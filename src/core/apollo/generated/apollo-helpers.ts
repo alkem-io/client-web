@@ -1412,6 +1412,11 @@ export type GeoKeySpecifier = ('endpoint' | GeoKeySpecifier)[];
 export type GeoFieldPolicy = {
   endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type GeoLocationKeySpecifier = ('latitude' | 'longitude' | GeoLocationKeySpecifier)[];
+export type GeoLocationFieldPolicy = {
+  latitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  longitude?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type GroupableKeySpecifier = ('groups' | GroupableKeySpecifier)[];
 export type GroupableFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1867,6 +1872,7 @@ export type LocationKeySpecifier = (
   | 'city'
   | 'country'
   | 'createdDate'
+  | 'geoLocation'
   | 'id'
   | 'postalCode'
   | 'stateOrProvince'
@@ -1879,6 +1885,7 @@ export type LocationFieldPolicy = {
   city?: FieldPolicy<any> | FieldReadFunction<any>;
   country?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  geoLocation?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2143,6 +2150,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationUpdateRoomState'
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
+  | 'adminUpdateGeoLocationData'
   | 'adminUserAccountDelete'
   | 'adminWingbackCreateTestCustomer'
   | 'adminWingbackGetCustomerEntitlements'
@@ -2189,6 +2197,7 @@ export type MutationKeySpecifier = (
   | 'createSubspace'
   | 'createTagsetOnProfile'
   | 'createTemplate'
+  | 'createTemplateFromContentSpace'
   | 'createTemplateFromSpace'
   | 'createUser'
   | 'createUserNewRegistration'
@@ -2314,6 +2323,7 @@ export type MutationFieldPolicy = {
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserAccountDelete?: FieldPolicy<any> | FieldReadFunction<any>;
   adminWingbackCreateTestCustomer?: FieldPolicy<any> | FieldReadFunction<any>;
   adminWingbackGetCustomerEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2360,6 +2370,7 @@ export type MutationFieldPolicy = {
   createSubspace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  createTemplateFromContentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplateFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   createUserNewRegistration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4652,6 +4663,10 @@ export type StrictTypedTypePolicies = {
   Geo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GeoKeySpecifier | (() => undefined | GeoKeySpecifier);
     fields?: GeoFieldPolicy;
+  };
+  GeoLocation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | GeoLocationKeySpecifier | (() => undefined | GeoLocationKeySpecifier);
+    fields?: GeoLocationFieldPolicy;
   };
   Groupable?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GroupableKeySpecifier | (() => undefined | GroupableKeySpecifier);

@@ -688,6 +688,7 @@
         }
       },
       "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
+      "invitationCardTitle": "{{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
       "you": "you",
       "vc": "your Virtual Contributor"
     },
@@ -2790,6 +2791,7 @@
       "references": "References",
       "host": "Host",
       "success": "{{entity}} updated successfully.",
+      "bokIngestStarted": "Body of Knowledge ingestion started. It may take a few minutes to complete.",
       "error": "An error occurred.",
       "sections": {
         "knowledge": {
@@ -2839,8 +2841,10 @@
         },
         "ingestion": {
           "title": "Body of Knowledge",
-          "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
-          "refreshBtn": "Update Knowledge"
+          "infoText": "Changes in the body of knowledge are not autmatically reflected in the Virtual Contributor. You need to manually apply them by clicking the button <bold>'UPDATE KNOWLEDGE'</bold>. It will take a few minutes for the update to complete. You can check back later to see if the update was successful.",
+          "refreshBtn": "Update Knowledge",
+          "lastUpdatedLabel": "Last updated: ",
+          "never": "Never"
         },
         "prompt": {
           "title": "Prompt",
@@ -2958,6 +2962,7 @@
       "verification-flow-continue": "Continue",
       "login-flow-account-exists": "This email is already associated with an account. If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
       "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
+      "claim-missing": "You haven't verified your Vidua identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Pick a password for your account"
     },
     "fields": {
