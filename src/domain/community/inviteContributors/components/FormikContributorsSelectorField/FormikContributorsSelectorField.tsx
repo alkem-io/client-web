@@ -1,10 +1,4 @@
-import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  User,
-  UserFilterInput,
-  UserSelectorQuery,
-  UserSelectorQueryVariables,
-} from '@/core/apollo/generated/graphql-schema';
+import { User, UserFilterInput, UserSelectorQuery } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { Box, SxProps, TextField, Theme, Button } from '@mui/material';
@@ -21,9 +15,10 @@ import ContributorChip from '../ContributorChip/ContributorChip';
 import { ContributorSelectorType, SelectedContributor } from './FormikContributorsSelectorField.models';
 import emailParser from './emailParser';
 import { DUPLICATED_EMAIL_ERROR } from './FormikContributorsSelectorField.validation';
-import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { useInView } from 'react-intersection-observer';
 import Loading from '@/core/ui/loading/Loading';
+import { useContributors } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
+import { createFilterOptions } from '@mui/material/Autocomplete';
 
 const MAX_USERS_SHOWN = 20;
 const FETCH_MORE_OPTION_ID = '__LOAD_MORE__';
@@ -43,10 +38,13 @@ export interface FormikContributorsSelectorFieldProps {
   hydrateUsers?: HydratorFn;
   sx?: SxProps<Theme>;
   allowExternalInvites?: boolean;
+  onlyFromParentCommunity?: boolean;
+  parentSpaceId?: string;
 }
 
 const identityFn = <U extends Identifiable>(results: U[]) => results;
 const alwaysTrue = () => true;
+const defaultFilter = createFilterOptions();
 
 const FormikContributorsSelectorField = ({
   name = 'selectedContributors',
@@ -55,6 +53,8 @@ const FormikContributorsSelectorField = ({
   hydrateUsers = identityFn as HydratorFn,
   sx,
   allowExternalInvites = true,
+  onlyFromParentCommunity = false,
+  parentSpaceId,
 }: FormikContributorsSelectorFieldProps) => {
   const { t } = useTranslation();
   const { userModel: currentUser } = useCurrentUserContext();
@@ -99,16 +99,16 @@ const FormikContributorsSelectorField = ({
   // Filter users for the Autocomplete
   const [filter, setFilter] = useState<UserFilterInput>();
 
-  const { data, hasMore, loading, fetchMore } = usePaginatedQuery<UserSelectorQuery, UserSelectorQueryVariables>({
-    useQuery: useUserSelectorQuery,
-    getPageInfo: data => data.usersPaginated.pageInfo,
-    options: {
-      skip: !filter,
-    },
+  const {
+    data: contributors = [],
+    hasMore,
+    loading,
+    fetchMore,
+  } = useContributors({
+    filter,
+    parentSpaceId,
+    onlyUsersInRole: onlyFromParentCommunity,
     pageSize: MAX_USERS_SHOWN,
-    variables: {
-      filter,
-    },
   });
 
   const { ref: intersectionObserverRef, inView: loadMoreInView } = useInView({
@@ -130,7 +130,7 @@ const FormikContributorsSelectorField = ({
     if (!inputValue) {
       return [];
     }
-    const users = data?.usersPaginated.users ?? [];
+    const users = contributors ?? [];
 
     const filterFunction = (user: SelectableUser) => {
       if (user.id === currentUser?.id) {
@@ -151,7 +151,7 @@ const FormikContributorsSelectorField = ({
   }, [
     currentUser?.id,
     selectedUserIds,
-    data?.usersPaginated.users,
+    contributors,
     field.value,
     inputValue,
     hydrateUsers,
@@ -240,7 +240,7 @@ const FormikContributorsSelectorField = ({
   return (
     <Box>
       <Autocomplete
-        freeSolo={allowExternalInvites}
+        freeSolo={allowExternalInvites && !onlyFromParentCommunity}
         options={listedUsers}
         getOptionDisabled={option => option.disabled ?? false}
         value={autocompleteValue}
@@ -253,7 +253,8 @@ const FormikContributorsSelectorField = ({
           }
           return option?.profile.displayName;
         }}
-        filterOptions={options => options}
+        // @ts-ignore
+        filterOptions={onlyFromParentCommunity ? defaultFilter : options => options}
         sx={{
           marginBottom: gutters(),
           [`& .${autocompleteClasses.popupIndicator}`]: {

@@ -12,7 +12,7 @@ export interface InviteContributorsDialogProps {
   filterContributors?: (contributor: Identifiable) => boolean;
   open: boolean;
   onClose: () => void;
-  allowExternalInvites?: boolean;
+  onlyFromParentCommunity?: boolean;
 }
 
 export interface ContributorProps extends Identifiable {

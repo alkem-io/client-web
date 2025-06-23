@@ -15,16 +15,18 @@ import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface InviteUsersFormDialogContentProps {
   filterUsers?: FormikContributorsSelectorFieldProps['filterUsers'];
-  allowExternalInvites: boolean;
+  parentSpaceId?: string;
+  onlyFromParentCommunity?: boolean;
 }
 
 const InviteUsersFormDialogContent: React.FC<InviteUsersFormDialogContentProps> = ({
   filterUsers,
-  allowExternalInvites = true,
+  parentSpaceId,
+  onlyFromParentCommunity = false,
 }) => {
   const { t } = useTranslation();
   const titleKey =
-    `community.invitations.inviteContributorsDialog.users.description${allowExternalInvites ? '' : '2'}` as TranslationKey;
+    `community.invitations.inviteContributorsDialog.users.description${onlyFromParentCommunity ? '2' : ''}` as TranslationKey;
 
   return (
     <DialogContent>
@@ -33,7 +35,8 @@ const InviteUsersFormDialogContent: React.FC<InviteUsersFormDialogContentProps> 
         <FormikContributorsSelectorField
           name="selectedContributors"
           filterUsers={filterUsers}
-          allowExternalInvites={allowExternalInvites}
+          onlyFromParentCommunity={onlyFromParentCommunity}
+          parentSpaceId={parentSpaceId}
         />
         <FormikInputField
           name="welcomeMessage"
