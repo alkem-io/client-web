@@ -38,10 +38,12 @@ interface BodyOfKnowledgeManagementProps {
 const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const aiPersonaServiceId = vc.aiPersona?.aiPersonaServiceID;
 
   const [updateBodyOfKnowledge, { loading: updateLoading }] = useRefreshBodyOfKnowledgeMutation();
   const { data } = useVirtualContributorKnowledgeBaseLastUpdatedQuery({
-    variables: { aiPersonaServiceID: vc.aiPersona?.aiPersonaServiceID ?? '' },
+    variables: { aiPersonaServiceID: aiPersonaServiceId ?? '' },
+    skip: !aiPersonaServiceId,
   });
   const lastUpdated = data?.aiServer.aiPersonaService.bodyOfKnowledgeLastUpdated;
 
