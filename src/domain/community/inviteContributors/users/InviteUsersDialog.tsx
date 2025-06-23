@@ -30,7 +30,6 @@ type InviteUsersData = {
   welcomeMessage: string;
   selectedContributors: SelectedContributor[];
   extraRole: RoleName;
-  onlyFromParentCommunity?: boolean;
 };
 
 const InviteUsersDialog = ({

@@ -10,6 +10,28 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
+export interface ContributorItem {
+  id: string;
+  profile: {
+    displayName: string;
+    description?: string;
+    location?: {
+      city?: string;
+      country?: string;
+    };
+    visual?: {
+      uri: string;
+    };
+  };
+}
+
+export interface UseContributorsResult {
+  data: ContributorItem[];
+  loading: boolean;
+  hasMore: boolean | undefined;
+  fetchMore: () => void;
+}
+
 export interface UseContributorsParams {
   filter?: UserFilterInput;
   parentSpaceId?: string;
@@ -17,7 +39,18 @@ export interface UseContributorsParams {
   pageSize?: number;
 }
 
-export const useContributors = ({ filter, parentSpaceId, onlyUsersInRole, pageSize = 20 }: UseContributorsParams) => {
+/**
+ * Fetch contributors either from a space's role set (RoleName.Member) or via a paginated user query.
+ * The hook switches mode based on `onlyUsersInRole` and `parentSpaceId`.
+ * @param {UseContributorsParams} params - Configuration for filtering and mode selection.
+ * @returns {UseContributorsResult} - Object containing contributor data, loading state, and pagination controls.
+ */
+export const useContributors = ({
+  filter,
+  parentSpaceId,
+  onlyUsersInRole,
+  pageSize = 20,
+}: UseContributorsParams): UseContributorsResult => {
   const { data: parentSpace, loading: loadingRoleSet } = useInviteUsersDialogQuery({
     variables: {
       spaceId: parentSpaceId!,
@@ -55,7 +88,7 @@ export const useContributors = ({ filter, parentSpaceId, onlyUsersInRole, pageSi
           ...user,
           profile: {
             ...user.profile,
-            visual: user.profile.avatar,
+            visual: user.profile.avatar, // to match the expected shape
           },
         })),
       [usersByRole]

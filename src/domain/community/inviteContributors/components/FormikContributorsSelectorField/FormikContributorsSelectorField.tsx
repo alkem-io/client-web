@@ -1,4 +1,4 @@
-import { User, UserFilterInput, UserSelectorQuery } from '@/core/apollo/generated/graphql-schema';
+import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { Box, SxProps, TextField, Theme, Button } from '@mui/material';
@@ -17,14 +17,15 @@ import emailParser from './emailParser';
 import { DUPLICATED_EMAIL_ERROR } from './FormikContributorsSelectorField.validation';
 import { useInView } from 'react-intersection-observer';
 import Loading from '@/core/ui/loading/Loading';
-import { useContributors } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
+import {
+  ContributorItem,
+  useContributors,
+} from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { createFilterOptions } from '@mui/material/Autocomplete';
 
 const MAX_USERS_SHOWN = 20;
 const FETCH_MORE_OPTION_ID = '__LOAD_MORE__';
 const LOAD_MORE_OPTION = { id: FETCH_MORE_OPTION_ID, profile: { displayName: 'Load More' }, disabled: true };
-
-type SelectableUser = UserSelectorQuery['usersPaginated']['users'][0];
 
 // We hydrate users returned by the query with this extra data: disabled, and the reason why they are,
 // so we can avoid inviting ourselves, or users already selected
@@ -52,8 +53,8 @@ const FormikContributorsSelectorField = ({
   filterUsers = alwaysTrue,
   hydrateUsers = identityFn as HydratorFn,
   sx,
-  allowExternalInvites = true,
   onlyFromParentCommunity = false,
+  allowExternalInvites = !onlyFromParentCommunity,
   parentSpaceId,
 }: FormikContributorsSelectorFieldProps) => {
   const { t } = useTranslation();
@@ -126,13 +127,13 @@ const FormikContributorsSelectorField = ({
   const [inputValue, setInputValue] = useState('');
 
   // Filter out users that are already selected, and myself
-  const listedUsers = useMemo<(Hydration<SelectableUser> | typeof LOAD_MORE_OPTION)[]>(() => {
+  const listedUsers = useMemo<(Hydration<ContributorItem> | typeof LOAD_MORE_OPTION)[]>(() => {
     if (!inputValue) {
       return [];
     }
     const users = contributors ?? [];
 
-    const filterFunction = (user: SelectableUser) => {
+    const filterFunction = (user: ContributorItem) => {
       if (user.id === currentUser?.id) {
         return false;
       }
@@ -276,7 +277,7 @@ const FormikContributorsSelectorField = ({
             }
           } else {
             // Print user row
-            const user = row as Hydration<SelectableUser>;
+            const user = row as Hydration<ContributorItem>;
             return (
               <li {...props} key={user.id}>
                 <ProfileChipView
