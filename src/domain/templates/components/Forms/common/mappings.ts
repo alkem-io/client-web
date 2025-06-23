@@ -5,6 +5,7 @@ import {
   CreateProfileInput,
   CreateReferenceInput,
   CreateTemplateFromSpaceMutationVariables,
+  CreateTemplateFromContentSpaceMutationVariables,
   CreateWhiteboardInput,
   UpdateCalloutMutationVariables,
   UpdateCommunityGuidelinesMutationVariables,
@@ -247,17 +248,41 @@ export const toCreateTemplateMutationVariables = (
   return result;
 };
 
-export const toCreateTemplateFromSpaceContentMutationVariables = (
+export const toCreateTemplateFromSpaceMutationVariables = (
   templatesSetId: string,
   values: TemplateSpaceFormSubmittedValues
 ): CreateTemplateFromSpaceMutationVariables => {
   // TODO: Maybe in the future we don't receive collaborationId to copy the collaboration and we receive the collaboration data directly
   if (!values.spaceId) {
-    throw new Error('Space ID is required to create a template from a collaboration');
+    throw new Error('Space ID required to create a template from a collaboration');
   }
 
   return {
     spaceId: values.spaceId,
+    templatesSetId: templatesSetId,
+    profileData: {
+      displayName: values.profile.displayName ?? '',
+      description: values.profile.description,
+      referencesData: values.profile.references?.map((ref, i) => ({
+        name: ref.name ?? `Reference ${i}`,
+        uri: ref.uri,
+        description: ref.description,
+      })),
+    },
+    tags: handleCreateTags(values),
+  };
+};
+
+export const toCreateTemplateFromSpaceContentMutationVariables = (
+  templatesSetId: string,
+  values: TemplateSpaceFormSubmittedValues
+): CreateTemplateFromContentSpaceMutationVariables => {
+  if (!values.contentSpaceId) {
+    throw new Error('contentSpaceId required to create a template from a collaboration');
+  }
+
+  return {
+    contentSpaceId: values.contentSpaceId,
     templatesSetId: templatesSetId,
     profileData: {
       displayName: values.profile.displayName ?? '',
