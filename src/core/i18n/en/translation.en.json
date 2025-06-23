@@ -2793,6 +2793,7 @@
       "references": "References",
       "host": "Host",
       "success": "{{entity}} updated successfully.",
+      "bokIngestStarted": "Body of Knowledge ingestion started. It may take a few minutes to complete.",
       "error": "An error occurred.",
       "sections": {
         "knowledge": {
@@ -2842,8 +2843,10 @@
         },
         "ingestion": {
           "title": "Body of Knowledge",
-          "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
-          "refreshBtn": "Update Knowledge"
+          "infoText": "Changes in the body of knowledge are not autmatically reflected in the Virtual Contributor. You need to manually apply them by clicking the button <bold>'UPDATE KNOWLEDGE'</bold>. It will take a few minutes for the update to complete. You can check back later to see if the update was successful.",
+          "refreshBtn": "Update Knowledge",
+          "lastUpdatedLabel": "Last updated: ",
+          "never": "Never"
         },
         "prompt": {
           "title": "Prompt",
