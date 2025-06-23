@@ -2057,6 +2057,16 @@ export type CreateTemplateContentSpaceInput = {
   settings: CreateSpaceSettingsInput;
 };
 
+export type CreateTemplateFromContentSpaceOnTemplatesSetInput = {
+  /** The ID of the ContentSpace to use as for the Template. */
+  contentSpaceID: Scalars['UUID']['input'];
+  /** A readable identifier, unique within the containing scope. */
+  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  profileData: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  templatesSetID: Scalars['UUID']['input'];
+};
+
 export type CreateTemplateFromSpaceOnTemplatesSetInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
@@ -3804,6 +3814,8 @@ export type Mutation = {
   createTagsetOnProfile: Tagset;
   /** Creates a new Template on the specified TemplatesSet. */
   createTemplate: Template;
+  /** Creates a new Template on the specified TemplatesSet using the provided ContentSpace as content. */
+  createTemplateFromContentSpace: Template;
   /** Creates a new Template on the specified TemplatesSet using the provided Space as content. */
   createTemplateFromSpace: Template;
   /** Creates a new User on the platform. */
@@ -4214,6 +4226,10 @@ export type MutationCreateTagsetOnProfileArgs = {
 
 export type MutationCreateTemplateArgs = {
   templateData: CreateTemplateOnTemplatesSetInput;
+};
+
+export type MutationCreateTemplateFromContentSpaceArgs = {
+  templateData: CreateTemplateFromContentSpaceOnTemplatesSetInput;
 };
 
 export type MutationCreateTemplateFromSpaceArgs = {
@@ -18717,6 +18733,18 @@ export type VirtualContributorUpdatesSubscription = {
   };
 };
 
+export type VirtualContributorKnowledgeBaseLastUpdatedQueryVariables = Exact<{
+  aiPersonaServiceID: Scalars['UUID']['input'];
+}>;
+
+export type VirtualContributorKnowledgeBaseLastUpdatedQuery = {
+  __typename?: 'Query';
+  aiServer: {
+    __typename?: 'AiServer';
+    aiPersonaService: { __typename?: 'AiPersonaService'; bodyOfKnowledgeLastUpdated?: Date | undefined };
+  };
+};
+
 export type VirtualContributorKnowledgeBaseQueryVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;
@@ -25624,6 +25652,18 @@ export type CreateTemplateMutation = {
         }
       | undefined;
   };
+};
+
+export type CreateTemplateFromContentSpaceMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID']['input'];
+  profileData: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  contentSpaceId: Scalars['UUID']['input'];
+}>;
+
+export type CreateTemplateFromContentSpaceMutation = {
+  __typename?: 'Mutation';
+  createTemplateFromContentSpace: { __typename?: 'Template'; id: string };
 };
 
 export type CreateTemplateFromSpaceMutationVariables = Exact<{

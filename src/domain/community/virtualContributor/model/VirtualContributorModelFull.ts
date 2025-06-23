@@ -42,5 +42,6 @@ export type VirtualContributorModelFull = {
     bodyOfKnowledgeID?: string;
     engine?: AiPersonaEngine;
     modelCard: AiPersonaModelCardModel;
+    aiPersonaServiceID?: string;
   };
 };
