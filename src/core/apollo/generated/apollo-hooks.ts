@@ -20531,67 +20531,70 @@ export type CreateTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTemplateMutation,
   SchemaTypes.CreateTemplateMutationVariables
 >;
-export const ImportSpaceTemplateDocument = gql`
-  mutation ImportSpaceTemplate(
+export const CreateTemplateFromContentSpaceDocument = gql`
+  mutation CreateTemplateFromContentSpace(
     $templatesSetId: UUID!
     $profileData: CreateProfileInput!
     $tags: [String!]
-    $spaceId: UUID!
+    $contentSpaceId: UUID!
   ) {
     createTemplateFromContentSpace(
       templateData: {
         templatesSetID: $templatesSetId
         profileData: $profileData
         tags: $tags
-        contentSpaceID: $spaceId
+        contentSpaceID: $contentSpaceId
       }
     ) {
       id
     }
   }
 `;
-export type ImportSpaceTemplateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.ImportSpaceTemplateMutation,
-  SchemaTypes.ImportSpaceTemplateMutationVariables
+export type CreateTemplateFromContentSpaceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateTemplateFromContentSpaceMutation,
+  SchemaTypes.CreateTemplateFromContentSpaceMutationVariables
 >;
 
 /**
- * __useImportSpaceTemplateMutation__
+ * __useCreateTemplateFromContentSpaceMutation__
  *
- * To run a mutation, you first call `useImportSpaceTemplateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useImportSpaceTemplateMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateTemplateFromContentSpaceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTemplateFromContentSpaceMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [importSpaceTemplateMutation, { data, loading, error }] = useImportSpaceTemplateMutation({
+ * const [createTemplateFromContentSpaceMutation, { data, loading, error }] = useCreateTemplateFromContentSpaceMutation({
  *   variables: {
  *      templatesSetId: // value for 'templatesSetId'
  *      profileData: // value for 'profileData'
  *      tags: // value for 'tags'
- *      spaceId: // value for 'spaceId'
+ *      contentSpaceId: // value for 'contentSpaceId'
  *   },
  * });
  */
-export function useImportSpaceTemplateMutation(
+export function useCreateTemplateFromContentSpaceMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.ImportSpaceTemplateMutation,
-    SchemaTypes.ImportSpaceTemplateMutationVariables
+    SchemaTypes.CreateTemplateFromContentSpaceMutation,
+    SchemaTypes.CreateTemplateFromContentSpaceMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.ImportSpaceTemplateMutation, SchemaTypes.ImportSpaceTemplateMutationVariables>(
-    ImportSpaceTemplateDocument,
-    options
-  );
+  return Apollo.useMutation<
+    SchemaTypes.CreateTemplateFromContentSpaceMutation,
+    SchemaTypes.CreateTemplateFromContentSpaceMutationVariables
+  >(CreateTemplateFromContentSpaceDocument, options);
 }
-export type ImportSpaceTemplateMutationHookResult = ReturnType<typeof useImportSpaceTemplateMutation>;
-export type ImportSpaceTemplateMutationResult = Apollo.MutationResult<SchemaTypes.ImportSpaceTemplateMutation>;
-export type ImportSpaceTemplateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.ImportSpaceTemplateMutation,
-  SchemaTypes.ImportSpaceTemplateMutationVariables
+export type CreateTemplateFromContentSpaceMutationHookResult = ReturnType<
+  typeof useCreateTemplateFromContentSpaceMutation
+>;
+export type CreateTemplateFromContentSpaceMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateTemplateFromContentSpaceMutation>;
+export type CreateTemplateFromContentSpaceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateTemplateFromContentSpaceMutation,
+  SchemaTypes.CreateTemplateFromContentSpaceMutationVariables
 >;
 export const CreateTemplateFromSpaceDocument = gql`
   mutation CreateTemplateFromSpace(

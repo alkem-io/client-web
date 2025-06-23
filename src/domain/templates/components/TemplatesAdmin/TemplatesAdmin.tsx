@@ -10,7 +10,7 @@ import {
   useUpdateCommunityGuidelinesMutation,
   useUpdateTemplateFromSpaceMutation,
   useUpdateTemplateMutation,
-  useImportSpaceTemplateMutation,
+  useCreateTemplateFromContentSpaceMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +24,7 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import {
+  toCreateTemplateFromSpaceMutationVariables,
   toCreateTemplateFromSpaceContentMutationVariables,
   toCreateTemplateMutationVariables,
   toUpdateTemplateMutationVariables,
@@ -167,13 +168,13 @@ const TemplatesAdmin = ({
   const [createSpaceTemplate] = useCreateTemplateFromSpaceMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
-  const [importSpaceTemplate] = useImportSpaceTemplateMutation({
+  const [createTemplateFromSpaceContent] = useCreateTemplateFromContentSpaceMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
 
   // Create a Collaboration template
   const handleSpaceTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
-    const variables = toCreateTemplateFromSpaceContentMutationVariables(
+    const variables = toCreateTemplateFromSpaceMutationVariables(
       templatesSetId,
       values as TemplateSpaceFormSubmittedValues
     );
@@ -266,9 +267,9 @@ const TemplatesAdmin = ({
     if (template) {
       const variables = toCreateTemplateFromSpaceContentMutationVariables(templatesSetId, {
         ...template,
-        spaceId: template.contentSpace?.id,
+        contentSpaceId: template.contentSpace?.id ?? '',
       });
-      await importSpaceTemplate({
+      await createTemplateFromSpaceContent({
         variables,
       });
       setImportTemplateType(undefined);

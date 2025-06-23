@@ -2059,7 +2059,7 @@ export type CreateTemplateContentSpaceInput = {
 
 export type CreateTemplateFromContentSpaceOnTemplatesSetInput = {
   /** The ID of the ContentSpace to use as for the Template. */
-  contentSpaceID?: InputMaybe<Scalars['UUID']['input']>;
+  contentSpaceID: Scalars['UUID']['input'];
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   profileData: CreateProfileInput;
@@ -25636,14 +25636,14 @@ export type CreateTemplateMutation = {
   };
 };
 
-export type ImportSpaceTemplateMutationVariables = Exact<{
+export type CreateTemplateFromContentSpaceMutationVariables = Exact<{
   templatesSetId: Scalars['UUID']['input'];
   profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
-  spaceId: Scalars['UUID']['input'];
+  contentSpaceId: Scalars['UUID']['input'];
 }>;
 
-export type ImportSpaceTemplateMutation = {
+export type CreateTemplateFromContentSpaceMutation = {
   __typename?: 'Mutation';
   createTemplateFromContentSpace: { __typename?: 'Template'; id: string };
 };

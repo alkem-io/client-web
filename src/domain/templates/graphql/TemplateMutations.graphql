@@ -53,20 +53,18 @@ mutation CreateTemplate(
   }
 }
 
-# Special case for creating a template from an existing Space
-# SpaceId is actually the contentSpaceId
-mutation ImportSpaceTemplate(
+mutation CreateTemplateFromContentSpace(
   $templatesSetId: UUID!
   $profileData: CreateProfileInput!
   $tags: [String!]
-  $spaceId: UUID!
+  $contentSpaceId: UUID!
 ) {
   createTemplateFromContentSpace(
     templateData: {
       templatesSetID: $templatesSetId
       profileData: $profileData
       tags: $tags
-      contentSpaceID: $spaceId
+      contentSpaceID: $contentSpaceId
     }
   ) {
     id
