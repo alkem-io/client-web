@@ -18711,6 +18711,18 @@ export type VirtualContributorUpdatesSubscription = {
   };
 };
 
+export type VirtualContributorKnowledgeBaseLastUpdatedQueryVariables = Exact<{
+  aiPersonaServiceID: Scalars['UUID']['input'];
+}>;
+
+export type VirtualContributorKnowledgeBaseLastUpdatedQuery = {
+  __typename?: 'Query';
+  aiServer: {
+    __typename?: 'AiServer';
+    aiPersonaService: { __typename?: 'AiPersonaService'; bodyOfKnowledgeLastUpdated?: Date | undefined };
+  };
+};
+
 export type VirtualContributorKnowledgeBaseQueryVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;

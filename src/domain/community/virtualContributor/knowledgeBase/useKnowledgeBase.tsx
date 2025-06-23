@@ -94,7 +94,7 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
         },
       },
       onCompleted: () => {
-        notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
+        notify(t('pages.virtualContributorProfile.bokIngestStarted'), 'success');
       },
     });
   };
