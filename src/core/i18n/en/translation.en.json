@@ -689,6 +689,7 @@
         }
       },
       "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
+      "invitationCardTitle": "{{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
       "you": "you",
       "vc": "your Virtual Contributor"
     },

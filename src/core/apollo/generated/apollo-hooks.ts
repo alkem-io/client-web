@@ -16300,11 +16300,13 @@ export const SpaceDashboardNavigationSubspacesDocument = gql`
         }
         about {
           ...SpaceAboutCardBanner
+          isContentPublic
         }
         subspaces {
           id
           about {
             ...SpaceAboutCardAvatar
+            isContentPublic
             membership {
               myMembershipStatus
             }
