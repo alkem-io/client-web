@@ -40,14 +40,14 @@ export const VersionHandling = () => {
   useEffect(() => {
     syncClientVersion(appVersion);
 
-    onVersionUpdate(version => {
+    onVersionUpdate(latestBuildVersion => {
       // this callback should be called only when there's a version mismatch
       // however in Sentry, there are logs with matching versions
-      if (version !== appVersion) {
-        logInfo(`New: ${version}; Current: ${appVersion}`, { label: 'VERSION_MISMATCH' });
-        setMessageBasedOnRecurringMismatch(version, appVersion);
+      if (appVersion !== latestBuildVersion) {
+        logInfo(`Current: ${appVersion}; New: ${latestBuildVersion};`, { label: 'VERSION_MISMATCH' });
+        setMessageBasedOnRecurringMismatch(appVersion, latestBuildVersion);
         setOpenToast(true);
-        setLastVersionDetected(version, appVersion);
+        setLastVersionDetected(appVersion, latestBuildVersion);
       }
     });
 
