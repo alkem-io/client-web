@@ -1482,7 +1482,7 @@
       "description": "Click here to delete this {{entity}}. Be careful, this action cannot be undone.",
       "confirmDialog": {
         "title": "Confirm {{entity}} Deletion",
-        "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. You can only delete a {{entity}} if there are no underlying Subspaces associated with it. If there are any Subspaces within this page, please delete them first (you can do so from the {{entity}} settings > Subspaces page).",
+        "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. <strong>You can only delete a {{entity}} if there are no underlying Subspaces associated with it.</strong> If there are any Subspaces within this page, please delete them first (you can do so from the {{entity}} settings > Subspaces page).",
         "descriptionShort": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible.",
         "checkbox": "Please check this box if you are certain about deleting this {{entity}}",
         "confirm": "Yes, delete"
@@ -1870,7 +1870,7 @@
       "shortName": "$t(common.library)",
       "fullName": "Template Library",
       "title": "Template Library on Alkemio is here to guide your way to impact",
-      "subtitle": "Open the template packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
+      "subtitle": "Open the template packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more [click here](https://alkem.io/docs/features/templates).",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
@@ -2675,7 +2675,7 @@
       "title": "Ooops!",
       "line1": "Looks like something went wrong: <italic>{{message}}</italic>",
       "line2": "Please check that your server ({{graphQLEndpoint}}) is available, and reload the page.",
-      "line3": "If the error persists please contact support.",
+      "line3": "If the error persists please [contact support](mailto:support@alkemio.com).",
       "buttons": {
         "reload": "Reload"
       },
