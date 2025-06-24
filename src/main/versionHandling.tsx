@@ -7,6 +7,8 @@ import { info as logInfo } from '@/core/logging/sentry/log';
 import { rem } from '@/core/ui/typography/utils';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
+const LAST_VERSION_MISMATCH_LS_KEY = 'lastVersionMismatch';
+
 /**
  * Listens for service worker messages about new versions and triggers a notification.
  */
@@ -21,10 +23,19 @@ export const VersionHandling = () => {
     return `${oldVersion}|${newVersion}`;
   };
   const setLastVersionDetected = (oldVersion: string, newVersion: string) => {
-    localStorage.setItem('lastVersionMismatch', buildVersionMismatchPair(oldVersion, newVersion));
+    try {
+      localStorage.setItem(LAST_VERSION_MISMATCH_LS_KEY, buildVersionMismatchPair(oldVersion, newVersion));
+    } catch (e) {
+      console.warn('Failed to store version mismatch info: ', e);
+    }
   };
   const getLastVersionDetected = () => {
-    return localStorage.getItem('lastVersionMismatch') || '';
+    try {
+      return localStorage.getItem(LAST_VERSION_MISMATCH_LS_KEY) || '';
+    } catch (e) {
+      console.warn('Failed to store version mismatch info: ', e);
+      return '';
+    }
   };
   const isRecurringMismatch = (oldVersion: string, newVersion: string) => {
     return getLastVersionDetected() === buildVersionMismatchPair(oldVersion, newVersion);
