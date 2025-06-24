@@ -2675,7 +2675,7 @@
       "title": "Ooops!",
       "line1": "Looks like something went wrong: <italic>{{message}}</italic>",
       "line2": "Please check that your server ({{graphQLEndpoint}}) is available, and reload the page.",
-      "line3": "If the error persists please [contact support](mailto:support@alkemio.io).",
+      "line3": "If the error persists please [contact support](mailto:support@alkem.io).",
       "buttons": {
         "reload": "Reload"
       },
