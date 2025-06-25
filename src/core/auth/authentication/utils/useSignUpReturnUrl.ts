@@ -17,6 +17,8 @@ const cookieDomain = (() => {
   return parts.length >= 2 ? `.${parts.slice(-2).join('.')}` : undefined;
 })();
 
+const returnUrlCookieOptions = { path: '/', domain: cookieDomain, sameSite: 'lax' } as const;
+
 type UseReturnUrlProvided = {
   returnUrl: string | undefined;
   setReturnUrl: (url: string | null) => void;
@@ -32,11 +34,11 @@ export function useReturnUrl(): UseReturnUrlProvided {
   const returnUrl = cookies[STORAGE_KEY_RETURN_URL];
   const setReturnUrl = (url: string | null) => {
     if (url?.trim()) {
-      setCookie(STORAGE_KEY_RETURN_URL, url, { path: '/', domain: cookieDomain });
+      setCookie(STORAGE_KEY_RETURN_URL, url, returnUrlCookieOptions);
     }
   };
   const clearReturnUrl = () => {
-    removeCookie(STORAGE_KEY_RETURN_URL, { path: '/', domain: cookieDomain });
+    removeCookie(STORAGE_KEY_RETURN_URL, returnUrlCookieOptions);
   };
 
   return {
