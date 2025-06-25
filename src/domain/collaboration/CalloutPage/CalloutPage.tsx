@@ -80,7 +80,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
       return locationState[LocationStateKeyCachedCallout];
     }
 
-    const draft = callout.visibility === CalloutVisibility.Draft;
+    const draft = callout.settings.visibility === CalloutVisibility.Draft;
     const editable = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
     const result: TypedCalloutDetails = {

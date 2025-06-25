@@ -18,7 +18,10 @@ fragment DashboardTopCallout on Callout {
       description
     }
   }
+  #//!! Remove
   type
-  visibility
+  settings {
+    visibility
+  }
   activity
 }

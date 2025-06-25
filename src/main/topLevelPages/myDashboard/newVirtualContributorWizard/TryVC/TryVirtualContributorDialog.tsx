@@ -12,8 +12,7 @@ import {
   useCalloutCreation,
 } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import {
-  CalloutState,
-  CalloutType,
+  CalloutFramingType,
   CalloutVisibility,
   VirtualContributorStatus,
 } from '@/core/apollo/generated/graphql-schema';
@@ -55,17 +54,19 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
 
   const calloutDetails: CalloutCreationType = {
     framing: {
+      type: CalloutFramingType.None,
       profile: {
         displayName: t('createVirtualContributorWizard.trySection.postTitle'),
         description: t('createVirtualContributorWizard.trySection.postDescription'),
         referencesData: [],
       },
     },
-    type: CalloutType.Post,
-    contributionPolicy: {
-      state: CalloutState.Open,
+    settings: {
+      framing: {
+        commentsEnabled: true
+      },
+      visibility: CalloutVisibility.Published
     },
-    visibility: CalloutVisibility.Published,
     sendNotification: false,
   };
 
@@ -106,7 +107,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       ...callout,
       comments: callout.comments,
       // Fake callout properties to show the callout inside the dialog without any controls
-      draft: callout.visibility === CalloutVisibility.Draft,
+      draft: callout.settings.visibility === CalloutVisibility.Draft,
       editable: false,
       movable: false,
       canBeSavedAsTemplate: false,

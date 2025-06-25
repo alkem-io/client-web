@@ -1,4 +1,4 @@
-import { CalloutContributionType, CalloutState, CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType, CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
 import { ReferenceIcon } from '@/domain/shared/components/References/icons/ReferenceIcon';
@@ -6,25 +6,24 @@ import { BlockOutlined, ForumOutlined, LibraryBooksOutlined } from '@mui/icons-m
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import calloutIcons from '../utils/calloutIcons';
 
-export interface ContributionPolicy {
-  allowedContributionTypes: CalloutContributionType[];
-  state: CalloutState;
+export interface ContributionSettings {
+  enabled: boolean;
 }
 
 export const getCalloutTypeIcon = ({
   type,
-  contributionPolicy,
+  settings,
 }: {
   type: CalloutType;
-  contributionPolicy: ContributionPolicy | undefined;
+  settings?: { contribution?: ContributionSettings };
 }) => {
   switch (type) {
     case CalloutType.Post:
-      if (!contributionPolicy) {
+      if (!settings) {
         return calloutIcons[type];
       }
 
-      return contributionPolicy.state === CalloutState.Open ? ForumOutlined : BlockOutlined;
+      return settings.contribution?.enabled ? ForumOutlined : BlockOutlined;
     default:
       return calloutIcons[type];
   }

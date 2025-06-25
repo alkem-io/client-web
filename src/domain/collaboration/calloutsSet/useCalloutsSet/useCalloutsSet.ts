@@ -9,7 +9,6 @@ import {
   CalloutVisibility,
   WhiteboardDetailsFragment,
   CommentsWithMessagesFragment,
-  CalloutContributionPolicy,
   CalloutContribution,
   CalloutsOnCalloutsSetUsingClassificationQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
@@ -74,7 +73,6 @@ export type TypedCalloutDetails = TypedCallout & {
     whiteboardContent?: string;
   };
   contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
-  contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
   comments?: CommentsWithMessagesFragment | undefined;
   classificationTagsets: ClassificationTagsetModel[];
 };
@@ -151,7 +149,7 @@ const useCalloutsSet = ({
       calloutsSet?.callouts
         ?.map(cloneDeep) // Clone to be able to modify the callouts
         .map(({ authorization, ...callout }) => {
-          const draft = callout?.visibility === CalloutVisibility.Draft;
+          const draft = callout?.settings.visibility === CalloutVisibility.Draft;
           const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
           const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 

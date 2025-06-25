@@ -32,8 +32,10 @@ interface CalloutContribution {
 
 interface CalloutContributionsProps {
   callout: {
-    contributionPolicy: {
-      allowedContributionTypes: CalloutContributionType[];
+    settings: {
+      contribution: {
+        allowedTypes: CalloutContributionType[];
+      };
     };
     contributions: CalloutContribution[];
     comments?: {

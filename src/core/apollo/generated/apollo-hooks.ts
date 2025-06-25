@@ -596,6 +596,20 @@ export const ContributeTabPostFragmentDoc = gql`
   }
   ${PostCardFragmentDoc}
 `;
+export const CalloutSettingsFullFragmentDoc = gql`
+  fragment CalloutSettingsFull on CalloutSettings {
+    contribution {
+      enabled
+      allowedTypes
+      canAddContributions
+      commentsEnabled
+    }
+    framing {
+      commentsEnabled
+    }
+    visibility
+  }
+`;
 export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
   fragment WhiteboardCollectionCalloutCard on Whiteboard {
     id
@@ -629,7 +643,9 @@ export const CalloutFragmentDoc = gql`
         displayName
       }
     }
-    visibility
+    settings {
+      visibility
+    }
   }
 `;
 export const ClassificationDetailsFragmentDoc = gql`
@@ -838,9 +854,6 @@ export const CalloutDetailsFragmentDoc = gql`
         ...WhiteboardDetails
       }
     }
-    contributionPolicy {
-      state
-    }
     contributionDefaults {
       id
       postDescription
@@ -862,7 +875,12 @@ export const CalloutDetailsFragmentDoc = gql`
       id
       myPrivileges
     }
-    visibility
+    settings {
+      contribution {
+        enabled
+      }
+      visibility
+    }
   }
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
@@ -1898,7 +1916,9 @@ export const DashboardTopCalloutFragmentDoc = gql`
       }
     }
     type
-    visibility
+    settings {
+      visibility
+    }
     activity
   }
 `;
@@ -2211,9 +2231,10 @@ export const CalloutTemplateContentFragmentDoc = gql`
         content
       }
     }
-    contributionPolicy {
-      id
-      state
+    settings {
+      contribution {
+        enabled
+      }
     }
     contributionDefaults {
       id
@@ -2374,10 +2395,11 @@ export const CalloutTemplateFragmentDoc = gql`
     callout {
       id
       type
-      contributionPolicy {
-        id
-        allowedContributionTypes
-        state
+      settings {
+        contribution {
+          enabled
+          allowedTypes
+        }
       }
     }
   }
@@ -2800,10 +2822,11 @@ export const SearchResultCalloutFragmentDoc = gql`
           }
         }
       }
-      contributionPolicy {
-        id
-        state
-        allowedContributionTypes
+      settings {
+        contribution {
+          enabled
+          allowedTypes
+        }
       }
       contributions {
         id
@@ -6586,12 +6609,13 @@ export const UpdateCalloutTemplateDocument = gql`
         postDescription
         whiteboardContent
       }
-      contributionPolicy {
-        id
-        state
+      settings {
+        contribution {
+          enabled
+        }
+        visibility
       }
       type
-      visibility
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -7963,7 +7987,7 @@ export const PostCalloutsInCalloutSetDocument = gql`
     lookup {
       calloutsSet(ID: $calloutsSetId) {
         id
-        callouts(types: [POST_COLLECTION]) {
+        callouts(withContributionTypes: [POST]) {
           id
           framing {
             id

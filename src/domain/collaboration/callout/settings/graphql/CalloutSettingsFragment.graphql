@@ -1,0 +1,12 @@
+fragment CalloutSettingsFull on CalloutSettings {
+  contribution {
+    enabled
+    allowedTypes
+    canAddContributions
+    commentsEnabled
+  }
+  framing {
+    commentsEnabled
+  }
+  visibility
+}

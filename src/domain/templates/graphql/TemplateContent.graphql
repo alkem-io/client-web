@@ -80,9 +80,10 @@ fragment CalloutTemplateContent on Callout {
       content
     }
   }
-  contributionPolicy {
-    id
-    state
+  settings {
+    contribution {
+      enabled
+    }
   }
   contributionDefaults {
     id

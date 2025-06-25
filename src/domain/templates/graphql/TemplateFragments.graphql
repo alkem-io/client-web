@@ -19,11 +19,13 @@ fragment CalloutTemplate on Template {
   ...TemplateProfileInfo
   callout {
     id
+    #//!! Remove
     type
-    contributionPolicy {
-      id
-      allowedContributionTypes
-      state
+    settings {
+      contribution {
+        enabled
+        allowedTypes
+      }
     }
   }
 }

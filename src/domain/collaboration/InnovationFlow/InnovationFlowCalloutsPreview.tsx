@@ -78,7 +78,7 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <RoundedIcon
                     size="small"
-                    component={getCalloutTypeIcon({ type: callout.type, contributionPolicy: undefined })}
+                    component={getCalloutTypeIcon({ type: callout.type, settings: undefined })}
                   />
                   <Text marginLeft={gutters()}>{callout.framing.profile.displayName}</Text>
                 </AccordionSummary>

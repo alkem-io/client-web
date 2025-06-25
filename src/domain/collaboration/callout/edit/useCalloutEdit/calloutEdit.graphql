@@ -39,12 +39,14 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
       postDescription
       whiteboardContent
     }
-    contributionPolicy {
-      id
-      state
+    settings {
+      contribution {
+        enabled
+      }
+      visibility
     }
+    #//!! Remove
     type
-    visibility
   }
 }
 

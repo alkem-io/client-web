@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import { CalloutFragmentDoc, useCreateCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
-  CalloutState,
-  CalloutType,
+  CalloutAllowedContributors,
+  CalloutContributionType,
+  CalloutFramingType,
   CalloutVisibility,
   CreateCalloutMutation,
   CreateCalloutOnCalloutsSetInput,
@@ -17,6 +18,7 @@ export interface CalloutCreationType {
     tagsets: CreateTagsetInput[];
   };
   framing: {
+    type: CalloutFramingType;
     profile: {
       description: string;
       displayName: string;
@@ -26,13 +28,21 @@ export interface CalloutCreationType {
     whiteboard?: WhiteboardFieldSubmittedValues;
     tags?: string[];
   };
+  settings?: {
+    framing?: {
+      commentsEnabled?: boolean;
+    };
+    contribution?: {
+      enabled?: boolean;
+      allowedTypes?: CalloutContributionType[];
+      canAddContributions?: CalloutAllowedContributors;
+      commentsEnabled?: boolean;
+    }
+    visibility?: CalloutVisibility;
+  };
   contributionDefaults?: {
     postDescription?: string;
     whiteboardContent?: string;
-  };
-  type: CalloutType;
-  contributionPolicy: {
-    state: CalloutState;
   };
   visibility?: CalloutVisibility;
   sendNotification?: boolean;
@@ -50,9 +60,6 @@ export interface CalloutCreationUtils {
   loading: boolean;
   canCreateCallout: boolean;
 }
-
-// Only Posts have comments for now.
-const CALLOUTS_WITH_COMMENTS = [CalloutType.Post];
 
 export const useCalloutCreation = ({ calloutsSetId }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCreating, setIsCreating] = useState(false);
@@ -101,7 +108,6 @@ export const useCalloutCreation = ({ calloutsSetId }: CalloutCreationParams): Ca
 
       const calloutData: CreateCalloutOnCalloutsSetInput = {
         calloutsSetID: calloutsSetId,
-        enableComments: CALLOUTS_WITH_COMMENTS.includes(callout.type),
         ...callout,
       };
 

@@ -1002,7 +1002,7 @@ export enum CalendarEventType {
 
 export type Callout = {
   __typename?: 'Callout';
-  /** The activity for this Callout. */
+  /** The activity for this Callout. The number of Contributions if the callout allows contributions, or the number of comments if it does not. */
   activity: Scalars['Float']['output'];
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
@@ -1012,8 +1012,6 @@ export type Callout = {
   comments?: Maybe<Room>;
   /** The Contribution Defaults for this Callout. */
   contributionDefaults: CalloutContributionDefaults;
-  /** The ContributionPolicy for this Callout. */
-  contributionPolicy: CalloutContributionPolicy;
   /** The Contributions that have been made to this Callout. */
   contributions: Array<CalloutContribution>;
   /** The user that created this Callout */
@@ -1034,14 +1032,14 @@ export type Callout = {
   publishedBy?: Maybe<User>;
   /** The timestamp for the publishing of this Callout. */
   publishedDate?: Maybe<Scalars['Float']['output']>;
+  /** The Callout Settings associated with this Callout. */
+  settings: CalloutSettings;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float']['output'];
-  /** The Callout type, e.g. Post, Whiteboard, Discussion */
+  /** The type of this Callout. WARNING. This field is deprecated and will be removed in the future. Use `framing.type` + `settings.contribution.allowedTypes` instead. */
   type: CalloutType;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
-  /** Visibility of the Callout. */
-  visibility: CalloutVisibility;
 };
 
 export type CalloutContributionsArgs = {
@@ -1049,6 +1047,12 @@ export type CalloutContributionsArgs = {
   limit?: InputMaybe<Scalars['Float']['input']>;
   shuffle?: InputMaybe<Scalars['Boolean']['input']>;
 };
+
+export enum CalloutAllowedContributors {
+  Admins = 'ADMINS',
+  Members = 'MEMBERS',
+  None = 'NONE',
+}
 
 export type CalloutContribution = {
   __typename?: 'CalloutContribution';
@@ -1086,20 +1090,6 @@ export type CalloutContributionDefaults = {
   whiteboardContent?: Maybe<Scalars['WhiteboardContent']['output']>;
 };
 
-export type CalloutContributionPolicy = {
-  __typename?: 'CalloutContributionPolicy';
-  /** The allowed contribution types for this callout. */
-  allowedContributionTypes: Array<CalloutContributionType>;
-  /** The date at which the entity was created. */
-  createdDate: Scalars['DateTime']['output'];
-  /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  /** State of the Callout. */
-  state: CalloutState;
-  /** The date at which the entity was last updated. */
-  updatedDate: Scalars['DateTime']['output'];
-};
-
 export enum CalloutContributionType {
   Link = 'LINK',
   Post = 'POST',
@@ -1116,11 +1106,18 @@ export type CalloutFraming = {
   id: Scalars['UUID']['output'];
   /** The Profile for framing the associated Callout. */
   profile: Profile;
+  /** The type of the Callout Framing, the additional content attached to this callout */
+  type: CalloutFramingType;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   /** The Whiteboard for framing the associated Callout. */
   whiteboard?: Maybe<Whiteboard>;
 };
+
+export enum CalloutFramingType {
+  None = 'NONE',
+  Whiteboard = 'WHITEBOARD',
+}
 
 export type CalloutPostCreated = {
   __typename?: 'CalloutPostCreated';
@@ -1134,11 +1131,33 @@ export type CalloutPostCreated = {
   sortOrder: Scalars['Float']['output'];
 };
 
-export enum CalloutState {
-  Archived = 'ARCHIVED',
-  Closed = 'CLOSED',
-  Open = 'OPEN',
-}
+export type CalloutSettings = {
+  __typename?: 'CalloutSettings';
+  /** Callout Contribution Settings. */
+  contribution: CalloutSettingsContribution;
+  /** Callout Framing Settings. */
+  framing: CalloutSettingsFraming;
+  /** Callout Visibility. */
+  visibility: CalloutVisibility;
+};
+
+export type CalloutSettingsContribution = {
+  __typename?: 'CalloutSettingsContribution';
+  /** The allowed contribution types for this callout. */
+  allowedTypes: Array<CalloutContributionType>;
+  /** Indicate who can add more contributions to the callout. */
+  canAddContributions: CalloutAllowedContributors;
+  /** Can comment to contributions callout. */
+  commentsEnabled: Scalars['Boolean']['output'];
+  /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
+  enabled: Scalars['Boolean']['output'];
+};
+
+export type CalloutSettingsFraming = {
+  __typename?: 'CalloutSettingsFraming';
+  /** Can comment to callout framing. */
+  commentsEnabled: Scalars['Boolean']['output'];
+};
 
 export enum CalloutType {
   LinkCollection = 'LINK_COLLECTION',
@@ -1177,7 +1196,7 @@ export type CalloutsSetCalloutsArgs = {
   limit?: InputMaybe<Scalars['Float']['input']>;
   shuffle?: InputMaybe<Scalars['Boolean']['input']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']['input']>;
-  types?: InputMaybe<Array<CalloutType>>;
+  withContributionTypes?: InputMaybe<Array<CalloutContributionType>>;
 };
 
 export enum CalloutsSetType {
@@ -1630,86 +1649,110 @@ export type CreateCalloutContributionDefaultsInput = {
   whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
 };
 
-export type CreateCalloutContributionPolicyData = {
-  __typename?: 'CreateCalloutContributionPolicyData';
-  /** State of the callout. */
-  state?: Maybe<CalloutState>;
-};
-
-export type CreateCalloutContributionPolicyInput = {
-  /** State of the callout. */
-  state?: InputMaybe<CalloutState>;
-};
-
 export type CreateCalloutData = {
   __typename?: 'CreateCalloutData';
   classification?: Maybe<CreateClassificationData>;
   contributionDefaults?: Maybe<CreateCalloutContributionDefaultsData>;
-  contributionPolicy?: Maybe<CreateCalloutContributionPolicyData>;
-  /** Controls if the comments are enabled for this Callout. Defaults to false. */
-  enableComments?: Maybe<Scalars['Boolean']['output']>;
   framing: CreateCalloutFramingData;
   /** A readable identifier, unique within the containing scope. */
   nameID?: Maybe<Scalars['NameID']['output']>;
   /** Send notification if this flag is true and visibility is PUBLISHED. Defaults to false. */
   sendNotification?: Maybe<Scalars['Boolean']['output']>;
+  settings?: Maybe<CreateCalloutSettingsData>;
   /** The sort order to assign to this Callout. */
   sortOrder?: Maybe<Scalars['Float']['output']>;
-  /** Callout type. */
-  type: CalloutType;
-  /** Visibility of the Callout. Defaults to DRAFT. */
-  visibility?: Maybe<CalloutVisibility>;
 };
 
 export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
   profile: CreateProfileData;
   tags?: Maybe<Array<Scalars['String']['output']>>;
+  /** The type of additional content attached to the framing of the callout. Defaults to None. ReadOnly. */
+  type?: Maybe<CalloutFramingType>;
   whiteboard?: Maybe<CreateWhiteboardData>;
 };
 
 export type CreateCalloutFramingInput = {
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** The type of additional content attached to the framing of the callout. Defaults to None. ReadOnly. */
+  type?: InputMaybe<CalloutFramingType>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
 export type CreateCalloutInput = {
   classification?: InputMaybe<CreateClassificationInput>;
   contributionDefaults?: InputMaybe<CreateCalloutContributionDefaultsInput>;
-  contributionPolicy?: InputMaybe<CreateCalloutContributionPolicyInput>;
-  /** Controls if the comments are enabled for this Callout. Defaults to false. */
-  enableComments?: InputMaybe<Scalars['Boolean']['input']>;
   framing: CreateCalloutFramingInput;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   /** Send notification if this flag is true and visibility is PUBLISHED. Defaults to false. */
   sendNotification?: InputMaybe<Scalars['Boolean']['input']>;
+  settings?: InputMaybe<CreateCalloutSettingsInput>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
-  /** Callout type. */
-  type: CalloutType;
-  /** Visibility of the Callout. Defaults to DRAFT. */
-  visibility?: InputMaybe<CalloutVisibility>;
 };
 
 export type CreateCalloutOnCalloutsSetInput = {
   calloutsSetID: Scalars['UUID']['input'];
   classification?: InputMaybe<CreateClassificationInput>;
   contributionDefaults?: InputMaybe<CreateCalloutContributionDefaultsInput>;
-  contributionPolicy?: InputMaybe<CreateCalloutContributionPolicyInput>;
-  /** Controls if the comments are enabled for this Callout. Defaults to false. */
-  enableComments?: InputMaybe<Scalars['Boolean']['input']>;
   framing: CreateCalloutFramingInput;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   /** Send notification if this flag is true and visibility is PUBLISHED. Defaults to false. */
   sendNotification?: InputMaybe<Scalars['Boolean']['input']>;
+  settings?: InputMaybe<CreateCalloutSettingsInput>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
-  /** Callout type. */
-  type: CalloutType;
-  /** Visibility of the Callout. Defaults to DRAFT. */
+};
+
+export type CreateCalloutSettingsContributionData = {
+  __typename?: 'CreateCalloutSettingsContributionData';
+  /** Allowed Contribution types. */
+  allowedTypes?: Maybe<Array<CalloutContributionType>>;
+  /** Indicate who can add more contributions to the callout. */
+  canAddContributions?: Maybe<CalloutAllowedContributors>;
+  /** Can comment to contributions callout. */
+  commentsEnabled?: Maybe<Scalars['Boolean']['output']>;
+  /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
+  enabled?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type CreateCalloutSettingsContributionInput = {
+  /** Allowed Contribution types. */
+  allowedTypes?: InputMaybe<Array<CalloutContributionType>>;
+  /** Indicate who can add more contributions to the callout. */
+  canAddContributions?: InputMaybe<CalloutAllowedContributors>;
+  /** Can comment to contributions callout. */
+  commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type CreateCalloutSettingsData = {
+  __typename?: 'CreateCalloutSettingsData';
+  contribution?: Maybe<CreateCalloutSettingsContributionData>;
+  framing?: Maybe<CreateCalloutSettingsFramingData>;
+  /** Visibility of the Callout. Defaults to PUBLISHED. */
+  visibility?: Maybe<CalloutVisibility>;
+};
+
+export type CreateCalloutSettingsFramingData = {
+  __typename?: 'CreateCalloutSettingsFramingData';
+  /** Can comment to callout framing. */
+  commentsEnabled?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type CreateCalloutSettingsFramingInput = {
+  /** Can comment to callout framing. */
+  commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type CreateCalloutSettingsInput = {
+  contribution?: InputMaybe<CreateCalloutSettingsContributionInput>;
+  framing?: InputMaybe<CreateCalloutSettingsFramingInput>;
+  /** Visibility of the Callout. Defaults to PUBLISHED. */
   visibility?: InputMaybe<CalloutVisibility>;
 };
 
@@ -6818,21 +6861,16 @@ export type UpdateCalloutContributionDefaultsInput = {
   whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
 };
 
-export type UpdateCalloutContributionPolicyInput = {
-  /** State of the callout. */
-  state?: InputMaybe<CalloutState>;
-};
-
 export type UpdateCalloutEntityInput = {
   ID: Scalars['UUID']['input'];
   classification?: InputMaybe<UpdateClassificationInput>;
   contributionDefaults?: InputMaybe<UpdateCalloutContributionDefaultsInput>;
-  contributionPolicy?: InputMaybe<UpdateCalloutContributionPolicyInput>;
   framing?: InputMaybe<UpdateCalloutFramingInput>;
   /** Set Group for this Callout. */
   groupName?: InputMaybe<Scalars['String']['input']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
+  settings?: InputMaybe<UpdateCalloutSettingsInput>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
 };
@@ -6851,6 +6889,27 @@ export type UpdateCalloutPublishInfoInput = {
   publishDate?: InputMaybe<Scalars['Float']['input']>;
   /** The identifier of the publisher of the Callout. */
   publisherID?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type UpdateCalloutSettingsContributionInput = {
+  /** Indicate who can add more contributions to the callout. */
+  canAddContributions?: InputMaybe<CalloutAllowedContributors>;
+  /** Can comment to contributions callout. */
+  commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Can add contributions to the Callout. Allowed Contribution types is going to be readOnly, so this field can be used to enable or disable the contribution temporarily instead of setting allowedTypes to None. */
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateCalloutSettingsFramingInput = {
+  /** Can comment to callout framing. */
+  commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateCalloutSettingsInput = {
+  contribution?: InputMaybe<UpdateCalloutSettingsContributionInput>;
+  framing?: InputMaybe<UpdateCalloutSettingsFramingInput>;
+  /** Visibility of the Callout. */
+  visibility?: InputMaybe<CalloutVisibility>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -9295,7 +9354,6 @@ export type CalloutPageCalloutQuery = {
           type: CalloutType;
           sortOrder: number;
           activity: number;
-          visibility: CalloutVisibility;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -9420,7 +9478,6 @@ export type CalloutPageCalloutQuery = {
                 }
               | undefined;
           };
-          contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
             id: string;
@@ -9610,6 +9667,11 @@ export type CalloutPageCalloutQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          settings: {
+            __typename?: 'CalloutSettings';
+            visibility: CalloutVisibility;
+            contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+          };
           classification?:
             | {
                 __typename?: 'Classification';
@@ -11268,7 +11330,6 @@ export type UpdateCalloutMutation = {
     type: CalloutType;
     sortOrder: number;
     activity: number;
-    visibility: CalloutVisibility;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -11378,7 +11439,6 @@ export type UpdateCalloutMutation = {
           }
         | undefined;
     };
-    contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
       id: string;
@@ -11540,6 +11600,11 @@ export type UpdateCalloutMutation = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    settings: {
+      __typename?: 'CalloutSettings';
+      visibility: CalloutVisibility;
+      contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+    };
   };
 };
 
@@ -11553,7 +11618,6 @@ export type UpdateCalloutTemplateMutation = {
     __typename?: 'Callout';
     id: string;
     type: CalloutType;
-    visibility: CalloutVisibility;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -11594,7 +11658,11 @@ export type UpdateCalloutTemplateMutation = {
       postDescription?: string | undefined;
       whiteboardContent?: string | undefined;
     };
-    contributionPolicy: { __typename?: 'CalloutContributionPolicy'; id: string; state: CalloutState };
+    settings: {
+      __typename?: 'CalloutSettings';
+      visibility: CalloutVisibility;
+      contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+    };
   };
 };
 
@@ -11610,7 +11678,6 @@ export type UpdateCalloutVisibilityMutation = {
     type: CalloutType;
     sortOrder: number;
     activity: number;
-    visibility: CalloutVisibility;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -11720,7 +11787,6 @@ export type UpdateCalloutVisibilityMutation = {
           }
         | undefined;
     };
-    contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
       id: string;
@@ -11882,6 +11948,11 @@ export type UpdateCalloutVisibilityMutation = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    settings: {
+      __typename?: 'CalloutSettings';
+      visibility: CalloutVisibility;
+      contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+    };
   };
 };
 
@@ -12148,6 +12219,19 @@ export type PostCardFragment = {
   };
 };
 
+export type CalloutSettingsFullFragment = {
+  __typename?: 'CalloutSettings';
+  visibility: CalloutVisibility;
+  contribution: {
+    __typename?: 'CalloutSettingsContribution';
+    enabled: boolean;
+    allowedTypes: Array<CalloutContributionType>;
+    canAddContributions: CalloutAllowedContributors;
+    commentsEnabled: boolean;
+  };
+  framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+};
+
 export type CalloutWhiteboardsQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
 }>;
@@ -12236,7 +12320,6 @@ export type DashboardTopCalloutsFragment = {
       __typename?: 'Callout';
       id: string;
       type: CalloutType;
-      visibility: CalloutVisibility;
       activity: number;
       framing: {
         __typename?: 'CalloutFraming';
@@ -12249,6 +12332,7 @@ export type DashboardTopCalloutsFragment = {
           description?: string | undefined;
         };
       };
+      settings: { __typename?: 'CalloutSettings'; visibility: CalloutVisibility };
     }>;
   };
 };
@@ -12257,13 +12341,13 @@ export type DashboardTopCalloutFragment = {
   __typename?: 'Callout';
   id: string;
   type: CalloutType;
-  visibility: CalloutVisibility;
   activity: number;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
   };
+  settings: { __typename?: 'CalloutSettings'; visibility: CalloutVisibility };
 };
 
 export type CalloutsSetAuthorizationQueryVariables = Exact<{
@@ -12299,7 +12383,6 @@ export type CreateCalloutMutation = {
     type: CalloutType;
     sortOrder: number;
     activity: number;
-    visibility: CalloutVisibility;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -12409,7 +12492,6 @@ export type CreateCalloutMutation = {
           }
         | undefined;
     };
-    contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
       id: string;
@@ -12571,6 +12653,11 @@ export type CreateCalloutMutation = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    settings: {
+      __typename?: 'CalloutSettings';
+      visibility: CalloutVisibility;
+      contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+    };
   };
 };
 
@@ -12597,7 +12684,6 @@ export type CalloutsOnCalloutsSetUsingClassificationQuery = {
             type: CalloutType;
             sortOrder: number;
             activity: number;
-            visibility: CalloutVisibility;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -12606,6 +12692,7 @@ export type CalloutsOnCalloutsSetUsingClassificationQuery = {
               id: string;
               profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
             };
+            settings: { __typename?: 'CalloutSettings'; visibility: CalloutVisibility };
             classification?:
               | {
                   __typename?: 'Classification';
@@ -12634,7 +12721,6 @@ export type CalloutFragment = {
   type: CalloutType;
   sortOrder: number;
   activity: number;
-  visibility: CalloutVisibility;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -12643,6 +12729,7 @@ export type CalloutFragment = {
     id: string;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   };
+  settings: { __typename?: 'CalloutSettings'; visibility: CalloutVisibility };
 };
 
 export type CalloutDetailsQueryVariables = Exact<{
@@ -12661,7 +12748,6 @@ export type CalloutDetailsQuery = {
           type: CalloutType;
           sortOrder: number;
           activity: number;
-          visibility: CalloutVisibility;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -12786,7 +12872,6 @@ export type CalloutDetailsQuery = {
                 }
               | undefined;
           };
-          contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
             id: string;
@@ -12976,6 +13061,11 @@ export type CalloutDetailsQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          settings: {
+            __typename?: 'CalloutSettings';
+            visibility: CalloutVisibility;
+            contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+          };
           classification?:
             | {
                 __typename?: 'Classification';
@@ -13023,7 +13113,6 @@ export type CalloutDetailsFragment = {
   type: CalloutType;
   sortOrder: number;
   activity: number;
-  visibility: CalloutVisibility;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -13133,7 +13222,6 @@ export type CalloutDetailsFragment = {
         }
       | undefined;
   };
-  contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
   contributionDefaults: {
     __typename?: 'CalloutContributionDefaults';
     id: string;
@@ -13295,6 +13383,11 @@ export type CalloutDetailsFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
+  settings: {
+    __typename?: 'CalloutSettings';
+    visibility: CalloutVisibility;
+    contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+  };
 };
 
 export type CalloutContentQueryVariables = Exact<{
@@ -22086,7 +22179,6 @@ export type SpacePageQuery = {
                 __typename?: 'Callout';
                 id: string;
                 type: CalloutType;
-                visibility: CalloutVisibility;
                 activity: number;
                 framing: {
                   __typename?: 'CalloutFraming';
@@ -22099,6 +22191,7 @@ export type SpacePageQuery = {
                     description?: string | undefined;
                   };
                 };
+                settings: { __typename?: 'CalloutSettings'; visibility: CalloutVisibility };
               }>;
             };
             timeline: {
@@ -22348,7 +22441,6 @@ export type SpacePageFragment = {
         __typename?: 'Callout';
         id: string;
         type: CalloutType;
-        visibility: CalloutVisibility;
         activity: number;
         framing: {
           __typename?: 'CalloutFraming';
@@ -22361,6 +22453,7 @@ export type SpacePageFragment = {
             description?: string | undefined;
           };
         };
+        settings: { __typename?: 'CalloutSettings'; visibility: CalloutVisibility };
       }>;
     };
     timeline: {
@@ -24430,11 +24523,13 @@ export type AllTemplatesInTemplatesSetQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
-                  contributionPolicy: {
-                    __typename?: 'CalloutContributionPolicy';
-                    id: string;
-                    allowedContributionTypes: Array<CalloutContributionType>;
-                    state: CalloutState;
+                  settings: {
+                    __typename?: 'CalloutSettings';
+                    contribution: {
+                      __typename?: 'CalloutSettingsContribution';
+                      enabled: boolean;
+                      allowedTypes: Array<CalloutContributionType>;
+                    };
                   };
                 }
               | undefined;
@@ -24794,7 +24889,10 @@ export type TemplateContentQuery = {
                       }
                     | undefined;
                 };
-                contributionPolicy: { __typename?: 'CalloutContributionPolicy'; id: string; state: CalloutState };
+                settings: {
+                  __typename?: 'CalloutSettings';
+                  contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+                };
                 contributionDefaults: {
                   __typename?: 'CalloutContributionDefaults';
                   id: string;
@@ -25185,7 +25283,10 @@ export type CalloutTemplateContentFragment = {
         }
       | undefined;
   };
-  contributionPolicy: { __typename?: 'CalloutContributionPolicy'; id: string; state: CalloutState };
+  settings: {
+    __typename?: 'CalloutSettings';
+    contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+  };
   contributionDefaults: {
     __typename?: 'CalloutContributionDefaults';
     id: string;
@@ -25432,11 +25533,13 @@ export type CalloutTemplateFragment = {
         __typename?: 'Callout';
         id: string;
         type: CalloutType;
-        contributionPolicy: {
-          __typename?: 'CalloutContributionPolicy';
-          id: string;
-          allowedContributionTypes: Array<CalloutContributionType>;
-          state: CalloutState;
+        settings: {
+          __typename?: 'CalloutSettings';
+          contribution: {
+            __typename?: 'CalloutSettingsContribution';
+            enabled: boolean;
+            allowedTypes: Array<CalloutContributionType>;
+          };
         };
       }
     | undefined;
@@ -25756,11 +25859,13 @@ export type TemplatesSetTemplatesFragment = {
           __typename?: 'Callout';
           id: string;
           type: CalloutType;
-          contributionPolicy: {
-            __typename?: 'CalloutContributionPolicy';
-            id: string;
-            allowedContributionTypes: Array<CalloutContributionType>;
-            state: CalloutState;
+          settings: {
+            __typename?: 'CalloutSettings';
+            contribution: {
+              __typename?: 'CalloutSettingsContribution';
+              enabled: boolean;
+              allowedTypes: Array<CalloutContributionType>;
+            };
           };
         }
       | undefined;
@@ -28913,11 +29018,13 @@ export type SearchQuery = {
                     | undefined;
                 };
               };
-              contributionPolicy: {
-                __typename?: 'CalloutContributionPolicy';
-                id: string;
-                state: CalloutState;
-                allowedContributionTypes: Array<CalloutContributionType>;
+              settings: {
+                __typename?: 'CalloutSettings';
+                contribution: {
+                  __typename?: 'CalloutSettingsContribution';
+                  enabled: boolean;
+                  allowedTypes: Array<CalloutContributionType>;
+                };
               };
               contributions: Array<{
                 __typename?: 'CalloutContribution';
@@ -29022,11 +29129,13 @@ export type SearchQuery = {
                     | undefined;
                 };
               };
-              contributionPolicy: {
-                __typename?: 'CalloutContributionPolicy';
-                id: string;
-                state: CalloutState;
-                allowedContributionTypes: Array<CalloutContributionType>;
+              settings: {
+                __typename?: 'CalloutSettings';
+                contribution: {
+                  __typename?: 'CalloutSettingsContribution';
+                  enabled: boolean;
+                  allowedTypes: Array<CalloutContributionType>;
+                };
               };
               contributions: Array<{
                 __typename?: 'CalloutContribution';
@@ -29478,11 +29587,13 @@ export type SearchResultCalloutFragment = {
           | undefined;
       };
     };
-    contributionPolicy: {
-      __typename?: 'CalloutContributionPolicy';
-      id: string;
-      state: CalloutState;
-      allowedContributionTypes: Array<CalloutContributionType>;
+    settings: {
+      __typename?: 'CalloutSettings';
+      contribution: {
+        __typename?: 'CalloutSettingsContribution';
+        enabled: boolean;
+        allowedTypes: Array<CalloutContributionType>;
+      };
     };
     contributions: Array<{
       __typename?: 'CalloutContribution';
