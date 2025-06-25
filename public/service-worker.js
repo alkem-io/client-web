@@ -7,10 +7,6 @@ const EventTypes = {
   CHECK_VERSION: 'CHECK_VERSION',
 };
 
-// holding the current client version
-let currentVersion = null;
-let versionCheckTimer = null;
-
 function isMajorOrMinorChanged(oldV, newV) {
   if (!oldV || !newV) return false;
   const [oMaj, oMin] = oldV.split('.');
@@ -26,7 +22,7 @@ function notifyClientsAboutUpdate(newVersion) {
   });
 }
 
-async function checkVersion() {
+async function checkVersion(currentVersion) {
   if (!currentVersion) {
     return;
   }
@@ -37,7 +33,7 @@ async function checkVersion() {
     const newVersion = data.version;
 
     if (newVersion !== currentVersion && isMajorOrMinorChanged(currentVersion, newVersion)) {
-      console.log('[SW] Different version detected: ', newVersion, currentVersion);
+      console.log('[SW] Different version detected: ', currentVersion, newVersion);
       notifyClientsAboutUpdate(newVersion);
     }
   } catch (error) {
@@ -56,16 +52,14 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('message', event => {
-  if (event.data?.type === EventTypes.CLIENT_VERSION) {
-    currentVersion = event.data.version;
-    console.log('[SW] CLIENT_VERSION: ', currentVersion);
-    checkVersion();
+  if (event.data?.type === EventTypes.CLIENT_VERSION && event.data.version) {
+    console.log('[SW] CLIENT_VERSION: ', event.data.version);
+    checkVersion(event.data.version);
   }
 
-  if (event.data?.type === EventTypes.CHECK_VERSION) {
-    currentVersion = event.data.version;
-    console.log('[SW] CHECK_VERSION: ', currentVersion);
-    checkVersion();
+  if (event.data?.type === EventTypes.CHECK_VERSION && event.data.version) {
+    console.log('[SW] CHECK_VERSION: ', event.data.version);
+    checkVersion(event.data.version);
   }
 });
 

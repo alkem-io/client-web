@@ -94,7 +94,11 @@ export function syncClientVersion(version: string) {
   if (!version) return;
 
   function startVersionCheckInterval(worker: ServiceWorker | null) {
-    if (intervalId || !worker) return;
+    if (!worker) return;
+
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
 
     intervalId = setInterval(() => {
       worker.postMessage({
