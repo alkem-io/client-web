@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import KratosUI from '../components/KratosUI';
-import { useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Loading from '@/core/ui/loading/Loading';
 import { useTranslation } from 'react-i18next';
@@ -51,8 +51,6 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
   const { setReturnUrl } = useReturnUrl();
 
-  setReturnUrl(returnUrl);
-
   // Ory 1.3.0: messages should be set on flow.ui.messages
   const loginUi =
     loginFlow &&
@@ -61,6 +59,10 @@ const LoginPage = ({ flow }: LoginPageProps) => {
         ui.messages = kratosErrors;
       }
     });
+
+  useEffect(() => {
+    setReturnUrl(returnUrl);
+  }, [returnUrl, setReturnUrl]);
 
   useLayoutEffect(() => {
     if (loginFlow && isEmailNotVerified(loginFlow)) {

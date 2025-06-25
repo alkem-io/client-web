@@ -6,11 +6,15 @@ import { useCookies } from 'react-cookie';
 // Determine base cookie domain (e.g. .alkem.io) for cross-subdomain cookies
 const cookieDomain = (() => {
   if (typeof window === 'undefined') return undefined;
-  const parts = window.location.hostname.split('.');
-  if (parts.length >= 2) {
-    return `.${parts.slice(-2).join('.')}`;
+
+  // Don't set domain for localhost or IP addresses
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+    return undefined;
   }
-  return undefined;
+
+  const parts = window.location.hostname.split('.');
+  return parts.length >= 2 ? `.${parts.slice(-2).join('.')}` : undefined;
 })();
 
 type UseReturnUrlProvided = {
@@ -27,7 +31,7 @@ export function useReturnUrl(): UseReturnUrlProvided {
   const [cookies, setCookie, removeCookie] = useCookies([STORAGE_KEY_RETURN_URL]);
   const returnUrl = cookies[STORAGE_KEY_RETURN_URL];
   const setReturnUrl = (url: string | null) => {
-    if (url) {
+    if (url?.trim()) {
       setCookie(STORAGE_KEY_RETURN_URL, url, { path: '/', domain: cookieDomain });
     }
   };

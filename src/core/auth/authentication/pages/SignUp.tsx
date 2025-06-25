@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UiContainer } from '@ory/kratos-client';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
@@ -49,7 +49,9 @@ const SignUp = () => {
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
   const { setReturnUrl } = useReturnUrl();
 
-  setReturnUrl(returnUrl);
+  useEffect(() => {
+    setReturnUrl(returnUrl);
+  }, [returnUrl, setReturnUrl]);
 
   if (!signUpFlow) {
     return null;
