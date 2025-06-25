@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { UiContainer } from '@ory/kratos-client';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
-import { PARAM_NAME_RETURN_URL, STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
+import { PARAM_NAME_RETURN_URL } from '../constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import { produce } from 'immer';
 import KratosUI from '../components/KratosUI';
@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import KratosForm from '../components/Kratos/KratosForm';
 import { KRATOS_INPUT_NAME_CSRF, KRATOS_REQUIRED_FIELDS } from '../components/Kratos/constants';
 import { isInputNode, isSubmitButton } from '../components/Kratos/helpers';
-import { useStoreSignUpReturnUrl } from '../utils/SignUpReturnUrl';
+import { useReturnUrl } from '../utils/useSignUpReturnUrl';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import AuthenticationLayout from '../AuthenticationLayout';
 import { AuthFormHeader } from '../components/AuthFormHeader';
@@ -47,14 +47,9 @@ const SignUp = () => {
   // which a user had no chance to fill because they weren't even on the page.
   const params = useQueryParams();
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
+  const { setReturnUrl } = useReturnUrl();
 
-  useEffect(() => {
-    if (returnUrl) {
-      sessionStorage.setItem(STORAGE_KEY_RETURN_URL, returnUrl);
-    }
-  }, [returnUrl]);
-
-  useStoreSignUpReturnUrl();
+  setReturnUrl(returnUrl);
 
   if (!signUpFlow) {
     return null;

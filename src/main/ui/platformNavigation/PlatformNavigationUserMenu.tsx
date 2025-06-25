@@ -48,7 +48,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
   ({ surface, onClose, footer, children }, ref) => {
     const { t } = useTranslation();
 
-    const { pathname } = useLocation();
+    const { pathname, search } = useLocation();
 
     const platformOrigin = usePlatformOrigin();
     const homeUrl = platformOrigin && `${platformOrigin}${ROUTE_HOME}`;
@@ -113,7 +113,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
               {!isAuthenticated && (
                 <NavigatableMenuItem
                   iconComponent={MeetingRoomOutlined}
-                  route={buildLoginUrl(pathname)}
+                  route={buildLoginUrl(pathname, search)}
                   onClick={onClose}
                 >
                   <Typography variant="inherit" fontWeight="bold">
