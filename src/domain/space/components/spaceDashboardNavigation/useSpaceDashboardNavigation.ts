@@ -3,7 +3,6 @@ import {
   useSpacePrivilegesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
-  Authorization,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   MyMembershipsRoleSetFragment,
@@ -37,30 +36,24 @@ export interface DashboardNavigationItem {
   children?: DashboardNavigationItem[];
 }
 
-const getDashboardNavigationItemProps = (
-  space: {
-    id: string;
-    about: SpaceAboutLightModel;
-    roleSet?: MyMembershipsRoleSetFragment;
-    authorization?: {
-      myPrivileges?: AuthorizationPrivilege[];
-    };
-  },
-  disabled?: boolean
-): DashboardNavigationItem => {
+const getDashboardNavigationItemProps = (space: {
+  id: string;
+  about: SpaceAboutLightModel;
+  roleSet?: MyMembershipsRoleSetFragment;
+  authorization?: {
+    myPrivileges?: AuthorizationPrivilege[];
+  };
+}): DashboardNavigationItem => {
   return {
     id: space.id,
     url: space.about.profile.url,
     displayName: space.about.profile.displayName,
     avatar: space.about.profile.avatar,
-    private: disabled,
+    private: !space.about.isContentPublic,
     member: space.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member,
     canCreateSubspace: space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateSubspace),
   };
 };
-
-const isReadable = ({ authorization }: { authorization?: Partial<Authorization> }) =>
-  authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
 const useSpaceDashboardNavigation = ({
   spaceId,
@@ -97,7 +90,7 @@ const useSpaceDashboardNavigation = ({
       ...getDashboardNavigationItemProps(space),
       children: space.subspaces.map(subspace => {
         return {
-          ...getDashboardNavigationItemProps(subspace, !isReadable(subspace)),
+          ...getDashboardNavigationItemProps(subspace),
         };
       }),
     };

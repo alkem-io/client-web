@@ -1410,7 +1410,7 @@ export type CommunityGuidelines = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
-  /** The details of the guidelilnes */
+  /** The details of the guidelines */
   profile: Profile;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
@@ -1960,6 +1960,8 @@ export type CreateReferenceOnProfileInput = {
 };
 
 export type CreateSpaceAboutInput = {
+  /** The CommunityGuidelines for the Space */
+  guidelines?: InputMaybe<CreateCommunityGuidelinesInput>;
   profileData: CreateProfileInput;
   when?: InputMaybe<Scalars['Markdown']['input']>;
   who?: InputMaybe<Scalars['Markdown']['input']>;
@@ -2053,6 +2055,16 @@ export type CreateTemplateContentSpaceInput = {
   level: SpaceLevel;
   /** Create the settings for the Space. */
   settings: CreateSpaceSettingsInput;
+};
+
+export type CreateTemplateFromContentSpaceOnTemplatesSetInput = {
+  /** The ID of the ContentSpace to use as for the Template. */
+  contentSpaceID: Scalars['UUID']['input'];
+  /** A readable identifier, unique within the containing scope. */
+  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  profileData: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  templatesSetID: Scalars['UUID']['input'];
 };
 
 export type CreateTemplateFromSpaceOnTemplatesSetInput = {
@@ -3802,6 +3814,8 @@ export type Mutation = {
   createTagsetOnProfile: Tagset;
   /** Creates a new Template on the specified TemplatesSet. */
   createTemplate: Template;
+  /** Creates a new Template on the specified TemplatesSet using the provided ContentSpace as content. */
+  createTemplateFromContentSpace: Template;
   /** Creates a new Template on the specified TemplatesSet using the provided Space as content. */
   createTemplateFromSpace: Template;
   /** Creates a new User on the platform. */
@@ -4212,6 +4226,10 @@ export type MutationCreateTagsetOnProfileArgs = {
 
 export type MutationCreateTemplateArgs = {
   templateData: CreateTemplateOnTemplatesSetInput;
+};
+
+export type MutationCreateTemplateFromContentSpaceArgs = {
+  templateData: CreateTemplateFromContentSpaceOnTemplatesSetInput;
 };
 
 export type MutationCreateTemplateFromSpaceArgs = {
@@ -5703,8 +5721,10 @@ export type RoleSet = {
   usersInRole: Array<User>;
   /** All users that have a Role in this RoleSet in the specified Roles. */
   usersInRoles: Array<UsersInRolesResponse>;
-  /** All virtuals that have the specified Role in this Community. */
+  /** All Virtual Contributors that have the specified Role in this Community. */
   virtualContributorsInRole: Array<VirtualContributor>;
+  /** All Virtual Contributors that are available from the current or parent RoleSets. */
+  virtualContributorsInRoleInHierarchy: Array<VirtualContributor>;
   /** All VirtualContributors that have a role in this RoleSet in the specified Roles. */
   virtualContributorsInRoles: Array<VirtualContributorsInRolesResponse>;
 };
@@ -5760,6 +5780,10 @@ export type RoleSetUsersInRolesArgs = {
 };
 
 export type RoleSetVirtualContributorsInRoleArgs = {
+  role: RoleName;
+};
+
+export type RoleSetVirtualContributorsInRoleInHierarchyArgs = {
   role: RoleName;
 };
 
@@ -15673,14 +15697,14 @@ export type VcInteractionsDetailsFragment = {
   virtualContributorID: string;
 };
 
-export type MentionableUsersQueryVariables = Exact<{
+export type MentionableContributorsQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']['input']>;
   roleSetId?: Scalars['UUID']['input'];
   includeVirtualContributors: Scalars['Boolean']['input'];
 }>;
 
-export type MentionableUsersQuery = {
+export type MentionableContributorsQuery = {
   __typename?: 'Query';
   usersPaginated: {
     __typename?: 'PaginatedUsers';
@@ -15706,7 +15730,7 @@ export type MentionableUsersQuery = {
     roleSet?:
       | {
           __typename?: 'RoleSet';
-          virtualContributorsInRole: Array<{
+          virtualContributorsInRoleInHierarchy: Array<{
             __typename?: 'VirtualContributor';
             id: string;
             profile: {
@@ -18709,6 +18733,18 @@ export type VirtualContributorUpdatesSubscription = {
   };
 };
 
+export type VirtualContributorKnowledgeBaseLastUpdatedQueryVariables = Exact<{
+  aiPersonaServiceID: Scalars['UUID']['input'];
+}>;
+
+export type VirtualContributorKnowledgeBaseLastUpdatedQuery = {
+  __typename?: 'Query';
+  aiServer: {
+    __typename?: 'AiServer';
+    aiPersonaService: { __typename?: 'AiPersonaService'; bodyOfKnowledgeLastUpdated?: Date | undefined };
+  };
+};
+
 export type VirtualContributorKnowledgeBaseQueryVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;
@@ -20749,6 +20785,7 @@ export type SpaceDashboardNavigationSubspacesQuery = {
             | undefined;
           about: {
             __typename?: 'SpaceAbout';
+            isContentPublic: boolean;
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -20767,6 +20804,7 @@ export type SpaceDashboardNavigationSubspacesQuery = {
             id: string;
             about: {
               __typename?: 'SpaceAbout';
+              isContentPublic: boolean;
               id: string;
               membership: {
                 __typename?: 'SpaceAboutMembership';
@@ -25614,6 +25652,18 @@ export type CreateTemplateMutation = {
         }
       | undefined;
   };
+};
+
+export type CreateTemplateFromContentSpaceMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID']['input'];
+  profileData: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  contentSpaceId: Scalars['UUID']['input'];
+}>;
+
+export type CreateTemplateFromContentSpaceMutation = {
+  __typename?: 'Mutation';
+  createTemplateFromContentSpace: { __typename?: 'Template'; id: string };
 };
 
 export type CreateTemplateFromSpaceMutationVariables = Exact<{

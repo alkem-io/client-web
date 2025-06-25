@@ -2197,6 +2197,7 @@ export type MutationKeySpecifier = (
   | 'createSubspace'
   | 'createTagsetOnProfile'
   | 'createTemplate'
+  | 'createTemplateFromContentSpace'
   | 'createTemplateFromSpace'
   | 'createUser'
   | 'createUserNewRegistration'
@@ -2369,6 +2370,7 @@ export type MutationFieldPolicy = {
   createSubspace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  createTemplateFromContentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplateFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   createUserNewRegistration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3107,6 +3109,7 @@ export type RoleSetKeySpecifier = (
   | 'usersInRole'
   | 'usersInRoles'
   | 'virtualContributorsInRole'
+  | 'virtualContributorsInRoleInHierarchy'
   | 'virtualContributorsInRoles'
   | RoleSetKeySpecifier
 )[];
@@ -3136,6 +3139,7 @@ export type RoleSetFieldPolicy = {
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorsInRoleInHierarchy?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorsInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoleSetInvitationResultKeySpecifier = (
