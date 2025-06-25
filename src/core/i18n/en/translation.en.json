@@ -603,6 +603,7 @@
         "users": {
           "title": "Invite others to join '{{spaceName}}'",
           "description": "Search for people below or directly add their email address",
+          "descriptionMembers": "Search members from the parent (Sub)Space.",
           "note": "Keep in mind that your personal email address will be visible to anyone you message.",
           "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
           "placeholder": "Username or email...",
@@ -2150,14 +2151,15 @@
             "invitations": "<b>Invitation only:</b> Users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
             "trustedApplicants": "Trusted applicants",
             "hostOrganizationJoin": "<b>Host organization:</b> Allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited.",
-            "allowSubspaceAdminsToInviteMembers": "<b>Space invitations</b>: Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation."
+            "allowSubspaceAdminsToInviteMembers": "<b>Space invitations</b>: Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation.",
+            "allowSubspaceAdminsToInviteMembersSubspace": "<b>Space invitations</b>: Allow admins of Subspaces within this Subspace to invite users directly to their own Subspace. If a user is not yet a member of this Subspace, they will automatically become one upon accepting the invitation. <b>Note: </b>Only users who are already members of the Space can be invited this way."
           },
           "memberActions": {
             "title": "Allowed Actions",
             "createBlocks": "<b>Create Blocks</b>: Allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
             "createSubspaces": "<b>Create Subspaces</b>: Allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
             "eventsFromSubspaces": "<b>Subspace events</b>: Allow events from Subspaces to be visible on this Space calendar as well.",
-            "inheritRights": "Allow Space members to contribute.",
+            "inheritRights": "Allow members of the parent community to contribute without needing to join first.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this Space."
           },
           "copySpace": {
@@ -3349,7 +3351,8 @@
   },
   "snackbars": {
     "appVersion": {
-      "message": "A new version of the app is available. Please refresh the page to update."
+      "message": "A new version of the app is available.",
+      "recurringMessage": "Please close all Alkemio tabs and reload to update."
     }
   }
 }
