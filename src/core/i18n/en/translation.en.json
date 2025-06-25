@@ -3351,7 +3351,8 @@
   },
   "snackbars": {
     "appVersion": {
-      "message": "A new version of the app is available. Please refresh the page to update."
+      "message": "A new version of the app is available.",
+      "recurringMessage": "Please close all Alkemio tabs and reload to update."
     }
   }
 }
