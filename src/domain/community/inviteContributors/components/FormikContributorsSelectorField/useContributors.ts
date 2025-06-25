@@ -81,23 +81,21 @@ export const useContributors = ({
     variables: { filter },
   });
 
+  const roleSetData = useMemo(
+    () =>
+      (usersByRole[RoleName.Member] ?? []).map(user => ({
+        ...user,
+        profile: {
+          ...user.profile,
+          visual: user.profile.avatar, // to match the expected shape
+        },
+      })),
+    [usersByRole]
+  );
+
   if (onlyUsersInRole && parentSpaceId) {
-    const data = useMemo(
-      () =>
-        (usersByRole[RoleName.Member] ?? []).map(user => ({
-          ...user,
-          profile: {
-            ...user.profile,
-            visual: user.profile.avatar, // to match the expected shape
-          },
-        })),
-      [usersByRole]
-    );
-
-    return { data, loading: loadingUsersByRoleSet || loadingRoleSet, hasMore: false, fetchMore: () => {} };
+    return { data: roleSetData, loading: loadingUsersByRoleSet || loadingRoleSet, hasMore: false, fetchMore: () => {} };
   } else {
-    const data = paginatedData?.usersPaginated.users ?? [];
-
-    return { data, loading, hasMore, fetchMore };
+    return { data: paginatedData?.usersPaginated.users ?? [], loading, hasMore, fetchMore };
   }
 };

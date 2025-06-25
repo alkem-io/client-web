@@ -26,7 +26,7 @@ const InviteUsersFormDialogContent: React.FC<InviteUsersFormDialogContentProps> 
 }) => {
   const { t } = useTranslation();
   const titleKey =
-    `community.invitations.inviteContributorsDialog.users.description${onlyFromParentCommunity ? '2' : ''}` as TranslationKey;
+    `community.invitations.inviteContributorsDialog.users.${onlyFromParentCommunity ? 'descriptionMembers' : 'description'}` as TranslationKey;
 
   return (
     <DialogContent>

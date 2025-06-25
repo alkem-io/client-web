@@ -603,7 +603,7 @@
         "users": {
           "title": "Invite others to join '{{spaceName}}'",
           "description": "Search for people below or directly add their email address",
-          "description2": "Search members from the parent (Sub)Space.",
+          "descriptionMembers": "Search members from the parent (Sub)Space.",
           "note": "Keep in mind that your personal email address will be visible to anyone you message.",
           "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
           "placeholder": "Username or email...",
@@ -2159,7 +2159,7 @@
             "createBlocks": "<b>Create Blocks</b>: Allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
             "createSubspaces": "<b>Create Subspaces</b>: Allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
             "eventsFromSubspaces": "<b>Subspace events</b>: Allow events from Subspaces to be visible on this Space calendar as well.",
-            "inheritRights": "Allow members of to contribute without needing to join first.",
+            "inheritRights": "Allow members of the parent community to contribute without needing to join first.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this Space."
           },
           "copySpace": {
