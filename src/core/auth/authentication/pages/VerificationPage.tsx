@@ -8,7 +8,7 @@ import KratosForm from '../components/Kratos/KratosForm';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import { BlockTitle } from '@/core/ui/typography';
 import { VerificationFlow } from '@ory/kratos-client';
-import { useSignUpReturnUrl } from '../utils/SignUpReturnUrl';
+import { useGetReturnUrl, useReturnUrl } from '../utils/useSignUpReturnUrl';
 import { produce } from 'immer';
 import { isAnchorNode, isVerificationContinueLink } from '../components/Kratos/helpers';
 import AuthenticationLayout from '../AuthenticationLayout';
@@ -25,12 +25,13 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   const { t } = useTranslation();
   const { flow: verificationFlow, loading, error } = useKratosFlow(FlowTypeName.Verification, flow);
 
-  const [returnUrl, cleanUp] = useSignUpReturnUrl();
+  const { clearReturnUrl } = useReturnUrl();
+  const returnUrl = useGetReturnUrl();
 
   const handleFormClick: MouseEventHandler = ({ target }) => {
     const element = target as HTMLElement;
     if (element.nodeName === 'A' && element.attributes['href'].value === returnUrl) {
-      cleanUp();
+      clearReturnUrl();
     }
   };
 
