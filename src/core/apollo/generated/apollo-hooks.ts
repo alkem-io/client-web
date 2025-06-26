@@ -9426,8 +9426,8 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutation,
   SchemaTypes.ReplyToMessageMutationVariables
 >;
-export const MentionableUsersDocument = gql`
-  query MentionableUsers(
+export const MentionableContributorsDocument = gql`
+  query MentionableContributors(
     $filter: UserFilterInput
     $first: Int
     $roleSetId: UUID! = "00000000-0000-0000-0000-000000000000"
@@ -9453,7 +9453,7 @@ export const MentionableUsersDocument = gql`
     }
     lookup @include(if: $includeVirtualContributors) {
       roleSet(ID: $roleSetId) {
-        virtualContributorsInRole(role: MEMBER) {
+        virtualContributorsInRoleInHierarchy(role: MEMBER) {
           id
           profile {
             id
@@ -9471,16 +9471,16 @@ export const MentionableUsersDocument = gql`
 `;
 
 /**
- * __useMentionableUsersQuery__
+ * __useMentionableContributorsQuery__
  *
- * To run a query within a React component, call `useMentionableUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useMentionableUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMentionableContributorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMentionableContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useMentionableUsersQuery({
+ * const { data, loading, error } = useMentionableContributorsQuery({
  *   variables: {
  *      filter: // value for 'filter'
  *      first: // value for 'first'
@@ -9489,48 +9489,54 @@ export const MentionableUsersDocument = gql`
  *   },
  * });
  */
-export function useMentionableUsersQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables> &
-    ({ variables: SchemaTypes.MentionableUsersQueryVariables; skip?: boolean } | { skip: boolean })
+export function useMentionableContributorsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.MentionableContributorsQuery,
+    SchemaTypes.MentionableContributorsQueryVariables
+  > &
+    ({ variables: SchemaTypes.MentionableContributorsQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>(
-    MentionableUsersDocument,
+  return Apollo.useQuery<SchemaTypes.MentionableContributorsQuery, SchemaTypes.MentionableContributorsQueryVariables>(
+    MentionableContributorsDocument,
     options
   );
 }
-export function useMentionableUsersLazyQuery(
+export function useMentionableContributorsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.MentionableUsersQuery,
-    SchemaTypes.MentionableUsersQueryVariables
+    SchemaTypes.MentionableContributorsQuery,
+    SchemaTypes.MentionableContributorsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>(
-    MentionableUsersDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.MentionableContributorsQuery,
+    SchemaTypes.MentionableContributorsQueryVariables
+  >(MentionableContributorsDocument, options);
 }
-export function useMentionableUsersSuspenseQuery(
+export function useMentionableContributorsSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.MentionableContributorsQuery,
+        SchemaTypes.MentionableContributorsQueryVariables
+      >
 ) {
   const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>(
-    MentionableUsersDocument,
-    options
-  );
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.MentionableContributorsQuery,
+    SchemaTypes.MentionableContributorsQueryVariables
+  >(MentionableContributorsDocument, options);
 }
-export type MentionableUsersQueryHookResult = ReturnType<typeof useMentionableUsersQuery>;
-export type MentionableUsersLazyQueryHookResult = ReturnType<typeof useMentionableUsersLazyQuery>;
-export type MentionableUsersSuspenseQueryHookResult = ReturnType<typeof useMentionableUsersSuspenseQuery>;
-export type MentionableUsersQueryResult = Apollo.QueryResult<
-  SchemaTypes.MentionableUsersQuery,
-  SchemaTypes.MentionableUsersQueryVariables
+export type MentionableContributorsQueryHookResult = ReturnType<typeof useMentionableContributorsQuery>;
+export type MentionableContributorsLazyQueryHookResult = ReturnType<typeof useMentionableContributorsLazyQuery>;
+export type MentionableContributorsSuspenseQueryHookResult = ReturnType<typeof useMentionableContributorsSuspenseQuery>;
+export type MentionableContributorsQueryResult = Apollo.QueryResult<
+  SchemaTypes.MentionableContributorsQuery,
+  SchemaTypes.MentionableContributorsQueryVariables
 >;
-export function refetchMentionableUsersQuery(variables: SchemaTypes.MentionableUsersQueryVariables) {
-  return { query: MentionableUsersDocument, variables: variables };
+export function refetchMentionableContributorsQuery(variables: SchemaTypes.MentionableContributorsQueryVariables) {
+  return { query: MentionableContributorsDocument, variables: variables };
 }
 export const SendMessageToRoomDocument = gql`
   mutation sendMessageToRoom($messageData: RoomSendMessageInput!) {

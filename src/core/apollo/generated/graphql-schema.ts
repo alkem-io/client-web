@@ -5721,8 +5721,10 @@ export type RoleSet = {
   usersInRole: Array<User>;
   /** All users that have a Role in this RoleSet in the specified Roles. */
   usersInRoles: Array<UsersInRolesResponse>;
-  /** All virtuals that have the specified Role in this Community. */
+  /** All Virtual Contributors that have the specified Role in this Community. */
   virtualContributorsInRole: Array<VirtualContributor>;
+  /** All Virtual Contributors that are available from the current or parent RoleSets. */
+  virtualContributorsInRoleInHierarchy: Array<VirtualContributor>;
   /** All VirtualContributors that have a role in this RoleSet in the specified Roles. */
   virtualContributorsInRoles: Array<VirtualContributorsInRolesResponse>;
 };
@@ -5778,6 +5780,10 @@ export type RoleSetUsersInRolesArgs = {
 };
 
 export type RoleSetVirtualContributorsInRoleArgs = {
+  role: RoleName;
+};
+
+export type RoleSetVirtualContributorsInRoleInHierarchyArgs = {
   role: RoleName;
 };
 
@@ -15691,14 +15697,14 @@ export type VcInteractionsDetailsFragment = {
   virtualContributorID: string;
 };
 
-export type MentionableUsersQueryVariables = Exact<{
+export type MentionableContributorsQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']['input']>;
   roleSetId?: Scalars['UUID']['input'];
   includeVirtualContributors: Scalars['Boolean']['input'];
 }>;
 
-export type MentionableUsersQuery = {
+export type MentionableContributorsQuery = {
   __typename?: 'Query';
   usersPaginated: {
     __typename?: 'PaginatedUsers';
@@ -15724,7 +15730,7 @@ export type MentionableUsersQuery = {
     roleSet?:
       | {
           __typename?: 'RoleSet';
-          virtualContributorsInRole: Array<{
+          virtualContributorsInRoleInHierarchy: Array<{
             __typename?: 'VirtualContributor';
             id: string;
             profile: {

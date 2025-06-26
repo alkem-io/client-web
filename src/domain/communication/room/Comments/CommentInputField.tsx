@@ -2,7 +2,7 @@ import { Box, IconButton, InputBaseComponentProps, Paper, Popper, PopperProps, s
 import React, { forwardRef, PropsWithChildren, ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
-import { useMentionableUsersLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useMentionableContributorsLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
@@ -154,7 +154,7 @@ export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComp
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const emptyQueries = useRef<string[]>([]).current;
 
-  const [queryUsers] = useMentionableUsersLazyQuery();
+  const [queryUsers] = useMentionableContributorsLazyQuery();
 
   const { space } = useSpace();
   const spaceRoleSetId = space.about.membership?.roleSetID;
@@ -167,7 +167,7 @@ export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComp
 
   const hasVcInteraction = vcInteractions.some(interaction => interaction?.threadID === threadId);
 
-  const getMentionableUsers = async (search: string): Promise<EnrichedSuggestionDataItem[]> => {
+  const getMentionableContributors = async (search: string): Promise<EnrichedSuggestionDataItem[]> => {
     if (
       !search ||
       emptyQueries.some(query => search.startsWith(query)) ||
@@ -192,7 +192,7 @@ export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComp
     const mentionableContributors: EnrichedSuggestionDataItem[] = [];
 
     if (!hasVcInteraction && vcEnabled) {
-      data?.lookup?.roleSet?.virtualContributorsInRole?.forEach(vc => {
+      data?.lookup?.roleSet?.virtualContributorsInRoleInHierarchy?.forEach(vc => {
         if (!isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase())) {
           mentionableContributors.push({
             id: vc.profile.url,
@@ -223,12 +223,15 @@ export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComp
     return mentionableContributors;
   };
 
-  const findMentionableUsers = async (search: string, callback: (users: EnrichedSuggestionDataItem[]) => void) => {
-    const users = await getMentionableUsers(search);
+  const findMentionableContributors = async (
+    search: string,
+    callback: (users: EnrichedSuggestionDataItem[]) => void
+  ) => {
+    const users = await getMentionableContributors(search);
     callback(users);
   };
 
-  // Open a tooltip (which is the same Popper that contains the maching users) but with a helper message
+  // Open a tooltip (which is the same Popper that contains the matching users) but with a helper message
   // that says something like "Start typing to mention someone"
   useEffect(() => {
     const input = containerRef.current?.querySelector('textarea');
@@ -288,7 +291,7 @@ export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComp
       >
         <Mention
           trigger={MENTION_SYMBOL}
-          data={findMentionableUsers}
+          data={findMentionableContributors}
           appendSpaceOnAdd
           displayTransform={(_, display) => `${MENTION_SYMBOL}${display}`}
           renderSuggestion={(suggestion, _, __, ___, focused) => {
