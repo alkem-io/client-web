@@ -25,10 +25,11 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
   const { t } = useTranslation();
 
   const hasTags = (template?.profile.defaultTagset?.tags ?? []).length > 0;
-  const footerHeight = template?.callout?.type === CalloutType.LinkCollection ? (hasTags ? 3 : 1) : hasTags ? 2 : 0;
+  const footerHeight =
+    template?.callout?.calloutTypeDeprecated === CalloutType.LinkCollection ? (hasTags ? 3 : 1) : hasTags ? 2 : 0;
   const descriptionHeightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - footerHeight;
 
-  const Icon = template?.callout?.type && calloutIcons[template.callout.type];
+  const Icon = template?.callout?.calloutTypeDeprecated && calloutIcons[template.callout.calloutTypeDeprecated];
 
   return (
     <ContributeCard {...props}>
@@ -46,8 +47,10 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
           {template && (
             <Box display="flex" alignItems="center" marginLeft={-0.5} gap={gutters(0.5)}>
               {Icon && <RoundedIcon marginLeft={0.5} size="xsmall" component={Icon} flexShrink={0} />}
-              {template.callout?.type && (
-                <Caption>{t(`components.calloutTypeSelect.label.${template.callout.type}` as const)}</Caption>
+              {template.callout?.calloutTypeDeprecated && (
+                <Caption>
+                  {t(`components.calloutTypeSelect.label.${template.callout.calloutTypeDeprecated}` as const)}
+                </Caption>
               )}
             </Box>
           )}

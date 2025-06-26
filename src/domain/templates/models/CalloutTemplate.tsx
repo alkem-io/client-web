@@ -1,5 +1,6 @@
 import { TemplateBase } from './TemplateBase';
-import { CalloutType, TemplateType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType, CalloutType, TemplateType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutSettingsModelFull } from '@/domain/collaboration/new-callout/models/CalloutSettingsModel';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
@@ -7,7 +8,10 @@ export interface CalloutTemplate extends TemplateBase {
   type: TemplateType; // TemplateType.Callout
   callout?: {
     id: string;
-    type: CalloutType;
+    /**
+     * @deprecated
+     */
+    deprecatedCalloutType: CalloutType;
     framing: {
       profile: {
         displayName: string;
@@ -15,6 +19,7 @@ export interface CalloutTemplate extends TemplateBase {
         references?: ReferenceModel[];
         tagsets?: TagsetModel[];
       };
+      type: CalloutFramingType;
       whiteboard?: {
         profile: {
           displayName: string;
@@ -31,5 +36,6 @@ export interface CalloutTemplate extends TemplateBase {
       postDescription?: string;
       whiteboardContent?: string; // For Whiteboard Collection Callout templates
     };
+    settings: CalloutSettingsModelFull;
   };
 }

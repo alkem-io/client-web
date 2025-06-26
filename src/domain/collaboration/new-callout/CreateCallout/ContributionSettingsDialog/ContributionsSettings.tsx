@@ -2,7 +2,7 @@ import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { useField } from 'formik';
 import { CalloutFormSubmittedValues } from '../CalloutForm';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import { CalloutAllowedContributors } from '../constants';
+import { CalloutAllowedContributors } from '@/core/apollo/generated/graphql-schema';
 import { ContributionTypeSettingsComponentRef } from './ContributionSettingsDialog';
 import { useTranslation } from 'react-i18next';
 
@@ -42,7 +42,7 @@ const ContributionsSettings = forwardRef<ContributionTypeSettingsComponentRef>((
           canAddContributions: formState.membersCanRespond
             ? CalloutAllowedContributors.Members
             : formState.adminCanRespond
-              ? CalloutAllowedContributors.Admin
+              ? CalloutAllowedContributors.Admins
               : CalloutAllowedContributors.None,
           commentsEnabled: formState.commentsOnEachResponse,
         },

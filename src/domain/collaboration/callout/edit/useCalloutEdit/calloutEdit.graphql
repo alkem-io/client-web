@@ -7,6 +7,7 @@ mutation UpdateCallout($calloutData: UpdateCalloutEntityInput!) {
 mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
   updateCallout(calloutData: $calloutData) {
     id
+    calloutTypeDeprecated: type
     framing {
       id
       profile {
@@ -22,6 +23,7 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
           uri
         }
       }
+      type
       whiteboard {
         id
         content
@@ -42,11 +44,10 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
     settings {
       contribution {
         enabled
+        allowedTypes
       }
       visibility
     }
-    #//!! Remove
-    type
   }
 }
 

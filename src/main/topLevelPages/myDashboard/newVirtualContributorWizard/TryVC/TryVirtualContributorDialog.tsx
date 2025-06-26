@@ -23,7 +23,7 @@ import {
   useDeleteCalloutMutation,
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { TypedCalloutDetails } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import { TypedCalloutDetails } from '@/domain/collaboration/new-callout/models/TypedCallout';
 import { Actions } from '@/core/ui/actions/Actions';
 import { removeVCCreationCache } from './utils';
 import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
@@ -63,9 +63,9 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     },
     settings: {
       framing: {
-        commentsEnabled: true
+        commentsEnabled: true,
       },
-      visibility: CalloutVisibility.Published
+      visibility: CalloutVisibility.Published,
     },
     sendNotification: false,
   };

@@ -9,7 +9,7 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Text, CaptionSmall } from '@/core/ui/typography';
 import { getCalloutTypeIcon } from '@/domain/collaboration/callout/calloutCard/calloutIcons';
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
-import { CalloutModelLight } from '../callout/model/CalloutModelLight';
+import { CalloutModelLight } from '../new-callout/models/CalloutModelLight';
 
 export interface InnovationFlowCalloutsPreviewProps {
   selectedState: string | undefined;
@@ -27,7 +27,7 @@ const StyledAccordion = styled(Accordion)(({ theme }) => ({
 const CalloutDescription = memo(({ callout }: { callout: CalloutModelLight }) => {
   const { t } = useTranslation();
 
-  switch (callout.type) {
+  switch (callout.calloutTypeDeprecated) {
     case CalloutType.Whiteboard:
     case CalloutType.WhiteboardCollection:
       if (callout.framing.whiteboard?.profile.preview?.uri) {
@@ -78,7 +78,10 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <RoundedIcon
                     size="small"
-                    component={getCalloutTypeIcon({ type: callout.type, settings: undefined })}
+                    component={getCalloutTypeIcon({
+                      calloutTypeDeprecated: callout.calloutTypeDeprecated,
+                      settings: undefined,
+                    })}
                   />
                   <Text marginLeft={gutters()}>{callout.framing.profile.displayName}</Text>
                 </AccordionSummary>

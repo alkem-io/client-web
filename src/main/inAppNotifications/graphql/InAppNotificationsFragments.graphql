@@ -18,7 +18,7 @@ fragment InAppNotificationAllTypes on InAppNotification {
 fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished {
   callout {
     id
-    type
+    calloutTypeDeprecated: type
     framing {
       id
       profile {

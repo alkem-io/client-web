@@ -18,8 +18,6 @@ fragment DashboardTopCallout on Callout {
       description
     }
   }
-  #//!! Remove
-  type
   settings {
     visibility
   }

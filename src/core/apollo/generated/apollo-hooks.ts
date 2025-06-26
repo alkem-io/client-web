@@ -316,7 +316,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       id
       callouts {
         id
-        type
+        calloutTypeDeprecated: type
         activity
         sortOrder
         classification {
@@ -374,7 +374,6 @@ export const ActivityLogCalloutPublishedFragmentDoc = gql`
   fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
     callout {
       ...ActivityCalloutContext
-      type
     }
   }
   ${ActivityCalloutContextFragmentDoc}
@@ -596,20 +595,6 @@ export const ContributeTabPostFragmentDoc = gql`
   }
   ${PostCardFragmentDoc}
 `;
-export const CalloutSettingsFullFragmentDoc = gql`
-  fragment CalloutSettingsFull on CalloutSettings {
-    contribution {
-      enabled
-      allowedTypes
-      canAddContributions
-      commentsEnabled
-    }
-    framing {
-      commentsEnabled
-    }
-    visibility
-  }
-`;
 export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
   fragment WhiteboardCollectionCalloutCard on Whiteboard {
     id
@@ -628,7 +613,7 @@ export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
-    type
+    calloutTypeDeprecated: type
     sortOrder
     activity
     authorization {
@@ -642,6 +627,7 @@ export const CalloutFragmentDoc = gql`
         url
         displayName
       }
+      type
     }
     settings {
       visibility
@@ -829,10 +815,24 @@ export const CommentsWithMessagesFragmentDoc = gql`
   ${MessageDetailsFragmentDoc}
   ${VcInteractionsDetailsFragmentDoc}
 `;
+export const CalloutSettingsFullFragmentDoc = gql`
+  fragment CalloutSettingsFull on CalloutSettings {
+    contribution {
+      enabled
+      allowedTypes
+      canAddContributions
+      commentsEnabled
+    }
+    framing {
+      commentsEnabled
+    }
+    visibility
+  }
+`;
 export const CalloutDetailsFragmentDoc = gql`
   fragment CalloutDetails on Callout {
     id
-    type
+    calloutTypeDeprecated: type
     framing {
       id
       profile {
@@ -850,6 +850,7 @@ export const CalloutDetailsFragmentDoc = gql`
         }
         url
       }
+      type
       whiteboard {
         ...WhiteboardDetails
       }
@@ -876,10 +877,7 @@ export const CalloutDetailsFragmentDoc = gql`
       myPrivileges
     }
     settings {
-      contribution {
-        enabled
-      }
-      visibility
+      ...CalloutSettingsFull
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -887,6 +885,7 @@ export const CalloutDetailsFragmentDoc = gql`
   ${WhiteboardDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
+  ${CalloutSettingsFullFragmentDoc}
 `;
 export const PostSettingsFragmentDoc = gql`
   fragment PostSettings on Post {
@@ -919,7 +918,7 @@ export const PostSettingsFragmentDoc = gql`
 export const PostSettingsCalloutFragmentDoc = gql`
   fragment PostSettingsCallout on Callout {
     id
-    type
+    calloutTypeDeprecated: type
     contributions {
       id
       post {
@@ -956,6 +955,12 @@ export const PostSettingsCalloutFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
+export const WhiteboardContentFragmentDoc = gql`
+  fragment WhiteboardContent on Whiteboard {
+    id
+    content
+  }
+`;
 export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
   fragment CollaborationWithWhiteboardDetails on Collaboration {
     id
@@ -963,7 +968,6 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
       id
       callouts {
         id
-        type
         authorization {
           id
           myPrivileges
@@ -975,6 +979,7 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
         }
         framing {
           id
+          type
           whiteboard {
             ...WhiteboardDetails
           }
@@ -1915,7 +1920,6 @@ export const DashboardTopCalloutFragmentDoc = gql`
         description
       }
     }
-    type
     settings {
       visibility
     }
@@ -2206,7 +2210,7 @@ export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
 export const CalloutTemplateContentFragmentDoc = gql`
   fragment CalloutTemplateContent on Callout {
     id
-    type
+    calloutTypeDeprecated: type
     framing {
       id
       profile {
@@ -2226,6 +2230,7 @@ export const CalloutTemplateContentFragmentDoc = gql`
           id
         }
       }
+      type
       whiteboard {
         ...WhiteboardDetails
         content
@@ -2278,7 +2283,7 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
       id
       callouts {
         id
-        type
+        calloutTypeDeprecated: type
         classification {
           id
           flowState: tagset(tagsetName: FLOW_STATE) {
@@ -2292,6 +2297,7 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
             displayName
             description
           }
+          type
           whiteboard {
             id
             profile {
@@ -2394,7 +2400,7 @@ export const CalloutTemplateFragmentDoc = gql`
     ...TemplateProfileInfo
     callout {
       id
-      type
+      calloutTypeDeprecated: type
       settings {
         contribution {
           enabled
@@ -2581,7 +2587,7 @@ export const InAppNotificationCalloutPublishedFragmentDoc = gql`
   fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished {
     callout {
       id
-      type
+      calloutTypeDeprecated: type
       framing {
         id
         profile {
@@ -2809,7 +2815,7 @@ export const SearchResultCalloutFragmentDoc = gql`
     id
     callout {
       id
-      type
+      calloutTypeDeprecated: type
       framing {
         id
         profile {
@@ -2916,12 +2922,6 @@ export const TemplateCardProfileInfoFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
 `;
-export const WhiteboardContentFragmentDoc = gql`
-  fragment WhiteboardContent on Whiteboard {
-    id
-    content
-  }
-`;
 export const LibraryTemplatesFragmentDoc = gql`
   fragment LibraryTemplates on TemplatesSet {
     id
@@ -2979,9 +2979,9 @@ export const LibraryTemplatesFragmentDoc = gql`
               ...ReferenceDetails
             }
           }
+          type
           whiteboard {
             ...WhiteboardDetails
-            ...WhiteboardContent
           }
         }
       }
@@ -3052,7 +3052,6 @@ export const LibraryTemplatesFragmentDoc = gql`
   ${TemplateCardProfileInfoFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
-  ${WhiteboardContentFragmentDoc}
 `;
 export const DashboardSpaceMembershipFragmentDoc = gql`
   fragment DashboardSpaceMembership on Space {
@@ -6577,6 +6576,7 @@ export const UpdateCalloutTemplateDocument = gql`
   mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
     updateCallout(calloutData: $calloutData) {
       id
+      calloutTypeDeprecated: type
       framing {
         id
         profile {
@@ -6592,6 +6592,7 @@ export const UpdateCalloutTemplateDocument = gql`
             uri
           }
         }
+        type
         whiteboard {
           id
           content
@@ -6612,10 +6613,10 @@ export const UpdateCalloutTemplateDocument = gql`
       settings {
         contribution {
           enabled
+          allowedTypes
         }
         visibility
       }
-      type
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -7549,7 +7550,7 @@ export const CalloutContentDocument = gql`
     lookup {
       callout(ID: $calloutId) {
         id
-        type
+        calloutTypeDeprecated: type
         framing {
           id
           profile {
@@ -7563,6 +7564,7 @@ export const CalloutContentDocument = gql`
               ...ReferenceDetails
             }
           }
+          type
           whiteboard {
             id
             profile {
@@ -8074,13 +8076,13 @@ export const WhiteboardFromCalloutDocument = gql`
     lookup {
       callout(ID: $calloutId) {
         id
-        type
         authorization {
           id
           myPrivileges
         }
         framing {
           id
+          type
           whiteboard {
             ...WhiteboardDetails
           }
@@ -18763,7 +18765,7 @@ export const SpaceAdminDefaultSpaceTemplatesDetailsDocument = gql`
                     id
                     callouts {
                       id
-                      type
+                      calloutTypeDeprecated: type
                       sortOrder
                       classification {
                         id
@@ -18778,6 +18780,7 @@ export const SpaceAdminDefaultSpaceTemplatesDetailsDocument = gql`
                           displayName
                           description
                         }
+                        type
                       }
                     }
                   }
@@ -20048,7 +20051,7 @@ export const ImportTemplateDialogDocument = gql`
           ...TemplateProfileInfo
           callout @include(if: $includeCallout) {
             id
-            type
+            calloutTypeDeprecated: type
           }
           contentSpace @include(if: $includeSpace) {
             id
@@ -20149,7 +20152,7 @@ export const ImportTemplateDialogPlatformTemplatesDocument = gql`
             ...TemplateProfileInfo
             callout @include(if: $includeCallout) {
               id
-              type
+              calloutTypeDeprecated: type
             }
             contentSpace @include(if: $includeSpace) {
               id

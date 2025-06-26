@@ -11,10 +11,10 @@ export interface ContributionSettings {
 }
 
 export const getCalloutTypeIcon = ({
-  type,
+  calloutTypeDeprecated: type,
   settings,
 }: {
-  type: CalloutType;
+  calloutTypeDeprecated: CalloutType;
   settings?: { contribution?: ContributionSettings };
 }) => {
   switch (type) {

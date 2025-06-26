@@ -1667,7 +1667,7 @@ export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
   profile: CreateProfileData;
   tags?: Maybe<Array<Scalars['String']['output']>>;
-  /** The type of additional content attached to the framing of the callout. Defaults to None. ReadOnly. */
+  /** The type of additional content attached to the framing of the callout. Defaults to None. */
   type?: Maybe<CalloutFramingType>;
   whiteboard?: Maybe<CreateWhiteboardData>;
 };
@@ -1675,7 +1675,7 @@ export type CreateCalloutFramingData = {
 export type CreateCalloutFramingInput = {
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
-  /** The type of additional content attached to the framing of the callout. Defaults to None. ReadOnly. */
+  /** The type of additional content attached to the framing of the callout. Defaults to None. */
   type?: InputMaybe<CalloutFramingType>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
@@ -6878,6 +6878,8 @@ export type UpdateCalloutEntityInput = {
 export type UpdateCalloutFramingInput = {
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
+  /** The type of additional content attached to the framing of the callout. */
+  type?: InputMaybe<CalloutFramingType>;
   /** The new content to be used. */
   whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
 };
@@ -9351,12 +9353,13 @@ export type CalloutPageCalloutQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          type: CalloutType;
           sortOrder: number;
           activity: number;
+          calloutTypeDeprecated: CalloutType;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
+            type: CalloutFramingType;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -9670,7 +9673,14 @@ export type CalloutPageCalloutQuery = {
           settings: {
             __typename?: 'CalloutSettings';
             visibility: CalloutVisibility;
-            contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+            contribution: {
+              __typename?: 'CalloutSettingsContribution';
+              enabled: boolean;
+              allowedTypes: Array<CalloutContributionType>;
+              canAddContributions: CalloutAllowedContributors;
+              commentsEnabled: boolean;
+            };
+            framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
           };
           classification?:
             | {
@@ -9756,9 +9766,9 @@ export type InnovationFlowSettingsQuery = {
             callouts: Array<{
               __typename?: 'Callout';
               id: string;
-              type: CalloutType;
               activity: number;
               sortOrder: number;
+              calloutTypeDeprecated: CalloutType;
               classification?:
                 | {
                     __typename?: 'Classification';
@@ -9908,9 +9918,9 @@ export type InnovationFlowCollaborationFragment = {
     callouts: Array<{
       __typename?: 'Callout';
       id: string;
-      type: CalloutType;
       activity: number;
       sortOrder: number;
+      calloutTypeDeprecated: CalloutType;
       classification?:
         | {
             __typename?: 'Classification';
@@ -10088,7 +10098,6 @@ export type ActivityLogCalloutPublishedFragment = {
   __typename?: 'ActivityLogEntryCalloutPublished';
   callout: {
     __typename?: 'Callout';
-    type: CalloutType;
     id: string;
     framing: {
       __typename?: 'CalloutFraming';
@@ -10321,7 +10330,6 @@ export type ActivityCreatedSubscription = {
           type: ActivityEventType;
           callout: {
             __typename?: 'Callout';
-            type: CalloutType;
             id: string;
             framing: {
               __typename?: 'CalloutFraming';
@@ -10524,7 +10532,6 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment = {
   type: ActivityEventType;
   callout: {
     __typename?: 'Callout';
-    type: CalloutType;
     id: string;
     framing: {
       __typename?: 'CalloutFraming';
@@ -10991,7 +10998,6 @@ export type ActivityLogOnCollaborationQuery = {
         };
         callout: {
           __typename?: 'Callout';
-          type: CalloutType;
           id: string;
           framing: {
             __typename?: 'CalloutFraming';
@@ -11327,12 +11333,13 @@ export type UpdateCalloutMutation = {
   updateCallout: {
     __typename?: 'Callout';
     id: string;
-    type: CalloutType;
     sortOrder: number;
     activity: number;
+    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
+      type: CalloutFramingType;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -11603,7 +11610,14 @@ export type UpdateCalloutMutation = {
     settings: {
       __typename?: 'CalloutSettings';
       visibility: CalloutVisibility;
-      contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+      contribution: {
+        __typename?: 'CalloutSettingsContribution';
+        enabled: boolean;
+        allowedTypes: Array<CalloutContributionType>;
+        canAddContributions: CalloutAllowedContributors;
+        commentsEnabled: boolean;
+      };
+      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
   };
 };
@@ -11617,10 +11631,11 @@ export type UpdateCalloutTemplateMutation = {
   updateCallout: {
     __typename?: 'Callout';
     id: string;
-    type: CalloutType;
+    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
+      type: CalloutFramingType;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -11661,7 +11676,11 @@ export type UpdateCalloutTemplateMutation = {
     settings: {
       __typename?: 'CalloutSettings';
       visibility: CalloutVisibility;
-      contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+      contribution: {
+        __typename?: 'CalloutSettingsContribution';
+        enabled: boolean;
+        allowedTypes: Array<CalloutContributionType>;
+      };
     };
   };
 };
@@ -11675,12 +11694,13 @@ export type UpdateCalloutVisibilityMutation = {
   updateCalloutVisibility: {
     __typename?: 'Callout';
     id: string;
-    type: CalloutType;
     sortOrder: number;
     activity: number;
+    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
+      type: CalloutFramingType;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -11951,7 +11971,14 @@ export type UpdateCalloutVisibilityMutation = {
     settings: {
       __typename?: 'CalloutSettings';
       visibility: CalloutVisibility;
-      contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+      contribution: {
+        __typename?: 'CalloutSettingsContribution';
+        enabled: boolean;
+        allowedTypes: Array<CalloutContributionType>;
+        canAddContributions: CalloutAllowedContributors;
+        commentsEnabled: boolean;
+      };
+      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
   };
 };
@@ -12319,7 +12346,6 @@ export type DashboardTopCalloutsFragment = {
     callouts: Array<{
       __typename?: 'Callout';
       id: string;
-      type: CalloutType;
       activity: number;
       framing: {
         __typename?: 'CalloutFraming';
@@ -12340,7 +12366,6 @@ export type DashboardTopCalloutsFragment = {
 export type DashboardTopCalloutFragment = {
   __typename?: 'Callout';
   id: string;
-  type: CalloutType;
   activity: number;
   framing: {
     __typename?: 'CalloutFraming';
@@ -12380,12 +12405,13 @@ export type CreateCalloutMutation = {
     __typename?: 'Callout';
     nameID: string;
     id: string;
-    type: CalloutType;
     sortOrder: number;
     activity: number;
+    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
+      type: CalloutFramingType;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -12656,7 +12682,14 @@ export type CreateCalloutMutation = {
     settings: {
       __typename?: 'CalloutSettings';
       visibility: CalloutVisibility;
-      contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+      contribution: {
+        __typename?: 'CalloutSettingsContribution';
+        enabled: boolean;
+        allowedTypes: Array<CalloutContributionType>;
+        canAddContributions: CalloutAllowedContributors;
+        commentsEnabled: boolean;
+      };
+      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
   };
 };
@@ -12681,15 +12714,16 @@ export type CalloutsOnCalloutsSetUsingClassificationQuery = {
           callouts: Array<{
             __typename?: 'Callout';
             id: string;
-            type: CalloutType;
             sortOrder: number;
             activity: number;
+            calloutTypeDeprecated: CalloutType;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             framing: {
               __typename?: 'CalloutFraming';
               id: string;
+              type: CalloutFramingType;
               profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
             };
             settings: { __typename?: 'CalloutSettings'; visibility: CalloutVisibility };
@@ -12718,15 +12752,16 @@ export type CalloutsOnCalloutsSetUsingClassificationQuery = {
 export type CalloutFragment = {
   __typename?: 'Callout';
   id: string;
-  type: CalloutType;
   sortOrder: number;
   activity: number;
+  calloutTypeDeprecated: CalloutType;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
+    type: CalloutFramingType;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   };
   settings: { __typename?: 'CalloutSettings'; visibility: CalloutVisibility };
@@ -12745,12 +12780,13 @@ export type CalloutDetailsQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          type: CalloutType;
           sortOrder: number;
           activity: number;
+          calloutTypeDeprecated: CalloutType;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
+            type: CalloutFramingType;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -13064,7 +13100,14 @@ export type CalloutDetailsQuery = {
           settings: {
             __typename?: 'CalloutSettings';
             visibility: CalloutVisibility;
-            contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+            contribution: {
+              __typename?: 'CalloutSettingsContribution';
+              enabled: boolean;
+              allowedTypes: Array<CalloutContributionType>;
+              canAddContributions: CalloutAllowedContributors;
+              commentsEnabled: boolean;
+            };
+            framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
           };
           classification?:
             | {
@@ -13110,12 +13153,13 @@ export type ClassificationDetailsFragment = {
 export type CalloutDetailsFragment = {
   __typename?: 'Callout';
   id: string;
-  type: CalloutType;
   sortOrder: number;
   activity: number;
+  calloutTypeDeprecated: CalloutType;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
+    type: CalloutFramingType;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -13386,7 +13430,14 @@ export type CalloutDetailsFragment = {
   settings: {
     __typename?: 'CalloutSettings';
     visibility: CalloutVisibility;
-    contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+    contribution: {
+      __typename?: 'CalloutSettingsContribution';
+      enabled: boolean;
+      allowedTypes: Array<CalloutContributionType>;
+      canAddContributions: CalloutAllowedContributors;
+      commentsEnabled: boolean;
+    };
+    framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
   };
 };
 
@@ -13402,10 +13453,11 @@ export type CalloutContentQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          type: CalloutType;
+          calloutTypeDeprecated: CalloutType;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
+            type: CalloutFramingType;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -13750,7 +13802,7 @@ export type PostSettingsQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          type: CalloutType;
+          calloutTypeDeprecated: CalloutType;
           contributions: Array<{
             __typename?: 'CalloutContribution';
             id: string;
@@ -13899,7 +13951,7 @@ export type PostSettingsFragment = {
 export type PostSettingsCalloutFragment = {
   __typename?: 'Callout';
   id: string;
-  type: CalloutType;
+  calloutTypeDeprecated: CalloutType;
   contributions: Array<{
     __typename?: 'CalloutContribution';
     id: string;
@@ -14114,7 +14166,6 @@ export type CollaborationWithWhiteboardDetailsFragment = {
     callouts: Array<{
       __typename?: 'Callout';
       id: string;
-      type: CalloutType;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
@@ -14213,6 +14264,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
       framing: {
         __typename?: 'CalloutFraming';
         id: string;
+        type: CalloutFramingType;
         whiteboard?:
           | {
               __typename?: 'Whiteboard';
@@ -14320,13 +14372,13 @@ export type WhiteboardFromCalloutQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          type: CalloutType;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
+            type: CalloutFramingType;
             whiteboard?:
               | {
                   __typename?: 'Whiteboard';
@@ -22178,7 +22230,6 @@ export type SpacePageQuery = {
               callouts: Array<{
                 __typename?: 'Callout';
                 id: string;
-                type: CalloutType;
                 activity: number;
                 framing: {
                   __typename?: 'CalloutFraming';
@@ -22440,7 +22491,6 @@ export type SpacePageFragment = {
       callouts: Array<{
         __typename?: 'Callout';
         id: string;
-        type: CalloutType;
         activity: number;
         framing: {
           __typename?: 'CalloutFraming';
@@ -23806,8 +23856,8 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                   callouts: Array<{
                                     __typename?: 'Callout';
                                     id: string;
-                                    type: CalloutType;
                                     sortOrder: number;
+                                    calloutTypeDeprecated: CalloutType;
                                     classification?:
                                       | {
                                           __typename?: 'Classification';
@@ -23827,6 +23877,7 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                     framing: {
                                       __typename?: 'CalloutFraming';
                                       id: string;
+                                      type: CalloutFramingType;
                                       profile: {
                                         __typename?: 'Profile';
                                         id: string;
@@ -24358,7 +24409,7 @@ export type ImportTemplateDialogQuery = {
             __typename?: 'Template';
             id: string;
             type: TemplateType;
-            callout?: { __typename?: 'Callout'; id: string; type: CalloutType } | undefined;
+            callout?: { __typename?: 'Callout'; id: string; calloutTypeDeprecated: CalloutType } | undefined;
             contentSpace?:
               | {
                   __typename?: 'TemplateContentSpace';
@@ -24418,7 +24469,7 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
           __typename?: 'Template';
           id: string;
           type: TemplateType;
-          callout?: { __typename?: 'Callout'; id: string; type: CalloutType } | undefined;
+          callout?: { __typename?: 'Callout'; id: string; calloutTypeDeprecated: CalloutType } | undefined;
           contentSpace?:
             | {
                 __typename?: 'TemplateContentSpace';
@@ -24522,7 +24573,7 @@ export type AllTemplatesInTemplatesSetQuery = {
               | {
                   __typename?: 'Callout';
                   id: string;
-                  type: CalloutType;
+                  calloutTypeDeprecated: CalloutType;
                   settings: {
                     __typename?: 'CalloutSettings';
                     contribution: {
@@ -24754,10 +24805,11 @@ export type TemplateContentQuery = {
             | {
                 __typename?: 'Callout';
                 id: string;
-                type: CalloutType;
+                calloutTypeDeprecated: CalloutType;
                 framing: {
                   __typename?: 'CalloutFraming';
                   id: string;
+                  type: CalloutFramingType;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -24960,8 +25012,8 @@ export type TemplateContentQuery = {
                     callouts: Array<{
                       __typename?: 'Callout';
                       id: string;
-                      type: CalloutType;
                       sortOrder: number;
+                      calloutTypeDeprecated: CalloutType;
                       classification?:
                         | {
                             __typename?: 'Classification';
@@ -24981,6 +25033,7 @@ export type TemplateContentQuery = {
                       framing: {
                         __typename?: 'CalloutFraming';
                         id: string;
+                        type: CalloutFramingType;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -25074,8 +25127,8 @@ export type SpaceTemplateContentQuery = {
               callouts: Array<{
                 __typename?: 'Callout';
                 id: string;
-                type: CalloutType;
                 sortOrder: number;
+                calloutTypeDeprecated: CalloutType;
                 classification?:
                   | {
                       __typename?: 'Classification';
@@ -25095,6 +25148,7 @@ export type SpaceTemplateContentQuery = {
                 framing: {
                   __typename?: 'CalloutFraming';
                   id: string;
+                  type: CalloutFramingType;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -25163,10 +25217,11 @@ export type SpaceTemplateContentQuery = {
 export type CalloutTemplateContentFragment = {
   __typename?: 'Callout';
   id: string;
-  type: CalloutType;
+  calloutTypeDeprecated: CalloutType;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
+    type: CalloutFramingType;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -25335,8 +25390,8 @@ export type SpaceTemplateContentFragment = {
       callouts: Array<{
         __typename?: 'Callout';
         id: string;
-        type: CalloutType;
         sortOrder: number;
+        calloutTypeDeprecated: CalloutType;
         classification?:
           | {
               __typename?: 'Classification';
@@ -25356,6 +25411,7 @@ export type SpaceTemplateContentFragment = {
         framing: {
           __typename?: 'CalloutFraming';
           id: string;
+          type: CalloutFramingType;
           profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           whiteboard?:
             | {
@@ -25417,8 +25473,8 @@ export type SpaceTemplateContent_CollaborationFragment = {
     callouts: Array<{
       __typename?: 'Callout';
       id: string;
-      type: CalloutType;
       sortOrder: number;
+      calloutTypeDeprecated: CalloutType;
       classification?:
         | {
             __typename?: 'Classification';
@@ -25438,6 +25494,7 @@ export type SpaceTemplateContent_CollaborationFragment = {
       framing: {
         __typename?: 'CalloutFraming';
         id: string;
+        type: CalloutFramingType;
         profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         whiteboard?:
           | {
@@ -25532,7 +25589,7 @@ export type CalloutTemplateFragment = {
     | {
         __typename?: 'Callout';
         id: string;
-        type: CalloutType;
+        calloutTypeDeprecated: CalloutType;
         settings: {
           __typename?: 'CalloutSettings';
           contribution: {
@@ -25858,7 +25915,7 @@ export type TemplatesSetTemplatesFragment = {
       | {
           __typename?: 'Callout';
           id: string;
-          type: CalloutType;
+          calloutTypeDeprecated: CalloutType;
           settings: {
             __typename?: 'CalloutSettings';
             contribution: {
@@ -27545,7 +27602,7 @@ export type InAppNotificationReceivedSubscription = {
           | {
               __typename?: 'Callout';
               id: string;
-              type: CalloutType;
+              calloutTypeDeprecated: CalloutType;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -27898,7 +27955,7 @@ export type InAppNotificationsQuery = {
           | {
               __typename?: 'Callout';
               id: string;
-              type: CalloutType;
+              calloutTypeDeprecated: CalloutType;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -28263,7 +28320,7 @@ type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
     | {
         __typename?: 'Callout';
         id: string;
-        type: CalloutType;
+        calloutTypeDeprecated: CalloutType;
         framing: {
           __typename?: 'CalloutFraming';
           id: string;
@@ -28522,7 +28579,7 @@ export type InAppNotificationCalloutPublishedFragment = {
     | {
         __typename?: 'Callout';
         id: string;
-        type: CalloutType;
+        calloutTypeDeprecated: CalloutType;
         framing: {
           __typename?: 'CalloutFraming';
           id: string;
@@ -28996,7 +29053,7 @@ export type SearchQuery = {
             callout: {
               __typename?: 'Callout';
               id: string;
-              type: CalloutType;
+              calloutTypeDeprecated: CalloutType;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -29107,7 +29164,7 @@ export type SearchQuery = {
             callout: {
               __typename?: 'Callout';
               id: string;
-              type: CalloutType;
+              calloutTypeDeprecated: CalloutType;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -29565,7 +29622,7 @@ export type SearchResultCalloutFragment = {
   callout: {
     __typename?: 'Callout';
     id: string;
-    type: CalloutType;
+    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -30124,6 +30181,7 @@ export type LibraryTemplatesFragment = {
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
+            type: CalloutFramingType;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -30157,7 +30215,6 @@ export type LibraryTemplatesFragment = {
                   nameID: string;
                   createdDate: Date;
                   contentUpdatePolicy: ContentUpdatePolicy;
-                  content: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -31034,7 +31091,6 @@ export type LatestContributionsQuery = {
           };
           callout: {
             __typename?: 'Callout';
-            type: CalloutType;
             id: string;
             framing: {
               __typename?: 'CalloutFraming';
@@ -31623,7 +31679,6 @@ export type LatestContributionsGroupedQuery = {
           | undefined;
         callout: {
           __typename?: 'Callout';
-          type: CalloutType;
           id: string;
           framing: {
             __typename?: 'CalloutFraming';

@@ -1,4 +1,4 @@
-import { CalloutType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutTemplate } from './CalloutTemplate';
 import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
 import { AnyTemplate, TemplateBase } from './TemplateBase';
@@ -33,7 +33,6 @@ export const getNewTemplate = (
         type: TemplateType.Callout,
         callout: {
           id: '',
-          type: data?.callout?.type ?? CalloutType.Post,
           framing: {
             profile: {
               displayName: data?.callout?.framing.profile?.displayName ?? '',
@@ -41,6 +40,7 @@ export const getNewTemplate = (
               references: data?.callout?.framing.profile?.references ?? [],
               tagsets: defaultTagset ? [defaultTagset] : [],
             },
+            type: data?.callout?.framing.type ?? CalloutFramingType.None,
             whiteboard: data?.callout?.framing.whiteboard ?? undefined,
           },
           contributionDefaults: {

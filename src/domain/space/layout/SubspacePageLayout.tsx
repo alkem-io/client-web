@@ -13,7 +13,6 @@ import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { MENU_STATE_KEY, MenuState, SubspaceInfoColumn } from './SubspaceInfoColumn';
 import { InnovationFlowStateContext } from '../routing/SubspaceRoutes';
-import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSubSpace } from '../hooks/useSubSpace';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
@@ -26,7 +25,6 @@ import { DialogActions } from '../components/subspaces/DialogActions';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
-import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { SubspaceDrawerMenu } from './SubspaceDrawerMenu';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
@@ -37,7 +35,7 @@ import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/call
 export const SubspacePageLayout = () => {
   const { t } = useTranslation();
   const { permissions } = useSubSpace();
-  const { spaceLevel, spaceId, parentSpaceId, loading } = useUrlResolver();
+  const { spaceLevel, spaceId, parentSpaceId } = useUrlResolver();
   const { selectedInnovationFlowState, setSelectedInnovationFlowState } = useContext(InnovationFlowStateContext);
   const { data: subspacePageData } = useSubspacePageQuery({
     variables: {
@@ -54,8 +52,6 @@ export const SubspacePageLayout = () => {
 
   const innovationFlowProvided = useInnovationFlowStates({ collaborationId });
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
-
-  const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
 
   const isCollapsed = localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false;
 
@@ -166,14 +162,6 @@ export const SubspacePageLayout = () => {
           )}
 
           <Outlet />
-
-          <CalloutCreationDialog
-            open={isCalloutCreationDialogOpen}
-            onClose={() => setIsCalloutCreationDialogOpen(false)}
-            onCreateCallout={handleCreateCallout}
-            loading={loading}
-            flowState={selectedInnovationFlowState}
-          />
           <CreateCalloutDialog
             open={isCalloutCreationDialogOpen}
             onClose={() => setIsCalloutCreationDialogOpen(false)}

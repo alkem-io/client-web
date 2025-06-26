@@ -15,7 +15,7 @@ import {
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 
-interface CollectionItems {
+export interface CalloutContributionsSortItem {
   name: string;
   id: string;
   commentsCount?: number;
@@ -25,8 +25,8 @@ interface SortDialogProps {
   open: boolean;
   onClose: () => void;
   calloutId: string;
-  contributions: CollectionItems[];
-  onUpdateContributionsOrder: (contributions: CollectionItems[]) => void;
+  contributions: CalloutContributionsSortItem[];
+  onUpdateContributionsOrder: (contributions: CalloutContributionsSortItem[]) => void;
 }
 
 const SortDialog = ({ open, onClose, calloutId, contributions, onUpdateContributionsOrder }: SortDialogProps) => {

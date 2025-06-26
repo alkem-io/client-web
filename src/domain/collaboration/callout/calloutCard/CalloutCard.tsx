@@ -26,10 +26,10 @@ export interface CalloutCardCallout {
       url?: string;
     };
   };
-  type: CalloutType;
+  calloutTypeDeprecated: CalloutType;
   settings: {
     contribution: CalloutContributionSettings;
-  }
+  };
 }
 
 interface Author {

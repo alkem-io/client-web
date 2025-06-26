@@ -6,7 +6,6 @@ import {
   Droppable,
   OnDragEndResponder,
 } from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
@@ -16,6 +15,7 @@ import InnovationFlowDragNDropEditor, {
 } from '../InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { GUTTER_PX } from '@/core/ui/grid/constants';
+import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 
 const SKELETON_COUNT = 3;
 
@@ -33,7 +33,6 @@ const StyledDragAndDropList = styled(Box)(({ theme }) => ({
 interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlowDragNDropEditorProps, 'children'> {
   callouts: {
     id: string;
-    type: CalloutType;
     activity: number;
     profile: {
       displayName: string;
@@ -126,7 +125,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
                         {...provider.draggableProps}
                         {...provider.dragHandleProps}
                         displayName={callout.profile.displayName}
-                        icon={calloutIcons[callout.type]}
+                        icon={calloutIcons[CalloutType.Post]} //!!
                         activity={callout.activity}
                       />
                     )}

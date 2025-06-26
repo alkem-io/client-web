@@ -32,7 +32,7 @@ const searchResults: SearchResult[] = [
           },
         },
       },
-      type: CalloutType.Post,
+      calloutTypeDeprecated: CalloutType.Post,
       settings: {
         contribution: {
           enabled: true,
@@ -41,7 +41,7 @@ const searchResults: SearchResult[] = [
             CalloutContributionType.Post,
             CalloutContributionType.Link,
           ],
-        }
+        },
       },
       contributions: [
         {
@@ -74,12 +74,12 @@ const searchResults: SearchResult[] = [
           },
         },
       },
-      type: CalloutType.LinkCollection,
+      calloutTypeDeprecated: CalloutType.LinkCollection,
       settings: {
         contribution: {
           enabled: true,
           allowedTypes: [CalloutContributionType.Link],
-        }
+        },
       },
       contributions: [
         {

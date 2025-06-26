@@ -59,7 +59,7 @@ export interface InAppNotificationProps {
       | undefined;
   };
   callout?: {
-    type: CalloutType;
+    calloutTypeDeprecated: CalloutType;
     framing:
       | {
           profile?:
