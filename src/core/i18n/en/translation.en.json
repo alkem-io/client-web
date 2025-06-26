@@ -1483,7 +1483,7 @@
       "description": "Click here to delete this {{entity}}. Be careful, this action cannot be undone.",
       "confirmDialog": {
         "title": "Confirm {{entity}} Deletion",
-        "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. You can only delete a {{entity}} if there are no underlying Subspaces associated with it. If there are any Subspaces within this page, please delete them first (you can do so from the {{entity}} settings > Subspaces page).",
+        "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. <strong>You can only delete a {{entity}} if there are no underlying Subspaces associated with it.</strong> If there are any Subspaces within this page, please delete them first (you can do so from the {{entity}} settings > Subspaces page).",
         "descriptionShort": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible.",
         "checkbox": "Please check this box if you are certain about deleting this {{entity}}",
         "confirm": "Yes, delete"
@@ -2677,7 +2677,7 @@
       "title": "Ooops!",
       "line1": "Looks like something went wrong: <italic>{{message}}</italic>",
       "line2": "Please check that your server ({{graphQLEndpoint}}) is available, and reload the page.",
-      "line3": "If the error persists please contact support.",
+      "line3": "If the error persists please <contact>contact support</contact>.",
       "buttons": {
         "reload": "Reload"
       },
