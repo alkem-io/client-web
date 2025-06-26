@@ -1870,7 +1870,7 @@
       "shortName": "$t(common.library)",
       "fullName": "Template Library",
       "title": "Template Library on Alkemio is here to guide your way to impact",
-      "subtitle": "Open the template packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more [click here](https://alkem.io/docs/features/templates).",
+      "subtitle": "Open the template packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
@@ -2675,7 +2675,7 @@
       "title": "Ooops!",
       "line1": "Looks like something went wrong: <italic>{{message}}</italic>",
       "line2": "Please check that your server ({{graphQLEndpoint}}) is available, and reload the page.",
-      "line3": "If the error persists please [contact support](mailto:support@alkem.io).",
+      "line3": "If the error persists please <contact>contact support</contact>.",
       "buttons": {
         "reload": "Reload"
       },
