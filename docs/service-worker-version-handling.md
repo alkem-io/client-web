@@ -68,6 +68,20 @@ This is the latest version metadata file, which:
 - Is used by the service worker to determine if a new version is available.
 - Should not be cached!
 
+---
+
+## 5. Local Setup
+
+For local development of the client-web app and to enable service worker version detection (avoiding console errors), run:
+
+```bash
+npm run build
+```
+
+This command generates a `public/meta.json` file (which is gitignored). After it’s created, rerun `npm run build` to update it or edit the file manually as needed.
+
+---
+
 ## **How It Works Together**
 
 1. On app load, `serviceWorker.ts` registers the service worker.
