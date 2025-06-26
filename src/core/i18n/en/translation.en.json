@@ -2280,7 +2280,8 @@
       },
       "virtualContributors": {
         "title": "Virtual Contributors"
-      }
+      },
+      "availableContributors": "Available {{entity}}"
     },
     "search": {
       "title": "Search",

@@ -6,7 +6,7 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import Gutters from '@/core/ui/grid/Gutters';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import ContributorCardSquare from '../ContributorCardSquare/ContributorCardSquare';
-import { useState } from 'react';
+import { useState, ReactNode, useMemo } from 'react';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import Loading from '@/core/ui/loading/Loading';
@@ -16,14 +16,18 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 
 type RoleSetContributorTypesBlockWideProps = {
   virtualContributors: VirtualContributorProps[];
-  isLoading?: boolean;
+  title?: ReactNode;
+  loading?: boolean;
+  compactView?: boolean;
 };
 
 const COMPACT_VIEW_ROWS = 3;
 
 const RoleSetVirtualContributorsBlockWide = ({
+  title,
   virtualContributors,
-  isLoading,
+  loading,
+  compactView = false,
 }: RoleSetContributorTypesBlockWideProps) => {
   const [searchTerm, onSearchTermChange] = useState<string[]>([]);
   const { isMediumSmallScreen } = useScreenSize();
@@ -37,12 +41,20 @@ const RoleSetVirtualContributorsBlockWide = ({
 
   const origin = usePlatformOrigin() ?? '';
 
-  const itemsLimit = columns * COMPACT_VIEW_ROWS;
+  const compactViewItemsLimit = compactView ? columns * COMPACT_VIEW_ROWS : undefined;
+
+  const visibleVCs = useMemo(
+    () =>
+      (virtualContributors ?? [])
+        .filter(matchesNameFilter(searchTerm))
+        .slice(0, compactView ? compactViewItemsLimit : undefined),
+    [virtualContributors, searchTerm, compactViewItemsLimit]
+  );
 
   return (
     <PageContentBlock>
       <PageContentBlockHeader
-        title={''}
+        title={title ? title : ''}
         actions={
           <MultipleSelect
             onChange={onSearchTermChange}
@@ -58,27 +70,24 @@ const RoleSetVirtualContributorsBlockWide = ({
       />
       <GridProvider columns={isMediumSmallScreen ? columns / 2 : columns}>
         <Gutters row flexWrap="wrap" disablePadding sx={{ overflowY: 'auto' }}>
-          {isLoading ? (
+          {loading ? (
             <Loading text={''} />
           ) : (
-            virtualContributors
-              ?.filter(matchesNameFilter(searchTerm))
-              .slice(0, itemsLimit)
-              .map(vc => (
-                <GridItem key={vc.id} columns={1}>
-                  <Box>
-                    <ContributorCardSquare
-                      avatar={vc.profile.avatar?.uri ?? ''}
-                      displayName={vc.profile.displayName}
-                      tooltip={{ tags: [] }}
-                      url={vc.profile.url.substring(origin.length, vc.profile.url.length) ?? ''}
-                      contributorType={RoleSetContributorType.Virtual}
-                      isContactable={false}
-                      {...vc}
-                    />
-                  </Box>
-                </GridItem>
-              ))
+            visibleVCs.map(vc => (
+              <GridItem key={vc.id} columns={1}>
+                <Box>
+                  <ContributorCardSquare
+                    avatar={vc.profile.avatar?.uri ?? ''}
+                    displayName={vc.profile.displayName}
+                    tooltip={{ tags: [] }}
+                    url={vc.profile.url.substring(origin.length, vc.profile.url.length) ?? ''}
+                    contributorType={RoleSetContributorType.Virtual}
+                    isContactable={false}
+                    {...vc}
+                  />
+                </Box>
+              </GridItem>
+            ))
           )}
         </Gutters>
       </GridProvider>

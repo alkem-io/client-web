@@ -18061,6 +18061,36 @@ export type EntitlementDetailsFragment = {
   enabled: boolean;
 };
 
+export type CommunityAvailableVCsQueryVariables = Exact<{
+  roleSetId?: Scalars['UUID']['input'];
+}>;
+
+export type CommunityAvailableVCsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    roleSet?:
+      | {
+          __typename?: 'RoleSet';
+          virtualContributorsInRoleInHierarchy: Array<{
+            __typename?: 'VirtualContributor';
+            id: string;
+            searchVisibility: SearchVisibility;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              url: string;
+              displayName: string;
+              avatar?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type AiPersonaServiceQueryVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;
