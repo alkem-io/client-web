@@ -2,7 +2,8 @@ import { Ref, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { TypedCallout, TypedCalloutDetails } from '../calloutsSet/useCalloutsSet/useCalloutsSet';
+import { TypedCallout, TypedCalloutDetails } from '../new-callout/models/TypedCallout';
+
 
 type CalloutDetailsContainerProvided = {
   ref: Ref<Element>;
@@ -45,11 +46,16 @@ const CalloutDetailsContainer = ({ callout, children }: CalloutDetailsContainerP
       },
       whiteboard: calloutDetails.framing.whiteboard,
     };
+    const classification = {
+      ...callout.classification,
+      ...calloutDetails.classification
+    }
 
     return {
       ...callout,
       ...calloutDetails,
       framing,
+      classification,
       comments: calloutDetails.comments,
       contributions: calloutDetails.contributions ?? [],
     };

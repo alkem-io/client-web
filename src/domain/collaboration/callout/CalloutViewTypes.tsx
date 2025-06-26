@@ -24,7 +24,7 @@ export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
 }
 
 export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
-  contributionsCount: number;
+  contributionsCount: number | undefined;
   loading?: boolean;
   canCreate?: boolean;
   expanded?: boolean;

@@ -34,13 +34,12 @@ export type Activity =
       type: Exclude<ActivityEventType, ActivityEventType.CalloutPublished>;
     }
   | {
-      type: ActivityEventType.CalloutPublished;
-      calloutType: CalloutType;
+    type: ActivityEventType.CalloutPublished;
     };
 
 const getActivityIcon = (activity: Activity): ComponentType<SvgIconProps> => {
   if (activity.type === ActivityEventType.CalloutPublished) {
-    return calloutIcons[activity.calloutType];
+    return calloutIcons[CalloutType.Post]; //!!
   }
   return ActivityIcon[activity.type];
 };

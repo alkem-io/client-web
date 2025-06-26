@@ -1,4 +1,4 @@
-import { CalloutFramingType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutAllowedContributors, CalloutFramingType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutTemplate } from './CalloutTemplate';
 import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
 import { AnyTemplate, TemplateBase } from './TemplateBase';
@@ -42,6 +42,18 @@ export const getNewTemplate = (
             },
             type: data?.callout?.framing.type ?? CalloutFramingType.None,
             whiteboard: data?.callout?.framing.whiteboard ?? undefined,
+          },
+          settings: {
+            contribution: {
+              enabled: data?.callout?.settings?.contribution?.enabled ?? true,
+              allowedTypes: data?.callout?.settings?.contribution?.allowedTypes ?? [],
+              canAddContributions: data?.callout?.settings?.contribution?.canAddContributions ?? CalloutAllowedContributors.Members,
+              commentsEnabled: data?.callout?.settings?.contribution?.commentsEnabled ?? true,
+            },
+            framing: {
+              commentsEnabled: data?.callout?.settings?.framing?.commentsEnabled ?? true,
+            },
+            visibility: data?.callout?.settings?.visibility ?? CalloutVisibility.Published,
           },
           contributionDefaults: {
             postDescription: data?.callout?.contributionDefaults?.postDescription ?? '',

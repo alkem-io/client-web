@@ -14,55 +14,7 @@ import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
 
 export interface CalloutLayoutProps {
   callout: TypedCalloutDetails;
-  /*{
-    id: string;
-    framing: {
-      profile: {
-        id: string;
-        url: string;
-        displayName: string;
-        description?: string;
-        references?: ReferenceModel[];
-        tagset?: TagsetModel;
-        storageBucket: {
-          id: string;
-        };
-      };
-      type: CalloutFramingType;
-      whiteboard?: WhiteboardDetailsFragment;
-    };
-    comments?: {
-      messages: MessageDetailsFragment[] | undefined;
-    };
-    settings: {
-      contribution: {
-        enabled: boolean;
-      };
-    };
-    contributionDefaults: {
-      postDescription?: string;
-      whiteboardContent?: string;
-    };
-    contributions?: {
-      id?: string;
-      sortOrder?: number;
-      link?: LinkDetails;
-      post?: ContributeTabPostFragment;
-      whiteboard?: WhiteboardDetailsFragment;
-    }[];
-    draft: boolean;
-    editable?: boolean;
-    movable?: boolean;
-    canSaveAsTemplate?: boolean;
-    authorization?: {
-      myPrivileges?: AuthorizationPrivilege[];
-    };
-    authorName?: string;
-    authorAvatarUri?: string;
-    publishedAt?: string;
-  };
-  */
-  contributionsCount: number;
+  contributionsCount: number | undefined;
   isMember?: boolean;
   expanded: boolean | undefined;
   onExpand: (() => void) | undefined;

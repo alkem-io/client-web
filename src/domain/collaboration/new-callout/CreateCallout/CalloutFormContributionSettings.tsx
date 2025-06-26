@@ -9,7 +9,7 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import RadioButtonsGroup from '@/core/ui/forms/radioButtons/RadioButtonsGroup';
 import CommentsDisabledOutlinedIcon from '@mui/icons-material/CommentsDisabledOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
-import type { CalloutStructuredResponseType } from './constants';
+import { CalloutStructuredResponseType } from './CalloutForm';
 import BlockIcon from '@mui/icons-material/Block';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 import calloutIcons from '../../callout/utils/calloutIcons';

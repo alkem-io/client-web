@@ -3,7 +3,7 @@ import { useCalloutPageCalloutQuery } from '@/core/apollo/generated/apollo-hooks
 import CalloutView from '../callout/CalloutView/CalloutView';
 import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
-import { TypedCalloutDetails } from '../calloutsSet/useCalloutsSet/useCalloutsSet';
+import { TypedCalloutDetails } from '../new-callout/models/TypedCallout';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { DialogContent } from '@mui/material';
@@ -15,7 +15,6 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '@/core/routing/ScrollToTop';
-import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 import { useScreenSize } from '@/core/ui/grid/constants';

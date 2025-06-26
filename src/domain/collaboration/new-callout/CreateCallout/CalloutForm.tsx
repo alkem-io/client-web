@@ -21,8 +21,9 @@ import * as yup from 'yup';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
 import CalloutFormAdditionalContent from './CalloutFormFramingSettings';
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
-import { CalloutAllowedContributors, CalloutFramingType, CalloutStructuredResponseType } from './constants';
-import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { CalloutAllowedContributors, CalloutContributionType, CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+
+export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
 export interface CalloutFormSubmittedValues {
   framing: {
@@ -32,6 +33,7 @@ export interface CalloutFormSubmittedValues {
       tagsets: TagsetModel[];
       references: ReferenceModel[];
     };
+    type: CalloutFramingType;
     whiteboard: WhiteboardFieldSubmittedValuesWithPreviewImages | undefined;
   };
   contributionDefaults: {
@@ -47,7 +49,6 @@ export interface CalloutFormSubmittedValues {
       commentsEnabled: boolean;
     };
     framing: {
-      type: CalloutFramingType;
       commentsEnabled: boolean;
     };
     visibility: CalloutVisibility;
@@ -87,6 +88,7 @@ const CalloutForm = ({
                 tagsets: [EmptyTagset],
                 references: [],
               },
+            type: CalloutFramingType.None,
               whiteboard: undefined,
             },
             contributionDefaults: {
@@ -97,12 +99,11 @@ const CalloutForm = ({
             settings: {
               contribution: {
                 enabled: true,
-                allowedTypes: 'none',
+                allowedTypes: 'none' as CalloutStructuredResponseType,
                 canAddContributions: CalloutAllowedContributors.Members,
                 commentsEnabled: true,
               },
               framing: {
-                type: CalloutFramingType.None,
                 commentsEnabled: true,
               },
               visibility: CalloutVisibility.Published,
@@ -173,7 +174,6 @@ const CalloutForm = ({
             {/*
             <PostTemplateSelector name="postDescription" />
             <WhiteboardTemplateSelector name="whiteboardContent" />
-            <FormikSwitch name="opened" title={t('callout.state-permission')} />
              */}
           </Gutters>
           {typeof children === 'function' ? (children as Function)(formikState) : children}

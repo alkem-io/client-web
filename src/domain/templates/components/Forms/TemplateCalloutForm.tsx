@@ -38,7 +38,7 @@ interface TemplateContentCallout {
   /**
    * @deprecated
    */
-  deprecatedCalloutType: CalloutType;
+  calloutTypeDeprecated: CalloutType;
   framing: {
     profile: {
       displayName: string;
@@ -128,7 +128,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions, temporaryLocation = 
   const initialValues: TemplateCalloutFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     callout: {
-      deprecatedCalloutType: template?.callout?.deprecatedCalloutType ?? CalloutType.Post,
+      calloutTypeDeprecated: template?.callout?.calloutTypeDeprecated ?? CalloutType.Post,
       framing: {
         profile: {
           displayName: template?.callout?.framing?.profile?.displayName ?? '',
@@ -189,22 +189,22 @@ const TemplateCalloutForm = ({ template, onSubmit, actions, temporaryLocation = 
             </Box>
             <TagsetField name="callout.framing.profile.tagsets[0].tags" title={t('common.tags')} />
             <FormikRadioButtonsGroup
-              name="callout.deprecatedCalloutType"
+              name="callout.calloutTypeDeprecated"
               options={calloutTypeOptions}
               readOnly={!createMode}
               tooltipProps={{ PopperProps: { sx: { pointerEvents: 'none' } } }}
             />
-            {values.callout?.deprecatedCalloutType === CalloutType.Whiteboard && (
+            {values.callout?.calloutTypeDeprecated === CalloutType.Whiteboard && (
               <FormikWhiteboardPreview
                 name="callout.framing.whiteboard.content"
                 previewImagesName="whiteboardPreviewImages"
                 canEdit
               />
             )}
-            {values.callout?.deprecatedCalloutType === CalloutType.WhiteboardCollection && (
+            {values.callout?.calloutTypeDeprecated === CalloutType.WhiteboardCollection && (
               <FormikWhiteboardPreview name="callout.contributionDefaults.whiteboardContent" canEdit />
             )}
-            {values.callout?.deprecatedCalloutType === CalloutType.PostCollection && (
+            {values.callout?.calloutTypeDeprecated === CalloutType.PostCollection && (
               <Box marginBottom={gutters(-1)}>
                 <FormikMarkdownField
                   name="callout.contributionDefaults.postDescription"

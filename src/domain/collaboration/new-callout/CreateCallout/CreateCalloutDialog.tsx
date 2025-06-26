@@ -1,7 +1,6 @@
 import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, FormControlLabel } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
-  CalloutState,
   CalloutType,
   CalloutVisibility,
   TemplateType,
@@ -26,24 +25,10 @@ import calloutIcons from '../utils/calloutIcons';
 */
 
 // import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
-import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import CalloutForm from './CalloutForm';
-
-export type CreateCalloutDialogFields = {
-  description?: string;
-  displayName?: string;
-  tags?: string[];
-  references?: ReferenceModel[];
-  type?: CalloutType;
-  state?: CalloutState;
-  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
-  profileId?: string;
-  postDescription?: string;
-  whiteboardContent?: string;
-};
 
 export interface CreateCalloutDialogProps {
   open?: boolean;
@@ -73,7 +58,7 @@ const CreateCalloutDialog = ({
   */
 }: CreateCalloutDialogProps) => {
   const { t } = useTranslation();
-  const { handleCreateCallout } =
+  const { handleCreateCallout } = //!! pending
     useCalloutCreationWithPreviewImages({ calloutsSetId });
 
   const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
@@ -190,12 +175,12 @@ const CreateCalloutDialog = ({
     if (!template || !templateCallout) {
       throw new Error("Couldn't load CalloutTemplate");
     }
+    /*
 
     const whiteboard = templateCallout.type === CalloutType.Whiteboard ? templateCallout.framing.whiteboard : undefined;
 
     const references =
       templateCallout.type === CalloutType.LinkCollection ? undefined : templateCallout.framing.profile.references;
-    /*
         setCallout({
           displayName: templateCallout.framing.profile.displayName,
           description: templateCallout.framing.profile.description,

@@ -7,7 +7,7 @@ import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import SearchField from '@/core/ui/search/SearchField';
 import CalloutsListItemTitle from '../../calloutsSet/CalloutsView/CalloutsListItemTitle';
-import { CalloutModelLight } from '../model/CalloutModelLight';
+import { CalloutModelLight } from '../../new-callout/models/CalloutModelLight';
 
 export interface CalloutsListProps<Callout extends CalloutModelLight> {
   callouts: Callout[] | undefined;
@@ -51,7 +51,7 @@ const CalloutsList = <Callout extends CalloutModelLight>({
           </ListItem>
         )}
         {filteredCallouts?.map(callout => {
-          const CalloutIcon = calloutIcons[callout.type];
+          const CalloutIcon = calloutIcons[callout.calloutTypeDeprecated];
           return (
             <ListItem key={callout.id} disableGutters component={RouterLink} to={callout.framing.profile.url ?? ''}>
               <ListItemIcon>

@@ -4,13 +4,10 @@ import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOffli
 import { Box, Collapse, Menu } from '@mui/material';
 import {
   AuthorizationPrivilege,
-  CalloutState,
+  CalloutContributionType,
   CalloutType,
   CalloutVisibility,
-  ContributeTabPostFragment,
-  MessageDetailsFragment,
   TemplateType,
-  WhiteboardDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { CalloutSummary } from '../CalloutSummary';
 import CalloutVisibilityChangeDialog from '../edit/visibilityChangeDialog/CalloutVisibilityChangeDialog';
@@ -32,14 +29,14 @@ import {
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
-import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
+import { FormatedLink } from '../links/LinkCollectionCallout';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import ExpandContentIcon from '@/core/ui/content/ExpandContent/ExpandContentIcon';
 import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
 import { gutters } from '@/core/ui/grid/utils';
-import SortDialog from './sort/SortDialog';
+import SortDialog, { CalloutContributionsSortItem } from './sort/SortDialog';
 import {
   useCalloutContentLazyQuery,
   useUpdateContributionsSortOrderMutation,
@@ -51,8 +48,7 @@ import { TemplateCalloutFormSubmittedValues } from '@/domain/templates/component
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useEnsurePresence from '@/core/utils/ensurePresence';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -62,51 +58,9 @@ interface CalloutSettingsProvided {
 
 export interface CalloutSettingsContainerProps
   extends CalloutLayoutEvents,
-    Partial<CalloutSortProps>,
-    SimpleContainerProps<CalloutSettingsProvided> {
-  callout: {
-    id: string;
-    framing: {
-      profile: {
-        id: string;
-        url: string;
-        displayName: string;
-        description?: string;
-        references?: ReferenceModel[];
-        tagset?: TagsetModel;
-        storageBucket: {
-          id: string;
-        };
-      };
-      whiteboard?: WhiteboardDetailsFragment;
-    };
-    comments?: {
-      messages: MessageDetailsFragment[] | undefined;
-    };
-    type: CalloutType;
-    contributionPolicy: {
-      state: CalloutState;
-    };
-    contributionDefaults: {
-      postDescription?: string;
-      whiteboardContent?: string;
-    };
-    contributions?: {
-      link?: LinkDetails;
-      post?: ContributeTabPostFragment;
-      whiteboard?: WhiteboardDetailsFragment;
-    }[];
-    draft: boolean;
-    editable?: boolean;
-    movable?: boolean;
-    canBeSavedAsTemplate?: boolean;
-    authorization?: {
-      myPrivileges?: AuthorizationPrivilege[];
-    };
-    authorName?: string;
-    authorAvatarUri?: string;
-    publishedAt?: string;
-  };
+  Partial<CalloutSortProps>,
+  SimpleContainerProps<CalloutSettingsProvided> {
+  callout: TypedCalloutDetails;
   items?: {
     posts?: PostCardPost[];
     whiteboards?: WhiteboardCardWhiteboard[];
@@ -221,28 +175,24 @@ const CalloutSettingsContainer = ({
     callback?.(callout.id);
   };
 
-  const isCollection = (type: CalloutType) =>
-    [CalloutType.LinkCollection, CalloutType.PostCollection, CalloutType.WhiteboardCollection].includes(type);
+  const isCollection = (callout: { settings: { contribution: { allowedTypes: CalloutContributionType[] } } }) =>
+    callout.settings.contribution.allowedTypes.length > 0;
 
-  const getCalloutItems = (type: CalloutType) => {
-    switch (type) {
-      case CalloutType.PostCollection:
-        return items?.posts?.map(post => ({
-          name: post.profile?.displayName,
+  const calloutContributions = useMemo<CalloutContributionsSortItem[]>(() => (
+    sortDialogOpen ? [] :
+      [
+        ...(items?.posts?.map(post => ({
           id: post.contributionId,
+          name: post.profile?.displayName,
           commentsCount: post.comments?.messagesCount,
-        }));
-      case CalloutType.WhiteboardCollection:
-        return items?.whiteboards?.map(whiteboard => ({
-          name: whiteboard.profile.displayName,
+        })) ?? []),
+        ...(items?.whiteboards?.map(whiteboard => ({
           id: whiteboard.contributionId,
-        }));
-      case CalloutType.LinkCollection:
-        return items?.links?.map(link => ({ name: link.name, id: link.contributionId }));
-      default:
-        return undefined;
-    }
-  };
+          name: whiteboard.profile.displayName,
+        })) ?? []),
+        ...(items?.links?.map(link => ({ id: link.contributionId, name: link.name })) ?? [])
+      ]), [sortDialogOpen, items]
+  );
 
   const [updateContributionsSortOrder] = useUpdateContributionsSortOrderMutation();
 
@@ -298,13 +248,13 @@ const CalloutSettingsContainer = ({
             {t('buttons.delete')}
           </MenuItemWithIcon>
         )}
-        {callout.editable && isCollection(callout.type) && (
+        {callout.editable && isCollection(callout) && (
           <MenuItemWithIcon
             key="sort"
             iconComponent={SwapVerticalCircleOutlined}
             onClick={handleSortDialogOpen}
             disabled={
-              !(callout.type === CalloutType.LinkCollection
+              !(callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link)
                 ? !!callout.contributions?.[0]?.link
                 : !!callout.contributions?.length)
             }
@@ -351,7 +301,7 @@ const CalloutSettingsContainer = ({
         open={sortDialogOpen}
         onClose={handleSortDialogClose}
         calloutId={callout.id}
-        contributions={getCalloutItems(callout.type) || []}
+        contributions={calloutContributions}
         onUpdateContributionsOrder={handleSortContributions}
       />
       <CalloutVisibilityChangeDialog
@@ -434,12 +384,12 @@ const CalloutSettingsContainer = ({
         <CalloutEditDialog
           open={editDialogOpened}
           onClose={handleEditDialogClosed}
-          calloutType={callout.type}
+          calloutType={callout.calloutTypeDeprecated}
           callout={callout}
           onCalloutEdit={handleCalloutEdit}
           onDelete={() => setDeleteDialogOpen(true)}
           disableRichMedia={disableRichMedia}
-          disablePostResponses={disablePostResponses && callout.type === CalloutType.Post}
+          disablePostResponses={disablePostResponses && callout.calloutTypeDeprecated === CalloutType.Post}
         />
       )}
       <ConfirmationDialog

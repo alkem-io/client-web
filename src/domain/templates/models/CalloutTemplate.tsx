@@ -11,7 +11,7 @@ export interface CalloutTemplate extends TemplateBase {
     /**
      * @deprecated
      */
-    deprecatedCalloutType: CalloutType;
+    calloutTypeDeprecated?: CalloutType;
     framing: {
       profile: {
         displayName: string;
