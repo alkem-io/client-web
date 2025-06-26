@@ -3,8 +3,7 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
-import fs from 'fs';
-import { version } from './package';
+import { generateMetaJson } from './build-utils.mjs';
 
 /**
  * Vite configuration for the Alkemio client-web project.
@@ -108,15 +107,12 @@ export default defineConfig({
     // Plugin to generate meta.json with version info
     {
       name: 'generate-meta-json',
-      buildStart() {
-        fs.mkdirSync(path.resolve(__dirname, 'public'), { recursive: true });
-        fs.writeFileSync('./public/meta.json', JSON.stringify({ version }, null, 2));
+      config() {
+        generateMetaJson();
       },
-      configureServer(server) {
-        // Also generate meta.json when dev server starts
-        fs.mkdirSync(path.resolve(__dirname, 'public'), { recursive: true });
-        fs.writeFileSync('./public/meta.json', JSON.stringify({ version }, null, 2));
-      }
+      buildStart() {
+        generateMetaJson();
+      },
     }
   ],
   resolve: {
