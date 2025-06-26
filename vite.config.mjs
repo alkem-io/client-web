@@ -108,8 +108,12 @@ export default defineConfig({
     // Plugin to generate meta.json with version info
     {
       name: 'generate-meta-json',
-      apply: 'build',
       buildStart() {
+        fs.mkdirSync(path.resolve(__dirname, 'public'), { recursive: true });
+        fs.writeFileSync('./public/meta.json', JSON.stringify({ version }, null, 2));
+      },
+      configureServer(server) {
+        // Also generate meta.json when dev server starts
         fs.mkdirSync(path.resolve(__dirname, 'public'), { recursive: true });
         fs.writeFileSync('./public/meta.json', JSON.stringify({ version }, null, 2));
       }
