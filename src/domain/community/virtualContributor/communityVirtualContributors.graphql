@@ -1,6 +1,4 @@
-query CommunityAvailableVCs(
-  $roleSetId: UUID! = "00000000-0000-0000-0000-000000000000"
-) {
+query CommunityAvailableVCs($roleSetId: UUID!) {
   lookup {
     roleSet(ID: $roleSetId) {
       virtualContributorsInRoleInHierarchy(role: MEMBER) {

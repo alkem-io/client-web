@@ -12964,7 +12964,7 @@ export function refetchCurrentUserFullQuery(variables?: SchemaTypes.CurrentUserF
   return { query: CurrentUserFullDocument, variables: variables };
 }
 export const CommunityAvailableVCsDocument = gql`
-  query CommunityAvailableVCs($roleSetId: UUID! = "00000000-0000-0000-0000-000000000000") {
+  query CommunityAvailableVCs($roleSetId: UUID!) {
     lookup {
       roleSet(ID: $roleSetId) {
         virtualContributorsInRoleInHierarchy(role: MEMBER) {
@@ -13002,10 +13002,11 @@ export const CommunityAvailableVCsDocument = gql`
  * });
  */
 export function useCommunityAvailableVCsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.CommunityAvailableVCsQuery,
     SchemaTypes.CommunityAvailableVCsQueryVariables
-  >
+  > &
+    ({ variables: SchemaTypes.CommunityAvailableVCsQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.CommunityAvailableVCsQuery, SchemaTypes.CommunityAvailableVCsQueryVariables>(
@@ -13046,7 +13047,7 @@ export type CommunityAvailableVCsQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityAvailableVCsQuery,
   SchemaTypes.CommunityAvailableVCsQueryVariables
 >;
-export function refetchCommunityAvailableVCsQuery(variables?: SchemaTypes.CommunityAvailableVCsQueryVariables) {
+export function refetchCommunityAvailableVCsQuery(variables: SchemaTypes.CommunityAvailableVCsQueryVariables) {
   return { query: CommunityAvailableVCsDocument, variables: variables };
 }
 export const AiPersonaServiceDocument = gql`

@@ -18062,7 +18062,7 @@ export type EntitlementDetailsFragment = {
 };
 
 export type CommunityAvailableVCsQueryVariables = Exact<{
-  roleSetId?: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID']['input'];
 }>;
 
 export type CommunityAvailableVCsQuery = {
