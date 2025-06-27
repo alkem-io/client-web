@@ -12,7 +12,12 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { Caption } from '@/core/ui/typography';
 import RoleSetVirtualContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetVirtualContributorsBlockWide';
-import { RoleName, RoleSetContributorType, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  RoleName,
+  RoleSetContributorType,
+  SearchVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import Gutters from '@/core/ui/grid/Gutters';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
@@ -39,7 +44,7 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
   });
   const roleSetId = subspaceData?.lookup.space?.community.roleSet.id;
 
-  const { usersByRole, organizationsByRole } = useRoleSetManager({
+  const { usersByRole, organizationsByRole, myPrivileges } = useRoleSetManager({
     roleSetId,
     relevantRoles: [RoleName.Member],
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
@@ -89,6 +94,9 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
   const virtualContributors: VirtualContributorProps[] =
     availableVCs.filter(vc => vc.searchVisibility !== SearchVisibility.Hidden) ?? [];
 
+  const hasInvitePrivilege =
+    myPrivileges?.some(privilege => [AuthorizationPrivilege.RolesetEntryRoleInvite].includes(privilege)) ?? false;
+
   return (
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">
       <DialogHeader onClose={onClose} title={t('common.contributors')} />
@@ -100,6 +108,7 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
               showUsers
               users={users}
               organizations={organizations}
+              hasInvitePrivilege={hasInvitePrivilege}
               isLoading={loading}
               isDialogView
             />
