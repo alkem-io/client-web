@@ -108,6 +108,10 @@ const SpaceDashboardView = ({
   const communityId = membership?.communityID;
   const calloutsSetId = calloutsSetProvided.calloutsSetId;
 
+  if (!space?.id) {
+    return null;
+  }
+
   return (
     <>
       {directMessageDialog}
@@ -146,7 +150,7 @@ const SpaceDashboardView = ({
             onCalloutUpdate={calloutsSetProvided.refetchCallout}
           />
         </ContentColumn>
-        {space?.id && tryVirtualContributorOpen && (
+        {tryVirtualContributorOpen && (
           <TryVirtualContributorDialog
             open={tryVirtualContributorOpen}
             onClose={onCloseTryVirtualContributor}
@@ -155,16 +159,14 @@ const SpaceDashboardView = ({
             vcId={vcId}
           />
         )}
-        {space?.id && openWelcome && <SpaceWelcomeDialog onClose={onCloseWelcome} />}
-        {space && (
-          <SpaceAboutDialog
-            open={aboutDialogOpen}
-            space={space}
-            onClose={() => setAboutDialogOpen(false)}
-            hasReadPrivilege
-            hasEditPrivilege={canEdit}
-          />
-        )}
+        {openWelcome && <SpaceWelcomeDialog onClose={onCloseWelcome} />}
+        <SpaceAboutDialog
+          open={aboutDialogOpen}
+          space={space}
+          onClose={() => setAboutDialogOpen(false)}
+          hasReadPrivilege
+          hasEditPrivilege={canEdit}
+        />
       </PageContent>
     </>
   );
