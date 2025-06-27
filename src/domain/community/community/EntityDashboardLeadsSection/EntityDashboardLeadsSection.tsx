@@ -9,6 +9,7 @@ import DashboardLeads from './DashboardLeads';
 import ContributorCardHorizontal, { ContributorCardHorizontalProps } from '@/core/ui/card/ContributorCardHorizontal';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { ContributorViewModel } from '../utils/ContributorViewModel';
+import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 
 const OrganizationCardTransparent = (props: ContributorCardHorizontalProps) => <ContributorCardHorizontal {...props} />;
 
@@ -24,6 +25,8 @@ interface EntityDashboardLeadsProps {
   organizationsHeaderIcon?: ReactElement<SvgIconProps>;
   usersHeader?: string;
 }
+
+export const getMessageType = (type: ProfileType | undefined) => (type === ProfileType.User ? 'user' : 'organization');
 
 const EntityDashboardLeadsSection = ({
   usersHeader,
@@ -48,7 +51,7 @@ const EntityDashboardLeadsSection = ({
         profile: org.profile,
         seamless: true,
         onContact: () => {
-          sendMessage('organization', {
+          sendMessage(getMessageType(ProfileType.Organization), {
             id: org.id,
             avatarUri: org.profile.avatar?.uri,
             displayName: org.profile.displayName,
@@ -66,7 +69,7 @@ const EntityDashboardLeadsSection = ({
       profile: user.profile,
       seamless: true,
       onContact: () => {
-        sendMessage('user', {
+        sendMessage(getMessageType(ProfileType.User), {
           id: user.id,
           avatarUri: user.profile.avatar?.uri,
           displayName: user.profile.displayName,
