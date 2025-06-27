@@ -1,17 +1,15 @@
 import { useState } from 'react';
-import CalloutCreationDialog from '../../callout/creationDialog/CalloutCreationDialog';
-import { useCalloutCreationWithPreviewImages } from '../useCalloutCreation/useCalloutCreationWithPreviewImages';
 import AddContentButton from '@/core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
+import CreateCalloutDialog from '../../new-callout/CreateCallout/CreateCalloutDialog';
+import { buildFlowStateClassificationTagsets } from '../Classification/ClassificationTagset.utils';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   calloutsSetId: string | undefined;
   canCreateCallout: boolean;
   createInFlowState?: string;
   createButtonPlace?: 'top' | 'bottom';
-  availableCalloutTypes?: CalloutType[];
 }
 
 const CalloutsGroupView = ({
@@ -19,14 +17,10 @@ const CalloutsGroupView = ({
   createInFlowState,
   createButtonPlace = 'bottom',
   calloutsSetId,
-  availableCalloutTypes,
-  disableRichMedia,
-  disablePostResponses,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const { t } = useTranslation();
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
-  const { handleCreateCallout, loading } = useCalloutCreationWithPreviewImages({ calloutsSetId });
 
   const createButton = (
     <AddContentButton
@@ -41,20 +35,15 @@ const CalloutsGroupView = ({
     <>
       {canCreateCallout && createButtonPlace === 'top' && createButton}
       <CalloutsView
-        disableRichMedia={disableRichMedia}
-        disablePostResponses={disablePostResponses}
         {...calloutsViewProps}
       />
       {canCreateCallout && createButtonPlace === 'bottom' && createButton}
-      <CalloutCreationDialog
+      <CreateCalloutDialog
         open={isCalloutCreationDialogOpen}
         onClose={() => setIsCalloutCreationDialogOpen(false)}
-        onCreateCallout={handleCreateCallout}
-        loading={loading}
-        flowState={createInFlowState}
-        availableCalloutTypes={availableCalloutTypes}
-        disableRichMedia={disableRichMedia}
-        disablePostResponses={disablePostResponses}
+        calloutsSetId={calloutsSetId}
+        classificationTagsets={buildFlowStateClassificationTagsets(createInFlowState)}
+        {...calloutsViewProps.calloutRestrictions}
       />
     </>
   );

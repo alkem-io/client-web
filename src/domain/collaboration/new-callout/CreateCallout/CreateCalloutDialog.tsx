@@ -30,7 +30,21 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import CalloutForm from './CalloutForm';
 
-export interface CreateCalloutDialogProps {
+export interface CalloutRestrictions {
+  disableMarginal?: boolean;
+  /**
+   * Disables upload of images, videos and other rich media in the Markdown editors.
+   */
+  disableRichMedia?: boolean;
+  disablePostResponses?: boolean;
+  /**
+   * Disables whiteboard callouts, both in the framing and in the responses. This is here because VCs still don't support whiteboards.
+   */
+  disableWhiteboards?: boolean;
+}
+
+
+export interface CreateCalloutDialogProps extends CalloutRestrictions {
   open?: boolean;
   onClose: () => void;
 
@@ -38,7 +52,6 @@ export interface CreateCalloutDialogProps {
   calloutsSetId: string | undefined;
   classificationTagsets?: ClassificationTagsetModel[] | undefined;
 
-  disableRichMedia?: boolean;
 
   /*
   onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
@@ -51,7 +64,11 @@ const CreateCalloutDialog = ({
   onClose,
   calloutsSetId,
   classificationTagsets,
-  disableRichMedia
+  disableRichMedia,
+  disableWhiteboards,
+  disableMarginal,
+  disablePostResponses,
+
   /*
   onCreateCallout,
   loading,

@@ -5,7 +5,6 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import useKnowledgeBase from './useKnowledgeBase';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { DescriptionComponent } from '@/domain/common/description/DescriptionComponent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -21,8 +20,6 @@ type KnowledgeBaseDialogProps = {
   placeholder: string;
   aiPersonaServiceID: string;
 };
-
-const AVAILABLE_CALLOUT_TYPES = [CalloutType.Post, CalloutType.LinkCollection, CalloutType.PostCollection];
 
 const KnowledgeBaseDialog = ({ aiPersonaServiceID, onClose, title, id, placeholder }: KnowledgeBaseDialogProps) => {
   const { t } = useTranslation();
@@ -84,9 +81,11 @@ const KnowledgeBaseDialog = ({ aiPersonaServiceID, onClose, title, id, placehold
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
                 createButtonPlace="bottom"
-                availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
-                disableRichMedia
-                disablePostResponses
+                  calloutRestrictions={{
+                    disableRichMedia: true,
+                    disableWhiteboards: true,
+                    disablePostResponses: true,
+                  }}
               />
             </Gutters>
           </StorageConfigContextProvider>

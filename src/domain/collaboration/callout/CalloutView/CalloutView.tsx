@@ -2,7 +2,7 @@ import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import PostCallout from '../post/PostCallout';
 import WhiteboardCollectionCallout from '../whiteboard/WhiteboardCollectionCallout';
 import CommentsCallout from '../comments/CommentsCallout';
-import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
+import { TypedCalloutDetails, TypedCalloutDetailsWithContributions } from '../../new-callout/models/TypedCallout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import LinkCollectionCallout from '../links/LinkCollectionCallout';
 import SingleWhiteboardCallout from '../SingleWhiteboard/SingleWhiteboardCallout';
@@ -35,7 +35,7 @@ const CalloutView = ({ callout, ...props }: CalloutViewProps) => {
     case CalloutType.Post:
       return <CommentsCallout callout={callout} {...props} />;
     case CalloutType.LinkCollection:
-      return <LinkCollectionCallout callout={callout} {...props} />;
+      return <LinkCollectionCallout callout={callout as TypedCalloutDetailsWithContributions} {...props} />; //!! WRONG, needs another container?
     case CalloutType.Whiteboard:
       return <SingleWhiteboardCallout callout={callout} {...props} />;
     default:

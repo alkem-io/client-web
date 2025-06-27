@@ -34,12 +34,12 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
       loading,
       creatingPost,
       onCreatePost,
-      canCreate = false,
+      canCreateContribution: canCreate = false,
       contributionsCount,
       expanded,
       onExpand,
       onCollapse,
-      disableRichMedia,
+      calloutRestrictions,
       ...calloutSettingsProps
     },
     ref
@@ -76,7 +76,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
         items={{ posts: sortedPosts }}
         expanded={expanded}
         onExpand={onExpand}
-        disableRichMedia={disableRichMedia}
+        disableRichMedia={calloutRestrictions?.disableRichMedia}
         {...calloutSettingsProps}
       >
         {calloutSettingsProvided => (
@@ -110,7 +110,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
               calloutId={callout.id}
               defaultDescription={callout.contributionDefaults.postDescription}
               creating={creatingPost}
-              disableRichMedia={disableRichMedia}
+              disableRichMedia={calloutRestrictions?.disableRichMedia}
             />
           </>
         )}

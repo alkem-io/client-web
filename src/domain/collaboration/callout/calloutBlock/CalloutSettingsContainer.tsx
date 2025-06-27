@@ -1,18 +1,15 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import { Box, Collapse, Menu } from '@mui/material';
 import {
   AuthorizationPrivilege,
   CalloutContributionType,
-  CalloutType,
   CalloutVisibility,
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
 import { CalloutSummary } from '../CalloutSummary';
 import CalloutVisibilityChangeDialog from '../edit/visibilityChangeDialog/CalloutVisibilityChangeDialog';
-import CalloutEditDialog from '../edit/editDialog/CalloutEditDialog';
-import { CalloutEditType } from '../edit/CalloutEditType';
 import { CalloutLayoutEvents, CalloutSortProps } from '../CalloutViewTypes';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import {
@@ -76,7 +73,6 @@ const CalloutSettingsContainer = ({
   callout,
   items,
   onVisibilityChange,
-  onCalloutEdit,
   onCalloutDelete,
   topCallout,
   bottomCallout,
@@ -87,8 +83,6 @@ const CalloutSettingsContainer = ({
   expanded = false,
   onExpand,
   children,
-  disableRichMedia,
-  disablePostResponses,
 }: CalloutSettingsContainerProps) => {
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
@@ -147,14 +141,16 @@ const CalloutSettingsContainer = ({
     setSettingsAnchorEl(null);
     setEditDialogOpened(true);
   };
+  /*
   const handleEditDialogClosed = () => setEditDialogOpened(false);
   const handleCalloutEdit = useCallback(
-    async (newCallout: CalloutEditType) => {
+    async (newCallout: Identifiable) => {
       await onCalloutEdit?.(newCallout);
       setEditDialogOpened(false);
     },
     [onCalloutEdit, setEditDialogOpened]
   );
+  */
   const [positionAnchorEl, setPositionAnchorEl] = useState<null | HTMLElement>(null);
   const handlePositionClose = () => {
     setPositionDialogOpen(false);
@@ -253,11 +249,14 @@ const CalloutSettingsContainer = ({
             key="sort"
             iconComponent={SwapVerticalCircleOutlined}
             onClick={handleSortDialogOpen}
+            /*
+            //!! wt was this?
             disabled={
               !(callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link)
                 ? !!callout.contributions?.[0]?.link
                 : !!callout.contributions?.length)
-            }
+            }*/
+
           >
             {t('callout.sortContributions')}
           </MenuItemWithIcon>
@@ -380,7 +379,9 @@ const CalloutSettingsContainer = ({
         url={callout.framing.profile.url}
         onClose={() => setShareDialogOpen(false)}
       />
-      {!!onCalloutDelete && (
+      {/*
+      I've lost functionality to edit callout for now
+      //!! {!!onCalloutDelete && (
         <CalloutEditDialog
           open={editDialogOpened}
           onClose={handleEditDialogClosed}
@@ -391,7 +392,7 @@ const CalloutSettingsContainer = ({
           disableRichMedia={disableRichMedia}
           disablePostResponses={disablePostResponses && callout.calloutTypeDeprecated === CalloutType.Post}
         />
-      )}
+      )}*/}
       <ConfirmationDialog
         entities={{
           titleId: 'callout.delete-confirm-title',

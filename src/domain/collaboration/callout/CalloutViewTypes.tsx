@@ -1,5 +1,6 @@
 import { Callout, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import { CalloutDeleteType, CalloutEditType } from './edit/CalloutEditType';
+import { CalloutRestrictions as CalloutRestrictions } from '../new-callout/CreateCallout/CreateCalloutDialog';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface CalloutSortEvents {
   onMoveUp: (calloutId: string) => void;
@@ -19,19 +20,17 @@ export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
     visibility: CalloutVisibility,
     sendNotification: boolean
   ) => Promise<void> | undefined;
-  onCalloutEdit?: (callout: CalloutEditType) => Promise<void> | undefined;
-  onCalloutDelete?: (callout: CalloutDeleteType) => Promise<void> | undefined;
+  onCalloutEdit?: (callout: Identifiable) => Promise<void> | undefined;
+  onCalloutDelete?: (callout: Identifiable) => Promise<void> | undefined;
 }
 
 export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   contributionsCount: number | undefined;
   loading?: boolean;
-  canCreate?: boolean;
+  canCreateContribution?: boolean;
   expanded?: boolean;
   onExpand?: () => void;
   onCollapse?: () => void;
   onCalloutUpdate?: () => void;
-  disableMarginal?: boolean;
-  disableRichMedia?: boolean;
-  disablePostResponses?: boolean;
+  calloutRestrictions?: CalloutRestrictions;
 }

@@ -73,7 +73,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
 
   const callout = calloutData?.lookup.callout;
 
-  const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
+  const { handleVisibilityChange, handleDelete } = useCalloutEdit();
 
   const typedCalloutDetails = useMemo(() => {
     if (!callout) {
@@ -170,7 +170,6 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
           callout={typedCalloutDetails}
           contributionsCount={typedCalloutDetails.activity}
           onVisibilityChange={handleVisibilityChange}
-          onCalloutEdit={handleEdit}
           onCalloutUpdate={refetchCalloutData}
           onCalloutDelete={handleDeleteWithClose}
           onCollapse={handleClose}
