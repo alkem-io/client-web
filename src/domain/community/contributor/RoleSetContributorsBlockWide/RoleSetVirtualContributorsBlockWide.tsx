@@ -54,7 +54,7 @@ const RoleSetVirtualContributorsBlockWide = ({
   return (
     <PageContentBlock>
       <PageContentBlockHeader
-        title={title ? title : ''}
+        title={title ?? ''}
         actions={
           <MultipleSelect
             onChange={onSearchTermChange}

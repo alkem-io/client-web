@@ -18062,7 +18062,7 @@ export type EntitlementDetailsFragment = {
 };
 
 export type CommunityAvailableVCsQueryVariables = Exact<{
-  roleSetId?: Scalars['UUID']['input'];
+  roleSetId: Scalars['UUID']['input'];
 }>;
 
 export type CommunityAvailableVCsQuery = {
@@ -20001,6 +20001,7 @@ export type SpaceAboutDetailsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -20023,6 +20024,7 @@ export type SpaceAboutDetailsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -20045,6 +20047,7 @@ export type SpaceAboutDetailsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -20227,6 +20230,7 @@ export type SpaceAboutFullQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -20249,6 +20253,7 @@ export type SpaceAboutFullQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -20271,6 +20276,7 @@ export type SpaceAboutFullQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -20457,6 +20463,7 @@ export type SpaceAboutDetailsFragment = {
           id: string;
           url: string;
           displayName: string;
+          type?: ProfileType | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
@@ -20473,6 +20480,7 @@ export type SpaceAboutDetailsFragment = {
           id: string;
           url: string;
           displayName: string;
+          type?: ProfileType | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
@@ -20489,6 +20497,7 @@ export type SpaceAboutDetailsFragment = {
           id: string;
           url: string;
           displayName: string;
+          type?: ProfileType | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
@@ -21209,6 +21218,7 @@ export type UpdateSpaceMutation = {
               id: string;
               url: string;
               displayName: string;
+              type?: ProfileType | undefined;
               avatar?:
                 | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
                 | undefined;
@@ -21225,6 +21235,7 @@ export type UpdateSpaceMutation = {
               id: string;
               url: string;
               displayName: string;
+              type?: ProfileType | undefined;
               avatar?:
                 | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
                 | undefined;
@@ -21241,6 +21252,7 @@ export type UpdateSpaceMutation = {
               id: string;
               url: string;
               displayName: string;
+              type?: ProfileType | undefined;
               avatar?:
                 | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
                 | undefined;
@@ -21382,6 +21394,7 @@ export type SpaceInfoFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
@@ -21398,6 +21411,7 @@ export type SpaceInfoFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
@@ -21414,6 +21428,7 @@ export type SpaceInfoFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
@@ -22000,6 +22015,7 @@ export type SpacePageQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -22033,6 +22049,7 @@ export type SpacePageQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -22066,6 +22083,7 @@ export type SpacePageQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -22280,6 +22298,7 @@ export type SpacePageFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             description?: string | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
@@ -22307,6 +22326,7 @@ export type SpacePageFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             description?: string | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
@@ -22334,6 +22354,7 @@ export type SpacePageFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             description?: string | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
