@@ -90,18 +90,18 @@ const validator = {
           references: referenceSegmentSchema,
           tagsets: tagsetsSegmentSchema,
         }),
-        whiteboard: yup.object().when(['type'], ([type], schema) => {
-          return type === CalloutType.Whiteboard ? schema.required() : schema;
+        type: yup
+          .mixed<CalloutFramingType>()
+          .oneOf(Object.values(CalloutFramingType).filter(value => typeof value === 'string'))
+          .required(),
+        whiteboard: yup.object().when(['framing.type'], ([type], schema) => {
+          return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
         }),
       }),
       contributionDefaults: yup.object().shape({
         postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
         whiteboardContent: yup.string(),
       }),
-      type: yup
-        .mixed<CalloutType>()
-        .oneOf(Object.values(CalloutType).filter(value => typeof value === 'string'))
-        .required(),
     })
     .required(),
 };
