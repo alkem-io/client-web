@@ -52,6 +52,7 @@ const SpaceDashboardView = ({
   shareUpdatesUrl,
   flowStateForNewCallouts,
   readUsersAccess,
+  tabDescription,
   canEdit = false,
 }: SpaceDashboardViewProps) => {
   const { t } = useTranslation();
@@ -113,7 +114,7 @@ const SpaceDashboardView = ({
       <PageContent>
         <InfoColumn>
           <PageContentBlock accent>
-            <SpaceWelcomeBlock spaceAbout={space?.about!} />
+            <SpaceWelcomeBlock spaceAbout={space?.about!} description={tabDescription} />
           </PageContentBlock>
 
           <FullWidthButton
