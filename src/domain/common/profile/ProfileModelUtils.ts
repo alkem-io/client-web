@@ -32,7 +32,9 @@ export const mapProfileModelToUpdateProfileInput = (
   };
 };
 
-export const mapProfileModelToCreateProfileInput = (profileModel: ProfileModel | undefined): CreateProfileInput => {
+export const mapProfileModelToCreateProfileInput = (
+  profileModel: Omit<ProfileModel, 'id'> | undefined
+): CreateProfileInput => {
   if (!profileModel)
     return {
       displayName: '',

@@ -1,34 +1,29 @@
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, FormControlLabel } from '@mui/material';
+import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  CalloutType,
-  CalloutVisibility,
-  TemplateType,
-  VisualType,
-} from '@/core/apollo/generated/graphql-schema';
-import { Actions } from '@/core/ui/actions/Actions';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import Gutters from '@/core/ui/grid/Gutters';
-import { gutters } from '@/core/ui/grid/utils';
-import FlexSpacer from '@/core/ui/utils/FlexSpacer';
-import scrollToTop from '@/core/ui/utils/scrollToTop';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import { useCallback, useLayoutEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { CalloutCreationTypeWithPreviewImages, useCalloutCreationWithPreviewImages } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  CalloutCreationTypeWithPreviewImages,
+  useCalloutCreationWithPreviewImages,
+} from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 /*import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import calloutIcons from '../utils/calloutIcons';
 */
 
 // import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
-import CalloutForm from './CalloutForm';
+import CalloutForm, { CalloutFormSubmittedValues } from './CalloutForm';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { mapProfileModelToCreateProfileInput } from '@/domain/common/profile/ProfileModelUtils';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 export interface CalloutRestrictions {
   disableMarginal?: boolean;
@@ -43,16 +38,15 @@ export interface CalloutRestrictions {
   disableWhiteboards?: boolean;
 }
 
-
-export interface CreateCalloutDialogProps extends CalloutRestrictions {
+export interface CreateCalloutDialogProps {
   open?: boolean;
-  onClose: () => void;
+  onClose?: () => void;
 
   // Where to save the callout:
   calloutsSetId: string | undefined;
-  classificationTagsets?: ClassificationTagsetModel[] | undefined;
+  calloutClassification?: ClassificationTagsetModel[] | undefined;
 
-
+  calloutRestrictions?: CalloutRestrictions;
   /*
   onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   loading: boolean;
@@ -63,11 +57,8 @@ const CreateCalloutDialog = ({
   open = false,
   onClose,
   calloutsSetId,
-  classificationTagsets,
-  disableRichMedia,
-  disableWhiteboards,
-  disableMarginal,
-  disablePostResponses,
+  calloutClassification,
+  calloutRestrictions,
 
   /*
   onCreateCallout,
@@ -75,11 +66,11 @@ const CreateCalloutDialog = ({
   */
 }: CreateCalloutDialogProps) => {
   const { t } = useTranslation();
-  const { handleCreateCallout } = //!! pending
-    useCalloutCreationWithPreviewImages({ calloutsSetId });
+  const ensurePresence = useEnsurePresence();
+
+  const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
 
   const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
-
 
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
@@ -175,7 +166,6 @@ const CreateCalloutDialog = ({
       closeConfirmCloseDialog();
     }, [onClose]);
   */
-
 
   const [fetchTemplateContent] = useTemplateContentLazyQuery();
   const handleSelectTemplate = async ({ id: templateId }: Identifiable) => {
@@ -346,37 +336,75 @@ const CreateCalloutDialog = ({
     </Dialog>
   );
   */
+  const [calloutFormData, setCalloutFormData] = useState<CalloutFormSubmittedValues>();
+
+  const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState(false);
+  const handleCloseButtonClick = () => {
+    if (calloutFormData) {
+      setConfirmCloseDialogOpen(true);
+    } else {
+      onClose?.();
+    }
+  };
+  const handleClose = () => {
+    setCalloutFormData(undefined);
+    setConfirmCloseDialogOpen(false);
+    onClose?.();
+  };
+
+  const [handlePublishCallout, publishingCallout] = useLoadingState(async () => {
+    const formData = ensurePresence(calloutFormData);
+    // Map the profile to CreateProfileInput and the allowedTypes to an array
+    const framing = { ...formData.framing, profile: mapProfileModelToCreateProfileInput(formData.framing.profile) };
+    const settings = {
+      ...formData.settings,
+      contribution: {
+        ...formData.settings?.contribution,
+        allowedTypes:
+          formData.settings.contribution.allowedTypes === 'none' ? [] : [formData.settings.contribution.allowedTypes],
+      },
+    };
+    const classification = calloutClassification ? { tagsets: calloutClassification } : undefined;
+
+    const createCalloutInput: CalloutCreationTypeWithPreviewImages = {
+      ...formData,
+      framing,
+      settings,
+      classification,
+    };
+
+    await handleCreateCallout(createCalloutInput);
+    handleClose();
+  });
 
   return (
     <>
-      <DialogWithGrid open={open} onClose={onClose} fullWidth>
-        <DialogHeader title={t('callout.create.dialogTitle')} onClose={onClose} actions={
-          <Button variant="outlined" onClick={() => setImportCalloutDialogOpen(true)} startIcon={<TipsAndUpdatesOutlinedIcon />}>
-            {t('buttons.find-template')}
-          </Button>
-        }
+      <DialogWithGrid open={open} onClose={handleCloseButtonClick} fullWidth>
+        <DialogHeader
+          title={t('callout.create.dialogTitle')}
+          onClose={handleCloseButtonClick}
+          actions={
+            <Button
+              variant="outlined"
+              onClick={() => setImportCalloutDialogOpen(true)}
+              startIcon={<TipsAndUpdatesOutlinedIcon />}
+            >
+              {t('buttons.find-template')}
+            </Button>
+          }
         />
         <DialogContent>
           <CalloutForm
+            onChange={setCalloutFormData}
             onStatusChanged={handleStatusChange}
-            disableRichMedia={disableRichMedia}
+            calloutRestrictions={calloutRestrictions}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} variant="text">
+          <Button onClick={onClose} variant="text" disabled={publishingCallout}>
             {t('buttons.cancel')}
           </Button>
-          <Button
-            variant="contained"
-            onClick={async () => {
-              /*const callout = await handleCreateCallout();
-              if (callout) {
-                onClose();
-                scrollToTop();
-              }*/
-            }}
-            disabled={!isValid}
-          >
+          <Button variant="contained" onClick={handlePublishCallout} loading={publishingCallout} disabled={!isValid}>
             {t('buttons.post')}
           </Button>
         </DialogActions>
@@ -393,8 +421,22 @@ const CreateCalloutDialog = ({
         onClose={() => setImportCalloutDialogOpen(false)}
         enablePlatformTemplates
       />
+      <ConfirmationDialog
+        entities={{
+          title: 'Close dialog?', //!! pending
+          content: 'Are you sure you want to leave and discard your changes?',
+          confirmButtonTextId: 'buttons.yesDiscard',
+        }}
+        options={{
+          show: confirmCloseDialogOpen,
+        }}
+        actions={{
+          onConfirm: onClose,
+          onCancel: () => setConfirmCloseDialogOpen(false),
+        }}
+      />
     </>
-  )
+  );
 };
 
 export default CreateCalloutDialog;

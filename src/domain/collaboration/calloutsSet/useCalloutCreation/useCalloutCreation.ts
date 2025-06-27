@@ -20,9 +20,9 @@ export interface CalloutCreationType {
   framing: {
     type: CalloutFramingType;
     profile: {
-      description: string;
       displayName: string;
-      referencesData: CreateReferenceInput[];
+      description?: string;
+      referencesData?: CreateReferenceInput[];
       tagsets?: CreateTagsetInput[];
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
@@ -44,8 +44,6 @@ export interface CalloutCreationType {
     postDescription?: string;
     whiteboardContent?: string;
   };
-  visibility?: CalloutVisibility;
-  sendNotification?: boolean;
 }
 
 export interface CalloutCreationParams {

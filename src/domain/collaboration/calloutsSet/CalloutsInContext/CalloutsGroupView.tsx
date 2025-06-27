@@ -34,15 +34,13 @@ const CalloutsGroupView = ({
   return (
     <>
       {canCreateCallout && createButtonPlace === 'top' && createButton}
-      <CalloutsView
-        {...calloutsViewProps}
-      />
+      <CalloutsView {...calloutsViewProps} />
       {canCreateCallout && createButtonPlace === 'bottom' && createButton}
       <CreateCalloutDialog
         open={isCalloutCreationDialogOpen}
         onClose={() => setIsCalloutCreationDialogOpen(false)}
         calloutsSetId={calloutsSetId}
-        classificationTagsets={buildFlowStateClassificationTagsets(createInFlowState)}
+        calloutClassification={buildFlowStateClassificationTagsets(createInFlowState)}
         {...calloutsViewProps.calloutRestrictions}
       />
     </>

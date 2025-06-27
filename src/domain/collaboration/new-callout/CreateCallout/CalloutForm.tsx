@@ -65,6 +65,7 @@ const FormikEffect = FormikEffectFactory<CalloutFormSubmittedValues>();
 
 export interface CalloutFormProps {
   callout?: Partial<Identifiable> & CalloutFormSubmittedValues;
+  onChange?: (values: CalloutFormSubmittedValues) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<CalloutFormSubmittedValues>['children'];
   calloutRestrictions?: CalloutRestrictions;
@@ -72,6 +73,7 @@ export interface CalloutFormProps {
 
 const CalloutForm = ({
   callout,
+  onChange,
   onStatusChanged,
   children,
   calloutRestrictions,
@@ -145,7 +147,7 @@ const CalloutForm = ({
       {formikState => (
         <>
           <Gutters>
-            <FormikEffect onStatusChange={onStatusChanged} />
+            <FormikEffect onChange={onChange} onStatusChange={onStatusChanged} />
             <Box display="flex" gap={gutters()} flexDirection={isSmallScreen ? 'column' : 'row'}>
               <FormikInputField
                 name={nameOf<CalloutFormSubmittedValues>('framing.profile.displayName')}
@@ -161,7 +163,7 @@ const CalloutForm = ({
               </Box>
             </Box>
             <FormikMarkdownField
-              name="description"
+              name={nameOf<CalloutFormSubmittedValues>('framing.profile.description')}
               title={t('components.callout-creation.info-step.description')}
               rows={7}
               maxLength={MARKDOWN_TEXT_LENGTH}

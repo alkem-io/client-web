@@ -166,7 +166,7 @@ export const SubspacePageLayout = () => {
             open={isCalloutCreationDialogOpen}
             onClose={() => setIsCalloutCreationDialogOpen(false)}
             calloutsSetId={calloutsSetId}
-            classificationTagsets={buildFlowStateClassificationTagsets(selectedInnovationFlowState)}
+            calloutClassification={buildFlowStateClassificationTagsets(selectedInnovationFlowState)}
           />
         </PageContentColumnBase>
       </PageContent>

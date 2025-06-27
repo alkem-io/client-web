@@ -17,9 +17,9 @@ import {
 export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationType {
   framing: {
     profile: {
-      description: string;
       displayName: string;
-      referencesData: CreateReferenceInput[];
+      description?: string;
+      referencesData?: CreateReferenceInput[];
       tagsets?: CreateTagsetInput[];
     };
     type: CalloutFramingType;
