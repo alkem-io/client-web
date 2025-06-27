@@ -1798,6 +1798,7 @@ export const SpaceAboutDetailsFragmentDoc = gql`
           city
           country
         }
+        type
       }
     }
     profile {
