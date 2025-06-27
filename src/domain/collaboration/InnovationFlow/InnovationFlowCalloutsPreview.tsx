@@ -4,7 +4,6 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, styled } from '@mui
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { gutters } from '@/core/ui/grid/utils';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Text, CaptionSmall } from '@/core/ui/typography';
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
@@ -27,24 +26,16 @@ const StyledAccordion = styled(Accordion)(({ theme }) => ({
 const CalloutDescription = memo(({ callout }: { callout: CalloutModelLight }) => {
   const { t } = useTranslation();
 
-  switch (callout.calloutTypeDeprecated) {
-    case CalloutType.Whiteboard:
-    case CalloutType.WhiteboardCollection:
-      if (callout.framing.whiteboard?.profile.preview?.uri) {
-        return (
-          <WhiteboardPreview
-            whiteboard={callout.framing.whiteboard}
-            displayName={callout.framing.profile.displayName}
-          />
-        );
-      }
-      return null;
-    default:
-      return callout.framing.profile.description?.trim() ? (
-        <WrapperMarkdown>{callout.framing.profile.description}</WrapperMarkdown>
-      ) : (
-        <CaptionSmall>{t('common.noDescription')}</CaptionSmall>
-      );
+  if (callout.framing.whiteboard?.profile.preview?.uri) {
+    return (
+      <WhiteboardPreview whiteboard={callout.framing.whiteboard} displayName={callout.framing.profile.displayName} />
+    );
+  } else {
+    return callout.framing.profile.description?.trim() ? (
+      <WrapperMarkdown>{callout.framing.profile.description}</WrapperMarkdown>
+    ) : (
+      <CaptionSmall>{t('common.noDescription')}</CaptionSmall>
+    );
   }
 });
 

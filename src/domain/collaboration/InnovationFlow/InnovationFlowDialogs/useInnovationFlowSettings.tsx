@@ -9,7 +9,7 @@ import {
   useUpdateInnovationFlowSingleStateMutation,
   useUpdateCollaborationFromSpaceTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CalloutType, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
 import { InnovationFlowStateModel } from '../models/InnovationFlowState';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
@@ -23,7 +23,6 @@ type useInnovationFlowSettingsProps = {
 
 export interface GroupedCallout {
   id: string;
-  calloutTypeDeprecated: CalloutType;
   activity: number;
   sortOrder: number;
   profile: {
@@ -74,7 +73,6 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
           profile: {
             displayName: callout.framing.profile.displayName,
           },
-          calloutTypeDeprecated: callout.calloutTypeDeprecated,
           activity: callout.activity,
           sortOrder: callout.sortOrder,
           flowState: mapFlowState(callout.classification?.flowState),

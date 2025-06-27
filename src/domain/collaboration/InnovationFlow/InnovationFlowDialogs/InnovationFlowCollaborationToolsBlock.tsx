@@ -9,13 +9,12 @@ import {
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import { GenericCalloutIcon } from '@/domain/collaboration/callout/utils/calloutIcons';
 import InnovationFlowDragNDropEditor, {
   InnovationFlowDragNDropEditorProps,
 } from '../InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { GUTTER_PX } from '@/core/ui/grid/constants';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 
 const SKELETON_COUNT = 3;
 
@@ -34,7 +33,6 @@ interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlow
   callouts: {
     id: string;
     activity: number;
-    calloutTypeDeprecated: CalloutType;
     profile: {
       displayName: string;
     };
@@ -126,7 +124,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
                         {...provider.draggableProps}
                         {...provider.dragHandleProps}
                         displayName={callout.profile.displayName}
-                        icon={calloutIcons[callout.calloutTypeDeprecated]}
+                        icon={GenericCalloutIcon}
                         activity={callout.activity}
                       />
                     )}

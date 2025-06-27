@@ -52,6 +52,7 @@ export type PostModel = {
 
 export type ContributorModel = {
   __typename?: string; // 'Organization' | 'User' | 'VirtualContributor';
+  id: string;
   profile: {
     id: string;
     displayName: string;

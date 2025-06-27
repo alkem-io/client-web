@@ -13,7 +13,11 @@ export interface CalloutViewProps extends Omit<BaseCalloutViewProps, 'canCreate'
   callout: TypedCalloutDetails;
   calloutActions?: boolean;
 }
-
+/**
+ *
+ * @param param0 //!! unify all of these
+ * @returns
+ */
 const CalloutView = ({ callout, ...props }: CalloutViewProps) => {
   switch (callout.calloutTypeDeprecated) {
     case CalloutType.PostCollection:
