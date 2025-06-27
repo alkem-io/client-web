@@ -20,7 +20,7 @@ query CalloutsOnCalloutsSetUsingClassification(
 
 fragment Callout on Callout {
   id
-  type
+  calloutTypeDeprecated: type
   sortOrder
   activity
   authorization {
@@ -34,8 +34,11 @@ fragment Callout on Callout {
       url
       displayName
     }
+    type
   }
-  visibility
+  settings {
+    visibility
+  }
 }
 
 query CalloutDetails($calloutId: UUID!, $withClassification: Boolean = true) {
@@ -58,7 +61,7 @@ fragment ClassificationDetails on Callout {
 
 fragment CalloutDetails on Callout {
   id
-  type
+  calloutTypeDeprecated: type
   framing {
     id
     profile {
@@ -76,12 +79,10 @@ fragment CalloutDetails on Callout {
       }
       url
     }
+    type
     whiteboard {
       ...WhiteboardDetails
     }
-  }
-  contributionPolicy {
-    state
   }
   contributionDefaults {
     id
@@ -104,14 +105,16 @@ fragment CalloutDetails on Callout {
     id
     myPrivileges
   }
-  visibility
+  settings {
+    ...CalloutSettingsFull
+  }
 }
 
 query CalloutContent($calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       id
-      type
+      calloutTypeDeprecated: type
       framing {
         id
         profile {
@@ -125,6 +128,7 @@ query CalloutContent($calloutId: UUID!) {
             ...ReferenceDetails
           }
         }
+        type
         whiteboard {
           id
           profile {

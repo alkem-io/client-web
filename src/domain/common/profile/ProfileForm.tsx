@@ -60,7 +60,7 @@ const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0
         onSubmit(values);
       }}
     >
-      {({ values: { references, tagsets }, handleSubmit }) => {
+      {({ values: { references }, handleSubmit }) => {
         // TODO [ATS]: Research useImperativeHandle and useRef to achieve this.
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
@@ -77,7 +77,7 @@ const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0
               maxLength={SMALL_TEXT_LENGTH}
             />
             <LocationSegment cityFieldName="location.city" countryFieldName="location.country" />
-            <TagsetSegment title={t('common.tags')} tagsets={tagsets} />
+            <TagsetSegment title={t('common.tags')} />
             <ContextReferenceSegment references={references || []} profileId={profile?.id} />
           </>
         );

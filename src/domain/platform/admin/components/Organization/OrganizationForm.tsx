@@ -35,6 +35,7 @@ import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import SocialSegment from '@/domain/platform/admin/components/Common/SocialSegment';
 import { socialNames, SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { nameOf } from '@/core/utils/nameOf';
 
 interface OrganizationFormValues {
   nameID: string;
@@ -221,7 +222,6 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
               }}
             >
               {({ values: { profile }, handleSubmit, isSubmitting }) => {
-                const tagsets = profile.tagsets || [];
                 return (
                   <Form noValidate onSubmit={handleSubmit}>
                     <Gutters disablePadding sx={{ width: '100%' }}>
@@ -242,8 +242,7 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
                             countryFieldName="profile.location.country"
                           />
                           <TagsetSegment
-                            fieldName="profile.tagsets"
-                            tagsets={tagsets}
+                            name={nameOf<OrganizationFormValues>('profile.tagsets')}
                             readOnly={isReadOnlyMode}
                             disabled={isSubmitting}
                           />

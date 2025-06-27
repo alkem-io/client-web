@@ -1,5 +1,3 @@
-import nameof from '@/core/utils/nameOf';
-
 interface UrlParams extends Record<string, string | undefined> {
   spaceNameId?: string;
   subspaceNameId?: string;
@@ -18,7 +16,24 @@ interface UrlParams extends Record<string, string | undefined> {
   innovationHubNameId?: string;
 }
 
+/***
+ * Unsupported in IE
+ * https://stackoverflow.com/a/63891494/11207901
+ */
+const nameOf = <T>() => {
+  return new Proxy(
+    {},
+    {
+      get: function (_target, prop) {
+        return prop;
+      },
+    }
+  ) as {
+    [P in keyof T]: P;
+  };
+};
+
 /**
  * Do not remove even if ts-prune says it is unused.
  */
-export const nameOfUrl = nameof<UrlParams>();
+export const nameOfUrl = nameOf<UrlParams>();

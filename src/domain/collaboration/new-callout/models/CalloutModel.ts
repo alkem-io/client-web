@@ -1,14 +1,15 @@
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import type { CalloutSettingsModelFull } from './CalloutSettingsModel';
 
-export interface CalloutModelLight {
+export interface CalloutModel {
   id: string;
-  type: CalloutType;
   framing: {
     profile: {
       displayName: string;
       description?: string;
-      url?: string;
+      url: string;
     };
+    type: CalloutFramingType;
     whiteboard?: {
       profile: {
         preview?: {
@@ -24,4 +25,7 @@ export interface CalloutModelLight {
       tags: string[];
     };
   };
+  settings: CalloutSettingsModelFull;
 }
+
+

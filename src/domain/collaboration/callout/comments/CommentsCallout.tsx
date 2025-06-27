@@ -3,12 +3,7 @@ import { useCallback, useMemo } from 'react';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useRemoveCommentFromCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CalloutState,
-  CommentsWithMessagesFragment,
-  CommunityMembershipStatus,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { useScreenSize } from '@/core/ui/grid/constants';
@@ -18,13 +13,11 @@ import { useMessages } from '@/domain/communication/room/Comments/useMessages';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CommentsCalloutLayout from './CommentsCalloutLayout';
 import { useSpace } from '@/domain/space/context/useSpace';
-
-type NeededFields = 'id' | 'authorization' | 'messages' | 'vcInteractions';
-export type CommentsCalloutData = Pick<CommentsWithMessagesFragment, NeededFields>;
+import { CommentsWithMessagesModel } from '../../new-callout/models/TypedCallout';
 
 interface CommentsCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
-    comments?: CommentsCalloutData | undefined;
+    comments?: CommentsWithMessagesModel | undefined;
   };
   calloutActions?: boolean;
 }
@@ -58,8 +51,7 @@ const CommentsCallout = ({
 
   const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
   const canPostMessages =
-    commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage) &&
-    callout.contributionPolicy.state !== CalloutState.Closed;
+    callout.settings.framing.commentsEnabled && commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
   const canAddReaction = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
 
   const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({

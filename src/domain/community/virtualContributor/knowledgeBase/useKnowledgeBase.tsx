@@ -3,10 +3,7 @@ import {
   AuthorizationPrivilege,
   CalloutsOnCalloutsSetUsingClassificationQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
-import useCalloutsSet, {
-  OrderUpdate,
-  TypedCallout,
-} from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import useCalloutsSet, { OrderUpdate } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import {
   useRefreshBodyOfKnowledgeMutation,
   useUpdateVirtualContributorMutation,
@@ -14,6 +11,7 @@ import {
   useVirtualContributorKnowledgePrivilegesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { TypedCallout } from '@/domain/collaboration/new-callout/models/TypedCallout';
 
 interface useKnowledgeBaseParams {
   id: string | undefined;

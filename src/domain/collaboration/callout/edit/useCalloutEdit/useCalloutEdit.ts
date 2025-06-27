@@ -6,9 +6,10 @@ import {
   useUpdateCalloutVisibilityMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { Callout, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import { useApolloClient } from '@apollo/client';
 import { mapProfileModelToUpdateProfileInput } from '@/domain/common/profile/ProfileModelUtils';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { CalloutFormSubmittedValues } from '@/domain/collaboration/new-callout/CreateCallout/CalloutForm';
 
 type UseCalloutEditReturnType = {
   handleVisibilityChange: (
@@ -16,8 +17,8 @@ type UseCalloutEditReturnType = {
     visibility: CalloutVisibility,
     sendNotification: boolean
   ) => Promise<void>;
-  handleEdit: (callout: CalloutEditType) => Promise<void>;
-  handleDelete: (callout: CalloutDeleteType) => Promise<void>;
+  handleEdit: (callout: Identifiable & CalloutFormSubmittedValues) => Promise<void>;
+  handleDelete: (callout: Identifiable) => Promise<void>;
 };
 
 export const useCalloutEdit = (): UseCalloutEditReturnType => {
@@ -52,17 +53,17 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
   );
 
   const handleEdit = useCallback(
-    async (callout: CalloutEditType) => {
+    async (callout: Identifiable & CalloutFormSubmittedValues) => {
       await updateCallout({
         variables: {
           calloutData: {
             ID: callout.id,
             framing: {
-              profile: mapProfileModelToUpdateProfileInput(callout.profile),
+              profile: mapProfileModelToUpdateProfileInput(callout.framing.profile),
+              type: callout.framing.type,
+              // Whiteboard and whiteboard content are not edited here, whiteboard is edited directly
             },
-            contributionPolicy: {
-              state: callout.state,
-            },
+            settings: callout.settings,
             contributionDefaults: {
               postDescription: callout.contributionDefaults?.postDescription,
               whiteboardContent: callout.contributionDefaults?.whiteboardContent,
@@ -79,7 +80,7 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
   });
 
   const handleDelete = useCallback(
-    async (callout: CalloutDeleteType) => {
+    async (callout: Identifiable) => {
       await deleteCallout({
         variables: { calloutId: callout.id },
       });

@@ -115,9 +115,10 @@ fragment LibraryTemplates on TemplatesSet {
             ...ReferenceDetails
           }
         }
+        type
         whiteboard {
           ...WhiteboardDetails
-          ...WhiteboardContent
+          # ...WhiteboardContent #//!! I don't think this is needed here
         }
       }
     }

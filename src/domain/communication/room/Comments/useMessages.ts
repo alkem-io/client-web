@@ -1,23 +1,11 @@
 import { useMemo } from 'react';
-import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
-import { ProfileType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorData, buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 
 interface FetchedMessage {
   id: string;
   threadID?: string;
   message: string;
-  sender?: {
-    id: string;
-    profile: {
-      id: string;
-      displayName: string;
-      url: string;
-      type?: ProfileType;
-      visual?: { id: string; uri: string };
-      tagsets?: { id: string; name: string; tags: string[] }[];
-      location?: { id: string; city?: string; country?: string };
-    };
-  };
+  sender?: AuthorData;
   timestamp: number;
   reactions: {
     id: string;

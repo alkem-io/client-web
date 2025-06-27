@@ -6,7 +6,10 @@ import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './Template
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import {
+  CalloutAllowedContributors,
+  CalloutFramingType,
   CalloutType,
+  CalloutVisibility,
   TemplateType,
   UpdateReferenceInput,
   UpdateTagsetInput,
@@ -29,8 +32,13 @@ import { Caption } from '@/core/ui/typography';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { CalloutSettingsModelFull } from '@/domain/collaboration/new-callout/models/CalloutSettingsModel';
 
 interface TemplateContentCallout {
+  /**
+   * @deprecated
+   */
+  calloutTypeDeprecated: CalloutType;
   framing: {
     profile: {
       displayName: string;
@@ -38,6 +46,7 @@ interface TemplateContentCallout {
       references?: UpdateReferenceInput[];
       tagsets?: UpdateTagsetInput[];
     };
+    type: CalloutFramingType;
     whiteboard?: {
       profile?: {
         displayName: string;
@@ -50,11 +59,11 @@ interface TemplateContentCallout {
       content: string;
     };
   };
+  settings: CalloutSettingsModelFull;
   contributionDefaults?: {
     postDescription?: string;
     whiteboardContent?: string;
   };
-  type?: CalloutType; // Cannot be sent on updates, but it's needed in the forms
 }
 
 export interface TemplateCalloutFormSubmittedValues extends TemplateFormProfileSubmittedValues {
@@ -81,18 +90,18 @@ const validator = {
           references: referenceSegmentSchema,
           tagsets: tagsetsSegmentSchema,
         }),
-        whiteboard: yup.object().when(['type'], ([type], schema) => {
-          return type === CalloutType.Whiteboard ? schema.required() : schema;
+        type: yup
+          .mixed<CalloutFramingType>()
+          .oneOf(Object.values(CalloutFramingType).filter(value => typeof value === 'string'))
+          .required(),
+        whiteboard: yup.object().when(['framing.type'], ([type], schema) => {
+          return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
         }),
       }),
       contributionDefaults: yup.object().shape({
         postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
         whiteboardContent: yup.string(),
       }),
-      type: yup
-        .mixed<CalloutType>()
-        .oneOf(Object.values(CalloutType).filter(value => typeof value === 'string'))
-        .required(),
     })
     .required(),
 };
@@ -119,6 +128,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions, temporaryLocation = 
   const initialValues: TemplateCalloutFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     callout: {
+      calloutTypeDeprecated: template?.callout?.calloutTypeDeprecated ?? CalloutType.Post,
       framing: {
         profile: {
           displayName: template?.callout?.framing?.profile?.displayName ?? '',
@@ -126,6 +136,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions, temporaryLocation = 
           references: mapReferenceModelsToUpdateReferenceInputs(template?.callout?.framing?.profile?.references) ?? [],
           tagsets: mapTagsetsToUpdateTagsets(template?.callout?.framing?.profile) ?? [{ ID: '', tags: [] }], // ID will be ignored on create
         },
+        type: template?.callout?.framing?.type ?? CalloutFramingType.None,
         whiteboard: {
           profile: {
             displayName: template?.callout?.framing?.whiteboard?.profile.displayName ?? '',
@@ -139,7 +150,19 @@ const TemplateCalloutForm = ({ template, onSubmit, actions, temporaryLocation = 
         postDescription: template?.callout?.contributionDefaults?.postDescription ?? '',
         whiteboardContent: template?.callout?.contributionDefaults?.whiteboardContent ?? '',
       },
-      type: template?.callout?.type ?? CalloutType.Post,
+      settings: {
+        contribution: {
+          enabled: template?.callout?.settings?.contribution?.enabled ?? false,
+          allowedTypes: template?.callout?.settings?.contribution?.allowedTypes ?? [],
+          canAddContributions:
+            template?.callout?.settings?.contribution?.canAddContributions ?? CalloutAllowedContributors.Members,
+          commentsEnabled: template?.callout?.settings?.contribution?.commentsEnabled ?? true,
+        },
+        framing: {
+          commentsEnabled: template?.callout?.settings?.framing?.commentsEnabled ?? false,
+        },
+        visibility: template?.callout?.settings?.visibility ?? CalloutVisibility.Published,
+      },
     },
   };
 
@@ -166,22 +189,22 @@ const TemplateCalloutForm = ({ template, onSubmit, actions, temporaryLocation = 
             </Box>
             <TagsetField name="callout.framing.profile.tagsets[0].tags" title={t('common.tags')} />
             <FormikRadioButtonsGroup
-              name="callout.type"
+              name="callout.calloutTypeDeprecated"
               options={calloutTypeOptions}
               readOnly={!createMode}
               tooltipProps={{ PopperProps: { sx: { pointerEvents: 'none' } } }}
             />
-            {values.callout?.type === CalloutType.Whiteboard && (
+            {values.callout?.calloutTypeDeprecated === CalloutType.Whiteboard && (
               <FormikWhiteboardPreview
                 name="callout.framing.whiteboard.content"
                 previewImagesName="whiteboardPreviewImages"
                 canEdit
               />
             )}
-            {values.callout?.type === CalloutType.WhiteboardCollection && (
+            {values.callout?.calloutTypeDeprecated === CalloutType.WhiteboardCollection && (
               <FormikWhiteboardPreview name="callout.contributionDefaults.whiteboardContent" canEdit />
             )}
-            {values.callout?.type === CalloutType.PostCollection && (
+            {values.callout?.calloutTypeDeprecated === CalloutType.PostCollection && (
               <Box marginBottom={gutters(-1)}>
                 <FormikMarkdownField
                   name="callout.contributionDefaults.postDescription"

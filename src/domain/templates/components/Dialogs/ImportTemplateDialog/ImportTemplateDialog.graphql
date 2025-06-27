@@ -10,7 +10,7 @@ query ImportTemplateDialog(
         ...TemplateProfileInfo
         callout @include(if: $includeCallout) {
           id
-          type
+          calloutTypeDeprecated: type
         }
         contentSpace @include(if: $includeSpace) {
           id
@@ -41,7 +41,7 @@ query ImportTemplateDialogPlatformTemplates(
           ...TemplateProfileInfo
           callout @include(if: $includeCallout) {
             id
-            type
+            calloutTypeDeprecated: type
           }
           contentSpace @include(if: $includeSpace) {
             id

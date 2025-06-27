@@ -1,73 +1,20 @@
 import React, { PropsWithChildren, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, DialogContent } from '@mui/material';
-import {
-  AuthorizationPrivilege,
-  CalloutState,
-  CalloutType,
-  ContributeTabPostFragment,
-  MessageDetailsFragment,
-  WhiteboardDetailsFragment,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Ribbon } from '@/core/ui/card/Ribbon';
 import References from '@/domain/shared/components/References/References';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import { LinkDetails } from '../links/LinkCollectionCallout';
 import CalloutHeader from './CalloutHeader';
 import CalloutClosedMarginal from './CalloutClosedMarginal';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
 
 export interface CalloutLayoutProps {
-  callout: {
-    id: string;
-    framing: {
-      profile: {
-        id: string;
-        url: string;
-        displayName: string;
-        description?: string;
-        references?: ReferenceModel[];
-        tagset?: TagsetModel;
-        storageBucket: {
-          id: string;
-        };
-      };
-      whiteboard?: WhiteboardDetailsFragment;
-    };
-    comments?: {
-      messages: MessageDetailsFragment[] | undefined;
-    };
-    type: CalloutType;
-    contributionPolicy: {
-      state: CalloutState;
-    };
-    contributionDefaults: {
-      postDescription?: string;
-      whiteboardContent?: string;
-    };
-    contributions?: {
-      id?: string;
-      sortOrder?: number;
-      link?: LinkDetails;
-      post?: ContributeTabPostFragment;
-      whiteboard?: WhiteboardDetailsFragment;
-    }[];
-    draft: boolean;
-    editable?: boolean;
-    movable?: boolean;
-    canSaveAsTemplate?: boolean;
-    authorization?: {
-      myPrivileges?: AuthorizationPrivilege[];
-    };
-    authorName?: string;
-    authorAvatarUri?: string;
-    publishedAt?: string;
-  };
-  contributionsCount: number;
+  callout: TypedCalloutDetails;
+  contributionsCount: number | undefined;
   isMember?: boolean;
   expanded: boolean | undefined;
   onExpand: (() => void) | undefined;
@@ -102,8 +49,6 @@ const CalloutLayout = ({
     return null;
   }
 
-  const hasCalloutDetails = callout.authorName && callout.publishedAt;
-
   return (
     <>
       {callout.draft && (
@@ -123,7 +68,7 @@ const CalloutLayout = ({
       />
       <DialogContent ref={contentRef} sx={{ paddingTop: 0 }}>
         <Gutters disablePadding>
-          {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
+          <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>
           <Box sx={{ wordWrap: 'break-word' }}>
             <WrapperMarkdown>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
           </Box>

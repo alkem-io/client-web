@@ -20,7 +20,6 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
 fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
   callout {
     ...ActivityCalloutContext
-    type
   }
 }
 

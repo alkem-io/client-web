@@ -1,4 +1,4 @@
-import { CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
@@ -21,7 +21,6 @@ export type CalloutSummaryFields = {
     };
   };
   templateId?: string;
-  type: CalloutType;
   draft: boolean;
 };
 export interface CalloutVisibilityChangeDialogProps {

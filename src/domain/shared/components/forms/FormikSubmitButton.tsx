@@ -11,7 +11,6 @@ export const FormikSubmitButtonPure = <Values extends unknown>({
   ...props
 }: FormikSubmitButtonProps<Values>) => {
   const { isValid, isValidating, isSubmitting, dirty } = formik;
-
   const isDisabled = !isValid || !dirty;
   const isLoading = isValidating || isSubmitting;
 

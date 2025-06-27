@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
@@ -34,6 +34,9 @@ export interface WhiteboardDetails {
   id: string;
   nameID: string; // NameID is used to name screenshots uploaded as visuals (banner, card...)
   contentUpdatePolicy?: ContentUpdatePolicy;
+  authorization?: {
+    myPrivileges?: AuthorizationPrivilege[];
+  };
   profile: {
     id: string;
     displayName: string;

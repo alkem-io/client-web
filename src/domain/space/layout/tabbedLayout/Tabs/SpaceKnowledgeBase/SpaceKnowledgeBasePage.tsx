@@ -1,9 +1,9 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import { ContributeCreationBlock } from '@/domain/space/components/ContributeCreationBlock';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
-import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import CreateCalloutDialog from '@/domain/collaboration/new-callout/CreateCallout/CreateCalloutDialog';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import CalloutsList from '@/domain/collaboration/callout/calloutsList/CalloutsList';
@@ -24,17 +24,7 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
 
   const { t } = useTranslation();
 
-  const {
-    isCalloutCreationDialogOpen,
-    handleCreateCalloutOpened,
-    handleCreateCalloutClosed,
-    handleCreateCallout,
-    loading: loadingCalloutCreation,
-  } = useCalloutCreationWithPreviewImages({ calloutsSetId });
-
-  const handleCreate = () => {
-    handleCreateCalloutOpened();
-  };
+  const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
 
   const { callouts, canCreateCallout, loading, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
     calloutsSetId,
@@ -47,7 +37,7 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
         <InfoColumn>
           <ContributeCreationBlock
             canCreate={canCreateCallout}
-            handleCreate={handleCreate}
+            handleCreate={() => setIsCalloutCreationDialogOpen(true)}
             tabDescription={tabDescription}
           />
           <PageContentBlock>
@@ -74,12 +64,10 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
           />
         </ContentColumn>
       </PageContent>
-      <CalloutCreationDialog
+      <CreateCalloutDialog
         open={isCalloutCreationDialogOpen}
-        onClose={handleCreateCalloutClosed}
-        onCreateCallout={handleCreateCallout}
-        flowState={flowStateForNewCallouts?.displayName}
-        loading={loadingCalloutCreation}
+        onClose={() => setIsCalloutCreationDialogOpen(false)}
+        calloutsSetId={calloutsSetId}
       />
     </>
   );

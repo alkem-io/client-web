@@ -1,4 +1,4 @@
-import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
+import CalloutLayout from '../calloutBlock/CalloutLayout';
 import { useCallback, useMemo, useState } from 'react';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
@@ -15,13 +15,14 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import References from '@/domain/shared/components/References/References';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { AuthorizationPrivilege, CalloutState } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutAllowedContributors, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { compact, sortBy } from 'lodash';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
+import { TypedCalloutDetailsWithContributions } from '../../new-callout/models/TypedCallout';
 
 const MAX_LINKS_NORMALVIEW = 3;
 
@@ -53,7 +54,7 @@ export interface FormatedLink {
 }
 
 interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
-  callout: CalloutLayoutProps['callout'];
+  callout: TypedCalloutDetailsWithContributions;
 }
 
 const LinkCollectionCallout = ({
@@ -85,7 +86,10 @@ const LinkCollectionCallout = ({
   const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
   const isContributionAllowed =
     calloutPrivileges.includes(AuthorizationPrivilege.Contribute) &&
-    callout.contributionPolicy.state === CalloutState.Open;
+    callout.settings.contribution.enabled &&
+    callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) &&
+    (callout.settings.contribution.canAddContributions === CalloutAllowedContributors.Members ||
+      calloutPrivileges.includes(AuthorizationPrivilege.Update));
   const canAddLinks = isContributionAllowed || calloutPrivileges.includes(AuthorizationPrivilege.Update);
   const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
 

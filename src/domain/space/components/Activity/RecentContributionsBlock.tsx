@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import {
   ActivityComponent,
   ActivityComponentProps,
@@ -23,7 +22,6 @@ export interface RecentContributionsBlockProps extends ActivityComponentProps {
   topCallouts:
     | (Identifiable & {
         activity: number;
-        type: CalloutType;
         framing: {
           profile: {
             url: string;
@@ -130,7 +128,6 @@ const RecentContributionsBlock = ({
                 title={callout.framing.profile.displayName}
                 description={callout.framing.profile.description ?? ''}
                 activity={callout.activity}
-                type={callout.type}
                 calloutUri={callout.framing.profile.url}
               />
             ))}

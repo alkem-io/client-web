@@ -129,7 +129,6 @@ export const CalendarEventsContainer = ({ spaceId, parentSpaceId, children }: Ca
             multipleDays,
             wholeDay,
             profileData: mapProfileModelToCreateProfileInput({
-              id: '',
               description,
               displayName,
               location: {

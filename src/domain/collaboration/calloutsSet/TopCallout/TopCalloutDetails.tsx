@@ -1,8 +1,7 @@
 import { Badge } from '@mui/material';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography/components';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
-import calloutIcons from '../../callout/utils/calloutIcons';
+import { GenericCalloutIcon } from '../../callout/utils/calloutIcons';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -13,11 +12,10 @@ type TopCalloutProps = {
   title: string;
   description: string;
   activity: number;
-  type: CalloutType;
   calloutUri?: string;
 };
 
-const TopCalloutDetails = ({ title, description, activity, type, calloutUri }: TopCalloutProps) => (
+const TopCalloutDetails = ({ title, description, activity, calloutUri }: TopCalloutProps) => (
   <BadgeCardView
     component={RouterLink}
     to={calloutUri}
@@ -39,7 +37,7 @@ const TopCalloutDetails = ({ title, description, activity, type, calloutUri }: T
         <RoundedIcon
           flexShrink={0}
           size="medium"
-          component={calloutIcons[type]}
+          component={GenericCalloutIcon}
           sx={{ backgroundColor: 'primary.main' }}
         />
       </Badge>

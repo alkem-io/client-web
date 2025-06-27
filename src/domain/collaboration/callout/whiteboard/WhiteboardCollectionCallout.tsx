@@ -4,7 +4,6 @@ import useNavigate from '@/core/routing/useNavigate';
 import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '@/domain/collaboration/callout/components/ScrollableCardsLayout';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { CalloutState } from '@/core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import WhiteboardCard, { WhiteboardCardWhiteboard } from './WhiteboardCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
@@ -28,7 +27,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
       callout,
       whiteboards,
       loading,
-      canCreate = false,
+      canCreateContribution = false,
       contributionsCount,
       createNewWhiteboard,
       expanded,
@@ -53,13 +52,13 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
       }
     };
 
-    const createButton = canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
+    const createButton = canCreateContribution && !callout.settings.contribution.enabled && (
       <CreateCalloutItemButton onClick={handleCreate} />
     );
 
     const showCards = useMemo(
-      () => (!loading && whiteboards.length > 0) || callout.contributionPolicy.state !== CalloutState.Closed,
-      [loading, whiteboards.length, callout.contributionPolicy.state]
+      () => (!loading && whiteboards.length > 0) || callout.settings.contribution.enabled,
+      [loading, whiteboards.length, callout.settings.contribution.enabled]
     );
     const sortedWhiteboards = useMemo(() => sortBy(whiteboards, 'sortOrder'), [whiteboards]);
 
@@ -97,7 +96,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
                 }
               </ScrollableCardsLayout>
             )}
-            {isSmallScreen && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
+            {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
               <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={handleCreate} />
             )}
           </CalloutLayout>

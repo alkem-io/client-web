@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
+import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { useUploadWhiteboardVisuals } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import {
   CalloutCreationParams,
@@ -8,7 +8,7 @@ import {
   useCalloutCreation,
 } from './useCalloutCreation';
 import {
-  CalloutType,
+  CalloutFramingType,
   CreateCalloutMutation,
   CreateReferenceInput,
   CreateTagsetInput,
@@ -17,11 +17,12 @@ import {
 export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationType {
   framing: {
     profile: {
-      description: string;
       displayName: string;
-      referencesData: CreateReferenceInput[];
+      description?: string;
+      referencesData?: CreateReferenceInput[];
       tagsets?: CreateTagsetInput[];
     };
+    type: CalloutFramingType;
     whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
     tags?: string[];
   };
@@ -56,7 +57,7 @@ export const useCalloutCreationWithPreviewImages = (
 
   const handleCreateCallout = useCallback(
     async (callout: CalloutCreationTypeWithPreviewImages) => {
-      // Remove the previewImages from the form data if it's present, to handle it separatelly
+      // Remove the previewImages from the form data if it's present, to handle it separately
       const { callout: cleanCallout, previewImages } = separatePreviewImages(callout);
 
       const result = await parentHook.handleCreateCallout(cleanCallout);
@@ -64,7 +65,8 @@ export const useCalloutCreationWithPreviewImages = (
       // The PreviewImages (like the ones generated for SingleWhiteboard callouts
       // are sent from here to the server after the callout creation
       if (result && previewImages) {
-        const whiteboard = callout.type === CalloutType.Whiteboard ? result?.framing.whiteboard : undefined;
+        const whiteboard =
+          callout.framing.type === CalloutFramingType.Whiteboard ? result?.framing.whiteboard : undefined;
         if (whiteboard && whiteboard.profile) {
           await uploadVisuals(
             previewImages,
