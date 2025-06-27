@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import {
-  CalloutType,
   RoleSetContributorType,
   InAppNotificationCategory,
   InAppNotificationState,
@@ -59,7 +58,6 @@ export interface InAppNotificationProps {
       | undefined;
   };
   callout?: {
-    calloutTypeDeprecated: CalloutType;
     framing:
       | {
           profile?:

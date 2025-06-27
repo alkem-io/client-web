@@ -16,19 +16,12 @@ export const CollaborationCalloutPublishedView = ({
   const { t } = useTranslation();
 
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
-    let calloutType = '';
-
-    if (callout?.calloutTypeDeprecated) {
-      calloutType = t(`components.calloutTypeSelect.label.${callout?.calloutTypeDeprecated}` as const);
-    }
-
     const spaceLevel = space?.level ?? SpaceLevel.L0;
     const notificationTextValues = {
       defaultValue: '',
       spaceName: space?.about.profile?.displayName,
       spaceLevel: t(`common.space-level.${spaceLevel}`),
       calloutName: callout?.framing?.profile?.displayName,
-      calloutType: calloutType,
       contributorName: triggeredBy?.profile?.displayName,
     };
 

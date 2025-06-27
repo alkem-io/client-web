@@ -18,10 +18,15 @@ import { Formik, FormikConfig } from 'formik';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
+import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import CalloutFormAdditionalContent from './CalloutFormFramingSettings';
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
-import { CalloutAllowedContributors, CalloutContributionType, CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutAllowedContributors,
+  CalloutContributionType,
+  CalloutFramingType,
+  CalloutVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
@@ -70,7 +75,7 @@ const CalloutForm = ({
   children,
   disableRichMedia,
   /*temporaryLocation = false,
-  */
+   */
 }: CalloutFormProps) => {
   const { t } = useTranslation();
 
@@ -88,7 +93,7 @@ const CalloutForm = ({
                 tagsets: [EmptyTagset],
                 references: [],
               },
-            type: CalloutFramingType.None,
+              type: CalloutFramingType.None,
               whiteboard: undefined,
             },
             contributionDefaults: {

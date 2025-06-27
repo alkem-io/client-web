@@ -2588,7 +2588,6 @@ export const InAppNotificationCalloutPublishedFragmentDoc = gql`
   fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished {
     callout {
       id
-      calloutTypeDeprecated: type
       framing {
         id
         profile {

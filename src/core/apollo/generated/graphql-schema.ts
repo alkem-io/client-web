@@ -27661,7 +27661,6 @@ export type InAppNotificationReceivedSubscription = {
           | {
               __typename?: 'Callout';
               id: string;
-              calloutTypeDeprecated: CalloutType;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -28014,7 +28013,6 @@ export type InAppNotificationsQuery = {
           | {
               __typename?: 'Callout';
               id: string;
-              calloutTypeDeprecated: CalloutType;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -28379,7 +28377,6 @@ type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
     | {
         __typename?: 'Callout';
         id: string;
-        calloutTypeDeprecated: CalloutType;
         framing: {
           __typename?: 'CalloutFraming';
           id: string;
@@ -28638,7 +28635,6 @@ export type InAppNotificationCalloutPublishedFragment = {
     | {
         __typename?: 'Callout';
         id: string;
-        calloutTypeDeprecated: CalloutType;
         framing: {
           __typename?: 'CalloutFraming';
           id: string;

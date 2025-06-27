@@ -10,7 +10,7 @@ import {
   CreateReferenceInput,
   CreateTagsetInput,
 } from '@/core/apollo/generated/graphql-schema';
-import { WhiteboardFieldSubmittedValues } from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
+import { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 
 export interface CalloutCreationType {
@@ -37,7 +37,7 @@ export interface CalloutCreationType {
       allowedTypes?: CalloutContributionType[];
       canAddContributions?: CalloutAllowedContributors;
       commentsEnabled?: boolean;
-    }
+    };
     visibility?: CalloutVisibility;
   };
   contributionDefaults?: {
