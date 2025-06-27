@@ -26,6 +26,7 @@ const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 type RoleSetContributorTypesBlockWideProps = {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
+  hasInvitePrivilege: boolean;
   isDialogView?: boolean;
   isLoading?: boolean;
   showUsers: boolean;
@@ -46,6 +47,7 @@ const RoleSetContributorTypesBlockWide = ({
   users,
   showUsers,
   organizations,
+  hasInvitePrivilege,
   isDialogView = false,
   isLoading = false,
 }: RoleSetContributorTypesBlockWideProps) => {
@@ -86,12 +88,14 @@ const RoleSetContributorTypesBlockWide = ({
   if (isDialogView) {
     return (
       <>
-        <Box textAlign="right">
-          <InviteContributorsWizard
-            contributorType={RoleSetContributorType.User}
-            filterContributors={filterInviteeContributors}
-          />
-        </Box>
+        {hasInvitePrivilege && (
+          <Box textAlign="right">
+            <InviteContributorsWizard
+              contributorType={RoleSetContributorType.User}
+              filterContributors={filterInviteeContributors}
+            />
+          </Box>
+        )}
         <PageContentBlock>
           <PageContentBlockHeader
             title={''}
