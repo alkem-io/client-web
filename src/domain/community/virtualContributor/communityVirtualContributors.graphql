@@ -1,0 +1,18 @@
+query CommunityAvailableVCs($roleSetId: UUID!) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      virtualContributorsInRoleInHierarchy(role: MEMBER) {
+        id
+        searchVisibility
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+    }
+  }
+}
