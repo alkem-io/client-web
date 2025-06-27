@@ -111,11 +111,12 @@ const SpaceCommunityPage = () => {
   let virtualContributors: VirtualContributorProps[] =
     memberVirtualContributors?.filter(vc => vc?.searchVisibility !== SearchVisibility.Hidden) ?? [];
 
-  const hasInvitePrivilege = myPrivileges?.some(privilege =>
-    [AuthorizationPrivilege.RolesetEntryRoleInvite, AuthorizationPrivilege.CommunityAssignVcFromAccount].includes(
-      privilege
-    )
-  );
+  const hasInvitePrivilege =
+    myPrivileges?.some(privilege =>
+      [AuthorizationPrivilege.RolesetEntryRoleInvite, AuthorizationPrivilege.CommunityAssignVcFromAccount].includes(
+        privilege
+      )
+    ) ?? false;
 
   const hasVcSpaceEntitlement = entitlements?.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess);
   const showVirtualContributorsBlock = hasVcSpaceEntitlement && (virtualContributors?.length > 0 || hasInvitePrivilege);
@@ -169,6 +170,7 @@ const SpaceCommunityPage = () => {
           users={memberUserCards}
           showUsers={isAuthenticated}
           organizations={memberOrganizationCards}
+          hasInvitePrivilege={hasInvitePrivilege}
         />
         <CalloutsGroupView
           calloutsSetId={calloutsSetId}
