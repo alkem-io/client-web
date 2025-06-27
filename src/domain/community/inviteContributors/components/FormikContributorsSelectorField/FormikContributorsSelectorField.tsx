@@ -1,10 +1,4 @@
-import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  User,
-  UserFilterInput,
-  UserSelectorQuery,
-  UserSelectorQueryVariables,
-} from '@/core/apollo/generated/graphql-schema';
+import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { Box, SxProps, TextField, Theme, Button } from '@mui/material';
@@ -21,15 +15,17 @@ import ContributorChip from '../ContributorChip/ContributorChip';
 import { ContributorSelectorType, SelectedContributor } from './FormikContributorsSelectorField.models';
 import emailParser from './emailParser';
 import { DUPLICATED_EMAIL_ERROR } from './FormikContributorsSelectorField.validation';
-import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { useInView } from 'react-intersection-observer';
 import Loading from '@/core/ui/loading/Loading';
+import {
+  ContributorItem,
+  useContributors,
+} from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
+import { createFilterOptions } from '@mui/material/Autocomplete';
 
 const MAX_USERS_SHOWN = 20;
 const FETCH_MORE_OPTION_ID = '__LOAD_MORE__';
 const LOAD_MORE_OPTION = { id: FETCH_MORE_OPTION_ID, profile: { displayName: 'Load More' }, disabled: true };
-
-type SelectableUser = UserSelectorQuery['usersPaginated']['users'][0];
 
 // We hydrate users returned by the query with this extra data: disabled, and the reason why they are,
 // so we can avoid inviting ourselves, or users already selected
@@ -42,10 +38,14 @@ export interface FormikContributorsSelectorFieldProps {
   filterUsers?: <U extends Identifiable>(users: U) => boolean;
   hydrateUsers?: HydratorFn;
   sx?: SxProps<Theme>;
+  allowExternalInvites?: boolean;
+  onlyFromParentCommunity?: boolean;
+  parentSpaceId?: string;
 }
 
 const identityFn = <U extends Identifiable>(results: U[]) => results;
 const alwaysTrue = () => true;
+const defaultFilter = createFilterOptions();
 
 const FormikContributorsSelectorField = ({
   name = 'selectedContributors',
@@ -53,6 +53,9 @@ const FormikContributorsSelectorField = ({
   filterUsers = alwaysTrue,
   hydrateUsers = identityFn as HydratorFn,
   sx,
+  onlyFromParentCommunity = false,
+  allowExternalInvites = !onlyFromParentCommunity,
+  parentSpaceId,
 }: FormikContributorsSelectorFieldProps) => {
   const { t } = useTranslation();
   const { userModel: currentUser } = useCurrentUserContext();
@@ -97,16 +100,16 @@ const FormikContributorsSelectorField = ({
   // Filter users for the Autocomplete
   const [filter, setFilter] = useState<UserFilterInput>();
 
-  const { data, hasMore, loading, fetchMore } = usePaginatedQuery<UserSelectorQuery, UserSelectorQueryVariables>({
-    useQuery: useUserSelectorQuery,
-    getPageInfo: data => data.usersPaginated.pageInfo,
-    options: {
-      skip: !filter,
-    },
+  const {
+    data: contributors = [],
+    hasMore,
+    loading,
+    fetchMore,
+  } = useContributors({
+    filter,
+    parentSpaceId,
+    onlyUsersInRole: onlyFromParentCommunity,
     pageSize: MAX_USERS_SHOWN,
-    variables: {
-      filter,
-    },
   });
 
   const { ref: intersectionObserverRef, inView: loadMoreInView } = useInView({
@@ -124,13 +127,13 @@ const FormikContributorsSelectorField = ({
   const [inputValue, setInputValue] = useState('');
 
   // Filter out users that are already selected, and myself
-  const listedUsers = useMemo<(Hydration<SelectableUser> | typeof LOAD_MORE_OPTION)[]>(() => {
+  const listedUsers = useMemo<(Hydration<ContributorItem> | typeof LOAD_MORE_OPTION)[]>(() => {
     if (!inputValue) {
       return [];
     }
-    const users = data?.usersPaginated.users ?? [];
+    const users = contributors ?? [];
 
-    const filterFunction = (user: SelectableUser) => {
+    const filterFunction = (user: ContributorItem) => {
       if (user.id === currentUser?.id) {
         return false;
       }
@@ -149,7 +152,7 @@ const FormikContributorsSelectorField = ({
   }, [
     currentUser?.id,
     selectedUserIds,
-    data?.usersPaginated.users,
+    contributors,
     field.value,
     inputValue,
     hydrateUsers,
@@ -203,7 +206,9 @@ const FormikContributorsSelectorField = ({
     helpers.setTouched(true);
     if (event.key === 'Enter') {
       event.preventDefault();
-      onAddContributorEmail();
+      if (allowExternalInvites) {
+        onAddContributorEmail();
+      }
     }
   };
 
@@ -236,10 +241,10 @@ const FormikContributorsSelectorField = ({
   return (
     <Box>
       <Autocomplete
+        freeSolo={allowExternalInvites && !onlyFromParentCommunity}
         options={listedUsers}
         getOptionDisabled={option => option.disabled ?? false}
         value={autocompleteValue}
-        freeSolo
         inputValue={inputValue}
         onInputChange={(event, value) => setInputValue(value)}
         autoHighlight
@@ -249,7 +254,8 @@ const FormikContributorsSelectorField = ({
           }
           return option?.profile.displayName;
         }}
-        filterOptions={options => options}
+        // @ts-ignore
+        filterOptions={onlyFromParentCommunity ? defaultFilter : options => options}
         sx={{
           marginBottom: gutters(),
           [`& .${autocompleteClasses.popupIndicator}`]: {
@@ -271,7 +277,7 @@ const FormikContributorsSelectorField = ({
             }
           } else {
             // Print user row
-            const user = row as Hydration<SelectableUser>;
+            const user = row as Hydration<ContributorItem>;
             return (
               <li {...props} key={user.id}>
                 <ProfileChipView
@@ -300,14 +306,15 @@ const FormikContributorsSelectorField = ({
               input: {
                 ...params.InputProps,
                 // Adds the button Add and the autocomplete X icon to empty the input
-                endAdornment: params.inputProps.value ? ( // Only if there's some text in the input
-                  <>
-                    <Button onClick={onAddContributorEmail} variant="contained">
-                      {t('common.add')}
-                    </Button>
-                    {params.InputProps.endAdornment}
-                  </>
-                ) : null,
+                endAdornment:
+                  params.inputProps.value && allowExternalInvites ? (
+                    <>
+                      <Button onClick={onAddContributorEmail} variant="contained">
+                        {t('common.add')}
+                      </Button>
+                      {params.InputProps.endAdornment}
+                    </>
+                  ) : null,
               },
             }}
             multiline

@@ -4,8 +4,7 @@ import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgrPlugin from 'vite-plugin-svgr';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { version } from './package';
-import fs from 'fs';
-import path from 'path';
+import { generateMetaJson } from './build-utils.mjs';
 
 export default defineConfig({
   server: {
@@ -45,8 +44,7 @@ export default defineConfig({
       name: 'generate-meta-json',
       apply: 'build',
       buildStart() {
-        fs.mkdirSync(path.resolve(__dirname, 'public'), { recursive: true });
-        fs.writeFileSync('./public/meta.json', JSON.stringify({ version }, null, 2));
+        generateMetaJson();
       }
     }
   ],

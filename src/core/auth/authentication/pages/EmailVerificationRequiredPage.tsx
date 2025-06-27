@@ -4,12 +4,12 @@ import EmailVerificationNotice from '@/core/auth/verification/components/EmailVe
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { PageTitle } from '@/core/ui/typography';
-import { useReturnUrl } from '../utils/SignUpReturnUrl';
+import { useGetReturnUrl } from '../utils/useSignUpReturnUrl';
 
 export const EmailVerificationRequiredPage: FC = () => {
   const { t } = useTranslation();
 
-  const returnUrl = useReturnUrl();
+  const returnUrl = useGetReturnUrl();
 
   return (
     <AuthPageContentContainer>

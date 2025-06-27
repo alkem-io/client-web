@@ -32,9 +32,14 @@ type InviteUsersData = {
   extraRole: RoleName;
 };
 
-const InviteUsersDialog = ({ open, onClose, filterContributors }: InviteContributorsDialogProps) => {
+const InviteUsersDialog = ({
+  open,
+  onClose,
+  filterContributors,
+  onlyFromParentCommunity,
+}: InviteContributorsDialogProps) => {
   const { t } = useTranslation();
-  const { spaceId, loading: resolvingSpace } = useUrlResolver();
+  const { spaceId, loading: resolvingSpace, parentSpaceId } = useUrlResolver();
   const { data, loading: loadingSpace } = useInviteUsersDialogQuery({
     variables: {
       spaceId: spaceId!,
@@ -117,7 +122,11 @@ const InviteUsersDialog = ({ open, onClose, filterContributors }: InviteContribu
             <>
               {!invitationsResults && (
                 <>
-                  <InviteUsersFormDialogContent filterUsers={filterContributors} />
+                  <InviteUsersFormDialogContent
+                    parentSpaceId={parentSpaceId}
+                    filterUsers={filterContributors}
+                    onlyFromParentCommunity={onlyFromParentCommunity}
+                  />
                   <DialogActions>
                     {invalidSelectedContributors && selectedContributorsValue.length === 0 && (
                       <Caption color="error">

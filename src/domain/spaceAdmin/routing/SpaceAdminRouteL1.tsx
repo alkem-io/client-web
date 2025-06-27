@@ -31,6 +31,7 @@ export const SpaceAdminL1Route: FC = () => {
     communityGuidelinesEnabled: true,
     communityGuidelinesTemplatesEnabled: false,
     communityGuidelinesId: subspace?.about.guidelines.id,
+    virtualContributorsBlockEnabled: false,
     level: subspace?.level,
     useL0Layout: false,
     spaceEntitlements: entitlements,

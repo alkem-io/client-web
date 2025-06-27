@@ -3,17 +3,23 @@ import { produce } from 'immer';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import KratosUI from '../components/KratosUI';
-import { useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Loading from '@/core/ui/loading/Loading';
 import { useTranslation } from 'react-i18next';
 import { LoginFlow } from '@ory/kratos-client';
-import { AUTH_REMINDER_PATH, AUTH_RESET_PASSWORD_PATH } from '../constants/authentication.constants';
+import {
+  AUTH_REMINDER_PATH,
+  AUTH_RESET_PASSWORD_PATH,
+  PARAM_NAME_RETURN_URL,
+} from '../constants/authentication.constants';
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
 import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 import KratosForm from '../components/Kratos/KratosForm';
 import AuthenticationLayout from '../AuthenticationLayout';
 import { AuthFormHeader } from '../components/AuthFormHeader';
+import { useQueryParams } from '@/core/routing/useQueryParams';
+import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 
 interface LoginPageProps {
   flow?: string;
@@ -41,6 +47,9 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const navigate = useNavigate();
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const { t } = useTranslation();
+  const params = useQueryParams();
+  const returnUrl = params.get(PARAM_NAME_RETURN_URL);
+  const { setReturnUrl } = useReturnUrl();
 
   // Ory 1.3.0: messages should be set on flow.ui.messages
   const loginUi =
@@ -50,6 +59,10 @@ const LoginPage = ({ flow }: LoginPageProps) => {
         ui.messages = kratosErrors;
       }
     });
+
+  useEffect(() => {
+    setReturnUrl(returnUrl);
+  }, [returnUrl, setReturnUrl]);
 
   useLayoutEffect(() => {
     if (loginFlow && isEmailNotVerified(loginFlow)) {

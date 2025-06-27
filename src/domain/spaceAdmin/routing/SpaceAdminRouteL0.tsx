@@ -37,6 +37,7 @@ const SpaceAdminL0Route: FC = () => {
     communityGuidelinesEnabled: true,
     communityGuidelinesTemplatesEnabled: true,
     communityGuidelinesId: space?.about.guidelines!.id,
+    virtualContributorsBlockEnabled: true,
     level: space?.level,
     useL0Layout: true,
     spaceEntitlements: entitlements,

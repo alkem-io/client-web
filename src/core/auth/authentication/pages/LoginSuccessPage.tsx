@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import { STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
-import { useReturnUrl } from '../utils/SignUpReturnUrl';
+import { useGetReturnUrl } from '../utils/useSignUpReturnUrl';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 export const LoginSuccessPage = () => {
-  const returnUrl = useReturnUrl();
+  const returnUrl = useGetReturnUrl();
+
   // We don't really need to use user info here on every login,
   // but user profile creation is triggered the first time the user logs in,
   // and this way we ensure the profile is created before the user is redirected to the returnUrl.
@@ -13,13 +13,8 @@ export const LoginSuccessPage = () => {
   const { userModel, loading } = useCurrentUserContext();
 
   useEffect(() => {
-    if (!loading && userModel) {
-      if (returnUrl) {
-        window.location.replace(returnUrl);
-        return () => {
-          sessionStorage.removeItem(STORAGE_KEY_RETURN_URL);
-        };
-      }
+    if (!loading && userModel && returnUrl) {
+      window.location.replace(returnUrl);
     }
   }, [returnUrl, userModel, loading]);
 

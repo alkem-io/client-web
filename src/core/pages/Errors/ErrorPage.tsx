@@ -1,5 +1,5 @@
 import { privateGraphQLEndpoint } from '@/main/constants/endpoints';
-import { Button, Container, Typography } from '@mui/material';
+import { Button, Container, Link, Typography } from '@mui/material';
 import { Trans, useTranslation } from 'react-i18next';
 
 export const ErrorPage = ({ error }: { error: Error }) => {
@@ -24,7 +24,12 @@ export const ErrorPage = ({ error }: { error: Error }) => {
       </Typography>
       {import.meta.env.MODE === 'development' && <Typography mb={2}>{error.stack}</Typography>}
       <Typography variant="h5" color="neutralMedium.main" fontWeight="regular" mb={2}>
-        {t('pages.error.line3')}
+        <Trans
+          i18nKey="pages.error.line3"
+          components={{
+            contact: <Link href={`mailto:${t('common.supportEmail')}`} />,
+          }}
+        />
       </Typography>
       <div>
         <Button variant="outlined" onClick={() => window.location.reload()}>

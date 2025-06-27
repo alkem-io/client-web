@@ -51,6 +51,7 @@ export type SpaceAdminCommunityPageProps = SettingsPageProps & {
   pendingMembershipsEnabled: boolean;
   communityGuidelinesEnabled: boolean;
   communityGuidelinesTemplatesEnabled: boolean;
+  virtualContributorsBlockEnabled: boolean;
   spaceEntitlements: LicenseEntitlementType[];
   useL0Layout: boolean;
   loading: boolean;
@@ -65,6 +66,7 @@ const SpaceAdminCommunityPage = ({
   communityGuidelinesId,
   communityGuidelinesEnabled,
   communityGuidelinesTemplatesEnabled,
+  virtualContributorsBlockEnabled,
   spaceEntitlements,
   useL0Layout,
   loading: isLoadingSpace,
@@ -171,6 +173,7 @@ const SpaceAdminCommunityPage = ({
               <InviteContributorsWizard
                 contributorType={RoleSetContributorType.User}
                 filterContributors={filterInviteeContributors}
+                onlyFromParentCommunity={level === SpaceLevel.L2}
               >
                 {t('buttons.invite')}
               </InviteContributorsWizard>
@@ -313,21 +316,23 @@ const SpaceAdminCommunityPage = ({
             />
           </PageContentBlock>
         </PageContentColumn>
-        <PageContentColumn columns={6}>
-          <PageContentBlock>
-            <CommunityVirtualContributors
-              virtualContributors={virtualContributors}
-              canAddVirtualContributors={addVirtualContributorsEnabled}
-              onRemoveMember={onRemoveVirtualContributor}
-              spaceDisplayName={about.profile.displayName}
-              fetchAvailableVirtualContributorsInLibrary={getAvailableVirtualContributorsInLibrary}
-              fetchAvailableVirtualContributors={getAvailableVirtualContributors}
-              onAddMember={onAddVirtualContributor}
-              inviteContributors={inviteUsers}
-              loading={loading}
-            />
-          </PageContentBlock>
-        </PageContentColumn>
+        {virtualContributorsBlockEnabled && (
+          <PageContentColumn columns={6}>
+            <PageContentBlock>
+              <CommunityVirtualContributors
+                virtualContributors={virtualContributors}
+                canAddVirtualContributors={addVirtualContributorsEnabled}
+                onRemoveMember={onRemoveVirtualContributor}
+                spaceDisplayName={about.profile.displayName}
+                fetchAvailableVirtualContributorsInLibrary={getAvailableVirtualContributorsInLibrary}
+                fetchAvailableVirtualContributors={getAvailableVirtualContributors}
+                onAddMember={onAddVirtualContributor}
+                inviteContributors={inviteUsers}
+                loading={loading}
+              />
+            </PageContentBlock>
+          </PageContentColumn>
+        )}
         <ConfirmationDialog
           actions={{
             onCancel: () => setError(false),

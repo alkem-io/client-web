@@ -1,4 +1,4 @@
-import { AuthorizationPrivilege, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, ProfileType, TagsetType } from '@/core/apollo/generated/graphql-schema';
 
 export type ContributorModel = {
   id: string;
@@ -9,13 +9,14 @@ export type ContributorModel = {
     tagline?: string;
     description?: string;
     avatar?: {
-      id;
-      uri;
+      id: string;
+      uri: string;
     };
     location?: {
       city?: string;
       country?: string;
     };
+    type?: ProfileType;
   };
 };
 export type SpaceAboutFullModel = {

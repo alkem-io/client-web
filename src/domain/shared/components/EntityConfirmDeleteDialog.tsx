@@ -7,7 +7,7 @@ import { Caption } from '@/core/ui/typography';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { Box, Button, Checkbox, Dialog, DialogContent, FormControlLabel } from '@mui/material';
 import { FC, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, TransProps, useTranslation } from 'react-i18next';
 
 interface EntityConfirmDeleteDialogProps {
   entity: string;
@@ -45,7 +45,14 @@ const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
         <Gutters disablePadding>
           <Box sx={{ wordWrap: 'break-word' }}>
             <Caption>
-              <>{t(description ?? 'components.deleteEntity.confirmDialog.description', { entity: entity })} </>
+              <Trans
+                i18nKey={
+                  (description ??
+                    'components.deleteEntity.confirmDialog.description') as unknown as TransProps<TranslationKey>['i18nKey']
+                }
+                values={{ entity: entity }}
+                components={{ strong: <strong /> }}
+              />
             </Caption>
             <FormControlLabel
               control={<Checkbox checked={checked} onChange={() => setChecked(!checked)} />}
