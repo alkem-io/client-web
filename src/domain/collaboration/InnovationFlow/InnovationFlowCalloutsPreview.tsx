@@ -7,9 +7,9 @@ import { gutters } from '@/core/ui/grid/utils';
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Text, CaptionSmall } from '@/core/ui/typography';
-import { getCalloutTypeIcon } from '@/domain/collaboration/callout/calloutCard/calloutIcons';
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
 import { CalloutModelLight } from '../new-callout/models/CalloutModelLight';
+import { GenericCalloutIcon } from '../callout/utils/calloutIcons';
 
 export interface InnovationFlowCalloutsPreviewProps {
   selectedState: string | undefined;
@@ -76,13 +76,7 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
                 onChange={handleSelectedCalloutChange(callout.id)}
               >
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <RoundedIcon
-                    size="small"
-                    component={getCalloutTypeIcon({
-                      calloutTypeDeprecated: callout.calloutTypeDeprecated,
-                      settings: undefined,
-                    })}
-                  />
+                  <RoundedIcon size="small" component={GenericCalloutIcon} />
                   <Text marginLeft={gutters()}>{callout.framing.profile.displayName}</Text>
                 </AccordionSummary>
                 <AccordionDetails>

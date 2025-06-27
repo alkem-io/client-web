@@ -34,6 +34,7 @@ interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlow
   callouts: {
     id: string;
     activity: number;
+    calloutTypeDeprecated: CalloutType;
     profile: {
       displayName: string;
     };
@@ -125,7 +126,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
                         {...provider.draggableProps}
                         {...provider.dragHandleProps}
                         displayName={callout.profile.displayName}
-                        icon={calloutIcons[CalloutType.Post]} //!!
+                        icon={calloutIcons[callout.calloutTypeDeprecated]}
                         activity={callout.activity}
                       />
                     )}

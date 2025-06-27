@@ -3,7 +3,8 @@ import { useInView } from 'react-intersection-observer';
 import { useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { TypedCallout, TypedCalloutDetails } from '../new-callout/models/TypedCallout';
-
+import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
+import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 
 type CalloutDetailsContainerProvided = {
   ref: Ref<Element>;
@@ -30,6 +31,9 @@ const CalloutDetailsContainer = ({ callout, children }: CalloutDetailsContainerP
     skip: !inView,
   });
 
+  /**
+   * This function hydrates the callout with the additional details fetched from the server.
+   */
   const result: TypedCalloutDetails | undefined = useMemo(() => {
     const calloutDetails = data?.lookup.callout;
 
@@ -46,10 +50,18 @@ const CalloutDetailsContainer = ({ callout, children }: CalloutDetailsContainerP
       },
       whiteboard: calloutDetails.framing.whiteboard,
     };
+    // TODO: Refactor this
+    // Probably can be done much better, typescript is complaining because many optional things on TypedCallout are now required in TypedCalloutDetails,
+    // and it is not sure if we have all the data we need for framing and for classification
     const classification = {
       ...callout.classification,
-      ...calloutDetails.classification
-    }
+      flowState: {
+        ...EmptyTagset,
+        name: TagsetReservedName.FlowState,
+        ...callout.classification?.flowState,
+      },
+      ...calloutDetails.classification,
+    };
 
     return {
       ...callout,

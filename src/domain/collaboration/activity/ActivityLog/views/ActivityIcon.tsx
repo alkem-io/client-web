@@ -1,4 +1,4 @@
-import { ActivityEventType, CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
 import {
@@ -10,7 +10,7 @@ import {
   PersonOutlined,
 } from '@mui/icons-material';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
-import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import { GenericCalloutIcon } from '@/domain/collaboration/callout/utils/calloutIcons';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 
 const ActivityIcon: Record<
@@ -34,12 +34,12 @@ export type Activity =
       type: Exclude<ActivityEventType, ActivityEventType.CalloutPublished>;
     }
   | {
-    type: ActivityEventType.CalloutPublished;
+      type: ActivityEventType.CalloutPublished;
     };
 
 const getActivityIcon = (activity: Activity): ComponentType<SvgIconProps> => {
   if (activity.type === ActivityEventType.CalloutPublished) {
-    return calloutIcons[CalloutType.Post]; //!!
+    return GenericCalloutIcon;
   }
   return ActivityIcon[activity.type];
 };

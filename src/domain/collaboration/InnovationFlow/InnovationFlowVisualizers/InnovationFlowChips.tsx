@@ -62,7 +62,7 @@ const InnovationFlowChips = ({
     <>
       <Gutters row disablePadding alignItems="start" overflow="hidden">
         {settingsButton}
-        <Divider orientation="vertical" flexItem />
+        {settingsButton && <Divider orientation="vertical" flexItem />}
         <Gutters
           row={columns > 4}
           disablePadding
