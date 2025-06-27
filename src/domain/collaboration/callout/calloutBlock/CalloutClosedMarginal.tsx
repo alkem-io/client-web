@@ -8,6 +8,9 @@ interface CalloutNotOpenStateMarginalProps {
       contribution: {
         enabled: boolean;
       };
+      framing: {
+        commentsEnabled: boolean;
+      };
     };
     comments?: {
       messages?: unknown[];
@@ -30,11 +33,7 @@ const CalloutClosedMarginal = ({
     if (disabled || !callout.settings.contribution.enabled) {
       return false;
     }
-    if (callout.comments?.messages?.length) {
-      return true;
-    } else {
-      return false;
-    }
+    return !!callout.comments?.messages?.length;
   }, [callout.settings.contribution, callout.comments?.messages, t]);
 
   if (!isClosed) {

@@ -1,4 +1,4 @@
-import { CreateProfileInput, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
+import { CreateProfileInput, TagsetReservedName, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
 import { ProfileModel } from './ProfileModel';
 import { mapTagsetModelsToUpdateTagsetInputs } from '../tagset/TagsetUtils';
 import { formatLocationInput } from '../location/LocationUtils';
@@ -51,4 +51,12 @@ export const mapProfileModelToCreateProfileInput = (
     location: formatLocationInput(profileModel.location),
   };
   return result;
+};
+
+export const mapProfileTagsToCreateTags = (profileModel: Pick<ProfileModel, 'tagsets'>): string[] | undefined => {
+  if (!profileModel || !profileModel.tagsets) {
+    return undefined;
+  }
+
+  return profileModel.tagsets.find(tagset => tagset.name === TagsetReservedName.Default)?.tags;
 };

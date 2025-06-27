@@ -12,21 +12,18 @@ import {
   CalloutCreationTypeWithPreviewImages,
   useCalloutCreationWithPreviewImages,
 } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
-/*import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
-import calloutIcons from '../utils/calloutIcons';
-*/
-
-// import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import CalloutForm, { CalloutFormSubmittedValues } from './CalloutForm';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { mapProfileModelToCreateProfileInput } from '@/domain/common/profile/ProfileModelUtils';
+import {
+  mapProfileModelToCreateProfileInput,
+  mapProfileTagsToCreateTags,
+} from '@/domain/common/profile/ProfileModelUtils';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 export interface CalloutRestrictions {
-  disableMarginal?: boolean;
   /**
    * Disables upload of images, videos and other rich media in the Markdown editors.
    */
@@ -47,10 +44,6 @@ export interface CreateCalloutDialogProps {
   calloutClassification?: ClassificationTagsetModel[] | undefined;
 
   calloutRestrictions?: CalloutRestrictions;
-  /*
-  onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
-  loading: boolean;
-  */
 }
 
 const CreateCalloutDialog = ({
@@ -59,11 +52,6 @@ const CreateCalloutDialog = ({
   calloutsSetId,
   calloutClassification,
   calloutRestrictions,
-
-  /*
-  onCreateCallout,
-  loading,
-  */
 }: CreateCalloutDialogProps) => {
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
@@ -77,10 +65,8 @@ const CreateCalloutDialog = ({
 
   /*
   const [callout, setCallout] = useState<CreateCalloutDialogFields>({});
-
   const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType>();
   const [isPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
-  const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(false);
 */
 
@@ -314,23 +300,7 @@ const CreateCalloutDialog = ({
               </Button>
             </Actions>
           </Dialog>
-          <Dialog open={isConfirmCloseDialogOpen}>
-            <DialogHeader
-              onClose={closeConfirmCloseDialog}
-              title={t('components.callout-creation.close-dialog.title')}
-            />
-            <DialogContent>
-              {t('components.callout-creation.close-dialog.text', {
-                calloutType: t(`components.calloutTypeSelect.label.${selectedCalloutType}` as const),
-              })}
-            </DialogContent>
-            <Actions padding={gutters()} justifyContent="end">
-              <Button variant="contained" onClick={closeConfirmCloseDialog}>
-                {t('buttons.cancel')}
-              </Button>
-              <Button onClick={handleClose}>{t('buttons.yes-close')}</Button>
-            </Actions>
-          </Dialog>
+
         </>
       )}
     </Dialog>
@@ -355,7 +325,11 @@ const CreateCalloutDialog = ({
   const [handlePublishCallout, publishingCallout] = useLoadingState(async () => {
     const formData = ensurePresence(calloutFormData);
     // Map the profile to CreateProfileInput and the allowedTypes to an array
-    const framing = { ...formData.framing, profile: mapProfileModelToCreateProfileInput(formData.framing.profile) };
+    const framing = {
+      ...formData.framing,
+      profile: mapProfileModelToCreateProfileInput(formData.framing.profile),
+      tags: mapProfileTagsToCreateTags(formData.framing.profile),
+    };
     const settings = {
       ...formData.settings,
       contribution: {
@@ -423,15 +397,15 @@ const CreateCalloutDialog = ({
       />
       <ConfirmationDialog
         entities={{
-          title: 'Close dialog?', //!! pending
-          content: 'Are you sure you want to leave and discard your changes?',
-          confirmButtonTextId: 'buttons.yesDiscard',
+          titleId: 'components.callout-creation.close-dialog.title',
+          contentId: 'components.callout-creation.close-dialog.text',
+          confirmButtonTextId: 'buttons.yes-close',
         }}
         options={{
           show: confirmCloseDialogOpen,
         }}
         actions={{
-          onConfirm: onClose,
+          onConfirm: handleClose,
           onCancel: () => setConfirmCloseDialogOpen(false),
         }}
       />

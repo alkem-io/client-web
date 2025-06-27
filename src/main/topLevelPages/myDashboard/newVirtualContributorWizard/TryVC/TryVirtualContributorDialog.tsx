@@ -67,7 +67,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       },
       visibility: CalloutVisibility.Published,
     },
-    sendNotification: false,
   };
 
   const [deleteCallout] = useDeleteCalloutMutation({

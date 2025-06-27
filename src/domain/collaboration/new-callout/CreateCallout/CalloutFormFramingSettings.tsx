@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import BlockIcon from '@mui/icons-material/Block';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import RadioButtonsGroup from '@/core/ui/forms/radioButtons/RadioButtonsGroup';
+import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
+import { nameOf } from '@/core/utils/nameOf';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
@@ -22,17 +23,13 @@ interface CalloutFormFramingSettingsProps {
 const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
-  const [framingTypeSelected, setFramingTypeSelected] = useState<CalloutFramingType>(CalloutFramingType.None);
 
-  const [framing, , helpers] = useField<CalloutFormSubmittedValues['framing']>('framing');
+  const [{ value: framing }, , helpers] = useField<CalloutFormSubmittedValues['framing']>('framing');
   const whiteboardPreviewRef = useRef<FormikWhiteboardPreviewRef>(null);
 
-  const handleFramingTypeChange = (newValue: CalloutFramingType) => {
-    setFramingTypeSelected(newValue);
-
-    // Add / remove whiteboard content from the formik state based on the selected framing type radio buttons
-    if (newValue === CalloutFramingType.Whiteboard) {
-      const { whiteboard, ...rest } = framing.value;
+  useEffect(() => {
+    if (framing.type === CalloutFramingType.Whiteboard) {
+      const { whiteboard, ...rest } = framing;
       helpers.setValue({
         ...rest,
         whiteboard: {
@@ -44,14 +41,15 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
         },
       });
     } else {
-      const { whiteboard, ...rest } = framing.value;
+      const { whiteboard, ...rest } = framing;
       helpers.setValue({ ...rest, whiteboard: undefined });
     }
-  };
+  }, [framing.type]);
 
   // Instantiating them here to be able to move them when the screen is small
   const radioButtons = (
-    <RadioButtonsGroup
+    <FormikRadioButtonsGroup
+      name={nameOf<CalloutFormSubmittedValues>('framing.type')}
       options={[
         {
           icon: BlockIcon,
@@ -67,8 +65,6 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           disabled: calloutRestrictions?.disableWhiteboards,
         },
       ]}
-      value={framingTypeSelected}
-      onChange={handleFramingTypeChange}
     />
   );
 
@@ -82,7 +78,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
         {isMediumSmallScreen && radioButtons}
       </PageContentBlock>
 
-      {framing.value.whiteboard && framingTypeSelected === CalloutFramingType.Whiteboard && (
+      {framing.whiteboard && framing.type === CalloutFramingType.Whiteboard && (
         <PageContentBlock disablePadding>
           <FormikWhiteboardPreview
             ref={whiteboardPreviewRef}
@@ -90,7 +86,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
             previewImagesName="framing.whiteboard.previewImages"
             canEdit
             onChangeContent={() => whiteboardPreviewRef.current?.closeEditDialog()}
-            onDeleteContent={() => handleFramingTypeChange(CalloutFramingType.None)}
+            onDeleteContent={() => helpers.setValue({ ...framing, type: CalloutFramingType.None })}
             maxHeight={gutters(12)}
             dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
           />
