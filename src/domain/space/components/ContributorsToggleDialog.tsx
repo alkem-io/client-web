@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import RoleSetContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetContributorsBlockWide';
-import { useSubspaceCommunityAndRoleSetIdQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useCommunityAvailableVCsQuery,
+  useSubspaceCommunityAndRoleSetIdQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { BlockTitle, Caption } from '@/core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import RoleSetVirtualContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetVirtualContributorsBlockWide';
 import { RoleName, RoleSetContributorType, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
@@ -25,8 +28,8 @@ export interface ContributorsToggleDialogProps {
  */
 const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleDialogProps) => {
   const { isAuthenticated } = useCurrentUserContext();
-  const { t } = useTranslation();
   const { spaceId } = useUrlResolver();
+  const { t } = useTranslation();
 
   const { data: subspaceData, loading } = useSubspaceCommunityAndRoleSetIdQuery({
     variables: {
@@ -36,7 +39,7 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
   });
   const roleSetId = subspaceData?.lookup.space?.community.roleSet.id;
 
-  const { usersByRole, organizationsByRole, virtualContributorsByRole } = useRoleSetManager({
+  const { usersByRole, organizationsByRole } = useRoleSetManager({
     roleSetId,
     relevantRoles: [RoleName.Member],
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
@@ -44,7 +47,6 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
   });
   const memberUsers = usersByRole[RoleName.Member] ?? [];
   const memberOrganizations = organizationsByRole[RoleName.Member] ?? [];
-  const memberVirtualContributors = virtualContributorsByRole[RoleName.Member] ?? [];
 
   const users: ContributorCardSquareProps[] | undefined = memberUsers.map(user => ({
     id: user.id,
@@ -62,8 +64,30 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
     contributorType: RoleSetContributorType.Organization,
   }));
 
+  // get the mentionable VCs as they are the ones that can be used in the community
+  const { data: vcData } = useCommunityAvailableVCsQuery({
+    variables: {
+      roleSetId: roleSetId!,
+    },
+    skip: !roleSetId || !open,
+  });
+
+  const availableVCs = useMemo(() => {
+    return (
+      vcData?.lookup?.roleSet?.virtualContributorsInRoleInHierarchy?.map(vc => ({
+        id: vc.id,
+        searchVisibility: vc.searchVisibility,
+        profile: {
+          displayName: vc.profile.displayName,
+          avatar: { uri: vc.profile.avatar?.uri ?? '' },
+          url: vc.profile.url,
+        },
+      })) ?? []
+    );
+  }, [vcData?.lookup?.roleSet?.virtualContributorsInRoleInHierarchy]);
+
   const virtualContributors: VirtualContributorProps[] =
-    memberVirtualContributors.filter(vc => vc.searchVisibility !== SearchVisibility.Hidden) ?? [];
+    availableVCs.filter(vc => vc.searchVisibility !== SearchVisibility.Hidden) ?? [];
 
   return (
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">
@@ -79,11 +103,13 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
               isLoading={loading}
               isDialogView
             />
-            {virtualContributors && virtualContributors?.length > 0 && (
-              <>
-                <BlockTitle>{t('pages.contributors.virtualContributors.title')}</BlockTitle>
-                <RoleSetVirtualContributorsBlockWide virtualContributors={virtualContributors} />
-              </>
+            {virtualContributors.length > 0 && (
+              <RoleSetVirtualContributorsBlockWide
+                virtualContributors={virtualContributors}
+                title={t('pages.contributors.availableContributors', {
+                  entity: t('pages.contributors.virtualContributors.title'),
+                })}
+              />
             )}
           </Gutters>
         )}

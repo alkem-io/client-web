@@ -25,6 +25,7 @@ export const SpaceAdminL2Route = () => {
     communityGuidelinesEnabled: true,
     communityGuidelinesTemplatesEnabled: false,
     communityGuidelinesId: subspace?.about.guidelines.id,
+    virtualContributorsBlockEnabled: false,
     useL0Layout: false,
     level: subspace?.level,
     spaceEntitlements: entitlements,

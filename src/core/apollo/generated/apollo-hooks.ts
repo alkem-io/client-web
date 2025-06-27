@@ -12990,6 +12990,93 @@ export type CurrentUserFullQueryResult = Apollo.QueryResult<
 export function refetchCurrentUserFullQuery(variables?: SchemaTypes.CurrentUserFullQueryVariables) {
   return { query: CurrentUserFullDocument, variables: variables };
 }
+export const CommunityAvailableVCsDocument = gql`
+  query CommunityAvailableVCs($roleSetId: UUID!) {
+    lookup {
+      roleSet(ID: $roleSetId) {
+        virtualContributorsInRoleInHierarchy(role: MEMBER) {
+          id
+          searchVisibility
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
+
+/**
+ * __useCommunityAvailableVCsQuery__
+ *
+ * To run a query within a React component, call `useCommunityAvailableVCsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityAvailableVCsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityAvailableVCsQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *   },
+ * });
+ */
+export function useCommunityAvailableVCsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityAvailableVCsQuery,
+    SchemaTypes.CommunityAvailableVCsQueryVariables
+  > &
+    ({ variables: SchemaTypes.CommunityAvailableVCsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityAvailableVCsQuery, SchemaTypes.CommunityAvailableVCsQueryVariables>(
+    CommunityAvailableVCsDocument,
+    options
+  );
+}
+export function useCommunityAvailableVCsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityAvailableVCsQuery,
+    SchemaTypes.CommunityAvailableVCsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CommunityAvailableVCsQuery, SchemaTypes.CommunityAvailableVCsQueryVariables>(
+    CommunityAvailableVCsDocument,
+    options
+  );
+}
+export function useCommunityAvailableVCsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CommunityAvailableVCsQuery,
+        SchemaTypes.CommunityAvailableVCsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.CommunityAvailableVCsQuery,
+    SchemaTypes.CommunityAvailableVCsQueryVariables
+  >(CommunityAvailableVCsDocument, options);
+}
+export type CommunityAvailableVCsQueryHookResult = ReturnType<typeof useCommunityAvailableVCsQuery>;
+export type CommunityAvailableVCsLazyQueryHookResult = ReturnType<typeof useCommunityAvailableVCsLazyQuery>;
+export type CommunityAvailableVCsSuspenseQueryHookResult = ReturnType<typeof useCommunityAvailableVCsSuspenseQuery>;
+export type CommunityAvailableVCsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityAvailableVCsQuery,
+  SchemaTypes.CommunityAvailableVCsQueryVariables
+>;
+export function refetchCommunityAvailableVCsQuery(variables: SchemaTypes.CommunityAvailableVCsQueryVariables) {
+  return { query: CommunityAvailableVCsDocument, variables: variables };
+}
 export const AiPersonaServiceDocument = gql`
   query AiPersonaService($id: UUID!) {
     aiServer {
