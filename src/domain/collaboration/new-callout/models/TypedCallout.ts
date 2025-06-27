@@ -1,5 +1,8 @@
 import { AuthorizationPrivilege, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
-import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
+import {
+  ClassificationTagsetModel,
+  ClassificationTagsetWithAllowedValuesModel,
+} from '../../calloutsSet/Classification/ClassificationTagset.model';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 import { CalloutSettingsModelFull } from './CalloutSettingsModel';
@@ -111,7 +114,7 @@ export type TypedCalloutDetails = TypedCallout & {
     whiteboard?: WhiteboardDetails;
   };
   classification?: {
-    flowState?: ClassificationTagsetModel;
+    flowState?: ClassificationTagsetWithAllowedValuesModel;
   };
   settings: CalloutSettingsModelFull;
   contributionDefaults: {

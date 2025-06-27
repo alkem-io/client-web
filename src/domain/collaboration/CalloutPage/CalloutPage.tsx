@@ -19,6 +19,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -138,7 +139,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
     backOrElse(parentPagePath);
   };
 
-  const handleDeleteWithClose = async (callout: CalloutDeleteType) => {
+  const handleDeleteWithClose = async (callout: Identifiable) => {
     await handleDelete(callout);
     handleClose();
   };

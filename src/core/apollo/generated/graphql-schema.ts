@@ -1080,6 +1080,8 @@ export type CalloutContributionDefaults = {
   __typename?: 'CalloutContributionDefaults';
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The default title to use for new contributions. */
+  defaultDisplayName?: Maybe<Scalars['String']['output']>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The default description to use for new contributions. */
@@ -1638,12 +1640,16 @@ export type CreateCalendarEventOnCalendarInput = {
 
 export type CreateCalloutContributionDefaultsData = {
   __typename?: 'CreateCalloutContributionDefaultsData';
+  /** The default title to use for new contributions. */
+  defaultDisplayName?: Maybe<Scalars['String']['output']>;
   /** The default description to use for new Post contributions. */
   postDescription?: Maybe<Scalars['Markdown']['output']>;
   whiteboardContent?: Maybe<Scalars['WhiteboardContent']['output']>;
 };
 
 export type CreateCalloutContributionDefaultsInput = {
+  /** The default title to use for new contributions. */
+  defaultDisplayName?: InputMaybe<Scalars['String']['input']>;
   /** The default description to use for new Post contributions. */
   postDescription?: InputMaybe<Scalars['Markdown']['input']>;
   whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
@@ -6855,6 +6861,8 @@ export type UpdateCalendarEventInput = {
 };
 
 export type UpdateCalloutContributionDefaultsInput = {
+  /** The default title to use for new contributions. */
+  defaultDisplayName?: InputMaybe<Scalars['String']['input']>;
   /** The default description to use for new Post contributions. */
   postDescription?: InputMaybe<Scalars['Markdown']['input']>;
   /** The default description to use for new Whiteboard contributions. */

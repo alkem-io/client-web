@@ -51,7 +51,6 @@ const RadioButtonsGroup = <Value,>({
                 gap: gutters(0.5),
                 flexDirection: labelPlacement === 'right' ? 'row' : 'column',
                 flexShrink: 1,
-                /* flexWrap: 'wrap',*/
                 textTransform: 'none',
                 '&.Mui-disabled': value === optionValue ? { color: 'primary.main' } : {},
               }}

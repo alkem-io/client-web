@@ -730,6 +730,7 @@ export type CalloutContributionFieldPolicy = {
 };
 export type CalloutContributionDefaultsKeySpecifier = (
   | 'createdDate'
+  | 'defaultDisplayName'
   | 'id'
   | 'postDescription'
   | 'updatedDate'
@@ -738,6 +739,7 @@ export type CalloutContributionDefaultsKeySpecifier = (
 )[];
 export type CalloutContributionDefaultsFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1106,11 +1108,13 @@ export type ContributorRolesFieldPolicy = {
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutContributionDefaultsDataKeySpecifier = (
+  | 'defaultDisplayName'
   | 'postDescription'
   | 'whiteboardContent'
   | CreateCalloutContributionDefaultsDataKeySpecifier
 )[];
 export type CreateCalloutContributionDefaultsDataFieldPolicy = {
+  defaultDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
