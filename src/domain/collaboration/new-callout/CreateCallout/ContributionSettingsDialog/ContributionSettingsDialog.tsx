@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import ContributionsSettings from './ContributionsSettings';
 import Gutters from '@/core/ui/grid/Gutters';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { CalloutRestrictions } from '../CreateCalloutDialog';
 
 /**
  * Specific settings for the contribution type (e.g. post, link, whiteboard)
@@ -28,16 +29,22 @@ export interface ContributionTypeSettingsComponentRef {
   isContentChanged: () => boolean;
 }
 
+export interface ContributionTypeSettingsProps extends RefAttributes<ContributionTypeSettingsComponentRef> {
+  calloutRestrictions?: CalloutRestrictions;
+}
+
 interface ContributionSettingsDialogProps {
   open?: boolean;
   onClose: () => void;
-  contributionTypeSettingsComponent?: ComponentType<RefAttributes<ContributionTypeSettingsComponentRef>> | undefined;
+  contributionTypeSettingsComponent?: ComponentType<ContributionTypeSettingsProps> | undefined;
+  calloutRestrictions?: CalloutRestrictions;
 }
 
 const ContributionSettingsDialog = ({
   open = false,
   onClose,
   contributionTypeSettingsComponent: SettingsComponent,
+  calloutRestrictions,
 }: ContributionSettingsDialogProps) => {
   const { t } = useTranslation();
   const contributionSettingsRef = useRef<ContributionTypeSettingsComponentRef>(null);
@@ -65,8 +72,10 @@ const ContributionSettingsDialog = ({
         <DialogHeader title={t('callout.create.contributionSettings.title')} onClose={handleBack} />
         <DialogContent>
           <Gutters disablePadding>
-            {SettingsComponent && <SettingsComponent ref={settingsComponentRef} />}
-            <ContributionsSettings ref={contributionSettingsRef} />
+            {SettingsComponent && (
+              <SettingsComponent ref={settingsComponentRef} calloutRestrictions={calloutRestrictions} />
+            )}
+            <ContributionsSettings ref={contributionSettingsRef} calloutRestrictions={calloutRestrictions} />
           </Gutters>
         </DialogContent>
         <DialogActions>

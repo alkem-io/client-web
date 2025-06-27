@@ -18,10 +18,13 @@ import ContributionSettingsDialog from './ContributionSettingsDialog/Contributio
 import ContributionsSettingsLink from './ContributionSettingsDialog/ContributionsSettingsLink';
 import ContributionsSettingsPost from './ContributionSettingsDialog/ContributionsSettingsPost';
 import ContributionsSettingsWhiteboard from './ContributionSettingsDialog/ContributionsSettingsWhiteboard';
+import { CalloutRestrictions } from './CreateCalloutDialog';
 
-interface CalloutFormContributionSettingsProps {}
+interface CalloutFormContributionSettingsProps {
+  calloutRestrictions?: CalloutRestrictions;
+}
 
-const CalloutFormContributionSettings = ({}: CalloutFormContributionSettingsProps) => {
+const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormContributionSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
   const [commentsEnabled, setCommentsEnabled] = useState<boolean>(true);
@@ -94,6 +97,7 @@ const CalloutFormContributionSettings = ({}: CalloutFormContributionSettingsProp
                 value: CalloutContributionType.Whiteboard,
                 label: t('callout.create.contributionSettings.contributionTypes.whiteboard.title'),
                 tooltip: t('callout.create.contributionSettings.contributionTypes.whiteboard.tooltip'),
+                disabled: calloutRestrictions?.disableWhiteboards,
               },
             ]}
             value={responseContributionType}
@@ -116,6 +120,7 @@ const CalloutFormContributionSettings = ({}: CalloutFormContributionSettingsProp
         open={contributionSettingsDialogOpen}
         onClose={() => setContributionSettingsDialogOpen(false)}
         contributionTypeSettingsComponent={SettingsComponent}
+        calloutRestrictions={calloutRestrictions}
       />
     </PageContentBlockCollapsible>
   );

@@ -13,10 +13,13 @@ import { CalloutFormSubmittedValues } from './CalloutForm';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import type { FormikWhiteboardPreviewRef } from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { CalloutRestrictions } from './CreateCalloutDialog';
 
-interface CalloutFormFramingSettingsProps {}
+interface CalloutFormFramingSettingsProps {
+  calloutRestrictions?: CalloutRestrictions;
+}
 
-const CalloutFormFramingSettings = ({}: CalloutFormFramingSettingsProps) => {
+const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
   const [framingTypeSelected, setFramingTypeSelected] = useState<CalloutFramingType>(CalloutFramingType.None);
@@ -61,6 +64,7 @@ const CalloutFormFramingSettings = ({}: CalloutFormFramingSettingsProps) => {
           value: CalloutFramingType.Whiteboard,
           label: t('callout.create.framingSettings.whiteboard.title'),
           tooltip: t('callout.create.framingSettings.whiteboard.tooltip'),
+          disabled: calloutRestrictions?.disableWhiteboards,
         },
       ]}
       value={framingTypeSelected}

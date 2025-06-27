@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ContributionTypeSettingsComponentRef } from './ContributionSettingsDialog';
+import { ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps } from './ContributionSettingsDialog';
 import { Formik, FormikProps, useField } from 'formik';
 import { CalloutFormSubmittedValues } from '../CalloutForm';
 import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
@@ -11,49 +11,49 @@ import { Box } from '@mui/material';
 import { Caption, CardText } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 
-const ContributionsSettingsWhiteboard = forwardRef<ContributionTypeSettingsComponentRef>((props, ref) => {
-  const { t } = useTranslation();
+const ContributionsSettingsWhiteboard = forwardRef<ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps>(
+  ({}, ref) => {
+    const { t } = useTranslation();
 
-  const [field, , meta] = useField<CalloutFormSubmittedValues['contributionDefaults']['whiteboardContent']>(
-    'contributionDefaults.whiteboardContent'
-  );
+    const [field, , meta] = useField<CalloutFormSubmittedValues['contributionDefaults']['whiteboardContent']>(
+      'contributionDefaults.whiteboardContent'
+    );
 
-  useImperativeHandle(ref, () => ({
-    onSave: () => {
-      // Apply the changes to the local form to the formik state of the CalloutForm
-      meta.setValue(internalFormRef.current?.values.whiteboardContent);
-    },
-    isContentChanged: () => field.value !== internalFormRef.current?.values.whiteboardContent,
-  }));
+    useImperativeHandle(ref, () => ({
+      onSave: () => {
+        // Apply the changes to the local form to the formik state of the CalloutForm
+        meta.setValue(internalFormRef.current?.values.whiteboardContent);
+      },
+      isContentChanged: () => field.value !== internalFormRef.current?.values.whiteboardContent,
+    }));
 
-  const initialValues = {
-    whiteboardContent: field.value,
-  };
+    const initialValues = {
+      whiteboardContent: field.value,
+    };
 
-  const internalFormRef = useRef<FormikProps<{ whiteboardContent: string | undefined }>>(null);
-  return (
-    <Formik initialValues={initialValues} onSubmit={() => { }} innerRef={internalFormRef}>
-      <Gutters disablePadding>
-        <Box>
-          <Caption>
-            {t('callout.create.contributionSettings.contributionTypes.whiteboard.settings.label')}
-          </Caption>
-          <CardText>
-            {t('callout.create.contributionSettings.contributionTypes.whiteboard.settings.explanation')}
-          </CardText>
-        </Box>
-        <PageContentBlock disablePadding>
-          <FormikWhiteboardPreview
-            name="whiteboardContent"
-            canEdit
-            onDeleteContent={() => internalFormRef.current?.setFieldValue('whiteboardContent', EmptyWhiteboardString)}
-            maxHeight={gutters(12)}
-            dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
-          />
-        </PageContentBlock>
-      </Gutters>
-    </Formik>
-  );
-});
+    const internalFormRef = useRef<FormikProps<{ whiteboardContent: string | undefined }>>(null);
+    return (
+      <Formik initialValues={initialValues} onSubmit={() => {}} innerRef={internalFormRef}>
+        <Gutters disablePadding>
+          <Box>
+            <Caption>{t('callout.create.contributionSettings.contributionTypes.whiteboard.settings.label')}</Caption>
+            <CardText>
+              {t('callout.create.contributionSettings.contributionTypes.whiteboard.settings.explanation')}
+            </CardText>
+          </Box>
+          <PageContentBlock disablePadding>
+            <FormikWhiteboardPreview
+              name="whiteboardContent"
+              canEdit
+              onDeleteContent={() => internalFormRef.current?.setFieldValue('whiteboardContent', EmptyWhiteboardString)}
+              maxHeight={gutters(12)}
+              dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
+            />
+          </PageContentBlock>
+        </Gutters>
+      </Formik>
+    );
+  }
+);
 
 export default ContributionsSettingsWhiteboard;

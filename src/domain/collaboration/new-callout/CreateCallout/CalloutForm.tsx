@@ -27,6 +27,7 @@ import {
   CalloutFramingType,
   CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
+import { CalloutRestrictions } from './CreateCalloutDialog';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
@@ -66,14 +67,14 @@ export interface CalloutFormProps {
   callout?: Partial<Identifiable> & CalloutFormSubmittedValues;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<CalloutFormSubmittedValues>['children'];
-  disableRichMedia?: boolean; // images, videos, iframe, etc.
+  calloutRestrictions?: CalloutRestrictions;
 }
 
 const CalloutForm = ({
   callout,
   onStatusChanged,
   children,
-  disableRichMedia,
+  calloutRestrictions,
   /*temporaryLocation = false,
    */
 }: CalloutFormProps) => {
@@ -165,9 +166,9 @@ const CalloutForm = ({
               rows={7}
               maxLength={MARKDOWN_TEXT_LENGTH}
               temporaryLocation={!Boolean(callout?.id)}
-              hideImageOptions={disableRichMedia}
+              hideImageOptions={calloutRestrictions?.disableRichMedia}
             />
-            <CalloutFormAdditionalContent />
+            <CalloutFormAdditionalContent calloutRestrictions={calloutRestrictions} />
             <ReferenceSegment
               fieldName={nameOf<CalloutFormSubmittedValues>('framing.profile.references')}
               compactMode
@@ -175,11 +176,7 @@ const CalloutForm = ({
               temporaryLocation={temporaryLocation}
               fullWidth
             />
-            <CalloutFormContributionSettings />
-            {/*
-            <PostTemplateSelector name="postDescription" />
-            <WhiteboardTemplateSelector name="whiteboardContent" />
-             */}
+            <CalloutFormContributionSettings calloutRestrictions={calloutRestrictions} />
           </Gutters>
           {typeof children === 'function' ? (children as Function)(formikState) : children}
         </>

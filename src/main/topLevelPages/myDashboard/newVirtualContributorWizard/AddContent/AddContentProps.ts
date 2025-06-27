@@ -1,4 +1,8 @@
-import { CalloutAllowedContributors, CalloutContributionType, CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutAllowedContributors,
+  CalloutContributionType,
+  CalloutVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 
 export type PostValues = {
   title: string;
@@ -29,7 +33,6 @@ export const getPostCalloutRequestData = (title: string, description: string) =>
       referencesData: [],
     },
   },
-  type: CalloutType.Post,
   settings: {
     framing: {
       commentsEnabled: false,
@@ -48,7 +51,6 @@ export const getDocumentCalloutRequestData = (name: string) => ({
       referencesData: [],
     },
   },
-  type: CalloutType.LinkCollection,
   settings: {
     framing: {
       commentsEnabled: false,
