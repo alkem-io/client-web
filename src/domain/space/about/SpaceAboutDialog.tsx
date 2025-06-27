@@ -130,7 +130,7 @@ const SpaceAboutDialog = ({
             component={Link}
             onClick={() => {
               if (!isAuthenticated) {
-                window.location.href = buildSignUpUrl(window.location.pathname, window.location.search);
+                navigate(buildSignUpUrl(window.location.pathname, window.location.search));
                 return;
               }
 
