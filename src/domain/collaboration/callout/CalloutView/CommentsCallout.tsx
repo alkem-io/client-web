@@ -12,7 +12,7 @@ import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboar
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import CalloutCommentsContainer from './CalloutCommentsContainer';
 import CommentsCalloutLayout from './CommentsCalloutLayout';
-import CalloutContributionLink from '../CalloutContributions/link/CalloutContributionLink';
+import CalloutContributionsLink from '../CalloutContributions/link/CalloutContributionsLink';
 
 interface CommentsCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -53,7 +53,7 @@ const CommentsCallout = ({
         >
           {callout.framing.type === CalloutFramingType.Whiteboard && <CalloutFramingWhiteboard callout={callout} />}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
-            <CalloutContributionLink
+            <CalloutContributionsLink
               callout={callout}
               loading={loading}
               expanded={expanded}

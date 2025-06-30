@@ -26,7 +26,7 @@ import {
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
-import { FormattedLink } from '../CalloutContributions/link/CalloutContributionLink';
+import { FormattedLink } from '../CalloutContributions/link/CalloutContributionsLink';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';

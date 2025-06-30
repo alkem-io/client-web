@@ -63,7 +63,7 @@ interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
   callout: TypedCalloutDetails;
 }
 
-const CalloutContributionLink = ({
+const CalloutContributionsLink = ({
   callout,
   loading,
   expanded,
@@ -296,4 +296,4 @@ const CalloutContributionLink = ({
   );
 };
 
-export default CalloutContributionLink;
+export default CalloutContributionsLink;
