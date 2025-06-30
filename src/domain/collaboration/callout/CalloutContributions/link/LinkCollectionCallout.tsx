@@ -1,6 +1,6 @@
-import CalloutLayout from '../calloutBlock/CalloutLayout';
+import CalloutLayout from '../../calloutBlock/CalloutLayout';
 import { useCallback, useMemo, useState } from 'react';
-import { BaseCalloutViewProps } from '../CalloutViewTypes';
+import { BaseCalloutViewProps } from '../../CalloutViewTypes';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import EditLinkDialog, { EditLinkFormValues } from '@/domain/shared/components/References/EditLinkDialog';
@@ -15,14 +15,18 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import References from '@/domain/shared/components/References/References';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { AuthorizationPrivilege, CalloutAllowedContributors, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutAllowedContributors,
+  CalloutContributionType,
+} from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { compact, sortBy } from 'lodash';
-import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
-import { TypedCalloutDetailsWithContributions } from '../../new-callout/models/TypedCallout';
+import CalloutSettingsContainer from '../../calloutBlock/CalloutSettingsContainer';
+import { TypedCalloutDetailsWithContributions } from '../../../new-callout/models/TypedCallout';
 
 const MAX_LINKS_NORMALVIEW = 3;
 

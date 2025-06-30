@@ -8,7 +8,7 @@ import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 import { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import { CalloutModelLight } from './CalloutModelLight';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { LinkDetails } from '../../callout/links/LinkCollectionCallout';
+import { LinkDetails } from '../../callout/CalloutContributions/link/LinkCollectionCallout';
 import { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
 //!! split these
 

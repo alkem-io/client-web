@@ -1,13 +1,13 @@
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
-import PostCallout from '../post/PostCallout';
-import WhiteboardCollectionCallout from '../whiteboard/WhiteboardCollectionCallout';
-import CommentsCallout from '../comments/CommentsCallout';
+import PostCallout from '../CalloutContributions/post/PostCallout';
+import WhiteboardCollectionCallout from '../CalloutContributions/whiteboard/WhiteboardCollectionCallout';
+import CommentsCallout from './CommentsCallout';
 import { TypedCalloutDetails, TypedCalloutDetailsWithContributions } from '../../new-callout/models/TypedCallout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import LinkCollectionCallout from '../links/LinkCollectionCallout';
+import LinkCollectionCallout from '../CalloutContributions/link/LinkCollectionCallout';
 import SingleWhiteboardCallout from './SingleWhiteboardCallout';
-import PostCalloutContainer from '../post/PostCalloutContainer';
-import WhiteboardCollectionCalloutContainer from '../whiteboard/WhiteboardCollectionCalloutContainer';
+import PostCalloutContainer from '../CalloutContributions/post/PostCalloutContainer';
+import WhiteboardCollectionCalloutContainer from '../CalloutContributions/whiteboard/WhiteboardCollectionCalloutContainer';
 
 export interface CalloutViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {
   callout: TypedCalloutDetails;

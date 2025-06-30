@@ -1,19 +1,19 @@
 import { forwardRef, useMemo } from 'react';
 import { sortBy } from 'lodash';
 import useNavigate from '@/core/routing/useNavigate';
-import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../../calloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '@/domain/collaboration/callout/components/ScrollableCardsLayout';
-import CreateCalloutItemButton from '../CreateCalloutItemButton';
+import CreateContributionButton from '../CreateContributionButton';
 import { Skeleton } from '@mui/material';
 import WhiteboardCard, { WhiteboardCardWhiteboard } from './WhiteboardCard';
-import { BaseCalloutViewProps } from '../CalloutViewTypes';
+import { BaseCalloutViewProps } from '../../CalloutViewTypes';
 import { gutters } from '@/core/ui/grid/utils';
-import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
+import CalloutBlockFooter from '../../calloutBlock/CalloutBlockFooter';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { normalizeLink } from '@/core/utils/links';
 import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
+import CalloutSettingsContainer from '../../calloutBlock/CalloutSettingsContainer';
 
 interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -52,7 +52,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
       }
     };
 
-    const createButton = canCreateContribution && <CreateCalloutItemButton onClick={handleCreate} />;
+    const createButton = canCreateContribution && <CreateContributionButton onClick={handleCreate} />;
 
     const showCards = useMemo(
       () => (!loading && whiteboards.length > 0) || callout.settings.contribution.enabled,

@@ -1,4 +1,8 @@
-import { AuthorizationPrivilege, CalloutAllowedContributors, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutAllowedContributors,
+  CalloutContributionType,
+} from '@/core/apollo/generated/graphql-schema';
 import {
   refetchCalloutWhiteboardsQuery,
   useCalloutWhiteboardsQuery,
@@ -10,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { Ref, useMemo } from 'react';
 import { compact } from 'lodash';
-import { CalloutSettingsModelFull } from '../../new-callout/models/CalloutSettingsModel';
+import { CalloutSettingsModelFull } from '../../../new-callout/models/CalloutSettingsModel';
 
 interface WhiteboardContributionProps {
   id: string;
@@ -101,15 +105,14 @@ const WhiteboardCollectionCalloutContainer = ({ callout, children }: WhiteboardC
     return data?.createContributionOnCallout.whiteboard;
   };
 
-  const canCreateContribution = (
-    callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateWhiteboard) &&
-    callout.settings.contribution.enabled &&
-    callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard) &&
-    (
-      (callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins) && callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update)) ||
-      (callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Members))
-    )
-  ) ?? false;
+  const canCreateContribution =
+    (callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateWhiteboard) &&
+      callout.settings.contribution.enabled &&
+      callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard) &&
+      ((callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins) &&
+        callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update)) ||
+        callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Members))) ??
+    false;
 
   return (
     <>

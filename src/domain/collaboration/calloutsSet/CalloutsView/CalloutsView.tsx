@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useCalloutManager } from '../../new-callout/utils/useCalloutManager';
 import { OrderUpdate } from '../useCalloutsSet/useCalloutsSet';
 import { TypedCallout, TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
-import { CalloutSortEvents, CalloutSortProps } from '../../callout/CalloutViewTypes';
+import { CalloutSortEvents, CalloutSortProps } from './CalloutSortModels';
 import CalloutView from '../../callout/CalloutView/CalloutView';
 import useNavigate from '@/core/routing/useNavigate';
 import {
@@ -15,7 +15,7 @@ import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardFooter from '@/core/ui/card/CardFooter';
 import { gutters } from '@/core/ui/grid/utils';
 import { without } from 'lodash';
-import CalloutDetailsContainer from '../../callout/CalloutDetailsContainer';
+import CalloutDetailsContainer from '../../callout/CalloutView/CalloutDetailsContainer';
 import { CalloutRestrictions } from '../../new-callout/CreateCallout/CreateCalloutDialog';
 
 const CalloutsViewSkeleton = () => (

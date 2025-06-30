@@ -11326,12 +11326,6 @@ export type ActivityLogOnCollaborationQuery = {
   >;
 };
 
-export type RemoveCommentFromCalloutMutationVariables = Exact<{
-  messageData: RoomRemoveMessageInput;
-}>;
-
-export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeMessageOnRoom: string };
-
 export type CreateLinkOnCalloutMutationVariables = Exact<{
   input: CreateContributionOnCalloutInput;
 }>;
@@ -11589,19 +11583,6 @@ export type PostCardFragment = {
   };
 };
 
-export type CalloutSettingsFullFragment = {
-  __typename?: 'CalloutSettings';
-  visibility: CalloutVisibility;
-  contribution: {
-    __typename?: 'CalloutSettingsContribution';
-    enabled: boolean;
-    allowedTypes: Array<CalloutContributionType>;
-    canAddContributions: CalloutAllowedContributors;
-    commentsEnabled: boolean;
-  };
-  framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
-};
-
 export type CalloutWhiteboardsQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
 }>;
@@ -11659,6 +11640,19 @@ export type WhiteboardCollectionCalloutCardFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
       | undefined;
   };
+};
+
+export type CalloutSettingsFullFragment = {
+  __typename?: 'CalloutSettings';
+  visibility: CalloutVisibility;
+  contribution: {
+    __typename?: 'CalloutSettingsContribution';
+    enabled: boolean;
+    allowedTypes: Array<CalloutContributionType>;
+    canAddContributions: CalloutAllowedContributors;
+    commentsEnabled: boolean;
+  };
+  framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
 };
 
 export type UpdateCalloutsSortOrderMutationVariables = Exact<{

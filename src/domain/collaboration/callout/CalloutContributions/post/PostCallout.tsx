@@ -1,21 +1,21 @@
 import { forwardRef, useMemo, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
-import CalloutLayout from '../calloutBlock/CalloutLayout';
+import CalloutLayout from '../../calloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '@/domain/collaboration/callout/components/ScrollableCardsLayout';
 import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
 import { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
-import CreateCalloutItemButton from '../CreateCalloutItemButton';
+import CreateContributionButton from '../CreateContributionButton';
 import PostCard, { PostCardPost } from './PostCard';
-import { BaseCalloutViewProps } from '../CalloutViewTypes';
+import { BaseCalloutViewProps } from '../../CalloutViewTypes';
 import { gutters } from '@/core/ui/grid/utils';
-import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
+import CalloutBlockFooter from '../../calloutBlock/CalloutBlockFooter';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import {
   LocationStateCachedCallout,
   LocationStateKeyCachedCallout,
 } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
-import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
+import CalloutSettingsContainer from '../../calloutBlock/CalloutSettingsContainer';
+import { TypedCalloutDetails } from '../../../new-callout/models/TypedCallout';
 import { sortBy } from 'lodash';
 
 interface PostCalloutProps extends BaseCalloutViewProps {
@@ -54,7 +54,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
     const postNames = useMemo(() => posts?.map(x => x.profile.displayName) ?? [], [posts]);
     const sortedPosts = useMemo(() => sortBy(posts, 'sortOrder'), [posts]);
 
-    const createButton = canCreateContribution && <CreateCalloutItemButton onClick={openCreateDialog} />;
+    const createButton = canCreateContribution && <CreateContributionButton onClick={openCreateDialog} />;
 
     const navigateToPost = (post: PostCardPost) => {
       const state: LocationStateCachedCallout = {

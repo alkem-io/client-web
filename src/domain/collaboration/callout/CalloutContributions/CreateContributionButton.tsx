@@ -3,7 +3,7 @@ import ContributeCard from '@/core/ui/card/ContributeCard';
 import { AddCircleOutline } from '@mui/icons-material';
 import { gutters } from '@/core/ui/grid/utils';
 
-const CreateCalloutItemButton = ({ onClick }: PropsWithChildren<{ onClick: () => void }>) => (
+const CreateContributionButton = ({ onClick }: PropsWithChildren<{ onClick: () => void }>) => (
   <ContributeCard
     onClick={onClick}
     sx={{
@@ -18,4 +18,4 @@ const CreateCalloutItemButton = ({ onClick }: PropsWithChildren<{ onClick: () =>
   </ContributeCard>
 );
 
-export default CreateCalloutItemButton;
+export default CreateContributionButton;

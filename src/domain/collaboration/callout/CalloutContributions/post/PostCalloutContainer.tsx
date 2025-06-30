@@ -1,11 +1,16 @@
 import { useCreatePostFromContributeTabMutation } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CalloutAllowedContributors, CalloutContributionType, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutAllowedContributors,
+  CalloutContributionType,
+  CreatePostInput,
+} from '@/core/apollo/generated/graphql-schema';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { Ref } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { PostContributionProps, useCalloutPosts } from './useCalloutPosts';
-import { CalloutSettingsModelFull } from '../../new-callout/models/CalloutSettingsModel';
+import { CalloutSettingsModelFull } from '../../../new-callout/models/CalloutSettingsModel';
 
 interface PostCalloutContainerProvided {
   ref: Ref<Element>;
@@ -58,15 +63,14 @@ const PostCalloutContainer = ({ callout, children }: PostCalloutContainerProps) 
     });
   };
 
-  const canCreateContribution = (
-    callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreatePost) &&
-    callout.settings.contribution.enabled &&
-    callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) &&
-    (
-      (callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins) && callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update)) ||
-      (callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Members))
-    )
-  ) ?? false;
+  const canCreateContribution =
+    (callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreatePost) &&
+      callout.settings.contribution.enabled &&
+      callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) &&
+      ((callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins) &&
+        callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update)) ||
+        callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Members))) ??
+    false;
 
   return (
     <StorageConfigContextProvider locationType="callout" calloutId={callout?.id}>

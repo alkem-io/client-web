@@ -9,8 +9,8 @@ import {
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
 import { CalloutSummary } from '../CalloutSummary';
-import CalloutVisibilityChangeDialog from '../edit/visibilityChangeDialog/CalloutVisibilityChangeDialog';
-import { CalloutLayoutEvents, CalloutSortProps } from '../CalloutViewTypes';
+import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
+import { CalloutLayoutEvents } from '../CalloutViewTypes';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import {
   ArrowDownwardOutlined,
@@ -26,7 +26,7 @@ import {
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
-import { FormatedLink } from '../links/LinkCollectionCallout';
+import { FormatedLink } from '../CalloutContributions/link/LinkCollectionCallout';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
@@ -38,8 +38,8 @@ import {
   useCalloutContentLazyQuery,
   useUpdateContributionsSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
-import { PostCardPost } from '../post/PostCard';
+import { WhiteboardCardWhiteboard } from '../CalloutContributions/whiteboard/WhiteboardCard';
+import { PostCardPost } from '../CalloutContributions/post/PostCard';
 import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
 import { TemplateCalloutFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCalloutForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
@@ -47,6 +47,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
 import EditCalloutDialog from '../../new-callout/CreateCallout/EditCalloutDialog';
+import { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortModels';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;

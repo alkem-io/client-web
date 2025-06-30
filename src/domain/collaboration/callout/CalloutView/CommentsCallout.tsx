@@ -2,7 +2,7 @@ import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import { useCallback, useMemo } from 'react';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { useRemoveCommentFromCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
@@ -54,7 +54,7 @@ const CommentsCallout = ({
     callout.settings.framing.commentsEnabled && commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
   const canAddReaction = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
 
-  const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({
+  const [deleteMessage, { loading: deletingMessage }] = useRemoveMessageOnRoomMutation({
     update: (cache, { data }) =>
       data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
   });
