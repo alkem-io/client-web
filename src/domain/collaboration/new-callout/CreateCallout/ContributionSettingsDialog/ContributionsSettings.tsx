@@ -50,12 +50,15 @@ const ContributionsSettings = forwardRef<ContributionTypeSettingsComponentRef, C
         };
         meta.setValue(newValue);
       },
-      isContentChanged: () =>
-        formState.membersCanRespond !==
-          (field.value.contribution.canAddContributions === CalloutAllowedContributors.Members) ||
-        formState.adminCanRespond !==
-          (field.value.contribution.canAddContributions !== CalloutAllowedContributors.None) ||
-        formState.commentsOnEachResponse !== field.value.contribution.commentsEnabled,
+      isContentChanged: () => {
+        return (
+          formState.membersCanRespond !==
+            (field.value.contribution.canAddContributions === CalloutAllowedContributors.Members) ||
+          formState.adminCanRespond !==
+            (field.value.contribution.canAddContributions !== CalloutAllowedContributors.None) ||
+          formState.commentsOnEachResponse !== field.value.contribution.commentsEnabled
+        );
+      },
     }));
 
     return (

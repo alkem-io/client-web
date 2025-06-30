@@ -28,6 +28,7 @@ import {
   CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import { CalloutRestrictions } from './CreateCalloutDialog';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
@@ -43,9 +44,10 @@ export interface CalloutFormSubmittedValues {
     whiteboard: WhiteboardFieldSubmittedValuesWithPreviewImages | undefined;
   };
   contributionDefaults: {
-    postDescription: string | undefined;
-    whiteboardContent: string | undefined;
-    links: ReferenceModel[] | undefined;
+    defaultDisplayName?: string;
+    postDescription?: string;
+    whiteboardContent?: string;
+    links?: ReferenceModel[];
   };
   settings: {
     contribution: {
@@ -100,8 +102,9 @@ const CalloutForm = ({
               whiteboard: undefined,
             },
             contributionDefaults: {
-              postDescription: undefined,
-              whiteboardContent: undefined,
+              defaultDisplayName: '',
+              postDescription: '',
+              whiteboardContent: EmptyWhiteboardString,
               links: undefined,
             },
             settings: {

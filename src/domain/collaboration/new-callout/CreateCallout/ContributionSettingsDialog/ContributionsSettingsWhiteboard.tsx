@@ -10,28 +10,33 @@ import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboar
 import { Box } from '@mui/material';
 import { Caption, CardText } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 
 const ContributionsSettingsWhiteboard = forwardRef<ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps>(
   ({}, ref) => {
     const { t } = useTranslation();
 
-    const [field, , meta] = useField<CalloutFormSubmittedValues['contributionDefaults']['whiteboardContent']>(
-      'contributionDefaults.whiteboardContent'
-    );
+    const [field, , meta] = useField<CalloutFormSubmittedValues['contributionDefaults']>('contributionDefaults');
 
     useImperativeHandle(ref, () => ({
       onSave: () => {
         // Apply the changes to the local form to the formik state of the CalloutForm
-        meta.setValue(internalFormRef.current?.values.whiteboardContent);
+        meta.setValue({
+          defaultDisplayName: internalFormRef.current?.values.defaultDisplayName,
+          whiteboardContent: internalFormRef.current?.values.whiteboardContent,
+        });
       },
-      isContentChanged: () => field.value !== internalFormRef.current?.values.whiteboardContent,
+      isContentChanged: () =>
+        field.value.defaultDisplayName !== internalFormRef.current?.values.defaultDisplayName ||
+        field.value.whiteboardContent !== internalFormRef.current?.values.whiteboardContent,
     }));
 
     const initialValues = {
-      whiteboardContent: field.value,
+      defaultDisplayName: field.value.defaultDisplayName ?? '',
+      whiteboardContent: field.value.whiteboardContent ?? EmptyWhiteboardString,
     };
 
-    const internalFormRef = useRef<FormikProps<{ whiteboardContent: string | undefined }>>(null);
+    const internalFormRef = useRef<FormikProps<{ defaultDisplayName: string; whiteboardContent: string }>>(null);
     return (
       <Formik initialValues={initialValues} onSubmit={() => {}} innerRef={internalFormRef}>
         <Gutters disablePadding>
@@ -41,6 +46,10 @@ const ContributionsSettingsWhiteboard = forwardRef<ContributionTypeSettingsCompo
               {t('callout.create.contributionSettings.contributionTypes.whiteboard.settings.explanation')}
             </CardText>
           </Box>
+          <FormikInputField
+            title={t('callout.create.contributionSettings.contributionTypes.common.defaultDisplayName')}
+            name="defaultDisplayName"
+          />
           <PageContentBlock disablePadding>
             <FormikWhiteboardPreview
               name="whiteboardContent"

@@ -752,6 +752,9 @@
               "confirm": "Yes, go back"
             }
           },
+          "common": {
+            "defaultDisplayName": "Title"
+          },
           "none": {
             "title": "None",
             "tooltip": "No structured responses"
