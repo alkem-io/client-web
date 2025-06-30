@@ -2,7 +2,7 @@ import { ReactElement, ReactNode, useEffect, useMemo } from 'react';
 import { useCalloutPageCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
 import CalloutView from '../callout/CalloutView/CalloutView';
 import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
+import { useCalloutManager } from '../new-callout/utils/useCalloutManager';
 import { TypedCalloutDetails } from '../new-callout/models/TypedCallout';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useLocation, useSearchParams } from 'react-router-dom';
@@ -73,7 +73,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
 
   const callout = calloutData?.lookup.callout;
 
-  const { handleVisibilityChange, handleDelete } = useCalloutEdit();
+  const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
 
   const typedCalloutDetails = useMemo(() => {
     if (!callout) {
@@ -140,7 +140,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   };
 
   const handleDeleteWithClose = async (callout: Identifiable) => {
-    await handleDelete(callout);
+    await deleteCallout(callout);
     handleClose();
   };
 
@@ -169,7 +169,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
         <CalloutView
           callout={typedCalloutDetails}
           contributionsCount={typedCalloutDetails.activity}
-          onVisibilityChange={handleVisibilityChange}
+          onVisibilityChange={changeCalloutVisibility}
           onCalloutUpdate={refetchCalloutData}
           onCalloutDelete={handleDeleteWithClose}
           onCollapse={handleClose}

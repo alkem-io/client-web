@@ -6,7 +6,7 @@ import {
   CreateTemplateFromSpaceMutationVariables,
   CreateTemplateFromContentSpaceMutationVariables,
   CreateWhiteboardInput,
-  UpdateCalloutMutationVariables,
+  UpdateCalloutTemplateMutationVariables,
   UpdateCommunityGuidelinesMutationVariables,
   UpdateProfileInput,
   UpdateTagsetInput,
@@ -343,7 +343,7 @@ export const toUpdateTemplateMutationVariables = (
   newValues: AnyTemplateFormSubmittedValues
 ): {
   updateTemplateVariables: UpdateTemplateMutationVariables;
-  updateCalloutVariables?: UpdateCalloutMutationVariables;
+  updateCalloutVariables?: UpdateCalloutTemplateMutationVariables;
   updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
   updateSpaceContentTemplateVariables?: UpdateTemplateFromSpaceMutationVariables;
 } => {
@@ -355,7 +355,7 @@ export const toUpdateTemplateMutationVariables = (
   switch (template.type) {
     case TemplateType.Callout: {
       const calloutTemplateData = newValues as TemplateCalloutFormSubmittedValues;
-      const updateCalloutVariables: UpdateCalloutMutationVariables = {
+      const updateCalloutVariables: UpdateCalloutTemplateMutationVariables = {
         calloutData: {
           ID: (template as CalloutTemplate).callout?.id!,
           framing: {

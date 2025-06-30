@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useCalloutEdit } from '../../callout/edit/useCalloutEdit/useCalloutEdit';
+import { useCalloutManager } from '../../new-callout/utils/useCalloutManager';
 import { OrderUpdate } from '../useCalloutsSet/useCalloutsSet';
 import { TypedCallout, TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
 import { CalloutSortEvents, CalloutSortProps } from '../../callout/CalloutViewTypes';
@@ -38,7 +38,7 @@ export interface CalloutsViewProps {
   loading?: boolean;
   blockProps?:
     | Partial<PageContentBlockProps>
-  | ((callout: TypedCallout, index: number) => Partial<PageContentBlockProps> | undefined);
+    | ((callout: TypedCallout, index: number) => Partial<PageContentBlockProps> | undefined);
   calloutRestrictions?: CalloutRestrictions;
 }
 
@@ -50,7 +50,7 @@ const CalloutsView = ({
   blockProps,
   calloutRestrictions: calloutRestrictions,
 }: CalloutsViewProps) => {
-  const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
+  const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
 
   const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);
 
@@ -128,8 +128,8 @@ const CalloutsView = ({
                         callout={calloutDetails}
                         contributionsCount={callout.activity}
                         onCalloutUpdate={() => onCalloutUpdate?.(callout.id)}
-                        onVisibilityChange={handleVisibilityChange}
-                        onCalloutDelete={handleDelete}
+                        onVisibilityChange={changeCalloutVisibility}
+                        onCalloutDelete={deleteCallout}
                         onExpand={() => handleExpand(calloutDetails)}
                         {...calloutRestrictions}
                         {...sortEvents}

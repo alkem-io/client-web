@@ -5,7 +5,7 @@ import CommentsCallout from '../comments/CommentsCallout';
 import { TypedCalloutDetails, TypedCalloutDetailsWithContributions } from '../../new-callout/models/TypedCallout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import LinkCollectionCallout from '../links/LinkCollectionCallout';
-import SingleWhiteboardCallout from '../SingleWhiteboard/SingleWhiteboardCallout';
+import SingleWhiteboardCallout from './SingleWhiteboardCallout';
 import PostCalloutContainer from '../post/PostCalloutContainer';
 import WhiteboardCollectionCalloutContainer from '../whiteboard/WhiteboardCollectionCalloutContainer';
 

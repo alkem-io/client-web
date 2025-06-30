@@ -196,7 +196,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
                   onCalloutUpdate={refetchCalloutData}
                   calloutActions={false}
                   onVisibilityChange={undefined}
-                  onCalloutEdit={undefined}
                   onCalloutDelete={undefined}
                 />
               </Paper>
