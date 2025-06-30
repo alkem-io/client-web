@@ -197,7 +197,6 @@ export const toCreateTemplateMutationVariables = (
           delete callout.framing.whiteboard?.profile?.visuals;
         }
       }
-      debugger;
       if (!calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post)) {
         delete callout.contributionDefaults?.postDescription;
       }
