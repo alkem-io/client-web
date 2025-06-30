@@ -7553,14 +7553,13 @@ export const CalloutContentDocument = gql`
     lookup {
       callout(ID: $calloutId) {
         id
-        calloutTypeDeprecated: type
         framing {
           id
           profile {
             id
             displayName
             description
-            tagset {
+            tagsets {
               ...TagsetDetails
             }
             references {
@@ -7584,14 +7583,19 @@ export const CalloutContentDocument = gql`
         }
         contributionDefaults {
           id
+          defaultDisplayName
           postDescription
           whiteboardContent
+        }
+        settings {
+          ...CalloutSettingsFull
         }
       }
     }
   }
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
+  ${CalloutSettingsFullFragmentDoc}
 `;
 
 /**
@@ -7650,6 +7654,54 @@ export type CalloutContentQueryResult = Apollo.QueryResult<
 export function refetchCalloutContentQuery(variables: SchemaTypes.CalloutContentQueryVariables) {
   return { query: CalloutContentDocument, variables: variables };
 }
+export const UpdateCalloutContentDocument = gql`
+  mutation UpdateCalloutContent($calloutData: UpdateCalloutEntityInput!) {
+    updateCallout(calloutData: $calloutData) {
+      ...CalloutDetails
+    }
+  }
+  ${CalloutDetailsFragmentDoc}
+`;
+export type UpdateCalloutContentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutContentMutation,
+  SchemaTypes.UpdateCalloutContentMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutContentMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutContentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutContentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutContentMutation, { data, loading, error }] = useUpdateCalloutContentMutation({
+ *   variables: {
+ *      calloutData: // value for 'calloutData'
+ *   },
+ * });
+ */
+export function useUpdateCalloutContentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutContentMutation,
+    SchemaTypes.UpdateCalloutContentMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCalloutContentMutation,
+    SchemaTypes.UpdateCalloutContentMutationVariables
+  >(UpdateCalloutContentDocument, options);
+}
+export type UpdateCalloutContentMutationHookResult = ReturnType<typeof useUpdateCalloutContentMutation>;
+export type UpdateCalloutContentMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutContentMutation>;
+export type UpdateCalloutContentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutContentMutation,
+  SchemaTypes.UpdateCalloutContentMutationVariables
+>;
 export const PostDocument = gql`
   query Post($postId: UUID!) {
     lookup {

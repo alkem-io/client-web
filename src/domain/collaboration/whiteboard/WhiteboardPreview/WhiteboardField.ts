@@ -1,9 +1,10 @@
-import { CreateProfileInput } from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface WhiteboardFieldSubmittedValues {
   content: string;
-  profile: CreateProfileInput;
+  profile: {
+    displayName: string;
+  };
 }
 
 export interface WhiteboardFieldSubmittedValuesWithPreviewImages extends WhiteboardFieldSubmittedValues {

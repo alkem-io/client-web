@@ -9,7 +9,7 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
 import CommentsDisabledOutlinedIcon from '@mui/icons-material/CommentsDisabledOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
-import { CalloutStructuredResponseType } from './CalloutForm';
+import { CalloutFormSubmittedValues, CalloutStructuredResponseType } from './CalloutForm';
 import BlockIcon from '@mui/icons-material/Block';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 import calloutIcons from '../../callout/utils/calloutIcons';
@@ -19,6 +19,8 @@ import ContributionsSettingsLink from './ContributionSettingsDialog/Contribution
 import ContributionsSettingsPost from './ContributionSettingsDialog/ContributionsSettingsPost';
 import ContributionsSettingsWhiteboard from './ContributionSettingsDialog/ContributionsSettingsWhiteboard';
 import { CalloutRestrictions } from './CreateCalloutDialog';
+import { nameOf } from '@/core/utils/nameOf';
+import { useField } from 'formik';
 
 interface CalloutFormContributionSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -27,11 +29,13 @@ interface CalloutFormContributionSettingsProps {
 const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormContributionSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
-  const [responseContributionType, setResponseContributionType] = useState<CalloutStructuredResponseType>('none');
+  const [allowedTypesField] = useField<CalloutFormSubmittedValues['settings']['contribution']['allowedTypes']>(
+    nameOf<CalloutFormSubmittedValues>('settings.contribution.allowedTypes')
+  );
   const [contributionSettingsDialogOpen, setContributionSettingsDialogOpen] = useState<boolean>(false);
 
   const SettingsComponent = useMemo(() => {
-    switch (responseContributionType) {
+    switch (allowedTypesField.value) {
       case CalloutContributionType.Link:
         return ContributionsSettingsLink;
       case CalloutContributionType.Post:
@@ -41,7 +45,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
       default:
         return undefined;
     }
-  }, [responseContributionType]);
+  }, [allowedTypesField.value]);
 
   return (
     <PageContentBlockCollapsible
@@ -100,13 +104,13 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
             ]}
             name="settings.contribution.allowedTypes"
             labelPlacement="bottom"
-            onChange={value => setResponseContributionType(value)}
+            readOnly={calloutRestrictions?.readOnlyAllowedTypes}
           >
             <Box display="flex" alignItems="end" marginLeft="auto">
               <Button
                 variant="outlined"
                 onClick={() => setContributionSettingsDialogOpen(true)}
-                disabled={responseContributionType === 'none'}
+                disabled={allowedTypesField.value === 'none'}
               >
                 {t('callout.create.contributionSettings.contributionTypes.settings.title')}
               </Button>

@@ -46,6 +46,7 @@ import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEd
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
+import EditCalloutDialog from '../../new-callout/CreateCallout/EditCalloutDialog';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -55,8 +56,8 @@ interface CalloutSettingsProvided {
 
 export interface CalloutSettingsContainerProps
   extends CalloutLayoutEvents,
-  Partial<CalloutSortProps>,
-  SimpleContainerProps<CalloutSettingsProvided> {
+    Partial<CalloutSortProps>,
+    SimpleContainerProps<CalloutSettingsProvided> {
   callout: TypedCalloutDetails;
   items?: {
     posts?: PostCardPost[];
@@ -141,16 +142,7 @@ const CalloutSettingsContainer = ({
     setSettingsAnchorEl(null);
     setEditDialogOpened(true);
   };
-  /*
-  const handleEditDialogClosed = () => setEditDialogOpened(false);
-  const handleCalloutEdit = useCallback(
-    async (newCallout: Identifiable) => {
-      await onCalloutEdit?.(newCallout);
-      setEditDialogOpened(false);
-    },
-    [onCalloutEdit, setEditDialogOpened]
-  );
-  */
+
   const [positionAnchorEl, setPositionAnchorEl] = useState<null | HTMLElement>(null);
   const handlePositionClose = () => {
     setPositionDialogOpen(false);
@@ -174,20 +166,23 @@ const CalloutSettingsContainer = ({
   const isCollection = (callout: { settings: { contribution: { allowedTypes: CalloutContributionType[] } } }) =>
     callout.settings.contribution.allowedTypes.length > 0;
 
-  const calloutContributions = useMemo<CalloutContributionsSortItem[]>(() => (
-    sortDialogOpen ? [] :
-      [
-        ...(items?.posts?.map(post => ({
-          id: post.contributionId,
-          name: post.profile?.displayName,
-          commentsCount: post.comments?.messagesCount,
-        })) ?? []),
-        ...(items?.whiteboards?.map(whiteboard => ({
-          id: whiteboard.contributionId,
-          name: whiteboard.profile.displayName,
-        })) ?? []),
-        ...(items?.links?.map(link => ({ id: link.contributionId, name: link.name })) ?? [])
-      ]), [sortDialogOpen, items]
+  const calloutContributions = useMemo<CalloutContributionsSortItem[]>(
+    () =>
+      sortDialogOpen
+        ? []
+        : [
+            ...(items?.posts?.map(post => ({
+              id: post.contributionId,
+              name: post.profile?.displayName,
+              commentsCount: post.comments?.messagesCount,
+            })) ?? []),
+            ...(items?.whiteboards?.map(whiteboard => ({
+              id: whiteboard.contributionId,
+              name: whiteboard.profile.displayName,
+            })) ?? []),
+            ...(items?.links?.map(link => ({ id: link.contributionId, name: link.name })) ?? []),
+          ],
+    [sortDialogOpen, items]
   );
 
   const [updateContributionsSortOrder] = useUpdateContributionsSortOrderMutation();
@@ -256,7 +251,6 @@ const CalloutSettingsContainer = ({
                 ? !!callout.contributions?.[0]?.link
                 : !!callout.contributions?.length)
             }*/
-
           >
             {t('callout.sortContributions')}
           </MenuItemWithIcon>
@@ -379,17 +373,15 @@ const CalloutSettingsContainer = ({
         url={callout.framing.profile.url}
         onClose={() => setShareDialogOpen(false)}
       />
+      <EditCalloutDialog open={editDialogOpened} onClose={() => setEditDialogOpened(false)} calloutId={callout.id} />
       {/*
       I've lost functionality to edit callout for now
       //!! {!!onCalloutDelete && (
         <CalloutEditDialog
-          open={editDialogOpened}
-          onClose={handleEditDialogClosed}
-          calloutType={callout.calloutTypeDeprecated}
           callout={callout}
           onCalloutEdit={handleCalloutEdit}
           onDelete={() => setDeleteDialogOpen(true)}
-          disableRichMedia={disableRichMedia}
+
           disablePostResponses={disablePostResponses && callout.calloutTypeDeprecated === CalloutType.Post}
         />
       )}*/}

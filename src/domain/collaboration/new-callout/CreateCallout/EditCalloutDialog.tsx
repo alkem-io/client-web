@@ -1,67 +1,93 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
-import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import {
+  useCalloutContentQuery,
+  useTemplateContentLazyQuery,
+  useUpdateCalloutContentMutation,
+} from '@/core/apollo/generated/apollo-hooks';
+import {
+  CalloutContributionType,
+  TemplateType,
+  UpdateCalloutEntityInput,
+} from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CalloutCreationTypeWithPreviewImages,
-  useCalloutCreationWithPreviewImages,
-} from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import {} from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
-import CalloutForm, { CalloutFormSubmittedValues } from './CalloutForm';
+import CalloutForm, { CalloutFormSubmittedValues, CalloutStructuredResponseType } from './CalloutForm';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import {
-  mapProfileModelToCreateProfileInput,
-  mapProfileTagsToCreateTags,
-} from '@/domain/common/profile/ProfileModelUtils';
+import { mapProfileModelToUpdateProfileInput } from '@/domain/common/profile/ProfileModelUtils';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import scrollToTop from '@/core/ui/utils/scrollToTop';
+import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
+import Loading from '@/core/ui/loading/Loading';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import { CalloutRestrictions } from './CreateCalloutDialog';
 
-export interface CalloutRestrictions {
-  /**
-   * Disables upload of images, videos and other rich media in the Markdown editors.
-   */
-  disableRichMedia?: boolean;
-  disablePostResponses?: boolean;
-  /**
-   * Disables whiteboard callouts, both in the framing and in the responses. This is here because VCs still don't support whiteboards.
-   */
-  disableWhiteboards?: boolean;
-  /**
-   * Makes the Structured Responses read-only
-   */
-  readOnlyAllowedTypes?: boolean;
-}
-
-export interface CreateCalloutDialogProps {
+export interface EditCalloutDialogProps {
   open?: boolean;
   onClose?: () => void;
 
-  // Where to save the callout:
-  calloutsSetId: string | undefined;
-  calloutClassification?: ClassificationTagsetModel[] | undefined;
+  calloutId: string | undefined;
 
   calloutRestrictions?: CalloutRestrictions;
 }
 
-const CreateCalloutDialog = ({
-  open = false,
-  onClose,
-  calloutsSetId,
-  calloutClassification,
-  calloutRestrictions,
-}: CreateCalloutDialogProps) => {
+const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictions }: EditCalloutDialogProps) => {
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
 
-  const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
+  const { data, loading: loadingCallout } = useCalloutContentQuery({
+    variables: {
+      calloutId: calloutId!,
+    },
+    skip: !calloutId || !open,
+  });
+
+  // Map the received Callout content data to the CalloutFormSubmittedValues type
+  const callout = useMemo<CalloutFormSubmittedValues | undefined>(() => {
+    const calloutData = data?.lookup.callout;
+    if (!calloutData) return undefined;
+    return {
+      ...calloutData,
+      id: undefined,
+      framing: {
+        ...calloutData.framing,
+        id: undefined,
+        profile: {
+          ...calloutData.framing.profile,
+          id: undefined,
+          description: calloutData.framing.profile.description ?? '',
+          tagsets: calloutData.framing.profile.tagsets ?? [EmptyTagset],
+          references: calloutData.framing.profile.references ?? [],
+        },
+        whiteboard: {
+          ...calloutData.framing.whiteboard,
+          id: undefined,
+          profile: calloutData.framing.whiteboard?.profile ?? { displayName: '' },
+          content: calloutData.framing.whiteboard?.content ?? '',
+          previewImages: [],
+        },
+      },
+      settings: {
+        ...calloutData.settings,
+        contribution: {
+          ...calloutData.settings.contribution,
+          allowedTypes: (calloutData.settings.contribution.allowedTypes.length
+            ? calloutData.settings.contribution.allowedTypes[0]
+            : 'none') as CalloutStructuredResponseType,
+        },
+      },
+      contributionDefaults: {
+        ...calloutData.contributionDefaults,
+        id: undefined,
+      },
+    };
+  }, [data?.lookup.callout, loadingCallout]);
 
   const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
 
@@ -103,13 +129,14 @@ const CreateCalloutDialog = ({
     onClose?.();
   };
 
-  const [handlePublishCallout, publishingCallout] = useLoadingState(async () => {
+  const [updateCalloutContent] = useUpdateCalloutContentMutation();
+
+  const [handleSaveCallout, savingCallout] = useLoadingState(async () => {
     const formData = ensurePresence(calloutFormData);
     // Map the profile to CreateProfileInput
     const framing = {
       ...formData.framing,
-      profile: mapProfileModelToCreateProfileInput(formData.framing.profile),
-      tags: mapProfileTagsToCreateTags(formData.framing.profile),
+      profile: mapProfileModelToUpdateProfileInput(formData.framing.profile),
     };
 
     // And map the radio button allowed contribution types to an array
@@ -117,12 +144,11 @@ const CreateCalloutDialog = ({
       ...formData.settings,
       contribution: {
         ...formData.settings?.contribution,
-        allowedTypes:
-          formData.settings.contribution.allowedTypes === 'none' ? [] : [formData.settings.contribution.allowedTypes],
+        // allowedTypes:
+        // formData.settings.contribution.allowedTypes === 'none' ? [] : [formData.settings.contribution.allowedTypes],
+        allowedTypes: undefined, // AllowedTypes is read-only for now, don't send it to the server
       },
     };
-    // If the calloutClassification is provided, map it to the expected format
-    const classification = calloutClassification ? { tagsets: calloutClassification } : undefined;
 
     // Clean up unneeded contributionDefaults
     const contributionDefaults = {
@@ -144,17 +170,21 @@ const CreateCalloutDialog = ({
           : undefined,
     };
 
-    const createCalloutInput: CalloutCreationTypeWithPreviewImages = {
+    const updateCalloutContentInput: UpdateCalloutEntityInput = {
+      ID: calloutId!,
       ...formData,
       framing,
       settings,
-      classification,
       contributionDefaults,
     };
 
-    await handleCreateCallout(createCalloutInput);
+    await updateCalloutContent({
+      variables: {
+        calloutData: updateCalloutContentInput,
+      },
+    });
+
     handleClose();
-    scrollToTop();
   });
 
   return (
@@ -174,19 +204,25 @@ const CreateCalloutDialog = ({
           }
         />
         <DialogContent>
-          <CalloutForm
-            onChange={setCalloutFormData}
-            onStatusChanged={handleStatusChange}
-            calloutRestrictions={calloutRestrictions}
-          />
+          {loadingCallout ? (
+            <Loading />
+          ) : (
+            <CalloutForm
+              callout={callout}
+              onChange={setCalloutFormData}
+              onStatusChanged={handleStatusChange}
+              /* Users cannot change the allowedTypes on an already created callout for now */
+              calloutRestrictions={{ ...calloutRestrictions, readOnlyAllowedTypes: true }}
+            />
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} variant="text" disabled={publishingCallout}>
+          <Button onClick={onClose} variant="text" disabled={savingCallout}>
             {t('buttons.cancel')}
           </Button>
-          <Button variant="contained" onClick={handlePublishCallout} loading={publishingCallout} disabled={!isValid}>
-            {t('buttons.post')}
-          </Button>
+          <SaveButton variant="contained" onClick={handleSaveCallout} loading={savingCallout} disabled={!isValid}>
+            {t('buttons.save')}
+          </SaveButton>
         </DialogActions>
       </DialogWithGrid>
       <ImportTemplatesDialog
@@ -219,4 +255,4 @@ const CreateCalloutDialog = ({
   );
 };
 
-export default CreateCalloutDialog;
+export default EditCalloutDialog;
