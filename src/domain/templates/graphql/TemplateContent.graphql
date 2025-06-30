@@ -84,6 +84,9 @@ fragment CalloutTemplateContent on Callout {
   settings {
     contribution {
       enabled
+      allowedTypes
+      canAddContributions
+      commentsEnabled
     }
   }
   contributionDefaults {

@@ -2240,6 +2240,9 @@ export const CalloutTemplateContentFragmentDoc = gql`
     settings {
       contribution {
         enabled
+        allowedTypes
+        canAddContributions
+        commentsEnabled
       }
     }
     contributionDefaults {

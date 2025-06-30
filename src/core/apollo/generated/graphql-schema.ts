@@ -25002,7 +25002,13 @@ export type TemplateContentQuery = {
                 };
                 settings: {
                   __typename?: 'CalloutSettings';
-                  contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+                  contribution: {
+                    __typename?: 'CalloutSettingsContribution';
+                    enabled: boolean;
+                    allowedTypes: Array<CalloutContributionType>;
+                    canAddContributions: CalloutAllowedContributors;
+                    commentsEnabled: boolean;
+                  };
                 };
                 contributionDefaults: {
                   __typename?: 'CalloutContributionDefaults';
@@ -25399,7 +25405,13 @@ export type CalloutTemplateContentFragment = {
   };
   settings: {
     __typename?: 'CalloutSettings';
-    contribution: { __typename?: 'CalloutSettingsContribution'; enabled: boolean };
+    contribution: {
+      __typename?: 'CalloutSettingsContribution';
+      enabled: boolean;
+      allowedTypes: Array<CalloutContributionType>;
+      canAddContributions: CalloutAllowedContributors;
+      commentsEnabled: boolean;
+    };
   };
   contributionDefaults: {
     __typename?: 'CalloutContributionDefaults';
