@@ -3,7 +3,11 @@ import useNavigate from '@/core/routing/useNavigate';
 import CalloutLayout from '../calloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '@/domain/collaboration/callout/components/ScrollableCardsLayout';
 import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
-import { CalloutAllowedContributors, CalloutContributionType, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutAllowedContributors,
+  CalloutContributionType,
+  CreatePostInput,
+} from '@/core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import PostCard, { PostCardPost } from './PostCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
@@ -56,11 +60,10 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
 
     const createButton = canCreate &&
       callout.settings.contribution.enabled &&
-      callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post)
-    callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Members)
-      && (
-      <CreateCalloutItemButton onClick={openCreateDialog} />
-    );
+      callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) &&
+      callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Members) && (
+        <CreateCalloutItemButton onClick={openCreateDialog} />
+      );
 
     const navigateToPost = (post: PostCardPost) => {
       const state: LocationStateCachedCallout = {
@@ -91,7 +94,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
               {...calloutSettingsProvided}
             >
               <ScrollableCardsLayout
-                items={loading ? [undefined, undefined] : sortedPosts ?? []}
+                items={loading ? [undefined, undefined] : (sortedPosts ?? [])}
                 createButton={!isSmallScreen && createButton}
                 maxHeight={gutters(22)}
               >
