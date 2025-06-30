@@ -1,4 +1,4 @@
-import { Callout, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { CalloutRestrictions as CalloutRestrictions } from '../new-callout/CreateCallout/CreateCalloutDialog';
 import { Identifiable } from '@/core/utils/Identifiable';
 
@@ -16,11 +16,10 @@ export interface CalloutSortProps {
 
 export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
   onVisibilityChange?: (
-    calloutId: Callout['id'],
+    callout: Identifiable,
     visibility: CalloutVisibility,
     sendNotification: boolean
   ) => Promise<void> | undefined;
-  onCalloutEdit?: (callout: Identifiable) => Promise<void> | undefined;
   onCalloutDelete?: (callout: Identifiable) => Promise<void> | undefined;
 }
 

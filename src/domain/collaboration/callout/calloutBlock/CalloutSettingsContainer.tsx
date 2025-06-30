@@ -106,7 +106,7 @@ const CalloutSettingsContainer = ({
     [callout.draft, t]
   );
   const handleVisibilityChange = async (visibility: CalloutVisibility, sendNotification: boolean) => {
-    await onVisibilityChange?.(callout.id, visibility, sendNotification);
+    await onVisibilityChange?.(callout, visibility, sendNotification);
     setVisibilityDialogOpen(false);
   };
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
