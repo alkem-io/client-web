@@ -1,0 +1,14 @@
+query CalloutContributions($calloutId: UUID!, $includeLinks: Boolean! = false) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      contributions {
+        id
+        sortOrder
+        link @include(if: $includeLinks) {
+          ...LinkDetailsWithAuthorization
+        }
+      }
+    }
+  }
+}

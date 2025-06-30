@@ -73,12 +73,14 @@ const CommentsCalloutLayout = ({
         <TagsComponent tags={callout.framing.profile.tagset?.tags} sx={{ paddingX: gutters() }} />
       ) : undefined}
       {children}
-      <CalloutClosedMarginal
-        callout={callout}
-        disabled={disableMarginal}
-        contributionsCount={contributionsCount}
-        isMember={isMember}
-      />
+      {(callout.settings.framing.commentsEnabled || (callout.comments?.messagesCount ?? 0) > 0) && (
+        <CalloutClosedMarginal
+          callout={callout}
+          disabled={disableMarginal}
+          contributionsCount={contributionsCount}
+          isMember={isMember}
+        />
+      )}
     </>
   );
 };

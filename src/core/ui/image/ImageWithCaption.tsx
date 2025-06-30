@@ -20,6 +20,7 @@ const Container = styled(ButtonBase)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   borderRadius: theme.shape.borderRadius,
+  width: '100%',
 }));
 
 const CaptionContainer = styled(Box)(({ theme }) => ({

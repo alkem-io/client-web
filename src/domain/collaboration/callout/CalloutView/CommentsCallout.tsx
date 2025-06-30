@@ -1,24 +1,21 @@
-import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
-import { useCallback, useMemo } from 'react';
-import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import { BaseCalloutViewProps } from '../CalloutViewTypes';
+import {
+  CalloutContributionType,
+  CalloutFramingType,
+  CommunityMembershipStatus,
+} from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
-import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
-import { useMessages } from '@/domain/communication/room/Comments/useMessages';
-import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
-import CommentsCalloutLayout from './CommentsCalloutLayout';
+import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { CommentsWithMessagesModel } from '../../new-callout/models/TypedCallout';
+import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
+import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
+import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
+import { BaseCalloutViewProps } from '../CalloutViewTypes';
+import CalloutCommentsContainer from './CalloutCommentsContainer';
+import CommentsCalloutLayout from './CommentsCalloutLayout';
+import CalloutContributionLink from '../CalloutContributions/link/CalloutContributionLink';
 
 interface CommentsCalloutProps extends BaseCalloutViewProps {
-  callout: CalloutLayoutProps['callout'] & {
-    comments?: CommentsWithMessagesModel | undefined;
-  };
+  callout: CalloutLayoutProps['callout'];
   calloutActions?: boolean;
 }
 
@@ -32,49 +29,11 @@ const CommentsCallout = ({
   onExpand,
   onCollapse,
   calloutActions = true,
+  onCalloutUpdate,
   ...calloutSettingsProps
 }: CommentsCalloutProps) => {
-  const { userModel, isAuthenticated } = useCurrentUserContext();
   const { space } = useSpace();
   const myMembershipStatus = space?.about.membership?.myMembershipStatus;
-
-  const commentsId = callout.comments?.id;
-  const fetchedMessages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
-  const messages = useMessages(fetchedMessages);
-
-  const commentsPrivileges = callout?.comments?.authorization?.myPrivileges ?? [];
-  const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
-  const canDeleteMessage = useCallback(
-    authorId => canDeleteMessages || (isAuthenticated && authorId === userModel?.id),
-    [userModel, isAuthenticated, canDeleteMessages]
-  );
-
-  const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostMessages =
-    callout.settings.framing.commentsEnabled && commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
-  const canAddReaction = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
-
-  const [deleteMessage, { loading: deletingMessage }] = useRemoveMessageOnRoomMutation({
-    update: (cache, { data }) =>
-      data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
-  });
-
-  const isSubscribedToComments = useSubscribeOnRoomEvents(commentsId);
-
-  const handleDeleteMessage = (commentsId: string, messageId: string) =>
-    deleteMessage({
-      variables: {
-        messageData: {
-          roomID: commentsId,
-          messageID: messageId,
-        },
-      },
-    });
-
-  const { postMessage, postReply, postingMessage, postingReply } = usePostMessageMutations({
-    roomId: commentsId,
-    isSubscribedToMessages: isSubscribedToComments,
-  });
 
   const { isSmallScreen } = useScreenSize();
   const lastMessageOnly = isSmallScreen && !expanded;
@@ -92,22 +51,32 @@ const CommentsCallout = ({
           onCollapse={onCollapse}
           calloutActions={calloutActions}
         >
-          <CommentsComponent
-            messages={messages}
-            vcInteractions={callout?.comments?.vcInteractions || []}
-            commentsId={commentsId}
-            canReadMessages={canReadMessages}
-            canPostMessages={canPostMessages}
-            postMessage={postMessage}
-            postReply={postReply}
-            canDeleteMessage={canDeleteMessage}
-            handleDeleteMessage={handleDeleteMessage}
-            canAddReaction={canAddReaction}
-            loading={loading || postingMessage || postingReply || deletingMessage}
-            last={lastMessageOnly}
-            maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
-            onClickMore={onExpand}
-          />
+          {callout.framing.type === CalloutFramingType.Whiteboard && <CalloutFramingWhiteboard callout={callout} />}
+          {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
+            <CalloutContributionLink
+              callout={callout}
+              loading={loading}
+              expanded={expanded}
+              onExpand={onExpand}
+              onCollapse={onCollapse}
+              contributionsCount={contributionsCount}
+              onCalloutUpdate={onCalloutUpdate}
+            />
+          )}
+
+          {callout.comments && (
+            <CalloutCommentsContainer callout={callout}>
+              {props => (
+                <CommentsComponent
+                  {...props}
+                  loading={loading || props.loading}
+                  last={lastMessageOnly}
+                  maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
+                  onClickMore={onExpand}
+                />
+              )}
+            </CalloutCommentsContainer>
+          )}
         </CommentsCalloutLayout>
       )}
     </CalloutSettingsContainer>

@@ -6481,6 +6481,90 @@ export function refetchActivityLogOnCollaborationQuery(
 ) {
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
+export const CalloutContributionsDocument = gql`
+  query CalloutContributions($calloutId: UUID!, $includeLinks: Boolean! = false) {
+    lookup {
+      callout(ID: $calloutId) {
+        id
+        contributions {
+          id
+          sortOrder
+          link @include(if: $includeLinks) {
+            ...LinkDetailsWithAuthorization
+          }
+        }
+      }
+    }
+  }
+  ${LinkDetailsWithAuthorizationFragmentDoc}
+`;
+
+/**
+ * __useCalloutContributionsQuery__
+ *
+ * To run a query within a React component, call `useCalloutContributionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutContributionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutContributionsQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      includeLinks: // value for 'includeLinks'
+ *   },
+ * });
+ */
+export function useCalloutContributionsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutContributionsQuery,
+    SchemaTypes.CalloutContributionsQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutContributionsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutContributionsQuery, SchemaTypes.CalloutContributionsQueryVariables>(
+    CalloutContributionsDocument,
+    options
+  );
+}
+export function useCalloutContributionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutContributionsQuery,
+    SchemaTypes.CalloutContributionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutContributionsQuery, SchemaTypes.CalloutContributionsQueryVariables>(
+    CalloutContributionsDocument,
+    options
+  );
+}
+export function useCalloutContributionsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalloutContributionsQuery,
+        SchemaTypes.CalloutContributionsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutContributionsQuery, SchemaTypes.CalloutContributionsQueryVariables>(
+    CalloutContributionsDocument,
+    options
+  );
+}
+export type CalloutContributionsQueryHookResult = ReturnType<typeof useCalloutContributionsQuery>;
+export type CalloutContributionsLazyQueryHookResult = ReturnType<typeof useCalloutContributionsLazyQuery>;
+export type CalloutContributionsSuspenseQueryHookResult = ReturnType<typeof useCalloutContributionsSuspenseQuery>;
+export type CalloutContributionsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutContributionsQuery,
+  SchemaTypes.CalloutContributionsQueryVariables
+>;
+export function refetchCalloutContributionsQuery(variables: SchemaTypes.CalloutContributionsQueryVariables) {
+  return { query: CalloutContributionsDocument, variables: variables };
+}
 export const CreateLinkOnCalloutDocument = gql`
   mutation createLinkOnCallout($input: CreateContributionOnCalloutInput!) {
     createContributionOnCallout(contributionData: $input) {

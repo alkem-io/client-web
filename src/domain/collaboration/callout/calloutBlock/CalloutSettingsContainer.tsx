@@ -26,7 +26,7 @@ import {
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
-import { FormatedLink } from '../CalloutContributions/link/LinkCollectionCallout';
+import { FormattedLink } from '../CalloutContributions/link/CalloutContributionLink';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
@@ -63,7 +63,7 @@ export interface CalloutSettingsContainerProps
   items?: {
     posts?: PostCardPost[];
     whiteboards?: WhiteboardCardWhiteboard[];
-    links?: FormatedLink[];
+    links?: FormattedLink[];
   };
   expanded?: boolean;
   onExpand?: () => void;
