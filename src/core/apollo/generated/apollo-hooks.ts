@@ -857,6 +857,7 @@ export const CalloutDetailsFragmentDoc = gql`
     }
     contributionDefaults {
       id
+      defaultDisplayName
       postDescription
       whiteboardContent
     }

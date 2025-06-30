@@ -34,7 +34,7 @@ const CalloutsViewSkeleton = () => (
 export interface CalloutsViewProps {
   callouts: TypedCallout[] | undefined;
   onSortOrderUpdate?: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
-  onCalloutUpdate?: (calloutId: string) => void;
+  onCalloutUpdate?: (calloutId: string) => Promise<unknown> | void;
   loading?: boolean;
   blockProps?:
     | Partial<PageContentBlockProps>

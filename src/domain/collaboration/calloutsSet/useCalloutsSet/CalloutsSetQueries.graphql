@@ -86,6 +86,7 @@ fragment CalloutDetails on Callout {
   }
   contributionDefaults {
     id
+    defaultDisplayName
     postDescription
     whiteboardContent
   }

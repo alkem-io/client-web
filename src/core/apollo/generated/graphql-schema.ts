@@ -9492,6 +9492,7 @@ export type CalloutPageCalloutQuery = {
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
             id: string;
+            defaultDisplayName?: string | undefined;
             postDescription?: string | undefined;
             whiteboardContent?: string | undefined;
           };
@@ -11859,6 +11860,7 @@ export type CreateCalloutMutation = {
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
       id: string;
+      defaultDisplayName?: string | undefined;
       postDescription?: string | undefined;
       whiteboardContent?: string | undefined;
     };
@@ -12249,6 +12251,7 @@ export type CalloutDetailsQuery = {
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
             id: string;
+            defaultDisplayName?: string | undefined;
             postDescription?: string | undefined;
             whiteboardContent?: string | undefined;
           };
@@ -12607,6 +12610,7 @@ export type CalloutDetailsFragment = {
   contributionDefaults: {
     __typename?: 'CalloutContributionDefaults';
     id: string;
+    defaultDisplayName?: string | undefined;
     postDescription?: string | undefined;
     whiteboardContent?: string | undefined;
   };
@@ -12983,6 +12987,7 @@ export type UpdateCalloutContentMutation = {
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
       id: string;
+      defaultDisplayName?: string | undefined;
       postDescription?: string | undefined;
       whiteboardContent?: string | undefined;
     };
@@ -13281,6 +13286,7 @@ export type UpdateCalloutVisibilityMutation = {
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
       id: string;
+      defaultDisplayName?: string | undefined;
       postDescription?: string | undefined;
       whiteboardContent?: string | undefined;
     };

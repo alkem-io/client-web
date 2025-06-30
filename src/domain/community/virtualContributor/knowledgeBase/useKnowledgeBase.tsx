@@ -24,7 +24,7 @@ interface useKnowledgeBaseProvided {
   loading: boolean;
   calloutsSetLoading: boolean;
   refetchCallouts: (variables?: Partial<CalloutsOnCalloutsSetUsingClassificationQueryVariables>) => void;
-  refetchCallout: (calloutId: string) => void;
+  refetchCallout: (calloutId: string) => Promise<unknown> | void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   knowledgeBaseDescription: string | undefined;
   updateDescription: (values: { description: string }) => Promise<void>;

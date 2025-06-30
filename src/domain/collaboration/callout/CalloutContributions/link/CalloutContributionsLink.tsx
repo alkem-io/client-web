@@ -26,8 +26,8 @@ import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { compact, sortBy } from 'lodash';
 import { TypedCalloutDetails } from '../../../new-callout/models/TypedCallout';
 import Loading from '@/core/ui/loading/Loading';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { gutters } from '@/core/ui/grid/utils';
+import Gutters from '@/core/ui/grid/Gutters';
 
 const MAX_LINKS_NORMAL_VIEW = 3;
 
@@ -238,30 +238,31 @@ const CalloutContributionsLink = forwardRef<HTMLDivElement, LinkCollectionCallou
         skip={!addNewLinkDialogOpen && !editLink}
       >
         {loading ? <Loading /> : undefined}
-        <PageContentBlockSeamless ref={ref}>
+        <Gutters ref={ref}>
           <References
             references={expanded ? sortedFormattedLinks : limitedLinks}
             noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
             onEdit={ref => setEditLink(ref)}
           />
-        </PageContentBlockSeamless>
-        <Box
-          display="flex"
-          justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'}
-          alignItems="end"
-          marginBottom={gutters()}
-        >
-          {isListTruncated && !expanded && (
-            <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
-              {t('callout.link-collection.more-links', { count: formattedLinks.length })}
-            </Caption>
-          )}
-          {canAddLinks && (
-            <IconButton aria-label={t('common.add')} size="small" onClick={() => setAddNewLinkDialogOpen(true)}>
-              <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-            </IconButton>
-          )}
-        </Box>
+          <Box
+            display="flex"
+            justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'}
+            alignItems="end"
+            marginBottom={gutters()}
+          >
+            {isListTruncated && !expanded && (
+              <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
+                {t('callout.link-collection.more-links', { count: formattedLinks.length })}
+              </Caption>
+            )}
+            {canAddLinks && (
+              <IconButton aria-label={t('common.add')} size="small" onClick={() => setAddNewLinkDialogOpen(true)}>
+                <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+              </IconButton>
+            )}
+          </Box>
+        </Gutters>
+
         <CreateLinksDialog
           open={addNewLinkDialogOpen}
           title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}

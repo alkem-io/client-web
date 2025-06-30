@@ -119,6 +119,7 @@ export type TypedCalloutDetails = TypedCallout & {
   };
   settings: CalloutSettingsModelFull;
   contributionDefaults: {
+    defaultDisplayName?: string;
     postDescription?: string;
     whiteboardContent?: string;
   };

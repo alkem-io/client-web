@@ -14,15 +14,16 @@ interface CalloutContributionsContainerProps extends SimpleContainerProps<Callou
         };
       })
     | undefined;
-  onCalloutUpdate?: () => Promise<unknown>;
+  onCalloutUpdate?: () => Promise<unknown> | void;
   skip?: boolean;
 }
 
 interface CalloutContributionsContainerProvided {
   ref: Ref<HTMLDivElement>;
   contributions: Required<CalloutContributionsQuery['lookup']>['callout']['contributions'];
+  contributionsCount: number;
   loading;
-  onCalloutUpdate?: () => Promise<unknown>;
+  refetchContributions?: () => Promise<unknown>;
 }
 
 const CalloutContributionsContainer = ({
@@ -55,8 +56,9 @@ const CalloutContributionsContainer = ({
       {children({
         ref: intersectionObserverRef,
         contributions: data?.lookup.callout?.contributions ?? [],
+        contributionsCount: data?.lookup.callout?.contributions.length ?? 0,
         loading,
-        onCalloutUpdate: async () => {
+        refetchContributions: async () => {
           await onCalloutUpdate?.();
           await refetch();
         },
