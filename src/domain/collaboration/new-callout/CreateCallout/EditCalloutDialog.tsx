@@ -1,19 +1,7 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
-import {
-  useCalloutContentQuery,
-  useTemplateContentLazyQuery,
-  useUpdateCalloutContentMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import {
-  CalloutContributionType,
-  TemplateType,
-  UpdateCalloutEntityInput,
-} from '@/core/apollo/generated/graphql-schema';
+import { useCalloutContentQuery, useUpdateCalloutContentMutation } from '@/core/apollo/generated/apollo-hooks';
+import { CalloutContributionType, UpdateCalloutEntityInput } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Identifiable } from '@/core/utils/Identifiable';
-import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {} from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
@@ -87,29 +75,8 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     };
   }, [data?.lookup.callout, loadingCallout]);
 
-  const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
-
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
-
-  const [fetchTemplateContent] = useTemplateContentLazyQuery();
-  const handleSelectTemplate = async ({ id: templateId }: Identifiable) => {
-    const { data } = await fetchTemplateContent({
-      variables: {
-        templateId,
-        includeCallout: true,
-      },
-    });
-
-    const template = data?.lookup.template;
-    const templateCallout = template?.callout;
-
-    if (!template || !templateCallout) {
-      throw new Error("Couldn't load CalloutTemplate");
-    }
-
-    setImportCalloutDialogOpen(false);
-  };
 
   const [calloutFormData, setCalloutFormData] = useState<CalloutFormSubmittedValues>();
 
@@ -191,19 +158,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
   return (
     <>
       <DialogWithGrid open={open} onClose={handleCloseButtonClick} fullWidth>
-        <DialogHeader
-          title={t('callout.create.dialogTitle')}
-          onClose={handleCloseButtonClick}
-          actions={
-            <Button
-              variant="outlined"
-              onClick={() => setImportCalloutDialogOpen(true)}
-              startIcon={<TipsAndUpdatesOutlinedIcon />}
-            >
-              {t('buttons.find-template')}
-            </Button>
-          }
-        />
+        <DialogHeader title={t('callout.edit.dialogTitle')} onClose={handleCloseButtonClick} />
         <DialogContent>
           {loadingCallout ? (
             <Loading />
@@ -226,18 +181,6 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           </SaveButton>
         </DialogActions>
       </DialogWithGrid>
-      <ImportTemplatesDialog
-        templateType={TemplateType.Callout}
-        actionButton={
-          <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
-            {t('buttons.use')}
-          </Button>
-        }
-        open={importCalloutTemplateDialogOpen}
-        onSelectTemplate={handleSelectTemplate}
-        onClose={() => setImportCalloutDialogOpen(false)}
-        enablePlatformTemplates
-      />
       <ConfirmationDialog
         entities={{
           titleId: 'components.callout-creation.closeDialog.title',

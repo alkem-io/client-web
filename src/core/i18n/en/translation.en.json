@@ -788,6 +788,9 @@
         }
       }
     },
+    "edit": {
+      "dialogTitle": "Edit $t(common.post)"
+    },
     "accessForbidden": {
       "title": "Content not available",
       "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
