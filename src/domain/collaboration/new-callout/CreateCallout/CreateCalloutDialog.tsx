@@ -397,8 +397,8 @@ const CreateCalloutDialog = ({
       />
       <ConfirmationDialog
         entities={{
-          titleId: 'components.callout-creation.close-dialog.title',
-          contentId: 'components.callout-creation.close-dialog.text',
+          titleId: 'components.callout-creation.closeDialog.title',
+          contentId: 'components.callout-creation.closeDialog.text',
           confirmButtonTextId: 'buttons.yes-close',
         }}
         options={{

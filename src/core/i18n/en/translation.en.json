@@ -1371,9 +1371,9 @@
         "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, <b>who have their notifications for these actions turned on</b>, to receive a notification?",
         "checkbox-label": "Yes, notify the community."
       },
-      "close-dialog": {
-        "title": "Discard callout",
-        "text": "Are you sure you want to close this {{calloutType}}? Unsaved changes will be lost."
+      "closeDialog": {
+        "title": "Discard Post",
+        "text": "Are you sure you want to close this Post? Unsaved changes will be lost."
       }
     },
     "calloutEdit": {
