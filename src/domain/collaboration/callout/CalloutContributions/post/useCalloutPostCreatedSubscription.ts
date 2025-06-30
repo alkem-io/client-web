@@ -2,12 +2,12 @@ import { CalloutPostCreatedDocument } from '@/core/apollo/generated/apollo-hooks
 import {
   CalloutPostCreatedSubscription,
   CalloutPostCreatedSubscriptionVariables,
-  CalloutPostsQuery,
+  CalloutContributionsQuery,
 } from '@/core/apollo/generated/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
 
 const useCalloutPostCreatedSubscription = createUseSubscriptionToSubEntityHook<
-  CalloutPostsQuery['lookup']['callout'],
+  CalloutContributionsQuery['lookup']['callout'],
   CalloutPostCreatedSubscription,
   CalloutPostCreatedSubscriptionVariables
 >({

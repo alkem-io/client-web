@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useCalloutPostsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useCalloutContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useCalloutPostCreatedSubscription from './useCalloutPostCreatedSubscription';
 import { compact } from 'lodash';
 
@@ -39,8 +39,8 @@ interface UsePostDataHookProps {
 }
 
 export const useCalloutPosts = ({ calloutId, skip = false }: UsePostDataHookProps): PostsData => {
-  const { data, subscribeToMore, loading } = useCalloutPostsQuery({
-    variables: { calloutId },
+  const { data, subscribeToMore, loading } = useCalloutContributionsQuery({
+    variables: { calloutId, includePost: true },
     skip,
   });
 

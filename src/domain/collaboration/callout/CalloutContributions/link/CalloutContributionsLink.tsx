@@ -74,7 +74,7 @@ const CalloutContributionsLink = ({
   const { data, loading: loadingLinks } = useCalloutContributionsQuery({
     variables: {
       calloutId: callout.id,
-      includeLinks: true,
+      includeLink: true,
     },
   });
 

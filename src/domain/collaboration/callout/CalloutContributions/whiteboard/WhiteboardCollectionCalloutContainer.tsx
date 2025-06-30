@@ -4,8 +4,8 @@ import {
   CalloutContributionType,
 } from '@/core/apollo/generated/graphql-schema';
 import {
-  refetchCalloutWhiteboardsQuery,
-  useCalloutWhiteboardsQuery,
+  refetchCalloutContributionsQuery,
+  useCalloutContributionsQuery,
   useCreateWhiteboardOnCalloutMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInView } from 'react-intersection-observer';
@@ -62,9 +62,10 @@ const WhiteboardCollectionCalloutContainer = ({ callout, children }: WhiteboardC
     triggerOnce: true,
   });
 
-  const { data, loading } = useCalloutWhiteboardsQuery({
+  const { data, loading } = useCalloutContributionsQuery({
     variables: {
       calloutId,
+      includeWhiteboard: true,
     },
     skip: !inView,
   });
@@ -99,7 +100,7 @@ const WhiteboardCollectionCalloutContainer = ({ callout, children }: WhiteboardC
           },
         },
       },
-      refetchQueries: [refetchCalloutWhiteboardsQuery({ calloutId: calloutId })],
+      refetchQueries: [refetchCalloutContributionsQuery({ calloutId: calloutId, includeWhiteboard: true })],
     });
 
     return data?.createContributionOnCallout.whiteboard;

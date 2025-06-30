@@ -6482,21 +6482,34 @@ export function refetchActivityLogOnCollaborationQuery(
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
 export const CalloutContributionsDocument = gql`
-  query CalloutContributions($calloutId: UUID!, $includeLinks: Boolean! = false) {
+  query CalloutContributions(
+    $calloutId: UUID!
+    $includeLink: Boolean! = false
+    $includeWhiteboard: Boolean! = false
+    $includePost: Boolean! = false
+  ) {
     lookup {
       callout(ID: $calloutId) {
         id
         contributions {
           id
           sortOrder
-          link @include(if: $includeLinks) {
+          link @include(if: $includeLink) {
             ...LinkDetailsWithAuthorization
+          }
+          whiteboard @include(if: $includeWhiteboard) {
+            ...WhiteboardCollectionCalloutCard
+          }
+          post @include(if: $includePost) {
+            ...ContributeTabPost
           }
         }
       }
     }
   }
   ${LinkDetailsWithAuthorizationFragmentDoc}
+  ${WhiteboardCollectionCalloutCardFragmentDoc}
+  ${ContributeTabPostFragmentDoc}
 `;
 
 /**
@@ -6512,7 +6525,9 @@ export const CalloutContributionsDocument = gql`
  * const { data, loading, error } = useCalloutContributionsQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
- *      includeLinks: // value for 'includeLinks'
+ *      includeLink: // value for 'includeLink'
+ *      includeWhiteboard: // value for 'includeWhiteboard'
+ *      includePost: // value for 'includePost'
  *   },
  * });
  */
@@ -6749,80 +6764,6 @@ export function useCalloutPostCreatedSubscription(
 export type CalloutPostCreatedSubscriptionHookResult = ReturnType<typeof useCalloutPostCreatedSubscription>;
 export type CalloutPostCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutPostCreatedSubscription>;
-export const CalloutPostsDocument = gql`
-  query CalloutPosts($calloutId: UUID!) {
-    lookup {
-      callout(ID: $calloutId) {
-        id
-        contributions {
-          id
-          sortOrder
-          post {
-            ...ContributeTabPost
-          }
-        }
-      }
-    }
-  }
-  ${ContributeTabPostFragmentDoc}
-`;
-
-/**
- * __useCalloutPostsQuery__
- *
- * To run a query within a React component, call `useCalloutPostsQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutPostsQuery({
- *   variables: {
- *      calloutId: // value for 'calloutId'
- *   },
- * });
- */
-export function useCalloutPostsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CalloutPostsQuery, SchemaTypes.CalloutPostsQueryVariables> &
-    ({ variables: SchemaTypes.CalloutPostsQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalloutPostsQuery, SchemaTypes.CalloutPostsQueryVariables>(
-    CalloutPostsDocument,
-    options
-  );
-}
-export function useCalloutPostsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutPostsQuery, SchemaTypes.CalloutPostsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CalloutPostsQuery, SchemaTypes.CalloutPostsQueryVariables>(
-    CalloutPostsDocument,
-    options
-  );
-}
-export function useCalloutPostsSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CalloutPostsQuery, SchemaTypes.CalloutPostsQueryVariables>
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.CalloutPostsQuery, SchemaTypes.CalloutPostsQueryVariables>(
-    CalloutPostsDocument,
-    options
-  );
-}
-export type CalloutPostsQueryHookResult = ReturnType<typeof useCalloutPostsQuery>;
-export type CalloutPostsLazyQueryHookResult = ReturnType<typeof useCalloutPostsLazyQuery>;
-export type CalloutPostsSuspenseQueryHookResult = ReturnType<typeof useCalloutPostsSuspenseQuery>;
-export type CalloutPostsQueryResult = Apollo.QueryResult<
-  SchemaTypes.CalloutPostsQuery,
-  SchemaTypes.CalloutPostsQueryVariables
->;
-export function refetchCalloutPostsQuery(variables: SchemaTypes.CalloutPostsQueryVariables) {
-  return { query: CalloutPostsDocument, variables: variables };
-}
 export const CreatePostFromContributeTabDocument = gql`
   mutation CreatePostFromContributeTab($postData: CreateContributionOnCalloutInput!) {
     createContributionOnCallout(contributionData: $postData) {
@@ -6873,86 +6814,6 @@ export type CreatePostFromContributeTabMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.CreatePostFromContributeTabMutation,
   SchemaTypes.CreatePostFromContributeTabMutationVariables
 >;
-export const CalloutWhiteboardsDocument = gql`
-  query CalloutWhiteboards($calloutId: UUID!) {
-    lookup {
-      callout(ID: $calloutId) {
-        id
-        contributions {
-          id
-          sortOrder
-          whiteboard {
-            ...WhiteboardCollectionCalloutCard
-          }
-        }
-      }
-    }
-  }
-  ${WhiteboardCollectionCalloutCardFragmentDoc}
-`;
-
-/**
- * __useCalloutWhiteboardsQuery__
- *
- * To run a query within a React component, call `useCalloutWhiteboardsQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutWhiteboardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutWhiteboardsQuery({
- *   variables: {
- *      calloutId: // value for 'calloutId'
- *   },
- * });
- */
-export function useCalloutWhiteboardsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CalloutWhiteboardsQuery,
-    SchemaTypes.CalloutWhiteboardsQueryVariables
-  > &
-    ({ variables: SchemaTypes.CalloutWhiteboardsQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalloutWhiteboardsQuery, SchemaTypes.CalloutWhiteboardsQueryVariables>(
-    CalloutWhiteboardsDocument,
-    options
-  );
-}
-export function useCalloutWhiteboardsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CalloutWhiteboardsQuery,
-    SchemaTypes.CalloutWhiteboardsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CalloutWhiteboardsQuery, SchemaTypes.CalloutWhiteboardsQueryVariables>(
-    CalloutWhiteboardsDocument,
-    options
-  );
-}
-export function useCalloutWhiteboardsSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CalloutWhiteboardsQuery, SchemaTypes.CalloutWhiteboardsQueryVariables>
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.CalloutWhiteboardsQuery, SchemaTypes.CalloutWhiteboardsQueryVariables>(
-    CalloutWhiteboardsDocument,
-    options
-  );
-}
-export type CalloutWhiteboardsQueryHookResult = ReturnType<typeof useCalloutWhiteboardsQuery>;
-export type CalloutWhiteboardsLazyQueryHookResult = ReturnType<typeof useCalloutWhiteboardsLazyQuery>;
-export type CalloutWhiteboardsSuspenseQueryHookResult = ReturnType<typeof useCalloutWhiteboardsSuspenseQuery>;
-export type CalloutWhiteboardsQueryResult = Apollo.QueryResult<
-  SchemaTypes.CalloutWhiteboardsQuery,
-  SchemaTypes.CalloutWhiteboardsQueryVariables
->;
-export function refetchCalloutWhiteboardsQuery(variables: SchemaTypes.CalloutWhiteboardsQueryVariables) {
-  return { query: CalloutWhiteboardsDocument, variables: variables };
-}
 export const UpdateCalloutsSortOrderDocument = gql`
   mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID!]!) {
     updateCalloutsSortOrder(sortOrderData: { calloutsSetID: $calloutsSetID, calloutIDs: $calloutIds }) {
