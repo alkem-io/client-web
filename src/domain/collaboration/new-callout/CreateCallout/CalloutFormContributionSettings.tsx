@@ -6,7 +6,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import RadioButtonsGroup from '@/core/ui/forms/radioButtons/RadioButtonsGroup';
+import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
 import CommentsDisabledOutlinedIcon from '@mui/icons-material/CommentsDisabledOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import { CalloutStructuredResponseType } from './CalloutForm';
@@ -27,7 +27,6 @@ interface CalloutFormContributionSettingsProps {
 const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormContributionSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
-  const [commentsEnabled, setCommentsEnabled] = useState<boolean>(true);
   const [responseContributionType, setResponseContributionType] = useState<CalloutStructuredResponseType>('none');
   const [contributionSettingsDialogOpen, setContributionSettingsDialogOpen] = useState<boolean>(false);
 
@@ -52,7 +51,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
       <Box display="flex" gap={gutters()} flexDirection={isMediumSmallScreen ? 'column' : 'row'}>
         <PageContentBlock sx={{ flex: 1 }}>
           <PageContentBlockHeader title={t('callout.create.contributionSettings.comments.title')} />
-          <RadioButtonsGroup
+          <FormikRadioButtonsGroup
             options={[
               {
                 icon: CommentsDisabledOutlinedIcon,
@@ -65,14 +64,13 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 label: t('callout.create.contributionSettings.comments.enabled'),
               },
             ]}
-            value={commentsEnabled}
+            name="settings.framing.commentsEnabled"
             labelPlacement="bottom"
-            onChange={value => setCommentsEnabled(value)}
           />
         </PageContentBlock>
         <PageContentBlock sx={{ flex: 3 }}>
           <PageContentBlockHeader title={t('callout.create.contributionSettings.contributionTypes.title')} />
-          <RadioButtonsGroup
+          <FormikRadioButtonsGroup
             options={[
               {
                 icon: BlockIcon,
@@ -100,7 +98,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 disabled: calloutRestrictions?.disableWhiteboards,
               },
             ]}
-            value={responseContributionType}
+            name="settings.contribution.allowedTypes"
             labelPlacement="bottom"
             onChange={value => setResponseContributionType(value)}
           >
@@ -113,7 +111,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 {t('callout.create.contributionSettings.contributionTypes.settings.title')}
               </Button>
             </Box>
-          </RadioButtonsGroup>
+          </FormikRadioButtonsGroup>
         </PageContentBlock>
       </Box>
       <ContributionSettingsDialog

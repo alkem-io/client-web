@@ -52,9 +52,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
       }
     };
 
-    const createButton = canCreateContribution && !callout.settings.contribution.enabled && (
-      <CreateCalloutItemButton onClick={handleCreate} />
-    );
+    const createButton = canCreateContribution && <CreateCalloutItemButton onClick={handleCreate} />;
 
     const showCards = useMemo(
       () => (!loading && whiteboards.length > 0) || callout.settings.contribution.enabled,

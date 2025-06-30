@@ -3,11 +3,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import CalloutLayout from '../calloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '@/domain/collaboration/callout/components/ScrollableCardsLayout';
 import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
-import {
-  CalloutAllowedContributors,
-  CalloutContributionType,
-  CreatePostInput,
-} from '@/core/apollo/generated/graphql-schema';
+import { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import PostCard, { PostCardPost } from './PostCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
@@ -38,7 +34,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
       loading,
       creatingPost,
       onCreatePost,
-      canCreateContribution: canCreate = false,
+      canCreateContribution,
       contributionsCount,
       expanded,
       onExpand,
@@ -58,12 +54,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
     const postNames = useMemo(() => posts?.map(x => x.profile.displayName) ?? [], [posts]);
     const sortedPosts = useMemo(() => sortBy(posts, 'sortOrder'), [posts]);
 
-    const createButton = canCreate &&
-      callout.settings.contribution.enabled &&
-      callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) &&
-      callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Members) && (
-        <CreateCalloutItemButton onClick={openCreateDialog} />
-      );
+    const createButton = canCreateContribution && <CreateCalloutItemButton onClick={openCreateDialog} />;
 
     const navigateToPost = (post: PostCardPost) => {
       const state: LocationStateCachedCallout = {
@@ -100,7 +91,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
               >
                 {post => <PostCard post={post} onClick={navigateToPost} />}
               </ScrollableCardsLayout>
-              {isSmallScreen && canCreate && callout.settings.contribution.enabled && (
+              {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
                 <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
               )}
             </CalloutLayout>
