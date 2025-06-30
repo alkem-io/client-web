@@ -20,6 +20,7 @@ import {
   CalloutAllowedContributors,
   CalloutContributionType,
 } from '@/core/apollo/generated/graphql-schema';
+import Gutters from '@/core/ui/grid/Gutters';
 
 interface WhiteboardContributionProps {
   id: string;
@@ -122,13 +123,12 @@ const CalloutContributionsWhiteboard = forwardRef<HTMLDivElement, CalloutContrib
     const sortedWhiteboards = useMemo(() => sortBy(whiteboards, 'sortOrder'), [whiteboards]);
 
     return (
-      <>
+      <Gutters ref={ref}>
         {showCards && (
           <ScrollableCardsLayout
             items={loading ? [undefined, undefined] : sortedWhiteboards}
             createButton={!isSmallScreen && createButton}
             maxHeight={gutters(22)}
-            ref={ref}
           >
             {whiteboard =>
               whiteboard ? (
@@ -142,7 +142,7 @@ const CalloutContributionsWhiteboard = forwardRef<HTMLDivElement, CalloutContrib
         {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
           <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={handleCreate} />
         )}
-      </>
+      </Gutters>
     );
   }
 );
