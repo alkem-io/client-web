@@ -45,6 +45,10 @@ const CalloutLayout = ({
 
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
 
+  // Prevents double title
+  // TODO: check if this is still needed
+  const hasCalloutDetails = callout.authorName && callout.publishedAt;
+
   if (dontShow) {
     return null;
   }
@@ -68,7 +72,7 @@ const CalloutLayout = ({
       />
       <DialogContent ref={contentRef} sx={{ paddingTop: 0 }}>
         <Gutters disablePadding>
-          <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>
+          {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
           <Box sx={{ wordWrap: 'break-word' }}>
             <WrapperMarkdown>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
           </Box>

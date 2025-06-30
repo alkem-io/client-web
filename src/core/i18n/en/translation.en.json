@@ -3104,8 +3104,8 @@
       "description": "This action cannot be undone"
     },
     "closeConfirm": {
-      "title": "Discard Callout",
-      "description": "Are you sure you want to close this Callout? Unsaved changes will be lost."
+      "title": "Discard Post",
+      "description": "Are you sure you want to close this Post? Unsaved changes will be lost."
     }
   },
   "innovation-edit": {
