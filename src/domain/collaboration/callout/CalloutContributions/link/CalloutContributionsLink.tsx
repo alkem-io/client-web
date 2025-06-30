@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useMemo, useState } from 'react';
 import { BaseCalloutViewProps } from '../../CalloutViewTypes';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,6 @@ import CreateLinksDialog, { CreateLinkFormValues } from '@/domain/shared/compone
 import { Box, IconButton, Link } from '@mui/material';
 import {
   refetchCalloutDetailsQuery,
-  useCalloutContributionsQuery,
   useCreateLinkOnCalloutMutation,
   useDeleteLinkMutation,
   useUpdateLinkMutation,
@@ -61,148 +60,146 @@ export interface FormattedLink {
 
 interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
   callout: TypedCalloutDetails;
+  contributions: {
+    id: string;
+    sortOrder: number;
+    link?: {
+      id: string;
+      uri: string;
+      profile: { displayName: string; description?: string };
+      authorization?: { myPrivileges?: AuthorizationPrivilege[] };
+    };
+  }[];
 }
 
-const CalloutContributionsLink = ({
-  callout,
-  loading,
-  expanded,
-  onExpand,
-  onCalloutUpdate,
-}: LinkCollectionCalloutProps) => {
-  const { t } = useTranslation();
-  const { data, loading: loadingLinks } = useCalloutContributionsQuery({
-    variables: {
-      calloutId: callout.id,
-      includeLink: true,
-    },
-  });
+const CalloutContributionsLink = forwardRef<HTMLDivElement, LinkCollectionCalloutProps>(
+  ({ callout, contributions, loading, expanded, onExpand, onCalloutUpdate }, ref) => {
+    const { t } = useTranslation();
 
-  const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
-    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
-  });
-  const [updateLink] = useUpdateLinkMutation();
-  const [deleteLink] = useDeleteLinkMutation({
-    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
-  });
-
-  const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
-  const [editLink, setEditLink] = useState<EditLinkFormValues>();
-  const [deletingLinkId, setDeletingLinkId] = useState<string>();
-
-  const closeAddNewDialog = () => setAddNewLinkDialogOpen(false);
-  const closeEditDialog = () => setEditLink(undefined);
-
-  const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
-  const isContributionAllowed =
-    calloutPrivileges.includes(AuthorizationPrivilege.Contribute) &&
-    callout.settings.contribution.enabled &&
-    callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) &&
-    (callout.settings.contribution.canAddContributions === CalloutAllowedContributors.Members ||
-      calloutPrivileges.includes(AuthorizationPrivilege.Update));
-  const canAddLinks = isContributionAllowed || calloutPrivileges.includes(AuthorizationPrivilege.Update);
-  const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
-
-  // New Links:
-  const getNewLinkId = useCallback(async () => {
-    const { data } = await createLinkOnCallout({
-      variables: {
-        input: {
-          calloutID: callout.id,
-          link: {
-            uri: '',
-            profile: {
-              // Link names have to be unique, if everything goes well this name will never be shown:
-              displayName: t('callout.link-collection.new-temporary-reference', {
-                temp: uuid().slice(0, 4),
-              }),
-            },
-          },
-        },
-      },
+    const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
+      refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
     });
-    if (!data?.createContributionOnCallout.link?.id) {
-      throw new Error('Error creating the new Link');
-    }
-    return data.createContributionOnCallout.link?.id;
-  }, [createLinkOnCallout, callout]);
-
-  const removeNewLink = (linkId: string) =>
-    deleteLink({
-      variables: {
-        input: {
-          ID: linkId,
-        },
-      },
-      update: (cache, { data }) => data?.deleteLink && evictFromCache(cache, data.deleteLink.id, 'Link'),
+    const [updateLink] = useUpdateLinkMutation();
+    const [deleteLink] = useDeleteLinkMutation({
+      refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
     });
 
-  const handleSaveNewLinks = useCallback(
-    async (links: CreateLinkFormValues[]) => {
-      await Promise.all(
-        links.map(link =>
-          updateLink({
-            variables: {
-              input: {
-                ID: link.id,
-                uri: link.uri,
-                profile: {
-                  displayName: link.name,
-                  description: link.description,
-                },
-              },
-            },
-          })
-        )
-      );
+    const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
+    const [editLink, setEditLink] = useState<EditLinkFormValues>();
+    const [deletingLinkId, setDeletingLinkId] = useState<string>();
 
-      onCalloutUpdate?.();
-      closeAddNewDialog();
-    },
-    [updateLink, closeAddNewDialog, onCalloutUpdate, callout]
-  );
+    const closeAddNewDialog = () => setAddNewLinkDialogOpen(false);
+    const closeEditDialog = () => setEditLink(undefined);
 
-  // Edit existing Links:
-  const handleEditLink = useCallback(
-    async (link: EditLinkFormValues) => {
-      await updateLink({
+    const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
+    const isContributionAllowed =
+      calloutPrivileges.includes(AuthorizationPrivilege.Contribute) &&
+      callout.settings.contribution.enabled &&
+      callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) &&
+      (callout.settings.contribution.canAddContributions === CalloutAllowedContributors.Members ||
+        calloutPrivileges.includes(AuthorizationPrivilege.Update));
+    const canAddLinks = isContributionAllowed || calloutPrivileges.includes(AuthorizationPrivilege.Update);
+    const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
+
+    // New Links:
+    const getNewLinkId = useCallback(async () => {
+      const { data } = await createLinkOnCallout({
         variables: {
           input: {
-            ID: link.id,
-            uri: link.uri,
-            profile: {
-              displayName: link.name,
-              description: link.description,
+            calloutID: callout.id,
+            link: {
+              uri: '',
+              profile: {
+                // Link names have to be unique, if everything goes well this name will never be shown:
+                displayName: t('callout.link-collection.new-temporary-reference', {
+                  temp: uuid().slice(0, 4),
+                }),
+              },
             },
           },
         },
       });
-      onCalloutUpdate?.();
-      closeEditDialog();
-    },
-    [closeEditDialog, onCalloutUpdate, updateLink, callout]
-  );
+      if (!data?.createContributionOnCallout.link?.id) {
+        throw new Error('Error creating the new Link');
+      }
+      return data.createContributionOnCallout.link?.id;
+    }, [createLinkOnCallout, callout]);
 
-  const handleDeleteLink = useCallback(async () => {
-    if (!deletingLinkId) {
-      return;
-    }
-    await deleteLink({
-      variables: {
-        input: {
-          ID: deletingLinkId,
+    const removeNewLink = (linkId: string) =>
+      deleteLink({
+        variables: {
+          input: {
+            ID: linkId,
+          },
         },
-      },
-    });
-    onCalloutUpdate?.();
-    setDeletingLinkId(undefined);
-    closeEditDialog();
-  }, [deletingLinkId, closeEditDialog, setDeletingLinkId, onCalloutUpdate, deleteLink, callout]);
+        update: (cache, { data }) => data?.deleteLink && evictFromCache(cache, data.deleteLink.id, 'Link'),
+      });
 
-  const formattedLinks: FormattedLink[] = useMemo(
-    () =>
-      compact(
-        data?.lookup.callout?.contributions.map(
+    const handleSaveNewLinks = useCallback(
+      async (links: CreateLinkFormValues[]) => {
+        await Promise.all(
+          links.map(link =>
+            updateLink({
+              variables: {
+                input: {
+                  ID: link.id,
+                  uri: link.uri,
+                  profile: {
+                    displayName: link.name,
+                    description: link.description,
+                  },
+                },
+              },
+            })
+          )
+        );
+
+        onCalloutUpdate?.();
+        closeAddNewDialog();
+      },
+      [updateLink, closeAddNewDialog, onCalloutUpdate, callout]
+    );
+
+    // Edit existing Links:
+    const handleEditLink = useCallback(
+      async (link: EditLinkFormValues) => {
+        await updateLink({
+          variables: {
+            input: {
+              ID: link.id,
+              uri: link.uri,
+              profile: {
+                displayName: link.name,
+                description: link.description,
+              },
+            },
+          },
+        });
+        onCalloutUpdate?.();
+        closeEditDialog();
+      },
+      [closeEditDialog, onCalloutUpdate, updateLink, callout]
+    );
+
+    const handleDeleteLink = useCallback(async () => {
+      if (!deletingLinkId) {
+        return;
+      }
+      await deleteLink({
+        variables: {
+          input: {
+            ID: deletingLinkId,
+          },
+        },
+      });
+      onCalloutUpdate?.();
+      setDeletingLinkId(undefined);
+      closeEditDialog();
+    }, [deletingLinkId, closeEditDialog, setDeletingLinkId, onCalloutUpdate, deleteLink, callout]);
+
+    const { formattedLinks, sortedFormattedLinks, limitedLinks, isListTruncated } = useMemo(() => {
+      const formattedLinks: FormattedLink[] = compact(
+        contributions.map(
           contribution =>
             contribution.link &&
             contribution.id && {
@@ -219,81 +216,86 @@ const CalloutContributionsLink = ({
         authorization: link.authorization,
         sortOrder: link.sortOrder ?? 0,
         contributionId: link.contributionId,
-      })),
-    [callout]
-  );
-  const sortedFormattedLinks = useMemo(() => sortBy(formattedLinks, 'sortOrder'), [formattedLinks]);
-  const limitedLinks = useMemo(() => sortedFormattedLinks?.slice(0, MAX_LINKS_NORMAL_VIEW), [callout]);
-  const isListTruncated = useMemo(
-    () =>
-      (compact(data?.lookup.callout?.contributions?.map(contribution => contribution.link))?.length ?? 0) >
-      MAX_LINKS_NORMAL_VIEW,
-    [callout]
-  );
-  return (
-    <StorageConfigContextProvider
-      locationType="callout"
-      calloutId={callout.id}
-      skip={!addNewLinkDialogOpen && !editLink}
-    >
-      {loading || loadingLinks ? <Loading /> : undefined}
-      <PageContentBlockSeamless>
-        <References
-          references={expanded ? sortedFormattedLinks : limitedLinks}
-          noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
-          onEdit={ref => setEditLink(ref)}
-        />
-      </PageContentBlockSeamless>
-      <Box
-        display="flex"
-        justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'}
-        alignItems="end"
-        marginBottom={gutters()}
+      }));
+
+      const sortedFormattedLinks = sortBy(formattedLinks, 'sortOrder');
+      const limitedLinks = sortedFormattedLinks?.slice(0, MAX_LINKS_NORMAL_VIEW);
+      const isListTruncated =
+        (compact(contributions?.map(contribution => contribution.link))?.length ?? 0) > MAX_LINKS_NORMAL_VIEW;
+
+      return {
+        formattedLinks,
+        sortedFormattedLinks,
+        limitedLinks,
+        isListTruncated,
+      };
+    }, [callout, contributions]);
+
+    return (
+      <StorageConfigContextProvider
+        locationType="callout"
+        calloutId={callout.id}
+        skip={!addNewLinkDialogOpen && !editLink}
       >
-        {isListTruncated && !expanded && (
-          <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
-            {t('callout.link-collection.more-links', { count: formattedLinks.length })}
-          </Caption>
-        )}
-        {canAddLinks && (
-          <IconButton aria-label={t('common.add')} size="small" onClick={() => setAddNewLinkDialogOpen(true)}>
-            <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-          </IconButton>
-        )}
-      </Box>
-      <CreateLinksDialog
-        open={addNewLinkDialogOpen}
-        title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
-        onClose={closeAddNewDialog}
-        onAddMore={getNewLinkId}
-        onRemove={removeNewLink}
-        onSave={handleSaveNewLinks}
-      />
-      <EditLinkDialog
-        open={Boolean(editLink)}
-        onClose={closeEditDialog}
-        title={<Box>{t('callout.link-collection.edit-link', { title: editLink?.name })}</Box>}
-        link={editLink!}
-        onSave={values => handleEditLink(values)}
-        canDelete={canDeleteLinks}
-        onDelete={() => setDeletingLinkId(editLink?.id)}
-      />
-      <ConfirmationDialog
-        actions={{
-          onConfirm: handleDeleteLink,
-          onCancel: () => setDeletingLinkId(undefined),
-        }}
-        options={{
-          show: Boolean(deletingLinkId),
-        }}
-        entities={{
-          titleId: 'callout.link-collection.delete-confirm-title',
-          content: t('callout.link-collection.delete-confirm', { title: callout.framing.profile.displayName }),
-          confirmButtonTextId: 'buttons.delete',
-        }}
-      />
-    </StorageConfigContextProvider>
-  );
-};
+        {loading ? <Loading /> : undefined}
+        <PageContentBlockSeamless ref={ref}>
+          <References
+            references={expanded ? sortedFormattedLinks : limitedLinks}
+            noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
+            onEdit={ref => setEditLink(ref)}
+          />
+        </PageContentBlockSeamless>
+        <Box
+          display="flex"
+          justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'}
+          alignItems="end"
+          marginBottom={gutters()}
+        >
+          {isListTruncated && !expanded && (
+            <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
+              {t('callout.link-collection.more-links', { count: formattedLinks.length })}
+            </Caption>
+          )}
+          {canAddLinks && (
+            <IconButton aria-label={t('common.add')} size="small" onClick={() => setAddNewLinkDialogOpen(true)}>
+              <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+            </IconButton>
+          )}
+        </Box>
+        <CreateLinksDialog
+          open={addNewLinkDialogOpen}
+          title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
+          onClose={closeAddNewDialog}
+          onAddMore={getNewLinkId}
+          onRemove={removeNewLink}
+          onSave={handleSaveNewLinks}
+        />
+        <EditLinkDialog
+          open={Boolean(editLink)}
+          onClose={closeEditDialog}
+          title={<Box>{t('callout.link-collection.edit-link', { title: editLink?.name })}</Box>}
+          link={editLink!}
+          onSave={values => handleEditLink(values)}
+          canDelete={canDeleteLinks}
+          onDelete={() => setDeletingLinkId(editLink?.id)}
+        />
+        <ConfirmationDialog
+          actions={{
+            onConfirm: handleDeleteLink,
+            onCancel: () => setDeletingLinkId(undefined),
+          }}
+          options={{
+            show: Boolean(deletingLinkId),
+          }}
+          entities={{
+            titleId: 'callout.link-collection.delete-confirm-title',
+            content: t('callout.link-collection.delete-confirm', { title: callout.framing.profile.displayName }),
+            confirmButtonTextId: 'buttons.delete',
+          }}
+        />
+      </StorageConfigContextProvider>
+    );
+  }
+);
 
 export default CalloutContributionsLink;

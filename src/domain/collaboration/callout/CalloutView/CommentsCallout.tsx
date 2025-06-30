@@ -13,6 +13,7 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import CalloutCommentsContainer from './CalloutCommentsContainer';
 import CommentsCalloutLayout from './CommentsCalloutLayout';
 import CalloutContributionsLink from '../CalloutContributions/link/CalloutContributionsLink';
+import CalloutContributionsContainer from '../CalloutContributions/CalloutContributionsContainer';
 
 interface CommentsCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -53,17 +54,22 @@ const CommentsCallout = ({
         >
           {callout.framing.type === CalloutFramingType.Whiteboard && <CalloutFramingWhiteboard callout={callout} />}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
-            <CalloutContributionsLink
-              callout={callout}
-              loading={loading}
-              expanded={expanded}
-              onExpand={onExpand}
-              onCollapse={onCollapse}
-              contributionsCount={contributionsCount}
-              onCalloutUpdate={onCalloutUpdate}
-            />
+            <CalloutContributionsContainer callout={callout} onCalloutUpdate={onCalloutUpdate}>
+              {({ contributions: items, onCalloutUpdate, loading, ref }) => (
+                <CalloutContributionsLink
+                  ref={ref}
+                  callout={callout}
+                  contributions={items}
+                  loading={loading}
+                  expanded={expanded}
+                  onExpand={onExpand}
+                  onCollapse={onCollapse}
+                  contributionsCount={contributionsCount}
+                  onCalloutUpdate={onCalloutUpdate}
+                />
+              )}
+            </CalloutContributionsContainer>
           )}
-
           {callout.comments && (
             <CalloutCommentsContainer callout={callout}>
               {props => (

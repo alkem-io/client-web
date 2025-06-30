@@ -19,6 +19,6 @@ export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<Callo
   expanded?: boolean;
   onExpand?: () => void;
   onCollapse?: () => void;
-  onCalloutUpdate?: () => void;
+  onCalloutUpdate?: () => Promise<unknown>;
   calloutRestrictions?: CalloutRestrictions;
 }
