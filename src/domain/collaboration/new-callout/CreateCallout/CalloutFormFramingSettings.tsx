@@ -56,13 +56,14 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           value: CalloutFramingType.None,
           label: t('callout.create.framingSettings.none.title'),
           tooltip: t('callout.create.framingSettings.none.tooltip'),
+          disabled: calloutRestrictions?.readOnlyAllowedTypes,
         },
         {
           icon: WhiteboardIcon,
           value: CalloutFramingType.Whiteboard,
           label: t('callout.create.framingSettings.whiteboard.title'),
           tooltip: t('callout.create.framingSettings.whiteboard.tooltip'),
-          disabled: calloutRestrictions?.disableWhiteboards,
+          disabled: calloutRestrictions?.disableWhiteboards || calloutRestrictions?.readOnlyAllowedTypes,
         },
       ]}
     />

@@ -374,17 +374,6 @@ const CalloutSettingsContainer = ({
         onClose={() => setShareDialogOpen(false)}
       />
       <EditCalloutDialog open={editDialogOpened} onClose={() => setEditDialogOpened(false)} calloutId={callout.id} />
-      {/*
-      I've lost functionality to edit callout for now
-      //!! {!!onCalloutDelete && (
-        <CalloutEditDialog
-          callout={callout}
-          onCalloutEdit={handleCalloutEdit}
-          onDelete={() => setDeleteDialogOpen(true)}
-
-          disablePostResponses={disablePostResponses && callout.calloutTypeDeprecated === CalloutType.Post}
-        />
-      )}*/}
       <ConfirmationDialog
         entities={{
           titleId: 'callout.delete-confirm-title',

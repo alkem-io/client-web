@@ -31,9 +31,7 @@ import { CalloutRestrictions } from './CreateCalloutDialog';
 export interface EditCalloutDialogProps {
   open?: boolean;
   onClose?: () => void;
-
   calloutId: string | undefined;
-
   calloutRestrictions?: CalloutRestrictions;
 }
 
@@ -153,6 +151,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     };
 
     // Clean up unneeded contributionDefaults
+    // TODO: extract as used in CreateCalloutDialog
     const contributionDefaults = {
       ...formData.contributionDefaults,
       defaultDisplayName: formData.contributionDefaults.defaultDisplayName
