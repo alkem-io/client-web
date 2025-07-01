@@ -65,7 +65,6 @@ export interface CalloutSettingsContainerProps
   expanded?: boolean;
   onExpand?: () => void;
   disableRichMedia?: boolean;
-  disablePostResponses?: boolean;
 }
 
 const CalloutSettingsContainer = ({

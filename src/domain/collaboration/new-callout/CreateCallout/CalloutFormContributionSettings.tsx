@@ -87,6 +87,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 icon: CommentOutlinedIcon,
                 value: true,
                 label: t('callout.create.contributionSettings.comments.enabled'),
+                disabled: calloutRestrictions?.disableComments,
               },
             ]}
             name="settings.framing.commentsEnabled"

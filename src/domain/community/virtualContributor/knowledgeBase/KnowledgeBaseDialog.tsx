@@ -84,7 +84,7 @@ const KnowledgeBaseDialog = ({ aiPersonaServiceID, onClose, title, id, placehold
                 calloutRestrictions={{
                   disableRichMedia: true,
                   disableWhiteboards: true,
-                  disablePostResponses: true,
+                  disableComments: true,
                 }}
               />
             </Gutters>

@@ -160,7 +160,7 @@ const CalloutForm = ({
                 commentsEnabled: true,
               },
               framing: {
-                commentsEnabled: true,
+                commentsEnabled: !calloutRestrictions?.disableComments,
               },
               visibility: CalloutVisibility.Published,
             },
