@@ -79,7 +79,7 @@ export const calloutValidationSchema = yup.object().shape({
       return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
     }),
   }),
-  contributionDefaults: yup.object().shape({
+  /*  contributionDefaults: yup.object().shape({
     defaultDisplayName: displayNameValidator,
     postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     whiteboardContent: yup.string(),
@@ -105,7 +105,7 @@ export const calloutValidationSchema = yup.object().shape({
       .mixed<CalloutVisibility>()
       .oneOf(Object.values(CalloutVisibility).filter(value => typeof value === 'string'))
       .required(),
-  }),
+  }),*/
 });
 
 const FormikEffect = FormikEffectFactory<CalloutFormSubmittedValues>();
