@@ -9,7 +9,6 @@ import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetSegment } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { ProfileReferenceSegment } from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
@@ -25,6 +24,7 @@ import PostTemplateSelector from '@/domain/templates/components/TemplateSelector
 import WhiteboardTemplateSelector from '@/domain/templates/components/TemplateSelectors/WhiteboardTemplateSelector';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import CollaborativeFormikMarkdownField from '@/core/ui/forms/MarkdownInput/CollaborativeFormikMarkdownField';
 
 type FormValueType = {
   displayName: string;
@@ -184,7 +184,7 @@ const CalloutForm = ({
             <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
             <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
             {!editMode && formConfiguration.whiteboard && <CalloutWhiteboardField name="whiteboard" />}
-            <FormikMarkdownField
+            <CollaborativeFormikMarkdownField
               name="description"
               title={t('components.callout-creation.info-step.description')}
               rows={7}

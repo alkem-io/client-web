@@ -104,6 +104,7 @@ const ControlsButton = memo(
     return prevProps.editor === nextProps.editor;
   }
 );
+ControlsButton.displayName = 'ControlsButton';
 
 const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-click without "jumping"
 
@@ -241,5 +242,6 @@ const MarkdownInputControls = memo(
     }
   )
 );
+MarkdownInputControls.displayName = 'MarkdownInputControls';
 
 export default MarkdownInputControls;
