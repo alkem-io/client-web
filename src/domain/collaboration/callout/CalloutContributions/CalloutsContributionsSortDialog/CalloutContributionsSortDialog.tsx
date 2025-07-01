@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { isNumber } from 'lodash';
+import { isNumber, sortBy } from 'lodash';
 import { Box, DialogContent, Paper } from '@mui/material';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -25,6 +25,7 @@ export interface CalloutContributionsSortItem {
   name: string;
   id: string;
   commentsCount?: number;
+  sortOrder: number;
 }
 
 interface CalloutContributionsSortDialogProps {
@@ -44,15 +45,18 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
   });
 
   const items = useMemo(() => {
-    return (
-      data?.lookup.callout?.contributions.map(contribution => ({
+    return sortBy(
+      data?.lookup.callout?.contributions.map<CalloutContributionsSortItem>(contribution => ({
         id: contribution.id,
         name:
           contribution.post?.profile.displayName ??
           contribution.link?.profile.displayName ??
-          contribution.whiteboard?.profile.displayName,
+          contribution.whiteboard?.profile.displayName ??
+          '',
         commentsCount: contribution.post?.comments?.messagesCount,
-      })) || []
+        sortOrder: contribution.sortOrder,
+      })),
+      'sortOrder'
     );
   }, [data]);
 
