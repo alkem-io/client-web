@@ -733,7 +733,7 @@
         }
       },
       "contributionSettings": {
-        "title": "Response Options",
+        "title": "Collection Options",
         "comments": {
           "title": "Comments",
           "enabled": "Comments",
@@ -742,10 +742,10 @@
         "contributionTypes": {
           "title": "Collection",
           "settings": {
-            "title": "Response Settings",
-            "membersCanRespond": "Members can respond",
-            "adminCanRespond": "Admins can respond",
-            "commentsOnEachResponse": "Enable comments on each response",
+            "title": "Collection Settings",
+            "membersCanRespond": "Members can add to the Collection",
+            "adminCanRespond": "Admins can add to the Collection",
+            "commentsOnEachResponse": "Enable comments on each Post in the Collection",
             "confirmBackDialog": {
               "title": "Are you sure that you want to go back?",
               "text": "There are unsaved changes in this form, is you close this dialog changes will be lost.",
@@ -757,7 +757,7 @@
           },
           "none": {
             "title": "None",
-            "tooltip": "No structured responses"
+            "tooltip": "No collection"
           },
           "link": {
             "title": "Links & Files",
@@ -782,7 +782,7 @@
             "tooltip": "Enable responding with whiteboards",
             "settings": {
               "label": "Default Whiteboard:",
-              "explanation": "Edit the default whiteboard response."
+              "explanation": "Edit the default whiteboard."
             }
           }
         }
@@ -802,7 +802,7 @@
     "notMember": "You can't reply to this discussion since you're not a member of this Space",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All Posts, Whiteboards and messages under the Callout will also be deleted.",
-    "state-permission": "Accept new responses",
+    "state-permission": "Allow adding to the Collection",
     "permission-help-text": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
     "sortContributions": "Sort contributions",
