@@ -9,6 +9,7 @@ import ContributionsSettings from './ContributionsSettings';
 import Gutters from '@/core/ui/grid/Gutters';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { CalloutRestrictions } from '../CreateCalloutDialog';
+import { FramingSettings } from '@/domain/collaboration/new-callout/CreateCallout/CalloutFormContributionSettings';
 
 /**
  * Specific settings for the contribution type (e.g. post, link, whiteboard)
@@ -38,6 +39,7 @@ interface ContributionSettingsDialogProps {
   onClose: () => void;
   contributionTypeSettingsComponent?: ComponentType<ContributionTypeSettingsProps> | undefined;
   calloutRestrictions?: CalloutRestrictions;
+  enabledSettings: FramingSettings;
 }
 
 const ContributionSettingsDialog = ({
@@ -45,6 +47,7 @@ const ContributionSettingsDialog = ({
   onClose,
   contributionTypeSettingsComponent: SettingsComponent,
   calloutRestrictions,
+  enabledSettings,
 }: ContributionSettingsDialogProps) => {
   const { t } = useTranslation();
   const contributionSettingsRef = useRef<ContributionTypeSettingsComponentRef>(null);
@@ -75,7 +78,11 @@ const ContributionSettingsDialog = ({
             {SettingsComponent && (
               <SettingsComponent ref={settingsComponentRef} calloutRestrictions={calloutRestrictions} />
             )}
-            <ContributionsSettings ref={contributionSettingsRef} calloutRestrictions={calloutRestrictions} />
+            <ContributionsSettings
+              ref={contributionSettingsRef}
+              calloutRestrictions={calloutRestrictions}
+              enabledSettings={enabledSettings}
+            />
           </Gutters>
         </DialogContent>
         <DialogActions>

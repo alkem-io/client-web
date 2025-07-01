@@ -26,6 +26,11 @@ interface CalloutFormContributionSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
 }
 
+export type FramingSettings = {
+  commentsEnabled: boolean;
+  canAddContributions: boolean;
+};
+
 const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormContributionSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
@@ -45,6 +50,22 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
       default:
         return undefined;
     }
+  }, [allowedTypesField.value]);
+
+  const enabledSettings: FramingSettings = useMemo(() => {
+    const result: FramingSettings = {
+      commentsEnabled: true,
+      canAddContributions: true,
+    };
+
+    switch (allowedTypesField.value) {
+      case CalloutContributionType.Link:
+      case CalloutContributionType.Whiteboard: {
+        result.commentsEnabled = false;
+      }
+    }
+
+    return result;
   }, [allowedTypesField.value]);
 
   return (
@@ -123,6 +144,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
         onClose={() => setContributionSettingsDialogOpen(false)}
         contributionTypeSettingsComponent={SettingsComponent}
         calloutRestrictions={calloutRestrictions}
+        enabledSettings={enabledSettings}
       />
     </PageContentBlockCollapsible>
   );
