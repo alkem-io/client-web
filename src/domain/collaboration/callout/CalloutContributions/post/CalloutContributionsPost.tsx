@@ -17,23 +17,20 @@ import {
 import CalloutSettingsContainer from '../../calloutBlock/CalloutSettingsContainer';
 import { TypedCalloutDetails } from '../../../new-callout/models/TypedCallout';
 import { sortBy } from 'lodash';
+import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 
-interface PostCalloutProps extends BaseCalloutViewProps {
+interface CalloutContributionsPostProps extends BaseCalloutViewProps {
   callout: TypedCalloutDetails;
-  posts: PostCardPost[] | undefined;
+  contributions: PostCardPost[] | undefined;
   loading: boolean;
-  creatingPost: boolean;
-  onCreatePost: (post: CreatePostInput) => Promise<unknown>;
 }
 
-const PostCallout = forwardRef<Element, PostCalloutProps>(
+const CalloutContributionsPost = forwardRef<HTMLDivElement, CalloutContributionsPostProps>(
   (
     {
       callout,
-      posts,
+      contributions,
       loading,
-      creatingPost,
-      onCreatePost,
       canCreateContribution,
       contributionsCount,
       expanded,
@@ -51,9 +48,27 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
     const navigate = useNavigate();
     const { isSmallScreen } = useScreenSize();
 
-    const postNames = useMemo(() => posts?.map(x => x.profile.displayName) ?? [], [posts]);
-    const sortedPosts = useMemo(() => sortBy(posts, 'sortOrder'), [posts]);
+    const postNames = useMemo(() => contributions?.map(x => x.profile.displayName) ?? [], [contributions]);
+    const sortedPosts = useMemo(() => sortBy(contributions, 'sortOrder'), [contributions]);
 
+    const [createPost, { loading: creatingPost }] = useCreatePostOnCalloutMutation();
+
+    const onCreatePost = async (post: CreatePostInput) => {
+      return createPost({
+        variables: {
+          postData: {
+            calloutID: callout.id,
+            post: {
+              profileData: {
+                displayName: post.profileData.displayName,
+                description: post.profileData.description,
+              },
+              tags: post.tags,
+            },
+          },
+        },
+      });
+    };
     const createButton = canCreateContribution && <CreateContributionButton onClick={openCreateDialog} />;
 
     const navigateToPost = (post: PostCardPost) => {
@@ -113,4 +128,4 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
   }
 );
 
-export default PostCallout;
+export default CalloutContributionsPost;

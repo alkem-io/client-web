@@ -1,14 +1,22 @@
 import { useCalloutContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationPrivilege,
+  CalloutAllowedContributors,
+  CalloutContributionsQuery,
+  CalloutContributionType,
+} from '@/core/apollo/generated/graphql-schema';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { Ref } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { CalloutSettingsModelFull } from '../../new-callout/models/CalloutSettingsModel';
-import { Ref } from 'react';
-import { CalloutContributionsQuery, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 
 interface CalloutContributionsContainerProps extends SimpleContainerProps<CalloutContributionsContainerProvided> {
   callout:
     | (Identifiable & {
+        authorization?: {
+          myPrivileges?: AuthorizationPrivilege[];
+        };
         settings: {
           contribution: CalloutSettingsModelFull['contribution'];
         };
@@ -22,6 +30,7 @@ interface CalloutContributionsContainerProvided {
   ref: Ref<HTMLDivElement>;
   contributions: Required<CalloutContributionsQuery['lookup']>['callout']['contributions'];
   contributionsCount: number;
+  canCreateContribution: boolean;
   loading;
   refetchContributions?: () => Promise<unknown>;
 }
@@ -51,6 +60,15 @@ const CalloutContributionsContainer = ({
     skip: !inView || !calloutId || skip,
   });
 
+  const canCreateContribution =
+    (callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreatePost) &&
+      callout.settings.contribution.enabled &&
+      callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) &&
+      ((callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins) &&
+        callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update)) ||
+        callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Members))) ??
+    false;
+
   return (
     <>
       {children({
@@ -58,6 +76,7 @@ const CalloutContributionsContainer = ({
         contributions: data?.lookup.callout?.contributions ?? [],
         contributionsCount: data?.lookup.callout?.contributions.length ?? 0,
         loading,
+        canCreateContribution,
         refetchContributions: async () => {
           await onCalloutUpdate?.();
           await refetch();

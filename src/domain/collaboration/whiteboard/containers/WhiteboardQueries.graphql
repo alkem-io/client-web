@@ -112,17 +112,6 @@ query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
   }
 }
 
-mutation createWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
-  createContributionOnCallout(contributionData: $input) {
-    whiteboard {
-      ...WhiteboardDetails
-      profile {
-        url
-      }
-    }
-  }
-}
-
 mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
   deleteWhiteboard(whiteboardData: $input) {
     id

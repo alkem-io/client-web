@@ -1,4 +1,4 @@
-import { useCreatePostFromContributeTabMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CalloutAllowedContributors,
@@ -44,7 +44,7 @@ const PostCalloutContainer = ({ callout, children }: PostCalloutContainerProps) 
     skip: !inView,
   });
 
-  const [createPost, { loading: isCreatingPost }] = useCreatePostFromContributeTabMutation();
+  const [createPost, { loading: isCreatingPost }] = useCreatePostOnCalloutMutation();
 
   const onCreatePost = async (post: CreatePostInput) => {
     return createPost({

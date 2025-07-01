@@ -105,6 +105,24 @@ const CommentsCallout = ({
               )}
             </CalloutContributionsContainer>
           )}
+          {/* Collaborate with Posts */}
+          {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) && (
+            <CalloutContributionsContainer callout={callout} onCalloutUpdate={onCalloutUpdate}>
+              {({ contributions: items, refetchContributions: onCalloutUpdate, loading, ref }) => (
+                <CalloutContributionsWhiteboard
+                  ref={ref}
+                  callout={callout}
+                  contributions={items}
+                  loading={loading}
+                  expanded={expanded}
+                  onExpand={onExpand}
+                  onCollapse={onCollapse}
+                  contributionsCount={contributionsCount}
+                  onCalloutUpdate={onCalloutUpdate}
+                />
+              )}
+            </CalloutContributionsContainer>
+          )}
         </CommentsCalloutLayout>
       )}
     </CalloutSettingsContainer>

@@ -1,5 +1,5 @@
 
-mutation createLinkOnCallout($input: CreateContributionOnCalloutInput!) {
+mutation CreateLinkOnCallout($input: CreateContributionOnCalloutInput!) {
   createContributionOnCallout(contributionData: $input) {
     link {
       ...LinkDetails

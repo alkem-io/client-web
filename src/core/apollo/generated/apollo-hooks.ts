@@ -6582,7 +6582,7 @@ export function refetchCalloutContributionsQuery(variables: SchemaTypes.CalloutC
   return { query: CalloutContributionsDocument, variables: variables };
 }
 export const CreateLinkOnCalloutDocument = gql`
-  mutation createLinkOnCallout($input: CreateContributionOnCalloutInput!) {
+  mutation CreateLinkOnCallout($input: CreateContributionOnCalloutInput!) {
     createContributionOnCallout(contributionData: $input) {
       link {
         ...LinkDetails
@@ -6765,8 +6765,8 @@ export function useCalloutPostCreatedSubscription(
 export type CalloutPostCreatedSubscriptionHookResult = ReturnType<typeof useCalloutPostCreatedSubscription>;
 export type CalloutPostCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutPostCreatedSubscription>;
-export const CreatePostFromContributeTabDocument = gql`
-  mutation CreatePostFromContributeTab($postData: CreateContributionOnCalloutInput!) {
+export const CreatePostOnCalloutDocument = gql`
+  mutation CreatePostOnCallout($postData: CreateContributionOnCalloutInput!) {
     createContributionOnCallout(contributionData: $postData) {
       post {
         id
@@ -6774,46 +6774,99 @@ export const CreatePostFromContributeTabDocument = gql`
     }
   }
 `;
-export type CreatePostFromContributeTabMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreatePostFromContributeTabMutation,
-  SchemaTypes.CreatePostFromContributeTabMutationVariables
+export type CreatePostOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreatePostOnCalloutMutation,
+  SchemaTypes.CreatePostOnCalloutMutationVariables
 >;
 
 /**
- * __useCreatePostFromContributeTabMutation__
+ * __useCreatePostOnCalloutMutation__
  *
- * To run a mutation, you first call `useCreatePostFromContributeTabMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreatePostFromContributeTabMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreatePostOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePostOnCalloutMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createPostFromContributeTabMutation, { data, loading, error }] = useCreatePostFromContributeTabMutation({
+ * const [createPostOnCalloutMutation, { data, loading, error }] = useCreatePostOnCalloutMutation({
  *   variables: {
  *      postData: // value for 'postData'
  *   },
  * });
  */
-export function useCreatePostFromContributeTabMutation(
+export function useCreatePostOnCalloutMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreatePostFromContributeTabMutation,
-    SchemaTypes.CreatePostFromContributeTabMutationVariables
+    SchemaTypes.CreatePostOnCalloutMutation,
+    SchemaTypes.CreatePostOnCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreatePostOnCalloutMutation, SchemaTypes.CreatePostOnCalloutMutationVariables>(
+    CreatePostOnCalloutDocument,
+    options
+  );
+}
+export type CreatePostOnCalloutMutationHookResult = ReturnType<typeof useCreatePostOnCalloutMutation>;
+export type CreatePostOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreatePostOnCalloutMutation>;
+export type CreatePostOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreatePostOnCalloutMutation,
+  SchemaTypes.CreatePostOnCalloutMutationVariables
+>;
+export const CreateWhiteboardOnCalloutDocument = gql`
+  mutation CreateWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
+    createContributionOnCallout(contributionData: $input) {
+      whiteboard {
+        ...WhiteboardDetails
+        profile {
+          url
+        }
+      }
+    }
+  }
+  ${WhiteboardDetailsFragmentDoc}
+`;
+export type CreateWhiteboardOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateWhiteboardOnCalloutMutation,
+  SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
+>;
+
+/**
+ * __useCreateWhiteboardOnCalloutMutation__
+ *
+ * To run a mutation, you first call `useCreateWhiteboardOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWhiteboardOnCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWhiteboardOnCalloutMutation, { data, loading, error }] = useCreateWhiteboardOnCalloutMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateWhiteboardOnCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateWhiteboardOnCalloutMutation,
+    SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.CreatePostFromContributeTabMutation,
-    SchemaTypes.CreatePostFromContributeTabMutationVariables
-  >(CreatePostFromContributeTabDocument, options);
+    SchemaTypes.CreateWhiteboardOnCalloutMutation,
+    SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
+  >(CreateWhiteboardOnCalloutDocument, options);
 }
-export type CreatePostFromContributeTabMutationHookResult = ReturnType<typeof useCreatePostFromContributeTabMutation>;
-export type CreatePostFromContributeTabMutationResult =
-  Apollo.MutationResult<SchemaTypes.CreatePostFromContributeTabMutation>;
-export type CreatePostFromContributeTabMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreatePostFromContributeTabMutation,
-  SchemaTypes.CreatePostFromContributeTabMutationVariables
+export type CreateWhiteboardOnCalloutMutationHookResult = ReturnType<typeof useCreateWhiteboardOnCalloutMutation>;
+export type CreateWhiteboardOnCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateWhiteboardOnCalloutMutation>;
+export type CreateWhiteboardOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateWhiteboardOnCalloutMutation,
+  SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
 >;
 export const UpdateCalloutsSortOrderDocument = gql`
   mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID!]!) {
@@ -8061,60 +8114,6 @@ export type WhiteboardLastUpdatedDateQueryResult = Apollo.QueryResult<
 export function refetchWhiteboardLastUpdatedDateQuery(variables: SchemaTypes.WhiteboardLastUpdatedDateQueryVariables) {
   return { query: WhiteboardLastUpdatedDateDocument, variables: variables };
 }
-export const CreateWhiteboardOnCalloutDocument = gql`
-  mutation createWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
-    createContributionOnCallout(contributionData: $input) {
-      whiteboard {
-        ...WhiteboardDetails
-        profile {
-          url
-        }
-      }
-    }
-  }
-  ${WhiteboardDetailsFragmentDoc}
-`;
-export type CreateWhiteboardOnCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateWhiteboardOnCalloutMutation,
-  SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
->;
-
-/**
- * __useCreateWhiteboardOnCalloutMutation__
- *
- * To run a mutation, you first call `useCreateWhiteboardOnCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateWhiteboardOnCalloutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createWhiteboardOnCalloutMutation, { data, loading, error }] = useCreateWhiteboardOnCalloutMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateWhiteboardOnCalloutMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateWhiteboardOnCalloutMutation,
-    SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CreateWhiteboardOnCalloutMutation,
-    SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
-  >(CreateWhiteboardOnCalloutDocument, options);
-}
-export type CreateWhiteboardOnCalloutMutationHookResult = ReturnType<typeof useCreateWhiteboardOnCalloutMutation>;
-export type CreateWhiteboardOnCalloutMutationResult =
-  Apollo.MutationResult<SchemaTypes.CreateWhiteboardOnCalloutMutation>;
-export type CreateWhiteboardOnCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateWhiteboardOnCalloutMutation,
-  SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
->;
 export const DeleteWhiteboardDocument = gql`
   mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
     deleteWhiteboard(whiteboardData: $input) {
