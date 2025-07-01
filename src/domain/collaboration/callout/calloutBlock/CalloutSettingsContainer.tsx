@@ -113,7 +113,10 @@ const CalloutSettingsContainer = ({
   };
 
   const [sortDialogOpen, setSortDialogOpen] = useState(false);
-  const handleSortDialogOpen = () => setSortDialogOpen(true);
+  const handleSortDialogOpen = () => {
+    setSortDialogOpen(true);
+    setSettingsAnchorEl(null);
+  };
   const handleSortDialogClose = () => setSortDialogOpen(false);
 
   const [handleDelete, loadingDelete] = useLoadingState(async () => {
