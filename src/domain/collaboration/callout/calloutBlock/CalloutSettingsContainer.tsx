@@ -45,6 +45,7 @@ import { CalloutSummary } from '../CalloutSummary';
 import { CalloutLayoutEvents } from '../CalloutViewTypes';
 import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
 import CalloutContributionsSortDialog from '../CalloutContributions/CalloutsContributionsSortDialog/CalloutContributionsSortDialog';
+import { CalloutRestrictions } from '../../new-callout/CreateCallout/CreateCalloutDialog';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -65,6 +66,7 @@ export interface CalloutSettingsContainerProps
   expanded?: boolean;
   onExpand?: () => void;
   disableRichMedia?: boolean;
+  calloutRestrictions?: CalloutRestrictions;
 }
 
 const CalloutSettingsContainer = ({
@@ -80,6 +82,7 @@ const CalloutSettingsContainer = ({
   expanded = false,
   onExpand,
   children,
+  calloutRestrictions,
 }: CalloutSettingsContainerProps) => {
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
@@ -336,7 +339,12 @@ const CalloutSettingsContainer = ({
         url={callout.framing.profile.url}
         onClose={() => setShareDialogOpen(false)}
       />
-      <EditCalloutDialog open={editDialogOpened} onClose={() => setEditDialogOpened(false)} calloutId={callout.id} />
+      <EditCalloutDialog
+        open={editDialogOpened}
+        calloutRestrictions={calloutRestrictions}
+        onClose={() => setEditDialogOpened(false)}
+        calloutId={callout.id}
+      />
       <ConfirmationDialog
         entities={{
           titleId: 'callout.delete-confirm-title',
