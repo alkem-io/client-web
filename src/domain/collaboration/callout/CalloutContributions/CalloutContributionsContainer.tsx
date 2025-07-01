@@ -10,6 +10,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import { Ref, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { CalloutSettingsModelFull } from '../../new-callout/models/CalloutSettingsModel';
+import useCalloutPostCreatedSubscription from './post/useCalloutPostCreatedSubscription';
 
 interface CalloutContributionsContainerProps extends SimpleContainerProps<CalloutContributionsContainerProvided> {
   callout:
@@ -32,6 +33,7 @@ interface CalloutContributionsContainerProvided {
   contributions: Required<CalloutContributionsQuery['lookup']>['callout']['contributions'];
   contributionsCount: number;
   canCreateContribution: boolean;
+  subscriptionEnabled: boolean;
   loading;
   onCalloutUpdate?: () => Promise<unknown>;
 }
@@ -51,7 +53,7 @@ const CalloutContributionsContainer = ({
     triggerOnce: true,
   });
 
-  const { data, loading, refetch } = useCalloutContributionsQuery({
+  const { data, subscribeToMore, loading, refetch } = useCalloutContributionsQuery({
     variables: {
       calloutId: calloutId!,
       includeLink: contributionType === CalloutContributionType.Link,
@@ -59,6 +61,11 @@ const CalloutContributionsContainer = ({
       includePost: contributionType === CalloutContributionType.Post,
     },
     skip: !inView || !calloutId || skip,
+  });
+
+  const subscription = useCalloutPostCreatedSubscription(data, data => data?.lookup.callout, subscribeToMore, {
+    variables: { calloutId: calloutId! },
+    skip: !inView || !calloutId || skip || contributionType !== CalloutContributionType.Post,
   });
 
   const canCreateContribution = useMemo(() => {
@@ -93,6 +100,7 @@ const CalloutContributionsContainer = ({
         contributionsCount: data?.lookup.callout?.contributions.length ?? 0,
         loading,
         canCreateContribution,
+        subscriptionEnabled: subscription.enabled,
         onCalloutUpdate: async () => {
           await onCalloutUpdate?.();
           await refetch();
