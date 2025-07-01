@@ -1,5 +1,30 @@
-import { CalloutFormSubmittedValues } from '../../callout/CalloutForm/CalloutFormModel';
+import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from '../../callout/CalloutForm/CalloutFormModel';
+import { CalloutModel } from './CalloutModel';
 import { CalloutSettingsModelFull } from './CalloutSettingsModel';
+
+export const mapCalloutModelToCalloutForm = (
+  callout: Pick<CalloutModel, 'framing' | 'contributionDefaults' | 'settings'> | undefined
+): CalloutFormSubmittedValues | undefined => {
+  if (!callout) {
+    return undefined;
+  } else {
+    return {
+      framing: {
+        ...DefaultCalloutFormValues.framing,
+        ...callout.framing,
+        profile: {
+          ...DefaultCalloutFormValues.framing.profile,
+          ...callout.framing.profile,
+        },
+      },
+      contributionDefaults: {
+        ...DefaultCalloutFormValues.contributionDefaults,
+        ...callout.contributionDefaults,
+      },
+      settings: mapCalloutSettingsModelToCalloutSettingsFormValues(callout?.settings),
+    } as CalloutFormSubmittedValues;
+  }
+};
 
 export const mapCalloutSettingsFormToCalloutSettingsModel = (
   settings: CalloutFormSubmittedValues['settings']

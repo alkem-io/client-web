@@ -63,6 +63,7 @@ export const getNewTemplate = (
             visibility: data?.callout?.settings?.visibility ?? CalloutVisibility.Published,
           },
           contributionDefaults: {
+            defaultDisplayName: data?.callout?.contributionDefaults?.defaultDisplayName ?? '',
             postDescription: data?.callout?.contributionDefaults?.postDescription ?? '',
             whiteboardContent:
               data?.callout?.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),

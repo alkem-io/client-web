@@ -102,7 +102,7 @@ const CalloutForm = ({ callout, onChange, onStatusChanged, children, calloutRest
       }
       return emptyCallout;
     }
-  }, [callout?.id, DefaultCalloutSettings, mapCalloutSettingsModelToCalloutSettingsFormValues]);
+  }, [callout, DefaultCalloutSettings, mapCalloutSettingsModelToCalloutSettingsFormValues]);
 
   return (
     <Formik

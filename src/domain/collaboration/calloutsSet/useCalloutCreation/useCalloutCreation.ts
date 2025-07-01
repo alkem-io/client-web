@@ -41,6 +41,7 @@ export interface CalloutCreationType {
     visibility?: CalloutVisibility;
   };
   contributionDefaults?: {
+    defaultDisplayName?: string;
     postDescription?: string;
     whiteboardContent?: string;
   };

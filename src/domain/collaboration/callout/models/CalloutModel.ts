@@ -1,5 +1,7 @@
 import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import type { CalloutSettingsModelFull } from './CalloutSettingsModel';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 export interface CalloutModel {
   id: string;
@@ -8,6 +10,8 @@ export interface CalloutModel {
       displayName: string;
       description?: string;
       url: string;
+      references?: ReferenceModel[];
+      tagsets?: TagsetModel[];
     };
     type: CalloutFramingType;
     whiteboard?: {
@@ -17,6 +21,11 @@ export interface CalloutModel {
         };
       };
     };
+  };
+  contributionDefaults?: {
+    defaultDisplayName?: string;
+    postDescription?: string;
+    whiteboardContent?: string;
   };
   sortOrder: number;
   activity?: number;

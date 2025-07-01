@@ -25,7 +25,8 @@ import {
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import Gutters from '@/core/ui/grid/Gutters';
-import { mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
+import { mapCalloutModelToCalloutForm, mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
+import { CalloutModel } from '../models/CalloutModel';
 
 export interface CalloutRestrictions {
   /**
@@ -75,6 +76,7 @@ const CreateCalloutDialog = ({
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
+  const [templateSelected, setTemplateSelected] = useState<CalloutFormSubmittedValues | undefined>(undefined);
   const [fetchTemplateContent] = useTemplateContentLazyQuery();
   const handleSelectTemplate = async ({ id: templateId }: Identifiable) => {
     const { data } = await fetchTemplateContent({
@@ -86,7 +88,7 @@ const CreateCalloutDialog = ({
 
     const template = data?.lookup.template;
     const templateCallout = template?.callout;
-
+    setTemplateSelected(mapCalloutModelToCalloutForm(templateCallout as unknown as CalloutModel)); //!!
     if (!template || !templateCallout) {
       throw new Error("Couldn't load CalloutTemplate");
     }
@@ -106,6 +108,7 @@ const CreateCalloutDialog = ({
     }
   };
   const handleClose = () => {
+    setTemplateSelected(undefined);
     setCalloutFormData(undefined);
     setConfirmCloseDialogOpen(false);
     onClose?.();
@@ -180,6 +183,7 @@ const CreateCalloutDialog = ({
         />
         <DialogContent>
           <CalloutForm
+            callout={templateSelected}
             onChange={setCalloutFormData}
             onStatusChanged={handleStatusChange}
             calloutRestrictions={{ ...calloutRestrictions, temporaryLocation: true }}
