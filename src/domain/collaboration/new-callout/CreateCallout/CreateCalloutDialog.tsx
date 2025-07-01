@@ -1,6 +1,6 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
@@ -103,59 +103,62 @@ const CreateCalloutDialog = ({
     onClose?.();
   };
 
-  const [handlePublishCallout, publishingCallout] = useLoadingState(async () => {
-    const formData = ensurePresence(calloutFormData);
-    // Map the profile to CreateProfileInput
-    const framing = {
-      ...formData.framing,
-      profile: mapProfileModelToCreateProfileInput(formData.framing.profile),
-      tags: mapProfileTagsToCreateTags(formData.framing.profile),
-    };
+  const [handlePublishCallout, publishingCallout] = useLoadingState(
+    async (visibility: CalloutVisibility = CalloutVisibility.Published) => {
+      const formData = ensurePresence(calloutFormData);
+      // Map the profile to CreateProfileInput
+      const framing = {
+        ...formData.framing,
+        profile: mapProfileModelToCreateProfileInput(formData.framing.profile),
+        tags: mapProfileTagsToCreateTags(formData.framing.profile),
+      };
 
-    // And map the radio button allowed contribution types to an array
-    const settings = {
-      ...formData.settings,
-      contribution: {
-        ...formData.settings?.contribution,
-        allowedTypes:
-          formData.settings.contribution.allowedTypes === 'none' ? [] : [formData.settings.contribution.allowedTypes],
-      },
-    };
-    // If the calloutClassification is provided, map it to the expected format
-    const classification = calloutClassification ? { tagsets: calloutClassification } : undefined;
+      // And map the radio button allowed contribution types to an array
+      const settings = {
+        ...formData.settings,
+        visibility,
+        contribution: {
+          ...formData.settings?.contribution,
+          allowedTypes:
+            formData.settings.contribution.allowedTypes === 'none' ? [] : [formData.settings.contribution.allowedTypes],
+        },
+      };
+      // If the calloutClassification is provided, map it to the expected format
+      const classification = calloutClassification ? { tagsets: calloutClassification } : undefined;
 
-    // Clean up unneeded contributionDefaults
-    const contributionDefaults = {
-      ...formData.contributionDefaults,
-      defaultDisplayName: formData.contributionDefaults.defaultDisplayName
-        ? formData.contributionDefaults.defaultDisplayName
-        : undefined, // Only include if it's set, if it's an empty string, we don't want to send it
-      whiteboardContent:
-        formData.settings.contribution.allowedTypes === CalloutContributionType.Whiteboard
-          ? formData.contributionDefaults.whiteboardContent
-          : undefined,
-      postDescription:
-        formData.settings.contribution.allowedTypes === CalloutContributionType.Post
-          ? formData.contributionDefaults.postDescription
-          : undefined,
-      links:
-        formData.settings.contribution.allowedTypes === CalloutContributionType.Link
-          ? formData.contributionDefaults.links
-          : undefined,
-    };
+      // Clean up unneeded contributionDefaults
+      const contributionDefaults = {
+        ...formData.contributionDefaults,
+        defaultDisplayName: formData.contributionDefaults.defaultDisplayName
+          ? formData.contributionDefaults.defaultDisplayName
+          : undefined, // Only include if it's set, if it's an empty string, we don't want to send it
+        whiteboardContent:
+          formData.settings.contribution.allowedTypes === CalloutContributionType.Whiteboard
+            ? formData.contributionDefaults.whiteboardContent
+            : undefined,
+        postDescription:
+          formData.settings.contribution.allowedTypes === CalloutContributionType.Post
+            ? formData.contributionDefaults.postDescription
+            : undefined,
+        links:
+          formData.settings.contribution.allowedTypes === CalloutContributionType.Link
+            ? formData.contributionDefaults.links
+            : undefined,
+      };
 
-    const createCalloutInput: CalloutCreationTypeWithPreviewImages = {
-      ...formData,
-      framing,
-      settings,
-      classification,
-      contributionDefaults,
-    };
+      const createCalloutInput: CalloutCreationTypeWithPreviewImages = {
+        ...formData,
+        framing,
+        settings,
+        classification,
+        contributionDefaults,
+      };
 
-    await handleCreateCallout(createCalloutInput);
-    handleClose();
-    scrollToTop();
-  });
+      await handleCreateCallout(createCalloutInput);
+      handleClose();
+      scrollToTop();
+    }
+  );
 
   return (
     <>
@@ -181,10 +184,20 @@ const CreateCalloutDialog = ({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} variant="text" disabled={publishingCallout}>
-            {t('buttons.cancel')}
+          <Button
+            variant="text"
+            onClick={() => handlePublishCallout(CalloutVisibility.Draft)}
+            loading={publishingCallout}
+            disabled={!isValid}
+          >
+            {t('buttons.saveDraft')}
           </Button>
-          <Button variant="contained" onClick={handlePublishCallout} loading={publishingCallout} disabled={!isValid}>
+          <Button
+            variant="contained"
+            onClick={() => handlePublishCallout()}
+            loading={publishingCallout}
+            disabled={!isValid}
+          >
             {t('buttons.post')}
           </Button>
         </DialogActions>

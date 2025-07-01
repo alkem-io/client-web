@@ -103,7 +103,7 @@
     "publish": "Publish",
     "post": "Post",
     "unpublish": "Unpublish",
-    "save-draft": "Save as draft",
+    "saveDraft": "Save as draft",
     "archive": "Archive",
     "save": "Save",
     "continue": "Continue",
