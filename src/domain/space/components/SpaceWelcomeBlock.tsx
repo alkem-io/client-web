@@ -27,16 +27,17 @@ export interface SpaceWelcomeBlockProps {
     };
     profile: { description?: string };
   };
+  description?: string; // explicitly passing description to support both the tabDescription and the about's description
 }
 
-const SpaceWelcomeBlock = ({ spaceAbout }: SpaceWelcomeBlockProps) => {
+const SpaceWelcomeBlock = ({ spaceAbout, description }: SpaceWelcomeBlockProps) => {
   const { t } = useTranslation();
 
   const { spaceLevel } = useUrlResolver();
   const navigate = useNavigate();
 
   const isMember = spaceAbout?.membership?.myMembershipStatus === CommunityMembershipStatus.Member;
-  const description = spaceAbout?.profile?.description;
+  const welcomeDescription = description ?? spaceAbout?.profile?.description;
 
   const { organizations: leadOrganizations, users: leadUsers } = useRoleSetManager({
     roleSetId: spaceAbout?.membership?.roleSetID,
@@ -63,7 +64,7 @@ const SpaceWelcomeBlock = ({ spaceAbout }: SpaceWelcomeBlockProps) => {
         }
       >
         {isMember && <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} />}
-        {description && <WrapperMarkdown disableParagraphPadding>{description}</WrapperMarkdown>}
+        {welcomeDescription && <WrapperMarkdown disableParagraphPadding>{welcomeDescription}</WrapperMarkdown>}
       </OverflowGradient>
       {(leadUsers.length > 0 || leadOrganizations.length > 0) && (
         <Gutters flexWrap="wrap" row disablePadding>
