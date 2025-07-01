@@ -59,4 +59,5 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
   }
 );
 
+ContributeCard.displayName = 'ContributeCard';
 export default ContributeCard;

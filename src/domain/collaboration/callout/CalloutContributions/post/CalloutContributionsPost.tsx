@@ -136,4 +136,5 @@ const CalloutContributionsPost = forwardRef<HTMLDivElement, CalloutContributions
   }
 );
 
+CalloutContributionsPost.displayName = 'CalloutContributionsPost';
 export default CalloutContributionsPost;

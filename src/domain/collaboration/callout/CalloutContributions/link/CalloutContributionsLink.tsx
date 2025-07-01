@@ -288,4 +288,5 @@ const CalloutContributionsLink = forwardRef<HTMLDivElement, CalloutContributions
   }
 );
 
+CalloutContributionsLink.displayName = 'CalloutContributionsLink';
 export default CalloutContributionsLink;
