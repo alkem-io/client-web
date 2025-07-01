@@ -149,8 +149,6 @@ const CalloutForm = ({ callout, onChange, onStatusChanged, children, calloutRest
             <CalloutFormContributionSettings calloutRestrictions={calloutRestrictions} />
           </Gutters>
           {typeof children === 'function' ? (children as Function)(formikState) : children}
-          <pre>{JSON.stringify(formikState.errors)}</pre>
-          <pre>{JSON.stringify(callout)}</pre>
         </>
       )}
     </Formik>
