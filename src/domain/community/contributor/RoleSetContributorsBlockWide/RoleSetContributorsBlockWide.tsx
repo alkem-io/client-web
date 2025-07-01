@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import RoleSetContributorsBlockWideContent from './RoleSetContributorsBlockWideContent';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import AltToggle from '@/core/ui/forms/AltToggle/AltToggle';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import { useScreenSize } from '@/core/ui/grid/constants';
@@ -26,6 +26,7 @@ const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 type RoleSetContributorTypesBlockWideProps = {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
+  level?: SpaceLevel;
   hasInvitePrivilege: boolean;
   isDialogView?: boolean;
   isLoading?: boolean;
@@ -47,6 +48,7 @@ const RoleSetContributorTypesBlockWide = ({
   users,
   showUsers,
   organizations,
+  level = SpaceLevel.L0,
   hasInvitePrivilege,
   isDialogView = false,
   isLoading = false,
@@ -93,6 +95,7 @@ const RoleSetContributorTypesBlockWide = ({
             <InviteContributorsWizard
               contributorType={RoleSetContributorType.User}
               filterContributors={filterInviteeContributors}
+              onlyFromParentCommunity={level === SpaceLevel.L2}
             />
           </Box>
         )}
