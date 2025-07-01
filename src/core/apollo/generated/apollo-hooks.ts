@@ -2209,6 +2209,21 @@ export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
   }
   ${ProfileStorageConfigFragmentDoc}
 `;
+export const TemplateCardProfileInfoFragmentDoc = gql`
+  fragment TemplateCardProfileInfo on Profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    visual(type: CARD) {
+      id
+      uri
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
 export const CalloutTemplateContentFragmentDoc = gql`
   fragment CalloutTemplateContent on Callout {
     id
@@ -2907,152 +2922,6 @@ export const SearchResultSpaceFragmentDoc = gql`
   ${SpaceAboutLightFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualModelFragmentDoc}
-`;
-export const TemplateCardProfileInfoFragmentDoc = gql`
-  fragment TemplateCardProfileInfo on Profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    visual(type: CARD) {
-      id
-      uri
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-`;
-export const LibraryTemplatesFragmentDoc = gql`
-  fragment LibraryTemplates on TemplatesSet {
-    id
-    postTemplates {
-      id
-      profile {
-        id
-        displayName
-        description
-        visual(type: CARD) {
-          ...VisualModel
-        }
-        tagset {
-          ...TagsetDetails
-        }
-      }
-      postDefaultDescription
-    }
-    postTemplatesCount
-    whiteboardTemplates {
-      id
-      profile {
-        id
-        displayName
-        description
-        visual(type: CARD) {
-          ...VisualModel
-        }
-        tagset {
-          ...TagsetDetails
-        }
-      }
-    }
-    whiteboardTemplatesCount
-    calloutTemplates {
-      id
-      type
-      profile {
-        ...TemplateCardProfileInfo
-      }
-      callout {
-        framing {
-          id
-          profile {
-            id
-            displayName
-            description
-            tagset {
-              ...TagsetDetails
-            }
-            storageBucket {
-              id
-            }
-            references {
-              ...ReferenceDetails
-            }
-          }
-          type
-          whiteboard {
-            ...WhiteboardDetails
-          }
-        }
-      }
-    }
-    calloutTemplatesCount
-    communityGuidelinesTemplates {
-      id
-      profile {
-        id
-        displayName
-        description
-        tagset {
-          ...TagsetDetails
-        }
-      }
-      communityGuidelines {
-        id
-        profile {
-          displayName
-          description
-          references {
-            ...ReferenceDetails
-          }
-        }
-      }
-    }
-    spaceTemplatesCount
-    spaceTemplates {
-      id
-      profile {
-        id
-        displayName
-        description
-        tagset {
-          ...TagsetDetails
-        }
-      }
-      contentSpace {
-        id
-        collaboration {
-          id
-          innovationFlow {
-            id
-            states {
-              displayName
-              description
-            }
-          }
-          calloutsSet {
-            id
-            callouts {
-              id
-              framing {
-                id
-                profile {
-                  id
-                  displayName
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  ${VisualModelFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-  ${TemplateCardProfileInfoFragmentDoc}
-  ${ReferenceDetailsFragmentDoc}
-  ${WhiteboardDetailsFragmentDoc}
 `;
 export const DashboardSpaceMembershipFragmentDoc = gql`
   fragment DashboardSpaceMembership on Space {

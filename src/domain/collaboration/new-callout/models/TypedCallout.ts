@@ -10,47 +10,13 @@ import { CalloutModelLight } from './CalloutModelLight';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { LinkDetails } from '../../callout/CalloutContributions/link/CalloutContributionsLink';
 import { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
-//!! split these
+import { PostModel } from '../../post/model/PostModel';
 
-/*
-export type WhiteboardDetailsModel = {
-  id: string;
-  nameID: string;
-  createdDate: Date | string;
-  profile: {
-    displayName: string;
-    visual?: VisualModel;
-    preview?: VisualModel;
-  };
-  authorization?: {
-    myPrivileges?: AuthorizationPrivilege[];
-  }
-  contentUpdatePolicy: ContentUpdatePolicy;
-  createdBy?: {
-    id
-    profile: {
-      displayName: string;
-      url: string;
-      location?: {
-        country?: string;
-        city?: string;
-      }
-      avatar?: {
-        uri: string;
-      }
-    }
-  }
-}
-*/
-export type PostModel = {
-  id: string;
-  profile: {
-    displayName: string;
-    description?: string;
-  };
-};
+// TODO: TypedCallout and CalloutModel requires a refactor to avoid duplication
+// TypedCallout was created long ago to provide CalloutModel data + a few additional fields useful for the UI,
+// TypedCallout is quite basic information, then TypedCalloutDetails has more details, and TypedCalloutDetailsWithContributions includes the contributions.
 
-export type ContributorModel = {
+type ContributorModel = {
   __typename?: string; // 'Organization' | 'User' | 'VirtualContributor';
   id: string;
   profile: {
@@ -67,7 +33,7 @@ export type ContributorModel = {
   };
 };
 
-export type CommentsWithMessagesModel = {
+type CommentsWithMessagesModel = {
   id: string;
   messagesCount: number;
   authorization?: { myPrivileges?: AuthorizationPrivilege[] };
