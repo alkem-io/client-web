@@ -740,7 +740,7 @@
           "disabled": "No Comments"
         },
         "contributionTypes": {
-          "title": "Structured Responses",
+          "title": "Collection",
           "settings": {
             "title": "Response Settings",
             "membersCanRespond": "Members can respond",

@@ -73,20 +73,7 @@ const CommentsCallout = ({
               )}
             </CalloutContributionsContainer>
           )}
-          {/* Framing Comments */}
-          {callout.comments && (
-            <CalloutCommentsContainer callout={callout}>
-              {props => (
-                <CommentsComponent
-                  {...props}
-                  loading={loading || props.loading}
-                  last={lastMessageOnly}
-                  maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
-                  onClickMore={onExpand}
-                />
-              )}
-            </CalloutCommentsContainer>
-          )}
+
           {/* Collaborate with Whiteboards */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard) && (
             <CalloutContributionsContainer callout={callout} onCalloutUpdate={onCalloutUpdate}>
@@ -122,6 +109,20 @@ const CommentsCallout = ({
                 />
               )}
             </CalloutContributionsContainer>
+          )}
+          {/* Framing Comments */}
+          {callout.comments && (
+            <CalloutCommentsContainer callout={callout}>
+              {props => (
+                <CommentsComponent
+                  {...props}
+                  loading={loading || props.loading}
+                  last={lastMessageOnly}
+                  maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
+                  onClickMore={onExpand}
+                />
+              )}
+            </CalloutCommentsContainer>
           )}
         </CommentsCalloutLayout>
       )}
