@@ -1,0 +1,45 @@
+query CalloutContributionsSortOrder(
+  $calloutId: UUID!,
+) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      contributions {
+        id
+        sortOrder
+        link {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+        whiteboard   {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+        post {
+          id
+          profile {
+            id
+            displayName
+          }
+          comments {
+            id
+            messagesCount
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation UpdateContributionsSortOrder($calloutID: UUID!, $contributionIds: [UUID!]!) {
+  updateContributionsSortOrder(sortOrderData: { calloutID: $calloutID, contributionIDs: $contributionIds }) {
+    id
+    sortOrder
+  }
+}

@@ -54,7 +54,7 @@ export interface FormattedLink {
   contributionId: string;
 }
 
-interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
+interface CalloutContributionsLinkProps extends BaseCalloutViewProps {
   callout: TypedCalloutDetails;
   contributions: {
     id: string;
@@ -68,7 +68,7 @@ interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
   }[];
 }
 
-const CalloutContributionsLink = forwardRef<HTMLDivElement, LinkCollectionCalloutProps>(
+const CalloutContributionsLink = forwardRef<HTMLDivElement, CalloutContributionsLinkProps>(
   ({ callout, contributions, canCreateContribution, loading, expanded, onExpand, onCalloutUpdate }, ref) => {
     const { t } = useTranslation();
 

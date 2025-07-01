@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNumber } from 'lodash';
 import { Box, DialogContent, Paper } from '@mui/material';
@@ -14,6 +14,12 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
+import {
+  useCalloutContributionsSortOrderQuery,
+  useUpdateContributionsSortOrderMutation,
+} from '@/core/apollo/generated/apollo-hooks';
+import { Identifiable } from '@/core/utils/Identifiable';
+import Loading from '@/core/ui/loading/Loading';
 
 export interface CalloutContributionsSortItem {
   name: string;
@@ -21,28 +27,51 @@ export interface CalloutContributionsSortItem {
   commentsCount?: number;
 }
 
-interface SortDialogProps {
+interface CalloutContributionsSortDialogProps {
   open: boolean;
   onClose: () => void;
-  calloutId: string;
-  contributions: CalloutContributionsSortItem[];
-  onUpdateContributionsOrder: (contributions: CalloutContributionsSortItem[]) => void;
+  callout: Identifiable;
 }
 
-const SortDialog = ({ open, onClose, calloutId, contributions, onUpdateContributionsOrder }: SortDialogProps) => {
+const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContributionsSortDialogProps) => {
   const { t } = useTranslation();
-  const [items, setItems] = useState(contributions);
-  useEffect(() => {
-    setItems(contributions);
-  }, [contributions]);
+
+  const { data, loading } = useCalloutContributionsSortOrderQuery({
+    variables: {
+      calloutId: callout.id,
+    },
+    skip: !open || !callout.id,
+  });
+
+  const items = useMemo(() => {
+    return (
+      data?.lookup.callout?.contributions.map(contribution => ({
+        id: contribution.id,
+        name:
+          contribution.post?.profile.displayName ??
+          contribution.link?.profile.displayName ??
+          contribution.whiteboard?.profile.displayName,
+        commentsCount: contribution.post?.comments?.messagesCount,
+      })) || []
+    );
+  }, [data]);
+
+  const [updateContributionsSortOrder] = useUpdateContributionsSortOrderMutation();
+  const handleSortContributions = async contributions => {
+    return updateContributionsSortOrder({
+      variables: {
+        calloutID: callout.id,
+        contributionIds: contributions.map(contribution => contribution.id),
+      },
+    });
+  };
 
   const handleDragEnd: OnDragEndResponder = result => {
     if (result.destination && items) {
       const newItems = Array.from(items);
       const [reorderedItem] = newItems.splice(result.source.index, 1);
       newItems.splice(result.destination.index, 0, reorderedItem);
-      setItems(newItems);
-      onUpdateContributionsOrder(newItems);
+      handleSortContributions(newItems);
     }
   };
 
@@ -50,9 +79,10 @@ const SortDialog = ({ open, onClose, calloutId, contributions, onUpdateContribut
     <DialogWithGrid open={open} columns={4} aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
       <DialogHeader title={t('callout.sortContributions')} onClose={onClose} />
       <DialogContent>
+        {loading && <Loading />}
         <Paper variant="outlined">
           <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId={calloutId}>
+            <Droppable droppableId={`contributions_${callout.id}`}>
               {provided => (
                 <Gutters ref={provided.innerRef} disableGap disablePadding {...provided.droppableProps}>
                   {items?.map((item, index) => (
@@ -85,4 +115,4 @@ const SortDialog = ({ open, onClose, calloutId, contributions, onUpdateContribut
   );
 };
 
-export default SortDialog;
+export default CalloutContributionsSortDialog;

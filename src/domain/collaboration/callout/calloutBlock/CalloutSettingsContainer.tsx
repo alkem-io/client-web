@@ -1,17 +1,22 @@
-import React, { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
-import { Box, Collapse, Menu } from '@mui/material';
+import { useCalloutContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CalloutContributionType,
   CalloutVisibility,
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutSummary } from '../CalloutSummary';
-import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
-import { CalloutLayoutEvents } from '../CalloutViewTypes';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import ExpandContentIcon from '@/core/ui/content/ExpandContent/ExpandContentIcon';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { gutters } from '@/core/ui/grid/utils';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import { TemplateCalloutFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCalloutForm';
+import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   ArrowDownwardOutlined,
   ArrowUpwardOutlined,
@@ -26,28 +31,20 @@ import {
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
-import { FormattedLink } from '../CalloutContributions/link/CalloutContributionsLink';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import ExpandContentIcon from '@/core/ui/content/ExpandContent/ExpandContentIcon';
-import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
-import { gutters } from '@/core/ui/grid/utils';
-import SortDialog, { CalloutContributionsSortItem } from './sort/SortDialog';
-import {
-  useCalloutContentLazyQuery,
-  useUpdateContributionsSortOrderMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import { WhiteboardCardWhiteboard } from '../CalloutContributions/whiteboard/WhiteboardCard';
-import { PostCardPost } from '../CalloutContributions/post/PostCard';
-import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
-import { TemplateCalloutFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCalloutForm';
-import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useEnsurePresence from '@/core/utils/ensurePresence';
-import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
-import EditCalloutDialog from '../../new-callout/CreateCallout/EditCalloutDialog';
+import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
+import { Box, Collapse, Menu } from '@mui/material';
+import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortModels';
+import EditCalloutDialog from '../../new-callout/CreateCallout/EditCalloutDialog';
+import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
+import { FormattedLink } from '../CalloutContributions/link/CalloutContributionsLink';
+import { PostCardPost } from '../CalloutContributions/post/PostCard';
+import { WhiteboardCardWhiteboard } from '../CalloutContributions/whiteboard/WhiteboardCard';
+import { CalloutSummary } from '../CalloutSummary';
+import { CalloutLayoutEvents } from '../CalloutViewTypes';
+import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
+import CalloutContributionsSortDialog from '../CalloutContributions/CalloutsContributionsSortDialog/CalloutContributionsSortDialog';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -73,7 +70,6 @@ export interface CalloutSettingsContainerProps
 
 const CalloutSettingsContainer = ({
   callout,
-  items,
   onVisibilityChange,
   onCalloutDelete,
   topCallout,
@@ -167,36 +163,6 @@ const CalloutSettingsContainer = ({
   const isCollection = (callout: { settings: { contribution: { allowedTypes: CalloutContributionType[] } } }) =>
     callout.settings.contribution.allowedTypes.length > 0;
 
-  const calloutContributions = useMemo<CalloutContributionsSortItem[]>(
-    () =>
-      sortDialogOpen
-        ? []
-        : [
-            ...(items?.posts?.map(post => ({
-              id: post.contributionId,
-              name: post.profile?.displayName,
-              commentsCount: post.comments?.messagesCount,
-            })) ?? []),
-            ...(items?.whiteboards?.map(whiteboard => ({
-              id: whiteboard.contributionId,
-              name: whiteboard.profile.displayName,
-            })) ?? []),
-            ...(items?.links?.map(link => ({ id: link.contributionId, name: link.name })) ?? []),
-          ],
-    [sortDialogOpen, items]
-  );
-
-  const [updateContributionsSortOrder] = useUpdateContributionsSortOrderMutation();
-
-  const handleSortContributions = async contributions => {
-    return updateContributionsSortOrder({
-      variables: {
-        calloutID: callout.id,
-        contributionIds: contributions.map(contribution => contribution.id),
-      },
-    });
-  };
-
   const [fetchCalloutContent] = useCalloutContentLazyQuery();
 
   if (dontShow) {
@@ -246,12 +212,12 @@ const CalloutSettingsContainer = ({
             iconComponent={SwapVerticalCircleOutlined}
             onClick={handleSortDialogOpen}
             /*
-            //!! wt was this?
-            disabled={
-              !(callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link)
-                ? !!callout.contributions?.[0]?.link
-                : !!callout.contributions?.length)
-            }*/
+          //!! wt was this?
+          disabled={
+            !(callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link)
+              ? !!callout.contributions?.[0]?.link
+              : !!callout.contributions?.length)
+          }*/
           >
             {t('callout.sortContributions')}
           </MenuItemWithIcon>
@@ -291,13 +257,7 @@ const CalloutSettingsContainer = ({
           </MenuItemWithIcon>
         )}
       </Menu>
-      <SortDialog
-        open={sortDialogOpen}
-        onClose={handleSortDialogClose}
-        calloutId={callout.id}
-        contributions={calloutContributions}
-        onUpdateContributionsOrder={handleSortContributions}
-      />
+      <CalloutContributionsSortDialog open={sortDialogOpen} onClose={handleSortDialogClose} callout={callout} />
       <CalloutVisibilityChangeDialog
         open={visibilityDialogOpen}
         onClose={() => setVisibilityDialogOpen(false)}
