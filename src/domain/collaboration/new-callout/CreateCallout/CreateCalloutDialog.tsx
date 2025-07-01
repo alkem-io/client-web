@@ -35,7 +35,7 @@ export interface CalloutRestrictions {
    */
   disableWhiteboards?: boolean;
   /**
-   * Makes the Structured Responses read-only
+   * Makes the Structured Responses Field read-only
    */
   readOnlyAllowedTypes?: boolean;
 }

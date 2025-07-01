@@ -1,14 +1,13 @@
 import React, { ReactNode, useMemo } from 'react';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { FormikProps } from 'formik';
+import { FormikProps, useField } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import {
   CalloutAllowedContributors,
   CalloutFramingType,
-  CalloutType,
   CalloutVisibility,
   TemplateType,
   UpdateReferenceInput,
@@ -33,12 +32,16 @@ import { referenceSegmentSchema } from '@/domain/platform/admin/components/Commo
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { CalloutSettingsModelFull } from '@/domain/collaboration/new-callout/models/CalloutSettingsModel';
+import CalloutForm, { CalloutFormSubmittedValues, calloutValidationSchema } from '@/domain/collaboration/new-callout/CreateCallout/CalloutForm';
+import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 
-interface TemplateContentCallout {
+interface TemplateContentCallout extends CalloutFormSubmittedValues {
   /**
    * @deprecated
-   */
+   *//*
   calloutTypeDeprecated: CalloutType;
+  */
+ /*
   framing: {
     profile: {
       displayName: string;
@@ -64,6 +67,8 @@ interface TemplateContentCallout {
     postDescription?: string;
     whiteboardContent?: string;
   };
+  */
+
 }
 
 export interface TemplateCalloutFormSubmittedValues extends TemplateFormProfileSubmittedValues {
@@ -79,7 +84,7 @@ interface TemplateCalloutFormProps {
   temporaryLocation?: boolean;
 }
 
-const validator = {
+/*const validator = {
   callout: yup
     .object()
     .shape({
@@ -105,12 +110,16 @@ const validator = {
     })
     .required(),
 };
+*/
+const validator = {
+  callout: calloutValidationSchema,
+};
 
 const TemplateCalloutForm = ({ template, onSubmit, actions, temporaryLocation = false }: TemplateCalloutFormProps) => {
   const { t } = useTranslation();
   const createMode = !template?.id;
 
-  const calloutTypeOptions = useMemo<RadioButtonOption<CalloutType>[]>(() => {
+  /*const calloutTypeOptions = useMemo<RadioButtonOption<CalloutType>[]>(() => {
     return [
       CalloutType.Post,
       CalloutType.Whiteboard,
@@ -124,36 +133,37 @@ const TemplateCalloutForm = ({ template, onSubmit, actions, temporaryLocation = 
       tooltip: createMode ? undefined : <Caption>{t('components.calloutTemplateDialog.typeReadonly')}</Caption>,
     }));
   }, [t]);
+  */
 
   const initialValues: TemplateCalloutFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
     callout: {
-      calloutTypeDeprecated: template?.callout?.calloutTypeDeprecated ?? CalloutType.Post,
       framing: {
         profile: {
           displayName: template?.callout?.framing?.profile?.displayName ?? '',
           description: template?.callout?.framing?.profile?.description ?? '',
-          references: mapReferenceModelsToUpdateReferenceInputs(template?.callout?.framing?.profile?.references) ?? [],
-          tagsets: mapTagsetsToUpdateTagsets(template?.callout?.framing?.profile) ?? [{ ID: '', tags: [] }], // ID will be ignored on create
+          references: template?.callout?.framing?.profile?.references ?? [], // mapReferenceModelsToUpdateReferenceInputs() ?? [],
+          tagsets: template?.callout?.framing.profile.tagsets ?? [EmptyTagset], // mapTagsetsToUpdateTagsets(template?.callout?.framing?.profile) ?? [{ ID: '', tags: [] }], // ID will be ignored on create
         },
         type: template?.callout?.framing?.type ?? CalloutFramingType.None,
         whiteboard: {
           profile: {
             displayName: template?.callout?.framing?.whiteboard?.profile.displayName ?? '',
-            description: template?.callout?.framing?.whiteboard?.profile.description ?? '',
-            preview: template?.callout?.framing?.whiteboard?.profile.preview,
           },
+          previewImages: [],  //!!
           content: template?.callout?.framing?.whiteboard?.content ?? JSON.stringify(EmptyWhiteboard),
         },
       },
       contributionDefaults: {
+        defaultDisplayName: template?.callout?.contributionDefaults?.defaultDisplayName ?? '',
         postDescription: template?.callout?.contributionDefaults?.postDescription ?? '',
         whiteboardContent: template?.callout?.contributionDefaults?.whiteboardContent ?? '',
       },
       settings: {
         contribution: {
           enabled: template?.callout?.settings?.contribution?.enabled ?? false,
-          allowedTypes: template?.callout?.settings?.contribution?.allowedTypes ?? [],
+          allowedTypes: template?.callout?.settings?.contribution?.allowedTypes.length ?
+            template?.callout?.settings?.contribution?.allowedTypes[0] : 'none',
           canAddContributions:
             template?.callout?.settings?.contribution?.canAddContributions ?? CalloutAllowedContributors.Members,
           commentsEnabled: template?.callout?.settings?.contribution?.commentsEnabled ?? true,
@@ -175,9 +185,18 @@ const TemplateCalloutForm = ({ template, onSubmit, actions, temporaryLocation = 
       actions={actions}
       validator={validator}
     >
-      {({ values }) => {
+      {({ values, setFieldValue, errors }) => {
         return (
           <>
+            <CalloutForm
+              callout={values.callout}
+              calloutRestrictions={{
+                readOnlyAllowedTypes: !createMode,
+              }}
+              onChange={calloutFormValues => { setFieldValue('callout', calloutFormValues) }}
+            />
+            {JSON.stringify(errors)}
+            {/*
             <FormikInputField name="callout.framing.profile.displayName" title={t('common.title')} />
             <Box marginBottom={gutters(-1)}>
               <FormikMarkdownField
@@ -214,6 +233,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions, temporaryLocation = 
                 />
               </Box>
             )}
+              */}
           </>
         );
       }}

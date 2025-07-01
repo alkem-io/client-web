@@ -63,6 +63,52 @@ export interface CalloutFormSubmittedValues {
   };
 }
 
+export const calloutValidationSchema = yup.object().shape({
+  framing: yup.object().shape({
+    profile: yup.object().shape({
+      displayName: displayNameValidator.required(),
+      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
+      tagsets: tagsetsSegmentSchema,
+      references: referenceSegmentSchema,
+    }),
+    type: yup
+      .mixed<CalloutFramingType>()
+      .oneOf(Object.values(CalloutFramingType).filter(value => typeof value === 'string'))
+      .required(),
+    whiteboard: yup.object().when(['framing.type'], ([type], schema) => {
+      return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
+    }),
+  }),
+  contributionDefaults: yup.object().shape({
+    defaultDisplayName: displayNameValidator,
+    postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+    whiteboardContent: yup.string(),
+    links: referenceSegmentSchema,
+  }),
+  settings: yup.object().shape({
+    contribution: yup.object().shape({
+      enabled: yup.boolean().required(),
+      allowedTypes: yup
+        .mixed<string>()
+        .oneOf(['none', ...Object.values(CalloutContributionType)].filter(value => typeof value === 'string'))
+        .required(),
+      canAddContributions: yup
+        .mixed<CalloutAllowedContributors>()
+        .oneOf(Object.values(CalloutAllowedContributors).filter(value => typeof value === 'string'))
+        .required(),
+      commentsEnabled: yup.boolean().required(),
+    }),
+    framing: yup.object().shape({
+      commentsEnabled: yup.boolean().required(),
+    }),
+    visibility: yup
+      .mixed<CalloutVisibility>()
+      .oneOf(Object.values(CalloutVisibility).filter(value => typeof value === 'string'))
+      .required(),
+  }),
+});
+
+
 const FormikEffect = FormikEffectFactory<CalloutFormSubmittedValues>();
 
 export interface CalloutFormProps {
@@ -125,24 +171,10 @@ const CalloutForm = ({
 
   const temporaryLocation = !Boolean(callout?.id); // Callout doesn't exist yet => enable temporary location
 
-  const validationSchema = yup.object().shape({
-    framing: yup.object().shape({
-      profile: yup.object().shape({
-        displayName: displayNameValidator,
-        description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-        tagsets: tagsetsSegmentSchema,
-        references: referenceSegmentSchema,
-      }),
-      whiteboard: yup.object().when(['settings.framing.type'], ([type], schema) => {
-        return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
-      }),
-    }),
-  });
-
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={calloutValidationSchema}
       enableReinitialize
       validateOnMount
       onSubmit={() => {}}

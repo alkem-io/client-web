@@ -8,7 +8,6 @@ export const displayNameValidator = yup
     'is-not-spaces',
     TranslatedValidatedMessageWithPayload('forms.validations.nonBlank'),
     value => !value || !/^[\s]*$/.test(value)
-  )
-  .required(TranslatedValidatedMessageWithPayload('forms.validations.required'))
+)
   .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
   .max(SMALL_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max }));

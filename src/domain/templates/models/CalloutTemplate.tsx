@@ -33,6 +33,7 @@ export interface CalloutTemplate extends TemplateBase {
       };
     };
     contributionDefaults?: {
+      defaultDisplayName?: string;
       postDescription?: string;
       whiteboardContent?: string; // For Whiteboard Collection Callout templates
     };
