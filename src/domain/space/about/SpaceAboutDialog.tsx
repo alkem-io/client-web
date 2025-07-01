@@ -6,12 +6,14 @@ import { MouseEventHandler, useRef } from 'react';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
+import EntityDashboardLeadsSection, {
+  getMessageType,
+} from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { Trans, useTranslation } from 'react-i18next';
 import { Theme } from '@mui/material/styles';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import References from '@/domain/shared/components/References/References';
-import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, ProfileType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
@@ -27,9 +29,10 @@ import ApplicationButton from '@/domain/community/applicationButton/ApplicationB
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import RouterLink from '@/core/ui/link/RouterLink';
 import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsUrl, buildSignUpUrl } from '@/main/routing/urlBuilders';
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceDashboardSpaceDetails } from '../layout/tabbedLayout/Tabs/SpaceDashboard/SpaceDashboardView';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 export interface SpaceAboutDialogProps {
   open: boolean;
@@ -59,6 +62,7 @@ const SpaceAboutDialog = ({
 }: SpaceAboutDialogProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const isLevelZeroSpace = space.level === SpaceLevel.L0;
   const spaceLevel = space.level || SpaceLevel.L0;
@@ -106,29 +110,38 @@ const SpaceAboutDialog = ({
       return <Loading />;
     }
 
+    const providerType = provider.profile.type;
+    const isOrganization = providerType === ProfileType.Organization;
+
     return (
       <EntityDashboardLeadsSection
         organizationsHeader={t('pages.space.sections.dashboard.organization')}
+        usersHeader={t('pages.space.sections.dashboard.organization')}
         organizationsHeaderIcon={
           <Tooltip title={t('pages.space.sections.dashboard.hostTooltip')} arrow>
             <InfoOutlinedIcon color="primary" />
           </Tooltip>
         }
-        leadOrganizations={provider ? [provider] : undefined}
-        leadUsers={undefined}
+        leadOrganizations={isOrganization ? [provider] : undefined}
+        leadUsers={isOrganization ? undefined : [provider]}
       >
         {provider && (
           <Caption
             component={Link}
-            onClick={() =>
-              sendMessage('organization', {
+            onClick={() => {
+              if (!isAuthenticated) {
+                navigate(buildSignUpUrl(window.location.pathname, window.location.search));
+                return;
+              }
+
+              return sendMessage(getMessageType(providerType), {
                 id: provider.id,
                 displayName: provider.profile.displayName,
                 avatarUri: provider.profile.avatar?.uri,
                 country: provider.profile.location?.country,
                 city: provider.profile.location?.city,
-              })
-            }
+              });
+            }}
             sx={{ cursor: 'pointer' }}
           >
             <MailOutlineIcon color="primary" sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />

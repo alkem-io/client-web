@@ -5721,8 +5721,10 @@ export type RoleSet = {
   usersInRole: Array<User>;
   /** All users that have a Role in this RoleSet in the specified Roles. */
   usersInRoles: Array<UsersInRolesResponse>;
-  /** All virtuals that have the specified Role in this Community. */
+  /** All Virtual Contributors that have the specified Role in this Community. */
   virtualContributorsInRole: Array<VirtualContributor>;
+  /** All Virtual Contributors that are available from the current or parent RoleSets. */
+  virtualContributorsInRoleInHierarchy: Array<VirtualContributor>;
   /** All VirtualContributors that have a role in this RoleSet in the specified Roles. */
   virtualContributorsInRoles: Array<VirtualContributorsInRolesResponse>;
 };
@@ -5778,6 +5780,10 @@ export type RoleSetUsersInRolesArgs = {
 };
 
 export type RoleSetVirtualContributorsInRoleArgs = {
+  role: RoleName;
+};
+
+export type RoleSetVirtualContributorsInRoleInHierarchyArgs = {
   role: RoleName;
 };
 
@@ -15691,14 +15697,14 @@ export type VcInteractionsDetailsFragment = {
   virtualContributorID: string;
 };
 
-export type MentionableUsersQueryVariables = Exact<{
+export type MentionableContributorsQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']['input']>;
   roleSetId?: Scalars['UUID']['input'];
   includeVirtualContributors: Scalars['Boolean']['input'];
 }>;
 
-export type MentionableUsersQuery = {
+export type MentionableContributorsQuery = {
   __typename?: 'Query';
   usersPaginated: {
     __typename?: 'PaginatedUsers';
@@ -15724,7 +15730,7 @@ export type MentionableUsersQuery = {
     roleSet?:
       | {
           __typename?: 'RoleSet';
-          virtualContributorsInRole: Array<{
+          virtualContributorsInRoleInHierarchy: Array<{
             __typename?: 'VirtualContributor';
             id: string;
             profile: {
@@ -18055,6 +18061,36 @@ export type EntitlementDetailsFragment = {
   enabled: boolean;
 };
 
+export type CommunityAvailableVCsQueryVariables = Exact<{
+  roleSetId: Scalars['UUID']['input'];
+}>;
+
+export type CommunityAvailableVCsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    roleSet?:
+      | {
+          __typename?: 'RoleSet';
+          virtualContributorsInRoleInHierarchy: Array<{
+            __typename?: 'VirtualContributor';
+            id: string;
+            searchVisibility: SearchVisibility;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              url: string;
+              displayName: string;
+              avatar?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type AiPersonaServiceQueryVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;
@@ -19965,6 +20001,7 @@ export type SpaceAboutDetailsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -19987,6 +20024,7 @@ export type SpaceAboutDetailsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -20009,6 +20047,7 @@ export type SpaceAboutDetailsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -20191,6 +20230,7 @@ export type SpaceAboutFullQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -20213,6 +20253,7 @@ export type SpaceAboutFullQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -20235,6 +20276,7 @@ export type SpaceAboutFullQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -20421,6 +20463,7 @@ export type SpaceAboutDetailsFragment = {
           id: string;
           url: string;
           displayName: string;
+          type?: ProfileType | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
@@ -20437,6 +20480,7 @@ export type SpaceAboutDetailsFragment = {
           id: string;
           url: string;
           displayName: string;
+          type?: ProfileType | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
@@ -20453,6 +20497,7 @@ export type SpaceAboutDetailsFragment = {
           id: string;
           url: string;
           displayName: string;
+          type?: ProfileType | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
@@ -21173,6 +21218,7 @@ export type UpdateSpaceMutation = {
               id: string;
               url: string;
               displayName: string;
+              type?: ProfileType | undefined;
               avatar?:
                 | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
                 | undefined;
@@ -21189,6 +21235,7 @@ export type UpdateSpaceMutation = {
               id: string;
               url: string;
               displayName: string;
+              type?: ProfileType | undefined;
               avatar?:
                 | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
                 | undefined;
@@ -21205,6 +21252,7 @@ export type UpdateSpaceMutation = {
               id: string;
               url: string;
               displayName: string;
+              type?: ProfileType | undefined;
               avatar?:
                 | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
                 | undefined;
@@ -21346,6 +21394,7 @@ export type SpaceInfoFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
@@ -21362,6 +21411,7 @@ export type SpaceInfoFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
@@ -21378,6 +21428,7 @@ export type SpaceInfoFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
@@ -21964,6 +22015,7 @@ export type SpacePageQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -21997,6 +22049,7 @@ export type SpacePageQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -22030,6 +22083,7 @@ export type SpacePageQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    type?: ProfileType | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -22244,6 +22298,7 @@ export type SpacePageFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             description?: string | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
@@ -22271,6 +22326,7 @@ export type SpacePageFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             description?: string | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
@@ -22298,6 +22354,7 @@ export type SpacePageFragment = {
             id: string;
             url: string;
             displayName: string;
+            type?: ProfileType | undefined;
             description?: string | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
