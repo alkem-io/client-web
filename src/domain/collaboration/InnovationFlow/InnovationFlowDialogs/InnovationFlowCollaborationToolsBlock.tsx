@@ -9,7 +9,7 @@ import {
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import { GenericCalloutIcon } from '@/domain/collaboration/callout/utils/calloutIcons';
+import { GenericCalloutIcon } from '@/domain/collaboration/callout/icons/calloutIcons';
 import InnovationFlowDragNDropEditor, {
   InnovationFlowDragNDropEditorProps,
 } from '../InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';

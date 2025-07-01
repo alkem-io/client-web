@@ -9,7 +9,7 @@ import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { Ref, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { CalloutSettingsModelFull } from '../../new-callout/models/CalloutSettingsModel';
+import { CalloutSettingsModelFull } from '../models/CalloutSettingsModel';
 import useCalloutPostCreatedSubscription from './post/useCalloutPostCreatedSubscription';
 
 interface CalloutContributionsContainerProps extends SimpleContainerProps<CalloutContributionsContainerProvided> {

@@ -29,7 +29,7 @@ import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
-import { mapCalloutSettingsFormToCalloutSettingsModel } from '@/domain/collaboration/new-callout/models/mappings';
+import { mapCalloutSettingsFormToCalloutSettingsModel } from '@/domain/collaboration/callout/models/mappings';
 
 interface EntityWithProfile {
   profile: {

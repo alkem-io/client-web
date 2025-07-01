@@ -2,7 +2,7 @@ import { Ref, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { TypedCallout, TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
+import { TypedCallout, TypedCalloutDetails } from '../models/TypedCallout';
 import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 

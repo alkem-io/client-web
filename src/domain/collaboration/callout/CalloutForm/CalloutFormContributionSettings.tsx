@@ -13,13 +13,13 @@ import { CalloutStructuredResponseType } from './CalloutForm';
 import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import BlockIcon from '@mui/icons-material/Block';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
-import calloutIcons from '../../callout/utils/calloutIcons';
+import calloutIcons from '../../callout/icons/calloutIcons';
 import { CalloutContributionType, CalloutType } from '@/core/apollo/generated/graphql-schema';
 import ContributionSettingsDialog from './ContributionSettingsDialog/ContributionSettingsDialog';
 import ContributionsSettingsLink from './ContributionSettingsDialog/ContributionsSettingsLink';
 import ContributionsSettingsPost from './ContributionSettingsDialog/ContributionsSettingsPost';
 import ContributionsSettingsWhiteboard from './ContributionSettingsDialog/ContributionsSettingsWhiteboard';
-import { CalloutRestrictions } from './CreateCalloutDialog';
+import { CalloutRestrictions } from '../../callout/CalloutDialogs/CreateCalloutDialog';
 import { nameOf } from '@/core/utils/nameOf';
 import { useField } from 'formik';
 

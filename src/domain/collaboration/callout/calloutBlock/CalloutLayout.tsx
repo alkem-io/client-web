@@ -10,7 +10,7 @@ import References from '@/domain/shared/components/References/References';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import CalloutHeader from './CalloutHeader';
 import CalloutClosedMarginal from './CalloutClosedMarginal';
-import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
+import { TypedCalloutDetails } from '../models/TypedCallout';
 
 export interface CalloutLayoutProps {
   callout: TypedCalloutDetails;

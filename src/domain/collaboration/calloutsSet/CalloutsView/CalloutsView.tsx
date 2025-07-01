@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { useCalloutManager } from '../../new-callout/utils/useCalloutManager';
+import { useCalloutManager } from '../../callout/utils/useCalloutManager';
 import { OrderUpdate } from '../useCalloutsSet/useCalloutsSet';
-import { TypedCallout, TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
+import { TypedCallout, TypedCalloutDetails } from '../../callout/models/TypedCallout';
 import { CalloutSortEvents, CalloutSortProps } from './CalloutSortModels';
 import CalloutView from '../../callout/CalloutView/CalloutView';
 import useNavigate from '@/core/routing/useNavigate';
@@ -16,7 +16,7 @@ import CardFooter from '@/core/ui/card/CardFooter';
 import { gutters } from '@/core/ui/grid/utils';
 import { without } from 'lodash';
 import CalloutDetailsContainer from '../../callout/CalloutView/CalloutDetailsContainer';
-import { CalloutRestrictions } from '../../new-callout/CreateCallout/CreateCalloutDialog';
+import { CalloutRestrictions } from '../../callout/CalloutDialogs/CreateCalloutDialog';
 
 const CalloutsViewSkeleton = () => (
   <PageContentBlock>

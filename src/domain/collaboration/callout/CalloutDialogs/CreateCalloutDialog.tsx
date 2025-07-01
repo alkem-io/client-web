@@ -14,8 +14,8 @@ import {
 } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
-import CalloutForm from './CalloutForm';
-import { CalloutFormSubmittedValues } from './CalloutFormModel';
+import CalloutForm from '../CalloutForm/CalloutForm';
+import { CalloutFormSubmittedValues } from '../CalloutForm/CalloutFormModel';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {

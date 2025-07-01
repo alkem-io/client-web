@@ -1,8 +1,8 @@
 import { CalloutFramingType, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import CalloutForm, { calloutValidationSchema } from '@/domain/collaboration/new-callout/CreateCallout/CalloutForm';
-import { CalloutFormSubmittedValues } from '@/domain/collaboration/new-callout/CreateCallout/CalloutFormModel';
-import { DefaultCalloutSettings } from '@/domain/collaboration/new-callout/models/CalloutSettingsModel';
-import { mapCalloutSettingsModelToCalloutSettingsFormValues } from '@/domain/collaboration/new-callout/models/mappings';
+import CalloutForm, { calloutValidationSchema } from '@/domain/collaboration/callout/CalloutForm/CalloutForm';
+import { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
+import { DefaultCalloutSettings } from '@/domain/collaboration/callout/models/CalloutSettingsModel';
+import { mapCalloutSettingsModelToCalloutSettingsFormValues } from '@/domain/collaboration/callout/models/mappings';
 import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';

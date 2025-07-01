@@ -36,8 +36,8 @@ import { Box, Collapse, Menu } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortModels';
-import EditCalloutDialog from '../../new-callout/CreateCallout/EditCalloutDialog';
-import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
+import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
+import { TypedCalloutDetails } from '../models/TypedCallout';
 import { FormattedLink } from '../CalloutContributions/link/CalloutContributionsLink';
 import { PostCardPost } from '../CalloutContributions/post/PostCard';
 import { WhiteboardCardWhiteboard } from '../CalloutContributions/whiteboard/WhiteboardCard';
@@ -45,7 +45,7 @@ import { CalloutSummary } from '../CalloutSummary';
 import { CalloutLayoutEvents } from '../CalloutViewTypes';
 import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
 import CalloutContributionsSortDialog from '../CalloutContributions/CalloutsContributionsSortDialog/CalloutContributionsSortDialog';
-import { CalloutRestrictions } from '../../new-callout/CreateCallout/CreateCalloutDialog';
+import { CalloutRestrictions } from '../CalloutDialogs/CreateCalloutDialog';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;

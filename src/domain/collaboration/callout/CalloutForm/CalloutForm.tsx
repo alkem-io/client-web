@@ -23,12 +23,12 @@ import { cloneDeep } from 'lodash';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { DefaultCalloutSettings } from '../models/CalloutSettingsModel';
+import { DefaultCalloutSettings } from '../../callout/models/CalloutSettingsModel';
 import { mapCalloutSettingsModelToCalloutSettingsFormValues } from '../models/mappings';
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
-import { CalloutRestrictions } from './CreateCalloutDialog';
+import { CalloutRestrictions } from '../../callout/CalloutDialogs/CreateCalloutDialog';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 

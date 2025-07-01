@@ -1,4 +1,4 @@
-import { CalloutFormSubmittedValues } from '../CreateCallout/CalloutFormModel';
+import { CalloutFormSubmittedValues } from '../../callout/CalloutForm/CalloutFormModel';
 import { CalloutSettingsModelFull } from './CalloutSettingsModel';
 
 export const mapCalloutSettingsFormToCalloutSettingsModel = (

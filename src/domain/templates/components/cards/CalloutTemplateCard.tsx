@@ -11,7 +11,7 @@ import { Caption } from '@/core/ui/typography';
 import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
 import InnovationPackIcon from '@/domain/InnovationPack/InnovationPackIcon';
 import CardTags from '@/core/ui/card/CardTags';
-import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import calloutIcons from '@/domain/collaboration/callout/icons/calloutIcons';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { gutters } from '@/core/ui/grid/utils';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';

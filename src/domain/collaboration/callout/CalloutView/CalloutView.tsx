@@ -1,6 +1,6 @@
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import CommentsCallout from './CommentsCallout';
-import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
+import { TypedCalloutDetails } from '../models/TypedCallout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 
 export interface CalloutViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {

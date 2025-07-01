@@ -23,5 +23,5 @@ export interface CalloutModelLight {
   activity?: number;
   classification?: {
     flowState?: ClassificationTagsetModel;
-  }
+  };
 }

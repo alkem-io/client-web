@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import WhiteboardPreview from '../../whiteboard/WhiteboardPreview/WhiteboardPreview';
 import WhiteboardView from '../../whiteboard/WhiteboardsManagement/WhiteboardView';
-import { TypedCalloutDetails } from '../../new-callout/models/TypedCallout';
+import { TypedCalloutDetails } from '../models/TypedCallout';
 
 interface CalloutFramingWhiteboardProps {
   callout: TypedCalloutDetails;

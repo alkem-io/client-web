@@ -8,7 +8,7 @@ import { DesignServicesOutlined } from '@mui/icons-material';
 import CardDetails from '@/core/ui/card/CardDetails';
 import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
 import { Visual } from '@/domain/common/visual/Visual';
-import { GenericCalloutIcon } from '../utils/calloutIcons';
+import { GenericCalloutIcon } from '../icons/calloutIcons';
 
 interface CalloutContributionSettings {
   enabled: boolean;

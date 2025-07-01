@@ -20,7 +20,7 @@ import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { compact, sortBy } from 'lodash';
-import { TypedCalloutDetails } from '../../../new-callout/models/TypedCallout';
+import { TypedCalloutDetails } from '../../models/TypedCallout';
 import Loading from '@/core/ui/loading/Loading';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';

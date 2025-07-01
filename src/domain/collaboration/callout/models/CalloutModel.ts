@@ -27,5 +27,3 @@ export interface CalloutModel {
   };
   settings: CalloutSettingsModelFull;
 }
-
-

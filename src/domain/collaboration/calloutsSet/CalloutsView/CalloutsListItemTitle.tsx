@@ -1,7 +1,7 @@
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
 import { useTranslation } from 'react-i18next';
-import { CalloutModelLight } from '../../new-callout/models/CalloutModelLight';
+import { CalloutModelLight } from '../../callout/models/CalloutModelLight';
 
 type CalloutsListItemTitleProps = {
   callout: CalloutModelLight;

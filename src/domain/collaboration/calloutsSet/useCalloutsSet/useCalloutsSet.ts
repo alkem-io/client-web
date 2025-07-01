@@ -14,7 +14,7 @@ import { cloneDeep } from 'lodash';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 import { ClassificationTagsetModel } from '../Classification/ClassificationTagset.model';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
-import { TypedCallout } from '../../new-callout/models/TypedCallout';
+import { TypedCallout } from '../../callout/models/TypedCallout';
 
 interface UseCalloutsSetParams {
   calloutsSetId: string | undefined;
