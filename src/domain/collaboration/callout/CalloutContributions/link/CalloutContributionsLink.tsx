@@ -14,11 +14,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import References from '@/domain/shared/components/References/References';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import {
-  AuthorizationPrivilege,
-  CalloutAllowedContributors,
-  CalloutContributionType,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -73,7 +69,7 @@ interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
 }
 
 const CalloutContributionsLink = forwardRef<HTMLDivElement, LinkCollectionCalloutProps>(
-  ({ callout, contributions, loading, expanded, onExpand, onCalloutUpdate }, ref) => {
+  ({ callout, contributions, canCreateContribution, loading, expanded, onExpand, onCalloutUpdate }, ref) => {
     const { t } = useTranslation();
 
     const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
@@ -92,13 +88,6 @@ const CalloutContributionsLink = forwardRef<HTMLDivElement, LinkCollectionCallou
     const closeEditDialog = () => setEditLink(undefined);
 
     const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
-    const isContributionAllowed =
-      calloutPrivileges.includes(AuthorizationPrivilege.Contribute) &&
-      callout.settings.contribution.enabled &&
-      callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) &&
-      (callout.settings.contribution.canAddContributions === CalloutAllowedContributors.Members ||
-        calloutPrivileges.includes(AuthorizationPrivilege.Update));
-    const canAddLinks = isContributionAllowed || calloutPrivileges.includes(AuthorizationPrivilege.Update);
     const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
 
     // New Links:
@@ -255,7 +244,7 @@ const CalloutContributionsLink = forwardRef<HTMLDivElement, LinkCollectionCallou
                 {t('callout.link-collection.more-links', { count: formattedLinks.length })}
               </Caption>
             )}
-            {canAddLinks && (
+            {canCreateContribution && (
               <IconButton aria-label={t('common.add')} size="small" onClick={() => setAddNewLinkDialogOpen(true)}>
                 <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
               </IconButton>

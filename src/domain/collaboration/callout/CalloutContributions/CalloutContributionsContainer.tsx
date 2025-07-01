@@ -69,11 +69,21 @@ const CalloutContributionsContainer = ({
   });
 
   const canCreateContribution = useMemo(() => {
-    if (!callout || !callout.settings.contribution.enabled) {
+    if (
+      !callout ||
+      !callout.settings.contribution.enabled ||
+      callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.None)
+    ) {
       return false;
     }
+
     const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
     const requiredPrivileges = [AuthorizationPrivilege.Contribute];
+
+    if (callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins)) {
+      requiredPrivileges.push(AuthorizationPrivilege.Update);
+    }
+
     switch (contributionType) {
       case CalloutContributionType.Whiteboard:
         requiredPrivileges.push(AuthorizationPrivilege.CreateWhiteboard);
@@ -82,14 +92,8 @@ const CalloutContributionsContainer = ({
         requiredPrivileges.push(AuthorizationPrivilege.CreatePost);
         break;
     }
-    const hasPermissions = requiredPrivileges.every(privilege => calloutPrivileges.includes(privilege));
-    if (hasPermissions) {
-      return true;
-    }
-    if (callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins)) {
-      return calloutPrivileges.includes(AuthorizationPrivilege.Update);
-    }
-    return false;
+
+    return requiredPrivileges.every(privilege => calloutPrivileges.includes(privilege));
   }, [callout, callout?.settings, callout?.authorization, contributionType]);
 
   return (
