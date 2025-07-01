@@ -24,8 +24,13 @@ import {
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import Gutters from '@/core/ui/grid/Gutters';
+import { mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
 
 export interface CalloutRestrictions {
+  /**
+   * Store media in a temporary location (required when the Callout doesn't exist yet)
+   */
+  temporaryLocation?: boolean;
   /**
    * Disables upload of images, videos and other rich media in the Markdown editors.
    */
@@ -115,18 +120,11 @@ const CreateCalloutDialog = ({
         tags: mapProfileTagsToCreateTags(formData.framing.profile),
       };
 
-      // And map the radio button allowed contribution types to an array
-      const settings = {
-        ...formData.settings,
-        visibility,
-        contribution: {
-          ...formData.settings?.contribution,
-          allowedTypes:
-            formData.settings.contribution.allowedTypes === 'none' ? [] : [formData.settings.contribution.allowedTypes],
-        },
-      };
-      // If the calloutClassification is provided, map it to the expected format
-      const classification = calloutClassification ? { tagsets: calloutClassification } : undefined;
+    // And map the radio button allowed contribution types to an array
+    const settings = mapCalloutSettingsFormToCalloutSettingsModel(formData.settings);
+    settings.visibility = visibility;
+    // If the calloutClassification is provided, map it to the expected format
+    const classification = calloutClassification ? { tagsets: calloutClassification } : undefined;
 
       // Clean up unneeded contributionDefaults
       const contributionDefaults = {
@@ -183,7 +181,7 @@ const CreateCalloutDialog = ({
           <CalloutForm
             onChange={setCalloutFormData}
             onStatusChanged={handleStatusChange}
-            calloutRestrictions={calloutRestrictions}
+            calloutRestrictions={{ ...calloutRestrictions, temporaryLocation: true }}
           />
         </DialogContent>
         <DialogActions>

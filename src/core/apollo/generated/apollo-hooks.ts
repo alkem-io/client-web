@@ -2219,7 +2219,7 @@ export const CalloutTemplateContentFragmentDoc = gql`
         id
         displayName
         description
-        tagset {
+        tagsets {
           ...TagsetDetails
         }
         defaultTagset: tagset {
@@ -2239,15 +2239,11 @@ export const CalloutTemplateContentFragmentDoc = gql`
       }
     }
     settings {
-      contribution {
-        enabled
-        allowedTypes
-        canAddContributions
-        commentsEnabled
-      }
+      ...CalloutSettingsFull
     }
     contributionDefaults {
       id
+      defaultDisplayName
       postDescription
       whiteboardContent
     }
@@ -2255,6 +2251,7 @@ export const CalloutTemplateContentFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
+  ${CalloutSettingsFullFragmentDoc}
 `;
 export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
   fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {

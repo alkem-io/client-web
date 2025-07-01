@@ -29,6 +29,7 @@ import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
+import { mapCalloutSettingsFormToCalloutSettingsModel } from '@/domain/collaboration/new-callout/models/mappings';
 
 interface EntityWithProfile {
   profile: {
@@ -150,13 +151,16 @@ const handleContributionDefaults = (
     | {
         postDescription?: string;
         whiteboardContent?: string;
+        defaultDisplayName?: string;
       }
     | undefined
 ) => {
+  // Return the values only they are not empty, otherwise just set them to undefined
   if (data) {
     return {
-      postDescription: data.postDescription,
-      whiteboardContent: data.whiteboardContent,
+      defaultDisplayName: data.defaultDisplayName ? data.defaultDisplayName : undefined,
+      postDescription: data.postDescription ? data.postDescription : undefined,
+      whiteboardContent: data.whiteboardContent ? data.whiteboardContent : undefined,
     };
   }
 };
@@ -187,6 +191,7 @@ export const toCreateTemplateMutationVariables = (
           tags,
           whiteboard: handleCreateWhiteboard(calloutTemplateData.callout.framing.whiteboard),
         },
+        settings: mapCalloutSettingsFormToCalloutSettingsModel(calloutTemplateData.callout.settings),
       };
       callout.contributionDefaults = handleContributionDefaults(calloutTemplateData.callout.contributionDefaults);
       if (!(calloutTemplateData.callout?.framing.type === CalloutFramingType.Whiteboard)) {
@@ -360,13 +365,14 @@ export const toUpdateTemplateMutationVariables = (
           ID: (template as CalloutTemplate).callout?.id!,
           framing: {
             profile: mapTemplateProfileToUpdateProfileInput(calloutTemplateData.callout?.framing.profile),
+            type: calloutTemplateData.callout?.framing.type,
             whiteboardContent: calloutTemplateData.callout?.framing.whiteboard?.content,
           },
           contributionDefaults: handleContributionDefaults(calloutTemplateData.callout?.contributionDefaults),
         },
       };
       // Delete useless fields and leave only the fields relevant to the callout types
-      if (!((template as CalloutTemplate).callout?.framing.type === CalloutFramingType.Whiteboard)) {
+      if (!(calloutTemplateData.callout?.framing.type === CalloutFramingType.Whiteboard)) {
         delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
       }
       if (!calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post)) {

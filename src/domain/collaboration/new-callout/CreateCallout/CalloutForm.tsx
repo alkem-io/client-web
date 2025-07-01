@@ -29,6 +29,8 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { CalloutRestrictions } from './CreateCalloutDialog';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { mapCalloutSettingsModelToCalloutSettingsFormValues } from '../models/mappings';
+import { DefaultCalloutSettings } from '../models/CalloutSettingsModel';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
@@ -79,11 +81,11 @@ export const calloutValidationSchema = yup.object().shape({
       return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
     }),
   }),
-  /*  contributionDefaults: yup.object().shape({
-    defaultDisplayName: displayNameValidator,
-    postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-    whiteboardContent: yup.string(),
-    links: referenceSegmentSchema,
+  contributionDefaults: yup.object().shape({
+    defaultDisplayName: displayNameValidator.optional().nullable(),
+    postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
+    whiteboardContent: yup.string().nullable(),
+    links: referenceSegmentSchema.nullable(),
   }),
   settings: yup.object().shape({
     contribution: yup.object().shape({
@@ -105,7 +107,7 @@ export const calloutValidationSchema = yup.object().shape({
       .mixed<CalloutVisibility>()
       .oneOf(Object.values(CalloutVisibility).filter(value => typeof value === 'string'))
       .required(),
-  }),*/
+  }),
 });
 
 const FormikEffect = FormikEffectFactory<CalloutFormSubmittedValues>();
@@ -118,15 +120,7 @@ export interface CalloutFormProps {
   calloutRestrictions?: CalloutRestrictions;
 }
 
-const CalloutForm = ({
-  callout,
-  onChange,
-  onStatusChanged,
-  children,
-  calloutRestrictions,
-  /*temporaryLocation = false,
-   */
-}: CalloutFormProps) => {
+const CalloutForm = ({ callout, onChange, onStatusChanged, children, calloutRestrictions }: CalloutFormProps) => {
   const { t } = useTranslation();
 
   const { isSmallScreen } = useScreenSize();
@@ -165,10 +159,8 @@ const CalloutForm = ({
               visibility: CalloutVisibility.Published,
             },
           },
-    [callout?.id]
+    [callout?.id, DefaultCalloutSettings, mapCalloutSettingsModelToCalloutSettingsFormValues]
   );
-
-  const temporaryLocation = !Boolean(callout?.id); // Callout doesn't exist yet => enable temporary location
 
   return (
     <Formik
@@ -209,12 +201,14 @@ const CalloutForm = ({
               fieldName={nameOf<CalloutFormSubmittedValues>('framing.profile.references')}
               compactMode
               references={formikState.values.framing.profile.references}
-              temporaryLocation={temporaryLocation}
+              temporaryLocation={calloutRestrictions?.temporaryLocation}
               fullWidth
             />
             <CalloutFormContributionSettings calloutRestrictions={calloutRestrictions} />
           </Gutters>
           {typeof children === 'function' ? (children as Function)(formikState) : children}
+          <pre>{JSON.stringify(formikState.errors)}</pre>
+          <pre>{JSON.stringify(callout)}</pre>
         </>
       )}
     </Formik>

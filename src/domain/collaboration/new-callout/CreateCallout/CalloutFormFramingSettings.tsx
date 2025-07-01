@@ -33,11 +33,11 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
       helpers.setValue({
         ...rest,
         whiteboard: {
-          content: EmptyWhiteboardString,
+          content: whiteboard?.content ?? EmptyWhiteboardString,
           profile: {
-            displayName: t('common.whiteboard'),
+            displayName: whiteboard?.profile.displayName ?? t('common.whiteboard'),
           },
-          previewImages: undefined,
+          previewImages: whiteboard?.previewImages,
         },
       });
     } else {

@@ -24888,15 +24888,15 @@ export type TemplateContentQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
-                    tagset?:
-                      | {
+                    tagsets?:
+                      | Array<{
                           __typename?: 'Tagset';
                           id: string;
                           name: string;
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
-                        }
+                        }>
                       | undefined;
                     defaultTagset?:
                       | {
@@ -25016,6 +25016,7 @@ export type TemplateContentQuery = {
                 };
                 settings: {
                   __typename?: 'CalloutSettings';
+                  visibility: CalloutVisibility;
                   contribution: {
                     __typename?: 'CalloutSettingsContribution';
                     enabled: boolean;
@@ -25023,10 +25024,12 @@ export type TemplateContentQuery = {
                     canAddContributions: CalloutAllowedContributors;
                     commentsEnabled: boolean;
                   };
+                  framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
                 };
                 contributionDefaults: {
                   __typename?: 'CalloutContributionDefaults';
                   id: string;
+                  defaultDisplayName?: string | undefined;
                   postDescription?: string | undefined;
                   whiteboardContent?: string | undefined;
                 };
@@ -25306,15 +25309,15 @@ export type CalloutTemplateContentFragment = {
       id: string;
       displayName: string;
       description?: string | undefined;
-      tagset?:
-        | {
+      tagsets?:
+        | Array<{
             __typename?: 'Tagset';
             id: string;
             name: string;
             tags: Array<string>;
             allowedValues: Array<string>;
             type: TagsetType;
-          }
+          }>
         | undefined;
       defaultTagset?:
         | {
@@ -25419,6 +25422,7 @@ export type CalloutTemplateContentFragment = {
   };
   settings: {
     __typename?: 'CalloutSettings';
+    visibility: CalloutVisibility;
     contribution: {
       __typename?: 'CalloutSettingsContribution';
       enabled: boolean;
@@ -25426,10 +25430,12 @@ export type CalloutTemplateContentFragment = {
       canAddContributions: CalloutAllowedContributors;
       commentsEnabled: boolean;
     };
+    framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
   };
   contributionDefaults: {
     __typename?: 'CalloutContributionDefaults';
     id: string;
+    defaultDisplayName?: string | undefined;
     postDescription?: string | undefined;
     whiteboardContent?: string | undefined;
   };

@@ -1,12 +1,15 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useCalloutContentQuery, useUpdateCalloutContentMutation } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType, UpdateCalloutEntityInput } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutContributionType,
+  UpdateCalloutEntityInput,
+  UpdateCalloutSettingsInput,
+} from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {} from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import CalloutForm, { CalloutFormSubmittedValues, CalloutStructuredResponseType } from './CalloutForm';
+import CalloutForm, { CalloutFormSubmittedValues } from './CalloutForm';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { mapProfileModelToUpdateProfileInput } from '@/domain/common/profile/ProfileModelUtils';
@@ -15,6 +18,11 @@ import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import Loading from '@/core/ui/loading/Loading';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import { CalloutRestrictions } from './CreateCalloutDialog';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import {
+  mapCalloutSettingsFormToCalloutSettingsModel,
+  mapCalloutSettingsModelToCalloutSettingsFormValues,
+} from '../models/mappings';
 
 export interface EditCalloutDialogProps {
   open?: boolean;
@@ -59,15 +67,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           previewImages: [],
         },
       },
-      settings: {
-        ...calloutData.settings,
-        contribution: {
-          ...calloutData.settings.contribution,
-          allowedTypes: (calloutData.settings.contribution.allowedTypes.length
-            ? calloutData.settings.contribution.allowedTypes[0]
-            : 'none') as CalloutStructuredResponseType,
-        },
-      },
+      settings: mapCalloutSettingsModelToCalloutSettingsFormValues(calloutData.settings),
       contributionDefaults: {
         ...calloutData.contributionDefaults,
         id: undefined,
@@ -107,15 +107,9 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
     };
 
     // And map the radio button allowed contribution types to an array
-    const settings = {
-      ...formData.settings,
-      contribution: {
-        ...formData.settings?.contribution,
-        // allowedTypes:
-        // formData.settings.contribution.allowedTypes === 'none' ? [] : [formData.settings.contribution.allowedTypes],
-        allowedTypes: undefined, // AllowedTypes is read-only for now, don't send it to the server
-      },
-    };
+    const settings: UpdateCalloutSettingsInput = mapCalloutSettingsFormToCalloutSettingsModel(formData.settings);
+    // AllowedTypes is read-only for now, never send it to the server
+    delete settings?.contribution?.['allowedTypes'];
 
     // Clean up unneeded contributionDefaults
     // TODO: extract as used in CreateCalloutDialog
@@ -163,13 +157,15 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           {loadingCallout ? (
             <Loading />
           ) : (
-            <CalloutForm
-              callout={callout}
-              onChange={setCalloutFormData}
-              onStatusChanged={handleStatusChange}
-              /* Users cannot change the allowedTypes on an already created callout for now */
-              calloutRestrictions={{ ...calloutRestrictions, readOnlyAllowedTypes: true }}
-            />
+            <StorageConfigContextProvider locationType="callout" calloutId={calloutId}>
+              <CalloutForm
+                callout={callout}
+                onChange={setCalloutFormData}
+                onStatusChanged={handleStatusChange}
+                /* Users cannot change the allowedTypes on an already created callout for now */
+                calloutRestrictions={{ ...calloutRestrictions, readOnlyAllowedTypes: true, temporaryLocation: false }}
+              />
+            </StorageConfigContextProvider>
           )}
         </DialogContent>
         <DialogActions>
