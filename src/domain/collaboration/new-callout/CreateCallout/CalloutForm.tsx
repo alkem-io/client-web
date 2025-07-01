@@ -19,7 +19,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
-import CalloutFormAdditionalContent from './CalloutFormFramingSettings';
+import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import {
   CalloutAllowedContributors,
@@ -107,7 +107,6 @@ export const calloutValidationSchema = yup.object().shape({
       .required(),
   }),
 });
-
 
 const FormikEffect = FormikEffectFactory<CalloutFormSubmittedValues>();
 
@@ -205,7 +204,7 @@ const CalloutForm = ({
               temporaryLocation={!Boolean(callout?.id)}
               hideImageOptions={calloutRestrictions?.disableRichMedia}
             />
-            <CalloutFormAdditionalContent calloutRestrictions={calloutRestrictions} />
+            <CalloutFormFramingSettings calloutRestrictions={calloutRestrictions} />
             <ReferenceSegment
               fieldName={nameOf<CalloutFormSubmittedValues>('framing.profile.references')}
               compactMode

@@ -131,7 +131,7 @@ const CalloutsView = ({
                         onVisibilityChange={changeCalloutVisibility}
                         onCalloutDelete={deleteCallout}
                         onExpand={() => handleExpand(calloutDetails)}
-                        {...calloutRestrictions}
+                        calloutRestrictions={calloutRestrictions}
                         {...sortEvents}
                         {...sortProps}
                       />

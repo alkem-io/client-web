@@ -81,11 +81,11 @@ const KnowledgeBaseDialog = ({ aiPersonaServiceID, onClose, title, id, placehold
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
                 createButtonPlace="bottom"
-                  calloutRestrictions={{
-                    disableRichMedia: true,
-                    disableWhiteboards: true,
-                    disablePostResponses: true,
-                  }}
+                calloutRestrictions={{
+                  disableRichMedia: true,
+                  disableWhiteboards: true,
+                  disablePostResponses: true,
+                }}
               />
             </Gutters>
           </StorageConfigContextProvider>

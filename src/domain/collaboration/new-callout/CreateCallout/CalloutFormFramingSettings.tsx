@@ -20,7 +20,7 @@ interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
 }
 
-const CalloutFormFramingSettings = ({}: CalloutFormFramingSettingsProps) => {
+const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
 
@@ -62,6 +62,7 @@ const CalloutFormFramingSettings = ({}: CalloutFormFramingSettingsProps) => {
           value: CalloutFramingType.Whiteboard,
           label: t('callout.create.framingSettings.whiteboard.title'),
           tooltip: t('callout.create.framingSettings.whiteboard.tooltip'),
+          disabled: calloutRestrictions?.disableWhiteboards,
         },
       ]}
     />

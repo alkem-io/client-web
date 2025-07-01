@@ -41,7 +41,7 @@ const CalloutsGroupView = ({
         onClose={() => setIsCalloutCreationDialogOpen(false)}
         calloutsSetId={calloutsSetId}
         calloutClassification={buildFlowStateClassificationTagsets(createInFlowState)}
-        {...calloutsViewProps.calloutRestrictions}
+        calloutRestrictions={calloutsViewProps.calloutRestrictions}
       />
     </>
   );
