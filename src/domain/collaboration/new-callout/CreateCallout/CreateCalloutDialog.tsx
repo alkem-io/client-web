@@ -1,4 +1,4 @@
-import { Button, DialogActions, DialogContent } from '@mui/material';
+import { Button, DialogActions, DialogContent, Checkbox, FormControlLabel, Tooltip } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutContributionType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -23,6 +23,7 @@ import {
 } from '@/domain/common/profile/ProfileModelUtils';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
+import Gutters from '@/core/ui/grid/Gutters';
 
 export interface CalloutRestrictions {
   /**
@@ -90,6 +91,7 @@ const CreateCalloutDialog = ({
   const [calloutFormData, setCalloutFormData] = useState<CalloutFormSubmittedValues>();
 
   const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState(false);
+  const [sendNotification, setSendNotification] = useState(false);
   const handleCloseButtonClick = () => {
     if (calloutFormData) {
       setConfirmCloseDialogOpen(true);
@@ -151,6 +153,7 @@ const CreateCalloutDialog = ({
         framing,
         settings,
         classification,
+        sendNotification,
         contributionDefaults,
       };
 
@@ -184,6 +187,23 @@ const CreateCalloutDialog = ({
           />
         </DialogContent>
         <DialogActions>
+          {isValid && (
+            <Gutters disableGap row paddingY={0} flex={1} alignItems="center">
+              <Tooltip title={t('callout.create.notification.description')} placement="top">
+                <FormControlLabel
+                  disabled={publishingCallout}
+                  control={
+                    <Checkbox
+                      checked={sendNotification}
+                      onChange={e => setSendNotification(e.target.checked)}
+                      color="primary"
+                    />
+                  }
+                  label={t('callout.create.notification.label')}
+                />
+              </Tooltip>
+            </Gutters>
+          )}
           <Button
             variant="text"
             onClick={() => handlePublishCallout(CalloutVisibility.Draft)}

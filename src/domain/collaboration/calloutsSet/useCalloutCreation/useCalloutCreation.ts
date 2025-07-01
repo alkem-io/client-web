@@ -44,6 +44,7 @@ export interface CalloutCreationType {
     postDescription?: string;
     whiteboardContent?: string;
   };
+  sendNotification?: boolean;
 }
 
 export interface CalloutCreationParams {
