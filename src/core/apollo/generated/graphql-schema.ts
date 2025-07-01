@@ -13561,6 +13561,26 @@ export type DeleteCalloutMutationVariables = Exact<{
 
 export type DeleteCalloutMutation = { __typename?: 'Mutation'; deleteCallout: { __typename?: 'Callout'; id: string } };
 
+export type CalloutSettingsQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type CalloutSettingsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          settings: {
+            __typename?: 'CalloutSettings';
+            contribution: { __typename?: 'CalloutSettingsContribution'; commentsEnabled: boolean };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type PostQueryVariables = Exact<{
   postId: Scalars['UUID']['input'];
 }>;

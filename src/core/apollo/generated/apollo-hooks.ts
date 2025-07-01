@@ -7518,6 +7518,76 @@ export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutMutation,
   SchemaTypes.DeleteCalloutMutationVariables
 >;
+export const CalloutSettingsDocument = gql`
+  query CalloutSettings($calloutId: UUID!) {
+    lookup {
+      callout(ID: $calloutId) {
+        settings {
+          contribution {
+            commentsEnabled
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCalloutSettingsQuery__
+ *
+ * To run a query within a React component, call `useCalloutSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutSettingsQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useCalloutSettingsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CalloutSettingsQuery, SchemaTypes.CalloutSettingsQueryVariables> &
+    ({ variables: SchemaTypes.CalloutSettingsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutSettingsQuery, SchemaTypes.CalloutSettingsQueryVariables>(
+    CalloutSettingsDocument,
+    options
+  );
+}
+export function useCalloutSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutSettingsQuery, SchemaTypes.CalloutSettingsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutSettingsQuery, SchemaTypes.CalloutSettingsQueryVariables>(
+    CalloutSettingsDocument,
+    options
+  );
+}
+export function useCalloutSettingsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CalloutSettingsQuery, SchemaTypes.CalloutSettingsQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutSettingsQuery, SchemaTypes.CalloutSettingsQueryVariables>(
+    CalloutSettingsDocument,
+    options
+  );
+}
+export type CalloutSettingsQueryHookResult = ReturnType<typeof useCalloutSettingsQuery>;
+export type CalloutSettingsLazyQueryHookResult = ReturnType<typeof useCalloutSettingsLazyQuery>;
+export type CalloutSettingsSuspenseQueryHookResult = ReturnType<typeof useCalloutSettingsSuspenseQuery>;
+export type CalloutSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutSettingsQuery,
+  SchemaTypes.CalloutSettingsQueryVariables
+>;
+export function refetchCalloutSettingsQuery(variables: SchemaTypes.CalloutSettingsQueryVariables) {
+  return { query: CalloutSettingsDocument, variables: variables };
+}
 export const PostDocument = gql`
   query Post($postId: UUID!) {
     lookup {
