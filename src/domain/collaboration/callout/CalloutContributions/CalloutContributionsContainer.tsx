@@ -7,7 +7,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { Ref } from 'react';
+import { Ref, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { CalloutSettingsModelFull } from '../../new-callout/models/CalloutSettingsModel';
 
@@ -22,6 +22,7 @@ interface CalloutContributionsContainerProps extends SimpleContainerProps<Callou
         };
       })
     | undefined;
+  contributionType: CalloutContributionType;
   onCalloutUpdate?: () => Promise<unknown> | void;
   skip?: boolean;
 }
@@ -32,11 +33,12 @@ interface CalloutContributionsContainerProvided {
   contributionsCount: number;
   canCreateContribution: boolean;
   loading;
-  refetchContributions?: () => Promise<unknown>;
+  onCalloutUpdate?: () => Promise<unknown>;
 }
 
 const CalloutContributionsContainer = ({
   callout,
+  contributionType,
   onCalloutUpdate,
   skip,
   children,
@@ -52,22 +54,36 @@ const CalloutContributionsContainer = ({
   const { data, loading, refetch } = useCalloutContributionsQuery({
     variables: {
       calloutId: calloutId!,
-      includeLink: callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) ?? false,
-      includeWhiteboard:
-        callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard) ?? false,
-      includePost: callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) ?? false,
+      includeLink: contributionType === CalloutContributionType.Link,
+      includeWhiteboard: contributionType === CalloutContributionType.Whiteboard,
+      includePost: contributionType === CalloutContributionType.Post,
     },
     skip: !inView || !calloutId || skip,
   });
 
-  const canCreateContribution =
-    (callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreatePost) &&
-      callout.settings.contribution.enabled &&
-      callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) &&
-      ((callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins) &&
-        callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update)) ||
-        callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Members))) ??
-    false;
+  const canCreateContribution = useMemo(() => {
+    if (!callout || !callout.settings.contribution.enabled) {
+      return false;
+    }
+    const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
+    const requiredPrivileges = [AuthorizationPrivilege.Contribute];
+    switch (contributionType) {
+      case CalloutContributionType.Whiteboard:
+        requiredPrivileges.push(AuthorizationPrivilege.CreateWhiteboard);
+        break;
+      case CalloutContributionType.Post:
+        requiredPrivileges.push(AuthorizationPrivilege.CreatePost);
+        break;
+    }
+    const hasPermissions = requiredPrivileges.every(privilege => calloutPrivileges.includes(privilege));
+    if (hasPermissions) {
+      return true;
+    }
+    if (callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins)) {
+      return calloutPrivileges.includes(AuthorizationPrivilege.Update);
+    }
+    return false;
+  }, [callout, callout?.settings, callout?.authorization, contributionType]);
 
   return (
     <>
@@ -77,7 +93,7 @@ const CalloutContributionsContainer = ({
         contributionsCount: data?.lookup.callout?.contributions.length ?? 0,
         loading,
         canCreateContribution,
-        refetchContributions: async () => {
+        onCalloutUpdate: async () => {
           await onCalloutUpdate?.();
           await refetch();
         },

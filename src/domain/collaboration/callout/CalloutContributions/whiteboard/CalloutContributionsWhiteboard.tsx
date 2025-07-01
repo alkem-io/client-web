@@ -15,11 +15,6 @@ import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPag
 import { useCreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
-import {
-  AuthorizationPrivilege,
-  CalloutAllowedContributors,
-  CalloutContributionType,
-} from '@/core/apollo/generated/graphql-schema';
 import Gutters from '@/core/ui/grid/Gutters';
 
 interface WhiteboardContributionProps {
@@ -52,7 +47,7 @@ interface CalloutContributionsWhiteboardProps extends BaseCalloutViewProps {
 }
 
 const CalloutContributionsWhiteboard = forwardRef<HTMLDivElement, CalloutContributionsWhiteboardProps>(
-  ({ callout, contributions, loading, onCalloutUpdate, contributionsCount }, ref) => {
+  ({ callout, contributions, loading, onCalloutUpdate, contributionsCount, canCreateContribution }, ref) => {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const { isSmallScreen } = useScreenSize();
@@ -106,14 +101,6 @@ const CalloutContributionsWhiteboard = forwardRef<HTMLDivElement, CalloutContrib
         });
       }
     };
-    const calloutPrivileges = callout.authorization?.myPrivileges ?? [];
-    const canCreateContribution =
-      calloutPrivileges.includes(AuthorizationPrivilege.Contribute) &&
-      callout.settings.contribution.enabled &&
-      callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard) &&
-      (callout.settings.contribution.canAddContributions === CalloutAllowedContributors.Members ||
-        calloutPrivileges.includes(AuthorizationPrivilege.Update));
-
     const createButton = canCreateContribution && <CreateContributionButton onClick={handleCreate} />;
 
     const showCards = useMemo(

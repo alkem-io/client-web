@@ -15,6 +15,7 @@ import CommentsCalloutLayout from './CommentsCalloutLayout';
 import CalloutContributionsLink from '../CalloutContributions/link/CalloutContributionsLink';
 import CalloutContributionsContainer from '../CalloutContributions/CalloutContributionsContainer';
 import CalloutContributionsWhiteboard from '../CalloutContributions/whiteboard/CalloutContributionsWhiteboard';
+import CalloutContributionsPost from '../CalloutContributions/post/CalloutContributionsPost';
 
 interface CommentsCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -57,18 +58,18 @@ const CommentsCallout = ({
           {callout.framing.type === CalloutFramingType.Whiteboard && <CalloutFramingWhiteboard callout={callout} />}
           {/* Collaborate with links */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
-            <CalloutContributionsContainer callout={callout} onCalloutUpdate={onCalloutUpdate}>
-              {({ contributions: items, refetchContributions: onCalloutUpdate, loading, ref }) => (
+            <CalloutContributionsContainer
+              callout={callout}
+              onCalloutUpdate={onCalloutUpdate}
+              contributionType={CalloutContributionType.Link}
+            >
+              {props => (
                 <CalloutContributionsLink
-                  ref={ref}
+                  {...props}
                   callout={callout}
-                  contributions={items}
-                  loading={loading}
                   expanded={expanded}
                   onExpand={onExpand}
                   onCollapse={onCollapse}
-                  contributionsCount={contributionsCount}
-                  onCalloutUpdate={onCalloutUpdate}
                 />
               )}
             </CalloutContributionsContainer>
@@ -76,36 +77,36 @@ const CommentsCallout = ({
 
           {/* Collaborate with Whiteboards */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard) && (
-            <CalloutContributionsContainer callout={callout} onCalloutUpdate={onCalloutUpdate}>
-              {({ contributions: items, refetchContributions: onCalloutUpdate, loading, ref }) => (
+            <CalloutContributionsContainer
+              callout={callout}
+              onCalloutUpdate={onCalloutUpdate}
+              contributionType={CalloutContributionType.Whiteboard}
+            >
+              {props => (
                 <CalloutContributionsWhiteboard
-                  ref={ref}
+                  {...props}
                   callout={callout}
-                  contributions={items}
-                  loading={loading}
                   expanded={expanded}
                   onExpand={onExpand}
                   onCollapse={onCollapse}
-                  contributionsCount={contributionsCount}
-                  onCalloutUpdate={onCalloutUpdate}
                 />
               )}
             </CalloutContributionsContainer>
           )}
           {/* Collaborate with Posts */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) && (
-            <CalloutContributionsContainer callout={callout} onCalloutUpdate={onCalloutUpdate}>
-              {({ contributions: items, refetchContributions: onCalloutUpdate, loading, ref }) => (
-                <CalloutContributionsWhiteboard
-                  ref={ref}
+            <CalloutContributionsContainer
+              callout={callout}
+              onCalloutUpdate={onCalloutUpdate}
+              contributionType={CalloutContributionType.Post}
+            >
+              {props => (
+                <CalloutContributionsPost
+                  {...props}
                   callout={callout}
-                  contributions={items}
-                  loading={loading}
                   expanded={expanded}
                   onExpand={onExpand}
                   onCollapse={onCollapse}
-                  contributionsCount={contributionsCount}
-                  onCalloutUpdate={onCalloutUpdate}
                 />
               )}
             </CalloutContributionsContainer>
