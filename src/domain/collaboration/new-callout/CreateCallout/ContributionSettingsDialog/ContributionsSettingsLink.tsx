@@ -1,7 +1,7 @@
 import ReferenceSegment from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { Formik, FormikProps, useField } from 'formik';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
-import { CalloutFormSubmittedValues } from '../CalloutForm';
+import { CalloutFormSubmittedValues } from '../CalloutFormModel';
 import { ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps } from './ContributionSettingsDialog';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { isArrayEqual } from '@/core/utils/isArrayEqual';

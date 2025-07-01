@@ -14,7 +14,8 @@ import {
 } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
-import CalloutForm, { CalloutFormSubmittedValues } from './CalloutForm';
+import CalloutForm from './CalloutForm';
+import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
@@ -120,11 +121,11 @@ const CreateCalloutDialog = ({
         tags: mapProfileTagsToCreateTags(formData.framing.profile),
       };
 
-    // And map the radio button allowed contribution types to an array
-    const settings = mapCalloutSettingsFormToCalloutSettingsModel(formData.settings);
-    settings.visibility = visibility;
-    // If the calloutClassification is provided, map it to the expected format
-    const classification = calloutClassification ? { tagsets: calloutClassification } : undefined;
+      // And map the radio button allowed contribution types to an array
+      const settings = mapCalloutSettingsFormToCalloutSettingsModel(formData.settings);
+      settings.visibility = visibility;
+      // If the calloutClassification is provided, map it to the expected format
+      const classification = calloutClassification ? { tagsets: calloutClassification } : undefined;
 
       // Clean up unneeded contributionDefaults
       const contributionDefaults = {

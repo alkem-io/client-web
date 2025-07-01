@@ -2,7 +2,7 @@ import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps } from './ContributionSettingsDialog';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { Formik, FormikProps, useField } from 'formik';
-import { CalloutFormSubmittedValues } from '../CalloutForm';
+import { CalloutFormSubmittedValues } from '../CalloutFormModel';
 import { Box } from '@mui/material';
 import { Caption, CardText } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';

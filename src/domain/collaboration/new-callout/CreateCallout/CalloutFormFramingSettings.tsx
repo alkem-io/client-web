@@ -10,7 +10,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useField } from 'formik';
-import { CalloutFormSubmittedValues } from './CalloutForm';
+import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import type { FormikWhiteboardPreviewRef } from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useScreenSize } from '@/core/ui/grid/constants';
