@@ -104,7 +104,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       ...formData.framing,
       profile: mapProfileModelToUpdateProfileInput(formData.framing.profile),
       whiteboard: undefined,
-      whiteboardContent: formData.framing.whiteboard?.content,
+      whiteboardContent: formData.framing.whiteboard?.content ? formData.framing.whiteboard.content : undefined,
     };
 
     // And map the radio button allowed contribution types to an array

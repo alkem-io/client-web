@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import BlockIcon from '@mui/icons-material/Block';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -9,7 +9,7 @@ import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
-import { useField } from 'formik';
+import { useField, useFormikContext } from 'formik';
 import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import type { FormikWhiteboardPreviewRef } from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
@@ -24,35 +24,25 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
 
-  const [{ value: framing }, , helpers] = useField<CalloutFormSubmittedValues['framing']>('framing');
+  const [{ value: framing }] = useField<CalloutFormSubmittedValues['framing']>('framing');
   const whiteboardPreviewRef = useRef<FormikWhiteboardPreviewRef>(null);
+  const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
 
-  useEffect(() => {
-    if (framing.type === CalloutFramingType.Whiteboard && !framing.whiteboard) {
-      // DO NOT call helpers.setValue synchronously,
-      // otherwise the form will end up in an infinite loop of FormikEffect - onChange
-      // one executing the other because the initialValues change. This happens on TemplateForm,
-      // I have tried to put the setTimeout in the onChange but it didn't work.
-      window.setTimeout(() => {
-        const { whiteboard, ...rest } = framing;
-        helpers.setValue({
-          ...rest,
-          whiteboard: {
-            content: EmptyWhiteboardString,
-            profile: {
-              displayName: t('common.whiteboard'),
+  const handleFramingTypeChange = (newType: CalloutFramingType) => {
+    const newFraming =
+      newType === CalloutFramingType.Whiteboard
+        ? {
+            ...framing,
+            type: newType,
+            whiteboard: {
+              content: EmptyWhiteboardString,
+              profile: { displayName: t('common.whiteboard') },
+              previewImages: [],
             },
-            previewImages: [],
-          },
-        });
-      }, 100);
-    } else if (framing.type === CalloutFramingType.None && framing.whiteboard) {
-      window.setTimeout(() => {
-        const { whiteboard, ...rest } = framing;
-        helpers.setValue({ ...rest, whiteboard: undefined });
-      }, 100);
-    }
-  }, [framing.type]);
+          }
+        : { ...framing, type: newType, whiteboard: undefined };
+    setFieldValue('framing', newFraming);
+  };
 
   // Instantiating them here to be able to move them when the screen is small
   const radioButtons = (
@@ -73,6 +63,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           disabled: calloutRestrictions?.disableWhiteboards,
         },
       ]}
+      onChange={handleFramingTypeChange}
     />
   );
 
@@ -94,7 +85,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
             previewImagesName="framing.whiteboard.previewImages"
             canEdit
             onChangeContent={() => whiteboardPreviewRef.current?.closeEditDialog()}
-            onDeleteContent={() => helpers.setValue({ ...framing, type: CalloutFramingType.None })}
+            onDeleteContent={() => handleFramingTypeChange(CalloutFramingType.None)}
             maxHeight={gutters(12)}
             dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
           />
