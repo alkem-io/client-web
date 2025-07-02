@@ -97,6 +97,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
               onChange={calloutFormValues => {
                 setFieldValue('callout', calloutFormValues);
               }}
+              containerProps={{ disablePadding: true }}
             />
           </>
         );
