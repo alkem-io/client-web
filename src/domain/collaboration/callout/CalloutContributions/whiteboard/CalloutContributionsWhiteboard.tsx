@@ -1,7 +1,7 @@
 import { forwardRef, useMemo } from 'react';
 import { compact, sortBy } from 'lodash';
 import useNavigate from '@/core/routing/useNavigate';
-import { CalloutLayoutProps } from '../../calloutBlock/CalloutLayout';
+import { CalloutLayoutProps } from '../../calloutBlock/CalloutLayoutTypes';
 import ScrollableCardsLayout from '@/domain/collaboration/callout/components/ScrollableCardsLayout';
 import CreateContributionButton from '../CreateContributionButton';
 import { Skeleton } from '@mui/material';

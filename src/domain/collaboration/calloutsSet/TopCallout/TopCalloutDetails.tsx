@@ -1,7 +1,7 @@
 import { Badge } from '@mui/material';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography/components';
-import { GenericCalloutIcon } from '../../callout/utils/calloutIcons';
+import { GenericCalloutIcon } from '../../callout/icons/calloutIcons';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import RouterLink from '@/core/ui/link/RouterLink';

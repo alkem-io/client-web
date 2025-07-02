@@ -1,13 +1,13 @@
 import { List, ListItem, ListItemIcon, Skeleton, useTheme } from '@mui/material';
 import { ReactNode, useMemo, useState } from 'react';
-import { GenericCalloutIcon } from '../utils/calloutIcons';
+import { GenericCalloutIcon } from '../icons/calloutIcons';
 import { useTranslation } from 'react-i18next';
 import { times } from 'lodash';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import SearchField from '@/core/ui/search/SearchField';
 import CalloutsListItemTitle from '../../calloutsSet/CalloutsView/CalloutsListItemTitle';
-import { CalloutModelLight } from '../../new-callout/models/CalloutModelLight';
+import { CalloutModelLight } from '../models/CalloutModelLight';
 
 export interface CalloutsListProps<Callout extends CalloutModelLight> {
   callouts: Callout[] | undefined;

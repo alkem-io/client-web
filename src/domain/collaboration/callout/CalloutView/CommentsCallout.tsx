@@ -6,7 +6,7 @@ import {
 import { useScreenSize } from '@/core/ui/grid/constants';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
+import { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';

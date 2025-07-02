@@ -7,8 +7,8 @@ import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Text, CaptionSmall } from '@/core/ui/typography';
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
-import { CalloutModelLight } from '../new-callout/models/CalloutModelLight';
-import { GenericCalloutIcon } from '../callout/utils/calloutIcons';
+import { CalloutModelLight } from '../callout/models/CalloutModelLight';
+import { GenericCalloutIcon } from '../callout/icons/calloutIcons';
 
 export interface InnovationFlowCalloutsPreviewProps {
   selectedState: string | undefined;

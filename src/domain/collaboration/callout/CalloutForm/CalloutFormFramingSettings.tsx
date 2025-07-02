@@ -10,11 +10,11 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useField } from 'formik';
-import { CalloutFormSubmittedValues } from './CalloutForm';
+import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import type { FormikWhiteboardPreviewRef } from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import { CalloutRestrictions } from './CreateCalloutDialog';
+import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -33,11 +33,11 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
       helpers.setValue({
         ...rest,
         whiteboard: {
-          content: EmptyWhiteboardString,
+          content: whiteboard?.content ?? EmptyWhiteboardString,
           profile: {
-            displayName: t('common.whiteboard'),
+            displayName: whiteboard?.profile.displayName ?? t('common.whiteboard'),
           },
-          previewImages: undefined,
+          previewImages: whiteboard?.previewImages,
         },
       });
     } else {

@@ -13,7 +13,7 @@ export type CalloutSummaryFields = {
   templateId?: string;
 };
 
-export interface CalloutSumaryProps {
+interface CalloutSummaryProps {
   callout: CalloutSummaryFields;
 }
 
@@ -22,7 +22,7 @@ export const CalloutSummary = ({
   templatePreviewComponent: TemplatePreview,
 }: {
   callout: CalloutSummaryFields;
-  templatePreviewComponent?: ComponentType<CalloutSumaryProps> | null;
+  templatePreviewComponent?: ComponentType<CalloutSummaryProps> | null;
 }) => {
   const { t } = useTranslation();
 

@@ -103,7 +103,7 @@
     "publish": "Publish",
     "post": "Post",
     "unpublish": "Unpublish",
-    "save-draft": "Save as draft",
+    "saveDraft": "Save as draft",
     "archive": "Archive",
     "save": "Save",
     "continue": "Continue",
@@ -786,6 +786,10 @@
             }
           }
         }
+      },
+      "notification": {
+        "label": "Notify the community.",
+        "description": "Members of this community will receive a notification (if enabled from their notifications)"
       }
     },
     "edit": {
@@ -1372,10 +1376,6 @@
       "create-step": {
         "title": "Create",
         "post-template-label": "Choose Post template"
-      },
-      "publish-dialog": {
-        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, <b>who have their notifications for these actions turned on</b>, to receive a notification?",
-        "checkbox-label": "Yes, notify the community."
       },
       "closeDialog": {
         "title": "Discard Post",

@@ -4,7 +4,7 @@ import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import PostForm, { PostFormOutput } from '../PostForm/PostForm';
 import { CalloutType, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import calloutIcons from '@/domain/collaboration/callout/icons/calloutIcons';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 

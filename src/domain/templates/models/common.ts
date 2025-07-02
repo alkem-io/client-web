@@ -1,4 +1,9 @@
-import { CalloutAllowedContributors, CalloutFramingType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutAllowedContributors,
+  CalloutFramingType,
+  CalloutVisibility,
+  TemplateType,
+} from '@/core/apollo/generated/graphql-schema';
 import { CalloutTemplate } from './CalloutTemplate';
 import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
 import { AnyTemplate, TemplateBase } from './TemplateBase';
@@ -7,6 +12,7 @@ import { WhiteboardTemplate } from './WhiteboardTemplate';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { SpaceTemplate } from './SpaceTemplate';
 import { findDefaultTagset } from '@/domain/common/tagset/TagsetUtils';
+import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 
 export const getNewTemplate = (
   templateType: TemplateType,
@@ -38,7 +44,7 @@ export const getNewTemplate = (
               displayName: data?.callout?.framing.profile?.displayName ?? '',
               description: data?.callout?.framing.profile?.description ?? '',
               references: data?.callout?.framing.profile?.references ?? [],
-              tagsets: defaultTagset ? [defaultTagset] : [],
+              tagsets: defaultTagset ? [defaultTagset] : [EmptyTagset],
             },
             type: data?.callout?.framing.type ?? CalloutFramingType.None,
             whiteboard: data?.callout?.framing.whiteboard ?? undefined,
@@ -47,7 +53,8 @@ export const getNewTemplate = (
             contribution: {
               enabled: data?.callout?.settings?.contribution?.enabled ?? true,
               allowedTypes: data?.callout?.settings?.contribution?.allowedTypes ?? [],
-              canAddContributions: data?.callout?.settings?.contribution?.canAddContributions ?? CalloutAllowedContributors.Members,
+              canAddContributions:
+                data?.callout?.settings?.contribution?.canAddContributions ?? CalloutAllowedContributors.Members,
               commentsEnabled: data?.callout?.settings?.contribution?.commentsEnabled ?? true,
             },
             framing: {
@@ -56,6 +63,7 @@ export const getNewTemplate = (
             visibility: data?.callout?.settings?.visibility ?? CalloutVisibility.Published,
           },
           contributionDefaults: {
+            defaultDisplayName: data?.callout?.contributionDefaults?.defaultDisplayName ?? '',
             postDescription: data?.callout?.contributionDefaults?.postDescription ?? '',
             whiteboardContent:
               data?.callout?.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),

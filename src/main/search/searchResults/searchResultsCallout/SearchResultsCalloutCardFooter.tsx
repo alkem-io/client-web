@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
-import { CONTRIBUTION_ICON } from '@/domain/collaboration/callout/utils/calloutIcons';
+import { CONTRIBUTION_ICON } from '@/domain/collaboration/callout/icons/calloutIcons';
 import React, { useMemo } from 'react';
 import { CalloutContributionType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';

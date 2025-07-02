@@ -5,6 +5,7 @@ import {
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
+  CreateCalloutContributionInput,
   CreateCalloutMutation,
   CreateCalloutOnCalloutsSetInput,
   CreateReferenceInput,
@@ -12,6 +13,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
+import { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
 
 export interface CalloutCreationType {
   classification?: {
@@ -40,10 +42,9 @@ export interface CalloutCreationType {
     };
     visibility?: CalloutVisibility;
   };
-  contributionDefaults?: {
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
+  contributions?: CreateCalloutContributionInput[];
+  contributionDefaults?: ContributionDefaultsModel;
+  sendNotification?: boolean;
 }
 
 export interface CalloutCreationParams {

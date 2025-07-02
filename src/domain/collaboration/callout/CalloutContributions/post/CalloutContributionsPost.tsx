@@ -13,7 +13,7 @@ import {
   LocationStateCachedCallout,
   LocationStateKeyCachedCallout,
 } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import { TypedCalloutDetails } from '../../../new-callout/models/TypedCallout';
+import { TypedCalloutDetails } from '../../models/TypedCallout';
 import { compact, sortBy } from 'lodash';
 import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';

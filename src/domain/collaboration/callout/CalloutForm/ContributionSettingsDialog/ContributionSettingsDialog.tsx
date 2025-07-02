@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next';
 import ContributionsSettings from './ContributionsSettings';
 import Gutters from '@/core/ui/grid/Gutters';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { CalloutRestrictions } from '../CreateCalloutDialog';
-import { FramingSettings } from '@/domain/collaboration/new-callout/CreateCallout/CalloutFormContributionSettings';
+import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
+import { FramingSettings } from '../CalloutFormContributionSettings';
 
 /**
  * Specific settings for the contribution type (e.g. post, link, whiteboard)

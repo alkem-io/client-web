@@ -1,3 +1,9 @@
+import {
+  CalloutAllowedContributors,
+  CalloutContributionType,
+  CalloutFramingType,
+  CalloutVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
@@ -5,63 +11,25 @@ import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFie
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import Gutters from '@/core/ui/grid/Gutters';
+import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { nameOf } from '@/core/utils/nameOf';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { Box } from '@mui/material';
 import { Formik, FormikConfig } from 'formik';
+import { cloneDeep } from 'lodash';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
-import CalloutFormFramingSettings from './CalloutFormFramingSettings';
+import { DefaultCalloutSettings } from '../../callout/models/CalloutSettingsModel';
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
-import {
-  CalloutAllowedContributors,
-  CalloutContributionType,
-  CalloutFramingType,
-  CalloutVisibility,
-} from '@/core/apollo/generated/graphql-schema';
-import { CalloutRestrictions } from './CreateCalloutDialog';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import CalloutFormFramingSettings from './CalloutFormFramingSettings';
+import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
+import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
-
-export interface CalloutFormSubmittedValues {
-  framing: {
-    profile: {
-      displayName: string;
-      description: string;
-      tagsets: TagsetModel[];
-      references: ReferenceModel[];
-    };
-    type: CalloutFramingType;
-    whiteboard: WhiteboardFieldSubmittedValuesWithPreviewImages | undefined;
-  };
-  contributionDefaults: {
-    defaultDisplayName?: string;
-    postDescription?: string;
-    whiteboardContent?: string;
-    links?: ReferenceModel[];
-  };
-  settings: {
-    contribution: {
-      enabled: boolean;
-      allowedTypes: CalloutStructuredResponseType;
-      canAddContributions: CalloutAllowedContributors;
-      commentsEnabled: boolean;
-    };
-    framing: {
-      commentsEnabled: boolean;
-    };
-    visibility: CalloutVisibility;
-  };
-}
 
 export const calloutValidationSchema = yup.object().shape({
   framing: yup.object().shape({
@@ -79,12 +47,15 @@ export const calloutValidationSchema = yup.object().shape({
       return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
     }),
   }),
-  /*  contributionDefaults: yup.object().shape({
-    defaultDisplayName: displayNameValidator,
-    postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-    whiteboardContent: yup.string(),
-    links: referenceSegmentSchema,
+  contributionDefaults: yup.object().shape({
+    defaultDisplayName: displayNameValidator.optional().nullable(),
+    postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
+    whiteboardContent: yup.string().nullable(),
   }),
+  contributions: yup.object().shape({
+    links: referenceSegmentSchema.nullable(),
+  }),
+
   settings: yup.object().shape({
     contribution: yup.object().shape({
       enabled: yup.boolean().required(),
@@ -105,7 +76,7 @@ export const calloutValidationSchema = yup.object().shape({
       .mixed<CalloutVisibility>()
       .oneOf(Object.values(CalloutVisibility).filter(value => typeof value === 'string'))
       .required(),
-  }),*/
+  }),
 });
 
 const FormikEffect = FormikEffectFactory<CalloutFormSubmittedValues>();
@@ -116,59 +87,31 @@ export interface CalloutFormProps {
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<CalloutFormSubmittedValues>['children'];
   calloutRestrictions?: CalloutRestrictions;
+  containerProps?: GuttersProps;
 }
 
 const CalloutForm = ({
   callout,
   onChange,
   onStatusChanged,
-  children,
   calloutRestrictions,
-  /*temporaryLocation = false,
-   */
+  containerProps,
+  children,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
 
   const { isSmallScreen } = useScreenSize();
 
-  const initialValues: CalloutFormSubmittedValues = useMemo(
-    () =>
-      callout
-        ? callout
-        : {
-            framing: {
-              profile: {
-                displayName: '',
-                description: '',
-                tagsets: [EmptyTagset],
-                references: [],
-              },
-              type: CalloutFramingType.None,
-              whiteboard: undefined,
-            },
-            contributionDefaults: {
-              defaultDisplayName: '',
-              postDescription: '',
-              whiteboardContent: EmptyWhiteboardString,
-              links: undefined,
-            },
-            settings: {
-              contribution: {
-                enabled: true,
-                allowedTypes: 'none' as CalloutStructuredResponseType,
-                canAddContributions: CalloutAllowedContributors.Members,
-                commentsEnabled: true,
-              },
-              framing: {
-                commentsEnabled: !calloutRestrictions?.disableComments,
-              },
-              visibility: CalloutVisibility.Published,
-            },
-          },
-    [callout?.id]
-  );
+  const initialValues: CalloutFormSubmittedValues = useMemo(() => {
+    if (callout) {
+      return callout;
+    } else {
+      const emptyCallout = cloneDeep(DefaultCalloutFormValues);
+      emptyCallout.settings.framing.commentsEnabled = !calloutRestrictions?.disableComments;
 
-  const temporaryLocation = !Boolean(callout?.id); // Callout doesn't exist yet => enable temporary location
+      return emptyCallout;
+    }
+  }, [callout, DefaultCalloutSettings]);
 
   return (
     <Formik
@@ -180,7 +123,7 @@ const CalloutForm = ({
     >
       {formikState => (
         <>
-          <Gutters>
+          <Gutters {...containerProps}>
             <FormikEffect onChange={onChange} onStatusChange={onStatusChanged} />
             <Box display="flex" gap={gutters()} flexDirection={isSmallScreen ? 'column' : 'row'}>
               <FormikInputField
@@ -209,7 +152,7 @@ const CalloutForm = ({
               fieldName={nameOf<CalloutFormSubmittedValues>('framing.profile.references')}
               compactMode
               references={formikState.values.framing.profile.references}
-              temporaryLocation={temporaryLocation}
+              temporaryLocation={calloutRestrictions?.temporaryLocation}
               fullWidth
             />
             <CalloutFormContributionSettings calloutRestrictions={calloutRestrictions} />

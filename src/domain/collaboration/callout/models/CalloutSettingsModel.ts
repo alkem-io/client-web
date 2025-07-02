@@ -16,3 +16,16 @@ export interface CalloutSettingsModelFull {
   };
   visibility: CalloutVisibility;
 }
+
+export const DefaultCalloutSettings = {
+  contribution: {
+    enabled: true,
+    allowedTypes: [],
+    canAddContributions: CalloutAllowedContributors.Members,
+    commentsEnabled: true,
+  },
+  framing: {
+    commentsEnabled: true,
+  },
+  visibility: CalloutVisibility.Published,
+};

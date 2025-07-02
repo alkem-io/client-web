@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import { ContributeCreationBlock } from '@/domain/space/components/ContributeCreationBlock';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import CreateCalloutDialog from '@/domain/collaboration/new-callout/CreateCallout/CreateCalloutDialog';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import CalloutsList from '@/domain/collaboration/callout/calloutsList/CalloutsList';
@@ -11,6 +10,11 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import Loading from '@/core/ui/loading/Loading';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+
+const CreateCalloutDialog = lazyWithGlobalErrorHandler(
+  () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')
+);
 
 type KnowledgeBasePageProps = {
   sectionIndex: number;
@@ -64,11 +68,13 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
           />
         </ContentColumn>
       </PageContent>
-      <CreateCalloutDialog
-        open={isCalloutCreationDialogOpen}
-        onClose={() => setIsCalloutCreationDialogOpen(false)}
-        calloutsSetId={calloutsSetId}
-      />
+      <Suspense fallback={null}>
+        <CreateCalloutDialog
+          open={isCalloutCreationDialogOpen}
+          onClose={() => setIsCalloutCreationDialogOpen(false)}
+          calloutsSetId={calloutsSetId}
+        />
+      </Suspense>
     </>
   );
 };

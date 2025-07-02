@@ -1,6 +1,6 @@
 import { TemplateBase } from './TemplateBase';
 import { CalloutFramingType, CalloutType, TemplateType, VisualType } from '@/core/apollo/generated/graphql-schema';
-import { CalloutSettingsModelFull } from '@/domain/collaboration/new-callout/models/CalloutSettingsModel';
+import { CalloutSettingsModelFull } from '@/domain/collaboration/callout/models/CalloutSettingsModel';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
