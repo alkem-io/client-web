@@ -24,7 +24,6 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { DefaultCalloutSettings } from '../../callout/models/CalloutSettingsModel';
-import { mapCalloutSettingsModelToCalloutSettingsFormValues } from '../models/mappings';
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
@@ -102,7 +101,7 @@ const CalloutForm = ({ callout, onChange, onStatusChanged, children, calloutRest
       }
       return emptyCallout;
     }
-  }, [callout, DefaultCalloutSettings, mapCalloutSettingsModelToCalloutSettingsFormValues]);
+  }, [callout, DefaultCalloutSettings]);
 
   return (
     <Formik

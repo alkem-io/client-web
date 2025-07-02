@@ -29,3 +29,8 @@ export const mapTagsetModelsToUpdateTagsetInputs = (
       tags: tagset.tags ?? [],
     }));
 };
+
+export const mapTagsetModelToTagsFormValues = (tagset: TagsetModel) /*: { name: string, tags: string[] }*/ => {
+  // TODO: This `as` shouldn't be here
+  return { name: tagset.name, tags: tagset.tags } as TagsetModel;
+};
