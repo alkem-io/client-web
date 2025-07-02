@@ -47,6 +47,8 @@ export interface CalloutFormSubmittedValues {
     defaultDisplayName?: string;
     postDescription?: string;
     whiteboardContent?: string;
+  };
+  contributions: {
     links?: ReferenceModel[];
   };
   settings: {

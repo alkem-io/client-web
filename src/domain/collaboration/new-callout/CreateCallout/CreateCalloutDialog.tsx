@@ -1,6 +1,10 @@
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutContributionType,
+  CreateCalloutContributionInput,
+  TemplateType,
+} from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
@@ -138,11 +142,20 @@ const CreateCalloutDialog = ({
         formData.settings.contribution.allowedTypes === CalloutContributionType.Post
           ? formData.contributionDefaults.postDescription
           : undefined,
-      links:
-        formData.settings.contribution.allowedTypes === CalloutContributionType.Link
-          ? formData.contributionDefaults.links
-          : undefined,
     };
+
+    let contributions: CreateCalloutContributionInput[] = [];
+    formData.contributions?.links?.forEach(link => {
+      contributions.push({
+        link: {
+          uri: link.uri,
+          profile: {
+            displayName: link.name,
+            description: link.description,
+          },
+        },
+      });
+    });
 
     const createCalloutInput: CalloutCreationTypeWithPreviewImages = {
       ...formData,
@@ -150,6 +163,7 @@ const CreateCalloutDialog = ({
       settings,
       classification,
       contributionDefaults,
+      contributions,
     };
 
     await handleCreateCallout(createCalloutInput);

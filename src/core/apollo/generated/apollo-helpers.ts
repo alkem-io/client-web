@@ -1107,6 +1107,19 @@ export type ContributorRolesFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateCalloutContributionDataKeySpecifier = (
+  | 'link'
+  | 'post'
+  | 'sortOrder'
+  | 'whiteboard'
+  | CreateCalloutContributionDataKeySpecifier
+)[];
+export type CreateCalloutContributionDataFieldPolicy = {
+  link?: FieldPolicy<any> | FieldReadFunction<any>;
+  post?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateCalloutContributionDefaultsDataKeySpecifier = (
   | 'defaultDisplayName'
   | 'postDescription'
@@ -1121,6 +1134,7 @@ export type CreateCalloutContributionDefaultsDataFieldPolicy = {
 export type CreateCalloutDataKeySpecifier = (
   | 'classification'
   | 'contributionDefaults'
+  | 'contributions'
   | 'framing'
   | 'nameID'
   | 'sendNotification'
@@ -1131,6 +1145,7 @@ export type CreateCalloutDataKeySpecifier = (
 export type CreateCalloutDataFieldPolicy = {
   classification?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributions?: FieldPolicy<any> | FieldReadFunction<any>;
   framing?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   sendNotification?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1216,6 +1231,11 @@ export type CreateInnovationFlowStateDataFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateLinkDataKeySpecifier = ('profile' | 'uri' | CreateLinkDataKeySpecifier)[];
+export type CreateLinkDataFieldPolicy = {
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  uri?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateLocationDataKeySpecifier = (
   | 'addressLine1'
   | 'addressLine2'
@@ -1232,6 +1252,10 @@ export type CreateLocationDataFieldPolicy = {
   country?: FieldPolicy<any> | FieldReadFunction<any>;
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreatePostDataKeySpecifier = ('tags' | CreatePostDataKeySpecifier)[];
+export type CreatePostDataFieldPolicy = {
+  tags?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateProfileDataKeySpecifier = (
   | 'description'
@@ -4579,6 +4603,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ContributorRolesKeySpecifier | (() => undefined | ContributorRolesKeySpecifier);
     fields?: ContributorRolesFieldPolicy;
   };
+  CreateCalloutContributionData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutContributionDataKeySpecifier
+      | (() => undefined | CreateCalloutContributionDataKeySpecifier);
+    fields?: CreateCalloutContributionDataFieldPolicy;
+  };
   CreateCalloutContributionDefaultsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -4645,9 +4676,17 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CreateInnovationFlowStateDataKeySpecifier);
     fields?: CreateInnovationFlowStateDataFieldPolicy;
   };
+  CreateLinkData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateLinkDataKeySpecifier | (() => undefined | CreateLinkDataKeySpecifier);
+    fields?: CreateLinkDataFieldPolicy;
+  };
   CreateLocationData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateLocationDataKeySpecifier | (() => undefined | CreateLocationDataKeySpecifier);
     fields?: CreateLocationDataFieldPolicy;
+  };
+  CreatePostData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreatePostDataKeySpecifier | (() => undefined | CreatePostDataKeySpecifier);
+    fields?: CreatePostDataFieldPolicy;
   };
   CreateProfileData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateProfileDataKeySpecifier | (() => undefined | CreateProfileDataKeySpecifier);

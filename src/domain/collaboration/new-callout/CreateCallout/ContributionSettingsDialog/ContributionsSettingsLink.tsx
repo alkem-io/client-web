@@ -10,8 +10,7 @@ import { useTranslation } from 'react-i18next';
 const ContributionsSettingsLink = forwardRef<ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps>(
   ({}, ref) => {
     const { t } = useTranslation();
-    const [field, , meta] =
-      useField<CalloutFormSubmittedValues['contributionDefaults']['links']>('contributionDefaults.links');
+    const [field, , meta] = useField<CalloutFormSubmittedValues['contributions']['links']>('contributions.links');
 
     useImperativeHandle(ref, () => ({
       onSave: () => {

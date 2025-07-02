@@ -5,6 +5,7 @@ import {
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
+  CreateCalloutContributionInput,
   CreateCalloutMutation,
   CreateCalloutOnCalloutsSetInput,
   CreateReferenceInput,
@@ -44,6 +45,7 @@ export interface CalloutCreationType {
     postDescription?: string;
     whiteboardContent?: string;
   };
+  contributions?: CreateCalloutContributionInput[];
 }
 
 export interface CalloutCreationParams {
