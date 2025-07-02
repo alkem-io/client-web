@@ -93,6 +93,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
               calloutRestrictions={{
                 readOnlyAllowedTypes: !createMode,
                 temporaryLocation: createMode,
+                readOnlyContributions: true,
               }}
               onChange={calloutFormValues => {
                 setFieldValue('callout', calloutFormValues);

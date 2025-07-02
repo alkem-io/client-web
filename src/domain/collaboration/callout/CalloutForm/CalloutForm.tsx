@@ -51,8 +51,11 @@ export const calloutValidationSchema = yup.object().shape({
     defaultDisplayName: displayNameValidator.optional().nullable(),
     postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
     whiteboardContent: yup.string().nullable(),
+  }),
+  contributions: yup.object().shape({
     links: referenceSegmentSchema.nullable(),
   }),
+
   settings: yup.object().shape({
     contribution: yup.object().shape({
       enabled: yup.boolean().required(),

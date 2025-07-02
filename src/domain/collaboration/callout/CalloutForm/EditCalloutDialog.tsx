@@ -127,10 +127,6 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
         formData.settings.contribution.allowedTypes === CalloutContributionType.Post
           ? formData.contributionDefaults.postDescription
           : undefined,
-      links:
-        formData.settings.contribution.allowedTypes === CalloutContributionType.Link
-          ? formData.contributionDefaults.links
-          : undefined,
     };
 
     const updateCalloutContentInput: UpdateCalloutEntityInput = {

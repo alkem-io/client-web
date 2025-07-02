@@ -1,6 +1,11 @@
 import { Button, DialogActions, DialogContent, Checkbox, FormControlLabel, Tooltip } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CreateCalloutContributionInput,
+  CalloutContributionType,
+  CalloutVisibility,
+  TemplateType,
+} from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
@@ -45,6 +50,11 @@ export interface CalloutRestrictions {
    * Makes the Structured Responses Field read-only
    */
   readOnlyAllowedTypes?: boolean;
+  /**
+   * Makes the contributions form read-only - For now, this only applies to the Links that are added to the Callout on creation.
+   * These cannot be edited when editing the callout, and cannot be used when creating/editing a callout template
+   */
+  readOnlyContributions?: boolean;
 }
 
 export interface CreateCalloutDialogProps {
@@ -143,19 +153,28 @@ const CreateCalloutDialog = ({
           formData.settings.contribution.allowedTypes === CalloutContributionType.Post
             ? formData.contributionDefaults.postDescription
             : undefined,
-        links:
-          formData.settings.contribution.allowedTypes === CalloutContributionType.Link
-            ? formData.contributionDefaults.links
-            : undefined,
       };
+
+      let contributions: CreateCalloutContributionInput[] = [];
+      formData.contributions?.links?.forEach(link => {
+        contributions.push({
+          link: {
+            uri: link.uri,
+            profile: {
+              displayName: link.name,
+              description: link.description,
+            },
+          },
+        });
+      });
 
       const createCalloutInput: CalloutCreationTypeWithPreviewImages = {
         ...formData,
         framing,
         settings,
         classification,
-        sendNotification,
         contributionDefaults,
+        contributions,
       };
 
       await handleCreateCallout(createCalloutInput);

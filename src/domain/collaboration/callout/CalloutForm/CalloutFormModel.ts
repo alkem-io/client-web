@@ -21,7 +21,8 @@ export interface CalloutFormSubmittedValues {
     type: CalloutFramingType;
     whiteboard: WhiteboardFieldSubmittedValuesWithPreviewImages | undefined;
   };
-  contributionDefaults: ContributionDefaultsModel & {
+  contributionDefaults: ContributionDefaultsModel;
+  contributions?: {
     links?: ReferenceModel[];
   };
   settings: {
@@ -53,7 +54,9 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     defaultDisplayName: '',
     postDescription: '',
     whiteboardContent: EmptyWhiteboardString,
-    links: undefined,
+  },
+  contributions: {
+    links: [{ uri: '', name: '', description: '', id: '' }],
   },
   settings: {
     contribution: {

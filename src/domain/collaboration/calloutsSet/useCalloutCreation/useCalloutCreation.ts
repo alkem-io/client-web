@@ -5,6 +5,7 @@ import {
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
+  CreateCalloutContributionInput,
   CreateCalloutMutation,
   CreateCalloutOnCalloutsSetInput,
   CreateReferenceInput,
@@ -41,6 +42,7 @@ export interface CalloutCreationType {
     };
     visibility?: CalloutVisibility;
   };
+  contributions?: CreateCalloutContributionInput[];
   contributionDefaults?: ContributionDefaultsModel;
   sendNotification?: boolean;
 }
