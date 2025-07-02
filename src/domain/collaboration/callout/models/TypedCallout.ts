@@ -11,6 +11,7 @@ import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { LinkDetails } from '../../callout/CalloutContributions/link/CalloutContributionsLink';
 import { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
 import { PostModel } from '../../post/model/PostModel';
+import { ContributionDefaultsModel } from './ContributionDefaultsModel';
 
 // TODO: TypedCallout and CalloutModel requires a refactor to avoid duplication
 // TypedCallout was created long ago to provide CalloutModel data + a few additional fields useful for the UI,
@@ -84,11 +85,7 @@ export type TypedCalloutDetails = TypedCallout & {
     flowState?: ClassificationTagsetWithAllowedValuesModel;
   };
   settings: CalloutSettingsModelFull;
-  contributionDefaults: {
-    defaultDisplayName?: string;
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
+  contributionDefaults: ContributionDefaultsModel;
   comments?: CommentsWithMessagesModel | undefined;
 };
 

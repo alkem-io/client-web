@@ -13,6 +13,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
+import { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
 
 export interface CalloutCreationType {
   classification?: {
@@ -41,12 +42,8 @@ export interface CalloutCreationType {
     };
     visibility?: CalloutVisibility;
   };
-  contributionDefaults?: {
-    defaultDisplayName?: string;
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
   contributions?: CreateCalloutContributionInput[];
+  contributionDefaults?: ContributionDefaultsModel;
   sendNotification?: boolean;
 }
 

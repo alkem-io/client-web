@@ -8,6 +8,7 @@ import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { CalloutStructuredResponseType } from './CalloutForm';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { ContributionDefaultsModel } from '../models/ContributionDefaultsModel';
 
 export interface CalloutFormSubmittedValues {
   framing: {
@@ -20,11 +21,7 @@ export interface CalloutFormSubmittedValues {
     type: CalloutFramingType;
     whiteboard: WhiteboardFieldSubmittedValuesWithPreviewImages | undefined;
   };
-  contributionDefaults: {
-    defaultDisplayName?: string;
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
+  contributionDefaults: ContributionDefaultsModel;
   contributions: {
     links?: ReferenceModel[];
   };
