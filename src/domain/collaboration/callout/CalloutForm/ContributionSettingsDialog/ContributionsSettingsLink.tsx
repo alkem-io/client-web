@@ -6,6 +6,7 @@ import { ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps } f
 import { EmptyReference, ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { isArrayEqual } from '@/core/utils/isArrayEqual';
 import { useTranslation } from 'react-i18next';
+const filterOutEmptyLinks = (link: ReferenceModel): boolean => Boolean(link.name || link.uri || link.description);
 
 const ContributionsSettingsLink = forwardRef<ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps>(
   ({ calloutRestrictions }, ref) => {
@@ -17,9 +18,12 @@ const ContributionsSettingsLink = forwardRef<ContributionTypeSettingsComponentRe
       onSave: () => {
         // Apply the changes to the local form to the formik state of the CalloutForm
         // Filter out empty links
-        meta.setValue(internalFormRef.current?.values.links.filter(link => link.name || link.uri || link.description));
+        meta.setValue(internalFormRef.current?.values.links.filter(filterOutEmptyLinks));
       },
-      isContentChanged: () => isArrayEqual(field.value, internalFormRef.current?.values.links),
+      isContentChanged: () => {
+        const currentLinks = internalFormRef.current?.values.links.filter(filterOutEmptyLinks) ?? [];
+        return !isArrayEqual(field.value, currentLinks);
+      },
     }));
 
     const initialValues =
