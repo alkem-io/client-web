@@ -161,7 +161,7 @@ const CreateCalloutDialog = ({
 
       await handleCreateCallout(createCalloutInput);
       handleClose();
-      scrollToTop();
+      setTimeout(scrollToTop, 100);
     }
   );
 
