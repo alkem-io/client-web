@@ -22,7 +22,7 @@ export interface CalloutFormSubmittedValues {
     whiteboard: WhiteboardFieldSubmittedValuesWithPreviewImages | undefined;
   };
   contributionDefaults: ContributionDefaultsModel;
-  contributions: {
+  contributions?: {
     links?: ReferenceModel[];
   };
   settings: {

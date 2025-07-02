@@ -8,9 +8,10 @@ import { isArrayEqual } from '@/core/utils/isArrayEqual';
 import { useTranslation } from 'react-i18next';
 
 const ContributionsSettingsLink = forwardRef<ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps>(
-  ({}, ref) => {
+  ({ calloutRestrictions }, ref) => {
     const { t } = useTranslation();
-    const [field, , meta] = useField<CalloutFormSubmittedValues['contributions']['links']>('contributions.links');
+    const [field, , meta] =
+      useField<Required<CalloutFormSubmittedValues>['contributions']['links']>('contributions.links');
 
     useImperativeHandle(ref, () => ({
       onSave: () => {
@@ -32,6 +33,12 @@ const ContributionsSettingsLink = forwardRef<ContributionTypeSettingsComponentRe
     };
 
     const internalFormRef = useRef<FormikProps<{ links: ReferenceModel[] }>>(null);
+
+    if (calloutRestrictions?.readOnlyContributions) {
+      // This component is only used to edit contributions, not contribution settings. Let's just hide it if we cannot change contributions.
+      return null;
+    }
+
     return (
       <Formik initialValues={initialValues} onSubmit={() => {}} innerRef={internalFormRef}>
         {({ values }) => (

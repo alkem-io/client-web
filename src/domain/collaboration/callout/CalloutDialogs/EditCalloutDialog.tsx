@@ -127,10 +127,6 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
         formData.settings.contribution.allowedTypes === CalloutContributionType.Post
           ? formData.contributionDefaults.postDescription
           : undefined,
-      links:
-        formData.settings.contribution.allowedTypes === CalloutContributionType.Link
-          ? formData.contributionDefaults.links
-          : undefined,
     };
 
     const updateCalloutContentInput: UpdateCalloutEntityInput = {
@@ -164,7 +160,12 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                 onChange={setCalloutFormData}
                 onStatusChanged={handleStatusChange}
                 /* Users cannot change the allowedTypes on an already created callout for now */
-                calloutRestrictions={{ ...calloutRestrictions, readOnlyAllowedTypes: true, temporaryLocation: false }}
+                calloutRestrictions={{
+                  ...calloutRestrictions,
+                  readOnlyAllowedTypes: true,
+                  temporaryLocation: false,
+                  readOnlyContributions: true,
+                }}
               />
             </StorageConfigContextProvider>
           )}
