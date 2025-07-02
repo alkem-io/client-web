@@ -168,6 +168,8 @@ const CalloutSettingsContainer = ({
   const isCollection = (callout: { settings: { contribution: { allowedTypes: CalloutContributionType[] } } }) =>
     callout.settings.contribution.allowedTypes.length > 0;
 
+  const hasContributions = (callout: { contributions: [] }) => callout.contributions.length > 0;
+
   const [fetchCalloutContent] = useCalloutContentLazyQuery();
 
   if (dontShow) {
@@ -216,6 +218,7 @@ const CalloutSettingsContainer = ({
             key="sort"
             iconComponent={SwapVerticalCircleOutlined}
             onClick={handleSortDialogOpen}
+            disabled={!hasContributions(callout)}
             /*
           //!! wt was this?
           disabled={

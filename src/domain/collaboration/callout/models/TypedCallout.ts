@@ -82,6 +82,7 @@ export type TypedCalloutDetails = TypedCallout & {
   classification?: {
     flowState?: ClassificationTagsetWithAllowedValuesModel;
   };
+  contributions: [];
   settings: CalloutSettingsModelFull;
   contributionDefaults: ContributionDefaultsModel;
   comments?: CommentsWithMessagesModel | undefined;
