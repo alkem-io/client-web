@@ -16,4 +16,9 @@ export interface CalloutRestrictions {
    * Makes the Structured Responses Field read-only
    */
   readOnlyAllowedTypes?: boolean;
+  /**
+   * Makes the contributions form read-only - For now, this only applies to the Links that are added to the Callout on creation.
+   * These cannot be edited when editing the callout, and cannot be used when creating/editing a callout template
+   */
+  readOnlyContributions?: boolean;
 }
