@@ -7997,13 +7997,6 @@ export const WhiteboardFromCalloutDocument = gql`
           id
           myPrivileges
         }
-        framing {
-          id
-          type
-          whiteboard {
-            ...WhiteboardDetails
-          }
-        }
         contributions(IDs: [$contributionId]) {
           id
           whiteboard {
