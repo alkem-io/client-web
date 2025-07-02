@@ -107,9 +107,8 @@ const CalloutForm = ({
       return callout;
     } else {
       const emptyCallout = cloneDeep(DefaultCalloutFormValues);
-      if (!calloutRestrictions?.disableComments) {
-        emptyCallout.settings.framing.commentsEnabled = false;
-      }
+      emptyCallout.settings.framing.commentsEnabled = !calloutRestrictions?.disableComments;
+
       return emptyCallout;
     }
   }, [callout, DefaultCalloutSettings]);
