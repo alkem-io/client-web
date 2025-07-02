@@ -8,9 +8,7 @@ import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 import { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import { CalloutModelLight } from './CalloutModelLight';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { LinkDetails } from '../../callout/CalloutContributions/link/CalloutContributionsLink';
 import { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
-import { PostModel } from '../../post/model/PostModel';
 
 // TODO: TypedCallout and CalloutModel requires a refactor to avoid duplication
 // TypedCallout was created long ago to provide CalloutModel data + a few additional fields useful for the UI,
@@ -90,14 +88,4 @@ export type TypedCalloutDetails = TypedCallout & {
     whiteboardContent?: string;
   };
   comments?: CommentsWithMessagesModel | undefined;
-};
-
-export type TypedCalloutDetailsWithContributions = TypedCalloutDetails & {
-  contributions: {
-    id?: string;
-    sortOrder?: number;
-    link?: LinkDetails;
-    post?: PostModel;
-    whiteboard?: WhiteboardDetails;
-  }[];
 };

@@ -16,7 +16,7 @@ import CardFooter from '@/core/ui/card/CardFooter';
 import { gutters } from '@/core/ui/grid/utils';
 import { without } from 'lodash';
 import CalloutDetailsContainer from '../../callout/CalloutView/CalloutDetailsContainer';
-import { CalloutRestrictions } from '../../callout/CalloutDialogs/CreateCalloutDialog';
+import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 
 const CalloutsViewSkeleton = () => (
   <PageContentBlock>

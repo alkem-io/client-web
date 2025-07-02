@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import ContributionsSettings from './ContributionsSettings';
 import Gutters from '@/core/ui/grid/Gutters';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { CalloutRestrictions } from '../../../callout/CalloutDialogs/CreateCalloutDialog';
+import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 import { FramingSettings } from '../CalloutFormContributionSettings';
 
 /**

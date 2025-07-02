@@ -9,7 +9,7 @@ import References from '@/domain/shared/components/References/References';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import CalloutHeader from '../calloutBlock/CalloutHeader';
 import CalloutClosedMarginal from '../calloutBlock/CalloutClosedMarginal';
-import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
+import { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
 import { gutters } from '@/core/ui/grid/utils';
 
 const DESCRIPTION_MAX_HEIGHT = 'calc(100vh - 400px)';

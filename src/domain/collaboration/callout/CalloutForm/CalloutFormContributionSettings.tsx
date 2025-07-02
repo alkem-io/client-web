@@ -19,7 +19,7 @@ import ContributionSettingsDialog from './ContributionSettingsDialog/Contributio
 import ContributionsSettingsLink from './ContributionSettingsDialog/ContributionsSettingsLink';
 import ContributionsSettingsPost from './ContributionSettingsDialog/ContributionsSettingsPost';
 import ContributionsSettingsWhiteboard from './ContributionSettingsDialog/ContributionsSettingsWhiteboard';
-import { CalloutRestrictions } from '../../callout/CalloutDialogs/CreateCalloutDialog';
+import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { nameOf } from '@/core/utils/nameOf';
 import { useField } from 'formik';
 
