@@ -2261,6 +2261,7 @@ export type MutationKeySpecifier = (
   | 'createWingbackAccount'
   | 'deleteCalendarEvent'
   | 'deleteCallout'
+  | 'deleteContribution'
   | 'deleteDiscussion'
   | 'deleteDocument'
   | 'deleteInnovationHub'
@@ -2434,6 +2435,7 @@ export type MutationFieldPolicy = {
   createWingbackAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteContribution?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
