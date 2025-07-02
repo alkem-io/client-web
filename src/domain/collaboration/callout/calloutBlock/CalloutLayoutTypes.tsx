@@ -9,7 +9,6 @@ export interface CalloutLayoutProps {
   onExpand: (() => void) | undefined;
   onCollapse: (() => void) | undefined;
   skipReferences?: boolean;
-  disableMarginal?: boolean;
   contentRef?: Ref<Element>;
   settingsOpen?: boolean;
   onOpenSettings?: (event: React.MouseEvent<HTMLElement>) => void;
