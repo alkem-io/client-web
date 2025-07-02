@@ -30,14 +30,13 @@ const WhiteboardProvider = ({ children }: WhiteboardProviderProps) => {
   const callout = data?.lookup.callout;
   const whiteboardContribution = callout?.contributions[0];
 
-  const framingWhiteboard = callout?.framing.whiteboard;
   const authorization = callout?.authorization;
 
   return (
     <>
       {children(
         {
-          whiteboard: framingWhiteboard ?? whiteboardContribution?.whiteboard,
+          whiteboard: whiteboardContribution?.whiteboard,
           calloutId,
           authorization,
         },

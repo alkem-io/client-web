@@ -4,7 +4,7 @@ import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/genera
 import { UrlResolverContextValue } from '@/main/routing/urlResolver/UrlResolverProvider';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
-import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
+import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import { SpaceTabQueryModel } from './spaceTabQuery.model';
 import { useSpace } from '../../context/useSpace';
 

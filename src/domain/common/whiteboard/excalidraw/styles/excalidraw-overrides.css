@@ -9,7 +9,7 @@
  * Hide the Library button
  */
 
- /* Button on big and small screens */
+/* Button on big and small screens */
 .excalidraw .sidebar-trigger.default-sidebar-trigger {
   display: none;
 }
@@ -31,5 +31,17 @@
 
 /* Separator after Add to library context menu item */
 .excalidraw li[data-testid="addToLibrary"]+hr.context-menu-item-separator {
+  display: none;
+}
+
+/**
+ * Hide the burger menu (Import, export, Save as image, about...) in readOnly mode
+ */
+
+.excalidraw.excalidraw--view-mode .App-menu {
+  display: none;
+}
+
+.excalidraw.excalidraw-container.excalidraw--view-mode.excalidraw--mobile .App-bottom-bar .App-toolbar-content {
   display: none;
 }

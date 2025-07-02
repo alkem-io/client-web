@@ -1,4 +1,8 @@
-import { CalloutState, CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutAllowedContributors,
+  CalloutContributionType,
+  CalloutVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 
 export type PostValues = {
   title: string;
@@ -29,11 +33,12 @@ export const getPostCalloutRequestData = (title: string, description: string) =>
       referencesData: [],
     },
   },
-  type: CalloutType.Post,
-  contributionPolicy: {
-    state: CalloutState.Closed,
+  settings: {
+    framing: {
+      commentsEnabled: false,
+    },
+    visibility: CalloutVisibility.Published,
   },
-  visibility: CalloutVisibility.Published,
   sendNotification: false,
 });
 
@@ -46,10 +51,17 @@ export const getDocumentCalloutRequestData = (name: string) => ({
       referencesData: [],
     },
   },
-  type: CalloutType.LinkCollection,
-  contributionPolicy: {
-    state: CalloutState.Open,
+  settings: {
+    framing: {
+      commentsEnabled: false,
+    },
+    contribution: {
+      enabled: true,
+      allowedTypes: [CalloutContributionType.Link],
+      canAddContributions: CalloutAllowedContributors.Members,
+      commentsEnabled: false,
+    },
+    visibility: CalloutVisibility.Published,
   },
-  visibility: CalloutVisibility.Published,
   sendNotification: false,
 });

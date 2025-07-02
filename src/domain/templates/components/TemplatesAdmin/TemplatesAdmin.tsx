@@ -375,7 +375,14 @@ const TemplatesAdmin = ({
       {selectedTemplate && editTemplateMode && (
         <EditTemplateDialog
           open
-          onClose={() => backToTemplates()}
+          onClose={() => {
+            backToTemplates();
+            window.setTimeout(() => {
+              if (!alwaysEditTemplate) {
+                setEditTemplateMode(false);
+              }
+            }, 100);
+          }}
           onCancel={alwaysEditTemplate ? undefined : () => setEditTemplateMode(false)}
           template={selectedTemplate}
           templateType={selectedTemplate.type}

@@ -29,7 +29,7 @@ interface CalloutHeaderProps {
   onCollapse?: () => void;
   settingsOpen?: boolean;
   onOpenSettings?: (event: React.MouseEvent<HTMLElement>) => void;
-  contributionsCount: number;
+  contributionsCount: number | undefined;
   calloutActions?: boolean;
 }
 
@@ -105,9 +105,11 @@ const CalloutHeader = ({
           date={callout.publishedAt}
           authorName={callout.authorName}
         >
-          {`${callout.authorName} • ${t('callout.contributions', {
-            count: contributionsCount,
-          })}`}
+          {contributionsCount !== undefined &&
+            `${callout.authorName} • ${t('callout.contributions', {
+              count: contributionsCount,
+            })}`}
+          {contributionsCount === undefined && callout.authorName}
         </Authorship>
       )}
       {!hasCalloutDetails && (

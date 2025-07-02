@@ -88,7 +88,7 @@ const PostForm = ({
   );
 
   const validationSchema = yup.object().shape({
-    name: displayNameValidator,
+    name: displayNameValidator.required(),
     description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH).required(),
     tagsets: tagsetsSegmentSchema,
     references: referenceSegmentSchema,
@@ -134,7 +134,6 @@ const PostForm = ({
               hideImageOptions={disableRichMedia}
             />
             <TagsetSegment
-              tagsets={tagsets}
               title={t('common.tags')}
               helpText={t('components.post-creation.info-step.tags-help-text')}
               loading={loading}

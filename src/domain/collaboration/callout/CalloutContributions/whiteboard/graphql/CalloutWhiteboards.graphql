@@ -1,0 +1,12 @@
+fragment WhiteboardCollectionCalloutCard on Whiteboard {
+  id
+  profile {
+    id
+    url
+    displayName
+    visual(type: CARD) {
+      ...VisualModel
+    }
+  }
+  createdDate
+}

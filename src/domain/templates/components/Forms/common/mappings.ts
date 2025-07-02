@@ -1,18 +1,18 @@
 import {
-  CalloutState,
-  CalloutType,
+  CalloutFramingType,
   CreateCalloutInput,
   CreateProfileInput,
   CreateReferenceInput,
   CreateTemplateFromSpaceMutationVariables,
   CreateTemplateFromContentSpaceMutationVariables,
   CreateWhiteboardInput,
-  UpdateCalloutMutationVariables,
+  UpdateCalloutTemplateMutationVariables,
   UpdateCommunityGuidelinesMutationVariables,
   UpdateProfileInput,
   UpdateTagsetInput,
   UpdateTemplateFromSpaceMutationVariables,
   VisualType,
+  CalloutContributionType,
 } from '@/core/apollo/generated/graphql-schema';
 import {
   CreateTemplateMutationVariables,
@@ -29,6 +29,9 @@ import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
+import { mapCalloutSettingsFormToCalloutSettingsModel } from '@/domain/collaboration/callout/models/mappings';
+import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 interface EntityWithProfile {
   profile: {
@@ -150,13 +153,16 @@ const handleContributionDefaults = (
     | {
         postDescription?: string;
         whiteboardContent?: string;
+        defaultDisplayName?: string;
       }
     | undefined
 ) => {
+  // Return the values only they are not empty, otherwise just set them to undefined
   if (data) {
     return {
-      postDescription: data.postDescription,
-      whiteboardContent: data.whiteboardContent,
+      defaultDisplayName: data.defaultDisplayName ? data.defaultDisplayName : undefined,
+      postDescription: data.postDescription ? data.postDescription : undefined,
+      whiteboardContent: data.whiteboardContent ? data.whiteboardContent : undefined,
     };
   }
 };
@@ -176,47 +182,37 @@ export const toCreateTemplateMutationVariables = (
   switch (templateType) {
     case TemplateType.Callout: {
       const calloutTemplateData = values as TemplateCalloutFormSubmittedValues;
-      if (!calloutTemplateData.callout || !calloutTemplateData.callout.type) {
+      if (!calloutTemplateData.callout) {
         throw new Error('Callout template must have callout data');
       }
       const { profileData, tags } = handleCreateProfile(calloutTemplateData.callout.framing);
       const callout: CreateCalloutInput = {
-        type: calloutTemplateData.callout.type,
         framing: {
           profile: profileData,
+          type: calloutTemplateData.callout.framing.type,
           tags,
           whiteboard: handleCreateWhiteboard(calloutTemplateData.callout.framing.whiteboard),
         },
+        settings: mapCalloutSettingsFormToCalloutSettingsModel(calloutTemplateData.callout.settings),
       };
       callout.contributionDefaults = handleContributionDefaults(calloutTemplateData.callout.contributionDefaults);
-
-      switch (calloutTemplateData.callout?.type) {
-        case CalloutType.Post:
-        case CalloutType.PostCollection: {
-          delete callout.contributionDefaults?.whiteboardContent;
-          delete callout.framing.whiteboard;
-          break;
-        }
-        case CalloutType.LinkCollection: {
-          delete callout.contributionDefaults;
-          delete callout.framing.whiteboard;
-          break;
-        }
-        case CalloutType.Whiteboard: {
-          delete callout.contributionDefaults;
-          // if there are preview images for upload, do not use the existing preview
-          if (calloutTemplateData.whiteboardPreviewImages) {
-            delete callout.framing.whiteboard?.profile?.visuals;
-          }
-          break;
-        }
-        case CalloutType.WhiteboardCollection: {
-          delete callout.framing.whiteboard;
-          delete callout.contributionDefaults?.postDescription;
-          break;
+      if (!(calloutTemplateData.callout?.framing.type === CalloutFramingType.Whiteboard)) {
+        delete callout.framing.whiteboard; // if the callout is not a whiteboard, we don't need the whiteboard field
+      } else {
+        // if there are preview images for upload, do not use the existing preview
+        if (calloutTemplateData.whiteboardPreviewImages) {
+          delete callout.framing.whiteboard?.profile?.visuals;
         }
       }
-      callout.contributionPolicy = { state: CalloutState.Open };
+      if (!calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post)) {
+        delete callout.contributionDefaults?.postDescription;
+      }
+      if (
+        !calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard)
+      ) {
+        delete callout.contributionDefaults?.whiteboardContent;
+      }
+
       result.calloutData = callout;
       break;
     }
@@ -336,6 +332,7 @@ interface TemplateProfile {
   description?: string;
   tagline?: string;
   defaultTagset?: TemplateTagset;
+  references?: Partial<ReferenceModel>[];
 }
 
 export const mapTemplateProfileToUpdateProfileInput = (profile?: TemplateProfile): UpdateProfileInput => {
@@ -344,6 +341,7 @@ export const mapTemplateProfileToUpdateProfileInput = (profile?: TemplateProfile
     description: profile?.description,
     tagline: profile?.tagline,
     tagsets: mapTagsetsToUpdateTagsets(profile),
+    references: mapReferenceModelsToUpdateReferenceInputs(profile?.references),
   };
 };
 
@@ -354,7 +352,7 @@ export const toUpdateTemplateMutationVariables = (
   newValues: AnyTemplateFormSubmittedValues
 ): {
   updateTemplateVariables: UpdateTemplateMutationVariables;
-  updateCalloutVariables?: UpdateCalloutMutationVariables;
+  updateCalloutVariables?: UpdateCalloutTemplateMutationVariables;
   updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
   updateSpaceContentTemplateVariables?: UpdateTemplateFromSpaceMutationVariables;
 } => {
@@ -366,42 +364,28 @@ export const toUpdateTemplateMutationVariables = (
   switch (template.type) {
     case TemplateType.Callout: {
       const calloutTemplateData = newValues as TemplateCalloutFormSubmittedValues;
-      const updateCalloutVariables: UpdateCalloutMutationVariables = {
+      const updateCalloutVariables: UpdateCalloutTemplateMutationVariables = {
         calloutData: {
           ID: (template as CalloutTemplate).callout?.id!,
           framing: {
             profile: mapTemplateProfileToUpdateProfileInput(calloutTemplateData.callout?.framing.profile),
+            type: calloutTemplateData.callout?.framing.type,
             whiteboardContent: calloutTemplateData.callout?.framing.whiteboard?.content,
           },
           contributionDefaults: handleContributionDefaults(calloutTemplateData.callout?.contributionDefaults),
         },
       };
       // Delete useless fields and leave only the fields relevant to the callout types
-      switch ((template as CalloutTemplate).callout?.type) {
-        case CalloutType.Post: {
-          delete updateCalloutVariables.calloutData?.contributionDefaults;
-          delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
-          break;
-        }
-        case CalloutType.PostCollection: {
-          delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
-          delete updateCalloutVariables.calloutData?.contributionDefaults?.whiteboardContent;
-          break;
-        }
-        case CalloutType.LinkCollection: {
-          delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
-          delete updateCalloutVariables.calloutData?.contributionDefaults;
-          break;
-        }
-        case CalloutType.Whiteboard: {
-          delete updateCalloutVariables.calloutData?.contributionDefaults;
-          break;
-        }
-        case CalloutType.WhiteboardCollection: {
-          delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
-          delete updateCalloutVariables.calloutData?.contributionDefaults?.postDescription;
-          break;
-        }
+      if (!(calloutTemplateData.callout?.framing.type === CalloutFramingType.Whiteboard)) {
+        delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
+      }
+      if (!calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post)) {
+        delete updateCalloutVariables.calloutData?.contributionDefaults?.postDescription;
+      }
+      if (
+        !calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard)
+      ) {
+        delete updateCalloutVariables.calloutData?.contributionDefaults?.whiteboardContent;
       }
 
       return {
