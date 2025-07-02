@@ -45,13 +45,15 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
             tagsets: template?.callout?.framing.profile.tagsets ?? [EmptyTagset],
           },
           type: template?.callout?.framing?.type ?? CalloutFramingType.None,
-          whiteboard: {
-            profile: {
-              displayName: template?.callout?.framing?.whiteboard?.profile.displayName ?? '',
-            },
-            previewImages: [], // This is not going to work for now :(
-            content: template?.callout?.framing?.whiteboard?.content ?? EmptyWhiteboardString,
-          },
+          whiteboard: template?.callout?.framing?.whiteboard
+            ? {
+                profile: {
+                  displayName: template.callout.framing.whiteboard.profile.displayName,
+                },
+                previewImages: [], // This is not going to work for now :(
+                content: template.callout.framing.whiteboard.content ?? EmptyWhiteboardString,
+              }
+            : undefined,
         },
         contributionDefaults: {
           defaultDisplayName: template?.callout?.contributionDefaults?.defaultDisplayName ?? '',

@@ -12,3 +12,10 @@ export interface ReferenceModelWithOptionalAuthorization extends ReferenceModel 
     myPrivileges?: AuthorizationPrivilege[];
   };
 }
+
+export const EmptyReference: ReferenceModel = {
+  id: '',
+  name: '',
+  uri: '',
+  description: '',
+};

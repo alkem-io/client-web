@@ -3,7 +3,7 @@ import { Formik, FormikProps, useField } from 'formik';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { CalloutFormSubmittedValues } from '../CalloutFormModel';
 import { ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps } from './ContributionSettingsDialog';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { EmptyReference, ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { isArrayEqual } from '@/core/utils/isArrayEqual';
 import { useTranslation } from 'react-i18next';
 
@@ -16,21 +16,16 @@ const ContributionsSettingsLink = forwardRef<ContributionTypeSettingsComponentRe
     useImperativeHandle(ref, () => ({
       onSave: () => {
         // Apply the changes to the local form to the formik state of the CalloutForm
-        meta.setValue(internalFormRef.current?.values.links);
+        // Filter out empty links
+        meta.setValue(internalFormRef.current?.values.links.filter(link => link.name || link.uri || link.description));
       },
       isContentChanged: () => isArrayEqual(field.value, internalFormRef.current?.values.links),
     }));
 
-    const initialValues = {
-      links: field.value ?? [
-        {
-          id: '',
-          name: '',
-          uri: '',
-          description: '',
-        },
-      ],
-    };
+    const initialValues =
+      field.value && field.value.length > 0 // If there are existing links, use them, if not create an empty one
+        ? { links: field.value }
+        : { links: [EmptyReference] };
 
     const internalFormRef = useRef<FormikProps<{ links: ReferenceModel[] }>>(null);
 

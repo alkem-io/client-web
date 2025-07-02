@@ -55,7 +55,6 @@ export const calloutValidationSchema = yup.object().shape({
   contributions: yup.object().shape({
     links: referenceSegmentSchema.nullable(),
   }),
-
   settings: yup.object().shape({
     contribution: yup.object().shape({
       enabled: yup.boolean().required(),
