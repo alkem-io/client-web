@@ -70,7 +70,13 @@ export const mapCalloutSettingsFormToCalloutSettingsModel = (
 ): CalloutSettingsModelFull => ({
   contribution: {
     enabled: settings.contribution.enabled,
-    allowedTypes: settings.contribution.allowedTypes === 'none' ? [] : [settings.contribution.allowedTypes],
+    allowedTypes:
+      settings.contribution.allowedTypes === 'none'
+        ? []
+        : // Sometimes, when the data is coming from a template, this allowedTypes is already an array
+          Array.isArray(settings.contribution.allowedTypes)
+          ? settings.contribution.allowedTypes
+          : [settings.contribution.allowedTypes],
     canAddContributions: settings.contribution.canAddContributions,
     commentsEnabled: settings.contribution.commentsEnabled,
   },
