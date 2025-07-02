@@ -44,6 +44,7 @@ const ContributionsSettings = forwardRef<
         ...field.value,
         contribution: {
           ...field.value.contribution,
+          enabled: formState.membersCanRespond || formState.adminCanRespond,
           canAddContributions: formState.membersCanRespond
             ? CalloutAllowedContributors.Members
             : formState.adminCanRespond
