@@ -3913,6 +3913,8 @@ export type Mutation = {
   deleteCalendarEvent: CalendarEvent;
   /** Delete a Callout. */
   deleteCallout: Callout;
+  /** Deletes a contribution. */
+  deleteContribution: CalloutContribution;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
   /** Deletes the specified Document. */
@@ -4337,6 +4339,10 @@ export type MutationDeleteCalendarEventArgs = {
 
 export type MutationDeleteCalloutArgs = {
   deleteData: DeleteCalloutInput;
+};
+
+export type MutationDeleteContributionArgs = {
+  contributionID: Scalars['String']['input'];
 };
 
 export type MutationDeleteDiscussionArgs = {
