@@ -11,8 +11,10 @@ This API is:
   The dialog will call this function to check if the content has been changed to prevent the users to lose data in case they close the back button or close the dialog.
 
 So important to have in mind while developing a new contribution type:
+
 - There are two states,
-  - The Formik state, which is of type CalloutFormSubmittedValues and it is what it's going to be sent to the server on createCallout mutation or updateCalloutMutation and should be as similar as possible to the corresponding *Inputs
+
+  - The Formik state, which is of type CalloutFormSubmittedValues and it is what it's going to be sent to the server on createCallout mutation or updateCalloutMutation and should be as similar as possible to the corresponding \*Inputs
   - Each individual form state by contribution type, which can be a whiteboard, or a post default description...
 
   The component is responsible of updating the Formik state when the user hits save button (onSave), and is responsible of checking if any content changed when the user wants to close the settings dialog.

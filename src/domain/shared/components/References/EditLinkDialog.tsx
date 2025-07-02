@@ -9,7 +9,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { BlockSectionTitle, BlockTitle } from '@/core/ui/typography';
-import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import calloutIcons from '@/domain/collaboration/callout/icons/calloutIcons';
 import { Actions } from '@/core/ui/actions/Actions';
 import { gutters } from '@/core/ui/grid/utils';
 import DeleteIcon from '@mui/icons-material/Delete';

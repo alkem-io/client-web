@@ -2,7 +2,7 @@ import { useState } from 'react';
 import AddContentButton from '@/core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
 import { useTranslation } from 'react-i18next';
-import CreateCalloutDialog from '../../new-callout/CreateCallout/CreateCalloutDialog';
+import CreateCalloutDialog from '../../callout/CalloutDialogs/CreateCalloutDialog';
 import { buildFlowStateClassificationTagsets } from '../Classification/ClassificationTagset.utils';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
@@ -41,7 +41,7 @@ const CalloutsGroupView = ({
         onClose={() => setIsCalloutCreationDialogOpen(false)}
         calloutsSetId={calloutsSetId}
         calloutClassification={buildFlowStateClassificationTagsets(createInFlowState)}
-        {...calloutsViewProps.calloutRestrictions}
+        calloutRestrictions={calloutsViewProps.calloutRestrictions}
       />
     </>
   );

@@ -10,7 +10,7 @@ import {
   PersonOutlined,
 } from '@mui/icons-material';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
-import { GenericCalloutIcon } from '@/domain/collaboration/callout/utils/calloutIcons';
+import { GenericCalloutIcon } from '@/domain/collaboration/callout/icons/calloutIcons';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 
 const ActivityIcon: Record<

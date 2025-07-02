@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import { ContributeCreationBlock } from '@/domain/space/components/ContributeCreationBlock';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import CreateCalloutDialog from '@/domain/collaboration/new-callout/CreateCallout/CreateCalloutDialog';
+import CreateCalloutDialog from '@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import CalloutsList from '@/domain/collaboration/callout/calloutsList/CalloutsList';

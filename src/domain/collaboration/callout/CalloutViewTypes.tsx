@@ -1,5 +1,5 @@
 import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import { CalloutRestrictions as CalloutRestrictions } from '../new-callout/CreateCallout/CreateCalloutDialog';
+import { CalloutRestrictions as CalloutRestrictions } from './CalloutDialogs/CreateCalloutDialog';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { CalloutSortEvents, CalloutSortProps } from '../calloutsSet/CalloutsView/CalloutSortModels';
 

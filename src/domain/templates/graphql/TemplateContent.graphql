@@ -62,7 +62,7 @@ fragment CalloutTemplateContent on Callout {
       id
       displayName
       description
-      tagset {
+      tagsets {
         ...TagsetDetails
       }
       defaultTagset: tagset {
@@ -82,15 +82,11 @@ fragment CalloutTemplateContent on Callout {
     }
   }
   settings {
-    contribution {
-      enabled
-      allowedTypes
-      canAddContributions
-      commentsEnabled
-    }
+    ...CalloutSettingsFull
   }
   contributionDefaults {
     id
+    defaultDisplayName
     postDescription
     whiteboardContent
   }

@@ -23,7 +23,7 @@ import {
   useDeleteCalloutMutation,
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { TypedCalloutDetails } from '@/domain/collaboration/new-callout/models/TypedCallout';
+import { TypedCalloutDetails } from '@/domain/collaboration/callout/models/TypedCallout';
 import { Actions } from '@/core/ui/actions/Actions';
 import { removeVCCreationCache } from './utils';
 import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';

@@ -1,8 +1,9 @@
-import { Button, DialogActions, DialogContent } from '@mui/material';
+import { Button, DialogActions, DialogContent, Checkbox, FormControlLabel, Tooltip } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
-  CalloutContributionType,
   CreateCalloutContributionInput,
+  CalloutContributionType,
+  CalloutVisibility,
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -18,7 +19,8 @@ import {
 } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
-import CalloutForm, { CalloutFormSubmittedValues } from './CalloutForm';
+import CalloutForm from '../CalloutForm/CalloutForm';
+import { CalloutFormSubmittedValues } from '../CalloutForm/CalloutFormModel';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
@@ -27,19 +29,26 @@ import {
 } from '@/domain/common/profile/ProfileModelUtils';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
+import Gutters from '@/core/ui/grid/Gutters';
+import { mapCalloutModelToCalloutForm, mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
+import { CalloutModel } from '../models/CalloutModel';
 
 export interface CalloutRestrictions {
+  /**
+   * Store media in a temporary location (required when the Callout doesn't exist yet)
+   */
+  temporaryLocation?: boolean;
   /**
    * Disables upload of images, videos and other rich media in the Markdown editors.
    */
   disableRichMedia?: boolean;
-  disablePostResponses?: boolean;
+  disableComments?: boolean;
   /**
    * Disables whiteboard callouts, both in the framing and in the responses. This is here because VCs still don't support whiteboards.
    */
   disableWhiteboards?: boolean;
   /**
-   * Makes the Structured Responses read-only
+   * Makes the Structured Responses Field read-only
    */
   readOnlyAllowedTypes?: boolean;
 }
@@ -72,6 +81,7 @@ const CreateCalloutDialog = ({
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
+  const [templateSelected, setTemplateSelected] = useState<CalloutFormSubmittedValues | undefined>(undefined);
   const [fetchTemplateContent] = useTemplateContentLazyQuery();
   const handleSelectTemplate = async ({ id: templateId }: Identifiable) => {
     const { data } = await fetchTemplateContent({
@@ -83,7 +93,7 @@ const CreateCalloutDialog = ({
 
     const template = data?.lookup.template;
     const templateCallout = template?.callout;
-
+    setTemplateSelected(mapCalloutModelToCalloutForm(templateCallout as unknown as CalloutModel)); //!!
     if (!template || !templateCallout) {
       throw new Error("Couldn't load CalloutTemplate");
     }
@@ -94,6 +104,7 @@ const CreateCalloutDialog = ({
   const [calloutFormData, setCalloutFormData] = useState<CalloutFormSubmittedValues>();
 
   const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState(false);
+  const [sendNotification, setSendNotification] = useState(false);
   const handleCloseButtonClick = () => {
     if (calloutFormData) {
       setConfirmCloseDialogOpen(true);
@@ -102,74 +113,71 @@ const CreateCalloutDialog = ({
     }
   };
   const handleClose = () => {
+    setTemplateSelected(undefined);
     setCalloutFormData(undefined);
     setConfirmCloseDialogOpen(false);
     onClose?.();
   };
 
-  const [handlePublishCallout, publishingCallout] = useLoadingState(async () => {
-    const formData = ensurePresence(calloutFormData);
-    // Map the profile to CreateProfileInput
-    const framing = {
-      ...formData.framing,
-      profile: mapProfileModelToCreateProfileInput(formData.framing.profile),
-      tags: mapProfileTagsToCreateTags(formData.framing.profile),
-    };
+  const [handlePublishCallout, publishingCallout] = useLoadingState(
+    async (visibility: CalloutVisibility = CalloutVisibility.Published) => {
+      const formData = ensurePresence(calloutFormData);
+      // Map the profile to CreateProfileInput
+      const framing = {
+        ...formData.framing,
+        profile: mapProfileModelToCreateProfileInput(formData.framing.profile),
+        tags: mapProfileTagsToCreateTags(formData.framing.profile),
+      };
 
-    // And map the radio button allowed contribution types to an array
-    const settings = {
-      ...formData.settings,
-      contribution: {
-        ...formData.settings?.contribution,
-        allowedTypes:
-          formData.settings.contribution.allowedTypes === 'none' ? [] : [formData.settings.contribution.allowedTypes],
-      },
-    };
-    // If the calloutClassification is provided, map it to the expected format
-    const classification = calloutClassification ? { tagsets: calloutClassification } : undefined;
+      // And map the radio button allowed contribution types to an array
+      const settings = mapCalloutSettingsFormToCalloutSettingsModel(formData.settings);
+      settings.visibility = visibility;
+      // If the calloutClassification is provided, map it to the expected format
+      const classification = calloutClassification ? { tagsets: calloutClassification } : undefined;
 
-    // Clean up unneeded contributionDefaults
-    const contributionDefaults = {
-      ...formData.contributionDefaults,
-      defaultDisplayName: formData.contributionDefaults.defaultDisplayName
-        ? formData.contributionDefaults.defaultDisplayName
-        : undefined, // Only include if it's set, if it's an empty string, we don't want to send it
-      whiteboardContent:
-        formData.settings.contribution.allowedTypes === CalloutContributionType.Whiteboard
-          ? formData.contributionDefaults.whiteboardContent
-          : undefined,
-      postDescription:
-        formData.settings.contribution.allowedTypes === CalloutContributionType.Post
-          ? formData.contributionDefaults.postDescription
-          : undefined,
-    };
+      // Clean up unneeded contributionDefaults
+      const contributionDefaults = {
+        ...formData.contributionDefaults,
+        defaultDisplayName: formData.contributionDefaults.defaultDisplayName
+          ? formData.contributionDefaults.defaultDisplayName
+          : undefined, // Only include if it's set, if it's an empty string, we don't want to send it
+        whiteboardContent:
+          formData.settings.contribution.allowedTypes === CalloutContributionType.Whiteboard
+            ? formData.contributionDefaults.whiteboardContent
+            : undefined,
+        postDescription:
+          formData.settings.contribution.allowedTypes === CalloutContributionType.Post
+            ? formData.contributionDefaults.postDescription
+            : undefined,
+      };
 
-    let contributions: CreateCalloutContributionInput[] = [];
-    formData.contributions?.links?.forEach(link => {
-      contributions.push({
-        link: {
-          uri: link.uri,
-          profile: {
-            displayName: link.name,
-            description: link.description,
+      let contributions: CreateCalloutContributionInput[] = [];
+      formData.contributions?.links?.forEach(link => {
+        contributions.push({
+          link: {
+            uri: link.uri,
+            profile: {
+              displayName: link.name,
+              description: link.description,
+            },
           },
-        },
+        });
       });
-    });
 
-    const createCalloutInput: CalloutCreationTypeWithPreviewImages = {
-      ...formData,
-      framing,
-      settings,
-      classification,
-      contributionDefaults,
-      contributions,
-    };
+      const createCalloutInput: CalloutCreationTypeWithPreviewImages = {
+        ...formData,
+        framing,
+        settings,
+        classification,
+        contributionDefaults,
+        contributions,
+      };
 
-    await handleCreateCallout(createCalloutInput);
-    handleClose();
-    scrollToTop();
-  });
+      await handleCreateCallout(createCalloutInput);
+      handleClose();
+      setTimeout(scrollToTop, 100);
+    }
+  );
 
   return (
     <>
@@ -189,16 +197,44 @@ const CreateCalloutDialog = ({
         />
         <DialogContent>
           <CalloutForm
+            callout={templateSelected}
             onChange={setCalloutFormData}
             onStatusChanged={handleStatusChange}
-            calloutRestrictions={calloutRestrictions}
+            calloutRestrictions={{ ...calloutRestrictions, temporaryLocation: true }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} variant="text" disabled={publishingCallout}>
-            {t('buttons.cancel')}
+          {isValid && (
+            <Gutters disableGap row paddingY={0} flex={1} alignItems="center">
+              <Tooltip title={t('callout.create.notification.description')} placement="top">
+                <FormControlLabel
+                  disabled={publishingCallout}
+                  control={
+                    <Checkbox
+                      checked={sendNotification}
+                      onChange={e => setSendNotification(e.target.checked)}
+                      color="primary"
+                    />
+                  }
+                  label={t('callout.create.notification.label')}
+                />
+              </Tooltip>
+            </Gutters>
+          )}
+          <Button
+            variant="text"
+            onClick={() => handlePublishCallout(CalloutVisibility.Draft)}
+            loading={publishingCallout}
+            disabled={!isValid}
+          >
+            {t('buttons.saveDraft')}
           </Button>
-          <Button variant="contained" onClick={handlePublishCallout} loading={publishingCallout} disabled={!isValid}>
+          <Button
+            variant="contained"
+            onClick={() => handlePublishCallout()}
+            loading={publishingCallout}
+            disabled={!isValid}
+          >
             {t('buttons.post')}
           </Button>
         </DialogActions>

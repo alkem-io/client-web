@@ -86,13 +86,6 @@ query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
         id
         myPrivileges
       }
-      framing {
-        id
-        type
-        whiteboard {
-          ...WhiteboardDetails
-        }
-      }
       contributions(IDs: [$contributionId]) {
         id
         whiteboard {

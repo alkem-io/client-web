@@ -59,128 +59,128 @@ query InnovationLibrary($filterTemplateType: [TemplateType!]) {
   }
 }
 
-fragment LibraryTemplates on TemplatesSet {
-  id
-  postTemplates {
-    id
-    profile {
-      id
-      displayName
-      description
-      visual(type: CARD) {
-        ...VisualModel
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-    postDefaultDescription
-  }
-  postTemplatesCount
-  whiteboardTemplates {
-    id
-    profile {
-      id
-      displayName
-      description
-      visual(type: CARD) {
-        ...VisualModel
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-  }
-  whiteboardTemplatesCount
-  calloutTemplates {
-    id
-    type
-    profile {
-      ...TemplateCardProfileInfo
-    }
-    callout {
-      framing {
-        id
-        profile {
-          id
-          displayName
-          description
-          tagset {
-            ...TagsetDetails
-          }
-          storageBucket {
-            id
-          }
-          references {
-            ...ReferenceDetails
-          }
-        }
-        type
-        whiteboard {
-          ...WhiteboardDetails
-          # ...WhiteboardContent #//!! I don't think this is needed here
-        }
-      }
-    }
-  }
-  calloutTemplatesCount
-  communityGuidelinesTemplates {
-    id
-    profile {
-      id
-      displayName
-      description
-      tagset {
-        ...TagsetDetails
-      }
-    }
-    communityGuidelines {
-      id
-      profile {
-        displayName
-        description
-        references {
-          ...ReferenceDetails
-        }
-      }
-    }
-  }
-  spaceTemplatesCount
-  spaceTemplates {
-    id
-    profile {
-      id
-      displayName
-      description
-      tagset {
-        ...TagsetDetails
-      }
-    }
-    contentSpace {
-      id
-      collaboration {
-        id
-        innovationFlow {
-          id
-          states {
-            displayName
-            description
-          }
-        }
-        calloutsSet {
-          id
-          callouts {
-            id
-            framing {
-              id
-              profile {
-                id
-                displayName
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
+# // TODO: Investigate why this fragment is NOT USED, It may be a mistake
+# fragment LibraryTemplates on TemplatesSet {
+#   id
+#   postTemplates {
+#     id
+#     profile {
+#       id
+#       displayName
+#       description
+#       visual(type: CARD) {
+#         ...VisualModel
+#       }
+#       tagset {
+#         ...TagsetDetails
+#       }
+#     }
+#     postDefaultDescription
+#   }
+#   postTemplatesCount
+#   whiteboardTemplates {
+#     id
+#     profile {
+#       id
+#       displayName
+#       description
+#       visual(type: CARD) {
+#         ...VisualModel
+#       }
+#       tagset {
+#         ...TagsetDetails
+#       }
+#     }
+#   }
+#   whiteboardTemplatesCount
+#   calloutTemplates {
+#     id
+#     type
+#     profile {
+#       ...TemplateCardProfileInfo
+#     }
+#     callout {
+#       framing {
+#         id
+#         profile {
+#           id
+#           displayName
+#           description
+#           tagset {
+#             ...TagsetDetails
+#           }
+#           storageBucket {
+#             id
+#           }
+#           references {
+#             ...ReferenceDetails
+#           }
+#         }
+#         type
+#         whiteboard {
+#           ...WhiteboardDetails
+#         }
+#       }
+#     }
+#   }
+#   calloutTemplatesCount
+#   communityGuidelinesTemplates {
+#     id
+#     profile {
+#       id
+#       displayName
+#       description
+#       tagset {
+#         ...TagsetDetails
+#       }
+#     }
+#     communityGuidelines {
+#       id
+#       profile {
+#         displayName
+#         description
+#         references {
+#           ...ReferenceDetails
+#         }
+#       }
+#     }
+#   }
+#   spaceTemplatesCount
+#   spaceTemplates {
+#     id
+#     profile {
+#       id
+#       displayName
+#       description
+#       tagset {
+#         ...TagsetDetails
+#       }
+#     }
+#     contentSpace {
+#       id
+#       collaboration {
+#         id
+#         innovationFlow {
+#           id
+#           states {
+#             displayName
+#             description
+#           }
+#         }
+#         calloutsSet {
+#           id
+#           callouts {
+#             id
+#             framing {
+#               id
+#               profile {
+#                 id
+#                 displayName
+#               }
+#             }
+#           }
+#         }
+#       }
+#     }
+#   }
+# }

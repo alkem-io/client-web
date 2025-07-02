@@ -1,12 +1,12 @@
 import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { useField } from 'formik';
-import { CalloutFormSubmittedValues } from '../CalloutForm';
+import { CalloutFormSubmittedValues } from '../CalloutFormModel';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { CalloutAllowedContributors } from '@/core/apollo/generated/graphql-schema';
 import { ContributionTypeSettingsComponentRef } from './ContributionSettingsDialog';
 import { useTranslation } from 'react-i18next';
-import { FramingSettings } from '@/domain/collaboration/new-callout/CreateCallout/CalloutFormContributionSettings';
-import { CalloutRestrictions } from '@/domain/collaboration/new-callout/CreateCallout/CreateCalloutDialog';
+import { FramingSettings } from '../CalloutFormContributionSettings';
+import { CalloutRestrictions } from '../../../callout/CalloutDialogs/CreateCalloutDialog';
 
 type FieldsState = {
   membersCanRespond: boolean;

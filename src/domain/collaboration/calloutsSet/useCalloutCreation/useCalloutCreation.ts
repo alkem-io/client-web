@@ -42,10 +42,12 @@ export interface CalloutCreationType {
     visibility?: CalloutVisibility;
   };
   contributionDefaults?: {
+    defaultDisplayName?: string;
     postDescription?: string;
     whiteboardContent?: string;
   };
   contributions?: CreateCalloutContributionInput[];
+  sendNotification?: boolean;
 }
 
 export interface CalloutCreationParams {

@@ -29,7 +29,7 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import { SubspaceDrawerMenu } from './SubspaceDrawerMenu';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
-import CreateCalloutDialog from '@/domain/collaboration/new-callout/CreateCallout/CreateCalloutDialog';
+import CreateCalloutDialog from '@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 
 export const SubspacePageLayout = () => {

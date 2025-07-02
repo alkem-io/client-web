@@ -2,7 +2,7 @@ import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ContributionTypeSettingsComponentRef, ContributionTypeSettingsProps } from './ContributionSettingsDialog';
 import { Formik, FormikProps, useField } from 'formik';
-import { CalloutFormSubmittedValues } from '../CalloutForm';
+import { CalloutFormSubmittedValues } from '../CalloutFormModel';
 import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';

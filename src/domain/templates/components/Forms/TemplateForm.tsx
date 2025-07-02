@@ -27,7 +27,7 @@ export type AnyTemplateFormSubmittedValues =
 const TemplateForm = ({ template, temporaryLocation = false, ...rest }: TemplateFormProps) => {
   switch (template.type) {
     case TemplateType.Callout:
-      return <TemplateCalloutForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
+      return <TemplateCalloutForm template={template} {...rest} />;
     case TemplateType.Space:
       return <TemplateSpaceForm template={template} {...rest} />;
     case TemplateType.CommunityGuidelines:

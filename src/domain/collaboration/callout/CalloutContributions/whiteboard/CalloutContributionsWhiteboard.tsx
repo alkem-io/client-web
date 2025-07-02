@@ -134,4 +134,5 @@ const CalloutContributionsWhiteboard = forwardRef<HTMLDivElement, CalloutContrib
   }
 );
 
+CalloutContributionsWhiteboard.displayName = 'CalloutContributionsWhiteboard';
 export default CalloutContributionsWhiteboard;
