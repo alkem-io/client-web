@@ -1,6 +1,11 @@
 import { Button, DialogActions, DialogContent, Checkbox, FormControlLabel, Tooltip } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType, CalloutVisibility, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CreateCalloutContributionInput,
+  CalloutContributionType,
+  CalloutVisibility,
+  TemplateType,
+} from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
@@ -27,6 +32,31 @@ import scrollToTop from '@/core/ui/utils/scrollToTop';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 import { applyCalloutTemplateToCalloutForm, mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
+
+export interface CalloutRestrictions {
+  /**
+   * Store media in a temporary location (required when the Callout doesn't exist yet)
+   */
+  temporaryLocation?: boolean;
+  /**
+   * Disables upload of images, videos and other rich media in the Markdown editors.
+   */
+  disableRichMedia?: boolean;
+  disableComments?: boolean;
+  /**
+   * Disables whiteboard callouts, both in the framing and in the responses. This is here because VCs still don't support whiteboards.
+   */
+  disableWhiteboards?: boolean;
+  /**
+   * Makes the Structured Responses Field read-only
+   */
+  readOnlyAllowedTypes?: boolean;
+  /**
+   * Makes the contributions form read-only - For now, this only applies to the Links that are added to the Callout on creation.
+   * These cannot be edited when editing the callout, and cannot be used when creating/editing a callout template
+   */
+  readOnlyContributions?: boolean;
+}
 
 export interface CreateCalloutDialogProps {
   open?: boolean;
@@ -124,19 +154,28 @@ const CreateCalloutDialog = ({
           formData.settings.contribution.allowedTypes === CalloutContributionType.Post
             ? formData.contributionDefaults.postDescription
             : undefined,
-        links:
-          formData.settings.contribution.allowedTypes === CalloutContributionType.Link
-            ? formData.contributionDefaults.links
-            : undefined,
       };
+
+      let contributions: CreateCalloutContributionInput[] = [];
+      formData.contributions?.links?.forEach(link => {
+        contributions.push({
+          link: {
+            uri: link.uri,
+            profile: {
+              displayName: link.name,
+              description: link.description,
+            },
+          },
+        });
+      });
 
       const createCalloutInput: CalloutCreationTypeWithPreviewImages = {
         ...formData,
         framing,
         settings,
         classification,
-        sendNotification,
         contributionDefaults,
+        contributions,
       };
 
       await handleCreateCallout(createCalloutInput);
