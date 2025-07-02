@@ -28,21 +28,29 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
   const whiteboardPreviewRef = useRef<FormikWhiteboardPreviewRef>(null);
 
   useEffect(() => {
-    if (framing.type === CalloutFramingType.Whiteboard) {
-      const { whiteboard, ...rest } = framing;
-      helpers.setValue({
-        ...rest,
-        whiteboard: {
-          content: whiteboard?.content ?? EmptyWhiteboardString,
-          profile: {
-            displayName: whiteboard?.profile.displayName ?? t('common.whiteboard'),
+    if (framing.type === CalloutFramingType.Whiteboard && !framing.whiteboard) {
+      // DO NOT call helpers.setValue synchronously,
+      // otherwise the form will end up in an infinite loop of FormikEffect - onChange
+      // one executing the other because the initialValues change. This happens on TemplateForm,
+      // I have tried to put the setTimeout in the onChange but it didn't work.
+      window.setTimeout(() => {
+        const { whiteboard, ...rest } = framing;
+        helpers.setValue({
+          ...rest,
+          whiteboard: {
+            content: EmptyWhiteboardString,
+            profile: {
+              displayName: t('common.whiteboard'),
+            },
+            previewImages: [],
           },
-          previewImages: whiteboard?.previewImages,
-        },
-      });
-    } else {
-      const { whiteboard, ...rest } = framing;
-      helpers.setValue({ ...rest, whiteboard: undefined });
+        });
+      }, 100);
+    } else if (framing.type === CalloutFramingType.None && framing.whiteboard) {
+      window.setTimeout(() => {
+        const { whiteboard, ...rest } = framing;
+        helpers.setValue({ ...rest, whiteboard: undefined });
+      }, 100);
     }
   }, [framing.type]);
 
