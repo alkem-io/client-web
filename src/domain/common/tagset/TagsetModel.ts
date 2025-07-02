@@ -8,6 +8,11 @@ export interface TagsetModel {
   type: TagsetType;
 }
 
+export interface TagsetFormValue {
+  name: string;
+  tags: string[];
+}
+
 export interface UpdateTagsetModel {
   id: string;
   name?: string;

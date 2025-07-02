@@ -30,6 +30,8 @@ import { CommunityGuidelinesTemplate } from '@/domain/templates/models/Community
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
 import { mapCalloutSettingsFormToCalloutSettingsModel } from '@/domain/collaboration/callout/models/mappings';
+import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 interface EntityWithProfile {
   profile: {
@@ -330,6 +332,7 @@ interface TemplateProfile {
   description?: string;
   tagline?: string;
   defaultTagset?: TemplateTagset;
+  references?: Partial<ReferenceModel>[];
 }
 
 export const mapTemplateProfileToUpdateProfileInput = (profile?: TemplateProfile): UpdateProfileInput => {
@@ -338,6 +341,7 @@ export const mapTemplateProfileToUpdateProfileInput = (profile?: TemplateProfile
     description: profile?.description,
     tagline: profile?.tagline,
     tagsets: mapTagsetsToUpdateTagsets(profile),
+    references: mapReferenceModelsToUpdateReferenceInputs(profile?.references),
   };
 };
 

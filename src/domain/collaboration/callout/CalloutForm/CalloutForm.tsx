@@ -11,7 +11,7 @@ import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFie
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import Gutters from '@/core/ui/grid/Gutters';
+import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { nameOf } from '@/core/utils/nameOf';
@@ -24,7 +24,6 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { DefaultCalloutSettings } from '../../callout/models/CalloutSettingsModel';
-import { mapCalloutSettingsModelToCalloutSettingsFormValues } from '../models/mappings';
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
@@ -85,9 +84,17 @@ export interface CalloutFormProps {
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<CalloutFormSubmittedValues>['children'];
   calloutRestrictions?: CalloutRestrictions;
+  containerProps?: GuttersProps;
 }
 
-const CalloutForm = ({ callout, onChange, onStatusChanged, children, calloutRestrictions }: CalloutFormProps) => {
+const CalloutForm = ({
+  callout,
+  onChange,
+  onStatusChanged,
+  calloutRestrictions,
+  containerProps,
+  children,
+}: CalloutFormProps) => {
   const { t } = useTranslation();
 
   const { isSmallScreen } = useScreenSize();
@@ -102,7 +109,7 @@ const CalloutForm = ({ callout, onChange, onStatusChanged, children, calloutRest
       }
       return emptyCallout;
     }
-  }, [callout, DefaultCalloutSettings, mapCalloutSettingsModelToCalloutSettingsFormValues]);
+  }, [callout, DefaultCalloutSettings]);
 
   return (
     <Formik
@@ -114,7 +121,7 @@ const CalloutForm = ({ callout, onChange, onStatusChanged, children, calloutRest
     >
       {formikState => (
         <>
-          <Gutters>
+          <Gutters {...containerProps}>
             <FormikEffect onChange={onChange} onStatusChange={onStatusChanged} />
             <Box display="flex" gap={gutters()} flexDirection={isSmallScreen ? 'column' : 'row'}>
               <FormikInputField
