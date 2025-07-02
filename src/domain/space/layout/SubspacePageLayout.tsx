@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, Suspense } from 'react';
 import PageContent from '@/core/ui/content/PageContent';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Outlet } from 'react-router-dom';
@@ -29,8 +29,12 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import { SubspaceDrawerMenu } from './SubspaceDrawerMenu';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
-import CreateCalloutDialog from '@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+
+const CreateCalloutDialog = lazyWithGlobalErrorHandler(
+  () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')
+);
 
 export const SubspacePageLayout = () => {
   const { t } = useTranslation();
@@ -162,12 +166,14 @@ export const SubspacePageLayout = () => {
           )}
 
           <Outlet />
-          <CreateCalloutDialog
-            open={isCalloutCreationDialogOpen}
-            onClose={() => setIsCalloutCreationDialogOpen(false)}
-            calloutsSetId={calloutsSetId}
-            calloutClassification={buildFlowStateClassificationTagsets(selectedInnovationFlowState)}
-          />
+          <Suspense fallback={null}>
+            <CreateCalloutDialog
+              open={isCalloutCreationDialogOpen}
+              onClose={() => setIsCalloutCreationDialogOpen(false)}
+              calloutsSetId={calloutsSetId}
+              calloutClassification={buildFlowStateClassificationTagsets(selectedInnovationFlowState)}
+            />
+          </Suspense>
         </PageContentColumnBase>
       </PageContent>
 

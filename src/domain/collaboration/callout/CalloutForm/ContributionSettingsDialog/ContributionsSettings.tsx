@@ -6,7 +6,7 @@ import { CalloutAllowedContributors } from '@/core/apollo/generated/graphql-sche
 import { ContributionTypeSettingsComponentRef } from './ContributionSettingsDialog';
 import { useTranslation } from 'react-i18next';
 import { FramingSettings } from '../CalloutFormContributionSettings';
-import { CalloutRestrictions } from '../../../callout/CalloutDialogs/CreateCalloutDialog';
+import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 
 type FieldsState = {
   membersCanRespond: boolean;

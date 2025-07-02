@@ -18,12 +18,12 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import Loading from '@/core/ui/loading/Loading';
 import SaveButton from '@/core/ui/actions/SaveButton';
-import { CalloutRestrictions } from './CreateCalloutDialog';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import {
   mapCalloutSettingsFormToCalloutSettingsModel,
   mapCalloutSettingsModelToCalloutSettingsFormValues,
 } from '../models/mappings';
+import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 
 export interface EditCalloutDialogProps {
   open?: boolean;

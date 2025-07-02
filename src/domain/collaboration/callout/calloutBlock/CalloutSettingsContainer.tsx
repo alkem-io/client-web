@@ -45,7 +45,7 @@ import { CalloutSummary } from '../CalloutSummary';
 import { CalloutLayoutEvents } from '../CalloutViewTypes';
 import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
 import CalloutContributionsSortDialog from '../CalloutContributions/CalloutsContributionsSortDialog/CalloutContributionsSortDialog';
-import { CalloutRestrictions } from '../CalloutDialogs/CreateCalloutDialog';
+import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;

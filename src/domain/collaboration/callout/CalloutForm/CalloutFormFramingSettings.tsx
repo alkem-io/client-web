@@ -14,7 +14,7 @@ import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import type { FormikWhiteboardPreviewRef } from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import { CalloutRestrictions } from '../../callout/CalloutDialogs/CreateCalloutDialog';
+import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;

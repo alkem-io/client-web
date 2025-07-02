@@ -27,7 +27,7 @@ import { DefaultCalloutSettings } from '../../callout/models/CalloutSettingsMode
 import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
-import { CalloutRestrictions } from '../../callout/CalloutDialogs/CreateCalloutDialog';
+import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 

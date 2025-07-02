@@ -1,7 +1,7 @@
 import { useMessages } from '@/domain/communication/room/Comments/useMessages';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useCallback, useMemo } from 'react';
-import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
+import { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
