@@ -56,7 +56,7 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     whiteboardContent: EmptyWhiteboardString,
   },
   contributions: {
-    links: [{ uri: '', name: '', description: '', id: '' }],
+    links: [],
   },
   settings: {
     contribution: {
