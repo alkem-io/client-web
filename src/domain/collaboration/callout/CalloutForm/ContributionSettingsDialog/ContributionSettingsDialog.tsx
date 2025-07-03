@@ -72,7 +72,10 @@ const ContributionSettingsDialog = ({
   return (
     <>
       <DialogWithGrid columns={6} open={open} onClose={handleBack}>
-        <DialogHeader title={t('callout.create.contributionSettings.title')} onClose={handleBack} />
+        <DialogHeader
+          title={t('callout.create.contributionSettings.contributionTypes.settings.title')}
+          onClose={handleBack}
+        />
         <DialogContent>
           <Gutters disablePadding>
             {SettingsComponent && (

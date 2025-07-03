@@ -733,7 +733,7 @@
         }
       },
       "contributionSettings": {
-        "title": "Collection Options",
+        "title": "Response Options",
         "comments": {
           "title": "Comments",
           "enabled": "Comments",
