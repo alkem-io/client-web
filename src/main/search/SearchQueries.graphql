@@ -130,12 +130,6 @@ fragment SearchResultCallout on SearchResultCallout {
         }
       }
     }
-    settings {
-      contribution {
-        enabled
-        allowedTypes
-      }
-    }
     contributions {
       id
       post {

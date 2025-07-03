@@ -29167,14 +29167,6 @@ export type SearchQuery = {
                     | undefined;
                 };
               };
-              settings: {
-                __typename?: 'CalloutSettings';
-                contribution: {
-                  __typename?: 'CalloutSettingsContribution';
-                  enabled: boolean;
-                  allowedTypes: Array<CalloutContributionType>;
-                };
-              };
               contributions: Array<{
                 __typename?: 'CalloutContribution';
                 id: string;
@@ -29276,14 +29268,6 @@ export type SearchQuery = {
                         type: TagsetType;
                       }
                     | undefined;
-                };
-              };
-              settings: {
-                __typename?: 'CalloutSettings';
-                contribution: {
-                  __typename?: 'CalloutSettingsContribution';
-                  enabled: boolean;
-                  allowedTypes: Array<CalloutContributionType>;
                 };
               };
               contributions: Array<{
@@ -29734,14 +29718,6 @@ export type SearchResultCalloutFragment = {
               type: TagsetType;
             }
           | undefined;
-      };
-    };
-    settings: {
-      __typename?: 'CalloutSettings';
-      contribution: {
-        __typename?: 'CalloutSettingsContribution';
-        enabled: boolean;
-        allowedTypes: Array<CalloutContributionType>;
       };
     };
     contributions: Array<{

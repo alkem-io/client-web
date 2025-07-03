@@ -2844,12 +2844,6 @@ export const SearchResultCalloutFragmentDoc = gql`
           }
         }
       }
-      settings {
-        contribution {
-          enabled
-          allowedTypes
-        }
-      }
       contributions {
         id
         post {
