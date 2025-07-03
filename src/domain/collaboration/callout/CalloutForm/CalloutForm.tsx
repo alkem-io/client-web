@@ -20,7 +20,7 @@ import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/com
 import { Box } from '@mui/material';
 import { Formik, FormikConfig } from 'formik';
 import { cloneDeep } from 'lodash';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { DefaultCalloutSettings } from '../../callout/models/CalloutSettingsModel';
@@ -28,12 +28,14 @@ import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
+import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
 export const calloutValidationSchema = yup.object().shape({
   framing: yup.object().shape({
     profile: yup.object().shape({
+      id: yup.string().optional(),
       displayName: displayNameValidator.required(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       tagsets: tagsetsSegmentSchema,
@@ -116,7 +118,7 @@ const CalloutForm = ({
     <Formik
       initialValues={initialValues}
       validationSchema={calloutValidationSchema}
-      enableReinitialize={Boolean(callout?.id)}
+      enableReinitialize
       validateOnMount
       onSubmit={() => {}}
     >
@@ -147,13 +149,24 @@ const CalloutForm = ({
               hideImageOptions={calloutRestrictions?.disableRichMedia}
             />
             <CalloutFormFramingSettings calloutRestrictions={calloutRestrictions} />
-            <ReferenceSegment
-              fieldName={nameOf<CalloutFormSubmittedValues>('framing.profile.references')}
-              compactMode
-              references={formikState.values.framing.profile.references}
-              temporaryLocation={calloutRestrictions?.temporaryLocation}
-              fullWidth
-            />
+            {formikState.values.framing.profile.id ? (
+              <ProfileReferenceSegment
+                profileId={formikState.values.framing.profile.id}
+                compactMode
+                fieldName="framing.profile.references"
+                references={formikState.values.framing.profile.references ?? []}
+                marginTop={gutters(-1)}
+                fullWidth
+              />
+            ) : (
+              <ReferenceSegment
+                fieldName={nameOf<CalloutFormSubmittedValues>('framing.profile.references')}
+                compactMode
+                references={formikState.values.framing.profile.references}
+                temporaryLocation={calloutRestrictions?.temporaryLocation}
+                fullWidth
+              />
+            )}
             <CalloutFormContributionSettings calloutRestrictions={calloutRestrictions} />
           </Gutters>
           {typeof children === 'function' ? (children as Function)(formikState) : children}

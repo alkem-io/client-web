@@ -56,7 +56,6 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
         id: undefined,
         profile: {
           ...calloutData.framing.profile,
-          id: undefined,
           description: calloutData.framing.profile.description ?? '',
           tagsets: calloutData.framing.profile.tagsets ?? [EmptyTagset],
           references: calloutData.framing.profile.references ?? [],

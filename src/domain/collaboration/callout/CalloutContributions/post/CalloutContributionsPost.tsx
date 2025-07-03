@@ -127,6 +127,7 @@ const CalloutContributionsPost = forwardRef<HTMLDivElement, CalloutContributions
           postNames={postNames}
           calloutDisplayName={callout.framing.profile.displayName}
           calloutId={callout.id}
+          defaultDisplayName={callout.contributionDefaults.defaultDisplayName}
           defaultDescription={callout.contributionDefaults.postDescription}
           creating={creatingPost}
           disableRichMedia={calloutRestrictions?.disableRichMedia}

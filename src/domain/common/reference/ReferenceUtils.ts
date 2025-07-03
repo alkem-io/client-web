@@ -5,7 +5,7 @@ export const mapReferenceModelsToUpdateReferenceInputs = (
   references: Partial<ReferenceModel>[] | undefined
 ): UpdateReferenceInput[] | undefined => {
   return references?.map(reference => ({
-    ID: reference.id ?? '',
+    ID: reference.id ?? reference.ID ?? '',
     description: reference.description,
     uri: reference.uri,
     name: reference.name,

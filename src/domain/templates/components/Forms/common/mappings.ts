@@ -29,7 +29,10 @@ import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
-import { mapCalloutSettingsFormToCalloutSettingsModel } from '@/domain/collaboration/callout/models/mappings';
+import {
+  mapCalloutSettingsFormToCalloutSettingsModel,
+  mapCalloutSettingsFormToCalloutUpdateSettings,
+} from '@/domain/collaboration/callout/models/mappings';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
@@ -364,6 +367,8 @@ export const toUpdateTemplateMutationVariables = (
   switch (template.type) {
     case TemplateType.Callout: {
       const calloutTemplateData = newValues as TemplateCalloutFormSubmittedValues;
+      const settings = mapCalloutSettingsFormToCalloutUpdateSettings(calloutTemplateData.callout?.settings);
+
       const updateCalloutVariables: UpdateCalloutTemplateMutationVariables = {
         calloutData: {
           ID: (template as CalloutTemplate).callout?.id!,
@@ -372,6 +377,7 @@ export const toUpdateTemplateMutationVariables = (
             type: calloutTemplateData.callout?.framing.type,
             whiteboardContent: calloutTemplateData.callout?.framing.whiteboard?.content,
           },
+          settings,
           contributionDefaults: handleContributionDefaults(calloutTemplateData.callout?.contributionDefaults),
         },
       };

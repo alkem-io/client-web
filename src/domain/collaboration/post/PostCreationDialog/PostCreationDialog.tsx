@@ -18,6 +18,7 @@ export type PostCreationDialogProps = {
   onCreate: (post: PostCreationOutput) => Promise<unknown>;
   calloutDisplayName: string;
   calloutId: string;
+  defaultDisplayName?: string;
   defaultDescription?: string;
   creating: boolean;
   disableRichMedia?: boolean;
@@ -29,6 +30,7 @@ const PostCreationDialog = ({
   onClose,
   onCreate,
   calloutDisplayName,
+  defaultDisplayName,
   defaultDescription,
   creating,
   disableRichMedia,
@@ -95,6 +97,7 @@ const PostCreationDialog = ({
             postNames={postNames}
             onChange={handleFormChange}
             onStatusChanged={handleFormStatusChange}
+            defaultDisplayName={defaultDisplayName}
             descriptionTemplate={defaultDescription}
             tags={[]}
             disableRichMedia={disableRichMedia}
