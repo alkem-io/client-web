@@ -73,7 +73,7 @@ const CreateCalloutDialog = ({
 
     const template = data?.lookup.template;
     const templateCallout = template?.callout;
-    setTemplateSelected(mapCalloutTemplateToCalloutForm(templateCallout));
+    setTemplateSelected(mapCalloutTemplateToCalloutForm(templateCallout, calloutRestrictions));
     if (!template || !templateCallout) {
       throw new Error("Couldn't load CalloutTemplate");
     }

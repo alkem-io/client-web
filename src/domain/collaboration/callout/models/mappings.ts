@@ -1,4 +1,4 @@
-import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from '../../callout/CalloutForm/CalloutFormModel';
 import { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
@@ -58,11 +58,22 @@ export const mapCalloutTemplateToCalloutForm = (
           }
         : undefined,
     };
+    const templateContributionDefaults =
+      mapContributionDefaultsModelToCalloutFormValues(calloutTemplate.contributionDefaults) ??
+      DefaultCalloutFormValues.contributionDefaults;
+
     const templateSettings = mapCalloutSettingsModelToCalloutSettingsFormValues(calloutTemplate.settings);
 
     if (calloutRestrictions?.disableWhiteboards && templateFraming.type === CalloutFramingType.Whiteboard) {
       templateFraming.type = CalloutFramingType.None;
       templateFraming.whiteboard = undefined;
+    }
+    if (
+      calloutRestrictions?.disableWhiteboards &&
+      templateSettings.contribution.allowedTypes === CalloutContributionType.Whiteboard
+    ) {
+      templateSettings.contribution.allowedTypes = 'none';
+      templateContributionDefaults.whiteboardContent = undefined;
     }
     if (calloutRestrictions?.disableComments) {
       templateSettings.contribution.commentsEnabled = false;
@@ -71,9 +82,7 @@ export const mapCalloutTemplateToCalloutForm = (
 
     return {
       framing: templateFraming,
-      contributionDefaults:
-        mapContributionDefaultsModelToCalloutFormValues(calloutTemplate.contributionDefaults) ??
-        DefaultCalloutFormValues.contributionDefaults,
+      contributionDefaults: templateContributionDefaults,
       settings: templateSettings,
       contributions: {
         links: [],
