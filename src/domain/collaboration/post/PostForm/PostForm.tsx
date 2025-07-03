@@ -40,6 +40,7 @@ export interface PostFormProps {
   post?: PostFormInput;
   postNames?: string[];
   edit?: boolean;
+  defaultDisplayName?: string;
   descriptionTemplate?: string;
   tags: string[] | undefined;
   loading?: boolean;
@@ -54,6 +55,7 @@ export interface PostFormProps {
 const PostForm = ({
   post,
   postNames,
+  defaultDisplayName,
   descriptionTemplate,
   tags,
   edit = false,
@@ -69,17 +71,10 @@ const PostForm = ({
 
   const tagsets: TagsetModel[] = [{ ...EmptyTagset, tags: tags ?? [] }];
 
-  const getDescriptionValue = () => {
-    if (!post) {
-      return '';
-    }
-    return post.profileData?.description ?? descriptionTemplate ?? '';
-  };
-
   const initialValues: FormValue = useMemo(
     () => ({
-      name: post?.profileData?.displayName ?? '',
-      description: getDescriptionValue(),
+      name: post?.profileData?.displayName ?? defaultDisplayName ?? '',
+      description: post?.profileData?.description ?? descriptionTemplate ?? '',
       tagsets,
       postNames: postNames ?? [],
       references: post?.references ?? [],

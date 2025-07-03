@@ -116,7 +116,7 @@ const CalloutForm = ({
     <Formik
       initialValues={initialValues}
       validationSchema={calloutValidationSchema}
-      enableReinitialize={Boolean(callout?.id)}
+      enableReinitialize
       validateOnMount
       onSubmit={() => {}}
     >
