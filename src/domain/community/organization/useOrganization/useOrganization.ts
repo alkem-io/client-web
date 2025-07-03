@@ -66,13 +66,16 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
   }, [organization?.profile.references]);
 
   const keywords = useMemo(
-    () => organization?.profile.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords)?.tags || [],
+    () =>
+      organization?.profile.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase())
+        ?.tags || [],
     [organization]
   );
 
   const capabilities = useMemo(
     () =>
-      organization?.profile.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Capabilities)?.tags || [],
+      organization?.profile.tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Capabilities.toLowerCase())
+        ?.tags || [],
     [organization]
   );
 

@@ -2,8 +2,8 @@ import { ReactElement, ReactNode, useEffect, useMemo } from 'react';
 import { useCalloutPageCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
 import CalloutView from '../callout/CalloutView/CalloutView';
 import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
-import { TypedCalloutDetails } from '../calloutsSet/useCalloutsSet/useCalloutsSet';
+import { useCalloutManager } from '../callout/utils/useCalloutManager';
+import { TypedCalloutDetails } from '../callout/models/TypedCallout';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { DialogContent } from '@mui/material';
@@ -15,11 +15,11 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '@/core/routing/ScrollToTop';
-import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -73,14 +73,14 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
 
   const callout = calloutData?.lookup.callout;
 
-  const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
+  const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
 
   const typedCalloutDetails = useMemo(() => {
     if (!callout) {
       return locationState[LocationStateKeyCachedCallout];
     }
 
-    const draft = callout.visibility === CalloutVisibility.Draft;
+    const draft = callout.settings.visibility === CalloutVisibility.Draft;
     const editable = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
     const result: TypedCalloutDetails = {
@@ -139,8 +139,8 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
     backOrElse(parentPagePath);
   };
 
-  const handleDeleteWithClose = async (callout: CalloutDeleteType) => {
-    await handleDelete(callout);
+  const handleDeleteWithClose = async (callout: Identifiable) => {
+    await deleteCallout(callout);
     handleClose();
   };
 
@@ -169,8 +169,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
         <CalloutView
           callout={typedCalloutDetails}
           contributionsCount={typedCalloutDetails.activity}
-          onVisibilityChange={handleVisibilityChange}
-          onCalloutEdit={handleEdit}
+          onVisibilityChange={changeCalloutVisibility}
           onCalloutUpdate={refetchCalloutData}
           onCalloutDelete={handleDeleteWithClose}
           onCollapse={handleClose}

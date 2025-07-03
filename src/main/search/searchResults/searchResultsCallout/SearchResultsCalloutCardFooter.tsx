@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
-import { CONTRIBUTION_ICON } from '@/domain/collaboration/callout/calloutCard/calloutIcons';
+import { CONTRIBUTION_ICON } from '@/domain/collaboration/callout/icons/calloutIcons';
 import React, { useMemo } from 'react';
 import { CalloutContributionType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -32,8 +32,10 @@ interface CalloutContribution {
 
 interface CalloutContributionsProps {
   callout: {
-    contributionPolicy: {
-      allowedContributionTypes: CalloutContributionType[];
+    settings: {
+      contribution: {
+        allowedTypes: CalloutContributionType[];
+      };
     };
     contributions: CalloutContribution[];
     comments?: {
@@ -53,7 +55,7 @@ const CalloutContributions = ({ callout }: CalloutContributionsProps) => {
     return callout.contributions.reduce((count, contribution) => {
       for (const [type, field] of Object.entries(calloutContributionField) as [
         CalloutContributionType,
-        keyof CalloutContribution
+        keyof CalloutContribution,
       ][]) {
         if (contribution[field]) {
           count.set(type, (count.get(type) ?? 0) + 1);

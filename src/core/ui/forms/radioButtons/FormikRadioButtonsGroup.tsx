@@ -1,15 +1,18 @@
 import { useField } from 'formik';
 import RadioButtonsGroup, { RadioButtonsGroupProps } from './RadioButtonsGroup';
 
-interface FormikRadioButtonsGroupProps extends Omit<RadioButtonsGroupProps<unknown>, 'value' | 'onChange'> {
+interface FormikRadioButtonsGroupProps<Value> extends Omit<RadioButtonsGroupProps<Value>, 'value' | 'onChange'> {
   name: string;
-  readOnly?: boolean;
+  onChange?: (value: Value) => void;
 }
 
-const FormikRadioButtonsGroup = ({ name, options, readOnly, ...rest }: FormikRadioButtonsGroupProps) => {
-  const [{ value }, , { setValue }] = useField<unknown>(name);
-
-  return <RadioButtonsGroup value={value} options={options} readOnly={readOnly} onChange={setValue} {...rest} />;
+const FormikRadioButtonsGroup = <Value,>({ name, onChange, options, ...rest }: FormikRadioButtonsGroupProps<Value>) => {
+  const [{ value }, , { setValue }] = useField<Value>(name);
+  const handleChange = newValue => {
+    setValue(newValue);
+    onChange?.(newValue);
+  };
+  return <RadioButtonsGroup value={value} options={options} onChange={handleChange} {...rest} />;
 };
 
 export default FormikRadioButtonsGroup;

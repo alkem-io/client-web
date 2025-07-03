@@ -55,14 +55,14 @@ query SpaceTemplateContent($spaceId: UUID!) {
 
 fragment CalloutTemplateContent on Callout {
   id
-  type
+  calloutTypeDeprecated: type
   framing {
     id
     profile {
       id
       displayName
       description
-      tagset {
+      tagsets {
         ...TagsetDetails
       }
       defaultTagset: tagset {
@@ -75,17 +75,18 @@ fragment CalloutTemplateContent on Callout {
         id
       }
     }
+    type
     whiteboard {
       ...WhiteboardDetails
       content
     }
   }
-  contributionPolicy {
-    id
-    state
+  settings {
+    ...CalloutSettingsFull
   }
   contributionDefaults {
     id
+    defaultDisplayName
     postDescription
     whiteboardContent
   }
@@ -133,7 +134,7 @@ fragment SpaceTemplateContent_Collaboration on Collaboration {
     id
     callouts {
       id
-      type
+      calloutTypeDeprecated: type
       classification {
         id
         flowState: tagset(tagsetName: FLOW_STATE) {
@@ -147,6 +148,7 @@ fragment SpaceTemplateContent_Collaboration on Collaboration {
           displayName
           description
         }
+        type
         whiteboard {
           id
           profile {

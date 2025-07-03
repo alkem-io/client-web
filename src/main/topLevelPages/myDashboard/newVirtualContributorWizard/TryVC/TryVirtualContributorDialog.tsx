@@ -12,8 +12,7 @@ import {
   useCalloutCreation,
 } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import {
-  CalloutState,
-  CalloutType,
+  CalloutFramingType,
   CalloutVisibility,
   VirtualContributorStatus,
 } from '@/core/apollo/generated/graphql-schema';
@@ -24,7 +23,7 @@ import {
   useDeleteCalloutMutation,
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { TypedCalloutDetails } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import { TypedCalloutDetails } from '@/domain/collaboration/callout/models/TypedCallout';
 import { Actions } from '@/core/ui/actions/Actions';
 import { removeVCCreationCache } from './utils';
 import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
@@ -55,18 +54,19 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
 
   const calloutDetails: CalloutCreationType = {
     framing: {
+      type: CalloutFramingType.None,
       profile: {
         displayName: t('createVirtualContributorWizard.trySection.postTitle'),
         description: t('createVirtualContributorWizard.trySection.postDescription'),
         referencesData: [],
       },
     },
-    type: CalloutType.Post,
-    contributionPolicy: {
-      state: CalloutState.Open,
+    settings: {
+      framing: {
+        commentsEnabled: true,
+      },
+      visibility: CalloutVisibility.Published,
     },
-    visibility: CalloutVisibility.Published,
-    sendNotification: false,
   };
 
   const [deleteCallout] = useDeleteCalloutMutation({
@@ -106,7 +106,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       ...callout,
       comments: callout.comments,
       // Fake callout properties to show the callout inside the dialog without any controls
-      draft: callout.visibility === CalloutVisibility.Draft,
+      draft: callout.settings.visibility === CalloutVisibility.Draft,
       editable: false,
       movable: false,
       canBeSavedAsTemplate: false,
@@ -196,7 +196,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
                   onCalloutUpdate={refetchCalloutData}
                   calloutActions={false}
                   onVisibilityChange={undefined}
-                  onCalloutEdit={undefined}
                   onCalloutDelete={undefined}
                 />
               </Paper>

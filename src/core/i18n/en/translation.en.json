@@ -101,8 +101,9 @@
     "ok": "Ok",
     "create": "Create",
     "publish": "Publish",
+    "post": "Post",
     "unpublish": "Unpublish",
-    "save-draft": "Save as draft",
+    "saveDraft": "Save as draft",
     "archive": "Archive",
     "save": "Save",
     "continue": "Continue",
@@ -122,6 +123,7 @@
     "no": "No",
     "yes-close": "Yes, close",
     "yesReplace": "Yes, replace",
+    "yesDelete": "Yes, delete",
     "yesStop": "Yes, stop",
     "yesDiscard": "Yes, Discard",
     "delete": "Delete",
@@ -715,11 +717,88 @@
     }
   },
   "callout": {
+    "create": {
+      "createButton": "$t(common.post)",
+      "createButtonTooltip": "Add $t(common.post)",
+      "dialogTitle": "Add $t(common.post)",
+      "framingSettings": {
+        "title": "Additional Content",
+        "none": {
+          "title": "None",
+          "tooltip": "No additional content"
+        },
+        "whiteboard": {
+          "title": "Whiteboard",
+          "tooltip": "Add a whiteboard to this post"
+        }
+      },
+      "contributionSettings": {
+        "title": "Collection Options",
+        "comments": {
+          "title": "Comments",
+          "enabled": "Comments",
+          "disabled": "No Comments"
+        },
+        "contributionTypes": {
+          "title": "Collection",
+          "settings": {
+            "title": "Collection Settings",
+            "membersCanRespond": "Members can add to the Collection",
+            "adminCanRespond": "Admins can add to the Collection",
+            "commentsOnEachResponse": "Enable comments on each Post in the Collection",
+            "confirmBackDialog": {
+              "title": "Are you sure that you want to go back?",
+              "text": "There are unsaved changes in this form, is you close this dialog changes will be lost.",
+              "confirm": "Yes, go back"
+            }
+          },
+          "common": {
+            "defaultDisplayName": "Title"
+          },
+          "none": {
+            "title": "None",
+            "tooltip": "No collection"
+          },
+          "link": {
+            "title": "Links & Files",
+            "tooltip": "Enable responding with links & files",
+            "settings": {
+              "label": "Directly Start",
+              "description": "Add your first links below, after publishing new links can be directly added to the post.",
+              "addButton": "Add another link"
+            }
+          },
+          "post": {
+            "title": "Posts",
+            "tooltip": "Enable responding with posts",
+            "settings": {
+              "label": "Default text:",
+              "explanation": "Add default text to the posts, for example, questions that you like people to answer.",
+              "text": "Default description"
+            }
+          },
+          "whiteboard": {
+            "title": "Whiteboards",
+            "tooltip": "Enable responding with whiteboards",
+            "settings": {
+              "label": "Default Whiteboard:",
+              "explanation": "Edit the default whiteboard."
+            }
+          }
+        }
+      },
+      "notification": {
+        "label": "Notify the community.",
+        "description": "Members of this community will receive a notification if enabled in their notification settings."
+      }
+    },
+    "edit": {
+      "dialogTitle": "Edit $t(common.post)"
+    },
     "accessForbidden": {
       "title": "Content not available",
       "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
     },
-    "createFull": "Add collaboration tool",
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - Only visible for admins",
@@ -727,7 +806,7 @@
     "notMember": "You can't reply to this discussion since you're not a member of this Space",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All Posts, Whiteboards and messages under the Callout will also be deleted.",
-    "state-permission": "Accept new responses",
+    "state-permission": "Allow adding to the Collection",
     "permission-help-text": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
     "sortContributions": "Sort contributions",
@@ -1298,13 +1377,9 @@
         "title": "Create",
         "post-template-label": "Choose Post template"
       },
-      "publish-dialog": {
-        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, <b>who have their notifications for these actions turned on</b>, to receive a notification?",
-        "checkbox-label": "Yes, notify the community."
-      },
-      "close-dialog": {
-        "title": "Discard callout",
-        "text": "Are you sure you want to close this {{calloutType}}? Unsaved changes will be lost."
+      "closeDialog": {
+        "title": "Discard Post",
+        "text": "Are you sure you want to close this Post? Unsaved changes will be lost."
       }
     },
     "calloutEdit": {
@@ -1450,6 +1525,7 @@
     },
     "referenceSegment": {
       "title": "References",
+      "addReference": "Add Reference",
       "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
       "missing-references": "No references yet",
       "tooltips": {
@@ -2630,6 +2706,10 @@
         "confirmationTitle": "Deleting Whiteboard",
         "confirmationText": "Are you sure you want to delete this whiteboard? The action is irreversible."
       },
+      "deleteContent": {
+        "confirmationTitle": "Deleting Whiteboard Content",
+        "confirmationText": "Are you sure you want to delete the content of this whiteboard?"
+      },
       "template": {
         "header": "Templates defined in Alkemio",
         "how-to": "To create a template create a new whiteboard or use an existing one and save it as a template."
@@ -3030,8 +3110,8 @@
       "description": "This action cannot be undone"
     },
     "closeConfirm": {
-      "title": "Discard Callout",
-      "description": "Are you sure you want to close this Callout? Unsaved changes will be lost."
+      "title": "Discard Post",
+      "description": "Are you sure you want to close this Post? Unsaved changes will be lost."
     }
   },
   "innovation-edit": {

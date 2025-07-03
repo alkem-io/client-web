@@ -1,23 +1,22 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
-import { Box, Collapse, Menu } from '@mui/material';
+import { useCalloutContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
-  CalloutState,
-  CalloutType,
+  CalloutContributionType,
   CalloutVisibility,
-  ContributeTabPostFragment,
-  MessageDetailsFragment,
   TemplateType,
-  WhiteboardDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutSummary } from '../CalloutSummary';
-import CalloutVisibilityChangeDialog from '../edit/visibilityChangeDialog/CalloutVisibilityChangeDialog';
-import CalloutEditDialog from '../edit/editDialog/CalloutEditDialog';
-import { CalloutEditType } from '../edit/CalloutEditType';
-import { CalloutLayoutEvents, CalloutSortProps } from '../CalloutViewTypes';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import ExpandContentIcon from '@/core/ui/content/ExpandContent/ExpandContentIcon';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { gutters } from '@/core/ui/grid/utils';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import { TemplateCalloutFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCalloutForm';
+import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import {
   ArrowDownwardOutlined,
   ArrowUpwardOutlined,
@@ -32,27 +31,21 @@ import {
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
-import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import ExpandContentIcon from '@/core/ui/content/ExpandContent/ExpandContentIcon';
-import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
-import { gutters } from '@/core/ui/grid/utils';
-import SortDialog from './sort/SortDialog';
-import {
-  useCalloutContentLazyQuery,
-  useUpdateContributionsSortOrderMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
-import { PostCardPost } from '../post/PostCard';
-import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
-import { TemplateCalloutFormSubmittedValues } from '@/domain/templates/components/Forms/TemplateCalloutForm';
-import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useEnsurePresence from '@/core/utils/ensurePresence';
-import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
+import { Box, Collapse, Menu } from '@mui/material';
+import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortModels';
+import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
+import { TypedCalloutDetails } from '../models/TypedCallout';
+import { FormattedLink } from '../CalloutContributions/link/CalloutContributionsLink';
+import { PostCardPost } from '../CalloutContributions/post/PostCard';
+import { WhiteboardCardWhiteboard } from '../CalloutContributions/whiteboard/WhiteboardCard';
+import { CalloutSummary } from '../CalloutSummary';
+import { CalloutLayoutEvents } from '../CalloutViewTypes';
+import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
+import CalloutContributionsSortDialog from '../CalloutContributions/CalloutsContributionsSortDialog/CalloutContributionsSortDialog';
+import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -64,65 +57,21 @@ export interface CalloutSettingsContainerProps
   extends CalloutLayoutEvents,
     Partial<CalloutSortProps>,
     SimpleContainerProps<CalloutSettingsProvided> {
-  callout: {
-    id: string;
-    framing: {
-      profile: {
-        id: string;
-        url: string;
-        displayName: string;
-        description?: string;
-        references?: ReferenceModel[];
-        tagset?: TagsetModel;
-        storageBucket: {
-          id: string;
-        };
-      };
-      whiteboard?: WhiteboardDetailsFragment;
-    };
-    comments?: {
-      messages: MessageDetailsFragment[] | undefined;
-    };
-    type: CalloutType;
-    contributionPolicy: {
-      state: CalloutState;
-    };
-    contributionDefaults: {
-      postDescription?: string;
-      whiteboardContent?: string;
-    };
-    contributions?: {
-      link?: LinkDetails;
-      post?: ContributeTabPostFragment;
-      whiteboard?: WhiteboardDetailsFragment;
-    }[];
-    draft: boolean;
-    editable?: boolean;
-    movable?: boolean;
-    canBeSavedAsTemplate?: boolean;
-    authorization?: {
-      myPrivileges?: AuthorizationPrivilege[];
-    };
-    authorName?: string;
-    authorAvatarUri?: string;
-    publishedAt?: string;
-  };
+  callout: TypedCalloutDetails;
   items?: {
     posts?: PostCardPost[];
     whiteboards?: WhiteboardCardWhiteboard[];
-    links?: FormatedLink[];
+    links?: FormattedLink[];
   };
   expanded?: boolean;
   onExpand?: () => void;
   disableRichMedia?: boolean;
-  disablePostResponses?: boolean;
+  calloutRestrictions?: CalloutRestrictions;
 }
 
 const CalloutSettingsContainer = ({
   callout,
-  items,
   onVisibilityChange,
-  onCalloutEdit,
   onCalloutDelete,
   topCallout,
   bottomCallout,
@@ -133,8 +82,7 @@ const CalloutSettingsContainer = ({
   expanded = false,
   onExpand,
   children,
-  disableRichMedia,
-  disablePostResponses,
+  calloutRestrictions,
 }: CalloutSettingsContainerProps) => {
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
@@ -157,7 +105,7 @@ const CalloutSettingsContainer = ({
     [callout.draft, t]
   );
   const handleVisibilityChange = async (visibility: CalloutVisibility, sendNotification: boolean) => {
-    await onVisibilityChange?.(callout.id, visibility, sendNotification);
+    await onVisibilityChange?.(callout, visibility, sendNotification);
     setVisibilityDialogOpen(false);
   };
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -167,7 +115,10 @@ const CalloutSettingsContainer = ({
   };
 
   const [sortDialogOpen, setSortDialogOpen] = useState(false);
-  const handleSortDialogOpen = () => setSortDialogOpen(true);
+  const handleSortDialogOpen = () => {
+    setSortDialogOpen(true);
+    setSettingsAnchorEl(null);
+  };
   const handleSortDialogClose = () => setSortDialogOpen(false);
 
   const [handleDelete, loadingDelete] = useLoadingState(async () => {
@@ -193,14 +144,7 @@ const CalloutSettingsContainer = ({
     setSettingsAnchorEl(null);
     setEditDialogOpened(true);
   };
-  const handleEditDialogClosed = () => setEditDialogOpened(false);
-  const handleCalloutEdit = useCallback(
-    async (newCallout: CalloutEditType) => {
-      await onCalloutEdit?.(newCallout);
-      setEditDialogOpened(false);
-    },
-    [onCalloutEdit, setEditDialogOpened]
-  );
+
   const [positionAnchorEl, setPositionAnchorEl] = useState<null | HTMLElement>(null);
   const handlePositionClose = () => {
     setPositionDialogOpen(false);
@@ -221,39 +165,8 @@ const CalloutSettingsContainer = ({
     callback?.(callout.id);
   };
 
-  const isCollection = (type: CalloutType) =>
-    [CalloutType.LinkCollection, CalloutType.PostCollection, CalloutType.WhiteboardCollection].includes(type);
-
-  const getCalloutItems = (type: CalloutType) => {
-    switch (type) {
-      case CalloutType.PostCollection:
-        return items?.posts?.map(post => ({
-          name: post.profile?.displayName,
-          id: post.contributionId,
-          commentsCount: post.comments?.messagesCount,
-        }));
-      case CalloutType.WhiteboardCollection:
-        return items?.whiteboards?.map(whiteboard => ({
-          name: whiteboard.profile.displayName,
-          id: whiteboard.contributionId,
-        }));
-      case CalloutType.LinkCollection:
-        return items?.links?.map(link => ({ name: link.name, id: link.contributionId }));
-      default:
-        return undefined;
-    }
-  };
-
-  const [updateContributionsSortOrder] = useUpdateContributionsSortOrderMutation();
-
-  const handleSortContributions = async contributions => {
-    return updateContributionsSortOrder({
-      variables: {
-        calloutID: callout.id,
-        contributionIds: contributions.map(contribution => contribution.id),
-      },
-    });
-  };
+  const isCollection = (callout: { settings: { contribution: { allowedTypes: CalloutContributionType[] } } }) =>
+    callout.settings.contribution.allowedTypes.length > 0;
 
   const [fetchCalloutContent] = useCalloutContentLazyQuery();
 
@@ -298,16 +211,18 @@ const CalloutSettingsContainer = ({
             {t('buttons.delete')}
           </MenuItemWithIcon>
         )}
-        {callout.editable && isCollection(callout.type) && (
+        {callout.editable && isCollection(callout) && (
           <MenuItemWithIcon
             key="sort"
             iconComponent={SwapVerticalCircleOutlined}
             onClick={handleSortDialogOpen}
-            disabled={
-              !(callout.type === CalloutType.LinkCollection
-                ? !!callout.contributions?.[0]?.link
-                : !!callout.contributions?.length)
-            }
+            /*
+          //!! wt was this?
+          disabled={
+            !(callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link)
+              ? !!callout.contributions?.[0]?.link
+              : !!callout.contributions?.length)
+          }*/
           >
             {t('callout.sortContributions')}
           </MenuItemWithIcon>
@@ -347,13 +262,7 @@ const CalloutSettingsContainer = ({
           </MenuItemWithIcon>
         )}
       </Menu>
-      <SortDialog
-        open={sortDialogOpen}
-        onClose={handleSortDialogClose}
-        calloutId={callout.id}
-        contributions={getCalloutItems(callout.type) || []}
-        onUpdateContributionsOrder={handleSortContributions}
-      />
+      <CalloutContributionsSortDialog open={sortDialogOpen} onClose={handleSortDialogClose} callout={callout} />
       <CalloutVisibilityChangeDialog
         open={visibilityDialogOpen}
         onClose={() => setVisibilityDialogOpen(false)}
@@ -430,18 +339,12 @@ const CalloutSettingsContainer = ({
         url={callout.framing.profile.url}
         onClose={() => setShareDialogOpen(false)}
       />
-      {!!onCalloutDelete && (
-        <CalloutEditDialog
-          open={editDialogOpened}
-          onClose={handleEditDialogClosed}
-          calloutType={callout.type}
-          callout={callout}
-          onCalloutEdit={handleCalloutEdit}
-          onDelete={() => setDeleteDialogOpen(true)}
-          disableRichMedia={disableRichMedia}
-          disablePostResponses={disablePostResponses && callout.type === CalloutType.Post}
-        />
-      )}
+      <EditCalloutDialog
+        open={editDialogOpened}
+        calloutRestrictions={calloutRestrictions}
+        onClose={() => setEditDialogOpened(false)}
+        calloutId={callout.id}
+      />
       <ConfirmationDialog
         entities={{
           titleId: 'callout.delete-confirm-title',

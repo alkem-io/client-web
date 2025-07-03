@@ -2,7 +2,7 @@ import { AuthorModel } from '@/domain/community/user/models/AuthorModel';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 
-interface AuthorData extends Identifiable {
+export interface AuthorData extends Identifiable {
   firstName?: string;
   lastName?: string;
   profile: {
