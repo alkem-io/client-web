@@ -101,8 +101,9 @@
     "ok": "Ok",
     "create": "Créer",
     "publish": "Publier",
+    "post": "Post",
     "unpublish": "Annuler la publication",
-    "save-draft": "Enregistrer comme brouillon",
+    "saveDraft": "Save as draft",
     "archive": "Archiver",
     "save": "Enregistrer",
     "continue": "Continue",
@@ -122,6 +123,7 @@
     "no": "No",
     "yes-close": "Yes, close",
     "yesReplace": "Yes, replace",
+    "yesDelete": "Yes, delete",
     "yesStop": "Yes, stop",
     "yesDiscard": "Yes, Discard",
     "delete": "Supprimer",
@@ -603,6 +605,7 @@
         "users": {
           "title": "Invite others to join '{{spaceName}}'",
           "description": "Search for people below or directly add their email address",
+          "descriptionMembers": "Search members from the parent (Sub)Space.",
           "note": "Keep in mind that your personal email address will be visible to anyone you message.",
           "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
           "placeholder": "Username or email...",
@@ -688,6 +691,7 @@
         }
       },
       "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
+      "invitationCardTitle": "{{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
       "you": "you",
       "vc": "your Virtual Contributor"
     },
@@ -713,11 +717,88 @@
     }
   },
   "callout": {
+    "create": {
+      "createButton": "$t(common.post)",
+      "createButtonTooltip": "Add $t(common.post)",
+      "dialogTitle": "Add $t(common.post)",
+      "framingSettings": {
+        "title": "Additional Content",
+        "none": {
+          "title": "None",
+          "tooltip": "No additional content"
+        },
+        "whiteboard": {
+          "title": "Whiteboard",
+          "tooltip": "Add a whiteboard to this post"
+        }
+      },
+      "contributionSettings": {
+        "title": "Collection Options",
+        "comments": {
+          "title": "Comments",
+          "enabled": "Comments",
+          "disabled": "No Comments"
+        },
+        "contributionTypes": {
+          "title": "Collection",
+          "settings": {
+            "title": "Collection Settings",
+            "membersCanRespond": "Members can add to the Collection",
+            "adminCanRespond": "Admins can add to the Collection",
+            "commentsOnEachResponse": "Enable comments on each Post in the Collection",
+            "confirmBackDialog": {
+              "title": "Are you sure that you want to go back?",
+              "text": "There are unsaved changes in this form, is you close this dialog changes will be lost.",
+              "confirm": "Yes, go back"
+            }
+          },
+          "common": {
+            "defaultDisplayName": "Title"
+          },
+          "none": {
+            "title": "None",
+            "tooltip": "No collection"
+          },
+          "link": {
+            "title": "Links & Files",
+            "tooltip": "Enable responding with links & files",
+            "settings": {
+              "label": "Directly Start",
+              "description": "Add your first links below, after publishing new links can be directly added to the post.",
+              "addButton": "Add another link"
+            }
+          },
+          "post": {
+            "title": "Posts",
+            "tooltip": "Enable responding with posts",
+            "settings": {
+              "label": "Default text:",
+              "explanation": "Add default text to the posts, for example, questions that you like people to answer.",
+              "text": "Default description"
+            }
+          },
+          "whiteboard": {
+            "title": "Whiteboards",
+            "tooltip": "Enable responding with whiteboards",
+            "settings": {
+              "label": "Default Whiteboard:",
+              "explanation": "Edit the default whiteboard."
+            }
+          }
+        }
+      },
+      "notification": {
+        "label": "Notify the community.",
+        "description": "Members of this community will receive a notification if enabled in their notification settings."
+      }
+    },
+    "edit": {
+      "dialogTitle": "Edit $t(common.post)"
+    },
     "accessForbidden": {
       "title": "Content not available",
       "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
     },
-    "createFull": "Ajouter des outils de collaboration",
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - Ce rappel n'est visible que pour les administrateurs.",
@@ -725,7 +806,7 @@
     "notMember": "You can't reply to this discussion since you're not a member of this Space",
     "delete-confirm-title": "Supprimer Callout?",
     "delete-confirm-text": "Toutes les cartes, les tableaux blancs et les messages sous le Callout seront également supprimés.",
-    "state-permission": "Accepter les nouvelles réponses",
+    "state-permission": "Allow adding to the Collection",
     "permission-help-text": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
     "sortContributions": "Sort contributions",
@@ -981,6 +1062,9 @@
         "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space not found",
         "selectAnother": "Update Collaboration from another Space"
+      },
+      "preview": {
+        "info": "Also included: About information & Settings"
       }
     },
     "communityGuidelinesTemplates": {
@@ -1293,13 +1377,9 @@
         "title": "Créer",
         "post-template-label": "Choisir un fichier modèle"
       },
-      "publish-dialog": {
-        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community, <b>who have their notifications for these actions turned on</b>, to receive a notification?",
-        "checkbox-label": "Oui, notifier la communauté."
-      },
-      "close-dialog": {
-        "title": "Discard callout",
-        "text": "Are you sure you want to close this {{calloutType}}? Unsaved changes will be lost."
+      "closeDialog": {
+        "title": "Discard Post",
+        "text": "Are you sure you want to close this Post? Unsaved changes will be lost."
       }
     },
     "calloutEdit": {
@@ -1445,6 +1525,7 @@
     },
     "referenceSegment": {
       "title": "Références",
+      "addReference": "Add Reference",
       "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
       "missing-references": "No references yet",
       "tooltips": {
@@ -1478,7 +1559,7 @@
       "description": "Click here to delete this {{entity}}. Be careful, this action cannot be undone.",
       "confirmDialog": {
         "title": "Confirm {{entity}} Deletion",
-        "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. You can only delete a {{entity}} if there are no underlying Subspaces associated with it. If there are any Subspaces within this page, please delete them first (you can do so from the {{entity}} settings > Subspaces page).",
+        "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. <strong>You can only delete a {{entity}} if there are no underlying Subspaces associated with it.</strong> If there are any Subspaces within this page, please delete them first (you can do so from the {{entity}} settings > Subspaces page).",
         "descriptionShort": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible.",
         "checkbox": "Please check this box if you are certain about deleting this {{entity}}",
         "confirm": "Yes, delete"
@@ -1921,6 +2002,9 @@
               "callout-template-import-subtitle": "Trouver un modèle à utiliser lorsque vous contribuez à votre $t(common.callout)",
               "noTemplates": "No templates in the Space library.",
               "imported-successfully-notification": "Modèle importé avec succès"
+            },
+            "validation": {
+              "spaceRequired": "Select an existing Subspace to proceed."
             }
           },
           "my-profile": {
@@ -2143,14 +2227,15 @@
             "invitations": "<b>Invitation only:</b> Users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
             "trustedApplicants": "Demandes de confiance",
             "hostOrganizationJoin": "<b>Host organization:</b> Allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited.",
-            "allowSubspaceAdminsToInviteMembers": "<b>Space invitations</b>: Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation."
+            "allowSubspaceAdminsToInviteMembers": "<b>Space invitations</b>: Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation.",
+            "allowSubspaceAdminsToInviteMembersSubspace": "<b>Space invitations</b>: Allow admins of Subspaces within this Subspace to invite users directly to their own Subspace. If a user is not yet a member of this Subspace, they will automatically become one upon accepting the invitation. <b>Note: </b>Only users who are already members of the Space can be invited this way."
           },
           "memberActions": {
             "title": "Actions de membre",
             "createBlocks": "<b>Create Blocks</b>: Allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
             "createSubspaces": "<b>Create Subspaces</b>: Allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
             "eventsFromSubspaces": "<b>Subspace events</b>: Allow events from Subspaces to be visible on this Space calendar as well.",
-            "inheritRights": "Allow Space members to contribute.",
+            "inheritRights": "Allow members of the parent community to contribute without needing to join first.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this Space."
           },
           "copySpace": {
@@ -2227,7 +2312,7 @@
     "visualEdit": {
       "AVATAR": {
         "title": "<b>Avatar</b>",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in information pane and top left navigation menu.",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Space card on page banner",
         "description": "Description: {{alternativeText}}"
       },
@@ -2271,7 +2356,8 @@
       },
       "virtualContributors": {
         "title": "Virtual Contributors"
-      }
+      },
+      "availableContributors": "Available {{entity}}"
     },
     "search": {
       "title": "Search",
@@ -2620,6 +2706,10 @@
         "confirmationTitle": "Deleting Whiteboard",
         "confirmationText": "Are you sure you want to delete this whiteboard? The action is irreversible."
       },
+      "deleteContent": {
+        "confirmationTitle": "Deleting Whiteboard Content",
+        "confirmationText": "Are you sure you want to delete the content of this whiteboard?"
+      },
       "template": {
         "header": "Modèles définis dans Alkemio",
         "how-to": "Pour créer un modèle, créez un nouveau tableau blanc ou utilisez un modèle existant et enregistrez-le en tant que modèle."
@@ -2668,7 +2758,7 @@
       "title": "Ouuups!",
       "line1": "On dirait que quelque chose s'est mal passé : <italic>{{message}}</italic>",
       "line2": "Veuillez vérifier que votre serveur ({{graphQLEndpoint}}) est disponible et recharger la page.",
-      "line3": "Si l'erreur persiste, veuillez contacter notre support.",
+      "line3": "If the error persists please <contact>contact support</contact>.",
       "buttons": {
         "reload": "Redémarrer"
       },
@@ -2784,6 +2874,7 @@
       "references": "References",
       "host": "Host",
       "success": "{{entity}} updated successfully.",
+      "bokIngestStarted": "Body of Knowledge ingestion started. It may take a few minutes to complete.",
       "error": "An error occurred.",
       "sections": {
         "knowledge": {
@@ -2833,8 +2924,10 @@
         },
         "ingestion": {
           "title": "Update Knowledge",
-          "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
-          "refreshBtn": "Update Knowledge"
+          "infoText": "Changes in the body of knowledge are not autmatically reflected in the Virtual Contributor. You need to manually apply them by clicking the button <bold>'UPDATE KNOWLEDGE'</bold>. It will take a few minutes for the update to complete. You can check back later to see if the update was successful.",
+          "refreshBtn": "Update Knowledge",
+          "lastUpdatedLabel": "Last updated: ",
+          "never": "Never"
         },
         "prompt": {
           "title": "Prompt",
@@ -2950,8 +3043,9 @@
       "verification-flow-expired": "Le lien de vérification a expiré. Veuillez en demander un nouveau en soumettant à nouveau votre e-mail.",
       "recovery-flow-expired": "Ce lien de réinitialisation de mot de passe a expiré. Veuillez en demander un nouveau en envoyant à nouveau votre e-mail.",
       "verification-flow-continue": "Continuer",
-      "login-flow-account-exists": "Vous essayez de vous connecter avec un compte LinkedIn/Microsoft, mais l'adresse e-mail associée était déjà utilisée auparavant. Veuillez vous connecter avec cette adresse e-mail et ce mot de passe ou essayer de réinitialiser le mot de passe. Si cela ne fonctionne pas, veuillez envoyer un e-mail à support@alkem.io.",
+      "login-flow-account-exists": "This email is already associated with an account. If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
       "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
+      "claim-missing": "You haven't verified your Vidua identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Pick a password for your account"
     },
     "fields": {
@@ -3016,8 +3110,8 @@
       "description": "Cette action ne peut pas être annulée"
     },
     "closeConfirm": {
-      "title": "Discard Callout",
-      "description": "Are you sure you want to close this Callout? Unsaved changes will be lost."
+      "title": "Discard Post",
+      "description": "Are you sure you want to close this Post? Unsaved changes will be lost."
     }
   },
   "innovation-edit": {
@@ -3338,7 +3432,8 @@
   },
   "snackbars": {
     "appVersion": {
-      "message": "A new version of the app is available. Please refresh the page to update."
+      "message": "A new version of the app is available.",
+      "recurringMessage": "Please close all Alkemio tabs and reload to update."
     }
   }
 }
