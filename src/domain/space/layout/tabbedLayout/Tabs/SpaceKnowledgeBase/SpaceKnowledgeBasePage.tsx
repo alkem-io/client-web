@@ -11,6 +11,7 @@ import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/us
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 
 const CreateCalloutDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')
@@ -73,6 +74,7 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
           open={isCalloutCreationDialogOpen}
           onClose={() => setIsCalloutCreationDialogOpen(false)}
           calloutsSetId={calloutsSetId}
+          calloutClassification={buildFlowStateClassificationTagsets(flowStateForNewCallouts?.displayName || '')}
         />
       </Suspense>
     </>
