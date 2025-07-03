@@ -14,6 +14,7 @@ export interface CalloutTemplate extends TemplateBase {
     calloutTypeDeprecated?: CalloutType;
     framing: {
       profile: {
+        id?: string;
         displayName: string;
         description?: string;
         references?: ReferenceModel[];

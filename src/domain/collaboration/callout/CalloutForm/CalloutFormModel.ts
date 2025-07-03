@@ -13,6 +13,7 @@ import { ContributionDefaultsModel } from '../models/ContributionDefaultsModel';
 export interface CalloutFormSubmittedValues {
   framing: {
     profile: {
+      id?: string;
       displayName: string;
       description: string;
       tagsets: TagsetModel[];
