@@ -23,7 +23,6 @@ const CommentsCalloutLayout = ({
   onExpand,
   onCollapse,
   skipReferences,
-  disableMarginal = false,
   settingsOpen,
   onOpenSettings,
   calloutActions = true,
@@ -73,14 +72,12 @@ const CommentsCalloutLayout = ({
         <TagsComponent tags={callout.framing.profile.tagset?.tags} sx={{ paddingX: gutters() }} />
       ) : undefined}
       {children}
-      {(callout.settings.framing.commentsEnabled || (callout.comments?.messagesCount ?? 0) > 0) && (
-        <CalloutClosedMarginal
-          callout={callout}
-          disabled={disableMarginal}
-          contributionsCount={contributionsCount}
-          isMember={isMember}
-        />
-      )}
+      <CalloutClosedMarginal
+        messagesCount={callout.comments?.messages?.length ?? 0}
+        disabled={!callout.settings.framing.commentsEnabled}
+        contributionsCount={contributionsCount}
+        isMember={isMember}
+      />
     </>
   );
 };
