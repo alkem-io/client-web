@@ -131,7 +131,7 @@ export const ReferenceSegment = ({
             <Caption>{t('components.referenceSegment.missing-references')}</Caption>
           ) : (
             references?.map((attachment, index) => (
-              <Gutters key={attachment.id ?? index} disablePadding>
+              <Gutters key={attachment.id ?? attachment.ID ?? index} disablePadding>
                 <Gutters row={!isSmallScreen} disablePadding alignItems="start">
                   <FormikInputField
                     name={`${fieldName}.${index}.name`}
@@ -198,7 +198,7 @@ export const ReferenceSegment = ({
                     />
                   </Box>
                 )}
-                {index < references.length - 1 && !compactMode && (<Divider />)}
+                {index < references.length - 1 && !compactMode && <Divider />}
               </Gutters>
             ))
           )}

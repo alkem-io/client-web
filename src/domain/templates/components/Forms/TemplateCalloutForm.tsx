@@ -39,6 +39,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
       callout: {
         framing: {
           profile: {
+            id: template?.callout?.framing?.profile?.id ?? '',
             displayName: template?.callout?.framing?.profile?.displayName ?? '',
             description: template?.callout?.framing?.profile?.description ?? '',
             references: template?.callout?.framing?.profile?.references ?? [],
