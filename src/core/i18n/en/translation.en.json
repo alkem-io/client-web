@@ -761,7 +761,7 @@
           },
           "link": {
             "title": "Links & Files",
-            "tooltip": "Enable responding with links & filest",
+            "tooltip": "Enable responding with links & files",
             "settings": {
               "label": "Directly Start",
               "description": "Add your first links below, after publishing new links can be directly added to the post.",
