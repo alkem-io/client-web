@@ -91,7 +91,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 disabled: calloutRestrictions?.disableComments,
               },
             ]}
-            name="settings.framing.commentsEnabled"
+            name={nameOf<CalloutFormSubmittedValues>('settings.framing.commentsEnabled')}
             labelPlacement="bottom"
           />
         </PageContentBlock>

@@ -31,7 +31,7 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
-import { applyCalloutTemplateToCalloutForm, mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
+import { mapCalloutTemplateToCalloutForm, mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
 
 export interface CreateCalloutDialogProps {
   open?: boolean;
@@ -73,7 +73,7 @@ const CreateCalloutDialog = ({
 
     const template = data?.lookup.template;
     const templateCallout = template?.callout;
-    setTemplateSelected(applyCalloutTemplateToCalloutForm(templateCallout));
+    setTemplateSelected(mapCalloutTemplateToCalloutForm(templateCallout, calloutRestrictions));
     if (!template || !templateCallout) {
       throw new Error("Couldn't load CalloutTemplate");
     }

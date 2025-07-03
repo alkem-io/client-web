@@ -1,4 +1,4 @@
-import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from '../../callout/CalloutForm/CalloutFormModel';
 import { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
@@ -7,27 +7,31 @@ import { ProfileModel } from '@/domain/common/profile/ProfileModel';
 import { mapTagsetModelToTagsFormValues } from '@/domain/common/tagset/TagsetUtils';
 import { mapReferenceModelToReferenceFormValues } from '@/domain/common/reference/ReferenceUtils';
 import { mapContributionDefaultsModelToCalloutFormValues } from './ContributionDefaultsModel';
+import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
 
-export const applyCalloutTemplateToCalloutForm = (calloutTemplate?: {
-  framing: {
-    type: CalloutFramingType;
-    profile: ProfileModel & {
-      defaultTagset?: TagsetModel;
-    };
-    whiteboard?: {
-      content: string;
+export const mapCalloutTemplateToCalloutForm = (
+  calloutTemplate?: {
+    framing: {
+      type: CalloutFramingType;
       profile: ProfileModel & {
-        preview?: VisualModel;
+        defaultTagset?: TagsetModel;
+      };
+      whiteboard?: {
+        content: string;
+        profile: ProfileModel & {
+          preview?: VisualModel;
+        };
       };
     };
-  };
-  settings: CalloutSettingsModelFull;
-  contributionDefaults: {
-    defaultDisplayName?: string | undefined;
-    postDescription?: string | undefined;
-    whiteboardContent?: string | undefined;
-  };
-}): CalloutFormSubmittedValues | undefined => {
+    settings: CalloutSettingsModelFull;
+    contributionDefaults: {
+      defaultDisplayName?: string | undefined;
+      postDescription?: string | undefined;
+      whiteboardContent?: string | undefined;
+    };
+  },
+  calloutRestrictions?: CalloutRestrictions
+): CalloutFormSubmittedValues | undefined => {
   if (!calloutTemplate) {
     return undefined;
   } else {
@@ -54,13 +58,35 @@ export const applyCalloutTemplateToCalloutForm = (calloutTemplate?: {
           }
         : undefined,
     };
+    const templateContributionDefaults =
+      mapContributionDefaultsModelToCalloutFormValues(calloutTemplate.contributionDefaults) ??
+      DefaultCalloutFormValues.contributionDefaults;
+
+    const templateSettings = mapCalloutSettingsModelToCalloutSettingsFormValues(calloutTemplate.settings);
+
+    if (calloutRestrictions?.disableWhiteboards && templateFraming.type === CalloutFramingType.Whiteboard) {
+      templateFraming.type = CalloutFramingType.None;
+      templateFraming.whiteboard = undefined;
+    }
+    if (
+      calloutRestrictions?.disableWhiteboards &&
+      templateSettings.contribution.allowedTypes === CalloutContributionType.Whiteboard
+    ) {
+      templateSettings.contribution.allowedTypes = 'none';
+      templateContributionDefaults.whiteboardContent = undefined;
+    }
+    if (calloutRestrictions?.disableComments) {
+      templateSettings.contribution.commentsEnabled = false;
+      templateSettings.framing.commentsEnabled = false;
+    }
 
     return {
       framing: templateFraming,
-      contributionDefaults:
-        mapContributionDefaultsModelToCalloutFormValues(calloutTemplate.contributionDefaults) ??
-        DefaultCalloutFormValues.contributionDefaults,
-      settings: mapCalloutSettingsModelToCalloutSettingsFormValues(calloutTemplate.settings),
+      contributionDefaults: templateContributionDefaults,
+      settings: templateSettings,
+      contributions: {
+        links: [],
+      },
     };
   }
 };
@@ -100,3 +126,21 @@ export const mapCalloutSettingsModelToCalloutSettingsFormValues = (
   },
   visibility: settings.visibility,
 });
+
+export const mapCalloutSettingsFormToCalloutUpdateSettings = (
+  settings: CalloutFormSubmittedValues['settings'] | undefined
+) =>
+  settings
+    ? {
+        contribution: {
+          enabled: settings.contribution.enabled,
+          // allowedTypes: // Read only for now
+          canAddContributions: settings.contribution.canAddContributions,
+          commentsEnabled: settings.contribution.commentsEnabled,
+        },
+        framing: {
+          commentsEnabled: settings.framing.commentsEnabled,
+        },
+        visibility: settings.visibility,
+      }
+    : undefined;
