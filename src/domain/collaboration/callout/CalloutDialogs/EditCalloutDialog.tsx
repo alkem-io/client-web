@@ -24,6 +24,7 @@ import {
   mapCalloutSettingsModelToCalloutSettingsFormValues,
 } from '../models/mappings';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
+import { useUploadWhiteboardVisuals } from '../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface EditCalloutDialogProps {
   open?: boolean;
@@ -96,7 +97,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
   };
 
   const [updateCalloutContent] = useUpdateCalloutContentMutation();
-
+  const { uploadVisuals } = useUploadWhiteboardVisuals();
   const [handleSaveCallout, savingCallout] = useLoadingState(async () => {
     const formData = ensurePresence(calloutFormData);
     // Map the profile to CreateProfileInput
@@ -137,11 +138,16 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       contributionDefaults,
     };
 
-    await updateCalloutContent({
+    const result = await updateCalloutContent({
       variables: {
         calloutData: updateCalloutContentInput,
       },
     });
+    if (result.data?.updateCallout.framing.whiteboard?.profile.preview?.id) {
+      await uploadVisuals(formData.framing.whiteboard?.previewImages, {
+        previewVisualId: result.data.updateCallout.framing.whiteboard?.profile.preview.id,
+      });
+    }
 
     handleClose();
   });
