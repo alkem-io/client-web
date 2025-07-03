@@ -47,7 +47,7 @@ const validator = {
     profile: yup
       .object()
       .shape({
-        displayName: displayNameValidator,
+        displayName: displayNameValidator.required(),
         description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
         references: referenceSegmentSchema,
         tagsets: tagsetsSegmentSchema,

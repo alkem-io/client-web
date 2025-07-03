@@ -3,10 +3,7 @@ import {
   AuthorizationPrivilege,
   CalloutsOnCalloutsSetUsingClassificationQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
-import useCalloutsSet, {
-  OrderUpdate,
-  TypedCallout,
-} from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import useCalloutsSet, { OrderUpdate } from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import {
   useRefreshBodyOfKnowledgeMutation,
   useUpdateVirtualContributorMutation,
@@ -14,6 +11,7 @@ import {
   useVirtualContributorKnowledgePrivilegesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { TypedCallout } from '@/domain/collaboration/callout/models/TypedCallout';
 
 interface useKnowledgeBaseParams {
   id: string | undefined;
@@ -26,7 +24,7 @@ interface useKnowledgeBaseProvided {
   loading: boolean;
   calloutsSetLoading: boolean;
   refetchCallouts: (variables?: Partial<CalloutsOnCalloutsSetUsingClassificationQueryVariables>) => void;
-  refetchCallout: (calloutId: string) => void;
+  refetchCallout: (calloutId: string) => Promise<unknown> | void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   knowledgeBaseDescription: string | undefined;
   updateDescription: (values: { description: string }) => Promise<void>;
@@ -94,7 +92,7 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
         },
       },
       onCompleted: () => {
-        notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
+        notify(t('pages.virtualContributorProfile.bokIngestStarted'), 'success');
       },
     });
   };

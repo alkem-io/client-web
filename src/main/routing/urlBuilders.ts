@@ -25,16 +25,22 @@ export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.loca
   return `?returnUrl=${encodeURI(fullReturnUrl)}`;
 };
 
-export const buildLoginUrl = (returnUrl?: string) => {
+export const hasReturnUrlParam = (params?: string) => params && params.includes('returnUrl=');
+
+export const buildLoginUrl = (returnUrl?: string, params?: string) => {
+  if (hasReturnUrlParam(params)) {
+    return `${_AUTH_LOGIN_PATH}${params}`;
+  }
+
   return `${_AUTH_LOGIN_PATH}${buildReturnUrlParam(returnUrl)}`;
 };
 
 export const buildSignUpUrl = (returnUrl?: string, params?: string) => {
-  return `${AUTH_SIGN_UP_PATH}${buildReturnUrlParam(returnUrl)}${params}`;
-};
+  if (hasReturnUrlParam(params)) {
+    return `${AUTH_SIGN_UP_PATH}${params}`;
+  }
 
-export const buildNewOrganizationUrl = () => {
-  return '/admin/organizations/new';
+  return `${AUTH_SIGN_UP_PATH}${buildReturnUrlParam(returnUrl)}${params ? params : ''}`;
 };
 
 export const buildUpdatesUrl = (spaceUrl: string) => {

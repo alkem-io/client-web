@@ -3,14 +3,17 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Loading from '@/core/ui/loading/Loading';
 import { useLogoutUrl } from '@/core/auth/authentication/hooks/useLogoutUrl';
+import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 
 const LogoutPage = () => {
   const { t } = useTranslation();
 
   const { getLogoutUrl, logoutUrl, error } = useLogoutUrl();
+  const { clearReturnUrl } = useReturnUrl();
 
   useEffect(() => {
     if (logoutUrl) {
+      clearReturnUrl();
       window.location.replace(logoutUrl);
       // For when the AJAX logout redirects to configured path.
       // until then use the logoutUrl.

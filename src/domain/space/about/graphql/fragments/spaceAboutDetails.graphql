@@ -58,6 +58,7 @@ fragment SpaceAboutDetails on SpaceAbout {
         city
         country
       }
+      type
     }
   }
   profile {

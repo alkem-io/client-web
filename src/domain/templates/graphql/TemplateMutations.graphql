@@ -53,7 +53,24 @@ mutation CreateTemplate(
   }
 }
 
-# Special case for creating a template from an existing Space
+mutation CreateTemplateFromContentSpace(
+  $templatesSetId: UUID!
+  $profileData: CreateProfileInput!
+  $tags: [String!]
+  $contentSpaceId: UUID!
+) {
+  createTemplateFromContentSpace(
+    templateData: {
+      templatesSetID: $templatesSetId
+      profileData: $profileData
+      tags: $tags
+      contentSpaceID: $contentSpaceId
+    }
+  ) {
+    id
+  }
+}
+
 mutation CreateTemplateFromSpace(
   $templatesSetId: UUID!
   $profileData: CreateProfileInput!
@@ -101,6 +118,54 @@ mutation UpdateTemplate(
     whiteboard {
       id
       content
+    }
+  }
+}
+
+# Special case for updating callout templates
+mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
+  updateCallout(calloutData: $calloutData) {
+    id
+    calloutTypeDeprecated: type
+    framing {
+      id
+      profile {
+        id
+        description
+        displayName
+        tagset {
+          ...TagsetDetails
+        }
+        references {
+          id
+          name
+          uri
+        }
+      }
+      type
+      whiteboard {
+        id
+        content
+        nameID # Used to set an altImage to the visual
+        profile {
+          id
+          previewVisual: visual(type: BANNER) {
+            id
+          }
+        }
+      }
+    }
+    contributionDefaults {
+      id
+      postDescription
+      whiteboardContent
+    }
+    settings {
+      contribution {
+        enabled
+        allowedTypes
+      }
+      visibility
     }
   }
 }

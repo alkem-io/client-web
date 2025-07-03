@@ -25,7 +25,10 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
       const variables = toCreateTemplateMutationVariables(templatesSetId, TemplateType.Callout, values);
       const result = await createCalloutTemplate({ variables });
       // update whiteboard (framing) visuals
-      await handlePreviewTemplates(values, result.data?.createTemplate.callout?.framing.whiteboard);
+      await handlePreviewTemplates(
+        values.callout?.framing.whiteboard?.previewImages,
+        result.data?.createTemplate.callout?.framing.whiteboard
+      );
     },
     [createCalloutTemplate]
   );

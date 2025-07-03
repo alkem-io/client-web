@@ -1,4 +1,3 @@
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Box, Typography, styled } from '@mui/material';
 import { ComponentType, PropsWithChildren } from 'react';
@@ -12,10 +11,9 @@ export type CalloutSummaryFields = {
     };
   };
   templateId?: string;
-  type: CalloutType;
 };
 
-export interface CalloutSumaryProps {
+interface CalloutSummaryProps {
   callout: CalloutSummaryFields;
 }
 
@@ -24,7 +22,7 @@ export const CalloutSummary = ({
   templatePreviewComponent: TemplatePreview,
 }: {
   callout: CalloutSummaryFields;
-  templatePreviewComponent?: ComponentType<CalloutSumaryProps> | null;
+  templatePreviewComponent?: ComponentType<CalloutSummaryProps> | null;
 }) => {
   const { t } = useTranslation();
 

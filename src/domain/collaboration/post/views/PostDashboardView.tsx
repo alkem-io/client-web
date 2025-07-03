@@ -23,6 +23,7 @@ import PageContentBlockBanner from '@/core/ui/content/PageContentBlockBanner';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { times } from 'lodash';
+import { useCalloutSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -30,6 +31,7 @@ const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 export interface PostDashboardViewProps {
   mode: 'messages' | 'share';
   postId: string | undefined;
+  calloutId: string | undefined;
   vcEnabled?: boolean;
 }
 
@@ -48,7 +50,7 @@ const isScrolledToBottom = ({
   return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_MISTAKE_TOLERANCE;
 };
 
-const PostDashboardView = ({ mode, postId, vcEnabled }: PostDashboardViewProps) => {
+const PostDashboardView = ({ mode, postId, calloutId, vcEnabled }: PostDashboardViewProps) => {
   const { t } = useTranslation();
   const {
     loading: { loading },
@@ -59,6 +61,14 @@ const PostDashboardView = ({ mode, postId, vcEnabled }: PostDashboardViewProps) 
   } = usePost({
     postId,
   });
+
+  const { data } = useCalloutSettingsQuery({
+    variables: {
+      calloutId: calloutId!,
+    },
+    skip: !calloutId,
+  });
+  const commentsEnabled = data?.lookup.callout?.settings?.contribution?.commentsEnabled ?? false;
 
   const commentsContainerRef = useRef<HTMLElement>(null);
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
@@ -94,6 +104,8 @@ const PostDashboardView = ({ mode, postId, vcEnabled }: PostDashboardViewProps) 
   const handleCommentsScroll = () => {
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
+
+  const canPostComments = permissions.canPostComments && commentsEnabled;
 
   return (
     <PageContentBlock sx={{ flexDirection: 'row' }}>
@@ -139,7 +151,7 @@ const PostDashboardView = ({ mode, postId, vcEnabled }: PostDashboardViewProps) 
                   messages={comments.messages}
                   vcInteractions={comments.vcInteractions}
                   vcEnabled={vcEnabled}
-                  canPostMessages={permissions.canPostComments}
+                  canPostMessages={canPostComments}
                   onReply={actions.postReply}
                   canDeleteMessage={permissions.canDeleteComment}
                   onDeleteMessage={onDeleteComment}
@@ -149,14 +161,14 @@ const PostDashboardView = ({ mode, postId, vcEnabled }: PostDashboardViewProps) 
               </Gutters>
             </ScrollerWithGradient>
             <Box>
-              {permissions.canPostComments && (
+              {canPostComments && (
                 <PostMessageToCommentsForm
                   vcEnabled={vcEnabled}
                   placeholder={t('pages.post.dashboard.comment.placeholder')}
                   onPostComment={actions.postMessage}
                 />
               )}
-              {!permissions.canPostComments && (
+              {!canPostComments && (
                 <Box paddingY={4} display="flex" justifyContent="center">
                   <BlockSectionTitle>{t('components.discussion.cant-post')}</BlockSectionTitle>
                 </Box>

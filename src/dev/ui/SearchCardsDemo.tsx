@@ -9,7 +9,7 @@ import CalloutCard, { CalloutCardCallout } from '@/domain/collaboration/callout/
 import SearchResultsCalloutCardFooter, {
   SearchResultsCalloutCardFooterProps,
 } from '@/main/search/searchResults/searchResultsCallout/SearchResultsCalloutCardFooter';
-import { CalloutContributionType, CalloutState, CalloutType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
@@ -32,14 +32,15 @@ const searchResults: SearchResult[] = [
           },
         },
       },
-      type: CalloutType.Post,
-      contributionPolicy: {
-        allowedContributionTypes: [
-          CalloutContributionType.Whiteboard,
-          CalloutContributionType.Post,
-          CalloutContributionType.Link,
-        ],
-        state: CalloutState.Open,
+      settings: {
+        contribution: {
+          enabled: true,
+          allowedTypes: [
+            CalloutContributionType.Whiteboard,
+            CalloutContributionType.Post,
+            CalloutContributionType.Link,
+          ],
+        },
       },
       contributions: [
         {
@@ -72,10 +73,11 @@ const searchResults: SearchResult[] = [
           },
         },
       },
-      type: CalloutType.LinkCollection,
-      contributionPolicy: {
-        allowedContributionTypes: [CalloutContributionType.Link],
-        state: CalloutState.Open,
+      settings: {
+        contribution: {
+          enabled: true,
+          allowedTypes: [CalloutContributionType.Link],
+        },
       },
       contributions: [
         {

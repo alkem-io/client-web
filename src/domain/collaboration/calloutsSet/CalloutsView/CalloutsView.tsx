@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { useCalloutEdit } from '../../callout/edit/useCalloutEdit/useCalloutEdit';
-import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCalloutsSet/useCalloutsSet';
-import { CalloutSortEvents, CalloutSortProps } from '../../callout/CalloutViewTypes';
+import { useCalloutManager } from '../../callout/utils/useCalloutManager';
+import { OrderUpdate } from '../useCalloutsSet/useCalloutsSet';
+import { TypedCallout, TypedCalloutDetails } from '../../callout/models/TypedCallout';
+import { CalloutSortEvents, CalloutSortProps } from './CalloutSortModels';
 import CalloutView from '../../callout/CalloutView/CalloutView';
 import useNavigate from '@/core/routing/useNavigate';
 import {
@@ -14,7 +15,8 @@ import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardFooter from '@/core/ui/card/CardFooter';
 import { gutters } from '@/core/ui/grid/utils';
 import { without } from 'lodash';
-import CalloutDetailsContainer from '../../callout/CalloutDetailsContainer';
+import CalloutDetailsContainer from '../../callout/CalloutView/CalloutDetailsContainer';
+import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 
 const CalloutsViewSkeleton = () => (
   <PageContentBlock>
@@ -32,14 +34,12 @@ const CalloutsViewSkeleton = () => (
 export interface CalloutsViewProps {
   callouts: TypedCallout[] | undefined;
   onSortOrderUpdate?: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
-  onCalloutUpdate?: (calloutId: string) => void;
+  onCalloutUpdate?: (calloutId: string) => Promise<unknown> | void;
   loading?: boolean;
   blockProps?:
     | Partial<PageContentBlockProps>
     | ((callout: TypedCallout, index: number) => Partial<PageContentBlockProps> | undefined);
-  disableMarginal?: boolean;
-  disableRichMedia?: boolean;
-  disablePostResponses?: boolean;
+  calloutRestrictions?: CalloutRestrictions;
 }
 
 const CalloutsView = ({
@@ -48,11 +48,9 @@ const CalloutsView = ({
   onSortOrderUpdate,
   onCalloutUpdate,
   blockProps,
-  disableMarginal,
-  disableRichMedia,
-  disablePostResponses,
+  calloutRestrictions: calloutRestrictions,
 }: CalloutsViewProps) => {
-  const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
+  const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
 
   const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);
 
@@ -129,14 +127,11 @@ const CalloutsView = ({
                       <CalloutView
                         callout={calloutDetails}
                         contributionsCount={callout.activity}
-                        onCalloutEdit={handleEdit}
                         onCalloutUpdate={() => onCalloutUpdate?.(callout.id)}
-                        onVisibilityChange={handleVisibilityChange}
-                        onCalloutDelete={handleDelete}
+                        onVisibilityChange={changeCalloutVisibility}
+                        onCalloutDelete={deleteCallout}
                         onExpand={() => handleExpand(calloutDetails)}
-                        disableMarginal={disableMarginal}
-                        disableRichMedia={disableRichMedia}
-                        disablePostResponses={disablePostResponses}
+                        calloutRestrictions={calloutRestrictions}
                         {...sortEvents}
                         {...sortProps}
                       />

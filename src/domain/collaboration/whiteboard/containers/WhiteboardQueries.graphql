@@ -58,7 +58,6 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
     id
     callouts {
       id
-      type
       authorization {
         id
         myPrivileges
@@ -70,6 +69,7 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
       }
       framing {
         id
+        type
         whiteboard {
           ...WhiteboardDetails
         }
@@ -82,16 +82,9 @@ query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       id
-      type
       authorization {
         id
         myPrivileges
-      }
-      framing {
-        id
-        whiteboard {
-          ...WhiteboardDetails
-        }
       }
       contributions(IDs: [$contributionId]) {
         id
@@ -108,17 +101,6 @@ query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
     whiteboard(ID: $whiteboardId) {
       id
       updatedDate
-    }
-  }
-}
-
-mutation createWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
-  createContributionOnCallout(contributionData: $input) {
-    whiteboard {
-      ...WhiteboardDetails
-      profile {
-        url
-      }
     }
   }
 }

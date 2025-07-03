@@ -1,27 +1,27 @@
-import { useTranslation } from 'react-i18next';
-import { Button, DialogActions, DialogContent } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
+import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import SyncOutlinedIcon from '@mui/icons-material/SyncOutlined';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import useKnowledgeBase from './useKnowledgeBase';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { DescriptionComponent } from '@/domain/common/description/DescriptionComponent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { Caption } from '@/core/ui/typography';
 import Loading from '@/core/ui/loading/Loading';
+import { useVirtualContributorKnowledgeBaseLastUpdatedQuery } from '@/core/apollo/generated/apollo-hooks';
+import { formatDateTime } from '@/core/utils/time/utils';
 
 type KnowledgeBaseDialogProps = {
   onClose: () => void;
   title: string;
   id: string;
   placeholder: string;
+  aiPersonaServiceID: string;
 };
 
-const AVAILABLE_CALLOUT_TYPES = [CalloutType.Post, CalloutType.LinkCollection, CalloutType.PostCollection];
-
-const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseDialogProps) => {
+const KnowledgeBaseDialog = ({ aiPersonaServiceID, onClose, title, id, placeholder }: KnowledgeBaseDialogProps) => {
   const { t } = useTranslation();
   const {
     calloutsSetId,
@@ -39,6 +39,12 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
 
     loadingPrivileges,
   } = useKnowledgeBase({ id });
+
+  const { data } = useVirtualContributorKnowledgeBaseLastUpdatedQuery({
+    variables: { aiPersonaServiceID },
+    skip: !aiPersonaServiceID,
+  });
+  const lastUpdated = data?.aiServer.aiPersonaService.bodyOfKnowledgeLastUpdated;
 
   if (!hasReadAccess && !loadingPrivileges) {
     return (
@@ -75,20 +81,42 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
                 createButtonPlace="bottom"
-                availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
-                disableRichMedia
-                disablePostResponses
+                calloutRestrictions={{
+                  disableRichMedia: true,
+                  disableWhiteboards: true,
+                  disableComments: true,
+                }}
               />
             </Gutters>
           </StorageConfigContextProvider>
         )}
       </DialogContent>
       {canCreateCallout && (
-        <DialogActions>
-          <Button variant="outlined" startIcon={<SyncOutlinedIcon />} loading={ingestLoading} onClick={ingestKnowledge}>
-            {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
-          </Button>
-        </DialogActions>
+        <>
+          <Box sx={{ fontSize: 14, color: 'text.primary', padding: 2 }}>
+            <Trans
+              i18nKey={'pages.virtualContributorProfile.settings.ingestion.infoText'}
+              components={{ bold: <b /> }}
+            />
+          </Box>
+          <DialogActions>
+            <Box sx={{ color: 'muted.main', display: 'flex', fontSize: 14 }}>
+              {t('pages.virtualContributorProfile.settings.ingestion.lastUpdatedLabel')}
+              {lastUpdated
+                ? formatDateTime(lastUpdated)
+                : t('pages.virtualContributorProfile.settings.ingestion.never')}
+            </Box>
+
+            <Button
+              variant="outlined"
+              startIcon={<SyncOutlinedIcon />}
+              loading={ingestLoading}
+              onClick={ingestKnowledge}
+            >
+              {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
+            </Button>
+          </DialogActions>
+        </>
       )}
     </DialogWithGrid>
   );

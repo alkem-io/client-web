@@ -5,7 +5,7 @@ import SwapColors from '@/core/ui/palette/SwapColors';
 import { CaptionSmall } from '@/core/ui/typography';
 
 interface CalloutBlockFooterProps {
-  contributionsCount: number;
+  contributionsCount: number | undefined;
   onCreate: () => void;
 }
 

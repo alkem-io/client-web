@@ -35,6 +35,7 @@ import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import SocialSegment from '@/domain/platform/admin/components/Common/SocialSegment';
 import { socialNames, SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { nameOf } from '@/core/utils/nameOf';
 
 interface OrganizationFormValues {
   nameID: string;
@@ -193,38 +194,36 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
       </>
     );
   } else {
+    const displayName = currentOrganization.profile.displayName || '';
+    const visual = getVisualByType(VisualType.Avatar, currentOrganization.profile.visuals);
     return (
       <>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          enableReinitialize
-          onSubmit={async (values, { setSubmitting }) => {
-            try {
-              await handleSubmit(values);
-            } finally {
-              setSubmitting(false);
-            }
-          }}
-        >
-          {({ values: { profile }, handleSubmit, isSubmitting }) => {
-            const tagsets = profile.tagsets || [];
-            const displayName = profile.displayName || '';
-            const visual = getVisualByType(VisualType.Avatar, profile.visuals);
-
-            return (
-              <Form noValidate onSubmit={handleSubmit}>
-                <PageContent background="transparent" gridContainerProps={{ gap: gutters(2) }}>
-                  <PageContentColumn columns={isCreateMode ? 12 : 4} justifyContent="end">
-                    <VisualUpload
-                      visual={visual}
-                      altText={t('visuals-alt-text.avatar.contributor.text', {
-                        displayName,
-                        altText: visual?.alternativeText,
-                      })}
-                    />
-                  </PageContentColumn>
-                  <PageContentColumn columns={isCreateMode ? 12 : 6} justifyContent={isCreateMode ? 'center' : 'start'}>
+        <PageContent sx={{ backgroundColor: 'transparent' }} gridContainerProps={{ gap: gutters(2) }}>
+          <PageContentColumn columns={isCreateMode ? 12 : 4} justifyContent="end">
+            <VisualUpload
+              visual={visual}
+              altText={t('visuals-alt-text.avatar.contributor.text', {
+                displayName,
+                altText: visual?.alternativeText,
+              })}
+            />
+          </PageContentColumn>
+          <PageContentColumn columns={isCreateMode ? 12 : 6} justifyContent={isCreateMode ? 'center' : 'start'}>
+            <Formik
+              key={currentOrganization.id ?? 'new'}
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={async (values, { setSubmitting }) => {
+                try {
+                  await handleSubmit(values);
+                } finally {
+                  setSubmitting(false);
+                }
+              }}
+            >
+              {({ values: { profile }, handleSubmit, isSubmitting }) => {
+                return (
+                  <Form noValidate onSubmit={handleSubmit}>
                     <Gutters disablePadding sx={{ width: '100%' }}>
                       <PageContentBlockHeader title={t('common.organization')} />
                       <NameSegment
@@ -242,20 +241,16 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
                             cityFieldName="profile.location.city"
                             countryFieldName="profile.location.country"
                           />
-
                           <TagsetSegment
-                            fieldName="profile.tagsets"
-                            tagsets={tagsets}
+                            name={nameOf<OrganizationFormValues>('profile.tagsets')}
                             readOnly={isReadOnlyMode}
                             disabled={isSubmitting}
                           />
-
                           <SocialSegment
                             readOnly={isReadOnlyMode}
                             fieldNames={{ email: 'contactEmail' }}
                             disabled={isSubmitting}
                           />
-
                           {isEditMode && (
                             <ProfileReferenceSegment
                               disabled={isSubmitting}
@@ -276,12 +271,12 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
                         </Actions>
                       )}
                     </Gutters>
-                  </PageContentColumn>
-                </PageContent>
-              </Form>
-            );
-          }}
-        </Formik>
+                  </Form>
+                );
+              }}
+            </Formik>
+          </PageContentColumn>
+        </PageContent>
       </>
     );
   }
