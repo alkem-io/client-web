@@ -37,7 +37,7 @@ export const calloutValidationSchema = yup.object().shape({
     profile: yup.object().shape({
       id: yup.string().optional(),
       displayName: displayNameValidator.required(),
-      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
+      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
       tagsets: tagsetsSegmentSchema,
       references: referenceSegmentSchema,
     }),
