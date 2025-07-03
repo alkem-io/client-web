@@ -54,6 +54,10 @@ export const FormikInputField = ({
       return _helperText;
     }
 
+    if (meta.error?.indexOf('required') !== -1) {
+      return tErr('forms.validations.required');
+    }
+
     return tErr(meta.error as TranslationKey, { field: title });
   }, [isError, meta.error, _helperText, tErr, title]);
 

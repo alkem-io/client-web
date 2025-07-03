@@ -761,7 +761,7 @@
           },
           "link": {
             "title": "Links & Files",
-            "tooltip": "Add attachments to this post",
+            "tooltip": "Enable responding with links & files",
             "settings": {
               "label": "Directly Start",
               "description": "Add your first links below, after publishing new links can be directly added to the post.",
@@ -789,7 +789,7 @@
       },
       "notification": {
         "label": "Notify the community.",
-        "description": "Members of this community will receive a notification (if enabled from their notifications)"
+        "description": "Members of this community will receive a notification if enabled in their notification settings."
       }
     },
     "edit": {
