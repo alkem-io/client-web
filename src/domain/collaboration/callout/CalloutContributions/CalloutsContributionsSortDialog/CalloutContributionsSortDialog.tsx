@@ -46,16 +46,24 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
 
   const items = useMemo(() => {
     return sortBy(
-      data?.lookup.callout?.contributions.map<CalloutContributionsSortItem>(contribution => ({
-        id: contribution.id,
-        name:
-          contribution.post?.profile.displayName ??
-          contribution.link?.profile.displayName ??
-          contribution.whiteboard?.profile.displayName ??
-          '',
-        commentsCount: contribution.post?.comments?.messagesCount,
-        sortOrder: contribution.sortOrder,
-      })),
+      data?.lookup.callout?.contributions
+        .filter(
+          contribution =>
+            // TODO: #8441
+            // Due to a bug we have deleted contributions in the database that don't have any of thes: post, link, or whiteboard
+            // Filter them here for now
+            contribution.post || contribution.link || contribution.whiteboard
+        )
+        .map<CalloutContributionsSortItem>(contribution => ({
+          id: contribution.id,
+          name:
+            contribution.post?.profile.displayName ??
+            contribution.link?.profile.displayName ??
+            contribution.whiteboard?.profile.displayName ??
+            '',
+          commentsCount: contribution.post?.comments?.messagesCount,
+          sortOrder: contribution.sortOrder,
+        })),
       'sortOrder'
     );
   }, [data]);
