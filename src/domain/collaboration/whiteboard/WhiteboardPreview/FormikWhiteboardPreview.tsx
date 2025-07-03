@@ -179,12 +179,12 @@ const FormikWhiteboardPreview = forwardRef<FormikWhiteboardPreviewRef, FormikWhi
               }}
               actions={{
                 onConfirm: () => {
-                  setDeleteContentConfirmDialogOpen(false);
-                  onDeleteContent?.();
                   helpers.setValue('');
                   if (previewImagesName) {
                     previewImagesField.setValue([]);
                   }
+                  onDeleteContent?.();
+                  setDeleteContentConfirmDialogOpen(false);
                 },
                 onCancel: () => setDeleteContentConfirmDialogOpen(false),
               }}
