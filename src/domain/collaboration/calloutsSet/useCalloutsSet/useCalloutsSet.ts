@@ -5,79 +5,16 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
-  CalloutType,
   CalloutVisibility,
-  WhiteboardDetailsFragment,
-  CommentsWithMessagesFragment,
-  CalloutContributionPolicy,
-  CalloutContribution,
   CalloutsOnCalloutsSetUsingClassificationQueryVariables,
+  TagsetReservedName,
 } from '@/core/apollo/generated/graphql-schema';
 import { useCallback, useMemo } from 'react';
 import { cloneDeep } from 'lodash';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
-import { ClassificationTagsetModel } from '../ClassificationTagset.model';
+import { ClassificationTagsetModel } from '../Classification/ClassificationTagset.model';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-
-export type TypedCallout = {
-  id: string;
-  activity: number;
-  sortOrder: number;
-  authorization:
-    | {
-        myPrivileges?: AuthorizationPrivilege[];
-      }
-    | undefined;
-  framing: {
-    profile: {
-      id: string;
-      url: string;
-      displayName: string;
-    };
-  };
-  classification?: {
-    flowState?: {
-      tags: string[];
-      allowedValues: string[];
-    };
-  };
-  type: CalloutType;
-  draft: boolean;
-  editable: boolean;
-  movable: boolean;
-  canBeSavedAsTemplate: boolean;
-  classificationTagsets: ClassificationTagsetModel[];
-};
-
-export type TypedCalloutDetails = TypedCallout & {
-  framing: {
-    profile: {
-      id: string;
-      displayName: string;
-      description?: string;
-      tagset?: TagsetModel;
-      storageBucket: {
-        id: string;
-      };
-    };
-    whiteboard?: WhiteboardDetailsFragment;
-  };
-  classification?: {
-    flowState?: {
-      tags: string[];
-      allowedValues: string[];
-    };
-  };
-  contributionDefaults: {
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
-  contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
-  contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
-  comments?: CommentsWithMessagesFragment | undefined;
-  classificationTagsets: ClassificationTagsetModel[];
-};
+import { TypedCallout } from '../../callout/models/TypedCallout';
 
 interface UseCalloutsSetParams {
   calloutsSetId: string | undefined;
@@ -85,6 +22,12 @@ interface UseCalloutsSetParams {
   includeClassification?: boolean | undefined;
   skip?: boolean;
 }
+
+const classificationTagsetModelToTagsetArgs = (tagsets: ClassificationTagsetModel[]) =>
+  tagsets.map(tagset => ({
+    name: tagset.name as TagsetReservedName,
+    tags: tagset.tags,
+  }));
 
 export interface OrderUpdate {
   (relatedCalloutIds: string[]): string[];
@@ -113,7 +56,7 @@ const useCalloutsSet = ({
 
   const variables: CalloutsOnCalloutsSetUsingClassificationQueryVariables = {
     calloutsSetId: calloutsSetId!,
-    classificationTagsets,
+    classificationTagsets: classificationTagsetModelToTagsetArgs(classificationTagsets),
     withClassification: withClassificationDetails,
   } as const;
 
@@ -151,14 +94,18 @@ const useCalloutsSet = ({
       calloutsSet?.callouts
         ?.map(cloneDeep) // Clone to be able to modify the callouts
         .map(({ authorization, ...callout }) => {
-          const draft = callout?.visibility === CalloutVisibility.Draft;
+          const draft = callout?.settings.visibility === CalloutVisibility.Draft;
           const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
           const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
+          const classification = callout.classification;
+
           const result: TypedCallout = {
             ...callout,
+            classification,
             framing: {
               profile: callout.framing.profile,
+              type: callout.framing.type,
             },
             authorization,
             draft,

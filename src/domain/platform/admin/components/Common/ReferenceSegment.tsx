@@ -1,6 +1,6 @@
 import { DeleteOutline } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
-import { Box, BoxProps, Link } from '@mui/material';
+import { Box, BoxProps, Divider, Link } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { FieldArray, useFormikContext } from 'formik';
@@ -26,6 +26,8 @@ export interface ReferenceSegmentProps extends BoxProps {
   readOnly?: boolean;
   disabled?: boolean;
   compactMode?: boolean;
+  addButtonPosition?: 'start' | 'end';
+  addButtonLabel?: string;
   onAdd?: (push: PushFunc) => void;
   // TODO REMOVE CALLBACK FROM SIGNATURE!
   onRemove?: (ref: ReferenceModel, remove: RemoveFunc) => void;
@@ -66,6 +68,8 @@ export const ReferenceSegment = ({
   readOnly = false,
   disabled = false,
   compactMode = false,
+  addButtonPosition = 'start',
+  addButtonLabel,
   onAdd,
   onRemove,
   fullWidth,
@@ -108,11 +112,10 @@ export const ReferenceSegment = ({
     <FieldArray name={fieldName}>
       {({ push, remove }) => (
         <Gutters disablePadding {...props}>
-          <Box display="flex" alignItems="center">
-            <BlockSectionTitle>{t('components.referenceSegment.title')}</BlockSectionTitle>
-            <Tooltip title={t('components.referenceSegment.tooltips.add-reference')} placement={'bottom'}>
+          {addButtonPosition === 'start' && (
+            <Box display="flex" alignItems="center">
               <IconButton
-                aria-label={t('callout.link-collection.add-another')}
+                aria-label={t('components.referenceSegment.addReference')}
                 onClick={() => {
                   handleAdd(push);
                 }}
@@ -121,13 +124,14 @@ export const ReferenceSegment = ({
               >
                 <AddIcon />
               </IconButton>
-            </Tooltip>
-          </Box>
+              <BlockSectionTitle>{addButtonLabel ?? t('components.referenceSegment.addReference')}</BlockSectionTitle>
+            </Box>
+          )}
           {!compactMode && references?.length === 0 ? (
             <Caption>{t('components.referenceSegment.missing-references')}</Caption>
           ) : (
             references?.map((attachment, index) => (
-              <Gutters key={attachment.id ?? index} disablePadding>
+              <Gutters key={attachment.id ?? attachment.ID ?? index} disablePadding>
                 <Gutters row={!isSmallScreen} disablePadding alignItems="start">
                   <FormikInputField
                     name={`${fieldName}.${index}.name`}
@@ -135,8 +139,9 @@ export const ReferenceSegment = ({
                     readOnly={readOnly}
                     disabled={disabled || isRemoving(index)}
                     fullWidth={isSmallScreen}
+                    sx={{ flexGrow: 1 }}
                   />
-                  <Box display="flex" flexDirection="row" sx={fullWidth ? { width: '100%' } : {}}>
+                  <Box display="flex" flexDirection="row" flexGrow={1} sx={fullWidth ? { width: '100%' } : {}}>
                     <FormikFileInput
                       fullWidth={fullWidth}
                       name={`${fieldName}.${index}.uri`}
@@ -193,8 +198,24 @@ export const ReferenceSegment = ({
                     />
                   </Box>
                 )}
+                {index < references.length - 1 && !compactMode && <Divider />}
               </Gutters>
             ))
+          )}
+          {addButtonPosition === 'end' && (
+            <Box display="flex" alignItems="center" justifyContent="end">
+              <BlockSectionTitle>{addButtonLabel ?? t('components.referenceSegment.addReference')}</BlockSectionTitle>
+              <IconButton
+                aria-label={t('components.referenceSegment.addReference')}
+                onClick={() => {
+                  handleAdd(push);
+                }}
+                color="primary"
+                disabled={disabled || adding}
+              >
+                <AddIcon />
+              </IconButton>
+            </Box>
           )}
         </Gutters>
       )}

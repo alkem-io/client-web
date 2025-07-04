@@ -13,7 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { gutters } from '@/core/ui/grid/utils';
-import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import calloutIcons from '@/domain/collaboration/callout/icons/calloutIcons';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';

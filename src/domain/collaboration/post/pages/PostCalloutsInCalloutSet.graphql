@@ -2,7 +2,7 @@ query PostCalloutsInCalloutSet($calloutsSetId: UUID!) {
   lookup {
     calloutsSet(ID: $calloutsSetId) {
       id
-      callouts (types: [POST_COLLECTION]){
+      callouts (withContributionTypes: [POST]){
         id
         framing {
           id

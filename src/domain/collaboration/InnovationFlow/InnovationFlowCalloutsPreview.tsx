@@ -4,12 +4,11 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, styled } from '@mui
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { gutters } from '@/core/ui/grid/utils';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Text, CaptionSmall } from '@/core/ui/typography';
-import { getCalloutTypeIcon } from '@/domain/collaboration/callout/calloutCard/calloutIcons';
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
-import { CalloutModelLight } from '../callout/model/CalloutModelLight';
+import { CalloutModelLight } from '../callout/models/CalloutModelLight';
+import { GenericCalloutIcon } from '../callout/icons/calloutIcons';
 
 export interface InnovationFlowCalloutsPreviewProps {
   selectedState: string | undefined;
@@ -27,24 +26,16 @@ const StyledAccordion = styled(Accordion)(({ theme }) => ({
 const CalloutDescription = memo(({ callout }: { callout: CalloutModelLight }) => {
   const { t } = useTranslation();
 
-  switch (callout.type) {
-    case CalloutType.Whiteboard:
-    case CalloutType.WhiteboardCollection:
-      if (callout.framing.whiteboard?.profile.preview?.uri) {
-        return (
-          <WhiteboardPreview
-            whiteboard={callout.framing.whiteboard}
-            displayName={callout.framing.profile.displayName}
-          />
-        );
-      }
-      return null;
-    default:
-      return callout.framing.profile.description?.trim() ? (
-        <WrapperMarkdown>{callout.framing.profile.description}</WrapperMarkdown>
-      ) : (
-        <CaptionSmall>{t('common.noDescription')}</CaptionSmall>
-      );
+  if (callout.framing.whiteboard?.profile.preview?.uri) {
+    return (
+      <WhiteboardPreview whiteboard={callout.framing.whiteboard} displayName={callout.framing.profile.displayName} />
+    );
+  } else {
+    return callout.framing.profile.description?.trim() ? (
+      <WrapperMarkdown>{callout.framing.profile.description}</WrapperMarkdown>
+    ) : (
+      <CaptionSmall>{t('common.noDescription')}</CaptionSmall>
+    );
   }
 });
 
@@ -76,10 +67,7 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
                 onChange={handleSelectedCalloutChange(callout.id)}
               >
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <RoundedIcon
-                    size="small"
-                    component={getCalloutTypeIcon({ type: callout.type, contributionPolicy: undefined })}
-                  />
+                  <RoundedIcon size="small" component={GenericCalloutIcon} />
                   <Text marginLeft={gutters()}>{callout.framing.profile.displayName}</Text>
                 </AccordionSummary>
                 <AccordionDetails>

@@ -1,40 +1,49 @@
 import { useCallback, useState } from 'react';
 import { CalloutFragmentDoc, useCreateCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
-  CalloutState,
-  CalloutType,
+  CalloutAllowedContributors,
+  CalloutContributionType,
+  CalloutFramingType,
   CalloutVisibility,
+  CreateCalloutContributionInput,
   CreateCalloutMutation,
   CreateCalloutOnCalloutsSetInput,
   CreateReferenceInput,
   CreateTagsetInput,
 } from '@/core/apollo/generated/graphql-schema';
-import { WhiteboardFieldSubmittedValues } from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
+import { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
+import { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
 
 export interface CalloutCreationType {
   classification?: {
     tagsets: CreateTagsetInput[];
   };
   framing: {
+    type: CalloutFramingType;
     profile: {
-      description: string;
       displayName: string;
-      referencesData: CreateReferenceInput[];
+      description?: string;
+      referencesData?: CreateReferenceInput[];
       tagsets?: CreateTagsetInput[];
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
     tags?: string[];
   };
-  contributionDefaults?: {
-    postDescription?: string;
-    whiteboardContent?: string;
+  settings?: {
+    framing?: {
+      commentsEnabled?: boolean;
+    };
+    contribution?: {
+      enabled?: boolean;
+      allowedTypes?: CalloutContributionType[];
+      canAddContributions?: CalloutAllowedContributors;
+      commentsEnabled?: boolean;
+    };
+    visibility?: CalloutVisibility;
   };
-  type: CalloutType;
-  contributionPolicy: {
-    state: CalloutState;
-  };
-  visibility?: CalloutVisibility;
+  contributions?: CreateCalloutContributionInput[];
+  contributionDefaults?: ContributionDefaultsModel;
   sendNotification?: boolean;
 }
 
@@ -44,9 +53,6 @@ export interface CalloutCreationParams {
 }
 
 export interface CalloutCreationUtils {
-  isCalloutCreationDialogOpen: boolean;
-  handleCreateCalloutOpened: () => void;
-  handleCreateCalloutClosed: () => void;
   handleCreateCallout: (
     callout: CalloutCreationType
   ) => Promise<CreateCalloutMutation['createCalloutOnCalloutsSet'] | undefined>;
@@ -54,14 +60,7 @@ export interface CalloutCreationUtils {
   canCreateCallout: boolean;
 }
 
-// Only Posts have comments for now.
-const CALLOUTS_WITH_COMMENTS = [CalloutType.Post];
-
-export const useCalloutCreation = ({
-  calloutsSetId,
-  initialOpened = false,
-}: CalloutCreationParams): CalloutCreationUtils => {
-  const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
+export const useCalloutCreation = ({ calloutsSetId }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCreating, setIsCreating] = useState(false);
 
   const { canCreateCallout, loading } = useCalloutsSetAuthorization({ calloutsSetId });
@@ -98,11 +97,6 @@ export const useCalloutCreation = ({
     },
   });
 
-  const handleCreateCalloutOpened = useCallback(() => {
-    setIsCalloutCreationDialogOpen(true);
-  }, []);
-  const handleCreateCalloutClosed = useCallback(() => setIsCalloutCreationDialogOpen(false), []);
-
   const handleCreateCallout = useCallback(
     async (callout: CalloutCreationType) => {
       if (!calloutsSetId) {
@@ -113,7 +107,6 @@ export const useCalloutCreation = ({
 
       const calloutData: CreateCalloutOnCalloutsSetInput = {
         calloutsSetID: calloutsSetId,
-        enableComments: CALLOUTS_WITH_COMMENTS.includes(callout.type),
         ...callout,
       };
 
@@ -124,8 +117,6 @@ export const useCalloutCreation = ({
           },
         });
 
-        setIsCalloutCreationDialogOpen(false);
-
         return result.data?.createCalloutOnCalloutsSet;
       } finally {
         setIsCreating(false);
@@ -135,9 +126,6 @@ export const useCalloutCreation = ({
   );
 
   return {
-    isCalloutCreationDialogOpen,
-    handleCreateCalloutOpened,
-    handleCreateCalloutClosed,
     handleCreateCallout,
     loading: loading || isCreating,
     canCreateCallout: canCreateCallout && !loading,

@@ -1,9 +1,8 @@
+import { useState, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '@/core/ui/content/PageContent';
 import { ContributeCreationBlock } from '@/domain/space/components/ContributeCreationBlock';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
-import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import CalloutsList from '@/domain/collaboration/callout/calloutsList/CalloutsList';
@@ -11,6 +10,12 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import Loading from '@/core/ui/loading/Loading';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
+
+const CreateCalloutDialog = lazyWithGlobalErrorHandler(
+  () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')
+);
 
 type KnowledgeBasePageProps = {
   sectionIndex: number;
@@ -24,17 +29,7 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
 
   const { t } = useTranslation();
 
-  const {
-    isCalloutCreationDialogOpen,
-    handleCreateCalloutOpened,
-    handleCreateCalloutClosed,
-    handleCreateCallout,
-    loading: loadingCalloutCreation,
-  } = useCalloutCreationWithPreviewImages({ calloutsSetId });
-
-  const handleCreate = () => {
-    handleCreateCalloutOpened();
-  };
+  const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
 
   const { callouts, canCreateCallout, loading, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
     calloutsSetId,
@@ -47,7 +42,7 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
         <InfoColumn>
           <ContributeCreationBlock
             canCreate={canCreateCallout}
-            handleCreate={handleCreate}
+            handleCreate={() => setIsCalloutCreationDialogOpen(true)}
             tabDescription={tabDescription}
           />
           <PageContentBlock>
@@ -74,13 +69,14 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
           />
         </ContentColumn>
       </PageContent>
-      <CalloutCreationDialog
-        open={isCalloutCreationDialogOpen}
-        onClose={handleCreateCalloutClosed}
-        onCreateCallout={handleCreateCallout}
-        flowState={flowStateForNewCallouts?.displayName}
-        loading={loadingCalloutCreation}
-      />
+      <Suspense fallback={null}>
+        <CreateCalloutDialog
+          open={isCalloutCreationDialogOpen}
+          onClose={() => setIsCalloutCreationDialogOpen(false)}
+          calloutsSetId={calloutsSetId}
+          calloutClassification={buildFlowStateClassificationTagsets(flowStateForNewCallouts?.displayName || '')}
+        />
+      </Suspense>
     </>
   );
 };

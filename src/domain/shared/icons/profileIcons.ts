@@ -16,7 +16,7 @@ import {
   PersonOutline,
   SvgIconComponent,
 } from '@mui/icons-material';
-import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import calloutIcons from '@/domain/collaboration/callout/icons/calloutIcons';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import { warn } from '@/core/logging/sentry/log';
 

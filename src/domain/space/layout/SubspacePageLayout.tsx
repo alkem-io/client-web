@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState, Suspense } from 'react';
 import PageContent from '@/core/ui/content/PageContent';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Outlet } from 'react-router-dom';
@@ -13,11 +13,10 @@ import { SpaceLevel, TagsetReservedName } from '@/core/apollo/generated/graphql-
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { MENU_STATE_KEY, MenuState, SubspaceInfoColumn } from './SubspaceInfoColumn';
 import { InnovationFlowStateContext } from '../routing/SubspaceRoutes';
-import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSubSpace } from '../hooks/useSubSpace';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/ClassificationTagset.model';
+import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
@@ -26,16 +25,21 @@ import { DialogActions } from '../components/subspaces/DialogActions';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
-import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { SubspaceDrawerMenu } from './SubspaceDrawerMenu';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
+import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+
+const CreateCalloutDialog = lazyWithGlobalErrorHandler(
+  () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')
+);
 
 export const SubspacePageLayout = () => {
   const { t } = useTranslation();
   const { permissions } = useSubSpace();
-  const { spaceLevel, spaceId, parentSpaceId, loading } = useUrlResolver();
+  const { spaceLevel, spaceId, parentSpaceId } = useUrlResolver();
   const { selectedInnovationFlowState, setSelectedInnovationFlowState } = useContext(InnovationFlowStateContext);
   const { data: subspacePageData } = useSubspacePageQuery({
     variables: {
@@ -51,9 +55,7 @@ export const SubspacePageLayout = () => {
   const collaborationId = collaboration?.id;
 
   const innovationFlowProvided = useInnovationFlowStates({ collaborationId });
-
-  const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
-    useCalloutCreationWithPreviewImages({ calloutsSetId });
+  const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
 
   const isCollapsed = localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false;
 
@@ -69,9 +71,9 @@ export const SubspacePageLayout = () => {
         borderColor: 'divider',
         textWrap: 'nowrap',
       }}
-      onClick={handleCreateCalloutOpened}
+      onClick={() => setIsCalloutCreationDialogOpen(true)}
     >
-      {t('common.collaborationTool')}
+      {t('common.post')}
     </Button>
   );
 
@@ -164,14 +166,14 @@ export const SubspacePageLayout = () => {
           )}
 
           <Outlet />
-
-          <CalloutCreationDialog
-            open={isCalloutCreationDialogOpen}
-            onClose={handleCreateCalloutClosed}
-            onCreateCallout={handleCreateCallout}
-            loading={loading}
-            flowState={selectedInnovationFlowState}
-          />
+          <Suspense fallback={null}>
+            <CreateCalloutDialog
+              open={isCalloutCreationDialogOpen}
+              onClose={() => setIsCalloutCreationDialogOpen(false)}
+              calloutsSetId={calloutsSetId}
+              calloutClassification={buildFlowStateClassificationTagsets(selectedInnovationFlowState)}
+            />
+          </Suspense>
         </PageContentColumnBase>
       </PageContent>
 
