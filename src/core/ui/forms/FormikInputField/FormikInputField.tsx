@@ -54,7 +54,7 @@ export const FormikInputField = ({
       return _helperText;
     }
 
-    if (meta.error?.indexOf('required') !== -1) {
+    if (typeof meta.error === 'string' && meta.error.indexOf('required') !== -1) {
       return tErr('forms.validations.required');
     }
 
