@@ -67,7 +67,7 @@ const RadioButtonsGroup = <Value,>({
                     height={gutters(2)}
                     bgcolor={value === optionValue ? 'background.paper' : undefined}
                   >
-                    <Icon color="primary" />
+                    <Icon color={(readOnly || disabled) && value !== optionValue ? 'disabled' : 'primary'} />
                   </Box>
                 </SwapColors>
               )}

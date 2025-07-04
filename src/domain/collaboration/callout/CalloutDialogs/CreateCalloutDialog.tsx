@@ -1,4 +1,4 @@
-import { Button, DialogActions, DialogContent, Checkbox, FormControlLabel, Tooltip } from '@mui/material';
+import { Button, DialogActions, DialogContent, Checkbox, FormControlLabel, Tooltip, Box } from '@mui/material';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   CreateCalloutContributionInput,
@@ -201,22 +201,26 @@ const CreateCalloutDialog = ({
               </Tooltip>
             </Gutters>
           )}
-          <Button
-            variant="text"
-            onClick={() => handlePublishCallout(CalloutVisibility.Draft)}
-            loading={publishingCallout}
-            disabled={!isValid}
-          >
-            {t('buttons.saveDraft')}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => handlePublishCallout()}
-            loading={publishingCallout}
-            disabled={!isValid}
-          >
-            {t('buttons.post')}
-          </Button>
+          <Tooltip title={isValid ? undefined : t('callout.create.disabledSubmitTooltip')}>
+            <Box>
+              <Button
+                variant="text"
+                onClick={() => handlePublishCallout(CalloutVisibility.Draft)}
+                loading={publishingCallout}
+                disabled={!isValid}
+              >
+                {t('buttons.saveDraft')}
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => handlePublishCallout()}
+                loading={publishingCallout}
+                disabled={!isValid}
+              >
+                {t('buttons.post')}
+              </Button>
+            </Box>
+          </Tooltip>
         </DialogActions>
       </DialogWithGrid>
       <ImportTemplatesDialog

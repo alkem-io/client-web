@@ -69,6 +69,8 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
     return result;
   }, [allowedTypesField.value]);
 
+  const disabledTooltip = t('callout.create.contributionSettings.contributionTypes.tooltipDisabled');
+
   return (
     <PageContentBlockCollapsible
       header={<PageContentBlockHeader title={t('callout.create.contributionSettings.title')} />}
@@ -109,19 +111,25 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 icon: AttachFileOutlinedIcon,
                 value: CalloutContributionType.Link,
                 label: t('callout.create.contributionSettings.contributionTypes.link.title'),
-                tooltip: t('callout.create.contributionSettings.contributionTypes.link.tooltip'),
+                tooltip: calloutRestrictions?.readOnlyAllowedTypes
+                  ? disabledTooltip
+                  : t('callout.create.contributionSettings.contributionTypes.link.tooltip'),
               },
               {
                 icon: calloutIcons[CalloutType.PostCollection],
                 value: CalloutContributionType.Post,
                 label: t('callout.create.contributionSettings.contributionTypes.post.title'),
-                tooltip: t('callout.create.contributionSettings.contributionTypes.post.tooltip'),
+                tooltip: calloutRestrictions?.readOnlyAllowedTypes
+                  ? disabledTooltip
+                  : t('callout.create.contributionSettings.contributionTypes.post.tooltip'),
               },
               {
                 icon: calloutIcons[CalloutType.Whiteboard],
                 value: CalloutContributionType.Whiteboard,
                 label: t('callout.create.contributionSettings.contributionTypes.whiteboard.title'),
-                tooltip: t('callout.create.contributionSettings.contributionTypes.whiteboard.tooltip'),
+                tooltip: calloutRestrictions?.readOnlyAllowedTypes
+                  ? disabledTooltip
+                  : t('callout.create.contributionSettings.contributionTypes.whiteboard.tooltip'),
                 disabled: calloutRestrictions?.disableWhiteboards,
               },
             ]}
