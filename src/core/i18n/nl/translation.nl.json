@@ -38,9 +38,9 @@
     ]
   },
   "releaseNotes": {
-    "title": "<small><icon/>Onze <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy> zijn bijgewerkt. Klik op de titels om ze te bekijken, of sluit deze melding.</small>",
-    "url": "NotClickableTermsUpdate-Oct-2024",
-    "isClickable": "Niet Waar"
+    "title": "<big>🎉 Platformupdate!</big> <small>Onze nieuwste update is er. Lees hier wat er nieuw is!</small>",
+    "url": "/forum/releases/latest?date=4725",
+    "isClickable": "TRUE"
   },
   "cookie": {
     "consent": "Door op \"Accepteer Alle Cookies\" te klikken, gaat u ermee akkoord dat er cookies op uw apparaat worden opgeslagen die bijdragen aan de website navigatie en het anayleren van website gebruik.",

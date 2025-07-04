@@ -38,9 +38,9 @@
     ]
   },
   "releaseNotes": {
-    "title": "<small><icon/>Unsere <terms>Nutzungsbedingungen</terms> und <privacy>Datenschutzerklärung</privacy> wurden aktualisiert. Klicken Sie auf die Titel, um sie zu überprüfen, oder schließen Sie diese Benachrichtigung.</small>",
-    "url": "NotClickableTermsUpdate-Oct-2024",
-    "isClickable": "FALSE"
+    "title": "<big>🎉 Platform update!</big> <small>We have some exciting news for you… Click here to read all about it!</small>",
+    "url": "/forum/releases/latest?date=4725",
+    "isClickable": "TRUE"
   },
   "cookie": {
     "consent": "Wenn Sie auf \"Alle Cookies akzeptieren\" klicken, stimmen Sie der Speicherung von Cookies auf Ihrem Gerät zu, um die Website-Navigation zu verbessern und die Nutzung der Website zu analysieren.",
