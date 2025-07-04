@@ -201,19 +201,26 @@ const useWhiteboardFilesManager = ({
     }
 
     const files = whiteboard.files;
-    // leave only the incoming files that don't have a dataURL and are not in the fileStore
-    const pendingFileIds = Object.keys(files).filter(fileId => !files[fileId]?.dataURL && !fileStore.current[fileId]);
+    // leave only the incoming files that HAVE a dataURL and add them to the local scene
+    // we don't need to download these
+    Object.values(files)
+      .filter<BinaryFileData>((file): file is BinaryFileData => !!file.dataURL)
+      .forEach(file => fileStoreAddFile(file.id, { ...file, url: '' } as BinaryFileDataWithUrl));
+    // leave only the incoming files that don't have a dataURL but have URL and are not in the fileStore
+    const downloadableFileIds = Object.keys(files).filter(
+      fileId => !files[fileId]?.dataURL && !fileStore.current[fileId]
+    );
 
-    if (!pendingFileIds.length) {
+    if (!downloadableFileIds.length) {
       return;
     }
 
-    log('I need to download these files', pendingFileIds);
+    log('I need to download these files', downloadableFileIds);
 
     setDownloadingFiles(true);
 
     await Promise.allSettled(
-      pendingFileIds.map(async fileId => {
+      downloadableFileIds.map(async fileId => {
         if (fileStore.current[fileId]?.dataURL) {
           log(`No need to download ${fileId} already in the store`, fileStore.current[fileId]);
           return;
@@ -340,10 +347,13 @@ const useWhiteboardFilesManager = ({
       if (file.url) {
         return { ...file, dataURL: '' } as BinaryFileDataWithUrl;
       }
-      if (fileStore.current[file.id]) {
+      // the file might be in the store, but does it have a URL to return?
+      if (fileStore.current[file.id]?.url) {
         // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
         return { ...file, dataURL: '', url: fileStore.current[file.id].url } as BinaryFileDataWithUrl;
-      } else if (file.dataURL && storageBucketId) {
+      }
+      // it doesn't matter if the file is in the store, but can we upload it`s content?
+      else if (file.dataURL && storageBucketId) {
         log('NEED TO UPLOAD ', file.id, file);
         const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
         // In theory id should be equal to fileId, but Excalidraw modifies files after it loads them in memory, so hashes don't have to necessarily match anymore
