@@ -784,7 +784,8 @@
               "label": "Default Whiteboard:",
               "explanation": "Edit the default whiteboard."
             }
-          }
+          },
+          "tooltipDisabled": "Please create a new post if you want a different collection option."
         }
       },
       "notification": {
