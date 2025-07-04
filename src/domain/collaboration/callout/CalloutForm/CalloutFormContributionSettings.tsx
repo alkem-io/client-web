@@ -69,6 +69,8 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
     return result;
   }, [allowedTypesField.value]);
 
+  const disabledTooltip = t('callout.create.contributionSettings.contributionTypes.tooltipDisabled');
+
   return (
     <PageContentBlockCollapsible
       header={<PageContentBlockHeader title={t('callout.create.contributionSettings.title')} />}
@@ -110,7 +112,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 value: CalloutContributionType.Link,
                 label: t('callout.create.contributionSettings.contributionTypes.link.title'),
                 tooltip: calloutRestrictions?.readOnlyAllowedTypes
-                  ? t('callout.create.contributionSettings.contributionTypes.tooltipDisabled')
+                  ? disabledTooltip
                   : t('callout.create.contributionSettings.contributionTypes.link.tooltip'),
               },
               {
@@ -118,7 +120,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 value: CalloutContributionType.Post,
                 label: t('callout.create.contributionSettings.contributionTypes.post.title'),
                 tooltip: calloutRestrictions?.readOnlyAllowedTypes
-                  ? t('callout.create.contributionSettings.contributionTypes.tooltipDisabled')
+                  ? disabledTooltip
                   : t('callout.create.contributionSettings.contributionTypes.post.tooltip'),
               },
               {
@@ -126,7 +128,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 value: CalloutContributionType.Whiteboard,
                 label: t('callout.create.contributionSettings.contributionTypes.whiteboard.title'),
                 tooltip: calloutRestrictions?.readOnlyAllowedTypes
-                  ? t('callout.create.contributionSettings.contributionTypes.tooltipDisabled')
+                  ? disabledTooltip
                   : t('callout.create.contributionSettings.contributionTypes.whiteboard.tooltip'),
                 disabled: calloutRestrictions?.disableWhiteboards,
               },
