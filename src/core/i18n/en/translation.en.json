@@ -791,7 +791,8 @@
       "notification": {
         "label": "Notify the community.",
         "description": "Members of this community will receive a notification if enabled in their notification settings."
-      }
+      },
+      "disabledSubmitTooltip": "Please make sure all titles are filled in."
     },
     "edit": {
       "dialogTitle": "Edit $t(common.post)"
