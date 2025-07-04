@@ -163,7 +163,7 @@
     "select": "Select",
     "change-field": "Change {{field}}",
     "send": "Send",
-    "contact-leads": "Contact the {{contact}}(s)",
+    "contactLeads": "Contact the {{contact}}",
     "moveUp": "Move up",
     "moveDown": "Move down",
     "moveToTop": "Move to top",
