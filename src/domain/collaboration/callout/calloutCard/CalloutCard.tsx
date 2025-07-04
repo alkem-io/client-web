@@ -3,17 +3,11 @@ import { ReactNode } from 'react';
 import CardHeader from '@/core/ui/card/CardHeader';
 import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
 import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
-import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import { DesignServicesOutlined } from '@mui/icons-material';
 import CardDetails from '@/core/ui/card/CardDetails';
 import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
 import { Visual } from '@/domain/common/visual/Visual';
 import { GenericCalloutIcon } from '../icons/calloutIcons';
-
-interface CalloutContributionSettings {
-  enabled: boolean;
-  allowedTypes: CalloutContributionType[];
-}
 
 export interface CalloutCardCallout {
   framing: {
@@ -25,9 +19,6 @@ export interface CalloutCardCallout {
       };
       url?: string;
     };
-  };
-  settings: {
-    contribution: CalloutContributionSettings;
   };
 }
 

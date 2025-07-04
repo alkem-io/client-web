@@ -32,11 +32,6 @@ interface CalloutContribution {
 
 interface CalloutContributionsProps {
   callout: {
-    settings: {
-      contribution: {
-        allowedTypes: CalloutContributionType[];
-      };
-    };
     contributions: CalloutContribution[];
     comments?: {
       messagesCount: number;
