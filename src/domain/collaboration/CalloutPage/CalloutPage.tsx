@@ -165,7 +165,23 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   return (
     <>
       {renderPage(calloutPosition)}
-      <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen}>
+      <DialogWithGrid
+        open
+        columns={12}
+        onClose={handleClose}
+        fullScreen={isSmallScreen}
+        sx={{
+          '.MuiDialog-paper': {
+            // copied from DialogWithGrid as it will be overridden here
+            maxWidth: '100vw',
+            margin: 0,
+            height: 'auto',
+            maxHeight: isSmallScreen ? '100vh' : '100%',
+
+            overflowY: 'auto',
+          },
+        }}
+      >
         <CalloutView
           callout={typedCalloutDetails}
           contributionsCount={typedCalloutDetails.activity}
