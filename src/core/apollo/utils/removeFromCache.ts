@@ -1,4 +1,5 @@
-import { ApolloCache, FetchResult } from '@apollo/client';
+import { ApolloCache, FetchResult, useApolloClient } from '@apollo/client';
+import { useCallback } from 'react';
 
 /***
  * A **MutationUpdaterFn** function that removes an object from Apollo cache, using the return result of a mutation.
@@ -53,3 +54,21 @@ export function evictFromCache<T = { [key: string]: unknown }>(cache: ApolloCach
   cache.evict({ id: normalizedId });
   cache.gc();
 }
+
+export const useApolloCache = () => {
+  const apolloClient = useApolloClient();
+
+  const handleEvictFromCache = useCallback(
+    (id: string | undefined, typeName: string) => {
+      if (!id) {
+        return;
+      }
+      evictFromCache(apolloClient.cache, id, typeName);
+    },
+    [apolloClient]
+  );
+
+  return {
+    evictFromCache: handleEvictFromCache,
+  };
+};

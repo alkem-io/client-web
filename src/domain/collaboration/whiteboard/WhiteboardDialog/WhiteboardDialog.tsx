@@ -29,6 +29,7 @@ import mergeWhiteboard from '../utils/mergeWhiteboard';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
+import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
 
 export interface WhiteboardDetails {
   id: string;
@@ -97,6 +98,7 @@ type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' |
 const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSavedDate }: WhiteboardDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const { evictFromCache } = useApolloCache();
   const { whiteboard } = entities;
 
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
@@ -193,8 +195,18 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
         });
       }
     }
+    // After editing the whiteboard in real time mode, we need to evict the cache in case we have a cached version, on CalloutForm for example.
+    evictFromCache(whiteboard?.id, 'Whiteboard');
     actions.onCancel();
-  }, [editModeEnabled, collabApiRef, whiteboard, getWhiteboardState, prepareWhiteboardForUpdate, actions]);
+  }, [
+    editModeEnabled,
+    collabApiRef,
+    whiteboard,
+    getWhiteboardState,
+    prepareWhiteboardForUpdate,
+    actions,
+    evictFromCache,
+  ]);
 
   const handleImportTemplate = useCallback(
     async (template: WhiteboardTemplateContent) => {
