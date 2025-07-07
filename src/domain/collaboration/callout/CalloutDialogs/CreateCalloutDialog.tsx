@@ -20,7 +20,7 @@ import {
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import CalloutForm from '../CalloutForm/CalloutForm';
-import { CalloutFormSubmittedValues } from '../CalloutForm/CalloutFormModel';
+import { CalloutFormSubmittedValues, isEmptyCalloutForm } from '../CalloutForm/CalloutFormModel';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
@@ -56,7 +56,8 @@ const CreateCalloutDialog = ({
 
   const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
 
-  const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
+  const [importCalloutTemplateDialogOpen, setImportCalloutTemplateDialogOpen] = useState(false);
+  const [importCalloutTemplateConfirmDialogOpen, setImportCalloutTemplateConfirmDialogOpen] = useState(false);
 
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
@@ -78,7 +79,14 @@ const CreateCalloutDialog = ({
       throw new Error("Couldn't load CalloutTemplate");
     }
 
-    setImportCalloutDialogOpen(false);
+    setImportCalloutTemplateDialogOpen(false);
+  };
+  const handleImportTemplateClick = () => {
+    if (isEmptyCalloutForm(calloutFormData)) {
+      setImportCalloutTemplateDialogOpen(true);
+    } else {
+      setImportCalloutTemplateConfirmDialogOpen(true);
+    }
   };
 
   const [calloutFormData, setCalloutFormData] = useState<CalloutFormSubmittedValues>();
@@ -86,7 +94,7 @@ const CreateCalloutDialog = ({
   const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(false);
   const handleCloseButtonClick = () => {
-    if (calloutFormData) {
+    if (!isEmptyCalloutForm(calloutFormData)) {
       setConfirmCloseDialogOpen(true);
     } else {
       onClose?.();
@@ -96,6 +104,8 @@ const CreateCalloutDialog = ({
     setTemplateSelected(undefined);
     setCalloutFormData(undefined);
     setConfirmCloseDialogOpen(false);
+    setImportCalloutTemplateDialogOpen(false);
+    setImportCalloutTemplateConfirmDialogOpen(false);
     onClose?.();
   };
 
@@ -166,11 +176,7 @@ const CreateCalloutDialog = ({
           title={t('callout.create.dialogTitle')}
           onClose={handleCloseButtonClick}
           actions={
-            <Button
-              variant="outlined"
-              onClick={() => setImportCalloutDialogOpen(true)}
-              startIcon={<TipsAndUpdatesOutlinedIcon />}
-            >
+            <Button variant="outlined" onClick={handleImportTemplateClick} startIcon={<TipsAndUpdatesOutlinedIcon />}>
               {t('buttons.find-template')}
             </Button>
           }
@@ -232,8 +238,25 @@ const CreateCalloutDialog = ({
         }
         open={importCalloutTemplateDialogOpen}
         onSelectTemplate={handleSelectTemplate}
-        onClose={() => setImportCalloutDialogOpen(false)}
+        onClose={() => setImportCalloutTemplateDialogOpen(false)}
         enablePlatformTemplates
+      />
+      <ConfirmationDialog
+        entities={{
+          titleId: 'callout.create.importTemplate.confirmOverwrite.title',
+          contentId: 'callout.create.importTemplate.confirmOverwrite.content',
+          confirmButtonTextId: 'buttons.yesContinue',
+        }}
+        options={{
+          show: importCalloutTemplateConfirmDialogOpen,
+        }}
+        actions={{
+          onConfirm: () => {
+            setImportCalloutTemplateDialogOpen(true);
+            setImportCalloutTemplateConfirmDialogOpen(false);
+          },
+          onCancel: () => setImportCalloutTemplateConfirmDialogOpen(false),
+        }}
       />
       <ConfirmationDialog
         entities={{

@@ -122,6 +122,7 @@
     "yes": "Yes",
     "no": "No",
     "yes-close": "Yes, close",
+    "yesContinue": "Yes, continue",
     "yesReplace": "Yes, replace",
     "yesDelete": "Yes, delete",
     "yesStop": "Yes, stop",
@@ -786,6 +787,12 @@
             }
           },
           "tooltipDisabled": "Please create a new post if you want a different collection option."
+        }
+      },
+      "importTemplate": {
+        "confirmOverwrite": {
+          "title": "Overwrite current post?",
+          "content": "If you import a template, the current content of the post will be overwritten. Are you sure you want to continue?"
         }
       },
       "notification": {
