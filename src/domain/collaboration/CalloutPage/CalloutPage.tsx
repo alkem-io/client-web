@@ -174,23 +174,34 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
           '.MuiDialog-paper': {
             // copied from DialogWithGrid as it will be overridden here
             maxWidth: '100vw',
-            margin: 0,
+            maxHeight: isSmallScreen ? '100vh' : '80vh',
             height: 'auto',
-            maxHeight: isSmallScreen ? '100vh' : '100%',
-
-            overflowY: 'auto',
+            minHeight: 'auto', // Allows dialog to be smaller when content is minimal
           },
         }}
       >
-        <CalloutView
-          callout={typedCalloutDetails}
-          contributionsCount={typedCalloutDetails.activity}
-          onVisibilityChange={changeCalloutVisibility}
-          onCalloutUpdate={refetchCalloutData}
-          onCalloutDelete={handleDeleteWithClose}
-          onCollapse={handleClose}
-          expanded
-        />
+        <DialogContent
+          dividers
+          sx={{
+            p: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            // Allow content to determine height, with max constraint
+            flexGrow: 1, // Take up available space
+            height: 'auto',
+            overflow: 'hidden', // Prevent dialog from scrolling
+          }}
+        >
+          <CalloutView
+            callout={typedCalloutDetails}
+            contributionsCount={typedCalloutDetails.activity}
+            onVisibilityChange={changeCalloutVisibility}
+            onCalloutUpdate={refetchCalloutData}
+            onCalloutDelete={handleDeleteWithClose}
+            onCollapse={handleClose}
+            expanded
+          />
+        </DialogContent>
       </DialogWithGrid>
       {children?.({ parentPagePath })}
     </>

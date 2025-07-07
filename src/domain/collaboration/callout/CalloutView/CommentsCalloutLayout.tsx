@@ -12,8 +12,6 @@ import CalloutClosedMarginal from '../calloutBlock/CalloutClosedMarginal';
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
 import { gutters } from '@/core/ui/grid/utils';
 
-const DESCRIPTION_MAX_HEIGHT = 'calc(100vh - 400px)';
-
 const CommentsCalloutLayout = ({
   callout,
   children,
@@ -37,48 +35,69 @@ const CommentsCalloutLayout = ({
 
   const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
-  // fixes comments not visible when description too long in modal/expanded
-  const expandedStyles = expanded ? { maxHeight: DESCRIPTION_MAX_HEIGHT, overflowY: 'auto' } : undefined;
-
   return (
-    <>
-      {callout.draft && (
-        <Ribbon>
-          <BlockTitle textAlign="center">{t('callout.draftNotice')}</BlockTitle>
-        </Ribbon>
-      )}
-      <CalloutHeader
-        callout={callout}
-        contributionsCount={contributionsCount}
-        expanded={expanded}
-        onExpand={onExpand}
-        onCollapse={onCollapse}
-        settingsOpen={settingsOpen}
-        onOpenSettings={onOpenSettings}
-        calloutActions={calloutActions}
-      />
-      {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
-      <Box className={MARKDOWN_CLASS_NAME}>
-        <WrapperMarkdown caption sx={expandedStyles}>
-          {callout.framing.profile.description ?? ''}
-        </WrapperMarkdown>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: expanded ? '100%' : 'auto',
+        position: 'relative',
+        overflow: expanded ? 'hidden' : 'visible',
+      }}
+    >
+      {/* header area - fixed at top */}
+      <Box sx={{ position: expanded ? 'sticky' : 'static', top: 0, zIndex: 10, background: 'white' }}>
+        {callout.draft && (
+          <Ribbon>
+            <BlockTitle textAlign="center">{t('callout.draftNotice')}</BlockTitle>
+          </Ribbon>
+        )}
+        <CalloutHeader
+          callout={callout}
+          contributionsCount={contributionsCount}
+          expanded={expanded}
+          onExpand={onExpand}
+          onCollapse={onCollapse}
+          settingsOpen={settingsOpen}
+          onOpenSettings={onOpenSettings}
+          calloutActions={calloutActions}
+        />
+        {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
       </Box>
-      {!skipReferences && !!callout.framing.profile.references?.length && (
-        <Box paddingX={gutters()} paddingBottom={gutters(0.5)}>
-          <References compact references={callout.framing.profile.references} />
+
+      {/* scrollable content region */}
+      <Box
+        sx={{
+          flex: expanded ? '1 1 auto' : '0 0 auto',
+          minHeight: 0,
+          maxHeight: expanded ? 'calc(100% - 120px)' : 'none',
+          overflowY: expanded ? 'auto' : 'visible',
+        }}
+      >
+        <Box className={MARKDOWN_CLASS_NAME}>
+          <WrapperMarkdown caption>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
         </Box>
-      )}
-      {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 ? (
-        <TagsComponent tags={callout.framing.profile.tagset?.tags} sx={{ paddingX: gutters() }} />
-      ) : undefined}
-      {expanded ? <Box sx={{ overflowY: 'auto' }}>{children}</Box> : children}
-      <CalloutClosedMarginal
-        messagesCount={callout.comments?.messages?.length ?? 0}
-        disabled={!callout.settings.framing.commentsEnabled}
-        contributionsCount={contributionsCount}
-        isMember={isMember}
-      />
-    </>
+        {!skipReferences && !!callout.framing.profile.references?.length && (
+          <Box paddingX={gutters()} paddingBottom={gutters(0.5)}>
+            <References compact references={callout.framing.profile.references} />
+          </Box>
+        )}
+        {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 && (
+          <TagsComponent tags={callout.framing.profile.tagset?.tags} sx={{ paddingX: gutters() }} />
+        )}
+        {children}
+      </Box>
+
+      {/* footer area - fixed at bottom */}
+      <Box sx={{ position: expanded ? 'sticky' : 'static', bottom: 0, zIndex: 10, background: 'white' }}>
+        <CalloutClosedMarginal
+          messagesCount={callout.comments?.messages?.length ?? 0}
+          disabled={!callout.settings.framing.commentsEnabled}
+          contributionsCount={contributionsCount}
+          isMember={isMember}
+        />
+      </Box>
+    </Box>
   );
 };
 
