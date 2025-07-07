@@ -21,4 +21,8 @@ export interface CalloutRestrictions {
    * These cannot be edited when editing the callout, and cannot be used when creating/editing a callout template
    */
   readOnlyContributions?: boolean;
+  /**
+   * Disables the editing of the callouts framing whiteboard, because it can only be edited in real-time when they are created.
+   */
+  onlyRealTimeWhiteboardFraming?: boolean;
 }

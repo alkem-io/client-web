@@ -730,7 +730,8 @@
         },
         "whiteboard": {
           "title": "Whiteboard",
-          "tooltip": "Add a whiteboard to this post"
+          "tooltip": "Add a whiteboard to this post",
+          "onlyRealTimeEditorAvailable": "To edit this whiteboard now, please use the whiteboard editor closing this dialog and opening the whiteboard directly clicking on the preview."
         }
       },
       "contributionSettings": {
