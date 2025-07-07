@@ -784,13 +784,15 @@
               "label": "Default Whiteboard:",
               "explanation": "Edit the default whiteboard."
             }
-          }
+          },
+          "tooltipDisabled": "Please create a new post if you want a different collection option."
         }
       },
       "notification": {
         "label": "Notify the community.",
         "description": "Members of this community will receive a notification if enabled in their notification settings."
-      }
+      },
+      "disabledSubmitTooltip": "Please make sure all titles are filled in."
     },
     "edit": {
       "dialogTitle": "Edit $t(common.post)"
