@@ -163,7 +163,7 @@
     "select": "Select",
     "change-field": "Change {{field}}",
     "send": "Send",
-    "contact-leads": "Contact the {{contact}}(s)",
+    "contactLeads": "Contact the {{contact}}",
     "moveUp": "Move up",
     "moveDown": "Move down",
     "moveToTop": "Move to top",
@@ -729,7 +729,8 @@
         },
         "whiteboard": {
           "title": "Whiteboard",
-          "tooltip": "Add a whiteboard to this post"
+          "tooltip": "Add a whiteboard to this post",
+          "onlyRealTimeEditorAvailable": "To edit this whiteboard now, please use the whiteboard editor closing this dialog and opening the whiteboard directly clicking on the preview."
         }
       },
       "contributionSettings": {
@@ -784,13 +785,15 @@
               "label": "Default Whiteboard:",
               "explanation": "Edit the default whiteboard."
             }
-          }
+          },
+          "tooltipDisabled": "Please create a new post if you want a different collection option."
         }
       },
       "notification": {
         "label": "Notify the community.",
         "description": "Members of this community will receive a notification if enabled in their notification settings."
-      }
+      },
+      "disabledSubmitTooltip": "Please make sure all titles are filled in."
     },
     "edit": {
       "dialogTitle": "Edit $t(common.post)"

@@ -24,7 +24,7 @@ export const ContributeCreationBlock = ({ tabDescription, canCreate, handleCreat
       {canCreate && (
         <Actions justifyContent="end">
           <Button variant="contained" startIcon={<AddOutlinedIcon />} onClick={handleCreate}>
-            {t('common.create')}
+            {t('common.post')}
           </Button>
         </Actions>
       )}
