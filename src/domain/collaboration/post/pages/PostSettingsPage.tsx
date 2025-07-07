@@ -39,6 +39,7 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
   const navigate = useNavigate();
 
   const [post, setPost] = useState<PostFormOutput>();
+  const [formTouched, setFormTouched] = useState<boolean>(false);
   const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false);
   const [closeConfirmDialogOpen, setCloseConfirmDialogOpen] = useState(false);
 
@@ -100,7 +101,11 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
   }, [postSettings, post, onClose]);
 
   const onCloseEdit = useCallback(() => {
-    setCloseConfirmDialogOpen(true);
+    if (formTouched) {
+      setCloseConfirmDialogOpen(true);
+    } else {
+      onClose();
+    }
   }, []);
 
   const [handleUpdate, loading] = useLoadingState(async (shouldUpdate: boolean) => {
@@ -136,6 +141,11 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
     }
   });
 
+  const handleFormChange = (postData: PostFormOutput, formTouched: boolean) => {
+    setPost(postData);
+    setFormTouched(formTouched);
+  };
+
   return (
     <PostLayout currentSection={PostDialogSection.Settings} onClose={onCloseEdit}>
       <StorageConfigContextProvider locationType="post" postId={postId}>
@@ -144,7 +154,7 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
           loading={postSettings.loading || postSettings.updating || isMovingContribution}
           post={toPostFormInput(postSettings.post)}
           postNames={postSettings.postsNames}
-          onChange={setPost}
+          onChange={handleFormChange}
           onAddReference={postSettings.handleAddReference}
           onRemoveReference={postSettings.handleRemoveReference}
           tags={postSettings.post?.profile.tagset?.tags}

@@ -9,7 +9,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
 import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
-import { Formik, FormikConfig } from 'formik';
+import { Formik, FormikConfig, FormikState } from 'formik';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -44,8 +44,8 @@ export interface PostFormProps {
   descriptionTemplate?: string;
   tags: string[] | undefined;
   loading?: boolean;
-  onChange?: (post: PostFormOutput) => void;
-  onStatusChanged?: (isValid: boolean) => void;
+  onChange?: (post: PostFormOutput, formTouched: boolean) => void;
+  onStatusChange?: (isValid: boolean) => void;
   onAddReference?: (push: PushFunc, referencesLength: number) => void;
   onRemoveReference?: (ref: ReferenceModel, remove: RemoveFunc) => void;
   children?: FormikConfig<FormValue>['children'];
@@ -61,7 +61,7 @@ const PostForm = ({
   edit = false,
   loading,
   onChange,
-  onStatusChanged,
+  onStatusChange,
   onAddReference,
   onRemoveReference,
   children,
@@ -89,15 +89,16 @@ const PostForm = ({
     references: referenceSegmentSchema,
   });
 
-  const handleChange = (values: FormValue) => {
+  const handleChange = (values: FormValue, formikState: FormikState<FormValue>) => {
     const post: PostFormOutput = {
       displayName: values.name,
       description: values.description,
       tags: values.tagsets[0].tags,
       references: values.references,
     };
+    const formTouched = Object.keys(formikState.touched).length > 0;
 
-    onChange?.(post);
+    onChange?.(post, formTouched);
   };
 
   return (
@@ -111,7 +112,7 @@ const PostForm = ({
       {formikState => (
         <>
           <Gutters disablePadding>
-            <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
+            <FormikEffect onChange={handleChange} onStatusChange={onStatusChange} />
             <FormikInputField
               name={'name'}
               title={t('common.title')}

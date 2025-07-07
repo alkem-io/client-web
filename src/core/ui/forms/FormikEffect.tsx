@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { useFormikContext } from 'formik';
+import { FormikState, useFormikContext } from 'formik';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 export interface FormikEffectProps<T> {
-  onChange?: (values: T) => void;
+  onChange?: (values: T, formikState: FormikState<T>) => void;
   onStatusChange?: (valid: boolean) => void;
 }
 
@@ -17,7 +17,7 @@ const FormikEffectFactory = <T,>() => {
 
     const { values, isValid } = formik;
 
-    useDeepCompareEffect(() => onChange && onChange(values), [values]);
+    useDeepCompareEffect(() => onChange && onChange(values, formik), [values]);
     useEffect(() => onStatusChange && onStatusChange(isValid), [isValid, onStatusChange]);
 
     return <></>;
