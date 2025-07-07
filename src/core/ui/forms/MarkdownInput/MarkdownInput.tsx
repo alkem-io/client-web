@@ -12,7 +12,7 @@ import React, {
 } from 'react';
 import { Box, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Editor, EditorContent, useEditor } from '@tiptap/react';
+import { Editor, EditorContent, Extensions, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
 import { CharacterCountContainer, useSetCharacterCount } from './CharacterCountContext';
@@ -31,12 +31,16 @@ import { EditorView } from '@tiptap/pm/view';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import Collaboration from '@tiptap/extension-collaboration';
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
+import { HocuspocusProvider } from '@hocuspocus/provider';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
   maxLength?: number;
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
+  collaborative?: boolean;
 }
 
 type Offset = {
@@ -73,6 +77,7 @@ export const MarkdownInput = memo(
         onFocus,
         onBlur,
         temporaryLocation = false,
+        collaborative = false,
       },
       ref
     ) => {
@@ -180,13 +185,44 @@ export const MarkdownInput = memo(
         [storageBucketId, hideImageOptions, temporaryLocation, uploadFile, isImageOrHtmlWithImage]
       );
 
-      const editorOptions: Partial<EditorOptions> = useMemo(
-        () => ({
-          extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
+      const providerRef = useRef<HocuspocusProvider | null>(null);
+
+      useEffect(() => {
+        return () => {
+          providerRef.current?.destroy();
+          providerRef.current = null;
+        };
+      }, [collaborative]);
+
+      const editorOptions: Partial<EditorOptions> = useMemo(() => {
+        const extensions: Extensions = [StarterKit, ImageExtension, Link, Highlight, Iframe];
+
+        if (collaborative && !providerRef.current) {
+          providerRef.current = new HocuspocusProvider({
+            url: 'ws://localhost:1234',
+            name: 'example-document',
+          });
+          extensions.push(
+            Collaboration.configure({
+              document: providerRef.current.document,
+            }),
+            CollaborationCursor.configure({
+              provider: providerRef.current,
+              user: {
+                name: 'Cyndi Lauper',
+                color: '#f783ac',
+              },
+            })
+          );
+        }
+
+        console.log('MarkdownInput editorOptions triggered');
+
+        return {
+          extensions,
           editorProps: { handlePaste },
-        }),
-        [handlePaste]
-      );
+        };
+      }, [collaborative, handlePaste]);
 
       const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
 
