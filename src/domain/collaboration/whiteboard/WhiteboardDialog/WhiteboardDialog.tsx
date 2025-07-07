@@ -198,7 +198,15 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
     // After editing the whiteboard in real time mode, we need to evict the cache in case we have a cached version, on CalloutForm for example.
     evictFromCache(whiteboard?.id, 'Whiteboard');
     actions.onCancel();
-  }, [editModeEnabled, collabApiRef, whiteboard, getWhiteboardState, prepareWhiteboardForUpdate, actions]);
+  }, [
+    editModeEnabled,
+    collabApiRef,
+    whiteboard,
+    getWhiteboardState,
+    prepareWhiteboardForUpdate,
+    actions,
+    evictFromCache,
+  ]);
 
   const handleImportTemplate = useCallback(
     async (template: WhiteboardTemplateContent) => {
