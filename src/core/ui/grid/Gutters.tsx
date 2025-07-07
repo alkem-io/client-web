@@ -30,6 +30,7 @@ const Gutters = forwardRef(
     );
   }
 );
+Gutters.displayName = 'Gutters';
 
 export default Gutters as <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>(
   props: GuttersProps & BoxProps<D, P>

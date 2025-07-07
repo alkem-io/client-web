@@ -70,7 +70,7 @@ fragment InnovationFlowCollaboration on Collaboration {
     id
     callouts {
       id
-      type
+      calloutTypeDeprecated: type
       activity
       sortOrder
       classification {

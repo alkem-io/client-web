@@ -33,7 +33,7 @@ export interface ContributorsToggleDialogProps {
  */
 const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleDialogProps) => {
   const { isAuthenticated } = useCurrentUserContext();
-  const { spaceId } = useUrlResolver();
+  const { spaceId, spaceLevel } = useUrlResolver();
   const { t } = useTranslation();
 
   const { data: subspaceData, loading } = useSubspaceCommunityAndRoleSetIdQuery({
@@ -108,6 +108,7 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
               showUsers
               users={users}
               organizations={organizations}
+              level={spaceLevel}
               hasInvitePrivilege={hasInvitePrivilege}
               isLoading={loading}
               isDialogView

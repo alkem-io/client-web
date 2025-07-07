@@ -26,6 +26,7 @@ import { mapTagsetModelsToUpdateTagsetInputs } from '@/domain/common/tagset/Tags
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { SpaceBodyOfKnowledgeModel } from '../../virtualContributor/model/SpaceBodyOfKnowledgeModel';
+import { nameOf } from '@/core/utils/nameOf';
 
 type VirtualContributorProps = {
   id: string;
@@ -114,12 +115,6 @@ export const VirtualContributorForm = ({
     return result;
   };
 
-  // use keywords tagset (existing after creation of VC) as tags
-  const keywordsTagsetWrapped = useMemo(() => {
-    const tagset = tagsets?.find(x => x.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase());
-    return tagset && [tagset];
-  }, [tagsets]);
-
   const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFormValues) => {
     const { profile, ...otherData } = values;
     const { displayName, description, tagline, tagsets, references } = profile;
@@ -163,7 +158,7 @@ export const VirtualContributorForm = ({
       >
         {({
           values: {
-            profile: { references },
+            profile: { tagsets, references },
             hostDisplayName,
           },
           handleSubmit,
@@ -187,10 +182,12 @@ export const VirtualContributorForm = ({
                     <Gutters>
                       <FormikInputField name="profile.displayName" title={t('components.nameSegment.name')} />
                       <ProfileSegment />
-                      {keywordsTagsetWrapped ? (
+                      {
+                        // use keywords tagset (existing after creation of VC) as tags
+                      }
+                      {tagsets?.find(tagset => tagset.name.toLowerCase() === TagsetReservedName.Keywords) ? (
                         <TagsetSegment
-                          fieldName="profile.tagsets"
-                          tagsets={keywordsTagsetWrapped}
+                          name={nameOf<VirtualContributorFormValues>('profile.tagsets')}
                           title={t('common.tags')}
                         />
                       ) : null}

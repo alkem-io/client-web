@@ -1,0 +1,10 @@
+mutation CreateWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
+  createContributionOnCallout(contributionData: $input) {
+    whiteboard {
+      ...WhiteboardDetails
+      profile {
+        url
+      }
+    }
+  }
+}

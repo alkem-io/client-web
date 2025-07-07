@@ -9,14 +9,14 @@ export interface PostSharePageProps {
   postId: string | undefined;
 }
 
-const PostSharePage = ({ onClose, postId }: PostSharePageProps) => {
+const PostSharePage = ({ onClose, postId, calloutId }: PostSharePageProps) => {
   if (!postId) {
     throw new Error('Must be within a Post route');
   }
 
   return (
     <PostLayout currentSection={PostDialogSection.Share} onClose={onClose}>
-      <PostDashboardView mode="share" postId={postId} />
+      <PostDashboardView mode="share" postId={postId} calloutId={calloutId} />
       <DialogFooter />
     </PostLayout>
   );

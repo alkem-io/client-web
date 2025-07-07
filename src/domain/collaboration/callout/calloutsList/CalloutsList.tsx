@@ -1,13 +1,13 @@
 import { List, ListItem, ListItemIcon, Skeleton, useTheme } from '@mui/material';
 import { ReactNode, useMemo, useState } from 'react';
-import calloutIcons from '../utils/calloutIcons';
+import { GenericCalloutIcon } from '../icons/calloutIcons';
 import { useTranslation } from 'react-i18next';
 import { times } from 'lodash';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import SearchField from '@/core/ui/search/SearchField';
 import CalloutsListItemTitle from '../../calloutsSet/CalloutsView/CalloutsListItemTitle';
-import { CalloutModelLight } from '../model/CalloutModelLight';
+import { CalloutModelLight } from '../models/CalloutModelLight';
 
 export interface CalloutsListProps<Callout extends CalloutModelLight> {
   callouts: Callout[] | undefined;
@@ -51,11 +51,10 @@ const CalloutsList = <Callout extends CalloutModelLight>({
           </ListItem>
         )}
         {filteredCallouts?.map(callout => {
-          const CalloutIcon = calloutIcons[callout.type];
           return (
             <ListItem key={callout.id} disableGutters component={RouterLink} to={callout.framing.profile.url ?? ''}>
               <ListItemIcon>
-                <CalloutIcon sx={{ color: theme.palette.primary.dark }} />
+                <GenericCalloutIcon sx={{ color: theme.palette.primary.dark }} />
               </ListItemIcon>
               <BlockSectionTitle minWidth={0} noWrap>
                 <CalloutsListItemTitle callout={callout} />

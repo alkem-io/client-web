@@ -1,0 +1,11 @@
+query CalloutSettings($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      settings {
+        contribution {
+          commentsEnabled
+        }
+      }
+    }
+  }
+}

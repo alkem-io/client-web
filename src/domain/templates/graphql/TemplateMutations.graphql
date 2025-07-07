@@ -122,6 +122,54 @@ mutation UpdateTemplate(
   }
 }
 
+# Special case for updating callout templates
+mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
+  updateCallout(calloutData: $calloutData) {
+    id
+    calloutTypeDeprecated: type
+    framing {
+      id
+      profile {
+        id
+        description
+        displayName
+        tagset {
+          ...TagsetDetails
+        }
+        references {
+          id
+          name
+          uri
+        }
+      }
+      type
+      whiteboard {
+        id
+        content
+        nameID # Used to set an altImage to the visual
+        profile {
+          id
+          previewVisual: visual(type: BANNER) {
+            id
+          }
+        }
+      }
+    }
+    contributionDefaults {
+      id
+      postDescription
+      whiteboardContent
+    }
+    settings {
+      contribution {
+        enabled
+        allowedTypes
+      }
+      visibility
+    }
+  }
+}
+
 # Special case for updating a collaboration template from an existing collaboration
 mutation UpdateTemplateFromSpace($templateId: UUID!, $spaceId: UUID!) {
   updateTemplateFromSpace(updateData: { templateID: $templateId, spaceID: $spaceId }) {

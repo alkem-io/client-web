@@ -73,7 +73,7 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
 
   const validationSchema = yup.object().shape({
     profile: yup.object().shape({
-      displayName: displayNameValidator,
+      displayName: displayNameValidator.required(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       tagsets: yup.array().of(
         yup.object().shape({

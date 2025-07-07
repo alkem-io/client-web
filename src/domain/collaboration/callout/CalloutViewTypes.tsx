@@ -1,37 +1,24 @@
-import { Callout, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import { CalloutDeleteType, CalloutEditType } from './edit/CalloutEditType';
-
-export interface CalloutSortEvents {
-  onMoveUp: (calloutId: string) => void;
-  onMoveDown: (calloutId: string) => void;
-  onMoveToTop: (calloutId: string) => void;
-  onMoveToBottom: (calloutId: string) => void;
-}
-
-export interface CalloutSortProps {
-  topCallout: boolean;
-  bottomCallout: boolean;
-}
+import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { CalloutSortEvents, CalloutSortProps } from '../calloutsSet/CalloutsView/CalloutSortModels';
+import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 
 export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
   onVisibilityChange?: (
-    calloutId: Callout['id'],
+    callout: Identifiable,
     visibility: CalloutVisibility,
     sendNotification: boolean
   ) => Promise<void> | undefined;
-  onCalloutEdit?: (callout: CalloutEditType) => Promise<void> | undefined;
-  onCalloutDelete?: (callout: CalloutDeleteType) => Promise<void> | undefined;
+  onCalloutDelete?: (callout: Identifiable) => Promise<void> | undefined;
 }
 
 export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
-  contributionsCount: number;
+  contributionsCount: number | undefined;
   loading?: boolean;
-  canCreate?: boolean;
+  canCreateContribution?: boolean;
   expanded?: boolean;
   onExpand?: () => void;
   onCollapse?: () => void;
-  onCalloutUpdate?: () => void;
-  disableMarginal?: boolean;
-  disableRichMedia?: boolean;
-  disablePostResponses?: boolean;
+  onCalloutUpdate?: () => Promise<unknown> | void;
+  calloutRestrictions?: CalloutRestrictions;
 }

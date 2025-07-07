@@ -3,17 +3,11 @@ import { ReactNode } from 'react';
 import CardHeader from '@/core/ui/card/CardHeader';
 import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
 import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
-import { CalloutContributionType, CalloutState, CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { DesignServicesOutlined } from '@mui/icons-material';
 import CardDetails from '@/core/ui/card/CardDetails';
 import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
 import { Visual } from '@/domain/common/visual/Visual';
-import { getCalloutTypeIcon } from './calloutIcons';
-
-interface ContributionPolicy {
-  allowedContributionTypes: CalloutContributionType[];
-  state: CalloutState;
-}
+import { GenericCalloutIcon } from '../icons/calloutIcons';
 
 export interface CalloutCardCallout {
   framing: {
@@ -26,8 +20,6 @@ export interface CalloutCardCallout {
       url?: string;
     };
   };
-  type: CalloutType;
-  contributionPolicy: ContributionPolicy;
 }
 
 interface Author {
@@ -53,7 +45,7 @@ const CalloutCard = ({
   footer,
   ...cardProps
 }: CalloutCardProps) => {
-  const CalloutIcon = !template && callout ? getCalloutTypeIcon(callout) : DesignServicesOutlined;
+  const CalloutIcon = !template && callout ? GenericCalloutIcon : DesignServicesOutlined;
 
   return (
     <ContributeCard {...cardProps}>

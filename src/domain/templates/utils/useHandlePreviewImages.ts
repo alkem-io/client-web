@@ -7,10 +7,10 @@ const useHandlePreviewImages = () => {
   const { uploadVisuals } = useUploadWhiteboardVisuals();
 
   const handlePreviewTemplates = async (
-    values: { whiteboardPreviewImages?: WhiteboardPreviewImage[] },
+    whiteboardPreviewImages: WhiteboardPreviewImage[] | undefined,
     mutationResult?: { profile?: { cardVisual?: { id: string }; previewVisual?: { id: string } }; nameID: string }
   ) => {
-    const previewImages = values.whiteboardPreviewImages;
+    const previewImages = whiteboardPreviewImages;
     if (mutationResult && previewImages) {
       await uploadVisuals(
         previewImages,

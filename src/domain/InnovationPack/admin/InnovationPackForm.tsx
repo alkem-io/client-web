@@ -18,6 +18,7 @@ import FormikSelect from '@/core/ui/forms/FormikSelect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { nameOf } from '@/core/utils/nameOf';
 
 export interface InnovationPackFormValues {
   profile: {
@@ -122,7 +123,7 @@ const InnovationPackForm = ({
             {!isNew && profileId ? (
               <>
                 <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
-                <TagsetSegment fieldName="profile.tagsets" tagsets={profile.tagsets} />
+                <TagsetSegment name={nameOf<InnovationPackFormValues>('profile.tagsets')} />
                 <ContextReferenceSegment
                   fieldName="profile.references"
                   references={profile.references || []}
