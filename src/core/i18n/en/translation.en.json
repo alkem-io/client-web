@@ -832,7 +832,7 @@
     "calloutsList": {
       "title": "Index",
       "filter": {
-        "placeholder": "Find collaboration tools..."
+        "placeholder": "Search..."
       }
     }
   },
@@ -1148,7 +1148,7 @@
       "title": "{{space}} statistics"
     },
     "dashboardNavigation": {
-      "help": "This Space holds the following Subspaces.",
+      "help": "Hierarchy of this Space.",
       "privateSubspace": "This is a private Subspace. Visit the Subspace and apply to become a member to view it's content.",
       "showAll": "Show all",
       "expand": "Show full hierarchy",
@@ -1921,7 +1921,7 @@
           "list": "List view",
           "empty": "No {{entities}} found.",
           "empty-list": "There are no {{entities}} yet.",
-          "searchPlaceholder": "Find Subspaces..."
+          "searchPlaceholder": "Search..."
         },
         "recommendations": {
           "title": "Recommended by the Host"
