@@ -109,7 +109,18 @@ const PostDashboardView = ({ mode, postId, calloutId, vcEnabled }: PostDashboard
 
   return (
     <PageContentBlock sx={{ flexDirection: 'row' }}>
-      <PageContentColumn columns={6}>
+      {mode === 'share' && (
+        <PageContentColumn columns={12}>
+          <PageContentBlock>
+            {loading || !post?.profile.url ? (
+              <Skeleton />
+            ) : (
+              <ShareComponent url={post.profile.url} entityTypeName="card" />
+            )}
+          </PageContentBlock>
+        </PageContentColumn>
+      )}
+      <PageContentColumn columns={12}>
         <PageContentBlock>
           <PageContentBlockBanner bannerUrl={post?.profile.banner?.uri}>
             <AuthorComponent
@@ -134,79 +145,68 @@ const PostDashboardView = ({ mode, postId, calloutId, vcEnabled }: PostDashboard
         <Gutters sx={{ width: '100%' }}>
           <References references={post?.profile.references} />
         </Gutters>
+        {mode === 'messages' && permissions.canReadComments && (
+          <>
+            <PageContentBlock title={`${t('common.comments')} (${comments.messages.length})`}>
+              <ScrollerWithGradient
+                maxHeight={COMMENTS_CONTAINER_HEIGHT}
+                minHeight={0}
+                marginRight={1}
+                flexGrow={1}
+                scrollerRef={commentsContainerRef}
+                onScroll={handleCommentsScroll}
+              >
+                <Gutters gap={0}>
+                  <MessagesThread
+                    messages={comments.messages}
+                    vcInteractions={comments.vcInteractions}
+                    vcEnabled={vcEnabled}
+                    canPostMessages={canPostComments}
+                    onReply={actions.postReply}
+                    canDeleteMessage={permissions.canDeleteComment}
+                    onDeleteMessage={onDeleteComment}
+                    canAddReaction={permissions.canAddReaction}
+                    {...commentReactionsMutations}
+                  />
+                </Gutters>
+              </ScrollerWithGradient>
+              <Box>
+                {canPostComments && (
+                  <PostMessageToCommentsForm
+                    vcEnabled={vcEnabled}
+                    placeholder={t('pages.post.dashboard.comment.placeholder')}
+                    onPostComment={actions.postMessage}
+                  />
+                )}
+                {!canPostComments && (
+                  <Box paddingY={4} display="flex" justifyContent="center">
+                    <BlockSectionTitle>{t('components.discussion.cant-post')}</BlockSectionTitle>
+                  </Box>
+                )}
+              </Box>
+            </PageContentBlock>
+            <ConfirmationDialog
+              actions={{
+                onCancel: () => setCommentToBeDeleted(undefined),
+                onConfirm: async () => {
+                  if (commentToBeDeleted) {
+                    await deleteComment(commentToBeDeleted);
+                  }
+                  setCommentToBeDeleted(undefined);
+                },
+              }}
+              entities={{
+                confirmButtonTextId: 'buttons.delete',
+                contentId: 'components.confirmation-dialog.delete-comment.confirmation-text',
+                titleId: 'components.confirmation-dialog.delete-comment.confirmation-title',
+              }}
+              options={{
+                show: Boolean(commentToBeDeleted),
+              }}
+            />
+          </>
+        )}
       </PageContentColumn>
-      {mode === 'messages' && permissions.canReadComments && (
-        <PageContentColumn columns={6}>
-          <PageContentBlock title={`${t('common.comments')} (${comments.messages.length})`}>
-            <ScrollerWithGradient
-              maxHeight={COMMENTS_CONTAINER_HEIGHT}
-              minHeight={0}
-              marginRight={1}
-              flexGrow={1}
-              scrollerRef={commentsContainerRef}
-              onScroll={handleCommentsScroll}
-            >
-              <Gutters gap={0}>
-                <MessagesThread
-                  messages={comments.messages}
-                  vcInteractions={comments.vcInteractions}
-                  vcEnabled={vcEnabled}
-                  canPostMessages={canPostComments}
-                  onReply={actions.postReply}
-                  canDeleteMessage={permissions.canDeleteComment}
-                  onDeleteMessage={onDeleteComment}
-                  canAddReaction={permissions.canAddReaction}
-                  {...commentReactionsMutations}
-                />
-              </Gutters>
-            </ScrollerWithGradient>
-            <Box>
-              {canPostComments && (
-                <PostMessageToCommentsForm
-                  vcEnabled={vcEnabled}
-                  placeholder={t('pages.post.dashboard.comment.placeholder')}
-                  onPostComment={actions.postMessage}
-                />
-              )}
-              {!canPostComments && (
-                <Box paddingY={4} display="flex" justifyContent="center">
-                  <BlockSectionTitle>{t('components.discussion.cant-post')}</BlockSectionTitle>
-                </Box>
-              )}
-            </Box>
-          </PageContentBlock>
-          <ConfirmationDialog
-            actions={{
-              onCancel: () => setCommentToBeDeleted(undefined),
-              onConfirm: async () => {
-                if (commentToBeDeleted) {
-                  await deleteComment(commentToBeDeleted);
-                }
-                setCommentToBeDeleted(undefined);
-              },
-            }}
-            entities={{
-              confirmButtonTextId: 'buttons.delete',
-              contentId: 'components.confirmation-dialog.delete-comment.confirmation-text',
-              titleId: 'components.confirmation-dialog.delete-comment.confirmation-title',
-            }}
-            options={{
-              show: Boolean(commentToBeDeleted),
-            }}
-          />
-        </PageContentColumn>
-      )}
-      {mode === 'share' && (
-        <PageContentColumn columns={6}>
-          <PageContentBlock>
-            {loading || !post?.profile.url ? (
-              <Skeleton />
-            ) : (
-              <ShareComponent url={post.profile.url} entityTypeName="card" />
-            )}
-          </PageContentBlock>
-        </PageContentColumn>
-      )}
     </PageContentBlock>
   );
 };
