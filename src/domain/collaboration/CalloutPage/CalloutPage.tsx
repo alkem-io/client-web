@@ -174,9 +174,10 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
           '.MuiDialog-paper': {
             // copied from DialogWithGrid as it will be overridden here
             maxWidth: '100vw',
-            maxHeight: isSmallScreen ? '100vh' : '80vh',
+            maxHeight: isSmallScreen ? '100vh' : 'calc(100vh - 32px)', // 64px for header height
             height: 'auto',
             minHeight: 'auto', // Allows dialog to be smaller when content is minimal
+            margin: 0, // Remove default padding
           },
         }}
       >
