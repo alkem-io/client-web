@@ -5,7 +5,6 @@ interface CalloutNotOpenStateMarginalProps {
   messagesCount: number;
   disabled?: boolean;
   isMember?: boolean;
-  contributionsCount?: number;
 }
 
 const CalloutClosedMarginal = ({ messagesCount, disabled = false, isMember }: CalloutNotOpenStateMarginalProps) => {

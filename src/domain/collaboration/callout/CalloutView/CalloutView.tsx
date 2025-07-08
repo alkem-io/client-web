@@ -51,7 +51,6 @@ const CalloutView = ({
           callout={callout}
           contributionsCount={contributionsCount}
           {...calloutSettingsProvided}
-          isMember={myMembershipStatus === CommunityMembershipStatus.Member}
           expanded={expanded}
           onExpand={onExpand}
           onCollapse={onCollapse}
@@ -120,10 +119,12 @@ const CalloutView = ({
               {props => (
                 <CommentsComponent
                   {...props}
+                  commentsEnabled={props.commentsEnabled}
                   loading={loading || props.loading}
                   last={lastMessageOnly}
                   maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
                   onClickMore={onExpand}
+                  isMember={myMembershipStatus === CommunityMembershipStatus.Member}
                 />
               )}
             </CalloutCommentsContainer>

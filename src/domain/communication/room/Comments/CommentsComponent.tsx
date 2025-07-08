@@ -15,6 +15,7 @@ import useCommentReactionsMutations from './useCommentReactionsMutations';
 import MessagesThread from './MessagesThread';
 import { gutters } from '@/core/ui/grid/utils';
 import { CommentInputFieldProps } from './CommentInputField';
+import CalloutClosedMarginal from '@/domain/collaboration/callout/calloutBlock/CalloutClosedMarginal';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
@@ -24,6 +25,7 @@ export interface CommentsComponentProps {
   commentsId: string | undefined;
   canReadMessages: boolean;
   canPostMessages: boolean;
+  isMember?: boolean;
   canAddReaction: boolean;
   canDeleteMessage: (authorId: string | undefined) => boolean;
   postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
@@ -33,6 +35,7 @@ export interface CommentsComponentProps {
   loading?: boolean;
   last?: boolean;
   onClickMore?: () => void;
+  commentsEnabled: boolean;
 }
 
 interface ScrollState {
@@ -59,11 +62,13 @@ const CommentsComponent = ({
   postReply,
   handleDeleteMessage,
   canPostMessages,
+  isMember = false,
   canDeleteMessage,
   canAddReaction,
   maxHeight,
   loading,
   onClickMore,
+  commentsEnabled,
 }: CommentsComponentProps) => {
   const { t } = useTranslation();
 
@@ -154,6 +159,9 @@ const CommentsComponent = ({
           padding={gutters()}
           paddingBottom={0}
         />
+      )}
+      {!canPostMessages && (
+        <CalloutClosedMarginal messagesCount={messages?.length ?? 0} disabled={!commentsEnabled} isMember={isMember} />
       )}
       <ConfirmationDialog
         actions={{
