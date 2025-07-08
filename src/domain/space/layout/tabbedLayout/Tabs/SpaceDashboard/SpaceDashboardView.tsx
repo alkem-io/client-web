@@ -25,10 +25,10 @@ import SpaceWelcomeDialog from '@/domain/space/components/SpaceWelcomeDialog';
 import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowState';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
-import MarkdownInput from '@/core/ui/forms/MarkdownInput/MarkdownInput';
 import { CharacterCountContextProvider } from '@/core/ui/forms/MarkdownInput/CharacterCountContext';
 import { gutters } from '@/core/ui/grid/utils';
 import { OutlinedInput } from '@mui/material';
+import CollaborativeMarkdownInput from '@/core/ui/forms/MarkdownInput/CollaborativeMarkdownInput';
 
 export type SpaceDashboardSpaceDetails = {
   id: string | undefined;
@@ -146,9 +146,9 @@ const SpaceDashboardView = ({
         <ContentColumn>
           <CharacterCountContextProvider>
             <OutlinedInput
-              inputComponent={MarkdownInput}
+              inputComponent={CollaborativeMarkdownInput}
               inputProps={{
-                collaborative: true,
+                controlsVisible: 'always',
               }}
               multiline
               sx={{

@@ -1,36 +1,25 @@
-import React, {
-  FormEvent,
-  forwardRef,
-  memo,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useMemo,
-} from 'react';
+import React, { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useRef, useState, useMemo } from 'react';
 import { Box, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Editor, EditorContent, useEditor } from '@tiptap/react';
+import { Editor, EditorContent, Extensions, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
-import { CharacterCountContainer, useSetCharacterCount } from './CharacterCountContext';
 import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
 import { Image } from '@tiptap/extension-image';
 import { Link } from '@tiptap/extension-link';
-import usePersistentValue from '@/core/utils/usePersistentValue';
-import UnifiedConverter from '@/core/ui/markdown/html/UnifiedConverter';
 import { gutters } from '@/core/ui/grid/utils';
-import { EditorState } from '@tiptap/pm/state';
 import { Highlight } from '@tiptap/extension-highlight';
-import { Selection } from 'prosemirror-state';
-import { EditorOptions } from '@tiptap/core';
 import { Iframe } from '../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
 import { EditorView } from '@tiptap/pm/view';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import Collaboration from '@tiptap/extension-collaboration';
+import { TiptapCollabProvider } from '@hocuspocus/provider';
+import * as Y from 'yjs';
+import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor';
+import { Caption } from '@/core/ui/typography';
+import { EditorOptions } from '@tiptap/core';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -61,38 +50,78 @@ const proseMirrorStyles = {
   '& img': { maxWidth: '100%' },
 } as const;
 
-export const MarkdownInput = memo(
+const colors = [
+  '#958DF1',
+  '#F98181',
+  '#FBBC88',
+  '#FAF594',
+  '#70CFF8',
+  '#94FADB',
+  '#B9F18D',
+  '#C3E2C2',
+  '#EAECCC',
+  '#AFC8AD',
+  '#EEC759',
+  '#9BB8CD',
+  '#FF90BC',
+  '#FFC0D9',
+  '#DC8686',
+  '#7ED7C1',
+  '#F3EEEA',
+  '#89B9AD',
+  '#D0BFFF',
+  '#FFF8C9',
+  '#CBFFA9',
+  '#9BABB8',
+  '#E3F4F4',
+];
+
+const names = [
+  'Lea Thompson',
+  'Cyndi Lauper',
+  'Tom Cruise',
+  'Madonna',
+  'Jerry Hall',
+  'Joan Collins',
+  'Winona Ryder',
+  'Christina Applegate',
+  'Alyssa Milano',
+  'Molly Ringwald',
+  'Ally Sheedy',
+  'Debbie Harry',
+  'Olivia Newton-John',
+  'Elton John',
+  'Michael J. Fox',
+  'Axl Rose',
+  'Emilio Estevez',
+  'Ralph Macchio',
+  'Rob Lowe',
+  'Jennifer Grey',
+  'Mickey Rourke',
+  'John Cusack',
+  'Matthew Broderick',
+  'Justine Bateman',
+  'Lisa Bonet',
+];
+
+const getRandomElement = list => list[Math.floor(Math.random() * list.length)];
+
+const getRandomColor = () => getRandomElement(colors);
+const getRandomName = () => getRandomElement(names);
+
+export const CollaborativeMarkdownInput = memo(
   forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
-    (
-      {
-        value,
-        onChange,
-        maxLength,
-        controlsVisible = 'focused',
-        hideImageOptions,
-        onFocus,
-        onBlur,
-        temporaryLocation = false,
-      },
-      ref
-    ) => {
+    ({ controlsVisible = 'focused', hideImageOptions, onFocus, onBlur, temporaryLocation = false }, ref) => {
       const containerRef = useRef<HTMLDivElement>(null);
       const toolbarRef = useRef<HTMLDivElement>(null);
+
+      const [status, setStatus] = useState('connecting');
 
       const [hasFocus, setHasFocus] = useState(false);
       const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
       const isInteractingWithInput = hasFocus || isControlsDialogOpen;
 
-      const [htmlContent, setHtmlContent] = useState('');
-
-      const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
-
       const storageConfig = useStorageConfigContext();
-
-      const updateHtmlContent = async () => {
-        const content = await markdownToHTML(value);
-        setHtmlContent(String(content));
-      };
 
       const { t } = useTranslation();
 
@@ -180,24 +209,76 @@ export const MarkdownInput = memo(
         [storageBucketId, hideImageOptions, temporaryLocation, uploadFile, isImageOrHtmlWithImage]
       );
 
-      const editorOptions: Partial<EditorOptions> = useMemo(
-        () => ({
-          extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
-          editorProps: { handlePaste },
-        }),
-        [handlePaste]
-      );
+      const ydoc = useMemo(() => new Y.Doc(), []);
+      const providerRef = useRef<TiptapCollabProvider | null>(null);
 
-      const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
+      useEffect(() => {
+        providerRef.current = new TiptapCollabProvider({
+          baseUrl: 'ws://localhost:1234',
+          name: 'example-room-id', // pass the uuid of the document here
+          document: ydoc,
+        });
 
-      // Currently used to highlight overflow but can be reused for other similar features as well
-      const shadowEditor = useEditor({ ...editorOptions, content: '', editable: false });
+        const statusHandler = event => {
+          setStatus(event.status);
+        };
 
-      useLayoutEffect(() => {
-        if (!editor || !isInteractingWithInput || editor.getText() === '') {
-          updateHtmlContent();
+        providerRef.current.on('status', statusHandler);
+
+        return () => {
+          providerRef.current?.off('status', statusHandler);
+          providerRef.current?.destroy();
+          providerRef.current = null;
+        };
+      }, [ydoc]);
+
+      const defaultContent = `
+        <p>Hi 👋, this is a collaborative document.</p>
+        <p>Feel free to edit and collaborate in real-time!</p>
+      `;
+
+      const editorOptions: Partial<EditorOptions> = useMemo(() => {
+        const extensions: Extensions = [StarterKit, ImageExtension, Link, Highlight, Iframe];
+
+        if (providerRef.current) {
+          extensions.push(
+            Collaboration.extend().configure({
+              document: ydoc,
+            }),
+            CollaborationCursor.extend().configure({
+              provider: providerRef.current,
+              user: {
+                name: getRandomName(),
+                color: getRandomColor(),
+              },
+            })
+          );
         }
-      }, [value, hasFocus]);
+
+        return {
+          extensions,
+          editorProps: { handlePaste },
+          enableContentCheck: true,
+          onContentError: ({ disableCollaboration }) => {
+            disableCollaboration();
+          },
+          onCreate: ({ editor: currentEditor }) => {
+            if (providerRef.current) {
+              providerRef.current.on('synced', () => {
+                if (currentEditor.isEmpty) {
+                  currentEditor.commands.setContent(defaultContent);
+                }
+              });
+            }
+          },
+        };
+      }, [providerRef.current]);
+
+      const editor = useEditor(editorOptions, [editorOptions]);
+
+      if (!editor) {
+        return null;
+      }
 
       const theme = useTheme();
 
@@ -234,97 +315,6 @@ export const MarkdownInput = memo(
         }),
         [editor, areControlsVisible()]
       );
-
-      const setCharacterCount = useSetCharacterCount();
-
-      useLayoutEffect(() => {
-        setCharacterCount(editor?.getText().length ?? 0);
-      }, [editor]);
-
-      const wrapIframeWithStyledDiv = (markdown: string): string =>
-        markdown.replace(
-          /<iframe[^>]*><\/iframe>/g,
-          iframe =>
-            `<div style='position: relative; padding-bottom: 56.25%; width: 100%; overflow: hidden; border-radius: 8px; margin-bottom: 10px;'>${iframe}</div>`
-        );
-
-      const emitChangeOnEditorUpdate = (editor: Editor) => {
-        const handleStateChange = async () => {
-          let markdown = await HTMLToMarkdown(editor.getHTML());
-
-          markdown = wrapIframeWithStyledDiv(markdown);
-
-          setCharacterCount(editor.getText().length);
-
-          onChange?.({
-            currentTarget: {
-              value: markdown,
-            },
-            target: {
-              value: markdown,
-            },
-          } as unknown as FormEvent<HTMLInputElement>);
-        };
-
-        editor.on('update', handleStateChange);
-
-        return () => {
-          editor.off('update', handleStateChange);
-        };
-      };
-
-      useEffect(() => {
-        if (editor) {
-          return emitChangeOnEditorUpdate(editor);
-        }
-      }, [editor]);
-
-      const updateShadowEditor = (editor: Editor, maxLength: number) => {
-        const highlightOverflow = () => {
-          if (!shadowEditor) {
-            return;
-          }
-
-          const contentLength = editor.getText().length;
-
-          if (contentLength <= maxLength) {
-            return;
-          }
-
-          try {
-            shadowEditor.view.updateState(EditorState.create({ doc: editor.state.doc }));
-          } catch (error) {
-            // In some states the "shadow" editor fails to update, but this doesn't break the highlight
-            console.error('Failed to update shadow editor state:', error);
-          }
-
-          const end = Selection.atEnd(shadowEditor.state.doc).from;
-          const overflow = contentLength - maxLength;
-
-          shadowEditor
-            .chain()
-            .setTextSelection({
-              from: end - overflow,
-              to: end,
-            })
-            .setHighlight() // Passing a highlight color doesn't work well here, styled later in sx={mark:{...}}
-            .run();
-        };
-
-        highlightOverflow();
-
-        editor.on('update', highlightOverflow);
-
-        return () => {
-          editor.off('update', highlightOverflow);
-        };
-      };
-
-      useEffect(() => {
-        if (editor && typeof maxLength === 'number') {
-          return updateShadowEditor(editor, maxLength);
-        }
-      }, [editor, maxLength]);
 
       const [prevEditorHeight, setPrevEditorHeight] = useState(0);
 
@@ -363,8 +353,24 @@ export const MarkdownInput = memo(
       const handleDialogOpen = useCallback(() => setIsControlsDialogOpen(true), [setIsControlsDialogOpen]);
       const handleDialogClose = useCallback(() => setIsControlsDialogOpen(false), [setIsControlsDialogOpen]);
 
+      const onlineStatusMessage = useMemo(
+        () =>
+          status === 'connected'
+            ? `${editor.storage.collaborationCursor?.users.length} user${editor.storage.collaborationCursor?.users.length === 1 ? '' : 's'} online`
+            : 'offline',
+        [status, editor.storage.collaborationCursor?.users.length]
+      );
+
       return (
         <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
+          <Caption
+            sx={{
+              color: theme =>
+                onlineStatusMessage === 'offline' ? theme.palette.negative.main : theme.palette.positive.main,
+            }}
+          >
+            {onlineStatusMessage}
+          </Caption>
           <MarkdownInputControls
             ref={toolbarRef}
             editor={editor}
@@ -377,30 +383,6 @@ export const MarkdownInput = memo(
           <Box width="100%" maxHeight="50vh" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
             <Box position="relative" style={{ minHeight: prevEditorHeight }}>
               <EditorContent editor={editor} />
-
-              <CharacterCountContainer>
-                {({ characterCount }) =>
-                  typeof maxLength === 'undefined' || characterCount <= maxLength ? null : (
-                    <Box
-                      position="absolute"
-                      top={0}
-                      left={0}
-                      bottom={0}
-                      right={0}
-                      sx={{
-                        pointerEvents: 'none',
-                        color: 'transparent',
-                        mark: {
-                          color: theme.palette.error.main,
-                          backgroundColor: 'transparent',
-                        },
-                      }}
-                    >
-                      <EditorContent editor={shadowEditor} />
-                    </Box>
-                  )
-                }
-              </CharacterCountContainer>
             </Box>
           </Box>
         </Box>
@@ -409,4 +391,4 @@ export const MarkdownInput = memo(
   )
 );
 
-export default MarkdownInput;
+export default CollaborativeMarkdownInput;
