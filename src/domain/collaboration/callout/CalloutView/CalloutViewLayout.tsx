@@ -12,7 +12,7 @@ import CalloutClosedMarginal from '../calloutBlock/CalloutClosedMarginal';
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
 import { gutters } from '@/core/ui/grid/utils';
 
-const CommentsCalloutLayout = ({
+const CalloutViewLayout = ({
   callout,
   children,
   contributionsCount,
@@ -101,4 +101,4 @@ const CommentsCalloutLayout = ({
   );
 };
 
-export default CommentsCalloutLayout;
+export default CalloutViewLayout;
