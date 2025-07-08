@@ -234,11 +234,11 @@ const TemplatesAdmin = ({
   // Import Template
   const [importTemplateType, setImportTemplateType] = useState<TemplateType>();
   const [getTemplateContent] = useTemplateContentLazyQuery();
-  const handleImportTemplate = async (importedTemplate: AnyTemplate) => {
+  const handleImportTemplate = async (importedTemplate: AnyTemplate, recursive: boolean) => {
     const { id, type: templateType } = importedTemplate;
     // TODO: Special case for collaboration, just for now, until we can import collaborations entirely
     if (templateType === TemplateType.Space) {
-      return handleImportSpaceTemplate(importedTemplate as SpaceTemplate);
+      return handleImportSpaceTemplate(importedTemplate as SpaceTemplate, recursive);
     }
 
     const { data } = await getTemplateContent({
@@ -261,7 +261,7 @@ const TemplatesAdmin = ({
     }
   };
   // Special case for Collaboration templates
-  const handleImportSpaceTemplate = async (importedTemplate: SpaceTemplate) => {
+  const handleImportSpaceTemplate = async (importedTemplate: SpaceTemplate, recursive: boolean) => {
     const { id } = importedTemplate;
     const { data } = await getTemplateContent({
       variables: {
@@ -273,6 +273,7 @@ const TemplatesAdmin = ({
     if (template) {
       const variables = toCreateTemplateFromSpaceContentMutationVariables(templatesSetId, {
         ...template,
+        recursive,
         contentSpaceId: template.contentSpace?.id ?? '',
       });
       await createTemplateFromSpaceContent({

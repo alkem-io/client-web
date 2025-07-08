@@ -20658,9 +20658,16 @@ export const CreateTemplateFromSpaceDocument = gql`
     $profileData: CreateProfileInput!
     $tags: [String!]
     $spaceId: UUID!
+    $recursive: Boolean!
   ) {
     createTemplateFromSpace(
-      templateData: { templatesSetID: $templatesSetId, profileData: $profileData, tags: $tags, spaceID: $spaceId }
+      templateData: {
+        templatesSetID: $templatesSetId
+        profileData: $profileData
+        recursive: $recursive
+        tags: $tags
+        spaceID: $spaceId
+      }
     ) {
       id
     }
@@ -20688,6 +20695,7 @@ export type CreateTemplateFromSpaceMutationFn = Apollo.MutationFunction<
  *      profileData: // value for 'profileData'
  *      tags: // value for 'tags'
  *      spaceId: // value for 'spaceId'
+ *      recursive: // value for 'recursive'
  *   },
  * });
  */

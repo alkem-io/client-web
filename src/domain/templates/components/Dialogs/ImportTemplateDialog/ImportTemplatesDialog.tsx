@@ -1,4 +1,13 @@
-import { Button, ButtonProps, CircularProgress, DialogActions, DialogContent, Link } from '@mui/material';
+import {
+  Button,
+  ButtonProps,
+  CircularProgress,
+  DialogActions,
+  DialogContent,
+  FormControlLabel,
+  Link,
+  Switch,
+} from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { cloneElement, ReactElement, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +47,7 @@ interface ImportTemplatesDialogProps extends ImportTemplatesOptions {
   subtitle?: string;
   open: boolean;
   onClose?: () => void;
-  onSelectTemplate: (template: AnyTemplate) => Promise<unknown>;
+  onSelectTemplate: (template: AnyTemplate, recursive: boolean) => Promise<unknown>;
   actionButton: ReactElement<ButtonProps>;
 }
 
@@ -59,9 +68,10 @@ const ImportTemplatesDialog = ({
   const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(!canUseSpaceTemplates);
 
   const [previewTemplate, setPreviewTemplate] = useState<AnyTemplate>();
+  const [recursiveImport, setRecursiveImport] = useState<boolean>(true);
   const [handleImportTemplate, loadingImport] = useLoadingState(async () => {
     if (previewTemplate) {
-      await onSelectTemplate(previewTemplate);
+      await onSelectTemplate(previewTemplate, recursiveImport);
     }
     handleClosePreview();
   });
@@ -180,7 +190,15 @@ const ImportTemplatesDialog = ({
           open
           template={previewTemplate}
           onClose={handleClosePreview}
-          actions={cloneElement(actionButton, { onClick: handleImportTemplate, loading: loadingImport })}
+          actions={
+            <>
+              {cloneElement(actionButton, { onClick: handleImportTemplate, loading: loadingImport })}
+              <FormControlLabel
+                label="Include subspaces"
+                control={<Switch checked={recursiveImport} onChange={e => setRecursiveImport(e.target.checked)} />}
+              />
+            </>
+          }
         />
       )}
     </>

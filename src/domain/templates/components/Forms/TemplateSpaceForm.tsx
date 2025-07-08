@@ -15,6 +15,7 @@ import SpaceContentFromSpaceUrlForm from './SpaceContentFromSpaceUrlForm';
 export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   spaceId?: string;
   contentSpaceId?: string; // This is not used in the form, but send to the server to update the template content space.
+  recursive?: boolean;
 }
 
 interface TemplateSpaceFormProps {
@@ -54,6 +55,7 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
     () => ({
       profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
       spaceId: template?.spaceId ?? '',
+      recursive: true,
     }),
     [template]
   );

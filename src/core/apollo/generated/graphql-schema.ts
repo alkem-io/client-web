@@ -2060,8 +2060,6 @@ export type CreateSpaceOnAccountInput = {
   licensePlanID?: InputMaybe<Scalars['UUID']['input']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
-  /** Pick up a different platform template. */
-  platformTemplate?: InputMaybe<TemplateDefaultType>;
   settings?: InputMaybe<CreateSpaceSettingsInput>;
   /** The Template to use for instantiating the Collaboration. */
   spaceTemplateID?: InputMaybe<Scalars['UUID']['input']>;
@@ -2104,8 +2102,6 @@ export type CreateSubspaceInput = {
   collaborationData: CreateCollaborationOnSpaceInput;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
-  /** Pick up a different platform template. */
-  platformTemplate?: InputMaybe<TemplateDefaultType>;
   settings?: InputMaybe<CreateSpaceSettingsInput>;
   spaceID: Scalars['UUID']['input'];
   /** The Template to use for instantiating the Collaboration. */
@@ -2138,6 +2134,7 @@ export type CreateTemplateContentSpaceInput = {
   level: SpaceLevel;
   /** Create the settings for the Space. */
   settings: CreateSpaceSettingsInput;
+  subspaces?: InputMaybe<Array<CreateTemplateContentSpaceInput>>;
 };
 
 export type CreateTemplateFromContentSpaceOnTemplatesSetInput = {
@@ -2154,6 +2151,8 @@ export type CreateTemplateFromSpaceOnTemplatesSetInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   profileData: CreateProfileInput;
+  /** Whether to reproduce the hierarchy or just the space. */
+  recursive?: InputMaybe<Scalars['Boolean']['input']>;
   /** The ID of the Space to use as the content for the Template. */
   spaceID: Scalars['UUID']['input'];
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -6714,6 +6713,8 @@ export type TemplateContentSpace = {
   level: SpaceLevel;
   /** The settings for this TemplateContentSpace. */
   settings: SpaceSettings;
+  /** The template subspaces for the Template Content Space. */
+  subspaces: Array<TemplateContentSpace>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -25864,6 +25865,7 @@ export type CreateTemplateFromSpaceMutationVariables = Exact<{
   profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
   spaceId: Scalars['UUID']['input'];
+  recursive: Scalars['Boolean']['input'];
 }>;
 
 export type CreateTemplateFromSpaceMutation = {
