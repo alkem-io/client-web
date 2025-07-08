@@ -165,22 +165,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   return (
     <>
       {renderPage(calloutPosition)}
-      <DialogWithGrid
-        open
-        columns={12}
-        onClose={handleClose}
-        fullScreen={isSmallScreen}
-        sx={{
-          '.MuiDialog-paper': {
-            // copied from DialogWithGrid as it will be overridden here
-            maxWidth: '100vw',
-            maxHeight: isSmallScreen ? '100vh' : 'calc(100vh - 32px)', // 64px for header height
-            height: 'auto',
-            minHeight: 'auto', // Allows dialog to be smaller when content is minimal
-            margin: 0, // Remove default padding
-          },
-        }}
-      >
+      <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen} fullHeight>
         <DialogContent
           dividers
           sx={{
