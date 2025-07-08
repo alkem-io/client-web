@@ -8,18 +8,11 @@ interface CalloutNotOpenStateMarginalProps {
   contributionsCount?: number;
 }
 
-const CalloutClosedMarginal = ({
-  messagesCount,
-  disabled = false,
-  contributionsCount,
-  isMember,
-}: CalloutNotOpenStateMarginalProps) => {
+const CalloutClosedMarginal = ({ messagesCount, disabled = false, isMember }: CalloutNotOpenStateMarginalProps) => {
   const { t } = useTranslation();
 
   if (!disabled) {
-    return !isMember && contributionsCount ? (
-      <CalloutBlockMarginal variant="footer">{t('callout.notMember')}</CalloutBlockMarginal>
-    ) : null;
+    return !isMember ? <CalloutBlockMarginal variant="footer">{t('callout.notMember')}</CalloutBlockMarginal> : null;
   }
   if (messagesCount) {
     return <CalloutBlockMarginal variant="footer">{t('callout.closed')}</CalloutBlockMarginal>;

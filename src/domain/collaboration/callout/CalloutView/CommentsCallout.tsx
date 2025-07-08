@@ -16,6 +16,7 @@ import CalloutContributionsLink from '../CalloutContributions/link/CalloutContri
 import CalloutContributionsContainer from '../CalloutContributions/CalloutContributionsContainer';
 import CalloutContributionsWhiteboard from '../CalloutContributions/whiteboard/CalloutContributionsWhiteboard';
 import CalloutContributionsPost from '../CalloutContributions/post/CalloutContributionsPost';
+import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 
 interface CommentsCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -36,7 +37,9 @@ const CommentsCallout = ({
   ...calloutSettingsProps
 }: CommentsCalloutProps) => {
   const { space } = useSpace();
-  const myMembershipStatus = space?.about.membership?.myMembershipStatus;
+  const { subspace } = useSubSpace();
+  const myMembershipStatus =
+    subspace?.about.membership?.myMembershipStatus ?? space?.about.membership?.myMembershipStatus;
 
   const { isSmallScreen } = useScreenSize();
   const lastMessageOnly = isSmallScreen && !expanded;
