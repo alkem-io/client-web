@@ -835,7 +835,7 @@
     "calloutsList": {
       "title": "Index",
       "filter": {
-        "placeholder": "Find collaboration tools..."
+        "placeholder": "Search..."
       }
     }
   },
@@ -1151,7 +1151,7 @@
       "title": "{{space}} statistics"
     },
     "dashboardNavigation": {
-      "help": "This Space holds the following Subspaces.",
+      "help": "Hierarchy of this Space.",
       "privateSubspace": "This is a private Subspace. Visit the Subspace and apply to become a member to view it's content.",
       "showAll": "Show all",
       "expand": "Show full hierarchy",
@@ -1924,7 +1924,7 @@
           "list": "List view",
           "empty": "No {{entities}} found.",
           "empty-list": "There are no {{entities}} yet.",
-          "searchPlaceholder": "Find Subspaces..."
+          "searchPlaceholder": "Search..."
         },
         "recommendations": {
           "title": "Recommended by the Host"
@@ -2235,7 +2235,7 @@
           },
           "memberActions": {
             "title": "Allowed Actions",
-            "createBlocks": "<b>Create Blocks</b>: Allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
+            "createBlocks": "<b>Create Posts</b>: Allow members to create posts for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new posts.",
             "createSubspaces": "<b>Create Subspaces</b>: Allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
             "eventsFromSubspaces": "<b>Subspace events</b>: Allow events from Subspaces to be visible on this Space calendar as well.",
             "inheritRights": "Allow members of the parent community to contribute without needing to join first.",
