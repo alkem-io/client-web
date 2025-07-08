@@ -1,7 +1,7 @@
 import { MouseEventHandler, ReactNode } from 'react';
 import { Dialog as MuiDialog, DialogProps as MuiDialogProps, Paper, PaperProps } from '@mui/material';
 import GridContainer from '../grid/GridContainer';
-import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX, useGlobalGridColumns } from '../grid/constants';
+import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX, useGlobalGridColumns, useScreenSize } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
 import GridItem, { GridItemProps } from '../grid/GridItem';
 
@@ -66,6 +66,7 @@ const DialogWithGrid = ({
   fullScreen,
   ...dialogProps
 }: DialogWithGridProps) => {
+  const { isSmallScreen } = useScreenSize();
   const { sx } = dialogProps;
 
   return (
@@ -80,7 +81,16 @@ const DialogWithGrid = ({
           maxWidth: '100vw',
           margin: 0,
           height: fullHeight ? '100%' : 'auto',
-          maxHeight: fullScreen ? '100vh' : '100%',
+          maxHeight:
+            fullScreen || isSmallScreen
+              ? '100vh'
+              : fullHeight
+                ? 'calc(100vh - 32px)' /* 64px for header height */
+                : '100%',
+          ...(fullHeight && {
+            height: 'auto',
+            minHeight: 'auto', // Allows dialog to be smaller when content is minimal
+          }),
         },
         ...sx,
       }}
