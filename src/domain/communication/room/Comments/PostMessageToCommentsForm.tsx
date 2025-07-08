@@ -51,7 +51,7 @@ const PostMessageToCommentsForm = ({
   };
 
   const validationSchema = yup.object().shape({
-    post: yup.string().required(t('forms.validations.required')),
+    post: yup.string().required(''), // prevent an error message from being displayed to the comment input
   });
 
   const handleSubmit = async (values: formValues, { resetForm }: FormikHelpers<formValues>) => {

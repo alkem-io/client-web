@@ -170,6 +170,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                   readOnlyAllowedTypes: true,
                   temporaryLocation: false,
                   readOnlyContributions: true,
+                  onlyRealTimeWhiteboardFraming: true,
                 }}
               />
             </StorageConfigContextProvider>

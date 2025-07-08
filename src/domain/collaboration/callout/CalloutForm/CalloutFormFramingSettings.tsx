@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import BlockIcon from '@mui/icons-material/Block';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -12,9 +11,11 @@ import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWh
 import { useField, useFormikContext } from 'formik';
 import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import type { FormikWhiteboardPreviewRef } from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
+import { Tooltip } from '@mui/material';
+import EditButton from '@/core/ui/actions/EditButton';
+import { useMemo } from 'react';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -25,7 +26,6 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
   const { isMediumSmallScreen } = useScreenSize();
 
   const [{ value: framing }] = useField<CalloutFormSubmittedValues['framing']>('framing');
-  const whiteboardPreviewRef = useRef<FormikWhiteboardPreviewRef>(null);
   const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
 
   const handleFramingTypeChange = (newType: CalloutFramingType) => {
@@ -67,6 +67,21 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
     />
   );
 
+  const editButton = useMemo(() => {
+    if (!calloutRestrictions?.onlyRealTimeWhiteboardFraming) {
+      return undefined; // Use the FormikWhiteboardPreview's default edit button
+    } else {
+      // TODO: Maybe in the future, open the real-time whiteboard editor from here
+      return (
+        <Tooltip title={t('callout.create.framingSettings.whiteboard.onlyRealTimeEditorAvailable')}>
+          <span>
+            <EditButton disabled />
+          </span>
+        </Tooltip>
+      );
+    }
+  }, [calloutRestrictions?.onlyRealTimeWhiteboardFraming]);
+
   return (
     <>
       <PageContentBlock sx={{ marginTop: gutters(-1) }}>
@@ -80,11 +95,10 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
       {framing.whiteboard && framing.type === CalloutFramingType.Whiteboard && (
         <PageContentBlock disablePadding>
           <FormikWhiteboardPreview
-            ref={whiteboardPreviewRef}
             name="framing.whiteboard.content"
             previewImagesName="framing.whiteboard.previewImages"
             canEdit
-            onChangeContent={() => whiteboardPreviewRef.current?.closeEditDialog()}
+            editButton={editButton}
             onDeleteContent={() => handleFramingTypeChange(CalloutFramingType.None)}
             maxHeight={gutters(12)}
             dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
