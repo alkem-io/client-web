@@ -10,7 +10,6 @@ interface DialogContainerProps extends PaperProps {
   centeredVertically?: boolean;
   onClose?: MouseEventHandler;
   fullScreen?: boolean;
-  fullHeight?: boolean;
 }
 
 export const DialogFooter = ({ children }: { children?: ReactNode }) => <>{children}</>;
