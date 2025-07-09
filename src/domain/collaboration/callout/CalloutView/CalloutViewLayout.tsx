@@ -8,7 +8,6 @@ import { Ribbon } from '@/core/ui/card/Ribbon';
 import References from '@/domain/shared/components/References/References';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import CalloutHeader from '../calloutBlock/CalloutHeader';
-import CalloutClosedMarginal from '../calloutBlock/CalloutClosedMarginal';
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
 import { gutters } from '@/core/ui/grid/utils';
 
@@ -16,7 +15,6 @@ const CalloutViewLayout = ({
   callout,
   children,
   contributionsCount,
-  isMember,
   expanded = false,
   onExpand,
   onCollapse,
@@ -86,16 +84,6 @@ const CalloutViewLayout = ({
           <TagsComponent tags={callout.framing.profile.tagset?.tags} sx={{ paddingX: gutters() }} />
         )}
         {children}
-      </Box>
-
-      {/* footer area - fixed at bottom */}
-      <Box sx={{ position: expanded ? 'sticky' : 'static', bottom: 0, zIndex: 10, background: 'white' }}>
-        <CalloutClosedMarginal
-          messagesCount={callout.comments?.messages?.length ?? 0}
-          disabled={!callout.settings.framing.commentsEnabled}
-          contributionsCount={contributionsCount}
-          isMember={isMember}
-        />
       </Box>
     </Box>
   );
