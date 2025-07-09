@@ -2338,9 +2338,18 @@ export const SpaceTemplateContent_AboutFragmentDoc = gql`
       id
       displayName
       description
+      tagline
+      tagsets {
+        ...TagsetDetails
+      }
+      visuals {
+        ...VisualModel
+      }
       url
     }
   }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const SpaceTemplateContent_SettingsFragmentDoc = gql`
   fragment SpaceTemplateContent_Settings on SpaceSettings {

@@ -1,5 +1,5 @@
 import { Box, Button, Chip, Skeleton } from '@mui/material';
-import { useField } from 'formik';
+import { useField, useFormikContext } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
@@ -7,7 +7,11 @@ import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplat
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import { SpaceLevel, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { useSpaceDefaultTemplatesQuery, useTemplateNameQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useSpaceDefaultTemplatesQuery,
+  useTemplateNameQuery,
+  useTemplateContentLazyQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import { Identifiable } from '@/core/utils/Identifiable';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -21,6 +25,7 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
   const { spaceId, loading: loadingSpace } = useUrlResolver();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [field, , helpers] = useField<string>(name);
+  const { setFieldValue } = useFormikContext();
 
   const templateId: string | undefined = typeof field.value === 'string' ? field.value : undefined;
 
@@ -33,6 +38,8 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
+
+  const [getTemplateContent] = useTemplateContentLazyQuery();
 
   const defaultTemplateName = useMemo(() => {
     const defaultSpaceTemplate = defaultSpaceTemplatesData?.lookup.space?.templatesManager?.templateDefaults.find(
@@ -48,6 +55,41 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
 
   const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
     helpers.setValue(templateId);
+
+    // Fetch template content with space data
+    try {
+      const { data } = await getTemplateContent({
+        variables: {
+          templateId,
+          includeSpace: true,
+        },
+      });
+
+      if (data?.lookup.template?.contentSpace) {
+        const contentSpaceAbout = data.lookup.template?.contentSpace?.about;
+
+        // Populate form fields with template data
+        if (contentSpaceAbout?.profile) {
+          if (contentSpaceAbout.profile.displayName) {
+            setFieldValue('displayName', contentSpaceAbout?.profile.displayName);
+          }
+          if (contentSpaceAbout.profile.tagline) {
+            setFieldValue('tagline', contentSpaceAbout?.profile.tagline);
+          }
+          if (contentSpaceAbout.profile.description) {
+            setFieldValue('description', contentSpaceAbout?.profile.description);
+          }
+        }
+
+        // Populate tags if available
+        if (contentSpaceAbout?.profile?.tagsets?.[0]?.tags) {
+          setFieldValue('tags', contentSpaceAbout?.profile.tagsets?.[0]?.tags);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching template content:', error);
+    }
+
     setDialogOpen(false);
   };
 

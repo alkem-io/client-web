@@ -142,23 +142,6 @@ export const CreateSubspaceForm = ({
               <FormikVisualUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
               <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
             </PageContentBlock>
-            {/* Temporarily hidden until we have more options to choose from */}
-            {/* Show options only if a template is selected */}
-            {/*{Boolean(spaceTemplateId) && (*/}
-            {/*  <Gutters disablePadding disableGap>*/}
-            {/*    <Caption>{t('common.options')}</Caption>*/}
-            {/*    <FormikRadiosSwitch*/}
-            {/*      name="addCallouts"*/}
-            {/*      label={t('context.common.addCallouts.title')}*/}
-            {/*      options={[*/}
-            {/*        { label: t('buttons.yes'), value: true },*/}
-            {/*        { label: t('buttons.no'), value: false },*/}
-            {/*      ]}*/}
-            {/*      row*/}
-            {/*      disablePadding*/}
-            {/*    />*/}
-            {/*  </Gutters>*/}
-            {/*)}*/}
           </Gutters>
         </Form>
       )}
