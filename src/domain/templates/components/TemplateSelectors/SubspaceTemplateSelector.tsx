@@ -47,7 +47,7 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
   const { spaceId, loading: loadingSpace } = useUrlResolver();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [field, , helpers] = useField<string>(name);
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue, validateForm } = useFormikContext();
 
   const templateId: string | undefined = typeof field.value === 'string' ? field.value : undefined;
 
@@ -90,7 +90,9 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
       helpers.setValue(templateId);
 
       if (profile.displayName) {
-        setFieldValue('displayName', profile.displayName);
+        await setFieldValue('displayName', profile.displayName);
+        // make sure the submit is enabled if displayName is set
+        await validateForm();
       }
       if (profile.tagline) {
         setFieldValue('tagline', profile.tagline);
@@ -111,7 +113,9 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
   };
 
   const handleRemoveTemplate = (): void => {
+    // reset the template field and the visuals
     helpers.setValue('');
+    onTemplateVisualsLoaded?.(getVisualUrls([]));
   };
 
   const loading = loadingSpace || loadingTemplate || loadingSpaceTemplate;
