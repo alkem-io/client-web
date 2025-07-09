@@ -22,8 +22,12 @@ const ContributionsSettings = forwardRef<
   const [field, , meta] = useField<CalloutFormSubmittedValues['settings']>('settings');
 
   const [formState, setFormState] = useState<FieldsState>({
-    membersCanRespond: field.value.contribution.canAddContributions === CalloutAllowedContributors.Members,
-    adminCanRespond: field.value.contribution.canAddContributions !== CalloutAllowedContributors.None,
+    membersCanRespond:
+      field.value.contribution.enabled &&
+      field.value.contribution.canAddContributions === CalloutAllowedContributors.Members,
+    adminCanRespond:
+      field.value.contribution.enabled &&
+      field.value.contribution.canAddContributions !== CalloutAllowedContributors.None,
     commentsOnEachResponse: field.value.contribution.commentsEnabled,
   });
 
