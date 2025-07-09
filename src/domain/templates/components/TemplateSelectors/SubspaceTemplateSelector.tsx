@@ -17,6 +17,7 @@ import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 export type BasicVisualUrlModel = {
   avatar?: string;
@@ -46,8 +47,9 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
   const { t } = useTranslation();
   const { spaceId, loading: loadingSpace } = useUrlResolver();
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [importTemplateConfirmOpen, setImportTemplateConfirmOpen] = useState(false);
   const [field, , helpers] = useField<string>(name);
-  const { setFieldValue, validateForm } = useFormikContext();
+  const { setFieldValue, validateForm, dirty } = useFormikContext();
 
   const templateId: string | undefined = typeof field.value === 'string' ? field.value : undefined;
 
@@ -118,6 +120,19 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
     onTemplateVisualsLoaded?.(getVisualUrls([]));
   };
 
+  const handleImportTemplateClick = () => {
+    if (!dirty) {
+      setDialogOpen(true);
+    } else {
+      setImportTemplateConfirmOpen(true);
+    }
+  };
+
+  const handleConfirmImportTemplate = () => {
+    setImportTemplateConfirmOpen(false);
+    setDialogOpen(true);
+  };
+
   const loading = loadingSpace || loadingTemplate || loadingSpaceTemplate;
 
   return (
@@ -136,7 +151,7 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
       )}
       <Box sx={{ marginLeft: 'auto' }}>
         <Button
-          onClick={() => setDialogOpen(true)}
+          onClick={handleImportTemplateClick}
           startIcon={<LibraryIcon />}
           variant="outlined"
           aria-label={t('buttons.change-template')}
@@ -155,6 +170,23 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
           onClose={() => setDialogOpen(false)}
           enablePlatformTemplates
         />
+        {/* Add confirmation dialog for overwriting form data */}
+        {importTemplateConfirmOpen && (
+          <ConfirmationDialog
+            actions={{
+              onConfirm: handleConfirmImportTemplate,
+              onCancel: () => setImportTemplateConfirmOpen(false),
+            }}
+            options={{
+              show: importTemplateConfirmOpen,
+            }}
+            entities={{
+              titleId: 'callout.create.importTemplate.confirmOverwrite.title',
+              contentId: 'callout.create.importTemplate.confirmOverwrite.content',
+              confirmButtonTextId: 'buttons.yesContinue',
+            }}
+          />
+        )}
       </Box>
     </Gutters>
   );
