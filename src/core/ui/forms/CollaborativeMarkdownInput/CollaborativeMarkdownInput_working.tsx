@@ -109,7 +109,7 @@ const getRandomElement = list => list[Math.floor(Math.random() * list.length)];
 const getRandomColor = () => getRandomElement(colors);
 const getRandomName = () => getRandomElement(names);
 
-export const CollaborativeMarkdownInput = memo(
+export const CollaborativeMarkdownInputWorking = memo(
   forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
     ({ controlsVisible = 'focused', hideImageOptions, onFocus, onBlur, temporaryLocation = false }, ref) => {
       const containerRef = useRef<HTMLDivElement>(null);
@@ -226,16 +226,9 @@ export const CollaborativeMarkdownInput = memo(
         providerRef.current.on('status', statusHandler);
 
         return () => {
-          providerRef.current?.off('status', statusHandler);
           providerRef.current?.destroy();
-          providerRef.current = null;
         };
       }, [ydoc]);
-
-      const defaultContent = `
-        <p>Hi 👋, this is a collaborative document.</p>
-        <p>Feel free to edit and collaborate in real-time!</p>
-      `;
 
       const editorOptions: Partial<EditorOptions> = useMemo(() => {
         const extensions: Extensions = [StarterKit, ImageExtension, Link, Highlight, Iframe];
@@ -261,15 +254,6 @@ export const CollaborativeMarkdownInput = memo(
           enableContentCheck: true,
           onContentError: ({ disableCollaboration }) => {
             disableCollaboration();
-          },
-          onCreate: ({ editor: currentEditor }) => {
-            if (providerRef.current) {
-              providerRef.current.on('synced', () => {
-                if (currentEditor.isEmpty) {
-                  currentEditor.commands.setContent(defaultContent);
-                }
-              });
-            }
           },
         };
       }, [providerRef.current]);
@@ -391,4 +375,4 @@ export const CollaborativeMarkdownInput = memo(
   )
 );
 
-export default CollaborativeMarkdownInput;
+export default CollaborativeMarkdownInputWorking;

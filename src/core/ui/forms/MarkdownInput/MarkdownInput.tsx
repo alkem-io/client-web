@@ -10,9 +10,10 @@ import React, {
   useState,
   useMemo,
 } from 'react';
+import { TiptapCollabProvider } from '@hocuspocus/provider';
 import { Box, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Editor, EditorContent, useEditor } from '@tiptap/react';
+import { Editor, EditorContent, Extensions, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
 import { CharacterCountContainer, useSetCharacterCount } from './CharacterCountContext';
@@ -31,12 +32,19 @@ import { EditorView } from '@tiptap/pm/view';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { Caption } from '@/core/ui/typography';
+import Collaboration from '@tiptap/extension-collaboration';
+import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor';
 
-interface MarkdownInputProps extends InputBaseComponentProps {
+type CollabStatusEvent = { status: CollabStatus };
+type CollabStatus = 'connecting' | 'connected' | 'disconnected' | 'authenticating' | 'syncing';
+
+export interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
   maxLength?: number;
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
+  provider?: TiptapCollabProvider;
 }
 
 type Offset = {
@@ -73,11 +81,14 @@ export const MarkdownInput = memo(
         onFocus,
         onBlur,
         temporaryLocation = false,
+        provider,
       },
       ref
     ) => {
       const containerRef = useRef<HTMLDivElement>(null);
       const toolbarRef = useRef<HTMLDivElement>(null);
+
+      const [collabStatus, setCollabStatus] = useState<CollabStatus>('connecting');
 
       const [hasFocus, setHasFocus] = useState(false);
       const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
@@ -180,15 +191,50 @@ export const MarkdownInput = memo(
         [storageBucketId, hideImageOptions, temporaryLocation, uploadFile, isImageOrHtmlWithImage]
       );
 
-      const editorOptions: Partial<EditorOptions> = useMemo(
-        () => ({
-          extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
-          editorProps: { handlePaste },
-        }),
-        [handlePaste]
-      );
+      const editorOptions: Partial<EditorOptions> = useMemo(() => {
+        const extensions: Extensions = [StarterKit, ImageExtension, Link, Highlight, Iframe];
 
-      const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
+        if (provider) {
+          extensions.push(
+            Collaboration.extend().configure({
+              document: provider.document,
+            }),
+            CollaborationCursor.extend().configure({
+              provider,
+              user: {
+                name: Math.random().toString(36).substring(2, 15), // Random name for the user
+                color: `#${Math.floor(Math.random() * 16777215).toString(16)}`, // Random color for the user
+              },
+            })
+          );
+        }
+
+        return {
+          extensions,
+          editorProps: { handlePaste },
+          enableContentCheck: true,
+          onContentError: ({ disableCollaboration }) => {
+            disableCollaboration();
+          },
+        };
+      }, [provider]);
+
+      useEffect(() => {
+        if (!provider) {
+          return;
+        }
+
+        provider.on('status', (event: CollabStatusEvent) => setCollabStatus(event.status));
+      }, [provider !== undefined]);
+
+      const editor = useEditor({ ...editorOptions, content: provider ? undefined : htmlContent }, [
+        provider,
+        htmlContent,
+      ]);
+
+      if (!editor) {
+        return null;
+      }
 
       // Currently used to highlight overflow but can be reused for other similar features as well
       const shadowEditor = useEditor({ ...editorOptions, content: '', editable: false });
@@ -363,8 +409,28 @@ export const MarkdownInput = memo(
       const handleDialogOpen = useCallback(() => setIsControlsDialogOpen(true), [setIsControlsDialogOpen]);
       const handleDialogClose = useCallback(() => setIsControlsDialogOpen(false), [setIsControlsDialogOpen]);
 
+      const onlineStatusMessage = useMemo(() => {
+        if (!editor.storage.collaborationCursor) {
+          return 'offline';
+        }
+        // assume syncing as connected
+        if (collabStatus === 'connected' || collabStatus === 'syncing') {
+          return `${editor.storage.collaborationCursor?.users.length} user${editor.storage.collaborationCursor?.users.length === 1 ? '' : 's'} online`;
+        }
+
+        return collabStatus;
+      }, [collabStatus, editor.storage.collaborationCursor?.users]);
+      // todo: ideally the status message should be in the collab wrapper
       return (
         <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
+          <Caption
+            sx={{
+              color: theme =>
+                onlineStatusMessage === 'offline' ? theme.palette.negative.main : theme.palette.positive.main,
+            }}
+          >
+            {onlineStatusMessage}
+          </Caption>
           <MarkdownInputControls
             ref={toolbarRef}
             editor={editor}
