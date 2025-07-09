@@ -165,16 +165,29 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   return (
     <>
       {renderPage(calloutPosition)}
-      <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen}>
-        <CalloutView
-          callout={typedCalloutDetails}
-          contributionsCount={typedCalloutDetails.activity}
-          onVisibilityChange={changeCalloutVisibility}
-          onCalloutUpdate={refetchCalloutData}
-          onCalloutDelete={handleDeleteWithClose}
-          onCollapse={handleClose}
-          expanded
-        />
+      <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen} fullHeight>
+        <DialogContent
+          dividers
+          sx={{
+            p: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            // Allow content to determine height, with max constraint
+            flexGrow: 1, // Take up available space
+            height: 'auto',
+            overflow: 'hidden', // Prevent dialog from scrolling
+          }}
+        >
+          <CalloutView
+            callout={typedCalloutDetails}
+            contributionsCount={typedCalloutDetails.activity}
+            onVisibilityChange={changeCalloutVisibility}
+            onCalloutUpdate={refetchCalloutData}
+            onCalloutDelete={handleDeleteWithClose}
+            onCollapse={handleClose}
+            expanded
+          />
+        </DialogContent>
       </DialogWithGrid>
       {children?.({ parentPagePath })}
     </>
