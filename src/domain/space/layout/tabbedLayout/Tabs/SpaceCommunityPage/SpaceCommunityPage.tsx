@@ -140,7 +140,7 @@ const SpaceCommunityPage = () => {
           leadOrganizations={leadOrganizations}
         />
         <ContactLeadsButton onClick={openContactLeadsDialog}>
-          {t('buttons.contact-leads', { contact: t('community.host') })}
+          {t('buttons.contactLeads', { contact: t('community.leads') })}
         </ContactLeadsButton>
         {hasInvitePrivilege && (
           <InviteContributorsWizard

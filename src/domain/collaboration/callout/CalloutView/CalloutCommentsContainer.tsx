@@ -21,6 +21,7 @@ interface CalloutCommentsContainerProvided {
   messages: Message[] | undefined;
   vcInteractions: CommentInputFieldProps['vcInteractions'];
   canReadMessages: boolean;
+  commentsEnabled: boolean;
   canPostMessages: boolean;
   canAddReaction: boolean;
   canDeleteMessage: (authorId: string | undefined) => boolean;
@@ -44,9 +45,8 @@ const CalloutCommentsContainer = ({ callout, children }: CalloutCommentsContaine
   );
 
   const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostMessages =
-    (callout?.settings.framing.commentsEnabled ?? false) &&
-    commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
+  const commentsEnabled = callout?.settings.framing.commentsEnabled ?? false;
+  const canPostMessages = commentsEnabled && commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
   const canAddReaction = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
 
   const [deleteMessage, { loading: deletingMessage }] = useRemoveMessageOnRoomMutation({
@@ -78,6 +78,7 @@ const CalloutCommentsContainer = ({ callout, children }: CalloutCommentsContaine
         messages,
         vcInteractions: callout?.comments?.vcInteractions ?? [],
         canReadMessages,
+        commentsEnabled,
         canPostMessages,
         postMessage,
         postReply,

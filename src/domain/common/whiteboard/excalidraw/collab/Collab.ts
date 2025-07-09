@@ -18,6 +18,7 @@ import type {
 } from '@alkemio/excalidraw';
 import {
   ACTIVE_THRESHOLD,
+  CollaboratorMode,
   CollaboratorModeEvent,
   CURSOR_SYNC_TIMEOUT,
   EVENT,
@@ -29,7 +30,7 @@ import {
 import { UserIdleState, isImageElement } from './utils';
 import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
-import { BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
+import { BinaryFilesWithOptionalUrl, BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import type {
   ReconciledExcalidrawElement,
@@ -84,6 +85,7 @@ class Collab {
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   private onSceneInitChange: (initialized: boolean) => void;
   private excalidrawUtils: Promise<ExcalidrawUtils>;
+  private collaborationMode: CollaboratorMode | undefined = undefined;
 
   constructor(props: CollabProps) {
     this.state = {
@@ -186,20 +188,32 @@ class Collab {
             roomId,
           },
           {
-            'scene-init': async (payload: { elements: readonly ExcalidrawElement[]; files: BinaryFilesWithUrl }) => {
+            'scene-init': async (payload: {
+              elements: readonly ExcalidrawElement[];
+              files: BinaryFilesWithOptionalUrl;
+            }) => {
               if (!this.portal.sceneInitialized) {
                 await this.handleRemoteSceneUpdate(
                   await this.reconcileElementsAndLoadFiles(payload.elements, payload.files)
                 );
-                const convertedFilesWithUrl = await this.filesManager.loadAndTryConvertEmbeddedFiles(payload.files);
-                // broadcast only the converted files
-                if (Object.entries(convertedFilesWithUrl).length) {
-                  await this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, [], convertedFilesWithUrl);
-                }
-                this.excalidrawAPI.zoomToFit();
+                // scene is initialized, so we can start broadcasting updates
                 this.portal.sceneInitialized = true;
                 this.onSceneInitChange(true);
+                // look for any embedded files that need to be converted ONLY IF the user can edit the scene
+                if (this.collaborationMode === 'write') {
+                  const convertedFilesWithUrl = await this.filesManager.loadAndTryConvertEmbeddedFiles(payload.files);
+                  // broadcast only the converted files
+                  if (Object.entries(convertedFilesWithUrl).length) {
+                    await this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, [], convertedFilesWithUrl);
+                  }
+                } else {
+                  // if the user is not able to edit the scene, we still need to load the files
+                  // so that the images are displayed correctly
+                  await this.filesManager.loadFiles({ files: payload.files });
+                }
               }
+
+              this.excalidrawAPI.zoomToFit();
             },
             'client-broadcast': async (binaryData: ArrayBuffer) => {
               const strData = new TextDecoder().decode(binaryData);
@@ -237,6 +251,7 @@ class Collab {
             },
             'collaborator-mode': event => {
               resolve();
+              this.collaborationMode = event.mode;
               this.onCollaboratorModeChange(event);
             },
             'idle-state': ({ userState, socketId, username }) => {
@@ -278,7 +293,7 @@ class Collab {
 
   private reconcileElementsAndLoadFiles = async (
     remoteElements: readonly ExcalidrawElement[],
-    remoteFiles: BinaryFilesWithUrl
+    remoteFiles: BinaryFilesWithOptionalUrl
   ): Promise<ReconciledExcalidrawElement[]> => {
     const localElements = this.getSceneElementsIncludingDeleted();
     const appState = this.excalidrawAPI.getAppState();

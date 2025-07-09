@@ -1,6 +1,6 @@
 import { Box, BoxProps, IconButton, Skeleton, styled } from '@mui/material';
 import { useField } from 'formik';
-import { MouseEventHandler, useMemo, useState, forwardRef, useImperativeHandle } from 'react';
+import { MouseEventHandler, useMemo, useState, forwardRef, useImperativeHandle, ReactNode } from 'react';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import SingleUserWhiteboardDialog from '../WhiteboardDialog/SingleUserWhiteboardDialog';
 import { BlockTitle } from '@/core/ui/typography';
@@ -23,6 +23,7 @@ interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Whiteboard content
   previewImagesName?: string; // Formik fieldName of the preview images. Will only be set if this argument is passed
   canEdit: boolean;
+  editButton?: ReactNode; // Optional custom edit button.
   onChangeContent?: (content: string, previewImages?: WhiteboardPreviewImage[]) => void;
   onDeleteContent?: () => void; // Optionally show Delete button
   loading?: boolean;
@@ -42,6 +43,7 @@ const FormikWhiteboardPreview = forwardRef<FormikWhiteboardPreviewRef, FormikWhi
       name = 'content',
       previewImagesName,
       canEdit,
+      editButton,
       onChangeContent,
       onDeleteContent,
       loading,
@@ -134,7 +136,7 @@ const FormikWhiteboardPreview = forwardRef<FormikWhiteboardPreviewRef, FormikWhi
             {canEdit ? (
               <>
                 <StyledBoxOverWhiteboard right={theme => theme.spacing(2.5)} bottom={theme => theme.spacing(2.5)}>
-                  <EditButton variant="contained" onClick={handleClickEditButton} />
+                  {editButton ? editButton : <EditButton variant="contained" onClick={handleClickEditButton} />}
                 </StyledBoxOverWhiteboard>
                 <SingleUserWhiteboardDialog
                   entities={{
