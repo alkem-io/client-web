@@ -72,3 +72,19 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     visibility: CalloutVisibility.Published,
   },
 };
+
+export const isEmptyCalloutForm = (calloutFormData: CalloutFormSubmittedValues | undefined): boolean => {
+  if (!calloutFormData) {
+    return true;
+  }
+  if (
+    !calloutFormData.framing.profile.displayName &&
+    !calloutFormData.framing.profile.description &&
+    !calloutFormData.framing.whiteboard?.content &&
+    calloutFormData.framing.profile.tagsets.every(tagset => tagset.tags.length === 0) &&
+    calloutFormData.settings.contribution.allowedTypes === 'none'
+  ) {
+    return true;
+  }
+  return false;
+};
