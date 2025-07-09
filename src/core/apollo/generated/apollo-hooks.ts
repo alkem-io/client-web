@@ -1514,6 +1514,17 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
     }
   }
 `;
+export const SubspaceVisualsFragmentDoc = gql`
+  fragment SubspaceVisuals on Profile {
+    avatar: visual(type: AVATAR) {
+      ...VisualModel
+    }
+    cardBanner: visual(type: CARD) {
+      ...VisualModel
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
 export const SpaceAboutLightFragmentDoc = gql`
   fragment SpaceAboutLight on SpaceAbout {
     id
@@ -1527,12 +1538,7 @@ export const SpaceAboutLightFragmentDoc = gql`
         id
         tags
       }
-      avatar: visual(type: AVATAR) {
-        ...VisualModel
-      }
-      cardBanner: visual(type: CARD) {
-        ...VisualModel
-      }
+      ...SubspaceVisuals
     }
     isContentPublic
     membership {
@@ -1545,7 +1551,7 @@ export const SpaceAboutLightFragmentDoc = gql`
       id
     }
   }
-  ${VisualModelFragmentDoc}
+  ${SubspaceVisualsFragmentDoc}
 `;
 export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
@@ -2361,6 +2367,26 @@ export const SpaceTemplateContent_SettingsFragmentDoc = gql`
     }
   }
 `;
+export const SpaceAboutTileFragmentDoc = gql`
+  fragment SpaceAboutTile on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      tagline
+      url
+      ...SubspaceVisuals
+    }
+    isContentPublic
+  }
+  ${SubspaceVisualsFragmentDoc}
+`;
+export const SpaceTemplateContent_SubspacesFragmentDoc = gql`
+  fragment SpaceTemplateContent_Subspaces on SpaceAbout {
+    ...SpaceAboutTile
+  }
+  ${SpaceAboutTileFragmentDoc}
+`;
 export const SpaceTemplateContentFragmentDoc = gql`
   fragment SpaceTemplateContent on TemplateContentSpace {
     id
@@ -2373,10 +2399,17 @@ export const SpaceTemplateContentFragmentDoc = gql`
     settings {
       ...SpaceTemplateContent_Settings
     }
+    subspaces {
+      id
+      about {
+        ...SpaceTemplateContent_Subspaces
+      }
+    }
   }
   ${SpaceTemplateContent_CollaborationFragmentDoc}
   ${SpaceTemplateContent_AboutFragmentDoc}
   ${SpaceTemplateContent_SettingsFragmentDoc}
+  ${SpaceTemplateContent_SubspacesFragmentDoc}
 `;
 export const WhiteboardTemplateContentFragmentDoc = gql`
   fragment WhiteboardTemplateContent on Whiteboard {
@@ -20409,12 +20442,16 @@ export const SpaceTemplateContentDocument = gql`
         settings {
           ...SpaceTemplateContent_Settings
         }
+        about {
+          ...SpaceTemplateContent_Subspaces
+        }
       }
     }
   }
   ${SpaceTemplateContent_CollaborationFragmentDoc}
   ${SpaceTemplateContent_AboutFragmentDoc}
   ${SpaceTemplateContent_SettingsFragmentDoc}
+  ${SpaceTemplateContent_SubspacesFragmentDoc}
 `;
 
 /**
@@ -20658,7 +20695,7 @@ export const CreateTemplateFromSpaceDocument = gql`
     $profileData: CreateProfileInput!
     $tags: [String!]
     $spaceId: UUID!
-    $recursive: Boolean!
+    $recursive: Boolean
   ) {
     createTemplateFromSpace(
       templateData: {

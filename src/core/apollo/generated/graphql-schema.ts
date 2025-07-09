@@ -20718,6 +20718,16 @@ export type SpaceAboutLightFragment = {
   guidelines: { __typename?: 'CommunityGuidelines'; id: string };
 };
 
+export type SubspaceVisualsFragment = {
+  __typename?: 'Profile';
+  avatar?:
+    | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+    | undefined;
+  cardBanner?:
+    | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+    | undefined;
+};
+
 export type SpaceAboutMinimalFragment = {
   __typename?: 'SpaceAbout';
   id: string;
@@ -20728,6 +20738,25 @@ export type SpaceAboutMinimalUrlFragment = {
   __typename?: 'SpaceAbout';
   id: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
+};
+
+export type SpaceAboutTileFragment = {
+  __typename?: 'SpaceAbout';
+  id: string;
+  isContentPublic: boolean;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    tagline?: string | undefined;
+    url: string;
+    avatar?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+      | undefined;
+    cardBanner?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+      | undefined;
+  };
 };
 
 export type SubspacePageBannerQueryVariables = Exact<{
@@ -25119,6 +25148,40 @@ export type TemplateContentQuery = {
                     allowEventsFromSubspaces: boolean;
                   };
                 };
+                subspaces: Array<{
+                  __typename?: 'TemplateContentSpace';
+                  id: string;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    isContentPublic: boolean;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      tagline?: string | undefined;
+                      url: string;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
+                }>;
               }
             | undefined;
         }
@@ -25205,12 +25268,20 @@ export type SpaceTemplateContentQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
+            isContentPublic: boolean;
             profile: {
               __typename?: 'Profile';
               id: string;
               displayName: string;
               description?: string | undefined;
               url: string;
+              tagline?: string | undefined;
+              avatar?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
+              cardBanner?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
             };
           };
           settings: {
@@ -25491,6 +25562,28 @@ export type SpaceTemplateContentFragment = {
       allowEventsFromSubspaces: boolean;
     };
   };
+  subspaces: Array<{
+    __typename?: 'TemplateContentSpace';
+    id: string;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      isContentPublic: boolean;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        tagline?: string | undefined;
+        url: string;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+      };
+    };
+  }>;
 };
 
 export type SpaceTemplateContent_CollaborationFragment = {
@@ -25574,6 +25667,25 @@ export type SpaceTemplateContent_SettingsFragment = {
     allowMembersToCreateSubspaces: boolean;
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
+  };
+};
+
+export type SpaceTemplateContent_SubspacesFragment = {
+  __typename?: 'SpaceAbout';
+  id: string;
+  isContentPublic: boolean;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    tagline?: string | undefined;
+    url: string;
+    avatar?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+      | undefined;
+    cardBanner?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+      | undefined;
   };
 };
 
@@ -25865,7 +25977,7 @@ export type CreateTemplateFromSpaceMutationVariables = Exact<{
   profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
   spaceId: Scalars['UUID']['input'];
-  recursive: Scalars['Boolean']['input'];
+  recursive?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type CreateTemplateFromSpaceMutation = {

@@ -76,7 +76,7 @@ mutation CreateTemplateFromSpace(
   $profileData: CreateProfileInput!
   $tags: [String!]
   $spaceId: UUID!
-  $recursive: Boolean!
+  $recursive: Boolean
 ) {
   createTemplateFromSpace(
     templateData: {

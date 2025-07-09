@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Loading from '@/core/ui/loading/Loading';
@@ -6,7 +6,11 @@ import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/Innovatio
 import InnovationFlowCalloutsPreview from '../../../collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
 import { TemplateContentSpaceModel } from '../../contentSpace/model/TemplateContentSpaceModel';
 import { Caption } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import SpaceTile from '@/domain/space/components/cards/SpaceTile';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import Gutters from '@/core/ui/grid/Gutters';
 
 interface TemplateContentSpacePreviewProps {
   loading?: boolean;
@@ -16,11 +20,14 @@ interface TemplateContentSpacePreviewProps {
 }
 
 const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpacePreviewProps) => {
-  const { t } = useTranslation();
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const collaboration = template?.contentSpace?.collaboration;
   const templateStates = collaboration?.innovationFlow?.states ?? [];
   const callouts = collaboration?.calloutsSet?.callouts ?? [];
+
+  const columns = useColumns();
+  const { isSmallScreen } = useScreenSize();
+  const cardColumns = useMemo(() => (isSmallScreen ? columns / 2 : columns / 4), [isSmallScreen, columns]);
 
   useEffect(() => {
     if (
@@ -39,6 +46,29 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
     }
   }, [selectedState, templateStates]);
 
+  const subspaces = useMemo(() => {
+    if (template?.contentSpace?.subspaces && template.contentSpace.subspaces.length > 0) {
+      return (
+        <>
+          <Caption>This template also includes these subspaces:</Caption>
+          <Gutters row disablePadding>
+            {template.contentSpace.subspaces.map((subspace, index) => (
+              <SpaceTile
+                key={index}
+                columns={cardColumns}
+                space={{
+                  about: subspace.about,
+                  level: SpaceLevel.L1,
+                }}
+              />
+            ))}
+          </Gutters>
+        </>
+      );
+    }
+    return null;
+  }, [template?.contentSpace?.subspaces]);
+
   return (
     <>
       <PageContentBlock>
@@ -55,8 +85,8 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
           />
         )}
         <InnovationFlowCalloutsPreview callouts={callouts} selectedState={selectedState} loading={loading} />
+        {subspaces}
       </PageContentBlock>
-      <Caption>{t('templateLibrary.spaceTemplates.preview.info')}</Caption>
     </>
   );
 };

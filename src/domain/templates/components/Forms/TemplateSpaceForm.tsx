@@ -6,11 +6,14 @@ import { FormikHelpers, FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
-import { BlockSectionTitle } from '@/core/ui/typography';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
 import TemplateContentSpacePreview from '../Previews/TemplateContentSpacePreview';
 import { useSpaceTemplateContentQuery, useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import SpaceContentFromSpaceUrlForm from './SpaceContentFromSpaceUrlForm';
+import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
+import { nameOf } from '@/core/utils/nameOf';
+import { Box, FormControlLabel, Switch } from '@mui/material';
 
 export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   spaceId?: string;
@@ -136,6 +139,16 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
             />
             <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
             <TemplateContentSpacePreview loading={loading} template={spacePreview} />
+            <Box>
+              <FormControlLabel
+                label={<Caption color="black">{t('templateLibrary.spaceTemplates.preview.info')}</Caption>}
+                control={<Switch checked disabled />}
+              />
+              <FormikSwitch
+                label={<Caption>{t('templateLibrary.spaceTemplates.recursive')}</Caption>}
+                name={nameOf<TemplateSpaceFormSubmittedValues>('recursive')}
+              />
+            </Box>
           </>
         );
       }}

@@ -2,6 +2,7 @@ import { InnovationFlowCalloutsPreviewProps } from '@/domain/collaboration/Innov
 import { InnovationFlowState } from '@/core/apollo/generated/graphql-schema';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { SpaceSettingsModel } from '@/domain/space/settings/SpaceSettingsModel';
+import { SpaceAboutTileModel } from '@/domain/space/about/model/SpaceAboutTile.model';
 
 export interface TemplateContentSpaceModel {
   id: string;
@@ -17,4 +18,7 @@ export interface TemplateContentSpaceModel {
   };
   about?: SpaceAboutLightModel;
   settings?: SpaceSettingsModel;
+  subspaces?: {
+    about: SpaceAboutTileModel;
+  }[];
 }
