@@ -6,7 +6,7 @@ import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
-import { SpaceLevel, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TemplateDefaultType, TemplateType, VisualType } from '@/core/apollo/generated/graphql-schema';
 import {
   useSpaceDefaultTemplatesQuery,
   useTemplateNameQuery,
@@ -15,12 +15,34 @@ import {
 import { Identifiable } from '@/core/utils/Identifiable';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
+import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+
+export type BasicVisualUrlModel = {
+  avatar?: string;
+  cardBanner?: string;
+};
 
 interface SubspaceTemplateSelectorProps extends GuttersProps {
   name: string;
+  onTemplateVisualsLoaded?: (visualUrls: BasicVisualUrlModel) => void;
 }
 
-export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ name, ...rest }) => {
+const getVisualUrls = (visuals: VisualModel[]): BasicVisualUrlModel => {
+  const avatar: string | undefined = getVisualByType(VisualType.Avatar, visuals)?.uri;
+  const cardBanner: string | undefined = getVisualByType(VisualType.Card, visuals)?.uri;
+
+  return {
+    ...(avatar && { avatar }),
+    ...(cardBanner && { cardBanner }),
+  };
+};
+
+export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
+  name,
+  onTemplateVisualsLoaded,
+  ...rest
+}) => {
   const { t } = useTranslation();
   const { spaceId, loading: loadingSpace } = useUrlResolver();
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -53,44 +75,39 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
     return templateData?.lookup.template?.profile.displayName ?? defaultTemplateName;
   }, [templateData, defaultTemplateName, t]);
 
+  // Fetch template content with space data and populate the form
   const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
-    helpers.setValue(templateId);
+    const { data } = await getTemplateContent({
+      variables: {
+        templateId,
+        includeSpace: true,
+      },
+    });
 
-    // Fetch template content with space data
-    try {
-      const { data } = await getTemplateContent({
-        variables: {
-          templateId,
-          includeSpace: true,
-        },
-      });
+    const profile = data?.lookup.template?.contentSpace?.about?.profile;
 
-      if (data?.lookup.template?.contentSpace) {
-        const contentSpaceAbout = data.lookup.template?.contentSpace?.about;
+    if (profile) {
+      helpers.setValue(templateId);
 
-        // Populate form fields with template data
-        if (contentSpaceAbout?.profile) {
-          if (contentSpaceAbout.profile.displayName) {
-            setFieldValue('displayName', contentSpaceAbout?.profile.displayName);
-          }
-          if (contentSpaceAbout.profile.tagline) {
-            setFieldValue('tagline', contentSpaceAbout?.profile.tagline);
-          }
-          if (contentSpaceAbout.profile.description) {
-            setFieldValue('description', contentSpaceAbout?.profile.description);
-          }
-        }
-
-        // Populate tags if available
-        if (contentSpaceAbout?.profile?.tagsets?.[0]?.tags) {
-          setFieldValue('tags', contentSpaceAbout?.profile.tagsets?.[0]?.tags);
-        }
+      if (profile.displayName) {
+        setFieldValue('displayName', profile.displayName);
       }
-    } catch (error) {
-      console.error('Error fetching template content:', error);
-    }
+      if (profile.tagline) {
+        setFieldValue('tagline', profile.tagline);
+      }
+      if (profile.description) {
+        setFieldValue('description', profile.description);
+      }
+      if (profile?.tagsets?.[0]?.tags) {
+        setFieldValue('tags', profile.tagsets[0].tags);
+      }
 
-    setDialogOpen(false);
+      if (profile?.visuals) {
+        onTemplateVisualsLoaded?.(getVisualUrls(profile.visuals));
+      }
+
+      setDialogOpen(false);
+    }
   };
 
   const handleRemoveTemplate = (): void => {

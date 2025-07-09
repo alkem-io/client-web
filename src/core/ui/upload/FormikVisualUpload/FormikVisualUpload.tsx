@@ -42,6 +42,8 @@ export interface FormikAvatarUploadProps extends BoxProps {
   height?: number;
   altText?: string;
   onChangeAvatar?: (avatar: VisualWithAltText) => void;
+  initialVisualUrl?: string;
+  showInitialVisual?: boolean;
 }
 
 /**
@@ -54,6 +56,8 @@ const FormikAvatarUpload = ({
   height = DEFAULT_SIZE,
   altText,
   onChangeAvatar,
+  initialVisualUrl,
+  showInitialVisual = true,
   ...containerProps
 }: FormikAvatarUploadProps) => {
   const { t } = useTranslation();
@@ -66,15 +70,20 @@ const FormikAvatarUpload = ({
 
   useEffect(() => {
     if (selectedFile?.file) {
+      // Show the user's uploaded file
       const objectUrl = URL.createObjectURL(selectedFile.file);
       setImageUrl(objectUrl);
       return () => {
         URL.revokeObjectURL(objectUrl);
       };
+    } else if (showInitialVisual && initialVisualUrl) {
+      // Show template visual if available
+      setImageUrl(initialVisualUrl);
     } else {
+      // Fall back to default visual
       setImageUrl(defaultVisualUrls[visualType]);
     }
-  }, [selectedFile, visualType]);
+  }, [selectedFile, visualType, initialVisualUrl, showInitialVisual]);
 
   const { data: constraintsData, loading } = useDefaultVisualTypeConstraintsQuery({
     variables: { visualType },

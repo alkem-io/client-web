@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Form, Formik } from 'formik';
@@ -13,7 +13,9 @@ import {
   SpaceFormValues,
 } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
+import SubspaceTemplateSelector, {
+  BasicVisualUrlModel,
+} from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
 import Gutters from '@/core/ui/grid/Gutters';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
@@ -44,6 +46,7 @@ export const CreateSubspaceForm = ({
 }: PropsWithChildren<CreateSubspaceFormProps>) => {
   const { t } = useTranslation();
   const { isSmallScreen } = useScreenSize();
+  const [templateVisuals, setTemplateVisuals] = useState<{ avatar?: string; cardBanner?: string }>({});
 
   const validationRequiredString = t('forms.validations.required');
 
@@ -58,6 +61,10 @@ export const CreateSubspaceForm = ({
       spaceTemplateId: value.spaceTemplateId || undefined, // in case of empty string
       visuals: value.visuals,
     });
+
+  const handleTemplateVisualsLoaded = (visuals: BasicVisualUrlModel) => {
+    setTemplateVisuals(visuals);
+  };
 
   const initialValues: CreateSubspaceFormValues = {
     displayName: '',
@@ -106,7 +113,12 @@ export const CreateSubspaceForm = ({
       {() => (
         <Form noValidate>
           <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
-          <SubspaceTemplateSelector name="spaceTemplateId" disablePadding sx={{ paddingBottom: gutters() }} />
+          <SubspaceTemplateSelector
+            name="spaceTemplateId"
+            disablePadding
+            sx={{ paddingBottom: gutters() }}
+            onTemplateVisualsLoaded={handleTemplateVisualsLoaded}
+          />
           <FormikInputField
             name="displayName"
             title={t(`context.${level}.displayName.title`)}
@@ -139,8 +151,20 @@ export const CreateSubspaceForm = ({
           />
           <Gutters padding={theme => `${gutters()(theme)} 0 0 0`}>
             <PageContentBlock sx={{ flexDirection: isSmallScreen ? 'column' : 'row', justifyContent: 'space-between' }}>
-              <FormikVisualUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
-              <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
+              <FormikVisualUpload
+                name="visuals.avatar"
+                visualType={VisualType.Avatar}
+                flex={1}
+                initialVisualUrl={templateVisuals.avatar}
+                showInitialVisual={Boolean(templateVisuals.avatar)}
+              />
+              <FormikVisualUpload
+                name="visuals.cardBanner"
+                visualType={VisualType.Card}
+                flex={1}
+                initialVisualUrl={templateVisuals.cardBanner}
+                showInitialVisual={Boolean(templateVisuals.cardBanner)}
+              />
             </PageContentBlock>
           </Gutters>
         </Form>
