@@ -11,6 +11,7 @@ import SpaceTile from '@/domain/space/components/cards/SpaceTile';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import Gutters from '@/core/ui/grid/Gutters';
+import { useTranslation } from 'react-i18next';
 
 interface TemplateContentSpacePreviewProps {
   loading?: boolean;
@@ -20,6 +21,7 @@ interface TemplateContentSpacePreviewProps {
 }
 
 const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpacePreviewProps) => {
+  const { t } = useTranslation();
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const collaboration = template?.contentSpace?.collaboration;
   const templateStates = collaboration?.innovationFlow?.states ?? [];
@@ -50,7 +52,7 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
     if (template?.contentSpace?.subspaces && template.contentSpace.subspaces.length > 0) {
       return (
         <>
-          <Caption>This template also includes these subspaces:</Caption>
+          <Caption>{t('templateLibrary.spaceTemplates.includesSubspaces')}</Caption>
           <Gutters row disablePadding>
             {template.contentSpace.subspaces.map((subspace, index) => (
               <SpaceTile
@@ -67,7 +69,7 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
       );
     }
     return null;
-  }, [template?.contentSpace?.subspaces]);
+  }, [template?.contentSpace?.subspaces, t, cardColumns]);
 
   return (
     <>
