@@ -25094,7 +25094,25 @@ export type TemplateContentQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
+                    tagline?: string | undefined;
                     url: string;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    visuals: Array<{
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }>;
                   };
                 };
                 settings: {
@@ -25209,7 +25227,25 @@ export type SpaceTemplateContentQuery = {
               id: string;
               displayName: string;
               description?: string | undefined;
+              tagline?: string | undefined;
               url: string;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              visuals: Array<{
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                alternativeText?: string | undefined;
+              }>;
             };
           };
           settings: {
@@ -25471,7 +25507,31 @@ export type SpaceTemplateContentFragment = {
   about: {
     __typename?: 'SpaceAbout';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined; url: string };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagline?: string | undefined;
+      url: string;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      visuals: Array<{
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        alternativeText?: string | undefined;
+      }>;
+    };
   };
   settings: {
     __typename?: 'SpaceSettings';
@@ -25555,7 +25615,31 @@ export type SpaceTemplateContent_CollaborationFragment = {
 export type SpaceTemplateContent_AboutFragment = {
   __typename?: 'SpaceAbout';
   id: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined; url: string };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagline?: string | undefined;
+    url: string;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+    visuals: Array<{
+      __typename?: 'Visual';
+      id: string;
+      uri: string;
+      name: string;
+      alternativeText?: string | undefined;
+    }>;
+  };
 };
 
 export type SpaceTemplateContent_SettingsFragment = {

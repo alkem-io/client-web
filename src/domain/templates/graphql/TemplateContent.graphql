@@ -169,6 +169,13 @@ fragment SpaceTemplateContent_About on SpaceAbout {
     id
     displayName
     description
+    tagline
+    tagsets {
+      ...TagsetDetails
+    }
+    visuals {
+      ...VisualModel
+    }
     url
   }
 }

@@ -1,5 +1,5 @@
 import { Box, Button, Chip, Skeleton } from '@mui/material';
-import { useField } from 'formik';
+import { useField, useFormikContext } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
@@ -7,20 +7,33 @@ import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplat
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import { SpaceLevel, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { useSpaceDefaultTemplatesQuery, useTemplateNameQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useSpaceDefaultTemplatesQuery,
+  useTemplateNameQuery,
+  useTemplateContentLazyQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import { Identifiable } from '@/core/utils/Identifiable';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { EntityVisualUrls, getVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 interface SubspaceTemplateSelectorProps extends GuttersProps {
   name: string;
+  onTemplateVisualsLoaded?: (visualUrls: EntityVisualUrls) => void;
 }
 
-export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ name, ...rest }) => {
+export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
+  name,
+  onTemplateVisualsLoaded,
+  ...rest
+}) => {
   const { t } = useTranslation();
   const { spaceId, loading: loadingSpace } = useUrlResolver();
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [importTemplateConfirmOpen, setImportTemplateConfirmOpen] = useState(false);
   const [field, , helpers] = useField<string>(name);
+  const { setFieldValue, validateForm, dirty } = useFormikContext();
 
   const templateId: string | undefined = typeof field.value === 'string' ? field.value : undefined;
 
@@ -34,6 +47,8 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
     skip: !spaceId,
   });
 
+  const [getTemplateContent] = useTemplateContentLazyQuery();
+
   const defaultTemplateName = useMemo(() => {
     const defaultSpaceTemplate = defaultSpaceTemplatesData?.lookup.space?.templatesManager?.templateDefaults.find(
       templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
@@ -46,13 +61,60 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
     return templateData?.lookup.template?.profile.displayName ?? defaultTemplateName;
   }, [templateData, defaultTemplateName, t]);
 
+  // Fetch template content with space data and populate the form
   const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
-    helpers.setValue(templateId);
-    setDialogOpen(false);
+    const { data } = await getTemplateContent({
+      variables: {
+        templateId,
+        includeSpace: true,
+      },
+    });
+
+    const profile = data?.lookup.template?.contentSpace?.about?.profile;
+
+    if (profile) {
+      helpers.setValue(templateId);
+
+      if (profile.displayName) {
+        await setFieldValue('displayName', profile.displayName);
+        // make sure the submit is enabled if displayName is set
+        await validateForm();
+      }
+      if (profile.tagline) {
+        setFieldValue('tagline', profile.tagline);
+      }
+      if (profile.description) {
+        setFieldValue('description', profile.description);
+      }
+      if (profile?.tagsets?.[0]?.tags) {
+        setFieldValue('tags', profile.tagsets[0].tags);
+      }
+
+      if (profile?.visuals) {
+        onTemplateVisualsLoaded?.(getVisualUrls(profile.visuals));
+      }
+
+      setDialogOpen(false);
+    }
   };
 
   const handleRemoveTemplate = (): void => {
+    // reset the template field and the visuals
     helpers.setValue('');
+    onTemplateVisualsLoaded?.({});
+  };
+
+  const handleImportTemplateClick = () => {
+    if (!dirty) {
+      setDialogOpen(true);
+    } else {
+      setImportTemplateConfirmOpen(true);
+    }
+  };
+
+  const handleConfirmImportTemplate = () => {
+    setImportTemplateConfirmOpen(false);
+    setDialogOpen(true);
   };
 
   const loading = loadingSpace || loadingTemplate || loadingSpaceTemplate;
@@ -73,7 +135,7 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
       )}
       <Box sx={{ marginLeft: 'auto' }}>
         <Button
-          onClick={() => setDialogOpen(true)}
+          onClick={handleImportTemplateClick}
           startIcon={<LibraryIcon />}
           variant="outlined"
           aria-label={t('buttons.change-template')}
@@ -92,6 +154,23 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
           onClose={() => setDialogOpen(false)}
           enablePlatformTemplates
         />
+        {/* Add confirmation dialog for overwriting form data */}
+        {importTemplateConfirmOpen && (
+          <ConfirmationDialog
+            actions={{
+              onConfirm: handleConfirmImportTemplate,
+              onCancel: () => setImportTemplateConfirmOpen(false),
+            }}
+            options={{
+              show: importTemplateConfirmOpen,
+            }}
+            entities={{
+              titleId: 'callout.create.importTemplate.confirmOverwrite.title',
+              contentId: 'callout.create.importTemplate.confirmOverwrite.content',
+              confirmButtonTextId: 'buttons.yesContinue',
+            }}
+          />
+        )}
       </Box>
     </Gutters>
   );

@@ -792,8 +792,8 @@
       },
       "importTemplate": {
         "confirmOverwrite": {
-          "title": "Overwrite current post?",
-          "content": "If you import a template, the current content of the post will be overwritten. Are you sure you want to continue?"
+          "title": "Overwrite current input?",
+          "content": "If you import a template, your current input could be overwritten. Are you sure you want to continue?"
         }
       },
       "notification": {
