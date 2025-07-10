@@ -275,7 +275,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
           open={Boolean(deleteDialogSelectedItem)}
           onClose={() => setDeleteDialogSelectedItem(undefined)}
           onDelete={onDeleteConfirmation}
-          description={'components.deleteEntity.confirmDialog.descriptionShortWithName'}
+          description="components.deleteEntity.confirmDialog.descriptionShortWithName"
         />
         {saveAsTemplateDialogSelectedSpace && templatesSet && (
           <CreateSpaceTemplateDialog
