@@ -202,9 +202,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       window.removeEventListener('popstate', handleUrlChange);
       // Restore original pushState
-      if (window.history.pushState === window.history.pushState) {
-        window.history.pushState = originalPushState;
-      }
+      window.history.pushState = originalPushState;
     };
   }, []);
 
