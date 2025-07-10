@@ -1,18 +1,13 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import PostDashboardPage from '../pages/PostDashboardPage';
 import PostSettingsPage from '../pages/PostSettingsPage';
 import PostSharePage from '../pages/PostSharePage';
 import { PostDialogSection } from './PostDialogSection';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useBackToPath from '@/core/routing/useBackToPath';
 
-export interface PostRouteProps {
-  parentPagePath: string;
-}
-
-const PostRoute = ({ parentPagePath }: PostRouteProps) => {
-  const backToExplore = useBackToPath();
-  const onClose = () => backToExplore(parentPagePath);
+const PostRoute = () => {
+  const navigate = useNavigate();
+  const onClose = () => navigate('../', { replace: true });
 
   const { postId, calloutsSetId, calloutId } = useUrlResolver();
 
