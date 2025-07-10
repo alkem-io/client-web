@@ -56,6 +56,7 @@ export interface DialogWithGridProps extends MuiDialogProps {
   columns?: GridItemProps['columns'];
   fullHeight?: boolean;
   centeredVertically?: boolean;
+  disableScrollLock?: boolean;
 }
 
 const DialogWithGrid = ({
@@ -71,7 +72,6 @@ const DialogWithGrid = ({
 
   return (
     <MuiDialog
-      disableScrollLock
       PaperComponent={DialogContainer}
       PaperProps={{ columns, centeredVertically, fullScreen } as PaperProps}
       onClose={onClose}
