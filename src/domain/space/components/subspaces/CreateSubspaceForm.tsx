@@ -13,15 +13,14 @@ import {
   SpaceFormValues,
 } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import SubspaceTemplateSelector, {
-  BasicVisualUrlModel,
-} from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
+import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
 import Gutters from '@/core/ui/grid/Gutters';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
+import { EntityVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
 
 const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
@@ -46,7 +45,7 @@ export const CreateSubspaceForm = ({
 }: PropsWithChildren<CreateSubspaceFormProps>) => {
   const { t } = useTranslation();
   const { isSmallScreen } = useScreenSize();
-  const [templateVisuals, setTemplateVisuals] = useState<{ avatar?: string; cardBanner?: string }>({});
+  const [templateVisuals, setTemplateVisuals] = useState<EntityVisualUrls>({});
 
   const validationRequiredString = t('forms.validations.required');
 
@@ -62,7 +61,7 @@ export const CreateSubspaceForm = ({
       visuals: value.visuals,
     });
 
-  const handleTemplateVisualsLoaded = (visuals: BasicVisualUrlModel) => {
+  const handleTemplateVisualsLoaded = (visuals: EntityVisualUrls) => {
     setTemplateVisuals(visuals);
   };
 
@@ -155,15 +154,13 @@ export const CreateSubspaceForm = ({
                 name="visuals.avatar"
                 visualType={VisualType.Avatar}
                 flex={1}
-                initialVisualUrl={templateVisuals.avatar}
-                showInitialVisual={Boolean(templateVisuals.avatar)}
+                initialVisualUrl={templateVisuals.avatarUrl}
               />
               <FormikVisualUpload
                 name="visuals.cardBanner"
                 visualType={VisualType.Card}
                 flex={1}
-                initialVisualUrl={templateVisuals.cardBanner}
-                showInitialVisual={Boolean(templateVisuals.cardBanner)}
+                initialVisualUrl={templateVisuals.cardBannerUrl}
               />
             </PageContentBlock>
           </Gutters>

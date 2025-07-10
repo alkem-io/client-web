@@ -6,7 +6,7 @@ import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
-import { SpaceLevel, TemplateDefaultType, TemplateType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import {
   useSpaceDefaultTemplatesQuery,
   useTemplateNameQuery,
@@ -15,29 +15,13 @@ import {
 import { Identifiable } from '@/core/utils/Identifiable';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import { EntityVisualUrls, getVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-
-export type BasicVisualUrlModel = {
-  avatar?: string;
-  cardBanner?: string;
-};
 
 interface SubspaceTemplateSelectorProps extends GuttersProps {
   name: string;
-  onTemplateVisualsLoaded?: (visualUrls: BasicVisualUrlModel) => void;
+  onTemplateVisualsLoaded?: (visualUrls: EntityVisualUrls) => void;
 }
-
-const getVisualUrls = (visuals: VisualModel[]): BasicVisualUrlModel => {
-  const avatar: string | undefined = getVisualByType(VisualType.Avatar, visuals)?.uri;
-  const cardBanner: string | undefined = getVisualByType(VisualType.Card, visuals)?.uri;
-
-  return {
-    ...(avatar && { avatar }),
-    ...(cardBanner && { cardBanner }),
-  };
-};
 
 export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
   name,
@@ -117,7 +101,7 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
   const handleRemoveTemplate = (): void => {
     // reset the template field and the visuals
     helpers.setValue('');
-    onTemplateVisualsLoaded?.(getVisualUrls([]));
+    onTemplateVisualsLoaded?.({});
   };
 
   const handleImportTemplateClick = () => {
