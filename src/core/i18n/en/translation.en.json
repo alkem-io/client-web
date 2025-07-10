@@ -792,8 +792,8 @@
       },
       "importTemplate": {
         "confirmOverwrite": {
-          "title": "Overwrite current post?",
-          "content": "If you import a template, the current content of the post will be overwritten. Are you sure you want to continue?"
+          "title": "Overwrite current input?",
+          "content": "If you import a template, your current input could be overwritten. Are you sure you want to continue?"
         }
       },
       "notification": {
@@ -1573,6 +1573,7 @@
         "title": "Confirm {{entity}} Deletion",
         "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. <strong>You can only delete a {{entity}} if there are no underlying Subspaces associated with it.</strong> If there are any Subspaces within this page, please delete them first (you can do so from the {{entity}} settings > Subspaces page).",
         "descriptionShort": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible.",
+        "descriptionShortWithName": "Are you certain you want to delete <strong>{{entity}}</strong>? Keep in mind that this action is irreversible.",
         "checkbox": "Please check this box if you are certain about deleting this {{entity}}",
         "confirm": "Yes, delete"
       }

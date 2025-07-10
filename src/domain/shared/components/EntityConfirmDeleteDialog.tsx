@@ -11,6 +11,7 @@ import { Trans, TransProps, useTranslation } from 'react-i18next';
 
 interface EntityConfirmDeleteDialogProps {
   entity: string;
+  name?: string;
   description?: TranslationKey;
   open: boolean;
   onClose: () => void;
@@ -19,6 +20,7 @@ interface EntityConfirmDeleteDialogProps {
 
 const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
   entity,
+  name,
   description,
   open,
   onClose,
@@ -50,7 +52,7 @@ const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
                   (description ??
                     'components.deleteEntity.confirmDialog.description') as unknown as TransProps<TranslationKey>['i18nKey']
                 }
-                values={{ entity: entity }}
+                values={{ entity: name ?? entity }}
                 components={{ strong: <strong /> }}
               />
             </Caption>
