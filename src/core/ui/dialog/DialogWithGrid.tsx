@@ -71,6 +71,7 @@ const DialogWithGrid = ({
 
   return (
     <MuiDialog
+      disableScrollLock
       PaperComponent={DialogContainer}
       PaperProps={{ columns, centeredVertically, fullScreen } as PaperProps}
       onClose={onClose}
