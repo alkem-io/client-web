@@ -137,18 +137,22 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
               collapsible={Boolean(template?.spaceId)}
               onCollapse={handleCancel}
             />
-            <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
-            <TemplateContentSpacePreview loading={loading} template={spacePreview} />
-            <Box>
-              <FormControlLabel
-                label={<Caption color="black">{t('templateLibrary.spaceTemplates.preview.info')}</Caption>}
-                control={<Switch checked disabled />}
-              />
-              <FormikSwitch
-                label={<Caption>{t('templateLibrary.spaceTemplates.recursive')}</Caption>}
-                name={nameOf<TemplateSpaceFormSubmittedValues>('recursive')}
-              />
-            </Box>
+            {spacePreview.contentSpace && (
+              <>
+                <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
+                <TemplateContentSpacePreview loading={loading} template={spacePreview} />
+                <Box>
+                  <FormControlLabel
+                    label={<Caption color="black">{t('templateLibrary.spaceTemplates.preview.info')}</Caption>}
+                    control={<Switch checked disabled />}
+                  />
+                  <FormikSwitch
+                    label={<Caption>{t('templateLibrary.spaceTemplates.recursive')}</Caption>}
+                    name={nameOf<TemplateSpaceFormSubmittedValues>('recursive')}
+                  />
+                </Box>
+              </>
+            )}
           </>
         );
       }}
