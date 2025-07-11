@@ -1,4 +1,5 @@
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 export type SpaceTabQueryModel = {
@@ -14,14 +15,8 @@ export type SpaceTabQueryModel = {
         id: string;
         innovationFlow: {
           id: string;
-          states: Array<{
-            displayName: string;
-            description: string;
-          }>;
-          currentState: {
-            displayName: string;
-            description: string;
-          };
+          states: Array<InnovationFlowStateModel>;
+          currentState: InnovationFlowStateModel;
         };
         calloutsSet: {
           id: string;

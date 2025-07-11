@@ -133,11 +133,7 @@ fragment SpaceTemplateContent on TemplateContentSpace {
 fragment SpaceTemplateContent_Collaboration on Collaboration {
   id
   innovationFlow {
-    id
-    states {
-      displayName
-      description
-    }
+    ...InnovationFlowDetails
   }
   calloutsSet {
     id

@@ -22126,8 +22126,22 @@ export type SpaceTabQuery = {
             innovationFlow: {
               __typename?: 'InnovationFlow';
               id: string;
-              states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-              currentState: { __typename?: 'InnovationFlowState'; displayName: string; description: string };
+              states: Array<{
+                __typename?: 'InnovationFlowState';
+                id: string;
+                displayName: string;
+                description: string;
+                sortOrder: number;
+                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              }>;
+              currentState: {
+                __typename?: 'InnovationFlowState';
+                id: string;
+                displayName: string;
+                description: string;
+                sortOrder: number;
+                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              };
             };
             calloutsSet: { __typename?: 'CalloutsSet'; id: string };
           };
@@ -22724,8 +22738,22 @@ export type SpaceTabsQuery = {
             innovationFlow: {
               __typename?: 'InnovationFlow';
               id: string;
-              currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-              states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+              currentState: {
+                __typename?: 'InnovationFlowState';
+                id: string;
+                displayName: string;
+                description: string;
+                sortOrder: number;
+                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              };
+              states: Array<{
+                __typename?: 'InnovationFlowState';
+                id: string;
+                displayName: string;
+                description: string;
+                sortOrder: number;
+                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              }>;
             };
           };
         }
@@ -24085,12 +24113,58 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                     id: string;
                                     displayName: string;
                                     description?: string | undefined;
+                                    tagsets?:
+                                      | Array<{
+                                          __typename?: 'Tagset';
+                                          id: string;
+                                          name: string;
+                                          tags: Array<string>;
+                                          allowedValues: Array<string>;
+                                          type: TagsetType;
+                                        }>
+                                      | undefined;
+                                    references?:
+                                      | Array<{
+                                          __typename?: 'Reference';
+                                          id: string;
+                                          name: string;
+                                          description?: string | undefined;
+                                          uri: string;
+                                        }>
+                                      | undefined;
+                                    bannerNarrow?:
+                                      | {
+                                          __typename?: 'Visual';
+                                          id: string;
+                                          uri: string;
+                                          name: string;
+                                          alternativeText?: string | undefined;
+                                        }
+                                      | undefined;
                                   };
                                   states: Array<{
                                     __typename?: 'InnovationFlowState';
+                                    id: string;
                                     displayName: string;
                                     description: string;
+                                    sortOrder: number;
+                                    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
                                   }>;
+                                  currentState: {
+                                    __typename?: 'InnovationFlowState';
+                                    id: string;
+                                    displayName: string;
+                                    description: string;
+                                    sortOrder: number;
+                                    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                                  };
+                                  authorization?:
+                                    | {
+                                        __typename?: 'Authorization';
+                                        id: string;
+                                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                      }
+                                    | undefined;
                                 };
                               };
                             }
@@ -25203,7 +25277,63 @@ export type TemplateContentQuery = {
                   innovationFlow: {
                     __typename?: 'InnovationFlow';
                     id: string;
-                    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      tagsets?:
+                        | Array<{
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }>
+                        | undefined;
+                      references?:
+                        | Array<{
+                            __typename?: 'Reference';
+                            id: string;
+                            name: string;
+                            description?: string | undefined;
+                            uri: string;
+                          }>
+                        | undefined;
+                      bannerNarrow?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                    states: Array<{
+                      __typename?: 'InnovationFlowState';
+                      id: string;
+                      displayName: string;
+                      description: string;
+                      sortOrder: number;
+                      settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                    }>;
+                    currentState: {
+                      __typename?: 'InnovationFlowState';
+                      id: string;
+                      displayName: string;
+                      description: string;
+                      sortOrder: number;
+                      settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                    };
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
                   };
                   calloutsSet: {
                     __typename?: 'CalloutsSet';
@@ -25370,7 +25500,59 @@ export type SpaceTemplateContentQuery = {
             innovationFlow: {
               __typename?: 'InnovationFlow';
               id: string;
-              states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+                references?:
+                  | Array<{
+                      __typename?: 'Reference';
+                      id: string;
+                      name: string;
+                      description?: string | undefined;
+                      uri: string;
+                    }>
+                  | undefined;
+                bannerNarrow?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+              states: Array<{
+                __typename?: 'InnovationFlowState';
+                id: string;
+                displayName: string;
+                description: string;
+                sortOrder: number;
+                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              }>;
+              currentState: {
+                __typename?: 'InnovationFlowState';
+                id: string;
+                displayName: string;
+                description: string;
+                sortOrder: number;
+                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              };
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
             };
             calloutsSet: {
               __typename?: 'CalloutsSet';
@@ -25667,7 +25849,47 @@ export type SpaceTemplateContentFragment = {
     innovationFlow: {
       __typename?: 'InnovationFlow';
       id: string;
-      states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+          | undefined;
+        bannerNarrow?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+      };
+      states: Array<{
+        __typename?: 'InnovationFlowState';
+        id: string;
+        displayName: string;
+        description: string;
+        sortOrder: number;
+        settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+      }>;
+      currentState: {
+        __typename?: 'InnovationFlowState';
+        id: string;
+        displayName: string;
+        description: string;
+        sortOrder: number;
+        settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+      };
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
     };
     calloutsSet: {
       __typename?: 'CalloutsSet';
@@ -25796,7 +26018,47 @@ export type SpaceTemplateContent_CollaborationFragment = {
   innovationFlow: {
     __typename?: 'InnovationFlow';
     id: string;
-    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+        | undefined;
+      bannerNarrow?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+        | undefined;
+    };
+    states: Array<{
+      __typename?: 'InnovationFlowState';
+      id: string;
+      displayName: string;
+      description: string;
+      sortOrder: number;
+      settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+    }>;
+    currentState: {
+      __typename?: 'InnovationFlowState';
+      id: string;
+      displayName: string;
+      description: string;
+      sortOrder: number;
+      settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+    };
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
   };
   calloutsSet: {
     __typename?: 'CalloutsSet';

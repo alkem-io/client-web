@@ -7,6 +7,7 @@ import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import { SpaceTabQueryModel } from './spaceTabQuery.model';
 import { useSpace } from '../../context/useSpace';
+import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 
 type InnovationFlowState = {
   displayName: string;
@@ -16,8 +17,8 @@ type InnovationFlowState = {
 interface SpaceTabProvided {
   urlInfo: UrlResolverContextValue;
   innovationFlowStates: InnovationFlowState[] | undefined;
-  innovationFlowCurrentState: InnovationFlowState | undefined;
-  flowStateForNewCallouts: InnovationFlowState | undefined;
+  innovationFlowCurrentState: InnovationFlowStateModel | undefined;
+  flowStateForNewCallouts: InnovationFlowStateModel | undefined;
   about: SpaceAboutLightModel | undefined;
   classificationTagsets: ClassificationTagsetModel[];
   calloutsSetId: string | undefined;
@@ -70,7 +71,7 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     const about: SpaceAboutLightModel | undefined = space?.about;
     const calloutsSetId = space?.collaboration.calloutsSet.id;
 
-    let flowState: InnovationFlowState | undefined = undefined;
+    let flowState: InnovationFlowStateModel | undefined = undefined;
     if (innovationFlowStates && innovationFlowStates?.length >= tabPosition) {
       flowState = innovationFlowStates[tabPosition];
     }

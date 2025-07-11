@@ -14,12 +14,22 @@ query SpaceTab($spaceId: UUID!) {
         innovationFlow {
           id
           states {
+            id
             displayName
             description
+            sortOrder
+            settings {
+              allowNewCallouts
+            }
           }
           currentState {
+            id
             displayName
             description
+            sortOrder
+            settings {
+              allowNewCallouts
+            }
           }
         }
         calloutsSet {

@@ -264,58 +264,6 @@ export const AccountItemProfileFragmentDoc = gql`
   }
   ${VisualModelFragmentDoc}
 `;
-export const InnovationFlowProfileFragmentDoc = gql`
-  fragment InnovationFlowProfile on Profile {
-    id
-    displayName
-    description
-    tagsets {
-      ...TagsetDetails
-    }
-    references {
-      id
-      name
-      description
-      uri
-    }
-    bannerNarrow: visual(type: CARD) {
-      ...VisualModel
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualModelFragmentDoc}
-`;
-export const InnovationFlowDetailsFragmentDoc = gql`
-  fragment InnovationFlowDetails on InnovationFlow {
-    id
-    profile {
-      ...InnovationFlowProfile
-    }
-    states {
-      id
-      displayName
-      description
-      sortOrder
-      settings {
-        allowNewCallouts
-      }
-    }
-    currentState {
-      id
-      displayName
-      description
-      sortOrder
-      settings {
-        allowNewCallouts
-      }
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${InnovationFlowProfileFragmentDoc}
-`;
 export const InnovationFlowCollaborationFragmentDoc = gql`
   fragment InnovationFlowCollaboration on Collaboration {
     id
@@ -2303,15 +2251,63 @@ export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
   }
   ${ReferenceDetailsFragmentDoc}
 `;
+export const InnovationFlowProfileFragmentDoc = gql`
+  fragment InnovationFlowProfile on Profile {
+    id
+    displayName
+    description
+    tagsets {
+      ...TagsetDetails
+    }
+    references {
+      id
+      name
+      description
+      uri
+    }
+    bannerNarrow: visual(type: CARD) {
+      ...VisualModel
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualModelFragmentDoc}
+`;
+export const InnovationFlowDetailsFragmentDoc = gql`
+  fragment InnovationFlowDetails on InnovationFlow {
+    id
+    profile {
+      ...InnovationFlowProfile
+    }
+    states {
+      id
+      displayName
+      description
+      sortOrder
+      settings {
+        allowNewCallouts
+      }
+    }
+    currentState {
+      id
+      displayName
+      description
+      sortOrder
+      settings {
+        allowNewCallouts
+      }
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${InnovationFlowProfileFragmentDoc}
+`;
 export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
   fragment SpaceTemplateContent_Collaboration on Collaboration {
     id
     innovationFlow {
-      id
-      states {
-        displayName
-        description
-      }
+      ...InnovationFlowDetails
     }
     calloutsSet {
       id
@@ -2345,6 +2341,7 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
       }
     }
   }
+  ${InnovationFlowDetailsFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
@@ -17592,12 +17589,22 @@ export const SpaceTabDocument = gql`
           innovationFlow {
             id
             states {
+              id
               displayName
               description
+              sortOrder
+              settings {
+                allowNewCallouts
+              }
             }
             currentState {
+              id
               displayName
               description
+              sortOrder
+              settings {
+                allowNewCallouts
+              }
             }
           }
           calloutsSet {
@@ -17728,11 +17735,22 @@ export const SpaceTabsDocument = gql`
           innovationFlow {
             id
             currentState {
-              displayName
-            }
-            states {
+              id
               displayName
               description
+              sortOrder
+              settings {
+                allowNewCallouts
+              }
+            }
+            states {
+              id
+              displayName
+              description
+              sortOrder
+              settings {
+                allowNewCallouts
+              }
             }
           }
         }
@@ -18878,16 +18896,7 @@ export const SpaceAdminDefaultSpaceTemplatesDetailsDocument = gql`
                     }
                   }
                   innovationFlow {
-                    id
-                    profile {
-                      id
-                      displayName
-                      description
-                    }
-                    states {
-                      displayName
-                      description
-                    }
+                    ...InnovationFlowDetails
                   }
                 }
               }
@@ -18899,6 +18908,7 @@ export const SpaceAdminDefaultSpaceTemplatesDetailsDocument = gql`
   }
   ${InnovationFlowProfileFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${InnovationFlowDetailsFragmentDoc}
 `;
 
 /**

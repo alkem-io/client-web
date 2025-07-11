@@ -7,11 +7,22 @@ query SpaceTabs($spaceId: UUID!) {
         innovationFlow {
           id
           currentState {
-            displayName
-          }
-          states {
+            id
             displayName
             description
+            sortOrder
+            settings {
+              allowNewCallouts
+            }
+          }
+          states {
+            id
+            displayName
+            description
+            sortOrder
+            settings {
+              allowNewCallouts
+            }
           }
         }
       }

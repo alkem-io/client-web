@@ -34,6 +34,10 @@ const InnovationFlowStateForm = ({
   const initialValues: InnovationFlowStateFormValues = {
     displayName: state?.displayName ?? '',
     description: state?.description ?? '',
+    sortOrder: state?.sortOrder ?? 0,
+    settings: {
+      allowNewCallouts: state?.settings?.allowNewCallouts ?? false,
+    },
   };
 
   const validationSchema = yup.object().shape({
