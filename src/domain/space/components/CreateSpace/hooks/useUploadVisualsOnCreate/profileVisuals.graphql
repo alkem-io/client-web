@@ -1,0 +1,18 @@
+fragment ProfileVisuals on Profile {
+  id
+  banner: visual(type: CARD) {
+    id
+    uri
+    name
+  }
+  cardBanner: visual(type: CARD) {
+    id
+    uri
+    name
+  }
+  avatar: visual(type: AVATAR) {
+    id
+    uri
+    name
+  }
+}

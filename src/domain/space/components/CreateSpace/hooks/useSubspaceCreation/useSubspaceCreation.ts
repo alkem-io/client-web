@@ -4,7 +4,6 @@ import {
   refetchCurrentUserFullQuery,
   SubspaceCardFragmentDoc,
   useCreateSubspaceMutation,
-  useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useConfig } from '@/domain/platform/config/useConfig';
@@ -15,7 +14,9 @@ import {
   TagsetReservedName,
   TagsetType,
 } from '@/core/apollo/generated/graphql-schema';
-import { error as logError } from '@/core/logging/sentry/log';
+import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
+import useUploadVisualsOnCreate from '../useUploadVisualsOnCreate/useUploadVisualsOnCreate';
+import { useTranslation } from 'react-i18next';
 
 interface SubspaceCreationInput {
   spaceID: string;
@@ -25,14 +26,8 @@ interface SubspaceCreationInput {
       tagline: string;
       description?: string;
       visuals: {
-        avatar: {
-          file: File | undefined;
-          altText?: string;
-        };
-        cardBanner: {
-          file: File | undefined;
-          altText?: string;
-        };
+        avatar: VisualUploadModel;
+        cardBanner: VisualUploadModel;
       };
       tags: string[];
     };
@@ -47,9 +42,10 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
   const { spaceId } = useUrlResolver();
   const { isFeatureEnabled } = useConfig();
 
-  const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
-  const [uploadVisual] = useUploadVisualMutation();
+  const { t } = useTranslation();
+  const { uploadVisuals } = useUploadVisualsOnCreate({ entityName: t('common.subspace') });
 
+  const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
   const {
     refetchQueries = [refetchCurrentUserFullQuery()], // default to refetching user provider
     ...restMutationOptions
@@ -90,7 +86,6 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
     ...restMutationOptions,
   });
 
-  // add useCallback
   const createSubspace = useCallback(
     async (value: SubspaceCreationInput) => {
       const includeVisuals =
@@ -156,46 +151,14 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
           },
         },
       });
-      try {
-        const uploadPromises: Promise<unknown>[] = [];
-        if (value.about.profile.visuals.avatar.file && data?.createSubspace.about.profile?.avatar?.id) {
-          uploadPromises.push(
-            uploadVisual({
-              variables: {
-                file: value.about.profile.visuals.avatar.file,
-                uploadData: {
-                  visualID: data.createSubspace.about.profile.avatar?.id || '',
-                  alternativeText: value.about.profile.visuals.avatar.altText,
-                },
-              },
-            })
-          );
-        }
-        if (value.about.profile.visuals.cardBanner.file && data?.createSubspace.about.profile?.cardBanner?.id) {
-          uploadPromises.push(
-            uploadVisual({
-              variables: {
-                file: value.about.profile.visuals.cardBanner.file,
-                uploadData: {
-                  visualID: data.createSubspace.about.profile?.cardBanner?.id || '',
-                  alternativeText: value.about.profile.visuals.cardBanner.altText,
-                },
-              },
-            })
-          );
-        }
-        await Promise.all(uploadPromises);
-      } catch (error) {
-        // Subspace is created anyway, just the images failed log the error and continue
-        if (error instanceof Error) {
-          logError(error);
-        } else {
-          logError(`Error uploading visuals for subspace: ${error}`, { label: 'TempStorage' });
-        }
+
+      if (includeVisuals) {
+        await uploadVisuals(data?.createSubspace.about.profile, value.about.profile.visuals);
       }
+
       return data?.createSubspace;
     },
-    [createSubspaceLazy, uploadVisual]
+    [createSubspaceLazy]
   );
 
   return { createSubspace, loading };

@@ -39,7 +39,9 @@ const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/In
 const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
 );
-const CreateSpaceDialog = lazyWithGlobalErrorHandler(() => import('@/domain/space/createSpace/CreateSpaceDialog'));
+const CreateSpaceDialog = lazyWithGlobalErrorHandler(
+  () => import('@/domain/space/components/CreateSpace/createSpace/CreateSpaceDialog')
+);
 const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoutes'));
 
 export const TopLevelRoutes = () => {

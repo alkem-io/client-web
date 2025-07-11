@@ -30,8 +30,8 @@ import { TagCategoryValues, info, error as logError } from '@/core/logging/sentr
 import { compact } from 'lodash';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import Gutters from '@/core/ui/grid/Gutters';
-import { addSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
-import { useSpacePlans } from '@/domain/space/createSpace/useSpacePlans';
+import { addSpaceWelcomeCache } from '@/domain/space/components/CreateSpace/utils';
+import { useSpacePlans } from '@/domain/space/components/CreateSpace/hooks/spacePlans/useSpacePlans';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
@@ -175,7 +175,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
       });
       notify(t('pages.admin.space.notifications.space-created'), 'success');
 
-      const spaceUrl = newSpace?.createSpace.about.profile.url;
+      const spaceUrl = newSpace?.createSpace.about.profile?.url;
       if (spaceUrl) {
         navigate(spaceUrl);
         return;

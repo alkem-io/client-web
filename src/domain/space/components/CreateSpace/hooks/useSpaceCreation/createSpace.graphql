@@ -1,0 +1,11 @@
+mutation CreateSpace($spaceData: CreateSpaceOnAccountInput!, $includeVisuals: Boolean = false) {
+  createSpace(spaceData: $spaceData) {
+    id
+    about {
+      ...SpaceAboutLight
+      profile @include(if: $includeVisuals) { # retrieved to upload the visuals directly after Space creation
+        ...ProfileVisuals
+      }
+    }
+  }
+}

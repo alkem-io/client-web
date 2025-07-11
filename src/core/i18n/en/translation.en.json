@@ -1445,7 +1445,8 @@
       "success": "Image uploaded successfully",
       "error": "Error occurred while uploading the image",
       "upload-hover": "Upload image",
-      "no-data": "Not yet set"
+      "no-data": "Not yet set",
+      "entityCreatedErrorUploading": "The {{entity}} was created, but there was an error uploading some images. Please try again."
     },
     "tags-component": {
       "more": "+{{count}} more",

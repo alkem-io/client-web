@@ -1,4 +1,4 @@
-mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean = false) {
+mutation CreateSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean = false) {
   createSubspace(subspaceData: $input) {
     ...SubspaceCard
     about {
@@ -8,20 +8,7 @@ mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean =
         url # Always request the URL at least to navigate to the new subspace
       }
       profile @include(if: $includeVisuals) {
-        id
-        cardBanner: visual(type: CARD) {
-          id
-          uri
-          name
-        }
-        avatar: visual(type: AVATAR) {
-          id
-          uri
-          name
-        }
-        tagset {
-          ...TagsetDetails
-        }
+        ...ProfileVisuals
       }
     }
   }

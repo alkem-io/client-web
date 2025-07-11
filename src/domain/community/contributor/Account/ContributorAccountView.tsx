@@ -10,7 +10,7 @@ import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
 } from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import { Actions } from '@/core/ui/actions/Actions';
-import CreateSpaceDialog from '@/domain/space/createSpace/CreateSpaceDialog';
+import CreateSpaceDialog from '@/domain/space/components/CreateSpace/createSpace/CreateSpaceDialog';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
 import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
