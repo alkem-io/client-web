@@ -269,6 +269,7 @@ export const toCreateTemplateFromSpaceMutationVariables = (
       })),
     },
     tags: handleCreateTags(values),
+    recursive: values.recursive,
   };
 };
 

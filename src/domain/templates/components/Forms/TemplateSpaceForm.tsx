@@ -6,15 +6,19 @@ import { FormikHelpers, FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
-import { BlockSectionTitle } from '@/core/ui/typography';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
 import TemplateContentSpacePreview from '../Previews/TemplateContentSpacePreview';
 import { useSpaceTemplateContentQuery, useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import SpaceContentFromSpaceUrlForm from './SpaceContentFromSpaceUrlForm';
+import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
+import { nameOf } from '@/core/utils/nameOf';
+import { Box, FormControlLabel, Switch } from '@mui/material';
 
 export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   spaceId?: string;
   contentSpaceId?: string; // This is not used in the form, but send to the server to update the template content space.
+  recursive?: boolean;
 }
 
 interface TemplateSpaceFormProps {
@@ -54,6 +58,7 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
     () => ({
       profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
       spaceId: template?.spaceId ?? '',
+      recursive: true,
     }),
     [template]
   );
@@ -132,8 +137,22 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
               collapsible={Boolean(template?.spaceId)}
               onCollapse={handleCancel}
             />
-            <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
-            <TemplateContentSpacePreview loading={loading} template={spacePreview} />
+            {spacePreview.contentSpace && (
+              <>
+                <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
+                <TemplateContentSpacePreview loading={loading} template={spacePreview} />
+                <Box>
+                  <FormControlLabel
+                    label={<Caption color="black">{t('templateLibrary.spaceTemplates.preview.info')}</Caption>}
+                    control={<Switch checked disabled />}
+                  />
+                  <FormikSwitch
+                    label={<Caption>{t('templateLibrary.spaceTemplates.recursive')}</Caption>}
+                    name={nameOf<TemplateSpaceFormSubmittedValues>('recursive')}
+                  />
+                </Box>
+              </>
+            )}
           </>
         );
       }}

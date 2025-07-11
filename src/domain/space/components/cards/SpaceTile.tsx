@@ -11,12 +11,12 @@ import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from '../../icons/PrivacyIcon';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { SpaceAboutTileModel } from '../../about/model/SpaceAboutTile.model';
 
 type SpaceTileProps = {
   space:
     | {
-        about: SpaceAboutLightModel;
+        about: SpaceAboutTileModel;
         level?: SpaceLevel;
       }
     | undefined;

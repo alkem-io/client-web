@@ -792,8 +792,8 @@
       },
       "importTemplate": {
         "confirmOverwrite": {
-          "title": "Overwrite current post?",
-          "content": "If you import a template, the current content of the post will be overwritten. Are you sure you want to continue?"
+          "title": "Overwrite current input?",
+          "content": "If you import a template, your current input could be overwritten. Are you sure you want to continue?"
         }
       },
       "notification": {
@@ -1074,8 +1074,10 @@
         "selectAnother": "Update Collaboration from another Space"
       },
       "preview": {
-        "info": "Also included: About information & Settings"
-      }
+        "info": "Always included: About information & Settings"
+      },
+      "recursive": "Also include Subspaces of the selected Space in the template",
+      "includesSubspaces": "This template also includes these subspaces:"
     },
     "communityGuidelinesTemplates": {
       "name": "$t(common.enums.templateType.COMMUNITY_GUIDELINES)",

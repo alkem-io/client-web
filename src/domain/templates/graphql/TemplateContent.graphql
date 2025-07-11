@@ -49,6 +49,9 @@ query SpaceTemplateContent($spaceId: UUID!) {
       settings {
         ...SpaceTemplateContent_Settings
       }
+      about {
+        ...SpaceTemplateContent_Subspaces
+      }
     }
   }
 }
@@ -119,6 +122,12 @@ fragment SpaceTemplateContent on TemplateContentSpace {
   settings {
     ...SpaceTemplateContent_Settings
   }
+  subspaces {
+    id
+    about {
+      ...SpaceTemplateContent_Subspaces
+    }
+  }
 }
 
 fragment SpaceTemplateContent_Collaboration on Collaboration {
@@ -169,6 +178,13 @@ fragment SpaceTemplateContent_About on SpaceAbout {
     id
     displayName
     description
+    tagline
+    tagsets {
+      ...TagsetDetails
+    }
+    visuals {
+      ...VisualModel
+    }
     url
   }
 }
@@ -189,6 +205,10 @@ fragment SpaceTemplateContent_Settings on SpaceSettings {
     inheritMembershipRights
     allowEventsFromSubspaces
   }
+}
+
+fragment SpaceTemplateContent_Subspaces on SpaceAbout {
+  ...SpaceAboutTile
 }
 
 fragment WhiteboardTemplateContent on Whiteboard {

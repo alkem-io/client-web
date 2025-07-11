@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Form, Formik } from 'formik';
@@ -20,6 +20,7 @@ import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisual
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
+import { EntityVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
 
 const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
@@ -44,6 +45,7 @@ export const CreateSubspaceForm = ({
 }: PropsWithChildren<CreateSubspaceFormProps>) => {
   const { t } = useTranslation();
   const { isSmallScreen } = useScreenSize();
+  const [templateVisuals, setTemplateVisuals] = useState<EntityVisualUrls>({});
 
   const validationRequiredString = t('forms.validations.required');
 
@@ -58,6 +60,10 @@ export const CreateSubspaceForm = ({
       spaceTemplateId: value.spaceTemplateId || undefined, // in case of empty string
       visuals: value.visuals,
     });
+
+  const handleTemplateVisualsLoaded = (visuals: EntityVisualUrls) => {
+    setTemplateVisuals(visuals);
+  };
 
   const initialValues: CreateSubspaceFormValues = {
     displayName: '',
@@ -106,7 +112,12 @@ export const CreateSubspaceForm = ({
       {() => (
         <Form noValidate>
           <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
-          <SubspaceTemplateSelector name="spaceTemplateId" disablePadding sx={{ paddingBottom: gutters() }} />
+          <SubspaceTemplateSelector
+            name="spaceTemplateId"
+            disablePadding
+            sx={{ paddingBottom: gutters() }}
+            onTemplateVisualsLoaded={handleTemplateVisualsLoaded}
+          />
           <FormikInputField
             name="displayName"
             title={t(`context.${level}.displayName.title`)}
@@ -139,26 +150,19 @@ export const CreateSubspaceForm = ({
           />
           <Gutters padding={theme => `${gutters()(theme)} 0 0 0`}>
             <PageContentBlock sx={{ flexDirection: isSmallScreen ? 'column' : 'row', justifyContent: 'space-between' }}>
-              <FormikVisualUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
-              <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
+              <FormikVisualUpload
+                name="visuals.avatar"
+                visualType={VisualType.Avatar}
+                flex={1}
+                initialVisualUrl={templateVisuals.avatarUrl}
+              />
+              <FormikVisualUpload
+                name="visuals.cardBanner"
+                visualType={VisualType.Card}
+                flex={1}
+                initialVisualUrl={templateVisuals.cardBannerUrl}
+              />
             </PageContentBlock>
-            {/* Temporarily hidden until we have more options to choose from */}
-            {/* Show options only if a template is selected */}
-            {/*{Boolean(spaceTemplateId) && (*/}
-            {/*  <Gutters disablePadding disableGap>*/}
-            {/*    <Caption>{t('common.options')}</Caption>*/}
-            {/*    <FormikRadiosSwitch*/}
-            {/*      name="addCallouts"*/}
-            {/*      label={t('context.common.addCallouts.title')}*/}
-            {/*      options={[*/}
-            {/*        { label: t('buttons.yes'), value: true },*/}
-            {/*        { label: t('buttons.no'), value: false },*/}
-            {/*      ]}*/}
-            {/*      row*/}
-            {/*      disablePadding*/}
-            {/*    />*/}
-            {/*  </Gutters>*/}
-            {/*)}*/}
           </Gutters>
         </Form>
       )}
