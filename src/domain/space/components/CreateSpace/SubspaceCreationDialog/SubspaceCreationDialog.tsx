@@ -3,7 +3,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { Button, DialogActions, DialogContent, SvgIconProps } from '@mui/material';
 import React, { FC, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SpaceCreationForm, SpaceFormValues } from './SubspaceCreationForm';
+import { SpaceCreationForm, SpaceFormValues } from './CreateSubspaceForm.model';
 
 interface SubspaceCreationDialogProps {
   open: boolean;

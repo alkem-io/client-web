@@ -1,7 +1,4 @@
-interface VisualUpload {
-  file: File | undefined;
-  altText?: string;
-}
+import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
 
 export interface SpaceFormValues {
   displayName: string;
@@ -13,8 +10,8 @@ export interface SpaceFormValues {
   addCallouts?: boolean;
   spaceTemplateId?: string;
   visuals: {
-    avatar: VisualUpload;
-    cardBanner: VisualUpload;
+    avatar: VisualUploadModel;
+    cardBanner: VisualUploadModel;
   };
 }
 

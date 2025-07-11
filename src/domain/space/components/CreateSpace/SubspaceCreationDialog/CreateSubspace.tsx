@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import { SubspaceCreationDialog } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/SubspaceCreationDialog';
-import { SpaceFormValues } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/SubspaceCreationForm';
+import { SpaceFormValues } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspaceForm.model';
 import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CreateSubspaceForm } from './CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';

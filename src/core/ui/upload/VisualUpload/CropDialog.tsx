@@ -24,7 +24,7 @@ type CropDialogConfig = {
 
 interface CropDialogInterface extends DialogProps {
   file?: File;
-  onSave?: (imgFile: File, altText: string) => Promise<void> | void;
+  onSave?: (data: { file: File; altText: string }) => Promise<void> | void;
   config: CropDialogConfig;
 }
 
@@ -179,7 +179,7 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
     async (values: CropDialogFormValues) => {
       if (!imgRef.current || !crop) return;
       const newImage = await getCroppedImg(imgRef.current, crop, 'newFile.jpg');
-      if (onSave) await onSave(newImage, values.altText);
+      if (onSave) await onSave({ file: newImage, altText: values.altText });
       handleClose();
     },
     [crop, getCroppedImg, onSave, handleClose]

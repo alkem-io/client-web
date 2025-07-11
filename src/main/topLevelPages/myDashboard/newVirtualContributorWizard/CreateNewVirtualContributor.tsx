@@ -20,13 +20,14 @@ import { theme } from '@/core/ui/themes/default/Theme';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import FormikVisualUpload, { VisualWithAltText } from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
+import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
+import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
 import { VisualType, AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
 type CreateNewVirtualContributorProps = {
   onClose: () => void;
-  onChangeAvatar: (visual: VisualWithAltText) => void;
+  onChangeAvatar: (visual: VisualUploadModel) => void;
   onCreateKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExistingKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExternal: (values: VirtualContributorFromProps) => void;
