@@ -11,7 +11,7 @@ import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/us
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { InnovationFlowStateContext } from '../../routing/SubspaceRoutes';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
-import CreateSubspace from '../../components/subspaces/SubspaceCreationDialog/CreateSubspace';
+import CreateSubspace from '../../components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 
 const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { isSmallScreen } = useScreenSize();

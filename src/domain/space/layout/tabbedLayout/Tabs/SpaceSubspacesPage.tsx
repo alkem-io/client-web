@@ -1,14 +1,14 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
-import { SubspaceCreationDialog } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
-import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
-import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
+import { SubspaceCreationDialog } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/SubspaceCreationDialog';
+import { SpaceFormValues } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/SubspaceCreationForm';
+import { CreateSubspaceForm } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspaceForm';
+import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';
 import { useSpace } from '../../../context/useSpace';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
-import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
 import SpaceL1Icon2 from '@/domain/space/icons/SpaceL1Icon2';
 import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';

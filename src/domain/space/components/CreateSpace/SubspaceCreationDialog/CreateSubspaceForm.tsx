@@ -11,7 +11,7 @@ import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import {
   SpaceCreationForm,
   SpaceFormValues,
-} from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
+} from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/SubspaceCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
 import Gutters from '@/core/ui/grid/Gutters';

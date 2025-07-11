@@ -20,7 +20,7 @@ import SpaceWelcomeBlock from '../components/SpaceWelcomeBlock';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { DialogActionButton } from '../components/subspaces/DialogActionButton';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import CreateSubspace from '@/domain/space/components/subspaces/SubspaceCreationDialog/CreateSubspace';
+import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 
 export const MENU_STATE_KEY = 'menuState';
 export enum MenuState {

@@ -23,7 +23,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button, IconButton } from '@mui/material';
 import { ReactElement, ReactNode, cloneElement, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import SubspaceCreate from './CreateSubspace';
+import CreateSubspaceBlock from './CreateSubspaceBlock';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
 import { defaultVisualUrls } from '../../icons/defaultVisualUrls';
 
@@ -88,7 +88,7 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
   return (
     <PageContent>
       <InfoColumn>
-        <SubspaceCreate
+        <CreateSubspaceBlock
           tabDescription={tabDescription}
           canCreateSubentity={childEntityCreateAccess}
           onCreateSubentity={childEntityOnCreate}
