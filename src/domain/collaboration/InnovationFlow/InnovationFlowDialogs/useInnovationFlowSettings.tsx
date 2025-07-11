@@ -7,14 +7,17 @@ import {
   useUpdateInnovationFlowSelectedStateMutation,
   useUpdateInnovationFlowStateMutation,
   useCreateStateOnInnovationFlowMutation,
+  useDeleteStateOnInnovationFlowMutation,
+  useUpdateInnovationFlowStatesSortOrderMutation,
   useUpdateCollaborationFromSpaceTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CreateStateOnInnovationFlowInput,
+  DeleteStateOnInnovationFlowInput,
   UpdateProfileInput,
 } from '@/core/apollo/generated/graphql-schema';
-import { InnovationFlowStateModel } from '../models/InnovationFlowState';
+import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 import useEnsurePresence from '@/core/utils/ensurePresence';
@@ -178,8 +181,10 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     });
   };
 
+  const [UpdateInnovationFlowStatesSortOrder] = useUpdateInnovationFlowStatesSortOrderMutation();
   const handleInnovationFlowStateOrder = async (displayName: string, sortOrder: number) => {
-    const states = innovationFlow?.states ?? [];
+    const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
+    const states = requiredInnovationFlow?.states ?? [];
     // Remove the flowState from its current position
     const movedState = states.find(state => state.displayName === displayName);
     if (!movedState) {
@@ -193,7 +198,14 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
       movedState,
       ...statesWithoutMovedState.slice(sortOrder),
     ];
-    updateInnovationFlowStates(nextStates);
+    // TODO: get the IDS based on the nextStates array. So passing in the display names will not work.
+    const orderedStateIDs: string[] = nextStates.map(state => state.displayName);
+    await UpdateInnovationFlowStatesSortOrder({
+      variables: {
+        innovationFlowID: requiredInnovationFlow.id,
+        stateIDs: orderedStateIDs,
+      },
+    });
   };
 
   /**
@@ -228,11 +240,29 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     });
   };
 
+  const [DeleteStateOnInnovationFlow] = useDeleteStateOnInnovationFlowMutation();
+  const handleDeleteState = async (stateID: string) => {
+    const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
+    const states = requiredInnovationFlow.states;
+    if (states.length - 1 < requiredInnovationFlow.settings.minimumNumberOfStates) {
+      throw new Error('Minimum number of states reached.');
+    }
+    const stateData: DeleteStateOnInnovationFlowInput = {
+      innovationFlowID: requiredInnovationFlow.id,
+      ID: stateID,
+    };
+    await DeleteStateOnInnovationFlow({
+      variables: {
+        stateData,
+      },
+    });
+  };
+
   const [updateInnovationFlowState] = useUpdateInnovationFlowStateMutation();
   const handleEditState = async (oldState: InnovationFlowStateModel, newState: InnovationFlowStateModel) => {
     await updateInnovationFlowState({
       variables: {
-        innovationFlowStateId,
+        innovationFlowStateId: '', // TODO
         displayName: oldState.displayName,
         description: oldState.description,
         settings: oldState.settings,
@@ -246,47 +276,37 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     refetch({ collaborationId: collaborationId! });
   };
 
-  const handleDeleteState = (stateDisplayName: string) => {
-    const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
-    const states = requiredInnovationFlow.states;
-    const nextStates = states.filter(state => state.displayName !== stateDisplayName);
-    if (nextStates.length < requiredInnovationFlow.settings.minimumNumberOfStates) {
-      throw new Error('Minimum number of states reached.');
-    }
-    return updateInnovationFlowStates(nextStates);
-  };
+  // const [updateInnovationFlow] = useUpdateInnovationFlowStatesMutation();
+  // const updateInnovationFlowStates = (nextStates: InnovationFlowStateModel[]) => {
+  //   const innovationFlowId = ensurePresence(innovationFlow?.id, 'Innovation Flow Id');
 
-  const [updateInnovationFlow] = useUpdateInnovationFlowStatesMutation();
-  const updateInnovationFlowStates = (nextStates: InnovationFlowStateModel[]) => {
-    const innovationFlowId = ensurePresence(innovationFlow?.id, 'Innovation Flow Id');
+  //   return updateInnovationFlow({
+  //     variables: { innovationFlowId, states: nextStates },
+  //     optimisticResponse: {
+  //       updateInnovationFlow: {
+  //         id: innovationFlowId,
+  //         states: nextStates,
+  //       },
+  //     },
+  //     update: cache => {
+  //       const id = cache.identify({
+  //         id: innovationFlowId,
+  //         __typename: 'InnovationFlow',
+  //       });
 
-    return updateInnovationFlow({
-      variables: { innovationFlowId, states: nextStates },
-      optimisticResponse: {
-        updateInnovationFlow: {
-          id: innovationFlowId,
-          states: nextStates,
-        },
-      },
-      update: cache => {
-        const id = cache.identify({
-          id: innovationFlowId,
-          __typename: 'InnovationFlow',
-        });
-
-        cache.modify({
-          id,
-          fields: {
-            states() {
-              return nextStates;
-            },
-          },
-        });
-      },
-      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
-      awaitRefetchQueries: true,
-    });
-  };
+  //       cache.modify({
+  //         id,
+  //         fields: {
+  //           states() {
+  //             return nextStates;
+  //           },
+  //         },
+  //       });
+  //     },
+  //     refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
+  //     awaitRefetchQueries: true,
+  //   });
+  // };
 
   const [updateCollaborationFromSpaceTemplate] = useUpdateCollaborationFromSpaceTemplateMutation();
   const handleImportInnovationFlowFromSpaceTemplate = (spaceTemplateId: string, addCallouts?: boolean) => {

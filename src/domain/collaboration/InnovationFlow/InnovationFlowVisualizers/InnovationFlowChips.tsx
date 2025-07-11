@@ -7,7 +7,7 @@ import { Caption } from '@/core/ui/typography';
 import { ArrowRight } from '@mui/icons-material';
 import { Button, Divider, styled, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { InnovationFlowStateModel } from '../models/InnovationFlowState';
+import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
 
 interface InnovationFlowChipsProps extends InnovationFlowVisualizerProps {}

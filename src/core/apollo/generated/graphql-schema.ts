@@ -9876,8 +9876,22 @@ export type InnovationFlowSettingsQuery = {
                 | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
                 | undefined;
             };
-            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-            currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+            states: Array<{
+              __typename?: 'InnovationFlowState';
+              id: string;
+              displayName: string;
+              description: string;
+              sortOrder: number;
+              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+            }>;
+            currentState: {
+              __typename?: 'InnovationFlowState';
+              id: string;
+              displayName: string;
+              description: string;
+              sortOrder: number;
+              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+            };
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -9965,8 +9979,22 @@ export type InnovationFlowDetailsQuery = {
                 | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
                 | undefined;
             };
-            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-            currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+            states: Array<{
+              __typename?: 'InnovationFlowState';
+              id: string;
+              displayName: string;
+              description: string;
+              sortOrder: number;
+              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+            }>;
+            currentState: {
+              __typename?: 'InnovationFlowState';
+              id: string;
+              displayName: string;
+              description: string;
+              sortOrder: number;
+              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+            };
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -10001,8 +10029,22 @@ export type InnovationFlowDetailsFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
       | undefined;
   };
-  states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-  currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+  states: Array<{
+    __typename?: 'InnovationFlowState';
+    id: string;
+    displayName: string;
+    description: string;
+    sortOrder: number;
+    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+  }>;
+  currentState: {
+    __typename?: 'InnovationFlowState';
+    id: string;
+    displayName: string;
+    description: string;
+    sortOrder: number;
+    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+  };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;

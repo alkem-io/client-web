@@ -16,10 +16,10 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { MenuList } from '@mui/material';
 import SpaceWelcomeBlock, { SpaceWelcomeBlockProps } from '../components/SpaceWelcomeBlock';
-import { InnovationFlowState } from '@/core/apollo/generated/graphql-schema';
+import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 
 interface SubspaceDrawerMenuProps {
-  innovationFlowStates?: InnovationFlowState[];
+  innovationFlowStates?: InnovationFlowStateModel[];
   selectedInnovationFlowState?: string;
   currentInnovationFlowState?: string;
   createButton?: React.ReactNode;

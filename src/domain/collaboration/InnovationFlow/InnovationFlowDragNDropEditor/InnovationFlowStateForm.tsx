@@ -8,7 +8,7 @@ import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-l
 import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { InnovationFlowStateModel } from '../models/InnovationFlowState';
+import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import Gutters from '@/core/ui/grid/Gutters';
 
 export interface InnovationFlowStateFormValues extends InnovationFlowStateModel {}

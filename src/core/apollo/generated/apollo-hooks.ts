@@ -292,11 +292,22 @@ export const InnovationFlowDetailsFragmentDoc = gql`
       ...InnovationFlowProfile
     }
     states {
+      id
       displayName
       description
+      sortOrder
+      settings {
+        allowNewCallouts
+      }
     }
     currentState {
+      id
       displayName
+      description
+      sortOrder
+      settings {
+        allowNewCallouts
+      }
     }
     authorization {
       id

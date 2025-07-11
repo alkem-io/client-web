@@ -1,6 +1,6 @@
 import { useInnovationFlowDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { InnovationFlowStateModel } from '../models/InnovationFlowState';
+import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 
 export interface UseInnovationFlowStatesProvided {
   innovationFlowStates: InnovationFlowStateModel[] | undefined;

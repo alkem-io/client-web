@@ -21,7 +21,7 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
-import { InnovationFlowStateModel } from '../models/InnovationFlowState';
+import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import InnovationFlowStateForm from './InnovationFlowStateForm';
 import InnovationFlowStateMenu from './InnovationFlowStateMenu';
 
