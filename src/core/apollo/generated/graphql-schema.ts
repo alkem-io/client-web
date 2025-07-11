@@ -10197,14 +10197,14 @@ export type UpdateInnovationFlowStateMutation = {
   };
 };
 
-export type UpdateCalloutsSortOrderMutationVariables = Exact<{
-  calloutsSetID: Scalars['UUID']['input'];
-  calloutIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+export type UpdateInnovationFlowStatesSortOrderMutationVariables = Exact<{
+  innovationFlowID: Scalars['UUID']['input'];
+  stateIDs: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
 }>;
 
-export type UpdateCalloutsSortOrderMutation = {
+export type UpdateInnovationFlowStatesSortOrderMutation = {
   __typename?: 'Mutation';
-  updateCalloutsSortOrder: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
+  updateInnovationFlowStatesSortOrder: Array<{ __typename?: 'InnovationFlowState'; id: string; sortOrder: number }>;
 };
 
 export type ActivityLogMemberJoinedFragment = {
@@ -12631,6 +12631,16 @@ export type CalloutSettingsFullFragment = {
     commentsEnabled: boolean;
   };
   framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+};
+
+export type UpdateCalloutsSortOrderMutationVariables = Exact<{
+  calloutsSetID: Scalars['UUID']['input'];
+  calloutIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+}>;
+
+export type UpdateCalloutsSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateCalloutsSortOrder: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
 };
 
 export type DashboardTopCalloutsFragment = {

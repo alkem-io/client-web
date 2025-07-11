@@ -6244,54 +6244,57 @@ export type UpdateInnovationFlowStateMutationOptions = Apollo.BaseMutationOption
   SchemaTypes.UpdateInnovationFlowStateMutation,
   SchemaTypes.UpdateInnovationFlowStateMutationVariables
 >;
-export const UpdateCalloutsSortOrderDocument = gql`
-  mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID!]!) {
-    updateCalloutsSortOrder(sortOrderData: { calloutsSetID: $calloutsSetID, calloutIDs: $calloutIds }) {
+export const UpdateInnovationFlowStatesSortOrderDocument = gql`
+  mutation UpdateInnovationFlowStatesSortOrder($innovationFlowID: UUID!, $stateIDs: [UUID!]!) {
+    updateInnovationFlowStatesSortOrder(sortOrderData: { innovationFlowID: $innovationFlowID, stateIDs: $stateIDs }) {
       id
       sortOrder
     }
   }
 `;
-export type UpdateCalloutsSortOrderMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateCalloutsSortOrderMutation,
-  SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+export type UpdateInnovationFlowStatesSortOrderMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationFlowStatesSortOrderMutation,
+  SchemaTypes.UpdateInnovationFlowStatesSortOrderMutationVariables
 >;
 
 /**
- * __useUpdateCalloutsSortOrderMutation__
+ * __useUpdateInnovationFlowStatesSortOrderMutation__
  *
- * To run a mutation, you first call `useUpdateCalloutsSortOrderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCalloutsSortOrderMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateInnovationFlowStatesSortOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationFlowStatesSortOrderMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateCalloutsSortOrderMutation, { data, loading, error }] = useUpdateCalloutsSortOrderMutation({
+ * const [updateInnovationFlowStatesSortOrderMutation, { data, loading, error }] = useUpdateInnovationFlowStatesSortOrderMutation({
  *   variables: {
- *      calloutsSetID: // value for 'calloutsSetID'
- *      calloutIds: // value for 'calloutIds'
+ *      innovationFlowID: // value for 'innovationFlowID'
+ *      stateIDs: // value for 'stateIDs'
  *   },
  * });
  */
-export function useUpdateCalloutsSortOrderMutation(
+export function useUpdateInnovationFlowStatesSortOrderMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateCalloutsSortOrderMutation,
-    SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+    SchemaTypes.UpdateInnovationFlowStatesSortOrderMutation,
+    SchemaTypes.UpdateInnovationFlowStatesSortOrderMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.UpdateCalloutsSortOrderMutation,
-    SchemaTypes.UpdateCalloutsSortOrderMutationVariables
-  >(UpdateCalloutsSortOrderDocument, options);
+    SchemaTypes.UpdateInnovationFlowStatesSortOrderMutation,
+    SchemaTypes.UpdateInnovationFlowStatesSortOrderMutationVariables
+  >(UpdateInnovationFlowStatesSortOrderDocument, options);
 }
-export type UpdateCalloutsSortOrderMutationHookResult = ReturnType<typeof useUpdateCalloutsSortOrderMutation>;
-export type UpdateCalloutsSortOrderMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutsSortOrderMutation>;
-export type UpdateCalloutsSortOrderMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateCalloutsSortOrderMutation,
-  SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+export type UpdateInnovationFlowStatesSortOrderMutationHookResult = ReturnType<
+  typeof useUpdateInnovationFlowStatesSortOrderMutation
+>;
+export type UpdateInnovationFlowStatesSortOrderMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowStatesSortOrderMutation>;
+export type UpdateInnovationFlowStatesSortOrderMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationFlowStatesSortOrderMutation,
+  SchemaTypes.UpdateInnovationFlowStatesSortOrderMutationVariables
 >;
 export const ActivityCreatedDocument = gql`
   subscription activityCreated($input: ActivityCreatedSubscriptionInput!) {
@@ -7278,6 +7281,55 @@ export type DeleteCalloutMutationResult = Apollo.MutationResult<SchemaTypes.Dele
 export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutMutation,
   SchemaTypes.DeleteCalloutMutationVariables
+>;
+export const UpdateCalloutsSortOrderDocument = gql`
+  mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID!]!) {
+    updateCalloutsSortOrder(sortOrderData: { calloutsSetID: $calloutsSetID, calloutIDs: $calloutIds }) {
+      id
+      sortOrder
+    }
+  }
+`;
+export type UpdateCalloutsSortOrderMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutsSortOrderMutation,
+  SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutsSortOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutsSortOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutsSortOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutsSortOrderMutation, { data, loading, error }] = useUpdateCalloutsSortOrderMutation({
+ *   variables: {
+ *      calloutsSetID: // value for 'calloutsSetID'
+ *      calloutIds: // value for 'calloutIds'
+ *   },
+ * });
+ */
+export function useUpdateCalloutsSortOrderMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutsSortOrderMutation,
+    SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCalloutsSortOrderMutation,
+    SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+  >(UpdateCalloutsSortOrderDocument, options);
+}
+export type UpdateCalloutsSortOrderMutationHookResult = ReturnType<typeof useUpdateCalloutsSortOrderMutation>;
+export type UpdateCalloutsSortOrderMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutsSortOrderMutation>;
+export type UpdateCalloutsSortOrderMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutsSortOrderMutation,
+  SchemaTypes.UpdateCalloutsSortOrderMutationVariables
 >;
 export const CalloutsSetAuthorizationDocument = gql`
   query CalloutsSetAuthorization($calloutsSetId: UUID!) {
