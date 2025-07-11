@@ -76,11 +76,13 @@ mutation CreateTemplateFromSpace(
   $profileData: CreateProfileInput!
   $tags: [String!]
   $spaceId: UUID!
+  $recursive: Boolean
 ) {
   createTemplateFromSpace(
     templateData: {
       templatesSetID: $templatesSetId
       profileData: $profileData
+      recursive: $recursive,
       tags: $tags
       spaceID: $spaceId
     }

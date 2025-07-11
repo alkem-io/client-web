@@ -2060,8 +2060,6 @@ export type CreateSpaceOnAccountInput = {
   licensePlanID?: InputMaybe<Scalars['UUID']['input']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
-  /** Pick up a different platform template. */
-  platformTemplate?: InputMaybe<TemplateDefaultType>;
   settings?: InputMaybe<CreateSpaceSettingsInput>;
   /** The Template to use for instantiating the Collaboration. */
   spaceTemplateID?: InputMaybe<Scalars['UUID']['input']>;
@@ -2104,8 +2102,6 @@ export type CreateSubspaceInput = {
   collaborationData: CreateCollaborationOnSpaceInput;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
-  /** Pick up a different platform template. */
-  platformTemplate?: InputMaybe<TemplateDefaultType>;
   settings?: InputMaybe<CreateSpaceSettingsInput>;
   spaceID: Scalars['UUID']['input'];
   /** The Template to use for instantiating the Collaboration. */
@@ -2138,6 +2134,7 @@ export type CreateTemplateContentSpaceInput = {
   level: SpaceLevel;
   /** Create the settings for the Space. */
   settings: CreateSpaceSettingsInput;
+  subspaces?: InputMaybe<Array<CreateTemplateContentSpaceInput>>;
 };
 
 export type CreateTemplateFromContentSpaceOnTemplatesSetInput = {
@@ -2154,6 +2151,8 @@ export type CreateTemplateFromSpaceOnTemplatesSetInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   profileData: CreateProfileInput;
+  /** Whether to reproduce the hierarchy or just the space. */
+  recursive?: InputMaybe<Scalars['Boolean']['input']>;
   /** The ID of the Space to use as the content for the Template. */
   spaceID: Scalars['UUID']['input'];
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -6714,6 +6713,8 @@ export type TemplateContentSpace = {
   level: SpaceLevel;
   /** The settings for this TemplateContentSpace. */
   settings: SpaceSettings;
+  /** The template subspaces for the Template Content Space. */
+  subspaces: Array<TemplateContentSpace>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -20717,6 +20718,16 @@ export type SpaceAboutLightFragment = {
   guidelines: { __typename?: 'CommunityGuidelines'; id: string };
 };
 
+export type SubspaceVisualsFragment = {
+  __typename?: 'Profile';
+  avatar?:
+    | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+    | undefined;
+  cardBanner?:
+    | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+    | undefined;
+};
+
 export type SpaceAboutMinimalFragment = {
   __typename?: 'SpaceAbout';
   id: string;
@@ -20727,6 +20738,25 @@ export type SpaceAboutMinimalUrlFragment = {
   __typename?: 'SpaceAbout';
   id: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
+};
+
+export type SpaceAboutTileFragment = {
+  __typename?: 'SpaceAbout';
+  id: string;
+  isContentPublic: boolean;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    tagline?: string | undefined;
+    url: string;
+    avatar?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+      | undefined;
+    cardBanner?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+      | undefined;
+  };
 };
 
 export type SubspacePageBannerQueryVariables = Exact<{
@@ -25136,6 +25166,40 @@ export type TemplateContentQuery = {
                     allowEventsFromSubspaces: boolean;
                   };
                 };
+                subspaces: Array<{
+                  __typename?: 'TemplateContentSpace';
+                  id: string;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    isContentPublic: boolean;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      tagline?: string | undefined;
+                      url: string;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
+                }>;
               }
             | undefined;
         }
@@ -25222,6 +25286,7 @@ export type SpaceTemplateContentQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
+            isContentPublic: boolean;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -25246,6 +25311,12 @@ export type SpaceTemplateContentQuery = {
                 name: string;
                 alternativeText?: string | undefined;
               }>;
+              avatar?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
+              cardBanner?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
             };
           };
           settings: {
@@ -25550,6 +25621,28 @@ export type SpaceTemplateContentFragment = {
       allowEventsFromSubspaces: boolean;
     };
   };
+  subspaces: Array<{
+    __typename?: 'TemplateContentSpace';
+    id: string;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      isContentPublic: boolean;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        tagline?: string | undefined;
+        url: string;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+      };
+    };
+  }>;
 };
 
 export type SpaceTemplateContent_CollaborationFragment = {
@@ -25657,6 +25750,25 @@ export type SpaceTemplateContent_SettingsFragment = {
     allowMembersToCreateSubspaces: boolean;
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
+  };
+};
+
+export type SpaceTemplateContent_SubspacesFragment = {
+  __typename?: 'SpaceAbout';
+  id: string;
+  isContentPublic: boolean;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    tagline?: string | undefined;
+    url: string;
+    avatar?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+      | undefined;
+    cardBanner?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+      | undefined;
   };
 };
 
@@ -25948,6 +26060,7 @@ export type CreateTemplateFromSpaceMutationVariables = Exact<{
   profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
   spaceId: Scalars['UUID']['input'];
+  recursive?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type CreateTemplateFromSpaceMutation = {

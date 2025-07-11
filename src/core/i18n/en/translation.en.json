@@ -1074,8 +1074,10 @@
         "selectAnother": "Update Collaboration from another Space"
       },
       "preview": {
-        "info": "Also included: About information & Settings"
-      }
+        "info": "Always included: About information & Settings"
+      },
+      "recursive": "Also include Subspaces of the selected Space in the template",
+      "includesSubspaces": "This template also includes these subspaces:"
     },
     "communityGuidelinesTemplates": {
       "name": "$t(common.enums.templateType.COMMUNITY_GUIDELINES)",
