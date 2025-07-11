@@ -9,7 +9,7 @@ interface SubspaceCreationDialogProps {
   open: boolean;
   icon?: ReactElement<SvgIconProps>;
   spaceDisplayName: string;
-  onClose: () => void;
+  onClose?: () => void;
   onCreate: (value: SpaceFormValues) => Promise<void>;
   formComponent: React.ComponentType<SpaceCreationForm>;
 }

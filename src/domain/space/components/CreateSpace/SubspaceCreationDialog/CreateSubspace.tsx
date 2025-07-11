@@ -7,25 +7,29 @@ import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hoo
 import { CreateSubspaceForm } from './CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';
 import SpaceL1Icon2 from '../../../icons/SpaceL1Icon2';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 export interface CreateSubspaceProps {
-  isVisible: boolean;
-  onClose: () => void;
+  open?: boolean;
+  onClose?: () => void;
   parentSpaceId: string | undefined;
 }
 
-export const CreateSubspace = ({ isVisible = false, onClose, parentSpaceId = '' }: CreateSubspaceProps) => {
+export const CreateSubspace = ({ open = false, onClose, parentSpaceId }: CreateSubspaceProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const ensurePresence = useEnsurePresence();
 
   const { createSubspace } = useSubspaceCreation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: parentSpaceId })],
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: parentSpaceId! })],
   });
 
   const handleCreate = useCallback(
     async (value: SpaceFormValues) => {
+      const spaceId = ensurePresence(parentSpaceId);
+
       const result = await createSubspace({
-        spaceID: parentSpaceId,
+        spaceID: spaceId,
         about: {
           profile: {
             displayName: value.displayName,
@@ -41,11 +45,9 @@ export const CreateSubspace = ({ isVisible = false, onClose, parentSpaceId = '' 
         spaceTemplateId: value.spaceTemplateId,
       });
 
-      if (!result) {
-        return;
-      }
-      navigate(result.about?.profile?.url!);
-      onClose();
+      const spaceUrl = ensurePresence(result?.about?.profile?.url, 'Space URL');
+      navigate(spaceUrl);
+      onClose?.();
     },
     [navigate, createSubspace, parentSpaceId]
   );
@@ -53,7 +55,7 @@ export const CreateSubspace = ({ isVisible = false, onClose, parentSpaceId = '' 
   return (
     <SubspaceCreationDialog
       icon={<SpaceL1Icon2 fill="primary" />}
-      open={isVisible}
+      open={open}
       spaceDisplayName={t('common.subspace')}
       onClose={onClose}
       onCreate={handleCreate}

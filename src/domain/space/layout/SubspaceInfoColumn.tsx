@@ -145,7 +145,7 @@ export const SubspaceInfoColumn = () => {
         <DashboardUpdatesSection communityId={communityId} shareUrl={buildUpdatesUrl(about?.profile?.url ?? '')} />
       )}
       <CreateSubspace
-        isVisible={createSpaceState.isDialogVisible}
+        open={createSpaceState.isDialogVisible}
         onClose={onCreateSubspaceClose}
         parentSpaceId={createSpaceState.parentSpaceId}
       />

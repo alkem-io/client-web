@@ -89,7 +89,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
       />
 
       <CreateSubspace
-        isVisible={createSpaceState.isDialogVisible}
+        open={createSpaceState.isDialogVisible}
         onClose={onCreateSubspaceClose}
         parentSpaceId={createSpaceState.parentSpaceId}
       />
