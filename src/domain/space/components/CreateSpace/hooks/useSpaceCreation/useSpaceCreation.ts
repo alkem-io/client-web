@@ -6,6 +6,7 @@ import {
 import { useCallback } from 'react';
 import useUploadVisualsOnCreate from '../useUploadVisualsOnCreate/useUploadVisualsOnCreate';
 import { useTranslation } from 'react-i18next';
+import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
 
 interface SpaceCreationInput {
   accountId: string;
@@ -18,14 +19,8 @@ interface SpaceCreationInput {
       tagline: string;
       description?: string;
       visuals: {
-        avatar: {
-          file: File | undefined;
-          altText?: string;
-        };
-        cardBanner: {
-          file: File | undefined;
-          altText?: string;
-        };
+        banner?: VisualUploadModel;
+        cardBanner?: VisualUploadModel;
       };
       tags: string[];
     };
@@ -52,7 +47,7 @@ export const useSpaceCreation = (mutationOptions: CreateSpaceMutationOptions = {
   const handleCreateSpace = useCallback(
     async (value: SpaceCreationInput) => {
       const includeVisuals =
-        Boolean(value.about.profile.visuals.cardBanner.file) || Boolean(value.about.profile.visuals.avatar.file);
+        Boolean(value.about.profile.visuals.banner?.file) || Boolean(value.about.profile.visuals.cardBanner?.file);
 
       const { data } = await createSpace({
         variables: {

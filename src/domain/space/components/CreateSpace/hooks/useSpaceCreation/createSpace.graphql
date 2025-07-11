@@ -3,6 +3,10 @@ mutation CreateSpace($spaceData: CreateSpaceOnAccountInput!, $includeVisuals: Bo
     id
     about {
       ...SpaceAboutLight
+      profile {
+        id
+        url # always retrieve the url to be able to redirect to the space
+      }
       profile @include(if: $includeVisuals) { # retrieved to upload the visuals directly after Space creation
         ...ProfileVisuals
       }

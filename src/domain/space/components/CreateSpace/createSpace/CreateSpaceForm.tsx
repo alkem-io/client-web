@@ -22,9 +22,9 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { EntityVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
 
-const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
+const FormikEffect = FormikEffectFactory<CreateSpaceFormValues>();
 
-type CreateSubspaceFormValues = Pick<
+type CreateSpaceFormValues = Pick<
   SpaceFormValues,
   | 'displayName'
   | 'tagline'
@@ -36,20 +36,20 @@ type CreateSubspaceFormValues = Pick<
   | 'visuals'
 >;
 
-interface CreateSubspaceFormProps extends SpaceCreationForm {}
+interface CreateSpaceFormProps extends SpaceCreationForm {}
 
-export const CreateSubspaceForm = ({
+export const CreateSpaceForm = ({
   isSubmitting,
   onValidChanged,
   onChanged,
-}: PropsWithChildren<CreateSubspaceFormProps>) => {
+}: PropsWithChildren<CreateSpaceFormProps>) => {
   const { t } = useTranslation();
   const { isSmallScreen } = useScreenSize();
   const [templateVisuals, setTemplateVisuals] = useState<EntityVisualUrls>({});
 
   const validationRequiredString = t('forms.validations.required');
 
-  const handleChanged = (value: CreateSubspaceFormValues) =>
+  const handleChanged = (value: CreateSpaceFormValues) =>
     onChanged({
       displayName: value.displayName,
       tagline: value.tagline,
@@ -65,7 +65,7 @@ export const CreateSubspaceForm = ({
     setTemplateVisuals(visuals);
   };
 
-  const initialValues: CreateSubspaceFormValues = {
+  const initialValues: CreateSpaceFormValues = {
     displayName: '',
     tagline: '',
     description: '',
@@ -151,10 +151,10 @@ export const CreateSubspaceForm = ({
           <Gutters padding={theme => `${gutters()(theme)} 0 0 0`}>
             <PageContentBlock sx={{ flexDirection: isSmallScreen ? 'column' : 'row', justifyContent: 'space-between' }}>
               <FormikVisualUpload
-                name="visuals.avatar"
-                visualType={VisualType.Avatar}
+                name="visuals.banner"
+                visualType={VisualType.Banner}
                 flex={1}
-                initialVisualUrl={templateVisuals.avatarUrl}
+                initialVisualUrl={templateVisuals.bannerUrl}
               />
               <FormikVisualUpload
                 name="visuals.cardBanner"

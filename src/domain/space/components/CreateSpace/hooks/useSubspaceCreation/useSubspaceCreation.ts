@@ -26,8 +26,8 @@ interface SubspaceCreationInput {
       tagline: string;
       description?: string;
       visuals: {
-        avatar: VisualUploadModel;
-        cardBanner: VisualUploadModel;
+        avatar?: VisualUploadModel;
+        cardBanner?: VisualUploadModel;
       };
       tags: string[];
     };
@@ -89,7 +89,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
   const createSubspace = useCallback(
     async (value: SubspaceCreationInput) => {
       const includeVisuals =
-        Boolean(value.about.profile.visuals.cardBanner.file) || Boolean(value.about.profile.visuals.avatar.file);
+        Boolean(value.about.profile.visuals.avatar?.file) || Boolean(value.about.profile.visuals.cardBanner?.file);
 
       const { data } = await createSubspaceLazy({
         variables: {

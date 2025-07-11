@@ -24,7 +24,7 @@ import NameIdField from '@/core/utils/nameId/NameIdField';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useCreateSpaceMutation, useRestrictedSpaceNamesQuery } from '@/core/apollo/generated/apollo-hooks';
+// import { useCreateSpaceMutation, useRestrictedSpaceNamesQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
 import { TagCategoryValues, info, error as logError } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
@@ -36,6 +36,7 @@ import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWi
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { useSpaceCreation } from '../hooks/useSpaceCreation/useSpaceCreation';
 
 interface FormValues {
   name: string;
@@ -55,7 +56,11 @@ type CreateSpaceDialogProps = {
   withRedirectOnClose?: boolean;
   onClose?: () => void;
 };
-
+/**
+ *
+ * @deprecated //!! remove
+ * @returns
+ */
 const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: CreateSpaceDialogProps) => {
   const redirectToHome = useBackToStaticPath(ROUTE_HOME);
   const { t } = useTranslation();
@@ -101,6 +106,8 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
     licensePlanId: '',
   };
 
+  const { createSpace } = useSpaceCreation();
+
   const { data } = useRestrictedSpaceNamesQuery();
   const restrictedSpaceNamesValues = data?.restrictedSpaceNames ?? [];
 
@@ -117,7 +124,6 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
     tagsets: tagsetsSegmentSchema,
   });
 
-  const [CreateNewSpace] = useCreateSpaceMutation();
   const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
     if (!accountId) {
       return;
@@ -135,7 +141,7 @@ const CreateSpaceDialog = ({ withRedirectOnClose = true, onClose, account }: Cre
     }
 
     setCreatingLoading(true);
-    const { data: newSpace } = await CreateNewSpace({
+    const { data: newSpace } = await createSpace({
       variables: {
         spaceData: {
           accountID: accountId,

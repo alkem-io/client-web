@@ -20961,11 +20961,11 @@ export type CreateSpaceMutation = {
       __typename?: 'SpaceAbout';
       id: string;
       isContentPublic: boolean;
-      profile?: {
+      profile: {
         __typename?: 'Profile';
         id: string;
-        displayName: string;
         url: string;
+        displayName: string;
         tagline?: string | undefined;
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;

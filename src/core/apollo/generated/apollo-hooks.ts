@@ -16455,6 +16455,10 @@ export const CreateSpaceDocument = gql`
       id
       about {
         ...SpaceAboutLight
+        profile {
+          id
+          url
+        }
         profile @include(if: $includeVisuals) {
           ...ProfileVisuals
         }

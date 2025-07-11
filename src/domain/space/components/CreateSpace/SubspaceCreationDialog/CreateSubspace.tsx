@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
-import { SubspaceCreationDialog } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/SubspaceCreationDialog';
-import { SpaceFormValues } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspaceForm.model';
+import { SpaceCreationDialog } from '../common/SpaceCreationDialog';
+import { SpaceFormValues } from '../common/SpaceCreationDialog.models';
 import { refetchSubspacesInSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CreateSubspaceForm } from './CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';
@@ -68,10 +68,10 @@ export const CreateSubspace = ({ open = false, onClose, parentSpaceId, onSubspac
   );
 
   return (
-    <SubspaceCreationDialog
+    <SpaceCreationDialog
       icon={<SpaceL1Icon2 fill="primary" />}
       open={open}
-      spaceDisplayName={t('common.subspace')}
+      entityName={t('common.subspace')}
       onClose={onClose}
       onCreate={handleCreate}
       formComponent={CreateSubspaceForm}
