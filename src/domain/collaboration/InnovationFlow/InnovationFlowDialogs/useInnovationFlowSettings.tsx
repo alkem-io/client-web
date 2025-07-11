@@ -4,12 +4,16 @@ import {
   useUpdateCalloutFlowStateMutation,
   useUpdateCalloutsSortOrderMutation,
   useUpdateInnovationFlowMutation,
-  useUpdateInnovationFlowCurrentStateMutation,
-  useUpdateInnovationFlowStatesMutation,
-  useUpdateInnovationFlowSingleStateMutation,
+  useUpdateInnovationFlowSelectedStateMutation,
+  useUpdateInnovationFlowStateMutation,
+  useCreateStateOnInnovationFlowMutation,
   useUpdateCollaborationFromSpaceTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CreateStateOnInnovationFlowInput,
+  UpdateProfileInput,
+} from '@/core/apollo/generated/graphql-schema';
 import { InnovationFlowStateModel } from '../models/InnovationFlowState';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
@@ -81,7 +85,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     [collaboration?.calloutsSet.callouts]
   );
 
-  const [updateInnovationFlowCurrentState, { loading: changingState }] = useUpdateInnovationFlowCurrentStateMutation({
+  const [updateInnovationFlowCurrentState, { loading: changingState }] = useUpdateInnovationFlowSelectedStateMutation({
     refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
   });
   const handleInnovationFlowCurrentStateChange = (newState: string) => {
@@ -195,11 +199,13 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
   /**
    * if stateBefore is undefined, the new state will be appended to the end of the list
    */
-  const handleCreateState = (newState: InnovationFlowStateModel, stateBefore?: string) => {
+  const [CreateStateOnInnovationFlow] = useCreateStateOnInnovationFlowMutation();
+  const handleCreateState = async (newState: InnovationFlowStateModel, stateBefore?: string) => {
     const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
     const states = requiredInnovationFlow.states;
     const stateBeforeIndex = !stateBefore ? -1 : states.findIndex(state => state.displayName === stateBefore);
 
+    // TODO: determine the sort order to use, which will be either the last one (so do not specify it), or give an exact position
     const nextStates =
       stateBeforeIndex === -1
         ? [...states, newState] // if stateBefore not found or undefined, just append the newState to the end
@@ -208,18 +214,28 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     if (nextStates.length > requiredInnovationFlow.settings.maximumNumberOfStates) {
       throw new Error('Maximum number of states reached.');
     }
-    return updateInnovationFlowStates(nextStates);
+    const stateData: CreateStateOnInnovationFlowInput = {
+      innovationFlowID: requiredInnovationFlow.id,
+      displayName: newState.displayName,
+      description: newState.description,
+      settings: newState.settings,
+    };
+
+    await CreateStateOnInnovationFlow({
+      variables: {
+        stateData,
+      },
+    });
   };
 
-  const [updateInnovationFlowState] = useUpdateInnovationFlowSingleStateMutation();
+  const [updateInnovationFlowState] = useUpdateInnovationFlowStateMutation();
   const handleEditState = async (oldState: InnovationFlowStateModel, newState: InnovationFlowStateModel) => {
-    const innovationFlowId = ensurePresence(innovationFlow?.id, 'Innovation Flow Id');
-
     await updateInnovationFlowState({
       variables: {
-        innovationFlowId,
-        stateName: oldState.displayName,
-        stateUpdatedData: newState,
+        innovationFlowStateId,
+        displayName: oldState.displayName,
+        description: oldState.description,
+        settings: oldState.settings,
       },
     });
     await Promise.all(
