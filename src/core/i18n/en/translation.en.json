@@ -2159,8 +2159,7 @@
         "notifications": {
           "subsubspace-created": "Subspace created successfully.",
           "subsubspace-removed": "Subspace removed successfully.",
-          "subsubspace-updated": "Subspace updated successfully.",
-          "error-creating-subsubspace": "An error occurred while creating the Subspace."
+          "subsubspace-updated": "Subspace updated successfully."
         }
       },
       "subspace": {

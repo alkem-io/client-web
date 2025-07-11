@@ -3,6 +3,10 @@ mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean =
     ...SubspaceCard
     about {
       id
+      profile {
+        id
+        url # Always request the URL at least to navigate to the new subspace
+      }
       profile @include(if: $includeVisuals) {
         id
         cardBanner: visual(type: CARD) {

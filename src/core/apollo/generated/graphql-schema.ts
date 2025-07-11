@@ -20759,6 +20759,53 @@ export type SpaceAboutTileFragment = {
   };
 };
 
+export type CreateSubspaceMutationVariables = Exact<{
+  input: CreateSubspaceInput;
+  includeVisuals?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+export type CreateSubspaceMutation = {
+  __typename?: 'Mutation';
+  createSubspace: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      isContentPublic: boolean;
+      why?: string | undefined;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        url: string;
+        displayName: string;
+        tagline?: string | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              tags: Array<string>;
+              name: string;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      membership: {
+        __typename?: 'SpaceAboutMembership';
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      };
+    };
+  };
+};
+
 export type SubspacePageBannerQueryVariables = Exact<{
   level0Space: Scalars['UUID']['input'];
   spaceId: Scalars['UUID']['input'];
@@ -21772,53 +21819,6 @@ export type SpacePermissionsAndEntitlementsQuery = {
             | undefined;
         }
       | undefined;
-  };
-};
-
-export type CreateSubspaceMutationVariables = Exact<{
-  input: CreateSubspaceInput;
-  includeVisuals?: InputMaybe<Scalars['Boolean']['input']>;
-}>;
-
-export type CreateSubspaceMutation = {
-  __typename?: 'Mutation';
-  createSubspace: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      isContentPublic: boolean;
-      why?: string | undefined;
-      profile?: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        url: string;
-        tagline?: string | undefined;
-        cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-          | undefined;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              tags: Array<string>;
-              name: string;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
-      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      membership: {
-        __typename?: 'SpaceAboutMembership';
-        myMembershipStatus?: CommunityMembershipStatus | undefined;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      };
-    };
   };
 };
 

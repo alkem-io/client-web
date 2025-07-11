@@ -8,20 +8,31 @@ import { CreateSubspaceForm } from './CreateSubspaceForm';
 import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';
 import SpaceL1Icon2 from '../../../icons/SpaceL1Icon2';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import { Identifiable } from '@/core/utils/Identifiable';
+
+type SubspaceCreatedResult = Identifiable & {
+  about: {
+    profile: {
+      url: string;
+    };
+  };
+};
 
 export interface CreateSubspaceProps {
   open?: boolean;
   onClose?: () => void;
   parentSpaceId: string | undefined;
+  onSubspaceCreated?: (subspace: SubspaceCreatedResult) => void;
 }
 
-export const CreateSubspace = ({ open = false, onClose, parentSpaceId }: CreateSubspaceProps) => {
+export const CreateSubspace = ({ open = false, onClose, parentSpaceId, onSubspaceCreated }: CreateSubspaceProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const ensurePresence = useEnsurePresence();
 
   const { createSubspace } = useSubspaceCreation({
     refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: parentSpaceId! })],
+    awaitRefetchQueries: true,
   });
 
   const handleCreate = useCallback(
@@ -34,7 +45,7 @@ export const CreateSubspace = ({ open = false, onClose, parentSpaceId }: CreateS
           profile: {
             displayName: value.displayName,
             tagline: value.tagline,
-            description: value.description ?? '',
+            description: value.description,
             visuals: value.visuals,
             tags: value.tags,
           },
@@ -46,8 +57,12 @@ export const CreateSubspace = ({ open = false, onClose, parentSpaceId }: CreateS
       });
 
       const spaceUrl = ensurePresence(result?.about?.profile?.url, 'Space URL');
-      navigate(spaceUrl);
       onClose?.();
+      if (onSubspaceCreated && result) {
+        onSubspaceCreated(result);
+      } else {
+        navigate(spaceUrl);
+      }
     },
     [navigate, createSubspace, parentSpaceId]
   );

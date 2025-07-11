@@ -16194,6 +16194,79 @@ export type SpaceAboutFullQueryResult = Apollo.QueryResult<
 export function refetchSpaceAboutFullQuery(variables: SchemaTypes.SpaceAboutFullQueryVariables) {
   return { query: SpaceAboutFullDocument, variables: variables };
 }
+export const CreateSubspaceDocument = gql`
+  mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean = false) {
+    createSubspace(subspaceData: $input) {
+      ...SubspaceCard
+      about {
+        id
+        profile {
+          id
+          url
+        }
+        profile @include(if: $includeVisuals) {
+          id
+          cardBanner: visual(type: CARD) {
+            id
+            uri
+            name
+          }
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+            name
+          }
+          tagset {
+            ...TagsetDetails
+          }
+        }
+      }
+    }
+  }
+  ${SubspaceCardFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export type CreateSubspaceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateSubspaceMutation,
+  SchemaTypes.CreateSubspaceMutationVariables
+>;
+
+/**
+ * __useCreateSubspaceMutation__
+ *
+ * To run a mutation, you first call `useCreateSubspaceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSubspaceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSubspaceMutation, { data, loading, error }] = useCreateSubspaceMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *      includeVisuals: // value for 'includeVisuals'
+ *   },
+ * });
+ */
+export function useCreateSubspaceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateSubspaceMutation,
+    SchemaTypes.CreateSubspaceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateSubspaceMutation, SchemaTypes.CreateSubspaceMutationVariables>(
+    CreateSubspaceDocument,
+    options
+  );
+}
+export type CreateSubspaceMutationHookResult = ReturnType<typeof useCreateSubspaceMutation>;
+export type CreateSubspaceMutationResult = Apollo.MutationResult<SchemaTypes.CreateSubspaceMutation>;
+export type CreateSubspaceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateSubspaceMutation,
+  SchemaTypes.CreateSubspaceMutationVariables
+>;
 export const SubspacePageBannerDocument = gql`
   query SubspacePageBanner($level0Space: UUID!, $spaceId: UUID!) {
     lookup {
@@ -17325,75 +17398,6 @@ export function refetchSpacePermissionsAndEntitlementsQuery(
 ) {
   return { query: SpacePermissionsAndEntitlementsDocument, variables: variables };
 }
-export const CreateSubspaceDocument = gql`
-  mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean = false) {
-    createSubspace(subspaceData: $input) {
-      ...SubspaceCard
-      about {
-        id
-        profile @include(if: $includeVisuals) {
-          id
-          cardBanner: visual(type: CARD) {
-            id
-            uri
-            name
-          }
-          avatar: visual(type: AVATAR) {
-            id
-            uri
-            name
-          }
-          tagset {
-            ...TagsetDetails
-          }
-        }
-      }
-    }
-  }
-  ${SubspaceCardFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export type CreateSubspaceMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateSubspaceMutation,
-  SchemaTypes.CreateSubspaceMutationVariables
->;
-
-/**
- * __useCreateSubspaceMutation__
- *
- * To run a mutation, you first call `useCreateSubspaceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSubspaceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createSubspaceMutation, { data, loading, error }] = useCreateSubspaceMutation({
- *   variables: {
- *      input: // value for 'input'
- *      includeVisuals: // value for 'includeVisuals'
- *   },
- * });
- */
-export function useCreateSubspaceMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateSubspaceMutation,
-    SchemaTypes.CreateSubspaceMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateSubspaceMutation, SchemaTypes.CreateSubspaceMutationVariables>(
-    CreateSubspaceDocument,
-    options
-  );
-}
-export type CreateSubspaceMutationHookResult = ReturnType<typeof useCreateSubspaceMutation>;
-export type CreateSubspaceMutationResult = Apollo.MutationResult<SchemaTypes.CreateSubspaceMutation>;
-export type CreateSubspaceMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateSubspaceMutation,
-  SchemaTypes.CreateSubspaceMutationVariables
->;
 export const SubspacePageDocument = gql`
   query SubspacePage($spaceId: UUID!) {
     lookup {

@@ -1,15 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import useNavigate from '@/core/routing/useNavigate';
-import { SubspaceCreationDialog } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/SubspaceCreationDialog';
-import { SpaceFormValues } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/SubspaceCreationForm';
-import { CreateSubspaceForm } from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspaceForm';
-import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';
+import { useMemo, useState } from 'react';
 import { useSpace } from '../../../context/useSpace';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
-import SpaceL1Icon2 from '@/domain/space/icons/SpaceL1Icon2';
 import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -17,11 +10,9 @@ import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCrea
 import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
 import SubspaceView from '@/domain/space/components/subspaces/SubspaceView';
+import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 
 const SpaceSubspacesPage = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-
   const {
     urlInfo,
     flowStateForNewCallouts: flowStateForTab,
@@ -35,38 +26,6 @@ const SpaceSubspacesPage = () => {
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const { createSubspace } = useSubspaceCreation();
-
-  const handleCreate = useCallback(
-    async (value: SpaceFormValues) => {
-      if (!spaceId) {
-        return;
-      }
-      const result = await createSubspace({
-        spaceID: spaceId,
-        about: {
-          profile: {
-            displayName: value.displayName,
-            description: value.description,
-            tagline: value.tagline,
-            visuals: value.visuals,
-            tags: value.tags,
-          },
-          why: value.why,
-        },
-        addTutorialCallouts: value.addTutorialCallouts,
-        addCallouts: value.addCallouts,
-        spaceTemplateId: value.spaceTemplateId,
-      });
-
-      if (!result) {
-        return;
-      }
-
-      navigate(result.about.profile?.url!);
-    },
-    [navigate, createSubspace, spaceId]
-  );
   const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
@@ -122,14 +81,7 @@ const SpaceSubspacesPage = () => {
       childEntityCreateAccess={permissions.canCreateSubspaces}
       childEntityOnCreate={() => setCreateDialogOpen(true)}
       createSubentityDialog={
-        <SubspaceCreationDialog
-          open={isCreateDialogOpen}
-          icon={<SpaceL1Icon2 fill="primary" />}
-          spaceDisplayName={t('common.subspace')}
-          onClose={() => setCreateDialogOpen(false)}
-          onCreate={handleCreate}
-          formComponent={CreateSubspaceForm}
-        />
+        <CreateSubspace open={isCreateDialogOpen} onClose={() => setCreateDialogOpen(false)} parentSpaceId={spaceId} />
       }
       children={
         <CalloutsGroupView
