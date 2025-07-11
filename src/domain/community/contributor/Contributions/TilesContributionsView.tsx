@@ -35,6 +35,7 @@ const ContributionItem = ({ contributionItem }) => {
     <SpaceTile
       key={contributionItem.id}
       space={loading || !details ? undefined : { about: details.about, level: details.level }}
+      levelZeroSpaceId={contributionItem.levelZeroSpaceId}
     />
   );
 };

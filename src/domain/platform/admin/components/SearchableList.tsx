@@ -16,6 +16,7 @@ export interface SearchableListProps<
   data: Item[];
   getActions?: (item: SearchableListItem) => React.ReactNode | undefined;
   loading?: boolean;
+  levelZeroSpaceId?: string;
 }
 
 export interface SearchableListItem {
@@ -37,6 +38,7 @@ export const SearchableList = <
   data = [],
   loading,
   getActions,
+  levelZeroSpaceId,
 }: SearchableListProps<ItemViewProps, Item>) => {
   const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
@@ -77,6 +79,7 @@ export const SearchableList = <
       ) : (
         slicedData.map(item => (
           <SpaceCardHorizontal
+            levelZeroSpaceId={levelZeroSpaceId}
             key={item.id}
             size="medium"
             space={{ about: { profile: item.profile }, level: item.level }}

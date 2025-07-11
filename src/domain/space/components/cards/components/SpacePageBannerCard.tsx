@@ -8,11 +8,18 @@ export interface SpacePageBannerCardProps extends PageBannerCardWrapperProps {
   tagline: string;
   avatar: Visual | undefined;
   tags: string[] | undefined;
+  levelZeroSpaceId?: string;
 }
 
-const SpacePageBannerCard = ({ displayName, tagline, avatar, ...props }: SpacePageBannerCardProps) => (
+const SpacePageBannerCard = ({
+  displayName,
+  tagline,
+  avatar,
+  levelZeroSpaceId,
+  ...props
+}: SpacePageBannerCardProps) => (
   <PageBannerCardWithVisual
-    visual={<SpaceAvatar src={avatar?.uri} />}
+    visual={<SpaceAvatar src={avatar?.uri} levelZeroSpaceId={levelZeroSpaceId} />}
     title={displayName}
     subtitle={tagline}
     {...props}

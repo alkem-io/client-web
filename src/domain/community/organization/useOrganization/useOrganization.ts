@@ -108,6 +108,7 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
   // Return all contributions, filter by role in the view if needed
   const contributions = useMemo(() => {
     const spaceContributions = (orgRolesData?.rolesOrganization?.spaces ?? []).map<SpaceHostedItem>(x => ({
+      levelZeroSpaceId: x.id,
       spaceID: x.id,
       spaceLevel: SpaceLevel.L0,
       id: x.id,
@@ -119,6 +120,7 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
     const subspaceContributions =
       orgRolesData?.rolesOrganization?.spaces.flatMap<SpaceHostedItem>(h =>
         h.subspaces.map<SpaceHostedItem>(c => ({
+          levelZeroSpaceId: h.id,
           spaceID: c.id,
           spaceLevel: c.level,
           id: c.id,

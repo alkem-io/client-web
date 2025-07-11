@@ -11,7 +11,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { useTranslation } from 'react-i18next';
 import { env } from '@/main/env';
-import { defaultVisualUrls } from '../../../icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '../../../icons/defaultVisualUrls';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useInnovationHubSpaceBannerRibbon from '@/domain/innovationHub/InnovationHubSpaceBannerRibbon/useInnovationHubSpaceBannerRibbon';
@@ -179,7 +179,7 @@ const SpacePageBanner = ({ level, isAdmin, loading: dataLoading = false, waterma
       </TopNotices>
       <Box>
         <ImageBlurredSides
-          src={profile?.banner?.uri || defaultVisualUrls[VisualType.Banner]}
+          src={profile?.banner?.uri || getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
           alt={t('visuals-alt-text.banner.page.text', { altText: profile?.banner?.alternativeText })}
           onLoad={() => setImageLoading(false)}
           onError={imageLoadError}

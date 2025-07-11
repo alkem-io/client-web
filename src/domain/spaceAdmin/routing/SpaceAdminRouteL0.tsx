@@ -83,6 +83,7 @@ const SpaceAdminL0Route: FC = () => {
     spaceId: spaceId,
     templatesEnabled: true,
     level: SpaceLevel.L0,
+    levelZeroSpaceId: spaceId,
   };
 
   return (

@@ -510,6 +510,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               {!loading &&
                 account?.spaces.map(space => (
                   <SpaceCardHorizontal
+                    levelZeroSpaceId={space.id}
                     key={space.id}
                     space={{ about: space.about, level: space.level, license: space.license }}
                     size="medium"

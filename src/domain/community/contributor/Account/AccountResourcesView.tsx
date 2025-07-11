@@ -86,11 +86,12 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
       {accountResources?.spaces && accountResources?.spaces.length > 0 && (
         <PageContentBlockGrid disablePadding>
           <ScrollableCardsLayoutContainer containerProps={{ flex: 1 }}>
-            {accountResources.spaces?.slice(0, visibleSpacesCount).map(contributionItem => (
+            {accountResources.spaces?.slice(0, visibleSpacesCount).map(space => (
               <SpaceTile
-                key={contributionItem.id}
+                key={space.id}
+                levelZeroSpaceId={space.id}
                 space={{
-                  about: contributionItem.about,
+                  about: space.about,
                   level: SpaceLevel.L0,
                 }}
               />

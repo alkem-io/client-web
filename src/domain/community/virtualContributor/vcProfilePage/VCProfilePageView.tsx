@@ -149,6 +149,8 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
                 <Gutters disableGap disablePadding paddingTop={1}>
                   <SpaceCardHorizontal
                     space={{ about: { profile: rest?.bokProfile || defaultProfile }, level: SpaceLevel.L0 }}
+                    // TODO: defaultVisuals bug in case of subspace as BoK, levelZeroSpaceId is required to show the correct visuals
+                    levelZeroSpaceId={virtualContributor?.aiPersona?.bodyOfKnowledgeID}
                     size="small"
                     deepness={0}
                     seamless

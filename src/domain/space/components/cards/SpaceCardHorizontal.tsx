@@ -50,6 +50,7 @@ export interface SpaceCardHorizontalProps {
       availableEntitlements?: LicenseEntitlementType[];
     };
   };
+  levelZeroSpaceId?: string;
   deepness?: number;
   seamless?: boolean;
   sx?: PaperProps['sx'];
@@ -69,6 +70,7 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 
 const SpaceCardHorizontal = ({
   space,
+  levelZeroSpaceId,
   deepness = !space.level || space.level === SpaceLevel.L1 ? 0 : 1,
   seamless,
   sx,
@@ -96,7 +98,11 @@ const SpaceCardHorizontal = ({
     <ElevatedPaper sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
         visual={
-          <SpaceAvatar size={size} src={space.about.profile.avatar?.uri || space.about.profile.cardBanner?.uri} />
+          <SpaceAvatar
+            size={size}
+            src={space.about.profile.avatar?.uri || space.about.profile.cardBanner?.uri}
+            levelZeroSpaceId={levelZeroSpaceId}
+          />
         }
         component={disableHoverState ? RouterLink : Wrapper}
         to={space.about.profile.url}

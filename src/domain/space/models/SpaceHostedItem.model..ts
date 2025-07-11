@@ -7,4 +7,5 @@ export interface SpaceHostedItem extends Identifiable {
   contributorId: string;
   contributorType: RoleSetContributorType;
   roles?: string[];
+  levelZeroSpaceId?: string;
 }

@@ -115,12 +115,14 @@ export const ExploreSpacesView = ({
         </CaptionSmall>
       )}
       <ScrollableCardsLayoutContainer orientation="vertical">
-        {visibleFirstWelcomeSpace && <SpaceTile space={welcomeSpace} columns={cardColumns} />}
+        {visibleFirstWelcomeSpace && (
+          <SpaceTile space={welcomeSpace} columns={cardColumns} levelZeroSpaceId={welcomeSpace?.id} />
+        )}
         {spacesLength > 0 && (
           <>
             {visibleSpaces!.map(space =>
               visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
-                <SpaceTile key={space.id} space={space} columns={cardColumns} />
+                <SpaceTile key={space.id} space={space} columns={cardColumns} levelZeroSpaceId={space.id} />
               )
             )}
             {enableLazyLoading && loader}

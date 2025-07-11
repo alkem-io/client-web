@@ -8,7 +8,7 @@ import { alpha } from '@mui/material/styles';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '@/core/ui/typography';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from '../../icons/PrivacyIcon';
 import { SpaceAboutTileModel } from '../../about/model/SpaceAboutTile.model';
@@ -21,6 +21,7 @@ type SpaceTileProps = {
       }
     | undefined;
   columns?: number;
+  levelZeroSpaceId?: string;
 };
 
 export const RECENT_SPACE_CARD_ASPECT_RATIO = '175/100';
@@ -28,8 +29,18 @@ export const RECENT_SPACE_CARD_ASPECT_RATIO = '175/100';
 const SPACE_TITLE_CLASS_NAME = 'SpaceTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
+const SpaceTile = ({ space, columns = 3, levelZeroSpaceId }: SpaceTileProps) => {
   const isPrivate = space?.about.isContentPublic === false;
+
+  const getVisualUrl = () => {
+    if (space?.about.profile.cardBanner?.uri) {
+      return space.about.profile.cardBanner.uri;
+    }
+
+    // do not use space.id as if not SpaceLevel.L0 it might lead to side effects
+    return getDefaultSpaceVisualUrl(VisualType.Card, levelZeroSpaceId);
+  };
+
   return (
     <GridItem columns={columns}>
       <ElevatedPaper
@@ -49,7 +60,7 @@ const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
             {isPrivate && <PrivacyIcon />}
 
             <Avatar
-              src={space.about.profile.cardBanner?.uri || defaultVisualUrls[VisualType.Card]}
+              src={getVisualUrl()}
               sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO }}
               variant="square"
             >

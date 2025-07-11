@@ -1,7 +1,7 @@
 import SpacePageBannerCard from '../cards/components/SpacePageBannerCard';
 import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
 import { useMemo } from 'react';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useSubspacePageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -25,7 +25,7 @@ const SubspacePageBanner = () => {
     }
     return {
       ...spaceBanner,
-      uri: defaultVisualUrls[VisualType.Banner],
+      uri: getDefaultSpaceVisualUrl(VisualType.Banner, levelZeroSpaceId),
     };
   }, [data?.lookup.level0Space?.about?.profile.banner?.id]);
 
@@ -37,6 +37,7 @@ const SubspacePageBanner = () => {
     <PageBanner
       banner={bannerVisual}
       cardComponent={SpacePageBannerCard}
+      levelZeroSpaceId={levelZeroSpaceId}
       displayName={data?.lookup.space?.about?.profile.displayName ?? ''}
       tagline={data?.lookup.space?.about?.profile.tagline ?? ''}
       avatar={data?.lookup.space?.about?.profile.avatar}

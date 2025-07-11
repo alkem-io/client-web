@@ -9,7 +9,7 @@ import { CropDialog } from '../VisualUpload/CropDialog';
 import { useField } from 'formik';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { Caption } from '../../typography';
 import { gutters } from '../../grid/utils';
 
@@ -64,7 +64,7 @@ const FormikAvatarUpload = ({
   const [field, , helpers] = useField<VisualWithAltText | undefined>(name);
   const selectedFile = field.value;
 
-  const [imageUrl, setImageUrl] = useState<string>(defaultVisualUrls[visualType]);
+  const [imageUrl, setImageUrl] = useState<string>(getDefaultSpaceVisualUrl(visualType));
 
   useEffect(() => {
     if (selectedFile?.file) {
@@ -79,7 +79,7 @@ const FormikAvatarUpload = ({
       setImageUrl(initialVisualUrl);
     } else {
       // Fall back to default visual
-      setImageUrl(defaultVisualUrls[visualType]);
+      setImageUrl(getDefaultSpaceVisualUrl(visualType));
     }
   }, [selectedFile, visualType, initialVisualUrl]);
 

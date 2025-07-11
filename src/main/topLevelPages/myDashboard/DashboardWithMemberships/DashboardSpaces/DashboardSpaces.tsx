@@ -12,7 +12,7 @@ import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMembersh
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import SpaceTile, { RECENT_SPACE_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';
 import { useEffect, useMemo } from 'react';
@@ -121,7 +121,7 @@ const DashboardSpaces = () => {
                   variant="square"
                   sx={styles.spaceCardMedia}
                   alt={profile?.displayName}
-                  src={profile?.spaceBanner?.uri || defaultVisualUrls[VisualType.Banner]}
+                  src={profile?.spaceBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Banner, id)}
                 />
               </Card>
 
@@ -145,12 +145,13 @@ const DashboardSpaces = () => {
                     return null;
                   }
 
-                  const { id, about, level } = subSpace;
+                  const { id: subSpaceId, about, level } = subSpace;
 
                   return (
                     <SpaceTile
-                      key={id}
+                      key={subSpaceId}
                       columns={cardColumns}
+                      levelZeroSpaceId={id}
                       space={{
                         about: about,
                         level: level,

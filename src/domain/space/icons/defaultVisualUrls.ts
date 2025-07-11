@@ -1,5 +1,45 @@
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
+const pathPrefix = '/default-visuals/space/';
+const avatarFolder = 'avatar/';
+const cardFolder = 'card/';
+const bannerFolder = 'banner/';
+
+const generateVisualUrls = (folder: string, visualType: VisualType) => {
+  const urls: Record<string, string> = {};
+
+  for (let i = 0; i < 16; i++) {
+    const hexKey = i.toString(16); // Convert to hex: 0,1,2...9,a,b,c,d,e,f
+    urls[hexKey] = `${pathPrefix}${folder}alkemio-default-${visualType.toLowerCase()}-${hexKey}.jpg`;
+  }
+
+  return urls;
+};
+
+export const defaultSpaceVisualUrls = {
+  [VisualType.Avatar]: generateVisualUrls(avatarFolder, VisualType.Avatar),
+  [VisualType.Card]: generateVisualUrls(cardFolder, VisualType.Card),
+  [VisualType.Banner]: generateVisualUrls(bannerFolder, VisualType.Banner),
+} as const;
+
+export const getDefaultSpaceVisualUrl = (visualType: VisualType, id?: string | undefined): string => {
+  if (!id || !id.trim()) {
+    return defaultSpaceVisualUrls[visualType]['0'];
+  }
+
+  const hexChar = id[0]?.toLowerCase();
+  const isValidHex = /^[0-9a-f]$/.test(hexChar);
+
+  if (isValidHex && defaultSpaceVisualUrls[visualType][hexChar]) {
+    return defaultSpaceVisualUrls[visualType][hexChar];
+  }
+
+  return defaultSpaceVisualUrls[visualType]['0'];
+};
+
+/**
+ * @deprecated use `getDefaultSpaceVisualUrl` instead
+ */
 export const defaultVisualUrls = {
   [VisualType.Avatar]: '/default-visuals/space/avatar.jpg',
   [VisualType.Banner]: '/default-visuals/space/banner.jpg',
