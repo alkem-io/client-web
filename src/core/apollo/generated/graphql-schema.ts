@@ -846,6 +846,7 @@ export enum AuthorizationPolicyType {
   Document = 'DOCUMENT',
   Forum = 'FORUM',
   InnovationFlow = 'INNOVATION_FLOW',
+  InnovationFlowState = 'INNOVATION_FLOW_STATE',
   InnovationHub = 'INNOVATION_HUB',
   InnovationPack = 'INNOVATION_PACK',
   Invitation = 'INVITATION',
@@ -1862,17 +1863,34 @@ export type CreateInnovationFlowInput = {
 
 export type CreateInnovationFlowStateData = {
   __typename?: 'CreateInnovationFlowStateData';
-  /** The explation text to clarify the State. */
+  /** The explanation text to clarify the State. */
   description?: Maybe<Scalars['Markdown']['output']>;
   /** The display name for the State */
   displayName: Scalars['String']['output'];
+  settings?: Maybe<CreateInnovationFlowStateSettingsData>;
+  /** The sort order for the State; if not specified, it will be set to the next highest order. */
+  sortOrder?: Maybe<Scalars['Float']['output']>;
 };
 
 export type CreateInnovationFlowStateInput = {
-  /** The explation text to clarify the State. */
+  /** The explanation text to clarify the State. */
   description?: InputMaybe<Scalars['Markdown']['input']>;
   /** The display name for the State */
   displayName: Scalars['String']['input'];
+  settings?: InputMaybe<CreateInnovationFlowStateSettingsInput>;
+  /** The sort order for the State; if not specified, it will be set to the next highest order. */
+  sortOrder?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type CreateInnovationFlowStateSettingsData = {
+  __typename?: 'CreateInnovationFlowStateSettingsData';
+  /** The flag to set. */
+  allowNewCallouts: Scalars['Boolean']['output'];
+};
+
+export type CreateInnovationFlowStateSettingsInput = {
+  /** The flag to set. */
+  allowNewCallouts: Scalars['Boolean']['input'];
 };
 
 export type CreateInnovationHubOnAccountInput = {
@@ -2095,6 +2113,17 @@ export type CreateSpaceSettingsPrivacyInput = {
   /** Flag to control if Platform Support has admin rights. */
   allowPlatformSupportAsAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   mode?: InputMaybe<SpacePrivacyMode>;
+};
+
+export type CreateStateOnInnovationFlowInput = {
+  /** The explanation text to clarify the State. */
+  description?: InputMaybe<Scalars['Markdown']['input']>;
+  /** The display name for the State */
+  displayName: Scalars['String']['input'];
+  innovationFlowID: Scalars['UUID']['input'];
+  settings?: InputMaybe<CreateInnovationFlowStateSettingsInput>;
+  /** The sort order for the State; if not specified, it will be set to the next highest order. */
+  sortOrder?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type CreateSubspaceInput = {
@@ -2372,6 +2401,11 @@ export type DeleteReferenceInput = {
 
 export type DeleteSpaceInput = {
   ID: Scalars['UUID']['input'];
+};
+
+export type DeleteStateOnInnovationFlowInput = {
+  ID: Scalars['UUID']['input'];
+  innovationFlowID: Scalars['UUID']['input'];
 };
 
 export type DeleteStorageBuckeetInput = {
@@ -2756,7 +2790,7 @@ export type InnovationFlow = {
   profile: Profile;
   /** The settings for this InnovationFlow. */
   settings: InnovationFlowSettings;
-  /** The set of States in use in this Flow. */
+  /** The States for this InnovationFlow. */
   states: Array<InnovationFlowState>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
@@ -2772,10 +2806,28 @@ export type InnovationFlowSettings = {
 
 export type InnovationFlowState = {
   __typename?: 'InnovationFlowState';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
   /** The explanation text to clarify the state. */
   description: Scalars['Markdown']['output'];
   /** The display name for the State */
   displayName: Scalars['String']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The Settings associated with this InnovationFlowState. */
+  settings: InnovationFlowStateSettings;
+  /** The sorting order for this State. */
+  sortOrder: Scalars['Float']['output'];
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
+};
+
+export type InnovationFlowStateSettings = {
+  __typename?: 'InnovationFlowStateSettings';
+  /** Whether new callouts can be added to this State. */
+  allowNewCallouts: Scalars['Boolean']['output'];
 };
 
 export type InnovationHub = {
@@ -3890,6 +3942,8 @@ export type Mutation = {
   createReferenceOnProfile: Reference;
   /** Creates a new Level Zero Space within the specified Account. */
   createSpace: Space;
+  /** Create a new State on the InnovationFlow. */
+  createStateOnInnovationFlow: InnovationFlowState;
   /** Creates a new Subspace within the specified Space. */
   createSubspace: Space;
   /** Creates a new Tagset on the specified Profile */
@@ -3938,6 +3992,8 @@ export type Mutation = {
   deleteReference: Reference;
   /** Deletes the specified Space. */
   deleteSpace: Space;
+  /** Delete a  State on the InnovationFlow. */
+  deleteStateOnInnovationFlow: InnovationFlowState;
   /** Deletes a Storage Bucket */
   deleteStorageBucket: StorageBucket;
   /** Deletes the specified Template. */
@@ -4063,7 +4119,9 @@ export type Mutation = {
   /** Updates the InnovationFlow. */
   updateInnovationFlowSelectedState: InnovationFlow;
   /** Updates the specified InnovationFlowState. */
-  updateInnovationFlowSingleState: InnovationFlow;
+  updateInnovationFlowState: InnovationFlowState;
+  /** Update the sortOrder field of the supplied InnovationFlowStates to increase as per the order that they are provided in. */
+  updateInnovationFlowStatesSortOrder: Array<InnovationFlowState>;
   /** Update Innovation Hub. */
   updateInnovationHub: InnovationHub;
   /** Updates the InnovationPack. */
@@ -4300,6 +4358,10 @@ export type MutationCreateSpaceArgs = {
   spaceData: CreateSpaceOnAccountInput;
 };
 
+export type MutationCreateStateOnInnovationFlowArgs = {
+  stateData: CreateStateOnInnovationFlowInput;
+};
+
 export type MutationCreateSubspaceArgs = {
   subspaceData: CreateSubspaceInput;
 };
@@ -4390,6 +4452,10 @@ export type MutationDeleteReferenceArgs = {
 
 export type MutationDeleteSpaceArgs = {
   deleteData: DeleteSpaceInput;
+};
+
+export type MutationDeleteStateOnInnovationFlowArgs = {
+  stateData: DeleteStateOnInnovationFlowInput;
 };
 
 export type MutationDeleteStorageBucketArgs = {
@@ -4621,15 +4687,19 @@ export type MutationUpdateDocumentArgs = {
 };
 
 export type MutationUpdateInnovationFlowArgs = {
-  innovationFlowData: UpdateInnovationFlowEntityInput;
+  innovationFlowData: UpdateInnovationFlowInput;
 };
 
 export type MutationUpdateInnovationFlowSelectedStateArgs = {
   innovationFlowStateData: UpdateInnovationFlowSelectedStateInput;
 };
 
-export type MutationUpdateInnovationFlowSingleStateArgs = {
-  innovationFlowStateData: UpdateInnovationFlowSingleStateInput;
+export type MutationUpdateInnovationFlowStateArgs = {
+  stateData: UpdateInnovationFlowStateInput;
+};
+
+export type MutationUpdateInnovationFlowStatesSortOrderArgs = {
+  sortOrderData: UpdateInnovationFlowStatesSortOrderInput;
 };
 
 export type MutationUpdateInnovationHubArgs = {
@@ -7045,34 +7115,39 @@ export type UpdateFormQuestionInput = {
   sortOrder: Scalars['Float']['input'];
 };
 
-export type UpdateInnovationFlowEntityInput = {
+export type UpdateInnovationFlowInput = {
   /** ID of the Innovation Flow */
   innovationFlowID: Scalars['UUID']['input'];
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  states?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
 };
 
 export type UpdateInnovationFlowSelectedStateInput = {
   /** ID of the Innovation Flow */
   innovationFlowID: Scalars['UUID']['input'];
-  /** The State that the Innovation Flow is in */
-  selectedState: Scalars['String']['input'];
-};
-
-export type UpdateInnovationFlowSingleStateInput = {
-  /** ID of the Innovation Flow */
-  innovationFlowID: Scalars['UUID']['input'];
-  /** The name of the Innovation Flow State to be updated */
-  stateDisplayName: Scalars['String']['input'];
-  stateUpdatedData: UpdateInnovationFlowStateInput;
+  /** ID of the Innovation Flow State to be selected. */
+  selectedStateID: Scalars['UUID']['input'];
 };
 
 export type UpdateInnovationFlowStateInput = {
-  /** The explation text to clarify the State. */
+  /** The explanation text to clarify the State. */
   description?: InputMaybe<Scalars['Markdown']['input']>;
   /** The display name for the State */
   displayName: Scalars['String']['input'];
+  /** ID of the Innovation Flow */
+  innovationFlowStateID: Scalars['UUID']['input'];
+  settings?: InputMaybe<UpdateInnovationFlowStateSettingsInput>;
+};
+
+export type UpdateInnovationFlowStateSettingsInput = {
+  /** The flag to set. */
+  allowNewCallouts: Scalars['Boolean']['input'];
+};
+
+export type UpdateInnovationFlowStatesSortOrderInput = {
+  innovationFlowID: Scalars['UUID']['input'];
+  /** The IDs of the states to update the sort order on */
+  stateIDs: Array<Scalars['UUID']['input']>;
 };
 
 export type UpdateInnovationHubInput = {
@@ -10027,34 +10102,6 @@ export type UpdateCalloutFlowStateMutation = {
   };
 };
 
-export type UpdateInnovationFlowCurrentStateMutationVariables = Exact<{
-  innovationFlowId: Scalars['UUID']['input'];
-  currentState: Scalars['String']['input'];
-}>;
-
-export type UpdateInnovationFlowCurrentStateMutation = {
-  __typename?: 'Mutation';
-  updateInnovationFlowSelectedState: {
-    __typename?: 'InnovationFlow';
-    id: string;
-    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-  };
-};
-
-export type UpdateInnovationFlowStatesMutationVariables = Exact<{
-  innovationFlowId: Scalars['UUID']['input'];
-  states: Array<UpdateInnovationFlowStateInput> | UpdateInnovationFlowStateInput;
-}>;
-
-export type UpdateInnovationFlowStatesMutation = {
-  __typename?: 'Mutation';
-  updateInnovationFlow: {
-    __typename?: 'InnovationFlow';
-    id: string;
-    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-  };
-};
-
 export type UpdateCollaborationFromSpaceTemplateMutationVariables = Exact<{
   collaborationId: Scalars['UUID']['input'];
   spaceTemplateId: Scalars['UUID']['input'];
@@ -10075,24 +10122,8 @@ export type UpdateCollaborationFromSpaceTemplateMutation = {
   };
 };
 
-export type UpdateInnovationFlowSingleStateMutationVariables = Exact<{
-  innovationFlowId: Scalars['UUID']['input'];
-  stateName: Scalars['String']['input'];
-  stateUpdatedData: UpdateInnovationFlowStateInput;
-}>;
-
-export type UpdateInnovationFlowSingleStateMutation = {
-  __typename?: 'Mutation';
-  updateInnovationFlowSingleState: {
-    __typename?: 'InnovationFlow';
-    id: string;
-    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-    currentState: { __typename?: 'InnovationFlowState'; displayName: string; description: string };
-  };
-};
-
 export type UpdateInnovationFlowMutationVariables = Exact<{
-  input: UpdateInnovationFlowEntityInput;
+  input: UpdateInnovationFlowInput;
 }>;
 
 export type UpdateInnovationFlowMutation = {
@@ -10102,6 +10133,78 @@ export type UpdateInnovationFlowMutation = {
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
+};
+
+export type UpdateInnovationFlowSelectedStateMutationVariables = Exact<{
+  innovationFlowId: Scalars['UUID']['input'];
+  currentState: Scalars['UUID']['input'];
+}>;
+
+export type UpdateInnovationFlowSelectedStateMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlowSelectedState: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+  };
+};
+
+export type CreateStateOnInnovationFlowMutationVariables = Exact<{
+  stateData: CreateStateOnInnovationFlowInput;
+}>;
+
+export type CreateStateOnInnovationFlowMutation = {
+  __typename?: 'Mutation';
+  createStateOnInnovationFlow: {
+    __typename?: 'InnovationFlowState';
+    id: string;
+    displayName: string;
+    description: string;
+    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+  };
+};
+
+export type DeleteStateOnInnovationFlowMutationVariables = Exact<{
+  stateData: DeleteStateOnInnovationFlowInput;
+}>;
+
+export type DeleteStateOnInnovationFlowMutation = {
+  __typename?: 'Mutation';
+  deleteStateOnInnovationFlow: {
+    __typename?: 'InnovationFlowState';
+    id: string;
+    displayName: string;
+    description: string;
+    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+  };
+};
+
+export type UpdateInnovationFlowStateMutationVariables = Exact<{
+  innovationFlowStateId: Scalars['UUID']['input'];
+  displayName: Scalars['String']['input'];
+  description: Scalars['Markdown']['input'];
+  settings?: InputMaybe<UpdateInnovationFlowStateSettingsInput>;
+}>;
+
+export type UpdateInnovationFlowStateMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlowState: {
+    __typename?: 'InnovationFlowState';
+    id: string;
+    displayName: string;
+    description: string;
+    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+  };
+};
+
+export type UpdateCalloutsSortOrderMutationVariables = Exact<{
+  calloutsSetID: Scalars['UUID']['input'];
+  calloutIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+}>;
+
+export type UpdateCalloutsSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateCalloutsSortOrder: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
 };
 
 export type ActivityLogMemberJoinedFragment = {
@@ -12528,16 +12631,6 @@ export type CalloutSettingsFullFragment = {
     commentsEnabled: boolean;
   };
   framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
-};
-
-export type UpdateCalloutsSortOrderMutationVariables = Exact<{
-  calloutsSetID: Scalars['UUID']['input'];
-  calloutIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
-}>;
-
-export type UpdateCalloutsSortOrderMutation = {
-  __typename?: 'Mutation';
-  updateCalloutsSortOrder: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
 };
 
 export type DashboardTopCalloutsFragment = {

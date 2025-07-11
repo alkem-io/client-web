@@ -89,7 +89,6 @@ fragment InnovationFlowCollaboration on Collaboration {
     }
   }
 }
-
 mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $value: String!) {
   updateCallout(
     calloutData: { ID: $calloutId, classification: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } }
@@ -101,27 +100,6 @@ mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $v
       flowState: tagset(tagsetName: FLOW_STATE) {
         ...TagsetDetails
       }
-    }
-  }
-}
-
-mutation updateInnovationFlowCurrentState($innovationFlowId: UUID!, $currentState: String!) {
-  updateInnovationFlowSelectedState(
-    innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedState: $currentState }
-  ) {
-    id
-    currentState {
-      displayName
-    }
-  }
-}
-
-mutation updateInnovationFlowStates($innovationFlowId: UUID!, $states: [UpdateInnovationFlowStateInput!]!) {
-  updateInnovationFlow(innovationFlowData: { innovationFlowID: $innovationFlowId, states: $states }) {
-    id
-    states {
-      displayName
-      description
     }
   }
 }
@@ -149,30 +127,6 @@ mutation UpdateCollaborationFromSpaceTemplate(
         displayName
         description
       }
-    }
-  }
-}
-
-mutation updateInnovationFlowSingleState(
-  $innovationFlowId: UUID!
-  $stateName: String!
-  $stateUpdatedData: UpdateInnovationFlowStateInput!
-) {
-  updateInnovationFlowSingleState(
-    innovationFlowStateData: {
-      innovationFlowID: $innovationFlowId
-      stateDisplayName: $stateName
-      stateUpdatedData: $stateUpdatedData
-    }
-  ) {
-    id
-    states {
-      displayName
-      description
-    }
-    currentState {
-      displayName
-      description
     }
   }
 }

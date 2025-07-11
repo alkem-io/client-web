@@ -1,0 +1,62 @@
+mutation updateInnovationFlowSelectedState($innovationFlowId: UUID!, $currentState: UUID!) {
+  updateInnovationFlowSelectedState(
+    innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedStateID: $currentState }
+  ) {
+    id
+    currentState {
+      displayName
+    }
+  }
+}
+
+mutation createStateOnInnovationFlow($stateData: CreateStateOnInnovationFlowInput!) {
+  createStateOnInnovationFlow(stateData: $stateData) {
+    id
+    displayName
+    description
+    settings {
+      allowNewCallouts
+    }
+  }
+}
+
+mutation deleteStateOnInnovationFlow($stateData: DeleteStateOnInnovationFlowInput!) {
+  deleteStateOnInnovationFlow(stateData: $stateData) {
+    id
+    displayName
+    description
+    settings {
+      allowNewCallouts
+    }
+  }
+}
+
+mutation updateInnovationFlowState(
+  $innovationFlowStateId: UUID!
+  $displayName: String!
+  $description: Markdown!
+  $settings: UpdateInnovationFlowStateSettingsInput
+) {
+  updateInnovationFlowState(
+    stateData: {
+      innovationFlowStateID: $innovationFlowStateId
+      displayName: $displayName
+      description: $description
+      settings: $settings
+    }
+  ) {
+    id
+    displayName
+    description
+    settings {
+      allowNewCallouts
+    }
+  }
+}
+
+mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID!]!) {
+  updateCalloutsSortOrder(sortOrderData: { calloutsSetID: $calloutsSetID, calloutIDs: $calloutIds }) {
+    id
+    sortOrder
+  }
+}
