@@ -24,6 +24,8 @@ import { compact } from 'lodash';
 import Loading from '@/core/ui/loading/Loading';
 import { useSpaceExplorerWelcomeSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
@@ -68,11 +70,12 @@ interface Space extends Identifiable {
 }
 
 interface WithBanner {
+  id?: string;
   about: { profile: { avatar?: Visual; cardBanner?: Visual } };
 }
 
 const collectParentAvatars = <SpaceWithVisuals extends WithBanner & WithParent<WithBanner>>(
-  { about, parent }: SpaceWithVisuals,
+  { about, parent, id }: SpaceWithVisuals,
   initial: string[] = []
 ) => {
   if (!about?.profile) {
@@ -80,7 +83,10 @@ const collectParentAvatars = <SpaceWithVisuals extends WithBanner & WithParent<W
   }
 
   const { cardBanner, avatar = cardBanner } = about?.profile;
-  const collected = [avatar?.uri ?? '', ...initial];
+
+  // Use default avatar visual if no cardBanner or avatar is available
+  const avatarUri = avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, id);
+  const collected = [avatarUri, ...initial];
 
   return parent ? collectParentAvatars(parent, collected) : collected;
 };
@@ -158,6 +164,7 @@ export const SpaceExplorerView = ({
       vs.push(
         <SubspaceCard
           key={id}
+          spaceId={id}
           tagline={profile?.tagline ?? ''}
           displayName={profile?.displayName}
           vision={profile.description ?? ''}
@@ -165,7 +172,7 @@ export const SpaceExplorerView = ({
           level={level}
           banner={profile?.cardBanner}
           avatarUris={collectParentAvatars(space) ?? []}
-          tags={space.matchedTerms ?? profile?.tagset?.tags.length ? profile?.tagset?.tags : undefined}
+          tags={(space.matchedTerms ?? profile?.tagset?.tags.length) ? profile?.tagset?.tags : undefined}
           spaceDisplayName={profile?.displayName}
           matchedTerms={!!space.matchedTerms}
           label={
