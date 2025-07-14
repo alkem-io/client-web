@@ -102,7 +102,7 @@ const InnovationPackForm = ({
                 />
                 <FormikCheckboxField
                   name="listedInStore"
-                  title={t('pages.admin.innovation-packs.fields.listedInStore')}
+                  label={t('pages.admin.innovation-packs.fields.listedInStore')}
                 />
                 <FormikSelect
                   name="searchVisibility"

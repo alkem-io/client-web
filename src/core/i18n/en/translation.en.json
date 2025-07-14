@@ -456,8 +456,8 @@
       "templateType": {
         "CALLOUT": "Collaboration Tool Template",
         "CALLOUT_plural": "Collaboration Tool Templates",
-        "SPACE": "Subspace Template",
-        "SPACE_plural": "Subspace Templates",
+        "SPACE": "Space Template",
+        "SPACE_plural": "Space Templates",
         "COMMUNITY_GUIDELINES": "Community Guidelines Template",
         "COMMUNITY_GUIDELINES_plural": "Community Guidelines Templates",
         "INNOVATION_FLOW": "Innovation Flow",
@@ -906,9 +906,19 @@
       }
     },
     "L0": {
+      "displayName": {
+        "title": "Title *",
+        "description": "",
+        "placeholder": ""
+      },
+      "nameId": {
+        "title": "Url",
+        "description": "",
+        "placeholder": ""
+      },
       "tagline": {
         "title": "Tagline",
-        "description": "Explain in one sentence what this Space is about.",
+        "description": "",
         "placeholder": ""
       },
       "description": {
@@ -930,6 +940,16 @@
         "title": "Who",
         "description": "",
         "placeholder": ""
+      },
+      "tags": {
+        "title": "Tags",
+        "description": "",
+        "placeholder": "",
+        "tooltip": "Tags"
+      },
+      "template": {
+        "title": "Template:",
+        "defaultTemplate": "Default Alkemio template for Spaces"
       }
     },
     "L1": {
@@ -971,7 +991,7 @@
       },
       "template": {
         "title": "Template:",
-        "defaultTemplate": "Default Alkemio template for subspaces"
+        "defaultTemplate": "Default Alkemio template for Subspaces"
       }
     },
     "L2": {
@@ -982,7 +1002,7 @@
       },
       "tagline": {
         "title": "Tagline",
-        "description": "In one sentence, explain what this Subspace is about.",
+        "description": "",
         "placeholder": ""
       },
       "description": {
@@ -1012,11 +1032,17 @@
       },
       "innovationFlow": {
         "title": "Subspace Flow"
+      },
+      "template": {
+        "title": "Template:",
+        "defaultTemplate": "Default Alkemio template for Subspaces"
       }
     }
   },
   "forms": {
     "validations": {
+      "field": "Field",
+      "fieldNotPresent": "{{fieldName}} is not present",
       "required": "This field is required!",
       "requiredField": "{{field}} is required!",
       "minLength": "{{field}} should be at least {{min}} symbols long",
@@ -1028,7 +1054,8 @@
       "invalidUrl": "Invalid URL",
       "invalidEmail": "Invalid Email address",
       "duplicateEmail": "Duplicated email address",
-      "elementMustBeValidUrl": "{{name}} must be a valid URL"
+      "elementMustBeValidUrl": "{{name}} must be a valid URL",
+      "acceptedTerms": "You must accept the terms and conditions"
     }
   },
   "templateDialog": {
@@ -1066,9 +1093,9 @@
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
         "title": "Subspace URL",
-        "description": "Enter the URL of the Subspace you want to copy as a template.",
+        "description": "Enter the URL of the Space or Subspace you want to copy as a template.",
         "use": "Use this Subspace",
-        "urlRequired": "Please paste here the URL of the Subspace you want to copy as a template.",
+        "urlRequired": "Please paste here the URL of the Space you want to copy as a template.",
         "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space not found",
         "selectAnother": "Update Collaboration from another Space"
@@ -1204,7 +1231,7 @@
           "activeStateWarning": "This phase is currently the active one and cannot be deleted. You can always rename it or select another one as the active."
         },
         "selectDifferentFlow": {
-          "title": "Find subspace template",
+          "title": "Find Space Template",
           "confirmationDialog": {
             "title": "Be careful when changing the flow!",
             "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the first phase of the new flow."
@@ -3228,6 +3255,9 @@
       "dialogTitle": "Terms and Conditions for creating a Space",
       "dialogContent": "I understand that as a host, I am responsible for all content within the Space.",
       "fullTermsLink": "Click here to read more about the Terms & Conditions."
+    },
+    "license": {
+      "noPlansError": "No Available Plans. Please, contact support."
     }
   },
   "plansTable": {

@@ -4,6 +4,7 @@ import FormikInputField, { FormikInputFieldProps } from '@/core/ui/forms/FormikI
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { Typography } from '@mui/material';
 import createNameId from './createNameId';
+import { useTranslation } from 'react-i18next';
 
 interface NameIdFieldProps {
   sourceFieldName?: string;
@@ -15,6 +16,7 @@ const NameIdField = ({
   name = 'nameID',
   ...props
 }: FormikInputFieldProps & NameIdFieldProps) => {
+  const { t } = useTranslation();
   const [{ value: sourceFieldValue = '' }, { touched: isSourceFieldTouched }] = useField(sourceFieldName);
   const [, { error }, { setValue, setTouched }] = useField(name);
 
@@ -41,6 +43,8 @@ const NameIdField = ({
       name={name}
       sx={{ whiteSpace: 'nowrap' }}
       onBlur={() => setIsTouchedByUser(true)}
+      helperText={t('context.L0.nameId.description')}
+      maxLength={13}
       InputProps={{
         startAdornment: <Typography color="neutral.light">{`${origin}/`}</Typography>,
       }}

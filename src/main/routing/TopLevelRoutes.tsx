@@ -18,6 +18,8 @@ import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
+import useNavigate from '@/core/routing/useNavigate';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
@@ -40,12 +42,13 @@ const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
 );
 const CreateSpaceDialog = lazyWithGlobalErrorHandler(
-  () => import('@/domain/space/components/CreateSpace/createSpace/CreateSpaceDialog')
+  () => import('@/domain/space/components/CreateSpace/createSpace/CreateSpace')
 );
 const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoutes'));
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
+  const navigate = useNavigate();
 
   return (
     <Routes>
@@ -69,7 +72,7 @@ export const TopLevelRoutes = () => {
                 <>
                   <HomePage />
                   <Suspense fallback={<Loading />}>
-                    <CreateSpaceDialog />
+                    <CreateSpaceDialog open onClose={() => navigate(ROUTE_HOME)} />
                   </Suspense>
                 </>
               </WithApmTransaction>

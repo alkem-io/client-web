@@ -15,12 +15,13 @@ export interface SpaceFormValues {
   why?: string; // Subspace only
   tags: string[];
   description?: string;
-  addTutorialCallouts: boolean;
-  addCallouts?: boolean;
+  addTutorialCallouts: boolean; // disabled temporarily
+  addCallouts?: boolean; // disabled temporarily
   spaceTemplateId?: string;
   visuals: {
     avatar?: VisualUploadModel; // Subspace only
     cardBanner?: VisualUploadModel;
     banner?: VisualUploadModel; // Space only
   };
+  acceptedTerms?: boolean; // Space only
 }

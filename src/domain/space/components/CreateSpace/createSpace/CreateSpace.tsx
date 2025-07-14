@@ -10,6 +10,10 @@ import useEnsurePresence from '@/core/utils/ensurePresence';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useSpacePlans } from '../hooks/spacePlans/useSpacePlans';
+import { TagCategoryValues, info } from '@/core/logging/sentry/log';
+import { addSpaceWelcomeCache } from '../utils';
 
 type SpaceCreatedResult = Identifiable & {
   about: {
@@ -47,15 +51,20 @@ export const CreateSpace = ({ open = false, onClose, accountId, onSpaceCreated }
   const { accountId: currentUserAccountId } = useCurrentUserContext();
   // either the account is passed in or we pick it up from the user context
   const destinationAccountId = accountId ?? currentUserAccountId;
+  const { availablePlans } = useSpacePlans({
+    accountId: destinationAccountId,
+    skip: !open || !destinationAccountId,
+  });
 
   const handleCreate = useCallback(
     async (value: SpaceFormValues) => {
-      const accountId = ensurePresence(destinationAccountId);
+      const accountId = ensurePresence(destinationAccountId, 'Account ID');
+      const licensePlanId = ensurePresence(availablePlans[0]?.id, '', t('createSpace.license.noPlansError'));
 
       const result = await createSpace({
         accountId,
         nameId: value.nameId!, // ensured by form validation
-        licensePlanId: undefined,
+        licensePlanId,
         about: {
           profile: {
             displayName: value.displayName,
@@ -72,25 +81,42 @@ export const CreateSpace = ({ open = false, onClose, accountId, onSpaceCreated }
       });
 
       const spaceUrl = ensurePresence(result?.about?.profile?.url, 'Space URL');
+      const spaceId = ensurePresence(result?.id, 'Space ID');
+
       onClose?.();
+
+      addSpaceWelcomeCache(spaceId);
+
+      // Log Created new Space to sentry
+      info(`Space Created SpaceId:${spaceId}`, {
+        category: TagCategoryValues.SPACE_CREATION,
+        label: 'Space Created',
+      });
       if (onSpaceCreated && result) {
         onSpaceCreated(result);
       } else {
         navigate(spaceUrl);
       }
     },
-    [navigate, createSpace, destinationAccountId, onSpaceCreated, onClose]
+    [navigate, createSpace, destinationAccountId, onSpaceCreated, onClose, availablePlans]
   );
 
+  if (!destinationAccountId) {
+    // If no account we cannot create a space anywhere, so just return null
+    return null;
+  }
+
   return (
-    <SpaceCreationDialog
-      icon={<SpaceL0Icon fill="primary" />}
-      open={open}
-      entityName={t('common.space')}
-      onClose={onClose}
-      onCreate={handleCreate}
-      formComponent={CreateSpaceForm}
-    />
+    <StorageConfigContextProvider locationType="account" accountId={destinationAccountId} skip={!open}>
+      <SpaceCreationDialog
+        icon={<SpaceL0Icon fill="primary" />}
+        open={open}
+        entityName={t('common.space')}
+        onClose={onClose}
+        onCreate={handleCreate}
+        formComponent={CreateSpaceForm}
+      />
+    </StorageConfigContextProvider>
   );
 };
 

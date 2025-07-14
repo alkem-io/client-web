@@ -13,7 +13,7 @@ import {
   SpaceFormValues,
 } from '@/domain/space/components/CreateSpace/common/SpaceCreationDialog.models';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
+import SpaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SpaceTemplateSelector';
 import Gutters from '@/core/ui/grid/Gutters';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
@@ -21,19 +21,22 @@ import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { EntityVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
+import { nameOf } from '@/core/utils/nameOf';
 
 const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
-type CreateSubspaceFormValues = Pick<
-  SpaceFormValues,
-  | 'displayName'
-  | 'tagline'
-  | 'description'
-  | 'tags'
-  | 'addTutorialCallouts'
-  | 'addCallouts'
-  | 'spaceTemplateId'
-  | 'visuals'
+type CreateSubspaceFormValues = Required<
+  Pick<
+    SpaceFormValues,
+    | 'displayName'
+    | 'tagline'
+    | 'description'
+    | 'tags'
+    | 'addTutorialCallouts'
+    | 'addCallouts'
+    | 'spaceTemplateId'
+    | 'visuals'
+  >
 >;
 
 interface CreateSubspaceFormProps extends SpaceCreationForm {}
@@ -44,7 +47,7 @@ export const CreateSubspaceForm = ({
   onChanged,
 }: PropsWithChildren<CreateSubspaceFormProps>) => {
   const { t } = useTranslation();
-  const { isSmallScreen } = useScreenSize();
+  const { isMediumSmallScreen } = useScreenSize();
   const [templateVisuals, setTemplateVisuals] = useState<EntityVisualUrls>({});
 
   const validationRequiredString = t('forms.validations.required');
@@ -72,7 +75,7 @@ export const CreateSubspaceForm = ({
     tags: [],
     addTutorialCallouts: false,
     addCallouts: true,
-    spaceTemplateId: undefined,
+    spaceTemplateId: '',
     visuals: {
       avatar: { file: undefined, altText: '' },
       cardBanner: { file: undefined, altText: '' },
@@ -112,28 +115,29 @@ export const CreateSubspaceForm = ({
       {() => (
         <Form noValidate>
           <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
-          <SubspaceTemplateSelector
-            name="spaceTemplateId"
+          <SpaceTemplateSelector
+            name={nameOf<CreateSubspaceFormValues>('spaceTemplateId')}
+            level={level}
             disablePadding
             sx={{ paddingBottom: gutters() }}
             onTemplateVisualsLoaded={handleTemplateVisualsLoaded}
           />
           <FormikInputField
-            name="displayName"
+            name={nameOf<CreateSubspaceFormValues>('displayName')}
             title={t(`context.${level}.displayName.title`)}
             helperText={t(`context.${level}.displayName.description`)}
             disabled={isSubmitting}
             maxLength={SMALL_TEXT_LENGTH}
           />
           <FormikInputField
-            name="tagline"
+            name={nameOf<CreateSubspaceFormValues>('tagline')}
             title={t(`context.${level}.tagline.title`)}
             helperText={t(`context.${level}.tagline.description`)}
             disabled={isSubmitting}
             maxLength={SMALL_TEXT_LENGTH}
           />
           <FormikMarkdownField
-            name="description"
+            name={nameOf<CreateSubspaceFormValues>('description')}
             title={t(`context.${level}.description.title`)}
             rows={5}
             helperText={t(`context.${level}.description.description`)}
@@ -142,22 +146,24 @@ export const CreateSubspaceForm = ({
             temporaryLocation
           />
           <TagsetField
-            name="tags"
+            name={nameOf<CreateSubspaceFormValues>('tags')}
             disabled={isSubmitting}
             title={t(`context.${level}.tags.title`)}
             helperText={t(`context.${level}.tags.description`)}
             helpTextIcon={t(`context.${level}.tags.tooltip`)}
           />
           <Gutters padding={theme => `${gutters()(theme)} 0 0 0`}>
-            <PageContentBlock sx={{ flexDirection: isSmallScreen ? 'column' : 'row', justifyContent: 'space-between' }}>
+            <PageContentBlock
+              sx={{ flexDirection: isMediumSmallScreen ? 'column' : 'row', justifyContent: 'space-between' }}
+            >
               <FormikVisualUpload
-                name="visuals.avatar"
+                name={nameOf<CreateSubspaceFormValues>('visuals.avatar')}
                 visualType={VisualType.Avatar}
                 flex={1}
                 initialVisualUrl={templateVisuals.avatarUrl}
               />
               <FormikVisualUpload
-                name="visuals.cardBanner"
+                name={nameOf<CreateSubspaceFormValues>('visuals.cardBanner')}
                 visualType={VisualType.Card}
                 flex={1}
                 initialVisualUrl={templateVisuals.cardBannerUrl}
