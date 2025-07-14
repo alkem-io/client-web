@@ -10,7 +10,6 @@ import { DialogContent } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 import { isApolloForbiddenError, isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import useBackToPath from '@/core/routing/useBackToPath';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +19,7 @@ import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePer
 import { useScreenSize } from '@/core/ui/grid/constants';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { Identifiable } from '@/core/utils/Identifiable';
+import useNavigate from '@/core/routing/useNavigate';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -52,6 +52,8 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
   const { t } = useTranslation();
+
+  const navigate = useNavigate();
 
   const {
     data: calloutData,
@@ -97,8 +99,6 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
     return result;
   }, [callout, locationState, calloutsCanBeSavedAsTemplate]);
 
-  const backOrElse = useBackToPath();
-
   const { isSmallScreen } = useScreenSize();
 
   const calloutFlowState = typedCalloutDetails?.classification?.flowState?.tags[0];
@@ -136,7 +136,10 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutPosition) : parentRoute;
 
   const handleClose = () => {
-    backOrElse(parentPagePath);
+    navigate(parentPagePath, {
+      state: { keepScroll: true },
+      replace: true,
+    });
   };
 
   const handleDeleteWithClose = async (callout: Identifiable) => {
@@ -165,7 +168,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   return (
     <>
       {renderPage(calloutPosition)}
-      <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen} fullHeight>
+      <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen} fullHeight disableScrollLock>
         <DialogContent
           dividers
           sx={{
