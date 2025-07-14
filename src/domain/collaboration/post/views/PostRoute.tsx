@@ -4,15 +4,14 @@ import PostSettingsPage from '../pages/PostSettingsPage';
 import PostSharePage from '../pages/PostSharePage';
 import { PostDialogSection } from './PostDialogSection';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useBackToPath from '@/core/routing/useBackToPath';
+import useNavigate from '@/core/routing/useNavigate';
 
-export interface PostRouteProps {
-  parentPagePath: string;
-}
+const PostRoute = () => {
+  const navigate = useNavigate();
 
-const PostRoute = ({ parentPagePath }: PostRouteProps) => {
-  const backToExplore = useBackToPath();
-  const onClose = () => backToExplore(parentPagePath);
+  const onClose = () => {
+    navigate('../', { state: { keepScroll: true }, replace: true });
+  };
 
   const { postId, calloutsSetId, calloutId } = useUrlResolver();
 
