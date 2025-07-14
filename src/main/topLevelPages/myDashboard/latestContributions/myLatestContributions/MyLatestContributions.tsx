@@ -96,7 +96,7 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
 
   const renderActivities = () => {
     if (hasActivity) {
-      return (typeof limit === 'number' ? (activities ?? [])?.slice(0, limit) : (activities ?? [])).map(activity => (
+      return (typeof limit === 'number' ? (activities ?? []).slice(0, limit) : (activities ?? [])).map(activity => (
         <ActivityViewChooser
           key={activity.id}
           activity={activity as ActivityLogResultType}

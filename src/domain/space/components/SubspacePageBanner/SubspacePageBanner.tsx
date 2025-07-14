@@ -25,9 +25,9 @@ const SubspacePageBanner = () => {
     }
     return {
       ...spaceBanner,
-      uri: getDefaultSpaceVisualUrl(VisualType.Banner, spaceId),
+      uri: getDefaultSpaceVisualUrl(VisualType.Banner, levelZeroSpaceId),
     };
-  }, [data?.lookup.level0Space?.about?.profile.banner?.id]);
+  }, [data?.lookup.level0Space?.about?.profile.banner?.id, levelZeroSpaceId]);
 
   if (spaceLevel === SpaceLevel.L0) {
     return null;
