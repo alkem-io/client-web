@@ -9,7 +9,7 @@
 
 # Alkemio Web Client
 
-Welcome to the Alkemio web client - allowing you to browse the contents of the Alkemio Platform. Please see the [Alkemio repositoryy](https://github.com/alkem-io/alkemio) for more details on the Alkemio platform.
+Welcome to the Alkemio web client - allowing you to browse the contents of the Alkemio Platform. Please see the [Alkemio repository](https://github.com/alkem-io/alkemio) for more details on the Alkemio platform.
 
 This client is based on React, and is intended to showcase how clients in general can interact with the domain model exposed by the [Alkemio server](https://github.com/alkem-io/server).
 
