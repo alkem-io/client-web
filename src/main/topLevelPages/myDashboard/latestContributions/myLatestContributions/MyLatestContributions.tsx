@@ -100,7 +100,9 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
         <ActivityViewChooser
           key={activity.id}
           activity={activity as ActivityLogResultType}
-          avatarUrl={activity.space?.about.profile.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar)}
+          avatarUrl={
+            activity.space?.about.profile.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, activity.space?.id)
+          }
         />
       ));
     }
