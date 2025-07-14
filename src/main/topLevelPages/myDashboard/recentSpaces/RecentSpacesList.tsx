@@ -9,7 +9,6 @@ import GridItem from '@/core/ui/grid/GridItem';
 import SpaceTile, { RECENT_SPACE_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
 import { useMemo } from 'react';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 interface RecentSpacesListProps {
   onSeeMore?: () => void;
@@ -30,10 +29,9 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
       {data?.me.mySpaces.slice(0, visibleSpaces).map(result => (
         <SpaceTile
           key={result.space.id}
-          // TODO: defaultVisuals - find a way set the id of non L0 spaces
-          levelZeroSpaceId={result.space.level === SpaceLevel.L0 ? result.space.id : undefined}
           columns={cardColumns}
           space={{
+            id: result.space.id,
             about: result.space.about,
             level: result.space.level,
           }}

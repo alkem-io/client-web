@@ -8,18 +8,11 @@ interface SpaceAvatarProps extends SizeableAvatarProps {
   src: string | undefined;
   sx?: SxProps<Theme> | undefined;
   size?: AvatarSize;
-  levelZeroSpaceId?: string;
+  spaceId?: string;
 }
 
-const SpaceAvatar = forwardRef<HTMLDivElement, SpaceAvatarProps>(({ src, size = 'large', ...props }, ref) => {
-  return (
-    <Avatar
-      ref={ref}
-      size={size}
-      src={src || getDefaultSpaceVisualUrl(VisualType.Avatar, props.levelZeroSpaceId)}
-      {...props}
-    />
-  );
+const SpaceAvatar = forwardRef<HTMLDivElement, SpaceAvatarProps>(({ src, size = 'large', spaceId, ...props }, ref) => {
+  return <Avatar ref={ref} size={size} src={src || getDefaultSpaceVisualUrl(VisualType.Avatar, spaceId)} {...props} />;
 });
 
 export default SpaceAvatar;

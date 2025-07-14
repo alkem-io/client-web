@@ -44,7 +44,6 @@ export interface SpaceAdminSubspacesPageProps extends SettingsPageProps {
   spaceId: string;
   templatesEnabled: boolean;
   level: SpaceLevel;
-  levelZeroSpaceId?: string;
 }
 
 const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
@@ -53,7 +52,6 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   routePrefix,
   templatesEnabled,
   level,
-  levelZeroSpaceId,
 }) => {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -252,12 +250,7 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
               {t('buttons.create')}
             </Button>
             <Gutters disablePadding>
-              <SearchableList
-                data={subspaces}
-                levelZeroSpaceId={levelZeroSpaceId}
-                getActions={getSubSpaceActions}
-                loading={loading}
-              />
+              <SearchableList data={subspaces} getActions={getSubSpaceActions} loading={loading} />
             </Gutters>
           </Box>
         </PageContentBlock>

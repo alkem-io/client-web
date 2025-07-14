@@ -16,12 +16,12 @@ import { SpaceAboutTileModel } from '../../about/model/SpaceAboutTile.model';
 type SpaceTileProps = {
   space:
     | {
+        id?: string;
         about: SpaceAboutTileModel;
         level?: SpaceLevel;
       }
     | undefined;
   columns?: number;
-  levelZeroSpaceId?: string;
 };
 
 export const RECENT_SPACE_CARD_ASPECT_RATIO = '175/100';
@@ -29,7 +29,7 @@ export const RECENT_SPACE_CARD_ASPECT_RATIO = '175/100';
 const SPACE_TITLE_CLASS_NAME = 'SpaceTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const SpaceTile = ({ space, columns = 3, levelZeroSpaceId }: SpaceTileProps) => {
+const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
   const isPrivate = space?.about.isContentPublic === false;
 
   const getVisualUrl = () => {
@@ -37,8 +37,7 @@ const SpaceTile = ({ space, columns = 3, levelZeroSpaceId }: SpaceTileProps) => 
       return space.about.profile.cardBanner.uri;
     }
 
-    // do not use space.id as if not SpaceLevel.L0 it might lead to side effects
-    return getDefaultSpaceVisualUrl(VisualType.Card, levelZeroSpaceId);
+    return getDefaultSpaceVisualUrl(VisualType.Card, space?.id);
   };
 
   return (

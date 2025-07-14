@@ -20,7 +20,6 @@ const useUserContributions = (userId: string | undefined) => {
 
     data.rolesUser.spaces.forEach(e => {
       contributions.push({
-        levelZeroSpaceId: e.id,
         spaceID: e.id,
         id: e.id,
         spaceLevel: SpaceLevel.L0,
@@ -31,7 +30,6 @@ const useUserContributions = (userId: string | undefined) => {
 
       e.subspaces.forEach(ss => {
         contributions.push({
-          levelZeroSpaceId: e.id,
           id: ss.id,
           spaceID: ss.id,
           spaceLevel: ss.level,

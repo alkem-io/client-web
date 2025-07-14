@@ -25,7 +25,7 @@ const SubspacePageBanner = () => {
     }
     return {
       ...spaceBanner,
-      uri: getDefaultSpaceVisualUrl(VisualType.Banner, levelZeroSpaceId),
+      uri: getDefaultSpaceVisualUrl(VisualType.Banner, spaceId),
     };
   }, [data?.lookup.level0Space?.about?.profile.banner?.id]);
 
@@ -37,7 +37,7 @@ const SubspacePageBanner = () => {
     <PageBanner
       banner={bannerVisual}
       cardComponent={SpacePageBannerCard}
-      levelZeroSpaceId={levelZeroSpaceId}
+      spaceId={spaceId}
       displayName={data?.lookup.space?.about?.profile.displayName ?? ''}
       tagline={data?.lookup.space?.about?.profile.tagline ?? ''}
       avatar={data?.lookup.space?.about?.profile.avatar}

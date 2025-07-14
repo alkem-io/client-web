@@ -4,9 +4,12 @@ const pathPrefix = '/default-visuals/space/';
 const avatarFolder = 'avatar/';
 const cardFolder = 'card/';
 const bannerFolder = 'banner/';
+const defaultIndex = '-1'; // Default index for the visual URLs
 
 const generateVisualUrls = (folder: string, visualType: VisualType) => {
   const urls: Record<string, string> = {};
+
+  urls[defaultIndex] = `${pathPrefix}${folder}alkemio-default-${visualType.toLowerCase()}.jpg`;
 
   for (let i = 0; i < 16; i++) {
     const hexKey = i.toString(16); // Convert to hex: 0,1,2...9,a,b,c,d,e,f
@@ -24,7 +27,7 @@ export const defaultSpaceVisualUrls = {
 
 export const getDefaultSpaceVisualUrl = (visualType: VisualType, id?: string | undefined): string => {
   if (!id || !id.trim()) {
-    return defaultSpaceVisualUrls[visualType]['0'];
+    return defaultSpaceVisualUrls[visualType][defaultIndex];
   }
 
   const hexChar = id[0]?.toLowerCase();
@@ -34,7 +37,7 @@ export const getDefaultSpaceVisualUrl = (visualType: VisualType, id?: string | u
     return defaultSpaceVisualUrls[visualType][hexChar];
   }
 
-  return defaultSpaceVisualUrls[visualType]['0'];
+  return defaultSpaceVisualUrls[visualType][defaultIndex];
 };
 
 /**

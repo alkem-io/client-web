@@ -40,9 +40,8 @@ const MyResources = () => {
       {innovationHubs?.map(hub => <InnovationHubCardHorizontal key={hub.id} {...hub} size="small" />)}
       {spaces.map(space => (
         <SpaceCardHorizontal
-          levelZeroSpaceId={space.id}
           key={space.id}
-          space={{ about: space.about, level: space.level }}
+          space={{ id: space.id, about: space.about, level: space.level }}
           size="small"
           deepness={0}
           seamless

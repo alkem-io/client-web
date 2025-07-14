@@ -63,7 +63,6 @@ export const SpaceAdminL1Route: FC = () => {
     spaceId: subspaceId,
     templatesEnabled: false,
     level: SpaceLevel.L1,
-    levelZeroSpaceId: space?.id,
   };
 
   return (
