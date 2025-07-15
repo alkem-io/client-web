@@ -1979,8 +1979,8 @@
     "innovationLibrary": {
       "shortName": "$t(common.library)",
       "fullName": "Template Library",
-      "title": "Template Library on Alkemio is here to guide your way to impact",
-      "subtitle": "Open the template packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
+      "title": "Alkemio's Template Library",
+      "subtitle": "Get your (Sub)Space running with these ready-to-use tools. <click>Learn more</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
