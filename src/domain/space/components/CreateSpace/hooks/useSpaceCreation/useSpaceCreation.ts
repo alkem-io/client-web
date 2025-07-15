@@ -55,7 +55,7 @@ export const useSpaceCreation = (mutationOptions: CreateSpaceMutationOptions = {
             accountID: value.accountId,
             licensePlanID: value.licensePlanId,
             nameID: value.nameId,
-            spaceTemplateID: value.spaceTemplateId,
+            spaceTemplateID: value.spaceTemplateId ? value.spaceTemplateId : undefined,
             about: {
               profileData: {
                 displayName: value.about.profile.displayName,
