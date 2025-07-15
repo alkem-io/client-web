@@ -48,6 +48,8 @@ const ReferenceDescription = ({ children }: ReferenceDescriptionProps) => {
 const ReferenceView = ({ reference, canEdit, onClickEdit }: ReferenceViewProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const hasEditIcon = Boolean(onClickEdit) && canEdit;
+
   return (
     <Root>
       <BadgeCardView
@@ -58,15 +60,20 @@ const ReferenceView = ({ reference, canEdit, onClickEdit }: ReferenceViewProps) 
             {isFileAttachmentUrl(reference.uri) ? <AttachmentIcon /> : <ReferenceIcon />}
           </RoundedBadge>
         }
-        sx={{ flexGrow: 1, maxWidth: `calc(100% - ${gutters(2)(theme)})` }}
+        flexGrow={1}
+        overflow="hidden"
+        textOverflow="ellipsis"
+        maxWidth={hasEditIcon ? `calc(100% - ${gutters(2)(theme)})` : '100%'}
       >
         <Tooltip title={reference.uri} placement="top-start" disableInteractive>
-          <BlockSectionTitle>{reference.name}</BlockSectionTitle>
+          <BlockSectionTitle overflow="hidden" textOverflow="ellipsis">
+            {reference.name}
+          </BlockSectionTitle>
         </Tooltip>
         <ReferenceDescription>{reference.description}</ReferenceDescription>
       </BadgeCardView>
 
-      {canEdit && onClickEdit && (
+      {hasEditIcon && (
         <IconButton
           size="small"
           onClick={onClickEdit}

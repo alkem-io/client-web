@@ -91,7 +91,7 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
             )}
 
           {!isEmpty(links) && (
-            <Gutters fullHeight>
+            <Gutters fullHeight maxWidth="100%">
               <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
 
               <References
