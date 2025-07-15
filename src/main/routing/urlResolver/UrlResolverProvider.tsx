@@ -105,9 +105,18 @@ const selectUrlParams = <T extends {}, R extends {}>(
 
 const UrlResolverContext = createContext<UrlResolverContextValue>(emptyResult);
 
+/**
+ * The UrlResolverProvider monitors URL changes and resolves them to entities in the system.
+ * It has been enhanced to prevent redundant updates and re-renders when navigating between
+ * pages that use the same base entity (like a space and its callouts/posts).
+ */
 const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Using a state to force a re-render of the children when the url changes
   const [currentUrl, setCurrentUrl] = useState<string>('');
+
+  // Keep a stable ref of the last processed URL to avoid duplicate updates
+  const lastProcessedUrlRef = useRef<string>('');
+
   /**
    * Default Apollo's cache behavior will store the result of the URL resolver queries based on the Id of the space returned
    * And will fill the gaps of missing Ids when the user navigates to a different URL
@@ -140,49 +149,64 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   }
 
   useEffect(() => {
-    // strip parts of the URL that go below the resolved wentity
+    // strip parts of the URL that go below the resolved entity
     const maskedUrlParts = [
       // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
       /\/settings(?:\/[a-zA-Z0-9-]+)?\/?$/,
       // Remove tabs from the URL as well
       `/${TabbedLayoutParams.Section}(?:/[a-zA-Z0-9-]+)?/?$`,
     ];
-    const handleUrlChange = () => {
-      let nextUrl = window.location.origin + window.location.pathname;
 
+    // Process URL to get a standardized version for comparison
+    const processUrl = (url: string): string => {
       // Remove trailing slash because /:spaceNameId and /:spaceNameId/ are the same url
-      if (nextUrl.endsWith('/')) {
-        nextUrl = nextUrl.slice(0, -1);
+      if (url.endsWith('/')) {
+        url = url.slice(0, -1);
       }
 
-      // TODO: We need to rework the Urls of the templates anyway. See #8061
-      // For now just don't do anything, if the url is /innovation-packs/:innovationPackNameId/settings/:templateNameId let it pass to the urlResolver
-      // Remove anything after /settings, because it's the settings url of the same entity, no need to resolve it:
-      if (!/\/innovation-packs\/[a-zA-Z0-9-]+\/settings\/[a-zA-Z0-9-]+/.test(nextUrl)) {
+      // Apply URL masks
+      if (!/\/innovation-packs\/[a-zA-Z0-9-]+\/settings\/[a-zA-Z0-9-]+/.test(url)) {
         for (const mask of maskedUrlParts) {
-          nextUrl = nextUrl.replace(mask, '');
+          url = url.replace(mask, '');
         }
       }
 
-      if (nextUrl !== currentUrl) {
-        setCurrentUrl(nextUrl); // Update the query URL state
-      }
+      return url;
     };
+
+    const handleUrlChange = () => {
+      // Get the normalized URL
+      let nextUrl = processUrl(window.location.origin + window.location.pathname);
+
+      // Skip update if URL hasn't changed from the last processed URL
+      if (nextUrl === lastProcessedUrlRef.current) {
+        return;
+      }
+
+      // Update the last processed URL and trigger URL resolution
+      lastProcessedUrlRef.current = nextUrl;
+      setCurrentUrl(nextUrl);
+    };
+
+    // Set up event listeners
     window.addEventListener('popstate', handleUrlChange);
-    var pushState = window.history.pushState;
+    const originalPushState = window.history.pushState;
     window.history.pushState = function (...args) {
-      pushState.apply(window.history, args);
+      originalPushState.apply(window.history, args);
       handleUrlChange();
     };
 
+    // Initial URL resolution
     handleUrlChange();
 
     return () => {
       window.removeEventListener('popstate', handleUrlChange);
+      // Restore original pushState
+      window.history.pushState = originalPushState;
     };
   }, []);
 
-  // create cache for the resolver value
+  // Create cache for the resolver value
   const valueRef = useRef<UrlResolverContextValue>(emptyResult);
   const value = useMemo<UrlResolverContextValue>(() => {
     // start generating the context value on successfull request
