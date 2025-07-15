@@ -37,6 +37,7 @@ type CreateSpaceFormValues = Required<
   Pick<
     SpaceFormValues,
     | 'displayName'
+    | 'nameId'
     | 'tagline'
     | 'description'
     | 'tags'
@@ -69,6 +70,7 @@ export const CreateSpaceForm = ({
 
   const initialValues: CreateSpaceFormValues = {
     displayName: '',
+    nameId: '',
     tagline: '',
     description: '',
     tags: [],
