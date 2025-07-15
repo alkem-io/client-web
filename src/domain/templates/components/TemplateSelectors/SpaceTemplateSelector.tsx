@@ -41,7 +41,7 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
   ...rest
 }) => {
   const { t } = useTranslation();
-  const { spaceId, loading: loadingSpace } = useUrlResolver();
+  const { spaceId } = useUrlResolver();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [importTemplateConfirmOpen, setImportTemplateConfirmOpen] = useState(false);
   const [field, , helpers] = useField<string>(name);
@@ -131,7 +131,7 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
     setDialogOpen(true);
   };
 
-  const loading = loadingSpace || loadingTemplate || loadingSpaceTemplate;
+  const loading = loadingTemplate || loadingSpaceTemplate;
 
   return (
     <Gutters row alignItems="center" {...rest}>
