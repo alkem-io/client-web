@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 import ReferenceView, { ReferenceViewProps } from './ReferenceView';
-import { Box } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import { OpenInNew } from '@mui/icons-material';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -14,9 +14,10 @@ interface ReferencesProps {
   icon?: ReferenceViewProps['icon'];
   compact?: boolean;
   onEdit?: (reference: ReferenceModel) => void;
+  containerProps?: BoxProps;
 }
 
-const References: FC<ReferencesProps> = ({ references, onEdit, noItemsView, icon, compact }) => {
+const References: FC<ReferencesProps> = ({ references, onEdit, noItemsView, icon, compact, containerProps }) => {
   if (!references || references.length === 0) {
     return null;
   }
@@ -42,7 +43,7 @@ const References: FC<ReferencesProps> = ({ references, onEdit, noItemsView, icon
     return null;
   } else {
     return (
-      <Box display="flex" flexDirection="column" gap={gutters()}>
+      <Box display="flex" flexDirection="column" gap={gutters()} {...containerProps}>
         {!references
           ? null
           : references.map(reference => (
