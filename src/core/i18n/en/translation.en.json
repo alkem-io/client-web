@@ -897,14 +897,6 @@
     }
   },
   "context": {
-    "common": {
-      "addCallouts": {
-        "title": "Add template's default collaboration tools"
-      },
-      "addTutorialCallouts": {
-        "title": "Add tutorials collaboration tools"
-      }
-    },
     "L0": {
       "displayName": {
         "title": "Title *",
@@ -3249,7 +3241,7 @@
   },
   "createSpace": {
     "title": "Create a Space",
-    "addTutorialsLabel": "Show Tutorials in this Space",
+    "addTutorialsLabel": "Add Tutorials to this Space",
     "terms": {
       "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a Space.",
       "dialogTitle": "Terms and Conditions for creating a Space",

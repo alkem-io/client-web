@@ -3,7 +3,7 @@ import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.mo
 export interface SpaceCreationForm {
   isSubmitting: boolean;
   onValidChanged: (valid: boolean) => void;
-  onChanged: (value: SpaceFormValues) => void;
+  onChange: (value: SpaceFormValues) => void;
 }
 
 // All form fields are here for both space and subspace creation, each of the forms Pick the fields they need

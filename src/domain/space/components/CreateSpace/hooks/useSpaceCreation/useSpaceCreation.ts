@@ -53,7 +53,7 @@ export const useSpaceCreation = (mutationOptions: CreateSpaceMutationOptions = {
         variables: {
           spaceData: {
             accountID: value.accountId,
-            licensePlanID: undefined,
+            licensePlanID: value.licensePlanId,
             nameID: value.nameId,
             spaceTemplateID: value.spaceTemplateId,
             about: {
@@ -66,7 +66,7 @@ export const useSpaceCreation = (mutationOptions: CreateSpaceMutationOptions = {
               why: value.about.why,
             },
             collaborationData: {
-              // addTutorialCallouts: value.addTutorialCallouts, // temporarily disabled
+              addTutorialCallouts: value.addTutorialCallouts,
               addCallouts: value.addCallouts, // we always want to add the default callouts
               calloutsSetData: {},
             },

@@ -90,7 +90,11 @@ const InnovationPackForm = ({
       {({ values: { profile }, handleSubmit, isValid }) => {
         return (
           <Gutters disablePadding>
-            <FormikInputField name="profile.displayName" title={t('components.nameSegment.name')} required />
+            <FormikInputField
+              name={nameOf<InnovationPackFormValues>('profile.displayName')}
+              title={t('components.nameSegment.name')}
+              required
+            />
             {!isNew && (
               <>
                 <TextField
@@ -101,11 +105,11 @@ const InnovationPackForm = ({
                   placeholder={t('pages.admin.innovation-packs.fields.provider')}
                 />
                 <FormikCheckboxField
-                  name="listedInStore"
+                  name={nameOf<InnovationPackFormValues>('listedInStore')}
                   label={t('pages.admin.innovation-packs.fields.listedInStore')}
                 />
                 <FormikSelect
-                  name="searchVisibility"
+                  name={nameOf<InnovationPackFormValues>('searchVisibility')}
                   title={t('pages.admin.innovation-packs.fields.searchVisibility')}
                   values={Object.values(SearchVisibility).map(id => ({
                     id,
@@ -117,7 +121,7 @@ const InnovationPackForm = ({
             <FormikMarkdownField
               temporaryLocation={isNew}
               title={t('common.description')}
-              name="profile.description"
+              name={nameOf<InnovationPackFormValues>('profile.description')}
               maxLength={MARKDOWN_TEXT_LENGTH}
             />
             {!isNew && profileId ? (
@@ -125,7 +129,7 @@ const InnovationPackForm = ({
                 <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
                 <TagsetSegment name={nameOf<InnovationPackFormValues>('profile.tagsets')} />
                 <ContextReferenceSegment
-                  fieldName="profile.references"
+                  fieldName={nameOf<InnovationPackFormValues>('profile.references')}
                   references={profile.references || []}
                   profileId={profileId}
                 />

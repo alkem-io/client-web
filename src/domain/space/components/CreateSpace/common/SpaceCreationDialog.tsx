@@ -41,9 +41,7 @@ export const SpaceCreationDialog: FC<SpaceCreationDialogProps> = ({
         {t('space-creation.dialog-title', { entity: entityName })}
       </DialogHeader>
       <DialogContent>
-        {/* check if open, because inside the form we do queries to prefill form fields, so better only query them if the dialog is open //!! */}
-        {open && /* **/ ''}
-        <FormComponent isSubmitting={isSubmitting} onChanged={handleChange} onValidChanged={setFormIsValid} />
+        <FormComponent isSubmitting={isSubmitting} onChange={handleChange} onValidChanged={setFormIsValid} />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} variant="text" disabled={isSubmitting} sx={{ alignSelf: 'start' }}>

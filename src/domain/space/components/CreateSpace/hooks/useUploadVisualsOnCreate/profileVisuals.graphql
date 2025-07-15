@@ -1,6 +1,6 @@
 fragment ProfileVisuals on Profile {
   id
-  banner: visual(type: CARD) {
+  banner: visual(type: BANNER) {
     id
     uri
     name

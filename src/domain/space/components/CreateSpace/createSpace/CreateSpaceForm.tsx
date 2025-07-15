@@ -13,7 +13,6 @@ import {
 } from '@/domain/space/components/CreateSpace/common/SpaceCreationDialog.models';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import SpaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SpaceTemplateSelector';
-import Gutters from '@/core/ui/grid/Gutters';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
@@ -54,7 +53,7 @@ interface CreateSpaceFormProps extends SpaceCreationForm {}
 export const CreateSpaceForm = ({
   isSubmitting,
   onValidChanged,
-  onChanged,
+  onChange,
 }: PropsWithChildren<CreateSpaceFormProps>) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
@@ -63,18 +62,6 @@ export const CreateSpaceForm = ({
   const config = useConfig();
 
   const validationRequiredString = t('forms.validations.required');
-
-  const handleChanged = (value: CreateSpaceFormValues) =>
-    onChanged({
-      displayName: value.displayName,
-      tagline: value.tagline,
-      description: value.description,
-      tags: value.tags,
-      addTutorialCallouts: false,
-      addCallouts: Boolean(value.spaceTemplateId) ? value.addCallouts : true,
-      spaceTemplateId: value.spaceTemplateId || undefined, // in case of empty string
-      visuals: value.visuals,
-    });
 
   const handleTemplateVisualsLoaded = (visuals: EntityVisualUrls) => {
     setTemplateVisuals(visuals);
@@ -128,7 +115,7 @@ export const CreateSpaceForm = ({
     >
       {() => (
         <Form noValidate>
-          <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
+          <FormikEffect onChange={onChange} onStatusChange={onValidChanged} />
           <SpaceTemplateSelector
             name={nameOf<CreateSpaceFormValues>('spaceTemplateId')}
             level={SpaceLevel.L0}
@@ -163,30 +150,36 @@ export const CreateSpaceForm = ({
             helperText={t(`context.${level}.tags.description`)}
             helpTextIcon={t(`context.${level}.tags.tooltip`)}
           />
-          <Gutters padding={theme => `${gutters()(theme)} 0 0 0`}>
-            <PageContentBlock
-              sx={{ flexDirection: isMediumSmallScreen ? 'column' : 'row', justifyContent: 'space-between' }}
-            >
-              <FormikVisualUpload
-                name={nameOf<CreateSpaceFormValues>('visuals.banner')}
-                visualType={VisualType.Banner}
-                flex={1}
-                initialVisualUrl={templateVisuals.bannerUrl}
-              />
-              <FormikVisualUpload
-                name={nameOf<CreateSpaceFormValues>('visuals.cardBanner')}
-                visualType={VisualType.Card}
-                flex={1}
-                initialVisualUrl={templateVisuals.cardBannerUrl}
-              />
-            </PageContentBlock>
-          </Gutters>
+          <PageContentBlock
+            sx={{
+              flexDirection: isMediumSmallScreen ? 'column' : 'row',
+              justifyContent: 'space-between',
+              marginTop: gutters(),
+            }}
+          >
+            <FormikVisualUpload
+              name={nameOf<CreateSpaceFormValues>('visuals.banner')}
+              visualType={VisualType.Banner}
+              flex={1}
+              initialVisualUrl={templateVisuals.bannerUrl}
+            />
+            <FormikVisualUpload
+              name={nameOf<CreateSpaceFormValues>('visuals.cardBanner')}
+              visualType={VisualType.Card}
+              flex={1}
+              initialVisualUrl={templateVisuals.cardBannerUrl}
+            />
+          </PageContentBlock>
+          <FormikCheckboxField
+            name={nameOf<CreateSpaceFormValues>('addTutorialCallouts')}
+            label={<Caption>{t('createSpace.addTutorialsLabel')}</Caption>}
+            containerProps={{ sx: { marginLeft: gutters(), marginTop: gutters(), width: '100%' } }}
+          />
           <FormikCheckboxField
             name={nameOf<CreateSpaceFormValues>('acceptedTerms')}
             required
-            title="createSpace.terms.checkboxLabel"
             label={
-              <Caption display="inline">
+              <Caption>
                 <Trans
                   i18nKey="createSpace.terms.checkboxLabel"
                   components={{
@@ -203,7 +196,7 @@ export const CreateSpaceForm = ({
                 />
               </Caption>
             }
-            containerProps={{ sx: { margin: gutters() } }}
+            containerProps={{ sx: { marginLeft: gutters(), width: '100%' } }}
           />
           <DialogWithGrid columns={8} open={isTermsDialogOpen} onClose={() => setIsTermsDialogOpen(false)}>
             <DialogHeader title={t('createSpace.terms.dialogTitle')} onClose={() => setIsTermsDialogOpen(false)} />

@@ -5,6 +5,7 @@ import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { Typography } from '@mui/material';
 import createNameId from './createNameId';
 import { useTranslation } from 'react-i18next';
+import { NAMEID_MAX_LENGTH } from '@/core/ui/forms/validator/nameIdValidator';
 
 interface NameIdFieldProps {
   sourceFieldName?: string;
@@ -44,7 +45,7 @@ const NameIdField = ({
       sx={{ whiteSpace: 'nowrap' }}
       onBlur={() => setIsTouchedByUser(true)}
       helperText={t('context.L0.nameId.description')}
-      maxLength={13}
+      maxLength={NAMEID_MAX_LENGTH}
       InputProps={{
         startAdornment: <Typography color="neutral.light">{`${origin}/`}</Typography>,
       }}

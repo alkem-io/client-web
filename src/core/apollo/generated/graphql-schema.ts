@@ -20885,6 +20885,10 @@ export type SpaceAboutTileFragment = {
   };
 };
 
+export type RestrictedSpaceNamesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type RestrictedSpaceNamesQuery = { __typename?: 'Query'; restrictedSpaceNames: Array<string> };
+
 export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
 
 export type PlansTableQuery = {
@@ -29377,10 +29381,6 @@ export type InAppNotificationUserMentionedFragment = {
       }
     | undefined;
 };
-
-export type RestrictedSpaceNamesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type RestrictedSpaceNamesQuery = { __typename?: 'Query'; restrictedSpaceNames: Array<string> };
 
 export type UrlResolverQueryVariables = Exact<{
   url: Scalars['String']['input'];

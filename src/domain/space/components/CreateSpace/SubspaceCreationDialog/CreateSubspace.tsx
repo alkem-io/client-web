@@ -64,7 +64,7 @@ export const CreateSubspace = ({ open = false, onClose, parentSpaceId, onSubspac
         navigate(spaceUrl);
       }
     },
-    [navigate, createSubspace, parentSpaceId]
+    [navigate, createSubspace, parentSpaceId, onSubspaceCreated]
   );
 
   return (

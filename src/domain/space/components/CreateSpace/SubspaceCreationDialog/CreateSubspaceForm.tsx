@@ -44,25 +44,13 @@ interface CreateSubspaceFormProps extends SpaceCreationForm {}
 export const CreateSubspaceForm = ({
   isSubmitting,
   onValidChanged,
-  onChanged,
+  onChange,
 }: PropsWithChildren<CreateSubspaceFormProps>) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
   const [templateVisuals, setTemplateVisuals] = useState<EntityVisualUrls>({});
 
   const validationRequiredString = t('forms.validations.required');
-
-  const handleChanged = (value: CreateSubspaceFormValues) =>
-    onChanged({
-      displayName: value.displayName,
-      tagline: value.tagline,
-      description: value.description,
-      tags: value.tags,
-      addTutorialCallouts: false,
-      addCallouts: Boolean(value.spaceTemplateId) ? value.addCallouts : true,
-      spaceTemplateId: value.spaceTemplateId || undefined, // in case of empty string
-      visuals: value.visuals,
-    });
 
   const handleTemplateVisualsLoaded = (visuals: EntityVisualUrls) => {
     setTemplateVisuals(visuals);
@@ -114,7 +102,7 @@ export const CreateSubspaceForm = ({
     >
       {() => (
         <Form noValidate>
-          <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
+          <FormikEffect onChange={onChange} onStatusChange={onValidChanged} />
           <SpaceTemplateSelector
             name={nameOf<CreateSubspaceFormValues>('spaceTemplateId')}
             level={level}
