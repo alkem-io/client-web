@@ -39,6 +39,7 @@ export const SpaceCardHorizontalSkeleton = () => (
 
 export interface SpaceCardHorizontalProps {
   space: {
+    id?: string;
     about: SpaceAboutLightModel;
     community?: {
       roleSet?: {
@@ -96,7 +97,11 @@ const SpaceCardHorizontal = ({
     <ElevatedPaper sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
         visual={
-          <SpaceAvatar size={size} src={space.about.profile.avatar?.uri || space.about.profile.cardBanner?.uri} />
+          <SpaceAvatar
+            size={size}
+            src={space.about.profile.avatar?.uri || space.about.profile.cardBanner?.uri}
+            spaceId={space.id}
+          />
         }
         component={disableHoverState ? RouterLink : Wrapper}
         to={space.about.profile.url}

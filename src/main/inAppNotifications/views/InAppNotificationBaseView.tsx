@@ -21,11 +21,11 @@ import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { gutters } from '@/core/ui/grid/utils';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import { InAppNotificationState } from '@/core/apollo/generated/graphql-schema';
+import { InAppNotificationState, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useInAppNotifications } from '../useInAppNotifications';
 import { useInAppNotificationsContext } from '../InAppNotificationsContext';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
 const MAX_LENGTH_COMMENT = 150; // 150 characters
 
@@ -34,6 +34,7 @@ export interface InAppNotificationBaseViewProps {
   type: string; // to support _ADMIN
   state: InAppNotificationState;
   space?: {
+    id?: string;
     avatarUrl: string;
   };
   resource: {
@@ -171,7 +172,7 @@ export const InAppNotificationBaseView = ({
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             badgeContent={contributor ? <Avatar size="small" src={contributor?.avatarUrl} /> : null}
           >
-            <Avatar size="regular" src={space?.avatarUrl || defaultVisualUrls.AVATAR} />
+            <Avatar size="regular" src={space?.avatarUrl || getDefaultSpaceVisualUrl(VisualType.Avatar, space?.id)} />
           </Badge>
         }
       >

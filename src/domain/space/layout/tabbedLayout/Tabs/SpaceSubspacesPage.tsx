@@ -106,6 +106,7 @@ const SpaceSubspacesPage = () => {
       state={{ loading: loading, error: error }}
       renderChildEntityCard={item => (
         <SubspaceCard
+          spaceId={item.id}
           displayName={item.about.profile.displayName}
           banner={item.about.profile.cardBanner}
           tags={item.about.profile.tagset?.tags!}
