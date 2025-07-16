@@ -1086,8 +1086,9 @@
       "findByUrl": {
         "title": "Subspace URL",
         "description": "Enter the URL of the Space or Subspace you want to copy as a template.",
-        "use": "Use this Subspace",
+        "use": "Use this Space",
         "urlRequired": "Please paste here the URL of the Space you want to copy as a template.",
+        "noRights": "You need administrator rights in the Space you want to copy as a template.",
         "invalidUrl": "The url is not recognized as a Space URL.",
         "spaceNotFoundError": "Space not found",
         "selectAnother": "Update Collaboration from another Space"
@@ -2037,7 +2038,7 @@
               "imported-successfully-notification": "Template imported successfully"
             },
             "validation": {
-              "spaceRequired": "Select an existing Subspace to proceed."
+              "spaceRequired": "Select an existing (Sub)Space to proceed."
             }
           },
           "my-profile": {

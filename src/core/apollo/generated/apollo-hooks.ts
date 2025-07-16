@@ -20531,6 +20531,10 @@ export const SpaceTemplateContentDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         collaboration {
           ...SpaceTemplateContent_Collaboration
         }

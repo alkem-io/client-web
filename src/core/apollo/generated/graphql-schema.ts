@@ -25423,6 +25423,9 @@ export type SpaceTemplateContentQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           collaboration: {
             __typename?: 'Collaboration';
             id: string;
