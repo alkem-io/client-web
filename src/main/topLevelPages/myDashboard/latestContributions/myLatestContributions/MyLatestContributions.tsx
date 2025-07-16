@@ -14,7 +14,7 @@ import {
   ActivityViewChooser,
 } from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
 import { Caption, CaptionSmall } from '@/core/ui/typography/components';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { LatestContributionsProps, SPACE_OPTION_ALL } from '../LatestContributionsProps';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import Loading from '@/core/ui/loading/Loading';
@@ -96,11 +96,13 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
 
   const renderActivities = () => {
     if (hasActivity) {
-      return (typeof limit === 'number' ? (activities ?? [])?.slice(0, limit) : activities ?? []).map(activity => (
+      return (typeof limit === 'number' ? (activities ?? []).slice(0, limit) : (activities ?? [])).map(activity => (
         <ActivityViewChooser
           key={activity.id}
           activity={activity as ActivityLogResultType}
-          avatarUrl={activity.space?.about.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
+          avatarUrl={
+            activity.space?.about.profile.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, activity.space?.id)
+          }
         />
       ));
     }

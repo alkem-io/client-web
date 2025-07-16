@@ -7,6 +7,7 @@ export interface NotificationViewProps {
   autoHideDuration?: number | null;
   anchorOrigin?: SnackbarProps['anchorOrigin'];
   children: ReactElement | undefined;
+  sx?: SnackbarProps['sx'];
 }
 
 /**
@@ -21,8 +22,15 @@ export const NotificationView = ({
   autoHideDuration,
   anchorOrigin = { vertical: 'bottom', horizontal: 'right' },
   children,
+  sx,
 }: NotificationViewProps) => (
-  <Snackbar open={open} onClose={onClose} autoHideDuration={autoHideDuration ?? undefined} anchorOrigin={anchorOrigin}>
+  <Snackbar
+    open={open}
+    onClose={onClose}
+    autoHideDuration={autoHideDuration ?? undefined}
+    anchorOrigin={anchorOrigin}
+    sx={sx}
+  >
     {children}
   </Snackbar>
 );

@@ -8,7 +8,7 @@ import { alpha } from '@mui/material/styles';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '@/core/ui/typography';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from '../../icons/PrivacyIcon';
 import { SpaceAboutTileModel } from '../../about/model/SpaceAboutTile.model';
@@ -16,6 +16,7 @@ import { SpaceAboutTileModel } from '../../about/model/SpaceAboutTile.model';
 type SpaceTileProps = {
   space:
     | {
+        id?: string;
         about: SpaceAboutTileModel;
         level?: SpaceLevel;
       }
@@ -30,6 +31,15 @@ const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
   const isPrivate = space?.about.isContentPublic === false;
+
+  const getVisualUrl = () => {
+    if (space?.about.profile.cardBanner?.uri) {
+      return space.about.profile.cardBanner.uri;
+    }
+
+    return getDefaultSpaceVisualUrl(VisualType.Card, space?.id);
+  };
+
   return (
     <GridItem columns={columns}>
       <ElevatedPaper
@@ -49,7 +59,7 @@ const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
             {isPrivate && <PrivacyIcon />}
 
             <Avatar
-              src={space.about.profile.cardBanner?.uri || defaultVisualUrls[VisualType.Card]}
+              src={getVisualUrl()}
               sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO }}
               variant="square"
             >

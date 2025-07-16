@@ -41,7 +41,7 @@ const MyResources = () => {
       {spaces.map(space => (
         <SpaceCardHorizontal
           key={space.id}
-          space={{ about: space.about, level: space.level }}
+          space={{ id: space.id, about: space.about, level: space.level }}
           size="small"
           deepness={0}
           seamless

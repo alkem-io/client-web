@@ -30,6 +30,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { Caption } from '@/core/ui/typography';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import LinkButton from '@/core/ui/button/LinkButton';
+import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
 
 const FormikEffect = FormikEffectFactory<CreateSpaceFormValues>();
 
@@ -78,7 +79,7 @@ export const CreateSpaceForm = ({
     addCallouts: true,
     spaceTemplateId: '',
     visuals: {
-      avatar: { file: undefined, altText: '' },
+      banner: { file: undefined, altText: '' },
       cardBanner: { file: undefined, altText: '' },
     },
     acceptedTerms: false,
@@ -93,6 +94,7 @@ export const CreateSpaceForm = ({
         TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
       )
       .required(validationRequiredString),
+    nameId: nameIdValidator,
     tagline: yup
       .string()
       .trim()
@@ -103,6 +105,7 @@ export const CreateSpaceForm = ({
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
     spaceTemplateId: yup.string().nullable(),
+    addTutorialCallouts: yup.boolean(),
     acceptedTerms: yup.boolean().oneOf([true], t('forms.validations.acceptedTerms')),
   });
   const level = SpaceLevel.L0;

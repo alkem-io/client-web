@@ -10,7 +10,7 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
-import { fontFamilySourceSans, subHeading } from '@/core/ui/typography/themeTypographyOptions';
+import { fontFamilySourceSans, fontFamilyVerdana, subHeading } from '@/core/ui/typography/themeTypographyOptions';
 import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
@@ -28,6 +28,7 @@ import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotif
 import { InAppNotificationSubscriber } from './main/inAppNotifications/inAppNotificationSubscriber';
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
 import { VersionHandling } from './main/versionHandling';
+import { rem } from '@/core/ui/typography/utils';
 
 // MARKDOWN_CLASS_NAME used in the styles below
 const globalStyles = (theme: Theme) => ({
@@ -63,10 +64,31 @@ const globalStyles = (theme: Theme) => ({
   '[aria-role="heading"]': subHeading,
   '.markdown': {
     wordWrap: 'break-word',
-    padding: theme.spacing(0, 2, 1),
   },
   '.markdown > pre': {
     whiteSpace: 'pre-wrap',
+  },
+  '.tiptap p, .markdown p': {
+    fontFamily: fontFamilyVerdana,
+    fontSize: rem(12),
+  },
+  '.tiptap h1, .markdown h1': {
+    fontFamily: fontFamilyVerdana,
+    fontWeight: 'bold',
+    fontSize: rem(14),
+    lineHeight: rem(20),
+  },
+  '.tiptap h2, .markdown h2': {
+    fontFamily: fontFamilyVerdana,
+    fontWeight: 'bold',
+    fontSize: rem(13),
+    lineHeight: rem(20),
+  },
+  '.tiptap h3, .markdown h3': {
+    fontFamily: fontFamilyVerdana,
+    fontWeight: 'bold',
+    fontSize: rem(12),
+    lineHeight: rem(20),
   },
   '.excalidraw-modal-container': {
     zIndex: `${theme.zIndex.modal + 1} !important`,
