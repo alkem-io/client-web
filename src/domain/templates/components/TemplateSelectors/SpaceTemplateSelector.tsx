@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Skeleton } from '@mui/material';
+import { Box, Button, Chip, Skeleton, Tooltip } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,7 @@ import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { EntityVisualUrls, getVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { SpaceTemplate } from '../../models/SpaceTemplate';
 
 interface SpaceTemplateSelectorProps extends GuttersProps {
   /**
@@ -32,12 +33,15 @@ interface SpaceTemplateSelectorProps extends GuttersProps {
    * Callback to tell the parent component to update the visuals taking the ones coming in the template
    */
   onTemplateVisualsLoaded?: (visualUrls: EntityVisualUrls) => void;
+
+  isTemplateSelectable?: (template: SpaceTemplate) => boolean;
 }
 
 export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
   name,
   level = SpaceLevel.L0,
   onTemplateVisualsLoaded,
+  isTemplateSelectable,
   ...rest
 }) => {
   const { t } = useTranslation();
@@ -158,11 +162,27 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
         </Button>
         <ImportTemplatesDialog
           templateType={TemplateType.Space}
-          actionButton={
-            <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
-              {t('buttons.use')}
-            </Button>
-          }
+          actionButton={template => {
+            if (isTemplateSelectable && !isTemplateSelectable(template as SpaceTemplate)) {
+              return (
+                /* Keep it inside a react fragment <>...</> to disable the onClick handler that the dialog is adding*/
+                <>
+                  <Tooltip title={t('createSpace.innovationFlowError')}>
+                    <span>
+                      <Button startIcon={<SystemUpdateAltIcon />} variant="contained" disabled>
+                        {t('buttons.use')}
+                      </Button>
+                    </span>
+                  </Tooltip>
+                </>
+              );
+            }
+            return (
+              <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
+                {t('buttons.use')}
+              </Button>
+            );
+          }}
           open={isDialogOpen}
           onSelectTemplate={handleSelectTemplate}
           onClose={() => setDialogOpen(false)}

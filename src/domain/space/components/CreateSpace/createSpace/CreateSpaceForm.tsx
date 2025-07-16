@@ -31,6 +31,7 @@ import { Caption } from '@/core/ui/typography';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import LinkButton from '@/core/ui/button/LinkButton';
 import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
+import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
 
 const FormikEffect = FormikEffectFactory<CreateSpaceFormValues>();
 
@@ -127,6 +128,10 @@ export const CreateSpaceForm = ({
             disablePadding
             sx={{ paddingBottom: gutters() }}
             onTemplateVisualsLoaded={handleTemplateVisualsLoaded}
+            isTemplateSelectable={(template: SpaceTemplate) =>
+              // Space templates can only be selected if they have a valid innovation flow with 4 states
+              template.contentSpace?.collaboration.innovationFlow.states.length === 4
+            }
           />
           <FormikInputField
             name={nameOf<CreateSpaceFormValues>('displayName')}

@@ -3251,7 +3251,8 @@
     },
     "license": {
       "noPlansError": "No Available Plans. Please, contact support."
-    }
+    },
+    "innovationFlowError": "This template cannot be used for root spaces. Please, select another template."
   },
   "plansTable": {
     "title": "Choose a plan",
