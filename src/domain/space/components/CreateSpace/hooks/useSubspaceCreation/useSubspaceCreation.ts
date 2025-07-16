@@ -95,7 +95,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
         variables: {
           input: {
             spaceID: value.spaceID,
-            spaceTemplateID: value.spaceTemplateId,
+            spaceTemplateID: value.spaceTemplateId ? value.spaceTemplateId : undefined,
             about: {
               why: value.about.why,
               profileData: {
