@@ -10,7 +10,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 
 const allowedNodeTypes = ['iframe'] as const;
 
-export const MARKDOWN_CLASS_NAME = 'markdown'; // global styles applied
+const MARKDOWN_CLASS_NAME = 'markdown'; // global styles applied
 
 export interface WrapperMarkdownProps extends ReactMarkdownOptions, Partial<MarkdownOptions> {
   // Do not remove. Even if it's not used directly, React adds a className
@@ -41,10 +41,9 @@ export const WrapperMarkdown = ({
     >
       <Box
         sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined, ...sx }}
-        className={className}
+        className={`${MARKDOWN_CLASS_NAME} ${className || ''}`.trim()}
       >
         <ReactMarkdown
-          // @ts-ignore
           components={components}
           remarkPlugins={[
             gfm,
