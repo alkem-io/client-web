@@ -1,6 +1,5 @@
-import { AuthorizationPrivilege, InnovationFlowState, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { InnovationFlowState, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { TemplateBase } from './TemplateBase';
-import { SpaceAboutTileModel } from '@/domain/space/about/model/SpaceAboutTile.model';
 
 export interface SpaceTemplate extends TemplateBase {
   type: TemplateType; // TemplateType.Space;
@@ -20,16 +19,5 @@ export interface SpaceTemplate extends TemplateBase {
         states: InnovationFlowState[];
       };
     };
-    subspaces?: {
-      about: SpaceAboutTileModel;
-      authorization: {
-        myPrivileges: AuthorizationPrivilege[];
-      };
-      subspaces?: {
-        authorization: {
-          myPrivileges: AuthorizationPrivilege[];
-        };
-      }[];
-    }[];
   };
 }
