@@ -439,11 +439,11 @@ const TemplatesAdmin = ({
           subtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
           onSelectTemplate={handleImportTemplate}
           {...importTemplateOptions}
-          actionButton={
+          actionButton={() => (
             <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
               {t('buttons.import')}
             </Button>
-          }
+          )}
         />
       )}
     </>

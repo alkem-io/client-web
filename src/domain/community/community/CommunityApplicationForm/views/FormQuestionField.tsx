@@ -94,7 +94,7 @@ const FormQuestionField = ({
       <Box>
         <FormikCheckboxField
           name={`questions.${index}.required`}
-          title={t('community.application-form.required-question')}
+          label={t('community.application-form.required-question')}
           disabled={disabled || readOnly}
         />
       </Box>

@@ -10,7 +10,7 @@ import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
 } from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import { Actions } from '@/core/ui/actions/Actions';
-import CreateSpaceDialog from '@/domain/space/createSpace/CreateSpaceDialog';
+import CreateSpace from '@/domain/space/components/CreateSpace/createSpace/CreateSpace';
 import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
 import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
@@ -523,7 +523,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             </Gutters>
           </Gutters>
           <Actions justifyContent="end">
-            {canCreateSpace && (
+            {account && canCreateSpace && (
               <>
                 <CreationButton
                   buttonComponent={
@@ -535,13 +535,11 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                   disabled={!isEntitledToCreateSpace}
                   disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
                 />
-                {createSpaceDialogOpen && (
-                  <CreateSpaceDialog
-                    withRedirectOnClose={false}
-                    onClose={() => setCreateSpaceDialogOpen(false)}
-                    account={{ id: account?.id, name: accountHostName }}
-                  />
-                )}
+                <CreateSpace
+                  accountId={account.id}
+                  open={createSpaceDialogOpen}
+                  onClose={() => setCreateSpaceDialogOpen(false)}
+                />
               </>
             )}
           </Actions>

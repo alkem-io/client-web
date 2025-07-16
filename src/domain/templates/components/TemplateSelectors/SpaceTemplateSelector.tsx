@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Skeleton } from '@mui/material';
+import { Box, Button, Chip, Skeleton, Tooltip } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,19 +17,35 @@ import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { EntityVisualUrls, getVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { SpaceTemplate } from '../../models/SpaceTemplate';
 
-interface SubspaceTemplateSelectorProps extends GuttersProps {
+interface SpaceTemplateSelectorProps extends GuttersProps {
+  /**
+   * Formik field name for the template Id
+   */
   name: string;
+  /**
+   * Optional, defaults to SpaceLevel.L0. Used to determine which default template to use the Space or the Subspace, and to show a few labels
+   * There is no distinction between Space and Subspace templates in the backend
+   */
+  level?: SpaceLevel;
+  /**
+   * Callback to tell the parent component to update the visuals taking the ones coming in the template
+   */
   onTemplateVisualsLoaded?: (visualUrls: EntityVisualUrls) => void;
+
+  isTemplateSelectable?: (template: SpaceTemplate) => boolean;
 }
 
-export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
+export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
   name,
+  level = SpaceLevel.L0,
   onTemplateVisualsLoaded,
+  isTemplateSelectable,
   ...rest
 }) => {
   const { t } = useTranslation();
-  const { spaceId, loading: loadingSpace } = useUrlResolver();
+  const { spaceId } = useUrlResolver();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [importTemplateConfirmOpen, setImportTemplateConfirmOpen] = useState(false);
   const [field, , helpers] = useField<string>(name);
@@ -50,12 +66,14 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
   const [getTemplateContent] = useTemplateContentLazyQuery();
 
   const defaultTemplateName = useMemo(() => {
+    const defaultTemplateType =
+      level === SpaceLevel.L0 ? TemplateDefaultType.PlatformSpace : TemplateDefaultType.SpaceSubspace;
     const defaultSpaceTemplate = defaultSpaceTemplatesData?.lookup.space?.templatesManager?.templateDefaults.find(
-      templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
+      templateDefault => templateDefault.type === defaultTemplateType
     )?.template?.profile.displayName;
 
-    return defaultSpaceTemplate ?? t(`context.${SpaceLevel.L1}.template.defaultTemplate`);
-  }, [defaultSpaceTemplatesData, t]);
+    return defaultSpaceTemplate ?? t(`context.${level}.template.defaultTemplate`);
+  }, [defaultSpaceTemplatesData, t, level]);
 
   const templateName = useMemo(() => {
     return templateData?.lookup.template?.profile.displayName ?? defaultTemplateName;
@@ -117,14 +135,14 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
     setDialogOpen(true);
   };
 
-  const loading = loadingSpace || loadingTemplate || loadingSpaceTemplate;
+  const loading = loadingTemplate || loadingSpaceTemplate;
 
   return (
     <Gutters row alignItems="center" {...rest}>
       {loading && <Skeleton width="100%" />}
       {!loading && templateName !== defaultTemplateName && (
         <>
-          <BlockSectionTitle>{t(`context.${SpaceLevel.L1}.template.title`)}</BlockSectionTitle>
+          <BlockSectionTitle>{t(`context.${level}.template.title`)}</BlockSectionTitle>
           <Chip
             variant="filled"
             color="primary"
@@ -144,11 +162,27 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
         </Button>
         <ImportTemplatesDialog
           templateType={TemplateType.Space}
-          actionButton={
-            <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
-              {t('buttons.use')}
-            </Button>
-          }
+          actionButton={template => {
+            if (isTemplateSelectable && !isTemplateSelectable(template as SpaceTemplate)) {
+              return (
+                /* Keep it inside a react fragment <>...</> to disable the onClick handler that the dialog is adding*/
+                <>
+                  <Tooltip title={t('createSpace.innovationFlowError')}>
+                    <span>
+                      <Button startIcon={<SystemUpdateAltIcon />} variant="contained" disabled>
+                        {t('buttons.use')}
+                      </Button>
+                    </span>
+                  </Tooltip>
+                </>
+              );
+            }
+            return (
+              <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
+                {t('buttons.use')}
+              </Button>
+            );
+          }}
           open={isDialogOpen}
           onSelectTemplate={handleSelectTemplate}
           onClose={() => setDialogOpen(false)}
@@ -176,4 +210,4 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({
   );
 };
 
-export default SubspaceTemplateSelector;
+export default SpaceTemplateSelector;

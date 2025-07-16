@@ -5,13 +5,13 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
-interface SubspaceCreateProps {
+interface CreateSubspaceBlockProps {
   canCreateSubentity: boolean;
   onCreateSubentity?: () => void;
   tabDescription: string;
 }
 
-const SubspaceCreate = ({ canCreateSubentity, onCreateSubentity, tabDescription }: SubspaceCreateProps) => {
+const CreateSubspaceBlock = ({ canCreateSubentity, onCreateSubentity, tabDescription }: CreateSubspaceBlockProps) => {
   const { t } = useTranslation();
 
   if (!tabDescription && !canCreateSubentity) {
@@ -32,4 +32,4 @@ const SubspaceCreate = ({ canCreateSubentity, onCreateSubentity, tabDescription 
   );
 };
 
-export default SubspaceCreate;
+export default CreateSubspaceBlock;
