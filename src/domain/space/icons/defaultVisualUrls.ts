@@ -5,6 +5,7 @@ const avatarFolder = 'avatar/';
 const cardFolder = 'card/';
 const bannerFolder = 'banner/';
 const defaultIndex = '-1'; // Default index for the visual URLs
+const validHex = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']);
 
 const generateVisualUrls = (folder: string, visualType: VisualType) => {
   const urls: Record<string, string> = {};
@@ -31,9 +32,8 @@ export const getDefaultSpaceVisualUrl = (visualType: VisualType, id?: string | u
   }
 
   const hexChar = id[0]?.toLowerCase();
-  const isValidHex = /^[0-9a-f]$/.test(hexChar);
 
-  if (isValidHex && defaultSpaceVisualUrls[visualType][hexChar]) {
+  if (validHex.has(hexChar) && defaultSpaceVisualUrls[visualType][hexChar]) {
     return defaultSpaceVisualUrls[visualType][hexChar];
   }
 
