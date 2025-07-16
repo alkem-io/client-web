@@ -23,7 +23,12 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
   const { visibility } = useSpace();
 
   const tLinks = TranslateWithElements(
-    <Link underline="always" target="_self" rel="noopener noreferrer" color={theme.palette.background.default} />
+    <Link
+      underline="always"
+      target="_self"
+      rel="noopener noreferrer"
+      sx={{ color: theme.palette.background.default, ':hover': { color: theme.palette.background.default } }}
+    />
   );
 
   const message = useMemo(() => {
