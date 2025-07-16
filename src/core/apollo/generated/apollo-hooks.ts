@@ -1667,21 +1667,16 @@ export const ProfileVisualsFragmentDoc = gql`
   fragment ProfileVisuals on Profile {
     id
     banner: visual(type: BANNER) {
-      id
-      uri
-      name
+      ...VisualModel
     }
     cardBanner: visual(type: CARD) {
-      id
-      uri
-      name
+      ...VisualModel
     }
     avatar: visual(type: AVATAR) {
-      id
-      uri
-      name
+      ...VisualModel
     }
   }
+  ${VisualModelFragmentDoc}
 `;
 export const SpaceAboutCardBannerFragmentDoc = gql`
   fragment SpaceAboutCardBanner on SpaceAbout {

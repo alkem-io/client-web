@@ -20973,7 +20973,9 @@ export type CreateSpaceMutation = {
         tagline?: string | undefined;
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        banner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
         cardBanner?:
           | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
           | undefined;
@@ -21028,8 +21030,12 @@ export type CreateSubspaceMutation = {
               type: TagsetType;
             }
           | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        banner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
       };
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       membership: {
@@ -21044,9 +21050,15 @@ export type CreateSubspaceMutation = {
 export type ProfileVisualsFragment = {
   __typename?: 'Profile';
   id: string;
-  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  banner?:
+    | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+    | undefined;
+  cardBanner?:
+    | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+    | undefined;
+  avatar?:
+    | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+    | undefined;
 };
 
 export type SubspacePageBannerQueryVariables = Exact<{
