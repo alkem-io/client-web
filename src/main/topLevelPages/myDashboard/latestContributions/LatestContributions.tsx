@@ -135,6 +135,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
         options={spaceOptions}
         label={t('pages.home.sections.latestContributions.filter.space.label')}
         onChange={handleSpaceSelect}
+        shrink
       />
       <SeamlessSelect
         value={filter.role}
@@ -148,7 +149,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
   const activityFeed = data?.activityFeed?.activityFeed;
 
   const renderActivities = () =>
-    (typeof limit === 'number' ? (activityFeed ?? []).slice(0, limit) : activityFeed ?? [])?.map(activity => (
+    (typeof limit === 'number' ? (activityFeed ?? []).slice(0, limit) : (activityFeed ?? []))?.map(activity => (
       <ActivityViewChooser
         key={activity.id}
         activity={activity as ActivityLogResultType}
