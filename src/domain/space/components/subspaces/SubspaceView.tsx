@@ -1,4 +1,4 @@
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import { CardLayoutContainer } from '@/domain/collaboration/callout/components/CardsLayout';
 import ContentColumn from '@/core/ui/content/ContentColumn';
@@ -25,7 +25,7 @@ import { ReactElement, ReactNode, cloneElement, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import CreateSubspaceBlock from './CreateSubspaceBlock';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
-import { defaultVisualUrls } from '../../icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '../../icons/defaultVisualUrls';
 
 export interface SubspacesState {
   loading: boolean;
@@ -78,7 +78,7 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
           title: entity.about.profile.displayName,
           icon: childEntitiesIcon,
           uri: entity.about.profile.url,
-          cardBanner: entity.about.profile?.cardBanner?.uri || defaultVisualUrls.AVATAR,
+          cardBanner: entity.about.profile?.cardBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, entity.id),
           isPrivate: !entity.about.isContentPublic,
         }))
         .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase())),

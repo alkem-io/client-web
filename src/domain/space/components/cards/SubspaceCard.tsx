@@ -13,6 +13,7 @@ import { ReactNode } from 'react';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 
 interface SubspaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconComponent' | 'expansion'> {
+  spaceId?: string;
   tagline?: string;
   displayName: string;
   vision: string;

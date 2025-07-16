@@ -1,28 +1,12 @@
-import { ReactNode } from 'react';
-import { Typography } from '@mui/material';
-
-type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
-
-const HTML_HEADING_LEVEL_MAX = 6;
-
-const PLATFORM_HEADING_LEVEL_MAX = 4;
+import { Typography, TypographyVariant } from '@mui/material';
+import type { Element } from 'hast';
 
 interface HeadingProps {
-  level: number;
-  node?: ReactNode;
-  [key: string]: unknown;
+  node?: Element;
 }
 
-const MarkdownHeading = ({ level, node, ...props }: HeadingProps) => {
-  const markdownHeadingLevel = level + PLATFORM_HEADING_LEVEL_MAX;
-
-  if (markdownHeadingLevel <= HTML_HEADING_LEVEL_MAX) {
-    const variant = `h${markdownHeadingLevel as HeadingLevel}` as const;
-
-    return <Typography variant={variant} {...props} />;
-  } else {
-    return <div role="heading" aria-level={markdownHeadingLevel} {...props} />;
-  }
+const MarkdownHeading = ({ node, ...props }: HeadingProps) => {
+  return <Typography variant={(node?.tagName ?? 'h1') as TypographyVariant} {...props} />;
 };
 
 export default MarkdownHeading;

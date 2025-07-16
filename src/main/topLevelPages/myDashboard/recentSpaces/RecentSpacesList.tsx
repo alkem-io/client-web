@@ -31,6 +31,7 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
           key={result.space.id}
           columns={cardColumns}
           space={{
+            id: result.space.id,
             about: result.space.about,
             level: result.space.level,
           }}

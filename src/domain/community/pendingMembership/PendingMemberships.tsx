@@ -18,6 +18,7 @@ import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAu
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 
 export interface SpaceDetails {
+  id: string;
   about: SpaceAboutLightModel;
   level: SpaceLevel;
 }

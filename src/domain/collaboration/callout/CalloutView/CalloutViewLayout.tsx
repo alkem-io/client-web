@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import WrapperMarkdown, { MARKDOWN_CLASS_NAME } from '@/core/ui/markdown/WrapperMarkdown';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '@/core/ui/typography';
 import { Ribbon } from '@/core/ui/card/Ribbon';
 import References from '@/domain/shared/components/References/References';
@@ -72,7 +72,7 @@ const CalloutViewLayout = ({
           overflowY: expanded ? 'auto' : 'visible',
         }}
       >
-        <Box className={MARKDOWN_CLASS_NAME}>
+        <Box sx={theme => ({ padding: theme.spacing(0, 2, 1) })}>
           <WrapperMarkdown caption>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
         </Box>
         {!skipReferences && !!callout.framing.profile.references?.length && (
