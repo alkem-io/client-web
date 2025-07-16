@@ -1,11 +1,10 @@
 import { ElementType } from 'react';
 import { Box } from '@mui/material';
 import { useMarkdownOptions } from '../MarkdownOptionsContext';
+import type { Element } from 'hast';
 
 interface ReactMarkdownProps {
-  node?: {
-    tagName?: ElementType;
-  };
+  node?: Element;
 }
 
 const MarkdownMedia = ({ node, ...props }: ReactMarkdownProps) => {

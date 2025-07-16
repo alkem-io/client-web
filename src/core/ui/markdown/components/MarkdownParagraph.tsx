@@ -1,13 +1,13 @@
 import { useMarkdownOptions } from '../MarkdownOptionsContext';
 import createMarkdownComponent from './MarkdownComponent';
 import { SxProps } from '@mui/material';
-import { ReactNode } from 'react';
+import type { Element } from 'hast';
 
 const Base = createMarkdownComponent('p');
 
 interface ReactMarkdownProps {
   sx?: SxProps;
-  node?: ReactNode;
+  node?: Element;
 }
 
 const MarkdownParagraph = (props: ReactMarkdownProps) => {
