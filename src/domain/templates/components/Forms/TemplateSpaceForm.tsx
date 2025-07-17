@@ -55,6 +55,15 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
 
   const [spaceId, setSpaceId] = useState<string>(template?.spaceId ?? ''); // This is a copy of the formik value spaceId, used to query the API and show the preview.
 
+  const initialValues: TemplateSpaceFormSubmittedValues = useMemo(
+    () => ({
+      profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
+      spaceId: template?.spaceId ?? '',
+      recursive: true,
+    }),
+    [template]
+  );
+
   // Load the innovationFlow and callouts from the selected space to update/create the template
   const {
     data: spaceData,
@@ -89,15 +98,6 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
   );
   const canUseSpaceAsTemplate = !spaceData?.lookup.space || hasUpdatePrivilegesOnSelectedSpace;
   const shouldShowSpacePreview = spacePreview.contentSpace && canUseSpaceAsTemplate;
-
-  const initialValues: TemplateSpaceFormSubmittedValues = useMemo(
-    () => ({
-      profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
-      spaceId: template?.spaceId ?? spaceId ?? '',
-      recursive: hasUpdatePrivilegesOnSelectedSpace,
-    }),
-    [template, hasUpdatePrivilegesOnSelectedSpace, spaceId]
-  );
 
   const loading = spaceContentLoading || templateLoading;
 
@@ -137,10 +137,19 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
         const handleSpaceIdChange = async (spaceId: string) => {
           if (spaceId) {
             const space = await refetchTemplateContent({ spaceId });
+            const hasUpdatePrivilege = checkSpaceUpdatePrivilege(
+              space.data?.lookup.space?.authorization?.myPrivileges ?? []
+            );
 
-            if (checkSpaceUpdatePrivilege(space.data?.lookup.space?.authorization?.myPrivileges ?? [])) {
-              setFieldValue('spaceId', spaceId); // Change the value in Formik
-              setSpaceId(spaceId); // Refresh the space content preview
+            if (hasUpdatePrivilege) {
+              // Set the spaceId value in the form
+              setFieldValue('spaceId', spaceId, false); // The third parameter 'false' prevents validation and keeps existing values intact
+
+              // Also update the recursive field based on privileges
+              setFieldValue('recursive', hasUpdatePrivilege, false);
+
+              // Update the state for the preview
+              setSpaceId(spaceId);
             } else {
               notify(t('templateLibrary.spaceTemplates.findByUrl.noRights'), 'error');
               handleCancel();
