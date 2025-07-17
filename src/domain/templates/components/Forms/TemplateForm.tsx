@@ -12,7 +12,7 @@ import TemplateWhiteboardForm, { TemplateWhiteboardFormSubmittedValues } from '.
 
 interface TemplateFormProps {
   template: AnyTemplate;
-  onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
+  onSubmit: (values: AnyTemplateFormSubmittedValues) => Promise<unknown>;
   actions: ReactNode | ((formState: FormikProps<AnyTemplateFormSubmittedValues>) => ReactNode);
   temporaryLocation?: boolean;
 }
