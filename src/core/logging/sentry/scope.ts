@@ -5,7 +5,7 @@ export const setUserScope = (user: UserModel | undefined, piiEnabled?: boolean) 
   if (user && piiEnabled) {
     Sentry.setUser({ id: user.id, username: user.profile.displayName, email: user.email });
   } else {
-    Sentry.configureScope(scope => scope.setUser(null));
+    Sentry.getCurrentScope().setUser(null);
   }
 };
 
@@ -14,5 +14,5 @@ export interface TransactionScope {
 }
 
 export const setTransactionScope = (tScope: TransactionScope) => {
-  Sentry.configureScope(scope => scope.setTransactionName(tScope.type));
+  Sentry.getCurrentScope().setTransactionName(tScope.type);
 };
