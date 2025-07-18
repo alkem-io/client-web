@@ -173,7 +173,7 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
 }
 
 # Special case for updating a collaboration template from an existing collaboration
-mutation UpdateTemplateFromSpace($templateId: UUID!, $spaceId: UUID!, $recursive: Boolean), {
+mutation UpdateTemplateFromSpace($templateId: UUID!, $spaceId: UUID!, $recursive: Boolean) {
   updateTemplateFromSpace(updateData: { templateID: $templateId, spaceID: $spaceId, recursive: $recursive }) {
     id
   }
