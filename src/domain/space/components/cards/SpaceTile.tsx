@@ -22,6 +22,7 @@ type SpaceTileProps = {
       }
     | undefined;
   columns?: number;
+  disableLink?: boolean;
 };
 
 export const RECENT_SPACE_CARD_ASPECT_RATIO = '175/100';
@@ -29,7 +30,7 @@ export const RECENT_SPACE_CARD_ASPECT_RATIO = '175/100';
 const SPACE_TITLE_CLASS_NAME = 'SpaceTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
+const SpaceTile = ({ space, columns = 3, disableLink }: SpaceTileProps) => {
   const isPrivate = space?.about.isContentPublic === false;
 
   const getVisualUrl = () => {
@@ -43,8 +44,7 @@ const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
   return (
     <GridItem columns={columns}>
       <ElevatedPaper
-        component={RouterLink}
-        to={space?.about.profile.url ?? ''}
+        {...(disableLink ? undefined : { component: RouterLink, to: space?.about.profile.url ?? '' })}
         sx={{
           position: 'relative',
         }}

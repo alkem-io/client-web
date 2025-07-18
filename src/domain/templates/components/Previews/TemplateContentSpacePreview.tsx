@@ -62,6 +62,7 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
                   about: subspace.about,
                   level: SpaceLevel.L1,
                 }}
+                disableLink
               />
             ))}
           </Gutters>
