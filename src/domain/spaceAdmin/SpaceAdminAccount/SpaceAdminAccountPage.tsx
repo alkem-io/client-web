@@ -1,5 +1,4 @@
 import {
-  refetchAdminSpacesListQuery,
   useDeleteSpaceMutation,
   useOrganizationAuthorizationLazyQuery,
   useSpaceAccountQuery,
@@ -117,8 +116,6 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
   }, [data]);
 
   const [deleteSpace] = useDeleteSpaceMutation({
-    refetchQueries: [refetchAdminSpacesListQuery()],
-    awaitRefetchQueries: true,
     onCompleted: () => {
       notify(t('pages.admin.space.notifications.space-removed'), 'success');
       navigate(ROUTE_HOME, { replace: true });
