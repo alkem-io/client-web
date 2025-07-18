@@ -10,7 +10,7 @@ import { UseCalloutsSetProvided } from '@/domain/collaboration/calloutsSet/useCa
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import SpaceWelcomeBlock from '@/domain/space/components/SpaceWelcomeBlock';
 import DashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
-import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/space/createSpace/utils';
+import { getSpaceWelcomeCache, removeSpaceWelcomeCache } from '@/domain/space/components/CreateSpace/utils';
 import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/TryVirtualContributorDialog';

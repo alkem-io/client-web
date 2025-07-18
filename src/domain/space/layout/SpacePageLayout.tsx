@@ -18,6 +18,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import { useSectionIndex } from './useSectionIndex';
 import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
+import { SpaceVisibilityNotice } from '@/domain/space/layout/tabbedLayout/layout/SpaceVisibilityNotice';
 
 // keep the logic around sections in one place - SpaceRoutes
 export const SpacePageLayout = () => {
@@ -34,7 +35,7 @@ export const SpacePageLayout = () => {
   return (
     <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
       <PlatformNavigationBar breadcrumbs={<SpaceBreadcrumbs spaceHierarchyPath={spaceHierarchyPath} />} />
-
+      <SpaceVisibilityNotice spaceLevel={spaceLevel} />
       <SpacePageBanner watermark={!isSmallScreen && <PageBannerWatermark />} />
       <SubspacePageBanner />
       {!isSmallScreen && isLevelZero && (

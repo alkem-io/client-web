@@ -70,6 +70,7 @@ export interface InAppNotificationProps {
       | undefined;
   };
   space?: {
+    id?: string;
     level: SpaceLevel;
     about: {
       profile:

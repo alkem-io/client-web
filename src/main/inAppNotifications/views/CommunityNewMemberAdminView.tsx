@@ -16,6 +16,7 @@ export const CommunityNewMemberAdminView = ({ id, state, space, triggeredAt, act
       type: 'COMMUNITY_NEW_MEMBER_ADMIN',
       state,
       space: {
+        id: space?.id,
         avatarUrl: space?.about.profile?.visual?.uri ?? '',
       },
       resource: {

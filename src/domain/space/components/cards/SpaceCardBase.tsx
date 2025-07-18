@@ -11,7 +11,7 @@ import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
 import CardBanner from '@/core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
 import { SpaceCardBanner } from './components/SpaceCardBanner';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import CardTags from '@/core/ui/card/CardTags';
 import { SpaceL0Icon } from '../../icons/SpaceL0Icon';
@@ -30,6 +30,7 @@ export interface SpaceCard2Props extends ContributeCardProps {
   actions?: ReactNode;
   matchedTerms?: boolean; // TODO pass ComponentType<CardTags> instead
   visual?: ReactNode;
+  spaceId?: string;
 }
 
 const SpaceCardBase = ({
@@ -67,7 +68,7 @@ const SpaceCardBase = ({
     <ContributeCard sx={{ position: 'relative' }} {...containerProps}>
       <Box {...wrapperProps}>
         <CardBanner
-          src={banner?.uri || defaultVisualUrls[VisualType.Card]}
+          src={banner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, containerProps.spaceId)}
           alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}
           overlay={bannerOverlay}
         />

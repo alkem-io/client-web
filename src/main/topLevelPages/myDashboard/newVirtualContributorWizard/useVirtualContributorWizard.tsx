@@ -36,7 +36,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import useNavigate from '@/core/routing/useNavigate';
 import { addVCCreationCache } from './TryVC/utils';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
-import { VisualWithAltText } from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
+import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
 import { useVirtualContributorWizardProvided, UserAccountProps } from './virtualContributorProps';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import ChooseCommunity from './ChooseCommunity';
@@ -83,14 +83,14 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
   const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
 
-  const [avatar, setAvatar] = useState<VisualWithAltText>();
+  const [avatar, setAvatar] = useState<VisualUploadModel>();
 
   const [uploadVisual] = useUploadVisualMutation({
     onError: () => notify(t('components.visual-upload.error'), 'error'),
     onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
   });
 
-  const uploadAvatar = useCallback(async (avatar: VisualWithAltText | undefined, visualID: string | undefined) => {
+  const uploadAvatar = useCallback(async (avatar: VisualUploadModel | undefined, visualID: string | undefined) => {
     if (avatar?.file && visualID) {
       await uploadVisual({
         variables: {

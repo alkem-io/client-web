@@ -117,6 +117,7 @@ const ContributionCard = ({
   return (
     <ContributionDetailsCard
       {...details}
+      spaceId={contributionItem.id}
       tagline={details.about.profile.tagline!}
       displayName={details.about.profile.displayName}
       enableLeave={enableLeave}

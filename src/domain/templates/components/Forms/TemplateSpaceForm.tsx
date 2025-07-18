@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { FormikHelpers, FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
@@ -54,6 +54,7 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
   const notify = useNotification();
 
   const [spaceId, setSpaceId] = useState<string>(template?.spaceId ?? ''); // This is a copy of the formik value spaceId, used to query the API and show the preview.
+
   const initialValues: TemplateSpaceFormSubmittedValues = useMemo(
     () => ({
       profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
@@ -88,13 +89,23 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
     contentSpace: spaceData?.lookup.space ?? templateData?.lookup.template?.contentSpace,
   };
 
+  const checkSpaceUpdatePrivilege = (myPrivileges: AuthorizationPrivilege[]) => {
+    return myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  };
+
+  const hasUpdatePrivilegesOnSelectedSpace = checkSpaceUpdatePrivilege(
+    spaceData?.lookup.space?.authorization?.myPrivileges ?? []
+  );
+  const canUseSpaceAsTemplate = !spaceData?.lookup.space || hasUpdatePrivilegesOnSelectedSpace;
+  const shouldShowSpacePreview = spacePreview.contentSpace && canUseSpaceAsTemplate;
+
   const loading = spaceContentLoading || templateLoading;
 
   const handleSubmit = (
     values: TemplateSpaceFormSubmittedValues,
     { setFieldValue }: FormikHelpers<TemplateSpaceFormSubmittedValues>
   ) => {
-    if (!template?.spaceId && !values.spaceId && !template?.contentSpace?.id) {
+    if ((!template?.spaceId && !values.spaceId && !template?.contentSpace?.id) || !canUseSpaceAsTemplate) {
       notify(t('pages.admin.generic.sections.templates.validation.spaceRequired'), 'error');
       return Promise.reject();
     }
@@ -120,16 +131,32 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
       validator={validator}
     >
       {({ setFieldValue }) => {
+        const handleCancel = () => {
+          setFieldValue('spaceId', '');
+        };
         const handleSpaceIdChange = async (spaceId: string) => {
-          setFieldValue('spaceId', spaceId); // Change the value in Formik
-          setSpaceId(spaceId); // Refresh the space content preview
           if (spaceId) {
-            await refetchTemplateContent({ spaceId });
+            const space = await refetchTemplateContent({ spaceId });
+            const hasUpdatePrivilege = checkSpaceUpdatePrivilege(
+              space.data?.lookup.space?.authorization?.myPrivileges ?? []
+            );
+
+            if (hasUpdatePrivilege) {
+              // Set the spaceId value in the form
+              setFieldValue('spaceId', spaceId, false); // The third parameter 'false' prevents validation and keeps existing values intact
+
+              // Also update the recursive field based on privileges
+              setFieldValue('recursive', hasUpdatePrivilege, false);
+
+              // Update the state for the preview
+              setSpaceId(spaceId);
+            } else {
+              notify(t('templateLibrary.spaceTemplates.findByUrl.noRights'), 'error');
+              handleCancel();
+            }
           }
         };
-        const handleCancel = () => {
-          setFieldValue('spaceId', undefined);
-        };
+
         return (
           <>
             <SpaceContentFromSpaceUrlForm
@@ -137,21 +164,23 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
               collapsible={Boolean(template?.spaceId)}
               onCollapse={handleCancel}
             />
-            {spacePreview.contentSpace && (
+            {shouldShowSpacePreview && (
               <>
                 <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
                 <TemplateContentSpacePreview loading={loading} template={spacePreview} />
-                <Box>
-                  <FormControlLabel
-                    label={<Caption color="black">{t('templateLibrary.spaceTemplates.preview.info')}</Caption>}
-                    control={<Switch checked disabled />}
-                  />
-                  <FormikSwitch
-                    label={<Caption>{t('templateLibrary.spaceTemplates.recursive')}</Caption>}
-                    name={nameOf<TemplateSpaceFormSubmittedValues>('recursive')}
-                  />
-                </Box>
               </>
+            )}
+            {hasUpdatePrivilegesOnSelectedSpace && (
+              <Box>
+                <FormControlLabel
+                  label={<Caption color="black">{t('templateLibrary.spaceTemplates.preview.info')}</Caption>}
+                  control={<Switch checked disabled />}
+                />
+                <FormikSwitch
+                  label={<Caption>{t('templateLibrary.spaceTemplates.recursive')}</Caption>}
+                  name={nameOf<TemplateSpaceFormSubmittedValues>('recursive')}
+                />
+              </Box>
             )}
           </>
         );
