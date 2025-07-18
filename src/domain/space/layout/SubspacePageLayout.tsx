@@ -137,7 +137,7 @@ export const SubspacePageLayout = () => {
                 position: 'sticky',
                 top: 0,
                 marginTop: gutters(-1),
-                paddingY: gutters(1),
+                paddingTop: gutters(1),
                 background: theme.palette.background.default,
                 width: '100%',
                 zIndex: 1,
@@ -164,7 +164,6 @@ export const SubspacePageLayout = () => {
               />
             </Box>
           )}
-
           <Outlet />
           <Suspense fallback={null}>
             <CreateCalloutDialog
