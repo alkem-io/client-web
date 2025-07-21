@@ -148,7 +148,11 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
 
                 <Gutters disableGap disablePadding paddingTop={1}>
                   <SpaceCardHorizontal
-                    space={{ about: { profile: rest?.bokProfile || defaultProfile }, level: SpaceLevel.L0 }}
+                    space={{
+                      id: virtualContributor?.aiPersona?.bodyOfKnowledgeID,
+                      about: { profile: rest?.bokProfile || defaultProfile },
+                      level: SpaceLevel.L0,
+                    }}
                     size="small"
                     deepness={0}
                     seamless

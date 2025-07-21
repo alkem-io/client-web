@@ -30,6 +30,7 @@ export const CollaborationCalloutPublishedView = ({
       type,
       state,
       space: {
+        id: space?.id,
         avatarUrl: space?.about.profile?.visual?.uri ?? '',
       },
       resource: {

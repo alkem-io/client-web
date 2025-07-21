@@ -20,14 +20,10 @@ const PageBannerCard = ({ title, subtitle, iconComponent: Icon, ...props }: Prop
     <PageBannerCardWrapper {...props}>
       <Gutters disablePadding gap={gutters(0.5)}>
         <BadgeCardView visual={Icon && <Icon color="primary" fontSize="large" />} minHeight={gutters(2)}>
-          <PageTitle color="primary" noWrap>
-            {title}
-          </PageTitle>
+          <PageTitle color="primary">{title}</PageTitle>
         </BadgeCardView>
 
-        <Text color="primary" noWrap>
-          {subtitle}
-        </Text>
+        <Text color="primary">{subtitle}</Text>
       </Gutters>
     </PageBannerCardWrapper>
   );

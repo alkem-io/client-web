@@ -77,7 +77,7 @@ const CalloutVisibilityChangeDialog = ({
                 {callout?.draft && (
                   <Box>
                     <BlockTitle>{t('common.notifications')}</BlockTitle>
-                    <FormikSwitch name="sendNotifications" title={t('components.callout-publish.notify-members')} />
+                    <FormikSwitch name="sendNotifications" label={t('components.callout-publish.notify-members')} />
                   </Box>
                 )}
               </Gutters>

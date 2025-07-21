@@ -1,17 +1,17 @@
 <p align="center">
-  <a href="https://alkemio.foundation/" target="blank"><img src="https://alkemio.foundation/uploads/logos/alkemio-logo.svg" width="400" alt="Alkemio Logo" /></a>
+  <a href="https://alkemio.foundation/" target="blank"><img src="https://alkem.io/logo.png" width="400" alt="Alkemio Logo" /></a>
 </p>
 <p align="center"><i>Empowering society. The platform to succeed in working on challenges, together.</i></p>
 
-[![Build & Deploy to Dev](https://github.com/alkem-io/client-web/actions/workflows/build-deploy-k8s-dev-azure.yml/badge.svg)](https://github.com/alkem-io/client-web/actions/workflows/build-deploy-k8s-dev-azure.yml)
+[![Build & Deploy to Dev](https://github.com/alkem-io/client-web/actions/workflows/build-deploy-k8s-dev-hetzner.yml/badge.svg)](https://github.com/alkem-io/client-web/actions/workflows/build-deploy-k8s-dev-azure.yml)
 [![Coverage Status](https://coveralls.io/repos/github/alkem-io/client-web/badge.svg?branch=develop)](https://coveralls.io/github/alkem-io/client-web?branch=develop)
 [![Crowdin](https://badges.crowdin.net/alkemio/localized.svg)](https://crowdin.com/project/alkemio)
 
 # Alkemio Web Client
 
-Welcome to the Alkemio web client - allowing you to browse the contents of the Alkemio Platform. Please see the [Alkemio repository](../alkemio) for more details on the Alkemio platform.
+Welcome to the Alkemio web client - allowing you to browse the contents of the Alkemio Platform. Please see the [Alkemio repository](https://github.com/alkem-io/alkemio) for more details on the Alkemio platform.
 
-This client is based on React, and is intended to showcase how clients in general can interact with the domain model exposed by the [Alkemio server](../server).
+This client is based on React, and is intended to showcase how clients in general can interact with the domain model exposed by the [Alkemio server](https://github.com/alkem-io/server).
 
 ## Configuration
 
@@ -19,7 +19,7 @@ Beyond the bootstrap configuration to point to the Alkemio server, all further c
 
 ## Launching the client
 
-To develop with the client, it is necessary to leverage the Alkemio server repository to get get a working instance of the Alkemio server running. For details on getting a working Alkemio server running please [consult the following documentation](https://github.com/alkem-io/server/blob/develop/docs/Running.md).
+To develop with the client, it is necessary to leverage the Alkemio server repository to get a working instance of the Alkemio server running. For details on getting a working Alkemio server running please [consult the following documentation](https://github.com/alkem-io/server/blob/develop/docs/Running.md).
 
 Once you can confirm that you have a running Alkemio server, then you can start with the launching of the Alkemio client.
 

@@ -71,6 +71,7 @@ export const UserProfileView = ({ userModel }: UserProfileViewProps) => {
           <References
             references={links[OTHER_LINK_GROUP]}
             noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
+            containerProps={{ maxWidth: '100%' }}
           />
         </GridLegacy>
       )}

@@ -14,6 +14,11 @@ type SeamlessSelectProps<Option extends string | number | SearchScope> = {
   label?: ReactNode;
   options: CustomSelectOption<Option>[];
   typographyComponent?: ComponentType<TypographyProps>;
+
+  /**
+   * Set it to true if it's inside a flex box and you expect the options to have long labels that might not fit in the container box.
+   */
+  shrink?: boolean;
 } & SelectProps;
 
 const SeamlessSelect = <Option extends string | number>({
@@ -21,10 +26,12 @@ const SeamlessSelect = <Option extends string | number>({
   options,
   label,
   typographyComponent: Typography = Caption,
+  shrink = false,
   ...props
 }: SeamlessSelectProps<Option>) => {
   const selectedOption = useMemo(() => options.find(option => option.value === value), [value, options]);
 
+  const { sx, ...restProps } = props;
   return (
     <Select
       value={value}
@@ -34,6 +41,8 @@ const SeamlessSelect = <Option extends string | number>({
         height: gutters(2),
         '.MuiOutlinedInput-notchedOutline': { border: 'none' },
         '.MuiSelect-icon': { top: 0, fontSize: gutters(1) },
+        ...(shrink ? { flexShrink: 1, minWidth: 0, textOverflow: 'ellipsis' } : {}),
+        ...sx,
       }}
       renderValue={() => (
         <Box display="flex">
@@ -48,11 +57,13 @@ const SeamlessSelect = <Option extends string | number>({
           </Typography>
         </Box>
       )}
-      {...props}
+      {...restProps}
     >
       {options.map(({ value, label }, index) => (
         <MenuItem value={value} key={`option_${index}`}>
-          <Typography textTransform="none">{label}</Typography>
+          <Typography textTransform="none" overflow="hidden" textOverflow="ellipsis">
+            {label}
+          </Typography>
         </MenuItem>
       ))}
     </Select>

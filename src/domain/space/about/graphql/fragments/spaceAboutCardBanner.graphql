@@ -9,8 +9,7 @@ fragment SpaceAboutCardBanner on SpaceAbout {
       ...VisualModel
     }
     tagset {
-      id
-      tags
+      ...TagsetDetails
     }
   }
 }

@@ -9,6 +9,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import FileUploadWrapper from '../FileUploadWrapper';
 import { CropDialog } from './CropDialog';
 import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
+import { VisualUploadModel } from './VisualUpload.model';
 
 const DEFAULT_SIZE = 128;
 
@@ -42,14 +43,14 @@ const VisualUpload = ({ visual, height = DEFAULT_SIZE }: VisualUploadProps) => {
   const [selectedFile, setSelectedFile] = useState<File>();
 
   const handleVisualUpload = useCallback(
-    async (file: File, altText: string) => {
-      if (visual) {
+    async (data: VisualUploadModel) => {
+      if (visual && data.file) {
         uploadVisual({
           variables: {
-            file,
+            file: data.file,
             uploadData: {
               visualID: visual.id,
-              alternativeText: altText,
+              alternativeText: data.altText,
             },
           },
         });

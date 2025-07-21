@@ -256,11 +256,11 @@ const SpaceAdminCommunityPage = ({
                     onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
                     onSelectTemplate={onSelectCommunityGuidelinesTemplate}
                     enablePlatformTemplates
-                    actionButton={
+                    actionButton={() => (
                       <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
                         {t('buttons.use')}
                       </Button>
-                    }
+                    )}
                   />
                 </>
               );

@@ -1,0 +1,11 @@
+fragment SpaceAboutTile on SpaceAbout {
+  id
+  profile {
+    id
+    displayName
+    tagline
+    url
+    ...SubspaceVisuals
+  }
+  isContentPublic
+}

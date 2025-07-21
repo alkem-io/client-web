@@ -1,6 +1,6 @@
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
-import { FC, useCallback, useState } from 'react';
+import { FC, useState } from 'react';
 import {
   refetchSubspacesInSpaceQuery,
   useSpaceAdminDefaultSpaceTemplatesDetailsQuery,
@@ -9,7 +9,7 @@ import {
   useUpdateTemplateDefaultMutation,
   refetchSpaceAdminDefaultSpaceTemplatesDetailsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, SpaceLevel, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import Gutters from '@/core/ui/grid/Gutters';
 import Loading from '@/core/ui/loading/Loading';
@@ -17,16 +17,12 @@ import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import SearchableList, { SearchableListItem } from '@/domain/platform/admin/components/SearchableList';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
-import { useSubspaceCreation } from '@/domain/space/hooks/useSubspaceCreation/useSubspaceCreation';
-import { CreateSubspaceForm } from '@/domain/space/components/subspaces/CreateSubspaceForm';
-import { SpaceFormValues } from '@/domain/space/components/subspaces/SubspaceCreationDialog/SubspaceCreationForm';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
-import { SubspaceCreationDialog } from '../../space/components/subspaces/SubspaceCreationDialog/SubspaceCreationDialog';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import InnovationFlowCalloutsPreview from '@/domain/collaboration/InnovationFlow/InnovationFlowCalloutsPreview';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -35,15 +31,13 @@ import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/Innovati
 import InnovationFlowProfileView from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SelectDefaultSpaceTemplateDialog from '@/domain/templates-manager/SelectDefaultSpaceTemplate/SelectDefaultSpaceTemplateDialog';
-import SpaceL1Icon2 from '../../space/icons/SpaceL1Icon2';
-import { SpaceL2Icon } from '../../space/icons/SpaceL2Icon';
 import CreateSpaceTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateSpaceTemplateDialog';
+import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 
 export interface SpaceAdminSubspacesPageProps extends SettingsPageProps {
   useL0Layout: boolean;
   spaceId: string;
   templatesEnabled: boolean;
-  level: SpaceLevel;
 }
 
 const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
@@ -51,7 +45,6 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
   useL0Layout,
   routePrefix,
   templatesEnabled,
-  level,
 }) => {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -97,42 +90,6 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
       },
     });
   };
-
-  const { createSubspace } = useSubspaceCreation({
-    onCompleted: () => {
-      notify(t('pages.admin.subsubspace.notifications.subsubspace-created'), 'success');
-    },
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: spaceId })],
-    awaitRefetchQueries: true,
-  });
-
-  const handleCreate = useCallback(
-    async (value: SpaceFormValues) => {
-      const result = await createSubspace({
-        spaceID: spaceId,
-        about: {
-          profile: {
-            displayName: value.displayName,
-            tagline: value.tagline,
-            description: value.description ?? '',
-            visuals: value.visuals,
-            tags: value.tags,
-          },
-          why: value.why ?? '',
-        },
-        addTutorialCallouts: value.addTutorialCallouts,
-        addCallouts: value.addCallouts,
-        spaceTemplateId: value.spaceTemplateId,
-      });
-
-      if (!result?.about.profile?.url) {
-        notify(t('pages.admin.subsubspace.notifications.error-creating-subsubspace'), 'error');
-        return;
-      }
-      navigate(buildSettingsUrl(result.about.profile.url));
-    },
-    [navigate, createSubspace, spaceId]
-  );
 
   // Templates usage
   const { data, loading: adminTemplatesLoading } = useSpaceAdminDefaultSpaceTemplatesDetailsQuery({
@@ -194,9 +151,10 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
       </MenuItemWithIcon>
     </>
   );
-
-  // Show the correct icon
-  const subspaceIcon = level === SpaceLevel.L0 ? <SpaceL1Icon2 fill="primary" /> : <SpaceL2Icon fill="primary" />;
+  const onSubspaceCreated = (subspace: { about: { profile: { url: string } } }) => {
+    notify(t('pages.admin.subsubspace.notifications.subsubspace-created'), 'success');
+    navigate(buildSettingsUrl(subspace.about.profile.url));
+  };
 
   if (loading || adminTemplatesLoading) return <Loading text={'Loading spaces'} />;
   return (
@@ -261,20 +219,19 @@ const SpaceAdminSubspacesPage: FC<SpaceAdminSubspacesPageProps> = ({
           onClose={() => setSelectSpaceTemplateDialogOpen(false)}
           onSelectSpaceTemplate={handleSelectSpaceTemplate}
         />
-        <SubspaceCreationDialog
+        <CreateSubspace
           open={subspaceCreationDialogOpen}
-          icon={subspaceIcon}
-          spaceDisplayName={t('common.subspace')}
           onClose={() => setSubspaceCreationDialogOpen(false)}
-          onCreate={handleCreate}
-          formComponent={CreateSubspaceForm}
+          parentSpaceId={spaceId}
+          onSubspaceCreated={onSubspaceCreated}
         />
         <EntityConfirmDeleteDialog
           entity={t('common.subspace')}
+          name={deleteDialogSelectedItem?.profile.displayName}
           open={Boolean(deleteDialogSelectedItem)}
           onClose={() => setDeleteDialogSelectedItem(undefined)}
           onDelete={onDeleteConfirmation}
-          description={'components.deleteEntity.confirmDialog.descriptionShort'}
+          description="components.deleteEntity.confirmDialog.descriptionShortWithName"
         />
         {saveAsTemplateDialogSelectedSpace && templatesSet && (
           <CreateSpaceTemplateDialog
