@@ -1,0 +1,15 @@
+mutation CreateSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean = false) {
+  createSubspace(subspaceData: $input) {
+    ...SubspaceCard
+    about {
+      id
+      profile {
+        id
+        url # Always request the URL at least to navigate to the new subspace
+      }
+      profile @include(if: $includeVisuals) {
+        ...ProfileVisuals
+      }
+    }
+  }
+}

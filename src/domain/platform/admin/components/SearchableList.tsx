@@ -79,7 +79,7 @@ export const SearchableList = <
           <SpaceCardHorizontal
             key={item.id}
             size="medium"
-            space={{ about: { profile: item.profile }, level: item.level }}
+            space={{ id: item.id, about: { profile: item.profile }, level: item.level }}
             deepness={0}
             seamless
             sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}

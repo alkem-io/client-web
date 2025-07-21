@@ -14,6 +14,7 @@ export const CommunityNewMemberView = ({ id, type, state, space, triggeredAt }: 
       type,
       state,
       space: {
+        id: space?.id,
         avatarUrl: space?.about.profile?.visual?.uri ?? '',
       },
       resource: {

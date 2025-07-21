@@ -76,11 +76,13 @@ mutation CreateTemplateFromSpace(
   $profileData: CreateProfileInput!
   $tags: [String!]
   $spaceId: UUID!
+  $recursive: Boolean
 ) {
   createTemplateFromSpace(
     templateData: {
       templatesSetID: $templatesSetId
       profileData: $profileData
+      recursive: $recursive,
       tags: $tags
       spaceID: $spaceId
     }
@@ -171,8 +173,8 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
 }
 
 # Special case for updating a collaboration template from an existing collaboration
-mutation UpdateTemplateFromSpace($templateId: UUID!, $spaceId: UUID!) {
-  updateTemplateFromSpace(updateData: { templateID: $templateId, spaceID: $spaceId }) {
+mutation UpdateTemplateFromSpace($templateId: UUID!, $spaceId: UUID!, $recursive: Boolean) {
+  updateTemplateFromSpace(updateData: { templateID: $templateId, spaceID: $spaceId, recursive: $recursive }) {
     id
   }
 }

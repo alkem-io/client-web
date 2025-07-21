@@ -9,9 +9,10 @@ import { CropDialog } from '../VisualUpload/CropDialog';
 import { useField } from 'formik';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { Caption } from '../../typography';
 import { gutters } from '../../grid/utils';
+import { VisualUploadModel } from '../VisualUpload/VisualUpload.model';
 
 const DEFAULT_SIZE = 70;
 
@@ -31,17 +32,13 @@ const FormikAvatarUploadSkeleton = ({ height = DEFAULT_SIZE, ...containerProps }
   );
 };
 
-export type VisualWithAltText = {
-  file: File;
-  altText?: string;
-};
-
 export interface FormikAvatarUploadProps extends BoxProps {
   name: string;
   visualType: VisualType;
   height?: number;
   altText?: string;
-  onChangeAvatar?: (avatar: VisualWithAltText) => void;
+  onChangeAvatar?: (avatar: VisualUploadModel) => void;
+  initialVisualUrl?: string;
 }
 
 /**
@@ -54,27 +51,33 @@ const FormikAvatarUpload = ({
   height = DEFAULT_SIZE,
   altText,
   onChangeAvatar,
+  initialVisualUrl,
   ...containerProps
 }: FormikAvatarUploadProps) => {
   const { t } = useTranslation();
 
   const [cropDialogOpened, setCropDialogOpened] = useState(false);
-  const [field, , helpers] = useField<VisualWithAltText | undefined>(name);
+  const [field, , helpers] = useField<VisualUploadModel | undefined>(name);
   const selectedFile = field.value;
 
-  const [imageUrl, setImageUrl] = useState<string>(defaultVisualUrls[visualType]);
+  const [imageUrl, setImageUrl] = useState<string>(getDefaultSpaceVisualUrl(visualType));
 
   useEffect(() => {
     if (selectedFile?.file) {
+      // Show the user's uploaded file
       const objectUrl = URL.createObjectURL(selectedFile.file);
       setImageUrl(objectUrl);
       return () => {
         URL.revokeObjectURL(objectUrl);
       };
+    } else if (initialVisualUrl) {
+      // Show template visual if available
+      setImageUrl(initialVisualUrl);
     } else {
-      setImageUrl(defaultVisualUrls[visualType]);
+      // Fall back to default visual
+      setImageUrl(getDefaultSpaceVisualUrl(visualType));
     }
-  }, [selectedFile, visualType]);
+  }, [selectedFile, visualType, initialVisualUrl]);
 
   const { data: constraintsData, loading } = useDefaultVisualTypeConstraintsQuery({
     variables: { visualType },
@@ -90,11 +93,11 @@ const FormikAvatarUpload = ({
     helpers.setValue({ file, altText });
     setCropDialogOpened(true);
   };
-  const handleVisualReady = (file: File, altText: string) => {
-    helpers.setValue({ file, altText });
+  const handleVisualReady = (data: VisualUploadModel) => {
+    helpers.setValue(data);
     setCropDialogOpened(false);
 
-    onChangeAvatar?.({ file, altText });
+    onChangeAvatar?.(data);
   };
 
   const width = height * aspectRatio;

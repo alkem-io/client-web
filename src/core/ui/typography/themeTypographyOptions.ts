@@ -4,6 +4,7 @@ import { rem } from './utils';
 
 export const fontFamilyMontserrat = '"Montserrat", sans-serif';
 export const fontFamilySourceSans = '"Source Sans Pro", sans-serif';
+export const fontFamilyVerdana = '"Verdana", "Arial", sans-serif';
 
 const fontWeightRegular = 400;
 const fontWeightMedium = 500;

@@ -231,11 +231,11 @@ const CreateCalloutDialog = ({
       </DialogWithGrid>
       <ImportTemplatesDialog
         templateType={TemplateType.Callout}
-        actionButton={
+        actionButton={() => (
           <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
             {t('buttons.use')}
           </Button>
-        }
+        )}
         open={importCalloutTemplateDialogOpen}
         onSelectTemplate={handleSelectTemplate}
         onClose={() => setImportCalloutTemplateDialogOpen(false)}

@@ -1,9 +1,9 @@
 import { Box, SxProps } from '@mui/material';
-import { ReactNode } from 'react';
+import type { Element } from 'hast';
 
 interface ReactMarkdownProps {
   sx?: SxProps;
-  node?: ReactNode;
+  node?: Element;
 }
 
 const createMarkdownList =

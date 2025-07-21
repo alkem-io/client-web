@@ -10,12 +10,7 @@ fragment SpaceAboutLight on SpaceAbout {
       id
       tags
     }
-    avatar: visual(type: AVATAR) {
-      ...VisualModel
-    }
-    cardBanner: visual(type: CARD) {
-      ...VisualModel
-    }
+    ...SubspaceVisuals
   }
   isContentPublic
   membership {
@@ -26,5 +21,14 @@ fragment SpaceAboutLight on SpaceAbout {
   }
   guidelines {
     id
+  }
+}
+
+fragment SubspaceVisuals on Profile {
+  avatar: visual(type: AVATAR) {
+    ...VisualModel
+  }
+  cardBanner: visual(type: CARD) {
+    ...VisualModel
   }
 }

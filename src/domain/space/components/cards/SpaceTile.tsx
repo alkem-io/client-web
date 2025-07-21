@@ -8,19 +8,21 @@ import { alpha } from '@mui/material/styles';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '@/core/ui/typography';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from '../../icons/PrivacyIcon';
-import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { SpaceAboutTileModel } from '../../about/model/SpaceAboutTile.model';
 
 type SpaceTileProps = {
   space:
     | {
-        about: SpaceAboutLightModel;
+        id?: string;
+        about: SpaceAboutTileModel;
         level?: SpaceLevel;
       }
     | undefined;
   columns?: number;
+  disableLink?: boolean;
 };
 
 export const RECENT_SPACE_CARD_ASPECT_RATIO = '175/100';
@@ -28,13 +30,21 @@ export const RECENT_SPACE_CARD_ASPECT_RATIO = '175/100';
 const SPACE_TITLE_CLASS_NAME = 'SpaceTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
+const SpaceTile = ({ space, columns = 3, disableLink }: SpaceTileProps) => {
   const isPrivate = space?.about.isContentPublic === false;
+
+  const getVisualUrl = () => {
+    if (space?.about.profile.cardBanner?.uri) {
+      return space.about.profile.cardBanner.uri;
+    }
+
+    return getDefaultSpaceVisualUrl(VisualType.Card, space?.id);
+  };
+
   return (
     <GridItem columns={columns}>
       <ElevatedPaper
-        component={RouterLink}
-        to={space?.about.profile.url ?? ''}
+        {...(disableLink ? undefined : { component: RouterLink, to: space?.about.profile.url ?? '' })}
         sx={{
           position: 'relative',
         }}
@@ -49,7 +59,7 @@ const SpaceTile = ({ space, columns = 3 }: SpaceTileProps) => {
             {isPrivate && <PrivacyIcon />}
 
             <Avatar
-              src={space.about.profile.cardBanner?.uri || defaultVisualUrls[VisualType.Card]}
+              src={getVisualUrl()}
               sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO }}
               variant="square"
             >

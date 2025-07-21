@@ -3787,6 +3787,7 @@ export type TemplateContentSpaceKeySpecifier = (
   | 'id'
   | 'level'
   | 'settings'
+  | 'subspaces'
   | 'updatedDate'
   | TemplateContentSpaceKeySpecifier
 )[];
@@ -3798,6 +3799,7 @@ export type TemplateContentSpaceFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TemplateDefaultKeySpecifier = (
