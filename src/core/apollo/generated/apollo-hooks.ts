@@ -20539,8 +20539,11 @@ export const SpaceTemplateContentDocument = gql`
         settings {
           ...SpaceTemplateContent_Settings
         }
-        about {
-          ...SpaceTemplateContent_Subspaces
+        subspaces {
+          id
+          about {
+            ...SpaceTemplateContent_Subspaces
+          }
         }
       }
     }
@@ -21019,8 +21022,8 @@ export type UpdateCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutTemplateMutationVariables
 >;
 export const UpdateTemplateFromSpaceDocument = gql`
-  mutation UpdateTemplateFromSpace($templateId: UUID!, $spaceId: UUID!) {
-    updateTemplateFromSpace(updateData: { templateID: $templateId, spaceID: $spaceId }) {
+  mutation UpdateTemplateFromSpace($templateId: UUID!, $spaceId: UUID!, $recursive: Boolean) {
+    updateTemplateFromSpace(updateData: { templateID: $templateId, spaceID: $spaceId, recursive: $recursive }) {
       id
     }
   }
@@ -21045,6 +21048,7 @@ export type UpdateTemplateFromSpaceMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      templateId: // value for 'templateId'
  *      spaceId: // value for 'spaceId'
+ *      recursive: // value for 'recursive'
  *   },
  * });
  */

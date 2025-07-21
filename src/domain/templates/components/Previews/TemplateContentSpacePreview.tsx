@@ -53,15 +53,17 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
       return (
         <>
           <Caption>{t('templateLibrary.spaceTemplates.includesSubspaces')}</Caption>
-          <Gutters row disablePadding>
+          <Gutters row disablePadding flexWrap="wrap">
             {template.contentSpace.subspaces.map((subspace, index) => (
               <SpaceTile
                 key={index}
                 columns={cardColumns}
                 space={{
+                  id: subspace.id,
                   about: subspace.about,
                   level: SpaceLevel.L1,
                 }}
+                disableLink
               />
             ))}
           </Gutters>

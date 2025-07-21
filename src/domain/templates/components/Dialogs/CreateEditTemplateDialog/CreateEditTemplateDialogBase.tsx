@@ -45,8 +45,12 @@ const CreateEditTemplateDialogBase = ({
           actions: formik => (
             <DialogFooter>
               <DialogActions sx={{ marginLeft: 'auto' }}>
-                {editMode && onDelete && <DeleteButton onClick={onDelete} />}
-                {editMode && onCancel && <BackButton onClick={onCancel}>{t('buttons.cancel')}</BackButton>}
+                {editMode && onDelete && <DeleteButton onClick={onDelete} disabled={formik.isSubmitting} />}
+                {editMode && onCancel && (
+                  <BackButton onClick={onCancel} disabled={formik.isSubmitting}>
+                    {t('buttons.cancel')}
+                  </BackButton>
+                )}
                 <FormikSubmitButtonPure
                   variant="contained"
                   formik={formik}

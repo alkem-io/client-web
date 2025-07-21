@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 interface CreateTemplateDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
+  onSubmit: (values: AnyTemplateFormSubmittedValues) => Promise<unknown>;
   templateType: TemplateType;
   getDefaultValues?: () => Promise<Partial<AnyTemplate>>;
   temporaryLocation?: boolean;

@@ -38,6 +38,7 @@ import { TemplateSpaceFormSubmittedValues } from '../Forms/TemplateSpaceForm';
 import { TemplateCalloutFormSubmittedValues } from '../Forms/TemplateCalloutForm';
 import { TemplateWhiteboardFormSubmittedValues } from '../Forms/TemplateWhiteboardForm';
 import { SpaceTemplate } from '../../models/SpaceTemplate';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
 const defaultPermissionDenied: TemplatePermissionCallback = () => false;
@@ -84,6 +85,7 @@ const TemplatesAdmin = ({
   canDeleteTemplates = defaultPermissionDenied,
 }: PropsWithChildren<TemplatesAdminProps>) => {
   const { t } = useTranslation();
+  const notify = useNotification();
   const backToTemplates = useBackWithDefaultUrl(baseUrl);
   const { handlePreviewTemplates } = useHandlePreviewImages();
 
@@ -110,7 +112,7 @@ const TemplatesAdmin = ({
   // Update Template
   const [editTemplateMode, setEditTemplateMode] = useState(alwaysEditTemplate);
 
-  const refetchQueries = ['AllTemplatesInTemplatesSet', 'TemplateContent'];
+  const refetchQueries = ['AllTemplatesInTemplatesSet', 'TemplateContent', 'SpaceTemplateContent'];
   const [updateTemplate] = useUpdateTemplateMutation({ refetchQueries });
   const [updateCallout] = useUpdateCalloutTemplateMutation({ refetchQueries });
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({ refetchQueries });
@@ -161,6 +163,7 @@ const TemplatesAdmin = ({
     if (!alwaysEditTemplate) {
       setEditTemplateMode(false);
     }
+    notify(t('templateLibrary.notifications.templateSaved'), 'success');
   };
 
   // Create Template
