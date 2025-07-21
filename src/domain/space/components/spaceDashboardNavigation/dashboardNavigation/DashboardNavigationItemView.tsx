@@ -65,44 +65,40 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
 
     const childrenContainerRef = useRef<HTMLDivElement>();
 
-    useImperativeHandle(
-      ref,
-      () => {
-        const getChildrenDimensions = () => {
-          const childrenBounds = childrenContainerRef.current?.getBoundingClientRect();
-          return {
-            top: childrenBounds?.top,
-            height: childrenBounds?.height,
-          };
-        };
+    useImperativeHandle(ref, () => {
+      const getChildrenDimensions = () => {
+        const childrenBounds = childrenContainerRef.current?.getBoundingClientRect();
         return {
-          id,
-          level,
-          expand: () => setIsExpanded(true),
-          getDimensions: () => {
-            // If items lose expandability, we can greatly simplify the code by using a wrapper Box and reading its height.
-            const hostBounds = hostContainerRef.current?.getBoundingClientRect();
-            const top = hostBounds?.top;
+          top: childrenBounds?.top,
+          height: childrenBounds?.height,
+        };
+      };
+      return {
+        id,
+        level,
+        expand: () => setIsExpanded(true),
+        getDimensions: () => {
+          // If items lose expandability, we can greatly simplify the code by using a wrapper Box and reading its height.
+          const hostBounds = hostContainerRef.current?.getBoundingClientRect();
+          const top = hostBounds?.top;
 
-            if (!isExpanded) {
-              return {
-                top,
-                height: hostBounds?.height,
-              };
-            }
-
-            const childrenBounds = getChildrenDimensions();
-
+          if (!isExpanded) {
             return {
               top,
-              height: (hostBounds?.height ?? 0) + (childrenBounds.height ?? 0),
+              height: hostBounds?.height,
             };
-          },
-          getChildrenDimensions,
-        };
-      },
-      [id, isExpanded, level]
-    );
+          }
+
+          const childrenBounds = getChildrenDimensions();
+
+          return {
+            top,
+            height: (hostBounds?.height ?? 0) + (childrenBounds.height ?? 0),
+          };
+        },
+        getChildrenDimensions,
+      };
+    }, [id, isExpanded, level]);
 
     const hasChildren = children && children.length > 0;
 
@@ -123,7 +119,7 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
                 placement={tooltipPlacement}
                 arrow
               >
-                <SpaceAvatar src={avatar?.uri} size="medium" />
+                <SpaceAvatar src={avatar?.uri} size="medium" spaceId={id} />
               </Tooltip>
             }
             visualRight={

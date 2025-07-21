@@ -64,11 +64,11 @@ const WhiteboardDialogTemplatesLibrary = ({
           )}
           <ImportTemplatesDialog
             templateType={TemplateType.Whiteboard}
-            actionButton={
+            actionButton={() => (
               <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}
               </Button>
-            }
+            )}
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}
             onClose={() => setDialogOpen(false)}

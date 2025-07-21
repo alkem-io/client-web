@@ -406,11 +406,12 @@ export const toUpdateTemplateMutationVariables = (
       // Then updateSpaceContentTemplateVariables will be returned and the mutation will be called.
       // If the spaceId remains the same, we just update the template profile.
       const oldSelectedSpaceId = (template as SpaceTemplate).contentSpace?.id;
-      const newModelSpaceId = (newValues as TemplateSpaceFormSubmittedValues).spaceId;
+      const { spaceId: newModelSpaceId, recursive } = newValues as TemplateSpaceFormSubmittedValues;
       if (oldSelectedSpaceId && newModelSpaceId && oldSelectedSpaceId !== newModelSpaceId) {
         const updateSpaceContentTemplateVariables: UpdateTemplateFromSpaceMutationVariables = {
           templateId,
           spaceId: newModelSpaceId,
+          recursive,
         };
         return {
           updateTemplateVariables,

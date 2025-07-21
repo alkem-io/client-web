@@ -19,7 +19,7 @@ import { useColumns } from '@/core/ui/grid/GridContext';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { SpaceLevel, RoleName, VisualType } from '@/core/apollo/generated/graphql-schema';
 
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
 const VISIBLE_COMMUNITY_ROLES = [RoleName.Admin, RoleName.Lead];
 
@@ -42,6 +42,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
   const {
     childMemberships,
     space: {
+      id,
       level,
       community,
       about: {
@@ -71,7 +72,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
             component={RouterLink}
             visual={
               <Avatar
-                src={avatar || defaultVisualUrls[VisualType.Card]}
+                src={avatar || getDefaultSpaceVisualUrl(VisualType.Card, id)}
                 alt={t('common.avatar-of', { space: displayName })}
                 aria-label="Space avatar"
               >

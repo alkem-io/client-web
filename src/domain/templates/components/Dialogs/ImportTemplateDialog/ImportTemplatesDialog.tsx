@@ -39,7 +39,7 @@ interface ImportTemplatesDialogProps extends ImportTemplatesOptions {
   open: boolean;
   onClose?: () => void;
   onSelectTemplate: (template: AnyTemplate) => Promise<unknown>;
-  actionButton: ReactElement<ButtonProps>;
+  actionButton: (template: AnyTemplate) => ReactElement<ButtonProps>;
 }
 
 const ImportTemplatesDialog = ({
@@ -180,7 +180,10 @@ const ImportTemplatesDialog = ({
           open
           template={previewTemplate}
           onClose={handleClosePreview}
-          actions={cloneElement(actionButton, { onClick: handleImportTemplate, loading: loadingImport })}
+          actions={cloneElement(actionButton(previewTemplate), {
+            onClick: handleImportTemplate,
+            loading: loadingImport,
+          })}
         />
       )}
     </>

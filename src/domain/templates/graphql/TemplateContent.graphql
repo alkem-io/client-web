@@ -40,6 +40,10 @@ query SpaceTemplateContent($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       collaboration {
         ...SpaceTemplateContent_Collaboration
       }
@@ -49,8 +53,11 @@ query SpaceTemplateContent($spaceId: UUID!) {
       settings {
         ...SpaceTemplateContent_Settings
       }
-      about {
-        ...SpaceTemplateContent_Subspaces
+      subspaces {
+        id
+        about {
+          ...SpaceTemplateContent_Subspaces
+        }
       }
     }
   }

@@ -8,7 +8,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useSpace } from '../../../context/useSpace';
 import { useTranslation } from 'react-i18next';
-import { defaultVisualUrls } from '../../../icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '../../../icons/defaultVisualUrls';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useInnovationHubSpaceBannerRibbon from '@/domain/innovationHub/InnovationHubSpaceBannerRibbon/useInnovationHubSpaceBannerRibbon';
@@ -85,7 +85,7 @@ const SpacePageBanner = ({ isAdmin, loading: dataLoading = false, watermark, tit
       {imageLoading && <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />}
       <Box>
         <ImageBlurredSides
-          src={profile?.banner?.uri || defaultVisualUrls[VisualType.Banner]}
+          src={profile?.banner?.uri || getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
           alt={t('visuals-alt-text.banner.page.text', { altText: profile?.banner?.alternativeText })}
           onLoad={() => setImageLoading(false)}
           onError={imageLoadError}

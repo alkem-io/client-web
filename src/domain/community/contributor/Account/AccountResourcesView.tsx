@@ -90,6 +90,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
               <SpaceTile
                 key={contributionItem.id}
                 space={{
+                  id: contributionItem.id,
                   about: contributionItem.about,
                   level: SpaceLevel.L0,
                 }}

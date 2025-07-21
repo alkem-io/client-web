@@ -1,19 +1,20 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { FormikHelpers, FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
 import TemplateContentSpacePreview from '../Previews/TemplateContentSpacePreview';
 import { useSpaceTemplateContentQuery, useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
-import SpaceContentFromSpaceUrlForm from './SpaceContentFromSpaceUrlForm';
+import SpaceContentFromSpaceUrlForm, { SpaceContentFromSpaceUrlFormRef } from './SpaceContentFromSpaceUrlForm';
 import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
 import { nameOf } from '@/core/utils/nameOf';
 import { Box, FormControlLabel, Switch } from '@mui/material';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   spaceId?: string;
@@ -23,7 +24,7 @@ export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSub
 
 interface TemplateSpaceFormProps {
   template?: SpaceTemplate;
-  onSubmit: (values: TemplateSpaceFormSubmittedValues) => void;
+  onSubmit: (values: TemplateSpaceFormSubmittedValues) => Promise<unknown>;
   actions: ReactNode | ((formState: FormikProps<TemplateSpaceFormSubmittedValues>) => ReactNode);
 }
 
@@ -54,6 +55,8 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
   const notify = useNotification();
 
   const [spaceId, setSpaceId] = useState<string>(template?.spaceId ?? ''); // This is a copy of the formik value spaceId, used to query the API and show the preview.
+  const loadSpaceContentComponentRef = useRef<SpaceContentFromSpaceUrlFormRef | null>(null);
+
   const initialValues: TemplateSpaceFormSubmittedValues = useMemo(
     () => ({
       profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
@@ -88,27 +91,45 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
     contentSpace: spaceData?.lookup.space ?? templateData?.lookup.template?.contentSpace,
   };
 
+  const checkSpaceUpdatePrivilege = (myPrivileges: AuthorizationPrivilege[]) => {
+    return myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  };
+
+  const hasUpdatePrivilegesOnSelectedSpace = checkSpaceUpdatePrivilege(
+    spaceData?.lookup.space?.authorization?.myPrivileges ?? []
+  );
+  const canUseSpaceAsTemplate = !spaceData?.lookup.space || hasUpdatePrivilegesOnSelectedSpace;
+  const shouldShowSpacePreview = spacePreview.contentSpace && canUseSpaceAsTemplate;
+
   const loading = spaceContentLoading || templateLoading;
 
-  const handleSubmit = (
-    values: TemplateSpaceFormSubmittedValues,
-    { setFieldValue }: FormikHelpers<TemplateSpaceFormSubmittedValues>
-  ) => {
-    if (!template?.spaceId && !values.spaceId && !template?.contentSpace?.id) {
-      notify(t('pages.admin.generic.sections.templates.validation.spaceRequired'), 'error');
-      return Promise.reject();
-    }
-    // Special case: For SpaceTemplates we change spaceId in the formik values,
-    // to mark that this template should reload its content from another space.
-    // That's not real, spaceId of a template never changes in the server.
-    // When we submit the form we call the updateTemplateFromSpace mutation with the new spaceId so the template gets updated.
-    // We reset it here to the correct value to avoid Formik detecting the form as dirty on the next render.
-    // (dirty means that it will enable the button `Update` as if there were pending changes to save)
-    template?.spaceId && setFieldValue('spaceId', template?.spaceId); // Set the value back to the original spaceId
+  const [handleSubmit, submitting] = useLoadingState(
+    async (
+      values: TemplateSpaceFormSubmittedValues,
+      { setFieldValue }: FormikHelpers<TemplateSpaceFormSubmittedValues>
+    ) => {
+      if ((!template?.spaceId && !values.spaceId && !template?.contentSpace?.id) || !canUseSpaceAsTemplate) {
+        notify(t('pages.admin.generic.sections.templates.validation.spaceRequired'), 'error');
+        return Promise.reject();
+      }
+      // Special case: For SpaceTemplates we change spaceId in the formik values,
+      // to mark that this template should reload its content from another space.
+      // That's not real, spaceId of a template never changes in the server.
+      // In fact, there is no spaceId, it's a contentSpace and inside there is an id that never changes.
 
-    // With other template types we just pass onSubmit directly to onSubmit
-    return onSubmit(values);
-  };
+      // When we submit the form we call the updateTemplateFromSpace mutation with the new spaceId so the template gets
+      // the content of that contentSpace updated copied from the selected space.
+      // We reset it spaceId here to undefined Formik detecting the form as dirty on the next render.
+      // (dirty means that it will enable the button `Update` as if there were pending changes to save)
+      setFieldValue('spaceId', undefined);
+      // With other template types we just pass onSubmit directly to onSubmit
+      const result = await onSubmit(values);
+
+      // And after saving the template we reset the space url input field to let the user know that the template has been imported.
+      loadSpaceContentComponentRef.current?.resetForm();
+      return result;
+    }
+  );
 
   return (
     <TemplateFormBase
@@ -120,38 +141,58 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
       validator={validator}
     >
       {({ setFieldValue }) => {
+        const handleCancel = () => {
+          setFieldValue('spaceId', '');
+        };
         const handleSpaceIdChange = async (spaceId: string) => {
-          setFieldValue('spaceId', spaceId); // Change the value in Formik
-          setSpaceId(spaceId); // Refresh the space content preview
           if (spaceId) {
-            await refetchTemplateContent({ spaceId });
+            const space = await refetchTemplateContent({ spaceId });
+            const hasUpdatePrivilege = checkSpaceUpdatePrivilege(
+              space.data?.lookup.space?.authorization?.myPrivileges ?? []
+            );
+
+            if (hasUpdatePrivilege) {
+              // Set the spaceId value in the form
+              setFieldValue('spaceId', spaceId, false); // The third parameter 'false' prevents validation and keeps existing values intact
+
+              // Also update the recursive field based on privileges
+              setFieldValue('recursive', hasUpdatePrivilege, false);
+
+              // Update the state for the preview
+              setSpaceId(spaceId);
+            } else {
+              notify(t('templateLibrary.spaceTemplates.findByUrl.noRights'), 'error');
+              handleCancel();
+            }
           }
         };
-        const handleCancel = () => {
-          setFieldValue('spaceId', undefined);
-        };
+
         return (
           <>
             <SpaceContentFromSpaceUrlForm
+              ref={loadSpaceContentComponentRef}
+              disabled={submitting}
               onUseSpace={handleSpaceIdChange}
               collapsible={Boolean(template?.spaceId)}
               onCollapse={handleCancel}
             />
-            {spacePreview.contentSpace && (
+            {shouldShowSpacePreview && (
               <>
                 <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
                 <TemplateContentSpacePreview loading={loading} template={spacePreview} />
-                <Box>
-                  <FormControlLabel
-                    label={<Caption color="black">{t('templateLibrary.spaceTemplates.preview.info')}</Caption>}
-                    control={<Switch checked disabled />}
-                  />
-                  <FormikSwitch
-                    label={<Caption>{t('templateLibrary.spaceTemplates.recursive')}</Caption>}
-                    name={nameOf<TemplateSpaceFormSubmittedValues>('recursive')}
-                  />
-                </Box>
               </>
+            )}
+            {hasUpdatePrivilegesOnSelectedSpace && (
+              <Box>
+                <FormControlLabel
+                  label={<Caption color="black">{t('templateLibrary.spaceTemplates.preview.info')}</Caption>}
+                  control={<Switch checked disabled />}
+                />
+                <FormikSwitch
+                  label={<Caption>{t('templateLibrary.spaceTemplates.recursive')}</Caption>}
+                  name={nameOf<TemplateSpaceFormSubmittedValues>('recursive')}
+                />
+              </Box>
             )}
           </>
         );

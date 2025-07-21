@@ -7,9 +7,9 @@ import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import UserCard from '@/domain/community/user/userCard/UserCard';
-import { defaultVisualUrls } from '@/domain/space/icons/defaultVisualUrls';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
@@ -32,7 +32,7 @@ const SpaceCardsDemo = () => {
             <PageContentBlockHeader title="Explore Spaces Cards" />
             <PageContentBlockGrid disablePadding cards>
               <SubspaceCard
-                banner={{ uri: defaultVisualUrls.CARD }}
+                banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Space L1 Card"
@@ -44,7 +44,7 @@ const SpaceCardsDemo = () => {
                 locked
               />
               <SubspaceCard
-                banner={{ uri: defaultVisualUrls.CARD }}
+                banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name"
@@ -56,7 +56,7 @@ const SpaceCardsDemo = () => {
                 avatarUris={['']}
               />
               <SubspaceCard
-                banner={{ uri: defaultVisualUrls.CARD }}
+                banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name That Doesn't Even Fit On 2 Lines"

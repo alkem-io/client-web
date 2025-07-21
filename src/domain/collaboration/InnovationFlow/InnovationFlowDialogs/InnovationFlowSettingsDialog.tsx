@@ -122,11 +122,11 @@ const InnovationFlowSettingsDialog = ({
         onClose={() => setImportInnovationFlowDialogOpen(false)}
         onSelectTemplate={async templateId => setSelectedTemplateToImport(templateId)}
         enablePlatformTemplates
-        actionButton={
+        actionButton={() => (
           <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
             {t('buttons.use')}
           </Button>
-        }
+        )}
       />
     </>
   );

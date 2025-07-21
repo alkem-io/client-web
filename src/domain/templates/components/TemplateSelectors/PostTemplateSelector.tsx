@@ -43,11 +43,11 @@ export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) =
           </Button>
           <ImportTemplatesDialog
             templateType={TemplateType.Post}
-            actionButton={
+            actionButton={() => (
               <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}
               </Button>
-            }
+            )}
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}
             onClose={() => setDialogOpen(false)}
