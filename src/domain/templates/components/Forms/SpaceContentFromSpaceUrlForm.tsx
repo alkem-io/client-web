@@ -111,4 +111,6 @@ const SpaceContentFromSpaceUrlForm = forwardRef<SpaceContentFromSpaceUrlFormRef,
   }
 );
 
+SpaceContentFromSpaceUrlForm.displayName = 'SpaceContentFromSpaceUrlForm';
+
 export default SpaceContentFromSpaceUrlForm;
