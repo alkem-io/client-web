@@ -296,6 +296,58 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
 `;
+export const InnovationFlowProfileFragmentDoc = gql`
+  fragment InnovationFlowProfile on Profile {
+    id
+    displayName
+    description
+    tagsets {
+      ...TagsetDetails
+    }
+    references {
+      id
+      name
+      description
+      uri
+    }
+    bannerNarrow: visual(type: CARD) {
+      ...VisualModel
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualModelFragmentDoc}
+`;
+export const InnovationFlowDetailsFragmentDoc = gql`
+  fragment InnovationFlowDetails on InnovationFlow {
+    id
+    profile {
+      ...InnovationFlowProfile
+    }
+    states {
+      id
+      displayName
+      description
+      sortOrder
+      settings {
+        allowNewCallouts
+      }
+    }
+    currentState {
+      id
+      displayName
+      description
+      sortOrder
+      settings {
+        allowNewCallouts
+      }
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${InnovationFlowProfileFragmentDoc}
+`;
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     contributor {
@@ -2266,33 +2318,9 @@ export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
   }
   ${ReferenceDetailsFragmentDoc}
 `;
-export const InnovationFlowProfileFragmentDoc = gql`
-  fragment InnovationFlowProfile on Profile {
+export const InnovationFlowStatesFragmentDoc = gql`
+  fragment InnovationFlowStates on InnovationFlow {
     id
-    displayName
-    description
-    tagsets {
-      ...TagsetDetails
-    }
-    references {
-      id
-      name
-      description
-      uri
-    }
-    bannerNarrow: visual(type: CARD) {
-      ...VisualModel
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualModelFragmentDoc}
-`;
-export const InnovationFlowDetailsFragmentDoc = gql`
-  fragment InnovationFlowDetails on InnovationFlow {
-    id
-    profile {
-      ...InnovationFlowProfile
-    }
     states {
       id
       displayName
@@ -2302,27 +2330,13 @@ export const InnovationFlowDetailsFragmentDoc = gql`
         allowNewCallouts
       }
     }
-    currentState {
-      id
-      displayName
-      description
-      sortOrder
-      settings {
-        allowNewCallouts
-      }
-    }
-    authorization {
-      id
-      myPrivileges
-    }
   }
-  ${InnovationFlowProfileFragmentDoc}
 `;
 export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
   fragment SpaceTemplateContent_Collaboration on Collaboration {
     id
     innovationFlow {
-      ...InnovationFlowDetails
+      ...InnovationFlowStates
     }
     calloutsSet {
       id
@@ -2356,7 +2370,7 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
       }
     }
   }
-  ${InnovationFlowDetailsFragmentDoc}
+  ${InnovationFlowStatesFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
@@ -5987,7 +6001,7 @@ export type UpdateCollaborationFromSpaceTemplateMutationOptions = Apollo.BaseMut
   SchemaTypes.UpdateCollaborationFromSpaceTemplateMutationVariables
 >;
 export const UpdateInnovationFlowDocument = gql`
-  mutation updateInnovationFlow($input: UpdateInnovationFlowInput!) {
+  mutation UpdateInnovationFlow($input: UpdateInnovationFlowInput!) {
     updateInnovationFlow(innovationFlowData: $input) {
       id
       profile {
@@ -6037,10 +6051,10 @@ export type UpdateInnovationFlowMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationFlowMutation,
   SchemaTypes.UpdateInnovationFlowMutationVariables
 >;
-export const UpdateInnovationFlowSelectedStateDocument = gql`
-  mutation updateInnovationFlowSelectedState($innovationFlowId: UUID!, $currentState: UUID!) {
-    updateInnovationFlowSelectedState(
-      innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedStateID: $currentState }
+export const UpdateInnovationFlowCurrentStateDocument = gql`
+  mutation UpdateInnovationFlowCurrentState($innovationFlowId: UUID!, $currentStateId: UUID!) {
+    updateInnovationFlowCurrentState(
+      innovationFlowStateData: { innovationFlowID: $innovationFlowId, currentStateID: $currentStateId }
     ) {
       id
       currentState {
@@ -6049,52 +6063,52 @@ export const UpdateInnovationFlowSelectedStateDocument = gql`
     }
   }
 `;
-export type UpdateInnovationFlowSelectedStateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateInnovationFlowSelectedStateMutation,
-  SchemaTypes.UpdateInnovationFlowSelectedStateMutationVariables
+export type UpdateInnovationFlowCurrentStateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationFlowCurrentStateMutation,
+  SchemaTypes.UpdateInnovationFlowCurrentStateMutationVariables
 >;
 
 /**
- * __useUpdateInnovationFlowSelectedStateMutation__
+ * __useUpdateInnovationFlowCurrentStateMutation__
  *
- * To run a mutation, you first call `useUpdateInnovationFlowSelectedStateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateInnovationFlowSelectedStateMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateInnovationFlowCurrentStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationFlowCurrentStateMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateInnovationFlowSelectedStateMutation, { data, loading, error }] = useUpdateInnovationFlowSelectedStateMutation({
+ * const [updateInnovationFlowCurrentStateMutation, { data, loading, error }] = useUpdateInnovationFlowCurrentStateMutation({
  *   variables: {
  *      innovationFlowId: // value for 'innovationFlowId'
- *      currentState: // value for 'currentState'
+ *      currentStateId: // value for 'currentStateId'
  *   },
  * });
  */
-export function useUpdateInnovationFlowSelectedStateMutation(
+export function useUpdateInnovationFlowCurrentStateMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateInnovationFlowSelectedStateMutation,
-    SchemaTypes.UpdateInnovationFlowSelectedStateMutationVariables
+    SchemaTypes.UpdateInnovationFlowCurrentStateMutation,
+    SchemaTypes.UpdateInnovationFlowCurrentStateMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.UpdateInnovationFlowSelectedStateMutation,
-    SchemaTypes.UpdateInnovationFlowSelectedStateMutationVariables
-  >(UpdateInnovationFlowSelectedStateDocument, options);
+    SchemaTypes.UpdateInnovationFlowCurrentStateMutation,
+    SchemaTypes.UpdateInnovationFlowCurrentStateMutationVariables
+  >(UpdateInnovationFlowCurrentStateDocument, options);
 }
-export type UpdateInnovationFlowSelectedStateMutationHookResult = ReturnType<
-  typeof useUpdateInnovationFlowSelectedStateMutation
+export type UpdateInnovationFlowCurrentStateMutationHookResult = ReturnType<
+  typeof useUpdateInnovationFlowCurrentStateMutation
 >;
-export type UpdateInnovationFlowSelectedStateMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowSelectedStateMutation>;
-export type UpdateInnovationFlowSelectedStateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateInnovationFlowSelectedStateMutation,
-  SchemaTypes.UpdateInnovationFlowSelectedStateMutationVariables
+export type UpdateInnovationFlowCurrentStateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowCurrentStateMutation>;
+export type UpdateInnovationFlowCurrentStateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationFlowCurrentStateMutation,
+  SchemaTypes.UpdateInnovationFlowCurrentStateMutationVariables
 >;
 export const CreateStateOnInnovationFlowDocument = gql`
-  mutation createStateOnInnovationFlow($stateData: CreateStateOnInnovationFlowInput!) {
+  mutation CreateStateOnInnovationFlow($stateData: CreateStateOnInnovationFlowInput!) {
     createStateOnInnovationFlow(stateData: $stateData) {
       id
       displayName
@@ -6147,14 +6161,9 @@ export type CreateStateOnInnovationFlowMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.CreateStateOnInnovationFlowMutationVariables
 >;
 export const DeleteStateOnInnovationFlowDocument = gql`
-  mutation deleteStateOnInnovationFlow($stateData: DeleteStateOnInnovationFlowInput!) {
+  mutation DeleteStateOnInnovationFlow($stateData: DeleteStateOnInnovationFlowInput!) {
     deleteStateOnInnovationFlow(stateData: $stateData) {
       id
-      displayName
-      description
-      settings {
-        allowNewCallouts
-      }
     }
   }
 `;
@@ -6200,7 +6209,7 @@ export type DeleteStateOnInnovationFlowMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.DeleteStateOnInnovationFlowMutationVariables
 >;
 export const UpdateInnovationFlowStateDocument = gql`
-  mutation updateInnovationFlowState(
+  mutation UpdateInnovationFlowState(
     $innovationFlowStateId: UUID!
     $displayName: String!
     $description: Markdown!

@@ -1,6 +1,6 @@
-mutation UpdateInnovationFlowSelectedState($innovationFlowId: UUID!, $currentState: UUID!) {
-  updateInnovationFlowSelectedState(
-    innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedStateID: $currentState }
+mutation UpdateInnovationFlowCurrentState($innovationFlowId: UUID!, $currentStateId: UUID!) {
+  updateInnovationFlowCurrentState(
+    innovationFlowStateData: { innovationFlowID: $innovationFlowId, currentStateID: $currentStateId }
   ) {
     id
     currentState {
@@ -23,11 +23,6 @@ mutation CreateStateOnInnovationFlow($stateData: CreateStateOnInnovationFlowInpu
 mutation DeleteStateOnInnovationFlow($stateData: DeleteStateOnInnovationFlowInput!) {
   deleteStateOnInnovationFlow(stateData: $stateData) {
     id
-    displayName
-    description
-    settings {
-      allowNewCallouts
-    }
   }
 }
 

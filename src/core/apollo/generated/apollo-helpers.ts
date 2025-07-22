@@ -2368,7 +2368,7 @@ export type MutationKeySpecifier = (
   | 'updateDiscussion'
   | 'updateDocument'
   | 'updateInnovationFlow'
-  | 'updateInnovationFlowSelectedState'
+  | 'updateInnovationFlowCurrentState'
   | 'updateInnovationFlowState'
   | 'updateInnovationFlowStatesSortOrder'
   | 'updateInnovationHub'
@@ -2545,7 +2545,7 @@ export type MutationFieldPolicy = {
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateInnovationFlowSelectedState?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateInnovationFlowCurrentState?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowStatesSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;

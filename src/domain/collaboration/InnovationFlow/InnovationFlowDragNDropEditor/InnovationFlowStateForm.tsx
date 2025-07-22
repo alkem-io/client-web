@@ -15,6 +15,9 @@ export interface InnovationFlowStateFormValues extends InnovationFlowStateModel 
 
 type InnovationFlowStateFormProps = {
   state?: InnovationFlowStateModel;
+  /**
+   * @deprecated Shouldn't be needed anymore
+   */
   forbiddenFlowStateNames?: string[];
   onSubmit: (formData: InnovationFlowStateFormValues) => Promise<unknown>;
   onCancel?: () => void;
@@ -25,6 +28,9 @@ const emptyMarkdown = (markdown: string | undefined = '') => (markdown.trim() ==
 
 const InnovationFlowStateForm = ({
   state,
+  /**
+   * @deprecated Shouldn't be needed anymore
+   */
   forbiddenFlowStateNames = [],
   onSubmit,
   onCancel,
@@ -36,7 +42,7 @@ const InnovationFlowStateForm = ({
     description: state?.description ?? '',
     sortOrder: state?.sortOrder ?? 0,
     settings: {
-      allowNewCallouts: state?.settings?.allowNewCallouts ?? false,
+      allowNewCallouts: state?.settings?.allowNewCallouts ?? false, // TODO: Not used yet
     },
   };
 
@@ -45,10 +51,6 @@ const InnovationFlowStateForm = ({
       .string()
       .required()
       .max(SMALL_TEXT_LENGTH)
-      // Avoid commas in state names, because they are used to separate states in the database
-      // This validation is also performed on the server: domain/collaboration/innovation-flow-states/innovation.flow.state.service.ts
-      // Keep them in sync
-      .test('no-comma', t('components.innovationFlowSettings.stateEditor.invalidChars'), value => !value?.includes(','))
       .notOneOf(forbiddenFlowStateNames, t('components.innovationFlowSettings.stateEditor.noRepeatedStates')),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   });

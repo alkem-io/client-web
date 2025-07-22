@@ -15,7 +15,7 @@ export type SpaceTabQueryModel = {
         id: string;
         innovationFlow: {
           id: string;
-          states: Array<InnovationFlowStateModel>;
+          states: InnovationFlowStateModel[];
           currentState: InnovationFlowStateModel;
         };
         calloutsSet: {

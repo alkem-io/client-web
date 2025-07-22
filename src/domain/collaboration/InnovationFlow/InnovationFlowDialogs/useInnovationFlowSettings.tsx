@@ -4,24 +4,20 @@ import {
   useUpdateCalloutFlowStateMutation,
   useUpdateCalloutsSortOrderMutation,
   useUpdateInnovationFlowMutation,
-  useUpdateInnovationFlowSelectedStateMutation,
+  useUpdateInnovationFlowCurrentStateMutation,
   useUpdateInnovationFlowStateMutation,
   useCreateStateOnInnovationFlowMutation,
   useDeleteStateOnInnovationFlowMutation,
   useUpdateInnovationFlowStatesSortOrderMutation,
   useUpdateCollaborationFromSpaceTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CreateStateOnInnovationFlowInput,
-  DeleteStateOnInnovationFlowInput,
-  UpdateProfileInput,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
 import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { sortBySortOrder } from '../utils/sortStates';
 
 type useInnovationFlowSettingsProps = {
   collaborationId: string | undefined;
@@ -88,17 +84,17 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     [collaboration?.calloutsSet.callouts]
   );
 
-  const [updateInnovationFlowCurrentState, { loading: changingState }] = useUpdateInnovationFlowSelectedStateMutation({
+  const [updateInnovationFlowCurrentState, { loading: changingState }] = useUpdateInnovationFlowCurrentStateMutation({
     refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
   });
-  const handleInnovationFlowCurrentStateChange = (newState: string) => {
+  const handleInnovationFlowCurrentStateChange = (newStateId: string) => {
     if (!innovationFlow) {
       return;
     }
     return updateInnovationFlowCurrentState({
       variables: {
         innovationFlowId: innovationFlow.id,
-        currentState: newState,
+        currentStateId: newStateId,
       },
       refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
     });
@@ -181,132 +177,136 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     });
   };
 
-  const [UpdateInnovationFlowStatesSortOrder] = useUpdateInnovationFlowStatesSortOrderMutation();
-  const handleInnovationFlowStateOrder = async (displayName: string, sortOrder: number) => {
+  const [updateInnovationFlowStatesSortOrder] = useUpdateInnovationFlowStatesSortOrderMutation();
+  const handleInnovationFlowStateOrder = async (movedStateId: string, sortOrder: number) => {
     const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
-    const states = requiredInnovationFlow?.states ?? [];
+    const states = requiredInnovationFlow.states;
     // Remove the flowState from its current position
-    const movedState = states.find(state => state.displayName === displayName);
+    const movedState = states.find(state => state.id === movedStateId);
     if (!movedState) {
-      throw new Error('Moved state not found.');
+      throw new Error(`State with ID ${movedStateId} not found in the innovation flow.`);
     }
-    const statesWithoutMovedState = states.filter(state => state.displayName !== displayName);
+    const stateIdsWithoutMovedState = states.map(state => state.id).filter(stateId => stateId !== movedStateId);
 
     // Insert the flowState at the new position
-    const nextStates = [
-      ...statesWithoutMovedState.slice(0, sortOrder),
-      movedState,
-      ...statesWithoutMovedState.slice(sortOrder),
+    const stateIDs = [
+      ...stateIdsWithoutMovedState.slice(0, sortOrder),
+      movedStateId,
+      ...stateIdsWithoutMovedState.slice(sortOrder),
     ];
-    // TODO: get the IDS based on the nextStates array. So passing in the display names will not work.
-    const orderedStateIDs: string[] = nextStates.map(state => state.displayName);
-    await UpdateInnovationFlowStatesSortOrder({
+
+    await updateInnovationFlowStatesSortOrder({
       variables: {
         innovationFlowID: requiredInnovationFlow.id,
-        stateIDs: orderedStateIDs,
+        stateIDs,
       },
+      refetchQueries: [
+        refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
+        'CalloutsOnCalloutsSetUsingClassification',
+      ],
     });
   };
 
   /**
    * if stateBefore is undefined, the new state will be appended to the end of the list
    */
-  const [CreateStateOnInnovationFlow] = useCreateStateOnInnovationFlowMutation();
-  const handleCreateState = async (newState: InnovationFlowStateModel, stateBefore?: string) => {
+  const [createStateOnInnovationFlow] = useCreateStateOnInnovationFlowMutation();
+  const handleCreateState = async (newStateData: InnovationFlowStateModel, stateBeforeId?: string) => {
     const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
-    const states = requiredInnovationFlow.states;
-    const stateBeforeIndex = !stateBefore ? -1 : states.findIndex(state => state.displayName === stateBefore);
-
-    // TODO: determine the sort order to use, which will be either the last one (so do not specify it), or give an exact position
-    const nextStates =
-      stateBeforeIndex === -1
-        ? [...states, newState] // if stateBefore not found or undefined, just append the newState to the end
-        : [...states.slice(0, stateBeforeIndex + 1), newState, ...states.slice(stateBeforeIndex + 1)];
-
-    if (nextStates.length > requiredInnovationFlow.settings.maximumNumberOfStates) {
+    const currentStates = requiredInnovationFlow.states;
+    if (currentStates.length + 1 > requiredInnovationFlow.settings.maximumNumberOfStates) {
       throw new Error('Maximum number of states reached.');
     }
-    const stateData: CreateStateOnInnovationFlowInput = {
-      innovationFlowID: requiredInnovationFlow.id,
-      displayName: newState.displayName,
-      description: newState.description,
-      settings: newState.settings,
-    };
 
-    await CreateStateOnInnovationFlow({
+    let stateIdsAfter: string[] = [];
+
+    if (currentStates.length === 0 || !stateBeforeId) {
+      // Creating a state at the end of the list (or the list is just empty)
+      const maxSortOrder = currentStates.reduce((max, state) => Math.max(max, state.sortOrder), 0);
+      newStateData.sortOrder = maxSortOrder + 1;
+    } else {
+      newStateData.sortOrder = currentStates.find(state => state.id === stateBeforeId)?.sortOrder ?? 0;
+      stateIdsAfter = currentStates
+        .filter(state => state.sortOrder > newStateData.sortOrder)
+        .sort(sortBySortOrder)
+        .map(state => state.id);
+    }
+
+    const newState = await createStateOnInnovationFlow({
       variables: {
-        stateData,
+        stateData: {
+          innovationFlowID: requiredInnovationFlow.id,
+          displayName: newStateData.displayName,
+          description: newStateData.description,
+          settings: newStateData.settings,
+          sortOrder: newStateData.sortOrder,
+        },
       },
+      refetchQueries: [
+        refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
+        'CalloutsOnCalloutsSetUsingClassification',
+      ],
     });
+    const newStateId = ensurePresence(newState.data?.createStateOnInnovationFlow?.id, 'New State');
+
+    if (stateIdsAfter.length > 0) {
+      await updateInnovationFlowStatesSortOrder({
+        variables: {
+          innovationFlowID: requiredInnovationFlow.id,
+          stateIDs: [newStateId, ...stateIdsAfter],
+        },
+        refetchQueries: [
+          refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
+          'CalloutsOnCalloutsSetUsingClassification',
+        ],
+      });
+    }
   };
 
-  const [DeleteStateOnInnovationFlow] = useDeleteStateOnInnovationFlowMutation();
-  const handleDeleteState = async (stateID: string) => {
+  const [deleteStateOnInnovationFlow] = useDeleteStateOnInnovationFlowMutation();
+  const handleDeleteState = async (stateId: string) => {
     const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
     const states = requiredInnovationFlow.states;
     if (states.length - 1 < requiredInnovationFlow.settings.minimumNumberOfStates) {
       throw new Error('Minimum number of states reached.');
     }
-    const stateData: DeleteStateOnInnovationFlowInput = {
-      innovationFlowID: requiredInnovationFlow.id,
-      ID: stateID,
-    };
-    await DeleteStateOnInnovationFlow({
+    await deleteStateOnInnovationFlow({
       variables: {
-        stateData,
+        stateData: {
+          innovationFlowID: requiredInnovationFlow.id,
+          ID: stateId,
+        },
       },
+      refetchQueries: [
+        refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
+        'CalloutsOnCalloutsSetUsingClassification',
+      ],
     });
   };
 
   const [updateInnovationFlowState] = useUpdateInnovationFlowStateMutation();
-  const handleEditState = async (oldState: InnovationFlowStateModel, newState: InnovationFlowStateModel) => {
+  const handleEditState = async (innovationFlowStateId: string, newState: InnovationFlowStateModel) => {
+    const oldState = innovationFlow?.states.find(state => state.id === innovationFlowStateId);
+
     await updateInnovationFlowState({
       variables: {
-        innovationFlowStateId: '', // TODO
-        displayName: oldState.displayName,
-        description: oldState.description,
-        settings: oldState.settings,
+        innovationFlowStateId,
+        displayName: newState.displayName,
+        description: newState.description,
+        settings: newState.settings,
       },
     });
-    await Promise.all(
-      callouts
-        .filter(callout => callout.flowState?.currentState === oldState.displayName)
-        .map((callout, index) => handleUpdateCalloutFlowState(callout.id, newState.displayName, index))
-    );
+
+    if (oldState) {
+      // TODO: This is probably not needed //!!
+      await Promise.all(
+        callouts
+          .filter(callout => callout.flowState?.currentState === oldState.displayName)
+          .map((callout, index) => handleUpdateCalloutFlowState(callout.id, newState.displayName, index))
+      );
+    }
     refetch({ collaborationId: collaborationId! });
   };
-
-  // const [updateInnovationFlow] = useUpdateInnovationFlowStatesMutation();
-  // const updateInnovationFlowStates = (nextStates: InnovationFlowStateModel[]) => {
-  //   const innovationFlowId = ensurePresence(innovationFlow?.id, 'Innovation Flow Id');
-
-  //   return updateInnovationFlow({
-  //     variables: { innovationFlowId, states: nextStates },
-  //     optimisticResponse: {
-  //       updateInnovationFlow: {
-  //         id: innovationFlowId,
-  //         states: nextStates,
-  //       },
-  //     },
-  //     update: cache => {
-  //       const id = cache.identify({
-  //         id: innovationFlowId,
-  //         __typename: 'InnovationFlow',
-  //       });
-
-  //       cache.modify({
-  //         id,
-  //         fields: {
-  //           states() {
-  //             return nextStates;
-  //           },
-  //         },
-  //       });
-  //     },
-  //     refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
-  //     awaitRefetchQueries: true,
-  //   });
-  // };
 
   const [updateCollaborationFromSpaceTemplate] = useUpdateCollaborationFromSpaceTemplateMutation();
   const handleImportInnovationFlowFromSpaceTemplate = (spaceTemplateId: string, addCallouts?: boolean) => {
