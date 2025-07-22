@@ -18,8 +18,6 @@ import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
-import useNavigate from '@/core/routing/useNavigate';
-import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
@@ -48,7 +46,6 @@ const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/rout
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
-  const navigate = useNavigate();
 
   return (
     <Routes>
@@ -72,7 +69,7 @@ export const TopLevelRoutes = () => {
                 <>
                   <HomePage />
                   <Suspense fallback={<Loading />}>
-                    <CreateSpaceDialog open onClose={() => navigate(ROUTE_HOME)} />
+                    <CreateSpaceDialog open onClose={() => {}} />
                   </Suspense>
                 </>
               </WithApmTransaction>
