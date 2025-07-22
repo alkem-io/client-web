@@ -171,7 +171,6 @@
     "@sentry/vite-plugin": "^2.7.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@types/eslint-plugin-jsx-a11y": "^6.2.4",
-    "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/react-mentions": "^4.1.8",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
