@@ -35,7 +35,6 @@ import { Form, Formik } from 'formik';
 import { keyBy } from 'lodash';
 import orderBy from 'lodash/orderBy';
 import { useEffect, useMemo, useState } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { FontDownloadIcon } from './icons/FontDownloadIcon';
@@ -109,6 +108,22 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
     setRemovedMessageId(id => (orderedMessages.find(m => m.id === id) ? id : null));
   }, [setRemovedMessageId, orderedMessages]);
   // TODO: Some translations are missing
+
+  const handleCopy = (message: string) => {
+    if (!message) {
+      notify('No content to copy', 'error');
+      return;
+    }
+
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard
+        .writeText(message)
+        .then(() => notify('Post copied to clipboard', 'info'))
+        .catch(() => notify('Failed to copy content', 'error'));
+    } else {
+      notify('Clipboard not supported', 'error');
+    }
+  };
 
   return (
     <>
@@ -266,13 +281,11 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                 {displayCardActions && (
                   <CardActions disableSpacing>
                     {canCopy && (
-                      <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
-                        <Tooltip title="Copy content to clipboard" placement="right">
-                          <IconButton size="large">
-                            <FileCopyIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </CopyToClipboard>
+                      <Tooltip title="Copy content to clipboard" placement="right">
+                        <IconButton onClick={() => handleCopy(m.message)} size="large" aria-label="copy">
+                          <FileCopyIcon />
+                        </IconButton>
+                      </Tooltip>
                     )}
                     {canRemove && (
                       <Tooltip title="Remove community update" placement="right">
