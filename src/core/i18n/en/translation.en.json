@@ -1115,6 +1115,9 @@
         "title": "Discard template",
         "description": "Are you sure you want to close this template? Unsaved changes will be lost."
       }
+    },
+    "notifications": {
+      "templateSaved": "Template saved successfully"
     }
   },
   "innovation-templates": {

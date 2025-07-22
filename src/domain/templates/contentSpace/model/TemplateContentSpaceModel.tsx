@@ -3,11 +3,10 @@ import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight
 import { SpaceSettingsModel } from '@/domain/space/settings/SpaceSettingsModel';
 import { SpaceAboutTileModel } from '@/domain/space/about/model/SpaceAboutTile.model';
 import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
+import { Identifiable } from '@/core/utils/Identifiable';
 
-export interface TemplateContentSpaceModel {
-  id: string;
-  collaboration: {
-    id: string;
+export interface TemplateContentSpaceModel extends Identifiable {
+  collaboration: Identifiable & {
     innovationFlow: {
       id: string;
       states: InnovationFlowStateModel[];
@@ -18,7 +17,7 @@ export interface TemplateContentSpaceModel {
   };
   about?: SpaceAboutLightModel;
   settings?: SpaceSettingsModel;
-  subspaces?: {
+  subspaces?: (Identifiable & {
     about: SpaceAboutTileModel;
-  }[];
+  })[];
 }

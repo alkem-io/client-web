@@ -7402,6 +7402,8 @@ export type UpdateTemplateDefaultTemplateInput = {
 };
 
 export type UpdateTemplateFromSpaceInput = {
+  /** Whether to reproduce the hierarchy or just the space. */
+  recursive?: InputMaybe<Scalars['Boolean']['input']>;
   /** The Space whose content should be copied to this Template. */
   spaceID: Scalars['UUID']['input'];
   /** The ID of the Template. */
@@ -25832,7 +25834,6 @@ export type SpaceTemplateContentQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
-            isContentPublic: boolean;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -25857,12 +25858,6 @@ export type SpaceTemplateContentQuery = {
                 name: string;
                 alternativeText?: string | undefined;
               }>;
-              avatar?:
-                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-                | undefined;
-              cardBanner?:
-                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-                | undefined;
             };
           };
           settings: {
@@ -25886,6 +25881,40 @@ export type SpaceTemplateContentQuery = {
               allowEventsFromSubspaces: boolean;
             };
           };
+          subspaces: Array<{
+            __typename?: 'Space';
+            id: string;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              isContentPublic: boolean;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline?: string | undefined;
+                url: string;
+                avatar?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                cardBanner?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            };
+          }>;
         }
       | undefined;
   };
@@ -26784,6 +26813,7 @@ export type UpdateCalloutTemplateMutation = {
 export type UpdateTemplateFromSpaceMutationVariables = Exact<{
   templateId: Scalars['UUID']['input'];
   spaceId: Scalars['UUID']['input'];
+  recursive?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type UpdateTemplateFromSpaceMutation = {

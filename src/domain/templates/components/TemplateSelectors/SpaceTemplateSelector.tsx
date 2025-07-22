@@ -49,7 +49,7 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [importTemplateConfirmOpen, setImportTemplateConfirmOpen] = useState(false);
   const [field, , helpers] = useField<string>(name);
-  const { setFieldValue, validateForm, dirty } = useFormikContext();
+  const { getFieldProps, setFieldValue, validateForm, dirty } = useFormikContext();
 
   const templateId: string | undefined = typeof field.value === 'string' ? field.value : undefined;
 
@@ -94,9 +94,12 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
       helpers.setValue(templateId);
 
       if (profile.displayName) {
-        await setFieldValue('displayName', profile.displayName);
-        // make sure the submit is enabled if displayName is set
-        await validateForm();
+        const currentValue = getFieldProps('displayName').value;
+        if (!currentValue) {
+          await setFieldValue('displayName', profile.displayName);
+          // make sure the submit is enabled if displayName is set
+          await validateForm();
+        }
       }
       if (profile.tagline) {
         setFieldValue('tagline', profile.tagline);

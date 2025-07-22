@@ -11,7 +11,7 @@ interface EditTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
   onCancel?: () => void;
-  onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
+  onSubmit: (values: AnyTemplateFormSubmittedValues) => Promise<unknown>;
   onDelete?: () => void;
   template: AnyTemplate | undefined;
   templateType: TemplateType;
