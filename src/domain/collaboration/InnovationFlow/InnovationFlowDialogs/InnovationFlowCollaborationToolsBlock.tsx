@@ -1,6 +1,6 @@
 import { Box, BoxProps, Skeleton, styled, SvgIconProps } from '@mui/material';
 import { groupBy } from 'lodash';
-import { ComponentType, FC, forwardRef } from 'react';
+import { ComponentType, FC } from 'react';
 import {
   Draggable,
   Droppable,
@@ -54,18 +54,24 @@ interface ListItemProps extends BoxProps {
   activity?: number;
 }
 
-const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
-  ({ displayName, icon: Icon, activity = 0, ...boxProps }, ref) => {
-    return (
-      <Box ref={ref} {...boxProps}>
-        <Caption>
-          {Icon && <Icon sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />}
-          {displayName} {activity > 0 && `(${activity})`}
-        </Caption>
-      </Box>
-    );
-  }
-);
+const ListItem = ({
+  ref,
+  displayName,
+  icon: Icon,
+  activity = 0,
+  ...boxProps
+}: ListItemProps & {
+  ref: React.RefObject<HTMLDivElement>;
+}) => {
+  return (
+    <Box ref={ref} {...boxProps}>
+      <Caption>
+        {Icon && <Icon sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />}
+        {displayName} {activity > 0 && `(${activity})`}
+      </Caption>
+    </Box>
+  );
+};
 
 const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationToolsBlockProps> = ({
   callouts,

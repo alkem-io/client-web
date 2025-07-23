@@ -1,7 +1,7 @@
 import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { useField } from 'formik';
 import { CalloutFormSubmittedValues } from '../CalloutFormModel';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { useImperativeHandle, useState } from 'react';
 import { CalloutAllowedContributors } from '@/core/apollo/generated/graphql-schema';
 import { ContributionTypeSettingsComponentRef } from './ContributionSettingsDialog';
 import { useTranslation } from 'react-i18next';
@@ -14,10 +14,12 @@ type FieldsState = {
   commentsOnEachResponse: boolean;
 };
 
-const ContributionsSettings = forwardRef<
-  ContributionTypeSettingsComponentRef,
-  { calloutRestrictions?: CalloutRestrictions; enabledSettings: FramingSettings }
->(({ enabledSettings }, ref) => {
+const ContributionsSettings = ({
+  ref,
+  enabledSettings,
+}: { calloutRestrictions?: CalloutRestrictions; enabledSettings: FramingSettings } & {
+  ref: React.RefObject<ContributionTypeSettingsComponentRef>;
+}) => {
   const { t } = useTranslation();
   const [field, , meta] = useField<CalloutFormSubmittedValues['settings']>('settings');
 
@@ -107,6 +109,6 @@ const ContributionsSettings = forwardRef<
       )}
     </FormGroup>
   );
-});
+};
 
 export default ContributionsSettings;

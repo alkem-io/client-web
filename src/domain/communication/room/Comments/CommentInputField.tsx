@@ -1,5 +1,5 @@
 import { Box, IconButton, InputBaseComponentProps, Paper, Popper, PopperProps, styled, Tooltip } from '@mui/material';
-import React, { forwardRef, PropsWithChildren, ReactNode, useEffect, useRef, useState } from 'react';
+import React, { PropsWithChildren, ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
 import { useMentionableContributorsLazyQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -131,8 +131,7 @@ const StyledCommentInput = styled(Box)(({ theme }) => ({
 
 const hasExcessiveSpaces = (searchTerm: string) => searchTerm.trim().split(' ').length > MAX_SPACES_IN_MENTION + 1;
 
-export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComponentProps>((props, ref) => {
-  // Need to extract the properties like this because OutlinedInput doesn't accept an ElementType<CommentInputFieldProps>
+export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef<'div'> & InputBaseComponentProps) => {
   const {
     value,
     onValueChange,
@@ -322,4 +321,4 @@ export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComp
       )}
     </StyledCommentInput>
   );
-});
+};

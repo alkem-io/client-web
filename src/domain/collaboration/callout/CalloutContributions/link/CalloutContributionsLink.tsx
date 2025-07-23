@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { BaseCalloutViewProps } from '../../CalloutViewTypes';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -68,225 +68,234 @@ interface CalloutContributionsLinkProps extends BaseCalloutViewProps {
   }[];
 }
 
-const CalloutContributionsLink = forwardRef<HTMLDivElement, CalloutContributionsLinkProps>(
-  ({ callout, contributions, canCreateContribution, loading, expanded, onExpand, onCalloutUpdate }, ref) => {
-    const { t } = useTranslation();
+const CalloutContributionsLink = ({
+  ref,
+  callout,
+  contributions,
+  canCreateContribution,
+  loading,
+  expanded,
+  onExpand,
+  onCalloutUpdate,
+}: CalloutContributionsLinkProps & {
+  ref: React.RefObject<HTMLDivElement>;
+}) => {
+  const { t } = useTranslation();
 
-    const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
-      refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
-    });
-    const [updateLink] = useUpdateLinkMutation();
-    const [deleteLink] = useDeleteLinkMutation({
-      refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
-    });
+  const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
+    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
+  });
+  const [updateLink] = useUpdateLinkMutation();
+  const [deleteLink] = useDeleteLinkMutation({
+    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
+  });
 
-    const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
-    const [editLink, setEditLink] = useState<EditLinkFormValues>();
-    const [deletingLinkId, setDeletingLinkId] = useState<string>();
+  const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
+  const [editLink, setEditLink] = useState<EditLinkFormValues>();
+  const [deletingLinkId, setDeletingLinkId] = useState<string>();
 
-    const closeAddNewDialog = () => setAddNewLinkDialogOpen(false);
-    const closeEditDialog = () => setEditLink(undefined);
+  const closeAddNewDialog = () => setAddNewLinkDialogOpen(false);
+  const closeEditDialog = () => setEditLink(undefined);
 
-    const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
-    const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
+  const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
+  const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
 
-    // New Links:
-    const getNewLinkId = useCallback(async () => {
-      const { data } = await createLinkOnCallout({
-        variables: {
-          input: {
-            calloutID: callout.id,
-            link: {
-              uri: '',
-              profile: {
-                // Link names have to be unique, if everything goes well this name will never be shown:
-                displayName: t('callout.link-collection.new-temporary-reference', {
-                  temp: uuid().slice(0, 4),
-                }),
-              },
+  // New Links:
+  const getNewLinkId = useCallback(async () => {
+    const { data } = await createLinkOnCallout({
+      variables: {
+        input: {
+          calloutID: callout.id,
+          link: {
+            uri: '',
+            profile: {
+              // Link names have to be unique, if everything goes well this name will never be shown:
+              displayName: t('callout.link-collection.new-temporary-reference', {
+                temp: uuid().slice(0, 4),
+              }),
             },
           },
         },
-      });
-      if (!data?.createContributionOnCallout.link?.id) {
-        throw new Error('Error creating the new Link');
-      }
-      return data.createContributionOnCallout.link?.id;
-    }, [createLinkOnCallout, callout]);
+      },
+    });
+    if (!data?.createContributionOnCallout.link?.id) {
+      throw new Error('Error creating the new Link');
+    }
+    return data.createContributionOnCallout.link?.id;
+  }, [createLinkOnCallout, callout]);
 
-    const removeNewLink = (linkId: string) =>
-      deleteLink({
-        variables: {
-          input: {
-            ID: linkId,
-          },
+  const removeNewLink = (linkId: string) =>
+    deleteLink({
+      variables: {
+        input: {
+          ID: linkId,
         },
-        update: (cache, { data }) => data?.deleteLink && evictFromCache(cache, data.deleteLink.id, 'Link'),
-      });
+      },
+      update: (cache, { data }) => data?.deleteLink && evictFromCache(cache, data.deleteLink.id, 'Link'),
+    });
 
-    const handleSaveNewLinks = useCallback(
-      async (links: CreateLinkFormValues[]) => {
-        await Promise.all(
-          links.map(link =>
-            updateLink({
-              variables: {
-                input: {
-                  ID: link.id,
-                  uri: link.uri,
-                  profile: {
-                    displayName: link.name,
-                    description: link.description,
-                  },
+  const handleSaveNewLinks = useCallback(
+    async (links: CreateLinkFormValues[]) => {
+      await Promise.all(
+        links.map(link =>
+          updateLink({
+            variables: {
+              input: {
+                ID: link.id,
+                uri: link.uri,
+                profile: {
+                  displayName: link.name,
+                  description: link.description,
                 },
               },
-            })
-          )
-        );
-
-        onCalloutUpdate?.();
-        closeAddNewDialog();
-      },
-      [updateLink, closeAddNewDialog, onCalloutUpdate, callout]
-    );
-
-    // Edit existing Links:
-    const handleEditLink = useCallback(
-      async (link: EditLinkFormValues) => {
-        await updateLink({
-          variables: {
-            input: {
-              ID: link.id,
-              uri: link.uri,
-              profile: {
-                displayName: link.name,
-                description: link.description,
-              },
             },
-          },
-        });
-        onCalloutUpdate?.();
-        closeEditDialog();
-      },
-      [closeEditDialog, onCalloutUpdate, updateLink, callout]
-    );
+          })
+        )
+      );
 
-    const handleDeleteLink = useCallback(async () => {
-      if (!deletingLinkId) {
-        return;
-      }
-      await deleteLink({
+      onCalloutUpdate?.();
+      closeAddNewDialog();
+    },
+    [updateLink, closeAddNewDialog, onCalloutUpdate, callout]
+  );
+
+  // Edit existing Links:
+  const handleEditLink = useCallback(
+    async (link: EditLinkFormValues) => {
+      await updateLink({
         variables: {
           input: {
-            ID: deletingLinkId,
+            ID: link.id,
+            uri: link.uri,
+            profile: {
+              displayName: link.name,
+              description: link.description,
+            },
           },
         },
       });
       onCalloutUpdate?.();
-      setDeletingLinkId(undefined);
       closeEditDialog();
-    }, [deletingLinkId, closeEditDialog, setDeletingLinkId, onCalloutUpdate, deleteLink, callout]);
+    },
+    [closeEditDialog, onCalloutUpdate, updateLink, callout]
+  );
 
-    const { formattedLinks, sortedFormattedLinks, limitedLinks, isListTruncated } = useMemo(() => {
-      const formattedLinks: FormattedLink[] = compact(
-        contributions.map(
-          contribution =>
-            contribution.link &&
-            contribution.id && {
-              ...contribution.link,
-              sortOrder: contribution.sortOrder ?? 0,
-              contributionId: contribution.id,
-            }
-        )
-      ).map(link => ({
-        id: link.id,
-        uri: link.uri,
-        name: link.profile?.displayName,
-        description: link.profile?.description,
-        authorization: link.authorization,
-        sortOrder: link.sortOrder ?? 0,
-        contributionId: link.contributionId,
-      }));
+  const handleDeleteLink = useCallback(async () => {
+    if (!deletingLinkId) {
+      return;
+    }
+    await deleteLink({
+      variables: {
+        input: {
+          ID: deletingLinkId,
+        },
+      },
+    });
+    onCalloutUpdate?.();
+    setDeletingLinkId(undefined);
+    closeEditDialog();
+  }, [deletingLinkId, closeEditDialog, setDeletingLinkId, onCalloutUpdate, deleteLink, callout]);
 
-      const sortedFormattedLinks = sortBy(formattedLinks, 'sortOrder');
-      const limitedLinks = sortedFormattedLinks?.slice(0, MAX_LINKS_NORMAL_VIEW);
-      const isListTruncated =
-        (compact(contributions?.map(contribution => contribution.link))?.length ?? 0) > MAX_LINKS_NORMAL_VIEW;
+  const { formattedLinks, sortedFormattedLinks, limitedLinks, isListTruncated } = useMemo(() => {
+    const formattedLinks: FormattedLink[] = compact(
+      contributions.map(
+        contribution =>
+          contribution.link &&
+          contribution.id && {
+            ...contribution.link,
+            sortOrder: contribution.sortOrder ?? 0,
+            contributionId: contribution.id,
+          }
+      )
+    ).map(link => ({
+      id: link.id,
+      uri: link.uri,
+      name: link.profile?.displayName,
+      description: link.profile?.description,
+      authorization: link.authorization,
+      sortOrder: link.sortOrder ?? 0,
+      contributionId: link.contributionId,
+    }));
 
-      return {
-        formattedLinks,
-        sortedFormattedLinks,
-        limitedLinks,
-        isListTruncated,
-      };
-    }, [callout, contributions]);
+    const sortedFormattedLinks = sortBy(formattedLinks, 'sortOrder');
+    const limitedLinks = sortedFormattedLinks?.slice(0, MAX_LINKS_NORMAL_VIEW);
+    const isListTruncated =
+      (compact(contributions?.map(contribution => contribution.link))?.length ?? 0) > MAX_LINKS_NORMAL_VIEW;
 
-    return (
-      <StorageConfigContextProvider
-        locationType="callout"
-        calloutId={callout.id}
-        skip={!addNewLinkDialogOpen && !editLink}
-      >
-        {loading ? <Loading /> : undefined}
-        <Gutters ref={ref}>
-          <References
-            references={expanded ? sortedFormattedLinks : limitedLinks}
-            noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
-            onEdit={ref => setEditLink(ref)}
-          />
-          <Box
-            display="flex"
-            justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'}
-            alignItems="end"
-            marginBottom={gutters()}
-          >
-            {isListTruncated && !expanded && (
-              <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
-                {t('callout.link-collection.more-links', { count: formattedLinks.length })}
-              </Caption>
-            )}
-            {canCreateContribution && (
-              <IconButton aria-label={t('common.add')} size="small" onClick={() => setAddNewLinkDialogOpen(true)}>
-                <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-              </IconButton>
-            )}
-          </Box>
-        </Gutters>
+    return {
+      formattedLinks,
+      sortedFormattedLinks,
+      limitedLinks,
+      isListTruncated,
+    };
+  }, [callout, contributions]);
 
-        <CreateLinksDialog
-          open={addNewLinkDialogOpen}
-          title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
-          onClose={closeAddNewDialog}
-          onAddMore={getNewLinkId}
-          onRemove={removeNewLink}
-          onSave={handleSaveNewLinks}
+  return (
+    <StorageConfigContextProvider
+      locationType="callout"
+      calloutId={callout.id}
+      skip={!addNewLinkDialogOpen && !editLink}
+    >
+      {loading ? <Loading /> : undefined}
+      <Gutters ref={ref}>
+        <References
+          references={expanded ? sortedFormattedLinks : limitedLinks}
+          noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
+          onEdit={ref => setEditLink(ref)}
         />
-        <EditLinkDialog
-          open={Boolean(editLink)}
-          onClose={closeEditDialog}
-          title={<Box>{t('callout.link-collection.edit-link', { title: editLink?.name })}</Box>}
-          link={editLink!}
-          onSave={values => handleEditLink(values)}
-          canDelete={canDeleteLinks}
-          onDelete={() => setDeletingLinkId(editLink?.id)}
-        />
-        <ConfirmationDialog
-          actions={{
-            onConfirm: handleDeleteLink,
-            onCancel: () => setDeletingLinkId(undefined),
-          }}
-          options={{
-            show: Boolean(deletingLinkId),
-          }}
-          entities={{
-            titleId: 'callout.link-collection.delete-confirm-title',
-            content: t('callout.link-collection.delete-confirm', { title: callout.framing.profile.displayName }),
-            confirmButtonTextId: 'buttons.delete',
-          }}
-        />
-      </StorageConfigContextProvider>
-    );
-  }
-);
+        <Box
+          display="flex"
+          justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'}
+          alignItems="end"
+          marginBottom={gutters()}
+        >
+          {isListTruncated && !expanded && (
+            <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
+              {t('callout.link-collection.more-links', { count: formattedLinks.length })}
+            </Caption>
+          )}
+          {canCreateContribution && (
+            <IconButton aria-label={t('common.add')} size="small" onClick={() => setAddNewLinkDialogOpen(true)}>
+              <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+            </IconButton>
+          )}
+        </Box>
+      </Gutters>
+
+      <CreateLinksDialog
+        open={addNewLinkDialogOpen}
+        title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
+        onClose={closeAddNewDialog}
+        onAddMore={getNewLinkId}
+        onRemove={removeNewLink}
+        onSave={handleSaveNewLinks}
+      />
+      <EditLinkDialog
+        open={Boolean(editLink)}
+        onClose={closeEditDialog}
+        title={<Box>{t('callout.link-collection.edit-link', { title: editLink?.name })}</Box>}
+        link={editLink!}
+        onSave={values => handleEditLink(values)}
+        canDelete={canDeleteLinks}
+        onDelete={() => setDeletingLinkId(editLink?.id)}
+      />
+      <ConfirmationDialog
+        actions={{
+          onConfirm: handleDeleteLink,
+          onCancel: () => setDeletingLinkId(undefined),
+        }}
+        options={{
+          show: Boolean(deletingLinkId),
+        }}
+        entities={{
+          titleId: 'callout.link-collection.delete-confirm-title',
+          content: t('callout.link-collection.delete-confirm', { title: callout.framing.profile.displayName }),
+          confirmButtonTextId: 'buttons.delete',
+        }}
+      />
+    </StorageConfigContextProvider>
+  );
+};
 
 CalloutContributionsLink.displayName = 'CalloutContributionsLink';
 export default CalloutContributionsLink;

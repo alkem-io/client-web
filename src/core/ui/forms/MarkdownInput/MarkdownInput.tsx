@@ -1,6 +1,5 @@
 import React, {
   FormEvent,
-  forwardRef,
   memo,
   useCallback,
   useEffect,
@@ -62,351 +61,349 @@ const proseMirrorStyles = {
 } as const;
 
 export const MarkdownInput = memo(
-  forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
-    (
-      {
-        value,
-        onChange,
-        maxLength,
-        controlsVisible = 'focused',
-        hideImageOptions,
-        onFocus,
-        onBlur,
-        temporaryLocation = false,
+  ({
+    ref,
+    value,
+    onChange,
+    maxLength,
+    controlsVisible = 'focused',
+    hideImageOptions,
+    onFocus,
+    onBlur,
+    temporaryLocation = false,
+  }: MarkdownInputProps & {
+    ref: React.RefObject<MarkdownInputRefApi>;
+  }) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const toolbarRef = useRef<HTMLDivElement>(null);
+
+    const [hasFocus, setHasFocus] = useState(false);
+    const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
+    const isInteractingWithInput = hasFocus || isControlsDialogOpen;
+
+    const [htmlContent, setHtmlContent] = useState('');
+
+    const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
+
+    const storageConfig = useStorageConfigContext();
+
+    const updateHtmlContent = async () => {
+      const content = await markdownToHTML(value);
+      setHtmlContent(String(content));
+    };
+
+    const { t } = useTranslation();
+
+    const notify = useNotification();
+
+    const [uploadFile] = useUploadFileMutation({
+      onCompleted: data => {
+        notify(t('components.file-upload.file-upload-success'), 'success');
+
+        editor?.commands.setImage({ src: data.uploadFileOnStorageBucket, alt: 'pasted-image' });
       },
-      ref
-    ) => {
-      const containerRef = useRef<HTMLDivElement>(null);
-      const toolbarRef = useRef<HTMLDivElement>(null);
 
-      const [hasFocus, setHasFocus] = useState(false);
-      const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
-      const isInteractingWithInput = hasFocus || isControlsDialogOpen;
+      onError: error => {
+        console.error(error.message);
+      },
+    });
 
-      const [htmlContent, setHtmlContent] = useState('');
+    const isImageOrHtmlWithImage = (item: DataTransferItem, clipboardData: DataTransfer | null) => {
+      if (item.type.startsWith('image/') || (item.kind === 'file' && item.type.startsWith('image/'))) {
+        return true; // Image
+      }
 
-      const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
+      if (item.kind === 'string' && item.type === 'text/html') {
+        const htmlContent = clipboardData?.getData('text/html');
+        return htmlContent?.includes('<img') ?? false; // HTML tag with image
+      }
 
-      const storageConfig = useStorageConfigContext();
+      return false; // Not an image or HTML with images
+    };
 
-      const updateHtmlContent = async () => {
-        const content = await markdownToHTML(value);
-        setHtmlContent(String(content));
-      };
+    const storageBucketId = storageConfig?.storageBucketId;
 
-      const { t } = useTranslation();
-
-      const notify = useNotification();
-
-      const [uploadFile] = useUploadFileMutation({
-        onCompleted: data => {
-          notify(t('components.file-upload.file-upload-success'), 'success');
-
-          editor?.commands.setImage({ src: data.uploadFileOnStorageBucket, alt: 'pasted-image' });
-        },
-
-        onError: error => {
-          console.error(error.message);
-        },
-      });
-
-      const isImageOrHtmlWithImage = (item: DataTransferItem, clipboardData: DataTransfer | null) => {
-        if (item.type.startsWith('image/') || (item.kind === 'file' && item.type.startsWith('image/'))) {
-          return true; // Image
-        }
-
-        if (item.kind === 'string' && item.type === 'text/html') {
-          const htmlContent = clipboardData?.getData('text/html');
-          return htmlContent?.includes('<img') ?? false; // HTML tag with image
-        }
-
-        return false; // Not an image or HTML with images
-      };
-
-      const storageBucketId = storageConfig?.storageBucketId;
-
-      /**
-       * Handles the paste event in the editor.
-       *
-       * @param _view - The editor view instance.
-       * @param event - The clipboard event triggered by pasting.
-       * @returns {boolean} - Returns true if the paste event is handled, otherwise false - continue execution of the default.
-       *
-       * Reference to alternative way of handling paste events in Tiptap: https://tiptap.dev/docs/editor/extensions/functionality/filehandler
-       *
-       */
-      const handlePaste = useCallback(
-        (_view: EditorView, event: ClipboardEvent): boolean => {
-          if (!storageBucketId) {
-            return false; // Allow default behavior for text
-          }
-
-          const clipboardData = event.clipboardData;
-          const items = clipboardData?.items;
-
-          if (!items) {
-            return false; // Allow default behavior for text
-          }
-
-          const itemsArray = Array.from(items); // Keep `Array.from` since if any kind of `for` loop is used it will iterate only over one item.
-
-          itemsArray.forEach(item => {
-            const isImage = isImageOrHtmlWithImage(item, clipboardData);
-
-            if (hideImageOptions && isImage) {
-              event.preventDefault();
-              return true; // Block paste of images or HTML with images
-            }
-
-            if (isImage) {
-              const file = item.getAsFile();
-
-              if (file) {
-                const reader = new FileReader();
-
-                reader.onload = () => {
-                  uploadFile({ variables: { file, uploadData: { storageBucketId, temporaryLocation } } });
-                };
-
-                reader.readAsDataURL(file);
-                event.preventDefault();
-                return true; // Block default behavior for images
-              }
-            }
-          });
-
+    /**
+     * Handles the paste event in the editor.
+     *
+     * @param _view - The editor view instance.
+     * @param event - The clipboard event triggered by pasting.
+     * @returns {boolean} - Returns true if the paste event is handled, otherwise false - continue execution of the default.
+     *
+     * Reference to alternative way of handling paste events in Tiptap: https://tiptap.dev/docs/editor/extensions/functionality/filehandler
+     *
+     */
+    const handlePaste = useCallback(
+      (_view: EditorView, event: ClipboardEvent): boolean => {
+        if (!storageBucketId) {
           return false; // Allow default behavior for text
+        }
+
+        const clipboardData = event.clipboardData;
+        const items = clipboardData?.items;
+
+        if (!items) {
+          return false; // Allow default behavior for text
+        }
+
+        const itemsArray = Array.from(items); // Keep `Array.from` since if any kind of `for` loop is used it will iterate only over one item.
+
+        itemsArray.forEach(item => {
+          const isImage = isImageOrHtmlWithImage(item, clipboardData);
+
+          if (hideImageOptions && isImage) {
+            event.preventDefault();
+            return true; // Block paste of images or HTML with images
+          }
+
+          if (isImage) {
+            const file = item.getAsFile();
+
+            if (file) {
+              const reader = new FileReader();
+
+              reader.onload = () => {
+                uploadFile({ variables: { file, uploadData: { storageBucketId, temporaryLocation } } });
+              };
+
+              reader.readAsDataURL(file);
+              event.preventDefault();
+              return true; // Block default behavior for images
+            }
+          }
+        });
+
+        return false; // Allow default behavior for text
+      },
+      [storageBucketId, hideImageOptions, temporaryLocation, uploadFile, isImageOrHtmlWithImage]
+    );
+
+    const editorOptions: Partial<EditorOptions> = useMemo(
+      () => ({
+        extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
+        editorProps: { handlePaste },
+      }),
+      [handlePaste]
+    );
+
+    const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
+
+    // Currently used to highlight overflow but can be reused for other similar features as well
+    const shadowEditor = useEditor({ ...editorOptions, content: '', editable: false });
+
+    useLayoutEffect(() => {
+      if (!editor || !isInteractingWithInput || editor.getText() === '') {
+        updateHtmlContent();
+      }
+    }, [value, hasFocus]);
+
+    const theme = useTheme();
+
+    const areControlsVisible = () => {
+      if (controlsVisible === 'always') {
+        return true;
+      }
+      if (controlsVisible === 'focused') {
+        return isInteractingWithInput;
+      }
+    };
+
+    const getLabelOffset = () => {
+      const offsetY = areControlsVisible()
+        ? toolbarRef.current
+          ? `${toolbarRef.current.clientHeight + 20}px`
+          : gutters(3)(theme)
+        : gutters(1)(theme);
+
+      return {
+        x: gutters()(theme),
+        y: offsetY,
+      };
+    };
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        getLabelOffset,
+        focus: () => editor?.commands.focus(),
+        get value() {
+          return editor?.getText();
         },
-        [storageBucketId, hideImageOptions, temporaryLocation, uploadFile, isImageOrHtmlWithImage]
+      }),
+      [editor, areControlsVisible()]
+    );
+
+    const setCharacterCount = useSetCharacterCount();
+
+    useLayoutEffect(() => {
+      setCharacterCount(editor?.getText().length ?? 0);
+    }, [editor]);
+
+    const wrapIframeWithStyledDiv = (markdown: string): string =>
+      markdown.replace(
+        /<iframe[^>]*><\/iframe>/g,
+        iframe =>
+          `<div style='position: relative; padding-bottom: 56.25%; width: 100%; overflow: hidden; border-radius: 8px; margin-bottom: 10px;'>${iframe}</div>`
       );
 
-      const editorOptions: Partial<EditorOptions> = useMemo(
-        () => ({
-          extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
-          editorProps: { handlePaste },
-        }),
-        [handlePaste]
-      );
+    const emitChangeOnEditorUpdate = (editor: Editor) => {
+      const handleStateChange = async () => {
+        let markdown = await HTMLToMarkdown(editor.getHTML());
 
-      const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
+        markdown = wrapIframeWithStyledDiv(markdown);
 
-      // Currently used to highlight overflow but can be reused for other similar features as well
-      const shadowEditor = useEditor({ ...editorOptions, content: '', editable: false });
+        setCharacterCount(editor.getText().length);
 
-      useLayoutEffect(() => {
-        if (!editor || !isInteractingWithInput || editor.getText() === '') {
-          updateHtmlContent();
-        }
-      }, [value, hasFocus]);
-
-      const theme = useTheme();
-
-      const areControlsVisible = () => {
-        if (controlsVisible === 'always') {
-          return true;
-        }
-        if (controlsVisible === 'focused') {
-          return isInteractingWithInput;
-        }
-      };
-
-      const getLabelOffset = () => {
-        const offsetY = areControlsVisible()
-          ? toolbarRef.current
-            ? `${toolbarRef.current.clientHeight + 20}px`
-            : gutters(3)(theme)
-          : gutters(1)(theme);
-
-        return {
-          x: gutters()(theme),
-          y: offsetY,
-        };
-      };
-
-      useImperativeHandle(
-        ref,
-        () => ({
-          getLabelOffset,
-          focus: () => editor?.commands.focus(),
-          get value() {
-            return editor?.getText();
+        onChange?.({
+          currentTarget: {
+            value: markdown,
           },
-        }),
-        [editor, areControlsVisible()]
-      );
-
-      const setCharacterCount = useSetCharacterCount();
-
-      useLayoutEffect(() => {
-        setCharacterCount(editor?.getText().length ?? 0);
-      }, [editor]);
-
-      const wrapIframeWithStyledDiv = (markdown: string): string =>
-        markdown.replace(
-          /<iframe[^>]*><\/iframe>/g,
-          iframe =>
-            `<div style='position: relative; padding-bottom: 56.25%; width: 100%; overflow: hidden; border-radius: 8px; margin-bottom: 10px;'>${iframe}</div>`
-        );
-
-      const emitChangeOnEditorUpdate = (editor: Editor) => {
-        const handleStateChange = async () => {
-          let markdown = await HTMLToMarkdown(editor.getHTML());
-
-          markdown = wrapIframeWithStyledDiv(markdown);
-
-          setCharacterCount(editor.getText().length);
-
-          onChange?.({
-            currentTarget: {
-              value: markdown,
-            },
-            target: {
-              value: markdown,
-            },
-          } as unknown as FormEvent<HTMLInputElement>);
-        };
-
-        editor.on('update', handleStateChange);
-
-        return () => {
-          editor.off('update', handleStateChange);
-        };
+          target: {
+            value: markdown,
+          },
+        } as unknown as FormEvent<HTMLInputElement>);
       };
 
-      useEffect(() => {
-        if (editor) {
-          return emitChangeOnEditorUpdate(editor);
-        }
-      }, [editor]);
+      editor.on('update', handleStateChange);
 
-      const updateShadowEditor = (editor: Editor, maxLength: number) => {
-        const highlightOverflow = () => {
-          if (!shadowEditor) {
-            return;
-          }
-
-          const contentLength = editor.getText().length;
-
-          if (contentLength <= maxLength) {
-            return;
-          }
-
-          try {
-            shadowEditor.view.updateState(EditorState.create({ doc: editor.state.doc }));
-          } catch (error) {
-            // In some states the "shadow" editor fails to update, but this doesn't break the highlight
-            console.error('Failed to update shadow editor state:', error);
-          }
-
-          const end = Selection.atEnd(shadowEditor.state.doc).from;
-          const overflow = contentLength - maxLength;
-
-          shadowEditor
-            .chain()
-            .setTextSelection({
-              from: end - overflow,
-              to: end,
-            })
-            .setHighlight() // Passing a highlight color doesn't work well here, styled later in sx={mark:{...}}
-            .run();
-        };
-
-        highlightOverflow();
-
-        editor.on('update', highlightOverflow);
-
-        return () => {
-          editor.off('update', highlightOverflow);
-        };
+      return () => {
+        editor.off('update', handleStateChange);
       };
+    };
 
-      useEffect(() => {
-        if (editor && typeof maxLength === 'number') {
-          return updateShadowEditor(editor, maxLength);
-        }
-      }, [editor, maxLength]);
+    useEffect(() => {
+      if (editor) {
+        return emitChangeOnEditorUpdate(editor);
+      }
+    }, [editor]);
 
-      const [prevEditorHeight, setPrevEditorHeight] = useState(0);
-
-      const keepScrollPositionOnEditorReset = (editor: Editor) => {
-        const handleCreate = () => {
-          setPrevEditorHeight(0);
-        };
-
-        editor.on('create', handleCreate);
-
-        return () => {
-          editor.off('create', handleCreate);
-        };
-      };
-
-      useEffect(() => {
-        if (editor) {
-          return keepScrollPositionOnEditorReset(editor);
-        }
-      }, [editor]);
-
-      const handleFocus = (event: React.FocusEvent<HTMLDivElement>) => {
-        setHasFocus(true);
-        onFocus?.(event as React.FocusEvent<HTMLInputElement>);
-      };
-
-      const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
-        if (containerRef.current?.contains(event.relatedTarget)) {
+    const updateShadowEditor = (editor: Editor, maxLength: number) => {
+      const highlightOverflow = () => {
+        if (!shadowEditor) {
           return;
         }
-        setPrevEditorHeight(editor?.view.dom.clientHeight ?? 0);
-        setHasFocus(false);
-        onBlur?.(event as React.FocusEvent<HTMLInputElement>);
+
+        const contentLength = editor.getText().length;
+
+        if (contentLength <= maxLength) {
+          return;
+        }
+
+        try {
+          shadowEditor.view.updateState(EditorState.create({ doc: editor.state.doc }));
+        } catch (error) {
+          // In some states the "shadow" editor fails to update, but this doesn't break the highlight
+          console.error('Failed to update shadow editor state:', error);
+        }
+
+        const end = Selection.atEnd(shadowEditor.state.doc).from;
+        const overflow = contentLength - maxLength;
+
+        shadowEditor
+          .chain()
+          .setTextSelection({
+            from: end - overflow,
+            to: end,
+          })
+          .setHighlight() // Passing a highlight color doesn't work well here, styled later in sx={mark:{...}}
+          .run();
       };
 
-      const handleDialogOpen = useCallback(() => setIsControlsDialogOpen(true), [setIsControlsDialogOpen]);
-      const handleDialogClose = useCallback(() => setIsControlsDialogOpen(false), [setIsControlsDialogOpen]);
+      highlightOverflow();
 
-      return (
-        <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
-          <MarkdownInputControls
-            ref={toolbarRef}
-            editor={editor}
-            visible={areControlsVisible()}
-            hideImageOptions={hideImageOptions}
-            onDialogOpen={handleDialogOpen}
-            onDialogClose={handleDialogClose}
-            temporaryLocation={temporaryLocation}
-          />
-          <Box width="100%" maxHeight="50vh" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
-            <Box position="relative" style={{ minHeight: prevEditorHeight }}>
-              <EditorContent editor={editor} />
+      editor.on('update', highlightOverflow);
 
-              <CharacterCountContainer>
-                {({ characterCount }) =>
-                  typeof maxLength === 'undefined' || characterCount <= maxLength ? null : (
-                    <Box
-                      position="absolute"
-                      top={0}
-                      left={0}
-                      bottom={0}
-                      right={0}
-                      sx={{
-                        pointerEvents: 'none',
-                        color: 'transparent',
-                        mark: {
-                          color: theme.palette.error.main,
-                          backgroundColor: 'transparent',
-                        },
-                      }}
-                    >
-                      <EditorContent editor={shadowEditor} />
-                    </Box>
-                  )
-                }
-              </CharacterCountContainer>
-            </Box>
+      return () => {
+        editor.off('update', highlightOverflow);
+      };
+    };
+
+    useEffect(() => {
+      if (editor && typeof maxLength === 'number') {
+        return updateShadowEditor(editor, maxLength);
+      }
+    }, [editor, maxLength]);
+
+    const [prevEditorHeight, setPrevEditorHeight] = useState(0);
+
+    const keepScrollPositionOnEditorReset = (editor: Editor) => {
+      const handleCreate = () => {
+        setPrevEditorHeight(0);
+      };
+
+      editor.on('create', handleCreate);
+
+      return () => {
+        editor.off('create', handleCreate);
+      };
+    };
+
+    useEffect(() => {
+      if (editor) {
+        return keepScrollPositionOnEditorReset(editor);
+      }
+    }, [editor]);
+
+    const handleFocus = (event: React.FocusEvent<HTMLDivElement>) => {
+      setHasFocus(true);
+      onFocus?.(event as React.FocusEvent<HTMLInputElement>);
+    };
+
+    const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+      if (containerRef.current?.contains(event.relatedTarget)) {
+        return;
+      }
+      setPrevEditorHeight(editor?.view.dom.clientHeight ?? 0);
+      setHasFocus(false);
+      onBlur?.(event as React.FocusEvent<HTMLInputElement>);
+    };
+
+    const handleDialogOpen = useCallback(() => setIsControlsDialogOpen(true), [setIsControlsDialogOpen]);
+    const handleDialogClose = useCallback(() => setIsControlsDialogOpen(false), [setIsControlsDialogOpen]);
+
+    return (
+      <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
+        <MarkdownInputControls
+          ref={toolbarRef}
+          editor={editor}
+          visible={areControlsVisible()}
+          hideImageOptions={hideImageOptions}
+          onDialogOpen={handleDialogOpen}
+          onDialogClose={handleDialogClose}
+          temporaryLocation={temporaryLocation}
+        />
+        <Box width="100%" maxHeight="50vh" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
+          <Box position="relative" style={{ minHeight: prevEditorHeight }}>
+            <EditorContent editor={editor} />
+
+            <CharacterCountContainer>
+              {({ characterCount }) =>
+                typeof maxLength === 'undefined' || characterCount <= maxLength ? null : (
+                  <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    bottom={0}
+                    right={0}
+                    sx={{
+                      pointerEvents: 'none',
+                      color: 'transparent',
+                      mark: {
+                        color: theme.palette.error.main,
+                        backgroundColor: 'transparent',
+                      },
+                    }}
+                  >
+                    <EditorContent editor={shadowEditor} />
+                  </Box>
+                )
+              }
+            </CharacterCountContainer>
           </Box>
         </Box>
-      );
-    }
-  )
+      </Box>
+    );
+  }
 );
 
 export default MarkdownInput;

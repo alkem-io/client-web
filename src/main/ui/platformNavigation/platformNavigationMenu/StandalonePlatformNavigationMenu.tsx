@@ -1,6 +1,6 @@
 import { Box, ButtonProps, Divider, MenuItem, MenuList, Paper, SvgIconProps } from '@mui/material';
 import Gutters from '@/core/ui/grid/Gutters';
-import React, { ComponentType, forwardRef, PropsWithChildren } from 'react';
+import React, { ComponentType, PropsWithChildren } from 'react';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
@@ -38,40 +38,43 @@ interface StandalonePlatformNavigationMenuProps {
   onClose?: () => void;
 }
 
-const StandalonePlatformNavigationMenu = forwardRef<HTMLDivElement, StandalonePlatformNavigationMenuProps>(
-  ({ onClose }, ref) => {
-    const { t } = useTranslation();
+const StandalonePlatformNavigationMenu = ({
+  ref,
+  onClose,
+}: StandalonePlatformNavigationMenuProps & {
+  ref: React.RefObject<HTMLDivElement>;
+}) => {
+  const { t } = useTranslation();
 
-    return (
-      <Paper ref={ref} elevation={PLATFORM_NAVIGATION_MENU_ELEVATION}>
-        <FocusTrap open>
-          <MenuList
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-              width: gutters(16),
-              padding: gutters(),
-              paddingBottom: gutters(0.5),
-            }}
-          >
-            {PLATFORM_NAVIGATION_MENU_ITEMS.map(({ label, ...props }) => (
-              <PlatformNavigationMenuItem key={label} {...props} onClick={onClose}>
-                <>{t(label)}</>
-              </PlatformNavigationMenuItem>
-            ))}
-            <Divider component="li" sx={{ width: '75%', marginY: 1 }} />
-            <Box component={MenuItem} paddingY={gutters(0.5)}>
-              <PoweredBy preview />
-            </Box>
-            <NavigatableMenuItem tabOnly iconComponent={ExitToAppOutlined} onClick={onClose}>
-              {t('components.navigation.exitMenu')}
-            </NavigatableMenuItem>
-          </MenuList>
-        </FocusTrap>
-      </Paper>
-    );
-  }
-);
+  return (
+    <Paper ref={ref} elevation={PLATFORM_NAVIGATION_MENU_ELEVATION}>
+      <FocusTrap open>
+        <MenuList
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            width: gutters(16),
+            padding: gutters(),
+            paddingBottom: gutters(0.5),
+          }}
+        >
+          {PLATFORM_NAVIGATION_MENU_ITEMS.map(({ label, ...props }) => (
+            <PlatformNavigationMenuItem key={label} {...props} onClick={onClose}>
+              <>{t(label)}</>
+            </PlatformNavigationMenuItem>
+          ))}
+          <Divider component="li" sx={{ width: '75%', marginY: 1 }} />
+          <Box component={MenuItem} paddingY={gutters(0.5)}>
+            <PoweredBy preview />
+          </Box>
+          <NavigatableMenuItem tabOnly iconComponent={ExitToAppOutlined} onClick={onClose}>
+            {t('components.navigation.exitMenu')}
+          </NavigatableMenuItem>
+        </MenuList>
+      </FocusTrap>
+    </Paper>
+  );
+};
 
 export default StandalonePlatformNavigationMenu;

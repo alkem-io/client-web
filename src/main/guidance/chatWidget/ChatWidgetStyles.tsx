@@ -1,11 +1,15 @@
 import { gutters } from '@/core/ui/grid/utils';
 import { Box, BoxProps } from '@mui/material';
-import { forwardRef } from 'react';
 import 'react-chat-widget-react-18/lib/styles.css';
 
 export const SOURCES_HEADING_TAG_HTML = 'h5'; // In the server there's a '#####' markdown tag
 
-const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
+const ChatWidgetStyles = ({
+  ref,
+  ...props
+}: BoxProps & {
+  ref: React.RefObject<HTMLDivElement>;
+}) => (
   <Box
     ref={ref}
     sx={theme => {
@@ -143,6 +147,6 @@ const ChatWidgetStyles = forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
     }}
     {...props}
   />
-));
+);
 
 export default ChatWidgetStyles;

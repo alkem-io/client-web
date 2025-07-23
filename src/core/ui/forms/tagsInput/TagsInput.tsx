@@ -1,4 +1,4 @@
-import { ChangeEvent, forwardRef } from 'react';
+import { ChangeEvent } from 'react';
 import {
   Autocomplete,
   Box,
@@ -26,86 +26,84 @@ type TagsInputProps = Omit<OutlinedTextFieldProps, 'onChange'> & {
   loading?: boolean;
 };
 
-export const TagsInput = forwardRef(
-  (
-    {
-      onChange,
-      onBlur,
-      minLength = DEFAULT_MIN_LENGTH,
-      error,
-      value,
-      placeholder,
-      readOnly,
-      disabled,
-      helpTextIcon,
-      helperText,
-      loading,
-      ...rest
-    }: TagsInputProps,
-    ref
-  ) => {
-    const handleChange = (e: ChangeEvent<{}>, newValue: (string | string[])[]) => {
-      const changedValues = newValue.map(x => (Array.isArray(x) ? x : x.trim())).filter(x => x.length >= minLength);
-      onChange && onChange(changedValues);
-    };
+export const TagsInput = ({
+  ref,
+  onChange,
+  onBlur,
+  minLength = DEFAULT_MIN_LENGTH,
+  error,
+  value,
+  placeholder,
+  readOnly,
+  disabled,
+  helpTextIcon,
+  helperText,
+  loading,
+  ...rest
+}: TagsInputProps & {
+  ref: React.RefObject<unknown>;
+}) => {
+  const handleChange = (e: ChangeEvent<{}>, newValue: (string | string[])[]) => {
+    const changedValues = newValue.map(x => (Array.isArray(x) ? x : x.trim())).filter(x => x.length >= minLength);
+    onChange && onChange(changedValues);
+  };
 
-    return (
-      <>
-        <Autocomplete
-          ref={ref}
-          aria-label="Filter"
-          id="card-filter"
-          multiple
-          fullWidth
-          freeSolo
-          autoSelect
-          disableCloseOnSelect
-          options={[]}
-          value={value}
-          onChange={handleChange}
-          disableClearable
-          disabled={loading || readOnly || disabled}
-          sx={{
-            ':root': {
-              padding: 14,
-            },
-          }}
-          renderTags={(value, getTagProps) =>
-            value.map((option, index) => (
-              <Chip
-                color="primary"
-                variant="outlined"
-                label={option}
-                {...getTagProps({ index })}
-                sx={{ borderColor: 'primary.main' }}
-                size="small"
-                key={index} // Unnecessary but avoids a console warning
-              />
-            ))
-          }
-          renderInput={params => (
-            <TextField
-              {...params}
-              {...rest}
-              error={error}
+  return (
+    <>
+      <Autocomplete
+        ref={ref}
+        aria-label="Filter"
+        id="card-filter"
+        multiple
+        fullWidth
+        freeSolo
+        autoSelect
+        disableCloseOnSelect
+        options={[]}
+        value={value}
+        onChange={handleChange}
+        disableClearable
+        disabled={loading || readOnly || disabled}
+        sx={{
+          ':root': {
+            padding: 14,
+          },
+        }}
+        renderTags={(value, getTagProps) =>
+          value.map((option, index) => (
+            <Chip
+              color="primary"
               variant="outlined"
-              onBlur={onBlur}
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: helpTextIcon && (
-                  <Box sx={{ marginRight: '5px', display: 'flex' }}>
-                    {loading && <CircularProgress size={20} />}
-                    <HelpButton helpText={helpTextIcon} />
-                  </Box>
-                ),
-              }}
+              label={option}
+              {...getTagProps({ index })}
+              sx={{ borderColor: 'primary.main' }}
+              size="small"
+              key={index} // Unnecessary but avoids a console warning
             />
-          )}
-        />
-        {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
-      </>
-    );
-  }
-);
+          ))
+        }
+        renderInput={params => (
+          <TextField
+            {...params}
+            {...rest}
+            error={error}
+            variant="outlined"
+            onBlur={onBlur}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: helpTextIcon && (
+                <Box sx={{ marginRight: '5px', display: 'flex' }}>
+                  {loading && <CircularProgress size={20} />}
+                  <HelpButton helpText={helpTextIcon} />
+                </Box>
+              ),
+            }}
+          />
+        )}
+      />
+      {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
+    </>
+  );
+};
 
 export default TagsInput;

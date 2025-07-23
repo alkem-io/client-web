@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import TextField from '@mui/material/TextField';
@@ -12,7 +12,7 @@ import { useLocation } from 'react-router-dom';
 const MINIMUM_TERM_LENGTH = 2;
 const getSearchTerms = (searchInput: string) => searchInput.trim();
 
-const SearchBar = forwardRef<typeof Box, BoxProps & { withRedirect?: boolean }>((props, ref) => {
+const SearchBar = ({ ref, ...props }: BoxProps & { withRedirect?: boolean } & { ref?: React.Ref<typeof Box> }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -82,6 +82,6 @@ const SearchBar = forwardRef<typeof Box, BoxProps & { withRedirect?: boolean }>(
       />
     </Box>
   );
-});
+};
 
 export default SearchBar;

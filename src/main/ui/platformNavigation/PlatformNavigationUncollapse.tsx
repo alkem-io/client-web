@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { Fade, IconButton } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import SwapColors from '@/core/ui/palette/SwapColors';
@@ -9,30 +9,33 @@ interface PlatformNavigationUncollapseProps {
   visible?: boolean;
 }
 
-const PlatformNavigationUncollapse = forwardRef<HTMLButtonElement, PlatformNavigationUncollapseProps>(
-  ({ visible }, ref) => {
-    const elevation = useElevationContext();
+const PlatformNavigationUncollapse = ({
+  ref,
+  visible,
+}: PlatformNavigationUncollapseProps & {
+  ref: React.RefObject<HTMLButtonElement>;
+}) => {
+  const elevation = useElevationContext();
 
-    return (
-      <Fade in={visible}>
-        <IconButton
-          ref={ref}
-          sx={{
-            position: 'absolute',
-            right: theme => `calc(100% + ${gutters()(theme)})`,
-            top: 0,
-          }}
-        >
-          <SwapColors>
-            <ArrowBackIosNew
-              color="primary"
-              sx={{ filter: elevation ? 'drop-shadow(0px 1px 8px rgba(0,0,0,0.12))' : 'none' }}
-            />
-          </SwapColors>
-        </IconButton>
-      </Fade>
-    );
-  }
-);
+  return (
+    <Fade in={visible}>
+      <IconButton
+        ref={ref}
+        sx={{
+          position: 'absolute',
+          right: theme => `calc(100% + ${gutters()(theme)})`,
+          top: 0,
+        }}
+      >
+        <SwapColors>
+          <ArrowBackIosNew
+            color="primary"
+            sx={{ filter: elevation ? 'drop-shadow(0px 1px 8px rgba(0,0,0,0.12))' : 'none' }}
+          />
+        </SwapColors>
+      </IconButton>
+    </Fade>
+  );
+};
 
 export default PlatformNavigationUncollapse;

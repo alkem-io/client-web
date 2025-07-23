@@ -1,4 +1,4 @@
-import { FC, forwardRef } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -23,10 +23,7 @@ export const ShareOnClipboardButton: FC<ShareOnPlatformButtonProps> = ({ setShar
   );
 };
 
-const ClipboardShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
-  HTMLDivElement | null,
-  ShareOnPlatformHandlerProps
->(({ url, closeDialog }, _ref) => {
+const ClipboardShareHandler: FC<ShareOnPlatformHandlerProps> = ({ ref: _ref, url, closeDialog }) => {
   const { t } = useTranslation();
 
   // On render of this element we copy the url to clipboard
@@ -51,4 +48,4 @@ const ClipboardShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
       {t('share-dialog.platforms.clipboard.copied')}
     </Text>
   );
-});
+};

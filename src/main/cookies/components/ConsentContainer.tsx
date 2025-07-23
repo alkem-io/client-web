@@ -1,9 +1,14 @@
-import React, { forwardRef, PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react';
 import { Paper } from '@mui/material';
 import SwapColors from '@/core/ui/palette/SwapColors';
 import { gutters } from '@/core/ui/grid/utils';
 
-const CookieConsent = forwardRef<HTMLDivElement, PropsWithChildren>(({ children }, ref) => {
+const CookieConsent = ({
+  ref,
+  children,
+}: PropsWithChildren & {
+  ref: React.RefObject<HTMLDivElement>;
+}) => {
   return (
     <SwapColors>
       <Paper
@@ -26,6 +31,6 @@ const CookieConsent = forwardRef<HTMLDivElement, PropsWithChildren>(({ children 
       </Paper>
     </SwapColors>
   );
-});
+};
 
 export default CookieConsent;

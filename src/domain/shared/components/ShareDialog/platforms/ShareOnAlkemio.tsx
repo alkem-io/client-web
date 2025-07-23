@@ -1,4 +1,4 @@
-import { FC, forwardRef, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
@@ -36,10 +36,7 @@ export const ShareOnAlkemioButton: FC<ShareOnPlatformButtonProps> = ({ setShareH
   );
 };
 
-const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
-  HTMLDivElement | null,
-  ShareOnPlatformHandlerProps
->(({ entityTypeName, url, goBack }, _ref) => {
+const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = ({ ref: _ref, entityTypeName, url, goBack }) => {
   const { t } = useTranslation();
 
   const initialValues: ShareOnAlkemioData = useMemo(
@@ -131,4 +128,4 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
       </Formik>
     </Box>
   );
-});
+};

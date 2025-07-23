@@ -1,11 +1,11 @@
-import React, { forwardRef, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useResizeDetector } from 'react-resize-detector';
 import ConsentContainer from './components/ConsentContainer';
 import GeneralConsent from './GeneralConsent';
 import CookieSettings from './CookieSettings';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 
-const CookieConsent = forwardRef<HTMLDivElement>((_, ref) => {
+const CookieConsent = ({ ref, ..._ }) => {
   const [cookieOptionsOpen, setCookieOptionsOpen] = useState(false);
 
   const handleOpenSettings = useCallback(() => setCookieOptionsOpen(true), [setCookieOptionsOpen]);
@@ -24,6 +24,6 @@ const CookieConsent = forwardRef<HTMLDivElement>((_, ref) => {
       {!cookieOptionsOpen ? <GeneralConsent handleOpenSettings={handleOpenSettings} /> : <CookieSettings />}
     </ConsentContainer>
   );
-});
+};
 
 export default CookieConsent;
