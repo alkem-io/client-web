@@ -6,6 +6,9 @@ export enum TopLevelRoutePath {
   InnovationLibrary = 'innovation-library',
   InnovationPacks = 'innovation-packs',
   InnovationHubs = 'innovation-hubs',
+  /**
+   * @deprecated Create space doesn't have a dedicated url anymore
+   */
   CreateSpace = 'create-space',
   Home = 'home',
   Spaces = 'spaces',
