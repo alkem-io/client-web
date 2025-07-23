@@ -22946,16 +22946,7 @@ export type SpaceTabsQuery = {
             innovationFlow: {
               __typename?: 'InnovationFlow';
               id: string;
-              currentState?:
-                | {
-                    __typename?: 'InnovationFlowState';
-                    id: string;
-                    displayName: string;
-                    description?: string | undefined;
-                    sortOrder: number;
-                    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
-                  }
-                | undefined;
+              currentState?: { __typename?: 'InnovationFlowState'; id: string } | undefined;
               states: Array<{
                 __typename?: 'InnovationFlowState';
                 id: string;

@@ -17816,12 +17816,6 @@ export const SpaceTabsDocument = gql`
             id
             currentState {
               id
-              displayName
-              description
-              sortOrder
-              settings {
-                allowNewCallouts
-              }
             }
             states {
               id

@@ -8,12 +8,6 @@ query SpaceTabs($spaceId: UUID!) {
           id
           currentState {
             id
-            displayName
-            description
-            sortOrder
-            settings {
-              allowNewCallouts
-            }
           }
           states {
             id
