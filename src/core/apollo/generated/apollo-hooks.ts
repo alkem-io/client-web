@@ -317,12 +317,9 @@ export const InnovationFlowProfileFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
-export const InnovationFlowDetailsFragmentDoc = gql`
-  fragment InnovationFlowDetails on InnovationFlow {
+export const InnovationFlowStatesFragmentDoc = gql`
+  fragment InnovationFlowStates on InnovationFlow {
     id
-    profile {
-      ...InnovationFlowProfile
-    }
     states {
       id
       displayName
@@ -332,14 +329,17 @@ export const InnovationFlowDetailsFragmentDoc = gql`
         allowNewCallouts
       }
     }
+  }
+`;
+export const InnovationFlowDetailsFragmentDoc = gql`
+  fragment InnovationFlowDetails on InnovationFlow {
+    id
+    profile {
+      ...InnovationFlowProfile
+    }
+    ...InnovationFlowStates
     currentState {
       id
-      displayName
-      description
-      sortOrder
-      settings {
-        allowNewCallouts
-      }
     }
     authorization {
       id
@@ -347,6 +347,7 @@ export const InnovationFlowDetailsFragmentDoc = gql`
     }
   }
   ${InnovationFlowProfileFragmentDoc}
+  ${InnovationFlowStatesFragmentDoc}
 `;
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
@@ -2317,20 +2318,6 @@ export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
     }
   }
   ${ReferenceDetailsFragmentDoc}
-`;
-export const InnovationFlowStatesFragmentDoc = gql`
-  fragment InnovationFlowStates on InnovationFlow {
-    id
-    states {
-      id
-      displayName
-      description
-      sortOrder
-      settings {
-        allowNewCallouts
-      }
-    }
-  }
 `;
 export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
   fragment SpaceTemplateContent_Collaboration on Collaboration {

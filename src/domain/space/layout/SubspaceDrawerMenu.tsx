@@ -43,7 +43,7 @@ export const SubspaceDrawerMenu = ({
   if (!isSmallScreen) {
     return null;
   }
-  const showInnovationFlowStates = innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState;
+  const showInnovationFlowStates = innovationFlowStates && selectedInnovationFlowState;
   return (
     <>
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>

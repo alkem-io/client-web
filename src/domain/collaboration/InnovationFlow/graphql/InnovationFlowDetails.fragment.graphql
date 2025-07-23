@@ -3,23 +3,9 @@ fragment InnovationFlowDetails on InnovationFlow {
   profile {
     ...InnovationFlowProfile
   }
-  states {
-    id
-    displayName
-    description
-    sortOrder
-    settings {
-      allowNewCallouts
-    }
-  }
+  ...InnovationFlowStates
   currentState {
     id
-    displayName
-    description
-    sortOrder
-    settings {
-      allowNewCallouts
-    }
   }
   authorization {
     id

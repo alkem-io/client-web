@@ -298,7 +298,9 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     });
 
     if (oldState) {
-      // TODO: This is probably not needed //!!
+      // TODO: This should be done by the server but currently it is not.
+      // Probably soon we'll have callouts classified by state.id and not by state.displayName
+      // so this won't be needed anymore
       await Promise.all(
         callouts
           .filter(callout => callout.flowState?.currentState === oldState.displayName)

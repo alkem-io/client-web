@@ -9878,6 +9878,10 @@ export type InnovationFlowSettingsQuery = {
                 | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
                 | undefined;
             };
+            currentState?: { __typename?: 'InnovationFlowState'; id: string } | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             states: Array<{
               __typename?: 'InnovationFlowState';
               id: string;
@@ -9886,19 +9890,6 @@ export type InnovationFlowSettingsQuery = {
               sortOrder: number;
               settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
             }>;
-            currentState?:
-              | {
-                  __typename?: 'InnovationFlowState';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  sortOrder: number;
-                  settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
-                }
-              | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -9983,6 +9974,10 @@ export type InnovationFlowDetailsQuery = {
                 | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
                 | undefined;
             };
+            currentState?: { __typename?: 'InnovationFlowState'; id: string } | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             states: Array<{
               __typename?: 'InnovationFlowState';
               id: string;
@@ -9991,19 +9986,6 @@ export type InnovationFlowDetailsQuery = {
               sortOrder: number;
               settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
             }>;
-            currentState?:
-              | {
-                  __typename?: 'InnovationFlowState';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  sortOrder: number;
-                  settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
-                }
-              | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
           };
         }
       | undefined;
@@ -10128,6 +10110,10 @@ export type InnovationFlowDetailsFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
       | undefined;
   };
+  currentState?: { __typename?: 'InnovationFlowState'; id: string } | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   states: Array<{
     __typename?: 'InnovationFlowState';
     id: string;
@@ -10136,19 +10122,6 @@ export type InnovationFlowDetailsFragment = {
     sortOrder: number;
     settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
   }>;
-  currentState?:
-    | {
-        __typename?: 'InnovationFlowState';
-        id: string;
-        displayName: string;
-        description?: string | undefined;
-        sortOrder: number;
-        settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
-      }
-    | undefined;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
 };
 
 export type InnovationFlowProfileFragment = {
@@ -24379,6 +24352,14 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                         }
                                       | undefined;
                                   };
+                                  currentState?: { __typename?: 'InnovationFlowState'; id: string } | undefined;
+                                  authorization?:
+                                    | {
+                                        __typename?: 'Authorization';
+                                        id: string;
+                                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                      }
+                                    | undefined;
                                   states: Array<{
                                     __typename?: 'InnovationFlowState';
                                     id: string;
@@ -24387,26 +24368,6 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                     sortOrder: number;
                                     settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
                                   }>;
-                                  currentState?:
-                                    | {
-                                        __typename?: 'InnovationFlowState';
-                                        id: string;
-                                        displayName: string;
-                                        description?: string | undefined;
-                                        sortOrder: number;
-                                        settings: {
-                                          __typename?: 'InnovationFlowStateSettings';
-                                          allowNewCallouts: boolean;
-                                        };
-                                      }
-                                    | undefined;
-                                  authorization?:
-                                    | {
-                                        __typename?: 'Authorization';
-                                        id: string;
-                                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                      }
-                                    | undefined;
                                 };
                               };
                             }
