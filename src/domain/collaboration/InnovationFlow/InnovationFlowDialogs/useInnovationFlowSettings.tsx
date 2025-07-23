@@ -17,7 +17,7 @@ import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { sortBySortOrder } from '../utils/sortStates';
+import { sortBySortOrder } from '../../../../core/utils/sortBySortOrder';
 
 type useInnovationFlowSettingsProps = {
   collaborationId: string | undefined;
