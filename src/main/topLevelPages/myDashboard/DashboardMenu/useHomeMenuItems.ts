@@ -6,7 +6,7 @@ import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { getAccountLink } from '@/main/routing/urlBuilders';
+import { buildUserAccountUrl } from '@/main/routing/urlBuilders';
 import { MenuOptionProps } from './dashboardMenuTypes';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 import { useCreateSpaceLink } from '../useCreateSpaceLink/useCreateSpaceLink';
@@ -52,7 +52,7 @@ export const useHomeMenuItems = () => {
       {
         label: 'pages.home.mainNavigation.myAccount',
         type: 'link',
-        to: getAccountLink(userModel?.profile?.url),
+        to: buildUserAccountUrl(userModel?.profile?.url),
         icon: LocalOfferOutlinedIcon,
         isVisible: (_, __) => true,
       },

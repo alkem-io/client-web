@@ -1,33 +1,49 @@
-import { Checkbox, CheckboxProps, FormControl, FormControlLabel, FormGroup, FormHelperText } from '@mui/material';
+import {
+  Checkbox,
+  CheckboxProps,
+  FormControl,
+  FormControlLabel,
+  FormControlProps,
+  FormGroup,
+  FormHelperText,
+} from '@mui/material';
 import { useField } from 'formik';
+import { ReactNode } from 'react';
 
 interface CheckboxFieldProps extends CheckboxProps {
-  title: string;
+  label: ReactNode;
   name: string;
   required?: boolean;
   disabled?: boolean;
+  containerProps?: FormControlProps;
 }
 
-export const FormikCheckboxField = ({ title, name, required = false, disabled = false }: CheckboxFieldProps) => {
-  const [field, meta] = useField(name);
+export const FormikCheckboxField = ({
+  label,
+  name,
+  required = false,
+  disabled = false,
+  containerProps,
+}: CheckboxFieldProps) => {
+  const [field, meta, helpers] = useField<boolean>(name);
 
   return (
-    <FormControl required={required} disabled={disabled}>
+    <FormControl required={required} disabled={disabled} {...containerProps}>
       <FormGroup row>
         <FormControlLabel
           control={
             <Checkbox
               name={name}
               checked={field.value}
-              onChange={field.onChange}
+              onChange={event => helpers.setValue(event.target.checked)}
               onBlur={field.onBlur}
               color={'primary'}
             />
           }
-          label={title}
+          label={label}
         />
       </FormGroup>
-      <FormHelperText>{meta.error}</FormHelperText>
+      {meta.error && meta.touched && <FormHelperText>{meta.error}</FormHelperText>}
     </FormControl>
   );
 };

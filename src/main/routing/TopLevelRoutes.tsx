@@ -39,7 +39,6 @@ const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/In
 const InnovationHubsRoutes = lazyWithGlobalErrorHandler(
   () => import('@/domain/innovationHub/InnovationHubsSettings/InnovationHubsRoutes')
 );
-const CreateSpaceDialog = lazyWithGlobalErrorHandler(() => import('@/domain/space/createSpace/CreateSpaceDialog'));
 const SpaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SpaceRoutes'));
 
 export const TopLevelRoutes = () => {
@@ -59,21 +58,6 @@ export const TopLevelRoutes = () => {
         <Route path={TopLevelRoutePath._Landing} element={<RedirectToWelcomeSite />} />
         {IdentityRoute()}
         {devRoute()}
-        <Route
-          path={TopLevelRoutePath.CreateSpace}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={TopLevelRoutePath.CreateSpace}>
-                <>
-                  <HomePage />
-                  <Suspense fallback={<Loading />}>
-                    <CreateSpaceDialog />
-                  </Suspense>
-                </>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
         <Route
           path={TopLevelRoutePath.Home}
           element={
