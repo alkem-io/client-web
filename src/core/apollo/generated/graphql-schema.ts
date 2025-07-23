@@ -2783,7 +2783,7 @@ export type InnovationFlow = {
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The currently selected State in this Flow. */
-  currentState: InnovationFlowState;
+  currentState?: Maybe<InnovationFlowState>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The Profile for this InnovationFlow. */
@@ -2811,7 +2811,7 @@ export type InnovationFlowState = {
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The explanation text to clarify the state. */
-  description: Scalars['Markdown']['output'];
+  description?: Maybe<Scalars['Markdown']['output']>;
   /** The display name for the State */
   displayName: Scalars['String']['output'];
   /** The ID of the entity */
@@ -9882,18 +9882,20 @@ export type InnovationFlowSettingsQuery = {
               __typename?: 'InnovationFlowState';
               id: string;
               displayName: string;
-              description: string;
+              description?: string | undefined;
               sortOrder: number;
               settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
             }>;
-            currentState: {
-              __typename?: 'InnovationFlowState';
-              id: string;
-              displayName: string;
-              description: string;
-              sortOrder: number;
-              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
-            };
+            currentState?:
+              | {
+                  __typename?: 'InnovationFlowState';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  sortOrder: number;
+                  settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                }
+              | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -9985,18 +9987,20 @@ export type InnovationFlowDetailsQuery = {
               __typename?: 'InnovationFlowState';
               id: string;
               displayName: string;
-              description: string;
+              description?: string | undefined;
               sortOrder: number;
               settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
             }>;
-            currentState: {
-              __typename?: 'InnovationFlowState';
-              id: string;
-              displayName: string;
-              description: string;
-              sortOrder: number;
-              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
-            };
+            currentState?:
+              | {
+                  __typename?: 'InnovationFlowState';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  sortOrder: number;
+                  settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                }
+              | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -10051,8 +10055,10 @@ export type UpdateCollaborationFromSpaceTemplateMutation = {
     innovationFlow: {
       __typename?: 'InnovationFlow';
       id: string;
-      states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-      currentState: { __typename?: 'InnovationFlowState'; displayName: string; description: string };
+      states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description?: string | undefined }>;
+      currentState?:
+        | { __typename?: 'InnovationFlowState'; displayName: string; description?: string | undefined }
+        | undefined;
     };
   };
 };
@@ -10126,18 +10132,20 @@ export type InnovationFlowDetailsFragment = {
     __typename?: 'InnovationFlowState';
     id: string;
     displayName: string;
-    description: string;
+    description?: string | undefined;
     sortOrder: number;
     settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
   }>;
-  currentState: {
-    __typename?: 'InnovationFlowState';
-    id: string;
-    displayName: string;
-    description: string;
-    sortOrder: number;
-    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
-  };
+  currentState?:
+    | {
+        __typename?: 'InnovationFlowState';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        sortOrder: number;
+        settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+      }
+    | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -10173,7 +10181,7 @@ export type InnovationFlowStatesFragment = {
     __typename?: 'InnovationFlowState';
     id: string;
     displayName: string;
-    description: string;
+    description?: string | undefined;
     sortOrder: number;
     settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
   }>;
@@ -10202,7 +10210,7 @@ export type UpdateInnovationFlowCurrentStateMutation = {
   updateInnovationFlowCurrentState: {
     __typename?: 'InnovationFlow';
     id: string;
-    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+    currentState?: { __typename?: 'InnovationFlowState'; displayName: string } | undefined;
   };
 };
 
@@ -10216,7 +10224,7 @@ export type CreateStateOnInnovationFlowMutation = {
     __typename?: 'InnovationFlowState';
     id: string;
     displayName: string;
-    description: string;
+    description?: string | undefined;
     settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
   };
 };
@@ -10243,7 +10251,7 @@ export type UpdateInnovationFlowStateMutation = {
     __typename?: 'InnovationFlowState';
     id: string;
     displayName: string;
-    description: string;
+    description?: string | undefined;
     settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
   };
 };
@@ -22355,18 +22363,20 @@ export type SpaceTabQuery = {
                 __typename?: 'InnovationFlowState';
                 id: string;
                 displayName: string;
-                description: string;
+                description?: string | undefined;
                 sortOrder: number;
                 settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
               }>;
-              currentState: {
-                __typename?: 'InnovationFlowState';
-                id: string;
-                displayName: string;
-                description: string;
-                sortOrder: number;
-                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
-              };
+              currentState?:
+                | {
+                    __typename?: 'InnovationFlowState';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    sortOrder: number;
+                    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                  }
+                | undefined;
             };
             calloutsSet: { __typename?: 'CalloutsSet'; id: string };
           };
@@ -22648,7 +22658,7 @@ export type SpacePageQuery = {
               __typename?: 'InnovationFlow';
               id: string;
               states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
-              currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+              currentState?: { __typename?: 'InnovationFlowState'; displayName: string } | undefined;
             };
             calloutsSet: {
               __typename?: 'CalloutsSet';
@@ -22912,7 +22922,7 @@ export type SpacePageFragment = {
       __typename?: 'InnovationFlow';
       id: string;
       states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
-      currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+      currentState?: { __typename?: 'InnovationFlowState'; displayName: string } | undefined;
     };
     calloutsSet: {
       __typename?: 'CalloutsSet';
@@ -22963,19 +22973,21 @@ export type SpaceTabsQuery = {
             innovationFlow: {
               __typename?: 'InnovationFlow';
               id: string;
-              currentState: {
-                __typename?: 'InnovationFlowState';
-                id: string;
-                displayName: string;
-                description: string;
-                sortOrder: number;
-                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
-              };
+              currentState?:
+                | {
+                    __typename?: 'InnovationFlowState';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    sortOrder: number;
+                    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                  }
+                | undefined;
               states: Array<{
                 __typename?: 'InnovationFlowState';
                 id: string;
                 displayName: string;
-                description: string;
+                description?: string | undefined;
                 sortOrder: number;
                 settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
               }>;
@@ -24371,18 +24383,23 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                     __typename?: 'InnovationFlowState';
                                     id: string;
                                     displayName: string;
-                                    description: string;
+                                    description?: string | undefined;
                                     sortOrder: number;
                                     settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
                                   }>;
-                                  currentState: {
-                                    __typename?: 'InnovationFlowState';
-                                    id: string;
-                                    displayName: string;
-                                    description: string;
-                                    sortOrder: number;
-                                    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
-                                  };
+                                  currentState?:
+                                    | {
+                                        __typename?: 'InnovationFlowState';
+                                        id: string;
+                                        displayName: string;
+                                        description?: string | undefined;
+                                        sortOrder: number;
+                                        settings: {
+                                          __typename?: 'InnovationFlowStateSettings';
+                                          allowNewCallouts: boolean;
+                                        };
+                                      }
+                                    | undefined;
                                   authorization?:
                                     | {
                                         __typename?: 'Authorization';
@@ -25206,7 +25223,11 @@ export type AllTemplatesInTemplatesSetQuery = {
                     innovationFlow: {
                       __typename?: 'InnovationFlow';
                       id: string;
-                      states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+                      states: Array<{
+                        __typename?: 'InnovationFlowState';
+                        displayName: string;
+                        description?: string | undefined;
+                      }>;
                     };
                   };
                 }
@@ -25506,7 +25527,7 @@ export type TemplateContentQuery = {
                       __typename?: 'InnovationFlowState';
                       id: string;
                       displayName: string;
-                      description: string;
+                      description?: string | undefined;
                       sortOrder: number;
                       settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
                     }>;
@@ -25683,7 +25704,7 @@ export type SpaceTemplateContentQuery = {
                 __typename?: 'InnovationFlowState';
                 id: string;
                 displayName: string;
-                description: string;
+                description?: string | undefined;
                 sortOrder: number;
                 settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
               }>;
@@ -26014,7 +26035,7 @@ export type SpaceTemplateContentFragment = {
         __typename?: 'InnovationFlowState';
         id: string;
         displayName: string;
-        description: string;
+        description?: string | undefined;
         sortOrder: number;
         settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
       }>;
@@ -26150,7 +26171,7 @@ export type SpaceTemplateContent_CollaborationFragment = {
       __typename?: 'InnovationFlowState';
       id: string;
       displayName: string;
-      description: string;
+      description?: string | undefined;
       sortOrder: number;
       settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
     }>;
@@ -26394,7 +26415,11 @@ export type SpaceTemplateFragment = {
           innovationFlow: {
             __typename?: 'InnovationFlow';
             id: string;
-            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+            states: Array<{
+              __typename?: 'InnovationFlowState';
+              displayName: string;
+              description?: string | undefined;
+            }>;
           };
         };
       }
@@ -26855,7 +26880,11 @@ export type TemplatesSetTemplatesFragment = {
             innovationFlow: {
               __typename?: 'InnovationFlow';
               id: string;
-              states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+              states: Array<{
+                __typename?: 'InnovationFlowState';
+                displayName: string;
+                description?: string | undefined;
+              }>;
             };
           };
         }

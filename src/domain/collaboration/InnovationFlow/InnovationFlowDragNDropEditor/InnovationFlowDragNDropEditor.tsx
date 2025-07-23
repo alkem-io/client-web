@@ -43,7 +43,7 @@ export interface InnovationFlowDragNDropEditorProps {
   children?: (state: Identifiable & InnovationFlowStateModel) => React.ReactNode;
   innovationFlow:
     | {
-        currentState: Identifiable;
+        currentState?: Identifiable;
         states: (Identifiable & InnovationFlowStateModel)[];
         settings: {
           maximumNumberOfStates: number;
@@ -97,7 +97,7 @@ const InnovationFlowDragNDropEditor = ({
 }: InnovationFlowDragNDropEditorProps) => {
   const { t } = useTranslation();
   const innovationFlowStates = innovationFlow?.states;
-  const currentStateId = innovationFlow?.currentState.id;
+  const currentStateId = innovationFlow?.currentState?.id;
 
   // Stores the previous flow state to create a new state after it. If undefined it will create the state at the end of the flow
   const [createFlowState, setCreateFlowState] = useState<

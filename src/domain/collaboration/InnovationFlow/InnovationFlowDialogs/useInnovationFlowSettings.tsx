@@ -292,7 +292,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
       variables: {
         innovationFlowStateId,
         displayName: newState.displayName,
-        description: newState.description,
+        description: newState.description ?? '',
         settings: newState.settings,
       },
     });

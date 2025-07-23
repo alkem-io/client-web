@@ -58,7 +58,7 @@ const useSpaceTabs = ({ spaceId, skip }: { spaceId: string | undefined; skip?: b
         displayName: state.displayName,
         description: state.description,
       })) ?? [];
-    const currentStateName = spaceTabsData?.lookup.space?.collaboration?.innovationFlow.currentState.displayName;
+    const currentStateName = spaceTabsData?.lookup.space?.collaboration?.innovationFlow.currentState?.displayName;
     let currentStateIndex = -1;
     if (currentStateName && innovationFlowTabs.length > 0) {
       currentStateIndex = innovationFlowTabs.findIndex(state => state.displayName === currentStateName);
@@ -96,7 +96,7 @@ const useSpaceTabs = ({ spaceId, skip }: { spaceId: string | undefined; skip?: b
         result.push({
           label: state.displayName,
           icon: <Tab />,
-          description: state.description,
+          description: state.description ?? '',
         });
       });
     }

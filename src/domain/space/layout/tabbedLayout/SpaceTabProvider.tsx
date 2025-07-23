@@ -9,14 +9,9 @@ import { SpaceTabQueryModel } from './spaceTabQuery.model';
 import { useSpace } from '../../context/useSpace';
 import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 
-type InnovationFlowState = {
-  displayName: string;
-  description: string;
-};
-
 interface SpaceTabProvided {
   urlInfo: UrlResolverContextValue;
-  innovationFlowStates: InnovationFlowState[] | undefined;
+  innovationFlowStates: InnovationFlowStateModel[] | undefined;
   innovationFlowCurrentState: InnovationFlowStateModel | undefined;
   flowStateForNewCallouts: InnovationFlowStateModel | undefined;
   about: SpaceAboutLightModel | undefined;
