@@ -22,15 +22,6 @@ query SpaceTab($spaceId: UUID!) {
               allowNewCallouts
             }
           }
-          currentState {
-            id
-            displayName
-            description
-            sortOrder
-            settings {
-              allowNewCallouts
-            }
-          }
         }
         calloutsSet {
           id

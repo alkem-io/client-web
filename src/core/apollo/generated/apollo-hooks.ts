@@ -17677,15 +17677,6 @@ export const SpaceTabDocument = gql`
                 allowNewCallouts
               }
             }
-            currentState {
-              id
-              displayName
-              description
-              sortOrder
-              settings {
-                allowNewCallouts
-              }
-            }
           }
           calloutsSet {
             id

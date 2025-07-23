@@ -22340,16 +22340,6 @@ export type SpaceTabQuery = {
                 sortOrder: number;
                 settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
               }>;
-              currentState?:
-                | {
-                    __typename?: 'InnovationFlowState';
-                    id: string;
-                    displayName: string;
-                    description?: string | undefined;
-                    sortOrder: number;
-                    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
-                  }
-                | undefined;
             };
             calloutsSet: { __typename?: 'CalloutsSet'; id: string };
           };

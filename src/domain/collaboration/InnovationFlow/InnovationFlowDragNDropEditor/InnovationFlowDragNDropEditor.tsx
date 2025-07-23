@@ -53,14 +53,14 @@ export interface InnovationFlowDragNDropEditorProps {
     | undefined;
 
   croppedDescriptions?: boolean;
-  onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
+  onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown>;
   onUpdateCurrentState?: (stateId: string) => void;
   onCreateFlowState: (
     newState: InnovationFlowStateModel,
     options: { after: string; last: false } | { after?: never; last: true }
-  ) => Promise<unknown> | void;
-  onEditFlowState: (stateId: string, newState: InnovationFlowStateModel) => Promise<unknown> | void;
-  onDeleteFlowState: (stateId: string) => Promise<unknown> | void;
+  ) => Promise<unknown>;
+  onEditFlowState: (stateId: string, newState: InnovationFlowStateModel) => Promise<unknown>;
+  onDeleteFlowState: (stateId: string) => Promise<unknown>;
   /**
    * Prevents the user from changing the number of states, adding or removing
    */
@@ -226,7 +226,7 @@ const InnovationFlowDragNDropEditor = ({
               ?.filter(state => state.displayName !== editFlowState?.displayName)
               .map(state => state.displayName)}
             onSubmit={async newState => {
-              await onEditFlowState(editFlowState?.id!, newState);
+              await onEditFlowState(editFlowState!.id, newState);
               setEditFlowState(undefined);
             }}
             onCancel={() => setEditFlowState(undefined)}

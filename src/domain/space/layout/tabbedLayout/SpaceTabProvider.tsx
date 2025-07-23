@@ -12,7 +12,6 @@ import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/
 interface SpaceTabProvided {
   urlInfo: UrlResolverContextValue;
   innovationFlowStates: InnovationFlowStateModel[] | undefined;
-  innovationFlowCurrentState: InnovationFlowStateModel | undefined;
   flowStateForNewCallouts: InnovationFlowStateModel | undefined;
   about: SpaceAboutLightModel | undefined;
   classificationTagsets: ClassificationTagsetModel[];
@@ -62,7 +61,6 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     const canReadSpace = myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
     const innovationFlow = space?.collaboration.innovationFlow;
     const innovationFlowStates = innovationFlow?.states;
-    const innovationFlowCurrentState = innovationFlow?.currentState;
     const about: SpaceAboutLightModel | undefined = space?.about;
     const calloutsSetId = space?.collaboration.calloutsSet.id;
 
@@ -86,7 +84,6 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     return {
       canReadSpace,
       innovationFlowStates,
-      innovationFlowCurrentState,
       flowStateForNewCallouts: flowState,
       about,
       tabDescription,
