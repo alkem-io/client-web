@@ -29,7 +29,7 @@ const ContributeCard = ({
   highlighted,
   children,
 }: PropsWithChildren<ContributeCardProps> & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   const getBaseComponentProps = () => {
     if (onClick) {

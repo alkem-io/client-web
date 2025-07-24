@@ -15,7 +15,7 @@ const PageContentColumn = ({
   columns,
   ...props
 }: PageContentColumnProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => (
   <GridItem columns={columns}>
     <PageContentColumnBase columns={columns} {...props} ref={ref} />

@@ -60,7 +60,7 @@ const CalloutContributionsPost = ({
   contributionsCount,
   calloutRestrictions,
 }: CalloutContributionsPostProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   // Dialog handling
   const [postDialogOpen, setPostDialogOpen] = useState(false);

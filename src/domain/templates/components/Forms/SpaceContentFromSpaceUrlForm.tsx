@@ -25,7 +25,7 @@ const SpaceContentFromSpaceUrlForm = ({
   collapsible,
   onCollapse,
 }: SpaceContentFromSpaceUrlFormProps & {
-  ref: React.RefObject<SpaceContentFromSpaceUrlFormRef>;
+  ref?: React.Ref<SpaceContentFromSpaceUrlFormRef>;
 }) => {
   const { t } = useTranslation();
   const [url, setUrl] = useState('');

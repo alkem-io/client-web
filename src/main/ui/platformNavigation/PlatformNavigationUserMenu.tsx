@@ -51,7 +51,7 @@ const PlatformNavigationUserMenu = ({
   footer,
   children,
 }: PropsWithChildren<PlatformNavigationUserMenuProps> & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   const { t } = useTranslation();
 

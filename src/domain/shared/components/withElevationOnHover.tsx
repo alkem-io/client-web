@@ -22,7 +22,7 @@ const withElevationOnHover =
     ref,
     ...props
   }: WithElevationProps<El, P> & {
-    ref: React.RefObject<El>;
+    ref?: React.Ref<El>;
   }) => {
     const { initialElevation = INITIAL_ELEVATION, finalElevation = FINAL_ELEVATION } = options;
 

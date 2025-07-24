@@ -15,7 +15,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 const ContributionsSettingsWhiteboard = ({
   ref,
 }: ContributionTypeSettingsProps & {
-  ref: React.RefObject<ContributionTypeSettingsComponentRef>;
+  ref?: React.Ref<ContributionTypeSettingsComponentRef>;
 }) => {
   const { t } = useTranslation();
 

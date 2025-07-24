@@ -13,7 +13,7 @@ const PageContentBlockSeamless = ({
   ref,
   ...props
 }: PageContentBlockSeamlessProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   return (
     <BasePageContentBlock

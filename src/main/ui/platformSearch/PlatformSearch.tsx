@@ -35,7 +35,7 @@ const PlatformSearch = ({
   compact,
   children,
 }: PropsWithChildren<PlatformSearchProps> & {
-  ref: React.RefObject<Collapsible>;
+  ref?: React.Ref<Collapsible>;
 }) => {
   const { t } = useTranslation();
 

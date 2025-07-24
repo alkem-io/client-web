@@ -13,7 +13,7 @@ const PlatformNavigationUncollapse = ({
   ref,
   visible,
 }: PlatformNavigationUncollapseProps & {
-  ref: React.RefObject<HTMLButtonElement>;
+  ref?: React.Ref<HTMLButtonElement>;
 }) => {
   const elevation = useElevationContext();
 

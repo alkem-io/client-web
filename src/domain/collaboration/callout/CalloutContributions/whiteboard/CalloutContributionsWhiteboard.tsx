@@ -55,7 +55,7 @@ const CalloutContributionsWhiteboard = ({
   contributionsCount,
   canCreateContribution,
 }: CalloutContributionsWhiteboardProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();

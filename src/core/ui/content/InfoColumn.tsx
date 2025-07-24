@@ -11,7 +11,7 @@ const InfoColumn = ({
   children,
   ...props
 }: BoxProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   const availableColumns = useColumns();
   const columnsToUse = availableColumns === GRID_COLUMNS_MOBILE ? GRID_COLUMNS_MOBILE : INFO_COLUMNS;

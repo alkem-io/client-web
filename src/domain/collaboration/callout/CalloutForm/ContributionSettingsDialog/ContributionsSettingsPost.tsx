@@ -13,7 +13,7 @@ const ContributionsSettingsPost = ({
   ref,
   calloutRestrictions,
 }: ContributionTypeSettingsProps & {
-  ref: React.RefObject<ContributionTypeSettingsComponentRef>;
+  ref?: React.Ref<ContributionTypeSettingsComponentRef>;
 }) => {
   const { t } = useTranslation();
 

@@ -11,7 +11,7 @@ const TableRowLoading = ({
   ref,
   colSpan,
 }: TableRowLoadingProps & {
-  ref: React.RefObject<HTMLTableRowElement>;
+  ref?: React.Ref<HTMLTableRowElement>;
 }) => {
   return (
     <TableRow ref={ref}>

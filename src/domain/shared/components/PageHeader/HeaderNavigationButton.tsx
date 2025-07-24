@@ -11,7 +11,7 @@ const HeaderNavigationButton = ({
   disabled,
   onClick,
 }: HeaderNavigationButtonProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   return (
     <Tab

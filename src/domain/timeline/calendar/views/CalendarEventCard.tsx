@@ -32,7 +32,7 @@ const CalendarEventCard = ({
   highlighted,
   onClick,
 }: CalendarEventCardProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   const handleClick = useCallback(() => event && onClick(event), [onClick, event]);
   const { t } = useTranslation();

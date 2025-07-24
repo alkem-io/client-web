@@ -8,7 +8,7 @@ const ChatWidgetStyles = ({
   ref,
   ...props
 }: BoxProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => (
   <Box
     ref={ref}

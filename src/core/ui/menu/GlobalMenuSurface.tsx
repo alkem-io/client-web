@@ -7,7 +7,7 @@ const GlobalMenuSurface = ({
   ref,
   children,
 }: PropsWithChildren & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => (
   <Paper ref={ref} sx={{ width: 320, maxWidth: '100%' }} elevation={PLATFORM_NAVIGATION_MENU_ELEVATION}>
     {children}

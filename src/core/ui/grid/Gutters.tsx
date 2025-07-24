@@ -18,7 +18,7 @@ const Gutters = ({
   fullHeight = false,
   ...props
 }: GuttersProps & {
-  ref: React.RefObject<unknown>;
+  ref?: React.Ref<unknown>;
 }) => {
   return (
     <Box

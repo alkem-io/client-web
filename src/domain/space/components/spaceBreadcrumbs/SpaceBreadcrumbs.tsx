@@ -22,7 +22,7 @@ const SpaceBreadcrumbs = (({
   settings,
   ...props
 }: SpaceBreadcrumbsProps<Expandable> & {
-  ref: React.RefObject<Collapsible>;
+  ref?: React.Ref<Collapsible>;
 }) => {
   const { t } = useTranslation();
   const { pathname } = useLocation();

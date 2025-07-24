@@ -50,7 +50,7 @@ const PageContentBlockCollapsible = ({
   seamless = false,
   ...props
 }: PageContentBlockCollapsibleProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 

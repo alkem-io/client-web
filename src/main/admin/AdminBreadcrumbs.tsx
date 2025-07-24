@@ -11,7 +11,7 @@ const AdminBreadcrumbs = ({
   ...props
 }: Collapsible &
   BreadcrumbsProps<Expandable> & {
-    ref: React.RefObject<Collapsible>;
+    ref?: React.Ref<Collapsible>;
   }) => {
   const { t } = useTranslation();
 

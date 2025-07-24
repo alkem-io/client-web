@@ -42,7 +42,7 @@ const StandalonePlatformNavigationMenu = ({
   ref,
   onClose,
 }: StandalonePlatformNavigationMenuProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   const { t } = useTranslation();
 

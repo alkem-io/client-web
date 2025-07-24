@@ -78,7 +78,7 @@ const CalloutContributionsLink = ({
   onExpand,
   onCalloutUpdate,
 }: CalloutContributionsLinkProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   const { t } = useTranslation();
 

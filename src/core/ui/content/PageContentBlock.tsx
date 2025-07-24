@@ -21,7 +21,7 @@ const OutlinedPaper = <D extends React.ElementType = PaperTypeMap['defaultCompon
 const PageContentBlock = ({
   accent = false,
   ...props
-}: PageContentBlockProps & { ref?: React.RefObject<HTMLDivElement> }) => {
+}: PageContentBlockProps & { ref?: React.Ref<HTMLDivElement> }) => {
   return (
     <SwapColors swap={accent}>
       <BasePageContentBlock

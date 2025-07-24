@@ -12,7 +12,7 @@ const ContributionsSettingsLink = ({
   ref,
   calloutRestrictions,
 }: ContributionTypeSettingsProps & {
-  ref: React.RefObject<ContributionTypeSettingsComponentRef>;
+  ref?: React.Ref<ContributionTypeSettingsComponentRef>;
 }) => {
   const { t } = useTranslation();
   const [field, , meta] =

@@ -41,7 +41,7 @@ export const TagsInput = ({
   loading,
   ...rest
 }: TagsInputProps & {
-  ref: React.RefObject<unknown>;
+  ref?: React.Ref<unknown>;
 }) => {
   const handleChange = (e: ChangeEvent<{}>, newValue: (string | string[])[]) => {
     const changedValues = newValue.map(x => (Array.isArray(x) ? x : x.trim())).filter(x => x.length >= minLength);

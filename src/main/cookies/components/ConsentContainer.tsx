@@ -7,7 +7,7 @@ const CookieConsent = ({
   ref,
   children,
 }: PropsWithChildren & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
   return (
     <SwapColors>

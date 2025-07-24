@@ -49,7 +49,7 @@ const FormikWhiteboardPreview = ({
   dialogProps,
   ...containerProps
 }: FormikWhiteboardPreviewProps & {
-  ref: React.RefObject<FormikWhiteboardPreviewRef>;
+  ref?: React.Ref<FormikWhiteboardPreviewRef>;
 }) => {
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const filesManager = useWhiteboardFilesManager({ excalidrawAPI });

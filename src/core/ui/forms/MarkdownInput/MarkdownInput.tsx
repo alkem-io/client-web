@@ -72,7 +72,7 @@ export const MarkdownInput = memo(
     onBlur,
     temporaryLocation = false,
   }: MarkdownInputProps & {
-    ref: React.RefObject<MarkdownInputRefApi>;
+    ref?: React.Ref<MarkdownInputRefApi>;
   }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);

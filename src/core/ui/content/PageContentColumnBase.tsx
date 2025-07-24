@@ -19,9 +19,9 @@ const PageContentColumnBase = ({
   children,
   ...props
 }: PageContentColumnBaseProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => {
-  const combinedRef = useCombinedRefs(null, ref);
+  const combinedRef = useCombinedRefs<HTMLDivElement | null>(null, ref);
 
   return (
     <Box ref={combinedRef} display="flex" flexWrap="wrap" alignContent="start" gap={GUTTER_MUI} {...props}>

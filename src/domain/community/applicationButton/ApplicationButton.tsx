@@ -69,7 +69,7 @@ export const ApplicationButton = ({
   onUpdateInvitation,
   noAuthApplyButtonText,
 }: ApplicationButtonProps & {
-  ref: React.RefObject<HTMLButtonElement>;
+  ref?: React.Ref<HTMLButtonElement>;
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();

@@ -22,7 +22,7 @@ const NavigationTab = ({
   label,
   disabled,
 }: NagivationTabProps & {
-  ref: React.RefObject<HTMLAnchorElement>;
+  ref?: React.Ref<HTMLAnchorElement>;
 }) => {
   return (
     <StyledTab

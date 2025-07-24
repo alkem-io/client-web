@@ -9,7 +9,7 @@ const ContentColumn = ({
   children,
   ...props
 }: BoxProps & {
-  ref: React.RefObject<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }) => (
   <PageContentColumn columns={CONTENT_COLUMNS} {...props} ref={ref}>
     {children}
