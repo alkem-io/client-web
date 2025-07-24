@@ -28,7 +28,7 @@ import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { CharacterCountContextProvider } from '@/core/ui/forms/MarkdownInput/CharacterCountContext';
 import { gutters } from '@/core/ui/grid/utils';
 import { OutlinedInput } from '@mui/material';
-import CollaborativeMarkdownInput from '@/core/ui/forms/CollaborativeMarkdownInput/CollaborativeMarkdownInput';
+import CollaborativeMarkdownInputWorking from '@/core/ui/forms/CollaborativeMarkdownInput/CollaborativeMarkdownInput_working';
 
 export type SpaceDashboardSpaceDetails = {
   id: string | undefined;
@@ -146,7 +146,7 @@ const SpaceDashboardView = ({
         <ContentColumn>
           <CharacterCountContextProvider>
             <OutlinedInput
-              inputComponent={CollaborativeMarkdownInput}
+              inputComponent={CollaborativeMarkdownInputWorking}
               inputProps={{
                 controlsVisible: 'always',
                 collaborationUUID: 'example-uuid',

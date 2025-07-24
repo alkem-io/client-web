@@ -17,7 +17,7 @@ const CollaborativeMarkdownInput = forwardRef<MarkdownInputRefApi, Collaborative
     // and both of them, used with initValue, are re-initialized on every render.
     const [provider] = useState(() => {
       return new TiptapCollabProvider({
-        baseUrl: 'ws://localhost:1234',
+        baseUrl: 'ws://localhost:4004',
         name: collaborationUUID,
         document: new Y.Doc(),
       });

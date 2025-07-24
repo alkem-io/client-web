@@ -17,9 +17,11 @@ import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageC
 import Collaboration from '@tiptap/extension-collaboration';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
 import * as Y from 'yjs';
-import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor';
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import { Caption } from '@/core/ui/typography';
 import { EditorOptions } from '@tiptap/core';
+import useUserCursor from './useUserCursor';
+import './styles.scss';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -50,70 +52,13 @@ const proseMirrorStyles = {
   '& img': { maxWidth: '100%' },
 } as const;
 
-const colors = [
-  '#958DF1',
-  '#F98181',
-  '#FBBC88',
-  '#FAF594',
-  '#70CFF8',
-  '#94FADB',
-  '#B9F18D',
-  '#C3E2C2',
-  '#EAECCC',
-  '#AFC8AD',
-  '#EEC759',
-  '#9BB8CD',
-  '#FF90BC',
-  '#FFC0D9',
-  '#DC8686',
-  '#7ED7C1',
-  '#F3EEEA',
-  '#89B9AD',
-  '#D0BFFF',
-  '#FFF8C9',
-  '#CBFFA9',
-  '#9BABB8',
-  '#E3F4F4',
-];
-
-const names = [
-  'Lea Thompson',
-  'Cyndi Lauper',
-  'Tom Cruise',
-  'Madonna',
-  'Jerry Hall',
-  'Joan Collins',
-  'Winona Ryder',
-  'Christina Applegate',
-  'Alyssa Milano',
-  'Molly Ringwald',
-  'Ally Sheedy',
-  'Debbie Harry',
-  'Olivia Newton-John',
-  'Elton John',
-  'Michael J. Fox',
-  'Axl Rose',
-  'Emilio Estevez',
-  'Ralph Macchio',
-  'Rob Lowe',
-  'Jennifer Grey',
-  'Mickey Rourke',
-  'John Cusack',
-  'Matthew Broderick',
-  'Justine Bateman',
-  'Lisa Bonet',
-];
-
-const getRandomElement = list => list[Math.floor(Math.random() * list.length)];
-
-const getRandomColor = () => getRandomElement(colors);
-const getRandomName = () => getRandomElement(names);
-
 export const CollaborativeMarkdownInputWorking = memo(
   forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
     ({ controlsVisible = 'focused', hideImageOptions, onFocus, onBlur, temporaryLocation = false }, ref) => {
       const containerRef = useRef<HTMLDivElement>(null);
       const toolbarRef = useRef<HTMLDivElement>(null);
+
+      const { userName, cursorColor } = useUserCursor();
 
       const [status, setStatus] = useState('connecting');
 
@@ -214,7 +159,7 @@ export const CollaborativeMarkdownInputWorking = memo(
 
       useEffect(() => {
         providerRef.current = new TiptapCollabProvider({
-          baseUrl: 'ws://localhost:1234',
+          baseUrl: 'ws://localhost:4004',
           name: 'example-room-id', // pass the uuid of the document here
           document: ydoc,
         });
@@ -241,8 +186,8 @@ export const CollaborativeMarkdownInputWorking = memo(
             CollaborationCursor.extend().configure({
               provider: providerRef.current,
               user: {
-                name: getRandomName(),
-                color: getRandomColor(),
+                name: userName,
+                color: cursorColor,
               },
             })
           );
