@@ -16,10 +16,10 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { MenuList } from '@mui/material';
 import SpaceWelcomeBlock, { SpaceWelcomeBlockProps } from '../components/SpaceWelcomeBlock';
-import { InnovationFlowState } from '@/core/apollo/generated/graphql-schema';
+import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 
 interface SubspaceDrawerMenuProps {
-  innovationFlowStates?: InnovationFlowState[];
+  innovationFlowStates?: InnovationFlowStateModel[];
   selectedInnovationFlowState?: string;
   currentInnovationFlowState?: string;
   createButton?: React.ReactNode;
@@ -43,7 +43,7 @@ export const SubspaceDrawerMenu = ({
   if (!isSmallScreen) {
     return null;
   }
-  const showInnovationFlowStates = innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState;
+  const showInnovationFlowStates = innovationFlowStates && selectedInnovationFlowState;
   return (
     <>
       <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>

@@ -7,17 +7,12 @@ import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import { SpaceTabQueryModel } from './spaceTabQuery.model';
 import { useSpace } from '../../context/useSpace';
-
-type InnovationFlowState = {
-  displayName: string;
-  description: string;
-};
+import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 
 interface SpaceTabProvided {
   urlInfo: UrlResolverContextValue;
-  innovationFlowStates: InnovationFlowState[] | undefined;
-  innovationFlowCurrentState: InnovationFlowState | undefined;
-  flowStateForNewCallouts: InnovationFlowState | undefined;
+  innovationFlowStates: InnovationFlowStateModel[] | undefined;
+  flowStateForNewCallouts: InnovationFlowStateModel | undefined;
   about: SpaceAboutLightModel | undefined;
   classificationTagsets: ClassificationTagsetModel[];
   calloutsSetId: string | undefined;
@@ -66,11 +61,10 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     const canReadSpace = myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
     const innovationFlow = space?.collaboration.innovationFlow;
     const innovationFlowStates = innovationFlow?.states;
-    const innovationFlowCurrentState = innovationFlow?.currentState;
     const about: SpaceAboutLightModel | undefined = space?.about;
     const calloutsSetId = space?.collaboration.calloutsSet.id;
 
-    let flowState: InnovationFlowState | undefined = undefined;
+    let flowState: InnovationFlowStateModel | undefined = undefined;
     if (innovationFlowStates && innovationFlowStates?.length >= tabPosition) {
       flowState = innovationFlowStates[tabPosition];
     }
@@ -90,7 +84,6 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     return {
       canReadSpace,
       innovationFlowStates,
-      innovationFlowCurrentState,
       flowStateForNewCallouts: flowState,
       about,
       tabDescription,

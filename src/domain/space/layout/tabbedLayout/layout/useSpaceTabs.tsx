@@ -53,12 +53,15 @@ const useSpaceTabs = ({ spaceId, skip }: { spaceId: string | undefined; skip?: b
 
   const { tabs, defaultTabIndex } = useMemo(() => {
     const result: TabDefinition[] = [];
-    const innovationFlowTabs =
-      spaceTabsData?.lookup.space?.collaboration?.innovationFlow.states.map(state => ({
-        displayName: state.displayName,
-        description: state.description,
-      })) ?? [];
-    const currentStateName = spaceTabsData?.lookup.space?.collaboration?.innovationFlow.currentState.displayName;
+    const innovationFlowStates = spaceTabsData?.lookup.space?.collaboration?.innovationFlow.states ?? [];
+    const innovationFlowTabs = innovationFlowStates.map(state => ({
+      displayName: state.displayName,
+      description: state.description,
+    }));
+
+    const currentStateName = innovationFlowStates.find(
+      state => state.id === spaceTabsData?.lookup.space?.collaboration?.innovationFlow.currentState?.id
+    )?.displayName;
     let currentStateIndex = -1;
     if (currentStateName && innovationFlowTabs.length > 0) {
       currentStateIndex = innovationFlowTabs.findIndex(state => state.displayName === currentStateName);
@@ -96,7 +99,7 @@ const useSpaceTabs = ({ spaceId, skip }: { spaceId: string | undefined; skip?: b
         result.push({
           label: state.displayName,
           icon: <Tab />,
-          description: state.description,
+          description: state.description ?? '',
         });
       });
     }
