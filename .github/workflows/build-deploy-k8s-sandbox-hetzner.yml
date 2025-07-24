@@ -10,6 +10,14 @@ jobs:
       - name: 'Checkout github Action'
         uses: actions/checkout@v4.1.7
 
+      - name: Prepare versioning
+        id: versioning
+        run: |
+          VERSION=sandbox-${GITHUB_SHA::8}
+          BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "build_date=${BUILD_DATE}" >> $GITHUB_OUTPUT
+
 #      - name: 'Download and extract translations'
 #        uses: crowdin/github-action@v2.1.3
 #        with:
@@ -37,7 +45,11 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker build -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:latest
+          docker build -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:latest \
+            --build-arg ARG_BUILD_VERSION=${{ steps.prep.outputs.version }} \
+            --build-arg ARG_BUILD_DATE=${{ steps.prep.outputs.build_date }} \
+            --build-arg ARG_BUILD_REVISION=${{ github.sha }} \
+            --build-arg ARG_BUILD_ENVIRONMENT=sandbox
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
 
       - name: Install Kubectl

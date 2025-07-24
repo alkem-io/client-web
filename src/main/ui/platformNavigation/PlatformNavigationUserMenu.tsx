@@ -2,7 +2,7 @@ import { PropsWithChildren, ReactNode, useMemo, useState } from 'react';
 import { Box, Divider, MenuList, Typography } from '@mui/material';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
-import { buildLoginUrl, getAccountLink } from '@/main/routing/urlBuilders';
+import { buildLoginUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
 import PendingMembershipsDialog from '@/domain/community/pendingMembership/PendingMembershipsDialog';
 import {
   AssignmentIndOutlined,
@@ -138,7 +138,7 @@ const PlatformNavigationUserMenu = ({
             {userModel && (
               <NavigatableMenuItem
                 iconComponent={LocalOfferOutlinedIcon}
-                route={getAccountLink(userModel.profile.url)}
+                route={buildUserAccountUrl(userModel.profile.url)}
                 onClick={onClose}
               >
                 {t('pages.home.mainNavigation.myAccount')}
