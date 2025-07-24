@@ -1,12 +1,12 @@
 import { Paper, PaperProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
-// import { DroppableProvidedProps } from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
+import { DroppableProvidedProps } from '@hello-pangea/dnd';
 import BasePageContentBlock, { BasePageContentBlockProps } from './BasePageContentBlock';
 import { PaperTypeMap } from '@mui/material/Paper/Paper';
 import { Ref } from 'react';
 
-export interface PageContentBlockProps extends BasePageContentBlockProps, PaperProps {
+export interface PageContentBlockProps extends BasePageContentBlockProps, PaperProps, Partial<DroppableProvidedProps> {
   accent?: boolean;
 }
 
