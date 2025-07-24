@@ -1,0 +1,12 @@
+fragment InnovationFlowStates on InnovationFlow {
+  id
+  states {
+    id
+    displayName
+    description
+    sortOrder
+    settings {
+      allowNewCallouts
+    }
+  }
+}

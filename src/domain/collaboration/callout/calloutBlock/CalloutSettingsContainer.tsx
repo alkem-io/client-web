@@ -212,18 +212,7 @@ const CalloutSettingsContainer = ({
           </MenuItemWithIcon>
         )}
         {callout.editable && isCollection(callout) && (
-          <MenuItemWithIcon
-            key="sort"
-            iconComponent={SwapVerticalCircleOutlined}
-            onClick={handleSortDialogOpen}
-            /*
-          //!! wt was this?
-          disabled={
-            !(callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link)
-              ? !!callout.contributions?.[0]?.link
-              : !!callout.contributions?.length)
-          }*/
-          >
+          <MenuItemWithIcon key="sort" iconComponent={SwapVerticalCircleOutlined} onClick={handleSortDialogOpen}>
             {t('callout.sortContributions')}
           </MenuItemWithIcon>
         )}

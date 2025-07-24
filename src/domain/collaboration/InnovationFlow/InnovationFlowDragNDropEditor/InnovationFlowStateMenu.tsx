@@ -6,17 +6,17 @@ import { AddCircleOutline, DeleteOutlined, EditOutlined, ToggleOn } from '@mui/i
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
 
 type InnovationFlowStateMenuProps = {
-  state: string;
+  stateId: string;
   isCurrentState: boolean;
-  onUpdateCurrentState?: (state: string) => void;
-  onEdit: (state: string) => void;
-  onDelete: (state: string) => void;
-  onAddStateAfter: (stateBefore: string) => void;
+  onUpdateCurrentState?: (stateId: string) => void;
+  onEdit: (stateId: string) => void;
+  onDelete: (stateId: string) => void;
+  onAddStateAfter: (stateBeforeId: string) => void;
   disableStateNumberChange?: boolean;
 };
 
 export default function InnovationFlowStateMenu({
-  state,
+  stateId,
   isCurrentState,
   onUpdateCurrentState,
   onEdit,
@@ -29,8 +29,8 @@ export default function InnovationFlowStateMenu({
   return (
     <PageContentBlockContextualMenu>
       {({ closeMenu }) => {
-        const createMenuAction = (menuAction: (state: string) => void) => () => {
-          menuAction(state);
+        const createMenuAction = (menuAction: (stateId: string) => void) => () => {
+          menuAction(stateId);
           closeMenu();
         };
 

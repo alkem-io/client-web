@@ -16,9 +16,10 @@ import { useState } from 'react';
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
-import { InnovationFlowStateModel } from '../models/InnovationFlowState';
+import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import InnovationFlowStateForm from './InnovationFlowStateForm';
 import InnovationFlowStateMenu from './InnovationFlowStateMenu';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 const STATES_DROPPABLE_ID = '__states';
 
@@ -34,11 +35,11 @@ const StyledDragAndDropBlock = styled(Box)(({ theme }) => ({
 
 export interface InnovationFlowDragNDropEditorProps {
   onUnhandledDragEnd?: OnDragEndResponder;
-  children?: (state: InnovationFlowStateModel) => React.ReactNode;
+  children?: (state: Identifiable & InnovationFlowStateModel) => React.ReactNode;
   innovationFlow:
     | {
-        currentState: Pick<InnovationFlowStateModel, 'displayName'>;
-        states: InnovationFlowStateModel[];
+        currentState?: Identifiable;
+        states: (Identifiable & InnovationFlowStateModel)[];
         settings: {
           maximumNumberOfStates: number;
           minimumNumberOfStates: number;
@@ -47,14 +48,14 @@ export interface InnovationFlowDragNDropEditorProps {
     | undefined;
 
   croppedDescriptions?: boolean;
-  onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
-  onUpdateCurrentState?: (state: string) => void;
+  onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown>;
+  onUpdateCurrentState?: (stateId: string) => void;
   onCreateFlowState: (
     newState: InnovationFlowStateModel,
     options: { after: string; last: false } | { after?: never; last: true }
-  ) => Promise<unknown> | void;
-  onEditFlowState: (oldState: InnovationFlowStateModel, newState: InnovationFlowStateModel) => Promise<unknown> | void;
-  onDeleteFlowState: (state: string) => Promise<unknown> | void;
+  ) => Promise<unknown>;
+  onEditFlowState: (stateId: string, newState: InnovationFlowStateModel) => Promise<unknown>;
+  onDeleteFlowState: (stateId: string) => Promise<unknown>;
   /**
    * Prevents the user from changing the number of states, adding or removing
    */
@@ -91,14 +92,14 @@ const InnovationFlowDragNDropEditor = ({
 }: InnovationFlowDragNDropEditorProps) => {
   const { t } = useTranslation();
   const innovationFlowStates = innovationFlow?.states;
-  const currentState = innovationFlow?.currentState.displayName;
+  const currentStateId = innovationFlow?.currentState?.id;
 
   // Stores the previous flow state to create a new state after it. If undefined it will create the state at the end of the flow
   const [createFlowState, setCreateFlowState] = useState<
     { after: string; last: false } | { after?: never; last: true } | undefined
   >(undefined);
-  const [editFlowState, setEditFlowState] = useState<InnovationFlowStateModel | undefined>();
-  const [deleteFlowState, setDeleteFlowState] = useState<string | undefined>();
+  const [editFlowState, setEditFlowState] = useState<(Identifiable & InnovationFlowStateModel) | undefined>();
+  const [deleteFlowStateId, setDeleteFlowStateId] = useState<string | undefined>();
 
   const handleDragEnd: OnDragEndResponder = (result, provided) => {
     const { draggableId, destination } = result;
@@ -126,16 +127,16 @@ const InnovationFlowDragNDropEditor = ({
               <StyledDragAndDropBlock>
                 {innovationFlowStates?.map((state, index) => (
                   <Draggable
-                    key={state.displayName}
-                    draggableId={state.displayName}
+                    key={state.id}
+                    draggableId={state.id}
                     index={index}
                     isDragDisabled={disableStateNumberChange}
                   >
                     {parentProvider => {
-                      const isCurrentState = currentState === state.displayName;
+                      const isCurrentState = currentStateId === state.id;
                       return (
                         <PageContentBlock
-                          key={state.displayName}
+                          key={state.id}
                           columns={3}
                           ref={parentProvider.innerRef}
                           sx={{ borderColor: isCurrentState ? 'primary.main' : undefined }}
@@ -150,12 +151,12 @@ const InnovationFlowDragNDropEditor = ({
                             sx={{ userSelect: 'none' }}
                             actions={
                               <InnovationFlowStateMenu
-                                state={state.displayName}
+                                stateId={state.id}
                                 isCurrentState={isCurrentState}
                                 onUpdateCurrentState={onUpdateCurrentState}
                                 onAddStateAfter={stateBefore => setCreateFlowState({ after: stateBefore, last: false })}
                                 onEdit={() => setEditFlowState(state)}
-                                onDelete={() => setDeleteFlowState(state.displayName)}
+                                onDelete={() => setDeleteFlowStateId(state.id)}
                                 disableStateNumberChange={disableStateNumberChange}
                               />
                             }
@@ -220,7 +221,7 @@ const InnovationFlowDragNDropEditor = ({
               ?.filter(state => state.displayName !== editFlowState?.displayName)
               .map(state => state.displayName)}
             onSubmit={async newState => {
-              await onEditFlowState(editFlowState!, newState);
+              await onEditFlowState(editFlowState!.id, newState);
               setEditFlowState(undefined);
             }}
             onCancel={() => setEditFlowState(undefined)}
@@ -230,13 +231,13 @@ const InnovationFlowDragNDropEditor = ({
       <ConfirmationDialog
         actions={{
           onConfirm: () => {
-            onDeleteFlowState(deleteFlowState!);
-            setDeleteFlowState(undefined);
+            onDeleteFlowState(deleteFlowStateId!);
+            setDeleteFlowStateId(undefined);
           },
-          onCancel: () => setDeleteFlowState(undefined),
+          onCancel: () => setDeleteFlowStateId(undefined),
         }}
         options={{
-          show: Boolean(deleteFlowState),
+          show: Boolean(deleteFlowStateId),
         }}
         entities={{
           titleId: 'components.innovationFlowSettings.stateEditor.deleteDialog.title',
