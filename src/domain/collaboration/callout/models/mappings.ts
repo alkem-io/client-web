@@ -22,6 +22,12 @@ export const mapCalloutTemplateToCalloutForm = (
           preview?: VisualModel;
         };
       };
+      memo?: {
+        content: string;
+        profile: ProfileModel & {
+          preview?: VisualModel;
+        };
+      };
     };
     settings: CalloutSettingsModelFull;
     contributionDefaults: {
@@ -57,6 +63,15 @@ export const mapCalloutTemplateToCalloutForm = (
             previewImages: [], // TODO: Download the preview images if available
           }
         : undefined,
+      memo: calloutTemplate.framing.memo
+        ? {
+            profile: {
+              displayName: calloutTemplate.framing.memo.profile.displayName,
+            },
+            content: calloutTemplate.framing.memo.content,
+            previewImages: [], // TODO: Download the preview images if available
+          }
+        : undefined,
     };
     const templateContributionDefaults =
       mapContributionDefaultsModelToCalloutFormValues(calloutTemplate.contributionDefaults) ??
@@ -67,6 +82,10 @@ export const mapCalloutTemplateToCalloutForm = (
     if (calloutRestrictions?.disableWhiteboards && templateFraming.type === CalloutFramingType.Whiteboard) {
       templateFraming.type = CalloutFramingType.None;
       templateFraming.whiteboard = undefined;
+    }
+    if (calloutRestrictions?.disableMemos && templateFraming.type === CalloutFramingType.Memo) {
+      templateFraming.type = CalloutFramingType.None;
+      templateFraming.memo = undefined;
     }
     if (
       calloutRestrictions?.disableWhiteboards &&

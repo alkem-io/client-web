@@ -256,6 +256,7 @@
     "callouts": "Callouts",
     "collaborationTools": "Collaboration Tools",
     "createdBy": "Created by",
+    "memo": "Memo",
     "whiteboard": "Whiteboard",
     "whiteboards": "Whiteboards",
     "calendar": "Calendar",
@@ -733,6 +734,10 @@
           "title": "Whiteboard",
           "tooltip": "Add a whiteboard to this post",
           "onlyRealTimeEditorAvailable": "To edit this whiteboard now, please use the whiteboard editor closing this dialog and opening the whiteboard directly clicking on the preview."
+        },
+        "memo": {
+          "title": "Memo",
+          "tooltip": "Add a collaborative document to this post"
         }
       },
       "contributionSettings": {
@@ -839,6 +844,9 @@
     },
     "singleWhiteboard": {
       "clickToSee": "Click to see the full whiteboard"
+    },
+    "memo": {
+      "clickToSee": "Click to see the full Memo"
     },
     "calloutsList": {
       "title": "Index",

@@ -18,6 +18,13 @@ export interface CalloutModelLight {
         };
       };
     };
+    memo?: {
+      profile: {
+        preview?: {
+          uri: string;
+        };
+      };
+    };
   };
   sortOrder: number;
   activity?: number;

@@ -9,6 +9,7 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { TypedCalloutDetails } from '../models/TypedCallout';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
+import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import CalloutCommentsContainer from './CalloutCommentsContainer';
 import CalloutViewLayout from './CalloutViewLayout';
@@ -58,6 +59,7 @@ const CalloutView = ({
         >
           {/* Whiteboard framing */}
           {callout.framing.type === CalloutFramingType.Whiteboard && <CalloutFramingWhiteboard callout={callout} />}
+          {callout.framing.type === CalloutFramingType.Memo && <CalloutFramingMemo callout={callout} />}
           {/* Collaborate with links */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
             <CalloutContributionsContainer

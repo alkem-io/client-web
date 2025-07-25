@@ -83,6 +83,9 @@ fragment CalloutDetails on Callout {
     whiteboard {
       ...WhiteboardDetails
     }
+    memo {
+      ...MemoDetails
+    }
   }
   contributionDefaults {
     id

@@ -55,6 +55,15 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
                 content: template.callout.framing.whiteboard.content ?? EmptyWhiteboardString,
               }
             : undefined,
+          memo: template?.callout?.framing?.memo
+            ? {
+                profile: {
+                  displayName: template.callout.framing.memo.profile.displayName,
+                },
+                previewImages: [], // This is not going to work for now :(
+                content: template.callout.framing.memo.content ?? '',
+              }
+            : undefined,
         },
         contributionDefaults: {
           defaultDisplayName: template?.callout?.contributionDefaults?.defaultDisplayName ?? '',

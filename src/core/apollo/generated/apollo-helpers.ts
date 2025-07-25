@@ -749,6 +749,7 @@ export type CalloutFramingKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'memo'
   | 'profile'
   | 'type'
   | 'updatedDate'
@@ -759,6 +760,7 @@ export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1153,6 +1155,7 @@ export type CreateCalloutDataFieldPolicy = {
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutFramingDataKeySpecifier = (
+  | 'memo'
   | 'profile'
   | 'tags'
   | 'type'
@@ -1160,6 +1163,7 @@ export type CreateCalloutFramingDataKeySpecifier = (
   | CreateCalloutFramingDataKeySpecifier
 )[];
 export type CreateCalloutFramingDataFieldPolicy = {
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1263,6 +1267,12 @@ export type CreateLocationDataFieldPolicy = {
   country?: FieldPolicy<any> | FieldReadFunction<any>;
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateMemoDataKeySpecifier = ('content' | 'nameID' | 'profile' | CreateMemoDataKeySpecifier)[];
+export type CreateMemoDataFieldPolicy = {
+  content?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreatePostDataKeySpecifier = ('tags' | CreatePostDataKeySpecifier)[];
 export type CreatePostDataFieldPolicy = {
@@ -2078,6 +2088,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'invitation'
   | 'knowledgeBase'
   | 'license'
+  | 'memo'
   | 'myPrivileges'
   | 'organization'
   | 'platformInvitation'
@@ -2117,6 +2128,7 @@ export type LookupQueryResultsFieldPolicy = {
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   knowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2155,6 +2167,31 @@ export type MeQueryResultsFieldPolicy = {
   spaceMembershipsFlat?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsHierarchical?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MemoKeySpecifier = (
+  | 'authorization'
+  | 'content'
+  | 'contentUpdatePolicy'
+  | 'createdBy'
+  | 'createdDate'
+  | 'id'
+  | 'isMultiUser'
+  | 'nameID'
+  | 'profile'
+  | 'updatedDate'
+  | MemoKeySpecifier
+)[];
+export type MemoFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  content?: FieldPolicy<any> | FieldReadFunction<any>;
+  contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageKeySpecifier = (
   | 'id'
@@ -2301,6 +2338,7 @@ export type MutationKeySpecifier = (
   | 'deleteInvitation'
   | 'deleteLicensePlan'
   | 'deleteLink'
+  | 'deleteMemo'
   | 'deleteOrganization'
   | 'deletePlatformInvitation'
   | 'deletePost'
@@ -2375,6 +2413,7 @@ export type MutationKeySpecifier = (
   | 'updateInnovationPack'
   | 'updateLicensePlan'
   | 'updateLink'
+  | 'updateMemo'
   | 'updateNotificationState'
   | 'updateOrganization'
   | 'updateOrganizationPlatformSettings'
@@ -2478,6 +2517,7 @@ export type MutationFieldPolicy = {
   deleteInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteLink?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteMemo?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePlatformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePost?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2552,6 +2592,7 @@ export type MutationFieldPolicy = {
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLink?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateMemo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateNotificationState?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganizationPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4732,6 +4773,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CreateLocationDataKeySpecifier | (() => undefined | CreateLocationDataKeySpecifier);
     fields?: CreateLocationDataFieldPolicy;
   };
+  CreateMemoData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateMemoDataKeySpecifier | (() => undefined | CreateMemoDataKeySpecifier);
+    fields?: CreateMemoDataFieldPolicy;
+  };
   CreatePostData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreatePostDataKeySpecifier | (() => undefined | CreatePostDataKeySpecifier);
     fields?: CreatePostDataFieldPolicy;
@@ -4959,6 +5004,10 @@ export type StrictTypedTypePolicies = {
   MeQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);
     fields?: MeQueryResultsFieldPolicy;
+  };
+  Memo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MemoKeySpecifier | (() => undefined | MemoKeySpecifier);
+    fields?: MemoFieldPolicy;
   };
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);

@@ -734,6 +734,53 @@ export const WhiteboardDetailsFragmentDoc = gql`
   ${WhiteboardProfileFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
+export const MemoProfileFragmentDoc = gql`
+  fragment MemoProfile on Profile {
+    id
+    displayName
+    preview: visual(type: BANNER_WIDE) {
+      ...VisualModelFull
+    }
+    storageBucket {
+      id
+    }
+    url
+  }
+  ${VisualModelFullFragmentDoc}
+`;
+export const MemoDetailsFragmentDoc = gql`
+  fragment MemoDetails on Memo {
+    id
+    nameID
+    createdDate
+    profile {
+      ...MemoProfile
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+    contentUpdatePolicy
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+        url
+        location {
+          id
+          country
+          city
+        }
+        avatar: visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
+    }
+  }
+  ${MemoProfileFragmentDoc}
+  ${VisualModelFragmentDoc}
+`;
 export const LinkDetailsWithAuthorizationFragmentDoc = gql`
   fragment LinkDetailsWithAuthorization on Link {
     id
@@ -866,6 +913,9 @@ export const CalloutDetailsFragmentDoc = gql`
       whiteboard {
         ...WhiteboardDetails
       }
+      memo {
+        ...MemoDetails
+      }
     }
     contributionDefaults {
       id
@@ -896,6 +946,7 @@ export const CalloutDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
+  ${MemoDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
@@ -7084,6 +7135,19 @@ export const CalloutContentDocument = gql`
             }
             content
           }
+          memo {
+            id
+            profile {
+              id
+              displayName
+              preview: visual(type: BANNER) {
+                id
+                name
+                uri
+              }
+            }
+            content
+          }
         }
         contributionDefaults {
           id
@@ -7651,6 +7715,73 @@ export type CalloutDetailsQueryResult = Apollo.QueryResult<
 >;
 export function refetchCalloutDetailsQuery(variables: SchemaTypes.CalloutDetailsQueryVariables) {
   return { query: CalloutDetailsDocument, variables: variables };
+}
+export const MemoDetailsDocument = gql`
+  query memoDetails($id: UUID!) {
+    lookup {
+      memo(ID: $id) {
+        ...MemoDetails
+      }
+    }
+  }
+  ${MemoDetailsFragmentDoc}
+`;
+
+/**
+ * __useMemoDetailsQuery__
+ *
+ * To run a query within a React component, call `useMemoDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMemoDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMemoDetailsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMemoDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.MemoDetailsQuery, SchemaTypes.MemoDetailsQueryVariables> &
+    ({ variables: SchemaTypes.MemoDetailsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MemoDetailsQuery, SchemaTypes.MemoDetailsQueryVariables>(
+    MemoDetailsDocument,
+    options
+  );
+}
+export function useMemoDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MemoDetailsQuery, SchemaTypes.MemoDetailsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MemoDetailsQuery, SchemaTypes.MemoDetailsQueryVariables>(
+    MemoDetailsDocument,
+    options
+  );
+}
+export function useMemoDetailsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.MemoDetailsQuery, SchemaTypes.MemoDetailsQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.MemoDetailsQuery, SchemaTypes.MemoDetailsQueryVariables>(
+    MemoDetailsDocument,
+    options
+  );
+}
+export type MemoDetailsQueryHookResult = ReturnType<typeof useMemoDetailsQuery>;
+export type MemoDetailsLazyQueryHookResult = ReturnType<typeof useMemoDetailsLazyQuery>;
+export type MemoDetailsSuspenseQueryHookResult = ReturnType<typeof useMemoDetailsSuspenseQuery>;
+export type MemoDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.MemoDetailsQuery,
+  SchemaTypes.MemoDetailsQueryVariables
+>;
+export function refetchMemoDetailsQuery(variables: SchemaTypes.MemoDetailsQueryVariables) {
+  return { query: MemoDetailsDocument, variables: variables };
 }
 export const CalloutSettingsDocument = gql`
   query CalloutSettings($calloutId: UUID!) {

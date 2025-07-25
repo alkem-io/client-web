@@ -32,6 +32,17 @@ export interface CalloutTemplate extends TemplateBase {
         };
         content?: string;
       };
+      memo?: {
+        profile: {
+          displayName: string;
+          description?: string;
+          preview?: {
+            name: VisualType.Banner;
+            uri: string;
+          };
+        };
+        content?: string;
+      };
     };
     contributionDefaults?: {
       defaultDisplayName?: string;

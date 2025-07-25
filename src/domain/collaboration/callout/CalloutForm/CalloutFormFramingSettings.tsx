@@ -16,6 +16,8 @@ import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { Tooltip } from '@mui/material';
 import EditButton from '@/core/ui/actions/EditButton';
 import { useMemo } from 'react';
+import { MemoIcon } from '../../memo/icon/MemoIcon';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -29,18 +31,44 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
   const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
 
   const handleFramingTypeChange = (newType: CalloutFramingType) => {
-    const newFraming =
-      newType === CalloutFramingType.Whiteboard
-        ? {
-            ...framing,
-            type: newType,
-            whiteboard: {
-              content: EmptyWhiteboardString,
-              profile: { displayName: t('common.whiteboard') },
-              previewImages: [],
-            },
-          }
-        : { ...framing, type: newType, whiteboard: undefined };
+    let newFraming: CalloutFormSubmittedValues['framing'] | undefined;
+
+    switch (newType) {
+      case CalloutFramingType.Whiteboard:
+        newFraming = {
+          ...framing,
+          type: newType,
+          whiteboard: {
+            content: EmptyWhiteboardString,
+            profile: { displayName: t('common.whiteboard') },
+            previewImages: [],
+          },
+          memo: undefined,
+        };
+        break;
+      case CalloutFramingType.Memo:
+        newFraming = {
+          ...framing,
+          type: newType,
+          whiteboard: undefined,
+          memo: {
+            content: '',
+            profile: { displayName: t('common.memo') },
+            previewImages: [],
+          },
+        };
+        break;
+      case CalloutFramingType.None:
+      default:
+        newFraming = {
+          ...framing,
+          type: newType,
+          whiteboard: undefined,
+          memo: undefined,
+        };
+        break;
+    }
+
     setFieldValue('framing', newFraming);
   };
 
@@ -61,6 +89,13 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           label: t('callout.create.framingSettings.whiteboard.title'),
           tooltip: t('callout.create.framingSettings.whiteboard.tooltip'),
           disabled: calloutRestrictions?.disableWhiteboards,
+        },
+        {
+          icon: MemoIcon,
+          value: CalloutFramingType.Memo,
+          label: t('callout.create.framingSettings.memo.title'),
+          tooltip: t('callout.create.framingSettings.memo.tooltip'),
+          disabled: calloutRestrictions?.disableMemos,
         },
       ]}
       onChange={handleFramingTypeChange}
@@ -102,6 +137,16 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
             onDeleteContent={() => handleFramingTypeChange(CalloutFramingType.None)}
             maxHeight={gutters(12)}
             dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
+          />
+        </PageContentBlock>
+      )}
+
+      {framing.memo && framing.type === CalloutFramingType.Memo && (
+        <PageContentBlock disablePadding>
+          <FormikMarkdownField
+            title="Initial content"
+            name="framing.memo.content"
+            /* previewImagesName="framing.memo.previewImages" */
           />
         </PageContentBlock>
       )}

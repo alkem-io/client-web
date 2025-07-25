@@ -67,6 +67,13 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           content: calloutData.framing.whiteboard?.content ?? '',
           previewImages: [],
         },
+        memo: {
+          ...calloutData.framing.memo,
+          id: undefined,
+          profile: calloutData.framing.whiteboard?.profile ?? { displayName: '' },
+          content: calloutData.framing.whiteboard?.content ?? '',
+          previewImages: [],
+        },
       },
       settings: mapCalloutSettingsModelToCalloutSettingsFormValues(calloutData.settings),
       contributionDefaults: {

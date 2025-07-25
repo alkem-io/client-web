@@ -29,6 +29,7 @@ generates:
         Markdown: string
         MessageID: string
         LifecycleDefinition: string
+        MemoContent: string
         WhiteboardContent: string
         SearchCursor: string
       strictScalars: true
