@@ -46,16 +46,7 @@ query SpaceAdminDefaultSpaceTemplatesDetails($spaceId: UUID!) {
                   }
                 }
                 innovationFlow {
-                  id
-                  profile {
-                    id
-                    displayName
-                    description
-                  }
-                  states {
-                    displayName
-                    description
-                  }
+                  ...InnovationFlowDetails
                 }
               }
             }

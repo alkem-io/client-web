@@ -1,5 +1,5 @@
 import { ComponentType, ReactNode } from 'react';
-import { InnovationFlowStateModel } from '../models/InnovationFlowState';
+import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import InnovationFlowChips from '../InnovationFlowVisualizers/InnovationFlowChips';
 import { InnovationFlowVisualizerProps } from '../InnovationFlowVisualizers/InnovationFlowVisualizer';
 

@@ -22,7 +22,7 @@ import { InfoOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { DashboardNavigationItem } from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import SpaceWelcomeDialog from '@/domain/space/components/SpaceWelcomeDialog';
-import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowState';
+import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { CharacterCountContextProvider } from '@/core/ui/forms/MarkdownInput/CharacterCountContext';

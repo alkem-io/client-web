@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
-import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { useMemo } from 'react';
+import { buildUserAccountUrl } from '@/main/routing/urlBuilders';
 
 export const useCreateSpaceLink = () => {
   const { t } = useTranslation();
-  const { accountPrivileges, loading, accountEntitlements } = useCurrentUserContext();
+  const { userModel, accountPrivileges, loading, accountEntitlements } = useCurrentUserContext();
 
   const STATIC_PAGE_LINK = t('pages.home.sections.startingSpace.url');
 
@@ -22,7 +22,7 @@ export const useCreateSpaceLink = () => {
     ].some(entitlement => accountEntitlements.includes(entitlement));
 
     if (accountPrivileges.includes(AuthorizationPrivilege.CreateSpace) && isEntitledToCreateSpace) {
-      return `/${TopLevelRoutePath.CreateSpace}`;
+      return buildUserAccountUrl(userModel?.profile.url);
     }
 
     return STATIC_PAGE_LINK;
