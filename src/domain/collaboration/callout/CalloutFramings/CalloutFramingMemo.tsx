@@ -9,10 +9,10 @@ interface CalloutFramingMemoProps {
 }
 
 const CalloutFramingMemo = ({ callout, onCollapse }: CalloutFramingMemoProps) => {
-  const [isMemoDialogOpen, setIsMemoDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const handleCloseMemoDialog = () => {
     onCollapse?.();
-    setIsMemoDialogOpen(false);
+    setDialogOpen(false);
   };
 
   if (!callout.framing.memo) {
@@ -24,11 +24,14 @@ const CalloutFramingMemo = ({ callout, onCollapse }: CalloutFramingMemoProps) =>
       <MemoPreview
         memo={callout.framing.memo}
         displayName={callout.framing.profile.displayName}
-        onClick={() => setIsMemoDialogOpen(true)}
+        onClick={() => setDialogOpen(true)}
       />
-      {isMemoDialogOpen && (
-        <MemoDialog memoId={callout.framing.memo.id} onClose={handleCloseMemoDialog} preventMemoDeletion />
-      )}
+      <MemoDialog
+        open={dialogOpen}
+        memoId={callout.framing.memo.id}
+        onClose={handleCloseMemoDialog}
+        preventMemoDeletion
+      />
     </>
   );
 };

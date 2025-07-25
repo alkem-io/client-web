@@ -19,7 +19,7 @@ const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: Memo
   const { memo, loading, onDeleteMemo } = useMemoManager({ id: memoId });
 
   return (
-    <DialogWithGrid open={open} onClose={onClose}>
+    <DialogWithGrid open={open} onClose={onClose} fullWidth fullHeight>
       <DialogHeader onClose={onClose} />
       <DialogContent>
         {loading && <Loading />}
@@ -37,6 +37,7 @@ const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: Memo
                   padding: gutters(0.5),
                 },
               }}
+              fullWidth
             />
           </CharacterCountContextProvider>
         )}
