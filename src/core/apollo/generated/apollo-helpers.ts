@@ -1735,7 +1735,7 @@ export type InvitationKeySpecifier = (
   | 'contributorType'
   | 'createdBy'
   | 'createdDate'
-  | 'extraRole'
+  | 'extraRoles'
   | 'id'
   | 'invitedToParent'
   | 'isFinalized'
@@ -1752,7 +1752,7 @@ export type InvitationFieldPolicy = {
   contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  extraRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  extraRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   isFinalized?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2797,7 +2797,7 @@ export type PlatformInvitationKeySpecifier = (
   | 'lastName'
   | 'platformRole'
   | 'profileCreated'
-  | 'roleSetExtraRole'
+  | 'roleSetExtraRoles'
   | 'roleSetInvitedToParent'
   | 'updatedDate'
   | 'welcomeMessage'
@@ -2813,7 +2813,7 @@ export type PlatformInvitationFieldPolicy = {
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   platformRole?: FieldPolicy<any> | FieldReadFunction<any>;
   profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  roleSetExtraRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSetExtraRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSetInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;

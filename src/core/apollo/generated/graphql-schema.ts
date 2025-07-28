@@ -2949,8 +2949,8 @@ export type Invitation = {
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** An additional role to assign to the Contributor, in addition to the entry Role. */
-  extraRole?: Maybe<RoleName>;
+  /** Additional roles to assign to the Contributor, in addition to the entry Role. */
+  extraRoles?: Maybe<Array<RoleName>>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Whether to also add the invited contributor to the parent community. */
@@ -2973,8 +2973,8 @@ export type InvitationEventInput = {
 };
 
 export type InviteForEntryRoleOnRoleSetInput = {
-  /** An additional role to assign in addition to the entry Role. */
-  extraRole?: InputMaybe<RoleName>;
+  /** Additional roles to assign in addition to the entry Role. */
+  extraRoles: Array<RoleName>;
   /** The identifiers for the contributors being invited. */
   invitedContributorIDs: Array<Scalars['UUID']['input']>;
   invitedUserEmails: Array<Scalars['String']['input']>;
@@ -5168,7 +5168,7 @@ export type PlatformInvitation = {
   /** Whether a new user profile has been created. */
   profileCreated: Scalars['Boolean']['output'];
   /** An additional role to assign to the Contributor, in addition to the entry Role. */
-  roleSetExtraRole?: Maybe<RoleName>;
+  roleSetExtraRoles?: Maybe<Array<RoleName>>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
   /** The date at which the entity was last updated. */
@@ -8479,7 +8479,7 @@ export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
   invitedContributorIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
   invitedUserEmails: Array<Scalars['String']['input']> | Scalars['String']['input'];
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
-  extraRole?: InputMaybe<RoleName>;
+  extraRoles: Array<RoleName> | RoleName;
 }>;
 
 export type InviteForEntryRoleOnRoleSetMutation = {
