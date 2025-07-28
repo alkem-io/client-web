@@ -5,10 +5,11 @@ import Gutters from '@/core/ui/grid/Gutters';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption } from '@/core/ui/typography';
 import { ArrowRight } from '@mui/icons-material';
-import { Button, Divider, styled, Tooltip } from '@mui/material';
+import { Button, Divider, styled, Tooltip, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface InnovationFlowChipsProps extends InnovationFlowVisualizerProps {}
 
@@ -106,7 +107,12 @@ const InnovationFlowChips = ({
           </Gutters>
         )}
       </Gutters>
-      {selectedStateDescription && <FlowStateDescription>{selectedStateDescription}</FlowStateDescription>}
+      {selectedStateDescription ? (
+        <FlowStateDescription>{selectedStateDescription}</FlowStateDescription>
+      ) : (
+        // fixes the offset when no description is present
+        <Box sx={{ marginBottom: gutters(0.7) }} />
+      )}
     </>
   );
 };
