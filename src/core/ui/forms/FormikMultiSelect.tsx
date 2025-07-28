@@ -40,6 +40,10 @@ export const FormikMultiSelect = ({
       return helpText;
     }
 
+    if (typeof meta.error === 'string' && meta.error.indexOf('must have at least') !== -1) {
+      return tErr('forms.validations.required');
+    }
+
     return tErr(meta.error as TranslationKey, { field: name });
   }, [isError, meta.error, helpText, name, tErr]);
 
