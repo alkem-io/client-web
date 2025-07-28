@@ -6,14 +6,13 @@ mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
   }
 }
 
-mutation InviteForEntryRoleOnRoleSet($roleSetId: UUID!, $invitedContributorIds: [UUID!]!, $invitedUserEmails: [String!]!, $welcomeMessage: String, $extraRole: RoleName) {
+mutation InviteForEntryRoleOnRoleSet($roleSetId: UUID!, $invitedContributorIds: [UUID!]!, $invitedUserEmails: [String!]!, $welcomeMessage: String, $extraRoles: [RoleName!]!) {
   inviteForEntryRoleOnRoleSet(invitationData:  {
     invitedContributorIDs: $invitedContributorIds
     invitedUserEmails: $invitedUserEmails
     roleSetID: $roleSetId
     welcomeMessage: $welcomeMessage
-    extraRole: $extraRole
-
+    extraRoles: $extraRoles
   }) {
     type
     invitation {

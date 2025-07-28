@@ -164,13 +164,17 @@ const useRoleSetApplicationsAndInvitations = ({
   }) => {
     const role = extraRole === RoleName.Member ? undefined : extraRole;
 
+    let extraRoles: RoleName[] = [];
+    if (role) {
+      extraRoles = [role];
+    }
     const result = await inviteForEntryRoleOnRoleSet({
       variables: {
         roleSetId,
         invitedContributorIds,
         invitedUserEmails,
         welcomeMessage,
-        extraRole: role,
+        extraRoles,
       },
       onCompleted: () => refetch(),
     });
