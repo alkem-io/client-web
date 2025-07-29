@@ -857,7 +857,8 @@
     "insertEmoji": "Insert Emoji",
     "addReaction": "Add reaction",
     "addMention": "Mention someone",
-    "formattingHelp": "Formatting help"
+    "formattingHelp": "Formatting help",
+    "missingAuthor": "Alkemio (virtual) contributor"
   },
   "send-message-dialog": {
     "direct-message-title": "Send a message",
