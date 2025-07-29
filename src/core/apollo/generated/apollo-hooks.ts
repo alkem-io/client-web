@@ -2628,6 +2628,7 @@ export const CollaborationTimelineInfoFragmentDoc = gql`
         }
         events {
           ...CalendarEventInfo
+          type
         }
       }
     }

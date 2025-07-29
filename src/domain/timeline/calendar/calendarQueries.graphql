@@ -21,6 +21,7 @@ fragment CollaborationTimelineInfo on Collaboration {
       }
       events {
         ...CalendarEventInfo
+        type
       }
     }
   }
