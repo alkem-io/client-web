@@ -231,8 +231,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           profileData: {
             displayName: values.name,
             tagline: values.tagline,
-            description:
-              values.description ?? t('createVirtualContributorWizard.createdVirtualContributor.description'),
+            description: values.description,
           },
           aiPersona: {
             aiPersonaService: {
@@ -247,7 +246,6 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
             },
             profile: {
               displayName: values.name,
-              description: values.description,
             },
           },
         },
