@@ -34,11 +34,12 @@ const CommentReactions = ({
   const reactionsWithCount = useMemo<ReactionViewReaction[]>(() => {
     const sortedReactions = sortBy(reactions, r => r.emoji);
 
+    // if the reaction sender is missing (e.g., due to a deleted user), we replace it with a placeholder from translation
     return Object.entries(groupBy(sortedReactions, r => r.emoji)).map(([emoji, reactions]) => {
       return {
         emoji,
         count: reactions.length,
-        senders: compact(reactions.map(r => r.sender)),
+        senders: compact(reactions.map(r => r.sender || { profile: { displayName: t('messaging.missingAuthor') } })),
         ownReactionId: userId && reactions.find(reaction => reaction.sender?.id === userId)?.id,
       };
     });
