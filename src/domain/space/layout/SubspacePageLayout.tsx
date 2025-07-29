@@ -142,7 +142,7 @@ export const SubspacePageLayout = () => {
                 position: 'sticky',
                 top: 0,
                 marginTop: gutters(-1),
-                marginBottom: gutters(-1),
+                marginBottom: gutters(-0.7),
                 paddingTop: gutters(1),
                 background: theme.palette.background.default,
                 width: '100%',
