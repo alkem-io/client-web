@@ -17,6 +17,7 @@ export type FormikMultiSelectProps = TextFieldProps & {
   disablePortal?: boolean;
   disabled?: boolean;
   onChange?: (values: FormikSelectValue[]) => void;
+  fixedOptions?: FormikSelectValue[];
 };
 
 export const FormikMultiSelect = ({
@@ -27,6 +28,7 @@ export const FormikMultiSelect = ({
   disablePortal = true,
   disabled,
   onChange,
+  fixedOptions = [],
   ...textFieldProps
 }: FormikMultiSelectProps) => {
   const tErr = useValidationMessageTranslation();
@@ -48,13 +50,21 @@ export const FormikMultiSelect = ({
   }, [isError, meta.error, helpText, name, tErr]);
 
   const selectedValues = useMemo(() => {
-    return values.filter(option => field.value?.includes(option.id)) ?? [];
-  }, [values, field.value]);
+    const fieldSelectedValues = values.filter(option => field.value?.includes(option.id)) ?? [];
+    // Ensure fixed options are always included in selected values
+    const allFixedOptions = fixedOptions.filter(
+      option => !fieldSelectedValues.some(selected => selected.id === option.id)
+    );
+    return [...fieldSelectedValues, ...allFixedOptions];
+  }, [values, field.value, fixedOptions]);
 
   const handleChange = (event: SyntheticEvent, newValues: FormikSelectValue[]) => {
-    const selectedIds = newValues.map(value => value.id);
+    // Filter out fixed options from the change since they should always be present
+    const removableValues = newValues.filter(value => !fixedOptions.some(fixed => fixed.id === value.id));
+    const allValues = [...fixedOptions, ...removableValues];
+    const selectedIds = allValues.map(value => value.id);
     helpers.setValue(selectedIds);
-    onChange?.(newValues);
+    onChange?.(allValues);
   };
 
   return (
@@ -71,10 +81,21 @@ export const FormikMultiSelect = ({
       getOptionLabel={option => option?.name}
       sx={sx}
       disabled={disabled}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
       renderTags={(value, getTagProps) =>
-        value.map((option, index) => (
-          <Chip variant="outlined" label={option.name} {...getTagProps({ index })} key={option.id} />
-        ))
+        value.map((option, index) => {
+          const isFixed = fixedOptions.some(fixed => fixed.id === option.id);
+
+          return (
+            <Chip
+              variant="outlined"
+              label={option.name}
+              {...getTagProps({ index })}
+              disabled={isFixed}
+              onDelete={isFixed ? undefined : getTagProps({ index }).onDelete}
+            />
+          );
+        })
       }
       renderInput={params => (
         <TextField
