@@ -39,7 +39,9 @@ const CommentReactions = ({
       return {
         emoji,
         count: reactions.length,
-        senders: compact(reactions.map(r => r.sender || { profile: { displayName: t('messaging.missingAuthor') } })),
+        senders: compact(
+          reactions.map(r => r.sender || { id: 'deleted-user', profile: { displayName: t('messaging.missingAuthor') } })
+        ),
         ownReactionId: userId && reactions.find(reaction => reaction.sender?.id === userId)?.id,
       };
     });
