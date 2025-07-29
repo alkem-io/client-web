@@ -82,7 +82,7 @@ export const MessageView = ({
         <Paper sx={{ backgroundColor: root ? undefined : 'background.default', padding: gutters(0.5) }} elevation={0}>
           {!message.deleted && (
             <Box display="flex" height={gutters()} justifyContent="space-between" alignItems="center">
-              <Caption>{author?.displayName}</Caption>
+              <Caption>{author?.displayName || t('messaging.missingAuthor')}</Caption>
               {author?.type === ProfileType.VirtualContributor && <VirtualContributorLabel />}
               <Box display="flex" height={gutters()} justifyContent="end" alignItems="center">
                 {root && canUpdate && onUpdate && (
