@@ -26894,8 +26894,8 @@ export type SpaceCalendarEventsQuery = {
                   | undefined;
                 events: Array<{
                   __typename?: 'CalendarEvent';
-                  type: CalendarEventType;
                   id: string;
+                  type: CalendarEventType;
                   startDate?: Date | undefined;
                   durationDays?: number | undefined;
                   durationMinutes: number;
@@ -26998,8 +26998,8 @@ export type CollaborationTimelineInfoFragment = {
         | undefined;
       events: Array<{
         __typename?: 'CalendarEvent';
-        type: CalendarEventType;
         id: string;
+        type: CalendarEventType;
         startDate?: Date | undefined;
         durationDays?: number | undefined;
         durationMinutes: number;
@@ -27098,6 +27098,7 @@ export type DashboardTimelineAuthorizationFragment = {
 export type CalendarEventInfoFragment = {
   __typename?: 'CalendarEvent';
   id: string;
+  type: CalendarEventType;
   startDate?: Date | undefined;
   durationDays?: number | undefined;
   durationMinutes: number;
@@ -27173,9 +27174,9 @@ export type CalendarEventDetailsQuery = {
     calendarEvent?:
       | {
           __typename?: 'CalendarEvent';
-          type: CalendarEventType;
           createdDate: Date;
           id: string;
+          type: CalendarEventType;
           startDate?: Date | undefined;
           durationDays?: number | undefined;
           durationMinutes: number;
@@ -27437,9 +27438,9 @@ export type CalendarEventDetailsQuery = {
 
 export type CalendarEventDetailsFragment = {
   __typename?: 'CalendarEvent';
-  type: CalendarEventType;
   createdDate: Date;
   id: string;
+  type: CalendarEventType;
   startDate?: Date | undefined;
   durationDays?: number | undefined;
   durationMinutes: number;
@@ -27667,9 +27668,9 @@ export type CreateCalendarEventMutation = {
   __typename?: 'Mutation';
   createEventOnCalendar: {
     __typename?: 'CalendarEvent';
-    type: CalendarEventType;
     createdDate: Date;
     id: string;
+    type: CalendarEventType;
     startDate?: Date | undefined;
     durationDays?: number | undefined;
     durationMinutes: number;
@@ -27899,9 +27900,9 @@ export type UpdateCalendarEventMutation = {
   __typename?: 'Mutation';
   updateCalendarEvent: {
     __typename?: 'CalendarEvent';
-    type: CalendarEventType;
     createdDate: Date;
     id: string;
+    type: CalendarEventType;
     startDate?: Date | undefined;
     durationDays?: number | undefined;
     durationMinutes: number;

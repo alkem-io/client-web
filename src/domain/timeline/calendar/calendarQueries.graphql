@@ -21,7 +21,6 @@ fragment CollaborationTimelineInfo on Collaboration {
       }
       events {
         ...CalendarEventInfo
-        type
       }
     }
   }
@@ -39,6 +38,7 @@ fragment DashboardTimelineAuthorization on Collaboration {
 
 fragment CalendarEventInfo on CalendarEvent {
   id
+  type
   startDate
   durationDays
   durationMinutes
@@ -70,7 +70,6 @@ fragment CalendarEventDetails on CalendarEvent {
     id
     myPrivileges
   }
-  type
   createdBy {
     id
     profile {

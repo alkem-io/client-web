@@ -2596,6 +2596,7 @@ export const EventProfileFragmentDoc = gql`
 export const CalendarEventInfoFragmentDoc = gql`
   fragment CalendarEventInfo on CalendarEvent {
     id
+    type
     startDate
     durationDays
     durationMinutes
@@ -2628,7 +2629,6 @@ export const CollaborationTimelineInfoFragmentDoc = gql`
         }
         events {
           ...CalendarEventInfo
-          type
         }
       }
     }
@@ -2642,7 +2642,6 @@ export const CalendarEventDetailsFragmentDoc = gql`
       id
       myPrivileges
     }
-    type
     createdBy {
       id
       profile {
