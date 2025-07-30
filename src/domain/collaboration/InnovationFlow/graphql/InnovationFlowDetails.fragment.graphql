@@ -1,0 +1,32 @@
+fragment InnovationFlowDetails on InnovationFlow {
+  id
+  profile {
+    ...InnovationFlowProfile
+  }
+  ...InnovationFlowStates
+  currentState {
+    id
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+}
+
+fragment InnovationFlowProfile on Profile {
+  id
+  displayName
+  description
+  tagsets {
+    ...TagsetDetails
+  }
+  references {
+    id
+    name
+    description
+    uri
+  }
+  bannerNarrow: visual(type: CARD) {
+    ...VisualModel
+  }
+}

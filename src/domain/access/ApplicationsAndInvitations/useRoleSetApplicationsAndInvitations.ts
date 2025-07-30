@@ -34,7 +34,7 @@ type useRoleSetApplicationsAndInvitationsProvided = {
     invitedContributorIds: string[];
     invitedUserEmails: string[];
     welcomeMessage: string;
-    extraRole?: RoleName;
+    extraRoles?: RoleName[];
   }) => Promise<InvitationResultModel[]>;
   invitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
   deleteInvitation: (invitationId: string) => Promise<unknown>;
@@ -154,15 +154,16 @@ const useRoleSetApplicationsAndInvitations = ({
     invitedContributorIds,
     invitedUserEmails,
     welcomeMessage,
-    extraRole,
+    extraRoles,
   }: {
     roleSetId: string;
     invitedContributorIds: string[];
     invitedUserEmails: string[];
     welcomeMessage: string;
-    extraRole?: RoleName;
+    extraRoles?: RoleName[];
   }) => {
-    const role = extraRole === RoleName.Member ? undefined : extraRole;
+    // Filter out the Member role as it's not an extra role
+    const filteredExtraRoles = (extraRoles ?? []).filter(role => role !== RoleName.Member);
 
     const result = await inviteForEntryRoleOnRoleSet({
       variables: {
@@ -170,7 +171,7 @@ const useRoleSetApplicationsAndInvitations = ({
         invitedContributorIds,
         invitedUserEmails,
         welcomeMessage,
-        extraRole: role,
+        extraRoles: filteredExtraRoles,
       },
       onCompleted: () => refetch(),
     });

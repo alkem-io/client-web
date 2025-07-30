@@ -29,7 +29,7 @@ export const INVITE_USERS_TO_ROLES = [RoleName.Member, RoleName.Lead, RoleName.A
 type InviteUsersData = {
   welcomeMessage: string;
   selectedContributors: SelectedContributor[];
-  extraRole: RoleName;
+  extraRoles: RoleName[];
 };
 
 const InviteUsersDialog = ({
@@ -58,7 +58,7 @@ const InviteUsersDialog = ({
   const validationSchema = yup.object().shape({
     welcomeMessage: yup.string().required(),
     selectedContributors: SelectedContributorsArraySchema.min(1).required(),
-    extraRole: yup.string().oneOf(INVITE_USERS_TO_ROLES).required(),
+    extraRoles: yup.array().of(yup.string().oneOf(INVITE_USERS_TO_ROLES)).min(1).required(),
   });
 
   const initialValues: InviteUsersData = {
@@ -66,7 +66,7 @@ const InviteUsersDialog = ({
       spaceName,
     }),
     selectedContributors: [],
-    extraRole: RoleName.Member,
+    extraRoles: [RoleName.Member],
   };
 
   const handleClose = () => {
@@ -91,7 +91,7 @@ const InviteUsersDialog = ({
       invitedContributorIds,
       invitedUserEmails,
       welcomeMessage: data.welcomeMessage,
-      extraRole: data.extraRole,
+      extraRoles: data.extraRoles,
     });
     setInvitationSent(result);
   });

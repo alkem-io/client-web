@@ -1,0 +1,29 @@
+fragment InnovationFlowCollaboration on Collaboration {
+  id
+  authorization {
+    id
+    myPrivileges
+  }
+  calloutsSet {
+    id
+    callouts {
+      id
+      calloutTypeDeprecated: type
+      activity
+      sortOrder
+      classification {
+        id
+        flowState: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
+        }
+      }
+      framing {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+    }
+  }
+}

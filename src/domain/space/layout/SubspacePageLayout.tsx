@@ -54,7 +54,11 @@ export const SubspacePageLayout = () => {
   const calloutsSetId = collaboration?.calloutsSet.id;
   const collaborationId = collaboration?.id;
 
-  const innovationFlowProvided = useInnovationFlowStates({ collaborationId });
+  const {
+    currentInnovationFlowStateDisplayName: currentInnovationFlowState,
+    innovationFlowStates,
+    canEditInnovationFlow,
+  } = useInnovationFlowStates({ collaborationId });
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
 
   const isCollapsed = localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false;
@@ -77,17 +81,18 @@ export const SubspacePageLayout = () => {
     </Button>
   );
 
-  const { currentInnovationFlowState, innovationFlowStates } = useInnovationFlowStates({ collaborationId });
-  const doesSelectedInnovationFlowStateExist = innovationFlowStates?.some(
-    state => state.displayName === selectedInnovationFlowState
-  );
-
-  // on e.g. innovation flow template change #6319
   useEffect(() => {
-    if (!doesSelectedInnovationFlowStateExist) {
-      setSelectedInnovationFlowState!(currentInnovationFlowState || '');
+    if (!innovationFlowStates || innovationFlowStates.length === 0) {
+      return;
     }
-  }, [doesSelectedInnovationFlowStateExist]);
+    // Set the current state on page load or the first state if none is selected
+    const selectedIndex = innovationFlowStates?.findIndex(state => state.displayName === currentInnovationFlowState);
+    if (selectedIndex !== undefined && selectedIndex >= 0) {
+      setSelectedInnovationFlowState!(innovationFlowStates[selectedIndex].displayName);
+    } else {
+      setSelectedInnovationFlowState!(innovationFlowStates[0].displayName);
+    }
+  }, [innovationFlowStates, currentInnovationFlowState, setSelectedInnovationFlowState]);
 
   let classificationTagsets: ClassificationTagsetModel[] = [];
   if (selectedInnovationFlowState) {
@@ -106,7 +111,7 @@ export const SubspacePageLayout = () => {
     skip: !selectedInnovationFlowState,
   });
 
-  const showInnovationFlowStates = innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState;
+  const showInnovationFlowStates = Boolean(innovationFlowStates?.length);
   return (
     <>
       <PageContent>
@@ -137,6 +142,7 @@ export const SubspacePageLayout = () => {
                 position: 'sticky',
                 top: 0,
                 marginTop: gutters(-1),
+                marginBottom: gutters(-0.7),
                 paddingTop: gutters(1),
                 background: theme.palette.background.default,
                 width: '100%',
@@ -152,7 +158,7 @@ export const SubspacePageLayout = () => {
                 visualizer={InnovationFlowChips}
                 createButton={calloutsSetProvided?.canCreateCallout && createButton}
                 settingsButton={
-                  innovationFlowProvided.canEditInnovationFlow &&
+                  canEditInnovationFlow &&
                   !isSmallScreen && (
                     <DialogActionButton
                       dialog={SubspaceDialog.ManageFlow}

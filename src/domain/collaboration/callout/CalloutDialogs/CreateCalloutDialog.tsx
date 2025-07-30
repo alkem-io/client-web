@@ -161,6 +161,7 @@ const CreateCalloutDialog = ({
         classification,
         contributionDefaults,
         contributions,
+        sendNotification,
       };
 
       await handleCreateCallout(createCalloutInput);
