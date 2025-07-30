@@ -11,10 +11,12 @@ import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
 import SpaceL1Icon2 from '@/domain/space/icons/SpaceL1Icon2';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import StarOutlineIcon from '@mui/icons-material/StarOutline';
 
 export interface EventCardHeaderProps {
   event:
     | {
+        type?: string;
         startDate?: Date;
         durationDays?: number | undefined;
         durationMinutes: number;
@@ -77,6 +79,7 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
                 {event.subspace.about.profile.displayName}
               </CardHeaderDetail>
             )}
+            {event?.type && <CardHeaderDetail iconComponent={<StarOutlineIcon />}>{event?.type}</CardHeaderDetail>}
           </>
         )}
         {!event && <Skeleton variant="rectangular" />}
