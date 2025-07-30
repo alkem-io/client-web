@@ -28,6 +28,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   maxLength?: number;
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
+  collaborationUUID?: string;
 }
 
 type Offset = {
@@ -54,7 +55,10 @@ const proseMirrorStyles = {
 
 export const CollaborativeMarkdownInputWorking = memo(
   forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
-    ({ controlsVisible = 'focused', hideImageOptions, onFocus, onBlur, temporaryLocation = false }, ref) => {
+    (
+      { controlsVisible = 'focused', hideImageOptions, onFocus, onBlur, temporaryLocation = false, collaborationUUID },
+      ref
+    ) => {
       const containerRef = useRef<HTMLDivElement>(null);
       const toolbarRef = useRef<HTMLDivElement>(null);
 
@@ -160,7 +164,7 @@ export const CollaborativeMarkdownInputWorking = memo(
       useEffect(() => {
         providerRef.current = new TiptapCollabProvider({
           baseUrl: 'ws://localhost:4004',
-          name: 'example-room-id', // pass the uuid of the document here
+          name: collaborationUUID,
           document: ydoc,
         });
 

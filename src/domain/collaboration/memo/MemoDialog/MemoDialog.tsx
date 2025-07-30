@@ -29,7 +29,7 @@ const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: Memo
               inputComponent={CollaborativeMarkdownInputWorking}
               inputProps={{
                 controlsVisible: 'always',
-                collaborationUUID: 'example-uuid',
+                collaborationUUID: memoId,
               }}
               multiline
               sx={{

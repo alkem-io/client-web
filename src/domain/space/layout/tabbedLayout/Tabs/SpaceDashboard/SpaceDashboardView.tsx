@@ -25,10 +25,6 @@ import SpaceWelcomeDialog from '@/domain/space/components/SpaceWelcomeDialog';
 import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
-import { CharacterCountContextProvider } from '@/core/ui/forms/MarkdownInput/CharacterCountContext';
-import { gutters } from '@/core/ui/grid/utils';
-import { OutlinedInput } from '@mui/material';
-import CollaborativeMarkdownInputWorking from '@/core/ui/forms/CollaborativeMarkdownInput/CollaborativeMarkdownInput_working';
 
 export type SpaceDashboardSpaceDetails = {
   id: string | undefined;
@@ -144,21 +140,6 @@ const SpaceDashboardView = ({
         </InfoColumn>
 
         <ContentColumn>
-          <CharacterCountContextProvider>
-            <OutlinedInput
-              inputComponent={CollaborativeMarkdownInputWorking}
-              inputProps={{
-                controlsVisible: 'always',
-                collaborationUUID: 'example-uuid',
-              }}
-              multiline
-              sx={{
-                '&.MuiOutlinedInput-root': {
-                  padding: gutters(0.5),
-                },
-              }}
-            />
-          </CharacterCountContextProvider>
           <CalloutsGroupView
             calloutsSetId={calloutsSetId}
             createInFlowState={flowStateForNewCallouts?.displayName}
