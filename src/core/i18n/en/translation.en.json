@@ -542,7 +542,8 @@
       }
     },
     "supportEmail": "support@alkem.io",
-    "options": "Options"
+    "options": "Options",
+    "externalLinkDisclaimer": "This link takes you to an external site. Alkemio is not responsible for its content."
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
