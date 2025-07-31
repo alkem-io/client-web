@@ -12148,6 +12148,19 @@ export type CalloutContentQuery = {
                   };
                 }
               | undefined;
+            link?:
+              | {
+                  __typename?: 'Link';
+                  id: string;
+                  uri: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';

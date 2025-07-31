@@ -22,6 +22,7 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import {
   mapCalloutSettingsFormToCalloutSettingsModel,
   mapCalloutSettingsModelToCalloutSettingsFormValues,
+  mapLinkDataToLinkInput,
 } from '../models/mappings';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 import { useUploadWhiteboardVisuals } from '../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
@@ -105,6 +106,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       profile: mapProfileModelToUpdateProfileInput(formData.framing.profile),
       whiteboard: undefined,
       whiteboardContent: formData.framing.whiteboard?.content ? formData.framing.whiteboard.content : undefined,
+      link: formData.framing.link ? mapLinkDataToLinkInput(formData.framing.link) : undefined,
     };
 
     // And map the radio button allowed contribution types to an array

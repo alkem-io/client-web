@@ -7088,6 +7088,9 @@ export const CalloutContentDocument = gql`
             }
             content
           }
+          link {
+            ...LinkDetails
+          }
         }
         contributionDefaults {
           id
@@ -7103,6 +7106,7 @@ export const CalloutContentDocument = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
+  ${LinkDetailsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
 

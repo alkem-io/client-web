@@ -48,6 +48,21 @@ export const calloutValidationSchema = yup.object().shape({
     whiteboard: yup.object().when(['framing.type'], ([type], schema) => {
       return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
     }),
+    link: yup.object().when(['framing.type'], ([type], schema) => {
+      return type === CalloutFramingType.Link
+        ? schema
+            .shape({
+              uri: yup.string().required(),
+              profile: yup
+                .object()
+                .shape({
+                  displayName: yup.string().required(),
+                })
+                .required(),
+            })
+            .required()
+        : schema;
+    }),
   }),
   contributionDefaults: yup.object().shape({
     defaultDisplayName: displayNameValidator.optional().nullable(),

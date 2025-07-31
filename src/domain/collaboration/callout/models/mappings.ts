@@ -1,4 +1,4 @@
-import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType, CalloutFramingType, UpdateLinkInput } from '@/core/apollo/generated/graphql-schema';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from '../../callout/CalloutForm/CalloutFormModel';
 import { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
@@ -8,6 +8,7 @@ import { mapTagsetModelToTagsFormValues } from '@/domain/common/tagset/TagsetUti
 import { mapReferenceModelToReferenceFormValues } from '@/domain/common/reference/ReferenceUtils';
 import { mapContributionDefaultsModelToCalloutFormValues } from './ContributionDefaultsModel';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
+import { LinkDetails } from '@/domain/collaboration/callout/models/TypedCallout';
 
 export const mapCalloutTemplateToCalloutForm = (
   calloutTemplate?: {
@@ -144,3 +145,13 @@ export const mapCalloutSettingsFormToCalloutUpdateSettings = (
         visibility: settings.visibility,
       }
     : undefined;
+
+export const mapLinkDataToLinkInput = (linkData: LinkDetails): UpdateLinkInput => {
+  return {
+    ID: linkData.id,
+    uri: linkData.uri,
+    profile: {
+      displayName: linkData.profile.displayName,
+    },
+  };
+};
