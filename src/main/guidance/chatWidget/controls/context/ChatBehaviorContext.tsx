@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 
 export interface ChatBehaviorState {
   showChat: boolean;
@@ -27,29 +27,29 @@ const ChatBehaviorContext = createContext<ChatBehaviorContextProps | undefined>(
 export const ChatBehaviorProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<ChatBehaviorState>(initialState);
 
-  const toggleChat = () => {
+  const toggleChat = useCallback(() => {
     setState(prev => ({ ...prev, showChat: !prev.showChat }));
-  };
+  }, []);
 
-  const toggleInputDisabled = () => {
+  const toggleInputDisabled = useCallback(() => {
     setState(prev => ({ ...prev, disabledInput: !prev.disabledInput }));
-  };
+  }, []);
 
-  const toggleMessageLoader = () => {
+  const toggleMessageLoader = useCallback(() => {
     setState(prev => ({ ...prev, messageLoader: !prev.messageLoader }));
-  };
+  }, []);
 
-  const setShowChat = (show: boolean) => {
+  const setShowChat = useCallback((show: boolean) => {
     setState(prev => ({ ...prev, showChat: show }));
-  };
+  }, []);
 
-  const setDisabledInput = (disabled: boolean) => {
+  const setDisabledInput = useCallback((disabled: boolean) => {
     setState(prev => ({ ...prev, disabledInput: disabled }));
-  };
+  }, []);
 
-  const setMessageLoader = (loading: boolean) => {
+  const setMessageLoader = useCallback((loading: boolean) => {
     setState(prev => ({ ...prev, messageLoader: loading }));
-  };
+  }, []);
 
   return (
     <ChatBehaviorContext.Provider
