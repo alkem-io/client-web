@@ -22,6 +22,7 @@ function Launcher({ toggle, chatId, openImg, closeImg, openLabel, closeLabel, sh
     state: { badgeCount },
     setBadgeCount,
   } = useMessages();
+
   const {
     state: { showChat },
   } = useChatBehavior();

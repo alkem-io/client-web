@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, ElementType, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, ElementType } from 'react';
 import { MessageTypes, Link, CustomCompMessage } from './types';
 
 export interface MessagesState {
@@ -72,52 +72,52 @@ const createComponentMessage = (
 export const MessagesProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<MessagesState>(initialState);
 
-  const addUserMessage = useCallback((text: string, id?: string) => {
+  const addUserMessage = (text: string, id?: string) => {
     const newMessage = createNewMessage(text, 'client', id);
     setState(prev => ({
       ...prev,
       messages: [...prev.messages, newMessage],
     }));
-  }, []);
+  };
 
-  const addResponseMessage = useCallback((text: string, id?: string) => {
+  const addResponseMessage = (text: string, id?: string) => {
     const newMessage = createNewMessage(text, 'response', id);
     setState(prev => ({
       ...prev,
       messages: [...prev.messages, newMessage],
       badgeCount: prev.badgeCount + 1,
     }));
-  }, []);
+  };
 
-  const addLinkSnippet = useCallback((link: { link: string; title: string; target?: string }, id?: string) => {
+  const addLinkSnippet = (link: { link: string; title: string; target?: string }, id?: string) => {
     const newMessage = createLinkSnippet(link, id);
     setState(prev => ({
       ...prev,
       messages: [...prev.messages, newMessage],
     }));
-  }, []);
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const addComponentMessage = useCallback((component: ElementType, props: any, showAvatar: boolean, id?: string) => {
+  const addComponentMessage = (component: ElementType, props: any, showAvatar: boolean, id?: string) => {
     const newMessage = createComponentMessage(component, props, showAvatar, id);
     setState(prev => ({
       ...prev,
       messages: [...prev.messages, newMessage],
     }));
-  }, []);
+  };
 
-  const dropMessages = useCallback(() => {
+  const dropMessages = () => {
     setState(prev => ({ ...prev, messages: [] }));
-  }, []);
+  };
 
-  const hideAvatar = useCallback((index: number) => {
+  const hideAvatar = (index: number) => {
     setState(prev => ({
       ...prev,
       messages: prev.messages.map((msg, i) => (i === index ? { ...msg, showAvatar: false } : msg)),
     }));
-  }, []);
+  };
 
-  const deleteMessages = useCallback((count: number, id?: string) => {
+  const deleteMessages = (count: number, id?: string) => {
     setState(prev => {
       if (id) {
         const targetIndex = prev.messages.findIndex(msg => msg.customId === id);
@@ -130,19 +130,19 @@ export const MessagesProvider = ({ children }: { children: ReactNode }) => {
         };
       }
     });
-  }, []);
+  };
 
-  const markAllMessagesRead = useCallback(() => {
+  const markAllMessagesRead = () => {
     setState(prev => ({
       ...prev,
       messages: prev.messages.map(msg => ({ ...msg, unread: false })),
       badgeCount: 0,
     }));
-  }, []);
+  };
 
-  const setBadgeCount = useCallback((count: number) => {
+  const setBadgeCount = (count: number) => {
     setState(prev => ({ ...prev, badgeCount: count }));
-  }, []);
+  };
 
   return (
     <MessagesContext.Provider

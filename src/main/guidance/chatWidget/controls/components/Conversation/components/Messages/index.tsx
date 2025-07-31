@@ -39,7 +39,7 @@ function Messages() {
   useEffect(() => {
     const unreadCount = messages.filter(message => message.unread).length;
     setBadgeCount(unreadCount);
-  }, [messages, setBadgeCount]);
+  }, [messages]);
 
   return (
     <Box
