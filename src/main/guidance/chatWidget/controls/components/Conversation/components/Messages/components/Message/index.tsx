@@ -1,0 +1,113 @@
+import React from 'react';
+import Box from '@mui/material/Box';
+import markdownIt from 'markdown-it';
+import markdownItSup from 'markdown-it-sup';
+import markdownItSanitizer from 'markdown-it-sanitizer';
+import markdownItClass from '@toycode/markdown-it-class';
+import markdownItLinkAttributes from 'markdown-it-link-attributes';
+
+import { Message as MessageType } from '../../../../../../context/types';
+import { MESSAGE_SENDER } from '@/main/guidance/chatWidget/controls/context';
+
+type Props = {
+  message: MessageType;
+};
+
+function Message({ message }: Props) {
+  // Message variant flags
+  const isClient = message.sender === MESSAGE_SENDER.CLIENT;
+  const isResponse = message.sender === MESSAGE_SENDER.RESPONSE;
+  const isSnippet = message.type === 'snippet';
+  // Markdown rendering
+  let renderedContent: React.ReactElement | null = null;
+  if ('text' in message) {
+    const sanitizedHTML = markdownIt({ breaks: true })
+      .use(markdownItClass, { img: ['rcw-message-img'] })
+      .use(markdownItSup)
+      .use(markdownItSanitizer)
+      .use(markdownItLinkAttributes, {
+        attrs: { target: '_blank', rel: 'noopener' },
+      })
+      .render(message.text);
+    renderedContent = (
+      <Box
+        className="rcw-message-text"
+        sx={{
+          p: 0,
+          m: 0,
+          whiteSpace: 'pre-wrap',
+          wordWrap: 'break-word',
+          '& p': { m: 0 },
+          '& img': { width: '100%', objectFit: 'contain' },
+        }}
+        dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
+      />
+    );
+  } else if ('title' in message && 'link' in message) {
+    // Link message
+    renderedContent = (
+      <Box className="rcw-message-text" sx={{ p: 0, m: 0, wordBreak: 'break-word' }}>
+        <a href={message.link} target={message.target || '_blank'} rel="noopener noreferrer">
+          {message.title}
+        </a>
+      </Box>
+    );
+  } else if ('props' in message) {
+    const Component = message.component;
+    renderedContent = <Component {...message.props} />;
+  }
+
+  // --- Apply the bubble and layout styles here ---
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: isClient ? 'row-reverse' : 'row',
+        padding: '0 20px 10px',
+        alignItems: 'flex-end',
+      }}
+    >
+      <Box
+        sx={theme => {
+          return {
+            borderRadius: isClient ? '20px 20px 5px 20px' : '20px 20px 20px 5px',
+            backgroundColor: isClient ? theme.palette.primary.light : theme.palette.grey[200],
+            maxWidth: 215,
+            padding: 1.875, // 15px
+            textAlign: 'left',
+            wordBreak: 'break-word',
+            ...theme.typography.body1,
+            fontSize: 14,
+            fontWeight: 300,
+            letterSpacing: '-0.2px',
+            ...(isClient && {
+              marginLeft: 'auto',
+              whiteSpace: 'pre-wrap',
+            }),
+            ...(isResponse && {
+              alignItems: 'flex-start',
+            }),
+            ...(isSnippet && {
+              backgroundColor: theme.palette.primary.light,
+              borderRadius: '10px',
+              maxWidth: '215px',
+              padding: '15px',
+              textAlign: 'left',
+            }),
+            '& .rcw-timestamp': {
+              fontSize: 10,
+              marginTop: 0.625, // 5px
+              alignSelf: isClient ? 'flex-end' : 'flex-start',
+              opacity: 0.6,
+              display: 'block',
+            },
+          };
+        }}
+      >
+        {renderedContent}
+      </Box>
+    </Box>
+  );
+}
+
+export default Message;

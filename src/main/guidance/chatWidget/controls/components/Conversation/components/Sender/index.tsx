@@ -1,14 +1,15 @@
 import { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import { ReactNode } from 'react';
 
 import { useChatBehavior } from '../../../../context/ChatBehaviorContext';
 
 import { getCaretIndex, isFirefox, updateCaret, insertNodeAtCaret, getSelection } from '../../../../utils';
 import send from '../../../../assets/send_button.svg';
-import emoji from '../../../../assets/icon-smiley.svg';
 
 const brRegex = /<br>/g;
 
 import { Box, IconButton } from '@mui/material';
+import { gutters } from '@/core/ui/grid/utils';
 
 type Props = {
   placeholder: string;
@@ -18,23 +19,10 @@ type Props = {
   sendMessage: (event: any) => void;
   buttonAlt: string;
   onPressEmoji: () => void;
-  // onChangeSize: (event: any) => void;
-  // onTextInputChange?: (event: any) => void;
+  menuButton?: ReactNode;
 };
 
-function Sender(
-  {
-    sendMessage,
-    placeholder,
-    disabledInput,
-    autofocus,
-    buttonAlt,
-    onPressEmoji,
-    // onTextInputChange,
-    // onChangeSize
-  }: Props,
-  ref
-) {
+function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt, menuButton }: Props, ref) {
   const {
     state: { showChat },
   } = useChatBehavior();
@@ -43,6 +31,7 @@ function Sender(
   const [enter, setEnter] = useState(false);
   const [firefox, setFirefox] = useState(false);
   const [height, setHeight] = useState(0);
+
   // @ts-ignore
   useEffect(() => {
     if (showChat && autofocus) inputRef.current?.focus();
@@ -56,10 +45,6 @@ function Sender(
       onSelectEmoji: handlerOnSelectEmoji,
     };
   });
-
-  // const handlerOnChange = (event) => {
-  //   onTextInputChange && onTextInputChange(event)
-  // }
 
   const handlerSendMessage = () => {
     const el = inputRef.current;
@@ -136,18 +121,13 @@ function Sender(
     }
   };
 
-  const handlerPressEmoji = () => {
-    onPressEmoji();
-    checkSize();
-  };
-
   return (
     <Box
       ref={refContainer}
-      sx={{
-        alignItems: 'flex-end',
-        backgroundColor: theme => theme.palette.grey[200], // $grey-2
-        borderRadius: { xs: 0, sm: '0 0 10px 10px' },
+      sx={theme => ({
+        alignItems: 'center',
+        borderRadius: 0,
+        backgroundColor: theme.palette.grey[200], // $grey-2
         display: 'flex',
         height: 'max-content',
         maxHeight: 95,
@@ -155,37 +135,21 @@ function Sender(
         overflow: 'hidden',
         p: 1.25, // 10px (theme spacing = 8*1.25 = 10)
         position: 'relative',
+        ...theme.typography.body1,
+        border: `1px solid ${theme.palette.divider}`,
+        flexGrow: 1,
+        flexShrink: 1,
+        '.rcw-input': {
+          lineHeight: `calc(${gutters()(theme)} - 2px)`,
+        },
         '@media (max-width:800px)': {
           borderRadius: 0,
           flexShrink: 0,
         },
-      }}
+      })}
     >
-      {/* Emoji Button */}
-      <IconButton
-        onClick={handlerPressEmoji}
-        sx={{
-          background: theme => theme.palette.grey[200],
-          border: 0,
-          p: 1, // default IconButton padding
-          cursor: 'pointer',
-          mr: 1,
-          '&:hover': {
-            background: theme => theme.palette.grey[300],
-          },
-        }}
-        type="button"
-      >
-        <Box
-          component="img"
-          src={emoji}
-          alt=""
-          sx={{
-            width: 25,
-            height: 25,
-          }}
-        />
-      </IconButton>
+      {/* Menu Button */}
+      {menuButton && <Box sx={{ mr: 1 }}>{menuButton}</Box>}
 
       {/* Message input container */}
       <Box
@@ -221,7 +185,7 @@ function Sender(
                 ? {
                     '&:empty:before': {
                       content: `"${placeholder}"`,
-                      color: theme => theme.palette.grey[50], // $grey-0
+                      color: theme => theme.palette.grey[50],
                       pointerEvents: 'none',
                       opacity: 1,
                     },
@@ -230,7 +194,8 @@ function Sender(
             },
           }}
         >
-          <div
+          <Box
+            component="div"
             spellCheck
             role="textbox"
             contentEditable={!disabledInput}
@@ -239,7 +204,29 @@ function Sender(
             onKeyPress={handlerOnKeyPress}
             onKeyUp={handlerOnKeyUp}
             onKeyDown={handlerOnKeyDown}
-            style={{ display: 'block' }}
+            sx={theme => ({
+              display: 'block',
+              height: '100%',
+              lineHeight: `calc(${gutters()(theme)} - 2px)`,
+              maxHeight: 78,
+              overflowY: 'auto',
+              userSelect: 'text',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              outline: 'none',
+              '&:focus-visible': {
+                outline: 'none',
+              },
+              ...(placeholder && {
+                '&:empty:before': {
+                  content: `"${placeholder}"`,
+                  color: theme.palette.grey[50],
+                  pointerEvents: 'none',
+                  opacity: 1,
+                },
+              }),
+              cursor: disabledInput ? 'not-allowed' : 'text',
+            })}
           />
         </Box>
       </Box>
@@ -252,6 +239,7 @@ function Sender(
           border: 0,
           p: 1,
           ml: 1,
+          paddingTop: '4px',
           cursor: 'pointer',
           '&:hover': {
             background: theme => theme.palette.grey[300],

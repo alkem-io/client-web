@@ -18,30 +18,21 @@ import {
   Tooltip,
   useTheme,
 } from '@mui/material';
-import { ReactElement, cloneElement, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ReactElement, cloneElement, useEffect, useRef, useState } from 'react';
 import { Widget } from './controls';
 import { useMessages } from './controls/context/MessagesContext';
 import { ChatBehaviorProvider } from './controls/context/ChatBehaviorContext';
 import { MessagesProvider } from './controls/context/MessagesContext';
 import { FullscreenPreviewProvider } from './controls/context/FullscreenPreviewContext';
-// import 'react-chat-widget-react-18/lib/styles.css';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import ChatWidgetFooter from './ChatWidgetFooter';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
 import ChatWidgetNewThreadButton from './ChatWidgetNewThreadButton';
 import ChatWidgetStyles from './ChatWidgetStyles';
-// import ChatWidgetTitle from './ChatWidgetTitle'; // TODO: Integrate with Context-based title
+import ChatWidgetTitle from './ChatWidgetTitle';
 import useChatGuidanceCommunication from './useChatGuidanceCommunication';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-
-// Remove the default props from the Widget component as it's throwing a warning
-// we should revise using this library or fork and fix it properly - fixing it in source is
-// rather easy
-// if (Widget.hasOwnProperty('defaultProps')) {
-//   delete Widget['defaultProps'];
-// }
 
 type FeedbackType = 'positive' | 'negative';
 
@@ -193,46 +184,7 @@ const ChatWidgetInner = () => {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const [footerContainer, setFooterContainer] = useState<HTMLDivElement | null>(null);
-
-  const setupFooterContainer = () => {
-    const conversationContainer = wrapperRef.current?.querySelector('.rcw-conversation-container');
-    if (!conversationContainer) {
-      setFooterContainer(null);
-      return;
-    }
-    let footerContainer = conversationContainer.querySelector('.footer-container') as HTMLDivElement | null;
-    if (!footerContainer) {
-      footerContainer = document.createElement('div');
-      footerContainer.classList.add('footer-container');
-      conversationContainer.appendChild(footerContainer);
-    }
-    setFooterContainer(footerContainer);
-  };
-
-  useLayoutEffect(setupFooterContainer, [chatToggleTime]);
-
-  const [menuButtonContainer, setMenuButtonContainer] = useState<HTMLDivElement | null>(null);
-
-  const setupMenuButton = () => {
-    const messageInputContainer = wrapperRef.current?.querySelector('.rcw-sender');
-    if (!messageInputContainer) {
-      setMenuButtonContainer(null);
-      return;
-    }
-    let menuButtonContainer = messageInputContainer.querySelector('.menu-button-container') as HTMLDivElement | null;
-    if (!menuButtonContainer) {
-      menuButtonContainer = document.createElement('div');
-      menuButtonContainer.classList.add('menu-button-container');
-      messageInputContainer.prepend(menuButtonContainer);
-    }
-    setMenuButtonContainer(menuButtonContainer);
-  };
-
-  useLayoutEffect(setupMenuButton, [chatToggleTime]);
-
   const closeConfirmationDialog = () => setOpenClearConfirm(false);
-
   const onClearClick = () => {
     setOpenClearConfirm(true);
   };
@@ -295,22 +247,21 @@ const ChatWidgetInner = () => {
           launcherOpenImg=""
           launcherCloseImg=""
           sendButtonAlt="Send"
-          showTimeStamp
           imagePreview={false}
           zoomStep={80}
           showBadge
           profileAvatar={logoSrc}
-          title="Chat Assistant"
+          title={<ChatWidgetTitle key="title" onClickInfo={() => setIsHelpDialogOpen(true)} />}
           subtitle=""
           handleNewUserMessage={handleNewUserMessage}
           handleToggle={() => {
             setChatToggleTime(Date.now());
           }}
+          footer={<ChatWidgetFooter />}
+          menuButton={<ChatWidgetNewThreadButton onClear={onClearClick} />}
         />
       </ChatWidgetStyles>
       <ChatWidgetHelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
-      {footerContainer && createPortal(<ChatWidgetFooter />, footerContainer)}
-      {menuButtonContainer && createPortal(<ChatWidgetNewThreadButton onClear={onClearClick} />, menuButtonContainer)}
       <ConfirmationDialog
         actions={{
           onConfirm: handleClearChat,

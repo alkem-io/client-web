@@ -18,13 +18,11 @@ export interface BaseMessage {
 
 // Text message type
 export interface MessageTypes extends BaseMessage {
-  type: 'text';
   text: string;
 }
 
 // Link message type
 export interface Link extends BaseMessage {
-  type: 'link';
   title: string;
   link: string;
   target?: string;
@@ -32,7 +30,6 @@ export interface Link extends BaseMessage {
 
 // Custom component message type
 export interface CustomCompMessage extends BaseMessage {
-  type: 'component';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props: any;
 }

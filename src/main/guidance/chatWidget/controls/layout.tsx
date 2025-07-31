@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { ReactNode } from 'react';
 
 import { useFullscreenPreview } from './context/FullscreenPreviewContext';
 import { useChatBehavior } from './context/ChatBehaviorContext';
@@ -10,7 +11,7 @@ import FullScreenPreview from './components/FullScreenPreview';
 import { Box } from '@mui/material';
 
 type Props = {
-  title: string;
+  title: string | ReactNode;
   titleAvatar?: string;
   subtitle: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,10 +28,11 @@ type Props = {
   launcherCloseImg: string;
   launcherOpenImg: string;
   sendButtonAlt: string;
-  showTimeStamp: boolean;
   imagePreview?: boolean;
   zoomStep?: number;
   showBadge?: boolean;
+  footer?: ReactNode;
+  menuButton?: ReactNode;
 };
 
 function WidgetLayout({
@@ -52,6 +54,8 @@ function WidgetLayout({
   zoomStep,
   showBadge,
   titleAvatar,
+  footer,
+  menuButton,
 }: Props) {
   const {
     state: { disabledInput, showChat },
@@ -106,21 +110,17 @@ function WidgetLayout({
         position: 'fixed',
         right: 0,
         zIndex: 9999,
-        // If !showChat, apply rcw-close-widget-container styles
         height: !showChat ? 'max-content' : undefined,
         width: !showChat ? 'max-content' : undefined,
-        // Responsive override for small screens (as in media query)
         '@media (max-width:800px)': {
-          height: '100%', // applies for mobile view
-          // ...put widget-container-fs mixin styles here if needed
+          height: '100vh',
+          margin: 0,
+          maxWidth: 'none',
+          width: '100%',
         },
-        // Optionally, add other dynamic styles (e.g., for .rcw-previewer)
-        // If there are special styles for 'rcw-previewer', add them here conditionally:
-        ...(imagePreview &&
-          {
-            // stylings for active preview mode,
-            // For example: pointer for images inside the widget. Leave this to nested elements if needed.
-          }),
+        ...(imagePreview && {
+          cursor: 'pointer',
+        }),
       }}
     >
       {showChat && (
@@ -137,6 +137,8 @@ function WidgetLayout({
           titleAvatar={titleAvatar}
           showChat={showChat}
           sendButtonAlt={sendButtonAlt}
+          footer={footer}
+          menuButton={menuButton}
         />
       )}
       <Launcher

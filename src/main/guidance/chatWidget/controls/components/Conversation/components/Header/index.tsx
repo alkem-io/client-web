@@ -1,9 +1,10 @@
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
+import { ReactNode } from 'react';
 import close from '../../../../assets/clear-button.svg';
 
 type Props = {
-  title: string;
+  title: string | ReactNode;
   subtitle: string;
   toggleChat: () => void;
   showCloseButton: boolean;

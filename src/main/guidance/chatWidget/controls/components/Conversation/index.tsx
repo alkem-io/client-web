@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { ReactNode } from 'react';
 
 import Header from './components/Header';
 import Messages from './components/Messages';
@@ -12,7 +13,7 @@ interface ISenderRef {
 }
 
 type Props = {
-  title: string;
+  title: string | ReactNode;
   subtitle: string;
   senderPlaceHolder: string;
   showCloseButton: boolean;
@@ -26,6 +27,8 @@ type Props = {
   profileAvatar?: string;
   titleAvatar?: string;
   sendButtonAlt: string;
+  footer?: ReactNode;
+  menuButton?: ReactNode;
 };
 
 function Conversation({
@@ -38,9 +41,10 @@ function Conversation({
   showChat,
   sendMessage,
   toggleChat,
-  profileAvatar,
   titleAvatar,
   sendButtonAlt,
+  footer,
+  menuButton,
 }: Props) {
   const senderRef = useRef<ISenderRef>(null!);
   const [pickerStatus, setPicket] = useState(false);
@@ -69,15 +73,10 @@ function Conversation({
         transform: showChat ? 'translateY(0px)' : 'translateY(10px)',
         transition: 'opacity 0.3s ease, transform 0.3s ease',
         boxShadow: theme => `0px 2px 10px 1px ${theme.palette.grey[300]}`,
-        // Responsive for fullscreen at <800px (move to full screen style if needed)
         '@media (max-width:800px)': {
-          // Use your "conversation-container-fs" styles here or inline
-          // For example:
-          borderRadius: 0,
-          minWidth: '100vw',
-          maxWidth: '100vw',
-          height: '100vh',
-          // Add any additional full-screen styles you need
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
         },
       }}
     >
@@ -89,7 +88,7 @@ function Conversation({
         showCloseButton={showCloseButton}
         titleAvatar={titleAvatar}
       />
-      <Messages profileAvatar={profileAvatar} />
+      <Messages />
       <Sender
         ref={senderRef}
         sendMessage={handlerSendMsn}
@@ -98,7 +97,9 @@ function Conversation({
         autofocus={autofocus}
         buttonAlt={sendButtonAlt}
         onPressEmoji={togglePicker}
+        menuButton={menuButton}
       />
+      {footer && <Box>{footer}</Box>}
     </Box>
   );
 }

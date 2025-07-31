@@ -1,6 +1,5 @@
 import { gutters } from '@/core/ui/grid/utils';
 import { Box, BoxProps } from '@mui/material';
-// import 'react-chat-widget-react-18/lib/styles.css';
 
 export const SOURCES_HEADING_TAG_HTML = 'h5'; // In the server there's a '#####' markdown tag
 
@@ -119,29 +118,6 @@ const ChatWidgetStyles = ({
             ...borderRadius,
             maxWidth: 'none',
           },
-        },
-        '.rcw-sender': {
-          alignItems: 'center',
-          borderRadius: 0,
-          '.rcw-send': {
-            paddingTop: '4px',
-          },
-        },
-        '.rcw-new-message': {
-          ...theme.typography.body1,
-          ...borderRadius,
-          border: `1px solid ${theme.palette.divider}`,
-          flexGrow: 1,
-          flexShrink: 1,
-          '.rcw-input': {
-            lineHeight: `calc(${gutters()(theme)} - 2px)`,
-          },
-        },
-        '.rcw-picker-btn': {
-          display: 'none',
-        },
-        '.rcw-timestamp': {
-          display: 'none',
         },
       };
     }}

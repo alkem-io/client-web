@@ -1,11 +1,12 @@
 import { FullscreenPreviewProvider } from './context/FullscreenPreviewContext';
 import { MessagesProvider, useMessages } from './context/MessagesContext';
 import { ChatBehaviorProvider, useChatBehavior } from './context/ChatBehaviorContext';
+import { ReactNode } from 'react';
 
 import WidgetLayout from './layout';
 
 type Props = {
-  title: string;
+  title: string | ReactNode;
   subtitle: string;
   senderPlaceHolder: string;
   profileAvatar?: string;
@@ -21,12 +22,13 @@ type Props = {
   launcherOpenImg: string;
   launcherCloseImg: string;
   sendButtonAlt: string;
-  showTimeStamp: boolean;
   imagePreview?: boolean;
   zoomStep?: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleSubmit?: (...args: any[]) => any;
   showBadge?: boolean;
+  footer?: ReactNode;
+  menuButton?: ReactNode;
 };
 
 function WidgetWithContext({
@@ -44,11 +46,12 @@ function WidgetWithContext({
   launcherCloseImg,
   launcherOpenImg,
   sendButtonAlt,
-  showTimeStamp,
   imagePreview,
   zoomStep,
   handleSubmit,
   showBadge,
+  footer,
+  menuButton,
 }: Props) {
   const { addUserMessage } = useMessages();
   const {
@@ -82,7 +85,6 @@ function WidgetWithContext({
       launcherOpenImg={launcherOpenImg}
       launcherCloseImg={launcherCloseImg}
       sendButtonAlt={sendButtonAlt}
-      showTimeStamp={showTimeStamp}
       imagePreview={imagePreview}
       zoomStep={zoomStep}
       showBadge={showBadge}
@@ -91,6 +93,8 @@ function WidgetWithContext({
       subtitle={subtitle}
       onSendMessage={handleMessageSubmit}
       onToggleConversation={toggleConversation}
+      footer={footer}
+      menuButton={menuButton}
     />
   );
 }
