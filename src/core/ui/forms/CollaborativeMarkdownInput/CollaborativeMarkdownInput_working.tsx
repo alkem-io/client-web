@@ -1,5 +1,5 @@
 import React, { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useRef, useState, useMemo } from 'react';
-import { Box, useTheme } from '@mui/material';
+import { Box, BoxProps, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Editor, EditorContent, Extensions, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -18,17 +18,20 @@ import Collaboration from '@tiptap/extension-collaboration';
 import { TiptapCollabProvider } from '@hocuspocus/provider';
 import * as Y from 'yjs';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
-import { Caption } from '@/core/ui/typography';
 import { EditorOptions } from '@tiptap/core';
 import useUserCursor from './useUserCursor';
 import './styles.scss';
+import { isEqual } from 'lodash';
+import { OnlineCollaborationState } from '@/domain/collaboration/onlineCollaboration/OnlineCollaborationState';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
   maxLength?: number;
+  height: BoxProps['height'];
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
-  collaborationUUID?: string;
+  collaborationId?: string;
+  onChangeCollaborationState?: (state: OnlineCollaborationState) => void;
 }
 
 type Offset = {
@@ -56,7 +59,16 @@ const proseMirrorStyles = {
 export const CollaborativeMarkdownInputWorking = memo(
   forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
     (
-      { controlsVisible = 'focused', hideImageOptions, onFocus, onBlur, temporaryLocation = false, collaborationUUID },
+      {
+        controlsVisible = 'focused',
+        hideImageOptions,
+        height,
+        onFocus,
+        onBlur,
+        temporaryLocation,
+        collaborationId,
+        onChangeCollaborationState,
+      },
       ref
     ) => {
       const containerRef = useRef<HTMLDivElement>(null);
@@ -164,7 +176,7 @@ export const CollaborativeMarkdownInputWorking = memo(
       useEffect(() => {
         providerRef.current = new TiptapCollabProvider({
           baseUrl: 'ws://localhost:4004',
-          name: collaborationUUID,
+          name: collaborationId,
           document: ydoc,
         });
 
@@ -286,24 +298,28 @@ export const CollaborativeMarkdownInputWorking = memo(
       const handleDialogOpen = useCallback(() => setIsControlsDialogOpen(true), [setIsControlsDialogOpen]);
       const handleDialogClose = useCallback(() => setIsControlsDialogOpen(false), [setIsControlsDialogOpen]);
 
-      const onlineStatusMessage = useMemo(
-        () =>
-          status === 'connected'
-            ? `${editor.storage.collaborationCursor?.users.length} user${editor.storage.collaborationCursor?.users.length === 1 ? '' : 's'} online`
-            : 'offline',
-        [status, editor.storage.collaborationCursor?.users.length]
-      );
+      const [currentCollaborationState, setCollaborationState] = useState<OnlineCollaborationState>();
+      useEffect(() => {
+        const collaborationState: OnlineCollaborationState = {
+          status,
+          lastActive: new Date(),
+          users:
+            editor.storage.collaborationCursor?.users.map(user => ({
+              id: user.clientId, // TODO: This needs to be the userId, not the clientId
+              profile: {
+                displayName: user.name,
+              },
+              color: user.color,
+            })) ?? [],
+        };
+        if (!isEqual(currentCollaborationState, collaborationState)) {
+          setCollaborationState(collaborationState);
+          onChangeCollaborationState?.(collaborationState);
+        }
+      }, [status, editor.storage.collaborationCursor?.users.length, editor.storage.collaborationCursor?.users]);
 
       return (
-        <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
-          <Caption
-            sx={{
-              color: theme =>
-                onlineStatusMessage === 'offline' ? theme.palette.negative.main : theme.palette.positive.main,
-            }}
-          >
-            {onlineStatusMessage}
-          </Caption>
+        <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur} height={height}>
           <MarkdownInputControls
             ref={toolbarRef}
             editor={editor}
@@ -313,7 +329,7 @@ export const CollaborativeMarkdownInputWorking = memo(
             onDialogClose={handleDialogClose}
             temporaryLocation={temporaryLocation}
           />
-          <Box width="100%" maxHeight="50vh" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
+          <Box width="100%" maxHeight="calc(100% - 40px)" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
             <Box position="relative" style={{ minHeight: prevEditorHeight }}>
               <EditorContent editor={editor} />
             </Box>
