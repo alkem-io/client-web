@@ -861,8 +861,6 @@ export enum AuthorizationPolicyType {
   OrganizationVerification = 'ORGANIZATION_VERIFICATION',
   Platform = 'PLATFORM',
   Post = 'POST',
-  Preference = 'PREFERENCE',
-  PreferenceSet = 'PREFERENCE_SET',
   Profile = 'PROFILE',
   Reference = 'REFERENCE',
   RoleSet = 'ROLE_SET',
@@ -881,6 +879,7 @@ export enum AuthorizationPolicyType {
   Unknown = 'UNKNOWN',
   User = 'USER',
   UserGroup = 'USER_GROUP',
+  UserSettings = 'USER_SETTINGS',
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
   Visual = 'VISUAL',
   Whiteboard = 'WHITEBOARD',
@@ -922,6 +921,8 @@ export enum AuthorizationPrivilege {
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
+  ReceiveNotifications = 'RECEIVE_NOTIFICATIONS',
+  ReceiveNotificationsAdmin = 'RECEIVE_NOTIFICATIONS_ADMIN',
   RolesetEntryRoleApply = 'ROLESET_ENTRY_ROLE_APPLY',
   RolesetEntryRoleAssign = 'ROLESET_ENTRY_ROLE_ASSIGN',
   RolesetEntryRoleAssignOrganization = 'ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION',
@@ -2064,7 +2065,6 @@ export type CreateSpaceAboutInput = {
   /** The CommunityGuidelines for the Space */
   guidelines?: InputMaybe<CreateCommunityGuidelinesInput>;
   profileData: CreateProfileInput;
-  when?: InputMaybe<Scalars['Markdown']['input']>;
   who?: InputMaybe<Scalars['Markdown']['input']>;
   why?: InputMaybe<Scalars['Markdown']['input']>;
 };
@@ -4142,8 +4142,6 @@ export type Mutation = {
   updatePlatformSettings: PlatformSettings;
   /** Updates the specified Post. */
   updatePost: Post;
-  /** Updates one of the Preferences on a Space */
-  updatePreferenceOnUser: Preference;
   /** Updates the specified Profile. */
   updateProfile: Profile;
   /** Updates the specified Reference. */
@@ -4742,10 +4740,6 @@ export type MutationUpdatePostArgs = {
   postData: UpdatePostInput;
 };
 
-export type MutationUpdatePreferenceOnUserArgs = {
-  preferenceData: UpdateUserPreferenceInput;
-};
-
 export type MutationUpdateProfileArgs = {
   profileData: UpdateProfileDirectInput;
 };
@@ -5255,79 +5249,6 @@ export type Post = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
-
-export type Preference = {
-  __typename?: 'Preference';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The date at which the entity was created. */
-  createdDate: Scalars['DateTime']['output'];
-  /** The definition for the Preference */
-  definition: PreferenceDefinition;
-  /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  /** The date at which the entity was last updated. */
-  updatedDate: Scalars['DateTime']['output'];
-  /** Value of the preference */
-  value: Scalars['String']['output'];
-};
-
-export type PreferenceDefinition = {
-  __typename?: 'PreferenceDefinition';
-  /** The date at which the entity was created. */
-  createdDate: Scalars['DateTime']['output'];
-  /** Preference description */
-  description: Scalars['String']['output'];
-  /** The name */
-  displayName: Scalars['String']['output'];
-  /** The group for the preference within the containing entity type. */
-  group: Scalars['String']['output'];
-  /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  /** The type of the Preference, specific to the Entity it is on. */
-  type: PreferenceType;
-  /** The date at which the entity was last updated. */
-  updatedDate: Scalars['DateTime']['output'];
-  /** Preference value type */
-  valueType: PreferenceValueType;
-};
-
-export enum PreferenceType {
-  NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
-  NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
-  NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
-  NotificationCommentReply = 'NOTIFICATION_COMMENT_REPLY',
-  NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
-  NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
-  NotificationCommunicationMention = 'NOTIFICATION_COMMUNICATION_MENTION',
-  NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
-  NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
-  NotificationCommunityCollaborationInterestAdmin = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_ADMIN',
-  NotificationCommunityCollaborationInterestUser = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_USER',
-  NotificationCommunityInvitationUser = 'NOTIFICATION_COMMUNITY_INVITATION_USER',
-  NotificationCommunityNewMember = 'NOTIFICATION_COMMUNITY_NEW_MEMBER',
-  NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
-  NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
-  NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
-  NotificationDiscussionCommentCreated = 'NOTIFICATION_DISCUSSION_COMMENT_CREATED',
-  NotificationForumDiscussionComment = 'NOTIFICATION_FORUM_DISCUSSION_COMMENT',
-  NotificationForumDiscussionCreated = 'NOTIFICATION_FORUM_DISCUSSION_CREATED',
-  NotificationOrganizationMention = 'NOTIFICATION_ORGANIZATION_MENTION',
-  NotificationOrganizationMessage = 'NOTIFICATION_ORGANIZATION_MESSAGE',
-  NotificationPostCommentCreated = 'NOTIFICATION_POST_COMMENT_CREATED',
-  NotificationPostCreated = 'NOTIFICATION_POST_CREATED',
-  NotificationPostCreatedAdmin = 'NOTIFICATION_POST_CREATED_ADMIN',
-  NotificationUserRemoved = 'NOTIFICATION_USER_REMOVED',
-  NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
-  NotificationWhiteboardCreated = 'NOTIFICATION_WHITEBOARD_CREATED',
-}
-
-export enum PreferenceValueType {
-  Boolean = 'BOOLEAN',
-  Float = 'FLOAT',
-  Int = 'INT',
-  String = 'STRING',
-}
 
 export type Profile = {
   __typename?: 'Profile';
@@ -7321,7 +7242,6 @@ export type UpdateReferenceInput = {
 export type UpdateSpaceAboutInput = {
   /** The Profile of this Space. */
   profile?: InputMaybe<UpdateProfileInput>;
-  when?: InputMaybe<Scalars['Markdown']['input']>;
   who?: InputMaybe<Scalars['Markdown']['input']>;
   why?: InputMaybe<Scalars['Markdown']['input']>;
 };
@@ -7448,14 +7368,6 @@ export type UpdateUserPlatformSettingsInput = {
   userID: Scalars['String']['input'];
 };
 
-export type UpdateUserPreferenceInput = {
-  /** Type of the user preference */
-  type: PreferenceType;
-  /** ID of the User */
-  userID: Scalars['UUID']['input'];
-  value: Scalars['String']['input'];
-};
-
 export type UpdateUserSettingsCommunicationInput = {
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages: Scalars['Boolean']['input'];
@@ -7464,6 +7376,8 @@ export type UpdateUserSettingsCommunicationInput = {
 export type UpdateUserSettingsEntityInput = {
   /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
+  /** Settings related to this users Notifications preferences. */
+  notification?: InputMaybe<UpdateUserSettingsNotificationInput>;
   /** Settings related to Privacy. */
   privacy?: InputMaybe<UpdateUserSettingsPrivacyInput>;
 };
@@ -7473,6 +7387,64 @@ export type UpdateUserSettingsInput = {
   settings: UpdateUserSettingsEntityInput;
   /** The identifier for the User whose settings are to be updated. */
   userID: Scalars['UUID']['input'];
+};
+
+export type UpdateUserSettingsNotificationInput = {
+  /** Settings related to Organization Notifications. */
+  organization?: InputMaybe<UpdateUserSettingsNotificationOrganizationInput>;
+  /** Settings related to Platform Notifications. */
+  platform?: InputMaybe<UpdateUserSettingsNotificationPlatformInput>;
+  /** Settings related to Space Notifications. */
+  space?: InputMaybe<UpdateUserSettingsNotificationSpaceInput>;
+};
+
+export type UpdateUserSettingsNotificationOrganizationInput = {
+  /** Receive a notification when the organization you are admin of is mentioned */
+  mentioned: Scalars['Boolean']['input'];
+  /** Receive notification when the organization you are admin of is messaged */
+  messageReceived: Scalars['Boolean']['input'];
+};
+
+export type UpdateUserSettingsNotificationPlatformInput = {
+  /** Receive a notification when a new comment is added to a Discussion I created in the Forum */
+  forumDiscussionComment: Scalars['Boolean']['input'];
+  /** Receive a notification when a new Discussion is created in the Forum */
+  forumDiscussionCreated: Scalars['Boolean']['input'];
+  /** [Admin] Receive notification when a new user signs up */
+  newUserSignUp: Scalars['Boolean']['input'];
+  /** [Admin] Receive a notification when a user profile is removed */
+  userProfileRemoved: Scalars['Boolean']['input'];
+};
+
+export type UpdateUserSettingsNotificationSpaceInput = {
+  /** Receive a notification when an application is received */
+  applicationReceived: Scalars['Boolean']['input'];
+  /** Receive a notification when an application is submitted */
+  applicationSubmitted: Scalars['Boolean']['input'];
+  /** Receive a notification when a callout is published */
+  calloutPublished: Scalars['Boolean']['input'];
+  /** Receive a notification when someone replies to your comment */
+  commentReply: Scalars['Boolean']['input'];
+  /** Receive a notification when mentioned in communication */
+  communicationMention: Scalars['Boolean']['input'];
+  /** Receive a notification for community updates */
+  communicationUpdates: Scalars['Boolean']['input'];
+  /** Receive a notification for community updates */
+  communicationUpdatesAdmin: Scalars['Boolean']['input'];
+  /** Receive a notification for community invitation */
+  communityInvitationUser: Scalars['Boolean']['input'];
+  /** Receive a notification when a new member joins the community */
+  communityNewMember: Scalars['Boolean']['input'];
+  /** Receive a notification when a new member joins the community (admin) */
+  communityNewMemberAdmin: Scalars['Boolean']['input'];
+  /** Receive a notification when a comment is created on a post */
+  postCommentCreated: Scalars['Boolean']['input'];
+  /** Receive a notification when a post is created */
+  postCreated: Scalars['Boolean']['input'];
+  /** Receive a notification when a post is created (admin) */
+  postCreatedAdmin: Scalars['Boolean']['input'];
+  /** Receive a notification when a whiteboard is created */
+  whiteboardCreated: Scalars['Boolean']['input'];
 };
 
 export type UpdateUserSettingsPrivacyInput = {
@@ -7653,8 +7625,6 @@ export type User = Contributor & {
   nameID: Scalars['NameID']['output'];
   /** The phone number for this User. */
   phone?: Maybe<Scalars['String']['output']>;
-  /** The preferences for this user */
-  preferences: Array<Preference>;
   /** The Profile for this User. */
   profile: Profile;
   /** The settings for this User. */
@@ -7721,16 +7691,88 @@ export type UserSendMessageInput = {
 
 export type UserSettings = {
   __typename?: 'UserSettings';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
   /** The communication settings for this User. */
   communication: UserSettingsCommunication;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The notification settings for this User. */
+  notification: UserSettingsNotification;
   /** The privacy settings for this User */
   privacy: UserSettingsPrivacy;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type UserSettingsCommunication = {
   __typename?: 'UserSettingsCommunication';
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages: Scalars['Boolean']['output'];
+};
+
+export type UserSettingsNotification = {
+  __typename?: 'UserSettingsNotification';
+  /** The notifications settings for Organization events for this User */
+  organization: UserSettingsNotificationOrganization;
+  /** The notifications settings for Platform events for this User */
+  platform: UserSettingsNotificationPlatform;
+  /** The notifications settings for Space events for this User */
+  space: UserSettingsNotificationSpace;
+};
+
+export type UserSettingsNotificationOrganization = {
+  __typename?: 'UserSettingsNotificationOrganization';
+  /** Receive a notification when the organization you are admin of is mentioned */
+  mentioned: Scalars['Boolean']['output'];
+  /** Receive notification when the organization you are admin of is messaged */
+  messageReceived: Scalars['Boolean']['output'];
+};
+
+export type UserSettingsNotificationPlatform = {
+  __typename?: 'UserSettingsNotificationPlatform';
+  /** Receive a notification when a new comment is added to a Discussion I created in the Forum */
+  forumDiscussionComment: Scalars['Boolean']['output'];
+  /** Receive a notification when a new Discussion is created in the Forum */
+  forumDiscussionCreated: Scalars['Boolean']['output'];
+  /** Receive notification when a new user signs up */
+  newUserSignUp: Scalars['Boolean']['output'];
+  /** Receive a notification when a user profile is removed */
+  userProfileRemoved: Scalars['Boolean']['output'];
+};
+
+export type UserSettingsNotificationSpace = {
+  __typename?: 'UserSettingsNotificationSpace';
+  /** Receive a notification when an application is received */
+  applicationReceived: Scalars['Boolean']['output'];
+  /** Receive a notification when an application is submitted */
+  applicationSubmitted: Scalars['Boolean']['output'];
+  /** Receive a notification when a callout is published */
+  calloutPublished: Scalars['Boolean']['output'];
+  /** Receive a notification when someone replies to your comment */
+  commentReply: Scalars['Boolean']['output'];
+  /** Receive a notification when mentioned in communication */
+  communicationMention: Scalars['Boolean']['output'];
+  /** Receive a notification for community updates */
+  communicationUpdates: Scalars['Boolean']['output'];
+  /** Receive a notification for community updates as Admin */
+  communicationUpdatesAdmin: Scalars['Boolean']['output'];
+  /** Receive a notification for community invitation */
+  communityInvitationUser: Scalars['Boolean']['output'];
+  /** Receive a notification when a new member joins the community */
+  communityNewMember: Scalars['Boolean']['output'];
+  /** Receive a notification when a new member joins the community (admin) */
+  communityNewMemberAdmin: Scalars['Boolean']['output'];
+  /** Receive a notification when a comment is created on a post */
+  postCommentCreated: Scalars['Boolean']['output'];
+  /** Receive a notification when a post is created */
+  postCreated: Scalars['Boolean']['output'];
+  /** Receive a notification when a post is created (admin) */
+  postCreatedAdmin: Scalars['Boolean']['output'];
+  /** Receive a notification when a whiteboard is created */
+  whiteboardCreated: Scalars['Boolean']['output'];
 };
 
 export type UserSettingsPrivacy = {
@@ -17922,17 +17964,6 @@ export type DeleteUserMutationVariables = Exact<{
 
 export type DeleteUserMutation = { __typename?: 'Mutation'; deleteUser: { __typename?: 'User'; id: string } };
 
-export type UpdatePreferenceOnUserMutationVariables = Exact<{
-  userId: Scalars['UUID']['input'];
-  type: PreferenceType;
-  value: Scalars['String']['input'];
-}>;
-
-export type UpdatePreferenceOnUserMutation = {
-  __typename?: 'Mutation';
-  updatePreferenceOnUser: { __typename?: 'Preference'; id: string; value: string };
-};
-
 export type UserAccountQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
@@ -18018,37 +18049,6 @@ export type UserQuery = {
                 }>
               | undefined;
           };
-        }
-      | undefined;
-  };
-};
-
-export type UserNotificationsPreferencesQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
-}>;
-
-export type UserNotificationsPreferencesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    user?:
-      | {
-          __typename?: 'User';
-          id: string;
-          preferences: Array<{
-            __typename?: 'Preference';
-            id: string;
-            value: string;
-            definition: {
-              __typename?: 'PreferenceDefinition';
-              id: string;
-              description: string;
-              displayName: string;
-              group: string;
-              type: PreferenceType;
-              valueType: PreferenceValueType;
-            };
-          }>;
         }
       | undefined;
   };
@@ -18296,6 +18296,38 @@ export type UserSettingsQuery = {
             __typename?: 'UserSettings';
             communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
             privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+            notification: {
+              __typename?: 'UserSettingsNotification';
+              platform: {
+                __typename?: 'UserSettingsNotificationPlatform';
+                userProfileRemoved: boolean;
+                newUserSignUp: boolean;
+                forumDiscussionComment: boolean;
+                forumDiscussionCreated: boolean;
+              };
+              organization: {
+                __typename?: 'UserSettingsNotificationOrganization';
+                mentioned: boolean;
+                messageReceived: boolean;
+              };
+              space: {
+                __typename?: 'UserSettingsNotificationSpace';
+                applicationReceived: boolean;
+                applicationSubmitted: boolean;
+                communityInvitationUser: boolean;
+                communityNewMemberAdmin: boolean;
+                postCommentCreated: boolean;
+                communicationMention: boolean;
+                commentReply: boolean;
+                calloutPublished: boolean;
+                communityNewMember: boolean;
+                communicationUpdates: boolean;
+                communicationUpdatesAdmin: boolean;
+                postCreated: boolean;
+                postCreatedAdmin: boolean;
+                whiteboardCreated: boolean;
+              };
+            };
           };
         }
       | undefined;

@@ -2381,7 +2381,6 @@ export type MutationKeySpecifier = (
   | 'updateOrganizationSettings'
   | 'updatePlatformSettings'
   | 'updatePost'
-  | 'updatePreferenceOnUser'
   | 'updateProfile'
   | 'updateReference'
   | 'updateSpace'
@@ -2558,7 +2557,6 @@ export type MutationFieldPolicy = {
   updateOrganizationSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePost?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatePreferenceOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateReference?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2897,44 +2895,6 @@ export type PostFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type PreferenceKeySpecifier = (
-  | 'authorization'
-  | 'createdDate'
-  | 'definition'
-  | 'id'
-  | 'updatedDate'
-  | 'value'
-  | PreferenceKeySpecifier
-)[];
-export type PreferenceFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  definition?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  value?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type PreferenceDefinitionKeySpecifier = (
-  | 'createdDate'
-  | 'description'
-  | 'displayName'
-  | 'group'
-  | 'id'
-  | 'type'
-  | 'updatedDate'
-  | 'valueType'
-  | PreferenceDefinitionKeySpecifier
-)[];
-export type PreferenceDefinitionFieldPolicy = {
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  group?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  valueType?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ProfileKeySpecifier = (
   | 'authorization'
@@ -4051,7 +4011,6 @@ export type UserKeySpecifier = (
   | 'lastName'
   | 'nameID'
   | 'phone'
-  | 'preferences'
   | 'profile'
   | 'settings'
   | 'storageAggregator'
@@ -4075,7 +4034,6 @@ export type UserFieldPolicy = {
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   phone?: FieldPolicy<any> | FieldReadFunction<any>;
-  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4111,10 +4069,24 @@ export type UserGroupFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type UserSettingsKeySpecifier = ('communication' | 'privacy' | UserSettingsKeySpecifier)[];
+export type UserSettingsKeySpecifier = (
+  | 'authorization'
+  | 'communication'
+  | 'createdDate'
+  | 'id'
+  | 'notification'
+  | 'privacy'
+  | 'updatedDate'
+  | UserSettingsKeySpecifier
+)[];
 export type UserSettingsFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  notification?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsCommunicationKeySpecifier = (
   | 'allowOtherUsersToSendMessages'
@@ -4122,6 +4094,72 @@ export type UserSettingsCommunicationKeySpecifier = (
 )[];
 export type UserSettingsCommunicationFieldPolicy = {
   allowOtherUsersToSendMessages?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationKeySpecifier = (
+  | 'organization'
+  | 'platform'
+  | 'space'
+  | UserSettingsNotificationKeySpecifier
+)[];
+export type UserSettingsNotificationFieldPolicy = {
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
+  platform?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationOrganizationKeySpecifier = (
+  | 'mentioned'
+  | 'messageReceived'
+  | UserSettingsNotificationOrganizationKeySpecifier
+)[];
+export type UserSettingsNotificationOrganizationFieldPolicy = {
+  mentioned?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationPlatformKeySpecifier = (
+  | 'forumDiscussionComment'
+  | 'forumDiscussionCreated'
+  | 'newUserSignUp'
+  | 'userProfileRemoved'
+  | UserSettingsNotificationPlatformKeySpecifier
+)[];
+export type UserSettingsNotificationPlatformFieldPolicy = {
+  forumDiscussionComment?: FieldPolicy<any> | FieldReadFunction<any>;
+  forumDiscussionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  newUserSignUp?: FieldPolicy<any> | FieldReadFunction<any>;
+  userProfileRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationSpaceKeySpecifier = (
+  | 'applicationReceived'
+  | 'applicationSubmitted'
+  | 'calloutPublished'
+  | 'commentReply'
+  | 'communicationMention'
+  | 'communicationUpdates'
+  | 'communicationUpdatesAdmin'
+  | 'communityInvitationUser'
+  | 'communityNewMember'
+  | 'communityNewMemberAdmin'
+  | 'postCommentCreated'
+  | 'postCreated'
+  | 'postCreatedAdmin'
+  | 'whiteboardCreated'
+  | UserSettingsNotificationSpaceKeySpecifier
+)[];
+export type UserSettingsNotificationSpaceFieldPolicy = {
+  applicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  applicationSubmitted?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutPublished?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentReply?: FieldPolicy<any> | FieldReadFunction<any>;
+  communicationMention?: FieldPolicy<any> | FieldReadFunction<any>;
+  communicationUpdates?: FieldPolicy<any> | FieldReadFunction<any>;
+  communicationUpdatesAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityInvitationUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityNewMember?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityNewMemberAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  postCommentCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  postCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  postCreatedAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardCreated?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsPrivacyKeySpecifier = ('contributionRolesPubliclyVisible' | UserSettingsPrivacyKeySpecifier)[];
 export type UserSettingsPrivacyFieldPolicy = {
@@ -5097,14 +5135,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | PostKeySpecifier | (() => undefined | PostKeySpecifier);
     fields?: PostFieldPolicy;
   };
-  Preference?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | PreferenceKeySpecifier | (() => undefined | PreferenceKeySpecifier);
-    fields?: PreferenceFieldPolicy;
-  };
-  PreferenceDefinition?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | PreferenceDefinitionKeySpecifier | (() => undefined | PreferenceDefinitionKeySpecifier);
-    fields?: PreferenceDefinitionFieldPolicy;
-  };
   Profile?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ProfileKeySpecifier | (() => undefined | ProfileKeySpecifier);
     fields?: ProfileFieldPolicy;
@@ -5417,6 +5447,31 @@ export type StrictTypedTypePolicies = {
       | UserSettingsCommunicationKeySpecifier
       | (() => undefined | UserSettingsCommunicationKeySpecifier);
     fields?: UserSettingsCommunicationFieldPolicy;
+  };
+  UserSettingsNotification?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserSettingsNotificationKeySpecifier | (() => undefined | UserSettingsNotificationKeySpecifier);
+    fields?: UserSettingsNotificationFieldPolicy;
+  };
+  UserSettingsNotificationOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationOrganizationKeySpecifier
+      | (() => undefined | UserSettingsNotificationOrganizationKeySpecifier);
+    fields?: UserSettingsNotificationOrganizationFieldPolicy;
+  };
+  UserSettingsNotificationPlatform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationPlatformKeySpecifier
+      | (() => undefined | UserSettingsNotificationPlatformKeySpecifier);
+    fields?: UserSettingsNotificationPlatformFieldPolicy;
+  };
+  UserSettingsNotificationSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationSpaceKeySpecifier
+      | (() => undefined | UserSettingsNotificationSpaceKeySpecifier);
+    fields?: UserSettingsNotificationSpaceFieldPolicy;
   };
   UserSettingsPrivacy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserSettingsPrivacyKeySpecifier | (() => undefined | UserSettingsPrivacyKeySpecifier);

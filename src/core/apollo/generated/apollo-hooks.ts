@@ -12186,56 +12186,6 @@ export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserMutation,
   SchemaTypes.DeleteUserMutationVariables
 >;
-export const UpdatePreferenceOnUserDocument = gql`
-  mutation updatePreferenceOnUser($userId: UUID!, $type: PreferenceType!, $value: String!) {
-    updatePreferenceOnUser(preferenceData: { userID: $userId, type: $type, value: $value }) {
-      id
-      value
-    }
-  }
-`;
-export type UpdatePreferenceOnUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdatePreferenceOnUserMutation,
-  SchemaTypes.UpdatePreferenceOnUserMutationVariables
->;
-
-/**
- * __useUpdatePreferenceOnUserMutation__
- *
- * To run a mutation, you first call `useUpdatePreferenceOnUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePreferenceOnUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updatePreferenceOnUserMutation, { data, loading, error }] = useUpdatePreferenceOnUserMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      type: // value for 'type'
- *      value: // value for 'value'
- *   },
- * });
- */
-export function useUpdatePreferenceOnUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdatePreferenceOnUserMutation,
-    SchemaTypes.UpdatePreferenceOnUserMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdatePreferenceOnUserMutation,
-    SchemaTypes.UpdatePreferenceOnUserMutationVariables
-  >(UpdatePreferenceOnUserDocument, options);
-}
-export type UpdatePreferenceOnUserMutationHookResult = ReturnType<typeof useUpdatePreferenceOnUserMutation>;
-export type UpdatePreferenceOnUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnUserMutation>;
-export type UpdatePreferenceOnUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdatePreferenceOnUserMutation,
-  SchemaTypes.UpdatePreferenceOnUserMutationVariables
->;
 export const UserAccountDocument = gql`
   query UserAccount($userId: UUID!) {
     lookup {
@@ -12370,99 +12320,6 @@ export type UserSuspenseQueryHookResult = ReturnType<typeof useUserSuspenseQuery
 export type UserQueryResult = Apollo.QueryResult<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>;
 export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
   return { query: UserDocument, variables: variables };
-}
-export const UserNotificationsPreferencesDocument = gql`
-  query userNotificationsPreferences($userId: UUID!) {
-    lookup {
-      user(ID: $userId) {
-        id
-        preferences {
-          id
-          definition {
-            id
-            description
-            displayName
-            group
-            type
-            valueType
-          }
-          value
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useUserNotificationsPreferencesQuery__
- *
- * To run a query within a React component, call `useUserNotificationsPreferencesQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserNotificationsPreferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserNotificationsPreferencesQuery({
- *   variables: {
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useUserNotificationsPreferencesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.UserNotificationsPreferencesQuery,
-    SchemaTypes.UserNotificationsPreferencesQueryVariables
-  > &
-    ({ variables: SchemaTypes.UserNotificationsPreferencesQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.UserNotificationsPreferencesQuery,
-    SchemaTypes.UserNotificationsPreferencesQueryVariables
-  >(UserNotificationsPreferencesDocument, options);
-}
-export function useUserNotificationsPreferencesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UserNotificationsPreferencesQuery,
-    SchemaTypes.UserNotificationsPreferencesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.UserNotificationsPreferencesQuery,
-    SchemaTypes.UserNotificationsPreferencesQueryVariables
-  >(UserNotificationsPreferencesDocument, options);
-}
-export function useUserNotificationsPreferencesSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.UserNotificationsPreferencesQuery,
-        SchemaTypes.UserNotificationsPreferencesQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.UserNotificationsPreferencesQuery,
-    SchemaTypes.UserNotificationsPreferencesQueryVariables
-  >(UserNotificationsPreferencesDocument, options);
-}
-export type UserNotificationsPreferencesQueryHookResult = ReturnType<typeof useUserNotificationsPreferencesQuery>;
-export type UserNotificationsPreferencesLazyQueryHookResult = ReturnType<
-  typeof useUserNotificationsPreferencesLazyQuery
->;
-export type UserNotificationsPreferencesSuspenseQueryHookResult = ReturnType<
-  typeof useUserNotificationsPreferencesSuspenseQuery
->;
-export type UserNotificationsPreferencesQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserNotificationsPreferencesQuery,
-  SchemaTypes.UserNotificationsPreferencesQueryVariables
->;
-export function refetchUserNotificationsPreferencesQuery(
-  variables: SchemaTypes.UserNotificationsPreferencesQueryVariables
-) {
-  return { query: UserNotificationsPreferencesDocument, variables: variables };
 }
 export const UserModelFullDocument = gql`
   query UserModelFull($userId: UUID!) {
@@ -12864,6 +12721,34 @@ export const UserSettingsDocument = gql`
           }
           privacy {
             contributionRolesPubliclyVisible
+          }
+          notification {
+            platform {
+              userProfileRemoved
+              newUserSignUp
+              forumDiscussionComment
+              forumDiscussionCreated
+            }
+            organization {
+              mentioned
+              messageReceived
+            }
+            space {
+              applicationReceived
+              applicationSubmitted
+              communityInvitationUser
+              communityNewMemberAdmin
+              postCommentCreated
+              communicationMention
+              commentReply
+              calloutPublished
+              communityNewMember
+              communicationUpdates
+              communicationUpdatesAdmin
+              postCreated
+              postCreatedAdmin
+              whiteboardCreated
+            }
           }
         }
       }
