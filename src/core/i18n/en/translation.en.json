@@ -394,6 +394,7 @@
     "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Collaboration tool",
     "optional": "optional",
+    "unknown": "Unknown",
     "menu": "Menu",
     "genders": {
       "notSpecified": "not specified",

@@ -32,7 +32,7 @@ const DialogContainer = ({
 
   return (
     <GridContainer
-      maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
+      maxWidth={fullScreen ? undefined : MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
       marginX="auto"
       flexGrow={1}
       justifyContent="center"
@@ -73,11 +73,21 @@ const DialogWithGrid = ({
   return (
     <MuiDialog
       PaperComponent={DialogContainer}
-      PaperProps={{ columns, centeredVertically, fullScreen } as PaperProps}
+      slotProps={{
+        paper: {
+          columns,
+          centeredVertically,
+          fullScreen,
+        } as PaperProps,
+      }}
       onClose={onClose}
       fullScreen={fullScreen}
       {...dialogProps}
       sx={{
+        '& .MuiPaper-root': {
+          height: fullHeight ? '100% !important' : undefined,
+          width: fullScreen ? '100% !important' : undefined,
+        },
         '.MuiDialog-paper': {
           maxWidth: '100vw',
           margin: 0,
