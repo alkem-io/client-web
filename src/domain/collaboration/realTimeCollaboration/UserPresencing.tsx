@@ -1,11 +1,11 @@
 import RoundedBadge from '@/core/ui/icon/RoundedBadge';
-import { OnlineCollaborationState } from './OnlineCollaborationState';
+import { RealTimeCollaborationState } from './RealTimeCollaborationState';
 import { SaveRequestIndicatorIcon } from './SaveRequestIndicatorIcon';
 import { Box, Tooltip } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 
 interface UserPresencingProps {
-  collaborationState: OnlineCollaborationState | undefined;
+  collaborationState: RealTimeCollaborationState | undefined;
 }
 
 const UserPresencing = ({ collaborationState }: UserPresencingProps) => {

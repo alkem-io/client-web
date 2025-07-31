@@ -1,4 +1,7 @@
 /* Basic editor styles */
+.tiptap.ProseMirror {
+  height: 100%;
+}
 .tiptap {
   /* Give a remote user a caret */
   .collaboration-cursor__caret {

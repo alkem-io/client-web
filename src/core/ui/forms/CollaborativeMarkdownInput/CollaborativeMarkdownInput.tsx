@@ -22,7 +22,7 @@ import { EditorOptions } from '@tiptap/core';
 import useUserCursor from './useUserCursor';
 import './styles.scss';
 import { isEqual } from 'lodash';
-import { OnlineCollaborationState } from '@/domain/collaboration/onlineCollaboration/OnlineCollaborationState';
+import { RealTimeCollaborationState } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -31,7 +31,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
   collaborationId?: string;
-  onChangeCollaborationState?: (state: OnlineCollaborationState) => void;
+  onChangeCollaborationState?: (state: RealTimeCollaborationState) => void;
 }
 
 type Offset = {
@@ -298,9 +298,9 @@ export const CollaborativeMarkdownInput = memo(
       const handleDialogOpen = useCallback(() => setIsControlsDialogOpen(true), [setIsControlsDialogOpen]);
       const handleDialogClose = useCallback(() => setIsControlsDialogOpen(false), [setIsControlsDialogOpen]);
 
-      const [currentCollaborationState, setCollaborationState] = useState<OnlineCollaborationState>();
+      const [currentCollaborationState, setCollaborationState] = useState<RealTimeCollaborationState>();
       useEffect(() => {
-        const collaborationState: OnlineCollaborationState = {
+        const collaborationState: RealTimeCollaborationState = {
           status,
           lastActive: new Date(),
           users:
@@ -329,9 +329,9 @@ export const CollaborativeMarkdownInput = memo(
             onDialogClose={handleDialogClose}
             temporaryLocation={temporaryLocation}
           />
-          <Box width="100%" maxHeight="calc(100% - 40px)" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
-            <Box position="relative" style={{ minHeight: prevEditorHeight }}>
-              <EditorContent editor={editor} />
+          <Box width="100%" height="calc(100% - 40px)" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
+            <Box position="relative" height="100%" style={{ minHeight: prevEditorHeight }}>
+              <EditorContent style={{ height: '100%' }} editor={editor} />
             </Box>
           </Box>
         </Box>
