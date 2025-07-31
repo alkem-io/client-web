@@ -115,6 +115,7 @@ function WidgetLayout({
         width: !showChat ? 'max-content' : undefined,
         maxWidth: gutters(19),
         maxHeight: '-webkit-fill-available',
+        scrollbarColor: `${theme.palette.primary.main} transparent`,
         '@media screen and (orientation: landscape)': {
           '.rcw-widget-container': {
             position: 'static',

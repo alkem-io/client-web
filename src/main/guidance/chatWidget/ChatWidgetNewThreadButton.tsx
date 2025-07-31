@@ -12,7 +12,6 @@ const AnimatedButton = styled(Button)(() => ({
   minWidth: '50px',
   width: 0,
   position: 'relative',
-  marginRight: '8px',
   '&:hover': {
     width: '124px',
   },

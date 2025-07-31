@@ -38,7 +38,6 @@ function Launcher({ toggle, chatId, openImg, closeImg, openLabel, closeLabel, sh
       onClick={toggleChat}
       sx={{
         alignSelf: 'flex-end',
-        bgcolor: theme => theme.palette.primary.main || '#36b9c8', // $turqois-1 fallback
         border: 0,
         borderRadius: '50%',
         boxShadow: theme => `0px 2px 10px 1px ${theme.palette.grey[300]}`,

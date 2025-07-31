@@ -19,7 +19,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { ReactElement, cloneElement, useEffect, useRef, useState } from 'react';
-import { Widget } from './controls';
+import Widget from './controls/Widget';
 import { useMessages } from './controls/context/MessagesContext';
 import { ChatBehaviorProvider } from './controls/context/ChatBehaviorContext';
 import { MessagesProvider } from './controls/context/MessagesContext';

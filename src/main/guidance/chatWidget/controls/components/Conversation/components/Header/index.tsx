@@ -15,14 +15,12 @@ function Header({ title, subtitle, toggleChat, showCloseButton, titleAvatar }: P
   return (
     <Box
       sx={{
-        backgroundColor: theme => theme.palette.primary.main || '#36b9c8',
+        backgroundColor: theme => theme.palette.primary.main,
         borderRadius: '10px 10px 0 0',
-        color: 'common.white',
+        color: theme => theme.palette.common.white,
         display: 'flex',
         flexDirection: 'column',
         textAlign: 'center',
-        py: '15px',
-        pb: '25px',
         padding: theme => theme.spacing(1),
         '@media (max-width:800px)': {
           borderRadius: 0,
@@ -35,17 +33,15 @@ function Header({ title, subtitle, toggleChat, showCloseButton, titleAvatar }: P
         <IconButton
           onClick={toggleChat}
           sx={theme => ({
-            backgroundColor: theme.palette.primary.main,
-            m: 1.5,
-            p: 1,
             zIndex: 1, // Otherwise the custom header makes it non-clickable
-            top: theme.spacing(1.5),
+            top: theme.spacing(0.5),
             right: theme.spacing(1),
             display: 'block',
             border: 0,
             position: 'absolute',
-            width: theme.spacing(3),
-            paddingX: 0,
+            width: 30,
+            paddingLeft: 0,
+            paddingRight: 0,
             cursor: 'pointer',
             background: 'transparent',
             '@media (max-width:800px)': {

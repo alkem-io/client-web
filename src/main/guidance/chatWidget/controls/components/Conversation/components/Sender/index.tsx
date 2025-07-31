@@ -127,21 +127,19 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
       sx={theme => ({
         alignItems: 'center',
         borderRadius: 0,
-        backgroundColor: theme.palette.grey[200], // $grey-2
+        backgroundColor: '#f4f7f9',
         display: 'flex',
         height: 'max-content',
         maxHeight: 95,
         minHeight: 45,
         overflow: 'hidden',
-        p: 1.25, // 10px (theme spacing = 8*1.25 = 10)
+        padding: '10px',
         position: 'relative',
         ...theme.typography.body1,
         border: `1px solid ${theme.palette.divider}`,
         flexGrow: 1,
         flexShrink: 1,
-        '.rcw-input': {
-          lineHeight: `calc(${gutters()(theme)} - 2px)`,
-        },
+        webkitBoxAlign: 'center',
         '@media (max-width:800px)': {
           borderRadius: 0,
           flexShrink: 0,
@@ -153,97 +151,60 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
 
       {/* Message input container */}
       <Box
-        sx={{
-          backgroundColor: disabledInput ? theme => theme.palette.grey[200] : 'common.white',
-          border: 0,
-          borderRadius: '5px',
-          px: 0.625, // 5px
-          py: 1.25, // 10px
+        sx={theme => ({
+          backgroundColor: disabledInput ? theme.palette.grey[200] : theme.palette.common.white,
+          border: '1px solid #D3D3D3',
+          borderRadius: '12px',
+          px: '5px',
+          py: '10px',
           resize: 'none',
+          flexGrow: 1,
           width: 'calc(100% - 75px)',
           cursor: disabledInput ? 'not-allowed' : 'text',
           transition: 'background 0.2s',
-        }}
+        })}
       >
         <Box
-          sx={{
-            '& > div': {
-              border: 0,
+          component="div"
+          spellCheck
+          role="textbox"
+          contentEditable={!disabledInput}
+          ref={inputRef}
+          tabIndex={0}
+          onKeyPress={handlerOnKeyPress}
+          onKeyUp={handlerOnKeyUp}
+          onKeyDown={handlerOnKeyDown}
+          sx={theme => ({
+            display: 'block',
+            height: '100%',
+            lineHeight: `calc(${gutters()(theme)} - 2px)`,
+            maxHeight: 78,
+            overflowY: 'auto',
+            userSelect: 'text',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            outline: 'none',
+            '&:focus-visible': {
               outline: 'none',
-              height: '100%',
-              lineHeight: '20px',
-              maxHeight: 78,
-              overflowY: 'auto',
-              userSelect: 'text',
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-              '&:focus-visible': {
-                outline: 'none',
-              },
-              // Placeholder mimic for contentEditable div when empty
-              ...(placeholder
-                ? {
-                    '&:empty:before': {
-                      content: `"${placeholder}"`,
-                      color: theme => theme.palette.grey[50],
-                      pointerEvents: 'none',
-                      opacity: 1,
-                    },
-                  }
-                : {}),
             },
-          }}
-        >
-          <Box
-            component="div"
-            spellCheck
-            role="textbox"
-            contentEditable={!disabledInput}
-            ref={inputRef}
-            tabIndex={0}
-            onKeyPress={handlerOnKeyPress}
-            onKeyUp={handlerOnKeyUp}
-            onKeyDown={handlerOnKeyDown}
-            sx={theme => ({
-              display: 'block',
-              height: '100%',
-              lineHeight: `calc(${gutters()(theme)} - 2px)`,
-              maxHeight: 78,
-              overflowY: 'auto',
-              userSelect: 'text',
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-              outline: 'none',
-              '&:focus-visible': {
-                outline: 'none',
+            ...(placeholder && {
+              '&:empty:before': {
+                content: `"${placeholder}"`,
+                color: '#808080',
+                pointerEvents: 'none',
+                opacity: 1,
               },
-              ...(placeholder && {
-                '&:empty:before': {
-                  content: `"${placeholder}"`,
-                  color: theme.palette.grey[50],
-                  pointerEvents: 'none',
-                  opacity: 1,
-                },
-              }),
-              cursor: disabledInput ? 'not-allowed' : 'text',
-            })}
-          />
-        </Box>
+            }),
+            cursor: disabledInput ? 'not-allowed' : 'text',
+          })}
+        />
       </Box>
 
-      {/* Send button */}
       <IconButton
         onClick={handlerSendMessage}
         sx={{
-          background: theme => theme.palette.grey[200],
-          border: 0,
-          p: 1,
-          ml: 1,
           paddingTop: '4px',
           cursor: 'pointer',
-          '&:hover': {
-            background: theme => theme.palette.grey[300],
-          },
         }}
         type="submit"
         disabled={disabledInput}
