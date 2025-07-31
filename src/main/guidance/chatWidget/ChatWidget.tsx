@@ -19,16 +19,12 @@ import {
   useTheme,
 } from '@mui/material';
 import { ReactElement, cloneElement, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import {
-  Widget,
-  addResponseMessage,
-  addUserMessage,
-  dropMessages,
-  markAllAsRead,
-  renderCustomComponent,
-  setBadgeCount,
-} from 'react-chat-widget-react-18';
-import 'react-chat-widget-react-18/lib/styles.css';
+import { Widget } from './controls';
+import { useMessages } from './controls/context/MessagesContext';
+import { ChatBehaviorProvider } from './controls/context/ChatBehaviorContext';
+import { MessagesProvider } from './controls/context/MessagesContext';
+import { FullscreenPreviewProvider } from './controls/context/FullscreenPreviewContext';
+// import 'react-chat-widget-react-18/lib/styles.css';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -36,16 +32,16 @@ import ChatWidgetFooter from './ChatWidgetFooter';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
 import ChatWidgetNewThreadButton from './ChatWidgetNewThreadButton';
 import ChatWidgetStyles from './ChatWidgetStyles';
-import ChatWidgetTitle from './ChatWidgetTitle';
+// import ChatWidgetTitle from './ChatWidgetTitle'; // TODO: Integrate with Context-based title
 import useChatGuidanceCommunication from './useChatGuidanceCommunication';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 // Remove the default props from the Widget component as it's throwing a warning
 // we should revise using this library or fork and fix it properly - fixing it in source is
 // rather easy
-if (Widget.hasOwnProperty('defaultProps')) {
-  delete Widget['defaultProps'];
-}
+// if (Widget.hasOwnProperty('defaultProps')) {
+//   delete Widget['defaultProps'];
+// }
 
 type FeedbackType = 'positive' | 'negative';
 
@@ -176,7 +172,7 @@ const Loading = () => {
   );
 };
 
-const ChatWidget = () => {
+const ChatWidgetInner = () => {
   const { t } = useTranslation();
   const [firstOpen, setFirstOpen] = useState(false);
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
@@ -184,6 +180,10 @@ const ChatWidget = () => {
   const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
   const { userModel } = useCurrentUserContext();
   const userId = userModel?.id;
+
+  // Use the Context hooks for message management
+  const { dropMessages, addUserMessage, addResponseMessage, addComponentMessage, setBadgeCount, markAllMessagesRead } =
+    useMessages();
 
   const handleNewUserMessage = async (newMessage: string) => {
     await sendMessage(newMessage);
@@ -263,22 +263,22 @@ const ChatWidget = () => {
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.author?.id && lastMessage.author.id !== userId) {
         // If the last message has an author and is not myself print the feedback buttons
-        renderCustomComponent(Feedback, { answerId: lastMessage.id });
+        addComponentMessage(Feedback, { answerId: lastMessage.id }, false);
         // And if the message is new, mark it as unread
         if (lastMessage.createdAt > new Date(chatToggleTime)) {
           setBadgeCount(1);
         } else {
-          markAllAsRead();
+          markAllMessagesRead();
         }
       } else if (messages.length === 1) {
         // Always mark as unread the intro message
         setBadgeCount(1);
       } else {
-        markAllAsRead();
+        markAllMessagesRead();
       }
     }
     if (loading) {
-      renderCustomComponent(Loading, undefined);
+      addComponentMessage(Loading, undefined, false);
     }
   }, [messages, loading]);
 
@@ -288,7 +288,6 @@ const ChatWidget = () => {
         <Widget
           senderPlaceHolder="Type a message..."
           showCloseButton
-          fullScreenMode={false}
           autofocus
           chatId="rcw-chat-container"
           launcherOpenLabel="Open chat"
@@ -301,8 +300,8 @@ const ChatWidget = () => {
           zoomStep={80}
           showBadge
           profileAvatar={logoSrc}
-          title={<ChatWidgetTitle key="title" onClickInfo={() => setIsHelpDialogOpen(true)} />}
-          subtitle={null}
+          title="Chat Assistant"
+          subtitle=""
           handleNewUserMessage={handleNewUserMessage}
           handleToggle={() => {
             setChatToggleTime(Date.now());
@@ -327,6 +326,18 @@ const ChatWidget = () => {
         }}
       />
     </>
+  );
+};
+
+const ChatWidget = () => {
+  return (
+    <ChatBehaviorProvider>
+      <MessagesProvider>
+        <FullscreenPreviewProvider>
+          <ChatWidgetInner />
+        </FullscreenPreviewProvider>
+      </MessagesProvider>
+    </ChatBehaviorProvider>
   );
 };
 

@@ -6,7 +6,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { AuthorizationPrivilege, PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
-// import ChatWidget from '@/main/guidance/chatWidget/ChatWidget';
+import ChatWidget from '@/main/guidance/chatWidget/ChatWidget';
 import { useTranslation } from 'react-i18next';
 
 const PlatformHelpButton = () => {
@@ -27,7 +27,9 @@ const PlatformHelpButton = () => {
 
   return (
     <>
-      {shouldDisplayChatWidget ? null : ( // <ChatWidget />
+      {shouldDisplayChatWidget ? (
+        <ChatWidget />
+      ) : (
         <IconButton onClick={openHelpDialog} aria-label={t('common.help')}>
           <HelpIcon color="primary" fontSize="large" sx={{ filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));' }} />
         </IconButton>
