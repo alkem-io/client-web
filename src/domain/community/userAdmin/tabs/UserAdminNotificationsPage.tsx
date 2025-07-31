@@ -42,12 +42,14 @@ const defaultUserSettingsNotification = {
 
 const UserAdminNotificationsPage = () => {
   const { t } = useTranslation();
-  // TODO: use the current user or the user whose page is being loaded?!
+  // TODO: this uses the userID for the page that is loaded. So the previous approach of looking at the privileges of the current
+  // user does not work. The logic below needs to be able to see what roles are held by the user whose settings are being shown
   const { userId } = useUrlResolver();
   const { user: userModel, loading: isLoadingUser } = useUserProvider(userId);
 
-  // const { platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
-  // const isPlatformAdmin = userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
+  const isPlatformAdmin = true;
+  const isOrganizationAdmin = true;
+  const isSpaceAdmin = true; // Placeholder for actual logic to determine if the user is a space admin
 
   const userID = userModel?.id ?? '';
 
@@ -169,10 +171,6 @@ const UserAdminNotificationsPage = () => {
               <BlockTitle>{t('pages.user-notifications-settings.space', 'Space settings')}</BlockTitle>
               <SwitchSettingsGroup
                 options={{
-                  applicationReceived: {
-                    checked: currentSettings?.notification?.space?.applicationReceived || false,
-                    label: t('pages.user-notifications-settings.general.applicationReceived', 'Application Received'),
-                  },
                   applicationSubmitted: {
                     checked: currentSettings?.notification?.space?.applicationSubmitted || false,
                     label: t('pages.user-notifications-settings.general.applicationSubmitted', 'Application Submitted'),
@@ -199,13 +197,6 @@ const UserAdminNotificationsPage = () => {
                       'Communication Updates'
                     ),
                   },
-                  communicationUpdatesAdmin: {
-                    checked: currentSettings?.notification?.space?.communicationUpdatesAdmin || false,
-                    label: t(
-                      'pages.user-notifications-settings.community-administration.communicationUpdatesAdmin',
-                      'Communication Updates (Admin)'
-                    ),
-                  },
                   communityInvitationUser: {
                     checked: currentSettings?.notification?.space?.communityInvitationUser || false,
                     label: t(
@@ -217,13 +208,6 @@ const UserAdminNotificationsPage = () => {
                     checked: currentSettings?.notification?.space?.communityNewMember || false,
                     label: t('pages.user-notifications-settings.general.communityNewMember', 'New Community Member'),
                   },
-                  communityNewMemberAdmin: {
-                    checked: currentSettings?.notification?.space?.communityNewMemberAdmin || false,
-                    label: t(
-                      'pages.user-notifications-settings.community-administration.communityNewMemberAdmin',
-                      'New Community Member (Admin)'
-                    ),
-                  },
                   postCommentCreated: {
                     checked: currentSettings?.notification?.space?.postCommentCreated || false,
                     label: t('pages.user-notifications-settings.general.postCommentCreated', 'Post Comment Created'),
@@ -232,13 +216,7 @@ const UserAdminNotificationsPage = () => {
                     checked: currentSettings?.notification?.space?.postCreated || false,
                     label: t('pages.user-notifications-settings.general.postCreated', 'Post Created'),
                   },
-                  postCreatedAdmin: {
-                    checked: currentSettings?.notification?.space?.postCreatedAdmin || false,
-                    label: t(
-                      'pages.user-notifications-settings.community-administration.postCreatedAdmin',
-                      'Post Created (Admin)'
-                    ),
-                  },
+
                   whiteboardCreated: {
                     checked: currentSettings?.notification?.space?.whiteboardCreated || false,
                     label: t('pages.user-notifications-settings.general.whiteboardCreated', 'Whiteboard Created'),
@@ -248,28 +226,66 @@ const UserAdminNotificationsPage = () => {
               />
             </PageContentBlock>
 
-            <PageContentBlock>
-              <BlockTitle>{t('pages.user-notifications-settings.organization-communication.title')}</BlockTitle>
-              <SwitchSettingsGroup
-                options={{
-                  mentioned: {
-                    checked: currentSettings?.notification?.organization?.mentioned || false,
-                    label: t(
-                      'pages.user-notifications-settings.organization-communication.mentioned',
-                      'Organization Mentioned'
-                    ),
-                  },
-                  messageReceived: {
-                    checked: currentSettings?.notification?.organization?.messageReceived || false,
-                    label: t(
-                      'pages.user-notifications-settings.organization-communication.messageReceived',
-                      'Message Received'
-                    ),
-                  },
-                }}
-                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-              />
-            </PageContentBlock>
+            {isSpaceAdmin && (
+              <PageContentBlock>
+                <BlockTitle>{t('pages.user-notifications-settings.space', 'Space admin settings')}</BlockTitle>
+                <SwitchSettingsGroup
+                  options={{
+                    applicationReceived: {
+                      checked: currentSettings?.notification?.space?.applicationReceived || false,
+                      label: t('pages.user-notifications-settings.general.applicationReceived', 'Application Received'),
+                    },
+                    communicationUpdatesAdmin: {
+                      checked: currentSettings?.notification?.space?.communicationUpdatesAdmin || false,
+                      label: t(
+                        'pages.user-notifications-settings.community-administration.communicationUpdatesAdmin',
+                        'Communication Updates (Admin)'
+                      ),
+                    },
+                    communityNewMemberAdmin: {
+                      checked: currentSettings?.notification?.space?.communityNewMemberAdmin || false,
+                      label: t(
+                        'pages.user-notifications-settings.community-administration.communityNewMemberAdmin',
+                        'New Community Member (Admin)'
+                      ),
+                    },
+                    postCreatedAdmin: {
+                      checked: currentSettings?.notification?.space?.postCreatedAdmin || false,
+                      label: t(
+                        'pages.user-notifications-settings.community-administration.postCreatedAdmin',
+                        'Post Created (Admin)'
+                      ),
+                    },
+                  }}
+                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+                />
+              </PageContentBlock>
+            )}
+
+            {isOrganizationAdmin && (
+              <PageContentBlock>
+                <BlockTitle>{t('pages.user-notifications-settings.organization-communication.title')}</BlockTitle>
+                <SwitchSettingsGroup
+                  options={{
+                    mentioned: {
+                      checked: currentSettings?.notification?.organization?.mentioned || false,
+                      label: t(
+                        'pages.user-notifications-settings.organization-communication.mentioned',
+                        'Organization Mentioned'
+                      ),
+                    },
+                    messageReceived: {
+                      checked: currentSettings?.notification?.organization?.messageReceived || false,
+                      label: t(
+                        'pages.user-notifications-settings.organization-communication.messageReceived',
+                        'Message Received'
+                      ),
+                    },
+                  }}
+                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+                />
+              </PageContentBlock>
+            )}
 
             <PageContentBlock>
               <BlockTitle>{t('pages.user-notifications-settings.platform.forum', 'Forum')}</BlockTitle>
@@ -293,25 +309,30 @@ const UserAdminNotificationsPage = () => {
                 onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
               />
             </PageContentBlock>
-            <PageContentBlock>
-              <BlockTitle>{t('pages.user-notifications-settings.platform.admin', 'Platform Admin')}</BlockTitle>
-              <SwitchSettingsGroup
-                options={{
-                  newUserSignUp: {
-                    checked: currentSettings?.notification?.platform?.newUserSignUp || false,
-                    label: t('pages.user-notifications-settings.user-administration.newUserSignUp', 'New User Sign Up'),
-                  },
-                  userProfileRemoved: {
-                    checked: currentSettings?.notification?.platform?.userProfileRemoved || false,
-                    label: t(
-                      'pages.user-notifications-settings.user-administration.userProfileRemoved',
-                      'User Profile Removed'
-                    ),
-                  },
-                }}
-                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-              />
-            </PageContentBlock>
+            {isPlatformAdmin && (
+              <PageContentBlock>
+                <BlockTitle>{t('pages.user-notifications-settings.platform.admin', 'Platform Admin')}</BlockTitle>
+                <SwitchSettingsGroup
+                  options={{
+                    newUserSignUp: {
+                      checked: currentSettings?.notification?.platform?.newUserSignUp || false,
+                      label: t(
+                        'pages.user-notifications-settings.user-administration.newUserSignUp',
+                        'New User Sign Up'
+                      ),
+                    },
+                    userProfileRemoved: {
+                      checked: currentSettings?.notification?.platform?.userProfileRemoved || false,
+                      label: t(
+                        'pages.user-notifications-settings.user-administration.userProfileRemoved',
+                        'User Profile Removed'
+                      ),
+                    },
+                  }}
+                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+                />
+              </PageContentBlock>
+            )}
           </>
         )}
       </PageContent>
