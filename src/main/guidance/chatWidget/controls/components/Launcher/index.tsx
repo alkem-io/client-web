@@ -44,17 +44,20 @@ function Launcher({ toggle, chatId, openImg, closeImg, openLabel, closeLabel, sh
         boxShadow: theme => `0px 2px 10px 1px ${theme.palette.grey[300]}`,
         height: 60,
         width: 60,
-        mt: 1.25, // 10px
+        mt: 1.25,
+        position: 'static',
+        margin: 0,
         cursor: 'pointer',
-        position: 'relative',
         transition: 'transform 0.5s',
-        // Slide in animation on appear
+        backgroundColor: theme => theme.palette.primary.main,
         animation: 'slideIn 0.5s',
         '&:focus': { outline: 'none' },
         '@media (max-width:800px)': {
-          // Inline your launcher-fs SASS mixin if any (e.g. borderRadius: 0, etc.)
+          bottom: 0,
+          margin: '20px',
+          position: 'fixed',
+          right: 0,
         },
-        // Optionally hide on small screens if needed
         ...(showChat && {
           '@media (max-width:800px)': {
             display: 'none',

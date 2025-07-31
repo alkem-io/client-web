@@ -15,7 +15,7 @@ function Header({ title, subtitle, toggleChat, showCloseButton, titleAvatar }: P
   return (
     <Box
       sx={{
-        backgroundColor: theme => theme.palette.primary.main || '#36b9c8', // $turqois-1 fallback
+        backgroundColor: theme => theme.palette.primary.main || '#36b9c8',
         borderRadius: '10px 10px 0 0',
         color: 'common.white',
         display: 'flex',
@@ -23,8 +23,7 @@ function Header({ title, subtitle, toggleChat, showCloseButton, titleAvatar }: P
         textAlign: 'center',
         py: '15px',
         pb: '25px',
-
-        // Responsive (mobile fullscreen override)
+        padding: theme => theme.spacing(1),
         '@media (max-width:800px)': {
           borderRadius: 0,
           flexShrink: 0,
@@ -34,24 +33,31 @@ function Header({ title, subtitle, toggleChat, showCloseButton, titleAvatar }: P
     >
       {showCloseButton && (
         <IconButton
-          // Acts as the close button, position absolute if needed
           onClick={toggleChat}
-          sx={{
-            position: 'absolute',
-            right: 0,
-            top: 0,
+          sx={theme => ({
+            backgroundColor: theme.palette.primary.main,
             m: 1.5,
-            display: 'block', // Always shown if showCloseButton
             p: 1,
-            zIndex: 1,
-
-            // Responsive overrides, inlining close-button-fs if needed
+            zIndex: 1, // Otherwise the custom header makes it non-clickable
+            top: theme.spacing(1.5),
+            right: theme.spacing(1),
+            display: 'block',
+            border: 0,
+            position: 'absolute',
+            width: theme.spacing(3),
+            paddingX: 0,
+            cursor: 'pointer',
+            background: 'transparent',
             '@media (max-width:800px)': {
-              borderRadius: 0,
-              flexShrink: 0,
-              position: 'relative',
+              backgroundColor: '#35cce6',
+              border: 0,
+              display: 'block',
+              position: 'absolute',
+              right: '10px',
+              top: '20px',
+              width: '40px',
             },
-          }}
+          })}
           aria-label="Close"
         >
           <Box
@@ -59,14 +65,9 @@ function Header({ title, subtitle, toggleChat, showCloseButton, titleAvatar }: P
             src={close}
             alt="close"
             sx={{
-              width: 24,
-              height: 24,
-              // Add responsive/close-fs tweaks
-              '@media (max-width:800px)': {
-                // ...close-fs mixin here
-                width: 28,
-                height: 28,
-              },
+              width: 20,
+              height: 20,
+              padding: 0.2,
             }}
           />
         </IconButton>
@@ -81,10 +82,9 @@ function Header({ title, subtitle, toggleChat, showCloseButton, titleAvatar }: P
           alignItems: 'center',
           justifyContent: 'center',
           fontWeight: 500,
-
-          // Responsive title-fs mixin if needed
+          padding: 0,
           '@media (max-width:800px)': {
-            // ...title-fs mixin here
+            padding: '0 0 15px 0',
           },
         }}
       >

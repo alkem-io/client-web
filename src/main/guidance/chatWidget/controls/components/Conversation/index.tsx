@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { ReactNode } from 'react';
+import { gutters } from '@/core/ui/grid/utils';
 
 import Header from './components/Header';
 import Messages from './components/Messages';
@@ -64,7 +65,6 @@ function Conversation({
       aria-live="polite"
       sx={{
         borderRadius: '10px',
-        minWidth: 370,
         maxWidth: '90vw',
         position: 'relative',
         opacity: showChat ? 1 : 0,
@@ -73,10 +73,19 @@ function Conversation({
         transform: showChat ? 'translateY(0px)' : 'translateY(10px)',
         transition: 'opacity 0.3s ease, transform 0.3s ease',
         boxShadow: theme => `0px 2px 10px 1px ${theme.palette.grey[300]}`,
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: gutters(0.5),
+        overflow: 'hidden',
+        minWidth: 0,
         '@media (max-width:800px)': {
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
+        },
+        '@media screen and (orientation: portrait)': {
+          margin: gutters(),
+          maxWidth: 'none',
         },
       }}
     >

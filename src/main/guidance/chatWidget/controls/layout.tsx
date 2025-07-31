@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { ReactNode } from 'react';
+import { gutters } from '@/core/ui/grid/utils';
 
 import { useFullscreenPreview } from './context/FullscreenPreviewContext';
 import { useChatBehavior } from './context/ChatBehaviorContext';
@@ -102,7 +103,7 @@ function WidgetLayout({
 
   return (
     <Box
-      sx={{
+      sx={theme => ({
         bottom: 0,
         display: 'flex',
         flexDirection: 'column',
@@ -112,6 +113,24 @@ function WidgetLayout({
         zIndex: 9999,
         height: !showChat ? 'max-content' : undefined,
         width: !showChat ? 'max-content' : undefined,
+        maxWidth: gutters(19),
+        maxHeight: '-webkit-fill-available',
+        '@media screen and (orientation: landscape)': {
+          '.rcw-widget-container': {
+            position: 'static',
+            margin: 0,
+            '&:has(.active)': {
+              maxHeight: `calc(100vh - ${gutters(2)(theme)})`,
+            },
+          },
+        },
+        '@media screen and (orientation: portrait)': {
+          maxWidth: 'none',
+          '&:not(:has(.active))': {
+            position: 'static',
+            margin: 0,
+          },
+        },
         '@media (max-width:800px)': {
           height: '100vh',
           margin: 0,
@@ -121,7 +140,7 @@ function WidgetLayout({
         ...(imagePreview && {
           cursor: 'pointer',
         }),
-      }}
+      })}
     >
       {showChat && (
         <Conversation

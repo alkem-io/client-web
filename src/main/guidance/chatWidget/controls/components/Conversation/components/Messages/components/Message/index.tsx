@@ -14,12 +14,11 @@ type Props = {
 };
 
 function Message({ message }: Props) {
-  // Message variant flags
   const isClient = message.sender === MESSAGE_SENDER.CLIENT;
   const isResponse = message.sender === MESSAGE_SENDER.RESPONSE;
   const isSnippet = message.type === 'snippet';
-  // Markdown rendering
   let renderedContent: React.ReactElement | null = null;
+
   if ('text' in message) {
     const sanitizedHTML = markdownIt({ breaks: true })
       .use(markdownItClass, { img: ['rcw-message-img'] })
@@ -35,8 +34,6 @@ function Message({ message }: Props) {
         sx={{
           p: 0,
           m: 0,
-          whiteSpace: 'pre-wrap',
-          wordWrap: 'break-word',
           '& p': { m: 0 },
           '& img': { width: '100%', objectFit: 'contain' },
         }}
@@ -57,7 +54,6 @@ function Message({ message }: Props) {
     renderedContent = <Component {...message.props} />;
   }
 
-  // --- Apply the bubble and layout styles here ---
   return (
     <Box
       sx={{
@@ -66,12 +62,13 @@ function Message({ message }: Props) {
         padding: '0 20px 10px',
         alignItems: 'flex-end',
       }}
+      className={isClient ? 'rcw-client' : 'rcw-response'}
     >
       <Box
         sx={theme => {
           return {
             borderRadius: isClient ? '20px 20px 5px 20px' : '20px 20px 20px 5px',
-            backgroundColor: isClient ? theme.palette.primary.light : theme.palette.grey[200],
+            backgroundColor: isClient ? theme.palette.primary.main : theme.palette.grey[200],
             maxWidth: 215,
             padding: 1.875, // 15px
             textAlign: 'left',
@@ -82,7 +79,6 @@ function Message({ message }: Props) {
             letterSpacing: '-0.2px',
             ...(isClient && {
               marginLeft: 'auto',
-              whiteSpace: 'pre-wrap',
             }),
             ...(isResponse && {
               alignItems: 'flex-start',
@@ -94,13 +90,6 @@ function Message({ message }: Props) {
               padding: '15px',
               textAlign: 'left',
             }),
-            '& .rcw-timestamp': {
-              fontSize: 10,
-              marginTop: 0.625, // 5px
-              alignSelf: isClient ? 'flex-end' : 'flex-start',
-              opacity: 0.6,
-              display: 'block',
-            },
           };
         }}
       >
