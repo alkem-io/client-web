@@ -120,7 +120,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
               <Gutters disableGap disablePadding>
                 <ProfileDetail
                   title={t('components.profile.fields.bodyOfKnowledge.title')}
-                  value={knowledgeBaseDescription}
+                  value={knowledgeBaseDescription || t('virtualContributorSpaceSettings.placeholder')}
                   aria-label="body-of-knowledge"
                 />
 

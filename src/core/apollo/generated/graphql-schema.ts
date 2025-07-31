@@ -2950,7 +2950,7 @@ export type Invitation = {
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** Additional roles to assign to the Contributor, in addition to the entry Role. */
-  extraRoles?: Maybe<Array<RoleName>>;
+  extraRoles: Array<RoleName>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Whether to also add the invited contributor to the parent community. */
@@ -5167,8 +5167,8 @@ export type PlatformInvitation = {
   platformRole?: Maybe<RoleName>;
   /** Whether a new user profile has been created. */
   profileCreated: Scalars['Boolean']['output'];
-  /** An additional role to assign to the Contributor, in addition to the entry Role. */
-  roleSetExtraRoles?: Maybe<Array<RoleName>>;
+  /** Additional roles to assign to the Contributor, in addition to the entry Role. */
+  roleSetExtraRoles: Array<RoleName>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
   /** The date at which the entity was last updated. */
@@ -7597,18 +7597,27 @@ export enum UrlType {
   ContributorsExplorer = 'CONTRIBUTORS_EXPLORER',
   Discussion = 'DISCUSSION',
   Documentation = 'DOCUMENTATION',
+  Error = 'ERROR',
   Flow = 'FLOW',
   Forum = 'FORUM',
   Home = 'HOME',
   InnovationHub = 'INNOVATION_HUB',
   InnovationLibrary = 'INNOVATION_LIBRARY',
   InnovationPacks = 'INNOVATION_PACKS',
+  Login = 'LOGIN',
+  Logout = 'LOGOUT',
   NotAuthorized = 'NOT_AUTHORIZED',
   Organization = 'ORGANIZATION',
+  Recovery = 'RECOVERY',
+  Registration = 'REGISTRATION',
+  Required = 'REQUIRED',
+  Restricted = 'RESTRICTED',
+  SignUp = 'SIGN_UP',
   Space = 'SPACE',
   SpaceExplorer = 'SPACE_EXPLORER',
   Unknown = 'UNKNOWN',
   User = 'USER',
+  Verify = 'VERIFY',
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
 }
 
@@ -26886,6 +26895,7 @@ export type SpaceCalendarEventsQuery = {
                 events: Array<{
                   __typename?: 'CalendarEvent';
                   id: string;
+                  type: CalendarEventType;
                   startDate?: Date | undefined;
                   durationDays?: number | undefined;
                   durationMinutes: number;
@@ -26989,6 +26999,7 @@ export type CollaborationTimelineInfoFragment = {
       events: Array<{
         __typename?: 'CalendarEvent';
         id: string;
+        type: CalendarEventType;
         startDate?: Date | undefined;
         durationDays?: number | undefined;
         durationMinutes: number;
@@ -27087,6 +27098,7 @@ export type DashboardTimelineAuthorizationFragment = {
 export type CalendarEventInfoFragment = {
   __typename?: 'CalendarEvent';
   id: string;
+  type: CalendarEventType;
   startDate?: Date | undefined;
   durationDays?: number | undefined;
   durationMinutes: number;
@@ -27162,9 +27174,9 @@ export type CalendarEventDetailsQuery = {
     calendarEvent?:
       | {
           __typename?: 'CalendarEvent';
-          type: CalendarEventType;
           createdDate: Date;
           id: string;
+          type: CalendarEventType;
           startDate?: Date | undefined;
           durationDays?: number | undefined;
           durationMinutes: number;
@@ -27426,9 +27438,9 @@ export type CalendarEventDetailsQuery = {
 
 export type CalendarEventDetailsFragment = {
   __typename?: 'CalendarEvent';
-  type: CalendarEventType;
   createdDate: Date;
   id: string;
+  type: CalendarEventType;
   startDate?: Date | undefined;
   durationDays?: number | undefined;
   durationMinutes: number;
@@ -27656,9 +27668,9 @@ export type CreateCalendarEventMutation = {
   __typename?: 'Mutation';
   createEventOnCalendar: {
     __typename?: 'CalendarEvent';
-    type: CalendarEventType;
     createdDate: Date;
     id: string;
+    type: CalendarEventType;
     startDate?: Date | undefined;
     durationDays?: number | undefined;
     durationMinutes: number;
@@ -27888,9 +27900,9 @@ export type UpdateCalendarEventMutation = {
   __typename?: 'Mutation';
   updateCalendarEvent: {
     __typename?: 'CalendarEvent';
-    type: CalendarEventType;
     createdDate: Date;
     id: string;
+    type: CalendarEventType;
     startDate?: Date | undefined;
     durationDays?: number | undefined;
     durationMinutes: number;

@@ -25,6 +25,7 @@ type useCalendarEventProvided = {
     | {
         id: string;
         createdDate?: string | Date;
+        type?: string;
         profile: {
           displayName: string;
           description?: string;
