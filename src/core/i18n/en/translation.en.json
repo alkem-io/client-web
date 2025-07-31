@@ -732,6 +732,10 @@
           "title": "Whiteboard",
           "tooltip": "Add a whiteboard to this post",
           "onlyRealTimeEditorAvailable": "To edit this whiteboard now, please use the whiteboard editor closing this dialog and opening the whiteboard directly clicking on the preview."
+        },
+        "link": {
+          "title": "Call To Action",
+          "tooltip": "Add a call to action to this post"
         }
       },
       "contributionSettings": {
@@ -1394,9 +1398,15 @@
         "type-whiteboards-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text.",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
-      "whiteboard": {
-        "title": "Whiteboard:",
-        "editDialogTitle": "Edit Whiteboard"
+      "framing": {
+        "whiteboard": {
+          "title": "Whiteboard:",
+          "editDialogTitle": "Edit Whiteboard"
+        },
+        "link": {
+          "name": "Call To Action",
+          "url": "URL"
+        }
       },
       "template-step": {
         "title": "Templates",

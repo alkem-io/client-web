@@ -1107,6 +1107,8 @@ export type CalloutFraming = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** The Link for framing the associated Callout. */
+  link?: Maybe<Link>;
   /** The Profile for framing the associated Callout. */
   profile: Profile;
   /** The type of the Callout Framing, the additional content attached to this callout */
@@ -1118,6 +1120,7 @@ export type CalloutFraming = {
 };
 
 export enum CalloutFramingType {
+  Link = 'LINK',
   None = 'NONE',
   Whiteboard = 'WHITEBOARD',
 }
@@ -1691,6 +1694,7 @@ export type CreateCalloutData = {
 
 export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
+  link?: Maybe<CreateLinkData>;
   profile: CreateProfileData;
   tags?: Maybe<Array<Scalars['String']['output']>>;
   /** The type of additional content attached to the framing of the callout. Defaults to None. */
@@ -1699,6 +1703,7 @@ export type CreateCalloutFramingData = {
 };
 
 export type CreateCalloutFramingInput = {
+  link?: InputMaybe<CreateLinkInput>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The type of additional content attached to the framing of the callout. Defaults to None. */
@@ -2064,7 +2069,6 @@ export type CreateSpaceAboutInput = {
   /** The CommunityGuidelines for the Space */
   guidelines?: InputMaybe<CreateCommunityGuidelinesInput>;
   profileData: CreateProfileInput;
-  when?: InputMaybe<Scalars['Markdown']['input']>;
   who?: InputMaybe<Scalars['Markdown']['input']>;
   why?: InputMaybe<Scalars['Markdown']['input']>;
 };
@@ -6995,6 +6999,7 @@ export type UpdateCalloutEntityInput = {
 };
 
 export type UpdateCalloutFramingInput = {
+  link?: InputMaybe<CreateLinkInput>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   /** The type of additional content attached to the framing of the callout. */
@@ -7321,7 +7326,6 @@ export type UpdateReferenceInput = {
 export type UpdateSpaceAboutInput = {
   /** The Profile of this Space. */
   profile?: InputMaybe<UpdateProfileInput>;
-  when?: InputMaybe<Scalars['Markdown']['input']>;
   who?: InputMaybe<Scalars['Markdown']['input']>;
   why?: InputMaybe<Scalars['Markdown']['input']>;
 };
@@ -9613,6 +9617,19 @@ export type CalloutPageCalloutQuery = {
                         };
                       }
                     | undefined;
+                }
+              | undefined;
+            link?:
+              | {
+                  __typename?: 'Link';
+                  id: string;
+                  uri: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
                 }
               | undefined;
           };
@@ -12277,6 +12294,14 @@ export type UpdateCalloutContentMutation = {
               | undefined;
           }
         | undefined;
+      link?:
+        | {
+            __typename?: 'Link';
+            id: string;
+            uri: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
@@ -12574,6 +12599,14 @@ export type UpdateCalloutVisibilityMutation = {
                   };
                 }
               | undefined;
+          }
+        | undefined;
+      link?:
+        | {
+            __typename?: 'Link';
+            id: string;
+            uri: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
     };
@@ -12960,6 +12993,14 @@ export type CreateCalloutMutation = {
                   };
                 }
               | undefined;
+          }
+        | undefined;
+      link?:
+        | {
+            __typename?: 'Link';
+            id: string;
+            uri: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
     };
@@ -13353,6 +13394,19 @@ export type CalloutDetailsQuery = {
                     | undefined;
                 }
               | undefined;
+            link?:
+              | {
+                  __typename?: 'Link';
+                  id: string;
+                  uri: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -13710,6 +13764,14 @@ export type CalloutDetailsFragment = {
                 };
               }
             | undefined;
+        }
+      | undefined;
+    link?:
+      | {
+          __typename?: 'Link';
+          id: string;
+          uri: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }
       | undefined;
   };

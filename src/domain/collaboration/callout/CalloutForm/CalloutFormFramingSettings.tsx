@@ -1,4 +1,5 @@
 import BlockIcon from '@mui/icons-material/Block';
+import CampaignIcon from '@mui/icons-material/Campaign';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
@@ -16,6 +17,8 @@ import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { Tooltip } from '@mui/material';
 import EditButton from '@/core/ui/actions/EditButton';
 import { useMemo } from 'react';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -29,19 +32,48 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
   const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
 
   const handleFramingTypeChange = (newType: CalloutFramingType) => {
-    const newFraming =
-      newType === CalloutFramingType.Whiteboard
-        ? {
-            ...framing,
-            type: newType,
-            whiteboard: {
-              content: EmptyWhiteboardString,
-              profile: { displayName: t('common.whiteboard') },
-              previewImages: [],
-            },
-          }
-        : { ...framing, type: newType, whiteboard: undefined };
-    setFieldValue('framing', newFraming);
+    if (newType === CalloutFramingType.Link) {
+      // Initialize the link object
+      setFieldValue('framing', {
+        ...framing,
+        type: newType,
+        link: {
+          uri: '',
+          profile: {
+            displayName: '',
+          },
+        },
+        whiteboard: undefined,
+      });
+    } else {
+      const newFraming =
+        newType === CalloutFramingType.Whiteboard
+          ? {
+              ...framing,
+              type: newType,
+              whiteboard: {
+                content: EmptyWhiteboardString,
+                profile: { displayName: t('common.whiteboard') },
+                previewImages: [],
+              },
+              link: undefined,
+            }
+          : {
+              ...framing,
+              type: newType,
+              whiteboard: undefined,
+              link: undefined,
+            };
+      setFieldValue('framing', newFraming);
+    }
+  };
+
+  const handleLinkChange = (field: 'uri' | 'displayName', value: string) => {
+    if (field === 'displayName') {
+      setFieldValue('framing.link.profile.displayName', value);
+    } else {
+      setFieldValue('framing.link.uri', value);
+    }
   };
 
   // Instantiating them here to be able to move them when the screen is small
@@ -61,6 +93,12 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           label: t('callout.create.framingSettings.whiteboard.title'),
           tooltip: t('callout.create.framingSettings.whiteboard.tooltip'),
           disabled: calloutRestrictions?.disableWhiteboards,
+        },
+        {
+          icon: CampaignIcon,
+          value: CalloutFramingType.Link,
+          label: t('callout.create.framingSettings.link.title'),
+          tooltip: t('callout.create.framingSettings.link.tooltip'),
         },
       ]}
       onChange={handleFramingTypeChange}
@@ -101,9 +139,30 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
             editButton={editButton}
             onDeleteContent={() => handleFramingTypeChange(CalloutFramingType.None)}
             maxHeight={gutters(12)}
-            dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
+            dialogProps={{ title: t('components.callout-creation.framing.whiteboard.editDialogTitle') }}
           />
         </PageContentBlock>
+      )}
+
+      {framing.type === CalloutFramingType.Link && (
+        <PageContentBlockSeamless row disablePadding>
+          <>
+            <FormikInputField
+              containerProps={{ width: '70%' }}
+              name="framing.link.profile.displayName"
+              title={t('components.callout-creation.framing.link.name')}
+              value={framing.link?.profile.displayName || ''}
+              onChange={e => handleLinkChange('displayName', e.target.value)}
+            />
+            <FormikInputField
+              containerProps={{ width: '30%' }}
+              name="framing.link.uri"
+              title={t('components.callout-creation.framing.link.url')}
+              value={framing.link?.uri || ''}
+              onChange={e => handleLinkChange('uri', e.target.value)}
+            />
+          </>
+        </PageContentBlockSeamless>
       )}
     </>
   );

@@ -734,6 +734,17 @@ export const WhiteboardDetailsFragmentDoc = gql`
   ${WhiteboardProfileFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
+export const LinkDetailsFragmentDoc = gql`
+  fragment LinkDetails on Link {
+    id
+    uri
+    profile {
+      id
+      displayName
+      description
+    }
+  }
+`;
 export const LinkDetailsWithAuthorizationFragmentDoc = gql`
   fragment LinkDetailsWithAuthorization on Link {
     id
@@ -866,6 +877,9 @@ export const CalloutDetailsFragmentDoc = gql`
       whiteboard {
         ...WhiteboardDetails
       }
+      link {
+        ...LinkDetails
+      }
     }
     contributionDefaults {
       id
@@ -896,6 +910,7 @@ export const CalloutDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
+  ${LinkDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
@@ -1001,17 +1016,6 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
     }
   }
   ${WhiteboardDetailsFragmentDoc}
-`;
-export const LinkDetailsFragmentDoc = gql`
-  fragment LinkDetails on Link {
-    id
-    uri
-    profile {
-      id
-      displayName
-      description
-    }
-  }
 `;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {

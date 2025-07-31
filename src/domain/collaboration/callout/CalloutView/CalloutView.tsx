@@ -58,6 +58,7 @@ const CalloutView = ({
         >
           {/* Whiteboard framing */}
           {callout.framing.type === CalloutFramingType.Whiteboard && <CalloutFramingWhiteboard callout={callout} />}
+
           {/* Collaborate with links */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
             <CalloutContributionsContainer
@@ -95,6 +96,7 @@ const CalloutView = ({
               )}
             </CalloutContributionsContainer>
           )}
+
           {/* Collaborate with Posts */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) && (
             <CalloutContributionsContainer
@@ -113,6 +115,7 @@ const CalloutView = ({
               )}
             </CalloutContributionsContainer>
           )}
+
           {/* Framing Comments */}
           {callout.comments && (
             <CalloutCommentsContainer callout={callout}>
