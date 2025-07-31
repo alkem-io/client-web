@@ -1,6 +1,6 @@
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
-import CollaborativeMarkdownInputWorking from '@/core/ui/forms/CollaborativeMarkdownInput/CollaborativeMarkdownInput_working';
+import CollaborativeMarkdownInput from '@/core/ui/forms/CollaborativeMarkdownInput/CollaborativeMarkdownInput';
 import { CharacterCountContextProvider } from '@/core/ui/forms/MarkdownInput/CharacterCountContext';
 import { DialogContent, OutlinedInput } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
@@ -50,7 +50,7 @@ const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: Memo
         {!loading && memo && (
           <CharacterCountContextProvider>
             <OutlinedInput
-              inputComponent={CollaborativeMarkdownInputWorking}
+              inputComponent={CollaborativeMarkdownInput}
               inputProps={{
                 controlsVisible: 'always',
                 collaborationId: memoId,
