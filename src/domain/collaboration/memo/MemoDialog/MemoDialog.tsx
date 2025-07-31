@@ -32,7 +32,6 @@ const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: Memo
         onClose={onClose}
         actions={
           <>
-            {collaborationState?.status}
             <ShareButton url={memo?.profile.url} entityTypeName="memo" disabled={!memo?.profile.url}>
               {/*hasUpdatePrivileges && (
               <WhiteboardShareSettings createdBy={whiteboard?.createdBy} {...contentUpdatePolicyProvided} />
