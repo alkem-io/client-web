@@ -1,9 +1,8 @@
-import { FullscreenPreviewProvider } from './context/FullscreenPreviewContext';
-import { MessagesProvider, useMessages } from './context/MessagesContext';
-import { ChatBehaviorProvider, useChatBehavior } from './context/ChatBehaviorContext';
+import { useMessages } from './context/MessagesContext';
+import { useChatBehavior } from './context/ChatBehaviorContext';
 import { ReactNode } from 'react';
 
-import WidgetLayout from './layout';
+import WidgetLayout from './WidgetLayout';
 
 type Props = {
   title: string | ReactNode;
@@ -31,7 +30,7 @@ type Props = {
   menuButton?: ReactNode;
 };
 
-function WidgetWithContext({
+function Widget({
   title,
   subtitle,
   senderPlaceHolder,
@@ -96,18 +95,6 @@ function WidgetWithContext({
       footer={footer}
       menuButton={menuButton}
     />
-  );
-}
-
-function Widget(props: Props) {
-  return (
-    <ChatBehaviorProvider>
-      <MessagesProvider>
-        <FullscreenPreviewProvider>
-          <WidgetWithContext {...props} />
-        </FullscreenPreviewProvider>
-      </MessagesProvider>
-    </ChatBehaviorProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface FullscreenPreviewState {
   src: string;
@@ -27,7 +27,7 @@ const FullscreenPreviewContext = createContext<FullscreenPreviewContextProps | u
 export const FullscreenPreviewProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<FullscreenPreviewState>(initialState);
 
-  const openPreview = useCallback((src: string, alt: string, width: number, height: number) => {
+  const openPreview = (src: string, alt: string, width: number, height: number) => {
     setState({
       src,
       alt,
@@ -35,11 +35,11 @@ export const FullscreenPreviewProvider = ({ children }: { children: ReactNode })
       height,
       visible: true,
     });
-  }, []);
+  };
 
-  const closePreview = useCallback(() => {
+  const closePreview = () => {
     setState(initialState);
-  }, []);
+  };
 
   return (
     <FullscreenPreviewContext.Provider
