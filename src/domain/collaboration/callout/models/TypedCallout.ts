@@ -64,7 +64,7 @@ export type TypedCallout = CalloutModelLight & {
 };
 
 export type LinkDetails = {
-  id: string;
+  id?: string;
   uri: string;
   profile: {
     displayName: string;

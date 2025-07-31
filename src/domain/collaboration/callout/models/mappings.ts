@@ -23,6 +23,12 @@ export const mapCalloutTemplateToCalloutForm = (
           preview?: VisualModel;
         };
       };
+      link?: {
+        uri: string;
+        profile: {
+          displayName: string;
+        };
+      };
     };
     settings: CalloutSettingsModelFull;
     contributionDefaults: {
@@ -56,6 +62,14 @@ export const mapCalloutTemplateToCalloutForm = (
             },
             content: calloutTemplate.framing.whiteboard.content,
             previewImages: [], // TODO: Download the preview images if available
+          }
+        : undefined,
+      link: calloutTemplate.framing.link
+        ? {
+            uri: calloutTemplate.framing.link.uri,
+            profile: {
+              displayName: calloutTemplate.framing.link.profile.displayName,
+            },
           }
         : undefined,
     };
@@ -146,9 +160,13 @@ export const mapCalloutSettingsFormToCalloutUpdateSettings = (
       }
     : undefined;
 
-export const mapLinkDataToLinkInput = (linkData: LinkDetails): UpdateLinkInput => {
+export const mapLinkDataToUpdateLinkInput = (linkData: LinkDetails | undefined): UpdateLinkInput | undefined => {
+  if (!linkData) {
+    return undefined;
+  }
+
   return {
-    ID: linkData.id,
+    ID: linkData.id ?? '', // the same model used for creation and update
     uri: linkData.uri,
     profile: {
       displayName: linkData.profile.displayName,

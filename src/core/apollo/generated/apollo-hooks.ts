@@ -2289,6 +2289,9 @@ export const CalloutTemplateContentFragmentDoc = gql`
         ...WhiteboardDetails
         content
       }
+      link {
+        ...LinkDetails
+      }
     }
     settings {
       ...CalloutSettingsFull
@@ -2303,6 +2306,7 @@ export const CalloutTemplateContentFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
+  ${LinkDetailsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
 export const CommunityGuidelinesTemplateContentFragmentDoc = gql`

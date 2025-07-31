@@ -6999,7 +6999,7 @@ export type UpdateCalloutEntityInput = {
 };
 
 export type UpdateCalloutFramingInput = {
-  link?: InputMaybe<CreateLinkInput>;
+  link?: InputMaybe<UpdateLinkInput>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   /** The type of additional content attached to the framing of the callout. */
@@ -25476,6 +25476,19 @@ export type TemplateContentQuery = {
                           | undefined;
                       }
                     | undefined;
+                  link?:
+                    | {
+                        __typename?: 'Link';
+                        id: string;
+                        uri: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
+                        };
+                      }
+                    | undefined;
                 };
                 settings: {
                   __typename?: 'CalloutSettings';
@@ -26001,6 +26014,14 @@ export type CalloutTemplateContentFragment = {
                 };
               }
             | undefined;
+        }
+      | undefined;
+    link?:
+      | {
+          __typename?: 'Link';
+          id: string;
+          uri: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }
       | undefined;
   };
