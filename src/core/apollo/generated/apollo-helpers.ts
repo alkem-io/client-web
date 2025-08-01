@@ -1268,10 +1268,8 @@ export type CreateLocationDataFieldPolicy = {
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CreateMemoDataKeySpecifier = ('content' | 'nameID' | 'profile' | CreateMemoDataKeySpecifier)[];
+export type CreateMemoDataKeySpecifier = ('profile' | CreateMemoDataKeySpecifier)[];
 export type CreateMemoDataFieldPolicy = {
-  content?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreatePostDataKeySpecifier = ('tags' | CreatePostDataKeySpecifier)[];

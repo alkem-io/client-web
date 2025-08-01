@@ -94,10 +94,6 @@ export const CollaborativeMarkdownInput = memo(
 
           editor?.commands.setImage({ src: data.uploadFileOnStorageBucket, alt: 'pasted-image' });
         },
-
-        onError: error => {
-          console.error(error.message);
-        },
       });
 
       const isImageOrHtmlWithImage = (item: DataTransferItem, clipboardData: DataTransfer | null) => {
@@ -175,7 +171,7 @@ export const CollaborativeMarkdownInput = memo(
 
       useEffect(() => {
         providerRef.current = new TiptapCollabProvider({
-          baseUrl: 'ws://localhost:4004',
+          baseUrl: 'ws://localhost:3000/api/private/hocuspocus',
           name: collaborationId,
           document: ydoc,
         });
@@ -185,6 +181,11 @@ export const CollaborativeMarkdownInput = memo(
         };
 
         providerRef.current.on('status', statusHandler);
+        providerRef.current.on('stateless', (message: { payload: string } | Record<string, unknown>) => {
+          if ('payload' in message && (message.payload === 'saved' || message.payload === 'save-error')) {
+            // Handle the stateless message
+          }
+        });
 
         return () => {
           providerRef.current?.destroy();

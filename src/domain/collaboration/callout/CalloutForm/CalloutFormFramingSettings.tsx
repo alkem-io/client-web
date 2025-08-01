@@ -17,7 +17,6 @@ import { Tooltip } from '@mui/material';
 import EditButton from '@/core/ui/actions/EditButton';
 import { useMemo } from 'react';
 import { MemoIcon } from '../../memo/icon/MemoIcon';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -52,7 +51,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           type: newType,
           whiteboard: undefined,
           memo: {
-            content: '',
+            // content: '',
             profile: { displayName: t('common.memo') },
             previewImages: [],
           },
@@ -137,16 +136,6 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
             onDeleteContent={() => handleFramingTypeChange(CalloutFramingType.None)}
             maxHeight={gutters(12)}
             dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
-          />
-        </PageContentBlock>
-      )}
-
-      {framing.memo && framing.type === CalloutFramingType.Memo && (
-        <PageContentBlock disablePadding>
-          <FormikMarkdownField
-            title="Initial content"
-            name="framing.memo.content"
-            /* previewImagesName="framing.memo.previewImages" */
           />
         </PageContentBlock>
       )}

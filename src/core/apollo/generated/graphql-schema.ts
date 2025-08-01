@@ -1992,16 +1992,10 @@ export type CreateLocationInput = {
 
 export type CreateMemoData = {
   __typename?: 'CreateMemoData';
-  content?: Maybe<Scalars['MemoContent']['output']>;
-  /** A readable identifier, unique within the containing scope. */
-  nameID?: Maybe<Scalars['NameID']['output']>;
   profile?: Maybe<CreateProfileData>;
 };
 
 export type CreateMemoInput = {
-  content?: InputMaybe<Scalars['MemoContent']['input']>;
-  /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
   profile?: InputMaybe<CreateProfileInput>;
 };
 
@@ -2086,7 +2080,6 @@ export type CreateSpaceAboutInput = {
   /** The CommunityGuidelines for the Space */
   guidelines?: InputMaybe<CreateCommunityGuidelinesInput>;
   profileData: CreateProfileInput;
-  when?: InputMaybe<Scalars['Markdown']['input']>;
   who?: InputMaybe<Scalars['Markdown']['input']>;
   why?: InputMaybe<Scalars['Markdown']['input']>;
 };
@@ -2976,7 +2969,7 @@ export type Invitation = {
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** Additional roles to assign to the Contributor, in addition to the entry Role. */
-  extraRoles?: Maybe<Array<RoleName>>;
+  extraRoles: Array<RoleName>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Whether to also add the invited contributor to the parent community. */
@@ -3766,8 +3759,8 @@ export type Memo = {
   __typename?: 'Memo';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The visual content of the Memo. */
-  content: Scalars['MemoContent']['output'];
+  /** The binary state V2 of the Yjs document, used to collaborate on the Memo, represented in base64. */
+  content?: Maybe<Scalars['String']['output']>;
   /** The policy governing who can update the Memo content. */
   contentUpdatePolicy: ContentUpdatePolicy;
   /** The user that created this Memo */
@@ -5235,8 +5228,8 @@ export type PlatformInvitation = {
   platformRole?: Maybe<RoleName>;
   /** Whether a new user profile has been created. */
   profileCreated: Scalars['Boolean']['output'];
-  /** An additional role to assign to the Contributor, in addition to the entry Role. */
-  roleSetExtraRoles?: Maybe<Array<RoleName>>;
+  /** Additional roles to assign to the Contributor, in addition to the entry Role. */
+  roleSetExtraRoles: Array<RoleName>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
   /** The date at which the entity was last updated. */
@@ -7064,6 +7057,8 @@ export type UpdateCalloutEntityInput = {
 };
 
 export type UpdateCalloutFramingInput = {
+  /** The new content to be used. */
+  memoContent?: InputMaybe<Scalars['Markdown']['input']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   /** The type of additional content attached to the framing of the callout. */
@@ -7295,8 +7290,6 @@ export type UpdateLocationInput = {
 export type UpdateMemoEntityInput = {
   ID: Scalars['UUID']['input'];
   contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
-  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']['input']>;
   /** The Profile of this entity. */
   profile?: InputMaybe<UpdateProfileInput>;
 };
@@ -7399,7 +7392,6 @@ export type UpdateReferenceInput = {
 export type UpdateSpaceAboutInput = {
   /** The Profile of this Space. */
   profile?: InputMaybe<UpdateProfileInput>;
-  when?: InputMaybe<Scalars['Markdown']['input']>;
   who?: InputMaybe<Scalars['Markdown']['input']>;
   why?: InputMaybe<Scalars['Markdown']['input']>;
 };
@@ -7675,18 +7667,27 @@ export enum UrlType {
   ContributorsExplorer = 'CONTRIBUTORS_EXPLORER',
   Discussion = 'DISCUSSION',
   Documentation = 'DOCUMENTATION',
+  Error = 'ERROR',
   Flow = 'FLOW',
   Forum = 'FORUM',
   Home = 'HOME',
   InnovationHub = 'INNOVATION_HUB',
   InnovationLibrary = 'INNOVATION_LIBRARY',
   InnovationPacks = 'INNOVATION_PACKS',
+  Login = 'LOGIN',
+  Logout = 'LOGOUT',
   NotAuthorized = 'NOT_AUTHORIZED',
   Organization = 'ORGANIZATION',
+  Recovery = 'RECOVERY',
+  Registration = 'REGISTRATION',
+  Required = 'REQUIRED',
+  Restricted = 'RESTRICTED',
+  SignUp = 'SIGN_UP',
   Space = 'SPACE',
   SpaceExplorer = 'SPACE_EXPLORER',
   Unknown = 'UNKNOWN',
   User = 'USER',
+  Verify = 'VERIFY',
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
 }
 
@@ -12271,7 +12272,7 @@ export type CalloutContentQuery = {
               | {
                   __typename?: 'Memo';
                   id: string;
-                  content: string;
+                  content?: string | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
