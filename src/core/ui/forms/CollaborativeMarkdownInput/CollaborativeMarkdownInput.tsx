@@ -23,6 +23,7 @@ import useUserCursor from './useUserCursor';
 import './styles.scss';
 import { isEqual } from 'lodash';
 import { RealTimeCollaborationState } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
+import { env } from '@/main/env';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -171,7 +172,7 @@ export const CollaborativeMarkdownInput = memo(
 
       useEffect(() => {
         providerRef.current = new TiptapCollabProvider({
-          baseUrl: 'ws://localhost:3000/api/private/hocuspocus',
+          baseUrl: `${env?.VITE_APP_COLLAB_DOC_URL}${env?.VITE_APP_COLLAB_DOC_PATH}`,
           name: collaborationId,
           document: ydoc,
         });
