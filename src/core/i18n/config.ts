@@ -46,7 +46,7 @@ export const resources = {
 
 type Language = keyof typeof resources;
 
-export const supportedLngs: Language[] = ['en', 'nl', 'es', 'bg', 'ua', 'de', 'fr', 'pt'];
+export const supportedLngs: Language[] = ['en', 'nl', 'es', 'bg', 'de', 'fr', 'pt'];
 
 if (env?.VITE_APP_IN_CONTEXT_TRANSLATION === 'true') {
   supportedLngs.push('inContextTool');
