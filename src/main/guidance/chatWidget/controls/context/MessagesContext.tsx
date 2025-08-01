@@ -27,10 +27,9 @@ const initialState: MessagesState = {
 
 const MessagesContext = createContext<MessagesContextProps | undefined>(undefined);
 
-// Helper functions (similar to the original utils)
 const createNewMessage = (text: string, sender: 'client' | 'response', id?: string): MessageTypes => ({
   type: 'text',
-  component: () => null, // This will be set by the actual message component
+  component: () => null,
   sender,
   showAvatar: sender !== 'client',
   timestamp: new Date(),
@@ -41,7 +40,7 @@ const createNewMessage = (text: string, sender: 'client' | 'response', id?: stri
 
 const createLinkSnippet = (link: { link: string; title: string; target?: string }, id?: string): Link => ({
   type: 'link',
-  component: () => null, // This will be set by the actual link component
+  component: () => null,
   sender: 'response',
   showAvatar: true,
   timestamp: new Date(),

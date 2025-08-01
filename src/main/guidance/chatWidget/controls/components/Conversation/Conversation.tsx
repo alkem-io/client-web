@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
 
 import Header from './components/Header';
-import Messages from './components/Messages';
+import Messages from './components/Messages/Messages';
 import Sender from './components/Sender';
 
 import Box from '@mui/material/Box';

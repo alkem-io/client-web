@@ -10,7 +10,7 @@ function Badge({ badge }: Props) {
       <Box
         component="span"
         sx={{
-          position: 'fixed',
+          position: 'absolute',
           top: -10,
           right: -5,
           bgcolor: 'error.main',

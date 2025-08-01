@@ -6,7 +6,7 @@ import markdownItSanitizer from 'markdown-it-sanitizer';
 import markdownItClass from '@toycode/markdown-it-class';
 import markdownItLinkAttributes from 'markdown-it-link-attributes';
 
-import { Message as MessageType } from '../../../../../../context/types';
+import { Message as MessageType } from '../../../../../context/types';
 import { MESSAGE_SENDER } from '@/main/guidance/chatWidget/controls/context';
 
 type Props = {

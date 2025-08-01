@@ -1,9 +1,9 @@
 import { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { ReactNode } from 'react';
 
-import { useChatBehavior } from '../../../../context/ChatBehaviorContext';
+import { useChatBehavior } from '../../../context/ChatBehaviorContext';
 
-import { getCaretIndex, isFirefox, updateCaret, insertNodeAtCaret, getSelection } from '../../../../utils';
+import { getCaretIndex, isFirefox, updateCaret, insertNodeAtCaret, getSelection } from '../../../utils';
 import send from '../../../../assets/send_button.svg';
 
 const brRegex = /<br>/g;

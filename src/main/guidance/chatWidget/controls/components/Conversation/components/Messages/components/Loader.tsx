@@ -17,15 +17,15 @@ function Loader({ typing }: Props) {
   return (
     <Box
       sx={{
-        margin: 1.25, // 10px
+        margin: '10px',
         display: 'flex',
       }}
     >
       <Box
         sx={{
           bgcolor: theme => theme.palette.grey[200],
-          borderRadius: 2.5, // 10px
-          padding: 1.875, // 15px
+          borderRadius: '10px',
+          padding: '15px',
           maxWidth: 215,
           textAlign: 'left',
         }}
