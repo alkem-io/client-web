@@ -1413,6 +1413,45 @@ export const UserDisplayNameFragmentDoc = gql`
     }
   }
 `;
+export const UserSettingsFragmentFragmentDoc = gql`
+  fragment userSettingsFragment on UserSettings {
+    id
+    communication {
+      allowOtherUsersToSendMessages
+    }
+    privacy {
+      contributionRolesPubliclyVisible
+    }
+    notification {
+      platform {
+        userProfileRemoved
+        newUserSignUp
+        forumDiscussionComment
+        forumDiscussionCreated
+      }
+      organization {
+        mentioned
+        messageReceived
+      }
+      space {
+        applicationReceived
+        applicationSubmitted
+        communityInvitationUser
+        communityNewMemberAdmin
+        postCommentCreated
+        communicationMention
+        commentReply
+        calloutPublished
+        communityNewMember
+        communicationUpdates
+        communicationUpdatesAdmin
+        postCreated
+        postCreatedAdmin
+        whiteboardCreated
+      }
+    }
+  }
+`;
 export const SpaceAboutMinimalUrlFragmentDoc = gql`
   fragment SpaceAboutMinimalUrl on SpaceAbout {
     id
@@ -12660,15 +12699,11 @@ export const UpdateUserSettingsDocument = gql`
     updateUserSettings(settingsData: $settingsData) {
       id
       settings {
-        privacy {
-          contributionRolesPubliclyVisible
-        }
-        communication {
-          allowOtherUsersToSendMessages
-        }
+        ...userSettingsFragment
       }
     }
   }
+  ${UserSettingsFragmentFragmentDoc}
 `;
 export type UpdateUserSettingsMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateUserSettingsMutation,
@@ -12716,44 +12751,12 @@ export const UserSettingsDocument = gql`
       user(ID: $userID) {
         id
         settings {
-          communication {
-            allowOtherUsersToSendMessages
-          }
-          privacy {
-            contributionRolesPubliclyVisible
-          }
-          notification {
-            platform {
-              userProfileRemoved
-              newUserSignUp
-              forumDiscussionComment
-              forumDiscussionCreated
-            }
-            organization {
-              mentioned
-              messageReceived
-            }
-            space {
-              applicationReceived
-              applicationSubmitted
-              communityInvitationUser
-              communityNewMemberAdmin
-              postCommentCreated
-              communicationMention
-              commentReply
-              calloutPublished
-              communityNewMember
-              communicationUpdates
-              communicationUpdatesAdmin
-              postCreated
-              postCreatedAdmin
-              whiteboardCreated
-            }
-          }
+          ...userSettingsFragment
         }
       }
     }
   }
+  ${UserSettingsFragmentFragmentDoc}
 `;
 
 /**

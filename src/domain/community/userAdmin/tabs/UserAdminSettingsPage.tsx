@@ -22,7 +22,7 @@ const defaultUserSettings = {
 
 export const UserAdminSettingsPage = () => {
   const { userId } = useUrlResolver();
-  const { user: userModel, loading: isLoadingUser } = useUserProvider(userId);
+  const { userModel: userModel, loading: isLoadingUser } = useUserProvider(userId);
 
   const { t } = useTranslation();
   const userID = userModel?.id ?? '';

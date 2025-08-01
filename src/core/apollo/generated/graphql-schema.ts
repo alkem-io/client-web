@@ -18274,8 +18274,76 @@ export type UpdateUserSettingsMutation = {
     id: string;
     settings: {
       __typename?: 'UserSettings';
-      privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+      id: string;
       communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+      privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+      notification: {
+        __typename?: 'UserSettingsNotification';
+        platform: {
+          __typename?: 'UserSettingsNotificationPlatform';
+          userProfileRemoved: boolean;
+          newUserSignUp: boolean;
+          forumDiscussionComment: boolean;
+          forumDiscussionCreated: boolean;
+        };
+        organization: {
+          __typename?: 'UserSettingsNotificationOrganization';
+          mentioned: boolean;
+          messageReceived: boolean;
+        };
+        space: {
+          __typename?: 'UserSettingsNotificationSpace';
+          applicationReceived: boolean;
+          applicationSubmitted: boolean;
+          communityInvitationUser: boolean;
+          communityNewMemberAdmin: boolean;
+          postCommentCreated: boolean;
+          communicationMention: boolean;
+          commentReply: boolean;
+          calloutPublished: boolean;
+          communityNewMember: boolean;
+          communicationUpdates: boolean;
+          communicationUpdatesAdmin: boolean;
+          postCreated: boolean;
+          postCreatedAdmin: boolean;
+          whiteboardCreated: boolean;
+        };
+      };
+    };
+  };
+};
+
+export type UserSettingsFragmentFragment = {
+  __typename?: 'UserSettings';
+  id: string;
+  communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+  privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+  notification: {
+    __typename?: 'UserSettingsNotification';
+    platform: {
+      __typename?: 'UserSettingsNotificationPlatform';
+      userProfileRemoved: boolean;
+      newUserSignUp: boolean;
+      forumDiscussionComment: boolean;
+      forumDiscussionCreated: boolean;
+    };
+    organization: { __typename?: 'UserSettingsNotificationOrganization'; mentioned: boolean; messageReceived: boolean };
+    space: {
+      __typename?: 'UserSettingsNotificationSpace';
+      applicationReceived: boolean;
+      applicationSubmitted: boolean;
+      communityInvitationUser: boolean;
+      communityNewMemberAdmin: boolean;
+      postCommentCreated: boolean;
+      communicationMention: boolean;
+      commentReply: boolean;
+      calloutPublished: boolean;
+      communityNewMember: boolean;
+      communicationUpdates: boolean;
+      communicationUpdatesAdmin: boolean;
+      postCreated: boolean;
+      postCreatedAdmin: boolean;
+      whiteboardCreated: boolean;
     };
   };
 };
@@ -18294,6 +18362,7 @@ export type UserSettingsQuery = {
           id: string;
           settings: {
             __typename?: 'UserSettings';
+            id: string;
             communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
             privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
             notification: {

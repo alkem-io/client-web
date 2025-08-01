@@ -10,6 +10,8 @@ import PageContent from '@/core/ui/content/PageContent';
 import { BlockTitle } from '@/core/ui/typography/components';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
+import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 const defaultUserSettingsNotification = {
   space: {
@@ -42,14 +44,24 @@ const defaultUserSettingsNotification = {
 
 const UserAdminNotificationsPage = () => {
   const { t } = useTranslation();
-  // TODO: this uses the userID for the page that is loaded. So the previous approach of looking at the privileges of the current
-  // user does not work. The logic below needs to be able to see what roles are held by the user whose settings are being shown
-  const { userId } = useUrlResolver();
-  const { user: userModel, loading: isLoadingUser } = useUserProvider(userId);
+  // Note: there is the page for whom the settings are being show. There is also the user that is currently logged in.
 
-  const isPlatformAdmin = true;
+  const { userId } = useUrlResolver();
+  const { userModel: userModel, loading: isLoadingUser } = useUserProvider(userId);
+
+  const { userModel: currentUserModel, platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
+  const notificationPageForCurrentUser = userModel?.id === currentUserModel?.id;
+
+  // For most users they will be looking at their own page, so unless they are platform admins they should not see those sections.
+  // For platform elevated users they should be able to see all sections.
+  let isPlatformAdmin = true;
+  if (notificationPageForCurrentUser) {
+    isPlatformAdmin = userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
+  }
+
+  // Until can determine quickly if the user for the page being shown has particular roles, we will assume they are an organization and space admin.
   const isOrganizationAdmin = true;
-  const isSpaceAdmin = true; // Placeholder for actual logic to determine if the user is a space admin
+  const isSpaceAdmin = true;
 
   const userID = userModel?.id ?? '';
 

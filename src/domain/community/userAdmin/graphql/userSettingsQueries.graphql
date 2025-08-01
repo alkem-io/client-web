@@ -3,40 +3,7 @@ query userSettings($userID: UUID!) {
     user(ID: $userID) {
       id
       settings {
-        communication {
-          allowOtherUsersToSendMessages
-        }
-        privacy {
-          contributionRolesPubliclyVisible
-        }
-        notification {
-          platform {
-            userProfileRemoved
-            newUserSignUp
-            forumDiscussionComment
-            forumDiscussionCreated
-          }
-          organization {
-            mentioned
-            messageReceived
-          }
-          space {
-            applicationReceived
-            applicationSubmitted
-            communityInvitationUser
-            communityNewMemberAdmin
-            postCommentCreated
-            communicationMention
-            commentReply
-            calloutPublished
-            communityNewMember
-            communicationUpdates
-            communicationUpdatesAdmin
-            postCreated
-            postCreatedAdmin
-            whiteboardCreated
-          }
-        }
+        ...userSettingsFragment
       }
     }
   }
