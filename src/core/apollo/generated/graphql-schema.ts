@@ -7370,7 +7370,7 @@ export type UpdateUserPlatformSettingsInput = {
 
 export type UpdateUserSettingsCommunicationInput = {
   /** Allow Users to send messages to this User. */
-  allowOtherUsersToSendMessages: Scalars['Boolean']['input'];
+  allowOtherUsersToSendMessages?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateUserSettingsEntityInput = {
@@ -7400,56 +7400,56 @@ export type UpdateUserSettingsNotificationInput = {
 
 export type UpdateUserSettingsNotificationOrganizationInput = {
   /** Receive a notification when the organization you are admin of is mentioned */
-  mentioned: Scalars['Boolean']['input'];
+  mentioned?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive notification when the organization you are admin of is messaged */
-  messageReceived: Scalars['Boolean']['input'];
+  messageReceived?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateUserSettingsNotificationPlatformInput = {
   /** Receive a notification when a new comment is added to a Discussion I created in the Forum */
-  forumDiscussionComment: Scalars['Boolean']['input'];
+  forumDiscussionComment?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a new Discussion is created in the Forum */
-  forumDiscussionCreated: Scalars['Boolean']['input'];
+  forumDiscussionCreated?: InputMaybe<Scalars['Boolean']['input']>;
   /** [Admin] Receive notification when a new user signs up */
-  newUserSignUp: Scalars['Boolean']['input'];
+  newUserSignUp?: InputMaybe<Scalars['Boolean']['input']>;
   /** [Admin] Receive a notification when a user profile is removed */
-  userProfileRemoved: Scalars['Boolean']['input'];
+  userProfileRemoved?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateUserSettingsNotificationSpaceInput = {
   /** Receive a notification when an application is received */
-  applicationReceived: Scalars['Boolean']['input'];
+  applicationReceived?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when an application is submitted */
-  applicationSubmitted: Scalars['Boolean']['input'];
+  applicationSubmitted?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a callout is published */
-  calloutPublished: Scalars['Boolean']['input'];
+  calloutPublished?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when someone replies to your comment */
-  commentReply: Scalars['Boolean']['input'];
+  commentReply?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when mentioned in communication */
-  communicationMention: Scalars['Boolean']['input'];
+  communicationMention?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification for community updates */
-  communicationUpdates: Scalars['Boolean']['input'];
+  communicationUpdates?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification for community updates */
-  communicationUpdatesAdmin: Scalars['Boolean']['input'];
+  communicationUpdatesAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification for community invitation */
-  communityInvitationUser: Scalars['Boolean']['input'];
+  communityInvitationUser?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a new member joins the community */
-  communityNewMember: Scalars['Boolean']['input'];
+  communityNewMember?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a new member joins the community (admin) */
-  communityNewMemberAdmin: Scalars['Boolean']['input'];
+  communityNewMemberAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a comment is created on a post */
-  postCommentCreated: Scalars['Boolean']['input'];
+  postCommentCreated?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a post is created */
-  postCreated: Scalars['Boolean']['input'];
+  postCreated?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a post is created (admin) */
-  postCreatedAdmin: Scalars['Boolean']['input'];
+  postCreatedAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a whiteboard is created */
-  whiteboardCreated: Scalars['Boolean']['input'];
+  whiteboardCreated?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateUserSettingsPrivacyInput = {
   /** Allow contribution roles (communication, lead etc) in Spaces to be visible. */
-  contributionRolesPubliclyVisible: Scalars['Boolean']['input'];
+  contributionRolesPubliclyVisible?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateVirtualContributorInput = {

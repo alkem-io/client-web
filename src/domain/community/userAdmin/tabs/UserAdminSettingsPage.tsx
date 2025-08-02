@@ -11,15 +11,6 @@ import { useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apol
 import { useUserProvider } from '../../user/hooks/useUserProvider';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
-const defaultUserSettings = {
-  privacy: {
-    contributionRolePubliclyVisible: true,
-  },
-  communication: {
-    allowOtherUsersToSendMessages: true,
-  },
-};
-
 export const UserAdminSettingsPage = () => {
   const { userId } = useUrlResolver();
   const { userModel: userModel, loading: isLoadingUser } = useUserProvider(userId);
@@ -47,10 +38,8 @@ export const UserAdminSettingsPage = () => {
   }
 
   const handleUpdateSettings = async ({
-    allowOtherUsersToSendMessages = currentSettings?.communication?.allowOtherUsersToSendMessages ||
-      defaultUserSettings.communication.allowOtherUsersToSendMessages,
-    contributionRolesPubliclyVisible = currentSettings?.privacy?.contributionRolesPubliclyVisible ||
-      defaultUserSettings.privacy.contributionRolePubliclyVisible,
+    allowOtherUsersToSendMessages = currentSettings?.communication?.allowOtherUsersToSendMessages,
+    contributionRolesPubliclyVisible = currentSettings?.privacy?.contributionRolesPubliclyVisible,
   }: {
     allowOtherUsersToSendMessages?: boolean;
     contributionRolesPubliclyVisible?: boolean;

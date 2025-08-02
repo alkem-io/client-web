@@ -13,35 +13,6 @@ import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGr
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
-const defaultUserSettingsNotification = {
-  space: {
-    applicationReceived: true,
-    applicationSubmitted: true,
-    calloutPublished: true,
-    commentReply: true,
-    communicationMention: true,
-    communicationUpdates: true,
-    communicationUpdatesAdmin: true,
-    communityInvitationUser: true,
-    communityNewMember: true,
-    communityNewMemberAdmin: true,
-    postCommentCreated: true,
-    postCreated: true,
-    postCreatedAdmin: true,
-    whiteboardCreated: true,
-  },
-  organization: {
-    mentioned: true,
-    messageReceived: true,
-  },
-  platform: {
-    forumDiscussionComment: true,
-    forumDiscussionCreated: true,
-    newUserSignUp: true,
-    userProfileRemoved: true,
-  },
-};
-
 const UserAdminNotificationsPage = () => {
   const { t } = useTranslation();
   // Note: there is the page for whom the settings are being show. There is also the user that is currently logged in.
@@ -84,30 +55,32 @@ const UserAdminNotificationsPage = () => {
     return <Loading />;
   }
 
+  const currentSpaceNotificationSettings = currentSettings?.notification?.space;
+
   const handleUpdateSettings = async ({
     // Space notifications
-    applicationReceived = defaultUserSettingsNotification.space.applicationReceived,
-    applicationSubmitted = defaultUserSettingsNotification.space.applicationSubmitted,
-    calloutPublished = defaultUserSettingsNotification.space.calloutPublished,
-    commentReply = defaultUserSettingsNotification.space.commentReply,
-    communicationMention = defaultUserSettingsNotification.space.communicationMention,
-    communicationUpdates = defaultUserSettingsNotification.space.communicationUpdates,
-    communicationUpdatesAdmin = defaultUserSettingsNotification.space.communicationUpdatesAdmin,
-    communityInvitationUser = defaultUserSettingsNotification.space.communityInvitationUser,
-    communityNewMember = defaultUserSettingsNotification.space.communityNewMember,
-    communityNewMemberAdmin = defaultUserSettingsNotification.space.communityNewMemberAdmin,
-    postCommentCreated = defaultUserSettingsNotification.space.postCommentCreated,
-    postCreated = defaultUserSettingsNotification.space.postCreated,
-    postCreatedAdmin = defaultUserSettingsNotification.space.postCreatedAdmin,
-    whiteboardCreated = defaultUserSettingsNotification.space.whiteboardCreated,
+    applicationReceived = currentSpaceNotificationSettings?.applicationReceived,
+    applicationSubmitted = currentSpaceNotificationSettings?.applicationSubmitted,
+    calloutPublished = currentSpaceNotificationSettings?.calloutPublished,
+    commentReply = currentSpaceNotificationSettings?.commentReply,
+    communicationMention = currentSpaceNotificationSettings?.communicationMention,
+    communicationUpdates = currentSpaceNotificationSettings?.communicationUpdates,
+    communicationUpdatesAdmin = currentSpaceNotificationSettings?.communicationUpdatesAdmin,
+    communityInvitationUser = currentSpaceNotificationSettings?.communityInvitationUser,
+    communityNewMember = currentSpaceNotificationSettings?.communityNewMember,
+    communityNewMemberAdmin = currentSpaceNotificationSettings?.communityNewMemberAdmin,
+    postCommentCreated = currentSpaceNotificationSettings?.postCommentCreated,
+    postCreated = currentSpaceNotificationSettings?.postCreated,
+    postCreatedAdmin = currentSpaceNotificationSettings?.postCreatedAdmin,
+    whiteboardCreated = currentSpaceNotificationSettings?.whiteboardCreated,
     // Organization notifications
-    mentioned = defaultUserSettingsNotification.organization.mentioned,
-    messageReceived = defaultUserSettingsNotification.organization.messageReceived,
+    mentioned = currentSettings?.notification?.organization?.mentioned,
+    messageReceived = currentSettings?.notification?.organization?.messageReceived,
     // Platform notifications
-    forumDiscussionComment = defaultUserSettingsNotification.platform.forumDiscussionComment,
-    forumDiscussionCreated = defaultUserSettingsNotification.platform.forumDiscussionCreated,
-    newUserSignUp = defaultUserSettingsNotification.platform.newUserSignUp,
-    userProfileRemoved = defaultUserSettingsNotification.platform.userProfileRemoved,
+    forumDiscussionComment = currentSettings?.notification?.platform?.forumDiscussionComment,
+    forumDiscussionCreated = currentSettings?.notification?.platform?.forumDiscussionCreated,
+    newUserSignUp = currentSettings?.notification?.platform?.newUserSignUp,
+    userProfileRemoved = currentSettings?.notification?.platform?.userProfileRemoved,
   }: {
     // Space notifications
     applicationReceived?: boolean;
