@@ -1225,11 +1225,22 @@ export type CreateInnovationFlowDataFieldPolicy = {
 export type CreateInnovationFlowStateDataKeySpecifier = (
   | 'description'
   | 'displayName'
+  | 'settings'
+  | 'sortOrder'
   | CreateInnovationFlowStateDataKeySpecifier
 )[];
 export type CreateInnovationFlowStateDataFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateInnovationFlowStateSettingsDataKeySpecifier = (
+  | 'allowNewCallouts'
+  | CreateInnovationFlowStateSettingsDataKeySpecifier
+)[];
+export type CreateInnovationFlowStateSettingsDataFieldPolicy = {
+  allowNewCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateLinkDataKeySpecifier = ('profile' | 'uri' | CreateLinkDataKeySpecifier)[];
 export type CreateLinkDataFieldPolicy = {
@@ -1620,10 +1631,30 @@ export type InnovationFlowSettingsFieldPolicy = {
   maximumNumberOfStates?: FieldPolicy<any> | FieldReadFunction<any>;
   minimumNumberOfStates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type InnovationFlowStateKeySpecifier = ('description' | 'displayName' | InnovationFlowStateKeySpecifier)[];
+export type InnovationFlowStateKeySpecifier = (
+  | 'authorization'
+  | 'createdDate'
+  | 'description'
+  | 'displayName'
+  | 'id'
+  | 'settings'
+  | 'sortOrder'
+  | 'updatedDate'
+  | InnovationFlowStateKeySpecifier
+)[];
 export type InnovationFlowStateFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InnovationFlowStateSettingsKeySpecifier = ('allowNewCallouts' | InnovationFlowStateSettingsKeySpecifier)[];
+export type InnovationFlowStateSettingsFieldPolicy = {
+  allowNewCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationHubKeySpecifier = (
   | 'account'
@@ -1704,7 +1735,7 @@ export type InvitationKeySpecifier = (
   | 'contributorType'
   | 'createdBy'
   | 'createdDate'
-  | 'extraRole'
+  | 'extraRoles'
   | 'id'
   | 'invitedToParent'
   | 'isFinalized'
@@ -1721,7 +1752,7 @@ export type InvitationFieldPolicy = {
   contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  extraRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  extraRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   isFinalized?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2250,6 +2281,7 @@ export type MutationKeySpecifier = (
   | 'createOrganization'
   | 'createReferenceOnProfile'
   | 'createSpace'
+  | 'createStateOnInnovationFlow'
   | 'createSubspace'
   | 'createTagsetOnProfile'
   | 'createTemplate'
@@ -2274,6 +2306,7 @@ export type MutationKeySpecifier = (
   | 'deletePost'
   | 'deleteReference'
   | 'deleteSpace'
+  | 'deleteStateOnInnovationFlow'
   | 'deleteStorageBucket'
   | 'deleteTemplate'
   | 'deleteUser'
@@ -2335,8 +2368,9 @@ export type MutationKeySpecifier = (
   | 'updateDiscussion'
   | 'updateDocument'
   | 'updateInnovationFlow'
-  | 'updateInnovationFlowSelectedState'
-  | 'updateInnovationFlowSingleState'
+  | 'updateInnovationFlowCurrentState'
+  | 'updateInnovationFlowState'
+  | 'updateInnovationFlowStatesSortOrder'
   | 'updateInnovationHub'
   | 'updateInnovationPack'
   | 'updateLicensePlan'
@@ -2424,6 +2458,7 @@ export type MutationFieldPolicy = {
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  createStateOnInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   createSubspace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2448,6 +2483,7 @@ export type MutationFieldPolicy = {
   deletePost?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteReference?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteStateOnInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2509,8 +2545,9 @@ export type MutationFieldPolicy = {
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateInnovationFlowSelectedState?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateInnovationFlowSingleState?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateInnovationFlowCurrentState?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateInnovationFlowStatesSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2760,7 +2797,7 @@ export type PlatformInvitationKeySpecifier = (
   | 'lastName'
   | 'platformRole'
   | 'profileCreated'
-  | 'roleSetExtraRole'
+  | 'roleSetExtraRoles'
   | 'roleSetInvitedToParent'
   | 'updatedDate'
   | 'welcomeMessage'
@@ -2776,7 +2813,7 @@ export type PlatformInvitationFieldPolicy = {
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   platformRole?: FieldPolicy<any> | FieldReadFunction<any>;
   profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  roleSetExtraRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSetExtraRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSetInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4680,6 +4717,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CreateInnovationFlowStateDataKeySpecifier);
     fields?: CreateInnovationFlowStateDataFieldPolicy;
   };
+  CreateInnovationFlowStateSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateInnovationFlowStateSettingsDataKeySpecifier
+      | (() => undefined | CreateInnovationFlowStateSettingsDataKeySpecifier);
+    fields?: CreateInnovationFlowStateSettingsDataFieldPolicy;
+  };
   CreateLinkData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateLinkDataKeySpecifier | (() => undefined | CreateLinkDataKeySpecifier);
     fields?: CreateLinkDataFieldPolicy;
@@ -4815,6 +4859,13 @@ export type StrictTypedTypePolicies = {
   InnovationFlowState?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationFlowStateKeySpecifier | (() => undefined | InnovationFlowStateKeySpecifier);
     fields?: InnovationFlowStateFieldPolicy;
+  };
+  InnovationFlowStateSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InnovationFlowStateSettingsKeySpecifier
+      | (() => undefined | InnovationFlowStateSettingsKeySpecifier);
+    fields?: InnovationFlowStateSettingsFieldPolicy;
   };
   InnovationHub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationHubKeySpecifier | (() => undefined | InnovationHubKeySpecifier);

@@ -8,7 +8,7 @@ import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-l
 import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { InnovationFlowStateModel } from '../models/InnovationFlowState';
+import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import Gutters from '@/core/ui/grid/Gutters';
 
 export interface InnovationFlowStateFormValues extends InnovationFlowStateModel {}
@@ -34,6 +34,10 @@ const InnovationFlowStateForm = ({
   const initialValues: InnovationFlowStateFormValues = {
     displayName: state?.displayName ?? '',
     description: state?.description ?? '',
+    sortOrder: state?.sortOrder ?? 0,
+    settings: {
+      allowNewCallouts: state?.settings?.allowNewCallouts ?? false, // TODO: Not used yet
+    },
   };
 
   const validationSchema = yup.object().shape({
@@ -45,6 +49,7 @@ const InnovationFlowStateForm = ({
       // This validation is also performed on the server: domain/collaboration/innovation-flow-states/innovation.flow.state.service.ts
       // Keep them in sync
       .test('no-comma', t('components.innovationFlowSettings.stateEditor.invalidChars'), value => !value?.includes(','))
+      // This is also still needed at least until we have callouts classified by state id and not by displayName
       .notOneOf(forbiddenFlowStateNames, t('components.innovationFlowSettings.stateEditor.noRepeatedStates')),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   });

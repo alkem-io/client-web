@@ -18,6 +18,13 @@ export const typePolicies: TypedTypePolicies = {
       },
     },
   },
+  SpaceAbout: {
+    fields: {
+      membership: {
+        merge: true,
+      },
+    },
+  },
   UserGroup: {
     fields: {
       members: {

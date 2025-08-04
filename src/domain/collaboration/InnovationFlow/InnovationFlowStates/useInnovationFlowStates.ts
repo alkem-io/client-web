@@ -1,10 +1,10 @@
 import { useInnovationFlowDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { InnovationFlowStateModel } from '../models/InnovationFlowState';
+import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 
 export interface UseInnovationFlowStatesProvided {
   innovationFlowStates: InnovationFlowStateModel[] | undefined;
-  currentInnovationFlowState: string | undefined;
+  currentInnovationFlowStateDisplayName: string | undefined;
   canEditInnovationFlow: boolean | undefined;
 }
 
@@ -19,14 +19,17 @@ const useInnovationFlowStates = ({
   });
 
   const innovationFlow = data?.lookup.collaboration?.innovationFlow;
+  const innovationFlowStates = innovationFlow?.states;
 
-  const currentInnovationFlowState = innovationFlow?.currentState.displayName;
+  const currentInnovationFlowStateDisplayName = innovationFlowStates?.find(
+    state => state.id === innovationFlow?.currentState?.id
+  )?.displayName;
   const myPrivileges = innovationFlow?.authorization?.myPrivileges;
   const canEditInnovationFlow = myPrivileges?.includes(AuthorizationPrivilege.Update);
 
   return {
-    innovationFlowStates: innovationFlow?.states,
-    currentInnovationFlowState,
+    innovationFlowStates,
+    currentInnovationFlowStateDisplayName,
     canEditInnovationFlow,
   };
 };
