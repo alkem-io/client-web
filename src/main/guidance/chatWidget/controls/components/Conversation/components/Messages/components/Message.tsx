@@ -11,9 +11,10 @@ import { MESSAGE_SENDER } from '@/main/guidance/chatWidget/controls/context';
 
 type Props = {
   message: MessageType;
+  profileAvatar?: string;
 };
 
-function Message({ message }: Props) {
+function Message({ message, profileAvatar }: Props) {
   const isClient = message.sender === MESSAGE_SENDER.CLIENT;
   const isResponse = message.sender === MESSAGE_SENDER.RESPONSE;
   const isSnippet = message.type === 'snippet';
@@ -59,18 +60,31 @@ function Message({ message }: Props) {
       sx={{
         display: 'flex',
         flexDirection: isClient ? 'row-reverse' : 'row',
-        padding: '0 20px 10px',
-        alignItems: 'flex-end',
+        margin: '10px',
+        alignItems: 'flex-start',
+        wordWrap: 'break-word',
+        textAlign: 'left',
       }}
-      className={isClient ? 'rcw-client' : 'rcw-response'}
     >
+      {!isClient && profileAvatar && (
+        <Box
+          component="img"
+          src={profileAvatar}
+          alt="Profile Avatar"
+          sx={{
+            width: 40,
+            height: 40,
+            borderRadius: '100%',
+            marginRight: '10px',
+          }}
+        />
+      )}
       <Box
         sx={theme => {
           return {
             borderRadius: isClient ? '20px 20px 5px 20px' : '20px 20px 20px 5px',
-            backgroundColor: isClient ? theme.palette.primary.main : theme.palette.grey[200],
-            maxWidth: 215,
-            padding: 1.875, // 15px
+            backgroundColor: isClient ? theme.palette.primary.main : '#f4f7f9',
+            padding: '15px',
             textAlign: 'left',
             wordBreak: 'break-word',
             ...theme.typography.body1,
@@ -92,6 +106,7 @@ function Message({ message }: Props) {
             }),
           };
         }}
+        className={isClient ? 'rcw-client' : 'rcw-response'}
       >
         {renderedContent}
       </Box>

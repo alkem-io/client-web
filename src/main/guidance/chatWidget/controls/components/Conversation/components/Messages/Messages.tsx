@@ -10,7 +10,11 @@ import { useChatBehavior } from '../../../../context/ChatBehaviorContext';
 import Loader from './components/Loader';
 import Message from './components/Message';
 
-function Messages() {
+interface MessagesProps {
+  profileAvatar?: string;
+}
+
+function Messages({ profileAvatar }: MessagesProps) {
   const {
     state: { messages, badgeCount },
     markAllMessagesRead,
@@ -60,7 +64,11 @@ function Messages() {
       }}
     >
       {messages?.map((message, index) => (
-        <Message key={`${index}-${format(message.timestamp, 'hh:mm')}`} message={message} />
+        <Message
+          key={`${index}-${format(message.timestamp, 'hh:mm')}`}
+          message={message}
+          profileAvatar={profileAvatar}
+        />
       ))}
       <Loader typing={typing} />
     </Box>

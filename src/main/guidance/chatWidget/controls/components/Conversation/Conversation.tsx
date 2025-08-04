@@ -42,6 +42,7 @@ function Conversation({
   showChat,
   sendMessage,
   toggleChat,
+  profileAvatar,
   titleAvatar,
   sendButtonAlt,
   footer,
@@ -98,7 +99,7 @@ function Conversation({
         showCloseButton={showCloseButton}
         titleAvatar={titleAvatar}
       />
-      <Messages />
+      <Messages profileAvatar={profileAvatar} />
       <Sender
         ref={senderRef}
         sendMessage={handlerSendMsn}
