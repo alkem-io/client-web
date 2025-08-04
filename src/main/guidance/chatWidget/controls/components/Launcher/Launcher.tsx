@@ -52,6 +52,9 @@ function Launcher({ toggle, chatId, openImg, closeImg, openLabel, closeLabel, sh
         backgroundColor: theme => theme.palette.primary.main,
         animation: 'slideIn 0.5s',
         '&:focus': { outline: 'none' },
+        '&:hover': {
+          backgroundColor: theme => theme.palette.primary.main,
+        },
         '@media (max-width:800px)': {
           bottom: 0,
           margin: '20px',

@@ -205,6 +205,9 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
         sx={{
           paddingTop: '4px',
           cursor: 'pointer',
+          '&:hover': {
+            backgroundColor: 'transparent',
+          },
         }}
         type="submit"
         disabled={disabledInput}
