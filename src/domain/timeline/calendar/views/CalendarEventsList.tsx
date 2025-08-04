@@ -25,6 +25,7 @@ import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAbout
 type CalendarEventsListProps = {
   events: {
     id: string;
+    type?: string;
     startDate?: Date;
     durationDays?: number | undefined;
     durationMinutes: number;
