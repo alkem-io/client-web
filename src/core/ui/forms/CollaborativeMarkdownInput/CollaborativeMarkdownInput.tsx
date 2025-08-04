@@ -15,7 +15,7 @@ import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import Collaboration from '@tiptap/extension-collaboration';
-import { TiptapCollabProvider } from '@hocuspocus/provider';
+import { TiptapCollabProvider, onAuthenticationFailedParameters, onStatelessParameters } from '@hocuspocus/provider';
 import * as Y from 'yjs';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import { EditorOptions } from '@tiptap/core';
@@ -24,6 +24,11 @@ import './styles.scss';
 import { isEqual } from 'lodash';
 import { RealTimeCollaborationState } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import { env } from '@/main/env';
+import {
+  isStatelessSaveMessage,
+  isStatelessReadOnlyStateMessage
+} from './stateless-messaging';
+import { decodeStatelessMessage } from './stateless-messaging/util';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -182,9 +187,21 @@ export const CollaborativeMarkdownInput = memo(
         };
 
         providerRef.current.on('status', statusHandler);
-        providerRef.current.on('stateless', (message: { payload: string } | Record<string, unknown>) => {
-          if ('payload' in message && (message.payload === 'saved' || message.payload === 'save-error')) {
-            // Handle the stateless message
+        providerRef.current.on('authenticationFailed',  ({ reason }: onAuthenticationFailedParameters) => {
+          // ... handle failed authentication
+        });
+        providerRef.current.on('stateless', ({ payload }: onStatelessParameters) => {
+          const decodedMessage = decodeStatelessMessage(payload);
+
+          if (!decodedMessage) {
+            console.warn('Received invalid stateless message');
+            return;
+          }
+
+          if (isStatelessSaveMessage(decodedMessage)) {
+            // Handle the save message; use isStatelessSaveErrorMessage
+          } else if (isStatelessReadOnlyStateMessage(decodedMessage)) {
+            // handle readOnly decodedMessage.readOnly
           }
         });
 
