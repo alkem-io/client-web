@@ -9,7 +9,7 @@ import useMemoManager from '../MemoManager/useMemoManager';
 import Loading from '@/core/ui/loading/Loading';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import UserPresencing from '../../realTimeCollaboration/UserPresencing';
 import { RealTimeCollaborationState } from '../../realTimeCollaboration/RealTimeCollaborationState';
 
@@ -22,14 +22,34 @@ interface MemoDialogProps {
 
 const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: MemoDialogProps) => {
   const [fullScreen, setFullScreen] = useState(false);
+  const [forceExitFullscreen, setForceExitFullscreen] = useState(false);
   const [collaborationState, setCollaborationState] = useState<RealTimeCollaborationState>();
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   const { memo, loading, onDeleteMemo } = useMemoManager({ id: memoId });
 
+  const handleClose = () => {
+    // Declaratively trigger fullscreen exit
+    setForceExitFullscreen(true);
+    setFullScreen(false);
+    onClose?.();
+  };
+
+  // Reset force exit flag when dialog opens
+  const handleDialogOpen = () => {
+    if (open) {
+      setForceExitFullscreen(false);
+    }
+  };
+
+  useEffect(() => {
+    handleDialogOpen();
+  }, [open]);
+
   return (
-    <DialogWithGrid open={open} onClose={onClose} fullWidth fullHeight fullScreen={fullScreen}>
+    <DialogWithGrid ref={dialogRef} open={open} onClose={handleClose} fullWidth fullHeight fullScreen={fullScreen}>
       <DialogHeader
-        onClose={onClose}
+        onClose={handleClose}
         actions={
           <>
             <ShareButton url={memo?.profile.url} entityTypeName="memo" disabled={!memo?.profile.url}>
@@ -38,7 +58,11 @@ const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: Memo
             )*/}
             </ShareButton>
 
-            <FullscreenButton onChange={setFullScreen} />
+            <FullscreenButton
+              element={dialogRef.current || undefined}
+              onChange={setFullScreen}
+              forceExit={forceExitFullscreen}
+            />
             <UserPresencing collaborationState={collaborationState} />
           </>
         }

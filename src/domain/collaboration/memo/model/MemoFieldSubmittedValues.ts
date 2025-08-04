@@ -9,6 +9,6 @@ export interface MemoFieldSubmittedValues {
     preview?: VisualModel;
     url?: string;
   };
-  // content: string;
+  content?: string;
   previewImages: WhiteboardPreviewImage[]; //!! TODO: Pending to see if we are going to use this field
 }

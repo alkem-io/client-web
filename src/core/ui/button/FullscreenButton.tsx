@@ -2,14 +2,25 @@ import { Fullscreen, FullscreenExit } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useFullscreen } from '../fullscreen/useFullscreen';
+import { useEffect } from 'react';
+
 interface FullscreenButtonProps {
   element?: HTMLElement;
   onChange?: (state: boolean) => void;
+  forceExit?: boolean; // New prop to declaratively control exit
 }
 
-const FullscreenButton = ({ element, onChange }: FullscreenButtonProps) => {
+const FullscreenButton = ({ element, onChange, forceExit = false }: FullscreenButtonProps) => {
   const { t } = useTranslation();
   const { fullscreen, setFullscreen } = useFullscreen(element);
+
+  // Declaratively handle forced exit
+  useEffect(() => {
+    if (forceExit && fullscreen) {
+      setFullscreen(false);
+      onChange?.(false);
+    }
+  }, [forceExit, fullscreen, setFullscreen, onChange]);
 
   const handleClick = () => {
     setFullscreen(!fullscreen);
