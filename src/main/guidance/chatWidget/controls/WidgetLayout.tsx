@@ -117,20 +117,14 @@ function WidgetLayout({
         maxHeight: '-webkit-fill-available',
         scrollbarColor: `${theme.palette.primary.main} transparent`,
         '@media screen and (orientation: landscape)': {
-          '.rcw-widget-container': {
-            position: 'static',
-            margin: 0,
-            '&:has(.active)': {
-              maxHeight: `calc(100vh - ${gutters(2)(theme)})`,
-            },
-          },
+          position: 'static',
+          margin: 0,
+          maxHeight: showChat ? `calc(100vh - ${gutters(2)(theme)})` : '-webkit-fill-available',
         },
         '@media screen and (orientation: portrait)': {
           maxWidth: 'none',
-          '&:not(:has(.active))': {
-            position: 'static',
-            margin: 0,
-          },
+          position: showChat ? 'fixed' : 'static',
+          margin: showChat ? undefined : 0,
         },
         '@media (max-width:800px)': {
           height: '100vh',

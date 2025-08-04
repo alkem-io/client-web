@@ -65,19 +65,18 @@ function Conversation({
       aria-live="polite"
       sx={{
         borderRadius: '10px',
+        boxShadow: theme => `0px 2px 10px 1px ${theme.palette.grey[300]}`,
+        minWidth: 370,
         maxWidth: '90vw',
+        height: '100%',
         position: 'relative',
         opacity: showChat ? 1 : 0,
+        transform: showChat ? 'translateY(0px)' : 'translateY(10px)',
         zIndex: showChat ? 'auto' : -1,
         pointerEvents: showChat ? 'auto' : 'none',
-        transform: showChat ? 'translateY(0px)' : 'translateY(10px)',
-        transition: 'opacity 0.3s ease, transform 0.3s ease',
-        boxShadow: theme => `0px 2px 10px 1px ${theme.palette.grey[300]}`,
-        display: 'flex',
-        flexDirection: 'column',
+        transition: showChat ? 'auto' : 'opacity 0.3s ease, transform 0.3s ease',
         marginBottom: gutters(0.5),
         overflow: 'hidden',
-        minWidth: 0,
         '@media (max-width:800px)': {
           display: 'flex',
           flexDirection: 'column',
@@ -86,6 +85,8 @@ function Conversation({
         '@media screen and (orientation: portrait)': {
           margin: gutters(),
           maxWidth: 'none',
+          display: 'flex',
+          flexDirection: 'column',
         },
       }}
     >
