@@ -48,7 +48,7 @@ export const calloutValidationSchema = yup.object().shape({
     whiteboard: yup.object().when(['framing.type'], ([type], schema) => {
       return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
     }),
-    link: yup.object().when(['framing.type'], ([type], schema) => {
+    link: yup.object().when(['type'], ([type], schema) => {
       return type === CalloutFramingType.Link
         ? schema
             .shape({
