@@ -5,6 +5,8 @@ import { TabTypeMap } from '@mui/material/Tab/Tab';
 
 interface HeaderNavigationTabProps {
   to: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ref?: React.Ref<any>;
 }
 
 const HeaderNavigationTab = (<D extends React.ElementType = TabTypeMap['defaultComponent'], P = {}>({

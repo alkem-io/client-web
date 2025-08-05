@@ -14,7 +14,7 @@ const MarkdownInputToolbarButton = ({
   tooltip,
   ...props
 }: MarkdownInputToolbarButtonProps & {
-  ref?: React.RefObject<HTMLButtonElement>;
+  ref?: React.Ref<HTMLButtonElement>;
 }) => {
   const curedProps = { ...props };
   const removeProps = ['indicator', 'fullWidth', 'selectionFollowsFocus', 'textColor'];

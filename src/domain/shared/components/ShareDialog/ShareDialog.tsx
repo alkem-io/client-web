@@ -91,6 +91,7 @@ export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, l
 };
 
 export interface ShareOnPlatformHandlerProps {
+  ref?: React.Ref<HTMLDivElement>;
   url: string;
   entityTypeName: ShareDialogProps['entityTypeName'];
   goBack: () => void;

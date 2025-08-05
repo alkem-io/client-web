@@ -133,7 +133,7 @@ export const InsertEmbedCodeButton = ({
   return (
     <>
       <MarkdownInputToolbarButton
-        ref={buttonRef}
+        ref={buttonRef as React.RefObject<HTMLButtonElement>}
         disabled={isDisabled}
         onClick={handleOnClick}
         tooltip={t('components.wysiwyg-editor.toolbar.embed.video')}

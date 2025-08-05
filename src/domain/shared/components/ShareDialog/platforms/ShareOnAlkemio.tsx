@@ -36,7 +36,7 @@ export const ShareOnAlkemioButton: FC<ShareOnPlatformButtonProps> = ({ setShareH
   );
 };
 
-const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = ({ ref: _ref, entityTypeName, url, goBack }) => {
+const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = ({ entityTypeName, url, goBack }) => {
   const { t } = useTranslation();
 
   const initialValues: ShareOnAlkemioData = useMemo(

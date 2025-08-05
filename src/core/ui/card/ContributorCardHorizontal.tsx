@@ -83,7 +83,7 @@ const ContributorCardHorizontal = ({
             }
             component={RouterLink}
             to={profile?.url ?? ''}
-            actions={menuActions && <ActionsMenu>{menuActions}</ActionsMenu>}
+            actions={menuActions ? <ActionsMenu>{menuActions}</ActionsMenu> : undefined}
           >
             <Box display="flex" flexDirection="row" justifyContent="space-between">
               <Box display="flex" flexDirection="column">

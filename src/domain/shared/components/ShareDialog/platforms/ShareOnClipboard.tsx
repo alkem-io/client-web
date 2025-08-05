@@ -23,7 +23,7 @@ export const ShareOnClipboardButton: FC<ShareOnPlatformButtonProps> = ({ setShar
   );
 };
 
-const ClipboardShareHandler: FC<ShareOnPlatformHandlerProps> = ({ ref: _ref, url, closeDialog }) => {
+const ClipboardShareHandler: FC<ShareOnPlatformHandlerProps> = ({ url, closeDialog }) => {
   const { t } = useTranslation();
 
   // On render of this element we copy the url to clipboard

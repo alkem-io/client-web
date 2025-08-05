@@ -9,7 +9,7 @@ import BreadcrumbsRootItem from '../ui/breadcrumbs/BreadcrumbsRootItem';
 const AdminBreadcrumbs = ({
   ref,
   ...props
-}: Collapsible &
+}: Partial<Collapsible> &
   BreadcrumbsProps<Expandable> & {
     ref?: React.Ref<Collapsible>;
   }) => {

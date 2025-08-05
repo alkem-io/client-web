@@ -2,8 +2,9 @@ import React, { cloneElement, PropsWithChildren, ReactElement } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { BoxTypeMap } from '@mui/system';
 import { gutters } from '../grid/utils';
+import { RouterLinkProps } from '../link/RouterLink';
 
-type BadgeCardViewProps = {
+interface BadgeCardViewProps extends Partial<RouterLinkProps> {
   visual?: ReactElement<{ sx: { flexShrink: number } }>;
   actions?: ReactElement<{ sx: { flexShrink: number } }>;
   visualRight?: ReactElement<{ sx: { flexShrink: number } }>;
@@ -11,7 +12,9 @@ type BadgeCardViewProps = {
   outlined?: boolean;
   square?: boolean;
   padding?: boolean;
-};
+  variant?: string;
+  target?: string;
+}
 
 const cloneVisual = <Sx extends { flexShrink: number }>(element: ReactElement<{ sx: Partial<Sx> }> | undefined) => {
   if (!element) {

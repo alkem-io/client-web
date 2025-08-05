@@ -44,7 +44,7 @@ const DashboardNavigationItemView = ({
   compact = false,
   itemProps = () => ({}),
 }: DashboardNavigationItemViewProps & {
-  ref?: React.RefObject<DashboardNavigationItemViewApi>;
+  ref?: React.Ref<DashboardNavigationItemViewApi>;
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
 

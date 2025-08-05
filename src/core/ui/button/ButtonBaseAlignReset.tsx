@@ -6,7 +6,7 @@ const ButtonBaseAlignReset = <D extends React.ElementType = ButtonBaseTypeMap['d
   sx,
   ...props
 }: ButtonBaseProps<D, P> & {
-  ref?: React.Ref<unknown>;
+  ref?: React.Ref<HTMLButtonElement>;
 }) => <ButtonBase ref={ref} {...props} sx={{ textAlign: 'initial', ...sx }} />;
 
 export default ButtonBaseAlignReset;

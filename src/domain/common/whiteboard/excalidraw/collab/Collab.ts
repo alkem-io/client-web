@@ -5,10 +5,7 @@ import type {
   Gesture,
   SocketId,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import type {
-  ExcalidrawElement,
-  OrderedExcalidrawElement,
-} from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
 import type {
   hashElementsVersion as ExcalidrawHashElementsVersion,
   reconcileElements as ExcalidrawReconcileElements,
@@ -36,7 +33,7 @@ import type {
   ReconciledExcalidrawElement,
   RemoteExcalidrawElement,
 } from '@alkemio/excalidraw/dist/types/excalidraw/data/reconcile';
-import type { Mutable } from '@alkemio/excalidraw/dist/types/excalidraw/utility-types';
+import type { Mutable } from '@alkemio/excalidraw/dist/types/common/src/utility-types';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 type CollabState = {
@@ -213,7 +210,21 @@ class Collab {
                 }
               }
 
-              this.excalidrawAPI.zoomToFit();
+              const excalidrawModule = await this.excalidrawUtils;
+              // Try to call zoomToFit if available - this is for auto-fitting content to viewport
+              try {
+                const zoomToFitFn = (excalidrawModule as unknown as { zoomToFit?: Function }).zoomToFit;
+                if (zoomToFitFn) {
+                  zoomToFitFn({
+                    targetElements: this.excalidrawAPI.getSceneElementsIncludingDeleted(),
+                    appState: this.excalidrawAPI.getAppState(),
+                    fitToViewport: true,
+                  });
+                }
+              } catch (error) {
+                // Silently fail if zoomToFit is not available
+                console.warn('zoomToFit function not available:', error);
+              }
             },
             'client-broadcast': async (binaryData: ArrayBuffer) => {
               const strData = new TextDecoder().decode(binaryData);

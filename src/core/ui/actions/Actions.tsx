@@ -6,5 +6,5 @@ export const Actions = ({
   ref,
   ...props
 }: ActionsProps & {
-  ref?: React.RefObject<unknown>;
+  ref?: React.Ref<unknown>;
 }) => <Box ref={ref} display="flex" gap={1} alignItems="center" justifyContent="flex-end" {...props} />;

@@ -8,7 +8,11 @@ const SentryErrorBoundaryProvider = ({ children }: PropsWithChildren) => {
   const { sentry } = useConfig();
   sentryBootstrap(sentry?.enabled, sentry?.endpoint, sentry?.environment);
 
-  return <Sentry.ErrorBoundary fallback={({ error }) => <ErrorPage error={error} />}>{children}</Sentry.ErrorBoundary>;
+  return (
+    <Sentry.ErrorBoundary fallback={({ error }: { error: unknown }) => <ErrorPage error={error as Error} />}>
+      {children}
+    </Sentry.ErrorBoundary>
+  );
 };
 
 export default SentryErrorBoundaryProvider;

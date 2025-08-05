@@ -114,3 +114,10 @@ export function scrollToBottom(messagesDiv: HTMLDivElement | null) {
   const scrollOffset = messagesDiv.scrollHeight - (scrollTop + screenHeight);
   if (scrollOffset) scrollWithSlowMotion(messagesDiv, scrollTop, scrollOffset);
 }
+
+export const formatTime = (date: Date) =>
+  date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });

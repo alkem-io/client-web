@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { scrollToBottom } from '../../../../utils';
+import { formatTime, scrollToBottom } from '../../../../utils';
 import { Box } from '@mui/material';
-
-import { format } from 'date-fns';
 
 import { useMessages } from '../../../../context/MessagesContext';
 import { useChatBehavior } from '../../../../context/ChatBehaviorContext';
@@ -64,11 +62,7 @@ function Messages({ profileAvatar }: MessagesProps) {
       }}
     >
       {messages?.map((message, index) => (
-        <Message
-          key={`${index}-${format(message.timestamp, 'hh:mm')}`}
-          message={message}
-          profileAvatar={profileAvatar}
-        />
+        <Message key={`${index}-${formatTime(message.timestamp)}`} message={message} profileAvatar={profileAvatar} />
       ))}
       <Loader typing={typing} />
     </Box>

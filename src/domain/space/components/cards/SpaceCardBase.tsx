@@ -1,4 +1,4 @@
-import { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
+import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
 import { Box, SvgIconProps } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
@@ -73,7 +73,7 @@ const SpaceCardBase = ({
           overlay={bannerOverlay}
         />
         <BadgeCardView
-          visual={visual || <RoundedIcon size="small" component={Icon} />}
+          visual={visual && React.isValidElement(visual) ? visual : <RoundedIcon size="small" component={Icon} />}
           visualRight={locked ? <LockOutlined fontSize="small" color="primary" /> : undefined}
           gap={1}
           height={gutters(3)}

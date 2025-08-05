@@ -12,7 +12,6 @@ import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { compact, debounce, merge } from 'lodash';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
@@ -134,10 +133,8 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
           onClick={async () => {
             if (actions.onUpdate) {
               await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
-              const element = document.body.getElementsByClassName('Modal__close')[0];
-              ReactDOM.findDOMNode(element)?.dispatchEvent(
-                new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
-              );
+              const closeButton = document.querySelector('.Modal__close') as HTMLElement;
+              closeButton?.click();
             }
           }}
         >

@@ -1,7 +1,7 @@
 import { RefObject, useEffect, useRef } from 'react';
 
 interface UseAutomaticTooltipResult {
-  containerReference: RefObject<HTMLDivElement>;
+  containerReference: RefObject<HTMLDivElement | null>;
   addAutomaticTooltip: (HTMLElement, string?) => void;
 }
 /**
