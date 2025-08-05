@@ -66,7 +66,7 @@ function Message({ message, profileAvatar }: Props) {
         textAlign: 'left',
       }}
     >
-      {!isClient && profileAvatar && (
+      {message.showAvatar && profileAvatar && (
         <Box
           component="img"
           src={profileAvatar}

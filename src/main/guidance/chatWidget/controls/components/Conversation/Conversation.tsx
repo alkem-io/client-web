@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { ReactNode } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
 
@@ -49,15 +49,9 @@ function Conversation({
   menuButton,
 }: Props) {
   const senderRef = useRef<ISenderRef>(null!);
-  const [pickerStatus, setPicket] = useState(false);
-
-  const togglePicker = () => {
-    setPicket(prevPickerStatus => !prevPickerStatus);
-  };
 
   const handlerSendMsn = event => {
     sendMessage(event);
-    if (pickerStatus) setPicket(false);
   };
 
   return (
@@ -107,7 +101,6 @@ function Conversation({
         disabledInput={disabledInput}
         autofocus={autofocus}
         buttonAlt={sendButtonAlt}
-        onPressEmoji={togglePicker}
         menuButton={menuButton}
       />
       {footer && <Box>{footer}</Box>}

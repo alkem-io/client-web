@@ -165,6 +165,8 @@ const ChatWidgetInner = () => {
   const [firstOpen, setFirstOpen] = useState(false);
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const [openClearConfirm, setOpenClearConfirm] = useState(false);
+  const [chatToggleTime, setChatToggleTime] = useState(Date.now());
+
   const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
   const { userModel } = useCurrentUserContext();
   const userId = userModel?.id;
@@ -176,8 +178,6 @@ const ChatWidgetInner = () => {
   const handleNewUserMessage = async (newMessage: string) => {
     await sendMessage(newMessage);
   };
-
-  const [chatToggleTime, setChatToggleTime] = useState(Date.now());
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -211,16 +211,13 @@ const ChatWidgetInner = () => {
       });
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.author?.id && lastMessage.author.id !== userId) {
-        // If the last message has an author and is not myself print the feedback buttons
         addComponentMessage(Feedback, { answerId: lastMessage.id }, false);
-        // And if the message is new, mark it as unread
         if (lastMessage.createdAt > new Date(chatToggleTime)) {
           setBadgeCount(1);
         } else {
           markAllMessagesRead();
         }
       } else if (messages.length === 1) {
-        // Always mark as unread the intro message
         setBadgeCount(1);
       } else {
         markAllMessagesRead();

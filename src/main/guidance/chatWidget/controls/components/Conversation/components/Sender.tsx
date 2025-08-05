@@ -18,7 +18,6 @@ type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sendMessage: (event: any) => void;
   buttonAlt: string;
-  onPressEmoji: () => void;
   menuButton?: ReactNode;
 };
 
