@@ -119,6 +119,7 @@
     "apollo-upload-client": "^18.0.1",
     "axios": "^1.9.0",
     "cross-env": "^7.0.3",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.7",
     "dotenv": "^16.3.1",
     "dotenv-expand": "^12.0.2",
@@ -209,7 +210,6 @@
     "glob-parent": "^5.1.2",
     "got": "11.8.5",
     "nth-check": "^2.0.1",
-    "chokidar": "^3.5.3",
-    "date-fns": "^4.1.0"
+    "chokidar": "^3.5.3"
   }
 }
