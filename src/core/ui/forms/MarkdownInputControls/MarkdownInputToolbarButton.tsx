@@ -1,7 +1,7 @@
 import { IconButton, IconButtonProps, Tooltip } from '@mui/material';
 
 export type MarkdownInputToolbarButtonProps = IconButtonProps & { tooltip: string } & {
-  ref?: React.RefObject<HTMLButtonElement>;
+  ref?: React.Ref<HTMLButtonElement>;
 };
 /**
  * For some strange reason the markdown editor is passing a few invalid properties:

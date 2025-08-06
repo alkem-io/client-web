@@ -211,19 +211,18 @@ class Collab {
               }
 
               const excalidrawModule = await this.excalidrawUtils;
-              // Try to call zoomToFit if available - this is for auto-fitting content to viewport
-              try {
-                const zoomToFitFn = (excalidrawModule as unknown as { zoomToFit?: Function }).zoomToFit;
-                if (zoomToFitFn) {
-                  zoomToFitFn({
+
+              // Auto-fit content to viewport if zoomToFit is available
+              if ('zoomToFit' in excalidrawModule && typeof excalidrawModule.zoomToFit === 'function') {
+                try {
+                  excalidrawModule.zoomToFit({
                     targetElements: this.excalidrawAPI.getSceneElementsIncludingDeleted(),
                     appState: this.excalidrawAPI.getAppState(),
                     fitToViewport: true,
                   });
+                } catch (error) {
+                  console.warn('Error calling zoomToFit:', error);
                 }
-              } catch (error) {
-                // Silently fail if zoomToFit is not available
-                console.warn('zoomToFit function not available:', error);
               }
             },
             'client-broadcast': async (binaryData: ArrayBuffer) => {

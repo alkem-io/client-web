@@ -23,9 +23,6 @@ export const ShareOnClipboardButton: FC<ShareOnPlatformButtonProps> = ({ setShar
 export const ClipboardShareHandler: FC<ShareOnPlatformHandlerProps> = props => {
   const { t } = useTranslation();
 
-  // Debug logging to see what props we're receiving
-  console.log('ClipboardShareHandler props:', props);
-
   const { url, closeDialog } = props || {};
 
   useEffect(() => {

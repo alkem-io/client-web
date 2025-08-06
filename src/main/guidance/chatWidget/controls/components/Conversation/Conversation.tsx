@@ -8,7 +8,7 @@ import Sender from './components/Sender';
 
 import Box from '@mui/material/Box';
 
-interface ISenderRef {
+export interface ISenderRef {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSelectEmoji: (event: any) => void;
 }
@@ -21,10 +21,8 @@ type Props = {
   disabledInput: boolean;
   autofocus: boolean;
   showChat: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  sendMessage: (...args: any[]) => any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  toggleChat: (...args: any[]) => any;
+  sendMessage: (message: string) => void | Promise<void>;
+  toggleChat: () => void;
   profileAvatar?: string;
   titleAvatar?: string;
   sendButtonAlt: string;

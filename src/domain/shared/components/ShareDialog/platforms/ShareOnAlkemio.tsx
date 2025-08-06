@@ -43,9 +43,6 @@ export const ShareOnAlkemioButton: FC<ShareOnPlatformButtonProps> = ({ setShareH
 export const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = props => {
   const { t } = useTranslation();
 
-  // Debug logging to see what props we're receiving
-  console.log('AlkemioShareHandler props:', props);
-
   const { entityTypeName, url, goBack } = props || {};
 
   const [isMessageSent, setMessageSent] = useState(false);

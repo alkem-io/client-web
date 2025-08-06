@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import { useRef, useEffect, useState, useImperativeHandle } from 'react';
 import { ReactNode } from 'react';
 
 import { useChatBehavior } from '../../../context/ChatBehaviorContext';
@@ -10,6 +10,7 @@ const brRegex = /<br>/g;
 
 import { Box, IconButton } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
+import { ISenderRef } from '../Conversation';
 
 type Props = {
   placeholder: string;
@@ -19,9 +20,10 @@ type Props = {
   sendMessage: (event: any) => void;
   buttonAlt: string;
   menuButton?: ReactNode;
+  ref?: React.Ref<ISenderRef>;
 };
 
-function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt, menuButton }: Props, ref) {
+function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt, menuButton, ref }: Props) {
   const {
     state: { showChat },
   } = useChatBehavior();
@@ -31,7 +33,6 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
   const [firefox, setFirefox] = useState(false);
   const [height, setHeight] = useState(0);
 
-  // @ts-ignore
   useEffect(() => {
     if (showChat && autofocus) inputRef.current?.focus();
   }, [showChat, autofocus]);
@@ -53,7 +54,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
     }
   };
 
-  const handlerOnSelectEmoji = emoji => {
+  const handlerOnSelectEmoji = (emoji: { native: string }) => {
     const el = inputRef.current;
     const { start, end } = getSelection(el);
     if (el.innerHTML) {
@@ -66,7 +67,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
     updateCaret(el, start, emoji.native.length);
   };
 
-  const handlerOnKeyPress = event => {
+  const handlerOnKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const el = inputRef.current;
 
     if (event.charCode == 13 && !event.shiftKey) {
@@ -90,7 +91,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
     }
   };
 
-  const handlerOnKeyUp = event => {
+  const handlerOnKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const el = inputRef.current;
     if (!el) return true;
     // Conditions need for firefox
@@ -105,7 +106,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
     checkSize();
   };
 
-  const handlerOnKeyDown = event => {
+  const handlerOnKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const el = inputRef.current;
 
     if (event.key === 'Backspace' && el) {
@@ -225,4 +226,4 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
   );
 }
 
-export default forwardRef(Sender);
+export default Sender;

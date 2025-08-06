@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useResizeDetector } from 'react-resize-detector';
 import ConsentContainer from './components/ConsentContainer';
 import GeneralConsent from './GeneralConsent';
 import CookieSettings from './CookieSettings';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 
-const CookieConsent = ({ ref, ..._ }) => {
+const CookieConsent = ({ ref }) => {
   const [cookieOptionsOpen, setCookieOptionsOpen] = useState(false);
 
   const handleOpenSettings = useCallback(() => setCookieOptionsOpen(true), [setCookieOptionsOpen]);

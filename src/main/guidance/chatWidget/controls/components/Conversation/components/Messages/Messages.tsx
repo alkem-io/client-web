@@ -24,20 +24,16 @@ function Messages({ profileAvatar }: MessagesProps) {
 
   const messageRef = useRef<HTMLDivElement | null>(null);
 
-  // Scroll to bottom when messages change
   useEffect(() => {
-    // @ts-ignore
     scrollToBottom(messageRef.current);
   }, [messages]);
 
-  // Mark all messages as read when chat is opened and there are unread messages
   useEffect(() => {
     if (showChat && badgeCount > 0) {
       markAllMessagesRead();
     }
   }, [showChat, badgeCount, markAllMessagesRead]);
 
-  // Update badge count when messages change
   useEffect(() => {
     const unreadCount = messages.filter(message => message.unread).length;
     setBadgeCount(unreadCount);
