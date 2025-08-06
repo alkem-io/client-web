@@ -59,7 +59,7 @@ const ContributionsSettingsWhiteboard = ({
             canEdit
             onDeleteContent={() => internalFormRef.current?.setFieldValue('whiteboardContent', EmptyWhiteboardString)}
             maxHeight={gutters(12)}
-            dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
+            dialogProps={{ title: t('components.callout-creation.framing.whiteboard.editDialogTitle') }}
           />
         </PageContentBlock>
       </Gutters>

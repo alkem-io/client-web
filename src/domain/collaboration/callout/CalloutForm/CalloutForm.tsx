@@ -4,12 +4,13 @@ import {
   CalloutFramingType,
   CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
@@ -29,6 +30,7 @@ import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
@@ -47,6 +49,25 @@ export const calloutValidationSchema = yup.object().shape({
       .required(),
     whiteboard: yup.object().when(['framing.type'], ([type], schema) => {
       return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
+    }),
+    link: yup.object().when(['type'], ([type], schema) => {
+      return type === CalloutFramingType.Link
+        ? schema
+            .shape({
+              uri: urlValidator
+                .max(MID_TEXT_LENGTH, ({ max }) =>
+                  TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
+                )
+                .required(),
+              profile: yup
+                .object()
+                .shape({
+                  displayName: yup.string().required(),
+                })
+                .required(),
+            })
+            .required()
+        : schema;
     }),
   }),
   contributionDefaults: yup.object().shape({
@@ -130,6 +151,7 @@ const CalloutForm = ({
               <FormikInputField
                 name={nameOf<CalloutFormSubmittedValues>('framing.profile.displayName')}
                 title={t('common.title')}
+                required
                 containerProps={{ sx: { flex: 1 } }}
               />
               <Box sx={isSmallScreen ? undefined : { width: '30%', minWidth: gutters(10) }}>
