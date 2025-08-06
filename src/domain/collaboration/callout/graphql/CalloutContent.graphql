@@ -29,6 +29,9 @@ query CalloutContent($calloutId: UUID!) {
           }
           content  # Get the whiteboard content to be able to edit it
         }
+        link {
+          ...LinkDetails
+        }
       }
       contributionDefaults {
         id

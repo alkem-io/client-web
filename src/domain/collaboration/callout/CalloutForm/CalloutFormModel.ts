@@ -21,6 +21,13 @@ export interface CalloutFormSubmittedValues {
     };
     type: CalloutFramingType;
     whiteboard: WhiteboardFieldSubmittedValuesWithPreviewImages | undefined;
+    link?: {
+      id?: string;
+      uri: string;
+      profile: {
+        displayName: string;
+      };
+    };
   };
   contributionDefaults: ContributionDefaultsModel;
   contributions?: {
@@ -50,6 +57,7 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     },
     type: CalloutFramingType.None,
     whiteboard: undefined,
+    link: undefined,
   },
   contributionDefaults: {
     defaultDisplayName: '',
