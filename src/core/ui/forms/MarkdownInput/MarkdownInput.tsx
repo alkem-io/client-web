@@ -104,7 +104,8 @@ export const MarkdownInput = memo(
       },
 
       onError: error => {
-        console.error(error.message);
+        console.error('File upload failed:', error.message);
+        notify(t('components.file-upload.file-upload-error'), 'error');
       },
     });
 

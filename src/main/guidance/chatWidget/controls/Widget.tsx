@@ -63,7 +63,7 @@ function Widget({
     handleToggle ? handleToggle(showChat) : null;
   };
 
-  const handleMessageSubmit = userInput => {
+  const handleMessageSubmit = (userInput: string) => {
     if (!userInput.trim()) {
       return;
     }

@@ -26,8 +26,7 @@ const PageContentBlock = ({
     <SwapColors swap={accent}>
       <BasePageContentBlock
         padding={theme => `calc(${gutters()(theme)} - ${borderWidth})`}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        component={OutlinedPaper as any}
+        component={OutlinedPaper}
         {...props}
       />
     </SwapColors>

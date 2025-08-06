@@ -4,6 +4,7 @@ import { HTMLAttributes } from 'react';
 
 const ErrorHandlingAvatar = ({
   onError,
+  ref,
   ...props
 }: AvatarProps &
   HTMLAttributes<HTMLDivElement> & {
@@ -16,7 +17,7 @@ const ErrorHandlingAvatar = ({
     onError?.(err);
   };
 
-  return <MUIAvatar onError={handleError} {...props} />;
+  return <MUIAvatar onError={handleError} {...props} ref={ref} />;
 };
 
 export default ErrorHandlingAvatar;

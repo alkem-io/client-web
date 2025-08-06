@@ -15,10 +15,8 @@ type Props = {
   title: string | ReactNode;
   titleAvatar?: string;
   subtitle: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onSendMessage: (...args: any[]) => any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onToggleConversation: (...args: any[]) => any;
+  onSendMessage: (message: string) => void | Promise<void>;
+  onToggleConversation: () => void;
   senderPlaceHolder: string;
   profileAvatar?: string;
   showCloseButton: boolean;
@@ -76,13 +74,6 @@ function WidgetLayout({
     };
   }, [showChat]);
 
-  const eventHandle = evt => {
-    if (evt.target && evt.target.className === 'rcw-message-img') {
-      const { src, alt, naturalWidth, naturalHeight } = evt.target as HTMLImageElement;
-      openPreview(src, alt, naturalWidth, naturalHeight);
-    }
-  };
-
   /**
    * Previewer needs to prevent body scroll behavior when fullScreenMode is true
    */
@@ -98,8 +89,19 @@ function WidgetLayout({
   }, [imagePreview, showChat]);
 
   useEffect(() => {
-    document.body.setAttribute('style', `overflow: ${visible ? 'hidden' : 'auto'}`);
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = visible ? 'hidden' : 'auto';
+    return () => {
+      document.body.style.overflow = previous;
+    };
   }, [visible]);
+
+  const eventHandle = (evt: MouseEvent) => {
+    if (evt.target && (evt.target as HTMLElement).className === 'rcw-message-img') {
+      const { src, alt, naturalWidth, naturalHeight } = evt.target as HTMLImageElement;
+      openPreview(src, alt, naturalWidth, naturalHeight);
+    }
+  };
 
   return (
     <Box
