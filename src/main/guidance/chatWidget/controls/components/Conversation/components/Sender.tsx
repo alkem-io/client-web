@@ -113,7 +113,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
     const el = inputRef.current;
 
     if (event.key === 'Backspace' && el) {
-      const caretPosition = getCaretIndex(inputRef.current);
+      const caretPosition = getCaretIndex(el);
       const character = el.innerHTML.charAt(caretPosition - 1);
       if (character === '\n') {
         event.preventDefault();
