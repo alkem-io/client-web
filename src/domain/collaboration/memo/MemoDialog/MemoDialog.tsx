@@ -104,6 +104,8 @@ const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: Memo
                     padding: gutters(0.5),
                   },
                   height: '100%',
+                  minHeight: 'calc(100vh - 200px)',
+                  alignItems: 'flex-start',
                 }}
                 fullWidth
               />
