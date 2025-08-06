@@ -15,7 +15,7 @@ import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import Collaboration from '@tiptap/extension-collaboration';
-import { TiptapCollabProvider, onAuthenticationFailedParameters, onStatelessParameters } from '@hocuspocus/provider';
+import { TiptapCollabProvider, onStatelessParameters } from '@hocuspocus/provider';
 import * as Y from 'yjs';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import { EditorOptions } from '@tiptap/core';
@@ -24,10 +24,7 @@ import './styles.scss';
 import { isEqual } from 'lodash';
 import { RealTimeCollaborationState } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import { env } from '@/main/env';
-import {
-  isStatelessSaveMessage,
-  isStatelessReadOnlyStateMessage
-} from './stateless-messaging';
+import { isStatelessSaveMessage, isStatelessReadOnlyStateMessage } from './stateless-messaging';
 import { decodeStatelessMessage } from './stateless-messaging/util';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
@@ -38,6 +35,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   temporaryLocation?: boolean;
   collaborationId?: string;
   onChangeCollaborationState?: (state: RealTimeCollaborationState) => void;
+  disabled?: boolean;
 }
 
 type Offset = {
@@ -74,6 +72,7 @@ export const CollaborativeMarkdownInput = memo(
         temporaryLocation,
         collaborationId,
         onChangeCollaborationState,
+        disabled,
       },
       ref
     ) => {
@@ -187,21 +186,20 @@ export const CollaborativeMarkdownInput = memo(
         };
 
         providerRef.current.on('status', statusHandler);
-        providerRef.current.on('authenticationFailed',  ({ reason }: onAuthenticationFailedParameters) => {
-          // ... handle failed authentication
+        providerRef.current.on('authenticationFailed', () => {
+          // TODO: handle authentication failure
+          setIsReadOnly(true);
         });
         providerRef.current.on('stateless', ({ payload }: onStatelessParameters) => {
           const decodedMessage = decodeStatelessMessage(payload);
-
           if (!decodedMessage) {
-            console.warn('Received invalid stateless message');
             return;
           }
 
           if (isStatelessSaveMessage(decodedMessage)) {
-            // Handle the save message; use isStatelessSaveErrorMessage
+            setLastSaveTime(new Date());
           } else if (isStatelessReadOnlyStateMessage(decodedMessage)) {
-            // handle readOnly decodedMessage.readOnly
+            setIsReadOnly(decodedMessage.readOnly);
           }
         });
 
@@ -235,6 +233,7 @@ export const CollaborativeMarkdownInput = memo(
           onContentError: ({ disableCollaboration }) => {
             disableCollaboration();
           },
+          editable: !disabled,
         };
       }, [providerRef.current]);
 
@@ -247,6 +246,9 @@ export const CollaborativeMarkdownInput = memo(
       const theme = useTheme();
 
       const areControlsVisible = () => {
+        if (disabled) {
+          return false;
+        }
         if (controlsVisible === 'always') {
           return true;
         }
@@ -318,10 +320,14 @@ export const CollaborativeMarkdownInput = memo(
       const handleDialogClose = useCallback(() => setIsControlsDialogOpen(false), [setIsControlsDialogOpen]);
 
       const [currentCollaborationState, setCollaborationState] = useState<RealTimeCollaborationState>();
+      const [lastSaveTime, setLastSaveTime] = useState<Date | undefined>(undefined);
+      const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
+
       useEffect(() => {
         const collaborationState: RealTimeCollaborationState = {
           status,
-          lastActive: new Date(),
+          lastActive: lastSaveTime,
+          readOnly: isReadOnly,
           users:
             editor.storage.collaborationCursor?.users.map(user => ({
               id: user.clientId, // TODO: This needs to be the userId, not the clientId
@@ -335,7 +341,13 @@ export const CollaborativeMarkdownInput = memo(
           setCollaborationState(collaborationState);
           onChangeCollaborationState?.(collaborationState);
         }
-      }, [status, editor.storage.collaborationCursor?.users.length, editor.storage.collaborationCursor?.users]);
+      }, [
+        status,
+        lastSaveTime,
+        isReadOnly,
+        editor.storage.collaborationCursor?.users.length,
+        editor.storage.collaborationCursor?.users,
+      ]);
 
       return (
         <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur} height={height}>

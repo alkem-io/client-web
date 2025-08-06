@@ -6,15 +6,16 @@ import { gutters } from '@/core/ui/grid/utils';
 
 interface UserPresencingProps {
   collaborationState: RealTimeCollaborationState | undefined;
+  hideSaveRequestIndicator?: boolean;
 }
 
-const UserPresencing = ({ collaborationState }: UserPresencingProps) => {
+const UserPresencing = ({ collaborationState, hideSaveRequestIndicator }: UserPresencingProps) => {
   if (!collaborationState || collaborationState.status === 'disconnected') {
     return <SaveRequestIndicatorIcon isSaved={false} date={undefined} />;
   }
   return (
     <>
-      <SaveRequestIndicatorIcon isSaved date={collaborationState.lastActive} />
+      {!hideSaveRequestIndicator && <SaveRequestIndicatorIcon isSaved date={collaborationState.lastActive} />}
       <Box display="flex" gap={gutters(0.5)} sx={{ cursor: 'pointer' }}>
         {collaborationState.users.map(user => (
           <Tooltip title={user.profile.displayName} key={user.id} arrow>

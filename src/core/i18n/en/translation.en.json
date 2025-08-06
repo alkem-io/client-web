@@ -2792,6 +2792,15 @@
       },
       "restartCollaboration": "Continue Editing"
     },
+    "memo": {
+      "readonlyReason": {
+        "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
+        "contentUpdatePolicy": "You don't have the rights to edit this Memo. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings if you want to contribute.",
+        "noMembership": "You have to be a member of the {{spaceLevel}} this memo is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceLevel}} this memo is in, to be able to edit. Click here to <signinlink>sign in</signinlink>",
+        "connecting": ""
+      }
+    },
     "login": {
       "title": "Sign in to Alkemio",
       "register": "Don’t have an Alkemio account yet? <signup>Click here to sign up.</signup>"

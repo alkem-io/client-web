@@ -4,29 +4,31 @@ import CollaborativeMarkdownInput from '@/core/ui/forms/CollaborativeMarkdownInp
 import { CharacterCountContextProvider } from '@/core/ui/forms/MarkdownInput/CharacterCountContext';
 import { Box, DialogContent, OutlinedInput } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
-import DeleteButton from '@/core/ui/actions/DeleteButton';
 import useMemoManager from '../MemoManager/useMemoManager';
 import Loading from '@/core/ui/loading/Loading';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import UserPresencing from '../../realTimeCollaboration/UserPresencing';
 import { RealTimeCollaborationState } from '../../realTimeCollaboration/RealTimeCollaborationState';
+import MemoFooter from './MemoFooter';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { useTranslation } from 'react-i18next';
 
 interface MemoDialogProps {
   open?: boolean;
   onClose?: () => void;
   memoId: string;
-  preventMemoDeletion?: boolean;
 }
 
-const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: MemoDialogProps) => {
+const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
+  const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const [forceExitFullscreen, setForceExitFullscreen] = useState(false);
   const [collaborationState, setCollaborationState] = useState<RealTimeCollaborationState>();
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  const { memo, loading, onDeleteMemo } = useMemoManager({ id: memoId });
+  const { memo, loading } = useMemoManager({ id: memoId });
 
   const handleClose = () => {
     // Declaratively trigger fullscreen exit
@@ -35,7 +37,6 @@ const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: Memo
     onClose?.();
   };
 
-  // Reset force exit flag when dialog opens
   const handleDialogOpen = () => {
     if (open) {
       setForceExitFullscreen(false);
@@ -46,28 +47,30 @@ const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: Memo
     handleDialogOpen();
   }, [open]);
 
+  const hasContributePrivileges = (memo?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Contribute);
+
   return (
     <DialogWithGrid ref={dialogRef} open={open} onClose={handleClose} fullWidth fullHeight fullScreen={fullScreen}>
       <DialogHeader
         onClose={handleClose}
         actions={
           <>
-            <ShareButton url={memo?.profile.url} entityTypeName="memo" disabled={!memo?.profile.url}>
-              {/*hasUpdatePrivileges && (
-              <WhiteboardShareSettings createdBy={whiteboard?.createdBy} {...contentUpdatePolicyProvided} />
-            )*/}
-            </ShareButton>
-
+            <ShareButton url={memo?.profile.url} entityTypeName="memo" disabled={!memo?.profile.url} />
             <FullscreenButton
               element={dialogRef.current || undefined}
               onChange={setFullScreen}
               forceExit={forceExitFullscreen}
             />
-            <UserPresencing collaborationState={collaborationState} />
+            <UserPresencing
+              collaborationState={collaborationState}
+              hideSaveRequestIndicator={
+                !hasContributePrivileges || collaborationState?.readOnly || !collaborationState?.lastActive
+              }
+            />
           </>
         }
       >
-        Memo
+        {t('common.memo')}
       </DialogHeader>
       <DialogContent>
         <Box position="relative" height="100%" width="100%">
@@ -92,13 +95,13 @@ const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: Memo
             <CharacterCountContextProvider>
               <OutlinedInput
                 inputComponent={CollaborativeMarkdownInput}
+                disabled={!hasContributePrivileges}
                 inputProps={{
                   controlsVisible: 'always',
                   collaborationId: memoId,
                   height: '100%',
                   onChangeCollaborationState: setCollaborationState,
                 }}
-                multiline
                 sx={{
                   '&.MuiOutlinedInput-root': {
                     padding: gutters(0.5),
@@ -107,13 +110,22 @@ const MemoDialog = ({ open = false, onClose, memoId, preventMemoDeletion }: Memo
                   minHeight: 'calc(100vh - 200px)',
                   alignItems: 'flex-start',
                 }}
+                multiline
                 fullWidth
               />
             </CharacterCountContextProvider>
           )}
         </Box>
       </DialogContent>
-      <DialogFooter>{!preventMemoDeletion && <DeleteButton onClick={onDeleteMemo} />}</DialogFooter>
+      <DialogFooter>
+        <MemoFooter
+          memoUrl={memo?.profile.url}
+          canContribute={hasContributePrivileges}
+          createdBy={memo?.createdBy}
+          contentUpdatePolicy={undefined}
+          collaborationState={collaborationState}
+        />
+      </DialogFooter>
     </DialogWithGrid>
   );
 };

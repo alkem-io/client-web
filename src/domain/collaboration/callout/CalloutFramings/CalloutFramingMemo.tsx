@@ -26,12 +26,7 @@ const CalloutFramingMemo = ({ callout, onCollapse }: CalloutFramingMemoProps) =>
         displayName={callout.framing.profile.displayName}
         onClick={() => setDialogOpen(true)}
       />
-      <MemoDialog
-        open={dialogOpen}
-        memoId={callout.framing.memo.id}
-        onClose={handleCloseMemoDialog}
-        preventMemoDeletion
-      />
+      <MemoDialog open={dialogOpen} memoId={callout.framing.memo.id} onClose={handleCloseMemoDialog} />
     </>
   );
 };
