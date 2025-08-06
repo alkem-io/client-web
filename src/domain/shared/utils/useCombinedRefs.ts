@@ -1,12 +1,12 @@
-import { MutableRefObject, useMemo, useRef } from 'react';
+import { RefObject, useMemo, useRef } from 'react';
 
 interface FunctionalRef<T> {
   (refValue: T): void;
 }
 
-type Ref<T> = MutableRefObject<T> | FunctionalRef<T> | undefined | null;
+type Ref<T> = RefObject<T> | FunctionalRef<T> | undefined | null;
 
-export const useCombinedRefs = <T>(initialValue: T, ...refs: Ref<T>[]): MutableRefObject<T> => {
+export const useCombinedRefs = <T>(initialValue: T, ...refs: Ref<T>[]): RefObject<T> => {
   const currentHolder = useRef<T>(initialValue);
 
   const updateAllRefs = (current: T) => {

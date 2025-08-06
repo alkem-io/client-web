@@ -1,6 +1,5 @@
 import {
   cloneElement,
-  forwardRef,
   MouseEventHandler,
   ReactElement,
   ReactNode,
@@ -46,108 +45,108 @@ const BreadcrumbsSeparator = () => (
 
 type SpaceBreadcrumbsExpandedState = Record<string | number, boolean>;
 
-const Breadcrumbs = forwardRef<Collapsible, BreadcrumbsInternalProps<Expandable>>(
-  <ItemProps extends Expandable>({ onExpand, children }: BreadcrumbsInternalProps<ItemProps>, ref) => {
-    const [expandedState, setExpandedState] = useState<SpaceBreadcrumbsExpandedState>({});
-    const [isExpanded, setIsExpanded] = useState(false);
+const Breadcrumbs = (<ItemProps extends Expandable>({
+  ref,
+  onExpand,
+  children,
+}: BreadcrumbsInternalProps<Expandable> & {
+  ref?: React.RefObject<Collapsible>;
+}) => {
+  const [expandedState, setExpandedState] = useState<SpaceBreadcrumbsExpandedState>({});
+  const [isExpanded, setIsExpanded] = useState(false);
 
-    const [firstChild, ...restChildren] = (flattenChildren(children) as ReactElement<ItemProps>[]).map(child => {
-      const expanded = isExpanded || (child.key && expandedState[child.key]) || false;
+  const [firstChild, ...restChildren] = (flattenChildren(children) as ReactElement<ItemProps>[]).map(child => {
+    const expanded = isExpanded || (child.key && expandedState[child.key]) || false;
 
-      const onExpand = child.key ? () => handleItemHover(child.key!) : undefined;
+    const onExpand = child.key ? () => handleItemHover(child.key!) : undefined;
 
-      const onCollapse = child.key ? () => handleItemLeave(child.key!) : undefined;
+    const onCollapse = child.key ? () => handleItemLeave(child.key!) : undefined;
 
-      return cloneElement(child, { expanded, onExpand, onCollapse } as Partial<ItemProps>);
-    });
+    return cloneElement(child, { expanded, onExpand, onCollapse } as Partial<ItemProps>);
+  });
 
-    const { isLargeScreen } = useScreenSize();
+  const { isLargeScreen } = useScreenSize();
 
-    useEffect(() => {
+  useEffect(() => {
+    setExpandedState({});
+    setIsExpanded(false);
+  }, [isLargeScreen]);
+
+  useEffect(() => {
+    onExpand?.(isExpanded || some(expandedState));
+  }, [isExpanded, expandedState]);
+
+  const childrenWithSeparator =
+    firstChild &&
+    restChildren.reduce<ReactNode[]>(
+      (acc, child, index) => {
+        acc.push(<BreadcrumbsSeparator key={`_separator_${index}`} />, child);
+
+        return acc;
+      },
+      [firstChild]
+    );
+
+  const onLeave = () => {
+    setExpandedState(prevExpandedState => (some(prevExpandedState) ? {} : prevExpandedState));
+  };
+
+  const handleItemHover = (childKey: string | number) => {
+    setExpandedState(prevExpandedState => ({
+      ...prevExpandedState,
+      [childKey]: true,
+    }));
+  };
+
+  const handleItemLeave = (childKey: string | number) => {
+    setExpandedState(prevExpandedState => ({
+      ...prevExpandedState,
+      [childKey]: false,
+    }));
+  };
+
+  const handleClick: MouseEventHandler = event => {
+    if (isLargeScreen) {
+      return;
+    }
+    if (!isExpanded) {
+      event.preventDefault();
+      setIsExpanded(true);
+    }
+  };
+
+  const handleClickAway = () => setIsExpanded(false);
+
+  useImperativeHandle(ref, () => {
+    const collapse = () => {
       setExpandedState({});
       setIsExpanded(false);
-    }, [isLargeScreen]);
-
-    useEffect(() => {
-      onExpand?.(isExpanded || some(expandedState));
-    }, [isExpanded, expandedState]);
-
-    const childrenWithSeparator =
-      firstChild &&
-      restChildren.reduce<ReactNode[]>(
-        (acc, child, index) => {
-          acc.push(<BreadcrumbsSeparator key={`_separator_${index}`} />, child);
-
-          return acc;
-        },
-        [firstChild]
-      );
-
-    const onLeave = () => {
-      setExpandedState(prevExpandedState => (some(prevExpandedState) ? {} : prevExpandedState));
     };
 
-    const handleItemHover = (childKey: string | number) => {
-      setExpandedState(prevExpandedState => ({
-        ...prevExpandedState,
-        [childKey]: true,
-      }));
-    };
+    return { collapse };
+  }, []);
 
-    const handleItemLeave = (childKey: string | number) => {
-      setExpandedState(prevExpandedState => ({
-        ...prevExpandedState,
-        [childKey]: false,
-      }));
-    };
-
-    const handleClick: MouseEventHandler = event => {
-      if (isLargeScreen) {
-        return;
-      }
-      if (!isExpanded) {
-        event.preventDefault();
-        setIsExpanded(true);
-      }
-    };
-
-    const handleClickAway = () => setIsExpanded(false);
-
-    useImperativeHandle(
-      ref,
-      () => {
-        const collapse = () => {
-          setExpandedState({});
-          setIsExpanded(false);
-        };
-
-        return { collapse };
-      },
-      []
-    );
-
-    return (
-      <ClickAwayListener onClickAway={handleClickAway}>
-        <Box
-          display="flex"
-          flexDirection="row"
-          columnGap={gutters(0.5)}
-          rowGap={gutters(0.25)}
-          alignItems="center"
-          flexWrap="wrap"
-          padding={gutters(0.5)}
-          paddingRight={0}
-          marginRight={gutters(2)}
-          onMouseLeave={onLeave}
-          onClick={handleClick}
-          sx={{ pointerEvents: 'auto', userSelect: 'none' }}
-        >
-          {childrenWithSeparator}
-        </Box>
-      </ClickAwayListener>
-    );
-  }
-) as <ItemProps extends Expandable>(
+  return (
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <Box
+        display="flex"
+        flexDirection="row"
+        columnGap={gutters(0.5)}
+        rowGap={gutters(0.25)}
+        alignItems="center"
+        flexWrap="wrap"
+        padding={gutters(0.5)}
+        paddingRight={0}
+        marginRight={gutters(2)}
+        onMouseLeave={onLeave}
+        onClick={handleClick}
+        sx={{ pointerEvents: 'auto', userSelect: 'none' }}
+      >
+        {childrenWithSeparator}
+      </Box>
+    </ClickAwayListener>
+  );
+}) as <ItemProps extends Expandable>(
   props: BreadcrumbsInternalProps<ItemProps> & { ref?: Ref<Collapsible> }
 ) => ReactElement;
 

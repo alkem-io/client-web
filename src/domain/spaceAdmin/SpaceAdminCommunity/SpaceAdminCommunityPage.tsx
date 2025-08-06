@@ -140,7 +140,7 @@ const SpaceAdminCommunityPage = ({
     spaceVirtualContributorEntitlementEnabled &&
     (permissions.canAddVirtualContributorsFromAccount || permissions.canAddVirtualContributors);
 
-  const currentCommunityGuidelines = useRef<CommunityGuidelines>();
+  const currentCommunityGuidelines = useRef<CommunityGuidelines | undefined>(undefined);
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);

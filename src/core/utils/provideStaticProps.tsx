@@ -1,19 +1,17 @@
-import { ComponentType, forwardRef, ForwardedRef } from 'react';
+import { ComponentType } from 'react';
 
 interface Options {
   override?: boolean;
 }
 
-const provideStaticProps = <Props extends {}>(
-  Component: ComponentType<Props>,
-  staticProps: Partial<Props>,
+function provideStaticProps<P, R>(
+  Component: ComponentType<P & { ref?: React.Ref<R> }>,
+  staticProps: Partial<P>,
   { override = false }: Options = {}
-) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return forwardRef<Props, Props>((props, ref: ForwardedRef<any>) => (
-    // @ts-ignore react-18
-    <Component ref={ref} {...(override ? {} : staticProps)} {...props} {...(override ? staticProps : {})} />
-  ));
-};
+) {
+  return (props: P & { ref?: React.Ref<R> }) => (
+    <Component {...(override ? {} : staticProps)} {...props} {...(override ? staticProps : {})} />
+  );
+}
 
 export default provideStaticProps;

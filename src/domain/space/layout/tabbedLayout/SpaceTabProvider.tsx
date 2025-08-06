@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useSpaceTabQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceTabQuery, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { UrlResolverContextValue } from '@/main/routing/urlResolver/UrlResolverProvider';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 import { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
-import { SpaceTabQueryModel } from './spaceTabQuery.model';
 import { useSpace } from '../../context/useSpace';
 import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 
@@ -32,8 +31,8 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
   const {
     space: { id: spaceId },
   } = useSpace();
-  const lastQueriedIdRef = useRef<string>();
-  const lastSpaceTabDataRef = useRef<SpaceTabQueryModel>();
+  const lastQueriedIdRef = useRef<string | null>(null);
+  const lastSpaceTabDataRef = useRef<SpaceTabQuery | undefined>(undefined);
   const shouldSkip = skip || !spaceId || lastQueriedIdRef.current === spaceId;
 
   const {

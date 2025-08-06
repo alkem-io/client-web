@@ -1,18 +1,21 @@
 import Breadcrumbs, { BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
 import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
-import { forwardRef } from 'react';
 import { Collapsible } from '@/core/ui/navigation/Collapsible';
 import { Expandable } from '@/core/ui/navigation/Expandable';
 
-const TopLevelPageBreadcrumbs = forwardRef<Collapsible, BreadcrumbsProps<Expandable>>(
-  <ItemProps extends Expandable>({ children, ...props }: BreadcrumbsProps<ItemProps>, ref) => {
-    return (
-      <Breadcrumbs ref={ref} {...props}>
-        <BreadcrumbsRootItem />
-        {children}
-      </Breadcrumbs>
-    );
-  }
-);
+const TopLevelPageBreadcrumbs = ({
+  ref,
+  children,
+  ...props
+}: BreadcrumbsProps<Expandable> & {
+  ref?: React.RefObject<Collapsible>;
+}) => {
+  return (
+    <Breadcrumbs ref={ref} {...props}>
+      <BreadcrumbsRootItem />
+      {children}
+    </Breadcrumbs>
+  );
+};
 
 export default TopLevelPageBreadcrumbs;

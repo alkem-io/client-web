@@ -1,8 +1,15 @@
-import { forwardRef } from 'react';
 import { Avatar as MUIAvatar, AvatarProps } from '@mui/material';
 import useImageErrorHandler from '../image/useImageErrorHandler';
+import { HTMLAttributes } from 'react';
 
-const ErrorHandlingAvatar = forwardRef<HTMLDivElement, AvatarProps>(({ onError, ...props }, ref) => {
+const ErrorHandlingAvatar = ({
+  onError,
+  ref,
+  ...props
+}: AvatarProps &
+  HTMLAttributes<HTMLDivElement> & {
+    ref?: React.Ref<HTMLDivElement>;
+  }) => {
   const reportImageError = useImageErrorHandler();
 
   const handleError = err => {
@@ -10,7 +17,7 @@ const ErrorHandlingAvatar = forwardRef<HTMLDivElement, AvatarProps>(({ onError, 
     onError?.(err);
   };
 
-  return <MUIAvatar ref={ref} onError={handleError} {...props} />;
-});
+  return <MUIAvatar onError={handleError} {...props} ref={ref} />;
+};
 
 export default ErrorHandlingAvatar;

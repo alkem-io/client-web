@@ -147,7 +147,7 @@ export const SpaceExplorerView = ({
     (membershipFilter === SpacesExplorerMembershipFilter.Member && !authenticated) || spaces?.length === 0;
 
   const renderVisibleSpaces = useCallback(() => {
-    const vs: JSX.Element[] = [];
+    const vs: React.ReactElement[] = [];
 
     if (!visibleSpaces) {
       return vs;
