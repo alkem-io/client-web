@@ -3,6 +3,8 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { TypedCalloutDetails } from '../models/TypedCallout';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import { useTranslation } from 'react-i18next';
+import { Caption } from '@/core/ui/typography';
+import useNavigate from '@/core/routing/useNavigate';
 
 interface CalloutFramingLinkProps {
   callout: TypedCalloutDetails;
@@ -12,6 +14,7 @@ interface CalloutFramingLinkProps {
 
 const CalloutFramingLink = ({ callout, sx, containerProps }: CalloutFramingLinkProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   if (!callout.framing?.link) {
     return null;
@@ -20,17 +23,40 @@ const CalloutFramingLink = ({ callout, sx, containerProps }: CalloutFramingLinkP
   const { uri, profile } = callout.framing.link;
   const displayName = profile.displayName || 'Link';
 
-  // Check if it's an external link
-  // Internal: relative paths (starting with /) or same origin URLs
-  // External: everything else (http/https to different domains)
-  const isExternalLink =
-    uri.startsWith('http://') || uri.startsWith('https://') ? !uri.startsWith(window.location.origin) : false;
+  // Improved link validation and security checks
+  const isValidUrl = (url: string): boolean => {
+    try {
+      const urlObj = new URL(url);
+      // Only allow http and https protocols for security
+      return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
+  const isValidLink = isValidUrl(uri);
+
+  // If link is invalid, don't render anything or show error state
+  if (!isValidLink) {
+    return (
+      <Gutters {...containerProps}>
+        <Button variant="outlined" color="error" fullWidth disabled sx={sx}>
+          {t('forms.validations.invalidUrl')}
+        </Button>
+      </Gutters>
+    );
+  }
+
+  // Determine if it's an external link
+  const urlObj = new URL(uri);
+  const currentOrigin = window.location.origin;
+  const isExternalLink = urlObj.origin !== currentOrigin;
 
   const handleLinkClick = () => {
     if (isExternalLink) {
       window.open(uri, '_blank', 'noopener,noreferrer');
     } else {
-      window.location.href = uri;
+      navigate(uri);
     }
   };
 
@@ -50,15 +76,23 @@ const CalloutFramingLink = ({ callout, sx, containerProps }: CalloutFramingLinkP
   if (isExternalLink) {
     return (
       <Gutters {...containerProps}>
-        <Tooltip title={t('common.externalLinkDisclaimer')}>{buttonContent}</Tooltip>
+        <Tooltip
+          title={
+            <>
+              <Caption>{t('common.externalLinkDisclaimer')}</Caption>
+              <Caption>{uri}</Caption>
+            </>
+          }
+        >
+          {buttonContent}
+        </Tooltip>
       </Gutters>
     );
   }
 
-  // For internal links, show URL in tooltip
   return (
     <Gutters {...containerProps}>
-      <Tooltip title={uri}>{buttonContent}</Tooltip>
+      <Tooltip title={<Caption>{uri}</Caption>}>{buttonContent}</Tooltip>
     </Gutters>
   );
 };

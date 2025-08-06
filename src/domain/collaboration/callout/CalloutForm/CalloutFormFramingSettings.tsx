@@ -153,6 +153,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
               title={t('components.callout-creation.framing.link.name')}
               value={framing.link?.profile.displayName || ''}
               onChange={e => handleLinkChange('displayName', e.target.value)}
+              required
             />
             <FormikInputField
               containerProps={{ width: '30%' }}
@@ -160,6 +161,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
               title={t('components.callout-creation.framing.link.url')}
               value={framing.link?.uri || ''}
               onChange={e => handleLinkChange('uri', e.target.value)}
+              required
             />
           </>
         </PageContentBlockSeamless>
