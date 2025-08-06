@@ -23,12 +23,16 @@ interface ShareOnAlkemioData {
 export const ShareOnAlkemioButton: FC<ShareOnPlatformButtonProps> = ({ setShareHandler, ...props }) => {
   const { t } = useTranslation();
 
+  const handleClick = useCallback(() => {
+    setShareHandler('alkemio');
+  }, [setShareHandler]);
+
   return (
     <ShareButton
       startIcon={<Box component="img" src={ICON_URL} />}
       color="primary"
       variant="contained"
-      onClick={() => setShareHandler(AlkemioShareHandler)}
+      onClick={handleClick}
       {...props}
     >
       {t('share-dialog.platforms.alkemio.title')}
@@ -36,8 +40,15 @@ export const ShareOnAlkemioButton: FC<ShareOnPlatformButtonProps> = ({ setShareH
   );
 };
 
-const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = ({ entityTypeName, url, goBack }) => {
+export const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = props => {
   const { t } = useTranslation();
+
+  // Debug logging to see what props we're receiving
+  console.log('AlkemioShareHandler props:', props);
+
+  const { entityTypeName, url, goBack } = props || {};
+
+  const [isMessageSent, setMessageSent] = useState(false);
 
   const initialValues: ShareOnAlkemioData = useMemo(
     () => ({
@@ -89,7 +100,7 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = ({ entityTypeName, 
     }
   };
 
-  const [isMessageSent, setMessageSent] = useState(false);
+  const handleSetMessageFalse = () => setMessageSent(false);
 
   return (
     <Box>
@@ -100,7 +111,7 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = ({ entityTypeName, 
               {t('share-dialog.platforms.alkemio.description', { entity: t(`common.${entityTypeName}` as const) })}
             </Text>
 
-            <FormikUserSelector name="users" onChange={() => setMessageSent(false)} />
+            <FormikUserSelector name="users" onChange={handleSetMessageFalse} />
 
             <FormikInputField
               name="message"
@@ -108,7 +119,7 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = ({ entityTypeName, 
               placeholder={t('messaging.message-optional')}
               multiline
               rows={5}
-              onFocus={() => setMessageSent(false)}
+              onFocus={handleSetMessageFalse}
               maxLength={LONG_TEXT_LENGTH}
             />
 
