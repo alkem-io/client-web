@@ -46,9 +46,9 @@ function Conversation({
   footer,
   menuButton,
 }: Props) {
-  const senderRef = useRef<ISenderRef>(null!);
+  const senderRef = useRef<ISenderRef | null>(null);
 
-  const handlerSendMsn = event => {
+  const handlerSendMsn = (event: string) => {
     sendMessage(event);
   };
 

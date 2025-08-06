@@ -27,7 +27,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
   const {
     state: { showChat },
   } = useChatBehavior();
-  const inputRef = useRef<HTMLDivElement>(null!);
+  const inputRef = useRef<HTMLDivElement | null>(null);
   const refContainer = useRef<HTMLDivElement>(null);
   const [enter, setEnter] = useState(false);
   const [firefox, setFirefox] = useState(false);
@@ -48,7 +48,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
 
   const handlerSendMessage = () => {
     const el = inputRef.current;
-    if (el.innerHTML) {
+    if (el && el.innerHTML) {
       sendMessage(el.innerText);
       el.innerHTML = '';
     }
@@ -56,6 +56,8 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
 
   const handlerOnSelectEmoji = (emoji: { native: string }) => {
     const el = inputRef.current;
+    if (!el) return;
+
     const { start, end } = getSelection(el);
     if (el.innerHTML) {
       const firstPart = el.innerHTML.substring(0, start);
@@ -69,6 +71,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
 
   const handlerOnKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const el = inputRef.current;
+    if (!el) return;
 
     if (event.charCode == 13 && !event.shiftKey) {
       event.preventDefault();
