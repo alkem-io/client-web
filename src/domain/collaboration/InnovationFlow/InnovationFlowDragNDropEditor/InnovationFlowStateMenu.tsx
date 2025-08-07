@@ -1,6 +1,6 @@
 import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
-import { Divider, ListItemIcon, Tooltip } from '@mui/material';
+import { Divider, ListItemIcon, Tooltip, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { AddCircleOutline, DeleteOutlined, EditOutlined, ToggleOn } from '@mui/icons-material';
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
@@ -35,7 +35,7 @@ export default function InnovationFlowStateMenu({
         };
 
         return (
-          <>
+          <Box>
             {isCurrentState ? (
               <MenuItem disabled>
                 <ListItemIcon>
@@ -83,7 +83,7 @@ export default function InnovationFlowStateMenu({
                 </MenuItem>
               </>
             )}
-          </>
+          </Box>
         );
       }}
     </PageContentBlockContextualMenu>

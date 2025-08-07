@@ -18,6 +18,7 @@ export type Scalars = {
   JSON: { input: string; output: string };
   LifecycleDefinition: { input: string; output: string };
   Markdown: { input: string; output: string };
+  MemoContent: { input: string; output: string };
   MessageID: { input: string; output: string };
   NameID: { input: string; output: string };
   SearchCursor: { input: string; output: string };
@@ -857,6 +858,7 @@ export enum AuthorizationPolicyType {
   LicensePolicy = 'LICENSE_POLICY',
   Licensing = 'LICENSING',
   Link = 'LINK',
+  Memo = 'MEMO',
   Organization = 'ORGANIZATION',
   OrganizationVerification = 'ORGANIZATION_VERIFICATION',
   Platform = 'PLATFORM',
@@ -1110,6 +1112,8 @@ export type CalloutFraming = {
   id: Scalars['UUID']['output'];
   /** The Link for framing the associated Callout. */
   link?: Maybe<Link>;
+  /** The Memo for framing the associated Callout. */
+  memo?: Maybe<Memo>;
   /** The Profile for framing the associated Callout. */
   profile: Profile;
   /** The type of the Callout Framing, the additional content attached to this callout */
@@ -1122,6 +1126,7 @@ export type CalloutFraming = {
 
 export enum CalloutFramingType {
   Link = 'LINK',
+  Memo = 'MEMO',
   None = 'NONE',
   Whiteboard = 'WHITEBOARD',
 }
@@ -1696,6 +1701,7 @@ export type CreateCalloutData = {
 export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
   link?: Maybe<CreateLinkData>;
+  memo?: Maybe<CreateMemoData>;
   profile: CreateProfileData;
   tags?: Maybe<Array<Scalars['String']['output']>>;
   /** The type of additional content attached to the framing of the callout. Defaults to None. */
@@ -1705,6 +1711,7 @@ export type CreateCalloutFramingData = {
 
 export type CreateCalloutFramingInput = {
   link?: InputMaybe<CreateLinkInput>;
+  memo?: InputMaybe<CreateMemoInput>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The type of additional content attached to the framing of the callout. Defaults to None. */
@@ -1987,6 +1994,15 @@ export type CreateLocationInput = {
   country?: InputMaybe<Scalars['String']['input']>;
   postalCode?: InputMaybe<Scalars['String']['input']>;
   stateOrProvince?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateMemoData = {
+  __typename?: 'CreateMemoData';
+  profile?: Maybe<CreateProfileData>;
+};
+
+export type CreateMemoInput = {
+  profile?: InputMaybe<CreateProfileInput>;
 };
 
 export type CreateNvpInput = {
@@ -2386,6 +2402,10 @@ export type DeleteLicensePlanInput = {
 };
 
 export type DeleteLinkInput = {
+  ID: Scalars['UUID']['input'];
+};
+
+export type DeleteMemoInput = {
   ID: Scalars['UUID']['input'];
 };
 
@@ -3521,6 +3541,8 @@ export type LookupQueryResults = {
   knowledgeBase: KnowledgeBase;
   /** Lookup the specified License */
   license?: Maybe<License>;
+  /** Lookup the specified Memo */
+  memo?: Maybe<Memo>;
   /** Lookup myPrivileges on the specified entity. */
   myPrivileges?: Maybe<LookupMyPrivilegesQueryResults>;
   /** Lookup the specified Organization using a ID */
@@ -3634,6 +3656,10 @@ export type LookupQueryResultsLicenseArgs = {
   ID: Scalars['UUID']['input'];
 };
 
+export type LookupQueryResultsMemoArgs = {
+  ID: Scalars['UUID']['input'];
+};
+
 export type LookupQueryResultsOrganizationArgs = {
   ID: Scalars['UUID']['input'];
 };
@@ -3736,6 +3762,30 @@ export type MeQueryResultsMySpacesArgs = {
 
 export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
   limit?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type Memo = {
+  __typename?: 'Memo';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The binary state V2 of the Yjs document, used to collaborate on the Memo, represented in base64. */
+  content?: Maybe<Scalars['String']['output']>;
+  /** The policy governing who can update the Memo content. */
+  contentUpdatePolicy: ContentUpdatePolicy;
+  /** The user that created this Memo */
+  createdBy?: Maybe<User>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** Whether the Memo is multi-user enabled on Space level. */
+  isMultiUser: Scalars['Boolean']['output'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID']['output'];
+  /** The Profile for this Memo. */
+  profile: Profile;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 /** A message that was sent either as an Update or as part of a Discussion. */
@@ -3990,6 +4040,8 @@ export type Mutation = {
   deleteLicensePlan: LicensePlan;
   /** Deletes the specified Link. */
   deleteLink: Link;
+  /** Deletes the specified Memo. */
+  deleteMemo: Memo;
   /** Deletes the specified Organization. */
   deleteOrganization: Organization;
   /** Removes the specified User platformInvitation. */
@@ -4138,6 +4190,8 @@ export type Mutation = {
   updateLicensePlan: LicensePlan;
   /** Updates the specified Link. */
   updateLink: Link;
+  /** Updates the specified Memo. */
+  updateMemo: Memo;
   /** Update notification state and return the notification. */
   updateNotificationState: InAppNotificationState;
   /** Updates the specified Organization. */
@@ -4440,6 +4494,10 @@ export type MutationDeleteLinkArgs = {
   deleteData: DeleteLinkInput;
 };
 
+export type MutationDeleteMemoArgs = {
+  memoData: DeleteMemoInput;
+};
+
 export type MutationDeleteOrganizationArgs = {
   deleteData: DeleteOrganizationInput;
 };
@@ -4722,6 +4780,10 @@ export type MutationUpdateLicensePlanArgs = {
 
 export type MutationUpdateLinkArgs = {
   linkData: UpdateLinkInput;
+};
+
+export type MutationUpdateMemoArgs = {
+  memoData: UpdateMemoEntityInput;
 };
 
 export type MutationUpdateNotificationStateArgs = {
@@ -5320,6 +5382,7 @@ export enum ProfileType {
   InnovationHub = 'INNOVATION_HUB',
   InnovationPack = 'INNOVATION_PACK',
   KnowledgeBase = 'KNOWLEDGE_BASE',
+  Memo = 'MEMO',
   Organization = 'ORGANIZATION',
   Post = 'POST',
   SpaceAbout = 'SPACE_ABOUT',
@@ -6925,6 +6988,8 @@ export type UpdateCalloutEntityInput = {
 
 export type UpdateCalloutFramingInput = {
   link?: InputMaybe<UpdateLinkInput>;
+  /** The new content to be used. */
+  memoContent?: InputMaybe<Scalars['Markdown']['input']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   /** The type of additional content attached to the framing of the callout. */
@@ -7151,6 +7216,13 @@ export type UpdateLocationInput = {
   country?: InputMaybe<Scalars['String']['input']>;
   postalCode?: InputMaybe<Scalars['String']['input']>;
   stateOrProvince?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateMemoEntityInput = {
+  ID: Scalars['UUID']['input'];
+  contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
+  /** The Profile of this entity. */
+  profile?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateNotificationStateInput = {
@@ -9624,6 +9696,73 @@ export type CalloutPageCalloutQuery = {
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
+                        }
+                      | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
+                  };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          location?:
+                            | {
+                                __typename?: 'Location';
+                                id: string;
+                                country?: string | undefined;
+                                city?: string | undefined;
+                              }
+                            | undefined;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        };
+                      }
+                    | undefined;
+                }
+              | undefined;
+            memo?:
+              | {
+                  __typename?: 'Memo';
+                  id: string;
+                  nameID: string;
+                  createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    preview?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          allowedTypes: Array<string>;
+                          aspectRatio: number;
+                          maxHeight: number;
+                          maxWidth: number;
+                          minHeight: number;
+                          minWidth: number;
+                          alternativeText?: string | undefined;
                         }
                       | undefined;
                     storageBucket: { __typename?: 'StorageBucket'; id: string };
@@ -12195,6 +12334,19 @@ export type CalloutContentQuery = {
                   };
                 }
               | undefined;
+            memo?:
+              | {
+                  __typename?: 'Memo';
+                  id: string;
+                  content?: string | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    preview?: { __typename?: 'Visual'; id: string; name: string; uri: string } | undefined;
+                  };
+                }
+              | undefined;
             link?:
               | {
                   __typename?: 'Link';
@@ -12321,6 +12473,64 @@ export type UpdateCalloutContentMutation = {
                     tags: Array<string>;
                     allowedValues: Array<string>;
                     type: TagsetType;
+                  }
+                | undefined;
+              storageBucket: { __typename?: 'StorageBucket'; id: string };
+            };
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            nameID: string;
+            createdDate: Date;
+            contentUpdatePolicy: ContentUpdatePolicy;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
                   }
                 | undefined;
               storageBucket: { __typename?: 'StorageBucket'; id: string };
@@ -12628,6 +12838,64 @@ export type UpdateCalloutVisibilityMutation = {
                     tags: Array<string>;
                     allowedValues: Array<string>;
                     type: TagsetType;
+                  }
+                | undefined;
+              storageBucket: { __typename?: 'StorageBucket'; id: string };
+            };
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            nameID: string;
+            createdDate: Date;
+            contentUpdatePolicy: ContentUpdatePolicy;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
                   }
                 | undefined;
               storageBucket: { __typename?: 'StorageBucket'; id: string };
@@ -13022,6 +13290,64 @@ export type CreateCalloutMutation = {
                     tags: Array<string>;
                     allowedValues: Array<string>;
                     type: TagsetType;
+                  }
+                | undefined;
+              storageBucket: { __typename?: 'StorageBucket'; id: string };
+            };
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            nameID: string;
+            createdDate: Date;
+            contentUpdatePolicy: ContentUpdatePolicy;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
                   }
                 | undefined;
               storageBucket: { __typename?: 'StorageBucket'; id: string };
@@ -13454,6 +13780,73 @@ export type CalloutDetailsQuery = {
                     | undefined;
                 }
               | undefined;
+            memo?:
+              | {
+                  __typename?: 'Memo';
+                  id: string;
+                  nameID: string;
+                  createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    preview?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          allowedTypes: Array<string>;
+                          aspectRatio: number;
+                          maxHeight: number;
+                          maxWidth: number;
+                          minHeight: number;
+                          minWidth: number;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
+                  };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          location?:
+                            | {
+                                __typename?: 'Location';
+                                id: string;
+                                country?: string | undefined;
+                                city?: string | undefined;
+                              }
+                            | undefined;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        };
+                      }
+                    | undefined;
+                }
+              | undefined;
             link?:
               | {
                   __typename?: 'Link';
@@ -13826,6 +14219,64 @@ export type CalloutDetailsFragment = {
             | undefined;
         }
       | undefined;
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          nameID: string;
+          createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
     link?:
       | {
           __typename?: 'Link';
@@ -14009,6 +14460,149 @@ export type CalloutDetailsFragment = {
     };
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
   };
+};
+
+export type MemoDetailsQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+export type MemoDetailsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          nameID: string;
+          createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type MemoProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  url: string;
+  preview?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        alternativeText?: string | undefined;
+      }
+    | undefined;
+  storageBucket: { __typename?: 'StorageBucket'; id: string };
+};
+
+export type MemoDetailsFragment = {
+  __typename?: 'Memo';
+  id: string;
+  nameID: string;
+  createdDate: Date;
+  contentUpdatePolicy: ContentUpdatePolicy;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    url: string;
+    preview?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+    storageBucket: { __typename?: 'StorageBucket'; id: string };
+  };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  createdBy?:
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          location?:
+            | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+            | undefined;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type CalloutSettingsQueryVariables = Exact<{

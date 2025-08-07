@@ -49,6 +49,7 @@ const CalloutDetailsContainer = ({ callout, children }: CalloutDetailsContainerP
         ...calloutDetails.framing.profile,
       },
       whiteboard: calloutDetails.framing.whiteboard,
+      memo: calloutDetails.framing.memo,
       link: calloutDetails.framing.link,
     };
     // TODO: Refactor this

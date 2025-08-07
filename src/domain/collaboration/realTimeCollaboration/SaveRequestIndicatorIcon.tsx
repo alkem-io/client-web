@@ -29,7 +29,11 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFormattedTime(date && formatTimeElapsed(date, t, 'long'));
+      if (!date) {
+        setFormattedTime(t('common.unknown'));
+      } else {
+        setFormattedTime(formatTimeElapsed(date, t, 'long'));
+      }
     }, 500);
 
     return () => {
@@ -45,10 +49,6 @@ export const SaveRequestIndicatorIcon = ({ date, isSaved }: SaveRequestIndicator
       values={{ datetime: formattedTime, warningMessage: isOpen ? '' : t('common.warning') + ':' }}
     />
   );
-
-  if (!date) {
-    return null;
-  }
 
   return (
     <>

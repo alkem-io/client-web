@@ -55,6 +55,15 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
                 content: template.callout.framing.whiteboard.content ?? EmptyWhiteboardString,
               }
             : undefined,
+          memo: template?.callout?.framing?.memo
+            ? {
+                profile: {
+                  displayName: template.callout.framing.memo.profile.displayName,
+                },
+                previewImages: [], // This is not going to work for now :(
+                content: template.callout.framing.memo.content ?? '',
+              }
+            : undefined,
           link: template?.callout?.framing?.link
             ? {
                 id: template.callout.framing.link.id ?? '',
@@ -106,6 +115,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
                 readOnlyAllowedTypes: !createMode,
                 temporaryLocation: createMode,
                 readOnlyContributions: true,
+                disableMemos: true,
               }}
               onChange={calloutFormValues => {
                 setFieldValue('callout', calloutFormValues);
