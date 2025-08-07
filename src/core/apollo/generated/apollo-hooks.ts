@@ -16109,6 +16109,7 @@ export const PlatformLicensingPlansDocument = gql`
           id
           type
           name
+          sortOrder
           licenseCredential
         }
       }

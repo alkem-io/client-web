@@ -7,6 +7,7 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 export interface LicensePlan {
   id: string;
   name: string;
+  sortOrder: number;
 }
 type RenderParams = GridRenderCellParams<LicensePlan>;
 type GetterParams = LicensePlan | undefined;
@@ -19,6 +20,9 @@ interface LicensePlansTableProps {
 
 const LicensePlansTable = ({ licensePlans, activeLicensePlanIds = [], onDelete }: LicensePlansTableProps) => {
   const isLicensePlanActive = (plan: GetterParams) => (plan?.id ? activeLicensePlanIds.includes(plan.id) : false);
+
+  // Sort license plans by sortOrder
+  const sortedLicensePlans = [...licensePlans].sort((a, b) => a.sortOrder - b.sortOrder);
 
   const columns: GridColDef<LicensePlan>[] = [
     {
@@ -36,7 +40,7 @@ const LicensePlansTable = ({ licensePlans, activeLicensePlanIds = [], onDelete }
 
   const [deletingPlanId, setDeletingPlanId] = useState<string | null>(null);
 
-  const deletingPlan = licensePlans.find(plan => plan.id === deletingPlanId);
+  const deletingPlan = sortedLicensePlans.find(plan => plan.id === deletingPlanId);
 
   const handleDelete = () => {
     onDelete?.(deletingPlan!);
@@ -46,7 +50,7 @@ const LicensePlansTable = ({ licensePlans, activeLicensePlanIds = [], onDelete }
   return (
     <>
       <DataGridTable
-        rows={licensePlans}
+        rows={sortedLicensePlans}
         columns={columns}
         disableDelete={plan => !isLicensePlanActive(plan)}
         onDelete={plan => setDeletingPlanId(plan.id)}
