@@ -153,6 +153,7 @@ const useAdminGlobalUserList = ({
         .map(licensePlan => ({
           id: licensePlan.id,
           name: licensePlan.name,
+          sortOrder: licensePlan.sortOrder,
         })) || [],
     [data]
   );
