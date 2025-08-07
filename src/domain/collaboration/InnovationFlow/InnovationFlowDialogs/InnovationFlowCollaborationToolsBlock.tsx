@@ -1,11 +1,7 @@
 import { Box, BoxProps, Skeleton, styled, SvgIconProps } from '@mui/material';
 import { groupBy } from 'lodash';
-import { ComponentType, FC, forwardRef } from 'react';
-import {
-  Draggable,
-  Droppable,
-  OnDragEndResponder,
-} from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
+import { ComponentType, FC } from 'react';
+import { Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
@@ -54,18 +50,24 @@ interface ListItemProps extends BoxProps {
   activity?: number;
 }
 
-const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
-  ({ displayName, icon: Icon, activity = 0, ...boxProps }, ref) => {
-    return (
-      <Box ref={ref} {...boxProps}>
-        <Caption>
-          {Icon && <Icon sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />}
-          {displayName} {activity > 0 && `(${activity})`}
-        </Caption>
-      </Box>
-    );
-  }
-);
+const ListItem = ({
+  ref,
+  displayName,
+  icon: Icon,
+  activity = 0,
+  ...boxProps
+}: ListItemProps & {
+  ref: React.Ref<HTMLDivElement>;
+}) => {
+  return (
+    <Box ref={ref} {...boxProps}>
+      <Caption>
+        {Icon && <Icon sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />}
+        {displayName} {activity > 0 && `(${activity})`}
+      </Caption>
+    </Box>
+  );
+};
 
 const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationToolsBlockProps> = ({
   callouts,

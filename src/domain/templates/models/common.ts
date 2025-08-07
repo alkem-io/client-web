@@ -48,6 +48,7 @@ export const getNewTemplate = (
             },
             type: data?.callout?.framing.type ?? CalloutFramingType.None,
             whiteboard: data?.callout?.framing.whiteboard ?? undefined,
+            link: data?.callout?.framing.link ?? undefined,
           },
           settings: {
             contribution: {

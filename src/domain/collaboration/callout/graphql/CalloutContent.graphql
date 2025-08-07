@@ -42,6 +42,9 @@ query CalloutContent($calloutId: UUID!) {
           }
           content  # Get the memo content to be able to edit it in single user mode
         }
+        link {
+          ...LinkDetails
+        }
       }
       contributionDefaults {
         id

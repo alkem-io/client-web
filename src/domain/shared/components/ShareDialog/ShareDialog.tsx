@@ -3,10 +3,14 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { gutters } from '@/core/ui/grid/utils';
 import { isAbsoluteUrl } from '@/core/utils/links';
 import { Box, Button, ButtonProps, DialogContent, Skeleton, TextField } from '@mui/material';
-import { ComponentType, FC, PropsWithChildren, useState } from 'react';
+import { FC, PropsWithChildren, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ShareOnAlkemioButton } from './platforms/ShareOnAlkemio';
 import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
+
+// Import the handler components directly
+import { ClipboardShareHandler } from './platforms/ShareOnClipboard';
+import { AlkemioShareHandler } from './platforms/ShareOnAlkemio';
 
 export interface ShareDialogProps extends ShareComponentProps {
   open: boolean;
@@ -52,8 +56,13 @@ export interface ShareComponentProps extends PropsWithChildren {
 
 export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, loading, onClose, children }) => {
   const { t } = useTranslation();
-  const [ShareHandler, setShareHandler] = useState<ComponentType<ShareOnPlatformHandlerProps>>();
+  const [activeHandler, setActiveHandler] = useState<string>();
   const fullUrl = isAbsoluteUrl(url) ? url : window.location.protocol + '//' + window.location.host + url;
+
+  const handleDialogClose = useCallback(() => {
+    setActiveHandler(undefined);
+    if (onClose) onClose();
+  }, [onClose]);
 
   const handleClick = e => {
     e.target.select();
@@ -64,11 +73,24 @@ export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, l
   }
 
   // Return to the list of available platforms to share
-  const goBack = () => setShareHandler(undefined);
+  const goBack = () => setActiveHandler(undefined);
 
-  return ShareHandler ? (
-    <ShareHandler url={fullUrl} entityTypeName={entityTypeName} goBack={goBack} closeDialog={onClose ?? goBack} />
-  ) : (
+  const handlerProps: ShareOnPlatformHandlerProps = {
+    url: fullUrl,
+    entityTypeName,
+    goBack,
+    closeDialog: handleDialogClose,
+  };
+
+  if (activeHandler === 'clipboard') {
+    return <ClipboardShareHandler {...handlerProps} />;
+  }
+
+  if (activeHandler === 'alkemio') {
+    return <AlkemioShareHandler {...handlerProps} />;
+  }
+
+  return (
     <Box display="flex" flexDirection="column" justifyContent="space-between">
       <TextField
         InputProps={{
@@ -81,17 +103,18 @@ export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, l
         sx={{ flexGrow: 1, minWidth: gutters(13), marginBottom: gutters(1.5) }}
       />
 
-      <ShareOnClipboardButton setShareHandler={setShareHandler} />
+      <ShareOnClipboardButton setShareHandler={setActiveHandler} />
       <Box height={gutters(3)} display="flex" flexDirection="column" justifyContent="center" textAlign="center">
         {t('share-dialog.or')}
       </Box>
-      <ShareOnAlkemioButton setShareHandler={setShareHandler} />
+      <ShareOnAlkemioButton setShareHandler={setActiveHandler} />
       {children}
     </Box>
   );
 };
 
 export interface ShareOnPlatformHandlerProps {
+  ref?: React.Ref<HTMLDivElement>;
   url: string;
   entityTypeName: ShareDialogProps['entityTypeName'];
   goBack: () => void;
@@ -99,7 +122,7 @@ export interface ShareOnPlatformHandlerProps {
 }
 
 export interface ShareOnPlatformButtonProps extends ButtonProps {
-  setShareHandler: (handler: ComponentType<ShareOnPlatformHandlerProps>) => void;
+  setShareHandler: (handler: string) => void;
 }
 
 export const ShareButton: FC<ButtonProps> = props => {

@@ -18,6 +18,7 @@ import CalloutContributionsContainer from '../CalloutContributions/CalloutContri
 import CalloutContributionsWhiteboard from '../CalloutContributions/whiteboard/CalloutContributionsWhiteboard';
 import CalloutContributionsPost from '../CalloutContributions/post/CalloutContributionsPost';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
 
 interface CalloutViewProps extends BaseCalloutViewProps {
   callout: TypedCalloutDetails;
@@ -59,7 +60,13 @@ const CalloutView = ({
         >
           {/* Whiteboard framing */}
           {callout.framing.type === CalloutFramingType.Whiteboard && <CalloutFramingWhiteboard callout={callout} />}
+
+          {/* Memo framing */}
           {callout.framing.type === CalloutFramingType.Memo && <CalloutFramingMemo callout={callout} />}
+
+          {/* Link framing */}
+          {callout.framing.type === CalloutFramingType.Link && <CalloutFramingLink callout={callout} />}
+
           {/* Collaborate with links */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
             <CalloutContributionsContainer
@@ -97,6 +104,7 @@ const CalloutView = ({
               )}
             </CalloutContributionsContainer>
           )}
+
           {/* Collaborate with Posts */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) && (
             <CalloutContributionsContainer
@@ -115,6 +123,7 @@ const CalloutView = ({
               )}
             </CalloutContributionsContainer>
           )}
+
           {/* Framing Comments */}
           {callout.comments && (
             <CalloutCommentsContainer callout={callout}>

@@ -1109,6 +1109,8 @@ export type CalloutFraming = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** The Link for framing the associated Callout. */
+  link?: Maybe<Link>;
   /** The Memo for framing the associated Callout. */
   memo?: Maybe<Memo>;
   /** The Profile for framing the associated Callout. */
@@ -1122,6 +1124,7 @@ export type CalloutFraming = {
 };
 
 export enum CalloutFramingType {
+  Link = 'LINK',
   Memo = 'MEMO',
   None = 'NONE',
   Whiteboard = 'WHITEBOARD',
@@ -1696,6 +1699,7 @@ export type CreateCalloutData = {
 
 export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
+  link?: Maybe<CreateLinkData>;
   memo?: Maybe<CreateMemoData>;
   profile: CreateProfileData;
   tags?: Maybe<Array<Scalars['String']['output']>>;
@@ -1705,6 +1709,7 @@ export type CreateCalloutFramingData = {
 };
 
 export type CreateCalloutFramingInput = {
+  link?: InputMaybe<CreateLinkInput>;
   memo?: InputMaybe<CreateMemoInput>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -7057,6 +7062,7 @@ export type UpdateCalloutEntityInput = {
 };
 
 export type UpdateCalloutFramingInput = {
+  link?: InputMaybe<UpdateLinkInput>;
   /** The new content to be used. */
   memoContent?: InputMaybe<Scalars['Markdown']['input']>;
   /** The Profile of the Template. */
@@ -9752,6 +9758,19 @@ export type CalloutPageCalloutQuery = {
                     | undefined;
                 }
               | undefined;
+            link?:
+              | {
+                  __typename?: 'Link';
+                  id: string;
+                  uri: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -12281,6 +12300,19 @@ export type CalloutContentQuery = {
                   };
                 }
               | undefined;
+            link?:
+              | {
+                  __typename?: 'Link';
+                  id: string;
+                  uri: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -12483,6 +12515,14 @@ export type UpdateCalloutContentMutation = {
                   };
                 }
               | undefined;
+          }
+        | undefined;
+      link?:
+        | {
+            __typename?: 'Link';
+            id: string;
+            uri: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
     };
@@ -12840,6 +12880,14 @@ export type UpdateCalloutVisibilityMutation = {
                   };
                 }
               | undefined;
+          }
+        | undefined;
+      link?:
+        | {
+            __typename?: 'Link';
+            id: string;
+            uri: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
     };
@@ -13284,6 +13332,14 @@ export type CreateCalloutMutation = {
                   };
                 }
               | undefined;
+          }
+        | undefined;
+      link?:
+        | {
+            __typename?: 'Link';
+            id: string;
+            uri: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
     };
@@ -13744,6 +13800,19 @@ export type CalloutDetailsQuery = {
                     | undefined;
                 }
               | undefined;
+            link?:
+              | {
+                  __typename?: 'Link';
+                  id: string;
+                  uri: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -14159,6 +14228,14 @@ export type CalloutDetailsFragment = {
                 };
               }
             | undefined;
+        }
+      | undefined;
+    link?:
+      | {
+          __typename?: 'Link';
+          id: string;
+          uri: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }
       | undefined;
   };
@@ -25993,6 +26070,19 @@ export type TemplateContentQuery = {
                           | undefined;
                       }
                     | undefined;
+                  link?:
+                    | {
+                        __typename?: 'Link';
+                        id: string;
+                        uri: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
+                        };
+                      }
+                    | undefined;
                 };
                 settings: {
                   __typename?: 'CalloutSettings';
@@ -26518,6 +26608,14 @@ export type CalloutTemplateContentFragment = {
                 };
               }
             | undefined;
+        }
+      | undefined;
+    link?:
+      | {
+          __typename?: 'Link';
+          id: string;
+          uri: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }
       | undefined;
   };

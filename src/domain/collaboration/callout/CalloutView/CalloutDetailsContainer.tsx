@@ -50,6 +50,7 @@ const CalloutDetailsContainer = ({ callout, children }: CalloutDetailsContainerP
       },
       whiteboard: calloutDetails.framing.whiteboard,
       memo: calloutDetails.framing.memo,
+      link: calloutDetails.framing.link,
     };
     // TODO: Refactor this
     // Probably can be done much better, typescript is complaining because many optional things on TypedCallout are now required in TypedCalloutDetails,

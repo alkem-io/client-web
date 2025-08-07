@@ -545,7 +545,8 @@
       }
     },
     "supportEmail": "support@alkem.io",
-    "options": "Options"
+    "options": "Options",
+    "externalLinkDisclaimer": "This link takes you to an external site. Alkemio is not responsible for its content."
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
@@ -739,6 +740,10 @@
         "memo": {
           "title": "Memo",
           "tooltip": "Add a collaborative document to this post"
+        },
+        "link": {
+          "title": "Call To Action",
+          "tooltip": "Add a call to action to this post"
         }
       },
       "contributionSettings": {
@@ -1404,9 +1409,15 @@
         "type-whiteboards-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text.",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
-      "whiteboard": {
-        "title": "Whiteboard:",
-        "editDialogTitle": "Edit Whiteboard"
+      "framing": {
+        "whiteboard": {
+          "title": "Whiteboard:",
+          "editDialogTitle": "Edit Whiteboard"
+        },
+        "link": {
+          "name": "Call To Action",
+          "url": "URL"
+        }
       },
       "template-step": {
         "title": "Templates",

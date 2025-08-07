@@ -64,6 +64,15 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
                 content: template.callout.framing.memo.content ?? '',
               }
             : undefined,
+          link: template?.callout?.framing?.link
+            ? {
+                id: template.callout.framing.link.id ?? '',
+                uri: template.callout.framing.link.uri,
+                profile: {
+                  displayName: template.callout.framing.link.profile.displayName,
+                },
+              }
+            : undefined,
         },
         contributionDefaults: {
           defaultDisplayName: template?.callout?.contributionDefaults?.defaultDisplayName ?? '',

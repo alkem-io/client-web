@@ -23,6 +23,13 @@ export interface CalloutFormSubmittedValues {
     type: CalloutFramingType;
     whiteboard: WhiteboardFieldSubmittedValuesWithPreviewImages | undefined;
     memo: MemoFieldSubmittedValues | undefined;
+    link?: {
+      id?: string;
+      uri: string;
+      profile: {
+        displayName: string;
+      };
+    };
   };
   contributionDefaults: ContributionDefaultsModel;
   contributions?: {
@@ -53,6 +60,7 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     type: CalloutFramingType.None,
     whiteboard: undefined,
     memo: undefined,
+    link: undefined,
   },
   contributionDefaults: {
     defaultDisplayName: '',

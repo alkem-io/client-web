@@ -1,17 +1,15 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 
 const DEFAULT_ENVIRONMENT = 'development';
 
-const reactRouterV6BrowserTracingIntegration = new Sentry.BrowserTracing({
-  routingInstrumentation: Sentry.reactRouterV6Instrumentation(
-    React.useEffect,
-    useLocation,
-    useNavigationType,
-    createRoutesFromChildren,
-    matchRoutes
-  ),
+const reactRouterV6BrowserTracingIntegration = Sentry.reactRouterV6BrowserTracingIntegration({
+  useEffect,
+  useLocation,
+  useNavigationType,
+  createRoutesFromChildren,
+  matchRoutes,
 });
 
 const bootstrap = (sentryEnabled?: boolean, sentryEndpoint?: string, environment?: string) => {

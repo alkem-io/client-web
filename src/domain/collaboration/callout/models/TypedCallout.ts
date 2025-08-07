@@ -64,6 +64,14 @@ export type TypedCallout = CalloutModelLight & {
   publishedAt?: string;
 };
 
+export type LinkDetails = {
+  id?: string;
+  uri: string;
+  profile: {
+    displayName: string;
+  };
+};
+
 export type TypedCalloutDetails = TypedCallout & {
   framing: {
     profile: {
@@ -80,6 +88,7 @@ export type TypedCalloutDetails = TypedCallout & {
     type: CalloutFramingType;
     whiteboard?: WhiteboardDetails;
     memo?: MemoModel;
+    link?: LinkDetails;
   };
   classification?: {
     flowState?: ClassificationTagsetWithAllowedValuesModel;

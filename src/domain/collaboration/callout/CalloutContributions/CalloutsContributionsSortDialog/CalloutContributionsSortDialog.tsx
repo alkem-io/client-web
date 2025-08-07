@@ -6,12 +6,7 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Caption } from '@/core/ui/typography';
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  OnDragEndResponder,
-} from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
+import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import {

@@ -781,6 +781,17 @@ export const MemoDetailsFragmentDoc = gql`
   ${MemoProfileFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
+export const LinkDetailsFragmentDoc = gql`
+  fragment LinkDetails on Link {
+    id
+    uri
+    profile {
+      id
+      displayName
+      description
+    }
+  }
+`;
 export const LinkDetailsWithAuthorizationFragmentDoc = gql`
   fragment LinkDetailsWithAuthorization on Link {
     id
@@ -916,6 +927,9 @@ export const CalloutDetailsFragmentDoc = gql`
       memo {
         ...MemoDetails
       }
+      link {
+        ...LinkDetails
+      }
     }
     contributionDefaults {
       id
@@ -947,6 +961,7 @@ export const CalloutDetailsFragmentDoc = gql`
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
   ${MemoDetailsFragmentDoc}
+  ${LinkDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
@@ -1052,17 +1067,6 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
     }
   }
   ${WhiteboardDetailsFragmentDoc}
-`;
-export const LinkDetailsFragmentDoc = gql`
-  fragment LinkDetails on Link {
-    id
-    uri
-    profile {
-      id
-      displayName
-      description
-    }
-  }
 `;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
@@ -2336,6 +2340,9 @@ export const CalloutTemplateContentFragmentDoc = gql`
         ...WhiteboardDetails
         content
       }
+      link {
+        ...LinkDetails
+      }
     }
     settings {
       ...CalloutSettingsFull
@@ -2350,6 +2357,7 @@ export const CalloutTemplateContentFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
+  ${LinkDetailsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
 export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
@@ -7148,6 +7156,9 @@ export const CalloutContentDocument = gql`
             }
             content
           }
+          link {
+            ...LinkDetails
+          }
         }
         contributionDefaults {
           id
@@ -7163,6 +7174,7 @@ export const CalloutContentDocument = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
+  ${LinkDetailsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
 

@@ -1,4 +1,5 @@
 import BlockIcon from '@mui/icons-material/Block';
+import CampaignIcon from '@mui/icons-material/Campaign';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
@@ -17,6 +18,8 @@ import { Tooltip } from '@mui/material';
 import EditButton from '@/core/ui/actions/EditButton';
 import { useMemo } from 'react';
 import { MemoIcon } from '../../memo/icon/MemoIcon';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -43,6 +46,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
             previewImages: [],
           },
           memo: undefined,
+          link: undefined,
         };
         break;
       case CalloutFramingType.Memo:
@@ -50,11 +54,26 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           ...framing,
           type: newType,
           whiteboard: undefined,
+          link: undefined,
           memo: {
             // content: '',
             profile: { displayName: t('common.memo') },
             previewImages: [],
           },
+        };
+        break;
+      case CalloutFramingType.Link:
+        newFraming = {
+          ...framing,
+          type: newType,
+          link: {
+            uri: '',
+            profile: {
+              displayName: '',
+            },
+          },
+          whiteboard: undefined,
+          memo: undefined,
         };
         break;
       case CalloutFramingType.None:
@@ -64,11 +83,20 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           type: newType,
           whiteboard: undefined,
           memo: undefined,
+          link: undefined,
         };
         break;
     }
 
     setFieldValue('framing', newFraming);
+  };
+
+  const handleLinkChange = (field: 'uri' | 'displayName', value: string) => {
+    if (field === 'displayName') {
+      setFieldValue('framing.link.profile.displayName', value);
+    } else {
+      setFieldValue('framing.link.uri', value);
+    }
   };
 
   // Instantiating them here to be able to move them when the screen is small
@@ -95,6 +123,12 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           label: t('callout.create.framingSettings.memo.title'),
           tooltip: t('callout.create.framingSettings.memo.tooltip'),
           disabled: calloutRestrictions?.disableMemos,
+        },
+        {
+          icon: CampaignIcon,
+          value: CalloutFramingType.Link,
+          label: t('callout.create.framingSettings.link.title'),
+          tooltip: t('callout.create.framingSettings.link.tooltip'),
         },
       ]}
       onChange={handleFramingTypeChange}
@@ -135,9 +169,32 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
             editButton={editButton}
             onDeleteContent={() => handleFramingTypeChange(CalloutFramingType.None)}
             maxHeight={gutters(12)}
-            dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
+            dialogProps={{ title: t('components.callout-creation.framing.whiteboard.editDialogTitle') }}
           />
         </PageContentBlock>
+      )}
+
+      {framing.type === CalloutFramingType.Link && (
+        <PageContentBlockSeamless row disablePadding>
+          <>
+            <FormikInputField
+              containerProps={{ width: '70%' }}
+              name="framing.link.profile.displayName"
+              title={t('components.callout-creation.framing.link.name')}
+              value={framing.link?.profile.displayName || ''}
+              onChange={e => handleLinkChange('displayName', e.target.value)}
+              required
+            />
+            <FormikInputField
+              containerProps={{ width: '30%' }}
+              name="framing.link.uri"
+              title={t('components.callout-creation.framing.link.url')}
+              value={framing.link?.uri || ''}
+              onChange={e => handleLinkChange('uri', e.target.value)}
+              required
+            />
+          </>
+        </PageContentBlockSeamless>
       )}
     </>
   );

@@ -43,6 +43,13 @@ export interface CalloutTemplate extends TemplateBase {
         };
         content?: string;
       };
+      link?: {
+        id?: string;
+        uri: string;
+        profile: {
+          displayName: string;
+        };
+      };
     };
     contributionDefaults?: {
       defaultDisplayName?: string;
