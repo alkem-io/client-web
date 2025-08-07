@@ -31,7 +31,7 @@ import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
-interface MarkdownInputProps extends InputBaseComponentProps {
+export interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
   maxLength?: number;
   hideImageOptions?: boolean;
@@ -188,6 +188,10 @@ export const MarkdownInput = memo(
     );
 
     const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
+
+    if (!editor) {
+      return null;
+    }
 
     // Currently used to highlight overflow but can be reused for other similar features as well
     const shadowEditor = useEditor({ ...editorOptions, content: '', editable: false });

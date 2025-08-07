@@ -17,6 +17,7 @@ import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { Tooltip } from '@mui/material';
 import EditButton from '@/core/ui/actions/EditButton';
 import { useMemo } from 'react';
+import { MemoIcon } from '../../memo/icon/MemoIcon';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 
@@ -32,40 +33,62 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
   const { setFieldValue } = useFormikContext<CalloutFormSubmittedValues>();
 
   const handleFramingTypeChange = (newType: CalloutFramingType) => {
-    if (newType === CalloutFramingType.Link) {
-      // Initialize the link object
-      setFieldValue('framing', {
-        ...framing,
-        type: newType,
-        link: {
-          uri: '',
-          profile: {
-            displayName: '',
+    let newFraming: CalloutFormSubmittedValues['framing'] | undefined;
+
+    switch (newType) {
+      case CalloutFramingType.Whiteboard:
+        newFraming = {
+          ...framing,
+          type: newType,
+          whiteboard: {
+            content: EmptyWhiteboardString,
+            profile: { displayName: t('common.whiteboard') },
+            previewImages: [],
           },
-        },
-        whiteboard: undefined,
-      });
-    } else {
-      const newFraming =
-        newType === CalloutFramingType.Whiteboard
-          ? {
-              ...framing,
-              type: newType,
-              whiteboard: {
-                content: EmptyWhiteboardString,
-                profile: { displayName: t('common.whiteboard') },
-                previewImages: [],
-              },
-              link: undefined,
-            }
-          : {
-              ...framing,
-              type: newType,
-              whiteboard: undefined,
-              link: undefined,
-            };
-      setFieldValue('framing', newFraming);
+          memo: undefined,
+          link: undefined,
+        };
+        break;
+      case CalloutFramingType.Memo:
+        newFraming = {
+          ...framing,
+          type: newType,
+          whiteboard: undefined,
+          link: undefined,
+          memo: {
+            // content: '',
+            profile: { displayName: t('common.memo') },
+            previewImages: [],
+          },
+        };
+        break;
+      case CalloutFramingType.Link:
+        newFraming = {
+          ...framing,
+          type: newType,
+          link: {
+            uri: '',
+            profile: {
+              displayName: '',
+            },
+          },
+          whiteboard: undefined,
+          memo: undefined,
+        };
+        break;
+      case CalloutFramingType.None:
+      default:
+        newFraming = {
+          ...framing,
+          type: newType,
+          whiteboard: undefined,
+          memo: undefined,
+          link: undefined,
+        };
+        break;
     }
+
+    setFieldValue('framing', newFraming);
   };
 
   const handleLinkChange = (field: 'uri' | 'displayName', value: string) => {
@@ -95,10 +118,18 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           disabled: calloutRestrictions?.disableWhiteboards,
         },
         {
+          icon: MemoIcon,
+          value: CalloutFramingType.Memo,
+          label: t('callout.create.framingSettings.memo.title'),
+          tooltip: t('callout.create.framingSettings.memo.tooltip'),
+          disabled: calloutRestrictions?.disableMemos,
+        },
+        {
           icon: CampaignIcon,
           value: CalloutFramingType.Link,
           label: t('callout.create.framingSettings.link.title'),
           tooltip: t('callout.create.framingSettings.link.tooltip'),
+          disabled: calloutRestrictions?.disableLinks,
         },
       ]}
       onChange={handleFramingTypeChange}

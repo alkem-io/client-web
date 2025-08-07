@@ -232,6 +232,7 @@
     },
     "actions": "Actions",
     "account": "Account",
+    "anonymous": "Anonymous",
     "all": "All",
     "knowledge-base": "Knowledge base",
     "or": "Or",
@@ -255,6 +256,7 @@
     "callouts": "Callouts",
     "collaborationTools": "Collaboration Tools",
     "createdBy": "Created by",
+    "memo": "Memo",
     "whiteboard": "Whiteboard",
     "whiteboards": "Whiteboards",
     "calendar": "Calendar",
@@ -392,6 +394,7 @@
     "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Collaboration tool",
     "optional": "optional",
+    "unknown": "Unknown",
     "menu": "Menu",
     "genders": {
       "notSpecified": "not specified",
@@ -734,6 +737,10 @@
           "tooltip": "Add a whiteboard to this post",
           "onlyRealTimeEditorAvailable": "To edit this whiteboard now, please use the whiteboard editor closing this dialog and opening the whiteboard directly clicking on the preview."
         },
+        "memo": {
+          "title": "Memo",
+          "tooltip": "Add a collaborative document to this post"
+        },
         "link": {
           "title": "Call To Action",
           "tooltip": "Add a call to action to this post"
@@ -843,6 +850,9 @@
     },
     "singleWhiteboard": {
       "clickToSee": "Click to see the full whiteboard"
+    },
+    "memo": {
+      "clickToSee": "Click to see the full Memo"
     },
     "calloutsList": {
       "title": "Index",
@@ -2792,6 +2802,15 @@
         }
       },
       "restartCollaboration": "Continue Editing"
+    },
+    "memo": {
+      "readonlyReason": {
+        "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
+        "contentUpdatePolicy": "You don't have the rights to edit this Memo. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings if you want to contribute.",
+        "noMembership": "You have to be a member of the {{spaceLevel}} this memo is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceLevel}} this memo is in, to be able to edit. Click here to <signinlink>sign in</signinlink>",
+        "connecting": ""
+      }
     },
     "login": {
       "title": "Sign in to Alkemio",

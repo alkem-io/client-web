@@ -10,6 +10,7 @@ import { CalloutModelLight } from './CalloutModelLight';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
 import { ContributionDefaultsModel } from './ContributionDefaultsModel';
+import { MemoModel } from '../../memo/model/MemoModel';
 
 // TODO: TypedCallout and CalloutModel requires a refactor to avoid duplication
 // TypedCallout was created long ago to provide CalloutModel data + a few additional fields useful for the UI,
@@ -86,6 +87,7 @@ export type TypedCalloutDetails = TypedCallout & {
     };
     type: CalloutFramingType;
     whiteboard?: WhiteboardDetails;
+    memo?: MemoModel;
     link?: LinkDetails;
   };
   classification?: {

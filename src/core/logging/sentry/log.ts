@@ -5,6 +5,7 @@ export const enum TagCategoryValues {
   AUTH = 'AUTH',
   UI = 'UI',
   WHITEBOARD = 'WHITEBOARD',
+  MEMO = 'MEMO',
   CONFIG = 'CONFIG',
   SPACE_CREATION = 'SPACE_CREATION',
   WS = 'WS',

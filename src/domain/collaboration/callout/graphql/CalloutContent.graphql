@@ -27,7 +27,20 @@ query CalloutContent($calloutId: UUID!) {
               uri
             }
           }
-          content  # Get the whiteboard content to be able to edit it
+          content  # Get the whiteboard content to be able to edit it in single user mode
+        }
+        memo {
+          id
+          profile {
+            id
+            displayName
+            preview: visual(type: BANNER) {
+              id
+              name
+              uri
+            }
+          }
+          content  # Get the memo content to be able to edit it in single user mode
         }
         link {
           ...LinkDetails
