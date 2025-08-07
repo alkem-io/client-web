@@ -7,7 +7,7 @@ import FormikSubmitButton from '@/domain/shared/components/forms/FormikSubmitBut
 
 interface AssignPlanProps {
   onAssignPlan: (licensePlanId: string) => Promise<unknown>;
-  licensePlans: { id: string; name: string }[];
+  licensePlans: { id: string; name: string; sortOrder: number }[];
 }
 
 interface AssignPlanFormValues {
@@ -15,6 +15,9 @@ interface AssignPlanFormValues {
 }
 
 const AssignPlan = ({ licensePlans, onAssignPlan }: AssignPlanProps) => {
+  // Sort license plans by sortOrder
+  const sortedLicensePlans = [...licensePlans].sort((a, b) => a.sortOrder - b.sortOrder);
+
   const initialValues: Partial<AssignPlanFormValues> = {
     licensePlanId: undefined,
   };
@@ -33,7 +36,7 @@ const AssignPlan = ({ licensePlans, onAssignPlan }: AssignPlanProps) => {
       <Form>
         <Gutters row>
           <FormikAutocomplete
-            values={licensePlans}
+            values={sortedLicensePlans}
             name="licensePlanId"
             sx={{ flexGrow: 1 }}
             label={'Assign License Plan'}
