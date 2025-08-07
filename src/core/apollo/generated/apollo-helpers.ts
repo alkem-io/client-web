@@ -749,6 +749,7 @@ export type CalloutFramingKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'link'
   | 'profile'
   | 'type'
   | 'updatedDate'
@@ -759,6 +760,7 @@ export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  link?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1153,6 +1155,7 @@ export type CreateCalloutDataFieldPolicy = {
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutFramingDataKeySpecifier = (
+  | 'link'
   | 'profile'
   | 'tags'
   | 'type'
@@ -1160,6 +1163,7 @@ export type CreateCalloutFramingDataKeySpecifier = (
   | CreateCalloutFramingDataKeySpecifier
 )[];
 export type CreateCalloutFramingDataFieldPolicy = {
+  link?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;

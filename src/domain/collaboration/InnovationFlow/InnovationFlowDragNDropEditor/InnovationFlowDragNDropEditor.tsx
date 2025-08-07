@@ -13,12 +13,7 @@ import { EditOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, DialogContent, IconButton, IconButtonProps, styled } from '@mui/material';
 import { useState } from 'react';
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  OnDragEndResponder,
-} from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
+import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';

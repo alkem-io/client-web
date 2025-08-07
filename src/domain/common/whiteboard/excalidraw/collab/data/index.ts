@@ -1,14 +1,10 @@
-import type {
-  ExcalidrawElement,
-  OrderedExcalidrawElement,
-} from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
 import type { AppState, CollaboratorPointer, SocketId } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { DELETED_ELEMENT_TIMEOUT, WS_SCENE_EVENT_TYPES } from '../excalidrawAppConstants';
 import { env } from '@/main/env';
 import { BinaryFilesWithUrl } from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import type { MakeBrand } from '@alkemio/excalidraw/dist/types/excalidraw/utility-types';
+import type { MakeBrand } from '@alkemio/excalidraw/dist/types/common/src/utility-types';
 import type { UserIdleState, isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw';
-
 export type SyncableExcalidrawElement = OrderedExcalidrawElement & MakeBrand<'SyncableExcalidrawElement'>;
 
 export const isSyncableElement = (

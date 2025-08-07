@@ -90,6 +90,9 @@ fragment CalloutTemplateContent on Callout {
       ...WhiteboardDetails
       content
     }
+    link {
+      ...LinkDetails
+    }
   }
   settings {
     ...CalloutSettingsFull

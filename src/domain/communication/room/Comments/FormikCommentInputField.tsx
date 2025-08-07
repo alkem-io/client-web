@@ -13,12 +13,13 @@ import {
   FormHelperText,
   IconButton,
   InputAdornment,
+  InputBaseComponentProps,
   InputProps,
   OutlinedInput,
   OutlinedInputProps,
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInputField, CommentInputFieldProps, MENTION_SYMBOL } from './CommentInputField';
 import { CursorPositionInMarkdown, MentionMatch, findCursorPositionInMarkdown } from './utils';
@@ -204,7 +205,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
               </InputAdornment>
             }
             aria-describedby="filled-weight-helper-text"
-            inputComponent={CommentInputField}
+            inputComponent={CommentInputField as React.ComponentType<InputBaseComponentProps>}
             inputProps={{
               vcInteractions,
               vcEnabled,

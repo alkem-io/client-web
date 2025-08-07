@@ -1,4 +1,4 @@
-import { ComponentType, DOMAttributes, forwardRef, useCallback, useState } from 'react';
+import { ComponentType, DOMAttributes, useCallback, useState } from 'react';
 
 export const INITIAL_ELEVATION = 1;
 export const FINAL_ELEVATION = 8;
@@ -16,8 +16,14 @@ interface Options {
   finalElevation?: number;
 }
 
-const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: ComponentType<P>, options: Options = {}) =>
-  forwardRef<El, WithElevationProps<El, P>>((props, ref) => {
+const withElevationOnHover =
+  <El, P extends ComponentProps<El>>(Component: ComponentType<P>, options: Options = {}) =>
+  ({
+    ref,
+    ...props
+  }: WithElevationProps<El, P> & {
+    ref?: React.Ref<El>;
+  }) => {
     const { initialElevation = INITIAL_ELEVATION, finalElevation = FINAL_ELEVATION } = options;
 
     const { elevationDisabled = false, ...componentProps } = props;
@@ -46,6 +52,6 @@ const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: Compo
         {...(componentProps as unknown as P)}
       />
     );
-  });
+  };
 
 export default withElevationOnHover;

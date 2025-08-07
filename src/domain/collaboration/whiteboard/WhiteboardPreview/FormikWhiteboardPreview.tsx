@@ -1,6 +1,6 @@
 import { Box, BoxProps, IconButton, Skeleton, styled } from '@mui/material';
 import { useField } from 'formik';
-import { MouseEventHandler, useMemo, useState, forwardRef, useImperativeHandle, ReactNode } from 'react';
+import { MouseEventHandler, useMemo, useState, useImperativeHandle, ReactNode } from 'react';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import SingleUserWhiteboardDialog from '../WhiteboardDialog/SingleUserWhiteboardDialog';
 import { BlockTitle } from '@/core/ui/typography';
@@ -37,167 +37,163 @@ const StyledBoxOverWhiteboard = styled(Box)(() => ({
   zIndex: 10,
 }));
 
-const FormikWhiteboardPreview = forwardRef<FormikWhiteboardPreviewRef, FormikWhiteboardPreviewProps>(
-  (
-    {
-      name = 'content',
-      previewImagesName,
-      canEdit,
-      editButton,
-      onChangeContent,
-      onDeleteContent,
-      loading,
-      dialogProps,
-      ...containerProps
-    }: FormikWhiteboardPreviewProps,
-    ref
-  ) => {
-    const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
-    const filesManager = useWhiteboardFilesManager({ excalidrawAPI });
+const FormikWhiteboardPreview = ({
+  ref,
+  name = 'content',
+  previewImagesName,
+  canEdit,
+  editButton,
+  onChangeContent,
+  onDeleteContent,
+  loading,
+  dialogProps,
+  ...containerProps
+}: FormikWhiteboardPreviewProps & {
+  ref?: React.Ref<FormikWhiteboardPreviewRef>;
+}) => {
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
+  const filesManager = useWhiteboardFilesManager({ excalidrawAPI });
 
-    const [field, , helpers] = useField<string>(name); // Whiteboard content JSON string
-    const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(
-      previewImagesName ?? 'previewImages'
-    );
+  const [field, , helpers] = useField<string>(name); // Whiteboard content JSON string
+  const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(previewImagesName ?? 'previewImages');
 
-    const [editDialogOpen, setEditDialogOpen] = useState(false);
-    const { fullscreen, setFullscreen } = useFullscreen();
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const { fullscreen, setFullscreen } = useFullscreen();
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        openEditDialog: () => setEditDialogOpen(true),
-        closeEditDialog: () => setEditDialogOpen(false),
-        setEditDialogOpen, // expose the setter if needed
-      }),
-      []
-    );
+  useImperativeHandle(
+    ref,
+    () => ({
+      openEditDialog: () => setEditDialogOpen(true),
+      closeEditDialog: () => setEditDialogOpen(false),
+      setEditDialogOpen, // expose the setter if needed
+    }),
+    []
+  );
 
-    const handleClickEditButton = () => {
-      setEditDialogOpen(true);
-      helpers.setTouched(true);
+  const handleClickEditButton = () => {
+    setEditDialogOpen(true);
+    helpers.setTouched(true);
+  };
+
+  const handleClose = () => {
+    setEditDialogOpen(false);
+    if (fullscreen) {
+      setFullscreen(false);
+    }
+  };
+
+  const [deleteContentConfirmDialogOpen, setDeleteContentConfirmDialogOpen] = useState(false);
+
+  const whiteboardFromTemplate = useMemo(() => {
+    return {
+      id: '__template',
+      nameID: '__template',
+      // Needed to pass yup validation of WhiteboardDialog
+      profile: { id: '__templateProfile', displayName: '__template', url: '', storageBucket: { id: '' } },
+      content: field.value,
     };
+  }, [field.value]);
 
-    const handleClose = () => {
-      setEditDialogOpen(false);
-      if (fullscreen) {
-        setFullscreen(false);
-      }
-    };
+  const preventSubmittingFormOnWhiteboardControlClick: MouseEventHandler = e => e.preventDefault();
 
-    const [deleteContentConfirmDialogOpen, setDeleteContentConfirmDialogOpen] = useState(false);
-
-    const whiteboardFromTemplate = useMemo(() => {
-      return {
-        id: '__template',
-        nameID: '__template',
-        // Needed to pass yup validation of WhiteboardDialog
-        profile: { id: '__templateProfile', displayName: '__template', url: '', storageBucket: { id: '' } },
-        content: field.value,
-      };
-    }, [field.value]);
-
-    const preventSubmittingFormOnWhiteboardControlClick: MouseEventHandler = e => e.preventDefault();
-
-    return (
-      <Box
-        flexGrow={1}
-        flexBasis={theme => theme.spacing(60)}
-        onClick={editDialogOpen ? undefined : preventSubmittingFormOnWhiteboardControlClick}
-        position="relative"
-        {...containerProps}
-      >
-        {!loading ? (
-          <>
-            <ExcalidrawWrapper
-              entities={{
-                whiteboard: whiteboardFromTemplate,
-                filesManager,
-              }}
-              actions={{
-                onInitApi: setExcalidrawAPI,
-              }}
-              options={{
-                viewModeEnabled: true,
-                UIOptions: {
-                  canvasActions: {
-                    export: false,
-                  },
+  return (
+    <Box
+      flexGrow={1}
+      flexBasis={theme => theme.spacing(60)}
+      onClick={editDialogOpen ? undefined : preventSubmittingFormOnWhiteboardControlClick}
+      position="relative"
+      {...containerProps}
+    >
+      {!loading ? (
+        <>
+          <ExcalidrawWrapper
+            entities={{
+              whiteboard: whiteboardFromTemplate,
+              filesManager,
+            }}
+            actions={{
+              onInitApi: setExcalidrawAPI,
+            }}
+            options={{
+              viewModeEnabled: true,
+              UIOptions: {
+                canvasActions: {
+                  export: false,
                 },
-              }}
-            />
-            {onDeleteContent && canEdit && (
-              <StyledBoxOverWhiteboard top={0} right={gutters(0.5)}>
-                <IconButton onClick={() => setDeleteContentConfirmDialogOpen(true)} sx={{ background: 'white' }}>
-                  <DeleteOutlinedIcon />
-                </IconButton>
+              },
+            }}
+          />
+          {onDeleteContent && canEdit && (
+            <StyledBoxOverWhiteboard top={0} right={gutters(0.5)}>
+              <IconButton onClick={() => setDeleteContentConfirmDialogOpen(true)} sx={{ background: 'white' }}>
+                <DeleteOutlinedIcon />
+              </IconButton>
+            </StyledBoxOverWhiteboard>
+          )}
+          {canEdit ? (
+            <>
+              <StyledBoxOverWhiteboard right={theme => theme.spacing(2.5)} bottom={theme => theme.spacing(2.5)}>
+                {editButton ? editButton : <EditButton variant="contained" onClick={handleClickEditButton} />}
               </StyledBoxOverWhiteboard>
-            )}
-            {canEdit ? (
-              <>
-                <StyledBoxOverWhiteboard right={theme => theme.spacing(2.5)} bottom={theme => theme.spacing(2.5)}>
-                  {editButton ? editButton : <EditButton variant="contained" onClick={handleClickEditButton} />}
-                </StyledBoxOverWhiteboard>
-                <SingleUserWhiteboardDialog
-                  entities={{
-                    whiteboard: whiteboardFromTemplate,
-                  }}
-                  actions={{
-                    onCancel: handleClose,
-                    onUpdate: async (whiteboard, previewImages) => {
-                      helpers.setValue(whiteboard.content);
-                      if (previewImagesName) {
-                        previewImagesField.setValue(previewImages);
-                      }
-                      onChangeContent?.(whiteboard.content, previewImages);
-                      setEditDialogOpen(false);
-                    },
-                    onDelete: undefined,
-                  }}
-                  options={{
-                    show: editDialogOpen,
-                    canEdit: true,
-                    canDelete: false,
-                    headerActions: undefined,
-                    allowFilesAttached: true,
-                    fixedDialogTitle: (
-                      <BlockTitle display="flex" alignItems="center">
-                        {dialogProps?.title}
-                      </BlockTitle>
-                    ),
-                    fullscreen,
-                  }}
-                />
-              </>
-            ) : undefined}
-            <ConfirmationDialog
-              entities={{
-                titleId: 'pages.whiteboard.deleteContent.confirmationTitle',
-                contentId: 'pages.whiteboard.deleteContent.confirmationText',
-                confirmButtonTextId: 'buttons.yesDelete',
-              }}
-              options={{
-                show: Boolean(onDeleteContent) && deleteContentConfirmDialogOpen,
-              }}
-              actions={{
-                onConfirm: () => {
-                  helpers.setValue('');
-                  if (previewImagesName) {
-                    previewImagesField.setValue([]);
-                  }
-                  onDeleteContent?.();
-                  setDeleteContentConfirmDialogOpen(false);
-                },
-                onCancel: () => setDeleteContentConfirmDialogOpen(false),
-              }}
-            />
-          </>
-        ) : (
-          <Skeleton height="100%" />
-        )}
-      </Box>
-    );
-  }
-);
+              <SingleUserWhiteboardDialog
+                entities={{
+                  whiteboard: whiteboardFromTemplate,
+                }}
+                actions={{
+                  onCancel: handleClose,
+                  onUpdate: async (whiteboard, previewImages) => {
+                    helpers.setValue(whiteboard.content);
+                    if (previewImagesName) {
+                      previewImagesField.setValue(previewImages);
+                    }
+                    onChangeContent?.(whiteboard.content, previewImages);
+                    setEditDialogOpen(false);
+                  },
+                  onDelete: undefined,
+                }}
+                options={{
+                  show: editDialogOpen,
+                  canEdit: true,
+                  canDelete: false,
+                  headerActions: undefined,
+                  allowFilesAttached: true,
+                  fixedDialogTitle: (
+                    <BlockTitle display="flex" alignItems="center">
+                      {dialogProps?.title}
+                    </BlockTitle>
+                  ),
+                  fullscreen,
+                }}
+              />
+            </>
+          ) : undefined}
+          <ConfirmationDialog
+            entities={{
+              titleId: 'pages.whiteboard.deleteContent.confirmationTitle',
+              contentId: 'pages.whiteboard.deleteContent.confirmationText',
+              confirmButtonTextId: 'buttons.yesDelete',
+            }}
+            options={{
+              show: Boolean(onDeleteContent) && deleteContentConfirmDialogOpen,
+            }}
+            actions={{
+              onConfirm: () => {
+                helpers.setValue('');
+                if (previewImagesName) {
+                  previewImagesField.setValue([]);
+                }
+                onDeleteContent?.();
+                setDeleteContentConfirmDialogOpen(false);
+              },
+              onCancel: () => setDeleteContentConfirmDialogOpen(false),
+            }}
+          />
+        </>
+      ) : (
+        <Skeleton height="100%" />
+      )}
+    </Box>
+  );
+};
 
 export default FormikWhiteboardPreview;

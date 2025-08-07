@@ -1,8 +1,8 @@
 import { RefObject, useEffect, useRef } from 'react';
 
 interface UseAutomaticTooltipResult {
-  containerReference: RefObject<HTMLDivElement>;
-  addAutomaticTooltip: (HTMLElement, string?) => void;
+  containerReference: RefObject<HTMLDivElement | null>;
+  addAutomaticTooltip: (element: HTMLElement | null, tooltipText?: string) => void;
 }
 /**
  * This is a hook to handle text elements that may be too long to be displayed in small screens.

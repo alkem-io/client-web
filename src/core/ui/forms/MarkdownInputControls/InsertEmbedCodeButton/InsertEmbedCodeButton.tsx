@@ -35,7 +35,7 @@ export const InsertEmbedCodeButton = ({
 
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
 
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null) as React.RefObject<HTMLButtonElement>;
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 

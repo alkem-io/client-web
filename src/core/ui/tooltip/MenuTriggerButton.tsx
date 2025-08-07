@@ -107,14 +107,14 @@ const MenuTriggerButton = ({
   return (
     <>
       <ClickAwayListener onClickAway={handleTriggerClickAway}>
-        <>
+        <div>
           {renderTrigger({
             ref: triggerRef,
             onClick: handleTriggerClick,
             onMouseEnter: handleTriggerMouseEnter,
             onMouseLeave: handleMouseLeaveDebounced,
           })}
-        </>
+        </div>
       </ClickAwayListener>
       {!drawer && (
         <Popper

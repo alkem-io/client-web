@@ -3,6 +3,12 @@ import { ClickAwayListener, IconButton, Menu } from '@mui/material';
 import { Children, MouseEvent, PropsWithChildren, cloneElement, isValidElement, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+type ClickableProps = {
+  onClick?: (e: MouseEvent<HTMLElement>) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
+
 const ActionsMenu = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
@@ -21,12 +27,10 @@ const ActionsMenu = ({ children }: PropsWithChildren) => {
 
   // close the menu on every item click
   const clonedChildren = Children.map(children, child => {
-    if (isValidElement(child)) {
-      return cloneElement(child as React.ReactElement, {
+    if (isValidElement<ClickableProps>(child)) {
+      return cloneElement(child, {
         onClick: (event: React.MouseEvent<HTMLElement>) => {
-          if (child.props.onClick) {
-            child.props.onClick(event);
-          }
+          child.props.onClick?.(event);
           handleClose();
         },
       });

@@ -14,7 +14,7 @@ import TableRow from '@mui/material/TableRow';
 import { styled } from '@mui/material/styles';
 import { times } from 'lodash';
 import debounce from 'lodash/debounce';
-import React, { ComponentType, PropsWithChildren, ReactNode, forwardRef, useEffect, useMemo, useState } from 'react';
+import React, { ComponentType, PropsWithChildren, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter } from '../Common/Filter';
 
@@ -162,7 +162,8 @@ export const AvailableMembers = <Member extends Identifiable>({
   const columnsCount = React.Children.count(renderHeader()) + 1;
 
   const Loader = useMemo(
-    () => forwardRef<HTMLTableRowElement>((props, ref) => <TableRowLoading ref={ref} colSpan={columnsCount} />),
+    () =>
+      ({ ref }) => <TableRowLoading ref={ref} colSpan={columnsCount} />,
     [columnsCount]
   );
 
