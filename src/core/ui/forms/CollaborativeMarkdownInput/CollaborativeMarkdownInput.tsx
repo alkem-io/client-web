@@ -24,7 +24,11 @@ import './styles.scss';
 import { isEqual } from 'lodash';
 import { RealTimeCollaborationState } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import { env } from '@/main/env';
-import { isStatelessSaveMessage, isStatelessReadOnlyStateMessage } from './stateless-messaging';
+import {
+  isStatelessSaveMessage,
+  isStatelessReadOnlyStateMessage,
+  isStatelessSaveErrorMessage,
+} from './stateless-messaging';
 import { decodeStatelessMessage } from './stateless-messaging/util';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
@@ -187,7 +191,7 @@ export const CollaborativeMarkdownInput = memo(
 
         providerRef.current.on('status', statusHandler);
         providerRef.current.on('authenticationFailed', () => {
-          // TODO: handle authentication failure
+          // TODO:MEMO handle authentication failure
           setIsReadOnly(true);
         });
         providerRef.current.on('stateless', ({ payload }: onStatelessParameters) => {
@@ -197,8 +201,14 @@ export const CollaborativeMarkdownInput = memo(
           }
 
           if (isStatelessSaveMessage(decodedMessage)) {
-            setLastSaveTime(new Date());
+            if (isStatelessSaveErrorMessage(decodedMessage)) {
+              // TODO:MEMO better error handling + retry logic
+              notify('Unable to save changes', 'warning');
+            } else {
+              setLastSaveTime(new Date());
+            }
           } else if (isStatelessReadOnlyStateMessage(decodedMessage)) {
+            // TODO:MEMO handle read-only codes: see enum ReadOnlyCode
             setIsReadOnly(decodedMessage.readOnly);
           }
         });
@@ -330,7 +340,7 @@ export const CollaborativeMarkdownInput = memo(
           readOnly: isReadOnly,
           users:
             editor.storage.collaborationCursor?.users.map(user => ({
-              id: user.clientId, // TODO: This needs to be the userId, not the clientId
+              id: user.clientId, // TODO:MEMO This needs to be the userId, not the clientId
               profile: {
                 displayName: user.name,
               },
