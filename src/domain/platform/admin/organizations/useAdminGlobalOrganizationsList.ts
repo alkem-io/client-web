@@ -32,6 +32,7 @@ export enum OrgVerificationLifecycleEvents {
 export interface ContributorLicensePlan {
   id: string;
   name: string;
+  sortOrder: number;
 }
 
 export const useAdminGlobalOrganizationsList = () => {
@@ -169,6 +170,7 @@ export const useAdminGlobalOrganizationsList = () => {
         .map(licensePlan => ({
           id: licensePlan.id,
           name: licensePlan.name,
+          sortOrder: licensePlan.sortOrder,
         })) || [],
     [data]
   );
