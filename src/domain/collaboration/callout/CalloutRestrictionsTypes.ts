@@ -17,6 +17,10 @@ export interface CalloutRestrictions {
    */
   disableMemos?: boolean;
   /**
+   * Disables Link callouts, both in the framing and in the responses.
+   */
+  disableLinks?: boolean;
+  /**
    * Makes the Structured Responses Field read-only
    */
   readOnlyAllowedTypes?: boolean;

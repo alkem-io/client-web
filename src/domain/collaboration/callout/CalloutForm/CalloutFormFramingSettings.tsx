@@ -129,6 +129,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           value: CalloutFramingType.Link,
           label: t('callout.create.framingSettings.link.title'),
           tooltip: t('callout.create.framingSettings.link.tooltip'),
+          disabled: calloutRestrictions?.disableLinks,
         },
       ]}
       onChange={handleFramingTypeChange}

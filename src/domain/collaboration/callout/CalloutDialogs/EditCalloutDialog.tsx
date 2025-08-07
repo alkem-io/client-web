@@ -2,6 +2,7 @@ import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useCalloutContentQuery, useUpdateCalloutContentMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   CalloutContributionType,
+  CalloutFramingType,
   UpdateCalloutEntityInput,
   UpdateCalloutSettingsInput,
 } from '@/core/apollo/generated/graphql-schema';
@@ -109,20 +110,23 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
   const [handleSaveCallout, savingCallout] = useLoadingState(async () => {
     const formData = ensurePresence(calloutFormData);
     // Map the profile to CreateProfileInput
+    const { memo, ...framingWithoutMemo } = formData.framing;
     const framing = {
-      ...formData.framing,
+      ...framingWithoutMemo,
       profile: mapProfileModelToUpdateProfileInput(formData.framing.profile),
       whiteboard: undefined,
-      whiteboardContent: formData.framing.whiteboard?.content ? formData.framing.whiteboard.content : undefined,
-      link: formData.framing.link ? mapLinkDataToUpdateLinkInput(formData.framing.link) : undefined,
-      memo: formData.framing.memo
-        ? {
-            profile: {
-              displayName: formData.framing.memo.profile.displayName,
-            },
-            content: formData.framing.memo.content,
-          }
-        : undefined,
+      whiteboardContent:
+        formData.framing.type === CalloutFramingType.Whiteboard && formData.framing.whiteboard?.content
+          ? formData.framing.whiteboard.content
+          : undefined,
+      link:
+        formData.framing.type === CalloutFramingType.Link
+          ? mapLinkDataToUpdateLinkInput(formData.framing.link)
+          : undefined,
+      ...(formData.framing.type === CalloutFramingType.Memo &&
+        memo?.content && {
+          memoContent: memo.content,
+        }),
     };
 
     // And map the radio button allowed contribution types to an array
@@ -189,6 +193,10 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                   temporaryLocation: false,
                   readOnlyContributions: true,
                   onlyRealTimeWhiteboardFraming: true,
+                  // disable the change of framing for now
+                  disableMemos: true,
+                  disableWhiteboards: true,
+                  disableLinks: true,
                 }}
               />
             </StorageConfigContextProvider>

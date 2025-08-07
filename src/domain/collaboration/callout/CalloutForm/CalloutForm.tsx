@@ -47,7 +47,7 @@ export const calloutValidationSchema = yup.object().shape({
       .mixed<CalloutFramingType>()
       .oneOf(Object.values(CalloutFramingType).filter(value => typeof value === 'string'))
       .required(),
-    whiteboard: yup.object().when(['framing.type'], ([type], schema) => {
+    whiteboard: yup.object().when(['type'], ([type], schema) => {
       return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
     }),
     link: yup.object().when(['type'], ([type], schema) => {
@@ -67,7 +67,7 @@ export const calloutValidationSchema = yup.object().shape({
                 .required(),
             })
             .required()
-        : schema;
+        : schema.nullable();
     }),
   }),
   contributionDefaults: yup.object().shape({
