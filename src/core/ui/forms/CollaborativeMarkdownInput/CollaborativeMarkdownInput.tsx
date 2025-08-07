@@ -22,7 +22,11 @@ import { EditorOptions } from '@tiptap/core';
 import useUserCursor from './useUserCursor';
 import './styles.scss';
 import { isEqual } from 'lodash';
-import { RealTimeCollaborationState } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
+import {
+  CollaborationStatus,
+  RealTimeCollaborationState,
+  isCollaborationStatus,
+} from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import { env } from '@/main/env';
 import {
   isStatelessSaveMessage,
@@ -30,6 +34,7 @@ import {
   isStatelessSaveErrorMessage,
 } from './stateless-messaging';
 import { decodeStatelessMessage } from './stateless-messaging/util';
+import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -64,6 +69,8 @@ const proseMirrorStyles = {
   '& img': { maxWidth: '100%' },
 } as const;
 
+const MEMO_SERVICE_URL = `${env?.VITE_APP_COLLAB_DOC_URL}${env?.VITE_APP_COLLAB_DOC_PATH}`;
+
 export const CollaborativeMarkdownInput = memo(
   forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
     (
@@ -85,7 +92,7 @@ export const CollaborativeMarkdownInput = memo(
 
       const { userName, cursorColor } = useUserCursor();
 
-      const [status, setStatus] = useState('connecting');
+      const [status, setStatus] = useState<CollaborationStatus>('connecting');
 
       const [hasFocus, setHasFocus] = useState(false);
       const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
@@ -172,7 +179,7 @@ export const CollaborativeMarkdownInput = memo(
 
           return false; // Allow default behavior for text
         },
-        [storageBucketId, hideImageOptions, temporaryLocation, uploadFile, isImageOrHtmlWithImage]
+        [storageBucketId, hideImageOptions, temporaryLocation, uploadFile]
       );
 
       const ydoc = useMemo(() => new Y.Doc(), []);
@@ -180,13 +187,17 @@ export const CollaborativeMarkdownInput = memo(
 
       useEffect(() => {
         providerRef.current = new TiptapCollabProvider({
-          baseUrl: `${env?.VITE_APP_COLLAB_DOC_URL}${env?.VITE_APP_COLLAB_DOC_PATH}`,
+          baseUrl: MEMO_SERVICE_URL,
           name: collaborationId,
           document: ydoc,
         });
 
         const statusHandler = event => {
-          setStatus(event.status);
+          if (isCollaborationStatus(event.status)) {
+            setStatus(event.status);
+          } else {
+            logError('UnknownMemoStatusError', { category: TagCategoryValues.MEMO, label: `Status: ${event.status}` });
+          }
         };
 
         providerRef.current.on('status', statusHandler);
@@ -245,13 +256,9 @@ export const CollaborativeMarkdownInput = memo(
           },
           editable: !disabled,
         };
-      }, [providerRef.current]);
+      }, [providerRef.current, ydoc, userName, cursorColor, handlePaste, disabled]);
 
       const editor = useEditor(editorOptions, [editorOptions]);
-
-      if (!editor) {
-        return null;
-      }
 
       const theme = useTheme();
 
@@ -332,6 +339,10 @@ export const CollaborativeMarkdownInput = memo(
       const [currentCollaborationState, setCollaborationState] = useState<RealTimeCollaborationState>();
       const [lastSaveTime, setLastSaveTime] = useState<Date | undefined>(undefined);
       const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
+
+      if (!editor) {
+        return null;
+      }
 
       useEffect(() => {
         const collaborationState: RealTimeCollaborationState = {

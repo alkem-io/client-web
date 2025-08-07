@@ -3,7 +3,6 @@ import { MemoModelFull } from '../model/MemoModelFull';
 
 interface useMemoManagerProvided {
   memo: MemoModelFull | undefined;
-  onDeleteMemo?: () => Promise<unknown>;
   loading: boolean;
 }
 

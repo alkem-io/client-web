@@ -98,7 +98,15 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
       columns={12}
       open={open}
       aria-labelledby="calendar-events-dialog-title"
-      PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
+      slotProps={{
+        paper: {
+          sx: {
+            padding: 0,
+            display: `${deletingEvent ? 'none' : 'flex'}`,
+            flexDirection: 'column',
+          },
+        },
+      }}
     >
       <CalendarEventsContainer spaceId={spaceId} parentSpaceId={parentSpaceId}>
         {(

@@ -70,10 +70,11 @@ const MemoFooter = ({
 
   const getSpaceAboutProfile = () => {
     switch (spaceLevel) {
-      case SpaceLevel.L0:
-        return spaceAbout.profile;
       case SpaceLevel.L1:
+      case SpaceLevel.L2:
         return subspaceAbout.profile;
+      default:
+        return spaceAbout.profile;
     }
   };
 

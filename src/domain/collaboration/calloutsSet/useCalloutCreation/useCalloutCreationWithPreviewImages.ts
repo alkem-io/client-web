@@ -90,14 +90,14 @@ export const useCalloutCreationWithPreviewImages = (
           );
         }
         const memo = callout.framing.type === CalloutFramingType.Memo ? result?.framing.memo : undefined;
-        if (memo && memo.profile) {
+        if (memo && memo.profile && memo.profile.preview?.id) {
           await uploadVisuals(
             previewImages,
             {
-              //!! cardVisualId: memo.profile.visual?.id,
-              previewVisualId: memo.profile.preview?.id,
+              // TODO:MEMO cardVisualId: memo.profile.visual?.id,
+              previewVisualId: memo.profile.preview.id,
             },
-            result.nameID // to name the files uploaded as whiteboard visuals
+            result.nameID // to name the files uploaded as memo visuals
           );
         }
       }

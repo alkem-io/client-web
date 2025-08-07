@@ -11,14 +11,10 @@ export interface StatelessSaveErrorMessage extends StatelessBaseMessage {
   error: string;
 }
 
-export const isStatelessSaveMessage = (
-  data: StatelessBaseMessage
-): data is StatelessSaveMessage => {
+export const isStatelessSaveMessage = (data: StatelessBaseMessage): data is StatelessSaveMessage => {
   return data.event === 'saved' || data.event === 'save-error';
 };
 
-export const isStatelessSaveErrorMessage = (
-  data: StatelessBaseMessage
-): data is StatelessSaveMessage => {
+export const isStatelessSaveErrorMessage = (data: StatelessBaseMessage): data is StatelessSaveErrorMessage => {
   return data.event === 'save-error';
 };
