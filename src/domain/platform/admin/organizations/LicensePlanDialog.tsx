@@ -12,6 +12,7 @@ type LicensePlanDialogProps = {
     | {
         id: string;
         name: string;
+        sortOrder: number;
       }[]
     | undefined;
   assignLicensePlan: (accountId: string, planId: string) => Promise<unknown>;
@@ -31,21 +32,24 @@ const LicensePlanDialog = ({
 }: LicensePlanDialogProps) => {
   const { t } = useTranslation();
 
+  // Sort license plans by sortOrder
+  const sortedLicensePlans = licensePlans?.slice().sort((a, b) => a.sortOrder - b.sortOrder);
+
   return (
     <DialogWithGrid open={open} onClose={onClose}>
       <DialogHeader title={t('pages.admin.spaces.manageLicensePlans')} onClose={onClose} />
       <DialogContent>
-        {licensePlans && (
+        {sortedLicensePlans && (
           <LicensePlansTable
             activeLicensePlanIds={activeLicensePlanIds}
-            licensePlans={licensePlans}
+            licensePlans={sortedLicensePlans}
             onDelete={plan => revokeLicensePlan(accountId, plan.id)}
           />
         )}
-        {licensePlans && (
+        {sortedLicensePlans && (
           <AssignPlan
             onAssignPlan={licensePlanId => assignLicensePlan(accountId, licensePlanId)}
-            licensePlans={licensePlans}
+            licensePlans={sortedLicensePlans}
           />
         )}
       </DialogContent>

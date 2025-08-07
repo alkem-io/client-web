@@ -2327,6 +2327,7 @@ export enum CredentialType {
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
   SpaceAdmin = 'SPACE_ADMIN',
+  SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
   SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
   SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
@@ -3100,6 +3101,7 @@ export enum LicenseEntitlementType {
   AccountSpacePlus = 'ACCOUNT_SPACE_PLUS',
   AccountSpacePremium = 'ACCOUNT_SPACE_PREMIUM',
   AccountVirtualContributor = 'ACCOUNT_VIRTUAL_CONTRIBUTOR',
+  SpaceFlagMemoMultiUser = 'SPACE_FLAG_MEMO_MULTI_USER',
   SpaceFlagSaveAsTemplate = 'SPACE_FLAG_SAVE_AS_TEMPLATE',
   SpaceFlagVirtualContributorAccess = 'SPACE_FLAG_VIRTUAL_CONTRIBUTOR_ACCESS',
   SpaceFlagWhiteboardMultiUser = 'SPACE_FLAG_WHITEBOARD_MULTI_USER',
@@ -3183,6 +3185,7 @@ export type Licensing = {
 
 export enum LicensingCredentialBasedCredentialType {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
+  SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
   SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
   SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
@@ -20295,6 +20298,7 @@ export type PlatformLicensingPlansQuery = {
         id: string;
         type: LicensingCredentialBasedPlanType;
         name: string;
+        sortOrder: number;
         licenseCredential: LicensingCredentialBasedCredentialType;
       }>;
     };
