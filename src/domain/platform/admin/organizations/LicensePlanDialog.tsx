@@ -50,6 +50,7 @@ const LicensePlanDialog = ({
           <AssignPlan
             onAssignPlan={licensePlanId => assignLicensePlan(accountId, licensePlanId)}
             licensePlans={sortedLicensePlans}
+            activeLicensePlanIds={activeLicensePlanIds}
           />
         )}
       </DialogContent>

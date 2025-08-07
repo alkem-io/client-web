@@ -8,15 +8,17 @@ import FormikSubmitButton from '@/domain/shared/components/forms/FormikSubmitBut
 interface AssignPlanProps {
   onAssignPlan: (licensePlanId: string) => Promise<unknown>;
   licensePlans: { id: string; name: string; sortOrder: number }[];
+  activeLicensePlanIds?: string[];
 }
-
 interface AssignPlanFormValues {
   licensePlanId: string;
 }
 
-const AssignPlan = ({ licensePlans, onAssignPlan }: AssignPlanProps) => {
-  // Sort license plans by sortOrder
-  const sortedLicensePlans = [...licensePlans].sort((a, b) => a.sortOrder - b.sortOrder);
+const AssignPlan = ({ licensePlans, onAssignPlan, activeLicensePlanIds = [] }: AssignPlanProps) => {
+  // Sort license plans by sortOrder and filter out already assigned ones
+  const availableLicensePlans = [...licensePlans]
+    .filter(plan => !activeLicensePlanIds.includes(plan.id))
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 
   const initialValues: Partial<AssignPlanFormValues> = {
     licensePlanId: undefined,
@@ -36,7 +38,7 @@ const AssignPlan = ({ licensePlans, onAssignPlan }: AssignPlanProps) => {
       <Form>
         <Gutters row>
           <FormikAutocomplete
-            values={sortedLicensePlans}
+            values={availableLicensePlans}
             name="licensePlanId"
             sx={{ flexGrow: 1 }}
             label={'Assign License Plan'}

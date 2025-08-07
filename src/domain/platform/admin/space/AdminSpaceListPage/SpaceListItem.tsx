@@ -175,6 +175,7 @@ const SpaceListItem = ({
             <AssignPlan
               onAssignPlan={licensePlanId => assignLicensePlan({ variables: { spaceId, licensePlanId } })}
               licensePlans={licensePlans}
+              activeLicensePlanIds={activeLicensePlanIds}
             />
           )}
         </DialogContent>
