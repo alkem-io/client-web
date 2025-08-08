@@ -10,7 +10,7 @@ import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useEffect, useRef, useState } from 'react';
 import UserPresencing from '../../realTimeCollaboration/UserPresencing';
-import { RealTimeCollaborationState } from '../../realTimeCollaboration/RealTimeCollaborationState';
+import { MemoStatus, RealTimeCollaborationState } from '../../realTimeCollaboration/RealTimeCollaborationState';
 import MemoFooter from './MemoFooter';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
@@ -48,7 +48,7 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
   }, [open]);
 
   const hasContributePrivileges = (memo?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Contribute);
-  const notConnected = !collaborationState || collaborationState.status !== 'connected';
+  const notConnected = !collaborationState || collaborationState.status !== MemoStatus.CONNECTED;
   const notSynced = !collaborationState || !collaborationState.synced;
   const disabled = !hasContributePrivileges || collaborationState?.readOnly || notConnected || notSynced;
 

@@ -195,14 +195,14 @@ export const CollaborativeMarkdownInput = memo(
           setSynced(!!event.state);
         };
 
+        let wasPreviouslyDisconnected = !synced;
         const statusHandler = event => {
-          let justSynced = true; // state could be delayed
           // logic to fix missing sync after reconnecting
           if (event.status === MemoStatus.DISCONNECTED || event.status === MemoStatus.CONNECTING) {
             setSynced(false);
-            justSynced = false;
+            wasPreviouslyDisconnected = true;
           }
-          if (event.status === MemoStatus.CONNECTED && !justSynced) {
+          if (event.status === MemoStatus.CONNECTED && wasPreviouslyDisconnected) {
             providerRef.current?.forceSync();
           }
 
