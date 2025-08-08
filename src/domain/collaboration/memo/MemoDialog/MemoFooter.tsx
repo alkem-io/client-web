@@ -1,11 +1,10 @@
-import { MouseEventHandler, useState } from 'react';
+import { MouseEventHandler, useState, useEffect, useRef } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-import { DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -17,9 +16,6 @@ import {
   MemoStatus,
   RealTimeCollaborationState,
 } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface MemoFooterProps {
@@ -33,7 +29,6 @@ interface MemoFooterProps {
         };
       })
     | undefined;
-  contentUpdatePolicy: ContentUpdatePolicy | undefined;
   collaborationState: RealTimeCollaborationState | undefined;
 }
 
@@ -43,6 +38,7 @@ enum ReadonlyReason {
   NoMembership = 'noMembership',
   Unauthenticated = 'unauthenticated',
   Connecting = 'connecting',
+  NotSynced = 'notSynced',
 }
 
 const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps) => {
@@ -54,6 +50,18 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
   const { subspace } = useSubSpace();
   const spaceAbout = space.about;
   const subspaceAbout = subspace.about;
+
+  const [delayedReadonlyReason, setDelayedReadonlyReason] = useState<ReadonlyReason | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const getMyMembershipStatus = () => {
+    switch (spaceLevel) {
+      case SpaceLevel.L0:
+        return spaceAbout.membership?.myMembershipStatus;
+      default:
+        return subspaceAbout.membership?.myMembershipStatus;
+    }
+  };
 
   const getSpaceAboutProfile = () => {
     switch (spaceLevel) {
@@ -68,25 +76,53 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
   const spaceAboutProfile = getSpaceAboutProfile();
 
   const getReadonlyReason = () => {
-    // Check collaboration status first
     if (collaborationState?.status !== MemoStatus.CONNECTED) {
       return ReadonlyReason.Connecting;
-    }
-
-    // Check if the document is in readonly mode from collaboration state
-    if (collaborationState?.readOnly) {
-      return ReadonlyReason.Readonly;
     }
 
     if (!isAuthenticated) {
       return ReadonlyReason.Unauthenticated;
     }
 
-    // return ReadonlyReason.ContentUpdatePolicy;
-    return null; // Default case, no readonly reason
+    if (getMyMembershipStatus() !== CommunityMembershipStatus.Member) {
+      return ReadonlyReason.NoMembership;
+    }
+
+    if (!collaborationState?.synced) {
+      return ReadonlyReason.NotSynced;
+    }
+
+    // The default if none of the above applies but the memo is still read-only.
+    if (collaborationState?.readOnly) {
+      return ReadonlyReason.Readonly;
+    }
+
+    return null;
   };
 
   const readonlyReason = getReadonlyReason();
+
+  // If there's a new reason, wait a bit before showing it.
+  // This prevents flickering for very short-lived states.
+  useEffect(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    if (readonlyReason) {
+      timerRef.current = setTimeout(() => {
+        setDelayedReadonlyReason(readonlyReason);
+      }, 500); // 500ms delay
+    } else {
+      setDelayedReadonlyReason(null);
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [readonlyReason]);
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -103,13 +139,6 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
     }
   };
 
-  const [isLearnWhyDialogOpen, setIsLearnWhyDialogOpen] = useState(false);
-
-  const handleLearnWhyClick: MouseEventHandler = event => {
-    event.preventDefault();
-    setIsLearnWhyDialogOpen(true);
-  };
-
   return (
     <>
       <Actions
@@ -119,10 +148,10 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
         justifyContent="start"
         alignItems="center"
       >
-        {readonlyReason && (
+        {delayedReadonlyReason && (
           <Caption>
             <Trans
-              i18nKey={`pages.memo.readonlyReason.${readonlyReason}` as const}
+              i18nKey={`pages.memo.readonlyReason.${delayedReadonlyReason}` as const}
               values={{
                 spaceLevel: t(`common.space-level.${spaceLevel}`),
                 ownerName: createdBy?.profile.displayName,
@@ -139,7 +168,6 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
                   <span />
                 ),
                 signinlink: <RouterLink to={buildLoginUrl(memoUrl)} state={{}} underline="always" />,
-                learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
               }}
             />
           </Caption>
@@ -147,13 +175,6 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
 
         {directMessageDialog}
       </Actions>
-
-      <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
-        <DialogHeader title={'TODO'} onClose={() => setIsLearnWhyDialogOpen(false)} />
-        <DialogContent sx={{ paddingTop: 0 }}>
-          <WrapperMarkdown>{'TODO'}</WrapperMarkdown>
-        </DialogContent>
-      </DialogWithGrid>
     </>
   );
 };

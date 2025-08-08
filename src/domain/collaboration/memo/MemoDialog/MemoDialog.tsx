@@ -50,6 +50,7 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
   const hasContributePrivileges = (memo?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Contribute);
   const notConnected = !collaborationState || collaborationState.status !== 'connected';
   const notSynced = !collaborationState || !collaborationState.synced;
+  const disabled = !hasContributePrivileges || collaborationState?.readOnly || notConnected || notSynced;
 
   return (
     <DialogWithGrid ref={dialogRef} open={open} onClose={handleClose} fullWidth fullHeight fullScreen={fullScreen}>
@@ -77,7 +78,7 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
       <DialogContent>
         <Box position="relative" height="100%" width="100%">
           {loading && <Loading />}
-          {(notConnected || notSynced) && (
+          {notConnected && (
             <Box
               position="absolute"
               top={0}
@@ -90,18 +91,14 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
               zIndex={1}
               sx={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
             >
-              {notConnected ? (
-                <Loading text="Connecting to collaboration service..." />
-              ) : (
-                <Loading text="Synchronizing..." />
-              )}
+              <Loading text="Connecting to collaboration service..." />
             </Box>
           )}
           {!loading && memo && (
             <CharacterCountContextProvider>
               <OutlinedInput
                 inputComponent={CollaborativeMarkdownInput}
-                disabled={!hasContributePrivileges}
+                disabled={disabled}
                 inputProps={{
                   controlsVisible: 'always',
                   collaborationId: memoId,
@@ -124,12 +121,7 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
         </Box>
       </DialogContent>
       <DialogFooter>
-        <MemoFooter
-          memoUrl={memo?.profile.url}
-          createdBy={memo?.createdBy}
-          contentUpdatePolicy={undefined}
-          collaborationState={collaborationState}
-        />
+        <MemoFooter memoUrl={memo?.profile.url} createdBy={memo?.createdBy} collaborationState={collaborationState} />
       </DialogFooter>
     </DialogWithGrid>
   );
