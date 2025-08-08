@@ -26,6 +26,7 @@ import {
   CollaborationStatus,
   RealTimeCollaborationState,
   isCollaborationStatus,
+  MemoStatus,
 } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import { env } from '@/main/env';
 import {
@@ -34,7 +35,7 @@ import {
   isStatelessSaveErrorMessage,
 } from './stateless-messaging';
 import { decodeStatelessMessage } from './stateless-messaging/util';
-import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -92,7 +93,8 @@ export const CollaborativeMarkdownInput = memo(
 
       const { userName, cursorColor } = useUserCursor();
 
-      const [status, setStatus] = useState<CollaborationStatus>('connecting');
+      const [status, setStatus] = useState<CollaborationStatus>(MemoStatus.CONNECTING);
+      const [synced, setSynced] = useState(false);
 
       const [hasFocus, setHasFocus] = useState(false);
       const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
@@ -192,20 +194,31 @@ export const CollaborativeMarkdownInput = memo(
           document: ydoc,
         });
 
+        const syncHandler = event => {
+          console.log('!!! SYNCED', event.state);
+          setSynced(!!event.state);
+        };
+
         const statusHandler = event => {
+          console.log('!!! on status', event);
+          let justSynced = true; // state could be delayed
+          // logic to fix missing sync after reconnecting
+          if (event.status === MemoStatus.DISCONNECTED || event.status === MemoStatus.CONNECTING) {
+            setSynced(false);
+            justSynced = false;
+          }
+          if (event.status === MemoStatus.CONNECTED && !justSynced) {
+            providerRef.current?.forceSync();
+          }
+
           if (isCollaborationStatus(event.status)) {
             setStatus(event.status);
           } else {
-            logError('UnknownMemoStatusError', { category: TagCategoryValues.MEMO, label: `Status: ${event.status}` });
+            logWarn('UnknownMemoStatusError', { category: TagCategoryValues.MEMO, label: `Status: ${event.status}` });
           }
         };
 
-        providerRef.current.on('status', statusHandler);
-        providerRef.current.on('authenticationFailed', () => {
-          // TODO:MEMO handle authentication failure
-          setIsReadOnly(true);
-        });
-        providerRef.current.on('stateless', ({ payload }: onStatelessParameters) => {
+        const statelessEventHandler = ({ payload }: onStatelessParameters) => {
           const decodedMessage = decodeStatelessMessage(payload);
           if (!decodedMessage) {
             return;
@@ -222,7 +235,24 @@ export const CollaborativeMarkdownInput = memo(
             // TODO:MEMO handle read-only codes: see enum ReadOnlyCode
             setIsReadOnly(decodedMessage.readOnly);
           }
-        });
+        };
+
+        const authenticationFailedHandler = event => {
+          // implement please reload logic
+          console.log('!!! authenticationFailed', event);
+          setSynced(false);
+        };
+
+        // provides MemoStatus updates
+        providerRef.current.on('status', statusHandler);
+
+        // explicit sync event
+        // connected is not enough sometimes you're connected, but not synced
+        // editing should not be allowed until synced
+        providerRef.current.on('synced', syncHandler);
+        providerRef.current.on('authenticationFailed', authenticationFailedHandler);
+        // passing custom messages
+        providerRef.current.on('stateless', statelessEventHandler);
 
         return () => {
           providerRef.current?.destroy();
@@ -347,6 +377,7 @@ export const CollaborativeMarkdownInput = memo(
       useEffect(() => {
         const collaborationState: RealTimeCollaborationState = {
           status,
+          synced,
           lastActive: lastSaveTime,
           readOnly: isReadOnly,
           users:
@@ -364,6 +395,7 @@ export const CollaborativeMarkdownInput = memo(
         }
       }, [
         status,
+        synced,
         lastSaveTime,
         isReadOnly,
         editor.storage.collaborationCursor?.users.length,

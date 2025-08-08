@@ -48,6 +48,8 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
   }, [open]);
 
   const hasContributePrivileges = (memo?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Contribute);
+  const notConnected = !collaborationState || collaborationState.status !== 'connected';
+  const notSynced = !collaborationState || !collaborationState.synced;
 
   return (
     <DialogWithGrid ref={dialogRef} open={open} onClose={handleClose} fullWidth fullHeight fullScreen={fullScreen}>
@@ -75,7 +77,7 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
       <DialogContent>
         <Box position="relative" height="100%" width="100%">
           {loading && <Loading />}
-          {collaborationState?.status !== 'connected' && (
+          {(notConnected || notSynced) && (
             <Box
               position="absolute"
               top={0}
@@ -88,7 +90,11 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
               zIndex={1}
               sx={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
             >
-              <Loading text="Connecting to collaboration service..." />
+              {notConnected ? (
+                <Loading text="Connecting to collaboration service..." />
+              ) : (
+                <Loading text="Synchronizing..." />
+              )}
             </Box>
           )}
           {!loading && memo && (
@@ -120,7 +126,6 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
       <DialogFooter>
         <MemoFooter
           memoUrl={memo?.profile.url}
-          canContribute={hasContributePrivileges}
           createdBy={memo?.createdBy}
           contentUpdatePolicy={undefined}
           collaborationState={collaborationState}

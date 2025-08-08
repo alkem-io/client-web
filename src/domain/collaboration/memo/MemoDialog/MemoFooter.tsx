@@ -5,7 +5,7 @@ import { Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { CommunityMembershipStatus, ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -13,7 +13,10 @@ import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { Visual } from '@/domain/common/visual/Visual';
-import { RealTimeCollaborationState } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
+import {
+  MemoStatus,
+  RealTimeCollaborationState,
+} from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
@@ -21,7 +24,6 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 interface MemoFooterProps {
   memoUrl: string | undefined;
-  canContribute: boolean;
   createdBy:
     | (Identifiable & {
         profile: {
@@ -43,13 +45,7 @@ enum ReadonlyReason {
   Connecting = 'connecting',
 }
 
-const MemoFooter = ({
-  memoUrl,
-  canContribute,
-  contentUpdatePolicy,
-  createdBy,
-  collaborationState,
-}: MemoFooterProps) => {
+const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps) => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
 
@@ -58,15 +54,6 @@ const MemoFooter = ({
   const { subspace } = useSubSpace();
   const spaceAbout = space.about;
   const subspaceAbout = subspace.about;
-
-  const getMyMembershipStatus = () => {
-    switch (spaceLevel) {
-      case SpaceLevel.L0:
-        return spaceAbout.membership?.myMembershipStatus;
-      default:
-        return subspaceAbout.membership?.myMembershipStatus;
-    }
-  };
 
   const getSpaceAboutProfile = () => {
     switch (spaceLevel) {
@@ -82,7 +69,7 @@ const MemoFooter = ({
 
   const getReadonlyReason = () => {
     // Check collaboration status first
-    if (collaborationState?.status !== 'connected') {
+    if (collaborationState?.status !== MemoStatus.CONNECTED) {
       return ReadonlyReason.Connecting;
     }
 
@@ -91,22 +78,12 @@ const MemoFooter = ({
       return ReadonlyReason.Readonly;
     }
 
-    if (canContribute) {
-      return null; // User has update privileges and collaboration is connected
-    }
-
     if (!isAuthenticated) {
       return ReadonlyReason.Unauthenticated;
     }
 
-    if (
-      contentUpdatePolicy === ContentUpdatePolicy.Contributors &&
-      getMyMembershipStatus() !== CommunityMembershipStatus.Member
-    ) {
-      return ReadonlyReason.NoMembership;
-    }
-
-    return ReadonlyReason.ContentUpdatePolicy;
+    // return ReadonlyReason.ContentUpdatePolicy;
+    return null; // Default case, no readonly reason
   };
 
   const readonlyReason = getReadonlyReason();
