@@ -216,6 +216,7 @@ export const CollaborativeMarkdownInput = memo(
         };
 
         const statelessEventHandler = ({ payload }: onStatelessParameters) => {
+          console.log('!!! readOnlyState', payload);
           const decodedMessage = decodeStatelessMessage(payload);
           if (!decodedMessage) {
             return;
@@ -240,6 +241,7 @@ export const CollaborativeMarkdownInput = memo(
           setSynced(false);
         };
 
+        // doc for the events: https://tiptap.dev/docs/collaboration/provider/events
         // provides MemoStatus updates
         providerRef.current.on('status', statusHandler);
 
