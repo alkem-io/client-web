@@ -35,6 +35,7 @@ import {
 } from './stateless-messaging';
 import { decodeStatelessMessage } from './stateless-messaging/util';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
+import useOnlineStatus from '@/core/utils/onlineStatus';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -104,6 +105,8 @@ export const CollaborativeMarkdownInput = memo(
       const { t } = useTranslation();
 
       const notify = useNotification();
+
+      const isOnline = useOnlineStatus();
 
       const [uploadFile] = useUploadFileMutation({
         onCompleted: data => {
@@ -399,6 +402,14 @@ export const CollaborativeMarkdownInput = memo(
         editor.storage.collaborationCursor?.users.length,
         editor.storage.collaborationCursor?.users,
       ]);
+
+      useEffect(() => {
+        if (!isOnline) {
+          setIsReadOnly(true);
+        } else {
+          setIsReadOnly(false);
+        }
+      }, [isOnline]);
 
       return (
         <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur} height={height}>
