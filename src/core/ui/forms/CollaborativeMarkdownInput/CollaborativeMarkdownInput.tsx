@@ -35,7 +35,7 @@ import {
 } from './stateless-messaging';
 import { decodeStatelessMessage } from './stateless-messaging/util';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
-import useOnlineStatus from '@/core/utils/onlineStatus';
+import { useOnlineStatus } from '@/core/utils/useOnlineStatus';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
