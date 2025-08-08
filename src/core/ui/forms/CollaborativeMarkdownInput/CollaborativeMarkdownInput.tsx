@@ -192,12 +192,10 @@ export const CollaborativeMarkdownInput = memo(
         });
 
         const syncHandler = event => {
-          console.log('!!! SYNCED', event.state);
           setSynced(!!event.state);
         };
 
         const statusHandler = event => {
-          console.log('!!! on status', event);
           let justSynced = true; // state could be delayed
           // logic to fix missing sync after reconnecting
           if (event.status === MemoStatus.DISCONNECTED || event.status === MemoStatus.CONNECTING) {
@@ -216,7 +214,6 @@ export const CollaborativeMarkdownInput = memo(
         };
 
         const statelessEventHandler = ({ payload }: onStatelessParameters) => {
-          console.log('!!! readOnlyState', payload);
           const decodedMessage = decodeStatelessMessage(payload);
           if (!decodedMessage) {
             return;
@@ -235,9 +232,11 @@ export const CollaborativeMarkdownInput = memo(
           }
         };
 
-        const authenticationFailedHandler = event => {
-          // implement please reload logic
-          console.log('!!! authenticationFailed', event);
+        const authenticationFailedHandler = () => {
+          // event.reason available
+          // As the user is actually authenticated on the platform
+          // this error is most likely not-relevant,
+          // so we show the notSynced state with a message to reload
           setSynced(false);
         };
 
