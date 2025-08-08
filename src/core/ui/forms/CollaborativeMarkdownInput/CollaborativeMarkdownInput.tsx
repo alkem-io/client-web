@@ -13,7 +13,6 @@ import { Iframe } from '../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
 import { EditorView } from '@tiptap/pm/view';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
-import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import Collaboration from '@tiptap/extension-collaboration';
 import { TiptapCollabProvider, onStatelessParameters } from '@hocuspocus/provider';
 import * as Y from 'yjs';
@@ -46,6 +45,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   collaborationId?: string;
   onChangeCollaborationState?: (state: RealTimeCollaborationState) => void;
   disabled?: boolean;
+  storageBucketId: string;
 }
 
 type Offset = {
@@ -85,6 +85,7 @@ export const CollaborativeMarkdownInput = memo(
         collaborationId,
         onChangeCollaborationState,
         disabled,
+        storageBucketId,
       },
       ref
     ) => {
@@ -99,8 +100,6 @@ export const CollaborativeMarkdownInput = memo(
       const [hasFocus, setHasFocus] = useState(false);
       const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
       const isInteractingWithInput = hasFocus || isControlsDialogOpen;
-
-      const storageConfig = useStorageConfigContext();
 
       const { t } = useTranslation();
 
@@ -126,8 +125,6 @@ export const CollaborativeMarkdownInput = memo(
 
         return false; // Not an image or HTML with images
       };
-
-      const storageBucketId = storageConfig?.storageBucketId;
 
       /**
        * Handles the paste event in the editor.

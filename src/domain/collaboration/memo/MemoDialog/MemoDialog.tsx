@@ -104,6 +104,7 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
                   collaborationId: memoId,
                   height: '100%',
                   onChangeCollaborationState: setCollaborationState,
+                  storageBucketId: memo.profile.storageBucket.id,
                 }}
                 sx={{
                   '&.MuiOutlinedInput-root': {
