@@ -1,5 +1,5 @@
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminSettingsView from '../views/UserAdminSettingsView';
 
 export const UserAdminSettingsPage = () => (

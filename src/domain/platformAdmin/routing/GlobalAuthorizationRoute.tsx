@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import AdminAuthorizationPage from '../authorization/AdminAuthorizationPage';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import AdminAuthorizationPage from '../authorization/AdminAuthorizationPage';
 
 const GlobalAuthorizationRoute: FC = () => {
   return (

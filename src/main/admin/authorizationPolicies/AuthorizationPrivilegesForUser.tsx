@@ -5,8 +5,8 @@ import { Autocomplete, Chip, CircularProgress, TextField } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 import Gutters from '@/core/ui/grid/Gutters';
 import { BlockTitle } from '@/core/ui/typography';
-import useAdminGlobalUserList from '@/domain/platform/admin/users/useAdminGlobalUserList';
-import { SearchableTableItem } from '@/domain/platform/admin/components/SearchableTable';
+import useAdminGlobalUserList from '@/domain/platformAdmin/domain/users/useAdminGlobalUserList';
+import { SearchableTableItem } from '@/domain/platformAdmin/components/SearchableTable';
 
 interface AuthorizationDialogProps {
   authorizationPolicyId: string;

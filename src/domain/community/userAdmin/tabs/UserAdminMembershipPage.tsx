@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { ActionableContributionsView } from '@/domain/community/profile/views';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
 import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';

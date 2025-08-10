@@ -1,20 +1,20 @@
 import { useMemo, useState } from 'react';
 import { sortBy } from 'lodash';
 import {
-  refetchAdminInnovationPacksListQuery,
-  useAdminInnovationPacksListQuery,
+  refetchPlatformAdminInnovationPacksQuery,
+  usePlatformAdminInnovationPacksQuery,
   useDeleteInnovationPackMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
 import SimpleSearchableTable from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
-import AdminLayout from '@/domain/platform/admin/layout/toplevel/AdminLayout';
-import { AdminSection } from '@/domain/platform/admin/layout/toplevel/constants';
+import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
+import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
 import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
 
 const AdminInnovationPacksPage = () => {
-  const { data, loading } = useAdminInnovationPacksListQuery();
+  const { data, loading } = usePlatformAdminInnovationPacksQuery();
   const [deleteInnovationPack] = useDeleteInnovationPackMutation({
-    refetchQueries: [refetchAdminInnovationPacksListQuery()],
+    refetchQueries: [refetchPlatformAdminInnovationPacksQuery()],
   });
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -29,7 +29,7 @@ const AdminInnovationPacksPage = () => {
   const innovationPacks = useMemo(
     () =>
       sortBy(
-        data?.platform.library.innovationPacks
+        data?.platformAdmin.innovationPacks
           .map(pack => ({
             value: pack.profile.displayName,
             url: buildInnovationPackSettingsUrl(pack.profile.url),
@@ -49,7 +49,7 @@ const AdminInnovationPacksPage = () => {
           onDelete={item => handleDelete(item.id)}
           loading={loading}
           fetchMore={() => Promise.resolve()}
-          pageSize={data?.platform.library.innovationPacks.length ?? 0}
+          pageSize={data?.platformAdmin.innovationPacks.length ?? 0}
           searchTerm={searchTerm}
           onSearchTermChange={setSearchTerm}
           hasMore={false}

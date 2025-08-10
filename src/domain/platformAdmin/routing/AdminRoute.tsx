@@ -3,14 +3,14 @@ import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeCont
 import { Error404 } from '@/core/pages/Errors/Error404';
 import NonPlatformAdminRedirect from '@/main/admin/NonPlatformAdminRedirect';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
-import { AdminOrganizationsRoutes } from '../../../community/organizationAdmin';
-import { UsersRoute } from '../users/routing/UsersRoute';
-import { SpacesRoute } from '../space/routing/SpacesRoute';
+import { UsersRoute } from '../domain/users/routing/UsersRoute';
+import { SpacesRoute } from '../domain/space/routing/SpacesRoute';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
-import AdminInnovationPacksRoutes from '@/domain/InnovationPack/admin/AdminInnovationPackRoutes';
-import AdminInnovationHubsRoutes from '@/domain/innovationHub/InnovationHubsAdmin/InnovationHubsAdminRoutes';
-import VirtualContributorsRoutes from '../virtual-contributors/VirtualContributorsRoutes';
+import AdminInnovationPacksRoutes from '@/domain/platformAdmin/domain/innovationPacks/AdminInnovationPackRoutes';
+import AdminInnovationHubsRoutes from '@/domain/platformAdmin/domain/innovationHubs/InnovationHubsAdminRoutes';
+import VirtualContributorsRoutes from '../domain/virtual-contributors/VirtualContributorsRoutes';
 import AuthorizationPoliciesPage from '@/main/admin/authorizationPolicies/AuthorizationPoliciesPage';
+import AdminOrganizationsRoutes from '../domain/organizations/AdminOrganizationsRoutes';
 
 const AdminRoute = () => {
   useTransactionScope({ type: 'admin' });

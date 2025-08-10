@@ -28,7 +28,7 @@ const InnovationLibraryPage = lazyWithGlobalErrorHandler(
   () => import('@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryPage')
 );
 const ContributorsPage = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/ContributorsPage'));
-const AdminRoute = lazyWithGlobalErrorHandler(() => import('@/domain/platform/admin/routing/AdminRoute'));
+const AdminRoute = lazyWithGlobalErrorHandler(() => import('@/domain/platformAdmin/routing/AdminRoute'));
 const UserRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/routing/UserRoute'));
 const OrganizationRoute = lazyWithGlobalErrorHandler(
   () => import('@/domain/community/organization/routing/OrganizationRoute')

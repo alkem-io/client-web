@@ -11,7 +11,7 @@ import PageContent from '@/core/ui/content/PageContent';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useTranslation } from 'react-i18next';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';

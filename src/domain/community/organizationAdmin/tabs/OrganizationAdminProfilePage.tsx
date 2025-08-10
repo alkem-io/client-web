@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import OrganizationPage from '../../../platform/admin/components/Organization/OrganizationPage';
+import { SettingsSection } from '../../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import OrganizationPage from '../../../platformAdmin/components/Organization/OrganizationPage';
 import { EditMode } from '@/core/ui/forms/editMode';
-import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
+import { SettingsPageProps } from '../../../platformAdmin/layout/EntitySettingsLayout/types';
 
 const OrganizationAdminProfilePage: FC<SettingsPageProps> = () => {
   return (

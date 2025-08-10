@@ -1,5 +1,5 @@
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import { FC, useState } from 'react';
 import {
   refetchSubspacesInSpaceQuery,
@@ -15,7 +15,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import Loading from '@/core/ui/loading/Loading';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import SearchableList, { SearchableListItem } from '@/domain/platform/admin/components/SearchableList';
+import SearchableList, { SearchableListItem } from '@/domain/platformAdmin/components/SearchableList';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';

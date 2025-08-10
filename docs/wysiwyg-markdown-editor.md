@@ -139,7 +139,7 @@ We are calculating the resulting markdown for each keystroke and for each action
 ## Integration in our code
 
 There is only one place in our codebase where this Markdown Editor was instantiated: `./src/common/components/composite/forms/FormikMarkdownField.tsx`
-There is also a wrapper around FormikMarkdownField in `./src/domain/platform/admin/components/Common/MarkdownInput.tsx` which may be better removed in the future
+There is also a wrapper around FormikMarkdownField in `./src/domain/platformAdmin/components/Common/MarkdownInput.tsx` which may be better removed in the future
 
 ### State handling
 

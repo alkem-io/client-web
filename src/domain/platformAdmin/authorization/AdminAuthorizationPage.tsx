@@ -9,8 +9,8 @@ import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { useTranslation } from 'react-i18next';
-import EditMemberUsers from '../components/Community/EditMembersUsers';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
+import EditMemberUsers from '../components/Community/EditMembersUsers';
 
 interface AdminAuthorizationPageProps {
   selectedRole?: RoleName;
