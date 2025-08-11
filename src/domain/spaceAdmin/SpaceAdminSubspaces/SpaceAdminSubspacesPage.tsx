@@ -1,5 +1,5 @@
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
+import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import { FC, useState } from 'react';
 import {
   refetchSubspacesInSpaceQuery,

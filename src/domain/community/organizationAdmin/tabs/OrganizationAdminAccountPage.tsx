@@ -3,7 +3,7 @@ import ContributorAccountView from '@/domain/community/contributor/Account/Contr
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { FC } from 'react';
 import { SettingsSection } from '../../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { SettingsPageProps } from '../../../platformAdmin/layout/EntitySettingsLayout/types';
+import type { SettingsPageProps } from '../../../platformAdmin/layout/EntitySettingsLayout/types';
 import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
 
 const OrganizationAccountPage: FC<SettingsPageProps> = () => {

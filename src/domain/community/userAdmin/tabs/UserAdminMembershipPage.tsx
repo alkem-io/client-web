@@ -4,7 +4,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { ActionableContributionsView } from '@/domain/community/profile/views';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
+import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useUserContributionsQuery, useUserPendingMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
