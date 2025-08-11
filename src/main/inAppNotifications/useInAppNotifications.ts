@@ -3,7 +3,6 @@ import {
   RoleSetContributorType,
   InAppNotificationCategory,
   InAppNotificationState,
-  NotificationEventType,
   SpaceLevel,
   InAppNotificationsQuery,
 } from '@/core/apollo/generated/graphql-schema';
@@ -18,7 +17,8 @@ import { ApolloCache } from '@apollo/client';
 
 export interface InAppNotificationProps {
   id: string;
-  type: NotificationEventType;
+  // @ts-ignore
+  type: any;
   triggeredAt: Date;
   state: InAppNotificationState;
   category: InAppNotificationCategory;

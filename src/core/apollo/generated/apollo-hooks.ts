@@ -275,7 +275,6 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       id
       callouts {
         id
-        calloutTypeDeprecated: type
         activity
         sortOrder
         classification {
@@ -625,7 +624,6 @@ export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
-    calloutTypeDeprecated: type
     sortOrder
     activity
     authorization {
@@ -902,7 +900,6 @@ export const CalloutSettingsFullFragmentDoc = gql`
 export const CalloutDetailsFragmentDoc = gql`
   fragment CalloutDetails on Callout {
     id
-    calloutTypeDeprecated: type
     framing {
       id
       profile {
@@ -997,7 +994,6 @@ export const PostSettingsFragmentDoc = gql`
 export const PostSettingsCalloutFragmentDoc = gql`
   fragment PostSettingsCallout on Callout {
     id
-    calloutTypeDeprecated: type
     contributions {
       id
       post {
@@ -2354,7 +2350,6 @@ export const TemplateCardProfileInfoFragmentDoc = gql`
 export const CalloutTemplateContentFragmentDoc = gql`
   fragment CalloutTemplateContent on Callout {
     id
-    calloutTypeDeprecated: type
     framing {
       id
       profile {
@@ -2427,7 +2422,6 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
       id
       callouts {
         id
-        calloutTypeDeprecated: type
         classification {
           id
           flowState: tagset(tagsetName: FLOW_STATE) {
@@ -2581,7 +2575,6 @@ export const CalloutTemplateFragmentDoc = gql`
     ...TemplateProfileInfo
     callout {
       id
-      calloutTypeDeprecated: type
       settings {
         contribution {
           enabled
@@ -2995,7 +2988,6 @@ export const SearchResultCalloutFragmentDoc = gql`
     id
     callout {
       id
-      calloutTypeDeprecated: type
       framing {
         id
         profile {
@@ -18973,7 +18965,6 @@ export const SpaceAdminDefaultSpaceTemplatesDetailsDocument = gql`
                     id
                     callouts {
                       id
-                      calloutTypeDeprecated: type
                       sortOrder
                       classification {
                         id
@@ -20251,7 +20242,6 @@ export const ImportTemplateDialogDocument = gql`
           ...TemplateProfileInfo
           callout @include(if: $includeCallout) {
             id
-            calloutTypeDeprecated: type
           }
           contentSpace @include(if: $includeSpace) {
             id
@@ -20352,7 +20342,6 @@ export const ImportTemplateDialogPlatformTemplatesDocument = gql`
             ...TemplateProfileInfo
             callout @include(if: $includeCallout) {
               id
-              calloutTypeDeprecated: type
             }
             contentSpace @include(if: $includeSpace) {
               id
@@ -21073,7 +21062,6 @@ export const UpdateCalloutTemplateDocument = gql`
   mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
     updateCallout(calloutData: $calloutData) {
       id
-      calloutTypeDeprecated: type
       framing {
         id
         profile {
@@ -22866,7 +22854,6 @@ export const InnovationLibraryDocument = gql`
             ...TemplateProfileInfo
             callout {
               id
-              type
             }
           }
           innovationPack {

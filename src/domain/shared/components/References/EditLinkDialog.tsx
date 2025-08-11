@@ -1,5 +1,4 @@
 import { FC, ReactNode, useMemo } from 'react';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { Box, Button, Dialog, DialogContent, IconButton } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { CalloutType } from '@/domain/collaboration/callout/CalloutViewTypes';
 
 export interface EditLinkFormValues {
   id: string;

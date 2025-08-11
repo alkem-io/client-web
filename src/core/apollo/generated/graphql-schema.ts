@@ -925,6 +925,7 @@ export enum AuthorizationPrivilege {
   ReadUserSettings = 'READ_USER_SETTINGS',
   ReceiveNotifications = 'RECEIVE_NOTIFICATIONS',
   ReceiveNotificationsAdmin = 'RECEIVE_NOTIFICATIONS_ADMIN',
+  ReceiveNotificationsInApp = 'RECEIVE_NOTIFICATIONS_IN_APP',
   RolesetEntryRoleApply = 'ROLESET_ENTRY_ROLE_APPLY',
   RolesetEntryRoleAssign = 'ROLESET_ENTRY_ROLE_ASSIGN',
   RolesetEntryRoleAssignOrganization = 'ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION',
@@ -1040,8 +1041,6 @@ export type Callout = {
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float']['output'];
-  /** The type of this Callout. WARNING. This field is deprecated and will be removed in the future. Use `framing.type` + `settings.contribution.allowedTypes` instead. */
-  type: CalloutType;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -1170,14 +1169,6 @@ export type CalloutSettingsFraming = {
   /** Can comment to callout framing. */
   commentsEnabled: Scalars['Boolean']['output'];
 };
-
-export enum CalloutType {
-  LinkCollection = 'LINK_COLLECTION',
-  Post = 'POST',
-  PostCollection = 'POST_COLLECTION',
-  Whiteboard = 'WHITEBOARD',
-  WhiteboardCollection = 'WHITEBOARD_COLLECTION',
-}
 
 export enum CalloutVisibility {
   Draft = 'DRAFT',
@@ -2717,7 +2708,7 @@ export type InAppNotification = {
   /** The Contributor who triggered the notification. */
   triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
-  type: NotificationEventType;
+  type: NotificationEvent;
 };
 
 export type InAppNotificationCalloutPublished = InAppNotification & {
@@ -2738,7 +2729,7 @@ export type InAppNotificationCalloutPublished = InAppNotification & {
   /** The Contributor who triggered the notification. */
   triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
-  type: NotificationEventType;
+  type: NotificationEvent;
 };
 
 /** Which category (role) is this notification targeted to. */
@@ -2768,7 +2759,7 @@ export type InAppNotificationCommunityNewMember = InAppNotification & {
   /** The Contributor who triggered the notification. */
   triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
-  type: NotificationEventType;
+  type: NotificationEvent;
 };
 
 export enum InAppNotificationState {
@@ -2799,7 +2790,7 @@ export type InAppNotificationUserMentioned = InAppNotification & {
   /** The Contributor who triggered the notification. */
   triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
-  type: NotificationEventType;
+  type: NotificationEvent;
 };
 
 export type InnovationFlow = {
@@ -4926,34 +4917,57 @@ export type Nvp = {
   value: Scalars['String']['output'];
 };
 
-/** The type of the notification */
-export enum NotificationEventType {
-  CollaborationCalloutPublished = 'COLLABORATION_CALLOUT_PUBLISHED',
-  CollaborationDiscussionComment = 'COLLABORATION_DISCUSSION_COMMENT',
-  CollaborationPostComment = 'COLLABORATION_POST_COMMENT',
-  CollaborationPostCreated = 'COLLABORATION_POST_CREATED',
-  CollaborationWhiteboardCreated = 'COLLABORATION_WHITEBOARD_CREATED',
-  CommentReply = 'COMMENT_REPLY',
-  CommunicationCommentSent = 'COMMUNICATION_COMMENT_SENT',
-  CommunicationCommunityMessage = 'COMMUNICATION_COMMUNITY_MESSAGE',
-  CommunicationOrganizationMention = 'COMMUNICATION_ORGANIZATION_MENTION',
-  CommunicationOrganizationMessage = 'COMMUNICATION_ORGANIZATION_MESSAGE',
-  CommunicationUpdateSent = 'COMMUNICATION_UPDATE_SENT',
-  CommunicationUserMention = 'COMMUNICATION_USER_MENTION',
-  CommunicationUserMessage = 'COMMUNICATION_USER_MESSAGE',
-  CommunityApplicationCreated = 'COMMUNITY_APPLICATION_CREATED',
-  CommunityInvitationCreated = 'COMMUNITY_INVITATION_CREATED',
-  CommunityInvitationCreatedVc = 'COMMUNITY_INVITATION_CREATED_VC',
-  CommunityNewMember = 'COMMUNITY_NEW_MEMBER',
-  CommunityPlatformInvitationCreated = 'COMMUNITY_PLATFORM_INVITATION_CREATED',
+export enum NotificationEvent {
+  OrganizationMentioned = 'ORGANIZATION_MENTIONED',
+  OrganizationMessageRecipient = 'ORGANIZATION_MESSAGE_RECIPIENT',
+  OrganizationMessageSender = 'ORGANIZATION_MESSAGE_SENDER',
   PlatformForumDiscussionComment = 'PLATFORM_FORUM_DISCUSSION_COMMENT',
   PlatformForumDiscussionCreated = 'PLATFORM_FORUM_DISCUSSION_CREATED',
   PlatformGlobalRoleChange = 'PLATFORM_GLOBAL_ROLE_CHANGE',
-  PlatformUserInvitedToRole = 'PLATFORM_USER_INVITED_TO_ROLE',
-  PlatformUserRegistered = 'PLATFORM_USER_REGISTERED',
-  PlatformUserRemoved = 'PLATFORM_USER_REMOVED',
-  SpaceCreated = 'SPACE_CREATED',
+  PlatformSpaceCreated = 'PLATFORM_SPACE_CREATED',
+  PlatformUserProfileCreated = 'PLATFORM_USER_PROFILE_CREATED',
+  PlatformUserProfileCreatedAdmin = 'PLATFORM_USER_PROFILE_CREATED_ADMIN',
+  PlatformUserProfileRemoved = 'PLATFORM_USER_PROFILE_REMOVED',
+  SpaceCalloutPublished = 'SPACE_CALLOUT_PUBLISHED',
+  SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
+  SpaceCommunicationUpdateAdmin = 'SPACE_COMMUNICATION_UPDATE_ADMIN',
+  SpaceCommunityApplicationApplicant = 'SPACE_COMMUNITY_APPLICATION_APPLICANT',
+  SpaceCommunityApplicationRecipient = 'SPACE_COMMUNITY_APPLICATION_RECIPIENT',
+  SpaceCommunityInvitationUser = 'SPACE_COMMUNITY_INVITATION_USER',
+  SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
+  SpaceCommunityInvitationVc = 'SPACE_COMMUNITY_INVITATION_VC',
+  SpaceCommunityNewMember = 'SPACE_COMMUNITY_NEW_MEMBER',
+  SpaceCommunityNewMemberAdmin = 'SPACE_COMMUNITY_NEW_MEMBER_ADMIN',
+  SpaceContactMessageRecipient = 'SPACE_CONTACT_MESSAGE_RECIPIENT',
+  SpaceContactMessageSender = 'SPACE_CONTACT_MESSAGE_SENDER',
+  SpacePostCommentCreated = 'SPACE_POST_COMMENT_CREATED',
+  SpacePostCreated = 'SPACE_POST_CREATED',
+  SpacePostCreatedAdmin = 'SPACE_POST_CREATED_ADMIN',
+  SpaceWhiteboardCreated = 'SPACE_WHITEBOARD_CREATED',
+  UserCommentReply = 'USER_COMMENT_REPLY',
+  UserMention = 'USER_MENTION',
+  UserMessageRecipient = 'USER_MESSAGE_RECIPIENT',
+  UserMessageSender = 'USER_MESSAGE_SENDER',
 }
+
+export type NotificationRecipientResult = {
+  __typename?: 'NotificationRecipientResult';
+  /** The email recipients for the notification. */
+  emailRecipients: Array<User>;
+  /** The in-app recipients for the notification. */
+  inAppRecipients: Array<User>;
+  /** The user that triggered the event. */
+  triggeredBy?: Maybe<User>;
+};
+
+export type NotificationRecipientsInput = {
+  /** The ID of the entity to retrieve the recipients for. This could be a Space, Organization etc, and is specific to the event type. */
+  entityID?: InputMaybe<Scalars['UUID']['input']>;
+  /** The type of notification setting to look up recipients for. */
+  eventType: NotificationEvent;
+  /** The ID of the User that triggered the event. */
+  triggeredBy?: InputMaybe<Scalars['UUID']['input']>;
+};
 
 export enum OpenAiModel {
   Babbage_002 = 'BABBAGE_002',
@@ -5422,6 +5436,8 @@ export type Query = {
   lookupByName: LookupByNameQueryResults;
   /** Information about the current authenticated user */
   me: MeQueryResults;
+  /** The notificationRecipients for the provided event on the given entity. */
+  notificationRecipients: NotificationRecipientResult;
   /** Get all notifications for the logged in user. */
   notifications: Array<InAppNotification>;
   /** A particular Organization */
@@ -5490,6 +5506,10 @@ export type QueryAdminCommunicationMembershipArgs = {
 
 export type QueryExploreSpacesArgs = {
   options?: InputMaybe<ExploreSpacesInput>;
+};
+
+export type QueryNotificationRecipientsArgs = {
+  eventData: NotificationRecipientsInput;
 };
 
 export type QueryOrganizationArgs = {
@@ -7477,6 +7497,8 @@ export type UpdateUserSettingsNotificationInput = {
   platform?: InputMaybe<UpdateUserSettingsNotificationPlatformInput>;
   /** Settings related to Space Notifications. */
   space?: InputMaybe<UpdateUserSettingsNotificationSpaceInput>;
+  /** Settings related to User Notifications. */
+  user?: InputMaybe<UpdateUserSettingsNotificationUserInput>;
 };
 
 export type UpdateUserSettingsNotificationOrganizationInput = {
@@ -7493,6 +7515,8 @@ export type UpdateUserSettingsNotificationPlatformInput = {
   forumDiscussionCreated?: InputMaybe<Scalars['Boolean']['input']>;
   /** [Admin] Receive notification when a new user signs up */
   newUserSignUp?: InputMaybe<Scalars['Boolean']['input']>;
+  /** [Admin] Receive a notification when a new L0 Space is created */
+  spaceCreated?: InputMaybe<Scalars['Boolean']['input']>;
   /** [Admin] Receive a notification when a user profile is removed */
   userProfileRemoved?: InputMaybe<Scalars['Boolean']['input']>;
 };
@@ -7510,7 +7534,7 @@ export type UpdateUserSettingsNotificationSpaceInput = {
   communicationMention?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification for community updates */
   communicationUpdates?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Receive a notification for community updates */
+  /** Receive a notification for community updates as admin */
   communicationUpdatesAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification for community invitation */
   communityInvitationUser?: InputMaybe<Scalars['Boolean']['input']>;
@@ -7526,6 +7550,17 @@ export type UpdateUserSettingsNotificationSpaceInput = {
   postCreatedAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a whiteboard is created */
   whiteboardCreated?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateUserSettingsNotificationUserInput = {
+  /** Receive a notification when someone replies to a comment I made. */
+  commentReply?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification you are mentioned */
+  mentioned?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive notification when I receive a message. */
+  messageReceived?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive notification I send a message. */
+  messageSent?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateUserSettingsPrivacyInput = {
@@ -7802,6 +7837,8 @@ export type UserSettingsNotification = {
   platform: UserSettingsNotificationPlatform;
   /** The notifications settings for Space events for this User */
   space: UserSettingsNotificationSpace;
+  /** The notifications settings for User events for this User */
+  user: UserSettingsNotificationUser;
 };
 
 export type UserSettingsNotificationOrganization = {
@@ -7820,6 +7857,8 @@ export type UserSettingsNotificationPlatform = {
   forumDiscussionCreated: Scalars['Boolean']['output'];
   /** Receive notification when a new user signs up */
   newUserSignUp: Scalars['Boolean']['output'];
+  /** Receive a notification when a new L0 Space is created */
+  spaceCreated: Scalars['Boolean']['output'];
   /** Receive a notification when a user profile is removed */
   userProfileRemoved: Scalars['Boolean']['output'];
 };
@@ -7854,6 +7893,18 @@ export type UserSettingsNotificationSpace = {
   postCreatedAdmin: Scalars['Boolean']['output'];
   /** Receive a notification when a whiteboard is created */
   whiteboardCreated: Scalars['Boolean']['output'];
+};
+
+export type UserSettingsNotificationUser = {
+  __typename?: 'UserSettingsNotificationUser';
+  /** Receive a notification when someone replies to a comment I made. */
+  commentReply: Scalars['Boolean']['output'];
+  /** Receive a notification you are mentioned */
+  mentioned: Scalars['Boolean']['output'];
+  /** Receive notification when I receive a message. */
+  messageReceived: Scalars['Boolean']['output'];
+  /** Receive notification I send a message. */
+  messageSent: Scalars['Boolean']['output'];
 };
 
 export type UserSettingsPrivacy = {
@@ -9613,7 +9664,6 @@ export type CalloutPageCalloutQuery = {
           id: string;
           sortOrder: number;
           activity: number;
-          calloutTypeDeprecated: CalloutType;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -10114,7 +10164,6 @@ export type InnovationFlowSettingsQuery = {
               id: string;
               activity: number;
               sortOrder: number;
-              calloutTypeDeprecated: CalloutType;
               classification?:
                 | {
                     __typename?: 'Classification';
@@ -10271,7 +10320,6 @@ export type InnovationFlowCollaborationFragment = {
       id: string;
       activity: number;
       sortOrder: number;
-      calloutTypeDeprecated: CalloutType;
       classification?:
         | {
             __typename?: 'Classification';
@@ -12396,7 +12444,6 @@ export type UpdateCalloutContentMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -12761,7 +12808,6 @@ export type UpdateCalloutVisibilityMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -13213,7 +13259,6 @@ export type CreateCalloutMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -13589,7 +13634,6 @@ export type CalloutsOnCalloutsSetUsingClassificationQuery = {
             id: string;
             sortOrder: number;
             activity: number;
-            calloutTypeDeprecated: CalloutType;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -13627,7 +13671,6 @@ export type CalloutFragment = {
   id: string;
   sortOrder: number;
   activity: number;
-  calloutTypeDeprecated: CalloutType;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -13655,7 +13698,6 @@ export type CalloutDetailsQuery = {
           id: string;
           sortOrder: number;
           activity: number;
-          calloutTypeDeprecated: CalloutType;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -14109,7 +14151,6 @@ export type CalloutDetailsFragment = {
   id: string;
   sortOrder: number;
   activity: number;
-  calloutTypeDeprecated: CalloutType;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -14919,7 +14960,6 @@ export type PostSettingsQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          calloutTypeDeprecated: CalloutType;
           contributions: Array<{
             __typename?: 'CalloutContribution';
             id: string;
@@ -15068,7 +15108,6 @@ export type PostSettingsFragment = {
 export type PostSettingsCalloutFragment = {
   __typename?: 'Callout';
   id: string;
-  calloutTypeDeprecated: CalloutType;
   contributions: Array<{
     __typename?: 'CalloutContribution';
     id: string;
@@ -25051,7 +25090,6 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                     __typename?: 'Callout';
                                     id: string;
                                     sortOrder: number;
-                                    calloutTypeDeprecated: CalloutType;
                                     classification?:
                                       | {
                                           __typename?: 'Classification';
@@ -25642,7 +25680,7 @@ export type ImportTemplateDialogQuery = {
             __typename?: 'Template';
             id: string;
             type: TemplateType;
-            callout?: { __typename?: 'Callout'; id: string; calloutTypeDeprecated: CalloutType } | undefined;
+            callout?: { __typename?: 'Callout'; id: string } | undefined;
             contentSpace?:
               | {
                   __typename?: 'TemplateContentSpace';
@@ -25702,7 +25740,7 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
           __typename?: 'Template';
           id: string;
           type: TemplateType;
-          callout?: { __typename?: 'Callout'; id: string; calloutTypeDeprecated: CalloutType } | undefined;
+          callout?: { __typename?: 'Callout'; id: string } | undefined;
           contentSpace?:
             | {
                 __typename?: 'TemplateContentSpace';
@@ -25806,7 +25844,6 @@ export type AllTemplatesInTemplatesSetQuery = {
               | {
                   __typename?: 'Callout';
                   id: string;
-                  calloutTypeDeprecated: CalloutType;
                   settings: {
                     __typename?: 'CalloutSettings';
                     contribution: {
@@ -26042,7 +26079,6 @@ export type TemplateContentQuery = {
             | {
                 __typename?: 'Callout';
                 id: string;
-                calloutTypeDeprecated: CalloutType;
                 framing: {
                   __typename?: 'CalloutFraming';
                   id: string;
@@ -26279,7 +26315,6 @@ export type TemplateContentQuery = {
                       __typename?: 'Callout';
                       id: string;
                       sortOrder: number;
-                      calloutTypeDeprecated: CalloutType;
                       classification?:
                         | {
                             __typename?: 'Classification';
@@ -26456,7 +26491,6 @@ export type SpaceTemplateContentQuery = {
                 __typename?: 'Callout';
                 id: string;
                 sortOrder: number;
-                calloutTypeDeprecated: CalloutType;
                 classification?:
                   | {
                       __typename?: 'Classification';
@@ -26597,7 +26631,6 @@ export type SpaceTemplateContentQuery = {
 export type CalloutTemplateContentFragment = {
   __typename?: 'Callout';
   id: string;
-  calloutTypeDeprecated: CalloutType;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -26795,7 +26828,6 @@ export type SpaceTemplateContentFragment = {
         __typename?: 'Callout';
         id: string;
         sortOrder: number;
-        calloutTypeDeprecated: CalloutType;
         classification?:
           | {
               __typename?: 'Classification';
@@ -26931,7 +26963,6 @@ export type SpaceTemplateContent_CollaborationFragment = {
       __typename?: 'Callout';
       id: string;
       sortOrder: number;
-      calloutTypeDeprecated: CalloutType;
       classification?:
         | {
             __typename?: 'Classification';
@@ -27089,7 +27120,6 @@ export type CalloutTemplateFragment = {
     | {
         __typename?: 'Callout';
         id: string;
-        calloutTypeDeprecated: CalloutType;
         settings: {
           __typename?: 'CalloutSettings';
           contribution: {
@@ -27376,7 +27406,6 @@ export type UpdateCalloutTemplateMutation = {
   updateCallout: {
     __typename?: 'Callout';
     id: string;
-    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -27484,7 +27513,6 @@ export type TemplatesSetTemplatesFragment = {
       | {
           __typename?: 'Callout';
           id: string;
-          calloutTypeDeprecated: CalloutType;
           settings: {
             __typename?: 'CalloutSettings';
             contribution: {
@@ -29170,7 +29198,7 @@ export type InAppNotificationReceivedSubscription = {
     | {
         __typename?: 'InAppNotificationCalloutPublished';
         id: string;
-        type: NotificationEventType;
+        type: NotificationEvent;
         category: InAppNotificationCategory;
         state: InAppNotificationState;
         triggeredAt: Date;
@@ -29299,7 +29327,7 @@ export type InAppNotificationReceivedSubscription = {
     | {
         __typename?: 'InAppNotificationCommunityNewMember';
         id: string;
-        type: NotificationEventType;
+        type: NotificationEvent;
         category: InAppNotificationCategory;
         state: InAppNotificationState;
         triggeredAt: Date;
@@ -29462,7 +29490,7 @@ export type InAppNotificationReceivedSubscription = {
     | {
         __typename?: 'InAppNotificationUserMentioned';
         id: string;
-        type: NotificationEventType;
+        type: NotificationEvent;
         category: InAppNotificationCategory;
         state: InAppNotificationState;
         triggeredAt: Date;
@@ -29540,7 +29568,7 @@ export type InAppNotificationsQuery = {
     | {
         __typename?: 'InAppNotificationCalloutPublished';
         id: string;
-        type: NotificationEventType;
+        type: NotificationEvent;
         category: InAppNotificationCategory;
         state: InAppNotificationState;
         triggeredAt: Date;
@@ -29669,7 +29697,7 @@ export type InAppNotificationsQuery = {
     | {
         __typename?: 'InAppNotificationCommunityNewMember';
         id: string;
-        type: NotificationEventType;
+        type: NotificationEvent;
         category: InAppNotificationCategory;
         state: InAppNotificationState;
         triggeredAt: Date;
@@ -29832,7 +29860,7 @@ export type InAppNotificationsQuery = {
     | {
         __typename?: 'InAppNotificationUserMentioned';
         id: string;
-        type: NotificationEventType;
+        type: NotificationEvent;
         category: InAppNotificationCategory;
         state: InAppNotificationState;
         triggeredAt: Date;
@@ -29922,7 +29950,7 @@ export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNot
 type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
   __typename?: 'InAppNotificationCalloutPublished';
   id: string;
-  type: NotificationEventType;
+  type: NotificationEvent;
   category: InAppNotificationCategory;
   state: InAppNotificationState;
   triggeredAt: Date;
@@ -30022,7 +30050,7 @@ type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
 type InAppNotificationAllTypes_InAppNotificationCommunityNewMember_Fragment = {
   __typename?: 'InAppNotificationCommunityNewMember';
   id: string;
-  type: NotificationEventType;
+  type: NotificationEvent;
   category: InAppNotificationCategory;
   state: InAppNotificationState;
   triggeredAt: Date;
@@ -30144,7 +30172,7 @@ type InAppNotificationAllTypes_InAppNotificationCommunityNewMember_Fragment = {
 type InAppNotificationAllTypes_InAppNotificationUserMentioned_Fragment = {
   __typename?: 'InAppNotificationUserMentioned';
   id: string;
-  type: NotificationEventType;
+  type: NotificationEvent;
   category: InAppNotificationCategory;
   state: InAppNotificationState;
   triggeredAt: Date;
@@ -30693,7 +30721,6 @@ export type SearchQuery = {
             callout: {
               __typename?: 'Callout';
               id: string;
-              calloutTypeDeprecated: CalloutType;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -30796,7 +30823,6 @@ export type SearchQuery = {
             callout: {
               __typename?: 'Callout';
               id: string;
-              calloutTypeDeprecated: CalloutType;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -31246,7 +31272,6 @@ export type SearchResultCalloutFragment = {
   callout: {
     __typename?: 'Callout';
     id: string;
-    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -31560,7 +31585,7 @@ export type InnovationLibraryQuery = {
           __typename?: 'Template';
           id: string;
           type: TemplateType;
-          callout?: { __typename?: 'Callout'; id: string; type: CalloutType } | undefined;
+          callout?: { __typename?: 'Callout'; id: string } | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
