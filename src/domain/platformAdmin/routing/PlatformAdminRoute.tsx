@@ -12,7 +12,7 @@ import VirtualContributorsRoutes from '../domain/virtual-contributors/VirtualCon
 import AuthorizationPoliciesPage from '@/main/admin/authorizationPolicies/AuthorizationPoliciesPage';
 import AdminOrganizationsRoutes from '../domain/organizations/AdminOrganizationsRoutes';
 
-const AdminRoute = () => {
+const PlatformAdminRoute = () => {
   useTransactionScope({ type: 'admin' });
 
   return (
@@ -35,4 +35,4 @@ const AdminRoute = () => {
   );
 };
 
-export default AdminRoute;
+export default PlatformAdminRoute;
