@@ -12,7 +12,7 @@ import FormikDatePicker from '@/core/ui/forms/DatePicker/FormikDatePicker';
 import FormikTimePicker from '@/core/ui/forms/DatePicker/FormikTimePicker';
 import dayjs from 'dayjs';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { CalendarEventFormData } from '@/domain/timeline/calendar/CalendarEventsContainer';
 import { Actions } from '@/core/ui/actions/Actions';

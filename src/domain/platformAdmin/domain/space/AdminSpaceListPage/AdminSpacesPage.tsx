@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import SpaceList from './SpaceList';
-import AdminLayout from '@/domain/platform/admin/layout/toplevel/AdminLayout';
-import { AdminSection } from '@/domain/platform/admin/layout/toplevel/constants';
+import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
+import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
 
 const AdminSpacesPage: FC = () => {
   return (

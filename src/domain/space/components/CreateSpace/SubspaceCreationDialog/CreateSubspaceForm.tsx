@@ -6,7 +6,7 @@ import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/Vali
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import {
   SpaceCreationForm,

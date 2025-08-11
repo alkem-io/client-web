@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import AdminLayout from '@/domain/platform/admin/layout/toplevel/AdminLayout';
-import { AdminSection } from '@/domain/platform/admin/layout/toplevel/constants';
+import AdminLayout from '../../layout/toplevel/AdminLayout';
+import { AdminSection } from '../../layout/toplevel/constants';
 import useAdminGlobalOrganizationsList from './useAdminGlobalOrganizationsList';
 import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
 import SimpleSearchableTable, {

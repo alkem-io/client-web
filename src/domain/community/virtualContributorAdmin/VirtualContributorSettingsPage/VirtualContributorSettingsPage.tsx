@@ -1,6 +1,6 @@
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import VisibilityForm from '../components/VisibilityForm';

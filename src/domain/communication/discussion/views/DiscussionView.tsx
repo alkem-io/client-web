@@ -2,7 +2,7 @@ import { FetchResult } from '@apollo/client';
 import { Box, GridLegacy, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Filter from '@/domain/platform/admin/components/Common/Filter';
+import Filter from '@/domain/platformAdmin/components/Common/Filter';
 import MessageView from '@/domain/communication/room/Comments/MessageView';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
 import { Message } from '@/domain/communication/room/models/Message';

@@ -1,26 +1,10 @@
-query AdminInnovationHubsList {
-  platform {
-    id
-    library {
-      innovationHubs {
-        id
-        subdomain
-        profile {
-          id
-          displayName
-          url
-        }
-      }
-    }
-  }
-}
+
 
 mutation deleteInnovationHub($innovationHubId: UUID!) {
   deleteInnovationHub(deleteData: { ID: $innovationHubId }) {
     id
   }
 }
-
 
 mutation createInnovationHub($hubData: CreateInnovationHubOnAccountInput!) {
   createInnovationHub(createData: $hubData) {

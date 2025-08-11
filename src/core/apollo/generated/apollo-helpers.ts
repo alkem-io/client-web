@@ -2821,6 +2821,34 @@ export type PlatformFieldPolicy = {
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PlatformAdminCommunicationQueryResultsKeySpecifier = (
+  | 'adminCommunicationMembership'
+  | 'adminCommunicationOrphanedUsage'
+  | PlatformAdminCommunicationQueryResultsKeySpecifier
+)[];
+export type PlatformAdminCommunicationQueryResultsFieldPolicy = {
+  adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformAdminQueryResultsKeySpecifier = (
+  | 'communication'
+  | 'innovationHubs'
+  | 'innovationPacks'
+  | 'organizations'
+  | 'spaces'
+  | 'users'
+  | 'virtualContributors'
+  | PlatformAdminQueryResultsKeySpecifier
+)[];
+export type PlatformAdminQueryResultsFieldPolicy = {
+  communication?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  users?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PlatformFeatureFlagKeySpecifier = ('enabled' | 'name' | PlatformFeatureFlagKeySpecifier)[];
 export type PlatformFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3026,8 +3054,6 @@ export type QueryKeySpecifier = (
   | 'activityFeed'
   | 'activityFeedGrouped'
   | 'activityLogOnCollaboration'
-  | 'adminCommunicationMembership'
-  | 'adminCommunicationOrphanedUsage'
   | 'aiServer'
   | 'exploreSpaces'
   | 'getSupportedVerifiedCredentialMetadata'
@@ -3040,6 +3066,7 @@ export type QueryKeySpecifier = (
   | 'organizations'
   | 'organizationsPaginated'
   | 'platform'
+  | 'platformAdmin'
   | 'restrictedSpaceNames'
   | 'rolesOrganization'
   | 'rolesUser'
@@ -3051,7 +3078,6 @@ export type QueryKeySpecifier = (
   | 'tasks'
   | 'urlResolver'
   | 'user'
-  | 'userAuthorizationPrivileges'
   | 'users'
   | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
@@ -3064,8 +3090,6 @@ export type QueryFieldPolicy = {
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3078,6 +3102,7 @@ export type QueryFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
+  platformAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   restrictedSpaceNames?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3089,7 +3114,6 @@ export type QueryFieldPolicy = {
   tasks?: FieldPolicy<any> | FieldReadFunction<any>;
   urlResolver?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
-  userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
   usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5120,6 +5144,20 @@ export type StrictTypedTypePolicies = {
   Platform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformKeySpecifier | (() => undefined | PlatformKeySpecifier);
     fields?: PlatformFieldPolicy;
+  };
+  PlatformAdminCommunicationQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PlatformAdminCommunicationQueryResultsKeySpecifier
+      | (() => undefined | PlatformAdminCommunicationQueryResultsKeySpecifier);
+    fields?: PlatformAdminCommunicationQueryResultsFieldPolicy;
+  };
+  PlatformAdminQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PlatformAdminQueryResultsKeySpecifier
+      | (() => undefined | PlatformAdminQueryResultsKeySpecifier);
+    fields?: PlatformAdminQueryResultsFieldPolicy;
   };
   PlatformFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformFeatureFlagKeySpecifier | (() => undefined | PlatformFeatureFlagKeySpecifier);

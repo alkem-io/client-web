@@ -4,7 +4,7 @@ import { ListItemLinkProps } from '@/domain/shared/components/SearchableList/Lis
 
 interface ListPageProps<
   ItemViewProps extends {},
-  Item extends SearchableTableItem & Omit<ItemViewProps, keyof ListItemLinkProps>
+  Item extends SearchableTableItem & Omit<ItemViewProps, keyof ListItemLinkProps>,
 > extends SearchableTableProps<ItemViewProps, Item> {
   title?: string;
   newLink?: string;
@@ -12,7 +12,7 @@ interface ListPageProps<
 
 export const ListPage = <
   ItemViewProps extends {},
-  Item extends SearchableTableItem & Omit<ItemViewProps, keyof ListItemLinkProps>
+  Item extends SearchableTableItem & Omit<ItemViewProps, keyof ListItemLinkProps>,
 >({
   title,
   newLink,

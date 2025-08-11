@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ApolloError } from '@apollo/client';
-import { SearchableTableItem } from '@/domain/platform/admin/components/SearchableTable';
+import { SearchableTableItem } from '@/domain/platformAdmin/components/SearchableTable';
 import {
   refetchUserListQuery,
   useAssignLicensePlanToAccountMutation,
@@ -19,7 +19,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { ContributorLicensePlan } from '@/domain/platform/admin/organizations/useAdminGlobalOrganizationsList';
+import { ContributorLicensePlan } from '@/domain/platformAdmin/domain/organizations/useAdminGlobalOrganizationsList';
 
 type Provided = {
   loading: boolean;

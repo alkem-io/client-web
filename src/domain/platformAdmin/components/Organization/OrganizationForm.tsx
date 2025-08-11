@@ -32,7 +32,7 @@ import {
   mapProfileModelToUpdateProfileInput,
 } from '@/domain/common/profile/ProfileModelUtils';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
-import SocialSegment from '@/domain/platform/admin/components/Common/SocialSegment';
+import SocialSegment from '@/domain/platformAdmin/components/Common/SocialSegment';
 import { socialNames, SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { nameOf } from '@/core/utils/nameOf';
