@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import OrganizationPage from '../components/Organization/OrganizationPage';
+import OrganizationPage from '../../components/Organization/OrganizationPage';
 import { EditMode } from '@/core/ui/forms/editMode';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import AdminOrganizationsPage from '@/domain/platform/admin/organizations/AdminOrganizationsPage';
-import AdminLayout from '../layout/toplevel/AdminLayout';
-import { AdminSection } from '../layout/toplevel/constants';
+import AdminOrganizationsPage from './AdminOrganizationsPage';
+import AdminLayout from '../../layout/toplevel/AdminLayout';
+import { AdminSection } from '../../layout/toplevel/constants';
 
 const AdminOrganizationsRoutes: FC = () => {
   return (

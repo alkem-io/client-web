@@ -2,7 +2,7 @@ import { useState, SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Tabs, Tab } from '@mui/material';
 import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '../../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import OrganizationAuthorizationRoleAssignementView from '../views/OrganizationAuthorizationRoleAssignementView';
 import Gutters from '@/core/ui/grid/Gutters';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';

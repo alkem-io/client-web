@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import AdminLayout from '../layout/toplevel/AdminLayout';
-import { AdminSection } from '../layout/toplevel/constants';
+import AdminLayout from '../../layout/toplevel/AdminLayout';
+import { AdminSection } from '../../layout/toplevel/constants';
 import { useAdminVirtualContributorsQuery } from '@/core/apollo/generated/apollo-hooks';
 import Avatar from '@/core/ui/avatar/Avatar';
 import { BlockTitle, CardTitle } from '@/core/ui/typography';

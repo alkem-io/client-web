@@ -7,8 +7,8 @@ import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constant
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import Gutters from '@/core/ui/grid/Gutters';
 import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
-import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import { Formik, FormikConfig } from 'formik';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

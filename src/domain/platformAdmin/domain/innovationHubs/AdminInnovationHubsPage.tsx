@@ -1,19 +1,19 @@
 import { useMemo, useState } from 'react';
 import { sortBy } from 'lodash';
-import AdminLayout from '@/domain/platform/admin/layout/toplevel/AdminLayout';
+import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
 import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
-import { AdminSection } from '@/domain/platform/admin/layout/toplevel/constants';
+import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
 import {
-  refetchAdminInnovationHubsListQuery,
-  useAdminInnovationHubsListQuery,
+  refetchPlatformAdminInnovationHubsQuery,
+  usePlatformAdminInnovationHubsQuery,
   useDeleteInnovationHubMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import SimpleSearchableTable from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 
 const AdminInnovationHubsPage = () => {
-  const { data, loading } = useAdminInnovationHubsListQuery();
+  const { data, loading } = usePlatformAdminInnovationHubsQuery();
   const [deleteInnovationHub] = useDeleteInnovationHubMutation({
-    refetchQueries: [refetchAdminInnovationHubsListQuery()],
+    refetchQueries: [refetchPlatformAdminInnovationHubsQuery()],
   });
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,7 +28,7 @@ const AdminInnovationHubsPage = () => {
   const innovationHubs = useMemo(
     () =>
       sortBy(
-        data?.platform.library.innovationHubs
+        data?.platformAdmin.innovationHubs
           .map(hub => ({
             value: hub.profile.displayName,
             url: hub.profile.url,
@@ -48,7 +48,7 @@ const AdminInnovationHubsPage = () => {
           onDelete={item => handleDelete(item.id)}
           loading={loading}
           fetchMore={() => Promise.resolve()}
-          pageSize={data?.platform.library.innovationHubs.length ?? 0}
+          pageSize={data?.platformAdmin.innovationHubs.length ?? 0}
           searchTerm={searchTerm}
           onSearchTermChange={setSearchTerm}
           hasMore={false}

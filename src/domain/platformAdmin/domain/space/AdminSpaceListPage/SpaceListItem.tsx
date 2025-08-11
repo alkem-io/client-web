@@ -17,7 +17,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { BlockTitle } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
-import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { nameSegmentSchema } from '@/domain/platformAdmin/components/Common/NameSegment';
 import { gutters } from '@/core/ui/grid/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import LicensePlansTable, { LicensePlan } from './LicensePlansTable';
