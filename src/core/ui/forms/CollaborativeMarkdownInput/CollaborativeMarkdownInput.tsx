@@ -1,5 +1,5 @@
-import React, { memo, useCallback, useEffect, useImperativeHandle, useRef, useState, useMemo } from 'react';
-import { Box, BoxProps, useTheme } from '@mui/material';
+import React, { memo, useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import { Box, BoxProps } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Editor, EditorContent, Extensions, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -82,7 +82,6 @@ export const CollaborativeMarkdownInput = memo(
     collaborationId = '',
     onChangeCollaborationState,
     disabled,
-    ref,
   }: MarkdownInputProps & React.RefAttributes<MarkdownInputRefApi>) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
@@ -257,8 +256,6 @@ export const CollaborativeMarkdownInput = memo(
 
     const editor = useEditor(editorOptions, [editorOptions]);
 
-    const theme = useTheme();
-
     const areControlsVisible = () => {
       if (disabled) {
         return false;
@@ -270,31 +267,6 @@ export const CollaborativeMarkdownInput = memo(
         return isInteractingWithInput;
       }
     };
-
-    const getLabelOffset = () => {
-      const offsetY = areControlsVisible()
-        ? toolbarRef.current
-          ? `${toolbarRef.current.clientHeight + 20}px`
-          : gutters(3)(theme)
-        : gutters(1)(theme);
-
-      return {
-        x: gutters()(theme),
-        y: offsetY,
-      };
-    };
-
-    useImperativeHandle(
-      ref,
-      () => ({
-        getLabelOffset,
-        focus: () => editor?.commands.focus(),
-        get value() {
-          return editor?.getText();
-        },
-      }),
-      [editor, areControlsVisible()]
-    );
 
     const [prevEditorHeight, setPrevEditorHeight] = useState(0);
 
