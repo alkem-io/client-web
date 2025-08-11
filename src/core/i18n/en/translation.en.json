@@ -3038,30 +3038,61 @@
       "subheader": "The page you're trying to access is only available to registered users.",
       "subheader2": "Please sign in to continue. Don’t have an account? Sign up for free."
     },
-    "user-notifications-settings": {
+    "userNotificationsSettings": {
       "general": {
         "title": "General",
         "subtitle": "This section allows you to select your preferences regarding receiving messages"
       },
-      "user-administration": {
-        "title": "Platform Administration",
-        "subtitle": "This section is only visible to users that are a global admin on the platform"
+      "space": {
+        "title": "Space Settings",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are a member of",
+        "settings": {
+          "applicationSubmitted": "Receive notification when I apply to join a community",
+          "calloutPublished": "Receive a notification when a Callout is published in a community I am a member of",
+          "communicationMention": "Receive a notification when a user tags you in a post or a comment",
+          "communicationUpdates": "Receive notification when a new update is shared with a community I am a member of",
+          "communityInvitationUser": "Receive a notification when someone invites you to join a community",
+          "communityNewMember": "Receive notification when a new member joins a community I am a member of",
+          "postCommentCreated": "Receive notification when a new comment is added to a post I follow",
+          "postCreated": "Receive notification when a new post is created in a community I am a member of",
+          "commentReply": "Receive a notification when someone replies to your comment",
+          "whiteboardCreated": "Receive a notification when a new whiteboard is created in a community I am a member of"
+        }
       },
-      "community-administration": {
-        "title": "Community administration",
-        "subtitle": "This section allows you to select your preferences regarding the community administration"
+      "spaceAdmin": {
+        "title": "Space Admin Settings",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are an admin of",
+        "settings": {
+          "applicationReceived": "Receive notifications when a new application is received",
+          "communicationUpdatesAdmin": "Receive notifications when there are updates in the communication (admin)",
+          "communityNewMemberAdmin": "Receive notifications when a new member joins the community (admin)",
+          "postCreatedAdmin": "Receive notifications when a new post is created (admin)"
+        }
       },
-      "user-communication": {
-        "title": "Mentions and messaging",
-        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging"
+      "platformAdmin": {
+        "title": "Platform Admin Settings",
+        "subtitle": "This section is only visible to users that are a global admin on the platform",
+        "settings": {
+          "newUserSignUp": "Receive notifications when a new user signs up",
+          "userProfileRemoved": "Receive notifications when a user profile is removed",
+          "spaceCreated": "Receive notifications when a new space is created"
+        }
       },
-      "organization-communication": {
+      "organization": {
         "title": "Organization mentions and messaging",
-        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to organizations you manage"
+        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to organizations you manage",
+        "settings": {
+          "mentioned": "Receive notifications when my organization is mentioned",
+          "messageReceived": "Receive direct messages to my organization"
+        }
       },
       "forum": {
         "title": "Forum",
-        "subtitle": "This section allows you to select your preferences regarding activities in the Forum"
+        "subtitle": "This section allows you to select your preferences regarding activities in the Forum",
+        "settings": {
+          "forumDiscussionComment": "Receive notifications when a new comment is added to a post I follow",
+          "forumDiscussionCreated": "Receive notifications when a new discussion is created"
+        }
       }
     },
     "help-dialog": {
