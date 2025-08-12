@@ -9,14 +9,14 @@ interface UseImageUploadProps {
   storageBucketId?: string;
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
-  editor?: Editor | null;
+  getEditor?: () => Editor | null;
 }
 
 export const useImageUpload = ({
   storageBucketId,
   hideImageOptions,
   temporaryLocation = false,
-  editor,
+  getEditor,
 }: UseImageUploadProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -24,6 +24,7 @@ export const useImageUpload = ({
   const [uploadFile] = useUploadFileMutation({
     onCompleted: data => {
       notify(t('components.file-upload.file-upload-success'), 'success');
+      const editor = getEditor?.();
       editor?.commands.setImage({ src: data.uploadFileOnStorageBucket, alt: 'pasted-image' });
     },
     onError: error => {
@@ -60,12 +61,13 @@ export const useImageUpload = ({
 
       const itemsArray = Array.from(items);
 
-      itemsArray.forEach(item => {
+      // Use for...of loop to enable proper early returns
+      for (const item of itemsArray) {
         const isImage = isImageOrHtmlWithImage(item, clipboardData);
 
         if (hideImageOptions && isImage) {
           event.preventDefault();
-          return true;
+          return true; // Block paste of images or HTML with images
         }
 
         if (isImage) {
@@ -80,12 +82,12 @@ export const useImageUpload = ({
 
             reader.readAsDataURL(file);
             event.preventDefault();
-            return true;
+            return true; // Block default behavior for images
           }
         }
-      });
+      }
 
-      return false;
+      return false; // Allow default behavior for text
     },
     [storageBucketId, hideImageOptions, temporaryLocation, uploadFile, isImageOrHtmlWithImage]
   );

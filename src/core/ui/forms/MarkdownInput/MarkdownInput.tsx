@@ -82,7 +82,7 @@ export const MarkdownInput = memo(
       storageBucketId,
       hideImageOptions,
       temporaryLocation,
-      editor: null, // Will be set after editor creation
+      getEditor: () => editor,
     });
 
     const editorConfig = useEditorConfig({
