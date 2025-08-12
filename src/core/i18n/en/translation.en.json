@@ -1991,8 +1991,8 @@
         "archivedSubspace": "This {{space}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
       },
       "demoNotice": {
-        "demoSpace": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
-        "demoSubspace": "This {{space}} is within a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces."
+        "demoSpace": "Demo Space",
+        "demoSubspace": "This {{space}} is within a Demo Space."
       }
     },
     "contribute": {
