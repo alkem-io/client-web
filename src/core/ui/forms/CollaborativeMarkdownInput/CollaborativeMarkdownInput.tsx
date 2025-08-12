@@ -1,6 +1,6 @@
 import React, { forwardRef, memo, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Box, BoxProps } from '@mui/material';
-import { EditorContent, useEditor } from '@tiptap/react';
+import { EditorContent, useEditor, Editor } from '@tiptap/react';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
 import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
 import { gutters } from '@/core/ui/grid/utils';
@@ -63,6 +63,7 @@ export const CollaborativeMarkdownInput = memo(
     ) => {
       const containerRef = useRef<HTMLDivElement>(null);
       const toolbarRef = useRef<HTMLDivElement>(null);
+      const editorRef = useRef<Editor | null>(null);
 
       const {
         areControlsVisible,
@@ -89,7 +90,7 @@ export const CollaborativeMarkdownInput = memo(
         storageBucketId,
         hideImageOptions,
         temporaryLocation,
-        getEditor: () => editor,
+        getEditor: () => editorRef.current,
       });
 
       const editorConfig = useEditorConfig({
@@ -108,6 +109,11 @@ export const CollaborativeMarkdownInput = memo(
         },
         [editorConfig]
       );
+
+      // Update ref when editor changes
+      useEffect(() => {
+        editorRef.current = editor;
+      }, [editor]);
 
       useImperativeHandle(
         ref,

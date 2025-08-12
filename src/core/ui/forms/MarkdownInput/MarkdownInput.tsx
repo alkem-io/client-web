@@ -55,6 +55,7 @@ export const MarkdownInput = memo(
     const containerRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
     const theme = useTheme();
+    const editorRef = useRef<Editor | null>(null);
 
     const storageConfig = useStorageConfigContext();
     const storageBucketId = storageConfig?.storageBucketId;
@@ -82,7 +83,7 @@ export const MarkdownInput = memo(
       storageBucketId,
       hideImageOptions,
       temporaryLocation,
-      getEditor: () => editor,
+      getEditor: () => editorRef.current,
     });
 
     const editorConfig = useEditorConfig({
@@ -97,6 +98,11 @@ export const MarkdownInput = memo(
       editorConfig,
       isInteractingWithInput,
     });
+
+    // Update ref when editor changes
+    useEffect(() => {
+      editorRef.current = editor;
+    }, [editor]);
 
     useImperativeHandle(
       ref,

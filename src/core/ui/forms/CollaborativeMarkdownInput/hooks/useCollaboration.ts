@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Extensions } from '@tiptap/core';
 import { TiptapCollabProvider, onStatelessParameters } from '@hocuspocus/provider';
 import * as Y from 'yjs';
@@ -37,7 +37,6 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
 
   const ydoc = useMemo(() => new Y.Doc(), []);
-  const providerRef = useRef<TiptapCollabProvider | null>(null);
 
   const getCollaborationServiceUrl = (): string | null => {
     const baseUrl = env?.VITE_APP_COLLAB_DOC_URL;
@@ -59,16 +58,24 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     return `${normalizedBase}${normalizedPath}`;
   };
 
-  useEffect(() => {
+  // Create provider synchronously so extensions are available before editor initialization
+  const provider = useMemo(() => {
     const MEMO_SERVICE_URL = getCollaborationServiceUrl();
 
-    if (!collaborationId || !MEMO_SERVICE_URL) return;
+    if (!collaborationId || !MEMO_SERVICE_URL) {
+      return null;
+    }
 
-    providerRef.current = new TiptapCollabProvider({
+    return new TiptapCollabProvider({
       baseUrl: MEMO_SERVICE_URL,
       name: collaborationId,
       document: ydoc,
     });
+  }, [collaborationId, ydoc]);
+
+  // Wire up provider events in effect
+  useEffect(() => {
+    if (!provider) return;
 
     const syncHandler = (event: { state: string }) => {
       setSynced(!!event.state);
@@ -103,36 +110,37 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       setSynced(false);
     };
 
-    providerRef.current.on('status', statusHandler);
-    providerRef.current.on('synced', syncHandler);
-    providerRef.current.on('authenticationFailed', authenticationFailedHandler);
-    providerRef.current.on('stateless', statelessEventHandler);
+    provider.on('status', statusHandler);
+    provider.on('synced', syncHandler);
+    provider.on('authenticationFailed', authenticationFailedHandler);
+    provider.on('stateless', statelessEventHandler);
 
     return () => {
-      providerRef.current?.destroy();
+      provider.destroy();
     };
-  }, [ydoc, collaborationId, notify]);
+  }, [provider, notify]);
 
   useEffect(() => {
     setIsReadOnly(!isOnline);
   }, [isOnline]);
 
+  // Extensions depend on the memoized provider, not ref.current
   const collaborationExtensions: Extensions = useMemo(() => {
-    if (!providerRef.current) return [];
+    if (!provider) return [];
 
     return [
       Collaboration.extend().configure({
         document: ydoc,
       }),
       CollaborationCursor.extend().configure({
-        provider: providerRef.current,
+        provider: provider,
         user: {
           name: userName,
           color: cursorColor,
         },
       }),
     ];
-  }, [providerRef.current, ydoc, userName, cursorColor]);
+  }, [provider, ydoc, userName, cursorColor]);
 
   return {
     status,
@@ -141,6 +149,6 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     isReadOnly,
     collaborationExtensions,
     ydoc,
-    providerRef,
+    provider,
   };
 };
