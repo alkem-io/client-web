@@ -680,6 +680,7 @@ export type CalloutKeySpecifier = (
   | 'publishedDate'
   | 'settings'
   | 'sortOrder'
+  | 'type'
   | 'updatedDate'
   | CalloutKeySpecifier
 )[];
@@ -701,6 +702,7 @@ export type CalloutFieldPolicy = {
   publishedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutContributionKeySpecifier = (
@@ -4187,37 +4189,37 @@ export type UserSettingsNotificationPlatformFieldPolicy = {
   userProfileRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationSpaceKeySpecifier = (
-  | 'applicationReceived'
-  | 'applicationSubmitted'
-  | 'calloutPublished'
-  | 'commentReply'
-  | 'communicationMention'
+  | 'collaborationCalloutPublished'
+  | 'collaborationPostCommentCreated'
+  | 'collaborationPostCreated'
+  | 'collaborationPostCreatedAdmin'
+  | 'collaborationWhiteboardCreated'
+  | 'communicationMessage'
+  | 'communicationMessageAdmin'
   | 'communicationUpdates'
   | 'communicationUpdatesAdmin'
+  | 'communityApplicationReceived'
+  | 'communityApplicationSubmitted'
   | 'communityInvitationUser'
   | 'communityNewMember'
   | 'communityNewMemberAdmin'
-  | 'postCommentCreated'
-  | 'postCreated'
-  | 'postCreatedAdmin'
-  | 'whiteboardCreated'
   | UserSettingsNotificationSpaceKeySpecifier
 )[];
 export type UserSettingsNotificationSpaceFieldPolicy = {
-  applicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
-  applicationSubmitted?: FieldPolicy<any> | FieldReadFunction<any>;
-  calloutPublished?: FieldPolicy<any> | FieldReadFunction<any>;
-  commentReply?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationMention?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationCalloutPublished?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationPostCommentCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationPostCreatedAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationWhiteboardCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  communicationMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+  communicationMessageAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdates?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdatesAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityApplicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityApplicationSubmitted?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitationUser?: FieldPolicy<any> | FieldReadFunction<any>;
   communityNewMember?: FieldPolicy<any> | FieldReadFunction<any>;
   communityNewMemberAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  postCommentCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  postCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  postCreatedAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardCreated?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationUserKeySpecifier = (
   | 'commentReply'

@@ -1041,6 +1041,8 @@ export type Callout = {
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float']['output'];
+  /** Deprecated: decide what to do with this field */
+  type?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -4928,22 +4930,22 @@ export enum NotificationEvent {
   PlatformUserProfileCreated = 'PLATFORM_USER_PROFILE_CREATED',
   PlatformUserProfileCreatedAdmin = 'PLATFORM_USER_PROFILE_CREATED_ADMIN',
   PlatformUserProfileRemoved = 'PLATFORM_USER_PROFILE_REMOVED',
-  SpaceCalloutPublished = 'SPACE_CALLOUT_PUBLISHED',
+  SpaceCollaborationCalloutPublished = 'SPACE_COLLABORATION_CALLOUT_PUBLISHED',
+  SpaceCollaborationPostCommentCreated = 'SPACE_COLLABORATION_POST_COMMENT_CREATED',
+  SpaceCollaborationPostCreated = 'SPACE_COLLABORATION_POST_CREATED',
+  SpaceCollaborationPostCreatedAdmin = 'SPACE_COLLABORATION_POST_CREATED_ADMIN',
+  SpaceCollaborationWhiteboardCreated = 'SPACE_COLLABORATION_WHITEBOARD_CREATED',
+  SpaceCommunicationMessageRecipient = 'SPACE_COMMUNICATION_MESSAGE_RECIPIENT',
+  SpaceCommunicationMessageSender = 'SPACE_COMMUNICATION_MESSAGE_SENDER',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
   SpaceCommunicationUpdateAdmin = 'SPACE_COMMUNICATION_UPDATE_ADMIN',
+  SpaceCommunityApplicationAdmin = 'SPACE_COMMUNITY_APPLICATION_ADMIN',
   SpaceCommunityApplicationApplicant = 'SPACE_COMMUNITY_APPLICATION_APPLICANT',
-  SpaceCommunityApplicationRecipient = 'SPACE_COMMUNITY_APPLICATION_RECIPIENT',
   SpaceCommunityInvitationUser = 'SPACE_COMMUNITY_INVITATION_USER',
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
   SpaceCommunityInvitationVc = 'SPACE_COMMUNITY_INVITATION_VC',
   SpaceCommunityNewMember = 'SPACE_COMMUNITY_NEW_MEMBER',
   SpaceCommunityNewMemberAdmin = 'SPACE_COMMUNITY_NEW_MEMBER_ADMIN',
-  SpaceContactMessageRecipient = 'SPACE_CONTACT_MESSAGE_RECIPIENT',
-  SpaceContactMessageSender = 'SPACE_CONTACT_MESSAGE_SENDER',
-  SpacePostCommentCreated = 'SPACE_POST_COMMENT_CREATED',
-  SpacePostCreated = 'SPACE_POST_CREATED',
-  SpacePostCreatedAdmin = 'SPACE_POST_CREATED_ADMIN',
-  SpaceWhiteboardCreated = 'SPACE_WHITEBOARD_CREATED',
   UserCommentReply = 'USER_COMMENT_REPLY',
   UserMention = 'USER_MENTION',
   UserMessageRecipient = 'USER_MESSAGE_RECIPIENT',
@@ -7522,34 +7524,34 @@ export type UpdateUserSettingsNotificationPlatformInput = {
 };
 
 export type UpdateUserSettingsNotificationSpaceInput = {
-  /** Receive a notification when an application is received */
-  applicationReceived?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Receive a notification when an application is submitted */
-  applicationSubmitted?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a callout is published */
-  calloutPublished?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Receive a notification when someone replies to your comment */
-  commentReply?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Receive a notification when mentioned in communication */
-  communicationMention?: InputMaybe<Scalars['Boolean']['input']>;
+  collaborationCalloutPublished?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when a comment is created on a post */
+  collaborationPostCommentCreated?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when a post is created */
+  collaborationPostCreated?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when a post is created (admin) */
+  collaborationPostCreatedAdmin?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when a whiteboard is created */
+  collaborationWhiteboardCreated?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a copy of messages that I send to a Space */
+  communicationMessage?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when a message is sent to a Space I lead */
+  communicationMessageAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification for community updates */
   communicationUpdates?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification for community updates as admin */
   communicationUpdatesAdmin?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when an application is received */
+  communityApplicationReceived?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when an application is submitted */
+  communityApplicationSubmitted?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification for community invitation */
   communityInvitationUser?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a new member joins the community */
   communityNewMember?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a new member joins the community (admin) */
   communityNewMemberAdmin?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Receive a notification when a comment is created on a post */
-  postCommentCreated?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Receive a notification when a post is created */
-  postCreated?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Receive a notification when a post is created (admin) */
-  postCreatedAdmin?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Receive a notification when a whiteboard is created */
-  whiteboardCreated?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateUserSettingsNotificationUserInput = {
@@ -7865,34 +7867,34 @@ export type UserSettingsNotificationPlatform = {
 
 export type UserSettingsNotificationSpace = {
   __typename?: 'UserSettingsNotificationSpace';
-  /** Receive a notification when an application is received */
-  applicationReceived: Scalars['Boolean']['output'];
-  /** Receive a notification when an application is submitted */
-  applicationSubmitted: Scalars['Boolean']['output'];
   /** Receive a notification when a callout is published */
-  calloutPublished: Scalars['Boolean']['output'];
-  /** Receive a notification when someone replies to your comment */
-  commentReply: Scalars['Boolean']['output'];
-  /** Receive a notification when mentioned in communication */
-  communicationMention: Scalars['Boolean']['output'];
+  collaborationCalloutPublished: Scalars['Boolean']['output'];
+  /** Receive a notification when a comment is created on a post */
+  collaborationPostCommentCreated: Scalars['Boolean']['output'];
+  /** Receive a notification when a post is created */
+  collaborationPostCreated: Scalars['Boolean']['output'];
+  /** Receive a notification when a post is created (admin) */
+  collaborationPostCreatedAdmin: Scalars['Boolean']['output'];
+  /** Receive a notification when a whiteboard is created */
+  collaborationWhiteboardCreated: Scalars['Boolean']['output'];
+  /** Receive a copy of messages that I send to a Space */
+  communicationMessage: Scalars['Boolean']['output'];
+  /** Receive a notification when a message is sent to a Space I lead */
+  communicationMessageAdmin: Scalars['Boolean']['output'];
   /** Receive a notification for community updates */
   communicationUpdates: Scalars['Boolean']['output'];
   /** Receive a notification for community updates as Admin */
   communicationUpdatesAdmin: Scalars['Boolean']['output'];
+  /** Receive a notification when an application is received */
+  communityApplicationReceived: Scalars['Boolean']['output'];
+  /** Receive a notification when an application is submitted */
+  communityApplicationSubmitted: Scalars['Boolean']['output'];
   /** Receive a notification for community invitation */
   communityInvitationUser: Scalars['Boolean']['output'];
   /** Receive a notification when a new member joins the community */
   communityNewMember: Scalars['Boolean']['output'];
   /** Receive a notification when a new member joins the community (admin) */
   communityNewMemberAdmin: Scalars['Boolean']['output'];
-  /** Receive a notification when a comment is created on a post */
-  postCommentCreated: Scalars['Boolean']['output'];
-  /** Receive a notification when a post is created */
-  postCreated: Scalars['Boolean']['output'];
-  /** Receive a notification when a post is created (admin) */
-  postCreatedAdmin: Scalars['Boolean']['output'];
-  /** Receive a notification when a whiteboard is created */
-  whiteboardCreated: Scalars['Boolean']['output'];
 };
 
 export type UserSettingsNotificationUser = {
@@ -18998,6 +19000,7 @@ export type UpdateUserSettingsMutation = {
           newUserSignUp: boolean;
           forumDiscussionComment: boolean;
           forumDiscussionCreated: boolean;
+          spaceCreated: boolean;
         };
         organization: {
           __typename?: 'UserSettingsNotificationOrganization';
@@ -19006,20 +19009,25 @@ export type UpdateUserSettingsMutation = {
         };
         space: {
           __typename?: 'UserSettingsNotificationSpace';
-          applicationReceived: boolean;
-          applicationSubmitted: boolean;
+          communityApplicationReceived: boolean;
+          communityApplicationSubmitted: boolean;
+          communityNewMember: boolean;
           communityInvitationUser: boolean;
           communityNewMemberAdmin: boolean;
-          postCommentCreated: boolean;
-          communicationMention: boolean;
-          commentReply: boolean;
-          calloutPublished: boolean;
-          communityNewMember: boolean;
           communicationUpdates: boolean;
           communicationUpdatesAdmin: boolean;
-          postCreated: boolean;
-          postCreatedAdmin: boolean;
-          whiteboardCreated: boolean;
+          collaborationPostCommentCreated: boolean;
+          collaborationCalloutPublished: boolean;
+          collaborationPostCreated: boolean;
+          collaborationPostCreatedAdmin: boolean;
+          collaborationWhiteboardCreated: boolean;
+        };
+        user: {
+          __typename?: 'UserSettingsNotificationUser';
+          mentioned: boolean;
+          commentReply: boolean;
+          messageReceived: boolean;
+          messageSent: boolean;
         };
       };
     };
@@ -19039,24 +19047,30 @@ export type UserSettingsFragmentFragment = {
       newUserSignUp: boolean;
       forumDiscussionComment: boolean;
       forumDiscussionCreated: boolean;
+      spaceCreated: boolean;
     };
     organization: { __typename?: 'UserSettingsNotificationOrganization'; mentioned: boolean; messageReceived: boolean };
     space: {
       __typename?: 'UserSettingsNotificationSpace';
-      applicationReceived: boolean;
-      applicationSubmitted: boolean;
+      communityApplicationReceived: boolean;
+      communityApplicationSubmitted: boolean;
+      communityNewMember: boolean;
       communityInvitationUser: boolean;
       communityNewMemberAdmin: boolean;
-      postCommentCreated: boolean;
-      communicationMention: boolean;
-      commentReply: boolean;
-      calloutPublished: boolean;
-      communityNewMember: boolean;
       communicationUpdates: boolean;
       communicationUpdatesAdmin: boolean;
-      postCreated: boolean;
-      postCreatedAdmin: boolean;
-      whiteboardCreated: boolean;
+      collaborationPostCommentCreated: boolean;
+      collaborationCalloutPublished: boolean;
+      collaborationPostCreated: boolean;
+      collaborationPostCreatedAdmin: boolean;
+      collaborationWhiteboardCreated: boolean;
+    };
+    user: {
+      __typename?: 'UserSettingsNotificationUser';
+      mentioned: boolean;
+      commentReply: boolean;
+      messageReceived: boolean;
+      messageSent: boolean;
     };
   };
 };
@@ -19086,6 +19100,7 @@ export type UserSettingsQuery = {
                 newUserSignUp: boolean;
                 forumDiscussionComment: boolean;
                 forumDiscussionCreated: boolean;
+                spaceCreated: boolean;
               };
               organization: {
                 __typename?: 'UserSettingsNotificationOrganization';
@@ -19094,20 +19109,25 @@ export type UserSettingsQuery = {
               };
               space: {
                 __typename?: 'UserSettingsNotificationSpace';
-                applicationReceived: boolean;
-                applicationSubmitted: boolean;
+                communityApplicationReceived: boolean;
+                communityApplicationSubmitted: boolean;
+                communityNewMember: boolean;
                 communityInvitationUser: boolean;
                 communityNewMemberAdmin: boolean;
-                postCommentCreated: boolean;
-                communicationMention: boolean;
-                commentReply: boolean;
-                calloutPublished: boolean;
-                communityNewMember: boolean;
                 communicationUpdates: boolean;
                 communicationUpdatesAdmin: boolean;
-                postCreated: boolean;
-                postCreatedAdmin: boolean;
-                whiteboardCreated: boolean;
+                collaborationPostCommentCreated: boolean;
+                collaborationCalloutPublished: boolean;
+                collaborationPostCreated: boolean;
+                collaborationPostCreatedAdmin: boolean;
+                collaborationWhiteboardCreated: boolean;
+              };
+              user: {
+                __typename?: 'UserSettingsNotificationUser';
+                mentioned: boolean;
+                commentReply: boolean;
+                messageReceived: boolean;
+                messageSent: boolean;
               };
             };
           };

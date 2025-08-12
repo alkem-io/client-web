@@ -112,25 +112,24 @@ const UserAdminNotificationsPage = () => {
     const currentSpaceSettings = currentSettings?.notification?.space;
     const currentOrgSettings = currentSettings?.notification?.organization;
     const currentPlatformSettings = currentSettings?.notification?.platform;
+    const currentUserSettings = currentSettings?.notification?.user;
 
     const settingsVariable = {
       notification: {
         space: {
-          applicationReceived: updates.applicationReceived ?? currentSpaceSettings?.applicationReceived,
-          applicationSubmitted: updates.applicationSubmitted ?? currentSpaceSettings?.applicationSubmitted,
-          calloutPublished: updates.calloutPublished ?? currentSpaceSettings?.calloutPublished,
-          commentReply: updates.commentReply ?? currentSpaceSettings?.commentReply,
-          communicationMention: updates.communicationMention ?? currentSpaceSettings?.communicationMention,
+          applicationReceived: updates.applicationReceived ?? currentSpaceSettings?.communityApplicationReceived,
+          applicationSubmitted: updates.applicationSubmitted ?? currentSpaceSettings?.communityApplicationSubmitted,
+          calloutPublished: updates.calloutPublished ?? currentSpaceSettings?.collaborationCalloutPublished,
           communicationUpdates: updates.communicationUpdates ?? currentSpaceSettings?.communicationUpdates,
           communicationUpdatesAdmin:
             updates.communicationUpdatesAdmin ?? currentSpaceSettings?.communicationUpdatesAdmin,
           communityInvitationUser: updates.communityInvitationUser ?? currentSpaceSettings?.communityInvitationUser,
           communityNewMember: updates.communityNewMember ?? currentSpaceSettings?.communityNewMember,
           communityNewMemberAdmin: updates.communityNewMemberAdmin ?? currentSpaceSettings?.communityNewMemberAdmin,
-          postCommentCreated: updates.postCommentCreated ?? currentSpaceSettings?.postCommentCreated,
-          postCreated: updates.postCreated ?? currentSpaceSettings?.postCreated,
-          postCreatedAdmin: updates.postCreatedAdmin ?? currentSpaceSettings?.postCreatedAdmin,
-          whiteboardCreated: updates.whiteboardCreated ?? currentSpaceSettings?.whiteboardCreated,
+          postCommentCreated: updates.postCommentCreated ?? currentSpaceSettings?.collaborationPostCommentCreated,
+          postCreated: updates.postCreated ?? currentSpaceSettings?.collaborationPostCreated,
+          postCreatedAdmin: updates.postCreatedAdmin ?? currentSpaceSettings?.collaborationPostCreatedAdmin,
+          whiteboardCreated: updates.whiteboardCreated ?? currentSpaceSettings?.collaborationWhiteboardCreated,
         },
         organization: {
           mentioned: updates.mentioned ?? currentOrgSettings?.mentioned,
@@ -141,6 +140,10 @@ const UserAdminNotificationsPage = () => {
           forumDiscussionCreated: updates.forumDiscussionCreated ?? currentPlatformSettings?.forumDiscussionCreated,
           newUserSignUp: updates.newUserSignUp ?? currentPlatformSettings?.newUserSignUp,
           userProfileRemoved: updates.userProfileRemoved ?? currentPlatformSettings?.userProfileRemoved,
+        },
+        user: {
+          commentReply: updates.commentReply ?? currentUserSettings?.commentReply,
+          mentioned: updates.mentioned ?? currentUserSettings?.mentioned,
         },
       },
     };
@@ -168,20 +171,12 @@ const UserAdminNotificationsPage = () => {
                 <SwitchSettingsGroup
                   options={{
                     applicationSubmitted: {
-                      checked: currentSettings?.notification?.space?.applicationSubmitted || false,
+                      checked: currentSettings?.notification?.space?.communityApplicationSubmitted || false,
                       label: t('pages.userNotificationsSettings.space.settings.applicationSubmitted'),
                     },
                     calloutPublished: {
-                      checked: currentSettings?.notification?.space?.calloutPublished || false,
+                      checked: currentSettings?.notification?.space?.collaborationCalloutPublished || false,
                       label: t('pages.userNotificationsSettings.space.settings.calloutPublished'),
-                    },
-                    commentReply: {
-                      checked: currentSettings?.notification?.space?.commentReply || false,
-                      label: t('pages.userNotificationsSettings.space.settings.commentReply'),
-                    },
-                    communicationMention: {
-                      checked: currentSettings?.notification?.space?.communicationMention || false,
-                      label: t('pages.userNotificationsSettings.space.settings.communicationMention'),
                     },
                     communicationUpdates: {
                       checked: currentSettings?.notification?.space?.communicationUpdates || false,
@@ -196,17 +191,25 @@ const UserAdminNotificationsPage = () => {
                       label: t('pages.userNotificationsSettings.space.settings.communityNewMember'),
                     },
                     postCommentCreated: {
-                      checked: currentSettings?.notification?.space?.postCommentCreated || false,
+                      checked: currentSettings?.notification?.space?.collaborationPostCommentCreated || false,
                       label: t('pages.userNotificationsSettings.space.settings.postCommentCreated'),
                     },
                     postCreated: {
-                      checked: currentSettings?.notification?.space?.postCreated || false,
+                      checked: currentSettings?.notification?.space?.collaborationPostCreated || false,
                       label: t('pages.userNotificationsSettings.space.settings.postCreated'),
                     },
-
                     whiteboardCreated: {
-                      checked: currentSettings?.notification?.space?.whiteboardCreated || false,
+                      checked: currentSettings?.notification?.space?.collaborationWhiteboardCreated || false,
                       label: t('pages.userNotificationsSettings.space.settings.whiteboardCreated'),
+                    },
+                    // TODO: These below under the user settings section
+                    commentReply: {
+                      checked: currentSettings?.notification?.user?.commentReply || false,
+                      label: t('pages.userNotificationsSettings.space.settings.commentReply'),
+                    },
+                    mentioned: {
+                      checked: currentSettings?.notification?.user?.mentioned || false,
+                      label: t('pages.userNotificationsSettings.space.settings.communicationMention'),
                     },
                   }}
                   onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
@@ -220,7 +223,7 @@ const UserAdminNotificationsPage = () => {
                   <SwitchSettingsGroup
                     options={{
                       applicationReceived: {
-                        checked: currentSettings?.notification?.space?.applicationReceived || false,
+                        checked: currentSettings?.notification?.space?.communityApplicationReceived || false,
                         label: t('pages.userNotificationsSettings.spaceAdmin.settings.applicationReceived'),
                       },
                       communicationUpdatesAdmin: {
@@ -232,7 +235,7 @@ const UserAdminNotificationsPage = () => {
                         label: t('pages.userNotificationsSettings.spaceAdmin.settings.communityNewMemberAdmin'),
                       },
                       postCreatedAdmin: {
-                        checked: currentSettings?.notification?.space?.postCreatedAdmin || false,
+                        checked: currentSettings?.notification?.space?.collaborationPostCreatedAdmin || false,
                         label: t('pages.userNotificationsSettings.spaceAdmin.settings.postCreatedAdmin'),
                       },
                     }}

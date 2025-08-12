@@ -1479,26 +1479,31 @@ export const UserSettingsFragmentFragmentDoc = gql`
         newUserSignUp
         forumDiscussionComment
         forumDiscussionCreated
+        spaceCreated
       }
       organization {
         mentioned
         messageReceived
       }
       space {
-        applicationReceived
-        applicationSubmitted
+        communityApplicationReceived
+        communityApplicationSubmitted
+        communityNewMember
         communityInvitationUser
         communityNewMemberAdmin
-        postCommentCreated
-        communicationMention
-        commentReply
-        calloutPublished
-        communityNewMember
         communicationUpdates
         communicationUpdatesAdmin
-        postCreated
-        postCreatedAdmin
-        whiteboardCreated
+        collaborationPostCommentCreated
+        collaborationCalloutPublished
+        collaborationPostCreated
+        collaborationPostCreatedAdmin
+        collaborationWhiteboardCreated
+      }
+      user {
+        mentioned
+        commentReply
+        messageReceived
+        messageSent
       }
     }
   }
