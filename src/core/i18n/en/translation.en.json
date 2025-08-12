@@ -1987,8 +1987,8 @@
         }
       },
       "archivedNotice": {
-        "archivedSpace": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
-        "archivedSubspace": "This {{space}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
+        "archivedSpace": "This Space is archived. <contact>Learn more</contact>",
+        "archivedSubspace": "This {{space}} is archived. <contact>Learn more</contact>"
       },
       "demoNotice": {
         "demoSpace": "Demo Space",
