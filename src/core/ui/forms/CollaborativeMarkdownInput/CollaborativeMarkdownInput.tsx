@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { EditorContent, useEditor, Editor } from '@tiptap/react';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
@@ -22,18 +22,6 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   onChangeCollaborationState?: (state: RealTimeCollaborationState) => void;
   disabled?: boolean;
   storageBucketId?: string; // Make optional with fallback
-  ref?: React.Ref<MarkdownInputRefApi>;
-}
-
-type Offset = {
-  x: string;
-  y: string;
-};
-
-export interface MarkdownInputRefApi {
-  focus: () => void;
-  value: string | undefined;
-  getLabelOffset: () => Offset;
 }
 
 const proseMirrorStyles = {
@@ -49,36 +37,28 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
   ({
     controlsVisible = 'focused',
     hideImageOptions,
-    height = '200px', // Default height
+    height = '200px',
     onFocus,
     onBlur,
     temporaryLocation,
     collaborationId,
     onChangeCollaborationState,
     disabled,
-    storageBucketId = '', // Default to empty string
-    ref,
+    storageBucketId = '',
   }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
     const editorRef = useRef<Editor | null>(null);
 
-    const {
-      areControlsVisible,
-      getLabelOffset,
-      handleFocus,
-      handleBlur,
-      handleDialogOpen,
-      handleDialogClose,
-      prevEditorHeight,
-    } = useMarkdownInputUI({
-      controlsVisible,
-      disabled,
-      toolbarRef,
-      containerRef,
-      onFocus,
-      onBlur,
-    });
+    const { areControlsVisible, handleFocus, handleBlur, handleDialogOpen, handleDialogClose, prevEditorHeight } =
+      useMarkdownInputUI({
+        controlsVisible,
+        disabled,
+        toolbarRef,
+        containerRef,
+        onFocus,
+        onBlur,
+      });
 
     const { status, synced, lastSaveTime, isReadOnly, collaborationExtensions } = useCollaboration({
       collaborationId,
@@ -112,18 +92,6 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
     useEffect(() => {
       editorRef.current = editor;
     }, [editor]);
-
-    useImperativeHandle(
-      ref,
-      () => ({
-        getLabelOffset,
-        focus: () => editor?.commands.focus(),
-        get value() {
-          return editor?.getText();
-        },
-      }),
-      [editor, getLabelOffset]
-    );
 
     const [currentCollaborationState, setCollaborationState] = useState<RealTimeCollaborationState>();
 
