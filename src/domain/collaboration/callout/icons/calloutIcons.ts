@@ -1,6 +1,6 @@
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
-import { CalloutContributionType, CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import {
   FormatListBulletedOutlined,
   ForumOutlined,
@@ -9,6 +9,7 @@ import {
 } from '@mui/icons-material';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import { ReferenceIcon } from '@/domain/shared/components/References/icons/ReferenceIcon';
+import { CalloutType } from '@/domain/collaboration/callout/CalloutViewTypes';
 
 const calloutIcons: Record<CalloutType, ComponentType<SvgIconProps>> = {
   [CalloutType.PostCollection]: LibraryBooksOutlined,

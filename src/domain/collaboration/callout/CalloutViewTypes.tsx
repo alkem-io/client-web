@@ -22,3 +22,12 @@ export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<Callo
   onCalloutUpdate?: () => Promise<unknown> | void;
   calloutRestrictions?: CalloutRestrictions;
 }
+
+/** @deprecated **/
+export enum CalloutType {
+  PostCollection = 'POST_COLLECTION',
+  WhiteboardCollection = 'WHITEBOARD_COLLECTION',
+  Post = 'POST',
+  LinkCollection = 'LINK_COLLECTION',
+  Whiteboard = 'WHITEBOARD',
+}

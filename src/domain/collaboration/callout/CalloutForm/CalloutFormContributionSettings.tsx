@@ -14,7 +14,7 @@ import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import BlockIcon from '@mui/icons-material/Block';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 import calloutIcons from '../../callout/icons/calloutIcons';
-import { CalloutContributionType, CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import ContributionSettingsDialog from './ContributionSettingsDialog/ContributionSettingsDialog';
 import ContributionsSettingsLink from './ContributionSettingsDialog/ContributionsSettingsLink';
 import ContributionsSettingsPost from './ContributionSettingsDialog/ContributionsSettingsPost';
@@ -22,6 +22,7 @@ import ContributionsSettingsWhiteboard from './ContributionSettingsDialog/Contri
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { nameOf } from '@/core/utils/nameOf';
 import { useField } from 'formik';
+import { CalloutType } from '@/domain/collaboration/callout/CalloutViewTypes';
 
 interface CalloutFormContributionSettingsProps {
   calloutRestrictions?: CalloutRestrictions;

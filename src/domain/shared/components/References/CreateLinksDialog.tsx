@@ -1,5 +1,4 @@
 import { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { Box, Button, DialogContent, IconButton, Link, Tooltip } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +21,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { newLinkName } from '@/domain/common/link/newLinkName';
+import { CalloutType } from '@/domain/collaboration/callout/CalloutViewTypes';
 
 export interface CreateLinkFormValues {
   id: string;
