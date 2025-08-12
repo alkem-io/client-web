@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import NotificationView from '@/core/ui/notifications/NotificationView';
 import { Box, Link, SnackbarContent, useTheme } from '@mui/material';
 import { rem } from '@/core/ui/typography/utils';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
@@ -14,7 +13,6 @@ type SpaceVisibilityNoticeProps = {
 };
 
 export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps) => {
-  const { locations } = useConfig();
   const theme = useTheme();
   const { t } = useTranslation();
   const origin = usePlatformOrigin();
@@ -59,7 +57,7 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
     }
 
     return null;
-  }, [visibility, spaceLevel, tLinks, locations?.feedback, origin]);
+  }, [visibility, spaceLevel, tLinks, origin]);
 
   if (!visibility || visibility === SpaceVisibility.Active) return null;
   if (!message || !spaceLevel) return null;
