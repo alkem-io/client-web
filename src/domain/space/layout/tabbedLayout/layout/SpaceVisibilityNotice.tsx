@@ -30,12 +30,17 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
   );
 
   const message = useMemo(() => {
+    if (visibility === SpaceVisibility.Archived) {
+      return tLinks(
+        'pages.generic.archivedNotice.archivedSpace',
+        {
+          contact: { href: `${origin}${t('pages.generic.archivedNotice.archivedLink')}` },
+        },
+        { space: t(`common.space-level.${spaceLevel || SpaceLevel.L0}`) }
+      );
+    }
+
     if (spaceLevel === SpaceLevel.L0) {
-      if (visibility === SpaceVisibility.Archived) {
-        return tLinks('pages.generic.archivedNotice.archivedSpace', {
-          contact: { href: locations?.feedback },
-        });
-      }
       if (visibility === SpaceVisibility.Demo) {
         return tLinks('pages.generic.demoNotice.demoSpace', {
           alkemio: { href: origin },
@@ -43,15 +48,6 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
       }
     }
 
-    if (visibility === SpaceVisibility.Archived) {
-      return tLinks(
-        'pages.generic.archivedNotice.archivedSubspace',
-        {
-          contact: { href: locations?.feedback },
-        },
-        { space: t(`common.space-level.${spaceLevel || SpaceLevel.L0}`) }
-      );
-    }
     if (visibility === SpaceVisibility.Demo) {
       return tLinks(
         'pages.generic.demoNotice.demoSubspace',

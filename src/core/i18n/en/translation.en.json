@@ -1987,8 +1987,8 @@
         }
       },
       "archivedNotice": {
-        "archivedSpace": "This Space is archived. <contact>Learn more</contact>",
-        "archivedSubspace": "This {{space}} is archived. <contact>Learn more</contact>"
+        "archivedSpace": "Archived {{space}}. <contact>Learn more</contact>",
+        "archivedLink": "/docs"
       },
       "demoNotice": {
         "demoSpace": "Demo Space",
