@@ -1,5 +1,4 @@
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import { BlockTitle } from '@/core/ui/typography/components';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -10,6 +9,7 @@ import { useMemo } from 'react';
 import { useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useUserProvider } from '../../user/hooks/useUserProvider';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 
 export const UserAdminSettingsPage = () => {
   const { userId } = useUrlResolver();

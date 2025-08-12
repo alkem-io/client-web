@@ -2,8 +2,8 @@ import { useAccountInformationQuery, useOrganizationAccountQuery } from '@/core/
 import ContributorAccountView from '@/domain/community/contributor/Account/ContributorAccountView';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { FC } from 'react';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
+import { SettingsSection } from '../../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import type { SettingsPageProps } from '../../../platformAdmin/layout/EntitySettingsLayout/types';
 import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
 
 const OrganizationAccountPage: FC<SettingsPageProps> = () => {

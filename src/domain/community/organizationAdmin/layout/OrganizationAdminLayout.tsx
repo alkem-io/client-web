@@ -4,8 +4,8 @@ import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumb
 import { Diversity3Outlined, Settings } from '@mui/icons-material';
 import { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import EntitySettingsLayout from '../../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import EntitySettingsLayout from '../../../platformAdmin/layout/EntitySettingsLayout/EntitySettingsLayout';
+import { SettingsSection } from '../../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import { organizationAdminTabs } from '../OrganizationAdminTabs';
 import useOrganizationProvider from '../../organization/useOrganization/useOrganization';
 

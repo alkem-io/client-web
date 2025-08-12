@@ -1,5 +1,5 @@
-import { TabDefinition } from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsTabs';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { TabDefinition } from '@/domain/platformAdmin/layout/EntitySettingsLayout/EntitySettingsTabs';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';

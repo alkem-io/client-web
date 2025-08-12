@@ -10,7 +10,7 @@ import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useEffect, useRef, useState } from 'react';
 import UserPresencing from '../../realTimeCollaboration/UserPresencing';
-import { RealTimeCollaborationState } from '../../realTimeCollaboration/RealTimeCollaborationState';
+import { MemoStatus, RealTimeCollaborationState } from '../../realTimeCollaboration/RealTimeCollaborationState';
 import MemoFooter from './MemoFooter';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
@@ -48,6 +48,9 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
   }, [open]);
 
   const hasContributePrivileges = (memo?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Contribute);
+  const notConnected = !collaborationState || collaborationState.status !== MemoStatus.CONNECTED;
+  const notSynced = !collaborationState || !collaborationState.synced;
+  const disabled = !hasContributePrivileges || collaborationState?.readOnly || notConnected || notSynced;
 
   return (
     <DialogWithGrid ref={dialogRef} open={open} onClose={handleClose} fullWidth fullHeight fullScreen={fullScreen}>
@@ -75,7 +78,7 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
       <DialogContent>
         <Box position="relative" height="100%" width="100%">
           {loading && <Loading />}
-          {collaborationState?.status !== 'connected' && (
+          {notConnected && (
             <Box
               position="absolute"
               top={0}
@@ -95,12 +98,13 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
             <CharacterCountContextProvider>
               <OutlinedInput
                 inputComponent={CollaborativeMarkdownInput}
-                disabled={!hasContributePrivileges}
+                disabled={disabled}
                 inputProps={{
                   controlsVisible: 'always',
                   collaborationId: memoId,
                   height: '100%',
                   onChangeCollaborationState: setCollaborationState,
+                  storageBucketId: memo.profile.storageBucket.id,
                 }}
                 sx={{
                   '&.MuiOutlinedInput-root': {
@@ -118,13 +122,7 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
         </Box>
       </DialogContent>
       <DialogFooter>
-        <MemoFooter
-          memoUrl={memo?.profile.url}
-          canContribute={hasContributePrivileges}
-          createdBy={memo?.createdBy}
-          contentUpdatePolicy={undefined}
-          collaborationState={collaborationState}
-        />
+        <MemoFooter memoUrl={memo?.profile.url} createdBy={memo?.createdBy} collaborationState={collaborationState} />
       </DialogFooter>
     </DialogWithGrid>
   );

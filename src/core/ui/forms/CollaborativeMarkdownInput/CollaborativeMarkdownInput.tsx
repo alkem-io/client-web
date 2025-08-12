@@ -13,7 +13,6 @@ import { Iframe } from '../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
 import { EditorView } from '@tiptap/pm/view';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
-import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import Collaboration from '@tiptap/extension-collaboration';
 import { TiptapCollabProvider, onStatelessParameters } from '@hocuspocus/provider';
 import * as Y from 'yjs';
@@ -26,6 +25,7 @@ import {
   CollaborationStatus,
   RealTimeCollaborationState,
   isCollaborationStatus,
+  MemoStatus,
 } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import { env } from '@/main/env';
 import {
@@ -34,7 +34,8 @@ import {
   isStatelessSaveErrorMessage,
 } from './stateless-messaging';
 import { decodeStatelessMessage } from './stateless-messaging/util';
-import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
+import { useOnlineStatus } from '@/core/utils/useOnlineStatus';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -45,6 +46,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   collaborationId?: string;
   onChangeCollaborationState?: (state: RealTimeCollaborationState) => void;
   disabled?: boolean;
+  storageBucketId: string;
 }
 
 type Offset = {
@@ -84,6 +86,7 @@ export const CollaborativeMarkdownInput = memo(
         collaborationId,
         onChangeCollaborationState,
         disabled,
+        storageBucketId,
       },
       ref
     ) => {
@@ -92,17 +95,18 @@ export const CollaborativeMarkdownInput = memo(
 
       const { userName, cursorColor } = useUserCursor();
 
-      const [status, setStatus] = useState<CollaborationStatus>('connecting');
+      const [status, setStatus] = useState<CollaborationStatus>(MemoStatus.CONNECTING);
+      const [synced, setSynced] = useState(false);
 
       const [hasFocus, setHasFocus] = useState(false);
       const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
       const isInteractingWithInput = hasFocus || isControlsDialogOpen;
 
-      const storageConfig = useStorageConfigContext();
-
       const { t } = useTranslation();
 
       const notify = useNotification();
+
+      const isOnline = useOnlineStatus();
 
       const [uploadFile] = useUploadFileMutation({
         onCompleted: data => {
@@ -124,8 +128,6 @@ export const CollaborativeMarkdownInput = memo(
 
         return false; // Not an image or HTML with images
       };
-
-      const storageBucketId = storageConfig?.storageBucketId;
 
       /**
        * Handles the paste event in the editor.
@@ -192,20 +194,19 @@ export const CollaborativeMarkdownInput = memo(
           document: ydoc,
         });
 
+        const syncHandler = event => {
+          setSynced(!!event.state);
+        };
+
         const statusHandler = event => {
           if (isCollaborationStatus(event.status)) {
             setStatus(event.status);
           } else {
-            logError('UnknownMemoStatusError', { category: TagCategoryValues.MEMO, label: `Status: ${event.status}` });
+            logWarn('UnknownMemoStatusError', { category: TagCategoryValues.MEMO, label: `Status: ${event.status}` });
           }
         };
 
-        providerRef.current.on('status', statusHandler);
-        providerRef.current.on('authenticationFailed', () => {
-          // TODO:MEMO handle authentication failure
-          setIsReadOnly(true);
-        });
-        providerRef.current.on('stateless', ({ payload }: onStatelessParameters) => {
+        const statelessEventHandler = ({ payload }: onStatelessParameters) => {
           const decodedMessage = decodeStatelessMessage(payload);
           if (!decodedMessage) {
             return;
@@ -222,7 +223,27 @@ export const CollaborativeMarkdownInput = memo(
             // TODO:MEMO handle read-only codes: see enum ReadOnlyCode
             setIsReadOnly(decodedMessage.readOnly);
           }
-        });
+        };
+
+        const authenticationFailedHandler = () => {
+          // event.reason available
+          // As the user is actually authenticated on the platform
+          // this error is most likely not-relevant,
+          // so we show the notSynced state with a message to reload
+          setSynced(false);
+        };
+
+        // doc for the events: https://tiptap.dev/docs/collaboration/provider/events
+        // provides MemoStatus updates
+        providerRef.current.on('status', statusHandler);
+
+        // explicit sync event
+        // connected is not enough sometimes you're connected, but not synced
+        // editing should not be allowed until synced
+        providerRef.current.on('synced', syncHandler);
+        providerRef.current.on('authenticationFailed', authenticationFailedHandler);
+        // passing custom messages
+        providerRef.current.on('stateless', statelessEventHandler);
 
         return () => {
           providerRef.current?.destroy();
@@ -347,6 +368,7 @@ export const CollaborativeMarkdownInput = memo(
       useEffect(() => {
         const collaborationState: RealTimeCollaborationState = {
           status,
+          synced,
           lastActive: lastSaveTime,
           readOnly: isReadOnly,
           users:
@@ -364,11 +386,20 @@ export const CollaborativeMarkdownInput = memo(
         }
       }, [
         status,
+        synced,
         lastSaveTime,
         isReadOnly,
         editor.storage.collaborationCursor?.users.length,
         editor.storage.collaborationCursor?.users,
       ]);
+
+      useEffect(() => {
+        if (!isOnline) {
+          setIsReadOnly(true);
+        } else {
+          setIsReadOnly(false);
+        }
+      }, [isOnline]);
 
       return (
         <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur} height={height}>

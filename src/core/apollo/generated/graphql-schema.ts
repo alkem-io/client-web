@@ -5204,6 +5204,69 @@ export type PlatformInnovationHubArgs = {
   subdomain?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type PlatformAdminCommunicationQueryResults = {
+  __typename?: 'PlatformAdminCommunicationQueryResults';
+  /** All Users that are members of a given room */
+  adminCommunicationMembership: CommunicationAdminMembershipResult;
+  /** Usage of the messaging platform that are not tied to the domain model. */
+  adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
+};
+
+export type PlatformAdminCommunicationQueryResultsAdminCommunicationMembershipArgs = {
+  communicationData: CommunicationAdminMembershipInput;
+};
+
+export type PlatformAdminQueryResults = {
+  __typename?: 'PlatformAdminQueryResults';
+  /** Lookup Communication related information. */
+  communication: PlatformAdminCommunicationQueryResults;
+  /** Retrieve all Innovation Hubs on the Platform. This is only available to Platform Admins. */
+  innovationHubs: Array<InnovationHub>;
+  /** Retrieve all Innovation Packs on the Platform. This is only available to Platform Admins. */
+  innovationPacks: Array<InnovationPack>;
+  /** Retrieve all Organizations on the Platform. This is only available to Platform Admins. */
+  organizations: PaginatedOrganization;
+  /** Retrieve all Spaces on the Platform. This is only available to Platform Admins. */
+  spaces: Array<Space>;
+  /** Retrieve all Users on the Platform. This is only available to Platform Admins. */
+  users: PaginatedUsers;
+  /** Retrieve all Virtual Contributors on the Platform. This is only available to Platform Admins. */
+  virtualContributors: Array<VirtualContributor>;
+};
+
+export type PlatformAdminQueryResultsInnovationPacksArgs = {
+  queryData?: InputMaybe<InnovationPacksInput>;
+};
+
+export type PlatformAdminQueryResultsOrganizationsArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<OrganizationFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<OrganizationVerificationEnum>;
+};
+
+export type PlatformAdminQueryResultsSpacesArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  filter?: InputMaybe<SpaceFilterInput>;
+};
+
+export type PlatformAdminQueryResultsUsersArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  withTags?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type PlatformAdminQueryResultsVirtualContributorsArgs = {
+  filter?: InputMaybe<ContributorFilterInput>;
+  limit?: InputMaybe<Scalars['Float']['input']>;
+  shuffle?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type PlatformFeatureFlag = {
   __typename?: 'PlatformFeatureFlag';
   /** Is this feature flag enabled? */
@@ -5420,10 +5483,6 @@ export type Query = {
   activityFeedGrouped: Array<ActivityLogEntry>;
   /** Retrieve the ActivityLog for the specified Collaboration */
   activityLogOnCollaboration: Array<ActivityLogEntry>;
-  /** All Users that are members of a given room */
-  adminCommunicationMembership: CommunicationAdminMembershipResult;
-  /** Usage of the messaging platform that are not tied to the domain model. */
-  adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** Alkemio AiServer */
   aiServer: AiServer;
   /** Active Spaces only, order by most active in the past X days. */
@@ -5450,6 +5509,8 @@ export type Query = {
   organizationsPaginated: PaginatedOrganization;
   /** Alkemio Platform */
   platform: Platform;
+  /** Allow looking up of information for Platform administration. */
+  platformAdmin: PlatformAdminQueryResults;
   /** Get the list of restricted space names. */
   restrictedSpaceNames: Array<Scalars['String']['output']>;
   /** The roles that the specified Organization has. */
@@ -5472,8 +5533,6 @@ export type Query = {
   urlResolver: UrlResolverQueryResults;
   /** A particular user, identified by the ID or by email */
   user: User;
-  /** Privileges assigned to a User (based on held credentials) given an Authorization defnition. */
-  userAuthorizationPrivileges: Array<AuthorizationPrivilege>;
   /** The users who have profiles on this platform */
   users: Array<User>;
   /** The users who have profiles on this platform */
@@ -5500,10 +5559,6 @@ export type QueryActivityFeedGroupedArgs = {
 
 export type QueryActivityLogOnCollaborationArgs = {
   queryData: ActivityLogInput;
-};
-
-export type QueryAdminCommunicationMembershipArgs = {
-  communicationData: CommunicationAdminMembershipInput;
 };
 
 export type QueryExploreSpacesArgs = {
@@ -5576,10 +5631,6 @@ export type QueryUrlResolverArgs = {
 
 export type QueryUserArgs = {
   ID: Scalars['UUID']['input'];
-};
-
-export type QueryUserAuthorizationPrivilegesArgs = {
-  userAuthorizationPrivilegesData: UserAuthorizationPrivilegesInput;
 };
 
 export type QueryUsersArgs = {
@@ -7763,13 +7814,6 @@ export type UserAuthenticationResult = {
   method: AuthenticationType;
 };
 
-export type UserAuthorizationPrivilegesInput = {
-  /** The authorization definition to evaluate the user credentials against. */
-  authorizationID: Scalars['UUID']['input'];
-  /** The user to evaluate privileges granted based on held credentials. */
-  userID: Scalars['UUID']['input'];
-};
-
 export type UserAuthorizationResetInput = {
   /** The identifier of the User whose Authorization Policy should be reset. */
   userID: Scalars['UUID']['input'];
@@ -8263,25 +8307,6 @@ export type InnovationPackProfilePageQuery = {
           templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
         }
       | undefined;
-  };
-};
-
-export type AdminInnovationPacksListQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AdminInnovationPacksListQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    library: {
-      __typename?: 'Library';
-      id: string;
-      innovationPacks: Array<{
-        __typename?: 'InnovationPack';
-        id: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-      }>;
-    };
   };
 };
 
@@ -20164,22 +20189,18 @@ export type DashboardSpacesQuery = {
   }>;
 };
 
-export type AdminInnovationHubsListQueryVariables = Exact<{ [key: string]: never }>;
+export type PlatformAdminInnovationHubsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type AdminInnovationHubsListQuery = {
+export type PlatformAdminInnovationHubsQuery = {
   __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    library: {
-      __typename?: 'Library';
-      innovationHubs: Array<{
-        __typename?: 'InnovationHub';
-        id: string;
-        subdomain: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-      }>;
-    };
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    innovationHubs: Array<{
+      __typename?: 'InnovationHub';
+      id: string;
+      subdomain: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    }>;
   };
 };
 
@@ -20651,11 +20672,152 @@ export type PlatformLevelAuthorizationQuery = {
   };
 };
 
+export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ConfigurationQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    configuration: {
+      __typename?: 'Config';
+      authentication: {
+        __typename?: 'AuthenticationConfig';
+        providers: Array<{
+          __typename?: 'AuthenticationProviderConfig';
+          name: string;
+          label: string;
+          icon: string;
+          enabled: boolean;
+          config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
+        }>;
+      };
+      locations: {
+        __typename?: 'PlatformLocations';
+        environment: string;
+        domain: string;
+        landing: string;
+        about: string;
+        blog: string;
+        feedback: string;
+        forumreleases: string;
+        privacy: string;
+        security: string;
+        support: string;
+        terms: string;
+        impact: string;
+        foundation: string;
+        opensource: string;
+        inspiration: string;
+        innovationLibrary: string;
+        releases: string;
+        help: string;
+        community: string;
+        newuser: string;
+        tips: string;
+        aup: string;
+        documentation: string;
+      };
+      featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
+      sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
+      apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
+      geo: { __typename?: 'Geo'; endpoint: string };
+    };
+    settings: {
+      __typename?: 'PlatformSettings';
+      integration: { __typename?: 'PlatformIntegrationSettings'; iframeAllowedUrls: Array<string> };
+    };
+    metadata: {
+      __typename?: 'Metadata';
+      services: Array<{ __typename?: 'ServiceMetadata'; name?: string | undefined; version?: string | undefined }>;
+    };
+  };
+};
+
+export type ConfigurationFragment = {
+  __typename?: 'Config';
+  authentication: {
+    __typename?: 'AuthenticationConfig';
+    providers: Array<{
+      __typename?: 'AuthenticationProviderConfig';
+      name: string;
+      label: string;
+      icon: string;
+      enabled: boolean;
+      config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
+    }>;
+  };
+  locations: {
+    __typename?: 'PlatformLocations';
+    environment: string;
+    domain: string;
+    landing: string;
+    about: string;
+    blog: string;
+    feedback: string;
+    forumreleases: string;
+    privacy: string;
+    security: string;
+    support: string;
+    terms: string;
+    impact: string;
+    foundation: string;
+    opensource: string;
+    inspiration: string;
+    innovationLibrary: string;
+    releases: string;
+    help: string;
+    community: string;
+    newuser: string;
+    tips: string;
+    aup: string;
+    documentation: string;
+  };
+  featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
+  sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
+  apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
+  geo: { __typename?: 'Geo'; endpoint: string };
+};
+
+export type PlatformLicensingPlansQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformLicensingPlansQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    licensingFramework: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        type: LicensingCredentialBasedPlanType;
+        name: string;
+        sortOrder: number;
+        licenseCredential: LicensingCredentialBasedCredentialType;
+      }>;
+    };
+  };
+};
+
 export type PlatformRoleSetQueryVariables = Exact<{ [key: string]: never }>;
 
 export type PlatformRoleSetQuery = {
   __typename?: 'Query';
   platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
+};
+
+export type PlatformAdminInnovationPacksQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformAdminInnovationPacksQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    innovationPacks: Array<{
+      __typename?: 'InnovationPack';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    }>;
+  };
 };
 
 export type AssignLicensePlanToAccountMutationVariables = Exact<{
@@ -20932,133 +21094,6 @@ export type AdminVirtualContributorsQuery = {
         | undefined;
     };
   }>;
-};
-
-export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
-
-export type ConfigurationQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    configuration: {
-      __typename?: 'Config';
-      authentication: {
-        __typename?: 'AuthenticationConfig';
-        providers: Array<{
-          __typename?: 'AuthenticationProviderConfig';
-          name: string;
-          label: string;
-          icon: string;
-          enabled: boolean;
-          config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
-        }>;
-      };
-      locations: {
-        __typename?: 'PlatformLocations';
-        environment: string;
-        domain: string;
-        landing: string;
-        about: string;
-        blog: string;
-        feedback: string;
-        forumreleases: string;
-        privacy: string;
-        security: string;
-        support: string;
-        terms: string;
-        impact: string;
-        foundation: string;
-        opensource: string;
-        inspiration: string;
-        innovationLibrary: string;
-        releases: string;
-        help: string;
-        community: string;
-        newuser: string;
-        tips: string;
-        aup: string;
-        documentation: string;
-      };
-      featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
-      sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
-      apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
-      geo: { __typename?: 'Geo'; endpoint: string };
-    };
-    settings: {
-      __typename?: 'PlatformSettings';
-      integration: { __typename?: 'PlatformIntegrationSettings'; iframeAllowedUrls: Array<string> };
-    };
-    metadata: {
-      __typename?: 'Metadata';
-      services: Array<{ __typename?: 'ServiceMetadata'; name?: string | undefined; version?: string | undefined }>;
-    };
-  };
-};
-
-export type ConfigurationFragment = {
-  __typename?: 'Config';
-  authentication: {
-    __typename?: 'AuthenticationConfig';
-    providers: Array<{
-      __typename?: 'AuthenticationProviderConfig';
-      name: string;
-      label: string;
-      icon: string;
-      enabled: boolean;
-      config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
-    }>;
-  };
-  locations: {
-    __typename?: 'PlatformLocations';
-    environment: string;
-    domain: string;
-    landing: string;
-    about: string;
-    blog: string;
-    feedback: string;
-    forumreleases: string;
-    privacy: string;
-    security: string;
-    support: string;
-    terms: string;
-    impact: string;
-    foundation: string;
-    opensource: string;
-    inspiration: string;
-    innovationLibrary: string;
-    releases: string;
-    help: string;
-    community: string;
-    newuser: string;
-    tips: string;
-    aup: string;
-    documentation: string;
-  };
-  featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
-  sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
-  apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
-  geo: { __typename?: 'Geo'; endpoint: string };
-};
-
-export type PlatformLicensingPlansQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlatformLicensingPlansQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    licensingFramework: {
-      __typename?: 'Licensing';
-      id: string;
-      plans: Array<{
-        __typename?: 'LicensePlan';
-        id: string;
-        type: LicensingCredentialBasedPlanType;
-        name: string;
-        sortOrder: number;
-        licenseCredential: LicensingCredentialBasedCredentialType;
-      }>;
-    };
-  };
 };
 
 export type ShareLinkWithUserMutationVariables = Exact<{

@@ -57,6 +57,8 @@ function Conversation({
       id="rcw-conversation-container"
       aria-live="polite"
       sx={{
+        display: 'flex',
+        flexDirection: 'column',
         borderRadius: '10px',
         boxShadow: theme => `0px 2px 10px 1px ${theme.palette.grey[300]}`,
         minWidth: 370,
@@ -71,15 +73,12 @@ function Conversation({
         marginBottom: gutters(0.5),
         overflow: 'hidden',
         '@media (max-width:800px)': {
-          display: 'flex',
-          flexDirection: 'column',
           height: '100%',
         },
         '@media screen and (orientation: portrait)': {
           margin: gutters(),
           maxWidth: 'none',
-          display: 'flex',
-          flexDirection: 'column',
+          minWidth: '0',
         },
       }}
     >

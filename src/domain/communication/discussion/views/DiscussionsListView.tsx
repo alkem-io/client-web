@@ -1,6 +1,6 @@
 import { List, ListItemText } from '@mui/material';
 import { Skeleton } from '@mui/material';
-import { Filter } from '@/domain/platform/admin/components/Common/Filter';
+import { Filter } from '@/domain/platformAdmin/components/Common/Filter';
 import DiscussionOverview from './DiscussionOverview';
 import { Discussion } from '../models/Discussion';
 

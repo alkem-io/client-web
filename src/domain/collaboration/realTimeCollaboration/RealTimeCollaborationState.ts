@@ -1,26 +1,23 @@
 import { Identifiable } from '@/core/utils/Identifiable';
 
-// Array of all available memo status values
-export const COLLABORATION_STATUS_VALUES = [
-  'connecting',
-  'connected',
-  'disconnected',
-  'authenticating',
-  'authenticationFailed',
-  'syncing',
-  'unknown',
-] as const;
+// Enum of all memo status values
+export enum MemoStatus {
+  CONNECTING = 'connecting',
+  CONNECTED = 'connected',
+  DISCONNECTED = 'disconnected',
+}
 
-// Derive the type from the array to ensure they stay in sync
-export type CollaborationStatus = (typeof COLLABORATION_STATUS_VALUES)[number];
+export const MEMO_STATUS_VALUES = Object.values(MemoStatus);
 
-// Check if a string is a valid CollaborationStatus
+export type CollaborationStatus = (typeof MEMO_STATUS_VALUES)[number];
+
 export const isCollaborationStatus = (value: string): value is CollaborationStatus => {
-  return COLLABORATION_STATUS_VALUES.includes(value as CollaborationStatus);
+  return MEMO_STATUS_VALUES.includes(value as CollaborationStatus);
 };
 
 export type RealTimeCollaborationState = {
   status: CollaborationStatus;
+  synced: boolean;
   lastActive?: Date;
   readOnly?: boolean;
   users: Array<

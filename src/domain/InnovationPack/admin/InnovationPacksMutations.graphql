@@ -1,20 +1,3 @@
-query AdminInnovationPacksList {
-  platform {
-    id
-    library {
-      id
-      innovationPacks {
-        id
-        profile {
-          id
-          displayName
-          url
-        }
-      }
-    }
-  }
-}
-
 mutation deleteInnovationPack($innovationPackId: UUID!) {
   deleteInnovationPack(deleteData: { ID: $innovationPackId }) {
     id
