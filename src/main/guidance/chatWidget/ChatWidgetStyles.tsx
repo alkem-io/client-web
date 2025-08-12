@@ -15,7 +15,6 @@ const ChatWidgetStyles = ({
       const background = {
         backgroundColor: theme.palette.primary.main,
       };
-
       const borderRadius = {
         borderRadius: `${theme.shape.borderRadius}px`,
       };

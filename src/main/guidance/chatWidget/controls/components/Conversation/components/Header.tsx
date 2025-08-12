@@ -44,15 +44,6 @@ function Header({ title, subtitle, toggleChat, showCloseButton, titleAvatar }: P
             paddingRight: 0,
             cursor: 'pointer',
             background: 'transparent',
-            '@media (max-width:800px)': {
-              backgroundColor: '#35cce6',
-              border: 0,
-              display: 'block',
-              position: 'absolute',
-              right: '10px',
-              top: '20px',
-              width: '40px',
-            },
           })}
           aria-label="Close"
         >
@@ -79,9 +70,6 @@ function Header({ title, subtitle, toggleChat, showCloseButton, titleAvatar }: P
           justifyContent: 'center',
           fontWeight: 500,
           padding: 0,
-          '@media (max-width:800px)': {
-            padding: '0 0 15px 0',
-          },
         }}
       >
         {titleAvatar && (
