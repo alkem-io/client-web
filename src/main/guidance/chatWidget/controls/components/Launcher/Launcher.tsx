@@ -56,12 +56,6 @@ function Launcher({ toggle, chatId, openImg, closeImg, openLabel, closeLabel, sh
         '&:hover': {
           backgroundColor: theme => theme.palette.primary.main,
         },
-        '@media (max-width:800px)': {
-          bottom: 0,
-          margin: '20px',
-          position: 'fixed',
-          right: 0,
-        },
         ...(showChat && {
           '@media (max-width:800px)': {
             display: 'none',
