@@ -20,8 +20,7 @@ import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useNotification } from '../../../notifications/useNotification';
 import useUserCursor from '../useUserCursor';
 import { useOnlineStatus } from '@/core/utils/useOnlineStatus';
-
-const MEMO_SERVICE_URL = `${env?.VITE_APP_COLLAB_DOC_URL}${env?.VITE_APP_COLLAB_DOC_PATH}`;
+import { error as logError } from '@/core/logging/sentry/log';
 
 interface UseCollaborationProps {
   collaborationId?: string;
@@ -40,8 +39,30 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   const ydoc = useMemo(() => new Y.Doc(), []);
   const providerRef = useRef<TiptapCollabProvider | null>(null);
 
+  const getCollaborationServiceUrl = (): string | null => {
+    const baseUrl = env?.VITE_APP_COLLAB_DOC_URL;
+    const path = env?.VITE_APP_COLLAB_DOC_PATH;
+
+    if (!baseUrl) {
+      logError('Collaboration service URL not configured', {
+        category: TagCategoryValues.MEMO,
+        label: `url: ${env?.VITE_APP_COLLAB_DOC_URL}; path: ${env?.VITE_APP_COLLAB_DOC_PATH}`,
+      });
+
+      return null;
+    }
+
+    // Normalize URL construction (ensure single slash between base and path)
+    const normalizedBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+    const normalizedPath = path?.startsWith('/') ? path : `/${path}`;
+
+    return `${normalizedBase}${normalizedPath}`;
+  };
+
   useEffect(() => {
-    if (!collaborationId) return;
+    const MEMO_SERVICE_URL = getCollaborationServiceUrl();
+
+    if (!collaborationId || !MEMO_SERVICE_URL) return;
 
     providerRef.current = new TiptapCollabProvider({
       baseUrl: MEMO_SERVICE_URL,
