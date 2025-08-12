@@ -16,6 +16,8 @@ export interface MarkdownInputProps extends InputBaseComponentProps {
   maxLength?: number;
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
+  // In React 19, ref becomes a regular prop
+  ref?: React.Ref<MarkdownInputRefApi>;
 }
 
 type Offset = {
@@ -38,7 +40,7 @@ const proseMirrorStyles = {
   '& img': { maxWidth: '100%' },
 } as const;
 
-export const MarkdownInput = memo(
+export const MarkdownInput = memo<MarkdownInputProps>(
   ({
     ref,
     value,
@@ -49,8 +51,6 @@ export const MarkdownInput = memo(
     onFocus,
     onBlur,
     temporaryLocation = false,
-  }: MarkdownInputProps & {
-    ref?: React.Ref<MarkdownInputRefApi>;
   }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
