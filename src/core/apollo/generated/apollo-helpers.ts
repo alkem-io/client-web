@@ -680,7 +680,6 @@ export type CalloutKeySpecifier = (
   | 'publishedDate'
   | 'settings'
   | 'sortOrder'
-  | 'type'
   | 'updatedDate'
   | CalloutKeySpecifier
 )[];
@@ -702,7 +701,6 @@ export type CalloutFieldPolicy = {
   publishedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutContributionKeySpecifier = (
@@ -2636,6 +2634,17 @@ export type NVPFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type NotificationRecipientResultKeySpecifier = (
+  | 'emailRecipients'
+  | 'inAppRecipients'
+  | 'triggeredBy'
+  | NotificationRecipientResultKeySpecifier
+)[];
+export type NotificationRecipientResultFieldPolicy = {
+  emailRecipients?: FieldPolicy<any> | FieldReadFunction<any>;
+  inAppRecipients?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type OrganizationKeySpecifier = (
   | 'account'
   | 'agent'
@@ -2995,6 +3004,7 @@ export type QueryKeySpecifier = (
   | 'lookup'
   | 'lookupByName'
   | 'me'
+  | 'notificationRecipients'
   | 'notifications'
   | 'organization'
   | 'organizations'
@@ -3033,6 +3043,7 @@ export type QueryFieldPolicy = {
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   lookupByName?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
+  notificationRecipients?: FieldPolicy<any> | FieldReadFunction<any>;
   notifications?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4142,12 +4153,14 @@ export type UserSettingsNotificationKeySpecifier = (
   | 'organization'
   | 'platform'
   | 'space'
+  | 'user'
   | UserSettingsNotificationKeySpecifier
 )[];
 export type UserSettingsNotificationFieldPolicy = {
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationOrganizationKeySpecifier = (
   | 'mentioned'
@@ -4162,6 +4175,7 @@ export type UserSettingsNotificationPlatformKeySpecifier = (
   | 'forumDiscussionComment'
   | 'forumDiscussionCreated'
   | 'newUserSignUp'
+  | 'spaceCreated'
   | 'userProfileRemoved'
   | UserSettingsNotificationPlatformKeySpecifier
 )[];
@@ -4169,6 +4183,7 @@ export type UserSettingsNotificationPlatformFieldPolicy = {
   forumDiscussionComment?: FieldPolicy<any> | FieldReadFunction<any>;
   forumDiscussionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   newUserSignUp?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   userProfileRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationSpaceKeySpecifier = (
@@ -4203,6 +4218,19 @@ export type UserSettingsNotificationSpaceFieldPolicy = {
   postCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   postCreatedAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationUserKeySpecifier = (
+  | 'commentReply'
+  | 'mentioned'
+  | 'messageReceived'
+  | 'messageSent'
+  | UserSettingsNotificationUserKeySpecifier
+)[];
+export type UserSettingsNotificationUserFieldPolicy = {
+  commentReply?: FieldPolicy<any> | FieldReadFunction<any>;
+  mentioned?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageSent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsPrivacyKeySpecifier = ('contributionRolesPubliclyVisible' | UserSettingsPrivacyKeySpecifier)[];
 export type UserSettingsPrivacyFieldPolicy = {
@@ -5095,6 +5123,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | NVPKeySpecifier | (() => undefined | NVPKeySpecifier);
     fields?: NVPFieldPolicy;
   };
+  NotificationRecipientResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | NotificationRecipientResultKeySpecifier
+      | (() => undefined | NotificationRecipientResultKeySpecifier);
+    fields?: NotificationRecipientResultFieldPolicy;
+  };
   Organization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationKeySpecifier | (() => undefined | OrganizationKeySpecifier);
     fields?: OrganizationFieldPolicy;
@@ -5523,6 +5558,13 @@ export type StrictTypedTypePolicies = {
       | UserSettingsNotificationSpaceKeySpecifier
       | (() => undefined | UserSettingsNotificationSpaceKeySpecifier);
     fields?: UserSettingsNotificationSpaceFieldPolicy;
+  };
+  UserSettingsNotificationUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationUserKeySpecifier
+      | (() => undefined | UserSettingsNotificationUserKeySpecifier);
+    fields?: UserSettingsNotificationUserFieldPolicy;
   };
   UserSettingsPrivacy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserSettingsPrivacyKeySpecifier | (() => undefined | UserSettingsPrivacyKeySpecifier);
