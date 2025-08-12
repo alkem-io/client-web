@@ -11,7 +11,7 @@ const MAX_ITEMS_LIMIT = 1000;
 
 export interface SearchableTableProps<
   ItemViewProps extends {},
-  Item extends SearchableTableItem & Omit<ItemViewProps, keyof ListItemLinkProps>
+  Item extends SearchableTableItem & Omit<ItemViewProps, keyof ListItemLinkProps>,
 > {
   data: Item[];
   edit?: boolean;
@@ -37,7 +37,7 @@ export interface SearchableTableItem {
 
 export const SearchableTable = <
   ItemViewProps extends {},
-  Item extends SearchableTableItem & Omit<ItemViewProps, keyof ListItemLinkProps>
+  Item extends SearchableTableItem & Omit<ItemViewProps, keyof ListItemLinkProps>,
 >({
   data = [],
   edit = false,

@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { Formik, FormikHelpers, FormikProps } from 'formik';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';

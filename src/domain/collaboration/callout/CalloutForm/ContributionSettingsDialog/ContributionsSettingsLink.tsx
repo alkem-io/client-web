@@ -1,4 +1,4 @@
-import ReferenceSegment from '@/domain/platform/admin/components/Common/ReferenceSegment';
+import ReferenceSegment from '@/domain/platformAdmin/components/Common/ReferenceSegment';
 import { Formik, FormikProps, useField } from 'formik';
 import { useImperativeHandle, useRef } from 'react';
 import { CalloutFormSubmittedValues } from '../CalloutFormModel';

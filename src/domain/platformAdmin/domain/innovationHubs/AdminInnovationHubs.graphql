@@ -1,0 +1,13 @@
+query PlatformAdminInnovationHubs {
+  platformAdmin {
+    innovationHubs {
+      id
+      subdomain
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
+}

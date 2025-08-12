@@ -8,8 +8,8 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import Loading from '@/core/ui/loading/Loading';
-import ListPage from '@/domain/platform/admin/components/ListPage';
-import { SearchableTableItem, SearchableTableItemMapper } from '@/domain/platform/admin/components/SearchableTable';
+import ListPage from '@/domain/platformAdmin/components/ListPage';
+import { SearchableTableItem, SearchableTableItemMapper } from '@/domain/platformAdmin/components/SearchableTable';
 import {
   AuthorizationPrivilege,
   LicensingCredentialBasedPlanType,
