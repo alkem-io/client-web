@@ -3055,7 +3055,6 @@
           "communityNewMember": "Receive notification when a new member joins a community I am a member of",
           "postCommentCreated": "Receive notification when a new comment is added to a post I follow",
           "postCreated": "Receive notification when a new post is created in a community I am a member of",
-          "commentReply": "Receive a notification when someone replies to your comment",
           "whiteboardCreated": "Receive a notification when a new whiteboard is created in a community I am a member of"
         }
       },
@@ -3082,8 +3081,17 @@
         "title": "Organization mentions and messaging",
         "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to organizations you manage",
         "settings": {
+          "commentReply": "Receive a notification when someone replies to your comment",
           "mentioned": "Receive notifications when my organization is mentioned",
           "messageReceived": "Receive direct messages to my organization"
+        }
+      },
+      "user": {
+        "title": "User mentions and messaging",
+        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to yourself.",
+        "settings": {
+          "mentioned": "Receive notifications when I am mentioned",
+          "messageReceived": "Receive direct messages to myself"
         }
       },
       "forum": {

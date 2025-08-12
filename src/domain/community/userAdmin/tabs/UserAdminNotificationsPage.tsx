@@ -202,14 +202,24 @@ const UserAdminNotificationsPage = () => {
                       checked: currentSettings?.notification?.space?.collaborationWhiteboardCreated || false,
                       label: t('pages.userNotificationsSettings.space.settings.whiteboardCreated'),
                     },
-                    // TODO: These below under the user settings section
+                  }}
+                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+                />
+              </PageContentBlock>
+
+              {/* User notification settings */}
+              <PageContentBlock>
+                <BlockTitle>{t('pages.userNotificationsSettings.user.title')}</BlockTitle>
+                <Caption>{t('pages.userNotificationsSettings.user.subtitle')}</Caption>
+                <SwitchSettingsGroup
+                  options={{
                     commentReply: {
                       checked: currentSettings?.notification?.user?.commentReply || false,
-                      label: t('pages.userNotificationsSettings.space.settings.commentReply'),
+                      label: t('pages.userNotificationsSettings.user.settings.commentReply'),
                     },
                     mentioned: {
                       checked: currentSettings?.notification?.user?.mentioned || false,
-                      label: t('pages.userNotificationsSettings.space.settings.communicationMention'),
+                      label: t('pages.userNotificationsSettings.user.settings.mentioned'),
                     },
                   }}
                   onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
