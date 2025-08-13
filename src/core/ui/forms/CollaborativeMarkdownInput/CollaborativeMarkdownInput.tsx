@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import React, { memo, useEffect, useRef, useState, useMemo } from 'react';
+import { Box } from '@mui/material';
 import { EditorContent, useEditor, Editor } from '@tiptap/react';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
 import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
@@ -15,29 +15,20 @@ import { useCollaboration } from './hooks/useCollaboration';
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
   maxLength?: number;
-  height?: BoxProps['height']; // Make optional
+  inputMinHeight?: string; // defines the height of the input area
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
   collaborationId?: string;
   onChangeCollaborationState?: (state: RealTimeCollaborationState) => void;
   disabled?: boolean;
-  storageBucketId?: string; // Make optional with fallback
+  storageBucketId?: string;
 }
-
-const proseMirrorStyles = {
-  outline: 'none',
-  minHeight: gutters(4),
-  padding: gutters(0.5),
-  '& p:first-of-type': { marginTop: 0 },
-  '& p:last-child': { marginBottom: 0 },
-  '& img': { maxWidth: '100%' },
-} as const;
 
 export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
   ({
     controlsVisible = 'focused',
     hideImageOptions,
-    height = '200px',
+    inputMinHeight = 'calc(100vh - 300px)',
     onFocus,
     onBlur,
     temporaryLocation,
@@ -49,6 +40,18 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
     const containerRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
     const editorRef = useRef<Editor | null>(null);
+
+    const proseMirrorStyles = useMemo(
+      () => ({
+        outline: 'none',
+        minHeight: inputMinHeight,
+        padding: gutters(0.5),
+        '& p:first-of-type': { marginTop: 0 },
+        '& p:last-child': { marginBottom: 0 },
+        '& img': { maxWidth: '100%' },
+      }),
+      [inputMinHeight]
+    );
 
     const { areControlsVisible, handleFocus, handleBlur, handleDialogOpen, handleDialogClose, prevEditorHeight } =
       useMarkdownInputUI({
@@ -133,7 +136,7 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
     }
 
     return (
-      <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur} height={height}>
+      <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
         <MarkdownInputControls
           ref={toolbarRef}
           editor={editor}
@@ -143,8 +146,8 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
           onDialogClose={handleDialogClose}
           temporaryLocation={temporaryLocation}
         />
-        <Box width="100%" height="calc(100% - 40px)" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
-          <Box position="relative" height="100%" style={{ minHeight: prevEditorHeight }}>
+        <Box width="100%" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
+          <Box position="relative" height="100%" style={{ minHeight: prevEditorHeight }} sx={{ cursor: 'text' }}>
             <EditorContent style={{ height: '100%' }} editor={editor} />
           </Box>
         </Box>
