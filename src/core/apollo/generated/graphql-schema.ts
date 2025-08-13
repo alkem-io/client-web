@@ -41,6 +41,8 @@ export type Account = {
   agent: Agent;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The base license plan assigned to this Account. Additional entitlements may be added via other means. */
+  baselineLicensePlan: AccountLicensePlan;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The external subscription ID for this Account. */
@@ -72,6 +74,22 @@ export type Account = {
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
   accountID: Scalars['UUID']['input'];
+};
+
+export type AccountLicensePlan = {
+  __typename?: 'AccountLicensePlan';
+  /** The number of Innovation Packs allowed. */
+  innovationPacks: Scalars['Int']['output'];
+  /** The number of Free Spaces allowed. */
+  spaceFree: Scalars['Int']['output'];
+  /** The number of Plus Spaces allowed. */
+  spacePlus: Scalars['Int']['output'];
+  /** The number of Premium Spaces allowed. */
+  spacePremium: Scalars['Int']['output'];
+  /** The number of Starting Pages allowed. */
+  startingPages: Scalars['Int']['output'];
+  /** The number of Virtual Contributors allowed. */
+  virtualContributor: Scalars['Int']['output'];
 };
 
 export type AccountLicenseResetInput = {
@@ -1041,8 +1059,6 @@ export type Callout = {
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float']['output'];
-  /** Deprecated: decide what to do with this field */
-  type?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -2699,12 +2715,12 @@ export type ISearchResults = {
 /** An in-app notification type. To not be queried directly */
 export type InAppNotification = {
   /** Which category (role) is this notification targeted to. */
-  category: InAppNotificationCategory;
+  category: NotificationEventCategory;
   id: Scalars['UUID']['output'];
   /** The receiver of the notification. */
   receiver: Contributor;
   /** The current state of the notification */
-  state: InAppNotificationState;
+  state: NotificationEventInAppState;
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime']['output'];
   /** The Contributor who triggered the notification. */
@@ -2713,19 +2729,194 @@ export type InAppNotification = {
   type: NotificationEvent;
 };
 
-export type InAppNotificationCalloutPublished = InAppNotification & {
-  __typename?: 'InAppNotificationCalloutPublished';
+export type InAppNotificationFilterInput = {
+  /** Return Notifications with a type matching one of the provided types. */
+  types?: InputMaybe<Array<NotificationEvent>>;
+};
+
+export type InAppNotificationOrganizationMentioned = InAppNotification & {
+  __typename?: 'InAppNotificationOrganizationMentioned';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationOrganizationMessageRecipient = InAppNotification & {
+  __typename?: 'InAppNotificationOrganizationMessageRecipient';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationOrganizationMessageSender = InAppNotification & {
+  __typename?: 'InAppNotificationOrganizationMessageSender';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationPlatformForumDiscussionComment = InAppNotification & {
+  __typename?: 'InAppNotificationPlatformForumDiscussionComment';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationPlatformForumDiscussionCreated = InAppNotification & {
+  __typename?: 'InAppNotificationPlatformForumDiscussionCreated';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationPlatformGlobalRoleChange = InAppNotification & {
+  __typename?: 'InAppNotificationPlatformGlobalRoleChange';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationPlatformSpaceCreated = InAppNotification & {
+  __typename?: 'InAppNotificationPlatformSpaceCreated';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationPlatformUserProfileCreated = InAppNotification & {
+  __typename?: 'InAppNotificationPlatformUserProfileCreated';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationPlatformUserProfileCreatedAdmin = InAppNotification & {
+  __typename?: 'InAppNotificationPlatformUserProfileCreatedAdmin';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationPlatformUserProfileRemoved = InAppNotification & {
+  __typename?: 'InAppNotificationPlatformUserProfileRemoved';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCollaborationCalloutPublished = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCollaborationCalloutPublished';
   /** The Callout that was published. */
   callout?: Maybe<Callout>;
   /** Which category (role) is this notification targeted to. */
-  category: InAppNotificationCategory;
+  category: NotificationEventCategory;
   id: Scalars['UUID']['output'];
   /** The receiver of the notification. */
   receiver: Contributor;
   /** Where the callout is located. */
   space?: Maybe<Space>;
   /** The current state of the notification */
-  state: InAppNotificationState;
+  state: NotificationEventInAppState;
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime']['output'];
   /** The Contributor who triggered the notification. */
@@ -2734,19 +2925,233 @@ export type InAppNotificationCalloutPublished = InAppNotification & {
   type: NotificationEvent;
 };
 
-/** Which category (role) is this notification targeted to. */
-export enum InAppNotificationCategory {
-  Admin = 'ADMIN',
-  Member = 'MEMBER',
-  Self = 'SELF',
-}
-
-export type InAppNotificationCommunityNewMember = InAppNotification & {
-  __typename?: 'InAppNotificationCommunityNewMember';
-  /** The Contributor that joined. */
-  actor?: Maybe<Contributor>;
+export type InAppNotificationSpaceCollaborationPostCommentCreated = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCollaborationPostCommentCreated';
   /** Which category (role) is this notification targeted to. */
-  category: InAppNotificationCategory;
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCollaborationPostCreated = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCollaborationPostCreated';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCollaborationPostCreatedAdmin = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCollaborationPostCreatedAdmin';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCollaborationWhiteboardCreated = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCollaborationWhiteboardCreated';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCommunicationMessageRecipient = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCommunicationMessageRecipient';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCommunicationMessageSender = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCommunicationMessageSender';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCommunicationUpdate = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCommunicationUpdate';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCommunicationUpdateAdmin = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCommunicationUpdateAdmin';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCommunityApplicationAdmin = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCommunityApplicationAdmin';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCommunityApplicationApplicant = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCommunityApplicationApplicant';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCommunityInvitationUser = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCommunityInvitationUser';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCommunityInvitationUserPlatform = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCommunityInvitationUserPlatform';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCommunityInvitationVc = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCommunityInvitationVc';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationSpaceCommunityNewMember = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCommunityNewMember';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  /** The Contributor that joined. */
+  contributor?: Maybe<Contributor>;
   /** The type of the Contributor that joined. */
   contributorType: RoleSetContributorType;
   id: Scalars['UUID']['output'];
@@ -2755,7 +3160,7 @@ export type InAppNotificationCommunityNewMember = InAppNotification & {
   /** The Space that was joined. */
   space?: Maybe<Space>;
   /** The current state of the notification */
-  state: InAppNotificationState;
+  state: NotificationEventInAppState;
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime']['output'];
   /** The Contributor who triggered the notification. */
@@ -2764,29 +3169,89 @@ export type InAppNotificationCommunityNewMember = InAppNotification & {
   type: NotificationEvent;
 };
 
-export enum InAppNotificationState {
-  Archived = 'ARCHIVED',
-  Read = 'READ',
-  Unread = 'UNREAD',
-}
+export type InAppNotificationSpaceCommunityNewMemberAdmin = InAppNotification & {
+  __typename?: 'InAppNotificationSpaceCommunityNewMemberAdmin';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationUserCommentReply = InAppNotification & {
+  __typename?: 'InAppNotificationUserCommentReply';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
 
 export type InAppNotificationUserMentioned = InAppNotification & {
   __typename?: 'InAppNotificationUserMentioned';
   /** Which category (role) is this notification targeted to. */
-  category: InAppNotificationCategory;
+  category: NotificationEventCategory;
   /** The comment that the contributor was mentioned in. */
   comment: Scalars['String']['output'];
   /** The display name of the resource where the comment was created. */
   commentOriginName: Scalars['String']['output'];
   /** The url of the resource where the comment was created. */
   commentUrl: Scalars['String']['output'];
-  /** The type of the Contributor that joined. */
-  contributorType: RoleSetContributorType;
   id: Scalars['UUID']['output'];
   /** The receiver of the notification. */
   receiver: Contributor;
   /** The current state of the notification */
-  state: InAppNotificationState;
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationUserMessageRecipient = InAppNotification & {
+  __typename?: 'InAppNotificationUserMessageRecipient';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime']['output'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEvent;
+};
+
+export type InAppNotificationUserMessageSender = InAppNotification & {
+  __typename?: 'InAppNotificationUserMessageSender';
+  /** Which category (role) is this notification targeted to. */
+  category: NotificationEventCategory;
+  id: Scalars['UUID']['output'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: NotificationEventInAppState;
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime']['output'];
   /** The Contributor who triggered the notification. */
@@ -4145,6 +4610,8 @@ export type Mutation = {
   updateAnswerRelevance: Scalars['Boolean']['output'];
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
+  /** Update the baseline License Plan on the specified Account. */
+  updateBaselineLicensePlanOnAccount: Account;
   /** Updates the specified CalendarEvent. */
   updateCalendarEvent: CalendarEvent;
   /** Update a Callout. */
@@ -4186,7 +4653,7 @@ export type Mutation = {
   /** Updates the specified Memo. */
   updateMemo: Memo;
   /** Update notification state and return the notification. */
-  updateNotificationState: InAppNotificationState;
+  updateNotificationState: NotificationEventInAppState;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
   /** Updates the specified Organization platform settings. */
@@ -4699,6 +5166,10 @@ export type MutationUpdateApplicationFormOnRoleSetArgs = {
   applicationFormData: UpdateApplicationFormOnRoleSetInput;
 };
 
+export type MutationUpdateBaselineLicensePlanOnAccountArgs = {
+  updateData: UpdateBaselineLicensePlanOnAccount;
+};
+
 export type MutationUpdateCalendarEventArgs = {
   eventData: UpdateCalendarEventInput;
 };
@@ -4950,6 +5421,21 @@ export enum NotificationEvent {
   UserMention = 'USER_MENTION',
   UserMessageRecipient = 'USER_MESSAGE_RECIPIENT',
   UserMessageSender = 'USER_MESSAGE_SENDER',
+}
+
+/** A categorization of notification type. */
+export enum NotificationEventCategory {
+  Organization = 'ORGANIZATION',
+  Platform = 'PLATFORM',
+  SpaceAdmin = 'SPACE_ADMIN',
+  SpaceMember = 'SPACE_MEMBER',
+  User = 'USER',
+}
+
+export enum NotificationEventInAppState {
+  Archived = 'ARCHIVED',
+  Read = 'READ',
+  Unread = 'UNREAD',
 }
 
 export type NotificationRecipientResult = {
@@ -5500,7 +5986,7 @@ export type Query = {
   /** The notificationRecipients for the provided event on the given entity. */
   notificationRecipients: NotificationRecipientResult;
   /** Get all notifications for the logged in user. */
-  notifications: Array<InAppNotification>;
+  notificationsInApp: Array<InAppNotification>;
   /** A particular Organization */
   organization: Organization;
   /** The Organizations on this platform */
@@ -5567,6 +6053,10 @@ export type QueryExploreSpacesArgs = {
 
 export type QueryNotificationRecipientsArgs = {
   eventData: NotificationRecipientsInput;
+};
+
+export type QueryNotificationsInAppArgs = {
+  filter?: InputMaybe<InAppNotificationFilterInput>;
 };
 
 export type QueryOrganizationArgs = {
@@ -7015,6 +7505,23 @@ export type UpdateApplicationFormOnRoleSetInput = {
   roleSetID: Scalars['UUID']['input'];
 };
 
+export type UpdateBaselineLicensePlanOnAccount = {
+  /** The Account to update the Baseline License Plan. */
+  accountID: Scalars['UUID']['input'];
+  /** The number of Innovation Packs allowed. */
+  innovationPacks?: InputMaybe<Scalars['Int']['input']>;
+  /** The number of Free Spaces allowed. */
+  spaceFree?: InputMaybe<Scalars['Int']['input']>;
+  /** The number of Plus Spaces allowed. */
+  spacePlus?: InputMaybe<Scalars['Int']['input']>;
+  /** The number of Premium Spaces allowed. */
+  spacePremium?: InputMaybe<Scalars['Int']['input']>;
+  /** The number of Starting Pages allowed. */
+  startingPages?: InputMaybe<Scalars['Int']['input']>;
+  /** The number of Virtual Contributors allowed. */
+  virtualContributor?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type UpdateCalendarEventInput = {
   ID: Scalars['UUID']['input'];
   /** The length of the event in days. */
@@ -7302,7 +7809,7 @@ export type UpdateNotificationStateInput = {
   /** The ID of the notification to update. */
   ID: Scalars['UUID']['input'];
   /** The new state of the notification. */
-  state: InAppNotificationState;
+  state: NotificationEventInAppState;
 };
 
 export type UpdateOrganizationInput = {
@@ -20189,21 +20696,6 @@ export type DashboardSpacesQuery = {
   }>;
 };
 
-export type PlatformAdminInnovationHubsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlatformAdminInnovationHubsQuery = {
-  __typename?: 'Query';
-  platformAdmin: {
-    __typename?: 'PlatformAdminQueryResults';
-    innovationHubs: Array<{
-      __typename?: 'InnovationHub';
-      id: string;
-      subdomain: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-    }>;
-  };
-};
-
 export type DeleteInnovationHubMutationVariables = Exact<{
   innovationHubId: Scalars['UUID']['input'];
 }>;
@@ -20804,6 +21296,21 @@ export type PlatformRoleSetQueryVariables = Exact<{ [key: string]: never }>;
 export type PlatformRoleSetQuery = {
   __typename?: 'Query';
   platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
+};
+
+export type PlatformAdminInnovationHubsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformAdminInnovationHubsQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    innovationHubs: Array<{
+      __typename?: 'InnovationHub';
+      id: string;
+      subdomain: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    }>;
+  };
 };
 
 export type PlatformAdminInnovationPacksQueryVariables = Exact<{ [key: string]: never }>;
@@ -29251,11 +29758,91 @@ export type InAppNotificationReceivedSubscription = {
   __typename?: 'Subscription';
   inAppNotificationReceived:
     | {
-        __typename?: 'InAppNotificationCalloutPublished';
+        __typename?: 'InAppNotificationOrganizationMentioned';
         id: string;
         type: NotificationEvent;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationOrganizationMessageRecipient';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationOrganizationMessageSender';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformForumDiscussionComment';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformForumDiscussionCreated';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformGlobalRoleChange';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformSpaceCreated';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformUserProfileCreated';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformUserProfileCreatedAdmin';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformUserProfileRemoved';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCollaborationCalloutPublished';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
         triggeredAt: Date;
         callout?:
           | {
@@ -29380,11 +29967,115 @@ export type InAppNotificationReceivedSubscription = {
           | undefined;
       }
     | {
-        __typename?: 'InAppNotificationCommunityNewMember';
+        __typename?: 'InAppNotificationSpaceCollaborationPostCommentCreated';
         id: string;
         type: NotificationEvent;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCollaborationPostCreated';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCollaborationPostCreatedAdmin';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCollaborationWhiteboardCreated';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunicationMessageRecipient';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunicationMessageSender';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunicationUpdate';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunicationUpdateAdmin';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityApplicationAdmin';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityApplicationApplicant';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityInvitationUser';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityInvitationUserPlatform';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityInvitationVc';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityNewMember';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
         triggeredAt: Date;
         triggeredBy?:
           | {
@@ -29482,7 +30173,7 @@ export type InAppNotificationReceivedSubscription = {
               };
             }
           | undefined;
-        actor?:
+        contributor?:
           | {
               __typename: 'Organization';
               id: string;
@@ -29543,16 +30234,31 @@ export type InAppNotificationReceivedSubscription = {
           | undefined;
       }
     | {
+        __typename?: 'InAppNotificationSpaceCommunityNewMemberAdmin';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationUserCommentReply';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
         __typename?: 'InAppNotificationUserMentioned';
         id: string;
         type: NotificationEvent;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
         triggeredAt: Date;
         commentUrl: string;
         comment: string;
         commentOriginName: string;
-        contributorType: RoleSetContributorType;
         triggeredBy?:
           | {
               __typename?: 'Organization';
@@ -29612,6 +30318,22 @@ export type InAppNotificationReceivedSubscription = {
               };
             }
           | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationUserMessageRecipient';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationUserMessageSender';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
       };
 };
 
@@ -29619,13 +30341,93 @@ export type InAppNotificationsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InAppNotificationsQuery = {
   __typename?: 'Query';
-  notifications: Array<
+  notificationsInApp: Array<
     | {
-        __typename?: 'InAppNotificationCalloutPublished';
+        __typename?: 'InAppNotificationOrganizationMentioned';
         id: string;
         type: NotificationEvent;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationOrganizationMessageRecipient';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationOrganizationMessageSender';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformForumDiscussionComment';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformForumDiscussionCreated';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformGlobalRoleChange';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformSpaceCreated';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformUserProfileCreated';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformUserProfileCreatedAdmin';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationPlatformUserProfileRemoved';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCollaborationCalloutPublished';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
         triggeredAt: Date;
         callout?:
           | {
@@ -29750,11 +30552,115 @@ export type InAppNotificationsQuery = {
           | undefined;
       }
     | {
-        __typename?: 'InAppNotificationCommunityNewMember';
+        __typename?: 'InAppNotificationSpaceCollaborationPostCommentCreated';
         id: string;
         type: NotificationEvent;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCollaborationPostCreated';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCollaborationPostCreatedAdmin';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCollaborationWhiteboardCreated';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunicationMessageRecipient';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunicationMessageSender';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunicationUpdate';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunicationUpdateAdmin';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityApplicationAdmin';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityApplicationApplicant';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityInvitationUser';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityInvitationUserPlatform';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityInvitationVc';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationSpaceCommunityNewMember';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
         triggeredAt: Date;
         triggeredBy?:
           | {
@@ -29852,7 +30758,7 @@ export type InAppNotificationsQuery = {
               };
             }
           | undefined;
-        actor?:
+        contributor?:
           | {
               __typename: 'Organization';
               id: string;
@@ -29913,16 +30819,31 @@ export type InAppNotificationsQuery = {
           | undefined;
       }
     | {
+        __typename?: 'InAppNotificationSpaceCommunityNewMemberAdmin';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationUserCommentReply';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
         __typename?: 'InAppNotificationUserMentioned';
         id: string;
         type: NotificationEvent;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
         triggeredAt: Date;
         commentUrl: string;
         comment: string;
         commentOriginName: string;
-        contributorType: RoleSetContributorType;
         triggeredBy?:
           | {
               __typename?: 'Organization';
@@ -29983,17 +30904,33 @@ export type InAppNotificationsQuery = {
             }
           | undefined;
       }
+    | {
+        __typename?: 'InAppNotificationUserMessageRecipient';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
+    | {
+        __typename?: 'InAppNotificationUserMessageSender';
+        id: string;
+        type: NotificationEvent;
+        category: NotificationEventCategory;
+        state: NotificationEventInAppState;
+        triggeredAt: Date;
+      }
   >;
 };
 
 export type UpdateNotificationStateMutationVariables = Exact<{
   ID: Scalars['UUID']['input'];
-  state: InAppNotificationState;
+  state: NotificationEventInAppState;
 }>;
 
 export type UpdateNotificationStateMutation = {
   __typename?: 'Mutation';
-  updateNotificationState: InAppNotificationState;
+  updateNotificationState: NotificationEventInAppState;
 };
 
 export type MarkNotificationsAsReadMutationVariables = Exact<{
@@ -30002,12 +30939,102 @@ export type MarkNotificationsAsReadMutationVariables = Exact<{
 
 export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNotificationsAsRead: boolean };
 
-type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
-  __typename?: 'InAppNotificationCalloutPublished';
+type InAppNotificationAllTypes_InAppNotificationOrganizationMentioned_Fragment = {
+  __typename?: 'InAppNotificationOrganizationMentioned';
   id: string;
   type: NotificationEvent;
-  category: InAppNotificationCategory;
-  state: InAppNotificationState;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationOrganizationMessageRecipient_Fragment = {
+  __typename?: 'InAppNotificationOrganizationMessageRecipient';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationOrganizationMessageSender_Fragment = {
+  __typename?: 'InAppNotificationOrganizationMessageSender';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationPlatformForumDiscussionComment_Fragment = {
+  __typename?: 'InAppNotificationPlatformForumDiscussionComment';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationPlatformForumDiscussionCreated_Fragment = {
+  __typename?: 'InAppNotificationPlatformForumDiscussionCreated';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationPlatformGlobalRoleChange_Fragment = {
+  __typename?: 'InAppNotificationPlatformGlobalRoleChange';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationPlatformSpaceCreated_Fragment = {
+  __typename?: 'InAppNotificationPlatformSpaceCreated';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationPlatformUserProfileCreated_Fragment = {
+  __typename?: 'InAppNotificationPlatformUserProfileCreated';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationPlatformUserProfileCreatedAdmin_Fragment = {
+  __typename?: 'InAppNotificationPlatformUserProfileCreatedAdmin';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationPlatformUserProfileRemoved_Fragment = {
+  __typename?: 'InAppNotificationPlatformUserProfileRemoved';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCollaborationCalloutPublished_Fragment = {
+  __typename?: 'InAppNotificationSpaceCollaborationCalloutPublished';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
   triggeredAt: Date;
   callout?:
     | {
@@ -30102,12 +31129,129 @@ type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
     | undefined;
 };
 
-type InAppNotificationAllTypes_InAppNotificationCommunityNewMember_Fragment = {
-  __typename?: 'InAppNotificationCommunityNewMember';
+type InAppNotificationAllTypes_InAppNotificationSpaceCollaborationPostCommentCreated_Fragment = {
+  __typename?: 'InAppNotificationSpaceCollaborationPostCommentCreated';
   id: string;
   type: NotificationEvent;
-  category: InAppNotificationCategory;
-  state: InAppNotificationState;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCollaborationPostCreated_Fragment = {
+  __typename?: 'InAppNotificationSpaceCollaborationPostCreated';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCollaborationPostCreatedAdmin_Fragment = {
+  __typename?: 'InAppNotificationSpaceCollaborationPostCreatedAdmin';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCollaborationWhiteboardCreated_Fragment = {
+  __typename?: 'InAppNotificationSpaceCollaborationWhiteboardCreated';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCommunicationMessageRecipient_Fragment = {
+  __typename?: 'InAppNotificationSpaceCommunicationMessageRecipient';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCommunicationMessageSender_Fragment = {
+  __typename?: 'InAppNotificationSpaceCommunicationMessageSender';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCommunicationUpdate_Fragment = {
+  __typename?: 'InAppNotificationSpaceCommunicationUpdate';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCommunicationUpdateAdmin_Fragment = {
+  __typename?: 'InAppNotificationSpaceCommunicationUpdateAdmin';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCommunityApplicationAdmin_Fragment = {
+  __typename?: 'InAppNotificationSpaceCommunityApplicationAdmin';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCommunityApplicationApplicant_Fragment = {
+  __typename?: 'InAppNotificationSpaceCommunityApplicationApplicant';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCommunityInvitationUser_Fragment = {
+  __typename?: 'InAppNotificationSpaceCommunityInvitationUser';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCommunityInvitationUserPlatform_Fragment = {
+  __typename?: 'InAppNotificationSpaceCommunityInvitationUserPlatform';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCommunityInvitationVc_Fragment = {
+  __typename?: 'InAppNotificationSpaceCommunityInvitationVc';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationSpaceCommunityNewMember_Fragment = {
+  __typename?: 'InAppNotificationSpaceCommunityNewMember';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
   triggeredAt: Date;
   triggeredBy?:
     | {
@@ -30181,7 +31325,7 @@ type InAppNotificationAllTypes_InAppNotificationCommunityNewMember_Fragment = {
         };
       }
     | undefined;
-  actor?:
+  contributor?:
     | {
         __typename: 'Organization';
         id: string;
@@ -30224,17 +31368,34 @@ type InAppNotificationAllTypes_InAppNotificationCommunityNewMember_Fragment = {
     | undefined;
 };
 
+type InAppNotificationAllTypes_InAppNotificationSpaceCommunityNewMemberAdmin_Fragment = {
+  __typename?: 'InAppNotificationSpaceCommunityNewMemberAdmin';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+type InAppNotificationAllTypes_InAppNotificationUserCommentReply_Fragment = {
+  __typename?: 'InAppNotificationUserCommentReply';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
 type InAppNotificationAllTypes_InAppNotificationUserMentioned_Fragment = {
   __typename?: 'InAppNotificationUserMentioned';
   id: string;
   type: NotificationEvent;
-  category: InAppNotificationCategory;
-  state: InAppNotificationState;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
   triggeredAt: Date;
   commentUrl: string;
   comment: string;
   commentOriginName: string;
-  contributorType: RoleSetContributorType;
   triggeredBy?:
     | {
         __typename?: 'Organization';
@@ -30278,13 +31439,58 @@ type InAppNotificationAllTypes_InAppNotificationUserMentioned_Fragment = {
     | undefined;
 };
 
-export type InAppNotificationAllTypesFragment =
-  | InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment
-  | InAppNotificationAllTypes_InAppNotificationCommunityNewMember_Fragment
-  | InAppNotificationAllTypes_InAppNotificationUserMentioned_Fragment;
+type InAppNotificationAllTypes_InAppNotificationUserMessageRecipient_Fragment = {
+  __typename?: 'InAppNotificationUserMessageRecipient';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
 
-export type InAppNotificationCalloutPublishedFragment = {
-  __typename?: 'InAppNotificationCalloutPublished';
+type InAppNotificationAllTypes_InAppNotificationUserMessageSender_Fragment = {
+  __typename?: 'InAppNotificationUserMessageSender';
+  id: string;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
+  triggeredAt: Date;
+};
+
+export type InAppNotificationAllTypesFragment =
+  | InAppNotificationAllTypes_InAppNotificationOrganizationMentioned_Fragment
+  | InAppNotificationAllTypes_InAppNotificationOrganizationMessageRecipient_Fragment
+  | InAppNotificationAllTypes_InAppNotificationOrganizationMessageSender_Fragment
+  | InAppNotificationAllTypes_InAppNotificationPlatformForumDiscussionComment_Fragment
+  | InAppNotificationAllTypes_InAppNotificationPlatformForumDiscussionCreated_Fragment
+  | InAppNotificationAllTypes_InAppNotificationPlatformGlobalRoleChange_Fragment
+  | InAppNotificationAllTypes_InAppNotificationPlatformSpaceCreated_Fragment
+  | InAppNotificationAllTypes_InAppNotificationPlatformUserProfileCreated_Fragment
+  | InAppNotificationAllTypes_InAppNotificationPlatformUserProfileCreatedAdmin_Fragment
+  | InAppNotificationAllTypes_InAppNotificationPlatformUserProfileRemoved_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCollaborationCalloutPublished_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCollaborationPostCommentCreated_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCollaborationPostCreated_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCollaborationPostCreatedAdmin_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCollaborationWhiteboardCreated_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCommunicationMessageRecipient_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCommunicationMessageSender_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCommunicationUpdate_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCommunicationUpdateAdmin_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCommunityApplicationAdmin_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCommunityApplicationApplicant_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCommunityInvitationUser_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCommunityInvitationUserPlatform_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCommunityInvitationVc_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCommunityNewMember_Fragment
+  | InAppNotificationAllTypes_InAppNotificationSpaceCommunityNewMemberAdmin_Fragment
+  | InAppNotificationAllTypes_InAppNotificationUserCommentReply_Fragment
+  | InAppNotificationAllTypes_InAppNotificationUserMentioned_Fragment
+  | InAppNotificationAllTypes_InAppNotificationUserMessageRecipient_Fragment
+  | InAppNotificationAllTypes_InAppNotificationUserMessageSender_Fragment;
+
+export type InAppNotificationSpaceCollaborationCalloutPublishedFragment = {
+  __typename?: 'InAppNotificationSpaceCollaborationCalloutPublished';
   callout?:
     | {
         __typename?: 'Callout';
@@ -30378,8 +31584,8 @@ export type InAppNotificationCalloutPublishedFragment = {
     | undefined;
 };
 
-export type InAppNotificationCommunityNewMemberFragment = {
-  __typename?: 'InAppNotificationCommunityNewMember';
+export type InAppNotificationSpaceCommunityNewMemberFragment = {
+  __typename?: 'InAppNotificationSpaceCommunityNewMember';
   triggeredBy?:
     | {
         __typename?: 'Organization';
@@ -30452,7 +31658,7 @@ export type InAppNotificationCommunityNewMemberFragment = {
         };
       }
     | undefined;
-  actor?:
+  contributor?:
     | {
         __typename: 'Organization';
         id: string;
@@ -30500,7 +31706,6 @@ export type InAppNotificationUserMentionedFragment = {
   commentUrl: string;
   comment: string;
   commentOriginName: string;
-  contributorType: RoleSetContributorType;
   triggeredBy?:
     | {
         __typename?: 'Organization';

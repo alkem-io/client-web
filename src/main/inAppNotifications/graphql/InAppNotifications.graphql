@@ -1,15 +1,15 @@
 query InAppNotifications {
-  notifications {
+  notificationsInApp(filter: { types: [USER_MENTION, SPACE_COLLABORATION_CALLOUT_PUBLISHED, SPACE_COMMUNITY_NEW_MEMBER] }) {
     id
     type
     category
     state
     triggeredAt
-    ... on InAppNotificationCalloutPublished {
-      ...InAppNotificationCalloutPublished
+    ... on InAppNotificationSpaceCollaborationCalloutPublished {
+      ...InAppNotificationSpaceCollaborationCalloutPublished
     }
-    ... on InAppNotificationCommunityNewMember {
-      ...InAppNotificationCommunityNewMember
+    ... on InAppNotificationSpaceCommunityNewMember {
+      ...InAppNotificationSpaceCommunityNewMember
     }
     ... on InAppNotificationUserMentioned {
       ...InAppNotificationUserMentioned
@@ -17,13 +17,10 @@ query InAppNotifications {
   }
 }
 
-mutation UpdateNotificationState ($ID: UUID!, $state: InAppNotificationState!) {
-  updateNotificationState ( notificationData:  {
-     ID: $ID,
-     state: $state,
-  })
+mutation UpdateNotificationState($ID: UUID!, $state: NotificationEventInAppState!) {
+  updateNotificationState(notificationData: { ID: $ID, state: $state })
 }
 
-mutation MarkNotificationsAsRead ($notificationIds: [String!]!) {
+mutation MarkNotificationsAsRead($notificationIds: [String!]!) {
   markNotificationsAsRead(notificationIds: $notificationIds)
 }

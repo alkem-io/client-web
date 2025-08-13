@@ -4,18 +4,18 @@ fragment InAppNotificationAllTypes on InAppNotification {
   category
   state
   triggeredAt
-  ... on InAppNotificationCalloutPublished {
-    ...InAppNotificationCalloutPublished
+  ... on InAppNotificationSpaceCollaborationCalloutPublished {
+    ...InAppNotificationSpaceCollaborationCalloutPublished
   }
-  ... on InAppNotificationCommunityNewMember {
-    ...InAppNotificationCommunityNewMember
+  ... on InAppNotificationSpaceCommunityNewMember {
+    ...InAppNotificationSpaceCommunityNewMember
   }
   ... on InAppNotificationUserMentioned {
     ...InAppNotificationUserMentioned
   }
 }
 
-fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished {
+fragment InAppNotificationSpaceCollaborationCalloutPublished on InAppNotificationSpaceCollaborationCalloutPublished {
   callout {
     id
     framing {
@@ -50,7 +50,7 @@ fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished 
   }
 }
 
-fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMember {
+fragment InAppNotificationSpaceCommunityNewMember on InAppNotificationSpaceCommunityNewMember {
   triggeredBy {
     id
     profile {
@@ -69,7 +69,7 @@ fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMem
       ...SpaceAboutCardBanner
     }
   }
-  actor {
+  contributor {
     id
     __typename # do not remove
     profile {
@@ -98,5 +98,4 @@ fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
   commentUrl
   comment
   commentOriginName
-  contributorType
 }

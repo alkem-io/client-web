@@ -2762,8 +2762,8 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
-export const InAppNotificationCalloutPublishedFragmentDoc = gql`
-  fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished {
+export const InAppNotificationSpaceCollaborationCalloutPublishedFragmentDoc = gql`
+  fragment InAppNotificationSpaceCollaborationCalloutPublished on InAppNotificationSpaceCollaborationCalloutPublished {
     callout {
       id
       framing {
@@ -2800,8 +2800,8 @@ export const InAppNotificationCalloutPublishedFragmentDoc = gql`
   ${VisualModelFragmentDoc}
   ${SpaceAboutCardBannerFragmentDoc}
 `;
-export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
-  fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMember {
+export const InAppNotificationSpaceCommunityNewMemberFragmentDoc = gql`
+  fragment InAppNotificationSpaceCommunityNewMember on InAppNotificationSpaceCommunityNewMember {
     triggeredBy {
       id
       profile {
@@ -2820,7 +2820,7 @@ export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
         ...SpaceAboutCardBanner
       }
     }
-    actor {
+    contributor {
       id
       __typename
       profile {
@@ -2852,7 +2852,6 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
     commentUrl
     comment
     commentOriginName
-    contributorType
   }
   ${VisualModelFragmentDoc}
 `;
@@ -2863,18 +2862,18 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
     category
     state
     triggeredAt
-    ... on InAppNotificationCalloutPublished {
-      ...InAppNotificationCalloutPublished
+    ... on InAppNotificationSpaceCollaborationCalloutPublished {
+      ...InAppNotificationSpaceCollaborationCalloutPublished
     }
-    ... on InAppNotificationCommunityNewMember {
-      ...InAppNotificationCommunityNewMember
+    ... on InAppNotificationSpaceCommunityNewMember {
+      ...InAppNotificationSpaceCommunityNewMember
     }
     ... on InAppNotificationUserMentioned {
       ...InAppNotificationUserMentioned
     }
   }
-  ${InAppNotificationCalloutPublishedFragmentDoc}
-  ${InAppNotificationCommunityNewMemberFragmentDoc}
+  ${InAppNotificationSpaceCollaborationCalloutPublishedFragmentDoc}
+  ${InAppNotificationSpaceCommunityNewMemberFragmentDoc}
   ${InAppNotificationUserMentionedFragmentDoc}
 `;
 export const SearchResultPostProfileFragmentDoc = gql`
@@ -14588,89 +14587,6 @@ export type DashboardSpacesQueryResult = Apollo.QueryResult<
 export function refetchDashboardSpacesQuery(variables?: SchemaTypes.DashboardSpacesQueryVariables) {
   return { query: DashboardSpacesDocument, variables: variables };
 }
-export const PlatformAdminInnovationHubsDocument = gql`
-  query PlatformAdminInnovationHubs {
-    platformAdmin {
-      innovationHubs {
-        id
-        subdomain
-        profile {
-          id
-          displayName
-          url
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __usePlatformAdminInnovationHubsQuery__
- *
- * To run a query within a React component, call `usePlatformAdminInnovationHubsQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlatformAdminInnovationHubsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePlatformAdminInnovationHubsQuery({
- *   variables: {
- *   },
- * });
- */
-export function usePlatformAdminInnovationHubsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.PlatformAdminInnovationHubsQuery,
-    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.PlatformAdminInnovationHubsQuery,
-    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-  >(PlatformAdminInnovationHubsDocument, options);
-}
-export function usePlatformAdminInnovationHubsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PlatformAdminInnovationHubsQuery,
-    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.PlatformAdminInnovationHubsQuery,
-    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-  >(PlatformAdminInnovationHubsDocument, options);
-}
-export function usePlatformAdminInnovationHubsSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.PlatformAdminInnovationHubsQuery,
-        SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.PlatformAdminInnovationHubsQuery,
-    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-  >(PlatformAdminInnovationHubsDocument, options);
-}
-export type PlatformAdminInnovationHubsQueryHookResult = ReturnType<typeof usePlatformAdminInnovationHubsQuery>;
-export type PlatformAdminInnovationHubsLazyQueryHookResult = ReturnType<typeof usePlatformAdminInnovationHubsLazyQuery>;
-export type PlatformAdminInnovationHubsSuspenseQueryHookResult = ReturnType<
-  typeof usePlatformAdminInnovationHubsSuspenseQuery
->;
-export type PlatformAdminInnovationHubsQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformAdminInnovationHubsQuery,
-  SchemaTypes.PlatformAdminInnovationHubsQueryVariables
->;
-export function refetchPlatformAdminInnovationHubsQuery(
-  variables?: SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-) {
-  return { query: PlatformAdminInnovationHubsDocument, variables: variables };
-}
 export const DeleteInnovationHubDocument = gql`
   mutation deleteInnovationHub($innovationHubId: UUID!) {
     deleteInnovationHub(deleteData: { ID: $innovationHubId }) {
@@ -15337,6 +15253,89 @@ export type PlatformRoleSetQueryResult = Apollo.QueryResult<
 >;
 export function refetchPlatformRoleSetQuery(variables?: SchemaTypes.PlatformRoleSetQueryVariables) {
   return { query: PlatformRoleSetDocument, variables: variables };
+}
+export const PlatformAdminInnovationHubsDocument = gql`
+  query PlatformAdminInnovationHubs {
+    platformAdmin {
+      innovationHubs {
+        id
+        subdomain
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlatformAdminInnovationHubsQuery__
+ *
+ * To run a query within a React component, call `usePlatformAdminInnovationHubsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformAdminInnovationHubsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformAdminInnovationHubsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformAdminInnovationHubsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformAdminInnovationHubsQuery,
+    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.PlatformAdminInnovationHubsQuery,
+    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+  >(PlatformAdminInnovationHubsDocument, options);
+}
+export function usePlatformAdminInnovationHubsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformAdminInnovationHubsQuery,
+    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformAdminInnovationHubsQuery,
+    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+  >(PlatformAdminInnovationHubsDocument, options);
+}
+export function usePlatformAdminInnovationHubsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.PlatformAdminInnovationHubsQuery,
+        SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.PlatformAdminInnovationHubsQuery,
+    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+  >(PlatformAdminInnovationHubsDocument, options);
+}
+export type PlatformAdminInnovationHubsQueryHookResult = ReturnType<typeof usePlatformAdminInnovationHubsQuery>;
+export type PlatformAdminInnovationHubsLazyQueryHookResult = ReturnType<typeof usePlatformAdminInnovationHubsLazyQuery>;
+export type PlatformAdminInnovationHubsSuspenseQueryHookResult = ReturnType<
+  typeof usePlatformAdminInnovationHubsSuspenseQuery
+>;
+export type PlatformAdminInnovationHubsQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformAdminInnovationHubsQuery,
+  SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+>;
+export function refetchPlatformAdminInnovationHubsQuery(
+  variables?: SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+) {
+  return { query: PlatformAdminInnovationHubsDocument, variables: variables };
 }
 export const PlatformAdminInnovationPacksDocument = gql`
   query PlatformAdminInnovationPacks {
@@ -22209,25 +22208,27 @@ export type InAppNotificationReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.InAppNotificationReceivedSubscription>;
 export const InAppNotificationsDocument = gql`
   query InAppNotifications {
-    notifications {
+    notificationsInApp(
+      filter: { types: [USER_MENTION, SPACE_COLLABORATION_CALLOUT_PUBLISHED, SPACE_COMMUNITY_NEW_MEMBER] }
+    ) {
       id
       type
       category
       state
       triggeredAt
-      ... on InAppNotificationCalloutPublished {
-        ...InAppNotificationCalloutPublished
+      ... on InAppNotificationSpaceCollaborationCalloutPublished {
+        ...InAppNotificationSpaceCollaborationCalloutPublished
       }
-      ... on InAppNotificationCommunityNewMember {
-        ...InAppNotificationCommunityNewMember
+      ... on InAppNotificationSpaceCommunityNewMember {
+        ...InAppNotificationSpaceCommunityNewMember
       }
       ... on InAppNotificationUserMentioned {
         ...InAppNotificationUserMentioned
       }
     }
   }
-  ${InAppNotificationCalloutPublishedFragmentDoc}
-  ${InAppNotificationCommunityNewMemberFragmentDoc}
+  ${InAppNotificationSpaceCollaborationCalloutPublishedFragmentDoc}
+  ${InAppNotificationSpaceCommunityNewMemberFragmentDoc}
   ${InAppNotificationUserMentionedFragmentDoc}
 `;
 
@@ -22292,7 +22293,7 @@ export function refetchInAppNotificationsQuery(variables?: SchemaTypes.InAppNoti
   return { query: InAppNotificationsDocument, variables: variables };
 }
 export const UpdateNotificationStateDocument = gql`
-  mutation UpdateNotificationState($ID: UUID!, $state: InAppNotificationState!) {
+  mutation UpdateNotificationState($ID: UUID!, $state: NotificationEventInAppState!) {
     updateNotificationState(notificationData: { ID: $ID, state: $state })
   }
 `;
