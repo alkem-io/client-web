@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import {
   RoleSetContributorType,
-  InAppNotificationCategory,
-  InAppNotificationState,
+  NotificationEventCategory,
+  NotificationEventInAppState,
   SpaceLevel,
   InAppNotificationsQuery,
+  NotificationEvent,
 } from '@/core/apollo/generated/graphql-schema';
 import {
   useInAppNotificationsQuery,
@@ -17,11 +18,10 @@ import { ApolloCache } from '@apollo/client';
 
 export interface InAppNotificationProps {
   id: string;
-  // @ts-ignore
-  type: any;
+  type: NotificationEvent;
   triggeredAt: Date;
-  state: InAppNotificationState;
-  category: InAppNotificationCategory;
+  state: NotificationEventInAppState;
+  category: NotificationEventCategory;
   triggeredBy?: {
     profile:
       | {
@@ -34,19 +34,7 @@ export interface InAppNotificationProps {
       | undefined;
   };
   contributor?: {
-    type: RoleSetContributorType;
-    profile:
-      | {
-          displayName: string;
-          url: string;
-          visual?: {
-            uri: string;
-          };
-        }
-      | undefined;
-  };
-  actor?: {
-    __typename: string;
+    type?: RoleSetContributorType;
     profile:
       | {
           displayName: string;
@@ -93,14 +81,14 @@ export interface InAppNotificationProps {
 const updateNotificationsCache = (
   cache: ApolloCache<InAppNotificationsQuery>,
   ids: string[],
-  newState: InAppNotificationState
+  newState: NotificationEventInAppState
 ) => {
   const existingData = cache.readQuery<InAppNotificationsQuery>({
     query: InAppNotificationsDocument,
   });
 
   if (existingData) {
-    const updatedNotifications = existingData.notifications.map(notification =>
+    const updatedNotifications = existingData.notificationsInApp.map(notification =>
       ids.includes(notification.id) ? { ...notification, state: newState } : notification
     );
 
@@ -122,11 +110,11 @@ export const useInAppNotifications = () => {
   });
 
   const items: InAppNotificationProps[] = useMemo(
-    () => (data?.notifications ?? []).filter(item => item.state !== InAppNotificationState.Archived),
+    () => (data?.notificationsInApp ?? []).filter(item => item.state !== NotificationEventInAppState.Archived),
     [data]
   );
 
-  const updateNotificationState = async (id: string, status: InAppNotificationState) => {
+  const updateNotificationState = async (id: string, status: NotificationEventInAppState) => {
     await updateState({
       variables: {
         ID: id,
@@ -141,7 +129,7 @@ export const useInAppNotifications = () => {
   };
 
   const markNotificationsAsRead = async () => {
-    const ids = items.filter(item => item.state === InAppNotificationState.Unread).map(item => item.id);
+    const ids = items.filter(item => item.state === NotificationEventInAppState.Unread).map(item => item.id);
 
     if (ids.length === 0) {
       return;
@@ -153,7 +141,7 @@ export const useInAppNotifications = () => {
       },
       update: (cache, data) => {
         if (data?.data?.markNotificationsAsRead) {
-          updateNotificationsCache(cache, ids, InAppNotificationState.Read);
+          updateNotificationsCache(cache, ids, NotificationEventInAppState.Read);
         }
       },
     });

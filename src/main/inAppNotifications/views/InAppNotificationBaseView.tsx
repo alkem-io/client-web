@@ -21,7 +21,7 @@ import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { gutters } from '@/core/ui/grid/utils';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import { InAppNotificationState, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { NotificationEventInAppState, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useInAppNotifications } from '../useInAppNotifications';
 import { useInAppNotificationsContext } from '../InAppNotificationsContext';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
@@ -32,7 +32,7 @@ const MAX_LENGTH_COMMENT = 150; // 150 characters
 export interface InAppNotificationBaseViewProps {
   id: string;
   type: string; // to support _ADMIN
-  state: InAppNotificationState;
+  state: NotificationEventInAppState;
   space?: {
     id?: string;
     avatarUrl: string;
@@ -67,30 +67,30 @@ export const InAppNotificationBaseView = ({
   const { setIsOpen } = useInAppNotificationsContext();
 
   const onNotificationClick = useCallback(() => {
-    if (state === InAppNotificationState.Unread) {
-      updateNotificationState(id, InAppNotificationState.Read);
+    if (state === NotificationEventInAppState.Unread) {
+      updateNotificationState(id, NotificationEventInAppState.Read);
     }
     setIsOpen(false);
   }, [id, state]);
 
   const getReadAction = useCallback(() => {
     switch (state) {
-      case InAppNotificationState.Unread:
+      case NotificationEventInAppState.Unread:
         return (
           <MenuItemWithIcon
             key={`${id}-mark-as-read`}
             iconComponent={DraftsOutlinedIcon}
-            onClick={() => updateNotificationState(id, InAppNotificationState.Read)}
+            onClick={() => updateNotificationState(id, NotificationEventInAppState.Read)}
           >
             {t('components.inAppNotifications.action.read')}
           </MenuItemWithIcon>
         );
-      case InAppNotificationState.Read:
+      case NotificationEventInAppState.Read:
         return (
           <MenuItemWithIcon
             key={`${id}-mark-as-unread`}
             iconComponent={MarkEmailUnreadOutlinedIcon}
-            onClick={() => updateNotificationState(id, InAppNotificationState.Unread)}
+            onClick={() => updateNotificationState(id, NotificationEventInAppState.Unread)}
           >
             {t('components.inAppNotifications.action.unread')}
           </MenuItemWithIcon>
@@ -106,7 +106,7 @@ export const InAppNotificationBaseView = ({
       <MenuItemWithIcon
         key={`${id}-delete`}
         iconComponent={DeleteOutline}
-        onClick={() => updateNotificationState(id, InAppNotificationState.Archived)}
+        onClick={() => updateNotificationState(id, NotificationEventInAppState.Archived)}
       >
         {t('components.inAppNotifications.action.delete')}
       </MenuItemWithIcon>,
@@ -153,7 +153,7 @@ export const InAppNotificationBaseView = ({
     return null;
   }, [values]);
 
-  const isUnread = state === InAppNotificationState.Unread;
+  const isUnread = state === NotificationEventInAppState.Unread;
 
   return (
     <>

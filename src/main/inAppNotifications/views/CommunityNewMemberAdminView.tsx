@@ -2,13 +2,13 @@ import { InAppNotificationProps } from '../useInAppNotifications';
 import { InAppNotificationBaseView, InAppNotificationBaseViewProps } from './InAppNotificationBaseView';
 import { useMemo } from 'react';
 
-export const CommunityNewMemberAdminView = ({ id, state, space, triggeredAt, actor }: InAppNotificationProps) => {
+export const CommunityNewMemberAdminView = ({ id, state, space, triggeredAt, contributor }: InAppNotificationProps) => {
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
     const notificationTextValues = {
       defaultValue: '',
       spaceName: space?.about.profile?.displayName,
-      memberType: actor?.__typename,
-      memberName: actor?.profile?.displayName,
+      memberType: contributor?.type,
+      memberName: contributor?.profile?.displayName,
     };
 
     return {
@@ -25,10 +25,10 @@ export const CommunityNewMemberAdminView = ({ id, state, space, triggeredAt, act
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };
-  }, [id, state, space, triggeredAt, actor]);
+  }, [id, state, space, triggeredAt, contributor]);
 
   // do not display notification if these are missing
-  if (!actor?.profile?.displayName || !space?.about.profile?.displayName) {
+  if (!contributor?.profile?.displayName || !space?.about.profile?.displayName) {
     return null;
   }
 
