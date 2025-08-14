@@ -21,6 +21,7 @@ import { useNotification } from '../../../notifications/useNotification';
 import useUserCursor from '../useUserCursor';
 import { useOnlineStatus } from '@/core/utils/useOnlineStatus';
 import { error as logError } from '@/core/logging/sentry/log';
+import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 
 interface UseCollaborationProps {
   collaborationId?: string;
@@ -34,7 +35,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   const [status, setStatus] = useState<CollaborationStatus>(MemoStatus.CONNECTING);
   const [synced, setSynced] = useState(false);
   const [lastSaveTime, setLastSaveTime] = useState<Date | undefined>(undefined);
-  const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
+  const [readOnlyState, setReadOnlyState] = useState<{ readOnly: boolean; readOnlyCode?: ReadOnlyCode }>();
 
   const ydoc = useMemo(() => new Y.Doc(), []);
 
@@ -102,7 +103,10 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
           setLastSaveTime(new Date());
         }
       } else if (isStatelessReadOnlyStateMessage(decodedMessage)) {
-        setIsReadOnly(decodedMessage.readOnly);
+        setReadOnlyState({
+          readOnly: decodedMessage.readOnly,
+          readOnlyCode: decodedMessage.readOnlyCode,
+        });
       }
     };
 
@@ -121,7 +125,10 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   }, [provider, notify]);
 
   useEffect(() => {
-    setIsReadOnly(!isOnline);
+    setReadOnlyState({
+      readOnly: !isOnline,
+      readOnlyCode: undefined,
+    });
   }, [isOnline]);
 
   // Extensions depend on the memoized provider, not ref.current
@@ -146,7 +153,8 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     status,
     synced,
     lastSaveTime,
-    isReadOnly,
+    isReadOnly: readOnlyState?.readOnly,
+    readOnlyCode: readOnlyState?.readOnlyCode,
     collaborationExtensions,
     ydoc,
     provider,
