@@ -51,6 +51,7 @@ export const ProfileChipView = ({
           loading="lazy"
           alt={t('common.avatar-of', { user: displayName })}
           aria-label={t('common.avatar-of', { user: displayName })}
+          role="img"
         />
         <Box>
           <BlockSectionTitle>{displayName}</BlockSectionTitle>
