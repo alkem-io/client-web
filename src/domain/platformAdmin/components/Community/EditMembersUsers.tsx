@@ -110,7 +110,9 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
               loading={loadingAvailableMembers}
               updating={updating}
               header={<TableCell>Full Name (email)</TableCell>}
-              renderRow={m => <TableCell>{`${m.profile.displayName} (${m.email})`}</TableCell>}
+              renderRow={m => (
+                <TableCell>{m.email ? `${m.profile.displayName} (${m.email})` : m.profile.displayName}</TableCell>
+              )}
               renderEmptyRow={Cell => (
                 <TableCell>
                   <Cell />
