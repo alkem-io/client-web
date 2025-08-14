@@ -1488,11 +1488,13 @@ export const UserSettingsFragmentFragmentDoc = gql`
       space {
         communityApplicationReceived
         communityApplicationSubmitted
-        communityNewMember
         communityInvitationUser
+        communityNewMember
         communityNewMemberAdmin
         communicationUpdates
         communicationUpdatesAdmin
+        communicationMessage
+        communicationMessageAdmin
         collaborationPostCommentCreated
         collaborationCalloutPublished
         collaborationPostCreated

@@ -83,30 +83,36 @@ const UserAdminNotificationsPage = () => {
   const handleUpdateSettings = async (
     updates: Partial<{
       // Space notifications
-      applicationSubmitted: boolean;
-      calloutPublished: boolean;
-      commentReply: boolean;
       communicationMention: boolean;
       communicationUpdates: boolean;
+      communityApplicationSubmitted: boolean;
       communityInvitationUser: boolean;
       communityNewMember: boolean;
-      postCommentCreated: boolean;
-      postCreated: boolean;
-      whiteboardCreated: boolean;
+      collaborationCalloutPublished: boolean;
+      collaborationPostCommentCreated: boolean;
+      collaborationPostCreated: boolean;
+      collaborationWhiteboardCreated: boolean;
+
       // Space Admin notifications
-      applicationReceived: boolean;
-      postCreatedAdmin: boolean;
-      communicationUpdatesAdmin: boolean;
       communityNewMemberAdmin: boolean;
+      communityApplicationReceived: boolean;
+      collaborationPostCreatedAdmin: boolean;
+      communicationUpdatesAdmin: boolean;
+
       // Organization notifications
-      mentioned: boolean;
-      messageReceived: boolean;
+      organizationMentioned: boolean;
+      organizationMessageReceived: boolean;
+
       // Forum notifications
       forumDiscussionComment: boolean;
       forumDiscussionCreated: boolean;
       // Platform Admin notifications
       newUserSignUp: boolean;
       userProfileRemoved: boolean;
+      // User notifications
+      commentReply: boolean;
+      userMentioned: boolean;
+      userMessageReceived: boolean;
     }>
   ) => {
     const currentSpaceSettings = currentSettings?.notification?.space;
@@ -117,33 +123,44 @@ const UserAdminNotificationsPage = () => {
     const settingsVariable = {
       notification: {
         space: {
-          applicationReceived: updates.applicationReceived ?? currentSpaceSettings?.communityApplicationReceived,
-          applicationSubmitted: updates.applicationSubmitted ?? currentSpaceSettings?.communityApplicationSubmitted,
-          calloutPublished: updates.calloutPublished ?? currentSpaceSettings?.collaborationCalloutPublished,
-          communicationUpdates: updates.communicationUpdates ?? currentSpaceSettings?.communicationUpdates,
+          communityApplicationReceived:
+            updates.communityApplicationReceived ?? currentSpaceSettings?.communityApplicationReceived,
+          communityApplicationSubmitted:
+            updates.communityApplicationSubmitted ?? currentSpaceSettings?.communityApplicationSubmitted,
+          collaborationCalloutPublished:
+            updates.collaborationCalloutPublished ?? currentSpaceSettings?.collaborationCalloutPublished,
           communicationUpdatesAdmin:
             updates.communicationUpdatesAdmin ?? currentSpaceSettings?.communicationUpdatesAdmin,
+          communicationUpdates: updates.communicationUpdates ?? currentSpaceSettings?.communicationUpdates,
           communityInvitationUser: updates.communityInvitationUser ?? currentSpaceSettings?.communityInvitationUser,
           communityNewMember: updates.communityNewMember ?? currentSpaceSettings?.communityNewMember,
           communityNewMemberAdmin: updates.communityNewMemberAdmin ?? currentSpaceSettings?.communityNewMemberAdmin,
-          postCommentCreated: updates.postCommentCreated ?? currentSpaceSettings?.collaborationPostCommentCreated,
-          postCreated: updates.postCreated ?? currentSpaceSettings?.collaborationPostCreated,
-          postCreatedAdmin: updates.postCreatedAdmin ?? currentSpaceSettings?.collaborationPostCreatedAdmin,
-          whiteboardCreated: updates.whiteboardCreated ?? currentSpaceSettings?.collaborationWhiteboardCreated,
+          collaborationPostCommentCreated:
+            updates.collaborationPostCommentCreated ?? currentSpaceSettings?.collaborationPostCommentCreated,
+          collaborationPostCreated: updates.collaborationPostCreated ?? currentSpaceSettings?.collaborationPostCreated,
+          collaborationPostCreatedAdmin:
+            updates.collaborationPostCreatedAdmin ?? currentSpaceSettings?.collaborationPostCreatedAdmin,
+          collaborationWhiteboardCreated:
+            updates.collaborationWhiteboardCreated ?? currentSpaceSettings?.collaborationWhiteboardCreated,
+          // not updatable yet
+          communicationMessageAdmin: currentSpaceSettings?.communicationMessageAdmin,
+          communicationMessage: currentSpaceSettings?.communicationMessage,
         },
         organization: {
-          mentioned: updates.mentioned ?? currentOrgSettings?.mentioned,
-          messageReceived: updates.messageReceived ?? currentOrgSettings?.messageReceived,
+          mentioned: updates.organizationMentioned ?? currentOrgSettings?.mentioned,
+          messageReceived: updates.organizationMessageReceived ?? currentOrgSettings?.messageReceived,
         },
         platform: {
           forumDiscussionComment: updates.forumDiscussionComment ?? currentPlatformSettings?.forumDiscussionComment,
           forumDiscussionCreated: updates.forumDiscussionCreated ?? currentPlatformSettings?.forumDiscussionCreated,
           newUserSignUp: updates.newUserSignUp ?? currentPlatformSettings?.newUserSignUp,
           userProfileRemoved: updates.userProfileRemoved ?? currentPlatformSettings?.userProfileRemoved,
+          // Not updatable yet
+          spaceCreated: currentPlatformSettings?.spaceCreated,
         },
         user: {
           commentReply: updates.commentReply ?? currentUserSettings?.commentReply,
-          mentioned: updates.mentioned ?? currentUserSettings?.mentioned,
+          mentioned: updates.userMentioned ?? currentUserSettings?.mentioned,
         },
       },
     };
@@ -170,13 +187,13 @@ const UserAdminNotificationsPage = () => {
                 <Caption>{t('pages.userNotificationsSettings.space.subtitle')}</Caption>
                 <SwitchSettingsGroup
                   options={{
-                    applicationSubmitted: {
+                    communityApplicationSubmitted: {
                       checked: currentSettings?.notification?.space?.communityApplicationSubmitted || false,
-                      label: t('pages.userNotificationsSettings.space.settings.applicationSubmitted'),
+                      label: t('pages.userNotificationsSettings.space.settings.communityApplicationSubmitted'),
                     },
-                    calloutPublished: {
+                    collaborationCalloutPublished: {
                       checked: currentSettings?.notification?.space?.collaborationCalloutPublished || false,
-                      label: t('pages.userNotificationsSettings.space.settings.calloutPublished'),
+                      label: t('pages.userNotificationsSettings.space.settings.collaborationCalloutPublished'),
                     },
                     communicationUpdates: {
                       checked: currentSettings?.notification?.space?.communicationUpdates || false,
@@ -190,17 +207,17 @@ const UserAdminNotificationsPage = () => {
                       checked: currentSettings?.notification?.space?.communityNewMember || false,
                       label: t('pages.userNotificationsSettings.space.settings.communityNewMember'),
                     },
-                    postCommentCreated: {
+                    collaborationPostCommentCreated: {
                       checked: currentSettings?.notification?.space?.collaborationPostCommentCreated || false,
-                      label: t('pages.userNotificationsSettings.space.settings.postCommentCreated'),
+                      label: t('pages.userNotificationsSettings.space.settings.collaborationPostCommentCreated'),
                     },
-                    postCreated: {
+                    collaborationPostCreated: {
                       checked: currentSettings?.notification?.space?.collaborationPostCreated || false,
-                      label: t('pages.userNotificationsSettings.space.settings.postCreated'),
+                      label: t('pages.userNotificationsSettings.space.settings.collaborationPostCreated'),
                     },
-                    whiteboardCreated: {
+                    collaborationWhiteboardCreated: {
                       checked: currentSettings?.notification?.space?.collaborationWhiteboardCreated || false,
-                      label: t('pages.userNotificationsSettings.space.settings.whiteboardCreated'),
+                      label: t('pages.userNotificationsSettings.space.settings.collaborationWhiteboardCreated'),
                     },
                   }}
                   onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
@@ -232,9 +249,9 @@ const UserAdminNotificationsPage = () => {
                   <Caption>{t('pages.userNotificationsSettings.spaceAdmin.subtitle')}</Caption>
                   <SwitchSettingsGroup
                     options={{
-                      applicationReceived: {
+                      communityApplicationReceived: {
                         checked: currentSettings?.notification?.space?.communityApplicationReceived || false,
-                        label: t('pages.userNotificationsSettings.spaceAdmin.settings.applicationReceived'),
+                        label: t('pages.userNotificationsSettings.spaceAdmin.settings.communityApplicationReceived'),
                       },
                       communicationUpdatesAdmin: {
                         checked: currentSettings?.notification?.space?.communicationUpdatesAdmin || false,
@@ -244,9 +261,9 @@ const UserAdminNotificationsPage = () => {
                         checked: currentSettings?.notification?.space?.communityNewMemberAdmin || false,
                         label: t('pages.userNotificationsSettings.spaceAdmin.settings.communityNewMemberAdmin'),
                       },
-                      postCreatedAdmin: {
+                      collaborationPostCreatedAdmin: {
                         checked: currentSettings?.notification?.space?.collaborationPostCreatedAdmin || false,
-                        label: t('pages.userNotificationsSettings.spaceAdmin.settings.postCreatedAdmin'),
+                        label: t('pages.userNotificationsSettings.spaceAdmin.settings.collaborationPostCreatedAdmin'),
                       },
                     }}
                     onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}

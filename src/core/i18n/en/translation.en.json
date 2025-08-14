@@ -3048,25 +3048,25 @@
         "title": "Space Settings",
         "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are a member of",
         "settings": {
-          "applicationSubmitted": "Receive notification when I apply to join a community",
-          "calloutPublished": "Receive a notification when a Callout is published in a community I am a member of",
           "communicationMention": "Receive a notification when a user tags you in a post or a comment",
           "communicationUpdates": "Receive notification when a new update is shared with a community I am a member of",
+          "communityApplicationSubmitted": "Receive notification when I apply to join a community",
           "communityInvitationUser": "Receive a notification when someone invites you to join a community",
           "communityNewMember": "Receive notification when a new member joins a community I am a member of",
-          "postCommentCreated": "Receive notification when a new comment is added to a post I follow",
-          "postCreated": "Receive notification when a new post is created in a community I am a member of",
-          "whiteboardCreated": "Receive a notification when a new whiteboard is created in a community I am a member of"
+          "collaborationCalloutPublished": "Receive a notification when a Callout is published in a community I am a member of",
+          "collaborationPostCreatedAdmin": "Receive notification when a new comment is added to a post I follow",
+          "collaborationPostCreated": "Receive notification when a new post is created in a community I am a member of",
+          "collaborationWhiteboardCreated": "Receive a notification when a new whiteboard is created in a community I am a member of"
         }
       },
       "spaceAdmin": {
         "title": "Space Admin Settings",
         "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are an admin of",
         "settings": {
-          "applicationReceived": "Receive notifications when a new application is received",
+          "communityApplicationReceived": "Receive notifications when a new application is received",
           "communicationUpdatesAdmin": "Receive notifications when there are updates in the communication (admin)",
           "communityNewMemberAdmin": "Receive notifications when a new member joins the community (admin)",
-          "postCreatedAdmin": "Receive notifications when a new post is created (admin)"
+          "collaborationPostCreatedAdmin": "Receive notifications when a new post is created (admin)"
         }
       },
       "platformAdmin": {

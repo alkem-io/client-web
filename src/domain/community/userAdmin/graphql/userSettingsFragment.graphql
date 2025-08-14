@@ -21,11 +21,13 @@ fragment userSettingsFragment on UserSettings {
     space {
       communityApplicationReceived
       communityApplicationSubmitted
-      communityNewMember
       communityInvitationUser
+      communityNewMember
       communityNewMemberAdmin
       communicationUpdates
       communicationUpdatesAdmin
+      communicationMessage
+      communicationMessageAdmin
       collaborationPostCommentCreated
       collaborationCalloutPublished
       collaborationPostCreated
