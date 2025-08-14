@@ -63,7 +63,7 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
         onBlur,
       });
 
-    const { status, synced, lastSaveTime, isReadOnly, collaborationExtensions } = useCollaboration({
+    const { status, synced, lastSaveTime, isReadOnly, readOnlyCode, collaborationExtensions } = useCollaboration({
       collaborationId,
     });
 
@@ -106,6 +106,7 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
         synced,
         lastActive: lastSaveTime,
         readOnly: isReadOnly,
+        readOnlyCode: readOnlyCode,
         users:
           editor.storage.collaborationCursor?.users.map(user => ({
             id: user.clientId, // TODO:MEMO This needs to be the userId, not the clientId
@@ -125,6 +126,7 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
       synced,
       lastSaveTime,
       isReadOnly,
+      readOnlyCode,
       editor?.storage.collaborationCursor?.users.length,
       editor?.storage.collaborationCursor?.users,
       currentCollaborationState,
