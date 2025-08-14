@@ -2805,12 +2805,21 @@
     },
     "memo": {
       "readonlyReason": {
-        "readonly": "<strong>View only mode</strong>",
+        "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this Memo. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings if you want to contribute.",
         "noMembership": "You have to be a member of the {{spaceLevel}} this memo is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
         "unauthenticated": "You have to be signed in and a member of the {{spaceLevel}} this memo is in, to be able to edit. Click here to <signinlink>sign in</signinlink>",
         "connecting": "",
         "notSynced": " Synchronizing... Reopen the memo to quickly enable it back. Backup your changes before closing."
+      },
+      "readonlyDialog": {
+        "title": "View only mode",
+        "reason": {
+          "noUpdateAccess": "You can’t edit this Memo because you don’t have the rights to do so. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings if you want to contribute.",
+          "multiUserNotAllowed": "You can’t edit this Memo because this Space only allows one Memo editor at a time",
+          "roomCapacityReached": "You can’t edit this Memo because this Space allows for multiple editors simultaneously, but the maximum is reached",
+          "generic": "You can’t edit this Memo for one of the following reasons:\n\nYou are not a member of the Space\n- This Space only allows one Memo editor at a time\n- This Space allows for more editors, but the maximum is reached"
+        }
       }
     },
     "login": {

@@ -17,6 +17,10 @@ import {
   RealTimeCollaborationState,
 } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { DialogContent } from '@mui/material';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 interface MemoFooterProps {
   memoUrl: string | undefined;
@@ -100,6 +104,13 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
     return null;
   };
 
+  const [isLearnWhyDialogOpen, setIsLearnWhyDialogOpen] = useState(false);
+
+  const handleLearnWhyClick: MouseEventHandler = event => {
+    event.preventDefault();
+    setIsLearnWhyDialogOpen(true);
+  };
+
   const readonlyReason = getReadonlyReason();
 
   // If there's a new reason, wait a bit before showing it.
@@ -168,6 +179,11 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
                   <span />
                 ),
                 signinlink: <RouterLink to={buildLoginUrl(memoUrl)} state={{}} underline="always" />,
+                learnwhy: collaborationState?.readOnly ? (
+                  <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />
+                ) : (
+                  <span />
+                ),
               }}
             />
           </Caption>
@@ -175,6 +191,17 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
 
         {directMessageDialog}
       </Actions>
+      <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
+        <DialogHeader
+          title={t('pages.whiteboard.readonlyDialog.title')}
+          onClose={() => setIsLearnWhyDialogOpen(false)}
+        />
+        <DialogContent sx={{ paddingTop: 0 }}>
+          <WrapperMarkdown>
+            {t(`pages.memo.readonlyDialog.reason.${collaborationState?.readOnlyCode ?? 'generic'}` as const)}
+          </WrapperMarkdown>
+        </DialogContent>
+      </DialogWithGrid>
     </>
   );
 };
