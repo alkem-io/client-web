@@ -10,9 +10,11 @@ const INFO_COLUMNS = 3;
 const ContentColumn = ({
   ref,
   children,
+  fullWidth = false,
   ...props
 }: BoxProps & {
   ref?: React.Ref<HTMLDivElement>;
+  fullWidth?: boolean;
 }) => {
   const availableColumns = useColumns();
 
@@ -21,7 +23,7 @@ const ContentColumn = ({
   if (availableColumns === GRID_COLUMNS_MOBILE) {
     // On mobile, use full width
     columnsToUse = GRID_COLUMNS_MOBILE;
-  } else if (availableColumns < 12) {
+  } else if (availableColumns < 12 && !fullWidth) {
     // On tablet (8 columns), use remaining columns after info column
     columnsToUse = availableColumns - INFO_COLUMNS;
   }
