@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import AdminLayout from '../../layout/toplevel/AdminLayout';
+import { AdminSection } from '../../layout/toplevel/constants';
 import useAdminGlobalOrganizationsList from './useAdminGlobalOrganizationsList';
 import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
 import SimpleSearchableTable, {
@@ -10,8 +12,6 @@ import { IconButton } from '@mui/material';
 import { TuneOutlined, VerifiedUser, VerifiedUserOutlined } from '@mui/icons-material';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import LicensePlanDialog from './LicensePlanDialog';
-import { AdminSection } from '../../layout/toplevel/constants';
-import AdminLayout from '../../layout/toplevel/AdminLayout';
 
 const AdminOrganizationsPage = () => {
   const { t } = useTranslation();

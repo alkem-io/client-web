@@ -2,10 +2,8 @@ import React, { useMemo } from 'react';
 import NotificationView from '@/core/ui/notifications/NotificationView';
 import { Box, Link, SnackbarContent, useTheme } from '@mui/material';
 import { rem } from '@/core/ui/typography/utils';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
-import { useScreenSize } from '@/core/ui/grid/constants';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useTranslation } from 'react-i18next';
@@ -15,8 +13,6 @@ type SpaceVisibilityNoticeProps = {
 };
 
 export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps) => {
-  const { locations } = useConfig();
-  const { isSmallScreen } = useScreenSize();
   const theme = useTheme();
   const { t } = useTranslation();
   const origin = usePlatformOrigin();
@@ -32,12 +28,17 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
   );
 
   const message = useMemo(() => {
+    if (visibility === SpaceVisibility.Archived) {
+      return tLinks(
+        'pages.generic.archivedNotice.archivedSpace',
+        {
+          contact: { href: `${origin}${t('pages.generic.archivedNotice.archivedLink')}` },
+        },
+        { space: t(`common.space-level.${spaceLevel || SpaceLevel.L0}`) }
+      );
+    }
+
     if (spaceLevel === SpaceLevel.L0) {
-      if (visibility === SpaceVisibility.Archived) {
-        return tLinks('pages.generic.archivedNotice.archivedSpace', {
-          contact: { href: locations?.feedback },
-        });
-      }
       if (visibility === SpaceVisibility.Demo) {
         return tLinks('pages.generic.demoNotice.demoSpace', {
           alkemio: { href: origin },
@@ -45,15 +46,6 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
       }
     }
 
-    if (visibility === SpaceVisibility.Archived) {
-      return tLinks(
-        'pages.generic.archivedNotice.archivedSubspace',
-        {
-          contact: { href: locations?.feedback },
-        },
-        { space: t(`common.space-level.${spaceLevel || SpaceLevel.L0}`) }
-      );
-    }
     if (visibility === SpaceVisibility.Demo) {
       return tLinks(
         'pages.generic.demoNotice.demoSubspace',
@@ -65,7 +57,7 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
     }
 
     return null;
-  }, [visibility, spaceLevel, tLinks, locations?.feedback, origin]);
+  }, [visibility, spaceLevel, tLinks, origin]);
 
   if (!visibility || visibility === SpaceVisibility.Active) return null;
   if (!message || !spaceLevel) return null;
@@ -77,15 +69,24 @@ export const SpaceVisibilityNotice = ({ spaceLevel }: SpaceVisibilityNoticeProps
         if (reason === 'clickaway') return;
       }}
       autoHideDuration={null}
-      anchorOrigin={{ vertical: isSmallScreen ? 'bottom' : 'top', horizontal: 'center' }}
-      sx={{ marginBottom: isSmallScreen ? '80px' : 0 }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      sx={{
+        top: '-2px!important',
+        marginBottom: 0,
+        opacity: 0.8,
+      }}
     >
       <SnackbarContent
         message={<Box>{message}</Box>}
         sx={{
+          minWidth: '100px!important',
+          paddingY: 0,
+          flexWrap: 'nowrap',
+          justifyContent: 'center',
+          fontSize: rem(15),
+          lineHeight: rem(10),
           backgroundColor: 'primary.main',
           color: 'white',
-          fontSize: rem(15),
         }}
       />
     </NotificationView>

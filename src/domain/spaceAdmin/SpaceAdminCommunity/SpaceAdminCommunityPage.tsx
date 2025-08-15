@@ -3,7 +3,7 @@ import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
+import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';

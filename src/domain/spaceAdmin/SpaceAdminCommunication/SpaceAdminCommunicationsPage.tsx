@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
+import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import SpaceAdminCommunityUpdatesPage from './SpaceAdminCommunityUpdatesPage';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 

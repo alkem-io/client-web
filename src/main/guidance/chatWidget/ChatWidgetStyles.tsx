@@ -15,12 +15,13 @@ const ChatWidgetStyles = ({
       const background = {
         backgroundColor: theme.palette.primary.main,
       };
-
       const borderRadius = {
         borderRadius: `${theme.shape.borderRadius}px`,
       };
 
       return {
+        height: '100%',
+        width: '100%',
         '.rcw-client .rcw-message-text': {
           ...background,
           color: theme.palette.common.white,

@@ -5,7 +5,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
 import { SettingsSection } from '../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { SettingsPageProps } from '../../platformAdmin/layout/EntitySettingsLayout/types';
+import type { SettingsPageProps } from '../../platformAdmin/layout/EntitySettingsLayout/types';
 import SpaceSettingsLayout from '../layout/SpaceAdminLayoutSpace';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useSpace } from '@/domain/space/context/useSpace';

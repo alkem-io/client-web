@@ -10,7 +10,7 @@ import { formatLocation } from '@/domain/common/location/LocationUtils';
 import ProfileForm, { ProfileFormValues } from '@/domain/common/profile/ProfileForm';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
+import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import { compact } from 'lodash';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';

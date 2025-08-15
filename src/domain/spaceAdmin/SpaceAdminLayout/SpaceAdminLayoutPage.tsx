@@ -5,7 +5,7 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import InnovationFlowCollaborationToolsBlock from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowCollaborationToolsBlock';
 import useInnovationFlowSettings from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
-import { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
+import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import { Box } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
