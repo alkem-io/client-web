@@ -1,4 +1,5 @@
-query AdminVirtualContributors {
+query platformAminVirtualContributorsList {
+  platformAdmin {
   virtualContributors {
     id
     authorization {
@@ -14,6 +15,7 @@ query AdminVirtualContributors {
         ...VisualModel
       }
     }
+  }
   }
 }
 

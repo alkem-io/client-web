@@ -1,4 +1,5 @@
-query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+query platformAdminOrganizationList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+  platformAdmin {
   organizationsPaginated(first: $first, after: $after, filter: $filter) {
     organization {
       id
@@ -25,6 +26,7 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
     pageInfo {
       ...PageInfo
     }
+  }
   }
 }
 
