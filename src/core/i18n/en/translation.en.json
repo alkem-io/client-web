@@ -3092,7 +3092,7 @@
         "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to yourself.",
         "settings": {
           "mentioned": "Receive notifications when I am mentioned",
-          "messageReceived": "Receive direct messages to myself"
+          "commentReply": "Receive a notification when someone replies to my comment"
         }
       },
       "forum": {

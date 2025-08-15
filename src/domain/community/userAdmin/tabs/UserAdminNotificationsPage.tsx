@@ -234,7 +234,7 @@ const UserAdminNotificationsPage = () => {
                       checked: currentSettings?.notification?.user?.commentReply || false,
                       label: t('pages.userNotificationsSettings.user.settings.commentReply'),
                     },
-                    mentioned: {
+                    userMentioned: {
                       checked: currentSettings?.notification?.user?.mentioned || false,
                       label: t('pages.userNotificationsSettings.user.settings.mentioned'),
                     },
@@ -299,11 +299,11 @@ const UserAdminNotificationsPage = () => {
                   <Caption>{t('pages.userNotificationsSettings.organization.subtitle')}</Caption>
                   <SwitchSettingsGroup
                     options={{
-                      mentioned: {
+                      organizationMentioned: {
                         checked: currentSettings?.notification?.organization?.mentioned || false,
                         label: t('pages.userNotificationsSettings.organization.settings.mentioned'),
                       },
-                      messageReceived: {
+                      organizationMessageReceived: {
                         checked: currentSettings?.notification?.organization?.messageReceived || false,
                         label: t('pages.userNotificationsSettings.organization.settings.messageReceived'),
                       },
