@@ -128,16 +128,11 @@ function WidgetLayout({
           position: showChat ? 'fixed' : 'static',
           margin: showChat ? undefined : 0,
         },
-        '@media (max-width:800px)': {
-          height: '100vh',
-          margin: 0,
-          maxWidth: 'none',
-          width: '100%',
-        },
         ...(imagePreview && {
           cursor: 'pointer',
         }),
       })}
+      className="chat-widget-container"
     >
       {showChat && (
         <Conversation

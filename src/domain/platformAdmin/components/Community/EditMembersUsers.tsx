@@ -12,6 +12,7 @@ export interface EditMemberUsersProps {
   availableMembers: {
     id: string;
     profile: { displayName: string };
+    email?: string;
   }[];
   updating?: boolean;
   loadingAvailableMembers?: boolean;
@@ -108,8 +109,10 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
               filteredMembers={availableMembers}
               loading={loadingAvailableMembers}
               updating={updating}
-              header={<TableCell>Full Name</TableCell>}
-              renderRow={m => <TableCell>{m.profile.displayName}</TableCell>}
+              header={<TableCell>Full Name (email)</TableCell>}
+              renderRow={m => (
+                <TableCell>{m.email ? `${m.profile.displayName} (${m.email})` : m.profile.displayName}</TableCell>
+              )}
               renderEmptyRow={Cell => (
                 <TableCell>
                   <Cell />
