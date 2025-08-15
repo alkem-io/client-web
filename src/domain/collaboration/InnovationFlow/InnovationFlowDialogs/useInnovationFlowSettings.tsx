@@ -213,20 +213,11 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
   const [createStateOnInnovationFlow] = useCreateStateOnInnovationFlowMutation();
   const handleCreateState = async (newStateData: InnovationFlowStateModel, stateBeforeId?: string) => {
     const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
-    const currentStates = [...requiredInnovationFlow.states]; // Make a copy of the current states because the array is readonly
-    if (currentStates.length + 1 > requiredInnovationFlow.settings.maximumNumberOfStates) {
-      throw new Error('Maximum number of states reached.');
-    }
+    const currentStates = requiredInnovationFlow.states.map(state => ({ id: state.id, sortOrder: state.sortOrder }));
 
-    // Insert the new state at the end of the list:
-    const insertLast = currentStates.length === 0 || !stateBeforeId;
-    if (insertLast) {
-      // Creating a state at the end of the list (or the list is just empty)
-      const maxSortOrder = currentStates.reduce((max, state) => Math.max(max, state.sortOrder), 0);
-      newStateData.sortOrder = maxSortOrder + 1;
-    } else {
-      newStateData.sortOrder = (currentStates.find(state => state.id === stateBeforeId)?.sortOrder ?? 0) + 1;
-    }
+    newStateData.sortOrder = stateBeforeId
+      ? (currentStates.find(state => state.id === stateBeforeId)?.sortOrder ?? 0) + 1
+      : Math.max(...currentStates.map(state => state.sortOrder)) + 1;
 
     const newState = await createStateOnInnovationFlow({
       variables: {
@@ -243,21 +234,19 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
         'CalloutsOnCalloutsSetUsingClassification',
       ],
     });
+    // In theory the new state create should have gone to the database with a correct sortOrder, but there are cases where
+    // states have consecutive sortOrders and that produces collisions, so we call the sort mutation to ensure all states get a correct sortOrder
     const newStateId = ensurePresence(newState.data?.createStateOnInnovationFlow?.id, 'New State');
-
-    let stateIdsSorted: string[] = [];
-    if (insertLast) {
-      stateIdsSorted = currentStates.sort(sortBySortOrder).map(state => state.id);
-      stateIdsSorted.push(newStateId);
-    } else {
-      stateIdsSorted = currentStates.sort(sortBySortOrder).map(state => state.id);
-      // Put newStateId after stateBeforeId in the sorted list
+    let stateIdsSorted: string[] = currentStates.sort(sortBySortOrder).map(state => state.id);
+    if (stateBeforeId) {
       const stateBeforeIndex = stateIdsSorted.indexOf(stateBeforeId);
       if (stateBeforeIndex === -1) {
         throw new Error(`State with ID ${stateBeforeId} not found in the innovation flow.`);
       }
       // Insert newStateId after stateBeforeId
       stateIdsSorted.splice(stateBeforeIndex + 1, 0, newStateId);
+    } else {
+      stateIdsSorted.push(newStateId);
     }
 
     await updateInnovationFlowStatesSortOrder({
