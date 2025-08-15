@@ -33,9 +33,11 @@ export const MessageWithRepliesView = ({
       actions={
         !isReplyFormVisible &&
         canReply && (
-          <ButtonBase component="li" onClick={() => setHasPressedReply(true)}>
-            <CardText>{t('buttons.reply')}</CardText>
-          </ButtonBase>
+          <li>
+            <ButtonBase onClick={() => setHasPressedReply(true)}>
+              <CardText>{t('buttons.reply')}</CardText>
+            </ButtonBase>
+          </li>
         )
       }
       {...props}

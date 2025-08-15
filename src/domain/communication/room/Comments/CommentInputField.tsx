@@ -108,6 +108,8 @@ export interface CommentInputFieldProps {
   vcInteractions?: { threadID: string }[];
   vcEnabled?: boolean;
   threadId?: string;
+  'aria-label'?: string;
+  placeholder?: string;
 }
 
 const StyledCommentInput = styled(Box)(({ theme }) => ({
@@ -144,6 +146,8 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
     vcInteractions = [],
     vcEnabled = true,
     threadId,
+    'aria-label': ariaLabel,
+    placeholder,
   } = props as CommentInputFieldProps;
 
   const { t } = useTranslation();
@@ -277,6 +281,12 @@ export const CommentInputField = ({ ref, ...props }: React.ComponentPropsWithRef
         readOnly={readOnly}
         maxLength={maxLength}
         onBlur={onBlur}
+        placeholder={placeholder}
+        inputRef={(textarea: HTMLTextAreaElement) => {
+          if (textarea && ariaLabel) {
+            textarea.setAttribute('aria-label', ariaLabel);
+          }
+        }}
         forceSuggestionsAboveCursor
         allowSpaceInQuery
         customSuggestionsContainer={children => (

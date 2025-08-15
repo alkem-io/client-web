@@ -132,6 +132,9 @@ const SearchBox = (<Option extends string | number>({
                 onChange={onChange}
                 onKeyUp={handleKeyUp}
                 fullWidth
+                inputProps={{
+                  'aria-label': t('common.search'),
+                }}
               />
             </Box>
           </Collapse>
