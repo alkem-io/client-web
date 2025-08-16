@@ -6,7 +6,6 @@ import { NotificationEvent } from '@/core/apollo/generated/graphql-schema';
 import { InAppSpaceCommunityNewMemberAdminView } from './views/InAppSpaceCommunityNewMemberAdminView';
 import { InAppSpaceCommunityNewMemberView } from './views/InAppSpaceCommunityNewMemberView';
 
-// TODO:NotificationEventType fix
 export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
   switch (item.type) {
     case NotificationEvent.SpaceCollaborationCalloutPublished:

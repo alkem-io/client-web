@@ -12,6 +12,7 @@ import {
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import { ApolloCache } from '@apollo/client';
 import { InAppNotificationModel } from './model/InAppNotificationModel';
+import { mapInAppNotificationToModel } from './util/mapInAppNotificationToModel';
 
 // update the cache as refetching all could be expensive
 const updateNotificationsCache = (
@@ -59,15 +60,8 @@ export const useInAppNotifications = () => {
   const notificationsInApp: InAppNotificationModel[] = [];
   for (const notificationData of data?.notificationsInApp ?? []) {
     if (notificationData.state !== NotificationEventInAppState.Archived) {
-      const notification: InAppNotificationModel = {
-        id: notificationData.id,
-        type: notificationData.type,
-        triggeredAt: notificationData.triggeredAt,
-        state: notificationData.state,
-        category: notificationData.category,
-        triggeredBy: notificationData.triggeredBy,
-        payload: notificationData.payload,
-      };
+      const notification = mapInAppNotificationToModel(notificationData);
+      if (!notification) continue; // TODO: log error?
       notificationsInApp.push(notification);
     }
   }

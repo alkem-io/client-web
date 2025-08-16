@@ -2764,6 +2764,17 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
+export const SpaceNotificationFragmentDoc = gql`
+  fragment spaceNotification on Space {
+    id
+    level
+    about {
+      id
+      ...SpaceAboutCardBanner
+    }
+  }
+  ${SpaceAboutCardBannerFragmentDoc}
+`;
 export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
   fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationPayloadSpaceCollaborationCallout {
     callout {
@@ -2781,24 +2792,16 @@ export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
       }
     }
     space {
-      id
-      level
-      about {
-        ...SpaceAboutCardBanner
-      }
+      ...spaceNotification
     }
   }
   ${VisualModelFragmentDoc}
-  ${SpaceAboutCardBannerFragmentDoc}
+  ${SpaceNotificationFragmentDoc}
 `;
 export const InAppNotificationSpaceCommunityContributorFragmentDoc = gql`
   fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
     space {
-      id
-      level
-      about {
-        ...SpaceAboutCardBanner
-      }
+      ...spaceNotification
     }
     contributor {
       id
@@ -2813,7 +2816,7 @@ export const InAppNotificationSpaceCommunityContributorFragmentDoc = gql`
       }
     }
   }
-  ${SpaceAboutCardBannerFragmentDoc}
+  ${SpaceNotificationFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
 export const InAppNotificationUserMentionedFragmentDoc = gql`

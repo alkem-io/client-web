@@ -30341,6 +30341,36 @@ export type InAppNotificationSpaceCommunityContributorFragment = {
     | undefined;
 };
 
+export type SpaceNotificationFragment = {
+  __typename?: 'Space';
+  id: string;
+  level: SpaceLevel;
+  about: {
+    __typename?: 'SpaceAbout';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      tagline?: string | undefined;
+      cardBanner?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+        | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type InAppNotificationUserMentionedFragment = {
   __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
   roomID?: string | undefined;

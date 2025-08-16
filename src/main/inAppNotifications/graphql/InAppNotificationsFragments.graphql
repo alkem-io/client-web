@@ -45,22 +45,14 @@ fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationP
     }
   }
   space {
-    id
-    level
-    about {
-      ...SpaceAboutCardBanner
-    }
+    ...spaceNotification
   }
 }
 
-fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
 
+fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
   space {
-    id
-    level
-    about {
-      ...SpaceAboutCardBanner
-    }
+    ...spaceNotification
   }
   contributor {
     id
@@ -73,6 +65,15 @@ fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadS
         ...VisualModel
       }
     }
+  }
+}
+
+fragment spaceNotification on Space {
+  id
+  level
+  about {
+    id
+    ...SpaceAboutCardBanner
   }
 }
 

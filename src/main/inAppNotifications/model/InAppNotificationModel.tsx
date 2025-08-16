@@ -11,11 +11,11 @@ export interface InAppNotificationModel {
   triggeredAt: Date;
   state: NotificationEventInAppState;
   category: NotificationEventCategory;
-  triggeredBy?: {
-    profile?: {
-      displayName?: string;
-      url?: string;
-      visual?: {
+  triggeredBy: {
+    profile: {
+      displayName: string;
+      url: string;
+      visual: {
         uri: string;
       };
     };

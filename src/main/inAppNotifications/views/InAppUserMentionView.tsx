@@ -1,49 +1,8 @@
-import { NotificationEventPayload } from '@/core/apollo/generated/graphql-schema';
 import { InAppNotificationModel } from '../model/InAppNotificationModel';
-import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { InAppNotificationBaseView } from './InAppNotificationBaseView';
 
-export const InAppUserMentionView = ({
-  id,
-  type,
-  state,
-  payload,
-  category,
-  triggeredBy,
-  triggeredAt,
-}: InAppNotificationModel) => {
-  const { t } = useTranslation();
-
-  const notificationTextValues = {
-    defaultValue: '',
-    commenterName: triggeredBy?.profile?.displayName,
-    calloutName: payload.commentOriginName,
-    comment: payload.comment,
-  };
-  const notification: InAppNotificationModel = useMemo(() => {
-    return {
-      id,
-      type,
-      category,
-      state,
-      triggeredAt: triggeredAt,
-      triggeredBy: {
-        avatarUrl: triggeredBy?.profile?.visual?.uri ?? '',
-        ...triggeredBy,
-      },
-      payload: {
-        type: NotificationEventPayload.UserMessageRoom,
-        space: {
-          id: payload.space?.id,
-          avatarUrl: payload.space?.about?.profile?.visual?.uri ?? '',
-          about: {
-            profile: { ...payload.space?.about?.profile },
-          },
-        },
-      },
-    };
-  }, [id, state, payload, triggeredBy, triggeredAt, t]);
+export const InAppUserMentionView = (notification: InAppNotificationModel) => {
+  const { payload, triggeredBy } = notification;
 
   // do not display notification if these are missing
   if (
@@ -54,6 +13,13 @@ export const InAppUserMentionView = ({
   ) {
     return null;
   }
+
+  const notificationTextValues = {
+    defaultValue: '',
+    triggeredByName: triggeredBy?.profile?.displayName,
+    calloutName: payload.commentOriginName,
+    comment: payload.comment,
+  };
 
   return (
     <InAppNotificationBaseView notification={notification} values={notificationTextValues} url={payload.commentUrl} />
