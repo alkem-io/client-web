@@ -782,6 +782,8 @@ export type Authorization = {
   createdDate: Scalars['DateTime']['output'];
   /** The set of credential rules that are contained by this Authorization Policy. */
   credentialRules?: Maybe<Array<AuthorizationPolicyRuleCredential>>;
+  /** Does the current User have the specified privilege based on this Authorization Policy. */
+  hasPrivilege: Scalars['Boolean']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The privileges granted to the current user based on this Authorization Policy. */
@@ -794,6 +796,10 @@ export type Authorization = {
   updatedDate: Scalars['DateTime']['output'];
   /** The set of verified credential rules that are contained by this Authorization Policy. */
   verifiedCredentialRules?: Maybe<Array<AuthorizationPolicyRuleVerifiedCredential>>;
+};
+
+export type AuthorizationHasPrivilegeArgs = {
+  privilege: AuthorizationPrivilege;
 };
 
 export enum AuthorizationCredential {
@@ -2820,7 +2826,7 @@ export type InAppNotificationPayloadPlatformUserMessageRoom = InAppNotificationP
   /** The payload type. */
   type: NotificationEventPayload;
   /** The User for the message. */
-  user?: Maybe<Contributor>;
+  user?: Maybe<User>;
 };
 
 export type InAppNotificationPayloadPlatformUserProfileRemoved = InAppNotificationPayload & {
@@ -4047,6 +4053,8 @@ export type Mutation = {
   assignRoleToVirtualContributor: VirtualContributor;
   /** Assigns a User as a member of the specified User Group. */
   assignUserToGroup: UserGroup;
+  /** Ensure all access privileges for the platform roles are re-calculated */
+  authorizationPlatformRolesAccessReset: Scalars['Boolean']['output'];
   /** Reset the Authorization Policy on all entities */
   authorizationPolicyResetAll: Scalars['String']['output'];
   /** Reset the Authorization Policy on the specified Account. */
@@ -5360,6 +5368,14 @@ export type PlatformInnovationHubArgs = {
   subdomain?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type PlatformAccessRole = {
+  __typename?: 'PlatformAccessRole';
+  /** The privileges to be granted for this Platform Access Role. */
+  grantedPrivileges: Array<AuthorizationPrivilege>;
+  /** The role name for this Platform Access Role. */
+  roleName: RoleName;
+};
+
 export type PlatformAdminCommunicationQueryResults = {
   __typename?: 'PlatformAdminCommunicationQueryResults';
   /** All Users that are members of a given room */
@@ -5436,6 +5452,7 @@ export enum PlatformFeatureFlagName {
   CommunicationsDiscussions = 'COMMUNICATIONS_DISCUSSIONS',
   GuidenceEngine = 'GUIDENCE_ENGINE',
   LandingPage = 'LANDING_PAGE',
+  Memo = 'MEMO',
   Notifications = 'NOTIFICATIONS',
   Ssi = 'SSI',
   Subscriptions = 'SUBSCRIPTIONS',
@@ -5527,6 +5544,12 @@ export type PlatformLocations = {
   terms: Scalars['String']['output'];
   /** URL where users can get tips and tricks */
   tips: Scalars['String']['output'];
+};
+
+export type PlatformRolesAccess = {
+  __typename?: 'PlatformRolesAccess';
+  /** The platform roles with their associated privileges. */
+  roles: Array<PlatformAccessRole>;
 };
 
 export type PlatformSettings = {
@@ -5899,6 +5922,8 @@ export type RelayPaginatedSpace = {
   license: License;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
+  /** The calculated platform access for this Space. */
+  platformAccess: PlatformRolesAccess;
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
@@ -6039,6 +6064,7 @@ export type Role = {
 
 export enum RoleName {
   Admin = 'ADMIN',
+  Anonymous = 'ANONYMOUS',
   Associate = 'ASSOCIATE',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityReader = 'GLOBAL_COMMUNITY_READER',
@@ -6052,6 +6078,7 @@ export enum RoleName {
   Owner = 'OWNER',
   PlatformBetaTester = 'PLATFORM_BETA_TESTER',
   PlatformVcCampaign = 'PLATFORM_VC_CAMPAIGN',
+  Registered = 'REGISTERED',
 }
 
 export type RoleSet = {
@@ -6561,6 +6588,8 @@ export type Space = {
   license: License;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
+  /** The calculated platform access for this Space. */
+  platformAccess: PlatformRolesAccess;
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */

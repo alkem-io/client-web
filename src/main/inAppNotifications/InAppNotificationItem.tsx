@@ -1,22 +1,22 @@
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { InAppNotificationModel } from './model/InAppNotificationModel';
-import { CollaborationCalloutPublishedView } from './views/CollaborationCalloutPublishedView';
-import { CommunicationUserMentionView } from './views/CommunicationUserMentionView';
+import { InAppSpaceCollaborationCalloutPublishedView } from './views/InAppSpaceCollaborationCalloutPublishedView';
+import { InAppUserMentionView } from './views/InAppUserMentionView';
 import { NotificationEvent } from '@/core/apollo/generated/graphql-schema';
-import { CommunityNewMemberAdminView } from './views/CommunityNewMemberAdminView';
-import { CommunityNewMemberView } from './views/CommunityNewMemberView';
+import { InAppSpaceCommunityNewMemberAdminView } from './views/InAppSpaceCommunityNewMemberAdminView';
+import { InAppSpaceCommunityNewMemberView } from './views/InAppSpaceCommunityNewMemberView';
 
 // TODO:NotificationEventType fix
 export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
   switch (item.type) {
     case NotificationEvent.SpaceCollaborationCalloutPublished:
-      return <CollaborationCalloutPublishedView {...item} />;
+      return <InAppSpaceCollaborationCalloutPublishedView {...item} />;
     case NotificationEvent.UserMention:
-      return <CommunicationUserMentionView {...item} />;
+      return <InAppUserMentionView {...item} />;
     case NotificationEvent.SpaceCommunityNewMember:
-      return <CommunityNewMemberView {...item} />;
+      return <InAppSpaceCommunityNewMemberView {...item} />;
     case NotificationEvent.SpaceCommunityNewMemberAdmin:
-      return <CommunityNewMemberAdminView {...item} />;
+      return <InAppSpaceCommunityNewMemberAdminView {...item} />;
 
     default:
       logWarn(`Unsupported Notification type: ${item.type}`, {

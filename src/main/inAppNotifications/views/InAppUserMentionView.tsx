@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InAppNotificationBaseView } from './InAppNotificationBaseView';
 
-export const CommunicationUserMentionView = ({
+export const InAppUserMentionView = ({
   id,
   type,
   state,

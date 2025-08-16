@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { NotificationEventPayload, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { InAppNotificationModel } from '../model/InAppNotificationModel';
 
-export const CollaborationCalloutPublishedView = ({
+export const InAppSpaceCollaborationCalloutPublishedView = ({
   id,
   type,
   state,

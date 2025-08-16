@@ -1,37 +1,39 @@
-import { NotificationEvent } from '@/core/apollo/generated/graphql-schema';
+import { NotificationEventPayload } from '@/core/apollo/generated/graphql-schema';
 import { InAppNotificationModel } from '../model/InAppNotificationModel';
 import { InAppNotificationBaseView } from './InAppNotificationBaseView';
 import { useMemo } from 'react';
 
-export const CommunityNewMemberAdminView = ({ id, state, payload, triggeredAt, category }: InAppNotificationModel) => {
+export const InAppSpaceCommunityNewMemberView = ({
+  id,
+  type,
+  state,
+  payload,
+  triggeredAt,
+  category,
+}: InAppNotificationModel) => {
   const notificationTextValues = {
     defaultValue: '',
-    spaceName: payload.space?.about?.profile?.displayName,
-    memberType: payload.contributor?.type,
-    memberName: payload.contributor?.profile?.displayName,
+    spaceName: payload?.space?.about?.profile?.displayName,
   };
-
   const notification: InAppNotificationModel = useMemo(() => {
     return {
       id,
-      type: NotificationEvent.SpaceCommunityNewMemberAdmin,
+      type,
       state,
       category,
-      triggeredAt,
+      triggeredAt: triggeredAt,
       payload: {
-        type: payload.type,
+        type: NotificationEventPayload.SpaceCommunityContributor,
         space: {
           id: payload.space?.id,
-          level: payload.space?.level,
           avatarUrl: payload.space?.about?.profile?.visual?.uri ?? '',
-          ...payload.space,
         },
       },
     };
-  }, [id, state, payload.space, triggeredAt, payload.contributor]);
+  }, [id, state, payload, triggeredAt]);
 
   // do not display notification if these are missing
-  if (!payload.contributor?.profile?.displayName || !payload.space?.about?.profile?.displayName) {
+  if (!payload.space?.about?.profile?.displayName) {
     return null;
   }
 
