@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 
 import {
-  refetchAdminGlobalOrganizationsListQuery,
-  useAdminGlobalOrganizationsListQuery,
+  refetchPlatformAdminOrganizationsListQuery,
+  usePlatformAdminOrganizationsListQuery,
   useAdminOrganizationVerifyMutation,
   useAssignLicensePlanToAccountMutation,
   useDeleteOrganizationMutation,
@@ -39,12 +39,12 @@ export const useAdminGlobalOrganizationsList = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const { data, ...paginationProvided } = usePaginatedQuery({
-    useQuery: useAdminGlobalOrganizationsListQuery,
+    useQuery: usePlatformAdminOrganizationsListQuery,
     variables: {
       filter: { displayName: searchTerm },
     },
     pageSize: PAGE_SIZE,
-    getPageInfo: data => data?.organizationsPaginated.pageInfo,
+    getPageInfo: data => data?.platformAdmin.organizations.pageInfo,
   });
 
   const { t } = useTranslation();
@@ -68,7 +68,7 @@ export const useAdminGlobalOrganizationsList = () => {
   const platformLicensePlans = usePlatformLicensingPlansQuery();
 
   const handleVerification = async (item: SearchableListItem) => {
-    const orgFullData = data?.organizationsPaginated?.organization?.find(org => org.id === item.id);
+    const orgFullData = data?.platformAdmin.organizations?.organization?.find(org => org.id === item.id);
 
     if (!orgFullData) {
       return;
@@ -118,7 +118,7 @@ export const useAdminGlobalOrganizationsList = () => {
         licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
-        refetchAdminGlobalOrganizationsListQuery({
+        refetchPlatformAdminOrganizationsListQuery({
           first: PAGE_SIZE,
           filter: { displayName: searchTerm },
         }),
@@ -136,7 +136,7 @@ export const useAdminGlobalOrganizationsList = () => {
         licensingId: platformLicensePlans.data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
-        refetchAdminGlobalOrganizationsListQuery({
+        refetchPlatformAdminOrganizationsListQuery({
           first: PAGE_SIZE,
           filter: { displayName: searchTerm },
         }),
@@ -147,7 +147,7 @@ export const useAdminGlobalOrganizationsList = () => {
 
   const organizations = useMemo<SearchableListItem[]>(
     () =>
-      data?.organizationsPaginated.organization.map(org => ({
+      data?.platformAdmin.organizations?.organization.map(org => ({
         id: org.id,
         accountId: org.account?.id,
         value: org.profile.displayName,

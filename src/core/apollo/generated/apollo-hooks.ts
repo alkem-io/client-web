@@ -14703,89 +14703,6 @@ export type DashboardSpacesQueryResult = Apollo.QueryResult<
 export function refetchDashboardSpacesQuery(variables?: SchemaTypes.DashboardSpacesQueryVariables) {
   return { query: DashboardSpacesDocument, variables: variables };
 }
-export const PlatformAdminInnovationHubsDocument = gql`
-  query PlatformAdminInnovationHubs {
-    platformAdmin {
-      innovationHubs {
-        id
-        subdomain
-        profile {
-          id
-          displayName
-          url
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __usePlatformAdminInnovationHubsQuery__
- *
- * To run a query within a React component, call `usePlatformAdminInnovationHubsQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlatformAdminInnovationHubsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePlatformAdminInnovationHubsQuery({
- *   variables: {
- *   },
- * });
- */
-export function usePlatformAdminInnovationHubsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.PlatformAdminInnovationHubsQuery,
-    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.PlatformAdminInnovationHubsQuery,
-    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-  >(PlatformAdminInnovationHubsDocument, options);
-}
-export function usePlatformAdminInnovationHubsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PlatformAdminInnovationHubsQuery,
-    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.PlatformAdminInnovationHubsQuery,
-    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-  >(PlatformAdminInnovationHubsDocument, options);
-}
-export function usePlatformAdminInnovationHubsSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.PlatformAdminInnovationHubsQuery,
-        SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.PlatformAdminInnovationHubsQuery,
-    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-  >(PlatformAdminInnovationHubsDocument, options);
-}
-export type PlatformAdminInnovationHubsQueryHookResult = ReturnType<typeof usePlatformAdminInnovationHubsQuery>;
-export type PlatformAdminInnovationHubsLazyQueryHookResult = ReturnType<typeof usePlatformAdminInnovationHubsLazyQuery>;
-export type PlatformAdminInnovationHubsSuspenseQueryHookResult = ReturnType<
-  typeof usePlatformAdminInnovationHubsSuspenseQuery
->;
-export type PlatformAdminInnovationHubsQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformAdminInnovationHubsQuery,
-  SchemaTypes.PlatformAdminInnovationHubsQueryVariables
->;
-export function refetchPlatformAdminInnovationHubsQuery(
-  variables?: SchemaTypes.PlatformAdminInnovationHubsQueryVariables
-) {
-  return { query: PlatformAdminInnovationHubsDocument, variables: variables };
-}
 export const DeleteInnovationHubDocument = gql`
   mutation deleteInnovationHub($innovationHubId: UUID!) {
     deleteInnovationHub(deleteData: { ID: $innovationHubId }) {
@@ -15453,6 +15370,89 @@ export type PlatformRoleSetQueryResult = Apollo.QueryResult<
 export function refetchPlatformRoleSetQuery(variables?: SchemaTypes.PlatformRoleSetQueryVariables) {
   return { query: PlatformRoleSetDocument, variables: variables };
 }
+export const PlatformAdminInnovationHubsDocument = gql`
+  query PlatformAdminInnovationHubs {
+    platformAdmin {
+      innovationHubs {
+        id
+        subdomain
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlatformAdminInnovationHubsQuery__
+ *
+ * To run a query within a React component, call `usePlatformAdminInnovationHubsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformAdminInnovationHubsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformAdminInnovationHubsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformAdminInnovationHubsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformAdminInnovationHubsQuery,
+    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.PlatformAdminInnovationHubsQuery,
+    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+  >(PlatformAdminInnovationHubsDocument, options);
+}
+export function usePlatformAdminInnovationHubsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformAdminInnovationHubsQuery,
+    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformAdminInnovationHubsQuery,
+    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+  >(PlatformAdminInnovationHubsDocument, options);
+}
+export function usePlatformAdminInnovationHubsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.PlatformAdminInnovationHubsQuery,
+        SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.PlatformAdminInnovationHubsQuery,
+    SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+  >(PlatformAdminInnovationHubsDocument, options);
+}
+export type PlatformAdminInnovationHubsQueryHookResult = ReturnType<typeof usePlatformAdminInnovationHubsQuery>;
+export type PlatformAdminInnovationHubsLazyQueryHookResult = ReturnType<typeof usePlatformAdminInnovationHubsLazyQuery>;
+export type PlatformAdminInnovationHubsSuspenseQueryHookResult = ReturnType<
+  typeof usePlatformAdminInnovationHubsSuspenseQuery
+>;
+export type PlatformAdminInnovationHubsQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformAdminInnovationHubsQuery,
+  SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+>;
+export function refetchPlatformAdminInnovationHubsQuery(
+  variables?: SchemaTypes.PlatformAdminInnovationHubsQueryVariables
+) {
+  return { query: PlatformAdminInnovationHubsDocument, variables: variables };
+}
 export const PlatformAdminInnovationPacksDocument = gql`
   query PlatformAdminInnovationPacks {
     platformAdmin {
@@ -15641,33 +15641,35 @@ export type RevokeLicensePlanFromAccountMutationOptions = Apollo.BaseMutationOpt
   SchemaTypes.RevokeLicensePlanFromAccountMutation,
   SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
 >;
-export const AdminGlobalOrganizationsListDocument = gql`
-  query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
-    organizationsPaginated(first: $first, after: $after, filter: $filter) {
-      organization {
-        id
-        account {
+export const PlatformAdminOrganizationsListDocument = gql`
+  query platformAdminOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+    platformAdmin {
+      organizations(first: $first, after: $after, filter: $filter) {
+        organization {
           id
-          subscriptions {
-            name
-          }
-        }
-        profile {
-          id
-          url
-          displayName
-          visual(type: AVATAR) {
+          account {
             id
-            uri
+            subscriptions {
+              name
+            }
+          }
+          profile {
+            id
+            url
+            displayName
+            visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+          verification {
+            id
+            state
           }
         }
-        verification {
-          id
-          state
+        pageInfo {
+          ...PageInfo
         }
-      }
-      pageInfo {
-        ...PageInfo
       }
     }
   }
@@ -15675,16 +15677,16 @@ export const AdminGlobalOrganizationsListDocument = gql`
 `;
 
 /**
- * __useAdminGlobalOrganizationsListQuery__
+ * __usePlatformAdminOrganizationsListQuery__
  *
- * To run a query within a React component, call `useAdminGlobalOrganizationsListQuery` and pass it any options that fit your needs.
- * When your component renders, `useAdminGlobalOrganizationsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePlatformAdminOrganizationsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformAdminOrganizationsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAdminGlobalOrganizationsListQuery({
+ * const { data, loading, error } = usePlatformAdminOrganizationsListQuery({
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
@@ -15692,60 +15694,60 @@ export const AdminGlobalOrganizationsListDocument = gql`
  *   },
  * });
  */
-export function useAdminGlobalOrganizationsListQuery(
+export function usePlatformAdminOrganizationsListQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AdminGlobalOrganizationsListQuery,
-    SchemaTypes.AdminGlobalOrganizationsListQueryVariables
+    SchemaTypes.PlatformAdminOrganizationsListQuery,
+    SchemaTypes.PlatformAdminOrganizationsListQueryVariables
   > &
-    ({ variables: SchemaTypes.AdminGlobalOrganizationsListQueryVariables; skip?: boolean } | { skip: boolean })
+    ({ variables: SchemaTypes.PlatformAdminOrganizationsListQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.AdminGlobalOrganizationsListQuery,
-    SchemaTypes.AdminGlobalOrganizationsListQueryVariables
-  >(AdminGlobalOrganizationsListDocument, options);
+    SchemaTypes.PlatformAdminOrganizationsListQuery,
+    SchemaTypes.PlatformAdminOrganizationsListQueryVariables
+  >(PlatformAdminOrganizationsListDocument, options);
 }
-export function useAdminGlobalOrganizationsListLazyQuery(
+export function usePlatformAdminOrganizationsListLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AdminGlobalOrganizationsListQuery,
-    SchemaTypes.AdminGlobalOrganizationsListQueryVariables
+    SchemaTypes.PlatformAdminOrganizationsListQuery,
+    SchemaTypes.PlatformAdminOrganizationsListQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.AdminGlobalOrganizationsListQuery,
-    SchemaTypes.AdminGlobalOrganizationsListQueryVariables
-  >(AdminGlobalOrganizationsListDocument, options);
+    SchemaTypes.PlatformAdminOrganizationsListQuery,
+    SchemaTypes.PlatformAdminOrganizationsListQueryVariables
+  >(PlatformAdminOrganizationsListDocument, options);
 }
-export function useAdminGlobalOrganizationsListSuspenseQuery(
+export function usePlatformAdminOrganizationsListSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
     | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.AdminGlobalOrganizationsListQuery,
-        SchemaTypes.AdminGlobalOrganizationsListQueryVariables
+        SchemaTypes.PlatformAdminOrganizationsListQuery,
+        SchemaTypes.PlatformAdminOrganizationsListQueryVariables
       >
 ) {
   const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
-    SchemaTypes.AdminGlobalOrganizationsListQuery,
-    SchemaTypes.AdminGlobalOrganizationsListQueryVariables
-  >(AdminGlobalOrganizationsListDocument, options);
+    SchemaTypes.PlatformAdminOrganizationsListQuery,
+    SchemaTypes.PlatformAdminOrganizationsListQueryVariables
+  >(PlatformAdminOrganizationsListDocument, options);
 }
-export type AdminGlobalOrganizationsListQueryHookResult = ReturnType<typeof useAdminGlobalOrganizationsListQuery>;
-export type AdminGlobalOrganizationsListLazyQueryHookResult = ReturnType<
-  typeof useAdminGlobalOrganizationsListLazyQuery
+export type PlatformAdminOrganizationsListQueryHookResult = ReturnType<typeof usePlatformAdminOrganizationsListQuery>;
+export type PlatformAdminOrganizationsListLazyQueryHookResult = ReturnType<
+  typeof usePlatformAdminOrganizationsListLazyQuery
 >;
-export type AdminGlobalOrganizationsListSuspenseQueryHookResult = ReturnType<
-  typeof useAdminGlobalOrganizationsListSuspenseQuery
+export type PlatformAdminOrganizationsListSuspenseQueryHookResult = ReturnType<
+  typeof usePlatformAdminOrganizationsListSuspenseQuery
 >;
-export type AdminGlobalOrganizationsListQueryResult = Apollo.QueryResult<
-  SchemaTypes.AdminGlobalOrganizationsListQuery,
-  SchemaTypes.AdminGlobalOrganizationsListQueryVariables
+export type PlatformAdminOrganizationsListQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformAdminOrganizationsListQuery,
+  SchemaTypes.PlatformAdminOrganizationsListQueryVariables
 >;
-export function refetchAdminGlobalOrganizationsListQuery(
-  variables: SchemaTypes.AdminGlobalOrganizationsListQueryVariables
+export function refetchPlatformAdminOrganizationsListQuery(
+  variables: SchemaTypes.PlatformAdminOrganizationsListQueryVariables
 ) {
-  return { query: AdminGlobalOrganizationsListDocument, variables: variables };
+  return { query: PlatformAdminOrganizationsListDocument, variables: variables };
 }
 export const AdminOrganizationVerifyDocument = gql`
   mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
@@ -15952,110 +15954,123 @@ export type UpdateSpacePlatformSettingsMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.UpdateSpacePlatformSettingsMutation,
   SchemaTypes.UpdateSpacePlatformSettingsMutationVariables
 >;
-export const AdminSpacesListDocument = gql`
-  query adminSpacesList {
-    spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
-      ...AdminSpace
+export const PlatformAdminSpacesListDocument = gql`
+  query platformAdminSpacesList {
+    platformAdmin {
+      spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
+        ...AdminSpace
+      }
     }
   }
   ${AdminSpaceFragmentDoc}
 `;
 
 /**
- * __useAdminSpacesListQuery__
+ * __usePlatformAdminSpacesListQuery__
  *
- * To run a query within a React component, call `useAdminSpacesListQuery` and pass it any options that fit your needs.
- * When your component renders, `useAdminSpacesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePlatformAdminSpacesListQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformAdminSpacesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAdminSpacesListQuery({
+ * const { data, loading, error } = usePlatformAdminSpacesListQuery({
  *   variables: {
  *   },
  * });
  */
-export function useAdminSpacesListQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AdminSpacesListQuery, SchemaTypes.AdminSpacesListQueryVariables>
+export function usePlatformAdminSpacesListQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformAdminSpacesListQuery,
+    SchemaTypes.PlatformAdminSpacesListQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AdminSpacesListQuery, SchemaTypes.AdminSpacesListQueryVariables>(
-    AdminSpacesListDocument,
+  return Apollo.useQuery<SchemaTypes.PlatformAdminSpacesListQuery, SchemaTypes.PlatformAdminSpacesListQueryVariables>(
+    PlatformAdminSpacesListDocument,
     options
   );
 }
-export function useAdminSpacesListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AdminSpacesListQuery, SchemaTypes.AdminSpacesListQueryVariables>
+export function usePlatformAdminSpacesListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformAdminSpacesListQuery,
+    SchemaTypes.PlatformAdminSpacesListQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AdminSpacesListQuery, SchemaTypes.AdminSpacesListQueryVariables>(
-    AdminSpacesListDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformAdminSpacesListQuery,
+    SchemaTypes.PlatformAdminSpacesListQueryVariables
+  >(PlatformAdminSpacesListDocument, options);
 }
-export function useAdminSpacesListSuspenseQuery(
+export function usePlatformAdminSpacesListSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<SchemaTypes.AdminSpacesListQuery, SchemaTypes.AdminSpacesListQueryVariables>
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.PlatformAdminSpacesListQuery,
+        SchemaTypes.PlatformAdminSpacesListQueryVariables
+      >
 ) {
   const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.AdminSpacesListQuery, SchemaTypes.AdminSpacesListQueryVariables>(
-    AdminSpacesListDocument,
-    options
-  );
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.PlatformAdminSpacesListQuery,
+    SchemaTypes.PlatformAdminSpacesListQueryVariables
+  >(PlatformAdminSpacesListDocument, options);
 }
-export type AdminSpacesListQueryHookResult = ReturnType<typeof useAdminSpacesListQuery>;
-export type AdminSpacesListLazyQueryHookResult = ReturnType<typeof useAdminSpacesListLazyQuery>;
-export type AdminSpacesListSuspenseQueryHookResult = ReturnType<typeof useAdminSpacesListSuspenseQuery>;
-export type AdminSpacesListQueryResult = Apollo.QueryResult<
-  SchemaTypes.AdminSpacesListQuery,
-  SchemaTypes.AdminSpacesListQueryVariables
+export type PlatformAdminSpacesListQueryHookResult = ReturnType<typeof usePlatformAdminSpacesListQuery>;
+export type PlatformAdminSpacesListLazyQueryHookResult = ReturnType<typeof usePlatformAdminSpacesListLazyQuery>;
+export type PlatformAdminSpacesListSuspenseQueryHookResult = ReturnType<typeof usePlatformAdminSpacesListSuspenseQuery>;
+export type PlatformAdminSpacesListQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformAdminSpacesListQuery,
+  SchemaTypes.PlatformAdminSpacesListQueryVariables
 >;
-export function refetchAdminSpacesListQuery(variables?: SchemaTypes.AdminSpacesListQueryVariables) {
-  return { query: AdminSpacesListDocument, variables: variables };
+export function refetchPlatformAdminSpacesListQuery(variables?: SchemaTypes.PlatformAdminSpacesListQueryVariables) {
+  return { query: PlatformAdminSpacesListDocument, variables: variables };
 }
-export const UserListDocument = gql`
-  query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
-    usersPaginated(first: $first, after: $after, filter: $filter) {
-      users {
-        id
-        account {
+export const PlatformAdminUsersListDocument = gql`
+  query platformAdminUsersList($first: Int!, $after: UUID, $filter: UserFilterInput) {
+    platformAdmin {
+      users(first: $first, after: $after, filter: $filter) {
+        users {
           id
-          subscriptions {
-            name
-          }
-        }
-        profile {
-          id
-          url
-          displayName
-          visual(type: AVATAR) {
+          account {
             id
-            uri
+            subscriptions {
+              name
+            }
           }
+          profile {
+            id
+            url
+            displayName
+            visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+          email
         }
-        email
-      }
-      pageInfo {
-        endCursor
-        hasNextPage
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
       }
     }
   }
 `;
 
 /**
- * __useUserListQuery__
+ * __usePlatformAdminUsersListQuery__
  *
- * To run a query within a React component, call `useUserListQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePlatformAdminUsersListQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformAdminUsersListQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useUserListQuery({
+ * const { data, loading, error } = usePlatformAdminUsersListQuery({
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
@@ -16063,52 +16078,72 @@ export const UserListDocument = gql`
  *   },
  * });
  */
-export function useUserListQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables> &
-    ({ variables: SchemaTypes.UserListQueryVariables; skip?: boolean } | { skip: boolean })
+export function usePlatformAdminUsersListQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformAdminUsersListQuery,
+    SchemaTypes.PlatformAdminUsersListQueryVariables
+  > &
+    ({ variables: SchemaTypes.PlatformAdminUsersListQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
-}
-export function useUserListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
-}
-export function useUserListSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(
-    UserListDocument,
+  return Apollo.useQuery<SchemaTypes.PlatformAdminUsersListQuery, SchemaTypes.PlatformAdminUsersListQueryVariables>(
+    PlatformAdminUsersListDocument,
     options
   );
 }
-export type UserListQueryHookResult = ReturnType<typeof useUserListQuery>;
-export type UserListLazyQueryHookResult = ReturnType<typeof useUserListLazyQuery>;
-export type UserListSuspenseQueryHookResult = ReturnType<typeof useUserListSuspenseQuery>;
-export type UserListQueryResult = Apollo.QueryResult<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>;
-export function refetchUserListQuery(variables: SchemaTypes.UserListQueryVariables) {
-  return { query: UserListDocument, variables: variables };
+export function usePlatformAdminUsersListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformAdminUsersListQuery,
+    SchemaTypes.PlatformAdminUsersListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformAdminUsersListQuery, SchemaTypes.PlatformAdminUsersListQueryVariables>(
+    PlatformAdminUsersListDocument,
+    options
+  );
 }
-export const AdminVirtualContributorsDocument = gql`
-  query AdminVirtualContributors {
-    virtualContributors {
-      id
-      authorization {
+export function usePlatformAdminUsersListSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.PlatformAdminUsersListQuery,
+        SchemaTypes.PlatformAdminUsersListQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.PlatformAdminUsersListQuery,
+    SchemaTypes.PlatformAdminUsersListQueryVariables
+  >(PlatformAdminUsersListDocument, options);
+}
+export type PlatformAdminUsersListQueryHookResult = ReturnType<typeof usePlatformAdminUsersListQuery>;
+export type PlatformAdminUsersListLazyQueryHookResult = ReturnType<typeof usePlatformAdminUsersListLazyQuery>;
+export type PlatformAdminUsersListSuspenseQueryHookResult = ReturnType<typeof usePlatformAdminUsersListSuspenseQuery>;
+export type PlatformAdminUsersListQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformAdminUsersListQuery,
+  SchemaTypes.PlatformAdminUsersListQueryVariables
+>;
+export function refetchPlatformAdminUsersListQuery(variables: SchemaTypes.PlatformAdminUsersListQueryVariables) {
+  return { query: PlatformAdminUsersListDocument, variables: variables };
+}
+export const PlatformAdminVirtualContributorsListDocument = gql`
+  query platformAdminVirtualContributorsList {
+    platformAdmin {
+      virtualContributors {
         id
-        myPrivileges
-      }
-      profile {
-        id
-        displayName
-        description
-        url
-        avatar: visual(type: AVATAR) {
-          ...VisualModel
+        authorization {
+          id
+          myPrivileges
+        }
+        profile {
+          id
+          displayName
+          description
+          url
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
         }
       }
     }
@@ -16117,69 +16152,75 @@ export const AdminVirtualContributorsDocument = gql`
 `;
 
 /**
- * __useAdminVirtualContributorsQuery__
+ * __usePlatformAdminVirtualContributorsListQuery__
  *
- * To run a query within a React component, call `useAdminVirtualContributorsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAdminVirtualContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePlatformAdminVirtualContributorsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformAdminVirtualContributorsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAdminVirtualContributorsQuery({
+ * const { data, loading, error } = usePlatformAdminVirtualContributorsListQuery({
  *   variables: {
  *   },
  * });
  */
-export function useAdminVirtualContributorsQuery(
+export function usePlatformAdminVirtualContributorsListQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.AdminVirtualContributorsQuery,
-    SchemaTypes.AdminVirtualContributorsQueryVariables
+    SchemaTypes.PlatformAdminVirtualContributorsListQuery,
+    SchemaTypes.PlatformAdminVirtualContributorsListQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AdminVirtualContributorsQuery, SchemaTypes.AdminVirtualContributorsQueryVariables>(
-    AdminVirtualContributorsDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.PlatformAdminVirtualContributorsListQuery,
+    SchemaTypes.PlatformAdminVirtualContributorsListQueryVariables
+  >(PlatformAdminVirtualContributorsListDocument, options);
 }
-export function useAdminVirtualContributorsLazyQuery(
+export function usePlatformAdminVirtualContributorsListLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AdminVirtualContributorsQuery,
-    SchemaTypes.AdminVirtualContributorsQueryVariables
+    SchemaTypes.PlatformAdminVirtualContributorsListQuery,
+    SchemaTypes.PlatformAdminVirtualContributorsListQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.AdminVirtualContributorsQuery,
-    SchemaTypes.AdminVirtualContributorsQueryVariables
-  >(AdminVirtualContributorsDocument, options);
+    SchemaTypes.PlatformAdminVirtualContributorsListQuery,
+    SchemaTypes.PlatformAdminVirtualContributorsListQueryVariables
+  >(PlatformAdminVirtualContributorsListDocument, options);
 }
-export function useAdminVirtualContributorsSuspenseQuery(
+export function usePlatformAdminVirtualContributorsListSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
     | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.AdminVirtualContributorsQuery,
-        SchemaTypes.AdminVirtualContributorsQueryVariables
+        SchemaTypes.PlatformAdminVirtualContributorsListQuery,
+        SchemaTypes.PlatformAdminVirtualContributorsListQueryVariables
       >
 ) {
   const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<
-    SchemaTypes.AdminVirtualContributorsQuery,
-    SchemaTypes.AdminVirtualContributorsQueryVariables
-  >(AdminVirtualContributorsDocument, options);
+    SchemaTypes.PlatformAdminVirtualContributorsListQuery,
+    SchemaTypes.PlatformAdminVirtualContributorsListQueryVariables
+  >(PlatformAdminVirtualContributorsListDocument, options);
 }
-export type AdminVirtualContributorsQueryHookResult = ReturnType<typeof useAdminVirtualContributorsQuery>;
-export type AdminVirtualContributorsLazyQueryHookResult = ReturnType<typeof useAdminVirtualContributorsLazyQuery>;
-export type AdminVirtualContributorsSuspenseQueryHookResult = ReturnType<
-  typeof useAdminVirtualContributorsSuspenseQuery
+export type PlatformAdminVirtualContributorsListQueryHookResult = ReturnType<
+  typeof usePlatformAdminVirtualContributorsListQuery
 >;
-export type AdminVirtualContributorsQueryResult = Apollo.QueryResult<
-  SchemaTypes.AdminVirtualContributorsQuery,
-  SchemaTypes.AdminVirtualContributorsQueryVariables
+export type PlatformAdminVirtualContributorsListLazyQueryHookResult = ReturnType<
+  typeof usePlatformAdminVirtualContributorsListLazyQuery
 >;
-export function refetchAdminVirtualContributorsQuery(variables?: SchemaTypes.AdminVirtualContributorsQueryVariables) {
-  return { query: AdminVirtualContributorsDocument, variables: variables };
+export type PlatformAdminVirtualContributorsListSuspenseQueryHookResult = ReturnType<
+  typeof usePlatformAdminVirtualContributorsListSuspenseQuery
+>;
+export type PlatformAdminVirtualContributorsListQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformAdminVirtualContributorsListQuery,
+  SchemaTypes.PlatformAdminVirtualContributorsListQueryVariables
+>;
+export function refetchPlatformAdminVirtualContributorsListQuery(
+  variables?: SchemaTypes.PlatformAdminVirtualContributorsListQueryVariables
+) {
+  return { query: PlatformAdminVirtualContributorsListDocument, variables: variables };
 }
 export const ShareLinkWithUserDocument = gql`
   mutation shareLinkWithUser($messageData: CommunicationSendMessageToUserInput!) {

@@ -1,6 +1,6 @@
 query platformAdminUsersList($first: Int!, $after: UUID, $filter: UserFilterInput) {
   platformAdmin {
-    usersPaginated(first: $first, after: $after, filter: $filter) {
+    users(first: $first, after: $after, filter: $filter) {
       users {
         id
         account {

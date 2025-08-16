@@ -1,6 +1,6 @@
-query platformAdminOrganizationList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+query platformAdminOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
   platformAdmin {
-  organizationsPaginated(first: $first, after: $after, filter: $filter) {
+  organizations(first: $first, after: $after, filter: $filter) {
     organization {
       id
       account {
