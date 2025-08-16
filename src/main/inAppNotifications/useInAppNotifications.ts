@@ -1,4 +1,8 @@
-import { NotificationEventInAppState, InAppNotificationsQuery } from '@/core/apollo/generated/graphql-schema';
+import {
+  NotificationEventInAppState,
+  InAppNotificationsQuery,
+  NotificationEvent,
+} from '@/core/apollo/generated/graphql-schema';
 import {
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
@@ -37,7 +41,18 @@ export const useInAppNotifications = () => {
   const [updateState] = useUpdateNotificationStateMutation();
   const [markAsRead] = useMarkNotificationsAsReadMutation();
 
+  // The set of notification event types currently being retrieve
+  const notificationEventTypes: NotificationEvent[] = [
+    NotificationEvent.UserMention,
+    NotificationEvent.SpaceCollaborationCalloutPublished,
+    NotificationEvent.SpaceCommunityNewMember,
+    NotificationEvent.SpaceCommunityNewMemberAdmin,
+  ];
+
   const { data, loading } = useInAppNotificationsQuery({
+    variables: {
+      types: notificationEventTypes,
+    },
     skip: !isEnabled,
   });
 

@@ -22189,10 +22189,8 @@ export type InAppNotificationReceivedSubscriptionHookResult = ReturnType<
 export type InAppNotificationReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.InAppNotificationReceivedSubscription>;
 export const InAppNotificationsDocument = gql`
-  query InAppNotifications {
-    notificationsInApp(
-      filter: { types: [USER_MENTION, SPACE_COLLABORATION_CALLOUT_PUBLISHED, SPACE_COMMUNITY_NEW_MEMBER] }
-    ) {
+  query InAppNotifications($types: [NotificationEvent!]) {
+    notificationsInApp(filter: { types: $types }) {
       id
       type
       category
@@ -22241,6 +22239,7 @@ export const InAppNotificationsDocument = gql`
  * @example
  * const { data, loading, error } = useInAppNotificationsQuery({
  *   variables: {
+ *      types: // value for 'types'
  *   },
  * });
  */

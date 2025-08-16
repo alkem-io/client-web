@@ -29675,7 +29675,9 @@ export type InAppNotificationReceivedSubscription = {
   };
 };
 
-export type InAppNotificationsQueryVariables = Exact<{ [key: string]: never }>;
+export type InAppNotificationsQueryVariables = Exact<{
+  types?: InputMaybe<Array<NotificationEvent> | NotificationEvent>;
+}>;
 
 export type InAppNotificationsQuery = {
   __typename?: 'Query';
