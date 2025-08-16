@@ -4,18 +4,32 @@ fragment InAppNotificationAllTypes on InAppNotification {
   category
   state
   triggeredAt
-  ... on InAppNotificationSpaceCollaborationCalloutPublished {
-    ...InAppNotificationSpaceCollaborationCalloutPublished
+  triggeredBy {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
   }
-  ... on InAppNotificationSpaceCommunityNewMember {
-    ...InAppNotificationSpaceCommunityNewMember
-  }
-  ... on InAppNotificationUserMentioned {
-    ...InAppNotificationUserMentioned
+  payload {
+    type
+    ... on InAppNotificationPayloadSpaceCollaborationCallout {
+      ...InAppNotificationPayloadSpaceCollaborationCallout
+    }
+    ... on InAppNotificationPayloadSpaceCommunityContributor {
+      ...InAppNotificationSpaceCommunityContributor
+    }
+    ... on InAppNotificationPayloadPlatformUserMessageRoom {
+      ...InAppNotificationUserMentioned
+    }
   }
 }
 
-fragment InAppNotificationSpaceCollaborationCalloutPublished on InAppNotificationSpaceCollaborationCalloutPublished {
+fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationPayloadSpaceCollaborationCallout {
   callout {
     id
     framing {
@@ -37,31 +51,10 @@ fragment InAppNotificationSpaceCollaborationCalloutPublished on InAppNotificatio
       ...SpaceAboutCardBanner
     }
   }
-  triggeredBy {
-    id
-    profile {
-      id
-      displayName
-      url
-      visual(type: AVATAR) {
-        ...VisualModel
-      }
-    }
-  }
 }
 
-fragment InAppNotificationSpaceCommunityNewMember on InAppNotificationSpaceCommunityNewMember {
-  triggeredBy {
-    id
-    profile {
-      id
-      displayName
-      url
-      visual(type: AVATAR) {
-        ...VisualModel
-      }
-    }
-  }
+fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
+
   space {
     id
     level
@@ -83,19 +76,7 @@ fragment InAppNotificationSpaceCommunityNewMember on InAppNotificationSpaceCommu
   }
 }
 
-fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
-  triggeredBy {
-    id
-    profile {
-      id
-      displayName
-      url
-      visual(type: AVATAR) {
-        ...VisualModel
-      }
-    }
-  }
-  commentUrl
-  comment
-  commentOriginName
+fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserMessageRoom {
+  roomID
+  originalMessageID
 }

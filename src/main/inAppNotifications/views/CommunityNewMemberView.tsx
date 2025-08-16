@@ -1,34 +1,40 @@
-import { InAppNotificationProps } from '../useInAppNotifications';
-import { InAppNotificationBaseView, InAppNotificationBaseViewProps } from './InAppNotificationBaseView';
+import { NotificationEventPayload } from '@/core/apollo/generated/graphql-schema';
+import { InAppNotificationModel } from '../model/InAppNotificationModel';
+import { InAppNotificationBaseView } from './InAppNotificationBaseView';
 import { useMemo } from 'react';
 
-export const CommunityNewMemberView = ({ id, type, state, space, triggeredAt }: InAppNotificationProps) => {
-  const notification: InAppNotificationBaseViewProps = useMemo(() => {
-    const notificationTextValues = {
-      defaultValue: '',
-      spaceName: space?.about.profile?.displayName,
-    };
-
+export const CommunityNewMemberView = ({ id, type, state, payload, triggeredAt, category }: InAppNotificationModel) => {
+  const notificationTextValues = {
+    defaultValue: '',
+    spaceName: payload?.space?.about?.profile?.displayName,
+  };
+  const notification: InAppNotificationModel = useMemo(() => {
     return {
       id,
       type,
       state,
-      space: {
-        id: space?.id,
-        avatarUrl: space?.about.profile?.visual?.uri ?? '',
-      },
-      resource: {
-        url: space?.about.profile?.url ?? '',
-      },
+      category,
       triggeredAt: triggeredAt,
-      values: notificationTextValues,
+      payload: {
+        type: NotificationEventPayload.SpaceCommunityContributor,
+        space: {
+          id: payload.space?.id,
+          avatarUrl: payload.space?.about?.profile?.visual?.uri ?? '',
+        },
+      },
     };
-  }, [id, state, space, triggeredAt]);
+  }, [id, state, payload, triggeredAt]);
 
   // do not display notification if these are missing
-  if (!space?.about.profile?.displayName) {
+  if (!payload.space?.about?.profile?.displayName) {
     return null;
   }
 
-  return <InAppNotificationBaseView {...notification} />;
+  return (
+    <InAppNotificationBaseView
+      notification={notification}
+      values={notificationTextValues}
+      url={payload.space?.about?.profile?.url}
+    />
+  );
 };

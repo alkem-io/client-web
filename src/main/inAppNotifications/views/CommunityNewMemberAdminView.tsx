@@ -1,36 +1,45 @@
-import { InAppNotificationProps } from '../useInAppNotifications';
-import { InAppNotificationBaseView, InAppNotificationBaseViewProps } from './InAppNotificationBaseView';
+import { NotificationEvent } from '@/core/apollo/generated/graphql-schema';
+import { InAppNotificationModel } from '../model/InAppNotificationModel';
+import { InAppNotificationBaseView } from './InAppNotificationBaseView';
 import { useMemo } from 'react';
 
-export const CommunityNewMemberAdminView = ({ id, state, space, triggeredAt, contributor }: InAppNotificationProps) => {
-  const notification: InAppNotificationBaseViewProps = useMemo(() => {
-    const notificationTextValues = {
-      defaultValue: '',
-      spaceName: space?.about.profile?.displayName,
-      memberType: contributor?.type,
-      memberName: contributor?.profile?.displayName,
-    };
+export const CommunityNewMemberAdminView = ({ id, state, payload, triggeredAt, category }: InAppNotificationModel) => {
+  const notificationTextValues = {
+    defaultValue: '',
+    spaceName: payload.space?.about?.profile?.displayName,
+    memberType: payload.contributor?.type,
+    memberName: payload.contributor?.profile?.displayName,
+  };
 
+  const notification: InAppNotificationModel = useMemo(() => {
     return {
       id,
-      type: 'COMMUNITY_NEW_MEMBER_ADMIN',
+      type: NotificationEvent.SpaceCommunityNewMemberAdmin,
       state,
-      space: {
-        id: space?.id,
-        avatarUrl: space?.about.profile?.visual?.uri ?? '',
+      category,
+      triggeredAt,
+      payload: {
+        type: payload.type,
+        space: {
+          id: payload.space?.id,
+          level: payload.space?.level,
+          avatarUrl: payload.space?.about?.profile?.visual?.uri ?? '',
+          ...payload.space,
+        },
       },
-      resource: {
-        url: space?.about.profile?.url ?? '',
-      },
-      triggeredAt: triggeredAt,
-      values: notificationTextValues,
     };
-  }, [id, state, space, triggeredAt, contributor]);
+  }, [id, state, payload.space, triggeredAt, payload.contributor]);
 
   // do not display notification if these are missing
-  if (!contributor?.profile?.displayName || !space?.about.profile?.displayName) {
+  if (!payload.contributor?.profile?.displayName || !payload.space?.about?.profile?.displayName) {
     return null;
   }
 
-  return <InAppNotificationBaseView {...notification} />;
+  return (
+    <InAppNotificationBaseView
+      notification={notification}
+      values={notificationTextValues}
+      url={payload.space?.about?.profile?.url}
+    />
+  );
 };

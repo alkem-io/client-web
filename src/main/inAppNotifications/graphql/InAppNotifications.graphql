@@ -1,18 +1,34 @@
 query InAppNotifications {
-  notificationsInApp(filter: { types: [USER_MENTION, SPACE_COLLABORATION_CALLOUT_PUBLISHED, SPACE_COMMUNITY_NEW_MEMBER] }) {
+  notificationsInApp(
+    filter: { types: [USER_MENTION, SPACE_COLLABORATION_CALLOUT_PUBLISHED, SPACE_COMMUNITY_NEW_MEMBER] }
+  ) {
     id
     type
     category
     state
     triggeredAt
-    ... on InAppNotificationSpaceCollaborationCalloutPublished {
-      ...InAppNotificationSpaceCollaborationCalloutPublished
+    triggeredBy {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
     }
-    ... on InAppNotificationSpaceCommunityNewMember {
-      ...InAppNotificationSpaceCommunityNewMember
-    }
-    ... on InAppNotificationUserMentioned {
-      ...InAppNotificationUserMentioned
+    payload {
+      type
+      ... on InAppNotificationPayloadSpaceCollaborationCallout {
+        ...InAppNotificationPayloadSpaceCollaborationCallout
+      }
+      ... on InAppNotificationPayloadSpaceCommunityContributor {
+        ...InAppNotificationSpaceCommunityContributor
+      }
+      ... on InAppNotificationPayloadPlatformUserMessageRoom {
+        ...InAppNotificationUserMentioned
+      }
     }
   }
 }

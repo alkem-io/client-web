@@ -1,12 +1,4 @@
-import { useMemo } from 'react';
-import {
-  RoleSetContributorType,
-  NotificationEventCategory,
-  NotificationEventInAppState,
-  SpaceLevel,
-  InAppNotificationsQuery,
-  NotificationEvent,
-} from '@/core/apollo/generated/graphql-schema';
+import { NotificationEventInAppState, InAppNotificationsQuery } from '@/core/apollo/generated/graphql-schema';
 import {
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
@@ -15,67 +7,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import { ApolloCache } from '@apollo/client';
-
-export interface InAppNotificationProps {
-  id: string;
-  type: NotificationEvent;
-  triggeredAt: Date;
-  state: NotificationEventInAppState;
-  category: NotificationEventCategory;
-  triggeredBy?: {
-    profile:
-      | {
-          displayName: string;
-          url: string;
-          visual?: {
-            uri: string;
-          };
-        }
-      | undefined;
-  };
-  contributor?: {
-    type?: RoleSetContributorType;
-    profile:
-      | {
-          displayName: string;
-          url: string;
-          visual?: {
-            uri: string;
-          };
-        }
-      | undefined;
-  };
-  callout?: {
-    framing:
-      | {
-          profile?:
-            | {
-                displayName: string;
-                url: string;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-  space?: {
-    id?: string;
-    level: SpaceLevel;
-    about: {
-      profile:
-        | {
-            displayName: string;
-            url: string;
-            visual?: {
-              uri: string;
-            };
-          }
-        | undefined;
-    };
-  };
-  comment?: string;
-  commentUrl?: string;
-  commentOriginName?: string;
-}
+import { InAppNotificationModel } from './model/InAppNotificationModel';
 
 // update the cache as refetching all could be expensive
 const updateNotificationsCache = (
@@ -109,10 +41,21 @@ export const useInAppNotifications = () => {
     skip: !isEnabled,
   });
 
-  const items: InAppNotificationProps[] = useMemo(
-    () => (data?.notificationsInApp ?? []).filter(item => item.state !== NotificationEventInAppState.Archived),
-    [data]
-  );
+  const notificationsInApp: InAppNotificationModel[] = [];
+  for (const notificationData of data?.notificationsInApp ?? []) {
+    if (notificationData.state !== NotificationEventInAppState.Archived) {
+      const notification: InAppNotificationModel = {
+        id: notificationData.id,
+        type: notificationData.type,
+        triggeredAt: notificationData.triggeredAt,
+        state: notificationData.state,
+        category: notificationData.category,
+        triggeredBy: notificationData.triggeredBy,
+        payload: notificationData.payload,
+      };
+      notificationsInApp.push(notification);
+    }
+  }
 
   const updateNotificationState = async (id: string, status: NotificationEventInAppState) => {
     await updateState({
@@ -129,7 +72,9 @@ export const useInAppNotifications = () => {
   };
 
   const markNotificationsAsRead = async () => {
-    const ids = items.filter(item => item.state === NotificationEventInAppState.Unread).map(item => item.id);
+    const ids = notificationsInApp
+      .filter(item => item.state === NotificationEventInAppState.Unread)
+      .map(item => item.id);
 
     if (ids.length === 0) {
       return;
@@ -147,5 +92,5 @@ export const useInAppNotifications = () => {
     });
   };
 
-  return { items, isLoading: loading, updateNotificationState, markNotificationsAsRead };
+  return { notificationsInApp, isLoading: loading, updateNotificationState, markNotificationsAsRead };
 };

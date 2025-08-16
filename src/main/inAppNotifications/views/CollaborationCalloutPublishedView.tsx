@@ -1,58 +1,69 @@
 import { useTranslation } from 'react-i18next';
-import { InAppNotificationProps } from '../useInAppNotifications';
-import { InAppNotificationBaseView, InAppNotificationBaseViewProps } from './InAppNotificationBaseView';
+import { InAppNotificationBaseView } from './InAppNotificationBaseView';
 import { useMemo } from 'react';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { NotificationEventPayload, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { InAppNotificationModel } from '../model/InAppNotificationModel';
 
 export const CollaborationCalloutPublishedView = ({
   id,
   type,
   state,
-  space,
-  callout,
+  category,
+  payload,
   triggeredBy,
   triggeredAt,
-}: InAppNotificationProps) => {
+}: InAppNotificationModel) => {
   const { t } = useTranslation();
 
-  const notification: InAppNotificationBaseViewProps = useMemo(() => {
-    const spaceLevel = space?.level ?? SpaceLevel.L0;
-    const notificationTextValues = {
-      defaultValue: '',
-      spaceName: space?.about.profile?.displayName,
-      spaceLevel: t(`common.space-level.${spaceLevel}`),
-      calloutName: callout?.framing?.profile?.displayName,
-      contributorName: triggeredBy?.profile?.displayName,
-    };
+  const spaceLevel = payload.space?.level ?? SpaceLevel.L0;
 
+  const notificationTextValues = {
+    defaultValue: '',
+    spaceName: payload.space?.about?.profile?.displayName,
+    spaceLevel: t(`common.space-level.${spaceLevel}`),
+    calloutName: payload.callout?.framing?.profile?.displayName,
+    contributorName: triggeredBy?.profile?.displayName,
+  };
+
+  const notification: InAppNotificationModel = useMemo(() => {
     return {
       id,
       type,
+      category,
       state,
-      space: {
-        id: space?.id,
-        avatarUrl: space?.about.profile?.visual?.uri ?? '',
-      },
-      resource: {
-        url: callout?.framing?.profile?.url ?? '',
-      },
-      contributor: {
-        avatarUrl: triggeredBy?.profile?.visual?.uri ?? '',
-      },
       triggeredAt: triggeredAt,
-      values: notificationTextValues,
+      triggeredBy: {
+        avatarUrl: triggeredBy?.profile?.visual?.uri ?? '',
+        ...triggeredBy,
+      },
+      payload: {
+        type: NotificationEventPayload.SpaceCollaborationCallout,
+        space: {
+          id: payload.space?.id,
+          avatarUrl: payload.space?.about?.profile?.visual?.uri ?? '',
+          about: {
+            profile: { ...payload.space?.about?.profile },
+          },
+        },
+      },
     };
-  }, [id, state, space, callout, triggeredBy, triggeredAt, t]);
+  }, [id, state, payload, triggeredBy, triggeredAt, t]);
 
   // do not display notification if these are missing
   if (
-    !callout ||
-    !callout.framing?.profile?.displayName ||
-    !callout?.framing?.profile?.url ||
+    !payload.callout ||
+    !payload.callout.framing?.profile?.displayName ||
+    !payload.callout.framing?.profile?.url ||
     !triggeredBy?.profile?.displayName
   ) {
     return null;
   }
 
-  return <InAppNotificationBaseView {...notification} />;
+  return (
+    <InAppNotificationBaseView
+      notification={notification}
+      values={notificationTextValues}
+      url={payload.callout.framing?.profile?.url}
+    />
+  );
 };

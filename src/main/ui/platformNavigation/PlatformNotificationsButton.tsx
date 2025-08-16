@@ -8,14 +8,16 @@ import { NotificationEventInAppState } from '@/core/apollo/generated/graphql-sch
 
 export const PlatformNotificationsButton = () => {
   const { isEnabled, setIsOpen } = useInAppNotificationsContext();
-  const { items } = useInAppNotifications();
+  const { notificationsInApp } = useInAppNotifications();
   const { t } = useTranslation();
 
   const openNotifications = () => {
     setIsOpen(true);
   };
 
-  const unreadNotificationsCount = items.filter(item => item.state === NotificationEventInAppState.Unread).length;
+  const unreadNotificationsCount = notificationsInApp.filter(
+    item => item.state === NotificationEventInAppState.Unread
+  ).length;
 
   if (!isEnabled) {
     return null;

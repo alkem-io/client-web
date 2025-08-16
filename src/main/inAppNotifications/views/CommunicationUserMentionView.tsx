@@ -1,49 +1,61 @@
-import { InAppNotificationProps } from '../useInAppNotifications';
-import { InAppNotificationBaseView, InAppNotificationBaseViewProps } from './InAppNotificationBaseView';
+import { NotificationEventPayload } from '@/core/apollo/generated/graphql-schema';
+import { InAppNotificationModel } from '../model/InAppNotificationModel';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { InAppNotificationBaseView } from './InAppNotificationBaseView';
 
 export const CommunicationUserMentionView = ({
   id,
   type,
   state,
-  space,
+  payload,
+  category,
   triggeredBy,
   triggeredAt,
-  comment,
-  commentUrl,
-  commentOriginName,
-}: InAppNotificationProps) => {
-  const notification: InAppNotificationBaseViewProps = useMemo(() => {
-    const notificationTextValues = {
-      defaultValue: '',
-      commenterName: triggeredBy?.profile?.displayName,
-      calloutName: commentOriginName,
-      comment,
-    };
+}: InAppNotificationModel) => {
+  const { t } = useTranslation();
 
+  const notificationTextValues = {
+    defaultValue: '',
+    commenterName: triggeredBy?.profile?.displayName,
+    calloutName: payload.commentOriginName,
+    comment: payload.comment,
+  };
+  const notification: InAppNotificationModel = useMemo(() => {
     return {
       id,
       type,
-      state: state,
-      space: {
-        id: space?.id,
-        avatarUrl: space?.about.profile?.visual?.uri ?? '',
-      },
-      resource: {
-        url: commentUrl ?? '',
-      },
-      contributor: {
-        avatarUrl: triggeredBy?.profile?.visual?.uri ?? '',
-      },
+      category,
+      state,
       triggeredAt: triggeredAt,
-      values: notificationTextValues,
+      triggeredBy: {
+        avatarUrl: triggeredBy?.profile?.visual?.uri ?? '',
+        ...triggeredBy,
+      },
+      payload: {
+        type: NotificationEventPayload.UserMessageRoom,
+        space: {
+          id: payload.space?.id,
+          avatarUrl: payload.space?.about?.profile?.visual?.uri ?? '',
+          about: {
+            profile: { ...payload.space?.about?.profile },
+          },
+        },
+      },
     };
-  }, [id, state, space, triggeredBy, commentOriginName, triggeredAt, comment, commentUrl]);
+  }, [id, state, payload, triggeredBy, triggeredAt, t]);
 
   // do not display notification if these are missing
-  if (!commentOriginName || !commentUrl || !triggeredBy?.profile?.displayName) {
+  if (
+    !payload.callout ||
+    !payload.callout.framing?.profile?.displayName ||
+    !payload.callout.framing?.profile?.url ||
+    !triggeredBy?.profile?.displayName
+  ) {
     return null;
   }
 
-  return <InAppNotificationBaseView {...notification} />;
+  return (
+    <InAppNotificationBaseView notification={notification} values={notificationTextValues} url={payload.commentUrl} />
+  );
 };

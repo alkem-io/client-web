@@ -2764,8 +2764,8 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
-export const InAppNotificationSpaceCollaborationCalloutPublishedFragmentDoc = gql`
-  fragment InAppNotificationSpaceCollaborationCalloutPublished on InAppNotificationSpaceCollaborationCalloutPublished {
+export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationPayloadSpaceCollaborationCallout {
     callout {
       id
       framing {
@@ -2787,34 +2787,12 @@ export const InAppNotificationSpaceCollaborationCalloutPublishedFragmentDoc = gq
         ...SpaceAboutCardBanner
       }
     }
-    triggeredBy {
-      id
-      profile {
-        id
-        displayName
-        url
-        visual(type: AVATAR) {
-          ...VisualModel
-        }
-      }
-    }
   }
   ${VisualModelFragmentDoc}
   ${SpaceAboutCardBannerFragmentDoc}
 `;
-export const InAppNotificationSpaceCommunityNewMemberFragmentDoc = gql`
-  fragment InAppNotificationSpaceCommunityNewMember on InAppNotificationSpaceCommunityNewMember {
-    triggeredBy {
-      id
-      profile {
-        id
-        displayName
-        url
-        visual(type: AVATAR) {
-          ...VisualModel
-        }
-      }
-    }
+export const InAppNotificationSpaceCommunityContributorFragmentDoc = gql`
+  fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
     space {
       id
       level
@@ -2835,11 +2813,22 @@ export const InAppNotificationSpaceCommunityNewMemberFragmentDoc = gql`
       }
     }
   }
-  ${VisualModelFragmentDoc}
   ${SpaceAboutCardBannerFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const InAppNotificationUserMentionedFragmentDoc = gql`
-  fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
+  fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserMessageRoom {
+    roomID
+    originalMessageID
+  }
+`;
+export const InAppNotificationAllTypesFragmentDoc = gql`
+  fragment InAppNotificationAllTypes on InAppNotification {
+    id
+    type
+    category
+    state
+    triggeredAt
     triggeredBy {
       id
       profile {
@@ -2851,31 +2840,22 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
         }
       }
     }
-    commentUrl
-    comment
-    commentOriginName
+    payload {
+      type
+      ... on InAppNotificationPayloadSpaceCollaborationCallout {
+        ...InAppNotificationPayloadSpaceCollaborationCallout
+      }
+      ... on InAppNotificationPayloadSpaceCommunityContributor {
+        ...InAppNotificationSpaceCommunityContributor
+      }
+      ... on InAppNotificationPayloadPlatformUserMessageRoom {
+        ...InAppNotificationUserMentioned
+      }
+    }
   }
   ${VisualModelFragmentDoc}
-`;
-export const InAppNotificationAllTypesFragmentDoc = gql`
-  fragment InAppNotificationAllTypes on InAppNotification {
-    id
-    type
-    category
-    state
-    triggeredAt
-    ... on InAppNotificationSpaceCollaborationCalloutPublished {
-      ...InAppNotificationSpaceCollaborationCalloutPublished
-    }
-    ... on InAppNotificationSpaceCommunityNewMember {
-      ...InAppNotificationSpaceCommunityNewMember
-    }
-    ... on InAppNotificationUserMentioned {
-      ...InAppNotificationUserMentioned
-    }
-  }
-  ${InAppNotificationSpaceCollaborationCalloutPublishedFragmentDoc}
-  ${InAppNotificationSpaceCommunityNewMemberFragmentDoc}
+  ${InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc}
+  ${InAppNotificationSpaceCommunityContributorFragmentDoc}
   ${InAppNotificationUserMentionedFragmentDoc}
 `;
 export const SearchResultPostProfileFragmentDoc = gql`
@@ -22218,19 +22198,34 @@ export const InAppNotificationsDocument = gql`
       category
       state
       triggeredAt
-      ... on InAppNotificationSpaceCollaborationCalloutPublished {
-        ...InAppNotificationSpaceCollaborationCalloutPublished
+      triggeredBy {
+        id
+        profile {
+          id
+          displayName
+          url
+          visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
       }
-      ... on InAppNotificationSpaceCommunityNewMember {
-        ...InAppNotificationSpaceCommunityNewMember
-      }
-      ... on InAppNotificationUserMentioned {
-        ...InAppNotificationUserMentioned
+      payload {
+        type
+        ... on InAppNotificationPayloadSpaceCollaborationCallout {
+          ...InAppNotificationPayloadSpaceCollaborationCallout
+        }
+        ... on InAppNotificationPayloadSpaceCommunityContributor {
+          ...InAppNotificationSpaceCommunityContributor
+        }
+        ... on InAppNotificationPayloadPlatformUserMessageRoom {
+          ...InAppNotificationUserMentioned
+        }
       }
     }
   }
-  ${InAppNotificationSpaceCollaborationCalloutPublishedFragmentDoc}
-  ${InAppNotificationSpaceCommunityNewMemberFragmentDoc}
+  ${VisualModelFragmentDoc}
+  ${InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc}
+  ${InAppNotificationSpaceCommunityContributorFragmentDoc}
   ${InAppNotificationUserMentionedFragmentDoc}
 `;
 

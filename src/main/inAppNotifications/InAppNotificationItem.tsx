@@ -1,8 +1,8 @@
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
-import { InAppNotificationProps } from './useInAppNotifications';
+import { InAppNotificationModel } from './model/InAppNotificationModel';
 
 // TODO:NotificationEventType fix
-export const InAppNotificationItem = ({ ...item }: InAppNotificationProps) => {
+export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
   switch (item.type) {
     // case NotificationEventType.CollaborationCalloutPublished:
     //   return <CollaborationCalloutPublishedView {...item} />;
