@@ -1,1 +1,1 @@
-export { default as AdminOrganizationsRoutes } from '../../platform/admin/organizations/AdminOrganizationsRoutes';
+export { default as AdminOrganizationsRoutes } from '../../platformAdmin/domain/organizations/AdminOrganizationsRoutes';

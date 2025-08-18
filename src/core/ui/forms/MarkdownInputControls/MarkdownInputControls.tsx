@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/react';
-import { forwardRef, memo, useEffect, useState } from 'react';
+import { memo, Ref, useEffect, useState } from 'react';
 import {
   Code,
   FormatBold,
@@ -104,142 +104,147 @@ const ControlsButton = memo(
     return prevProps.editor === nextProps.editor;
   }
 );
+ControlsButton.displayName = 'ControlsButton';
 
 const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-click without "jumping"
 
 const MarkdownInputControls = memo(
-  forwardRef<HTMLDivElement | null, MarkdownInputControlsProps>(
-    (
-      { editor, visible = false, hideImageOptions = false, onDialogOpen, onDialogClose, temporaryLocation = false },
-      ref
-    ) => {
-      const [isVisible, setIsVisible] = useState(visible);
-      const { t } = useTranslation();
-      useEffect(() => {
-        if (visible) {
-          setTimeout(() => {
-            setIsVisible(() => visible);
-          }, CONTROLS_SHOW_DELAY_MS);
-        } else {
-          setIsVisible(false);
-        }
-      }, [visible]);
+  ({
+    ref,
+    editor,
+    visible = false,
+    hideImageOptions = false,
+    onDialogOpen,
+    onDialogClose,
+    temporaryLocation = false,
+  }: MarkdownInputControlsProps & { ref: Ref<HTMLDivElement> }) => {
+    const [isVisible, setIsVisible] = useState(visible);
+    const { t } = useTranslation();
+    useEffect(() => {
+      if (visible) {
+        setTimeout(() => {
+          setIsVisible(() => visible);
+        }, CONTROLS_SHOW_DELAY_MS);
+      } else {
+        setIsVisible(false);
+      }
+    }, [visible]);
 
-      return (
-        <Collapse in={isVisible} ref={ref}>
-          <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
-            <ControlsButton
-              editor={editor}
-              command={e => e.undo()}
-              tooltip={t('components.wysiwyg-editor.toolbar.history.undo')}
-            >
-              <Undo />
-            </ControlsButton>
-            <ControlsButton
-              editor={editor}
-              command={e => e.redo()}
-              tooltip={t('components.wysiwyg-editor.toolbar.history.redo')}
-            >
-              <Redo />
-            </ControlsButton>
-            <ControlsButton
-              editor={editor}
-              command={e => e.toggleBold()}
-              specs="bold"
-              tooltip={t('components.wysiwyg-editor.toolbar.inline.bold')}
-            >
-              <FormatBold />
-            </ControlsButton>
-            <ControlsButton
-              editor={editor}
-              command={e => e.toggleItalic()}
-              specs="italic"
-              tooltip={t('components.wysiwyg-editor.toolbar.inline.italic')}
-            >
-              <FormatItalic />
-            </ControlsButton>
-            <ControlsButton
-              editor={editor}
-              command={e => e.toggleHeading({ level: 1 })}
-              specs={['heading', { level: 1 }]}
-              tooltip={t('components.wysiwyg-editor.toolbar.blocktype.h1')}
-            >
-              <Title fontSize="large" />
-            </ControlsButton>
-            <ControlsButton
-              editor={editor}
-              command={e => e.toggleHeading({ level: 2 })}
-              specs={['heading', { level: 2 }]}
-              tooltip={t('components.wysiwyg-editor.toolbar.blocktype.h2')}
-            >
-              <Title />
-            </ControlsButton>
-            <ControlsButton
-              editor={editor}
-              command={e => e.toggleHeading({ level: 3 })}
-              specs={['heading', { level: 3 }]}
-              tooltip={t('components.wysiwyg-editor.toolbar.blocktype.h3')}
-            >
-              <Title fontSize="small" />
-            </ControlsButton>
+    return (
+      <Collapse in={isVisible} ref={ref}>
+        <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
+          <ControlsButton
+            editor={editor}
+            command={e => e.undo()}
+            tooltip={t('components.wysiwyg-editor.toolbar.history.undo')}
+          >
+            <Undo />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.redo()}
+            tooltip={t('components.wysiwyg-editor.toolbar.history.redo')}
+          >
+            <Redo />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleBold()}
+            specs="bold"
+            tooltip={t('components.wysiwyg-editor.toolbar.inline.bold')}
+          >
+            <FormatBold />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleItalic()}
+            specs="italic"
+            tooltip={t('components.wysiwyg-editor.toolbar.inline.italic')}
+          >
+            <FormatItalic />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleHeading({ level: 1 })}
+            specs={['heading', { level: 1 }]}
             tooltip={t('components.wysiwyg-editor.toolbar.blocktype.h1')}
-            <ControlsButton
+          >
+            <Title fontSize="large" />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleHeading({ level: 2 })}
+            specs={['heading', { level: 2 }]}
+            tooltip={t('components.wysiwyg-editor.toolbar.blocktype.h2')}
+          >
+            <Title />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleHeading({ level: 3 })}
+            specs={['heading', { level: 3 }]}
+            tooltip={t('components.wysiwyg-editor.toolbar.blocktype.h3')}
+          >
+            <Title fontSize="small" />
+          </ControlsButton>
+          tooltip={t('components.wysiwyg-editor.toolbar.blocktype.h1')}
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleBulletList()}
+            specs="bulletList"
+            tooltip={t('components.wysiwyg-editor.toolbar.list.unordered')}
+          >
+            <FormatListBulleted />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleOrderedList()}
+            specs="orderedList"
+            tooltip={t('components.wysiwyg-editor.toolbar.list.ordered')}
+          >
+            <FormatListNumbered />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleBlockquote()}
+            specs="blockquote"
+            tooltip={t('components.wysiwyg-editor.toolbar.blocktype.blockquote')}
+          >
+            <FormatQuoteOutlined />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleCodeBlock()}
+            specs="codeBlock"
+            tooltip={t('components.wysiwyg-editor.toolbar.blocktype.code')}
+          >
+            <Code />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.setHorizontalRule()}
+            tooltip={t('components.wysiwyg-editor.toolbar.horizontal.line')}
+          >
+            <HorizontalRuleOutlined />
+          </ControlsButton>
+          <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+          {!hideImageOptions && (
+            <InsertImageButton
               editor={editor}
-              command={e => e.toggleBulletList()}
-              specs="bulletList"
-              tooltip={t('components.wysiwyg-editor.toolbar.list.unordered')}
-            >
-              <FormatListBulleted />
-            </ControlsButton>
-            <ControlsButton
-              editor={editor}
-              command={e => e.toggleOrderedList()}
-              specs="orderedList"
-              tooltip={t('components.wysiwyg-editor.toolbar.list.ordered')}
-            >
-              <FormatListNumbered />
-            </ControlsButton>
-            <ControlsButton
-              editor={editor}
-              command={e => e.toggleBlockquote()}
-              specs="blockquote"
-              tooltip={t('components.wysiwyg-editor.toolbar.blocktype.blockquote')}
-            >
-              <FormatQuoteOutlined />
-            </ControlsButton>
-            <ControlsButton
-              editor={editor}
-              command={e => e.toggleCodeBlock()}
-              specs="codeBlock"
-              tooltip={t('components.wysiwyg-editor.toolbar.blocktype.code')}
-            >
-              <Code />
-            </ControlsButton>
-            <ControlsButton
-              editor={editor}
-              command={e => e.setHorizontalRule()}
-              tooltip={t('components.wysiwyg-editor.toolbar.horizontal.line')}
-            >
-              <HorizontalRuleOutlined />
-            </ControlsButton>
-            <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-            {!hideImageOptions && (
-              <InsertImageButton
-                editor={editor}
-                onDialogOpen={onDialogOpen}
-                onDialogClose={onDialogClose}
-                temporaryLocation={temporaryLocation}
-              />
-            )}
-            {!hideImageOptions && ( // Don't join these two, they throw a warning about MUI Tabs component not accepting React Fragments
-              <InsertEmbedCodeButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-            )}
-            <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-          </Toolbar>
-        </Collapse>
-      );
-    }
-  )
+              onDialogOpen={onDialogOpen}
+              onDialogClose={onDialogClose}
+              temporaryLocation={temporaryLocation}
+            />
+          )}
+          {!hideImageOptions && ( // Don't join these two, they throw a warning about MUI Tabs component not accepting React Fragments
+            <InsertEmbedCodeButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+          )}
+          <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+        </Toolbar>
+      </Collapse>
+    );
+  }
 );
+MarkdownInputControls.displayName = 'MarkdownInputControls';
 
 export default MarkdownInputControls;

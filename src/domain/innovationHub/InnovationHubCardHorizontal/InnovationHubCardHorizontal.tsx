@@ -52,7 +52,7 @@ const InnovationHubCardHorizontal = ({
       to={buildInnovationHubUrl(subdomain)}
       target="_blank"
       strict
-      actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
+      actions={actions ? <ActionsMenu>{actions}</ActionsMenu> : undefined}
     >
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box display="flex" flexDirection="column">

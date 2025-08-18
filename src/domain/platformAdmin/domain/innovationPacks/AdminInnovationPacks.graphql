@@ -1,0 +1,12 @@
+query PlatformAdminInnovationPacks {
+  platformAdmin {
+    innovationPacks {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
+}

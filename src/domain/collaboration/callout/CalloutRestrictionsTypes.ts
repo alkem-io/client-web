@@ -13,6 +13,14 @@ export interface CalloutRestrictions {
    */
   disableWhiteboards?: boolean;
   /**
+   * Disables memo callouts, both in the framing and in the responses. This is here because VCs still don't support Memos.
+   */
+  disableMemos?: boolean;
+  /**
+   * Disables Link callouts, both in the framing and in the responses.
+   */
+  disableLinks?: boolean;
+  /**
    * Makes the Structured Responses Field read-only
    */
   readOnlyAllowedTypes?: boolean;

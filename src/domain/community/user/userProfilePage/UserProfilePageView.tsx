@@ -3,7 +3,7 @@ import UserProfileView, { UserProfileViewProps } from '@/domain/community/profil
 import AssociatedOrganizationsLazilyFetched from '@/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
+import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 import TilesContributionsView from '@/domain/community/contributor/Contributions/TilesContributionsView';
 import { CaptionSmall } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';

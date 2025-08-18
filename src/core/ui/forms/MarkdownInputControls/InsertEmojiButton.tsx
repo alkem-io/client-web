@@ -48,7 +48,7 @@ const InsertEmojiButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
   return (
     <>
       <MarkdownInputToolbarButton
-        ref={buttonRef}
+        ref={buttonRef as React.RefObject<HTMLButtonElement>}
         onClick={openDialog}
         disabled={isDisabled}
         tooltip={t('components.wysiwyg-editor.toolbar.emoji.emoji')}

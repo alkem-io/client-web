@@ -6,6 +6,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { refetchPlatformDiscussionsQuery, useCreateDiscussionMutation } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
 import DiscussionForm, { DiscussionFormValues } from '../forms/DiscussionForm';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface NewDiscussionDialogProps {
   open: boolean;
@@ -17,6 +18,7 @@ export interface NewDiscussionDialogProps {
 const NewDiscussionDialog = ({ open, onClose, forumId, categories }: NewDiscussionDialogProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isSmallScreen } = useScreenSize();
 
   const [createDiscussion] = useCreateDiscussionMutation({
     refetchQueries: [refetchPlatformDiscussionsQuery()],
@@ -42,7 +44,7 @@ const NewDiscussionDialog = ({ open, onClose, forumId, categories }: NewDiscussi
   };
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} fullScreen>
+    <DialogWithGrid open={open} onClose={onClose} fullWidth fullScreen={isSmallScreen}>
       <DialogHeader onClose={onClose}>{t('pages.forum.new-title')}</DialogHeader>
       <DialogContent>
         <DiscussionForm onSubmit={handleSubmit} categories={categories} />

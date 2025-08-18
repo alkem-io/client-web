@@ -749,6 +749,8 @@ export type CalloutFramingKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'link'
+  | 'memo'
   | 'profile'
   | 'type'
   | 'updatedDate'
@@ -759,6 +761,8 @@ export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  link?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1153,6 +1157,8 @@ export type CreateCalloutDataFieldPolicy = {
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutFramingDataKeySpecifier = (
+  | 'link'
+  | 'memo'
   | 'profile'
   | 'tags'
   | 'type'
@@ -1160,6 +1166,8 @@ export type CreateCalloutFramingDataKeySpecifier = (
   | CreateCalloutFramingDataKeySpecifier
 )[];
 export type CreateCalloutFramingDataFieldPolicy = {
+  link?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1263,6 +1271,10 @@ export type CreateLocationDataFieldPolicy = {
   country?: FieldPolicy<any> | FieldReadFunction<any>;
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateMemoDataKeySpecifier = ('profile' | CreateMemoDataKeySpecifier)[];
+export type CreateMemoDataFieldPolicy = {
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreatePostDataKeySpecifier = ('tags' | CreatePostDataKeySpecifier)[];
 export type CreatePostDataFieldPolicy = {
@@ -2078,6 +2090,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'invitation'
   | 'knowledgeBase'
   | 'license'
+  | 'memo'
   | 'myPrivileges'
   | 'organization'
   | 'platformInvitation'
@@ -2117,6 +2130,7 @@ export type LookupQueryResultsFieldPolicy = {
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   knowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2155,6 +2169,31 @@ export type MeQueryResultsFieldPolicy = {
   spaceMembershipsFlat?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsHierarchical?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MemoKeySpecifier = (
+  | 'authorization'
+  | 'content'
+  | 'contentUpdatePolicy'
+  | 'createdBy'
+  | 'createdDate'
+  | 'id'
+  | 'isMultiUser'
+  | 'nameID'
+  | 'profile'
+  | 'updatedDate'
+  | MemoKeySpecifier
+)[];
+export type MemoFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  content?: FieldPolicy<any> | FieldReadFunction<any>;
+  contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageKeySpecifier = (
   | 'id'
@@ -2301,6 +2340,7 @@ export type MutationKeySpecifier = (
   | 'deleteInvitation'
   | 'deleteLicensePlan'
   | 'deleteLink'
+  | 'deleteMemo'
   | 'deleteOrganization'
   | 'deletePlatformInvitation'
   | 'deletePost'
@@ -2375,6 +2415,7 @@ export type MutationKeySpecifier = (
   | 'updateInnovationPack'
   | 'updateLicensePlan'
   | 'updateLink'
+  | 'updateMemo'
   | 'updateNotificationState'
   | 'updateOrganization'
   | 'updateOrganizationPlatformSettings'
@@ -2478,6 +2519,7 @@ export type MutationFieldPolicy = {
   deleteInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteLink?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteMemo?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePlatformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePost?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2552,6 +2594,7 @@ export type MutationFieldPolicy = {
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLink?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateMemo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateNotificationState?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganizationPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2778,6 +2821,34 @@ export type PlatformFieldPolicy = {
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PlatformAdminCommunicationQueryResultsKeySpecifier = (
+  | 'adminCommunicationMembership'
+  | 'adminCommunicationOrphanedUsage'
+  | PlatformAdminCommunicationQueryResultsKeySpecifier
+)[];
+export type PlatformAdminCommunicationQueryResultsFieldPolicy = {
+  adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformAdminQueryResultsKeySpecifier = (
+  | 'communication'
+  | 'innovationHubs'
+  | 'innovationPacks'
+  | 'organizations'
+  | 'spaces'
+  | 'users'
+  | 'virtualContributors'
+  | PlatformAdminQueryResultsKeySpecifier
+)[];
+export type PlatformAdminQueryResultsFieldPolicy = {
+  communication?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  users?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PlatformFeatureFlagKeySpecifier = ('enabled' | 'name' | PlatformFeatureFlagKeySpecifier)[];
 export type PlatformFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2983,8 +3054,6 @@ export type QueryKeySpecifier = (
   | 'activityFeed'
   | 'activityFeedGrouped'
   | 'activityLogOnCollaboration'
-  | 'adminCommunicationMembership'
-  | 'adminCommunicationOrphanedUsage'
   | 'aiServer'
   | 'exploreSpaces'
   | 'getSupportedVerifiedCredentialMetadata'
@@ -2997,6 +3066,7 @@ export type QueryKeySpecifier = (
   | 'organizations'
   | 'organizationsPaginated'
   | 'platform'
+  | 'platformAdmin'
   | 'restrictedSpaceNames'
   | 'rolesOrganization'
   | 'rolesUser'
@@ -3008,7 +3078,6 @@ export type QueryKeySpecifier = (
   | 'tasks'
   | 'urlResolver'
   | 'user'
-  | 'userAuthorizationPrivileges'
   | 'users'
   | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
@@ -3021,8 +3090,6 @@ export type QueryFieldPolicy = {
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3035,6 +3102,7 @@ export type QueryFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
+  platformAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   restrictedSpaceNames?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3046,7 +3114,6 @@ export type QueryFieldPolicy = {
   tasks?: FieldPolicy<any> | FieldReadFunction<any>;
   urlResolver?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
-  userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
   usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4732,6 +4799,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CreateLocationDataKeySpecifier | (() => undefined | CreateLocationDataKeySpecifier);
     fields?: CreateLocationDataFieldPolicy;
   };
+  CreateMemoData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateMemoDataKeySpecifier | (() => undefined | CreateMemoDataKeySpecifier);
+    fields?: CreateMemoDataFieldPolicy;
+  };
   CreatePostData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreatePostDataKeySpecifier | (() => undefined | CreatePostDataKeySpecifier);
     fields?: CreatePostDataFieldPolicy;
@@ -4960,6 +5031,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);
     fields?: MeQueryResultsFieldPolicy;
   };
+  Memo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MemoKeySpecifier | (() => undefined | MemoKeySpecifier);
+    fields?: MemoFieldPolicy;
+  };
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
     fields?: MessageFieldPolicy;
@@ -5069,6 +5144,20 @@ export type StrictTypedTypePolicies = {
   Platform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformKeySpecifier | (() => undefined | PlatformKeySpecifier);
     fields?: PlatformFieldPolicy;
+  };
+  PlatformAdminCommunicationQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PlatformAdminCommunicationQueryResultsKeySpecifier
+      | (() => undefined | PlatformAdminCommunicationQueryResultsKeySpecifier);
+    fields?: PlatformAdminCommunicationQueryResultsFieldPolicy;
+  };
+  PlatformAdminQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PlatformAdminQueryResultsKeySpecifier
+      | (() => undefined | PlatformAdminQueryResultsKeySpecifier);
+    fields?: PlatformAdminQueryResultsFieldPolicy;
   };
   PlatformFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformFeatureFlagKeySpecifier | (() => undefined | PlatformFeatureFlagKeySpecifier);

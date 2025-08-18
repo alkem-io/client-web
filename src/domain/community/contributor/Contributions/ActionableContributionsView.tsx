@@ -1,6 +1,6 @@
 import { GridLegacy, Skeleton } from '@mui/material';
 import React, { useState } from 'react';
-import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model.';
+import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 import { Caption } from '@/core/ui/typography';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';

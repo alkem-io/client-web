@@ -1,7 +1,7 @@
 import { GridLegacy } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import AssociatedOrganizationsLazilyFetched from '@/domain/community/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import { useUserProvider } from '../../user/hooks/useUserProvider';

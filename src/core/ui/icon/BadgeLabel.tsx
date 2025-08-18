@@ -30,7 +30,7 @@ const BadgeLabel = ({ count, size = 'medium', ...props }: BadgeLabelProps) => {
       color={theme.palette.background.paper}
       fontWeight="bold"
       display="inline-block"
-      borderRadius={`${theme.shape.borderRadius / 2}px`}
+      borderRadius={`${Number(theme.shape.borderRadius) / 2}px`}
       paddingX={gutters(0.2)}
       textAlign="center"
       {...BadgeSizes[size]}

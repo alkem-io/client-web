@@ -6,6 +6,7 @@ import {
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
+import { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
 import { CalloutStructuredResponseType } from './CalloutForm';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { ContributionDefaultsModel } from '../models/ContributionDefaultsModel';
@@ -21,6 +22,14 @@ export interface CalloutFormSubmittedValues {
     };
     type: CalloutFramingType;
     whiteboard: WhiteboardFieldSubmittedValuesWithPreviewImages | undefined;
+    memo: MemoFieldSubmittedValues | undefined;
+    link?: {
+      id?: string;
+      uri: string;
+      profile: {
+        displayName: string;
+      };
+    };
   };
   contributionDefaults: ContributionDefaultsModel;
   contributions?: {
@@ -50,6 +59,8 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     },
     type: CalloutFramingType.None,
     whiteboard: undefined,
+    memo: undefined,
+    link: undefined,
   },
   contributionDefaults: {
     defaultDisplayName: '',

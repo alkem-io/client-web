@@ -1,4 +1,3 @@
-import { forwardRef } from 'react';
 import { SxProps, Theme } from '@mui/material';
 import Avatar, { AvatarSize, SizeableAvatarProps } from '@/core/ui/avatar/Avatar';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
@@ -11,8 +10,16 @@ interface SpaceAvatarProps extends SizeableAvatarProps {
   spaceId?: string;
 }
 
-const SpaceAvatar = forwardRef<HTMLDivElement, SpaceAvatarProps>(({ src, size = 'large', spaceId, ...props }, ref) => {
+const SpaceAvatar = ({
+  ref,
+  src,
+  size = 'large',
+  spaceId,
+  ...props
+}: SpaceAvatarProps & {
+  ref?: React.RefObject<HTMLDivElement>;
+}) => {
   return <Avatar ref={ref} size={size} src={src || getDefaultSpaceVisualUrl(VisualType.Avatar, spaceId)} {...props} />;
-});
+};
 
 export default SpaceAvatar;

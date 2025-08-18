@@ -12,7 +12,7 @@ import {
   TableRow,
 } from '@mui/material';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
-import React, { forwardRef, ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import RemoveModal from '@/core/ui/dialogs/RemoveModal';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -70,14 +70,14 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
 
   const Loader = useMemo(
     () =>
-      forwardRef<HTMLDivElement>((props, ref) => (
+      ({ ref }) => (
         <>
           <LoadingListItem ref={ref} />
           {times(pageSize - 1, i => (
             <LoadingListItem key={`__loading_${i}`} />
           ))}
         </>
-      )),
+      ),
     [pageSize]
   );
 

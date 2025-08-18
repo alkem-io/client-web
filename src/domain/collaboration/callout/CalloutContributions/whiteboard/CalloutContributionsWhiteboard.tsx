@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from 'react';
+import { useMemo } from 'react';
 import { compact, sortBy } from 'lodash';
 import useNavigate from '@/core/routing/useNavigate';
 import { CalloutLayoutProps } from '../../calloutBlock/CalloutLayoutTypes';
@@ -46,93 +46,96 @@ interface CalloutContributionsWhiteboardProps extends BaseCalloutViewProps {
   }[];
 }
 
-const CalloutContributionsWhiteboard = forwardRef<HTMLDivElement, CalloutContributionsWhiteboardProps>(
-  ({ callout, contributions, loading, onCalloutUpdate, contributionsCount, canCreateContribution }, ref) => {
-    const navigate = useNavigate();
-    const { t } = useTranslation();
-    const { isSmallScreen } = useScreenSize();
+const CalloutContributionsWhiteboard = ({
+  ref,
+  callout,
+  contributions,
+  loading,
+  onCalloutUpdate,
+  contributionsCount,
+  canCreateContribution,
+}: CalloutContributionsWhiteboardProps & {
+  ref?: React.Ref<HTMLDivElement>;
+}) => {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { isSmallScreen } = useScreenSize();
 
-    const whiteboards: WhiteboardContributionProps[] = useMemo(
-      () =>
-        compact(
-          contributions?.map(
-            contribution =>
-              contribution.whiteboard && {
-                ...contribution.whiteboard,
-                sortOrder: contribution.sortOrder,
-                contributionId: contribution.id,
-              }
-          )
-        ) ?? [],
-      [contributions]
-    );
+  const whiteboards: WhiteboardContributionProps[] = useMemo(
+    () =>
+      compact(
+        contributions?.map(
+          contribution =>
+            contribution.whiteboard && {
+              ...contribution.whiteboard,
+              sortOrder: contribution.sortOrder,
+              contributionId: contribution.id,
+            }
+        )
+      ) ?? [],
+    [contributions]
+  );
 
-    const [createWhiteboard] = useCreateWhiteboardOnCalloutMutation();
+  const [createWhiteboard] = useCreateWhiteboardOnCalloutMutation();
 
-    const createNewWhiteboard = async () => {
-      const { data } = await createWhiteboard({
-        variables: {
-          input: {
-            calloutID: callout.id,
-            whiteboard: {
-              profile: {
-                displayName:
-                  callout.contributionDefaults?.defaultDisplayName ??
-                  t('pages.whiteboard.defaultWhiteboardDisplayName'),
-              },
-              content: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
+  const createNewWhiteboard = async () => {
+    const { data } = await createWhiteboard({
+      variables: {
+        input: {
+          calloutID: callout.id,
+          whiteboard: {
+            profile: {
+              displayName:
+                callout.contributionDefaults?.defaultDisplayName ?? t('pages.whiteboard.defaultWhiteboardDisplayName'),
             },
+            content: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
           },
         },
-        refetchQueries: [],
+      },
+      refetchQueries: [],
+    });
+    await onCalloutUpdate?.();
+    return data?.createContributionOnCallout.whiteboard;
+  };
+
+  const handleCreate = async () => {
+    const result = await createNewWhiteboard();
+    if (result) {
+      navigate(normalizeLink(result.profile.url), {
+        state: {
+          [LocationStateKeyCachedCallout]: callout,
+          keepScroll: true,
+        },
       });
-      await onCalloutUpdate?.();
-      return data?.createContributionOnCallout.whiteboard;
-    };
+    }
+  };
+  const createButton = canCreateContribution && <CreateContributionButton onClick={handleCreate} />;
 
-    const handleCreate = async () => {
-      const result = await createNewWhiteboard();
-      if (result) {
-        navigate(normalizeLink(result.profile.url), {
-          state: {
-            [LocationStateKeyCachedCallout]: callout,
-            keepScroll: true,
-          },
-        });
-      }
-    };
-    const createButton = canCreateContribution && <CreateContributionButton onClick={handleCreate} />;
+  const showCards = useMemo(
+    () => (!loading && whiteboards.length > 0) || callout.settings.contribution.enabled,
+    [loading, whiteboards.length, callout.settings.contribution.enabled]
+  );
+  const sortedWhiteboards = useMemo(() => sortBy(whiteboards, 'sortOrder'), [whiteboards]);
 
-    const showCards = useMemo(
-      () => (!loading && whiteboards.length > 0) || callout.settings.contribution.enabled,
-      [loading, whiteboards.length, callout.settings.contribution.enabled]
-    );
-    const sortedWhiteboards = useMemo(() => sortBy(whiteboards, 'sortOrder'), [whiteboards]);
-
-    return (
-      <Gutters ref={ref}>
-        {showCards && (
-          <ScrollableCardsLayout
-            items={loading ? [undefined, undefined] : sortedWhiteboards}
-            createButton={!isSmallScreen && createButton}
-            maxHeight={gutters(22)}
-          >
-            {whiteboard =>
-              whiteboard ? (
-                <WhiteboardCard key={whiteboard.id} whiteboard={whiteboard} callout={callout} />
-              ) : (
-                <Skeleton />
-              )
-            }
-          </ScrollableCardsLayout>
-        )}
-        {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
-          <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={handleCreate} />
-        )}
-      </Gutters>
-    );
-  }
-);
+  return (
+    <Gutters ref={ref}>
+      {showCards && (
+        <ScrollableCardsLayout
+          items={loading ? [undefined, undefined] : sortedWhiteboards}
+          createButton={!isSmallScreen && createButton}
+          maxHeight={gutters(22)}
+        >
+          {whiteboard =>
+            whiteboard ? <WhiteboardCard key={whiteboard.id} whiteboard={whiteboard} callout={callout} /> : <Skeleton />
+          }
+        </ScrollableCardsLayout>
+      )}
+      {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
+        <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={handleCreate} />
+      )}
+    </Gutters>
+  );
+};
 
 CalloutContributionsWhiteboard.displayName = 'CalloutContributionsWhiteboard';
 export default CalloutContributionsWhiteboard;

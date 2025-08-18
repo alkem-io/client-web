@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -30,7 +30,7 @@ const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, Act
 
 const LATEST_CONTRIBUTIONS_PAGE_SIZE = 20;
 
-const Loader = forwardRef((props, ref) => {
+const Loader = ({ ref }) => {
   const theme = useTheme();
 
   return (
@@ -43,7 +43,7 @@ const Loader = forwardRef((props, ref) => {
       <Skeleton variant="text" />
     </BadgeCardView>
   );
-});
+};
 
 export interface RoleOption {
   value: ActivityFeedRoles | typeof ROLE_OPTION_ALL;

@@ -2,7 +2,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { DialogContent } from '@mui/material';
 import Gutters from '@/core/ui/grid/Gutters';
-import OrganizationForm from '@/domain/platform/admin/components/Organization/OrganizationForm';
+import OrganizationForm from '@/domain/platformAdmin/components/Organization/OrganizationForm';
 import { EditMode } from '@/core/ui/forms/editMode';
 import { useCreateOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';

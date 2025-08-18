@@ -15,7 +15,7 @@ type TopCalloutProps = {
   calloutUri?: string;
 };
 
-const TopCalloutDetails = ({ title, description, activity, calloutUri }: TopCalloutProps) => (
+const TopCalloutDetails = ({ title, description, activity, calloutUri = '' }: TopCalloutProps) => (
   <BadgeCardView
     component={RouterLink}
     to={calloutUri}

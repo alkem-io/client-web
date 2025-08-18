@@ -13,12 +13,7 @@ import { EditOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, DialogContent, IconButton, IconButtonProps, styled } from '@mui/material';
 import { useState } from 'react';
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  OnDragEndResponder,
-} from '@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration';
+import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
@@ -123,6 +118,10 @@ const InnovationFlowDragNDropEditor = ({
       ? t(`common.enums.innovationFlowState.${state}` as TranslationKey)
       : state;
 
+  const canAddState =
+    !disableStateNumberChange &&
+    !((innovationFlowStates ?? []).length >= (innovationFlow?.settings.maximumNumberOfStates ?? 0));
+
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -163,6 +162,8 @@ const InnovationFlowDragNDropEditor = ({
                                 onEdit={() => setEditFlowState(state)}
                                 onDelete={() => setDeleteFlowStateId(state.id)}
                                 disableStateNumberChange={disableStateNumberChange}
+                                disableAddStateAfter={!canAddState}
+                                disableRemoveState={disableStateNumberChange}
                               />
                             }
                           />
@@ -182,12 +183,7 @@ const InnovationFlowDragNDropEditor = ({
                 ))}
                 {parentDroppableProvided.placeholder}
                 {!disableStateNumberChange && (
-                  <AddButton
-                    onClick={() => setCreateFlowState({ last: true })}
-                    disabled={
-                      (innovationFlowStates ?? []).length >= (innovationFlow?.settings.maximumNumberOfStates ?? 0)
-                    }
-                  />
+                  <AddButton onClick={() => setCreateFlowState({ last: true })} disabled={!canAddState} />
                 )}
               </StyledDragAndDropBlock>
             </Box>

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { version } from './package';
+import { version } from './package.json';
 
 // no __dirname in ESM, so we need to use fileURLToPath
 const __filename = fileURLToPath(import.meta.url);
@@ -18,6 +18,3 @@ export function generateMetaJson() {
     JSON.stringify({ version }, null, 2)
   );
 }
-
-
-

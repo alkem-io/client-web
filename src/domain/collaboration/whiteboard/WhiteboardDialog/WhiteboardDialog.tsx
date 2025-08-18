@@ -42,12 +42,8 @@ export interface WhiteboardDetails {
     id: string;
     displayName: string;
     storageBucket: { id: string };
-    visual?: {
-      id: string;
-    } & PreviewImageDimensions;
-    preview?: {
-      id: string;
-    } & PreviewImageDimensions;
+    visual?: Identifiable & PreviewImageDimensions;
+    preview?: Identifiable & PreviewImageDimensions;
     url?: string;
   };
   createdBy?: {

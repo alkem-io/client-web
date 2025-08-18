@@ -105,7 +105,7 @@ const SpaceCardHorizontal = ({
         }
         component={disableHoverState ? RouterLink : Wrapper}
         to={space.about.profile.url}
-        actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
+        actions={actions ? <ActionsMenu>{actions}</ActionsMenu> : undefined}
       >
         <BlockTitleWithIcon
           title={space.about.profile.displayName}
