@@ -118,6 +118,10 @@ const InnovationFlowDragNDropEditor = ({
       ? t(`common.enums.innovationFlowState.${state}` as TranslationKey)
       : state;
 
+  const canAddState =
+    !disableStateNumberChange &&
+    !((innovationFlowStates ?? []).length >= (innovationFlow?.settings.maximumNumberOfStates ?? 0));
+
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -158,6 +162,8 @@ const InnovationFlowDragNDropEditor = ({
                                 onEdit={() => setEditFlowState(state)}
                                 onDelete={() => setDeleteFlowStateId(state.id)}
                                 disableStateNumberChange={disableStateNumberChange}
+                                disableAddStateAfter={!canAddState}
+                                disableRemoveState={disableStateNumberChange}
                               />
                             }
                           />
@@ -177,12 +183,7 @@ const InnovationFlowDragNDropEditor = ({
                 ))}
                 {parentDroppableProvided.placeholder}
                 {!disableStateNumberChange && (
-                  <AddButton
-                    onClick={() => setCreateFlowState({ last: true })}
-                    disabled={
-                      (innovationFlowStates ?? []).length >= (innovationFlow?.settings.maximumNumberOfStates ?? 0)
-                    }
-                  />
+                  <AddButton onClick={() => setCreateFlowState({ last: true })} disabled={!canAddState} />
                 )}
               </StyledDragAndDropBlock>
             </Box>
