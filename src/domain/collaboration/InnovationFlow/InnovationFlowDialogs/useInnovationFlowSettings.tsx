@@ -217,7 +217,9 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
 
     newStateData.sortOrder = stateBeforeId
       ? (currentStates.find(state => state.id === stateBeforeId)?.sortOrder ?? 0) + 1
-      : Math.max(...currentStates.map(state => state.sortOrder)) + 1;
+      : currentStates.length > 0
+        ? Math.max(...currentStates.map(state => state.sortOrder)) + 1
+        : 1;
 
     const newState = await createStateOnInnovationFlow({
       variables: {
