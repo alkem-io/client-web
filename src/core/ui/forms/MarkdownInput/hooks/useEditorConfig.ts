@@ -25,7 +25,13 @@ export const useEditorConfig = ({
 
     return {
       extensions,
-      editorProps: { handlePaste },
+      editorProps: {
+        handlePaste,
+        attributes: {
+          'aria-label': 'Markdown editor',
+          role: 'textbox',
+        },
+      },
       editable: !disabled,
     };
   }, [handlePaste, disabled, additionalExtensions]);

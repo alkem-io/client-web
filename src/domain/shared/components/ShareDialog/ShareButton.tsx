@@ -32,36 +32,34 @@ const ShareButton: FC<ShareButtonProps> = ({
   return (
     <>
       <Tooltip title={disabled ? tooltipIfDisabled : tooltip} arrow placement="top">
-        <>
-          {title ? (
-            <Button
-              variant="contained"
-              color="primary"
-              aria-label={t('buttons.share')}
-              aria-haspopup="true"
-              aria-controls={dialogOpen ? 'share-dialog' : undefined}
-              aria-expanded={dialogOpen ? 'true' : undefined}
-              onClick={() => setDialogOpen(true)}
-              disabled={disabled}
-              sx={{ width: '100%', ...sx }}
-            >
-              <ShareOutlinedIcon sx={{ marginRight: theme => theme.spacing(2) }} />
-              {title}
-            </Button>
-          ) : (
-            <IconButton
-              aria-label={t('buttons.share')}
-              aria-haspopup="true"
-              aria-controls={dialogOpen ? 'share-dialog' : undefined}
-              aria-expanded={dialogOpen ? 'true' : undefined}
-              onClick={() => setDialogOpen(true)}
-              disabled={disabled}
-              sx={{ color: theme => theme.palette.primary.main, ...sx }}
-            >
-              <ShareOutlinedIcon />
-            </IconButton>
-          )}
-        </>
+        {title ? (
+          <Button
+            variant="contained"
+            color="primary"
+            aria-label={t('buttons.share')}
+            aria-haspopup="true"
+            aria-controls={dialogOpen ? 'share-dialog' : undefined}
+            aria-expanded={dialogOpen ? 'true' : undefined}
+            onClick={() => setDialogOpen(true)}
+            disabled={disabled}
+            sx={{ width: '100%', ...sx }}
+          >
+            <ShareOutlinedIcon sx={{ marginRight: theme => theme.spacing(2) }} />
+            {title}
+          </Button>
+        ) : (
+          <IconButton
+            aria-label={t('buttons.share')}
+            aria-haspopup="true"
+            aria-controls={dialogOpen ? 'share-dialog' : undefined}
+            aria-expanded={dialogOpen ? 'true' : undefined}
+            onClick={() => setDialogOpen(true)}
+            disabled={disabled}
+            sx={{ color: theme => theme.palette.primary.main, ...sx }}
+          >
+            <ShareOutlinedIcon />
+          </IconButton>
+        )}
       </Tooltip>
       <ShareDialog open={dialogOpen} url={url} {...dialogProps} onClose={() => setDialogOpen(false)} />
     </>

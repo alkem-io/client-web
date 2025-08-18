@@ -50,6 +50,7 @@ const BreadcrumbsItem = ({
       onFocus={() => onExpand?.()}
       onBlur={() => onCollapse?.()}
       aria-label={children}
+      {...(uri ? {} : { role: 'navigation' })}
     >
       <Avatar
         src={avatar?.uri}
