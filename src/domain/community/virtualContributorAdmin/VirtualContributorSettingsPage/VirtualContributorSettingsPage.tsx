@@ -24,7 +24,9 @@ const VirtualContributorSettingsPage = () => {
     AiPersonaEngine.GenericOpenai,
   ].includes(vc?.aiPersona?.engine!);
 
-  const isPromptConfigAvailable = [AiPersonaEngine.LibraFlow].includes(vc?.aiPersona?.engine!);
+  const isPromptConfigAvailable = [AiPersonaEngine.GenericOpenai, AiPersonaEngine.LibraFlow].includes(
+    vc?.aiPersona?.engine!
+  );
 
   if (!vc || !vc.aiPersona) {
     return null;

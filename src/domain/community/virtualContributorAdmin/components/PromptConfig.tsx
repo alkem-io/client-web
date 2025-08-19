@@ -12,7 +12,8 @@ import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { useMemo, useState } from 'react';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { Button, OutlinedInput } from '@mui/material';
+import { Button, OutlinedInput, Box } from '@mui/material';
+import Gutters from '@/core/ui/grid/Gutters';
 
 type FormValueType = {
   prompt: string;
@@ -78,15 +79,102 @@ const PromptConfig = ({ vc }) => {
           >
             <>
               <FormikEffect onStatusChange={(isValid: boolean) => setIsValid(isValid)} />
-              <OutlinedInput
-                name="prompt"
-                value={prompt}
-                title={t('pages.virtualContributorProfile.settings.prompt.title')}
-                onChange={e => setPrompt(e.target.value)}
-                multiline
-                minRows={10}
-                maxRows={35}
-              />
+              <Box>
+                <Box>
+                  <BlockTitle variant="h5" sx={{ marginBottom: 0 }}>
+                    Steps
+                  </BlockTitle>
+                </Box>
+
+                {[1, 2, 3].map(i => (
+                  <>
+                    <Box>
+                      <Box>
+                        <OutlinedInput
+                          name="step_description"
+                          title="Step"
+                          sx={{ width: '100%' }}
+                          placeholder="Step description"
+                        />
+                      </Box>
+                      <Box sx={{ marginTop: 1, marginBottom: 1 }}>
+                        Input is the output of all steps plus:
+                        <ul>
+                          <li>{'{knowledge}'} - relevant parts of the VC knowledge base structured like: ...</li>
+                          <li>
+                            {'{conversation}'} - the conversation so far structured as: <br /> <b>human</b>: some human
+                            message
+                            <br />
+                            <b>assistant</b>: some assistant message <br />
+                            <br />
+                          </li>
+                          <li>
+                            {'{first_message}'} - the contents of the first message in the conversation as simple string
+                          </li>
+                          <li>
+                            {'{last_message}'} - the contents of the last message in the conversation as simple string
+                          </li>
+                        </ul>
+                      </Box>
+                      <OutlinedInput
+                        name="prompt"
+                        value={prompt}
+                        title={t('pages.virtualContributorProfile.settings.prompt.title')}
+                        onChange={e => setPrompt(e.target.value)}
+                        multiline
+                        minRows={10}
+                        maxRows={35}
+                        fullWidth
+                      />
+
+                      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: 1 }}>
+                        {/* <Box sx={{ display: 'flex', width: '100%', flexDirection: 'column' }}> */}
+                        {/*   <Box> */}
+                        {/*     <BlockTitle variant="h6" sx={{ marginBottom: 0 }}> */}
+                        {/*       Input */}
+                        {/*     </BlockTitle> */}
+                        {/*   </Box> */}
+                        {/*   <Box sx={{ display: 'flex', width: '100%', flexDirection: 'row', alignItems: 'flex-start' }}> */}
+                        {/*     <OutlinedInput sx={{ width: '100%' }} name="label" title="key" /> */}
+                        {/*     <OutlinedInput sx={{ width: '100%' }} name="description" title="description" /> */}
+                        {/*   </Box> */}
+                        {/*   <Button variant="outlined" sx={{ marginTop: 1 }}> */}
+                        {/*     + Add */}
+                        {/*   </Button> */}
+                        {/* </Box> */}
+                        <Box sx={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
+                          <Box>
+                            <BlockTitle variant="h6" sx={{ marginBottom: 0 }}>
+                              Output
+                            </BlockTitle>
+                          </Box>
+                          {[1, 2, 3].map(() => (
+                            <Box
+                              sx={{ display: 'flex', width: '100%', flexDirection: 'row', alignItems: 'flex-start' }}
+                            >
+                              <OutlinedInput sx={{ width: '100%' }} name="label" title="key" placeholder="Name" />
+                              <OutlinedInput
+                                sx={{ width: '100%' }}
+                                name="description"
+                                title="description"
+                                placeholder="Description"
+                              />
+                            </Box>
+                          ))}
+                          <Button variant="outlined" sx={{ marginTop: 1 }}>
+                            + Add
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Box>
+                    <hr style={{ margin: '40px 0' }} />
+                  </>
+                ))}
+
+                <Button variant="outlined" sx={{ marginTop: 1 }}>
+                  + Add
+                </Button>
+              </Box>
               <Actions>
                 <Button
                   variant="contained"
