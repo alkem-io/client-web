@@ -1,40 +1,40 @@
-import {
-  NotificationEventInAppState,
-  InAppNotificationsQuery,
-  NotificationEvent,
-} from '@/core/apollo/generated/graphql-schema';
+import { NotificationEventInAppState, NotificationEvent } from '@/core/apollo/generated/graphql-schema';
 import {
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
   useMarkNotificationsAsReadMutation,
-  InAppNotificationsDocument,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import { ApolloCache } from '@apollo/client';
 import { InAppNotificationModel } from './model/InAppNotificationModel';
 import { mapInAppNotificationToModel } from './util/mapInAppNotificationToModel';
+import { useMemo, useCallback } from 'react';
+import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 
-// update the cache as refetching all could be expensive
+// Update the cache as refetching all could be expensive
 const updateNotificationsCache = (
-  cache: ApolloCache<InAppNotificationsQuery>,
+  cache: ApolloCache<unknown>,
   ids: string[],
   newState: NotificationEventInAppState
 ) => {
-  const existingData = cache.readQuery<InAppNotificationsQuery>({
-    query: InAppNotificationsDocument,
-  });
-
-  if (existingData) {
-    const updatedNotifications = existingData.notificationsInApp.map(notification =>
-      ids.includes(notification.id) ? { ...notification, state: newState } : notification
-    );
-
-    cache.writeQuery({
-      query: InAppNotificationsDocument,
-      data: { notifications: updatedNotifications },
+  // Modify individual notification objects in the cache
+  ids.forEach(id => {
+    cache.modify({
+      id: cache.identify({ __typename: 'InAppNotification', id }),
+      fields: {
+        state: () => newState,
+      },
     });
-  }
+  });
 };
+
+// The set of notification event types currently being retrieved
+const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [
+  NotificationEvent.UserMention,
+  NotificationEvent.SpaceCollaborationCalloutPublished,
+  NotificationEvent.SpaceCommunityNewMember,
+  NotificationEvent.SpaceCommunityNewMemberAdmin,
+];
 
 export const useInAppNotifications = () => {
   const { isEnabled } = useInAppNotificationsContext();
@@ -42,64 +42,86 @@ export const useInAppNotifications = () => {
   const [updateState] = useUpdateNotificationStateMutation();
   const [markAsRead] = useMarkNotificationsAsReadMutation();
 
-  // The set of notification event types currently being retrieve
-  const notificationEventTypes: NotificationEvent[] = [
-    NotificationEvent.UserMention,
-    NotificationEvent.SpaceCollaborationCalloutPublished,
-    NotificationEvent.SpaceCommunityNewMember,
-    NotificationEvent.SpaceCommunityNewMemberAdmin,
-  ];
-
   const { data, loading } = useInAppNotificationsQuery({
     variables: {
-      types: notificationEventTypes,
+      types: NOTIFICATION_EVENT_TYPES,
     },
     skip: !isEnabled,
   });
 
-  const notificationsInApp: InAppNotificationModel[] = [];
-  for (const notificationData of data?.notificationsInApp ?? []) {
-    if (notificationData.state !== NotificationEventInAppState.Archived) {
+  // Memoize the filtered and mapped notifications to avoid unnecessary re-processing
+  const notificationsInApp = useMemo(() => {
+    const notifications: InAppNotificationModel[] = [];
+
+    for (const notificationData of data?.notificationsInApp ?? []) {
+      if (notificationData.state === NotificationEventInAppState.Archived) {
+        continue; // Skip archived notifications
+      }
+
       const notification = mapInAppNotificationToModel(notificationData);
-      if (!notification) continue; // TODO: log error?
-      notificationsInApp.push(notification);
+      if (notification) {
+        notifications.push(notification);
+      } else {
+        logError('Broken InAppNotification', {
+          category: TagCategoryValues.NOTIFICATIONS,
+          label: `Raw data: ${JSON.stringify(notificationData)}`,
+        });
+      }
     }
-  }
 
-  const updateNotificationState = async (id: string, status: NotificationEventInAppState) => {
-    await updateState({
-      variables: {
-        ID: id,
-        state: status,
-      },
-      update: (cache, data) => {
-        if (data?.data?.updateNotificationState === status) {
-          updateNotificationsCache(cache, [id], status);
-        }
-      },
-    });
-  };
+    return notifications;
+  }, [data?.notificationsInApp]);
 
-  const markNotificationsAsRead = async () => {
-    const ids = notificationsInApp
+  const updateNotificationState = useCallback(
+    async (id: string, status: NotificationEventInAppState) => {
+      try {
+        await updateState({
+          variables: {
+            ID: id,
+            state: status,
+          },
+          update: (cache, result) => {
+            if (result?.data?.updateNotificationState === status) {
+              updateNotificationsCache(cache, [id], status);
+            }
+          },
+        });
+      } catch (error) {
+        console.error('Failed to update notification state:', error);
+      }
+    },
+    [updateState]
+  );
+
+  const markNotificationsAsRead = useCallback(async () => {
+    const unreadIds = notificationsInApp
       .filter(item => item.state === NotificationEventInAppState.Unread)
       .map(item => item.id);
 
-    if (ids.length === 0) {
+    if (unreadIds.length === 0) {
       return;
     }
 
-    await markAsRead({
-      variables: {
-        notificationIds: ids,
-      },
-      update: (cache, data) => {
-        if (data?.data?.markNotificationsAsRead) {
-          updateNotificationsCache(cache, ids, NotificationEventInAppState.Read);
-        }
-      },
-    });
-  };
+    try {
+      await markAsRead({
+        variables: {
+          notificationIds: unreadIds,
+        },
+        update: (cache, result) => {
+          if (result?.data?.markNotificationsAsRead) {
+            updateNotificationsCache(cache, unreadIds, NotificationEventInAppState.Read);
+          }
+        },
+      });
+    } catch (error) {
+      console.error('Failed to mark notifications as read:', error);
+    }
+  }, [markAsRead, notificationsInApp]);
 
-  return { notificationsInApp, isLoading: loading, updateNotificationState, markNotificationsAsRead };
+  return {
+    notificationsInApp,
+    isLoading: loading,
+    updateNotificationState,
+    markNotificationsAsRead,
+  };
 };

@@ -1891,9 +1891,9 @@
         "delete": "Delete Notification"
       },
       "type": {
-        "COLLABORATION_CALLOUT_PUBLISHED": {
+        "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
           "subject": "{{spaceName}} - New Post is published \"{{calloutName}}\", have a look!",
-          "description": "{{contributorName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
+          "description": "{{triggeredByName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
         "COMMUNICATION_USER_MENTION": {
           "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",

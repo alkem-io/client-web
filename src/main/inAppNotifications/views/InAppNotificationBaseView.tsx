@@ -153,10 +153,7 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             badgeContent={triggeredBy ? <Avatar size="small" src={triggeredBy?.profile?.visual?.uri} /> : null}
           >
-            <Avatar
-              size="regular"
-              src={payload.space?.about?.profile?.url || getDefaultSpaceVisualUrl(VisualType.Avatar, payload.space?.id)}
-            />
+            <Avatar size="regular" src={getDefaultSpaceVisualUrl(VisualType.Avatar, payload.space?.id)} />
           </Badge>
         }
       >

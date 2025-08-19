@@ -36,7 +36,7 @@ export const mapInAppNotificationToModel = (inAppNotification?: {
     ) {
       return undefined;
     }
-    const result: InAppNotificationModel = {
+    return {
       id: inAppNotification.id,
       type: inAppNotification.type,
       triggeredAt: inAppNotification.triggeredAt,
@@ -52,7 +52,6 @@ export const mapInAppNotificationToModel = (inAppNotification?: {
         },
       },
       payload: inAppNotification.payload,
-    };
-    return result;
+    } as InAppNotificationModel;
   }
 };
