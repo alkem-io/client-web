@@ -56,7 +56,6 @@ export const ActionableContributionsView = ({
   loading,
   enableLeave,
   onLeave,
-  onContributionClick,
   cards,
 }: ActionableContributionsViewProps) => {
   const [leavingRoleSetId, setLeavingRoleSetId] = useState<string>();
@@ -83,7 +82,6 @@ export const ActionableContributionsView = ({
                 enableLeave={enableLeave}
                 leavingRoleSetId={leavingRoleSetId}
                 setLeavingRoleSetId={setLeavingRoleSetId}
-                onContributionClick={onContributionClick}
               />
             ))}
           </ScrollableCardsLayoutContainer>
@@ -93,14 +91,7 @@ export const ActionableContributionsView = ({
   );
 };
 
-const ContributionCard = ({
-  contributionItem,
-  onLeave,
-  enableLeave,
-  leavingRoleSetId,
-  setLeavingRoleSetId,
-  onContributionClick,
-}) => {
+const ContributionCard = ({ contributionItem, onLeave, enableLeave, leavingRoleSetId, setLeavingRoleSetId }) => {
   const { details, loading, isLeavingCommunity, leaveCommunity } = useContributionProvider({
     spaceHostedItem: contributionItem,
   });
@@ -125,7 +116,7 @@ const ContributionCard = ({
       handleLeaveCommunity={handleLeaveCommunity}
       leavingCommunityDialogOpen={!!leavingRoleSetId && leavingRoleSetId === details?.roleSetId}
       onLeaveCommunityDialogOpen={isOpen => setLeavingRoleSetId(isOpen ? details?.roleSetId : undefined)}
-      onClick={onContributionClick ? event => onContributionClick(event, details) : undefined}
+      spaceUri={details?.about?.profile?.url}
     />
   );
 };

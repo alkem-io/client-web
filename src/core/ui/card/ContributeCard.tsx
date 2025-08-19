@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 export interface ContributeCardProps {
+  // if you use onClick, the children of this component should not be clickable elements! a11y 4.1.2
   onClick?: MouseEventHandler;
   highlighted?: boolean;
   sx?: SxProps<Theme>;
