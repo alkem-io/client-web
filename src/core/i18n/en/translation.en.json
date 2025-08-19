@@ -1899,13 +1899,13 @@
           "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
           "description": ""
         },
-        "COMMUNITY_NEW_MEMBER": {
+        "SPACE_COMMUNITY_NEW_MEMBER": {
           "subject": "{{spaceName}} - Welcome to the Community!",
           "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various posts and whiteboards, further deepen your knowledge about this topic, and connect with other Contributors."
         },
-        "COMMUNITY_NEW_MEMBER_ADMIN": {
+        "SPACE_COMMUNITY_NEW_MEMBER_ADMIN": {
           "subject": "{{memberType}} \"{{memberName}}\" joined {{spaceName}}",
-          "description": "The {{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
+          "description": "{{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
         }
       },
       "emptyInbox": "No pending notifications",

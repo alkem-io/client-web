@@ -12,8 +12,8 @@ export const InAppSpaceCommunityNewMemberAdminView = (notification: InAppNotific
   const notificationTextValues = {
     defaultValue: '',
     spaceName: payload.space?.about?.profile?.displayName,
-    memberType: payload.contributor?.type,
     memberName: payload.contributor?.profile?.displayName,
+    memberType: '', // todo: missing memberType (Admin, member, lead)
   };
 
   return (
