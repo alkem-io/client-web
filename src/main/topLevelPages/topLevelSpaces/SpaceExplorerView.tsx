@@ -220,6 +220,7 @@ export const SpaceExplorerView = ({
             onClick={() => {
               setInfoOpen(true);
             }}
+            aria-label={t('tooltips.click-more-info')}
           >
             <InfoOutlinedIcon color="primary" fontSize="small" />
           </IconButton>
