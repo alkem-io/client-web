@@ -5,12 +5,7 @@ export const InAppUserMentionView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;
 
   // do not display notification if these are missing
-  if (
-    !payload.callout ||
-    !payload.callout.framing?.profile?.displayName ||
-    !payload.callout.framing?.profile?.url ||
-    !triggeredBy?.profile?.displayName
-  ) {
+  if (!triggeredBy?.profile?.displayName) {
     return null;
   }
 

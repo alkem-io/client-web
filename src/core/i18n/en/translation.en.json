@@ -1895,8 +1895,8 @@
           "subject": "{{spaceName}} - New Post is published \"{{calloutName}}\", have a look!",
           "description": "{{triggeredByName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
-        "COMMUNICATION_USER_MENTION": {
-          "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
+        "USER_MENTION": {
+          "subject": "{{triggeredByName}} mentioned you in a comment on {{calloutName}}:",
           "description": ""
         },
         "SPACE_COMMUNITY_NEW_MEMBER": {
