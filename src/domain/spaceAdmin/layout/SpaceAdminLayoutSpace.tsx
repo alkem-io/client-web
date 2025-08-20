@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SettingsSection } from '../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import RouterLink from '@/core/ui/link/RouterLink';
-import EntitySettingsLayout from '../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
+import EntitySettingsLayout from '../../platformAdmin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import SpaceBreadcrumbs from '@/domain/space/components/spaceBreadcrumbs/SpaceBreadcrumbs';
 import BackButton from '@/core/ui/actions/BackButton';
 import { spaceAdminTabsL0 } from './SpaceAdminTabsL0';

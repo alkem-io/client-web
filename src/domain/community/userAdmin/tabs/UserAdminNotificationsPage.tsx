@@ -1,4 +1,4 @@
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import UserNotificationsPageView from '../views/UserAdminNotificationsPageView';
 import { useMemo } from 'react';

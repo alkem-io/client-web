@@ -8,8 +8,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
-import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
+import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 

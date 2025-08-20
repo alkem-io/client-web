@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardDetails from '@/core/ui/card/CardDetails';
 import CardDescription from '@/core/ui/card/CardDescription';
@@ -26,7 +26,14 @@ export interface CalendarEventCardProps {
   onClick: (event: { profile: { url: string } }) => void;
 }
 
-const CalendarEventCard = forwardRef<HTMLDivElement, CalendarEventCardProps>(({ event, highlighted, onClick }, ref) => {
+const CalendarEventCard = ({
+  ref,
+  event,
+  highlighted,
+  onClick,
+}: CalendarEventCardProps & {
+  ref?: React.Ref<HTMLDivElement>;
+}) => {
   const handleClick = useCallback(() => event && onClick(event), [onClick, event]);
   const { t } = useTranslation();
 
@@ -43,6 +50,6 @@ const CalendarEventCard = forwardRef<HTMLDivElement, CalendarEventCardProps>(({ 
       </CardFooter>
     </ContributeCard>
   );
-});
+};
 
 export default CalendarEventCard;

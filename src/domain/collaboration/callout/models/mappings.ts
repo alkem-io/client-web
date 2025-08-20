@@ -1,4 +1,4 @@
-import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType, CalloutFramingType, UpdateLinkInput } from '@/core/apollo/generated/graphql-schema';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from '../../callout/CalloutForm/CalloutFormModel';
 import { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
@@ -8,6 +8,7 @@ import { mapTagsetModelToTagsFormValues } from '@/domain/common/tagset/TagsetUti
 import { mapReferenceModelToReferenceFormValues } from '@/domain/common/reference/ReferenceUtils';
 import { mapContributionDefaultsModelToCalloutFormValues } from './ContributionDefaultsModel';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
+import { LinkDetails } from '@/domain/collaboration/callout/models/TypedCallout';
 
 export const mapCalloutTemplateToCalloutForm = (
   calloutTemplate?: {
@@ -20,6 +21,18 @@ export const mapCalloutTemplateToCalloutForm = (
         content: string;
         profile: ProfileModel & {
           preview?: VisualModel;
+        };
+      };
+      memo?: {
+        content: string;
+        profile: ProfileModel & {
+          preview?: VisualModel;
+        };
+      };
+      link?: {
+        uri: string;
+        profile: {
+          displayName: string;
         };
       };
     };
@@ -57,6 +70,23 @@ export const mapCalloutTemplateToCalloutForm = (
             previewImages: [], // TODO: Download the preview images if available
           }
         : undefined,
+      memo: calloutTemplate.framing.memo
+        ? {
+            profile: {
+              displayName: calloutTemplate.framing.memo.profile.displayName,
+            },
+            content: calloutTemplate.framing.memo.content,
+            previewImages: [], // TODO: Download the preview images if available
+          }
+        : undefined,
+      link: calloutTemplate.framing.link
+        ? {
+            uri: calloutTemplate.framing.link.uri,
+            profile: {
+              displayName: calloutTemplate.framing.link.profile.displayName,
+            },
+          }
+        : undefined,
     };
     const templateContributionDefaults =
       mapContributionDefaultsModelToCalloutFormValues(calloutTemplate.contributionDefaults) ??
@@ -67,6 +97,10 @@ export const mapCalloutTemplateToCalloutForm = (
     if (calloutRestrictions?.disableWhiteboards && templateFraming.type === CalloutFramingType.Whiteboard) {
       templateFraming.type = CalloutFramingType.None;
       templateFraming.whiteboard = undefined;
+    }
+    if (calloutRestrictions?.disableMemos && templateFraming.type === CalloutFramingType.Memo) {
+      templateFraming.type = CalloutFramingType.None;
+      templateFraming.memo = undefined;
     }
     if (
       calloutRestrictions?.disableWhiteboards &&
@@ -144,3 +178,17 @@ export const mapCalloutSettingsFormToCalloutUpdateSettings = (
         visibility: settings.visibility,
       }
     : undefined;
+
+export const mapLinkDataToUpdateLinkInput = (linkData: LinkDetails | undefined): UpdateLinkInput | undefined => {
+  if (!linkData) {
+    return undefined;
+  }
+
+  return {
+    ID: linkData.id ?? '', // the same model used for creation and update
+    uri: linkData.uri,
+    profile: {
+      displayName: linkData.profile.displayName,
+    },
+  };
+};

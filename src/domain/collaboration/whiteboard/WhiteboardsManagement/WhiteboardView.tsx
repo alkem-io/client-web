@@ -7,7 +7,7 @@ import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/Whitebo
 import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import useWhiteboardContentUpdatePolicy from '../contentUpdatePolicy/WhiteboardContentUpdatePolicy';
 import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
-import { SaveRequestIndicatorIcon } from '../icon/SaveRequestIndicatorIcon';
+import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
 import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface ActiveWhiteboardIdHolder {

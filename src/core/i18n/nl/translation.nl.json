@@ -38,13 +38,13 @@
     ]
   },
   "releaseNotes": {
-    "title": "<big>🎉 Platformupdate!</big> <small>Onze nieuwste update is er. Lees hier wat er nieuw is!</small>",
+    "title": "<big>🎉 Platform update!</big> <small>We hebben leuk nieuws, klik hier om er alles over te lezen!</small>",
     "url": "/forum/releases/latest?date=4725",
     "isClickable": "TRUE"
   },
   "cookie": {
     "consent": "Door op \"Accepteer Alle Cookies\" te klikken, gaat u ermee akkoord dat er cookies op uw apparaat worden opgeslagen die bijdragen aan de website navigatie en het anayleren van website gebruik.",
-    "settings": "Bij het bezoeken van een website kan informatie worden opgeslagen in uw browser in de vorm van cookies. Deze informatie kan over u, uw voorkeuren en uw apparaat gaan. Meestal wordt deze informatie gebruikt om de website zo goed mogelijk te laten werken. Sommige websites gebruiken de cookies ook voor marketingdoeleinden. Aangezien Alkemio geen advertenties toestaat op de website, maken wij slechts onderscheid tussen twee soorten cookies. Lees meer.",
+    "settings": "Bij het bezoeken van een website kan informatie worden opgeslagen in uw browser in de vorm van cookies. Deze informatie kan over u, uw voorkeuren en uw apparaat gaan. Meestal wordt deze informatie gebruikt om de website zo goed mogelijk te laten werken. Sommige websites gebruiken de cookies ook voor marketingdoeleinden. Aangezien Alkemio geen advertenties toestaat op de website, maken wij slechts onderscheid tussen twee soorten cookies.",
     "technical": "Technisch noodzakelijke cookies: maken het mogelijk op de website te navigeren en uw voorkeuren op te slaan.",
     "analysis": "Analytische cookies: staan ons toe vast te stellen hoe gebruikers onze dienst gebruiken om de gebruikerservaring te verbeteren."
   },
@@ -122,6 +122,7 @@
     "yes": "Ja",
     "no": "Nee",
     "yes-close": "Ja, sluiten",
+    "yesContinue": "Ja, doorgaan",
     "yesReplace": "Ja, vervang",
     "yesDelete": "Ja, verwijderen",
     "yesStop": "Ja, stop",
@@ -163,7 +164,7 @@
     "select": "Selecteer",
     "change-field": "{{field}} wijzigen",
     "send": "Verzenden",
-    "contact-leads": "Neem contact op met de {{contact}}(s)",
+    "contactLeads": "Contacteer de {{contact}}",
     "moveUp": "Omhoog verplaatsen",
     "moveDown": "Omlaag verplaatsen",
     "moveToTop": "Bovenaan zetten",
@@ -231,6 +232,7 @@
     },
     "actions": "Acties",
     "account": "Account",
+    "anonymous": "Anoniem",
     "all": "Alles",
     "knowledge-base": "Kennisbank",
     "or": "Of",
@@ -254,6 +256,7 @@
     "callouts": "Oproepen",
     "collaborationTools": "Samenwerkingstools",
     "createdBy": "Gemaakt door",
+    "memo": "Memo",
     "whiteboard": "Whiteboard",
     "whiteboards": "Whiteboards",
     "calendar": "Kalender",
@@ -391,6 +394,7 @@
     "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Samenwerkingstool",
     "optional": "optioneel",
+    "unknown": "Onbekend",
     "menu": "Menu",
     "genders": {
       "notSpecified": "niet gespecificeerd",
@@ -455,8 +459,8 @@
       "templateType": {
         "CALLOUT": "Samenwerkingstool Template",
         "CALLOUT_plural": "Samenwerkingstool Templates",
-        "SPACE": "Subspace Template",
-        "SPACE_plural": "Subspace Templates",
+        "SPACE": "Space Template",
+        "SPACE_plural": "Space Templates",
         "COMMUNITY_GUIDELINES": "Community Richtlijnen Template",
         "COMMUNITY_GUIDELINES_plural": "Community Richtlijnen Templates",
         "INNOVATION_FLOW": "Innovatie Flow",
@@ -541,7 +545,8 @@
       }
     },
     "supportEmail": "support@alkem.io",
-    "options": "Opties"
+    "options": "Opties",
+    "externalLinkDisclaimer": "Deze link brengt je naar een externe site. Alkemio is niet verantwoordelijk voor de inhoud."
   },
   "community": {
     "memberUsers": "Leden ({{count}})",
@@ -673,8 +678,8 @@
       }
     },
     "pendingMembership": {
-      "pendingMemberships": "Mijn Openstaande Lidmaatschappen",
-      "pendingMembershipsWithCount": "Mijn Openstaande Lidmaatschappen ({{count}})",
+      "pendingMemberships": "Mijn Openstaande Uitnodigingen",
+      "pendingMembershipsWithCount": "Mijn Openstaande Uitnodigingen ({{count}})",
       "invitationsSectionTitle": "Uitnodigingen",
       "virtualInvitationsSectionTitle": "Uitnodigingen voor mijn Virtual Contributor",
       "applicationsSectionTitle": "Open aanmeldingen",
@@ -729,23 +734,32 @@
         },
         "whiteboard": {
           "title": "Whiteboard",
-          "tooltip": "Voeg een whiteboard toe aan deze post"
+          "tooltip": "Voeg een whiteboard toe aan deze post",
+          "onlyRealTimeEditorAvailable": "Om dit whiteboard nu te bewerken moet je de whiteboard editor gebruiken. Sluit dit venster en open het whiteboard door direct op het voorbeeld te klikken."
+        },
+        "memo": {
+          "title": "Memo",
+          "tooltip": "Voeg een gezamenlijk document toe aan deze Post"
+        },
+        "link": {
+          "title": "Oproep tot actie",
+          "tooltip": "Voeg een oproep tot actie toe aan dit bericht"
         }
       },
       "contributionSettings": {
-        "title": "Verzameling Opties",
+        "title": "Reactie Opties",
         "comments": {
           "title": "Reacties",
           "enabled": "Reacties",
           "disabled": "Geen reacties"
         },
         "contributionTypes": {
-          "title": "Verzameling",
+          "title": "Collectie",
           "settings": {
-            "title": "Verzameling Instellingen",
-            "membersCanRespond": "Leden kunnen aan de verzameling toevoegen",
-            "adminCanRespond": "Beheerders kunnen aan de verzameling toevoegen",
-            "commentsOnEachResponse": "Reacties op elke post in de verzameling inschakelen",
+            "title": "Instellingen",
+            "membersCanRespond": "Leden kunnen aan de collectie toevoegen",
+            "adminCanRespond": "Beheerders kunnen aan de collectie toevoegen",
+            "commentsOnEachResponse": "Reacties op elke post in de collectie inschakelen",
             "confirmBackDialog": {
               "title": "Weet je zeker dat je terug wilt gaan?",
               "text": "Er zijn niet opgeslagen wijzigingen in dit formulier, deze gaan verloren als je dit venster sluit.",
@@ -757,7 +771,7 @@
           },
           "none": {
             "title": "Geen",
-            "tooltip": "Geen verzameling"
+            "tooltip": "Geen collectie"
           },
           "link": {
             "title": "Links & Bestanden",
@@ -784,13 +798,21 @@
               "label": "Standaard Whiteboard:",
               "explanation": "Bewerk het standaard whiteboard."
             }
-          }
+          },
+          "tooltipDisabled": "Maak een nieuwe post aan als je een andere collectie optie wil."
+        }
+      },
+      "importTemplate": {
+        "confirmOverwrite": {
+          "title": "Huidige invoer overschrijven?",
+          "content": "Bij het importeren van een template kan de huidige inhoud worden overschreven. Weet je zeker dat je door wil gaan?"
         }
       },
       "notification": {
         "label": "Informeer de community.",
         "description": "Leden van deze community ontvangen een notificatie indien ingeschakeld in hun notificatie instellingen."
-      }
+      },
+      "disabledSubmitTooltip": "Zorg ervoor dat alle titels zijn ingevuld."
     },
     "edit": {
       "dialogTitle": "Bewerk $t(common.post)"
@@ -806,7 +828,7 @@
     "notMember": "Je kan niet reageren op deze discussie omdat je geen lid bent van deze Space",
     "delete-confirm-title": "Oproep verwijderen?",
     "delete-confirm-text": "Alle kaarten, whiteboards en discussies onder deze oproep worden ook verwijderd.",
-    "state-permission": "Sta toevoegen aan de collectie toe",
+    "state-permission": "Sta toevoegen aan de verzameling toe",
     "permission-help-text": "Gebruik de switch hieronder om deze oproep voor nieuwe bijdragen te sluiten.",
     "callout-location": "Locatie: ",
     "sortContributions": "Sorteer bijdragen",
@@ -829,10 +851,13 @@
     "singleWhiteboard": {
       "clickToSee": "Klik hier om het volledige whiteboard te zien"
     },
+    "memo": {
+      "clickToSee": "Klik om de volledige Memo te zien"
+    },
     "calloutsList": {
       "title": "Index",
       "filter": {
-        "placeholder": "Vind samenwerkingstools..."
+        "placeholder": "Zoek..."
       }
     }
   },
@@ -847,7 +872,8 @@
     "insertEmoji": "Emoji toevoegen",
     "addReaction": "Reactie toevoegen",
     "addMention": "Vermeld iemand",
-    "formattingHelp": "Opmaak hulp"
+    "formattingHelp": "Opmaak hulp",
+    "missingAuthor": "Alkemio (virtual) contributor"
   },
   "send-message-dialog": {
     "direct-message-title": "Verstuur een bericht",
@@ -887,18 +913,20 @@
     }
   },
   "context": {
-    "common": {
-      "addCallouts": {
-        "title": "Voeg de standaard samenwerkingstools van template toe"
-      },
-      "addTutorialCallouts": {
-        "title": "Voeg tutorials toe"
-      }
-    },
     "L0": {
+      "displayName": {
+        "title": "Titel *",
+        "description": "",
+        "placeholder": ""
+      },
+      "nameId": {
+        "title": "URL",
+        "description": "",
+        "placeholder": ""
+      },
       "tagline": {
         "title": "Tagline",
-        "description": "Leg in één zin uit waar deze Space over gaat.",
+        "description": "",
         "placeholder": ""
       },
       "description": {
@@ -920,6 +948,16 @@
         "title": "Wie",
         "description": "",
         "placeholder": ""
+      },
+      "tags": {
+        "title": "Tags",
+        "description": "",
+        "placeholder": "",
+        "tooltip": "Tags"
+      },
+      "template": {
+        "title": "Template:",
+        "defaultTemplate": "Standaard Alkemio template voor Spaces"
       }
     },
     "L1": {
@@ -972,7 +1010,7 @@
       },
       "tagline": {
         "title": "Tagline",
-        "description": "Leg in één zin uit waar deze Subspace over gaat.",
+        "description": "",
         "placeholder": ""
       },
       "description": {
@@ -1002,11 +1040,17 @@
       },
       "innovationFlow": {
         "title": "Subspace Flow"
+      },
+      "template": {
+        "title": "Template:",
+        "defaultTemplate": "Standaard Alkemio template voor Subspaces"
       }
     }
   },
   "forms": {
     "validations": {
+      "field": "Veld",
+      "fieldNotPresent": "{{fieldName}} is niet aanwezig",
       "required": "Dit veld is vereist!",
       "requiredField": "{{field}} is vereist!",
       "minLength": "{{field}} moet tenminste {{min}} karakters lang zijn",
@@ -1018,7 +1062,8 @@
       "invalidUrl": "Ongeldige URL",
       "invalidEmail": "Ongeldig e-mailadres",
       "duplicateEmail": "E-mailadres is al ingevoerd",
-      "elementMustBeValidUrl": "{{name}} moet een geldige URL zijn"
+      "elementMustBeValidUrl": "{{name}} moet een geldige URL zijn",
+      "acceptedTerms": "Je moet de algemene voorwaarden accepteren"
     }
   },
   "templateDialog": {
@@ -1056,16 +1101,19 @@
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
         "title": "Subspace URL",
-        "description": "Plak hier de URL van de Subspace die je wil kopiëren als Template.",
-        "use": "Gebruik deze Subspace",
-        "urlRequired": "Plak hier de URL van de Subspace die je wil kopiëren als template.",
+        "description": "Voer de URL in van de Space of Subspace die je wilt kopiëren als template.",
+        "use": "Gebruik deze Space",
+        "urlRequired": "Plak hier de URL van de Space die je wil kopiëren als template.",
+        "noRights": "Je hebt beheerdersrechten nodig in de Space die je wilt kopiëren als template.",
         "invalidUrl": "De URL wordt niet herkend als een Space-URL.",
         "spaceNotFoundError": "Space niet gevonden",
         "selectAnother": "Update Samenwerking vanuit een andere Space"
       },
       "preview": {
-        "info": "Inclusief informatie en instellingen"
-      }
+        "info": "Altijd opgenomen: Informatie over de Space & Instellingen"
+      },
+      "recursive": "De Subspaces van de geselecteerde Space in de template opnemen",
+      "includesSubspaces": "Deze template bevat ook de volgende Subspaces:"
     },
     "communityGuidelinesTemplates": {
       "name": "$t(common.enums.templateType.COMMUNITY_GUIDELINES)",
@@ -1083,6 +1131,9 @@
         "title": "Template verwijderen",
         "description": "Weet je zeker dat je dit Template wilt sluiten? Niet opgeslagen wijzigingen gaan verloren."
       }
+    },
+    "notifications": {
+      "templateSaved": "Template succesvol opgeslagen"
     }
   },
   "innovation-templates": {
@@ -1135,7 +1186,7 @@
       "platform": "Overal op Alkemio"
     },
     "poweredBy": {
-      "label": "Mogelijk gemaakt door",
+      "label": "Aangeboden door",
       "aria-label": "Mogelijk gemaakt door Alkemio"
     },
     "spaceUnauthorizedDialog": {
@@ -1148,7 +1199,7 @@
       "title": "{{space}} statistieken"
     },
     "dashboardNavigation": {
-      "help": "Deze Space bevat de volgende Subspaces. Ook zijn de eventuele onderliggende Subspaces zichtbaar.",
+      "help": "Hiërarchie van deze Space.",
       "privateSubspace": "Dit is een privé Supspace. Bezoek de Subspace en doe een verzoek om lid te worden om de inhoud ervan te bekijken.",
       "showAll": "Toon alles",
       "expand": "Toon volledige hiërarchie",
@@ -1192,7 +1243,7 @@
           "activeStateWarning": "Deze fase is momenteel actief en kan niet worden verwijderd. Je kan het altijd hernoemen of een andere fase als actieve fase instellen."
         },
         "selectDifferentFlow": {
-          "title": "Zoek Subspace Template",
+          "title": "Zoek Space Template",
           "confirmationDialog": {
             "title": "Wees voorzichtig bij het wijzigen van de Flow!",
             "description": "- Door het wijzigen van de Innovatie Flow **gaan alle veranderingen die in de huidige flow zijn aangebracht verloren**.\n- Alle bestaande samenwerkingstools zullen gegroepeerd worden onder de eerste fase van de nieuwe Flow."
@@ -1358,9 +1409,15 @@
         "type-whiteboards-help": "Selecteer ‘Whiteboards’ als je wilt dat mensen antwoorden via visuele whiteboards waar ze op kunnen tekenen en schrijven.",
         "unique-title-validation-text": "Deze titel wordt al gebruikt voor een andere $t(common.callout)"
       },
-      "whiteboard": {
-        "title": "Whiteboard:",
-        "editDialogTitle": "Whiteboard bewerken"
+      "framing": {
+        "whiteboard": {
+          "title": "Whiteboard:",
+          "editDialogTitle": "Whiteboard bewerken"
+        },
+        "link": {
+          "name": "Oproep tot actie",
+          "url": "URL"
+        }
       },
       "template-step": {
         "title": "Templates",
@@ -1433,7 +1490,8 @@
       "success": "Afbeelding succesvol geupload",
       "error": "Er is een fout opgetreden tijdens het uploaden van de afbeelding",
       "upload-hover": "Upload afbeelding",
-      "no-data": "Nog niet ingesteld"
+      "no-data": "Nog niet ingesteld",
+      "entityCreatedErrorUploading": "De {{entity}} is aangemaakt, maar er is een fout opgetreden bij het uploaden van sommige afbeeldingen. Probeer het opnieuw."
     },
     "tags-component": {
       "more": "+{{count}} meer",
@@ -1526,7 +1584,7 @@
     "referenceSegment": {
       "title": "Referenties",
       "addReference": "Referentie toevoegen",
-      "description": "Houd er rekening mee dat alle bestanden die je hier toevoegt openbaar zijn. Als je wilt dat alleen de leden van deze Space toegang hebben tot de bestanden, voeg het dan toe aan een bericht of een verzameling links op één van de Space pagina's.",
+      "description": "Houd er rekening mee dat alle bestanden die je hier toevoegt openbaar zijn. Als je wilt dat alleen de leden van deze Space toegang hebben tot de bestanden, voeg het dan toe aan een bericht of een collectie van links op één van de Space pagina's.",
       "missing-references": "Nog geen referenties",
       "tooltips": {
         "add-reference": "Voeg een referentie toe",
@@ -1561,6 +1619,7 @@
         "title": "Bevestig verwijderen van {{entity}}",
         "description": "Weet je zeker dat je {{entity}} wilt verwijderen? Houd er rekening mee dat deze actie onomkeerbaar is. <strong>Je kunt alleen een {{entity}} verwijderen als er geen onderliggende Subspaces aan gekoppeld zijn.</strong> Als er Subspaces zijn, verwijder deze dan eerst (je kunt dit doen via de {{entity}} instellingen > Subspaces pagina).",
         "descriptionShort": "Weet je zeker dat je {{entity}} wilt verwijderen? Houd er rekening mee dat deze actie onomkeerbaar is.",
+        "descriptionShortWithName": "Weet je zeker dat je <strong>{{entity}}</strong> wilt verwijderen? Houd er rekening mee dat deze actie onomkeerbaar is.",
         "checkbox": "Vink dit vakje aan als je zeker bent over het verwijderen van {{entity}}",
         "confirm": "Ja, verwijderen"
       }
@@ -1833,8 +1892,8 @@
       },
       "type": {
         "COLLABORATION_CALLOUT_PUBLISHED": {
-          "subject": "{{spaceName}} - Nieuw {{calloutType}} is gepubliceerd \"{{calloutName}}\", neem een kijkje!",
-          "description": "{{contributorName}} heeft een nieuwe {{calloutType}} gepubliceerd in {{spaceLevel}}: {{spaceName}}, met naam: {{calloutName}}."
+          "subject": "{{spaceName}} - Nieuwe Post is gepubliceerd\"{{calloutName}}\", neem een kijke!",
+          "description": "{{contributorName}} heeft een nieuwe Post gepubliceerd in {{spaceLevel}}: {{spaceName}}, met naam: {{calloutName}}."
         },
         "COMMUNICATION_USER_MENTION": {
           "subject": "{{commenterName}} heeft je genoemd in een reactie op {{calloutName}}:",
@@ -1921,19 +1980,19 @@
           "list": "Lijst weergave",
           "empty": "Geen {{entities}} gevonden.",
           "empty-list": "Er zijn nog geen {{entities}}.",
-          "searchPlaceholder": "Vind Subspaces..."
+          "searchPlaceholder": "Zoek..."
         },
         "recommendations": {
           "title": "Aanbevolen door de Host"
         }
       },
       "archivedNotice": {
-        "archivedSpace": "Deze Space is momenteel gearchiveerd. Wil je de Space weer actief maken? <contact>Klik hier</contact> om contact op te nemen met Alkemio.",
-        "archivedSubspace": "Deze {{space}} is onderdeel van een momenteel gearchiveerde Space. Wil je hem weer actief maken? <contact>Klik hier</contact> om contact op te nemen met Alkemio."
+        "archivedSpace": "Gearchiveerde {{space}}. <contact>Kom meer te weten</contact>",
+        "archivedLink": "/docs"
       },
       "demoNotice": {
-        "demoSpace": "Dit is een Demo Space. <alkemio>Klik hier</alkemio> om samen te werken in actieve Spaces.",
-        "demoSubspace": "Deze {{space}} is onderdeel van een Demo Space. <alkemio>Klik hier</alkemio> om samen te werken in actieve Spaces."
+        "demoSpace": "Demo Space",
+        "demoSubspace": "Deze {{space}} bevindt zich in een Demo Space."
       }
     },
     "contribute": {
@@ -1946,8 +2005,8 @@
     "innovationLibrary": {
       "shortName": "Bibliotheek",
       "fullName": "Template Bibliotheek",
-      "title": "De Bibliotheek op Alkemio biedt templates en best practices om je te begeleiden",
-      "subtitle": "Open de onderstaande Innovatiepakketten om alle templates voor whiteboards, posts en innovatie flows te verkennen. Als je meer wilt weten <click>klik dan hier</click>.",
+      "title": "Alkemio's Template Bibliotheek",
+      "subtitle": "Zet je (Sub)Space direct aan de slag met deze kant-en-klare tools. <click>Lees meer</click>.",
       "useTemplateButton": "Vind dit template via de template bibliotheek in jouw Space om het te gebruiken.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
@@ -2004,7 +2063,7 @@
               "imported-successfully-notification": "Template succesvol geïmporteerd"
             },
             "validation": {
-              "spaceRequired": "Selecteer een bestaand Subspace om verder te gaan."
+              "spaceRequired": "Selecteer een bestaand (Sub)Space om verder te gaan."
             }
           },
           "my-profile": {
@@ -2146,8 +2205,7 @@
         "notifications": {
           "subsubspace-created": "Subspace succesvol aangemaakt.",
           "subsubspace-removed": "Subspace succesvol verwijderd.",
-          "subsubspace-updated": "Subspace succesvol aangepast.",
-          "error-creating-subsubspace": "Er is een fout opgetreden tijdens het maken van de Subspace."
+          "subsubspace-updated": "Subspace succesvol aangepast."
         }
       },
       "subspace": {
@@ -2232,7 +2290,7 @@
           },
           "memberActions": {
             "title": "Toegestane acties voor leden",
-            "createBlocks": "<b>Blokken maken</b>: Sta leden toe om zelf blokken te maken voor samenwerkingstools & posts Als je dit deactiveert, kunnen leden nog steeds reageren op en bijdragen aan bestaande oproepen.",
+            "createBlocks": "<b>Post maken</b>: Sta leden toe om zelf posts te maken voor samenwerkingstools & posts Als je dit deactiveert, kunnen leden nog steeds reageren op bestaande posts waar reacties en collecties ingeschakeld zijn.",
             "createSubspaces": "<b>Subspaces aanmaken</b>: Sta leden toe om Subspaces in deze Spacce te maken. Als je dit deactiveert, kun je nog steeds zelf Subspaces maken en andere mensen toevoegen als beheerder in de Subspace.",
             "eventsFromSubspaces": "<b>Subspace events</b>: Laat events uit Subspaces ook zien op deze Space kalender.",
             "inheritRights": "Sta leden van de bovenliggende community toe om bij te dragen zonder eerst lid te hoeven worden.",
@@ -2745,6 +2803,25 @@
       },
       "restartCollaboration": "Doorgaan met bewerken"
     },
+    "memo": {
+      "readonlyReason": {
+        "readonly": "<strong>Alleen lezen modus</strong> <learnwhy>lees hier waarom</learnwhy>",
+        "contentUpdatePolicy": "Je hebt geen rechten om deze Memo te bewerken. Vraag de beheerder, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
+        "noMembership": "Je moet lid zijn van {{spaceLevel}} om deze Memo te kunnen bewerken. <spacelink>Klik hier om je aan te melden</spacelink>",
+        "unauthenticated": "Je moet ingelogd en lid zijn van {{spaceLevel}} om deze Memo te kunnen bewerken. <signinlink>Klik hier om in te loggen</signinlink>",
+        "connecting": "",
+        "notSynced": " Synchroniseren... Heropen de memo om het snel terug te krijgen. Back-up je wijzigingen voordat je afsluit."
+      },
+      "readonlyDialog": {
+        "title": "Alleen bekijken modus",
+        "reason": {
+          "noUpdateAccess": "Je hebt geen rechten om deze Memo te bewerken. Vraag de beheerder, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
+          "multiUserNotAllowed": "Je kunt deze Memo niet bewerken omdat deze Space slechts één Memo editor tegelijkertijd toestaat",
+          "roomCapacityReached": "Je kunt deze Memo niet bewerken omdat deze Space meerdere editors gelijktijdig toestaat, maar het maximum deelnemers is bereikt",
+          "generic": "Je kunt deze Memo niet bewerken om een van de volgende redenen:\n\n- Je bent geen lid van de Space\n- Deze Space staat slechts één whiteboard editor tegelijk toe \n- Deze Space staat meer gelijktijdige editors toe, maar het maximum aantal deelnemers is bereikt"
+        }
+      }
+    },
     "login": {
       "title": "Aanmelden bij Alkemio",
       "register": "Heeft u nog geen Alkemio account? <signup>Klik hier om u aan te melden.</signup>"
@@ -3209,13 +3286,17 @@
   },
   "createSpace": {
     "title": "Creëer een Space",
-    "addTutorialsLabel": "Toon tutorials in deze Space",
+    "addTutorialsLabel": "Voeg tutorials toe aan deze Space",
     "terms": {
       "checkboxLabel": "Ik heb de <terms>Algemene voorwaarden voor het maken van een Space gelezen en geaccepteerd (klik hier om ze te openen)</terms>.",
       "dialogTitle": "Algemene voorwaarden voor het maken van een Space",
       "dialogContent": "Ik begrijp dat ik als host verantwoordelijk ben voor alle inhoud binnen de Space.",
       "fullTermsLink": "Klik hier om meer te lezen over de Algemene Voorwaarden."
-    }
+    },
+    "license": {
+      "noPlansError": "Geen beschikbare paketten. Neem contact op met support."
+    },
+    "innovationFlowError": "Deze template kan niet worden gebruikt voor Spaces. Selecteer een andere template."
   },
   "plansTable": {
     "title": "Kies een abonnement",
@@ -3305,7 +3386,7 @@
     },
     "name": "Naam",
     "bodyOfKnowledge": "Kennisbank",
-    "placeholder": "Hier vind je een verzameling documenten en teksten die zijn gebruikt om deze VC zijn inzichten en functionaliteit te bieden.",
+    "placeholder": "Deze Virtual Contributor is gebaseerd op zijn eigen verzameling documenten, tekst en links.",
     "infoTextBoK": "Selecteer de Space of Subspace die je wilt gebruiken als kennisbank voor deze Virtual Contributor",
     "noSubspacesInfo": "Maak eerst een Subspace, en vul deze met de relevante informatie voor je Virtual Contributor.",
     "confirmDeletion": {
@@ -3318,7 +3399,6 @@
   "createVirtualContributorWizard": {
     "noSpaces": "Geen Space gevonden die door jou wordt gehost, neem contact met ons op voor ondersteuning.",
     "createdVirtualContributor": {
-      "description": "",
       "successMessage": "Virtual Contributor '{{name}}' succesvol gemaakt"
     },
     "autoCreated": {

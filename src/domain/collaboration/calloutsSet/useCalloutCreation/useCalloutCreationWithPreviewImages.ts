@@ -13,6 +13,7 @@ import {
   CreateReferenceInput,
   CreateTagsetInput,
 } from '@/core/apollo/generated/graphql-schema';
+import { MemoFieldSubmittedValues } from '../../memo/model/MemoFieldSubmittedValues';
 
 export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationType {
   framing: {
@@ -24,6 +25,7 @@ export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationTyp
     };
     type: CalloutFramingType;
     whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
+    memo?: MemoFieldSubmittedValues;
     tags?: string[];
   };
 }
@@ -52,6 +54,16 @@ export const useCalloutCreationWithPreviewImages = (
       } = callout;
       return { callout: { framing: { whiteboard: restWhiteboard, ...restFraming }, ...restCallout }, previewImages };
     }
+    if (callout.framing.memo) {
+      const {
+        framing: {
+          memo: { previewImages, ...restMemo },
+          ...restFraming
+        },
+        ...restCallout
+      } = callout;
+      return { callout: { framing: { memo: restMemo, ...restFraming }, ...restCallout }, previewImages };
+    }
     return { callout };
   };
 
@@ -75,6 +87,17 @@ export const useCalloutCreationWithPreviewImages = (
               previewVisualId: whiteboard.profile.preview?.id,
             },
             result.nameID // to name the files uploaded as whiteboard visuals
+          );
+        }
+        const memo = callout.framing.type === CalloutFramingType.Memo ? result?.framing.memo : undefined;
+        if (memo && memo.profile && memo.profile.preview?.id) {
+          await uploadVisuals(
+            previewImages,
+            {
+              // TODO:MEMO cardVisualId: memo.profile.visual?.id,
+              previewVisualId: memo.profile.preview.id,
+            },
+            result.nameID // to name the files uploaded as memo visuals
           );
         }
       }

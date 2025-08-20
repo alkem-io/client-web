@@ -17,7 +17,7 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 
 export const UserAdminProfilePage = () => {
   const navigate = useNavigate();

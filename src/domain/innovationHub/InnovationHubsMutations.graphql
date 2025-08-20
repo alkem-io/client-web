@@ -1,0 +1,19 @@
+
+
+mutation deleteInnovationHub($innovationHubId: UUID!) {
+  deleteInnovationHub(deleteData: { ID: $innovationHubId }) {
+    id
+  }
+}
+
+mutation createInnovationHub($hubData: CreateInnovationHubOnAccountInput!) {
+  createInnovationHub(createData: $hubData) {
+    ...InnovationHubSettings
+  }
+}
+
+mutation updateInnovationHub($hubData: UpdateInnovationHubInput!) {
+  updateInnovationHub(updateData: $hubData) {
+    ...InnovationHubSettings
+  }
+}

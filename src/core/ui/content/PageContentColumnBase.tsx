@@ -1,4 +1,3 @@
-import { forwardRef } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import GridProvider from '../grid/GridProvider';
 import { GUTTER_MUI } from '../grid/constants';
@@ -14,24 +13,29 @@ export interface PageContentColumnBaseProps extends BoxProps {
  * Grid container for page content blocks.
  * @constructor
  */
-const PageContentColumnBase = forwardRef<HTMLDivElement, PageContentColumnBaseProps>(
-  ({ columns, children, ...props }, ref) => {
-    const combinedRef = useCombinedRefs(null, ref);
+const PageContentColumnBase = ({
+  ref,
+  columns,
+  children,
+  ...props
+}: PageContentColumnBaseProps & {
+  ref?: React.Ref<HTMLDivElement>;
+}) => {
+  const combinedRef = useCombinedRefs<HTMLDivElement | null>(null, ref);
 
-    return (
-      <Box ref={combinedRef} display="flex" flexWrap="wrap" alignContent="start" gap={GUTTER_MUI} {...props}>
-        <GridProvider columns={columns}>
-          <BlockAnchorProvider blockRef={combinedRef}>
-            {children}
-            <NextBlockAnchor>
-              <SkipLink />
-            </NextBlockAnchor>
-          </BlockAnchorProvider>
-        </GridProvider>
-      </Box>
-    );
-  }
-);
+  return (
+    <Box ref={combinedRef} display="flex" flexWrap="wrap" alignContent="start" gap={GUTTER_MUI} {...props}>
+      <GridProvider columns={columns}>
+        <BlockAnchorProvider blockRef={combinedRef}>
+          {children}
+          <NextBlockAnchor>
+            <SkipLink />
+          </NextBlockAnchor>
+        </BlockAnchorProvider>
+      </GridProvider>
+    </Box>
+  );
+};
 PageContentColumnBase.displayName = 'PageContentColumnBase';
 
 export default PageContentColumnBase;

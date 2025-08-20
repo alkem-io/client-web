@@ -1,5 +1,5 @@
 import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '../../../platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import OrganizationAdminSettingsView from '../views/OrganizationAdminSettingsView';
 
 const OrganizationAdminSettingsPage = () => (

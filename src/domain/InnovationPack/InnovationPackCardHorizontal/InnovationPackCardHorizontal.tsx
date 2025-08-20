@@ -54,7 +54,7 @@ const InnovationPackCardHorizontal = ({
     }
     component={RouterLink}
     to={url ?? ''}
-    actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
+    actions={actions ? <ActionsMenu>{actions}</ActionsMenu> : undefined}
   >
     <Box display="flex" flexDirection="row" justifyContent="space-between">
       <Box display="flex" flexDirection="column">

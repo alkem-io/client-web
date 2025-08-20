@@ -18,6 +18,7 @@ export type Scalars = {
   JSON: { input: string; output: string };
   LifecycleDefinition: { input: string; output: string };
   Markdown: { input: string; output: string };
+  MemoContent: { input: string; output: string };
   MessageID: { input: string; output: string };
   NameID: { input: string; output: string };
   SearchCursor: { input: string; output: string };
@@ -857,6 +858,7 @@ export enum AuthorizationPolicyType {
   LicensePolicy = 'LICENSE_POLICY',
   Licensing = 'LICENSING',
   Link = 'LINK',
+  Memo = 'MEMO',
   Organization = 'ORGANIZATION',
   OrganizationVerification = 'ORGANIZATION_VERIFICATION',
   Platform = 'PLATFORM',
@@ -1107,6 +1109,10 @@ export type CalloutFraming = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** The Link for framing the associated Callout. */
+  link?: Maybe<Link>;
+  /** The Memo for framing the associated Callout. */
+  memo?: Maybe<Memo>;
   /** The Profile for framing the associated Callout. */
   profile: Profile;
   /** The type of the Callout Framing, the additional content attached to this callout */
@@ -1118,6 +1124,8 @@ export type CalloutFraming = {
 };
 
 export enum CalloutFramingType {
+  Link = 'LINK',
+  Memo = 'MEMO',
   None = 'NONE',
   Whiteboard = 'WHITEBOARD',
 }
@@ -1691,6 +1699,8 @@ export type CreateCalloutData = {
 
 export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
+  link?: Maybe<CreateLinkData>;
+  memo?: Maybe<CreateMemoData>;
   profile: CreateProfileData;
   tags?: Maybe<Array<Scalars['String']['output']>>;
   /** The type of additional content attached to the framing of the callout. Defaults to None. */
@@ -1699,6 +1709,8 @@ export type CreateCalloutFramingData = {
 };
 
 export type CreateCalloutFramingInput = {
+  link?: InputMaybe<CreateLinkInput>;
+  memo?: InputMaybe<CreateMemoInput>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The type of additional content attached to the framing of the callout. Defaults to None. */
@@ -1983,6 +1995,15 @@ export type CreateLocationInput = {
   stateOrProvince?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type CreateMemoData = {
+  __typename?: 'CreateMemoData';
+  profile?: Maybe<CreateProfileData>;
+};
+
+export type CreateMemoInput = {
+  profile?: InputMaybe<CreateProfileInput>;
+};
+
 export type CreateNvpInput = {
   name: Scalars['String']['input'];
   sortOrder: Scalars['Float']['input'];
@@ -2064,7 +2085,6 @@ export type CreateSpaceAboutInput = {
   /** The CommunityGuidelines for the Space */
   guidelines?: InputMaybe<CreateCommunityGuidelinesInput>;
   profileData: CreateProfileInput;
-  when?: InputMaybe<Scalars['Markdown']['input']>;
   who?: InputMaybe<Scalars['Markdown']['input']>;
   why?: InputMaybe<Scalars['Markdown']['input']>;
 };
@@ -2323,6 +2343,7 @@ export enum CredentialType {
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
   SpaceAdmin = 'SPACE_ADMIN',
+  SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
   SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
   SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
@@ -2380,6 +2401,10 @@ export type DeleteLicensePlanInput = {
 };
 
 export type DeleteLinkInput = {
+  ID: Scalars['UUID']['input'];
+};
+
+export type DeleteMemoInput = {
   ID: Scalars['UUID']['input'];
 };
 
@@ -3096,6 +3121,7 @@ export enum LicenseEntitlementType {
   AccountSpacePlus = 'ACCOUNT_SPACE_PLUS',
   AccountSpacePremium = 'ACCOUNT_SPACE_PREMIUM',
   AccountVirtualContributor = 'ACCOUNT_VIRTUAL_CONTRIBUTOR',
+  SpaceFlagMemoMultiUser = 'SPACE_FLAG_MEMO_MULTI_USER',
   SpaceFlagSaveAsTemplate = 'SPACE_FLAG_SAVE_AS_TEMPLATE',
   SpaceFlagVirtualContributorAccess = 'SPACE_FLAG_VIRTUAL_CONTRIBUTOR_ACCESS',
   SpaceFlagWhiteboardMultiUser = 'SPACE_FLAG_WHITEBOARD_MULTI_USER',
@@ -3179,6 +3205,7 @@ export type Licensing = {
 
 export enum LicensingCredentialBasedCredentialType {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
+  SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
   SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
   SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
@@ -3513,6 +3540,8 @@ export type LookupQueryResults = {
   knowledgeBase: KnowledgeBase;
   /** Lookup the specified License */
   license?: Maybe<License>;
+  /** Lookup the specified Memo */
+  memo?: Maybe<Memo>;
   /** Lookup myPrivileges on the specified entity. */
   myPrivileges?: Maybe<LookupMyPrivilegesQueryResults>;
   /** Lookup the specified Organization using a ID */
@@ -3626,6 +3655,10 @@ export type LookupQueryResultsLicenseArgs = {
   ID: Scalars['UUID']['input'];
 };
 
+export type LookupQueryResultsMemoArgs = {
+  ID: Scalars['UUID']['input'];
+};
+
 export type LookupQueryResultsOrganizationArgs = {
   ID: Scalars['UUID']['input'];
 };
@@ -3728,6 +3761,30 @@ export type MeQueryResultsMySpacesArgs = {
 
 export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
   limit?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type Memo = {
+  __typename?: 'Memo';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The binary state V2 of the Yjs document, used to collaborate on the Memo, represented in base64. */
+  content?: Maybe<Scalars['String']['output']>;
+  /** The policy governing who can update the Memo content. */
+  contentUpdatePolicy: ContentUpdatePolicy;
+  /** The user that created this Memo */
+  createdBy?: Maybe<User>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** Whether the Memo is multi-user enabled on Space level. */
+  isMultiUser: Scalars['Boolean']['output'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID']['output'];
+  /** The Profile for this Memo. */
+  profile: Profile;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 /** A message that was sent either as an Update or as part of a Discussion. */
@@ -3982,6 +4039,8 @@ export type Mutation = {
   deleteLicensePlan: LicensePlan;
   /** Deletes the specified Link. */
   deleteLink: Link;
+  /** Deletes the specified Memo. */
+  deleteMemo: Memo;
   /** Deletes the specified Organization. */
   deleteOrganization: Organization;
   /** Removes the specified User platformInvitation. */
@@ -4130,6 +4189,8 @@ export type Mutation = {
   updateLicensePlan: LicensePlan;
   /** Updates the specified Link. */
   updateLink: Link;
+  /** Updates the specified Memo. */
+  updateMemo: Memo;
   /** Update notification state and return the notification. */
   updateNotificationState: InAppNotificationState;
   /** Updates the specified Organization. */
@@ -4434,6 +4495,10 @@ export type MutationDeleteLinkArgs = {
   deleteData: DeleteLinkInput;
 };
 
+export type MutationDeleteMemoArgs = {
+  memoData: DeleteMemoInput;
+};
+
 export type MutationDeleteOrganizationArgs = {
   deleteData: DeleteOrganizationInput;
 };
@@ -4716,6 +4781,10 @@ export type MutationUpdateLicensePlanArgs = {
 
 export type MutationUpdateLinkArgs = {
   linkData: UpdateLinkInput;
+};
+
+export type MutationUpdateMemoArgs = {
+  memoData: UpdateMemoEntityInput;
 };
 
 export type MutationUpdateNotificationStateArgs = {
@@ -5124,6 +5193,69 @@ export type PlatformInnovationHubArgs = {
   subdomain?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type PlatformAdminCommunicationQueryResults = {
+  __typename?: 'PlatformAdminCommunicationQueryResults';
+  /** All Users that are members of a given room */
+  adminCommunicationMembership: CommunicationAdminMembershipResult;
+  /** Usage of the messaging platform that are not tied to the domain model. */
+  adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
+};
+
+export type PlatformAdminCommunicationQueryResultsAdminCommunicationMembershipArgs = {
+  communicationData: CommunicationAdminMembershipInput;
+};
+
+export type PlatformAdminQueryResults = {
+  __typename?: 'PlatformAdminQueryResults';
+  /** Lookup Communication related information. */
+  communication: PlatformAdminCommunicationQueryResults;
+  /** Retrieve all Innovation Hubs on the Platform. This is only available to Platform Admins. */
+  innovationHubs: Array<InnovationHub>;
+  /** Retrieve all Innovation Packs on the Platform. This is only available to Platform Admins. */
+  innovationPacks: Array<InnovationPack>;
+  /** Retrieve all Organizations on the Platform. This is only available to Platform Admins. */
+  organizations: PaginatedOrganization;
+  /** Retrieve all Spaces on the Platform. This is only available to Platform Admins. */
+  spaces: Array<Space>;
+  /** Retrieve all Users on the Platform. This is only available to Platform Admins. */
+  users: PaginatedUsers;
+  /** Retrieve all Virtual Contributors on the Platform. This is only available to Platform Admins. */
+  virtualContributors: Array<VirtualContributor>;
+};
+
+export type PlatformAdminQueryResultsInnovationPacksArgs = {
+  queryData?: InputMaybe<InnovationPacksInput>;
+};
+
+export type PlatformAdminQueryResultsOrganizationsArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<OrganizationFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<OrganizationVerificationEnum>;
+};
+
+export type PlatformAdminQueryResultsSpacesArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  filter?: InputMaybe<SpaceFilterInput>;
+};
+
+export type PlatformAdminQueryResultsUsersArgs = {
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
+  filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  withTags?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type PlatformAdminQueryResultsVirtualContributorsArgs = {
+  filter?: InputMaybe<ContributorFilterInput>;
+  limit?: InputMaybe<Scalars['Float']['input']>;
+  shuffle?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type PlatformFeatureFlag = {
   __typename?: 'PlatformFeatureFlag';
   /** Is this feature flag enabled? */
@@ -5391,6 +5523,7 @@ export enum ProfileType {
   InnovationHub = 'INNOVATION_HUB',
   InnovationPack = 'INNOVATION_PACK',
   KnowledgeBase = 'KNOWLEDGE_BASE',
+  Memo = 'MEMO',
   Organization = 'ORGANIZATION',
   Post = 'POST',
   SpaceAbout = 'SPACE_ABOUT',
@@ -5412,10 +5545,6 @@ export type Query = {
   activityFeedGrouped: Array<ActivityLogEntry>;
   /** Retrieve the ActivityLog for the specified Collaboration */
   activityLogOnCollaboration: Array<ActivityLogEntry>;
-  /** All Users that are members of a given room */
-  adminCommunicationMembership: CommunicationAdminMembershipResult;
-  /** Usage of the messaging platform that are not tied to the domain model. */
-  adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** Alkemio AiServer */
   aiServer: AiServer;
   /** Active Spaces only, order by most active in the past X days. */
@@ -5440,6 +5569,8 @@ export type Query = {
   organizationsPaginated: PaginatedOrganization;
   /** Alkemio Platform */
   platform: Platform;
+  /** Allow looking up of information for Platform administration. */
+  platformAdmin: PlatformAdminQueryResults;
   /** Get the list of restricted space names. */
   restrictedSpaceNames: Array<Scalars['String']['output']>;
   /** The roles that the specified Organization has. */
@@ -5462,8 +5593,6 @@ export type Query = {
   urlResolver: UrlResolverQueryResults;
   /** A particular user, identified by the ID or by email */
   user: User;
-  /** Privileges assigned to a User (based on held credentials) given an Authorization defnition. */
-  userAuthorizationPrivileges: Array<AuthorizationPrivilege>;
   /** The users who have profiles on this platform */
   users: Array<User>;
   /** The users who have profiles on this platform */
@@ -5490,10 +5619,6 @@ export type QueryActivityFeedGroupedArgs = {
 
 export type QueryActivityLogOnCollaborationArgs = {
   queryData: ActivityLogInput;
-};
-
-export type QueryAdminCommunicationMembershipArgs = {
-  communicationData: CommunicationAdminMembershipInput;
 };
 
 export type QueryExploreSpacesArgs = {
@@ -5562,10 +5687,6 @@ export type QueryUrlResolverArgs = {
 
 export type QueryUserArgs = {
   ID: Scalars['UUID']['input'];
-};
-
-export type QueryUserAuthorizationPrivilegesArgs = {
-  userAuthorizationPrivilegesData: UserAuthorizationPrivilegesInput;
 };
 
 export type QueryUsersArgs = {
@@ -6995,6 +7116,9 @@ export type UpdateCalloutEntityInput = {
 };
 
 export type UpdateCalloutFramingInput = {
+  link?: InputMaybe<UpdateLinkInput>;
+  /** The new content to be used. */
+  memoContent?: InputMaybe<Scalars['Markdown']['input']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   /** The type of additional content attached to the framing of the callout. */
@@ -7223,6 +7347,13 @@ export type UpdateLocationInput = {
   stateOrProvince?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateMemoEntityInput = {
+  ID: Scalars['UUID']['input'];
+  contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
+  /** The Profile of this entity. */
+  profile?: InputMaybe<UpdateProfileInput>;
+};
+
 export type UpdateNotificationStateInput = {
   /** The ID of the notification to update. */
   ID: Scalars['UUID']['input'];
@@ -7321,7 +7452,6 @@ export type UpdateReferenceInput = {
 export type UpdateSpaceAboutInput = {
   /** The Profile of this Space. */
   profile?: InputMaybe<UpdateProfileInput>;
-  when?: InputMaybe<Scalars['Markdown']['input']>;
   who?: InputMaybe<Scalars['Markdown']['input']>;
   why?: InputMaybe<Scalars['Markdown']['input']>;
 };
@@ -7673,13 +7803,6 @@ export type UserAuthenticationResult = {
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
   method: AuthenticationType;
-};
-
-export type UserAuthorizationPrivilegesInput = {
-  /** The authorization definition to evaluate the user credentials against. */
-  authorizationID: Scalars['UUID']['input'];
-  /** The user to evaluate privileges granted based on held credentials. */
-  userID: Scalars['UUID']['input'];
 };
 
 export type UserAuthorizationResetInput = {
@@ -8087,25 +8210,6 @@ export type InnovationPackProfilePageQuery = {
           templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
         }
       | undefined;
-  };
-};
-
-export type AdminInnovationPacksListQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AdminInnovationPacksListQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    library: {
-      __typename?: 'Library';
-      id: string;
-      innovationPacks: Array<{
-        __typename?: 'InnovationPack';
-        id: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-      }>;
-    };
   };
 };
 
@@ -9613,6 +9717,86 @@ export type CalloutPageCalloutQuery = {
                         };
                       }
                     | undefined;
+                }
+              | undefined;
+            memo?:
+              | {
+                  __typename?: 'Memo';
+                  id: string;
+                  nameID: string;
+                  createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    preview?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          allowedTypes: Array<string>;
+                          aspectRatio: number;
+                          maxHeight: number;
+                          maxWidth: number;
+                          minHeight: number;
+                          minWidth: number;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
+                  };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          location?:
+                            | {
+                                __typename?: 'Location';
+                                id: string;
+                                country?: string | undefined;
+                                city?: string | undefined;
+                              }
+                            | undefined;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        };
+                      }
+                    | undefined;
+                }
+              | undefined;
+            link?:
+              | {
+                  __typename?: 'Link';
+                  id: string;
+                  uri: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
                 }
               | undefined;
           };
@@ -12131,6 +12315,32 @@ export type CalloutContentQuery = {
                   };
                 }
               | undefined;
+            memo?:
+              | {
+                  __typename?: 'Memo';
+                  id: string;
+                  content?: string | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    preview?: { __typename?: 'Visual'; id: string; name: string; uri: string } | undefined;
+                  };
+                }
+              | undefined;
+            link?:
+              | {
+                  __typename?: 'Link';
+                  id: string;
+                  uri: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -12275,6 +12485,72 @@ export type UpdateCalloutContentMutation = {
                   };
                 }
               | undefined;
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            nameID: string;
+            createdDate: Date;
+            contentUpdatePolicy: ContentUpdatePolicy;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              storageBucket: { __typename?: 'StorageBucket'; id: string };
+            };
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+      link?:
+        | {
+            __typename?: 'Link';
+            id: string;
+            uri: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
     };
@@ -12574,6 +12850,72 @@ export type UpdateCalloutVisibilityMutation = {
                   };
                 }
               | undefined;
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            nameID: string;
+            createdDate: Date;
+            contentUpdatePolicy: ContentUpdatePolicy;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              storageBucket: { __typename?: 'StorageBucket'; id: string };
+            };
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+      link?:
+        | {
+            __typename?: 'Link';
+            id: string;
+            uri: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
     };
@@ -12960,6 +13302,72 @@ export type CreateCalloutMutation = {
                   };
                 }
               | undefined;
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            nameID: string;
+            createdDate: Date;
+            contentUpdatePolicy: ContentUpdatePolicy;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              storageBucket: { __typename?: 'StorageBucket'; id: string };
+            };
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+      link?:
+        | {
+            __typename?: 'Link';
+            id: string;
+            uri: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
     };
@@ -13353,6 +13761,86 @@ export type CalloutDetailsQuery = {
                     | undefined;
                 }
               | undefined;
+            memo?:
+              | {
+                  __typename?: 'Memo';
+                  id: string;
+                  nameID: string;
+                  createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    preview?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          allowedTypes: Array<string>;
+                          aspectRatio: number;
+                          maxHeight: number;
+                          maxWidth: number;
+                          minHeight: number;
+                          minWidth: number;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
+                  };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          location?:
+                            | {
+                                __typename?: 'Location';
+                                id: string;
+                                country?: string | undefined;
+                                city?: string | undefined;
+                              }
+                            | undefined;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        };
+                      }
+                    | undefined;
+                }
+              | undefined;
+            link?:
+              | {
+                  __typename?: 'Link';
+                  id: string;
+                  uri: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -13712,6 +14200,72 @@ export type CalloutDetailsFragment = {
             | undefined;
         }
       | undefined;
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          nameID: string;
+          createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+    link?:
+      | {
+          __typename?: 'Link';
+          id: string;
+          uri: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        }
+      | undefined;
   };
   contributionDefaults: {
     __typename?: 'CalloutContributionDefaults';
@@ -13887,6 +14441,149 @@ export type CalloutDetailsFragment = {
     };
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
   };
+};
+
+export type MemoDetailsQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+export type MemoDetailsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          nameID: string;
+          createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type MemoProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  url: string;
+  preview?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        alternativeText?: string | undefined;
+      }
+    | undefined;
+  storageBucket: { __typename?: 'StorageBucket'; id: string };
+};
+
+export type MemoDetailsFragment = {
+  __typename?: 'Memo';
+  id: string;
+  nameID: string;
+  createdDate: Date;
+  contentUpdatePolicy: ContentUpdatePolicy;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    url: string;
+    preview?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+    storageBucket: { __typename?: 'StorageBucket'; id: string };
+  };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  createdBy?:
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          location?:
+            | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+            | undefined;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type CalloutSettingsQueryVariables = Exact<{
@@ -19330,22 +20027,18 @@ export type DashboardSpacesQuery = {
   }>;
 };
 
-export type AdminInnovationHubsListQueryVariables = Exact<{ [key: string]: never }>;
+export type PlatformAdminInnovationHubsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type AdminInnovationHubsListQuery = {
+export type PlatformAdminInnovationHubsQuery = {
   __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    library: {
-      __typename?: 'Library';
-      innovationHubs: Array<{
-        __typename?: 'InnovationHub';
-        id: string;
-        subdomain: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-      }>;
-    };
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    innovationHubs: Array<{
+      __typename?: 'InnovationHub';
+      id: string;
+      subdomain: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    }>;
   };
 };
 
@@ -19817,11 +20510,152 @@ export type PlatformLevelAuthorizationQuery = {
   };
 };
 
+export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ConfigurationQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    configuration: {
+      __typename?: 'Config';
+      authentication: {
+        __typename?: 'AuthenticationConfig';
+        providers: Array<{
+          __typename?: 'AuthenticationProviderConfig';
+          name: string;
+          label: string;
+          icon: string;
+          enabled: boolean;
+          config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
+        }>;
+      };
+      locations: {
+        __typename?: 'PlatformLocations';
+        environment: string;
+        domain: string;
+        landing: string;
+        about: string;
+        blog: string;
+        feedback: string;
+        forumreleases: string;
+        privacy: string;
+        security: string;
+        support: string;
+        terms: string;
+        impact: string;
+        foundation: string;
+        opensource: string;
+        inspiration: string;
+        innovationLibrary: string;
+        releases: string;
+        help: string;
+        community: string;
+        newuser: string;
+        tips: string;
+        aup: string;
+        documentation: string;
+      };
+      featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
+      sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
+      apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
+      geo: { __typename?: 'Geo'; endpoint: string };
+    };
+    settings: {
+      __typename?: 'PlatformSettings';
+      integration: { __typename?: 'PlatformIntegrationSettings'; iframeAllowedUrls: Array<string> };
+    };
+    metadata: {
+      __typename?: 'Metadata';
+      services: Array<{ __typename?: 'ServiceMetadata'; name?: string | undefined; version?: string | undefined }>;
+    };
+  };
+};
+
+export type ConfigurationFragment = {
+  __typename?: 'Config';
+  authentication: {
+    __typename?: 'AuthenticationConfig';
+    providers: Array<{
+      __typename?: 'AuthenticationProviderConfig';
+      name: string;
+      label: string;
+      icon: string;
+      enabled: boolean;
+      config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
+    }>;
+  };
+  locations: {
+    __typename?: 'PlatformLocations';
+    environment: string;
+    domain: string;
+    landing: string;
+    about: string;
+    blog: string;
+    feedback: string;
+    forumreleases: string;
+    privacy: string;
+    security: string;
+    support: string;
+    terms: string;
+    impact: string;
+    foundation: string;
+    opensource: string;
+    inspiration: string;
+    innovationLibrary: string;
+    releases: string;
+    help: string;
+    community: string;
+    newuser: string;
+    tips: string;
+    aup: string;
+    documentation: string;
+  };
+  featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
+  sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
+  apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
+  geo: { __typename?: 'Geo'; endpoint: string };
+};
+
+export type PlatformLicensingPlansQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformLicensingPlansQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    licensingFramework: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        type: LicensingCredentialBasedPlanType;
+        name: string;
+        sortOrder: number;
+        licenseCredential: LicensingCredentialBasedCredentialType;
+      }>;
+    };
+  };
+};
+
 export type PlatformRoleSetQueryVariables = Exact<{ [key: string]: never }>;
 
 export type PlatformRoleSetQuery = {
   __typename?: 'Query';
   platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
+};
+
+export type PlatformAdminInnovationPacksQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformAdminInnovationPacksQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    innovationPacks: Array<{
+      __typename?: 'InnovationPack';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    }>;
+  };
 };
 
 export type AssignLicensePlanToAccountMutationVariables = Exact<{
@@ -20098,132 +20932,6 @@ export type AdminVirtualContributorsQuery = {
         | undefined;
     };
   }>;
-};
-
-export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
-
-export type ConfigurationQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    configuration: {
-      __typename?: 'Config';
-      authentication: {
-        __typename?: 'AuthenticationConfig';
-        providers: Array<{
-          __typename?: 'AuthenticationProviderConfig';
-          name: string;
-          label: string;
-          icon: string;
-          enabled: boolean;
-          config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
-        }>;
-      };
-      locations: {
-        __typename?: 'PlatformLocations';
-        environment: string;
-        domain: string;
-        landing: string;
-        about: string;
-        blog: string;
-        feedback: string;
-        forumreleases: string;
-        privacy: string;
-        security: string;
-        support: string;
-        terms: string;
-        impact: string;
-        foundation: string;
-        opensource: string;
-        inspiration: string;
-        innovationLibrary: string;
-        releases: string;
-        help: string;
-        community: string;
-        newuser: string;
-        tips: string;
-        aup: string;
-        documentation: string;
-      };
-      featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
-      sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
-      apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
-      geo: { __typename?: 'Geo'; endpoint: string };
-    };
-    settings: {
-      __typename?: 'PlatformSettings';
-      integration: { __typename?: 'PlatformIntegrationSettings'; iframeAllowedUrls: Array<string> };
-    };
-    metadata: {
-      __typename?: 'Metadata';
-      services: Array<{ __typename?: 'ServiceMetadata'; name?: string | undefined; version?: string | undefined }>;
-    };
-  };
-};
-
-export type ConfigurationFragment = {
-  __typename?: 'Config';
-  authentication: {
-    __typename?: 'AuthenticationConfig';
-    providers: Array<{
-      __typename?: 'AuthenticationProviderConfig';
-      name: string;
-      label: string;
-      icon: string;
-      enabled: boolean;
-      config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
-    }>;
-  };
-  locations: {
-    __typename?: 'PlatformLocations';
-    environment: string;
-    domain: string;
-    landing: string;
-    about: string;
-    blog: string;
-    feedback: string;
-    forumreleases: string;
-    privacy: string;
-    security: string;
-    support: string;
-    terms: string;
-    impact: string;
-    foundation: string;
-    opensource: string;
-    inspiration: string;
-    innovationLibrary: string;
-    releases: string;
-    help: string;
-    community: string;
-    newuser: string;
-    tips: string;
-    aup: string;
-    documentation: string;
-  };
-  featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
-  sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
-  apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
-  geo: { __typename?: 'Geo'; endpoint: string };
-};
-
-export type PlatformLicensingPlansQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlatformLicensingPlansQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    licensingFramework: {
-      __typename?: 'Licensing';
-      id: string;
-      plans: Array<{
-        __typename?: 'LicensePlan';
-        id: string;
-        type: LicensingCredentialBasedPlanType;
-        name: string;
-        licenseCredential: LicensingCredentialBasedCredentialType;
-      }>;
-    };
-  };
 };
 
 export type ShareLinkWithUserMutationVariables = Exact<{
@@ -25401,6 +26109,19 @@ export type TemplateContentQuery = {
                           | undefined;
                       }
                     | undefined;
+                  link?:
+                    | {
+                        __typename?: 'Link';
+                        id: string;
+                        uri: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
+                        };
+                      }
+                    | undefined;
                 };
                 settings: {
                   __typename?: 'CalloutSettings';
@@ -25926,6 +26647,14 @@ export type CalloutTemplateContentFragment = {
                 };
               }
             | undefined;
+        }
+      | undefined;
+    link?:
+      | {
+          __typename?: 'Link';
+          id: string;
+          uri: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }
       | undefined;
   };

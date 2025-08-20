@@ -1,0 +1,89 @@
+mutation deleteInnovationPack($innovationPackId: UUID!) {
+  deleteInnovationPack(deleteData: { ID: $innovationPackId }) {
+    id
+  }
+}
+
+fragment InnovationPackProfile on Profile {
+  id
+  displayName
+  description
+  tagline
+  tagset {
+    ...TagsetDetails
+  }
+  references {
+    id
+    name
+    description
+    uri
+  }
+  url
+}
+
+query AdminInnovationPack($innovationPackId: UUID!) {
+  lookup {
+    innovationPack(ID: $innovationPackId) {
+      id
+      provider {
+        ...InnovationPackProviderProfileWithAvatar
+      }
+      profile {
+        ...InnovationPackProfile
+      }
+      templatesSet {
+        id
+      }
+      listedInStore
+      searchVisibility
+    }
+  }
+}
+
+mutation createInnovationPack($packData: CreateInnovationPackOnAccountInput!) {
+  createInnovationPack(innovationPackData: $packData) {
+    id
+  }
+}
+
+mutation updateInnovationPack($packData: UpdateInnovationPackInput!) {
+  updateInnovationPack(innovationPackData: $packData) {
+    id
+  }
+}
+
+fragment InnovationPackProviderProfileWithAvatar on Contributor {
+  id
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualModel
+    }
+    url
+  }
+}
+
+fragment InnovationPackCard on InnovationPack {
+  id
+  profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    url
+  }
+  templatesSet {
+    id
+    calloutTemplatesCount
+    communityGuidelinesTemplatesCount
+    spaceTemplatesCount
+    postTemplatesCount
+    whiteboardTemplatesCount
+  }
+  provider {
+    ...InnovationPackProviderProfileWithAvatar
+  }
+}

@@ -4,19 +4,20 @@ import {
   CalloutFramingType,
   CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { nameOf } from '@/core/utils/nameOf';
-import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import { Box } from '@mui/material';
 import { Formik, FormikConfig } from 'formik';
 import { cloneDeep } from 'lodash';
@@ -28,7 +29,8 @@ import CalloutFormContributionSettings from './CalloutFormContributionSettings';
 import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
-import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
+import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
@@ -45,8 +47,27 @@ export const calloutValidationSchema = yup.object().shape({
       .mixed<CalloutFramingType>()
       .oneOf(Object.values(CalloutFramingType).filter(value => typeof value === 'string'))
       .required(),
-    whiteboard: yup.object().when(['framing.type'], ([type], schema) => {
+    whiteboard: yup.object().when(['type'], ([type], schema) => {
       return type === CalloutFramingType.Whiteboard ? schema.required() : schema;
+    }),
+    link: yup.object().when(['type'], ([type], schema) => {
+      return type === CalloutFramingType.Link
+        ? schema
+            .shape({
+              uri: urlValidator
+                .max(MID_TEXT_LENGTH, ({ max }) =>
+                  TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
+                )
+                .required(),
+              profile: yup
+                .object()
+                .shape({
+                  displayName: yup.string().required(),
+                })
+                .required(),
+            })
+            .required()
+        : schema.nullable();
     }),
   }),
   contributionDefaults: yup.object().shape({
@@ -130,6 +151,7 @@ const CalloutForm = ({
               <FormikInputField
                 name={nameOf<CalloutFormSubmittedValues>('framing.profile.displayName')}
                 title={t('common.title')}
+                required
                 containerProps={{ sx: { flex: 1 } }}
               />
               <Box sx={isSmallScreen ? undefined : { width: '30%', minWidth: gutters(10) }}>

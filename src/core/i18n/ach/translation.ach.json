@@ -38,9 +38,9 @@
     ]
   },
   "releaseNotes": {
-    "title": "crwdns17390:0crwdne17390:0",
-    "url": "crwdns17392:0crwdne17392:0",
-    "isClickable": "crwdns17394:0crwdne17394:0"
+    "title": "crwdns37290:0crwdne37290:0",
+    "url": "crwdns37292:0crwdne37292:0",
+    "isClickable": "crwdns37294:0crwdne37294:0"
   },
   "cookie": {
     "consent": "crwdns17396:0crwdne17396:0",
@@ -122,6 +122,7 @@
     "yes": "crwdns17514:0crwdne17514:0",
     "no": "crwdns37112:0crwdne37112:0",
     "yes-close": "crwdns17516:0crwdne17516:0",
+    "yesContinue": "crwdns37318:0crwdne37318:0",
     "yesReplace": "crwdns17518:0crwdne17518:0",
     "yesDelete": "crwdns37188:0crwdne37188:0",
     "yesStop": "crwdns17520:0crwdne17520:0",
@@ -163,7 +164,7 @@
     "select": "crwdns17592:0crwdne17592:0",
     "change-field": "crwdns17594:0{{field}}crwdne17594:0",
     "send": "crwdns17596:0crwdne17596:0",
-    "contact-leads": "crwdns17598:0{{contact}}crwdne17598:0",
+    "contactLeads": "crwdns37302:0{{contact}}crwdne37302:0",
     "moveUp": "crwdns17600:0crwdne17600:0",
     "moveDown": "crwdns17602:0crwdne17602:0",
     "moveToTop": "crwdns17604:0crwdne17604:0",
@@ -231,6 +232,7 @@
     },
     "actions": "crwdns36944:0crwdne36944:0",
     "account": "crwdns17670:0crwdne17670:0",
+    "anonymous": "crwdns37424:0crwdne37424:0",
     "all": "crwdns17672:0crwdne17672:0",
     "knowledge-base": "crwdns17674:0crwdne17674:0",
     "or": "crwdns17676:0crwdne17676:0",
@@ -254,6 +256,7 @@
     "callouts": "crwdns17712:0crwdne17712:0",
     "collaborationTools": "crwdns17714:0crwdne17714:0",
     "createdBy": "crwdns17716:0crwdne17716:0",
+    "memo": "crwdns37426:0crwdne37426:0",
     "whiteboard": "crwdns17718:0crwdne17718:0",
     "whiteboards": "crwdns17720:0crwdne17720:0",
     "calendar": "crwdns17722:0crwdne17722:0",
@@ -391,6 +394,7 @@
     "virtual-contributor": "crwdns17980:0crwdne17980:0",
     "collaborationTool": "crwdns17982:0crwdne17982:0",
     "optional": "crwdns17984:0crwdne17984:0",
+    "unknown": "crwdns37428:0crwdne37428:0",
     "menu": "crwdns17986:0crwdne17986:0",
     "genders": {
       "notSpecified": "crwdns17988:0crwdne17988:0",
@@ -455,8 +459,8 @@
       "templateType": {
         "CALLOUT": "crwdns18064:0crwdne18064:0",
         "CALLOUT_plural": "crwdns18066:0crwdne18066:0",
-        "SPACE": "crwdns37114:0crwdne37114:0",
-        "SPACE_plural": "crwdns37116:0crwdne37116:0",
+        "SPACE": "crwdns37340:0crwdne37340:0",
+        "SPACE_plural": "crwdns37342:0crwdne37342:0",
         "COMMUNITY_GUIDELINES": "crwdns18072:0crwdne18072:0",
         "COMMUNITY_GUIDELINES_plural": "crwdns18074:0crwdne18074:0",
         "INNOVATION_FLOW": "crwdns18076:0crwdne18076:0",
@@ -541,7 +545,8 @@
       }
     },
     "supportEmail": "crwdns28750:0crwdne28750:0",
-    "options": "crwdns37118:0crwdne37118:0"
+    "options": "crwdns37118:0crwdne37118:0",
+    "externalLinkDisclaimer": "crwdns37410:0crwdne37410:0"
   },
   "community": {
     "memberUsers": "crwdns18180:0{{count}}crwdne18180:0",
@@ -729,11 +734,20 @@
         },
         "whiteboard": {
           "title": "crwdns37202:0crwdne37202:0",
-          "tooltip": "crwdns37204:0crwdne37204:0"
+          "tooltip": "crwdns37204:0crwdne37204:0",
+          "onlyRealTimeEditorAvailable": "crwdns37308:0crwdne37308:0"
+        },
+        "memo": {
+          "title": "crwdns37430:0crwdne37430:0",
+          "tooltip": "crwdns37432:0crwdne37432:0"
+        },
+        "link": {
+          "title": "crwdns37412:0crwdne37412:0",
+          "tooltip": "crwdns37414:0crwdne37414:0"
         }
       },
       "contributionSettings": {
-        "title": "crwdns37206:0crwdne37206:0",
+        "title": "crwdns37296:0crwdne37296:0",
         "comments": {
           "title": "crwdns37208:0crwdne37208:0",
           "enabled": "crwdns37210:0crwdne37210:0",
@@ -784,13 +798,21 @@
               "label": "crwdns37260:0crwdne37260:0",
               "explanation": "crwdns37262:0crwdne37262:0"
             }
-          }
+          },
+          "tooltipDisabled": "crwdns37304:0crwdne37304:0"
+        }
+      },
+      "importTemplate": {
+        "confirmOverwrite": {
+          "title": "crwdns37326:0crwdne37326:0",
+          "content": "crwdns37328:0crwdne37328:0"
         }
       },
       "notification": {
         "label": "crwdns37264:0crwdne37264:0",
         "description": "crwdns37288:0crwdne37288:0"
-      }
+      },
+      "disabledSubmitTooltip": "crwdns37306:0crwdne37306:0"
     },
     "edit": {
       "dialogTitle": "crwdns37268:0$t(common.post)crwdne37268:0"
@@ -829,10 +851,13 @@
     "singleWhiteboard": {
       "clickToSee": "crwdns18386:0crwdne18386:0"
     },
+    "memo": {
+      "clickToSee": "crwdns37434:0crwdne37434:0"
+    },
     "calloutsList": {
       "title": "crwdns18400:0crwdne18400:0",
       "filter": {
-        "placeholder": "crwdns18402:0crwdne18402:0"
+        "placeholder": "crwdns37310:0crwdne37310:0"
       }
     }
   },
@@ -847,7 +872,8 @@
     "insertEmoji": "crwdns18414:0crwdne18414:0",
     "addReaction": "crwdns18416:0crwdne18416:0",
     "addMention": "crwdns18418:0crwdne18418:0",
-    "formattingHelp": "crwdns18420:0crwdne18420:0"
+    "formattingHelp": "crwdns18420:0crwdne18420:0",
+    "missingAuthor": "crwdns37406:0crwdne37406:0"
   },
   "send-message-dialog": {
     "direct-message-title": "crwdns18422:0crwdne18422:0",
@@ -887,18 +913,20 @@
     }
   },
   "context": {
-    "common": {
-      "addCallouts": {
-        "title": "crwdns37120:0crwdne37120:0"
-      },
-      "addTutorialCallouts": {
-        "title": "crwdns37122:0crwdne37122:0"
-      }
-    },
     "L0": {
+      "displayName": {
+        "title": "crwdns37344:0crwdne37344:0",
+        "description": "crwdns37346:0crwdne37346:0",
+        "placeholder": "crwdns37348:0crwdne37348:0"
+      },
+      "nameId": {
+        "title": "crwdns37350:0crwdne37350:0",
+        "description": "crwdns37352:0crwdne37352:0",
+        "placeholder": "crwdns37354:0crwdne37354:0"
+      },
       "tagline": {
         "title": "crwdns28800:0crwdne28800:0",
-        "description": "crwdns28802:0crwdne28802:0",
+        "description": "crwdns37356:0crwdne37356:0",
         "placeholder": "crwdns28804:0crwdne28804:0"
       },
       "description": {
@@ -920,6 +948,16 @@
         "title": "crwdns36686:0crwdne36686:0",
         "description": "crwdns36688:0crwdne36688:0",
         "placeholder": "crwdns28828:0crwdne28828:0"
+      },
+      "tags": {
+        "title": "crwdns37358:0crwdne37358:0",
+        "description": "crwdns37360:0crwdne37360:0",
+        "placeholder": "crwdns37362:0crwdne37362:0",
+        "tooltip": "crwdns37364:0crwdne37364:0"
+      },
+      "template": {
+        "title": "crwdns37366:0crwdne37366:0",
+        "defaultTemplate": "crwdns37368:0crwdne37368:0"
       }
     },
     "L1": {
@@ -961,7 +999,7 @@
       },
       "template": {
         "title": "crwdns28882:0crwdne28882:0",
-        "defaultTemplate": "crwdns28884:0crwdne28884:0"
+        "defaultTemplate": "crwdns37370:0crwdne37370:0"
       }
     },
     "L2": {
@@ -972,7 +1010,7 @@
       },
       "tagline": {
         "title": "crwdns28892:0crwdne28892:0",
-        "description": "crwdns28894:0crwdne28894:0",
+        "description": "crwdns37372:0crwdne37372:0",
         "placeholder": "crwdns28896:0crwdne28896:0"
       },
       "description": {
@@ -1002,11 +1040,17 @@
       },
       "innovationFlow": {
         "title": "crwdns28932:0crwdne28932:0"
+      },
+      "template": {
+        "title": "crwdns37374:0crwdne37374:0",
+        "defaultTemplate": "crwdns37376:0crwdne37376:0"
       }
     }
   },
   "forms": {
     "validations": {
+      "field": "crwdns37378:0crwdne37378:0",
+      "fieldNotPresent": "crwdns37380:0{{fieldName}}crwdne37380:0",
       "required": "crwdns18588:0crwdne18588:0",
       "requiredField": "crwdns18590:0{{field}}crwdne18590:0",
       "minLength": "crwdns18592:0{{field}}crwdnd18592:0{{min}}crwdne18592:0",
@@ -1018,7 +1062,8 @@
       "invalidUrl": "crwdns36854:0crwdne36854:0",
       "invalidEmail": "crwdns37046:0crwdne37046:0",
       "duplicateEmail": "crwdns37052:0crwdne37052:0",
-      "elementMustBeValidUrl": "crwdns37054:0{{name}}crwdne37054:0"
+      "elementMustBeValidUrl": "crwdns37054:0{{name}}crwdne37054:0",
+      "acceptedTerms": "crwdns37382:0crwdne37382:0"
     }
   },
   "templateDialog": {
@@ -1056,16 +1101,19 @@
       "title": "crwdns37126:0$t(common.templateLibrary)crwdnd37126:0$t(common.enums.templateType.COLLABORATION_plural)crwdne37126:0",
       "findByUrl": {
         "title": "crwdns37128:0crwdne37128:0",
-        "description": "crwdns37130:0crwdne37130:0",
-        "use": "crwdns37132:0crwdne37132:0",
-        "urlRequired": "crwdns37134:0crwdne37134:0",
+        "description": "crwdns37384:0crwdne37384:0",
+        "use": "crwdns37386:0crwdne37386:0",
+        "urlRequired": "crwdns37388:0crwdne37388:0",
+        "noRights": "crwdns37390:0crwdne37390:0",
         "invalidUrl": "crwdns37136:0crwdne37136:0",
         "spaceNotFoundError": "crwdns37138:0crwdne37138:0",
         "selectAnother": "crwdns37140:0crwdne37140:0"
       },
       "preview": {
-        "info": "crwdns37148:0crwdne37148:0"
-      }
+        "info": "crwdns37330:0crwdne37330:0"
+      },
+      "recursive": "crwdns37332:0crwdne37332:0",
+      "includesSubspaces": "crwdns37334:0crwdne37334:0"
     },
     "communityGuidelinesTemplates": {
       "name": "crwdns18654:0$t(common.enums.templateType.COMMUNITY_GUIDELINES)crwdne18654:0",
@@ -1083,6 +1131,9 @@
         "title": "crwdns18674:0crwdne18674:0",
         "description": "crwdns18676:0crwdne18676:0"
       }
+    },
+    "notifications": {
+      "templateSaved": "crwdns37404:0crwdne37404:0"
     }
   },
   "innovation-templates": {
@@ -1148,7 +1199,7 @@
       "title": "crwdns36872:0{{space}}crwdne36872:0"
     },
     "dashboardNavigation": {
-      "help": "crwdns18728:0crwdne18728:0",
+      "help": "crwdns37312:0crwdne37312:0",
       "privateSubspace": "crwdns18730:0crwdne18730:0",
       "showAll": "crwdns18732:0crwdne18732:0",
       "expand": "crwdns18734:0crwdne18734:0",
@@ -1192,7 +1243,7 @@
           "activeStateWarning": "crwdns36799:0crwdne36799:0"
         },
         "selectDifferentFlow": {
-          "title": "crwdns18778:0crwdne18778:0",
+          "title": "crwdns37392:0crwdne37392:0",
           "confirmationDialog": {
             "title": "crwdns18780:0crwdne18780:0",
             "description": "crwdns18782:0crwdne18782:0"
@@ -1358,9 +1409,15 @@
         "type-whiteboards-help": "crwdns19022:0crwdne19022:0",
         "unique-title-validation-text": "crwdns19024:0$t(common.callout)crwdne19024:0"
       },
-      "whiteboard": {
-        "title": "crwdns19026:0crwdne19026:0",
-        "editDialogTitle": "crwdns19028:0crwdne19028:0"
+      "framing": {
+        "whiteboard": {
+          "title": "crwdns37416:0crwdne37416:0",
+          "editDialogTitle": "crwdns37418:0crwdne37418:0"
+        },
+        "link": {
+          "name": "crwdns37420:0crwdne37420:0",
+          "url": "crwdns37422:0crwdne37422:0"
+        }
       },
       "template-step": {
         "title": "crwdns19030:0crwdne19030:0",
@@ -1433,7 +1490,8 @@
       "success": "crwdns19122:0crwdne19122:0",
       "error": "crwdns36652:0crwdne36652:0",
       "upload-hover": "crwdns19124:0crwdne19124:0",
-      "no-data": "crwdns19126:0crwdne19126:0"
+      "no-data": "crwdns19126:0crwdne19126:0",
+      "entityCreatedErrorUploading": "crwdns37394:0{{entity}}crwdne37394:0"
     },
     "tags-component": {
       "more": "crwdns19128:0{{count}}crwdne19128:0",
@@ -1561,6 +1619,7 @@
         "title": "crwdns19264:0{{entity}}crwdne19264:0",
         "description": "crwdns37178:0{{entity}}crwdnd37178:0{{entity}}crwdnd37178:0{{entity}}crwdne37178:0",
         "descriptionShort": "crwdns19268:0{{entity}}crwdne19268:0",
+        "descriptionShortWithName": "crwdns37324:0{{entity}}crwdne37324:0",
         "checkbox": "crwdns19270:0{{entity}}crwdne19270:0",
         "confirm": "crwdns19272:0crwdne19272:0"
       }
@@ -1833,8 +1892,8 @@
       },
       "type": {
         "COLLABORATION_CALLOUT_PUBLISHED": {
-          "subject": "crwdns19496:0{{spaceName}}crwdnd19496:0{{calloutType}}crwdnd19496:0{{calloutName}}crwdne19496:0",
-          "description": "crwdns36934:0{{contributorName}}crwdnd36934:0{{calloutType}}crwdnd36934:0{{spaceLevel}}crwdnd36934:0{{spaceName}}crwdnd36934:0{{calloutName}}crwdne36934:0"
+          "subject": "crwdns37298:0{{spaceName}}crwdnd37298:0{{calloutName}}crwdne37298:0",
+          "description": "crwdns37300:0{{contributorName}}crwdnd37300:0{{spaceLevel}}crwdnd37300:0{{spaceName}}crwdnd37300:0{{calloutName}}crwdne37300:0"
         },
         "COMMUNICATION_USER_MENTION": {
           "subject": "crwdns19500:0{{commenterName}}crwdnd19500:0{{calloutName}}crwdne19500:0",
@@ -1921,19 +1980,19 @@
           "list": "crwdns19572:0crwdne19572:0",
           "empty": "crwdns19574:0{{entities}}crwdne19574:0",
           "empty-list": "crwdns19576:0{{entities}}crwdne19576:0",
-          "searchPlaceholder": "crwdns19578:0crwdne19578:0"
+          "searchPlaceholder": "crwdns37314:0crwdne37314:0"
         },
         "recommendations": {
           "title": "crwdns19580:0crwdne19580:0"
         }
       },
       "archivedNotice": {
-        "archivedSpace": "crwdns36880:0crwdne36880:0",
-        "archivedSubspace": "crwdns36882:0{{space}}crwdne36882:0"
+        "archivedSpace": "crwdns37450:0{{space}}crwdne37450:0",
+        "archivedLink": "crwdns37452:0crwdne37452:0"
       },
       "demoNotice": {
-        "demoSpace": "crwdns36884:0crwdne36884:0",
-        "demoSubspace": "crwdns36886:0{{space}}crwdne36886:0"
+        "demoSpace": "crwdns37454:0crwdne37454:0",
+        "demoSubspace": "crwdns37456:0{{space}}crwdne37456:0"
       }
     },
     "contribute": {
@@ -1946,8 +2005,8 @@
     "innovationLibrary": {
       "shortName": "crwdns19598:0$t(common.library)crwdne19598:0",
       "fullName": "crwdns19600:0crwdne19600:0",
-      "title": "crwdns19602:0crwdne19602:0",
-      "subtitle": "crwdns19604:0crwdne19604:0",
+      "title": "crwdns37336:0crwdne37336:0",
+      "subtitle": "crwdns37338:0crwdne37338:0",
       "useTemplateButton": "crwdns19606:0crwdne19606:0",
       "innovationPacks": {
         "headerTitle": "crwdns19608:0$t(common.innovation-packs)crwdne19608:0",
@@ -2004,7 +2063,7 @@
               "imported-successfully-notification": "crwdns19644:0crwdne19644:0"
             },
             "validation": {
-              "spaceRequired": "crwdns37154:0crwdne37154:0"
+              "spaceRequired": "crwdns37396:0crwdne37396:0"
             }
           },
           "my-profile": {
@@ -2146,8 +2205,7 @@
         "notifications": {
           "subsubspace-created": "crwdns19782:0crwdne19782:0",
           "subsubspace-removed": "crwdns19784:0crwdne19784:0",
-          "subsubspace-updated": "crwdns19786:0crwdne19786:0",
-          "error-creating-subsubspace": "crwdns19788:0crwdne19788:0"
+          "subsubspace-updated": "crwdns19786:0crwdne19786:0"
         }
       },
       "subspace": {
@@ -2232,7 +2290,7 @@
           },
           "memberActions": {
             "title": "crwdns19858:0crwdne19858:0",
-            "createBlocks": "crwdns19860:0crwdne19860:0",
+            "createBlocks": "crwdns37316:0crwdne37316:0",
             "createSubspaces": "crwdns19862:0crwdne19862:0",
             "eventsFromSubspaces": "crwdns19864:0crwdne19864:0",
             "inheritRights": "crwdns37176:0crwdne37176:0",
@@ -2754,6 +2812,25 @@
       },
       "restartCollaboration": "crwdns20414:0crwdne20414:0"
     },
+    "memo": {
+      "readonlyReason": {
+        "readonly": "crwdns37458:0crwdne37458:0",
+        "contentUpdatePolicy": "crwdns37438:0{{ownerName}}crwdne37438:0",
+        "noMembership": "crwdns37440:0{{spaceLevel}}crwdne37440:0",
+        "unauthenticated": "crwdns37442:0{{spaceLevel}}crwdne37442:0",
+        "connecting": "crwdns37444:0crwdne37444:0",
+        "notSynced": "crwdns37448:0crwdne37448:0"
+      },
+      "readonlyDialog": {
+        "title": "crwdns37460:0crwdne37460:0",
+        "reason": {
+          "noUpdateAccess": "crwdns37462:0{{ownerName}}crwdne37462:0",
+          "multiUserNotAllowed": "crwdns37464:0crwdne37464:0",
+          "roomCapacityReached": "crwdns37466:0crwdne37466:0",
+          "generic": "crwdns37468:0crwdne37468:0"
+        }
+      }
+    },
     "login": {
       "title": "crwdns20416:0crwdne20416:0",
       "register": "crwdns20418:0crwdne20418:0"
@@ -3218,13 +3295,17 @@
   },
   "createSpace": {
     "title": "crwdns20862:0crwdne20862:0",
-    "addTutorialsLabel": "crwdns20864:0crwdne20864:0",
+    "addTutorialsLabel": "crwdns37398:0crwdne37398:0",
     "terms": {
       "checkboxLabel": "crwdns20866:0crwdne20866:0",
       "dialogTitle": "crwdns20868:0crwdne20868:0",
       "dialogContent": "crwdns20870:0crwdne20870:0",
       "fullTermsLink": "crwdns20872:0crwdne20872:0"
-    }
+    },
+    "license": {
+      "noPlansError": "crwdns37400:0crwdne37400:0"
+    },
+    "innovationFlowError": "crwdns37402:0crwdne37402:0"
   },
   "plansTable": {
     "title": "crwdns20874:0crwdne20874:0",
@@ -3310,7 +3391,7 @@
     },
     "name": "crwdns20978:0crwdne20978:0",
     "bodyOfKnowledge": "crwdns20980:0crwdne20980:0",
-    "placeholder": "crwdns28772:0crwdne28772:0",
+    "placeholder": "crwdns37408:0crwdne37408:0",
     "infoTextBoK": "crwdns20982:0crwdne20982:0",
     "noSubspacesInfo": "crwdns20984:0crwdne20984:0",
     "confirmDeletion": {
@@ -3323,7 +3404,6 @@
   "createVirtualContributorWizard": {
     "noSpaces": "crwdns20990:0crwdne20990:0",
     "createdVirtualContributor": {
-      "description": "crwdns20992:0crwdne20992:0",
       "successMessage": "crwdns20994:0{{name}}crwdne20994:0"
     },
     "autoCreated": {

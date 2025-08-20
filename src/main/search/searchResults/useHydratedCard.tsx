@@ -180,7 +180,7 @@ const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, 
 };
 
 interface HydratedCardGetter<Data> {
-  (data: Data): null | JSX.Element;
+  (data: Data): null | React.ReactElement;
 }
 
 interface UseHydrateCardProvided {

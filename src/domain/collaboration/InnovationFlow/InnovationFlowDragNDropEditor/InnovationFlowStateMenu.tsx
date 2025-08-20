@@ -1,6 +1,6 @@
 import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
-import { Divider, ListItemIcon, Tooltip } from '@mui/material';
+import { Divider, ListItemIcon, Tooltip, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { AddCircleOutline, DeleteOutlined, EditOutlined, ToggleOn } from '@mui/icons-material';
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
@@ -13,6 +13,8 @@ type InnovationFlowStateMenuProps = {
   onDelete: (stateId: string) => void;
   onAddStateAfter: (stateBeforeId: string) => void;
   disableStateNumberChange?: boolean;
+  disableAddStateAfter?: boolean;
+  disableRemoveState?: boolean;
 };
 
 export default function InnovationFlowStateMenu({
@@ -23,6 +25,8 @@ export default function InnovationFlowStateMenu({
   onDelete,
   onAddStateAfter,
   disableStateNumberChange = false,
+  disableAddStateAfter = false,
+  disableRemoveState = false,
 }: InnovationFlowStateMenuProps) {
   const { t } = useTranslation();
 
@@ -35,7 +39,7 @@ export default function InnovationFlowStateMenu({
         };
 
         return (
-          <>
+          <Box>
             {isCurrentState ? (
               <MenuItem disabled>
                 <ListItemIcon>
@@ -66,7 +70,7 @@ export default function InnovationFlowStateMenu({
                   disableHoverListener={!isCurrentState}
                 >
                   <span>
-                    <MenuItem onClick={createMenuAction(onDelete)} disabled={isCurrentState}>
+                    <MenuItem onClick={createMenuAction(onDelete)} disabled={isCurrentState || disableRemoveState}>
                       <ListItemIcon>
                         <DeleteOutlined fontSize="small" />
                       </ListItemIcon>
@@ -75,7 +79,7 @@ export default function InnovationFlowStateMenu({
                   </span>
                 </Tooltip>
                 <Divider />
-                <MenuItem onClick={createMenuAction(onAddStateAfter)}>
+                <MenuItem onClick={createMenuAction(onAddStateAfter)} disabled={disableAddStateAfter}>
                   <ListItemIcon>
                     <AddCircleOutline fontSize="small" />
                   </ListItemIcon>
@@ -83,7 +87,7 @@ export default function InnovationFlowStateMenu({
                 </MenuItem>
               </>
             )}
-          </>
+          </Box>
         );
       }}
     </PageContentBlockContextualMenu>

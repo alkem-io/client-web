@@ -42,7 +42,7 @@ export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterfac
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
-  const imgRef = useRef<HTMLImageElement>();
+  const imgRef = useRef<HTMLImageElement>(null);
 
   const {
     aspectRatio = ASPECT_RATIO,

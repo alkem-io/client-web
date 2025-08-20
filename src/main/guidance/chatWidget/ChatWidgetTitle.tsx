@@ -13,7 +13,7 @@ const ChatWidgetTitle = ({ onClickInfo }: ChatWidgetTitleProps) => {
   const { t } = useTranslation();
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" position="relative" height={gutters(2.5)}>
+    <Box display="flex" justifyContent="center" alignItems="center" height={gutters(2.5)}>
       <Box>
         <PageTitle position="relative">
           {t('chatbot.title')}
@@ -34,7 +34,7 @@ const ChatWidgetTitle = ({ onClickInfo }: ChatWidgetTitleProps) => {
         <IconButton
           size="small"
           color="primary"
-          sx={{ position: 'absolute', top: 0, right: gutters(1.5) }}
+          sx={{ position: 'absolute', top: 7, right: gutters(2) }}
           onClick={onClickInfo}
           aria-label={t('common.help')}
         >

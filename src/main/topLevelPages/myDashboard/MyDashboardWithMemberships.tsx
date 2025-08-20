@@ -34,7 +34,7 @@ const MyDashboardWithMemberships = () => {
           <MyResources />
         </InfoColumn>
       )}
-      <ContentColumn>
+      <ContentColumn fullWidth>
         {isMediumSmallScreen && <DashboardMenu expandable />}
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <CampaignBlock />

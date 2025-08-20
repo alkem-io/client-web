@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgrPlugin from 'vite-plugin-svgr';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
-import { version } from './package';
+import { version } from './package.json';
 import { generateMetaJson } from './build-utils.mjs';
 
 export default defineConfig({

@@ -1,7 +1,7 @@
 import { MouseEventHandler, ReactNode } from 'react';
 import { Dialog as MuiDialog, DialogProps as MuiDialogProps, Paper, PaperProps } from '@mui/material';
 import GridContainer from '../grid/GridContainer';
-import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX, useGlobalGridColumns, useScreenSize } from '../grid/constants';
+import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX, useGlobalGridColumns } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
 import GridItem, { GridItemProps } from '../grid/GridItem';
 
@@ -32,7 +32,7 @@ const DialogContainer = ({
 
   return (
     <GridContainer
-      maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
+      maxWidth={fullScreen ? undefined : MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
       marginX="auto"
       flexGrow={1}
       justifyContent="center"
@@ -40,6 +40,7 @@ const DialogContainer = ({
       alignItems={centeredVertically ? 'center' : 'start'}
       onClick={handleContainerClick}
       disablePadding={fullScreen}
+      sx={{ paddingY: fullScreen ? 0 : 4 }}
     >
       <GridProvider columns={containerColumns} force>
         <GridItem columns={columns}>
@@ -67,30 +68,35 @@ const DialogWithGrid = ({
   fullScreen,
   ...dialogProps
 }: DialogWithGridProps) => {
-  const { isSmallScreen } = useScreenSize();
   const { sx } = dialogProps;
 
   return (
     <MuiDialog
       PaperComponent={DialogContainer}
-      PaperProps={{ columns, centeredVertically, fullScreen } as PaperProps}
+      slotProps={{
+        paper: {
+          columns,
+          centeredVertically,
+          fullScreen,
+        } as PaperProps,
+      }}
       onClose={onClose}
       fullScreen={fullScreen}
       {...dialogProps}
       sx={{
+        ...(fullScreen && {
+          '& .MuiPaper-root': {
+            height: '100% !important',
+            width: '100% !important',
+          },
+        }),
         '.MuiDialog-paper': {
           maxWidth: '100vw',
           margin: 0,
-          height: fullHeight ? '100%' : 'auto',
-          maxHeight:
-            fullScreen || isSmallScreen
-              ? '100vh'
-              : fullHeight
-                ? 'calc(100vh - 32px)' /* 64px for header height */
-                : '100%',
+          height: 'auto',
+          maxHeight: fullScreen ? '100vh' : '100%',
           ...(fullHeight && {
-            height: 'auto',
-            minHeight: 'auto', // Allows dialog to be smaller when content is minimal
+            minHeight: 'auto',
           }),
         },
         ...sx,

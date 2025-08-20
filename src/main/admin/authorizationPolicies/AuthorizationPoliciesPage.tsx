@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuthorizationPolicyQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AdminSection, adminTabs } from '@/domain/platform/admin/layout/toplevel/constants';
+import { AdminSection, adminTabs } from '@/domain/platformAdmin/layout/toplevel/constants';
 import { Form, Formik } from 'formik';
 import Gutters from '@/core/ui/grid/Gutters';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';

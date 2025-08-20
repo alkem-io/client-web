@@ -1,4 +1,4 @@
-import { ComponentType, forwardRef, useRef } from 'react';
+import { ComponentType, Ref, useRef } from 'react';
 import { SxProps } from '@mui/material';
 import { gutters, useGridItem } from '../grid/utils';
 import GridProvider from '../grid/GridProvider';
@@ -36,26 +36,25 @@ const getFlexDirection = ({ row, flex }: { row: boolean; flex: boolean }) => {
   return undefined;
 };
 
-const BasePageContentBlock = forwardRef(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  <Props extends { id?: string; sx?: SxProps<any> }>(
-    {
-      disablePadding = false,
-      disableGap = false,
-      flex = !disableGap,
-      halfWidth = false,
-      row = false,
-      flexWrap,
-      fullHeight = false,
-      columns,
-      sx,
-      component: Component,
-      padding,
-      anchor,
-      ...props
-    }: BasePageContentBlockWithChildrenProps<Props>,
-    ref
-  ) => {
+const BasePageContentBlock = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  <Props extends { id?: string; sx?: SxProps<any> }>({
+    ref,
+    disablePadding = false,
+    disableGap = false,
+    flex = !disableGap,
+    halfWidth = false,
+    row = false,
+    flexWrap,
+    fullHeight = false,
+    columns,
+    sx,
+    component: Component,
+    padding,
+    anchor,
+    ...props
+  }: BasePageContentBlockWithChildrenProps<Props> & {
+    ref?: Ref<HTMLDivElement>;
+  }) => {
     const gridColumns = useDeclaredColumns();
 
     const getGridItemStyle = useGridItem();
@@ -84,8 +83,7 @@ const BasePageContentBlock = forwardRef(
         </BlockAnchorProvider>
       </GridProvider>
     );
-  }
-);
+  };
 BasePageContentBlock.displayName = 'BasePageContentBlock';
 
 export default BasePageContentBlock;
