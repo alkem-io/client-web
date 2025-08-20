@@ -19,7 +19,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { ContributorLicensePlan } from '@/domain/platformAdmin/domain/organizations/useAdminGlobalOrganizationsList';
+import { ContributorLicensePlan } from '../../types/ContributorLicensePlan';
 
 type Provided = {
   loading: boolean;

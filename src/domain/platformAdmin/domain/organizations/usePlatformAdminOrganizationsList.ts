@@ -16,26 +16,15 @@ import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
+import { ContributorLicensePlan } from '../../types/ContributorLicensePlan';
+import {
+  OrgVerificationLifecycleEvents,
+  OrgVerificationLifecycleStates,
+} from '@/domain/community/organization/model/OrganizationVerification';
 
 const PAGE_SIZE = 10;
 
-enum OrgVerificationLifecycleStates {
-  manuallyVerified = 'manuallyVerified',
-}
-
-export enum OrgVerificationLifecycleEvents {
-  VERIFICATION_REQUEST = 'VERIFICATION_REQUEST',
-  MANUALLY_VERIFY = 'MANUALLY_VERIFY',
-  RESET = 'RESET',
-}
-
-export interface ContributorLicensePlan {
-  id: string;
-  name: string;
-  sortOrder: number;
-}
-
-export const useAdminGlobalOrganizationsList = () => {
+export const usePlatformAdminOrganizationsList = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const { data, ...paginationProvided } = usePaginatedQuery({
@@ -188,4 +177,4 @@ export const useAdminGlobalOrganizationsList = () => {
   };
 };
 
-export default useAdminGlobalOrganizationsList;
+export default usePlatformAdminOrganizationsList;
