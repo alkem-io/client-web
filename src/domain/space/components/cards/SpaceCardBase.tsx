@@ -85,8 +85,20 @@ const SpaceCardBase = ({
       </Box>
       <Box
         onClick={canBeExpanded ? toggleExpanded : undefined}
-        sx={{ cursor: containerProps.onClick || containerProps.to ? 'pointer' : 'default' }}
+        sx={{ cursor: canBeExpanded || containerProps.onClick || containerProps.to ? 'pointer' : 'default' }}
         paddingBottom={1}
+        aria-expanded={canBeExpanded ? isExpanded : undefined}
+        tabIndex={canBeExpanded ? 0 : undefined}
+        onKeyDown={
+          canBeExpanded
+            ? e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  toggleExpanded();
+                }
+              }
+            : undefined
+        }
       >
         <CardContent flexGrow={1}>{children}</CardContent>
         <ExpandableCardFooter

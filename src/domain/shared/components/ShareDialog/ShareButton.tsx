@@ -38,8 +38,6 @@ const ShareButton: FC<ShareButtonProps> = ({
             color="primary"
             aria-label={t('buttons.share')}
             aria-haspopup="true"
-            aria-controls={dialogOpen ? 'share-dialog' : undefined}
-            aria-expanded={dialogOpen ? 'true' : undefined}
             onClick={() => setDialogOpen(true)}
             disabled={disabled}
             sx={{ width: '100%', ...sx }}
@@ -51,8 +49,6 @@ const ShareButton: FC<ShareButtonProps> = ({
           <IconButton
             aria-label={t('buttons.share')}
             aria-haspopup="true"
-            aria-controls={dialogOpen ? 'share-dialog' : undefined}
-            aria-expanded={dialogOpen ? 'true' : undefined}
             onClick={() => setDialogOpen(true)}
             disabled={disabled}
             sx={{ color: theme => theme.palette.primary.main, ...sx }}

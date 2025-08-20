@@ -56,6 +56,8 @@ export interface FormikCommentInputFieldProps extends InputProps {
   vcInteractions?: CommentInputFieldProps['vcInteractions'];
   vcEnabled?: boolean;
   threadId?: string;
+  title?: string;
+  placeholder?: string;
 }
 
 export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
