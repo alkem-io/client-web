@@ -1,0 +1,21 @@
+query platformAdminVirtualContributorsList {
+  platformAdmin {
+    virtualContributors {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      profile {
+        id
+        displayName
+        description
+        url
+        avatar: visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
+    }
+  }
+}
+

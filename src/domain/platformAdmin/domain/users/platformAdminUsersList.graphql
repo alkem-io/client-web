@@ -1,0 +1,29 @@
+query platformAdminUsersList($first: Int!, $after: UUID, $filter: UserFilterInput) {
+  platformAdmin {
+    users(first: $first, after: $after, filter: $filter) {
+      users {
+        id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
+        profile {
+          id
+          url
+          displayName
+          visual(type: AVATAR) {
+            id
+            uri
+          }
+        }
+        email
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+}
