@@ -34,7 +34,7 @@ export const MessageWithRepliesView = ({
         !isReplyFormVisible &&
         canReply && (
           <li>
-            <ButtonBase onClick={() => setHasPressedReply(true)}>
+            <ButtonBase onClick={() => setHasPressedReply(true)} aria-label={t('buttons.reply')}>
               <CardText>{t('buttons.reply')}</CardText>
             </ButtonBase>
           </li>

@@ -103,6 +103,7 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
           avatarUrl={
             activity.space?.about.profile.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, activity.space?.id)
           }
+          avatarName={activity.space?.about.profile.displayName || ''}
         />
       ));
     }

@@ -26,7 +26,7 @@ const BlurredSide = ({ src, side, blurRadius }: BlurredSideProps) => {
       minWidth={0}
       position="relative"
       overflow="hidden"
-      role="img"
+      role="presentation"
       sx={{
         ':after': {
           content: '""',
@@ -47,7 +47,7 @@ const BlurredSide = ({ src, side, blurRadius }: BlurredSideProps) => {
 };
 
 const ImageBlurredSides = ({ src, blurRadius, sx, containerProps, ...props }: ImageBlurredSidesProps) => (
-  <Box display="flex" justifyContent="center" alignItems="stretch" {...containerProps} role="img">
+  <Box display="flex" justifyContent="center" alignItems="stretch" {...containerProps} role="presentation">
     <BlurredSide src={src} blurRadius={blurRadius} side="left" />
     <BlurredSide src={src} blurRadius={blurRadius} side="right" />
     <Image src={src} {...props} flexShrink={0} sx={{ objectFit: 'cover', ...sx }} />

@@ -91,7 +91,21 @@ export const ActionableContributionsView = ({
   );
 };
 
-const ContributionCard = ({ contributionItem, onLeave, enableLeave, leavingRoleSetId, setLeavingRoleSetId }) => {
+type ContributionCardProps = {
+  contributionItem: SpaceHostedItem;
+  onLeave?: () => Promise<unknown>;
+  enableLeave?: boolean;
+  leavingRoleSetId?: string;
+  setLeavingRoleSetId: React.Dispatch<React.SetStateAction<string | undefined>>;
+};
+
+const ContributionCard: React.FC<ContributionCardProps> = ({
+  contributionItem,
+  onLeave,
+  enableLeave,
+  leavingRoleSetId,
+  setLeavingRoleSetId,
+}) => {
   const { details, loading, isLeavingCommunity, leaveCommunity } = useContributionProvider({
     spaceHostedItem: contributionItem,
   });
@@ -109,7 +123,7 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, leavingRoleS
     <ContributionDetailsCard
       {...details}
       spaceId={contributionItem.id}
-      tagline={details.about.profile.tagline!}
+      tagline={details.about.profile.tagline ?? ''}
       displayName={details.about.profile.displayName}
       enableLeave={enableLeave}
       leavingCommunity={isLeavingCommunity}

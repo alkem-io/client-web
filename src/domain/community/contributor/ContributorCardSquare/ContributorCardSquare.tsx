@@ -117,7 +117,7 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
                 variant="rounded"
                 src={avatar}
                 sx={{ height: 1, width: 1 }}
-                alt={t('common.avatar-of', { user: avatarAltText })}
+                alt={t('common.avatar-of', { user: avatarAltText ?? displayName })}
               >
                 {displayName[0]}
               </Avatar>

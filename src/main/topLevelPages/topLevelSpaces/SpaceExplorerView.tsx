@@ -81,7 +81,7 @@ const collectParentAvatars = <SpaceWithVisuals extends WithBanner & WithParent<W
     return initial;
   }
 
-  const { cardBanner, avatar = cardBanner } = about?.profile;
+  const { cardBanner, avatar = cardBanner } = about.profile;
   const { uri, alternativeText } = avatar || {};
 
   // Use default avatar visual if no cardBanner or avatar is available
@@ -227,6 +227,8 @@ export const SpaceExplorerView = ({
               setInfoOpen(true);
             }}
             aria-label={t('tooltips.click-more-info')}
+            aria-haspopup="dialog"
+            aria-controls={infoOpen ? 'space-explorer-info-dialog' : undefined}
           >
             <InfoOutlinedIcon color="primary" fontSize="small" />
           </IconButton>
@@ -267,7 +269,7 @@ export const SpaceExplorerView = ({
         />
       )}
       {infoOpen && (
-        <DialogWithGrid open={infoOpen} onClose={() => setInfoOpen(false)} columns={4}>
+        <DialogWithGrid open={infoOpen} onClose={() => setInfoOpen(false)} columns={4} id="space-explorer-info-dialog">
           <DialogHeader title={t('pages.exploreSpaces.fullName')} onClose={() => setInfoOpen(false)} />
           <DialogContent sx={{ paddingTop: 0 }}>
             <WrapperMarkdown caption>{t('pages.exploreSpaces.caption')}</WrapperMarkdown>
