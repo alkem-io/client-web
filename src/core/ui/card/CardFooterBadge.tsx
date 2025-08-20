@@ -17,7 +17,7 @@ const CardFooterBadge = ({ avatarUri, avatarDisplayName, children }: PropsWithCh
       {avatarUri && (
         <CardFooterAvatar
           src={avatarUri}
-          aria-label={avatarDisplayName ? t('common.avatar-of', { user: avatarDisplayName }) : t('common.avatar')}
+          alt={avatarDisplayName ? t('common.avatar-of', { user: avatarDisplayName }) : t('common.avatar')}
         />
       )}
       <Caption noWrap>{children}</Caption>

@@ -44,10 +44,10 @@ const DiscussionOverview = ({ discussion, onClick }: DiscussionOverviewProps) =>
               <Avatar
                 key={i}
                 src={a.avatarUrl}
-                aria-label={a.firstName[0] ? t('common.avatar-of', { user: a.firstName[0] }) : t('common.avatar')}
+                aria-label={a.firstName?.[0] ? t('common.avatar-of', { user: a.firstName[0] }) : t('common.avatar')}
                 sx={theme => ({ height: theme.spacing(3.5), width: theme.spacing(3.5) })}
               >
-                {a.firstName[0]}
+                {a.firstName?.[0] ?? ''}
               </Avatar>
             ))}
           </AvatarGroup>
