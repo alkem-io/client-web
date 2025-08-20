@@ -221,6 +221,7 @@ type AuthorComponentProps = {
 };
 
 const AuthorComponent = ({ avatarSrc, name, createdDate, loading }: AuthorComponentProps) => {
+  const { t } = useTranslation();
   const localeCreatedDate = createdDate && new Date(createdDate)?.toLocaleDateString();
   return (
     <Box
@@ -241,7 +242,7 @@ const AuthorComponent = ({ avatarSrc, name, createdDate, loading }: AuthorCompon
           <Avatar />
         </Skeleton>
       ) : (
-        <Avatar src={avatarSrc} />
+        <Avatar src={avatarSrc} alt={t('common.avatar-of', { user: name })} />
       )}
       <Typography noWrap sx={{ maxWidth: '100%' }}>
         {loading ? <Skeleton width="100%" /> : name}

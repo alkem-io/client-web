@@ -91,7 +91,7 @@ export const ActivityComponent = ({ activities, limit }: ActivityComponentProps)
   return <>{display ?? <ActivityLoadingView rows={3} />}</>;
 };
 
-interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'avatarUrl'> {
+interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'avatarUrl' | 'avatarName'> {
   activity: ActivityLogResultType;
 }
 

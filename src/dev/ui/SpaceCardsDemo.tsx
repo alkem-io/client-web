@@ -40,7 +40,10 @@ const SpaceCardsDemo = () => {
                 spaceUri=""
                 spaceDisplayName="Parent Space"
                 level={SpaceLevel.L1}
-                avatarUris={['', '']}
+                avatarUris={[
+                  { src: '', alt: '' },
+                  { src: '', alt: '' },
+                ]}
                 locked
               />
               <SubspaceCard
@@ -53,7 +56,7 @@ const SpaceCardsDemo = () => {
                 spaceDisplayName=""
                 level={SpaceLevel.L0}
                 isPrivate
-                avatarUris={['']}
+                avatarUris={[{ src: '', alt: '' }]}
               />
               <SubspaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
@@ -65,7 +68,11 @@ const SpaceCardsDemo = () => {
                 spaceUri=""
                 spaceDisplayName="Parent Space"
                 level={SpaceLevel.L2}
-                avatarUris={['', '', '']}
+                avatarUris={[
+                  { src: '', alt: '' },
+                  { src: '', alt: '' },
+                  { src: '', alt: '' },
+                ]}
               />
             </PageContentBlockGrid>
           </PageContentBlock>

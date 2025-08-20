@@ -26,7 +26,6 @@ import { useSpaceExplorerWelcomeSpaceQuery, useSpaceUrlResolverQuery } from '@/c
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
   setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
@@ -76,17 +75,24 @@ interface WithBanner {
 
 const collectParentAvatars = <SpaceWithVisuals extends WithBanner & WithParent<WithBanner>>(
   { about, parent, id }: SpaceWithVisuals,
-  initial: string[] = []
+  initial: { src: string; alt: string }[] = []
 ) => {
   if (!about?.profile) {
     return initial;
   }
 
   const { cardBanner, avatar = cardBanner } = about?.profile;
+  const { uri, alternativeText } = avatar || {};
 
   // Use default avatar visual if no cardBanner or avatar is available
-  const avatarUri = avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, id);
-  const collected = [avatarUri, ...initial];
+  const avatarUri = uri || getDefaultSpaceVisualUrl(VisualType.Avatar, id);
+  const collected = [
+    {
+      src: avatarUri,
+      alt: alternativeText || '',
+    },
+    ...initial,
+  ];
 
   return parent ? collectParentAvatars(parent, collected) : collected;
 };

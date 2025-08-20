@@ -6,6 +6,7 @@ import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import OverflowGradient from '@/core/ui/overflow/OverflowGradient';
+import { useTranslation } from 'react-i18next';
 
 export interface SingleUpdateViewProps {
   author?: AuthorModel;
@@ -15,12 +16,13 @@ export interface SingleUpdateViewProps {
 }
 
 const SingleUpdateView = ({ author, createdDate, content = '', loading }: SingleUpdateViewProps) => {
+  const { t } = useTranslation();
   const visual = loading ? (
     <Skeleton variant="rectangular">
       <Avatar />
     </Skeleton>
   ) : (
-    <Avatar src={author?.avatarUrl} />
+    <Avatar src={author?.avatarUrl} alt={t('common.avatar-of', { user: author?.displayName })} />
   );
 
   return (

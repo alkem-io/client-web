@@ -113,7 +113,12 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
         <ElevatedPaper>
           <Box sx={{ minHeight: 64, minWidth: 64, aspectRatio: '1/1' }}>
             <TooltipElement>
-              <Avatar variant="rounded" src={avatar} sx={{ height: 1, width: 1 }}>
+              <Avatar
+                variant="rounded"
+                src={avatar}
+                sx={{ height: 1, width: 1 }}
+                alt={t('common.avatar-of', { user: avatarAltText })}
+              >
                 {displayName[0]}
               </Avatar>
             </TooltipElement>

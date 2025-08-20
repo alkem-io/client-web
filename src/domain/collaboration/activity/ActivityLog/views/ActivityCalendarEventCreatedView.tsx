@@ -23,6 +23,7 @@ export const ActivityCalendarEventCreatedView = ({
     type={type}
     title={<ActivityDescriptionByType activityType={type} subject={calendarEvent.profile.displayName} />}
     url={calendarEvent.profile.url}
+    avatarName={calendarEvent.profile.displayName}
     contextDisplayName={spaceDisplayName}
     {...rest}
   />

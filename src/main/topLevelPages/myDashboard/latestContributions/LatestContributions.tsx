@@ -154,6 +154,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
         key={activity.id}
         activity={activity as ActivityLogResultType}
         avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+        avatarName={activity.triggeredBy.profile.displayName}
       />
     ));
 
