@@ -109,4 +109,11 @@ export const typePolicies: TypedTypePolicies = {
       },
     },
   },
+  PlatformAdminQueryResults: {
+    fields: {
+      users: paginationFieldPolicy(['filter'], 'User'),
+      organizations: paginationFieldPolicy(['filter'], 'Organization'),
+      spaces: paginationFieldPolicy(['filter'], 'Space'),
+    },
+  },
 };

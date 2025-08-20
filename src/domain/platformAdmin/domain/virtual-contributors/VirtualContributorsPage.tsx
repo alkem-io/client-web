@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
-import { useAdminVirtualContributorsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { usePlatformAdminVirtualContributorsListQuery } from '@/core/apollo/generated/apollo-hooks';
 import Avatar from '@/core/ui/avatar/Avatar';
 import { BlockTitle, CardTitle } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHe
 
 const VirtualContributorsPage: FC = () => {
   const { t } = useTranslation();
-  const { data, loading: loadingVCs } = useAdminVirtualContributorsQuery();
+  const { data, loading: loadingVCs } = usePlatformAdminVirtualContributorsListQuery();
 
   return (
     <AdminLayout currentTab={AdminSection.VirtualContributors}>
@@ -35,7 +35,7 @@ const VirtualContributorsPage: FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data?.virtualContributors.map((virtualContributor, i) => (
+                {data?.platformAdmin.virtualContributors.map((virtualContributor, i) => (
                   <TableRow
                     key={virtualContributor.id}
                     sx={{
