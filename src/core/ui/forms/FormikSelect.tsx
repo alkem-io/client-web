@@ -54,7 +54,7 @@ export const FormikSelect = ({
   return (
     <FormControl required={required} disabled={disabled} fullWidth error={isError}>
       {title && (
-        <InputLabel id="mui-component-select-category" shrink>
+        <InputLabel id={`${name}-label`} shrink>
           {title}
         </InputLabel>
       )}

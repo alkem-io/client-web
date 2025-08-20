@@ -29,6 +29,8 @@ export const useEditorConfig = ({
         handlePaste,
         attributes: {
           'aria-label': 'Markdown editor',
+          'aria-multiline': 'true',
+          'aria-disabled': disabled ? 'true' : 'false',
           role: 'textbox',
         },
       },

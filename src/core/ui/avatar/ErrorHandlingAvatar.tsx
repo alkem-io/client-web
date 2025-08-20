@@ -17,7 +17,7 @@ const ErrorHandlingAvatar = ({
     onError?.(err);
   };
 
-  return <MUIAvatar onError={handleError} {...props} ref={ref} role="img" />;
+  return <MUIAvatar onError={handleError} {...props} ref={ref} />;
 };
 
 export default ErrorHandlingAvatar;
