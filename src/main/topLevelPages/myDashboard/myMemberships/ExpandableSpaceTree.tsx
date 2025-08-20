@@ -73,7 +73,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
             visual={
               <Avatar
                 src={avatar || getDefaultSpaceVisualUrl(VisualType.Card, id)}
-                alt={t('common.avatar-of', { space: displayName })}
+                alt={displayName ? t('common.avatar-of', { space: displayName }) : t('common.avatar')}
                 aria-label="Space avatar"
               >
                 {displayName[0] ?? '?'}

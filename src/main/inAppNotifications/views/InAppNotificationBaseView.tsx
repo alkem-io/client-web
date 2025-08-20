@@ -176,7 +176,7 @@ export const InAppNotificationBaseView = ({
             <Avatar
               size="regular"
               src={space?.avatarUrl || getDefaultSpaceVisualUrl(VisualType.Avatar, space?.id)}
-              alt={t('common.avatar-of', { user: space?.avatarAlt })}
+              alt={space?.avatarAlt ? t('common.avatar-of', { user: space?.avatarAlt }) : t('common.avatar')}
             />
           </Badge>
         }

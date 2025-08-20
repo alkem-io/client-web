@@ -138,7 +138,7 @@ export const FormikUserSelector = ({
             renderOption={(props, user) => {
               const { key, ...otherProps } = props;
               return (
-                <li key={key + user.id} {...otherProps}>
+                <li key={`${key}-${user.id}`} {...otherProps}>
                   <ProfileChipView
                     displayName={user.profile.displayName}
                     avatarUrl={user.profile.visual?.uri}

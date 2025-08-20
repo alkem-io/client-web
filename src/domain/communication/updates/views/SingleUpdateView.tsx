@@ -22,7 +22,10 @@ const SingleUpdateView = ({ author, createdDate, content = '', loading }: Single
       <Avatar />
     </Skeleton>
   ) : (
-    <Avatar src={author?.avatarUrl} alt={t('common.avatar-of', { user: author?.displayName })} />
+    <Avatar
+      src={author?.avatarUrl}
+      alt={author?.displayName ? t('common.avatar-of', { user: author?.displayName }) : t('common.avatar')}
+    />
   );
 
   return (

@@ -77,7 +77,11 @@ export const ActivityBaseView = ({
               }}
             />
           ) : (
-            <Avatar src={avatarUrl} sx={{ borderRadius: 1.2 }} alt={t('common.avatar-of', { user: avatarName })} />
+            <Avatar
+              src={avatarUrl}
+              sx={{ borderRadius: 1.2 }}
+              alt={avatarName ? t('common.avatar-of', { user: avatarName }) : t('common.avatar')}
+            />
           )}
         </Badge>
       }

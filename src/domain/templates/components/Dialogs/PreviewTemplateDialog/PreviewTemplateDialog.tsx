@@ -84,7 +84,11 @@ const PreviewTemplateDialog = ({
                   visual={
                     <Avatar
                       src={innovationPack.provider.profile.avatar?.uri}
-                      alt={t('common.avatar-of', { user: innovationPack.provider.profile.displayName })}
+                      alt={
+                        innovationPack.provider.profile.displayName
+                          ? t('common.avatar-of', { user: innovationPack.provider.profile.displayName })
+                          : t('common.avatar')
+                      }
                     >
                       {innovationPack.provider.profile.displayName[0]}
                     </Avatar>

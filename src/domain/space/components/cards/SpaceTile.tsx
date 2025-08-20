@@ -62,7 +62,11 @@ const SpaceTile = ({ space, columns = 3, disableLink }: SpaceTileProps) => {
 
             <Avatar
               src={getVisualUrl()}
-              alt={t('common.avatar-of', { user: space?.about.profile.displayName })}
+              alt={
+                space?.about.profile.displayName
+                  ? t('common.avatar-of', { user: space?.about.profile.displayName })
+                  : t('common.avatar')
+              }
               sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO }}
               variant="square"
             >

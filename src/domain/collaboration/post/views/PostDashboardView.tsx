@@ -242,7 +242,7 @@ const AuthorComponent = ({ avatarSrc, name, createdDate, loading }: AuthorCompon
           <Avatar />
         </Skeleton>
       ) : (
-        <Avatar src={avatarSrc} alt={t('common.avatar-of', { user: name })} />
+        <Avatar src={avatarSrc} alt={name ? t('common.avatar-of', { user: name }) : t('common.avatar')} />
       )}
       <Typography noWrap sx={{ maxWidth: '100%' }}>
         {loading ? <Skeleton width="100%" /> : name}

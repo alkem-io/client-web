@@ -28,7 +28,7 @@ const SpaceAvatar = ({
       ref={ref}
       size={size}
       src={src || getDefaultSpaceVisualUrl(VisualType.Avatar, spaceId)}
-      alt={alt ? t('common.avatar-of', { user: alt }) : ''}
+      alt={alt ? t('common.avatar-of', { user: alt }) : t('common.avatar')}
       {...props}
     />
   );

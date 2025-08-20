@@ -56,7 +56,7 @@ const SearchResultsScopeCard = ({
               borderRadius: 0.4,
               backgroundColor: accent ? 'primary.main' : 'transparent',
             }}
-            alt={t('common.avatar-of', { user: avatar?.name })}
+            alt={avatar?.name ? t('common.avatar-of', { user: avatar?.name }) : t('common.avatar')}
           >
             {loading && <CircularProgress size={gutters(0.6)(theme)} />}
             {!loading && <SwapColors swap={accent}>{Icon && <Icon fontSize="inherit" color="primary" />}</SwapColors>}

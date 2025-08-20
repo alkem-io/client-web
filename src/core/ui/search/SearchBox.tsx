@@ -113,7 +113,7 @@ const SearchBox = (<Option extends string | number>({
                     value={searchOption}
                     options={searchOptions}
                     onChange={event => setSearchOption(event.target.value as Option)}
-                    label={t(`components.search.searchScope.${compact ? 'short' : 'full'}` as const)}
+                    label={t(`components.search.searchScope.${compact ? 'short' : 'full'}`)}
                     typographyComponent={BlockSectionTitle}
                   />
                   <Divider orientation="vertical" sx={{ height: gutters(1) }} />

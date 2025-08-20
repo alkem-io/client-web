@@ -58,7 +58,7 @@ export const ActionableContributionsView = ({
   onLeave,
   cards,
 }: ActionableContributionsViewProps) => {
-  const [leavingRoleSetId, setLeavingRoleSetId] = useState<string>();
+  const [leavingRoleSetId, setLeavingRoleSetId] = useState<string | undefined>(undefined);
 
   return (
     <PageContentBlock>

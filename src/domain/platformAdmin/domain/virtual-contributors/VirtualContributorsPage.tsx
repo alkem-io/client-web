@@ -50,7 +50,11 @@ const VirtualContributorsPage: FC = () => {
                         visual={
                           <Avatar
                             src={virtualContributor.profile.avatar?.uri}
-                            alt={t('common.avatar-of', { user: virtualContributor.profile.displayName })}
+                            alt={
+                              virtualContributor.profile.displayName
+                                ? t('common.avatar-of', { user: virtualContributor.profile.displayName })
+                                : t('common.avatar')
+                            }
                           />
                         }
                         component={RouterLink}
