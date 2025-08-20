@@ -2,24 +2,24 @@ import { useMemo, useState } from 'react';
 import { ApolloError } from '@apollo/client';
 import { SearchableTableItem } from '@/domain/platformAdmin/components/SearchableTable';
 import {
-  refetchUserListQuery,
+  refetchPlatformAdminUsersListQuery,
   useAssignLicensePlanToAccountMutation,
   useDeleteUserMutation,
   usePlatformLicensingPlansQuery,
   useRevokeLicensePlanFromAccountMutation,
-  useUserListQuery,
+  usePlatformAdminUsersListQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import {
   LicensingCredentialBasedPlanType,
-  UserListQuery,
-  UserListQueryVariables,
+  PlatformAdminUsersListQuery,
+  PlatformAdminUsersListQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { ContributorLicensePlan } from '@/domain/platformAdmin/domain/organizations/useAdminGlobalOrganizationsList';
+import { ContributorLicensePlan } from '../../types/ContributorLicensePlan';
 
 type Provided = {
   loading: boolean;
@@ -62,8 +62,8 @@ const useAdminGlobalUserList = ({
     hasMore,
     pageSize: actualPageSize,
     firstPageSize,
-  } = usePaginatedQuery<UserListQuery, UserListQueryVariables>({
-    useQuery: useUserListQuery,
+  } = usePaginatedQuery<PlatformAdminUsersListQuery, PlatformAdminUsersListQueryVariables>({
+    useQuery: usePlatformAdminUsersListQuery,
     options: {
       fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-first',
@@ -73,14 +73,14 @@ const useAdminGlobalUserList = ({
       filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
     },
     pageSize,
-    getPageInfo: result => result.usersPaginated.pageInfo,
+    getPageInfo: result => result.platformAdmin.users.pageInfo,
   });
 
   const platformLicensePlans = usePlatformLicensingPlansQuery();
 
   const userList = useMemo(
     () =>
-      (data?.usersPaginated.users ?? []).map<SearchableTableItem>(({ id, profile, email, account }) => ({
+      (data?.platformAdmin.users.users ?? []).map<SearchableTableItem>(({ id, profile, email, account }) => ({
         id,
         accountId: account?.id,
         value: `${profile.displayName} (${email})`,
@@ -119,7 +119,7 @@ const useAdminGlobalUserList = ({
         licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
-        refetchUserListQuery({
+        refetchPlatformAdminUsersListQuery({
           first: pageSize,
           filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
         }),
@@ -137,7 +137,7 @@ const useAdminGlobalUserList = ({
         licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
-        refetchUserListQuery({
+        refetchPlatformAdminUsersListQuery({
           first: pageSize,
           filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
         }),
