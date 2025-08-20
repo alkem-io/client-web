@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 export interface BreadcrumbsItemProps extends Expandable {
   avatar?: {
     uri?: string;
-    name?: string;
+    alternativeText?: string;
   };
   iconComponent?: ComponentType<SvgIconProps>;
   uri?: string;
@@ -63,7 +63,7 @@ const BreadcrumbsItem = ({
           borderRadius: 0.4,
           backgroundColor: accent ? 'primary.main' : 'transparent',
         }}
-        alt={avatar?.name ? t('common.avatar-of', { user: avatar?.name }) : t('common.avatar')}
+        alt={avatar?.alternativeText || t('common.avatar')}
       >
         {loading && <CircularProgress size={gutters(0.6)(theme)} />}
         {!loading && <SwapColors swap={accent}>{Icon && <Icon fontSize="inherit" color="primary" />}</SwapColors>}

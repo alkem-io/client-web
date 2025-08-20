@@ -5,6 +5,6 @@ import { ActivityBaseViewProps } from './ActivityBaseView';
  * Don't confuse with ActivityBaseViewProps, which are props for the ActivityBaseView component.
  */
 export interface ActivityViewProps
-  extends Pick<ActivityBaseViewProps, 'createdDate' | 'avatarUrl' | 'avatarName' | 'loading'> {
+  extends Pick<ActivityBaseViewProps, 'createdDate' | 'avatarUrl' | 'avatarAlt' | 'loading'> {
   spaceDisplayName: string | undefined;
 }

@@ -153,8 +153,12 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
       <ActivityViewChooser
         key={activity.id}
         activity={activity as ActivityLogResultType}
-        avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-        avatarName={activity.triggeredBy.profile.displayName}
+        avatarUrl={activity.triggeredBy.profile.avatar?.uri || ''}
+        avatarAlt={
+          activity.triggeredBy.profile.displayName
+            ? t('common.avatar-of', { user: activity.triggeredBy.profile.displayName })
+            : t('common.avatar')
+        }
       />
     ));
 

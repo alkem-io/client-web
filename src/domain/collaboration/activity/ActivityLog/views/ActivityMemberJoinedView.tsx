@@ -19,6 +19,7 @@ export const ActivityMemberJoinedView = ({
     {...rest}
     type={type}
     avatarUrl={member.avatarUrl}
+    avatarAlt={member.displayName}
     title={<ActivityDescriptionByType activityType={type} subject={member.displayName} />}
     url={member.url}
     contextDisplayName={spaceDisplayName}

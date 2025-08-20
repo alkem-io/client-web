@@ -103,7 +103,11 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
           avatarUrl={
             activity.space?.about.profile.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar, activity.space?.id)
           }
-          avatarName={activity.space?.about.profile.displayName || ''}
+          avatarAlt={
+            activity.space?.about.profile.displayName
+              ? t('common.avatar-of', { user: activity.space?.about.profile.displayName })
+              : t('common.avatar')
+          }
         />
       ));
     }

@@ -62,6 +62,7 @@ export const FormikSelect = ({
         name={name}
         value={field.value}
         label={title}
+        labelId={`${title ? `${name}-label` : ''}`}
         onBlur={field.onBlur}
         onChange={field.onChange}
         variant="outlined"

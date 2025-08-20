@@ -75,7 +75,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
                 src={avatar || getDefaultSpaceVisualUrl(VisualType.Card, id)}
                 alt={displayName ? t('common.avatar-of', { user: displayName }) : t('common.avatar')}
               >
-                {displayName ?? '?'}
+                {displayName[0] ?? '?'}
               </Avatar>
             }
           >
