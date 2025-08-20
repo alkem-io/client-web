@@ -5,7 +5,7 @@ export const InAppUserMentionView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;
 
   // do not display notification if these are missing
-  if (!triggeredBy?.profile?.displayName) {
+  if (!triggeredBy?.profile?.displayName || !payload.commentOriginName) {
     return null;
   }
 

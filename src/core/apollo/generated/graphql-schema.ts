@@ -2762,15 +2762,21 @@ export type InAppNotificationPayloadOrganization = InAppNotificationPayload & {
 export type InAppNotificationPayloadOrganizationMessageDirect = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadOrganizationMessageDirect';
   /** The message content. */
-  message?: Maybe<Scalars['String']['output']>;
+  message: Scalars['String']['output'];
   /** The organization. */
-  organization?: Maybe<Contributor>;
+  organization: Contributor;
   /** The payload type. */
   type: NotificationEventPayload;
 };
 
 export type InAppNotificationPayloadOrganizationMessageRoom = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadOrganizationMessageRoom';
+  /** The comment that mentioned the organization. */
+  comment?: Maybe<Scalars['String']['output']>;
+  /** The organization. */
+  organization: Organization;
+  /** The Room ID with of the comment. */
+  roomID?: Maybe<Scalars['String']['output']>;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -2787,12 +2793,6 @@ export type InAppNotificationPayloadPlatformForumDiscussion = InAppNotificationP
   type: NotificationEventPayload;
 };
 
-export type InAppNotificationPayloadPlatformForumDiscussionComment = InAppNotificationPayload & {
-  __typename?: 'InAppNotificationPayloadPlatformForumDiscussionComment';
-  /** The payload type. */
-  type: NotificationEventPayload;
-};
-
 export type InAppNotificationPayloadPlatformGlobalRoleChange = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
   /** The payload type. */
@@ -2801,12 +2801,6 @@ export type InAppNotificationPayloadPlatformGlobalRoleChange = InAppNotification
 
 export type InAppNotificationPayloadPlatformUser = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadPlatformUser';
-  /** The payload type. */
-  type: NotificationEventPayload;
-};
-
-export type InAppNotificationPayloadPlatformUserMessageDirect = InAppNotificationPayload & {
-  __typename?: 'InAppNotificationPayloadPlatformUserMessageDirect';
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -2826,7 +2820,7 @@ export type InAppNotificationPayloadPlatformUserMessageRoom = InAppNotificationP
   /** The payload type. */
   type: NotificationEventPayload;
   /** The User for the message. */
-  user?: Maybe<User>;
+  user: User;
 };
 
 export type InAppNotificationPayloadPlatformUserProfileRemoved = InAppNotificationPayload & {
@@ -2844,39 +2838,75 @@ export type InAppNotificationPayloadSpace = InAppNotificationPayload & {
 export type InAppNotificationPayloadSpaceCollaborationCallout = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
   /** The Callout that was published. */
-  callout?: Maybe<Callout>;
+  callout: Callout;
   /** Where the callout is located. */
-  space?: Maybe<Space>;
+  space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
 };
 
 export type InAppNotificationPayloadSpaceCollaborationPost = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationPost';
+  /** The callout ID. */
+  callout: Scalars['String']['output'];
+  /** The post ID. */
+  post: Scalars['String']['output'];
+  /** The Space where the post was created. */
+  space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
 };
 
 export type InAppNotificationPayloadSpaceCollaborationPostComment = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationPostComment';
+  /** The comment ID. */
+  comment: Scalars['String']['output'];
+  /** The post ID. */
+  post: Scalars['String']['output'];
+  /** The Space where the comment was created. */
+  space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
 };
 
 export type InAppNotificationPayloadSpaceCollaborationWhiteboard = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationWhiteboard';
+  /** The callout ID. */
+  callout: Scalars['String']['output'];
+  /** The Space where the whiteboard was created. */
+  space: Space;
+  /** The payload type. */
+  type: NotificationEventPayload;
+  /** The whiteboard ID. */
+  whiteboard: Scalars['String']['output'];
+};
+
+export type InAppNotificationPayloadSpaceCommunicationMessageDirect = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
+  /** The message content. */
+  message: Scalars['String']['output'];
+  /** The Space where the message was sent. */
+  space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
 };
 
 export type InAppNotificationPayloadSpaceCommunicationUpdate = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate';
+  /** The Space where the update was sent. */
+  space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
+  /** The update content. */
+  update?: Maybe<Scalars['String']['output']>;
 };
 
 export type InAppNotificationPayloadSpaceCommunityApplication = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunityApplication';
+  /** The Application that the notification is related to. */
+  application: Application;
+  /** The Space that the application was made to. */
+  space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -2884,29 +2914,37 @@ export type InAppNotificationPayloadSpaceCommunityApplication = InAppNotificatio
 export type InAppNotificationPayloadSpaceCommunityContributor = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
   /** The Contributor that joined. */
-  contributor?: Maybe<Contributor>;
+  contributor: Contributor;
   /** The Space that was joined. */
-  space?: Maybe<Space>;
+  space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
 };
 
 export type InAppNotificationPayloadSpaceCommunityInvitation = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation';
+  /** The Space that the invitation is for. */
+  space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
 };
 
 export type InAppNotificationPayloadSpaceCommunityInvitationPlatform = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform';
+  /** The Space that the invitation is for. */
+  space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
 };
 
-export type InAppNotificationPayloadSpaceMessageDirect = InAppNotificationPayload & {
-  __typename?: 'InAppNotificationPayloadSpaceMessageDirect';
+export type InAppNotificationPayloadUserMessageDirect = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadUserMessageDirect';
+  /** The message content. */
+  message?: Maybe<Scalars['String']['output']>;
   /** The payload type. */
   type: NotificationEventPayload;
+  /** The User that was sent the message. */
+  user: User;
 };
 
 export type InnovationFlow = {
@@ -29515,130 +29553,124 @@ export type InAppNotificationReceivedSubscription = {
       | { __typename?: 'InAppNotificationPayloadOrganizationMessageRoom'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
-      | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussionComment'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadPlatformUser'; type: NotificationEventPayload }
-      | { __typename?: 'InAppNotificationPayloadPlatformUserMessageDirect'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
           type: NotificationEventPayload;
-          roomID?: string | undefined;
-          originalMessageID?: string | undefined;
+          comment?: string | undefined;
+          commentUrl?: string | undefined;
+          commentOriginName?: string | undefined;
         }
       | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
           type: NotificationEventPayload;
-          callout?:
-            | {
-                __typename?: 'Callout';
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                framing: {
-                  __typename?: 'CalloutFraming';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    visual?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
-          space?:
-            | {
-                __typename?: 'Space';
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            };
+          };
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                level: SpaceLevel;
-                about: {
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
+                displayName: string;
+                url: string;
+                tagline?: string | undefined;
+                cardBanner?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+            };
+          };
         }
       | { __typename?: 'InAppNotificationPayloadSpaceCollaborationPost'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCollaborationPostComment'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCollaborationWhiteboard'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunityApplication'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
           type: NotificationEventPayload;
-          space?:
-            | {
-                __typename?: 'Space';
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                level: SpaceLevel;
-                about: {
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
-          contributor?:
+                displayName: string;
+                url: string;
+                tagline?: string | undefined;
+                cardBanner?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+            };
+          };
+          contributor:
             | {
                 __typename: 'Organization';
                 id: string;
@@ -29695,12 +29727,11 @@ export type InAppNotificationReceivedSubscription = {
                       }
                     | undefined;
                 };
-              }
-            | undefined;
+              };
         }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform'; type: NotificationEventPayload }
-      | { __typename?: 'InAppNotificationPayloadSpaceMessageDirect'; type: NotificationEventPayload };
+      | { __typename?: 'InAppNotificationPayloadUserMessageDirect'; type: NotificationEventPayload };
   };
 };
 
@@ -29764,130 +29795,124 @@ export type InAppNotificationsQuery = {
       | { __typename?: 'InAppNotificationPayloadOrganizationMessageRoom'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
-      | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussionComment'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadPlatformUser'; type: NotificationEventPayload }
-      | { __typename?: 'InAppNotificationPayloadPlatformUserMessageDirect'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
           type: NotificationEventPayload;
-          roomID?: string | undefined;
-          originalMessageID?: string | undefined;
+          comment?: string | undefined;
+          commentUrl?: string | undefined;
+          commentOriginName?: string | undefined;
         }
       | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
           type: NotificationEventPayload;
-          callout?:
-            | {
-                __typename?: 'Callout';
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                framing: {
-                  __typename?: 'CalloutFraming';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    visual?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
-          space?:
-            | {
-                __typename?: 'Space';
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            };
+          };
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                level: SpaceLevel;
-                about: {
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
+                displayName: string;
+                url: string;
+                tagline?: string | undefined;
+                cardBanner?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+            };
+          };
         }
       | { __typename?: 'InAppNotificationPayloadSpaceCollaborationPost'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCollaborationPostComment'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCollaborationWhiteboard'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunityApplication'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
           type: NotificationEventPayload;
-          space?:
-            | {
-                __typename?: 'Space';
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                level: SpaceLevel;
-                about: {
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
-          contributor?:
+                displayName: string;
+                url: string;
+                tagline?: string | undefined;
+                cardBanner?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+            };
+          };
+          contributor:
             | {
                 __typename: 'Organization';
                 id: string;
@@ -29944,12 +29969,11 @@ export type InAppNotificationsQuery = {
                       }
                     | undefined;
                 };
-              }
-            | undefined;
+              };
         }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform'; type: NotificationEventPayload }
-      | { __typename?: 'InAppNotificationPayloadSpaceMessageDirect'; type: NotificationEventPayload };
+      | { __typename?: 'InAppNotificationPayloadUserMessageDirect'; type: NotificationEventPayload };
   }>;
 };
 
@@ -30023,130 +30047,106 @@ export type InAppNotificationAllTypesFragment = {
     | { __typename?: 'InAppNotificationPayloadOrganizationMessageRoom'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
-    | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussionComment'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadPlatformUser'; type: NotificationEventPayload }
-    | { __typename?: 'InAppNotificationPayloadPlatformUserMessageDirect'; type: NotificationEventPayload }
     | {
         __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
         type: NotificationEventPayload;
-        roomID?: string | undefined;
-        originalMessageID?: string | undefined;
+        comment?: string | undefined;
+        commentUrl?: string | undefined;
+        commentOriginName?: string | undefined;
       }
     | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
     | {
         __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
         type: NotificationEventPayload;
-        callout?:
-          | {
-              __typename?: 'Callout';
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              framing: {
-                __typename?: 'CalloutFraming';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  visual?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                };
-              };
-            }
-          | undefined;
-        space?:
-          | {
-              __typename?: 'Space';
+              displayName: string;
+              url: string;
+              visual?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
+            };
+          };
+        };
+        space: {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              };
-            }
-          | undefined;
+              displayName: string;
+              url: string;
+              tagline?: string | undefined;
+              cardBanner?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+            };
+          };
+        };
       }
     | { __typename?: 'InAppNotificationPayloadSpaceCollaborationPost'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadSpaceCollaborationPostComment'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadSpaceCollaborationWhiteboard'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadSpaceCommunityApplication'; type: NotificationEventPayload }
     | {
         __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
         type: NotificationEventPayload;
-        space?:
-          | {
-              __typename?: 'Space';
+        space: {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              };
-            }
-          | undefined;
-        contributor?:
+              displayName: string;
+              url: string;
+              tagline?: string | undefined;
+              cardBanner?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+            };
+          };
+        };
+        contributor:
           | {
               __typename: 'Organization';
               id: string;
@@ -30203,102 +30203,95 @@ export type InAppNotificationAllTypesFragment = {
                     }
                   | undefined;
               };
-            }
-          | undefined;
+            };
       }
     | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform'; type: NotificationEventPayload }
-    | { __typename?: 'InAppNotificationPayloadSpaceMessageDirect'; type: NotificationEventPayload };
+    | { __typename?: 'InAppNotificationPayloadUserMessageDirect'; type: NotificationEventPayload };
 };
 
 export type InAppNotificationPayloadSpaceCollaborationCalloutFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
-  callout?:
-    | {
-        __typename?: 'Callout';
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
         id: string;
-        framing: {
-          __typename?: 'CalloutFraming';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            visual?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-          };
-        };
-      }
-    | undefined;
-  space?:
-    | {
-        __typename?: 'Space';
+        displayName: string;
+        url: string;
+        visual?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+      };
+    };
+  };
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
         id: string;
-        level: SpaceLevel;
-        about: {
-          __typename?: 'SpaceAbout';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-          };
-        };
-      }
-    | undefined;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+    };
+  };
 };
 
 export type InAppNotificationSpaceCommunityContributorFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
-  space?:
-    | {
-        __typename?: 'Space';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
         id: string;
-        level: SpaceLevel;
-        about: {
-          __typename?: 'SpaceAbout';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-          };
-        };
-      }
-    | undefined;
-  contributor?:
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+    };
+  };
+  contributor:
     | {
         __typename: 'Organization';
         id: string;
@@ -30337,8 +30330,7 @@ export type InAppNotificationSpaceCommunityContributorFragment = {
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
         };
-      }
-    | undefined;
+      };
 };
 
 export type SpaceNotificationFragment = {
@@ -30373,8 +30365,9 @@ export type SpaceNotificationFragment = {
 
 export type InAppNotificationUserMentionedFragment = {
   __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
-  roomID?: string | undefined;
-  originalMessageID?: string | undefined;
+  comment?: string | undefined;
+  commentUrl?: string | undefined;
+  commentOriginName?: string | undefined;
 };
 
 export type UrlResolverQueryVariables = Exact<{

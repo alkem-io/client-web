@@ -2821,8 +2821,9 @@ export const InAppNotificationSpaceCommunityContributorFragmentDoc = gql`
 `;
 export const InAppNotificationUserMentionedFragmentDoc = gql`
   fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserMessageRoom {
-    roomID
-    originalMessageID
+    comment
+    commentUrl
+    commentOriginName
   }
 `;
 export const InAppNotificationAllTypesFragmentDoc = gql`
