@@ -10,11 +10,10 @@ export interface AlkemioTimePickerProps
   value: Date | string;
   fullWidth?: boolean;
   onChange?: (date: Date) => void;
-  onBlur?: () => void;
   minTime?: Dayjs;
-  // @ts-ignore react-18 allow string and translations (hard to type)
-  error?: unknown;
   containerProps?: BoxProps;
+  label: string;
+  disabled?: boolean;
 }
 
 const Styles = styled(Box)(() => ({
@@ -26,12 +25,11 @@ const Styles = styled(Box)(() => ({
 const AlkemioTimePicker = ({
   value,
   onChange,
-  error,
   fullWidth,
-  onBlur,
   minTime,
   containerProps,
-  ...timePickerProps
+  label,
+  disabled,
 }: AlkemioTimePickerProps) => {
   const handleChange = (date: string | null) => {
     date && onChange?.(dayjs(date).toDate());
@@ -63,12 +61,13 @@ const AlkemioTimePicker = ({
         }}
         IconComponent={ScheduleIcon}
         MenuProps={{ sx: { '.MuiPaper-root': { maxHeight: gutters(12) } } }}
-        fullWidth
+        fullWidth={fullWidth}
         notched
         inputProps={{
-          'aria-label': typeof timePickerProps.label === 'string' ? timePickerProps.label : undefined,
+          'aria-label': label,
         }}
-        {...timePickerProps}
+        label={label}
+        disabled={disabled}
       >
         {timeSlots.map(t => (
           <MenuItem key={t.format()} value={t.format()} disabled={t.isBefore(minTime)}>
