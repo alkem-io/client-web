@@ -1,7 +1,8 @@
 import { HTMLAttributes, ReactNode } from 'react';
-import { AvatarProps, Box } from '@mui/material';
+import { AvatarProps, Box, SxProps } from '@mui/material';
 import ErrorHandlingAvatar from './ErrorHandlingAvatar';
 import { gutters } from '../grid/utils';
+import { Theme } from '@mui/material/styles';
 
 export type AvatarSize = 'small' | 'medium' | 'regular' | 'large';
 
@@ -12,27 +13,36 @@ const AvatarSizes: Record<AvatarSize, number> = {
   large: 4,
 };
 
-export interface SizeableAvatarProps {
+export interface CustomAvatarProps {
+  src?: string;
+  ariaLabel?: string;
+  alt?: string;
   size?: AvatarSize;
   overlay?: ReactNode;
+  variant?: AvatarProps['variant'];
+  sx?: SxProps<Theme>;
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 const Avatar = ({
+  src,
+  ariaLabel,
+  alt,
   size,
-  sx,
   overlay,
-  ...props
+  variant,
+  sx,
+  ref,
 }: HTMLAttributes<HTMLDivElement> & {
   ref?: React.Ref<HTMLDivElement>;
 } & AvatarProps &
-  SizeableAvatarProps) => {
+  CustomAvatarProps) => {
   const avatarSize = size && AvatarSizes[size];
-  const { ref } = props;
 
   if (overlay) {
     return (
       <Box ref={ref} position="relative">
-        <Avatar size={size} sx={sx} {...props} />
+        <Avatar size={size} sx={sx} src={src} ariaLabel={ariaLabel} alt={alt} variant={variant} />
         <Box
           position="absolute"
           top={0}
@@ -57,7 +67,10 @@ const Avatar = ({
         height: avatarSize && gutters(avatarSize),
         ...sx,
       }}
-      {...props}
+      src={src}
+      ariaLabel={ariaLabel}
+      alt={alt}
+      variant={variant}
     />
   );
 };
