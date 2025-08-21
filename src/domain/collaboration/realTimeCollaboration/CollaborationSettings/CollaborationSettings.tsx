@@ -53,25 +53,28 @@ const CollaborationSettings = ({ element, elementType }: CollaborationSettingsPr
     }
   }, [contentUpdatePolicy, updating]);
 
+  const elementName = t(`common.${elementType}`);
   return (
     <>
       <Gutters paddingX={0}>
         <BlockTitle>{t('common.settings')}</BlockTitle>
-        <Caption>{t('components.shareSettings.description')}</Caption>
+        <Caption>{t('components.shareSettings.description', { elementName })}</Caption>
       </Gutters>
       <Gutters row disablePadding>
         <GridItem columns={4}>
           <Gutters disablePadding>
-            <BlockSectionTitle>{t('components.shareSettings.ownedBy.title')}</BlockSectionTitle>
+            <BlockSectionTitle>{t('components.shareSettings.ownedBy.title', { elementName })}</BlockSectionTitle>
             {element?.createdBy && <ContributorCardHorizontal profile={element.createdBy.profile} seamless />}
           </Gutters>
         </GridItem>
         <GridItem columns={4}>
           <Gutters disablePadding>
-            <BlockSectionTitle>{t('components.shareSettings.editableBy.title')}</BlockSectionTitle>
+            <BlockSectionTitle id="rt-collaboration-share-settings">
+              {t('components.shareSettings.editableBy.title', { elementName })}
+            </BlockSectionTitle>
             <FormControl disabled={loading || updating}>
               <RadioGroup
-                aria-labelledby="whiteboard-rt-share-settings"
+                aria-labelledby="rt-collaboration-share-settings"
                 value={shareSettings}
                 onChange={handleSettingsChange}
               >
@@ -80,7 +83,11 @@ const CollaborationSettings = ({ element, elementType }: CollaborationSettingsPr
                     key={option}
                     value={option}
                     control={<Radio />}
-                    label={<Caption>{t(`components.shareSettings.editableBy.options.${option}` as const)}</Caption>}
+                    label={
+                      <Caption>
+                        {t(`components.shareSettings.editableBy.options.${option}` as const, { elementName })}
+                      </Caption>
+                    }
                   />
                 ))}
               </RadioGroup>

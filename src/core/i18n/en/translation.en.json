@@ -1147,17 +1147,17 @@
       "typeReadonly": "Once a template is created, its type cannot be changed. If you need a different type, please create a new template."
     },
     "shareSettings": {
-      "description": "Based on the settings of the Space that this Whiteboard is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
-      "disabled": "Based on the settings of the Space that this Whiteboard is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
+      "description": "Based on the settings of the Space that this {{elementName}} is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
+      "disabled": "Based on the settings of the Space that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
       "ownedBy": {
-        "title": "This whiteboard is owned by:"
+        "title": "This {{elementName}} is owned by:"
       },
       "editableBy": {
-        "title": "This whiteboard can be edited by:",
+        "title": "This {{elementName}} can be edited by:",
         "options": {
           "CONTRIBUTORS": "Everyone who can contribute in this (sub)space",
           "ADMINS": "The owner and the admins and leads of this (sub)space",
-          "OWNER": "The owner of this whiteboard"
+          "OWNER": "The owner of this {{elementName}}"
         }
       }
     },
