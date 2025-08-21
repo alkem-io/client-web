@@ -106,7 +106,7 @@ const ControlsButton = memo(
 );
 ControlsButton.displayName = 'ControlsButton';
 
-const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-click without "jumping"
+// const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-click without "jumping"
 
 const MarkdownInputControls = memo(
   ({
@@ -118,20 +118,22 @@ const MarkdownInputControls = memo(
     onDialogClose,
     temporaryLocation = false,
   }: MarkdownInputControlsProps & { ref: Ref<HTMLDivElement> }) => {
-    const [isVisible, setIsVisible] = useState(visible);
+    // const [isVisible, setIsVisible] = useState(visible);
     const { t } = useTranslation();
-    useEffect(() => {
-      if (visible) {
-        setTimeout(() => {
-          setIsVisible(() => visible);
-        }, CONTROLS_SHOW_DELAY_MS);
-      } else {
-        setIsVisible(false);
-      }
-    }, [visible]);
+
+    // TODO: Not removed yed because I need to test this, but I think this code is complicating things more than fixing that "jumping" issue
+    // useEffect(() => {
+    //   if (visible) {
+    //     setTimeout(() => {
+    //       setIsVisible(() => visible);
+    //     }, CONTROLS_SHOW_DELAY_MS);
+    //   } else {
+    //     setIsVisible(false);
+    //   }
+    // }, [visible]);
 
     return (
-      <Collapse in={isVisible} ref={ref}>
+      <Collapse in={visible} ref={ref}>
         <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
           <ControlsButton
             editor={editor}
