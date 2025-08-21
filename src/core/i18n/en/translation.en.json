@@ -1442,17 +1442,6 @@
     "calloutEdit": {
       "titleWithType": "Edit {{type}}"
     },
-    "calloutTypeSelect": {
-      "title": "What would you like to add?",
-      "label": {
-        "POST": "Post",
-        "POST_COLLECTION": "Call for Posts",
-        "WHITEBOARD_COLLECTION": "Call for Whiteboards",
-        "LINK_COLLECTION": "Collection of Links and Documents",
-        "WHITEBOARD": "Whiteboard"
-      },
-      "callout-templates-library": "...or have a look at the library!"
-    },
     "post-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
       "type-step": {
@@ -3108,7 +3097,7 @@
         "title": "Forum",
         "subtitle": "This section allows you to select your preferences regarding activities in the Forum",
         "settings": {
-          "forumDiscussionComment": "Receive notifications when a new comment is added to a post I follow",
+          "forumDiscussionComment": "Receive notifications when a new comment is added to a discussion I follow",
           "forumDiscussionCreated": "Receive notifications when a new discussion is created"
         }
       }

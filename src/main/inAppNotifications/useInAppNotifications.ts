@@ -64,7 +64,7 @@ export const useInAppNotifications = () => {
       } else {
         logError('Broken InAppNotification', {
           category: TagCategoryValues.NOTIFICATIONS,
-          label: `Raw data: ${JSON.stringify(notificationData)}`,
+          label: `id=${notificationData?.id}, type=${notificationData?.type}`,
         });
       }
     }

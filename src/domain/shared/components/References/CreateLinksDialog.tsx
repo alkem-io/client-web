@@ -12,7 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { gutters } from '@/core/ui/grid/utils';
-import calloutIcons from '@/domain/collaboration/callout/icons/calloutIcons';
+import { contributionIcons } from '@/domain/collaboration/callout/icons/calloutIcons';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
@@ -21,7 +21,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { newLinkName } from '@/domain/common/link/newLinkName';
-import { CalloutType } from '@/domain/collaboration/callout/CalloutViewTypes';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 
 export interface CreateLinkFormValues {
   id: string;
@@ -66,7 +66,7 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
   const { locations } = useConfig();
   const { isMediumSmallScreen } = useScreenSize();
 
-  const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
+  const CalloutIcon = contributionIcons[CalloutContributionType.Link];
   const [newLinkId, setNewLinkId] = useState<string>();
   const [hangingLinkIds, setHangingLinkIds] = useState<string[]>([]);
   const [isCancelling, setCancelling] = useState(false);

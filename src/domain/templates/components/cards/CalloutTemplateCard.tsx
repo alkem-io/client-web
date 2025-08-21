@@ -16,10 +16,9 @@ interface CalloutTemplateCardProps extends TemplateCardProps {
   template: CalloutTemplate;
 }
 
-// TODO:CalloutType fix missing content
 const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
-  const hasTags = (template?.profile.defaultTagset?.tags ?? []).length > 0;
-  const footerHeight = hasTags ? 2 : 0;
+  const tags = template?.profile.defaultTagset?.tags ?? [];
+  const footerHeight = tags.length > 0 ? 2 : 0;
   const descriptionHeightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - footerHeight;
 
   return (
@@ -34,7 +33,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
         <CardDescription heightGutters={descriptionHeightGutters}>{template?.profile.description}</CardDescription>
       </CardDetails>
       <CardDetails>
-        <CardTags tags={template?.profile.defaultTagset?.tags ?? []} marginY={1} hideIfEmpty />
+        <CardTags tags={tags} marginY={1} hideIfEmpty />
       </CardDetails>
       {innovationPack?.profile.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
