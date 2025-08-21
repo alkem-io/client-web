@@ -3063,9 +3063,9 @@
           "communityInvitationUser": "Receive a notification when someone invites you to join a community",
           "communityNewMember": "Receive notification when a new member joins a community I am a member of",
           "collaborationCalloutPublished": "Receive a notification when a Callout is published in a community I am a member of",
-          "collaborationPostCreatedAdmin": "Receive notification when a new comment is added to a post I follow",
           "collaborationPostCreated": "Receive notification when a new post is created in a community I am a member of",
-          "collaborationWhiteboardCreated": "Receive a notification when a new whiteboard is created in a community I am a member of"
+          "collaborationWhiteboardCreated": "Receive a notification when a new whiteboard is created in a community I am a member of",
+          "collaborationPostCommentCreated": "Receive a notification when a new comment is added to a post I follow"
         }
       },
       "spaceAdmin": {
