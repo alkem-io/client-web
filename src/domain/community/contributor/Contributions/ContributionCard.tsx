@@ -41,7 +41,9 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
       onLeaveCommunityDialogOpen={isOpen => setLeavingRoleSetId(isOpen ? details?.roleSetId : undefined)}
       {...(onContributionClick
         ? { onClick: event => onContributionClick(event, details) }
-        : { to: details.about.profile.url })}
+        : details.about.profile.url
+          ? { to: details.about.profile.url }
+          : {})}
     />
   );
 };
