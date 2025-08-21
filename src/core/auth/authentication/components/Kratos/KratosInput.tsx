@@ -54,7 +54,7 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
   }
 
   return (
-    <GridLegacy xs={12}>
+    <GridLegacy xs={12} item>
       <Tooltip
         title={t('pages.accept-terms.tooltip')}
         arrow
