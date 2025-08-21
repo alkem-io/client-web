@@ -7,38 +7,40 @@ import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal'
 import { Location } from '@/core/ui/location/getLocationString';
 import { useEffect, useState } from 'react';
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import { Identifiable } from '@/core/utils/Identifiable';
+import useContentUpdatePolicyManager from './useContentUpdatePolicyManager';
 
-type WhiteboardShareSettingsProps = {
-  createdBy:
-    | {
-        profile: {
-          displayName: string;
-          location?: Location;
-          avatar?: {
-            uri: string;
-          };
-          url: string;
-        };
-      }
+type CollaborationSettingsProps = {
+  element:
+    | (Identifiable & {
+        createdBy?:
+          | {
+              profile: {
+                displayName: string;
+                location?: Location;
+                avatar?: {
+                  uri: string;
+                };
+                url: string;
+              };
+            }
+          | undefined;
+      })
     | undefined;
-  value: ContentUpdatePolicy | undefined;
-  onChange?: (contentUpdatePolicy: ContentUpdatePolicy) => void;
-  loading?: boolean;
-  updating?: boolean;
+  elementType: 'whiteboard' | 'memo';
 };
 
 const OPTIONS = [ContentUpdatePolicy.Contributors, ContentUpdatePolicy.Admins, ContentUpdatePolicy.Owner];
 
-const WhiteboardShareSettings = ({
-  createdBy,
-  value,
-  onChange,
-  loading = false,
-  updating = false,
-}: WhiteboardShareSettingsProps) => {
+const CollaborationSettings = ({ element, elementType }: CollaborationSettingsProps) => {
   const { t } = useTranslation();
+  const { contentUpdatePolicy, loading, updating, onChange } = useContentUpdatePolicyManager({
+    elementId: element?.id,
+    elementType,
+    skip: !element?.id || !elementType,
+  });
 
-  const [shareSettings, setShareSettings] = useState(value);
+  const [shareSettings, setShareSettings] = useState(contentUpdatePolicy);
 
   const handleSettingsChange = (event: unknown, value: string) => {
     setShareSettings(value as ContentUpdatePolicy);
@@ -47,9 +49,9 @@ const WhiteboardShareSettings = ({
 
   useEffect(() => {
     if (!updating) {
-      setShareSettings(value);
+      setShareSettings(contentUpdatePolicy);
     }
-  }, [value, updating]);
+  }, [contentUpdatePolicy, updating]);
 
   return (
     <>
@@ -61,7 +63,7 @@ const WhiteboardShareSettings = ({
         <GridItem columns={4}>
           <Gutters disablePadding>
             <BlockSectionTitle>{t('components.shareSettings.ownedBy.title')}</BlockSectionTitle>
-            {createdBy && <ContributorCardHorizontal profile={createdBy.profile} seamless />}
+            {element?.createdBy && <ContributorCardHorizontal profile={element.createdBy.profile} seamless />}
           </Gutters>
         </GridItem>
         <GridItem columns={4}>
@@ -90,4 +92,4 @@ const WhiteboardShareSettings = ({
   );
 };
 
-export default WhiteboardShareSettings;
+export default CollaborationSettings;
