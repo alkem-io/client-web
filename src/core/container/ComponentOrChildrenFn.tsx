@@ -19,7 +19,12 @@ export const renderComponentOrChildrenFn = <Consumed extends {}, Provided extend
 ) => {
   if ('component' in props) {
     const Component = props.component;
-    return <Component {...provided} />;
+    if ('key' in props && typeof props.key === 'string') {
+      const key = props.key;
+      return <Component key={key} {...provided} />;
+    } else {
+      return <Component {...provided} />;
+    }
   }
   return props.children(provided);
 };
