@@ -4302,13 +4302,13 @@ export type UserFieldPolicy = {
 export type UserAuthenticationResultKeySpecifier = (
   | 'authenticatedAt'
   | 'createdAt'
-  | 'method'
+  | 'methods'
   | UserAuthenticationResultKeySpecifier
 )[];
 export type UserAuthenticationResultFieldPolicy = {
   authenticatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
-  method?: FieldPolicy<any> | FieldReadFunction<any>;
+  methods?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserGroupKeySpecifier = (
   | 'authorization'
