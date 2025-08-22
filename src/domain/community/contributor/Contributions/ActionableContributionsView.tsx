@@ -53,9 +53,9 @@ export const ActionableContributionsView = ({
   loading,
   enableLeave,
   onLeave,
+  onContributionClick,
   cards,
 }: ActionableContributionsViewProps) => {
-
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={title} />
@@ -76,6 +76,7 @@ export const ActionableContributionsView = ({
                 contributionItem={contributionItem}
                 onLeave={onLeave}
                 enableLeave={enableLeave}
+                onContributionClick={onContributionClick}
               />
             ))}
           </ScrollableCardsLayoutContainer>
