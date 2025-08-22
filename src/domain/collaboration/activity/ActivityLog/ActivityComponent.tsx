@@ -29,6 +29,7 @@ import {
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
+import { useTranslation } from 'react-i18next';
 
 export type ActivityLogResult<T> = T &
   Omit<ActivityLogEntry, 'parentDisplayName'> & {
@@ -68,6 +69,8 @@ export interface ActivityComponentProps {
 }
 
 export const ActivityComponent = ({ activities, limit }: ActivityComponentProps) => {
+  const { t, i18n } = useTranslation();
+
   const display = useMemo(() => {
     if (!activities) {
       return null;
@@ -79,19 +82,24 @@ export const ActivityComponent = ({ activities, limit }: ActivityComponentProps)
           return (
             <ActivityViewChooser
               activity={activity}
-              avatarUrl={activity.triggeredBy.profile.avatar.uri}
+              avatarUrl={activity.triggeredBy.profile.avatar?.uri ?? ''}
+              avatarAlt={
+                activity.triggeredBy.profile.displayName
+                  ? t('common.avatar-of', { user: activity.triggeredBy.profile.displayName })
+                  : t('common.avatar')
+              }
               key={activity.id}
             />
           );
         })}
       </>
     );
-  }, [activities]);
+  }, [activities, limit, i18n.language]);
 
   return <>{display ?? <ActivityLoadingView rows={3} />}</>;
 };
 
-interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'avatarUrl'> {
+interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'avatarUrl' | 'avatarAlt'> {
   activity: ActivityLogResultType;
 }
 

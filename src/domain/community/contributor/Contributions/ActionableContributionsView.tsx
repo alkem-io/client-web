@@ -56,10 +56,9 @@ export const ActionableContributionsView = ({
   loading,
   enableLeave,
   onLeave,
-  onContributionClick,
   cards,
 }: ActionableContributionsViewProps) => {
-  const [leavingRoleSetId, setLeavingRoleSetId] = useState<string>();
+  const [leavingRoleSetId, setLeavingRoleSetId] = useState<string | undefined>(undefined);
 
   return (
     <PageContentBlock>
@@ -83,7 +82,6 @@ export const ActionableContributionsView = ({
                 enableLeave={enableLeave}
                 leavingRoleSetId={leavingRoleSetId}
                 setLeavingRoleSetId={setLeavingRoleSetId}
-                onContributionClick={onContributionClick}
               />
             ))}
           </ScrollableCardsLayoutContainer>
@@ -93,13 +91,20 @@ export const ActionableContributionsView = ({
   );
 };
 
-const ContributionCard = ({
+type ContributionCardProps = {
+  contributionItem: SpaceHostedItem;
+  onLeave?: () => Promise<unknown>;
+  enableLeave?: boolean;
+  leavingRoleSetId?: string;
+  setLeavingRoleSetId: React.Dispatch<React.SetStateAction<string | undefined>>;
+};
+
+const ContributionCard: React.FC<ContributionCardProps> = ({
   contributionItem,
   onLeave,
   enableLeave,
   leavingRoleSetId,
   setLeavingRoleSetId,
-  onContributionClick,
 }) => {
   const { details, loading, isLeavingCommunity, leaveCommunity } = useContributionProvider({
     spaceHostedItem: contributionItem,
@@ -118,14 +123,14 @@ const ContributionCard = ({
     <ContributionDetailsCard
       {...details}
       spaceId={contributionItem.id}
-      tagline={details.about.profile.tagline!}
+      tagline={details.about.profile.tagline ?? ''}
       displayName={details.about.profile.displayName}
       enableLeave={enableLeave}
       leavingCommunity={isLeavingCommunity}
       handleLeaveCommunity={handleLeaveCommunity}
       leavingCommunityDialogOpen={!!leavingRoleSetId && leavingRoleSetId === details?.roleSetId}
       onLeaveCommunityDialogOpen={isOpen => setLeavingRoleSetId(isOpen ? details?.roleSetId : undefined)}
-      onClick={onContributionClick ? event => onContributionClick(event, details) : undefined}
+      spaceUri={details?.about?.profile?.url}
     />
   );
 };

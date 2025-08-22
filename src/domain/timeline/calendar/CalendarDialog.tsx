@@ -238,6 +238,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
                       <BackButton onClick={navigateBack} variant="contained" />
                     </>
                   }
+                  dialogTitleId="calendar-events-dialog-title"
                 />
               );
             }
