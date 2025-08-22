@@ -11,14 +11,16 @@ type CalendarEventDetailProps = {
   eventId: string | undefined;
   onClose: DialogHeaderProps['onClose'];
   actions?: ReactNode;
+  dialogTitleId?: string;
 };
 
-const CalendarEventDetail = ({ eventId, onClose, actions }: CalendarEventDetailProps) => {
+const CalendarEventDetail = ({ eventId, onClose, actions, dialogTitleId }: CalendarEventDetailProps) => {
   const { t } = useTranslation();
   const { event } = useCalendarEvent({ eventId });
   return (
     <>
       <DialogHeader
+        titleContainerProps={{ id: dialogTitleId }}
         onClose={onClose}
         actions={<>{event && <ShareButton url={event.profile.url} entityTypeName="event" />}</>}
       >

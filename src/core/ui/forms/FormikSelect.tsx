@@ -53,11 +53,16 @@ export const FormikSelect = ({
 
   return (
     <FormControl required={required} disabled={disabled} fullWidth error={isError}>
-      {title && <InputLabel shrink>{title}</InputLabel>}
+      {title && (
+        <InputLabel id={`${name}-label`} shrink>
+          {title}
+        </InputLabel>
+      )}
       <Select
         name={name}
         value={field.value}
         label={title}
+        labelId={`${title ? `${name}-label` : ''}`}
         onBlur={field.onBlur}
         onChange={field.onChange}
         variant="outlined"

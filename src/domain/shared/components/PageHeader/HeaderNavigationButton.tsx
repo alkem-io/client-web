@@ -22,6 +22,7 @@ const HeaderNavigationButton = ({
       disabled={disabled}
       className="button-tab"
       onClick={onClick}
+      aria-label={value}
     />
   );
 };

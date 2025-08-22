@@ -15459,6 +15459,41 @@ export type PostCalloutsInCalloutSetQuery = {
   };
 };
 
+export type ContentUpdatePolicyQueryVariables = Exact<{
+  elementId: Scalars['UUID']['input'];
+  isWhiteboard: Scalars['Boolean']['input'];
+  isMemo: Scalars['Boolean']['input'];
+}>;
+
+export type ContentUpdatePolicyQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboard?: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy } | undefined;
+    memo?: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy } | undefined;
+  };
+};
+
+export type UpdateWhiteboardContentUpdatePolicyMutationVariables = Exact<{
+  whiteboardId: Scalars['UUID']['input'];
+  contentUpdatePolicy: ContentUpdatePolicy;
+}>;
+
+export type UpdateWhiteboardContentUpdatePolicyMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboard: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
+};
+
+export type UpdateMemoContentUpdatePolicyMutationVariables = Exact<{
+  memoId: Scalars['UUID']['input'];
+  contentUpdatePolicy: ContentUpdatePolicy;
+}>;
+
+export type UpdateMemoContentUpdatePolicyMutation = {
+  __typename?: 'Mutation';
+  updateMemo: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
+};
+
 export type WhiteboardProfileFragment = {
   __typename?: 'Profile';
   id: string;
@@ -15939,28 +15974,6 @@ export type UpdateWhiteboardMutation = {
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
-};
-
-export type WhiteboardContentUpdatePolicyQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
-}>;
-
-export type WhiteboardContentUpdatePolicyQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    whiteboard?: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy } | undefined;
-  };
-};
-
-export type UpdateWhiteboardContentUpdatePolicyMutationVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
-  contentUpdatePolicy: ContentUpdatePolicy;
-}>;
-
-export type UpdateWhiteboardContentUpdatePolicyMutation = {
-  __typename?: 'Mutation';
-  updateWhiteboard: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
 export type LinkDetailsFragment = {

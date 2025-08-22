@@ -91,7 +91,12 @@ const CommunityOrganizations = ({
       filterable: false,
       renderCell: ({ row }: RenderParams) => (
         <Link href={row.profile.url} target="_blank">
-          <Avatar src={row.profile.avatar?.uri} alt={t('common.avatar-of', { user: row.profile.displayName })} />
+          <Avatar
+            src={row.profile.avatar?.uri}
+            alt={
+              row.profile.displayName ? t('common.avatar-of', { user: row.profile.displayName }) : t('common.avatar')
+            }
+          />
         </Link>
       ),
     },
