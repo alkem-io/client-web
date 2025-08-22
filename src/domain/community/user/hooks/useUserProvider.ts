@@ -13,7 +13,7 @@ export const useUserProvider = (userId: string | undefined) => {
   const userModel: UserModel | undefined = data?.lookup?.user;
 
   return {
-    user: userModel,
+    userModel: userModel,
     loading,
   };
 };

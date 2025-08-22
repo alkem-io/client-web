@@ -19,7 +19,6 @@ fragment CalloutTemplate on Template {
   ...TemplateProfileInfo
   callout {
     id
-    calloutTypeDeprecated: type
     settings {
       contribution {
         enabled

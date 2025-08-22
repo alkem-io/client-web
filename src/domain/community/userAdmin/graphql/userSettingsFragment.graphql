@@ -1,0 +1,44 @@
+fragment userSettingsFragment on UserSettings {
+  id
+  communication {
+    allowOtherUsersToSendMessages
+  }
+  privacy {
+    contributionRolesPubliclyVisible
+  }
+  notification {
+    platform {
+      userProfileRemoved
+      newUserSignUp
+      forumDiscussionComment
+      forumDiscussionCreated
+      spaceCreated
+    }
+    organization {
+      mentioned
+      messageReceived
+    }
+    space {
+      communityApplicationReceived
+      communityApplicationSubmitted
+      communityInvitationUser
+      communityNewMember
+      communityNewMemberAdmin
+      communicationUpdates
+      communicationUpdatesAdmin
+      communicationMessage
+      communicationMessageAdmin
+      collaborationPostCommentCreated
+      collaborationCalloutPublished
+      collaborationPostCreated
+      collaborationPostCreatedAdmin
+      collaborationWhiteboardCreated
+    }
+    user {
+      mentioned
+      commentReply
+      messageReceived
+      messageSent
+    }
+  }
+}

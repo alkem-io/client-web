@@ -37,7 +37,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
       onClick={onClick}
       outlined
     >
-      <Gutters disablePadding row fullWidth>
+      <Gutters disablePadding row>
         <Box flex={1}>
           <BlockSectionTitle>
             <DetailedActivityDescription
