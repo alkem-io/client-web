@@ -124,8 +124,8 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           ? mapLinkDataToUpdateLinkInput(formData.framing.link)
           : undefined,
       ...(formData.framing.type === CalloutFramingType.Memo &&
-        memo?.content && {
-          memoContent: memo.content,
+        memo?.markdown && {
+          memoContent: memo.markdown,
         }),
     };
 

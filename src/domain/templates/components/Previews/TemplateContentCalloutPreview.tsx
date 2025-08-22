@@ -23,6 +23,9 @@ interface TemplateContentCalloutPreviewProps {
             };
           };
         };
+        memo?: {
+          markdown: string;
+        };
       };
     };
   };
@@ -31,6 +34,7 @@ interface TemplateContentCalloutPreviewProps {
 const TemplateContentCalloutPreview = ({ template }: TemplateContentCalloutPreviewProps) => {
   const framing = template?.callout?.framing;
   const whiteboard = template?.callout?.framing.whiteboard;
+  const memo = template?.callout?.framing.memo;
 
   return (
     <PageContentBlock>
@@ -38,6 +42,7 @@ const TemplateContentCalloutPreview = ({ template }: TemplateContentCalloutPrevi
       <WrapperMarkdown>{framing?.profile.description ?? ''}</WrapperMarkdown>
       <TagsComponent tags={findDefaultTagset(framing?.profile.tagsets)?.tags ?? framing?.profile.tagset?.tags ?? []} />
       {whiteboard && <WhiteboardPreview whiteboard={whiteboard} displayName={framing?.profile.displayName} />}
+      {memo && <WhiteboardPreview whiteboard={whiteboard} displayName={framing?.profile.displayName} />}
     </PageContentBlock>
   );
 };

@@ -1,5 +1,6 @@
 import { CalloutFramingType, CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
+import { MemoModelLight } from '../../memo/model/MemoModelLight';
 
 export interface CalloutModelLight {
   id: string;
@@ -18,13 +19,7 @@ export interface CalloutModelLight {
         };
       };
     };
-    memo?: {
-      profile: {
-        preview?: {
-          uri: string;
-        };
-      };
-    };
+    memo?: MemoModelLight;
   };
   sortOrder: number;
   activity?: number;

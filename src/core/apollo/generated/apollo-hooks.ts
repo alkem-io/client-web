@@ -756,6 +756,7 @@ export const MemoDetailsFragmentDoc = gql`
     profile {
       ...MemoProfile
     }
+    markdown
     authorization {
       id
       myPrivileges

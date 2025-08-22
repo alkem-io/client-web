@@ -56,9 +56,8 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           whiteboard: undefined,
           link: undefined,
           memo: {
-            // content: '',
             profile: { displayName: t('common.memo') },
-            previewImages: [],
+            markdown: '',
           },
         };
         break;

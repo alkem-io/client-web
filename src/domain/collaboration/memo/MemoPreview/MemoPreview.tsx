@@ -2,14 +2,14 @@ import ImageWithCaption from '@/core/ui/image/ImageWithCaption';
 import { MemoIcon } from '../icon/MemoIcon';
 import { useTranslation } from 'react-i18next';
 import { MouseEventHandler } from 'react';
+import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
+import { gutters } from '@/core/ui/grid/utils';
 
 type MemoPreviewProps = {
   displayName?: string;
   memo:
     | {
-        profile: {
-          preview?: { uri: string };
-        };
+        markdown?: string;
       }
     | undefined;
   onClick?: MouseEventHandler;
@@ -18,17 +18,32 @@ type MemoPreviewProps = {
 
 const MemoPreview = ({ displayName, memo, onClick, onClose, ...props }: MemoPreviewProps) => {
   const { t } = useTranslation();
-
-  return (
-    <ImageWithCaption
-      caption={onClick ? t('callout.memo.clickToSee') : ''}
-      src={memo?.profile.preview?.uri}
-      alt={displayName}
-      defaultImage={<MemoIcon />}
-      onClick={onClick}
-      {...props}
-    />
-  );
+  if (!memo) {
+    return (
+      <ImageWithCaption
+        caption={onClick ? t('callout.memo.clickToSee') : ''}
+        alt={displayName}
+        defaultImage={<MemoIcon />}
+        onClick={onClick}
+        {...props}
+      />
+    );
+  } else {
+    return (
+      <CroppedMarkdown
+        backgroundColor="paper"
+        maxHeightGutters={10}
+        minHeightGutters={10}
+        sx={{ cursor: 'pointer' }}
+        containerProps={{
+          marginX: gutters(1),
+          onClick: onClick,
+        }}
+      >
+        {memo?.markdown ?? ''}
+      </CroppedMarkdown>
+    );
+  }
 };
 
 export default MemoPreview;
