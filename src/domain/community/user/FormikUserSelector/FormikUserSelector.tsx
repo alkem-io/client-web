@@ -135,20 +135,23 @@ export const FormikUserSelector = ({
               ...sx,
             }}
             onChange={(_, value) => handleSelect(value)}
-            renderOption={(props, user) => (
-              <li {...props}>
-                <ProfileChipView
-                  displayName={user.profile.displayName}
-                  avatarUrl={user.profile.visual?.uri}
-                  city={user.profile.location?.city}
-                  country={user.profile.location?.country}
-                  width="100%"
-                >
-                  <FlexSpacer />
-                  <CaptionSmall sx={{ maxWidth: '50%' }}>{user.message}</CaptionSmall>
-                </ProfileChipView>
-              </li>
-            )}
+            renderOption={(props, user) => {
+              const { key, ...otherProps } = props;
+              return (
+                <li key={`${key}-${user.id}`} {...otherProps}>
+                  <ProfileChipView
+                    displayName={user.profile.displayName}
+                    avatarUrl={user.profile.visual?.uri}
+                    city={user.profile.location?.city}
+                    country={user.profile.location?.country}
+                    width="100%"
+                  >
+                    <FlexSpacer />
+                    <CaptionSmall sx={{ maxWidth: '50%' }}>{user.message}</CaptionSmall>
+                  </ProfileChipView>
+                </li>
+              );
+            }}
             renderInput={params => (
               <TextField
                 {...params}

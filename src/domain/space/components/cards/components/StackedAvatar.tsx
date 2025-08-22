@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import SpaceAvatar from '@/domain/space/components/SpaceAvatar';
 
-const StackedAvatar = ({ avatarUris }: { avatarUris: string[] }) => (
+const StackedAvatar = ({ avatarUris }: { avatarUris: { src: string; alt: string }[] }) => (
   <Box sx={{ width: gutters(2), height: gutters(2), position: 'relative', flex: '0 0 15%' }}>
     {avatarUris.map((avatarUri, index) => {
       return (
@@ -18,7 +18,8 @@ const StackedAvatar = ({ avatarUris }: { avatarUris: string[] }) => (
             border: theme => `${theme.spacing(0.2)} solid #FFFFFF`,
             borderRadius: theme => theme.spacing(0.6),
           }}
-          src={avatarUri}
+          src={avatarUri.src}
+          alt={avatarUri.alt}
         />
       );
     })}
