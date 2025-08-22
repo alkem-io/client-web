@@ -36,6 +36,7 @@ export interface InAppNotificationBaseViewProps {
   space?: {
     id?: string;
     avatarUrl: string;
+    avatarAlt?: string; // Optional alt text for the avatar
   };
   resource: {
     url: string;
@@ -172,7 +173,11 @@ export const InAppNotificationBaseView = ({
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             badgeContent={contributor ? <Avatar size="small" src={contributor?.avatarUrl} /> : null}
           >
-            <Avatar size="regular" src={space?.avatarUrl || getDefaultSpaceVisualUrl(VisualType.Avatar, space?.id)} />
+            <Avatar
+              size="regular"
+              src={space?.avatarUrl || getDefaultSpaceVisualUrl(VisualType.Avatar, space?.id)}
+              alt={space?.avatarAlt ? t('common.avatar-of', { user: space?.avatarAlt }) : t('common.avatar')}
+            />
           </Badge>
         }
       >

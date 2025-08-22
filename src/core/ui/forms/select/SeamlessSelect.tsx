@@ -11,7 +11,7 @@ export interface CustomSelectOption<Option extends string | number | SearchScope
 }
 
 type SeamlessSelectProps<Option extends string | number | SearchScope> = {
-  label?: ReactNode;
+  label?: string;
   options: CustomSelectOption<Option>[];
   typographyComponent?: ComponentType<TypographyProps>;
 
@@ -43,6 +43,9 @@ const SeamlessSelect = <Option extends string | number>({
         '.MuiSelect-icon': { top: 0, fontSize: gutters(1) },
         ...(shrink ? { flexShrink: 1, minWidth: 0, textOverflow: 'ellipsis' } : {}),
         ...sx,
+      }}
+      inputProps={{
+        'aria-label': label,
       }}
       renderValue={() => (
         <Box display="flex">

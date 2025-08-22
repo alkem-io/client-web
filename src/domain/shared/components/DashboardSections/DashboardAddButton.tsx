@@ -27,7 +27,7 @@ export const DashboardAddButton = ({ url, level = 0, onClick, translationKey, sx
       to={url ?? ''}
       onClick={onClick}
       visual={
-        <Avatar size="medium" sx={{ backgroundColor: 'primary.main' }}>
+        <Avatar size="medium" sx={{ backgroundColor: 'primary.main' }} alt={t('common.add')}>
           <AddCircleOutlineOutlined />
         </Avatar>
       }

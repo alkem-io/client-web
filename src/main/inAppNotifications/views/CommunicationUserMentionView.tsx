@@ -28,6 +28,7 @@ export const CommunicationUserMentionView = ({
       space: {
         id: space?.id,
         avatarUrl: space?.about.profile?.visual?.uri ?? '',
+        avatarAlt: space?.about.profile?.displayName ?? '',
       },
       resource: {
         url: commentUrl ?? '',

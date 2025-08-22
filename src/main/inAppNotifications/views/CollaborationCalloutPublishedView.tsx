@@ -32,6 +32,7 @@ export const CollaborationCalloutPublishedView = ({
       space: {
         id: space?.id,
         avatarUrl: space?.about.profile?.visual?.uri ?? '',
+        avatarAlt: space?.about.profile?.displayName ?? '', // Optional alt text for the avatar
       },
       resource: {
         url: callout?.framing?.profile?.url ?? '',
