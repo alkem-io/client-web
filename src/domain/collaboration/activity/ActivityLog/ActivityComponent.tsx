@@ -82,7 +82,7 @@ export const ActivityComponent = ({ activities, limit }: ActivityComponentProps)
           return (
             <ActivityViewChooser
               activity={activity}
-              avatarUrl={activity.triggeredBy.profile.avatar?.uri || ''}
+              avatarUrl={activity.triggeredBy.profile.avatar?.uri ?? ''}
               avatarAlt={
                 activity.triggeredBy.profile.displayName
                   ? t('common.avatar-of', { user: activity.triggeredBy.profile.displayName })
