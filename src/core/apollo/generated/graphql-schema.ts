@@ -771,6 +771,7 @@ export type AuthenticationProviderConfigUnion = OryConfig;
 
 export enum AuthenticationType {
   Email = 'EMAIL',
+  Github = 'GITHUB',
   Linkedin = 'LINKEDIN',
   Microsoft = 'MICROSOFT',
   Unknown = 'UNKNOWN',
@@ -7871,8 +7872,8 @@ export type UserAuthenticationResult = {
   authenticatedAt?: Maybe<Scalars['DateTime']['output']>;
   /** When the Kratos Account for the user was created */
   createdAt?: Maybe<Scalars['DateTime']['output']>;
-  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
-  method: AuthenticationType;
+  /** The Authentication Methods used for this User. One of email, linkedin, microsoft, github or unknown */
+  methods: Array<AuthenticationType>;
 };
 
 export type UserAuthorizationResetInput = {
@@ -7924,72 +7925,6 @@ export type UserSettingsCommunication = {
   __typename?: 'UserSettingsCommunication';
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages: Scalars['Boolean']['output'];
-};
-
-export type UserSettingsNotificationOrganization = {
-  __typename?: 'UserSettingsNotificationOrganization';
-  /** Receive a notification when the organization you are admin of is mentioned */
-  mentioned: Scalars['Boolean']['output'];
-  /** Receive notification when the organization you are admin of is messaged */
-  messageReceived: Scalars['Boolean']['output'];
-};
-
-export type UserSettingsNotificationPlatform = {
-  __typename?: 'UserSettingsNotificationPlatform';
-  /** Receive a notification when a new comment is added to a Discussion I created in the Forum */
-  forumDiscussionComment: Scalars['Boolean']['output'];
-  /** Receive a notification when a new Discussion is created in the Forum */
-  forumDiscussionCreated: Scalars['Boolean']['output'];
-  /** Receive notification when a new user signs up */
-  newUserSignUp: Scalars['Boolean']['output'];
-  /** Receive a notification when a new L0 Space is created */
-  spaceCreated: Scalars['Boolean']['output'];
-  /** Receive a notification when a user profile is removed */
-  userProfileRemoved: Scalars['Boolean']['output'];
-};
-
-export type UserSettingsNotificationSpace = {
-  __typename?: 'UserSettingsNotificationSpace';
-  /** Receive a notification when a callout is published */
-  collaborationCalloutPublished: Scalars['Boolean']['output'];
-  /** Receive a notification when a comment is created on a post */
-  collaborationPostCommentCreated: Scalars['Boolean']['output'];
-  /** Receive a notification when a post is created */
-  collaborationPostCreated: Scalars['Boolean']['output'];
-  /** Receive a notification when a post is created (admin) */
-  collaborationPostCreatedAdmin: Scalars['Boolean']['output'];
-  /** Receive a notification when a whiteboard is created */
-  collaborationWhiteboardCreated: Scalars['Boolean']['output'];
-  /** Receive a copy of messages that I send to a Space */
-  communicationMessage: Scalars['Boolean']['output'];
-  /** Receive a notification when a message is sent to a Space I lead */
-  communicationMessageAdmin: Scalars['Boolean']['output'];
-  /** Receive a notification for community updates */
-  communicationUpdates: Scalars['Boolean']['output'];
-  /** Receive a notification for community updates as Admin */
-  communicationUpdatesAdmin: Scalars['Boolean']['output'];
-  /** Receive a notification when an application is received */
-  communityApplicationReceived: Scalars['Boolean']['output'];
-  /** Receive a notification when an application is submitted */
-  communityApplicationSubmitted: Scalars['Boolean']['output'];
-  /** Receive a notification for community invitation */
-  communityInvitationUser: Scalars['Boolean']['output'];
-  /** Receive a notification when a new member joins the community */
-  communityNewMember: Scalars['Boolean']['output'];
-  /** Receive a notification when a new member joins the community (admin) */
-  communityNewMemberAdmin: Scalars['Boolean']['output'];
-};
-
-export type UserSettingsNotificationUser = {
-  __typename?: 'UserSettingsNotificationUser';
-  /** Receive a notification when someone replies to a comment I made. */
-  commentReply: Scalars['Boolean']['output'];
-  /** Receive a notification you are mentioned */
-  mentioned: Scalars['Boolean']['output'];
-  /** Receive notification when I receive a message. */
-  messageReceived: Scalars['Boolean']['output'];
-  /** Receive notification I send a message. */
-  messageSent: Scalars['Boolean']['output'];
 };
 
 export type UserSettingsPrivacy = {
@@ -15263,6 +15198,41 @@ export type PostCalloutsInCalloutSetQuery = {
   };
 };
 
+export type ContentUpdatePolicyQueryVariables = Exact<{
+  elementId: Scalars['UUID']['input'];
+  isWhiteboard: Scalars['Boolean']['input'];
+  isMemo: Scalars['Boolean']['input'];
+}>;
+
+export type ContentUpdatePolicyQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboard?: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy } | undefined;
+    memo?: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy } | undefined;
+  };
+};
+
+export type UpdateWhiteboardContentUpdatePolicyMutationVariables = Exact<{
+  whiteboardId: Scalars['UUID']['input'];
+  contentUpdatePolicy: ContentUpdatePolicy;
+}>;
+
+export type UpdateWhiteboardContentUpdatePolicyMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboard: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
+};
+
+export type UpdateMemoContentUpdatePolicyMutationVariables = Exact<{
+  memoId: Scalars['UUID']['input'];
+  contentUpdatePolicy: ContentUpdatePolicy;
+}>;
+
+export type UpdateMemoContentUpdatePolicyMutation = {
+  __typename?: 'Mutation';
+  updateMemo: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
+};
+
 export type WhiteboardProfileFragment = {
   __typename?: 'Profile';
   id: string;
@@ -15743,28 +15713,6 @@ export type UpdateWhiteboardMutation = {
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
-};
-
-export type WhiteboardContentUpdatePolicyQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
-}>;
-
-export type WhiteboardContentUpdatePolicyQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    whiteboard?: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy } | undefined;
-  };
-};
-
-export type UpdateWhiteboardContentUpdatePolicyMutationVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
-  contentUpdatePolicy: ContentUpdatePolicy;
-}>;
-
-export type UpdateWhiteboardContentUpdatePolicyMutation = {
-  __typename?: 'Mutation';
-  updateWhiteboard: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
 export type LinkDetailsFragment = {

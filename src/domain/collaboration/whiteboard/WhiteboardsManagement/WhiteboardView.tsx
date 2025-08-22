@@ -5,8 +5,7 @@ import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { useState, useEffect, ReactNode } from 'react';
 import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
 import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
-import useWhiteboardContentUpdatePolicy from '../contentUpdatePolicy/WhiteboardContentUpdatePolicy';
-import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
+import CollaborationSettings from '../../realTimeCollaboration/CollaborationSettings/CollaborationSettings';
 import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
 import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 
@@ -60,11 +59,6 @@ const WhiteboardView = ({
   const hasDeletePrivileges =
     !preventWhiteboardDeletion && authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
 
-  const contentUpdatePolicyProvided = useWhiteboardContentUpdatePolicy({
-    whiteboardId: whiteboard?.id,
-    skip: !hasUpdatePrivileges,
-  });
-
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
     variables: { whiteboardId: whiteboard?.id! },
     skip: !whiteboard?.id,
@@ -102,9 +96,7 @@ const WhiteboardView = ({
             headerActions: (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
-                  {hasUpdatePrivileges && (
-                    <WhiteboardShareSettings createdBy={whiteboard?.createdBy} {...contentUpdatePolicyProvided} />
-                  )}
+                  {hasUpdatePrivileges && <CollaborationSettings element={whiteboard} elementType="whiteboard" />}
                 </ShareButton>
 
                 <FullscreenButton />

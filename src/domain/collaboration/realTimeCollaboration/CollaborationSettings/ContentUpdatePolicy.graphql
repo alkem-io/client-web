@@ -1,0 +1,26 @@
+query ContentUpdatePolicy($elementId: UUID!, $isWhiteboard: Boolean!, $isMemo: Boolean!) {
+  lookup {
+    whiteboard(ID: $elementId) @include(if: $isWhiteboard) {
+      id
+      contentUpdatePolicy
+    }
+    memo(ID: $elementId) @include(if: $isMemo) {
+      id
+      contentUpdatePolicy
+    }
+  }
+}
+
+mutation UpdateWhiteboardContentUpdatePolicy($whiteboardId: UUID!, $contentUpdatePolicy: ContentUpdatePolicy!) {
+  updateWhiteboard(whiteboardData: { ID: $whiteboardId, contentUpdatePolicy: $contentUpdatePolicy }) {
+    id
+    contentUpdatePolicy
+  }
+}
+
+mutation UpdateMemoContentUpdatePolicy($memoId: UUID!, $contentUpdatePolicy: ContentUpdatePolicy!) {
+  updateMemo(memoData: { ID: $memoId, contentUpdatePolicy: $contentUpdatePolicy }) {
+    id
+    contentUpdatePolicy
+  }
+}
