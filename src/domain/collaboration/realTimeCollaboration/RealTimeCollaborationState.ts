@@ -1,17 +1,11 @@
 import { Identifiable } from '@/core/utils/Identifiable';
+import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 
 // Enum of all memo status values
 export enum MemoStatus {
   CONNECTING = 'connecting',
   CONNECTED = 'connected',
   DISCONNECTED = 'disconnected',
-}
-// needs to support a wide variety of read-only reasons for the different features
-export enum ReadOnlyCode {
-  NOT_AUTHENTICATED = 'notAuthenticated',
-  NO_UPDATE_ACCESS = 'noUpdateAccess',
-  ROOM_CAPACITY_REACHED = 'roomCapacityReached',
-  MULTI_USER_NOT_ALLOWED = 'multiUserNotAllowed',
 }
 
 export const MEMO_STATUS_VALUES = Object.values(MemoStatus);
