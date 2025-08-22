@@ -4189,13 +4189,13 @@ export type UserFieldPolicy = {
 export type UserAuthenticationResultKeySpecifier = (
   | 'authenticatedAt'
   | 'createdAt'
-  | 'method'
+  | 'methods'
   | UserAuthenticationResultKeySpecifier
 )[];
 export type UserAuthenticationResultFieldPolicy = {
   authenticatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
-  method?: FieldPolicy<any> | FieldReadFunction<any>;
+  methods?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserGroupKeySpecifier = (
   | 'authorization'
@@ -4227,76 +4227,6 @@ export type UserSettingsCommunicationKeySpecifier = (
 )[];
 export type UserSettingsCommunicationFieldPolicy = {
   allowOtherUsersToSendMessages?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type UserSettingsNotificationOrganizationKeySpecifier = (
-  | 'mentioned'
-  | 'messageReceived'
-  | UserSettingsNotificationOrganizationKeySpecifier
-)[];
-export type UserSettingsNotificationOrganizationFieldPolicy = {
-  mentioned?: FieldPolicy<any> | FieldReadFunction<any>;
-  messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type UserSettingsNotificationPlatformKeySpecifier = (
-  | 'forumDiscussionComment'
-  | 'forumDiscussionCreated'
-  | 'newUserSignUp'
-  | 'spaceCreated'
-  | 'userProfileRemoved'
-  | UserSettingsNotificationPlatformKeySpecifier
-)[];
-export type UserSettingsNotificationPlatformFieldPolicy = {
-  forumDiscussionComment?: FieldPolicy<any> | FieldReadFunction<any>;
-  forumDiscussionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  newUserSignUp?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  userProfileRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type UserSettingsNotificationSpaceKeySpecifier = (
-  | 'collaborationCalloutPublished'
-  | 'collaborationPostCommentCreated'
-  | 'collaborationPostCreated'
-  | 'collaborationPostCreatedAdmin'
-  | 'collaborationWhiteboardCreated'
-  | 'communicationMessage'
-  | 'communicationMessageAdmin'
-  | 'communicationUpdates'
-  | 'communicationUpdatesAdmin'
-  | 'communityApplicationReceived'
-  | 'communityApplicationSubmitted'
-  | 'communityInvitationUser'
-  | 'communityNewMember'
-  | 'communityNewMemberAdmin'
-  | UserSettingsNotificationSpaceKeySpecifier
-)[];
-export type UserSettingsNotificationSpaceFieldPolicy = {
-  collaborationCalloutPublished?: FieldPolicy<any> | FieldReadFunction<any>;
-  collaborationPostCommentCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  collaborationPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  collaborationPostCreatedAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  collaborationWhiteboardCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationMessage?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationMessageAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationUpdates?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationUpdatesAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityApplicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityApplicationSubmitted?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityInvitationUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityNewMember?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityNewMemberAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type UserSettingsNotificationUserKeySpecifier = (
-  | 'commentReply'
-  | 'mentioned'
-  | 'messageReceived'
-  | 'messageSent'
-  | UserSettingsNotificationUserKeySpecifier
-)[];
-export type UserSettingsNotificationUserFieldPolicy = {
-  commentReply?: FieldPolicy<any> | FieldReadFunction<any>;
-  mentioned?: FieldPolicy<any> | FieldReadFunction<any>;
-  messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
-  messageSent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsPrivacyKeySpecifier = ('contributionRolesPubliclyVisible' | UserSettingsPrivacyKeySpecifier)[];
 export type UserSettingsPrivacyFieldPolicy = {
@@ -5626,34 +5556,6 @@ export type StrictTypedTypePolicies = {
       | UserSettingsCommunicationKeySpecifier
       | (() => undefined | UserSettingsCommunicationKeySpecifier);
     fields?: UserSettingsCommunicationFieldPolicy;
-  };
-  UserSettingsNotificationOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | UserSettingsNotificationOrganizationKeySpecifier
-      | (() => undefined | UserSettingsNotificationOrganizationKeySpecifier);
-    fields?: UserSettingsNotificationOrganizationFieldPolicy;
-  };
-  UserSettingsNotificationPlatform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | UserSettingsNotificationPlatformKeySpecifier
-      | (() => undefined | UserSettingsNotificationPlatformKeySpecifier);
-    fields?: UserSettingsNotificationPlatformFieldPolicy;
-  };
-  UserSettingsNotificationSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | UserSettingsNotificationSpaceKeySpecifier
-      | (() => undefined | UserSettingsNotificationSpaceKeySpecifier);
-    fields?: UserSettingsNotificationSpaceFieldPolicy;
-  };
-  UserSettingsNotificationUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | UserSettingsNotificationUserKeySpecifier
-      | (() => undefined | UserSettingsNotificationUserKeySpecifier);
-    fields?: UserSettingsNotificationUserFieldPolicy;
   };
   UserSettingsPrivacy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserSettingsPrivacyKeySpecifier | (() => undefined | UserSettingsPrivacyKeySpecifier);
