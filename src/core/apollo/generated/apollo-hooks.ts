@@ -1475,21 +1475,23 @@ export const UserSettingsFragmentFragmentDoc = gql`
     }
     notification {
       platform {
-        adminUserProfileRemoved {
-          email
-          inApp
-        }
-        adminUserProfileCreated {
-          email
-          inApp
-        }
-        adminSpaceCreated {
-          email
-          inApp
-        }
-        adminUserGlobalRoleChanged {
-          email
-          inApp
+        admin {
+          userProfileRemoved {
+            email
+            inApp
+          }
+          userProfileCreated {
+            email
+            inApp
+          }
+          spaceCreated {
+            email
+            inApp
+          }
+          userGlobalRoleChanged {
+            email
+            inApp
+          }
         }
         forumDiscussionComment {
           email
@@ -1511,21 +1513,23 @@ export const UserSettingsFragmentFragmentDoc = gql`
         }
       }
       space {
-        adminCommunityApplicationReceived {
-          email
-          inApp
-        }
-        adminCollaborationCalloutContributionCreated {
-          email
-          inApp
-        }
-        adminCommunityNewMember {
-          email
-          inApp
-        }
-        adminCommunicationMessageReceived {
-          email
-          inApp
+        admin {
+          communityApplicationReceived {
+            email
+            inApp
+          }
+          collaborationCalloutContributionCreated {
+            email
+            inApp
+          }
+          communityNewMember {
+            email
+            inApp
+          }
+          communicationMessageReceived {
+            email
+            inApp
+          }
         }
         collaborationCalloutContributionCreated {
           email
@@ -1549,17 +1553,19 @@ export const UserSettingsFragmentFragmentDoc = gql`
         }
       }
       user {
-        spaceCommunityInvitationReceived {
-          email
-          inApp
-        }
-        spaceCommunityJoined {
-          email
-          inApp
-        }
-        spaceCommunityApplicationSubmitted {
-          email
-          inApp
+        membership {
+          spaceCommunityInvitationReceived {
+            email
+            inApp
+          }
+          spaceCommunityJoined {
+            email
+            inApp
+          }
+          spaceCommunityApplicationSubmitted {
+            email
+            inApp
+          }
         }
         mentioned {
           email

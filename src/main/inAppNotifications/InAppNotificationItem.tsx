@@ -10,7 +10,7 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
   switch (item.type) {
     case NotificationEvent.SpaceCollaborationCalloutPublished:
       return <InAppSpaceCollaborationCalloutPublishedView {...item} />;
-    case NotificationEvent.UserMention:
+    case NotificationEvent.UserMentioned:
       return <InAppUserMentionView {...item} />;
     case NotificationEvent.SpaceAdminCommunityNewMember:
       return <InAppSpaceCommunityNewMemberView {...item} />;

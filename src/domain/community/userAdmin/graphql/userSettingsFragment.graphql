@@ -8,21 +8,23 @@ fragment userSettingsFragment on UserSettings {
   }
   notification {
     platform {
-      adminUserProfileRemoved {
-        email
-        inApp
-      }
-      adminUserProfileCreated {
-        email
-        inApp
-      }
-      adminSpaceCreated {
-        email
-        inApp
-      }
-      adminUserGlobalRoleChanged {
-        email
-        inApp
+      admin {
+        userProfileRemoved {
+          email
+          inApp
+        }
+        userProfileCreated {
+          email
+          inApp
+        }
+        spaceCreated {
+          email
+          inApp
+        }
+        userGlobalRoleChanged {
+          email
+          inApp
+        }
       }
       # non-admin settings
       forumDiscussionComment {
@@ -46,21 +48,23 @@ fragment userSettingsFragment on UserSettings {
     }
     space {
       # Admin related notifications
-      adminCommunityApplicationReceived {
-        email
-        inApp
-      }
-      adminCollaborationCalloutContributionCreated {
-        email
-        inApp
-      }
-      adminCommunityNewMember {
-        email
-        inApp
-      }
-      adminCommunicationMessageReceived {
-        email
-        inApp
+      admin {
+        communityApplicationReceived {
+          email
+          inApp
+        }
+        collaborationCalloutContributionCreated {
+          email
+          inApp
+        }
+        communityNewMember {
+          email
+          inApp
+        }
+        communicationMessageReceived {
+          email
+          inApp
+        }
       }
       # Member related notifications
       collaborationCalloutContributionCreated {
@@ -85,17 +89,19 @@ fragment userSettingsFragment on UserSettings {
       }
     }
     user {
-      spaceCommunityInvitationReceived {
-        email
-        inApp
-      }
-      spaceCommunityJoined {
-        email
-        inApp
-      }
-      spaceCommunityApplicationSubmitted {
-        email
-        inApp
+      membership {
+        spaceCommunityInvitationReceived {
+          email
+          inApp
+        }
+        spaceCommunityJoined {
+          email
+          inApp
+        }
+        spaceCommunityApplicationSubmitted {
+          email
+          inApp
+        }
       }
       mentioned {
         email
