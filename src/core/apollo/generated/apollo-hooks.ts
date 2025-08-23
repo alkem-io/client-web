@@ -1483,19 +1483,19 @@ export const UserSettingsFragmentFragmentDoc = gql`
           email
           inApp
         }
-        forumDiscussionComment {
-          email
-          inApp
-        }
-        forumDiscussionCreated {
-          email
-          inApp
-        }
         adminSpaceCreated {
           email
           inApp
         }
         adminUserGlobalRoleChange {
+          email
+          inApp
+        }
+        forumDiscussionComment {
+          email
+          inApp
+        }
+        forumDiscussionCreated {
           email
           inApp
         }
@@ -1573,7 +1573,7 @@ export const UserSettingsFragmentFragmentDoc = gql`
           email
           inApp
         }
-        messageSent {
+        copyOfMessageSent {
           email
           inApp
         }

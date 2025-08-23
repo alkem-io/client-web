@@ -7811,12 +7811,12 @@ export type UpdateUserSettingsNotificationSpaceInput = {
 export type UpdateUserSettingsNotificationUserInput = {
   /** Receive a notification when someone replies to a comment I made. */
   commentReply?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive notification I send a message to a User, Organization or Space. */
+  copyOfMessageSent?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification you are mentioned */
   mentioned?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive notification when I receive a message. */
   messageReceived?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Receive notification I send a message to a User, Organization or Space. */
-  messageSent?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when an application is submitted */
   spaceCommunityApplicationSubmitted?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification for community invitation */
@@ -8161,12 +8161,12 @@ export type UserSettingsNotificationUser = {
   __typename?: 'UserSettingsNotificationUser';
   /** Receive a notification when someone replies to a comment I made. */
   commentReply: UserSettingsNotificationChannels;
+  /** Receive notification I send a message to a User, Organization or Space. */
+  copyOfMessageSent: UserSettingsNotificationChannels;
   /** Receive a notification you are mentioned */
   mentioned: UserSettingsNotificationChannels;
   /** Receive notification when I receive a direct message. */
   messageReceived: UserSettingsNotificationChannels;
-  /** Receive notification I send a message to a User, Organization or Space. */
-  messageSent: UserSettingsNotificationChannels;
   /** Receive a notification when an application for a Space is submitted */
   spaceCommunityApplicationSubmitted: UserSettingsNotificationChannels;
   /** Receive a notification when I am invited to join a Space community */
@@ -19264,14 +19264,14 @@ export type UpdateUserSettingsMutation = {
           __typename?: 'UserSettingsNotificationPlatform';
           adminUserProfileRemoved: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           adminUserProfileCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-          forumDiscussionComment: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-          forumDiscussionCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           adminSpaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           adminUserGlobalRoleChange: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
           };
+          forumDiscussionComment: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          forumDiscussionCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
         };
         organization: {
           __typename?: 'UserSettingsNotificationOrganization';
@@ -19334,7 +19334,7 @@ export type UpdateUserSettingsMutation = {
           mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-          messageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          copyOfMessageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
         };
         virtualContributor: {
           __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -19360,10 +19360,10 @@ export type UserSettingsFragmentFragment = {
       __typename?: 'UserSettingsNotificationPlatform';
       adminUserProfileRemoved: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
       adminUserProfileCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-      forumDiscussionComment: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-      forumDiscussionCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
       adminSpaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
       adminUserGlobalRoleChange: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      forumDiscussionComment: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      forumDiscussionCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
     };
     organization: {
       __typename?: 'UserSettingsNotificationOrganization';
@@ -19422,7 +19422,7 @@ export type UserSettingsFragmentFragment = {
       mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
       commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
       messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-      messageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      copyOfMessageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
     };
     virtualContributor: {
       __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -19466,18 +19466,18 @@ export type UserSettingsQuery = {
                   email: boolean;
                   inApp: boolean;
                 };
+                adminSpaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+                adminUserGlobalRoleChange: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
                 forumDiscussionComment: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
                 };
                 forumDiscussionCreated: {
-                  __typename?: 'UserSettingsNotificationChannels';
-                  email: boolean;
-                  inApp: boolean;
-                };
-                adminSpaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-                adminUserGlobalRoleChange: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
@@ -19560,7 +19560,7 @@ export type UserSettingsQuery = {
                 mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
                 commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
                 messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-                messageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+                copyOfMessageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
               };
               virtualContributor: {
                 __typename?: 'UserSettingsNotificationVirtualContributor';

@@ -109,7 +109,7 @@ fragment userSettingsFragment on UserSettings {
         email
         inApp
       }
-      messageSent {
+      copyOfMessageSent {
         email
         inApp
       }

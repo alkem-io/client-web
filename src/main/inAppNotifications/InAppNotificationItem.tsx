@@ -12,9 +12,9 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
       return <InAppSpaceCollaborationCalloutPublishedView {...item} />;
     case NotificationEvent.UserMention:
       return <InAppUserMentionView {...item} />;
-    case NotificationEvent.SpaceCommunityNewMember:
+    case NotificationEvent.SpaceAdminCommunityNewMember:
       return <InAppSpaceCommunityNewMemberView {...item} />;
-    case NotificationEvent.SpaceCommunityNewMemberAdmin:
+    case NotificationEvent.UserSpaceCommunityJoined:
       return <InAppSpaceCommunityNewMemberAdminView {...item} />;
 
     default:
