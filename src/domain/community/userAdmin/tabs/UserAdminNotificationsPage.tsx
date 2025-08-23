@@ -119,18 +119,27 @@ const UserAdminNotificationsPage = () => {
     }>
   ) => {
     const currentSpaceSettings = currentSettings?.notification?.space;
+    const currentSpaceAdminSettings = currentSettings?.notification?.space?.admin;
     const currentOrgSettings = currentSettings?.notification?.organization;
     const currentPlatformSettings = currentSettings?.notification?.platform;
+    const currentPlatformAdminSettings = currentSettings?.notification?.platform?.admin;
     const currentUserSettings = currentSettings?.notification?.user;
 
     const settingsVariable = {
       notification: {
         space: {
-          adminCommunityApplicationReceived:
-            updates.spaceAdminCommunityApplicationReceived ??
-            currentSpaceSettings?.admin.communityApplicationReceived.email,
-          adminCommunityNewMember:
-            updates.spaceAdminCommunityNewMember ?? currentSpaceSettings?.admin.communityNewMember.email,
+          admin: {
+            communityApplicationReceived:
+              updates.spaceAdminCommunityApplicationReceived ??
+              currentSpaceAdminSettings?.communityApplicationReceived.email,
+            communityNewMember:
+              updates.spaceAdminCommunityNewMember ?? currentSpaceAdminSettings?.communityNewMember.email,
+            collaborationCalloutContributionCreated:
+              updates.spaceAdminCollaborationCalloutContributionCreated ??
+              currentSpaceAdminSettings?.collaborationCalloutContributionCreated.email,
+            // not updatable yet
+            communicationMessageReceived: currentSpaceAdminSettings?.communicationMessageReceived.email,
+          },
           collaborationCalloutPublished:
             updates.collaborationCalloutPublished ?? currentSpaceSettings?.collaborationCalloutPublished.email,
           communicationUpdates: updates.communicationUpdates ?? currentSpaceSettings?.communicationUpdates.email,
@@ -140,13 +149,8 @@ const UserAdminNotificationsPage = () => {
           collaborationCalloutContributionCreated:
             updates.collaborationCalloutContributionCreated ??
             currentSpaceSettings?.collaborationCalloutContributionCreated.email,
-          adminCollaborationCalloutContributionCreated:
-            updates.spaceAdminCollaborationCalloutContributionCreated ??
-            currentSpaceSettings?.admin.collaborationCalloutContributionCreated.email,
           collaborationCalloutComment:
             updates.collaborationCalloutComment ?? currentSpaceSettings?.collaborationCalloutComment.email,
-          // not updatable yet
-          adminCommunicationMessageReceived: currentSpaceSettings?.admin.communicationMessageReceived.email,
         },
         organization: {
           adminMentioned: updates.organizationMentioned ?? currentOrgSettings?.adminMentioned.email,
@@ -157,26 +161,30 @@ const UserAdminNotificationsPage = () => {
             updates.forumDiscussionComment ?? currentPlatformSettings?.forumDiscussionComment.email,
           forumDiscussionCreated:
             updates.forumDiscussionCreated ?? currentPlatformSettings?.forumDiscussionCreated.email,
-          adminUserProfileCreated:
-            updates.platformAdminUserProfileCreated ?? currentPlatformSettings?.admin.userProfileCreated.email,
-          adminUserProfileRemoved:
-            updates.platformAdminUserProfileRemoved ?? currentPlatformSettings?.admin.userProfileRemoved.email,
-          // Not updatable yet
-          adminSpaceCreated: currentPlatformSettings?.admin.spaceCreated.email,
-          adminUserGlobalRoleChanged: currentPlatformSettings?.admin.userGlobalRoleChanged.email,
+          admin: {
+            userProfileCreated:
+              updates.platformAdminUserProfileCreated ?? currentPlatformAdminSettings?.userProfileCreated.email,
+            userProfileRemoved:
+              updates.platformAdminUserProfileRemoved ?? currentPlatformAdminSettings?.userProfileRemoved.email,
+            // Not updatable yet
+            spaceCreated: currentPlatformAdminSettings?.spaceCreated.email,
+            userGlobalRoleChanged: currentPlatformAdminSettings?.userGlobalRoleChanged.email,
+          },
         },
         user: {
           commentReply: updates.commentReply ?? currentUserSettings?.commentReply.email,
           mentioned: updates.userMentioned ?? currentUserSettings?.mentioned.email,
-          spaceCommunityApplicationSubmitted:
-            updates.userSpaceCommunityApplicationSubmitted ??
-            currentUserSettings?.membership.spaceCommunityApplicationSubmitted.email,
-          spaceCommunityInvitationReceived:
-            updates.userSpaceCommunityInvitationReceived ??
-            currentUserSettings?.membership.spaceCommunityInvitationReceived.email,
-          spaceCommunityJoined:
-            updates.userSpaceCommunityJoined ?? currentUserSettings?.membership.spaceCommunityJoined.email,
           copyOfMessageSent: updates.userCopyOfMessageSent ?? currentUserSettings?.copyOfMessageSent.email,
+          membership: {
+            spaceCommunityApplicationSubmitted:
+              updates.userSpaceCommunityApplicationSubmitted ??
+              currentUserSettings?.membership.spaceCommunityApplicationSubmitted.email,
+            spaceCommunityInvitationReceived:
+              updates.userSpaceCommunityInvitationReceived ??
+              currentUserSettings?.membership.spaceCommunityInvitationReceived.email,
+            spaceCommunityJoined:
+              updates.userSpaceCommunityJoined ?? currentUserSettings?.membership.spaceCommunityJoined.email,
+          },
         },
       },
     };
