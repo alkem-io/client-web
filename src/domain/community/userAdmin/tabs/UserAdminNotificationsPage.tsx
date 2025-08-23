@@ -93,6 +93,7 @@ const UserAdminNotificationsPage = () => {
       spaceAdminCommunityNewMember: boolean;
       spaceAdminCommunityApplicationReceived: boolean;
       spaceAdminCollaborationCalloutContributionCreated: boolean;
+      spaceAdminCommunicationMessageReceived: boolean;
 
       // Organization notifications
       organizationMentioned: boolean;
@@ -136,8 +137,9 @@ const UserAdminNotificationsPage = () => {
           collaborationCalloutContributionCreated:
             updates.spaceAdminCollaborationCalloutContributionCreated ??
             currentSpaceAdminSettings?.collaborationCalloutContributionCreated.email,
-          // not updatable yet
-          communicationMessageReceived: currentSpaceAdminSettings?.communicationMessageReceived.email,
+          communicationMessageReceived:
+            updates.spaceAdminCommunicationMessageReceived ??
+            currentSpaceAdminSettings?.communicationMessageReceived.email,
         },
         collaborationCalloutPublished:
           updates.collaborationCalloutPublished ?? currentSpaceSettings?.collaborationCalloutPublished.email,
@@ -303,7 +305,7 @@ const UserAdminNotificationsPage = () => {
                           'pages.userNotificationsSettings.spaceAdmin.settings.collaborationCalloutContributionCreated'
                         ),
                       },
-                      adminCommunicationMessageReceived: {
+                      spaceAdminCommunicationMessageReceived: {
                         checked:
                           currentSettings?.notification?.space?.admin.communicationMessageReceived.email || false,
                         label: t('pages.userNotificationsSettings.spaceAdmin.settings.communicationMessageReceived'),
