@@ -3050,7 +3050,7 @@
           "collaborationCalloutPublished": "Receive a notification when a Callout is published in a community I am a member of",
           "collaborationCalloutContributionCreated": "Receive notification when a new post is created in a community I am a member of",
           "collaborationCalloutComment": "Receive a notification when a new whiteboard is created in a community I am a member of",
-          "collaborationPostContributionComment": "Receive a notification when a new comment is added to a post I follow"
+          "collaborationCalloutPostContributionComment": "Receive a notification when a new comment is added to a post I follow"
         }
       },
       "spaceAdmin": {
@@ -3075,7 +3075,7 @@
         "title": "User mentions and messaging",
         "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to yourself.",
         "settings": {
-          "spaceCommunityApplicationSubmitted": "Receive notification when I apply to join a community",
+          "spaceCommunityApplication": "Receive notification when I apply to join a community",
           "spaceCommunityInvitation": "Receive a notification when someone invites you to join a community",
           "spaceCommunityJoined": "Receive notification when I join a new Space community",
           "mentioned": "Receive notifications when I am mentioned",
@@ -3088,10 +3088,10 @@
         "title": "Platform Admin Settings",
         "subtitle": "This section is only visible to users that are a global admin on the platform",
         "settings": {
-          "userProfileCreated": "Receive notifications when a new user signs up",
-          "userProfileRemoved": "Receive notifications when a user profile is removed",
-          "spaceCreated": "Receive notifications when a new space is created",
-          "globalRoleChanged": "Receive notifications when a user's global role is changed"
+          "adminUserProfileCreated": "Receive notifications when a new user signs up",
+          "adminUserProfileRemoved": "Receive notifications when a user profile is removed",
+          "adminSpaceCreated": "Receive notifications when a new space is created",
+          "adminUserGlobalRoleChanged": "Receive notifications when a user's global role is changed"
         }
       },
       "forum": {

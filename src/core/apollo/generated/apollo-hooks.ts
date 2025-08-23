@@ -1487,7 +1487,7 @@ export const UserSettingsFragmentFragmentDoc = gql`
           email
           inApp
         }
-        adminUserGlobalRoleChange {
+        adminUserGlobalRoleChanged {
           email
           inApp
         }
@@ -1515,7 +1515,7 @@ export const UserSettingsFragmentFragmentDoc = gql`
           email
           inApp
         }
-        adminCollaborationContributionCreated {
+        adminCollaborationCalloutContributionCreated {
           email
           inApp
         }

@@ -4353,7 +4353,7 @@ export type UserSettingsNotificationOrganizationFieldPolicy = {
 };
 export type UserSettingsNotificationPlatformKeySpecifier = (
   | 'adminSpaceCreated'
-  | 'adminUserGlobalRoleChange'
+  | 'adminUserGlobalRoleChanged'
   | 'adminUserProfileCreated'
   | 'adminUserProfileRemoved'
   | 'forumDiscussionComment'
@@ -4362,14 +4362,14 @@ export type UserSettingsNotificationPlatformKeySpecifier = (
 )[];
 export type UserSettingsNotificationPlatformFieldPolicy = {
   adminSpaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminUserGlobalRoleChange?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUserGlobalRoleChanged?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserProfileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserProfileRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
   forumDiscussionComment?: FieldPolicy<any> | FieldReadFunction<any>;
   forumDiscussionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationSpaceKeySpecifier = (
-  | 'adminCollaborationContributionCreated'
+  | 'adminCollaborationCalloutContributionCreated'
   | 'adminCommunicationMessageReceived'
   | 'adminCommunityApplicationReceived'
   | 'adminCommunityNewMember'
@@ -4381,7 +4381,7 @@ export type UserSettingsNotificationSpaceKeySpecifier = (
   | UserSettingsNotificationSpaceKeySpecifier
 )[];
 export type UserSettingsNotificationSpaceFieldPolicy = {
-  adminCollaborationContributionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCollaborationCalloutContributionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunityApplicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunityNewMember?: FieldPolicy<any> | FieldReadFunction<any>;

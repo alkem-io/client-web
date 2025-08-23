@@ -5049,7 +5049,7 @@ export type Nvp = {
 export enum NotificationEvent {
   OrganizationAdminMentioned = 'ORGANIZATION_ADMIN_MENTIONED',
   OrganizationAdminMessage = 'ORGANIZATION_ADMIN_MESSAGE',
-  PlatformAdminGlobalRoleChange = 'PLATFORM_ADMIN_GLOBAL_ROLE_CHANGE',
+  PlatformAdminGlobalRoleChanged = 'PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED',
   PlatformAdminSpaceCreated = 'PLATFORM_ADMIN_SPACE_CREATED',
   PlatformAdminUserProfileCreated = 'PLATFORM_ADMIN_USER_PROFILE_CREATED',
   PlatformAdminUserProfileRemoved = 'PLATFORM_ADMIN_USER_PROFILE_REMOVED',
@@ -5061,14 +5061,14 @@ export enum NotificationEvent {
   SpaceAdminCommunityNewMember = 'SPACE_ADMIN_COMMUNITY_NEW_MEMBER',
   SpaceCollaborationCalloutComment = 'SPACE_COLLABORATION_CALLOUT_COMMENT',
   SpaceCollaborationCalloutContribution = 'SPACE_COLLABORATION_CALLOUT_CONTRIBUTION',
-  SpaceCollaborationCalloutContributionComment = 'SPACE_COLLABORATION_CALLOUT_CONTRIBUTION_COMMENT',
+  SpaceCollaborationCalloutPostContributionComment = 'SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT',
   SpaceCollaborationCalloutPublished = 'SPACE_COLLABORATION_CALLOUT_PUBLISHED',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
   UserCommentReply = 'USER_COMMENT_REPLY',
-  UserMention = 'USER_MENTION',
+  UserCopyOfMessageSent = 'USER_COPY_OF_MESSAGE_SENT',
+  UserMentioned = 'USER_MENTIONED',
   UserMessage = 'USER_MESSAGE',
-  UserMessageSentCopy = 'USER_MESSAGE_SENT_COPY',
   UserSignUpWelcome = 'USER_SIGN_UP_WELCOME',
   UserSpaceCommunityApplication = 'USER_SPACE_COMMUNITY_APPLICATION',
   UserSpaceCommunityInvitation = 'USER_SPACE_COMMUNITY_INVITATION',
@@ -7773,10 +7773,10 @@ export type UpdateUserSettingsNotificationOrganizationInput = {
 };
 
 export type UpdateUserSettingsNotificationPlatformInput = {
-  /** [Admin] Receive a notification user is assigned or removed from a global role */
-  adminGlobalRoleChanged?: InputMaybe<Scalars['Boolean']['input']>;
   /** [Admin] Receive a notification when a new L0 Space is created */
   adminSpaceCreated?: InputMaybe<Scalars['Boolean']['input']>;
+  /** [Admin] Receive a notification user is assigned or removed from a global role */
+  adminUserGlobalRoleChanged?: InputMaybe<Scalars['Boolean']['input']>;
   /** [Admin] Receive notification when a new user signs up */
   adminUserProfileCreated?: InputMaybe<Scalars['Boolean']['input']>;
   /** [Admin] Receive a notification when a user profile is removed */
@@ -7789,7 +7789,7 @@ export type UpdateUserSettingsNotificationPlatformInput = {
 
 export type UpdateUserSettingsNotificationSpaceInput = {
   /** Receive a notification when a contribution is added (admin) */
-  adminCollaborationCalloutContribution?: InputMaybe<Scalars['Boolean']['input']>;
+  adminCollaborationCalloutContributionCreated?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when a message is sent to a Space I lead */
   adminCommunicationMessage?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive a notification when an application is received */
@@ -8124,7 +8124,7 @@ export type UserSettingsNotificationPlatform = {
   /** Receive a notification when a new L0 Space is created */
   adminSpaceCreated: UserSettingsNotificationChannels;
   /** Receive a notification when a user global role is assigned or removed. */
-  adminUserGlobalRoleChange: UserSettingsNotificationChannels;
+  adminUserGlobalRoleChanged: UserSettingsNotificationChannels;
   /** Receive notification when a new user signs up */
   adminUserProfileCreated: UserSettingsNotificationChannels;
   /** Receive a notification when a user profile is removed */
@@ -8138,7 +8138,7 @@ export type UserSettingsNotificationPlatform = {
 export type UserSettingsNotificationSpace = {
   __typename?: 'UserSettingsNotificationSpace';
   /** Receive a notification when a contribution is created (admin) */
-  adminCollaborationContributionCreated: UserSettingsNotificationChannels;
+  adminCollaborationCalloutContributionCreated: UserSettingsNotificationChannels;
   /** Receive a notification when a message is sent to a Space I lead */
   adminCommunicationMessageReceived: UserSettingsNotificationChannels;
   /** Receive a notification when an application is received */
@@ -19265,7 +19265,7 @@ export type UpdateUserSettingsMutation = {
           adminUserProfileRemoved: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           adminUserProfileCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           adminSpaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-          adminUserGlobalRoleChange: {
+          adminUserGlobalRoleChanged: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
@@ -19285,7 +19285,7 @@ export type UpdateUserSettingsMutation = {
             email: boolean;
             inApp: boolean;
           };
-          adminCollaborationContributionCreated: {
+          adminCollaborationCalloutContributionCreated: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
@@ -19361,7 +19361,7 @@ export type UserSettingsFragmentFragment = {
       adminUserProfileRemoved: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
       adminUserProfileCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
       adminSpaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-      adminUserGlobalRoleChange: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      adminUserGlobalRoleChanged: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
       forumDiscussionComment: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
       forumDiscussionCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
     };
@@ -19377,7 +19377,7 @@ export type UserSettingsFragmentFragment = {
         email: boolean;
         inApp: boolean;
       };
-      adminCollaborationContributionCreated: {
+      adminCollaborationCalloutContributionCreated: {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
         inApp: boolean;
@@ -19467,7 +19467,7 @@ export type UserSettingsQuery = {
                   inApp: boolean;
                 };
                 adminSpaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-                adminUserGlobalRoleChange: {
+                adminUserGlobalRoleChanged: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
@@ -19499,7 +19499,7 @@ export type UserSettingsQuery = {
                   email: boolean;
                   inApp: boolean;
                 };
-                adminCollaborationContributionCreated: {
+                adminCollaborationCalloutContributionCreated: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;

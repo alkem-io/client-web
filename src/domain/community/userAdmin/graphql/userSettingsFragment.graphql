@@ -20,7 +20,7 @@ fragment userSettingsFragment on UserSettings {
         email
         inApp
       }
-      adminUserGlobalRoleChange {
+      adminUserGlobalRoleChanged {
         email
         inApp
       }
@@ -50,7 +50,7 @@ fragment userSettingsFragment on UserSettings {
         email
         inApp
       }
-      adminCollaborationContributionCreated {
+      adminCollaborationCalloutContributionCreated {
         email
         inApp
       }
