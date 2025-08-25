@@ -4,7 +4,7 @@ import rehypeRaw from 'rehype-raw';
 import components from './components';
 import PlainText from './PlainText';
 import { MarkdownOptions, MarkdownOptionsProvider } from './MarkdownOptionsContext';
-import { Box } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 import { remarkVerifyIframe } from './embed/remarkVerifyIframe';
 import { useConfig } from '@/domain/platform/config/useConfig';
 
@@ -17,6 +17,7 @@ export interface WrapperMarkdownProps extends ReactMarkdownOptions, Partial<Mark
   // when using sx, that gets passed to ReactMarkdown and it throws an error
   // because it doesn't support it anymore
   className?: string;
+  containerProps?: BoxProps;
 }
 
 export const WrapperMarkdown = ({
@@ -27,6 +28,7 @@ export const WrapperMarkdown = ({
   caption = false,
   sx,
   className,
+  containerProps,
   ...props
 }: WrapperMarkdownProps) => {
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
@@ -42,6 +44,7 @@ export const WrapperMarkdown = ({
       <Box
         sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined, ...sx }}
         className={`${MARKDOWN_CLASS_NAME} ${className || ''}`.trim()}
+        {...containerProps}
       >
         <ReactMarkdown
           components={components}

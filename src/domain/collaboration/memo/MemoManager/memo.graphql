@@ -25,6 +25,7 @@ fragment MemoDetails on Memo {
   profile {
     ...MemoProfile
   }
+  markdown
   authorization {
     id
     myPrivileges

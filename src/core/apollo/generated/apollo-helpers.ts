@@ -2341,6 +2341,7 @@ export type MemoKeySpecifier = (
   | 'createdDate'
   | 'id'
   | 'isMultiUser'
+  | 'markdown'
   | 'nameID'
   | 'profile'
   | 'updatedDate'
@@ -2354,6 +2355,7 @@ export type MemoFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  markdown?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;

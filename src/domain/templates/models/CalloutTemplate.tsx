@@ -35,12 +35,8 @@ export interface CalloutTemplate extends TemplateBase {
         profile: {
           displayName: string;
           description?: string;
-          preview?: {
-            name: VisualType.Banner;
-            uri: string;
-          };
         };
-        content?: string;
+        markdown?: string;
       };
       link?: {
         id?: string;

@@ -3914,7 +3914,7 @@ export type Memo = {
   __typename?: 'Memo';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The binary state V2 of the Yjs document, used to collaborate on the Memo, represented in base64. */
+  /** The last saved binary stateV2 of the Yjs document, used to collaborate on the Memo, represented in base64. */
   content?: Maybe<Scalars['String']['output']>;
   /** The policy governing who can update the Memo content. */
   contentUpdatePolicy: ContentUpdatePolicy;
@@ -3926,6 +3926,8 @@ export type Memo = {
   id: Scalars['UUID']['output'];
   /** Whether the Memo is multi-user enabled on Space level. */
   isMultiUser: Scalars['Boolean']['output'];
+  /** The last saved content of the Memo, represented in Markdown. */
+  markdown?: Maybe<Scalars['Markdown']['output']>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
   /** The Profile for this Memo. */
@@ -10068,6 +10070,7 @@ export type CalloutPageCalloutQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  markdown?: string | undefined;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -12602,6 +12605,18 @@ export type CreateWhiteboardOnCalloutMutation = {
   };
 };
 
+export type MemoMarkdownQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+export type MemoMarkdownQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
+  };
+};
+
 export type CalloutContentQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
 }>;
@@ -12833,6 +12848,7 @@ export type UpdateCalloutContentMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13197,6 +13213,7 @@ export type UpdateCalloutVisibilityMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13648,6 +13665,7 @@ export type CreateCalloutMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -14102,6 +14120,7 @@ export type CalloutDetailsQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  markdown?: string | undefined;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -14540,6 +14559,7 @@ export type CalloutDetailsFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -14791,6 +14811,7 @@ export type MemoDetailsQuery = {
           id: string;
           nameID: string;
           createdDate: Date;
+          markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -14874,6 +14895,7 @@ export type MemoDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
+  markdown?: string | undefined;
   contentUpdatePolicy: ContentUpdatePolicy;
   profile: {
     __typename?: 'Profile';

@@ -1417,6 +1417,10 @@
         "link": {
           "name": "Call To Action",
           "url": "URL"
+        },
+        "memo": {
+          "name": "Initial content",
+          "placeholder": "(Optional) Add some initial content to the memo"
         }
       },
       "template-step": {

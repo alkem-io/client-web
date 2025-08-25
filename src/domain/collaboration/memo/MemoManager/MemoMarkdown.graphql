@@ -1,0 +1,8 @@
+query MemoMarkdown($id: UUID!) {
+  lookup {
+    memo(ID: $id) {
+      id
+      markdown
+    }
+  }
+}
