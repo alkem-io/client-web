@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 import { styled, AvatarProps, Tooltip, Link, Box, useTheme } from '@mui/material';
-import Avatar from '@/core/ui/avatar/Avatar';
+import Avatar, { CustomAvatarProps } from '@/core/ui/avatar/Avatar';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 import { AuthorModel } from '../../../community/user/models/AuthorModel';
 import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
@@ -9,7 +9,9 @@ import { useTranslation } from 'react-i18next';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
 
-const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
+const UserAvatar = styled(({ src, alt }: AvatarProps & CustomAvatarProps) => <Avatar src={src} alt={alt} />)<
+  AvatarProps & CustomAvatarProps
+>(({ theme }) => ({
   height: theme.avatarSizeXs,
   width: theme.avatarSizeXs,
 }));

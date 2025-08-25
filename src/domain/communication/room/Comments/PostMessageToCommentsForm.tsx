@@ -1,5 +1,5 @@
 import { AvatarProps, Box, BoxProps, styled } from '@mui/material';
-import Avatar from '@/core/ui/avatar/Avatar';
+import Avatar, { CustomAvatarProps } from '@/core/ui/avatar/Avatar';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -9,7 +9,9 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { COMMENTS_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
-const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
+const UserAvatar = styled(({ src, variant, alt }: AvatarProps & CustomAvatarProps) => (
+  <Avatar src={src} variant={variant} alt={alt} />
+))<AvatarProps & CustomAvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
   width: theme.avatarSizeXs,
 }));
@@ -70,7 +72,7 @@ const PostMessageToCommentsForm = ({
       <UserAvatar
         src={userAvatarUri}
         variant="rounded"
-        aria-label={t('common.avatar-of', { user: userModel?.profile.displayName })}
+        alt={t('common.avatar-of', { user: userModel?.profile.displayName })}
       />
       <Box flexGrow={1} minWidth={0}>
         <Formik
