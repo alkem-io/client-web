@@ -57,7 +57,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           link: undefined,
           memo: {
             profile: { displayName: t('common.memo') },
-            markdown: '',
+            //markdown: '',
           },
         };
         break;

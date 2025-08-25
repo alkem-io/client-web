@@ -12605,6 +12605,18 @@ export type CreateWhiteboardOnCalloutMutation = {
   };
 };
 
+export type MemoMarkdownQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+export type MemoMarkdownQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
+  };
+};
+
 export type CalloutContentQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
 }>;

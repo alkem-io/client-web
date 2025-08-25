@@ -24,7 +24,7 @@ interface TemplateContentCalloutPreviewProps {
           };
         };
         memo?: {
-          markdown: string;
+          // markdown: string;
         };
       };
     };

@@ -16,16 +16,15 @@ type MemoPreviewProps = {
   onClose?: () => void;
 };
 
-const MemoPreview = ({ displayName, memo, onClick, onClose, ...props }: MemoPreviewProps) => {
+const MemoPreview = ({ displayName, memo, onClick }: MemoPreviewProps) => {
   const { t } = useTranslation();
-  if (!memo) {
+  if (!memo?.markdown) {
     return (
       <ImageWithCaption
         caption={onClick ? t('callout.memo.clickToSee') : ''}
         alt={displayName}
         defaultImage={<MemoIcon />}
         onClick={onClick}
-        {...props}
       />
     );
   } else {
@@ -39,8 +38,13 @@ const MemoPreview = ({ displayName, memo, onClick, onClose, ...props }: MemoPrev
           marginX: gutters(1),
           onClick: onClick,
         }}
+        // overflowMarker={
+        //   <CaptionContainer>
+        //     <Caption sx={{ color: theme => theme.palette.primary.main }}>{t('callout.memo.clickToSee')}</Caption>
+        //   </CaptionContainer>
+        // }
       >
-        {memo?.markdown ?? ''}
+        {memo.markdown}
       </CroppedMarkdown>
     );
   }

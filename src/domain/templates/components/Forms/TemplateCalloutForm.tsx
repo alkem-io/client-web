@@ -60,7 +60,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
                 profile: {
                   displayName: template.callout.framing.memo.profile.displayName,
                 },
-                markdown: template.callout.framing.memo.markdown ?? '',
+                // markdown: template.callout.framing.memo.markdown ?? '',
               }
             : undefined,
           link: template?.callout?.framing?.link
