@@ -13,9 +13,9 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
     case NotificationEvent.UserMentioned:
       return <InAppUserMentionView {...item} />;
     case NotificationEvent.SpaceAdminCommunityNewMember:
-      return <InAppSpaceCommunityNewMemberView {...item} />;
-    case NotificationEvent.UserSpaceCommunityJoined:
       return <InAppSpaceCommunityNewMemberAdminView {...item} />;
+    case NotificationEvent.UserSpaceCommunityJoined:
+      return <InAppSpaceCommunityNewMemberView {...item} />;
 
     default:
       logWarn(`Unsupported Notification type: ${item.type}`, {

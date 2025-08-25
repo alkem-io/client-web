@@ -1884,17 +1884,17 @@
           "subject": "{{spaceName}} - New Post is published \"{{calloutName}}\", have a look!",
           "description": "{{triggeredByName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
-        "USER_MENTION": {
+        "USER_MENTIONED": {
           "subject": "{{triggeredByName}} mentioned you in a comment on {{calloutName}}:",
           "description": ""
         },
-        "SPACE_COMMUNITY_NEW_MEMBER": {
+        "USER_SPACE_COMMUNITY_JOINED": {
           "subject": "{{spaceName}} - Welcome to the Community!",
           "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various posts and whiteboards, further deepen your knowledge about this topic, and connect with other Contributors."
         },
-        "SPACE_COMMUNITY_NEW_MEMBER_ADMIN": {
-          "subject": "{{memberType}} \"{{memberName}}\" joined {{spaceName}}",
-          "description": "{{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
+        "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
+          "subject": "\"{{memberName}}\" joined {{spaceName}}",
+          "description": "{{memberName}} has joined {{spaceName}}, of which you are an admin."
         }
       },
       "emptyInbox": "No pending notifications",
