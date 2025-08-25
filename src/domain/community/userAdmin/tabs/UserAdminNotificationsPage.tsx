@@ -55,9 +55,10 @@ const UserAdminNotificationsPage = () => {
     return true; // If viewing another user's page, assume platform admin for now.
   }, [notificationPageForCurrentUser, userWrapper, isLoadingUserContext, isLoadingUser]);
 
-  // TODO: impl
-  const isOrganizationAdmin = true;
-  const isSpaceAdmin = true;
+  const isOrganizationAdmin =
+    userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsOrganizationAdmin) ?? false;
+  const isSpaceAdmin =
+    userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsSpaceAdmin) ?? false;
 
   const userID = userProfile?.id ?? '';
 
@@ -245,26 +246,37 @@ const UserAdminNotificationsPage = () => {
               </PageContentBlock>
 
               {/* User notification settings */}
+
               <PageContentBlock>
-                <BlockTitle>{t('pages.userNotificationsSettings.user.title')}</BlockTitle>
-                <Caption>{t('pages.userNotificationsSettings.user.subtitle')}</Caption>
+                <BlockTitle>{t('pages.userNotificationsSettings.userMembership.title')}</BlockTitle>
+                <Caption>{t('pages.userNotificationsSettings.userMembership.subtitle')}</Caption>
                 <SwitchSettingsGroup
                   options={{
                     userSpaceCommunityInvitationReceived: {
                       checked:
                         currentSettings?.notification?.user?.membership.spaceCommunityInvitationReceived.email || false,
-                      label: t('pages.userNotificationsSettings.user.settings.spaceCommunityInvitation'),
+                      label: t('pages.userNotificationsSettings.userMembership.settings.spaceCommunityInvitation'),
                     },
                     userSpaceCommunityJoined: {
                       checked: currentSettings?.notification?.user?.membership.spaceCommunityJoined.email || false,
-                      label: t('pages.userNotificationsSettings.user.settings.spaceCommunityJoined'),
+                      label: t('pages.userNotificationsSettings.userMembership.settings.spaceCommunityJoined'),
                     },
                     userSpaceCommunityApplicationSubmitted: {
                       checked:
                         currentSettings?.notification?.user?.membership.spaceCommunityApplicationSubmitted.email ||
                         false,
-                      label: t('pages.userNotificationsSettings.user.settings.spaceCommunityApplication'),
+                      label: t('pages.userNotificationsSettings.userMembership.settings.spaceCommunityApplication'),
                     },
+                  }}
+                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+                />
+              </PageContentBlock>
+
+              <PageContentBlock>
+                <BlockTitle>{t('pages.userNotificationsSettings.user.title')}</BlockTitle>
+                <Caption>{t('pages.userNotificationsSettings.user.subtitle')}</Caption>
+                <SwitchSettingsGroup
+                  options={{
                     commentReply: {
                       checked: currentSettings?.notification?.user?.commentReply.email || false,
                       label: t('pages.userNotificationsSettings.user.settings.commentReply'),
@@ -277,12 +289,16 @@ const UserAdminNotificationsPage = () => {
                       checked: currentSettings?.notification?.user?.messageReceived.email || false,
                       label: t('pages.userNotificationsSettings.user.settings.messageReceived'),
                     },
+                    userCopyOfMessageSent: {
+                      checked: currentSettings?.notification?.user?.copyOfMessageSent.email || false,
+                      label: t('pages.userNotificationsSettings.user.settings.copyOfMessageSent'),
+                    },
                   }}
                   onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
                 />
               </PageContentBlock>
 
-              {isSpaceAdmin && (
+              {(isPlatformAdmin || isSpaceAdmin) && (
                 <PageContentBlock>
                   <BlockTitle>{t('pages.userNotificationsSettings.spaceAdmin.title')}</BlockTitle>
                   <Caption>{t('pages.userNotificationsSettings.spaceAdmin.subtitle')}</Caption>
@@ -346,7 +362,7 @@ const UserAdminNotificationsPage = () => {
                 </PageContentBlock>
               )}
 
-              {isOrganizationAdmin && (
+              {(isPlatformAdmin || isOrganizationAdmin) && (
                 <PageContentBlock>
                   <BlockTitle>{t('pages.userNotificationsSettings.organization.title')}</BlockTitle>
                   <Caption>{t('pages.userNotificationsSettings.organization.subtitle')}</Caption>

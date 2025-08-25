@@ -3075,13 +3075,19 @@
         "title": "User mentions and messaging",
         "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to yourself.",
         "settings": {
-          "spaceCommunityApplication": "Receive notification when I apply to join a community",
-          "spaceCommunityInvitation": "Receive a notification when someone invites you to join a community",
-          "spaceCommunityJoined": "Receive notification when I join a new Space community",
           "mentioned": "Receive notifications when I am mentioned",
           "commentReply": "Receive a notification when someone replies to my comment",
           "messageReceived": "Receive a notification when someone sends me a direct message",
           "copyOfMessageSent": "Receive a notification when I send a direct message"
+        }
+      },
+      "userMembership": {
+        "title": "User membership notifications",
+        "subtitle": "This section allows you to select your preferences regarding notifications related to your membership in communities.",
+        "settings": {
+          "spaceCommunityApplication": "Receive notification when I apply to join a community",
+          "spaceCommunityInvitation": "Receive a notification when someone invites you to join a community",
+          "spaceCommunityJoined": "Receive notification when I join a new Space community"
         }
       },
       "platformAdmin": {
