@@ -20,6 +20,8 @@ import { useMemo } from 'react';
 import { MemoIcon } from '../../memo/icon/MemoIcon';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -57,7 +59,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           link: undefined,
           memo: {
             profile: { displayName: t('common.memo') },
-            //markdown: '',
+            markdown: '',
           },
         };
         break;
@@ -172,6 +174,17 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
             dialogProps={{ title: t('components.callout-creation.framing.whiteboard.editDialogTitle') }}
           />
         </PageContentBlock>
+      )}
+
+      {framing.memo && framing.type === CalloutFramingType.Memo && (
+        <FormikMarkdownField
+          title={t('components.callout-creation.framing.memo.name')}
+          placeholder={t('components.callout-creation.framing.memo.placeholder')}
+          rows={10}
+          name={nameOf<CalloutFormSubmittedValues>('framing.memo.markdown')}
+          hideImageOptions
+          maxLength={MARKDOWN_TEXT_LENGTH}
+        />
       )}
 
       {framing.type === CalloutFramingType.Link && (

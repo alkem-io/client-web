@@ -8,5 +8,5 @@ export interface MemoFieldSubmittedValues {
     preview?: VisualModel;
     url?: string;
   };
-  // markdown?: string;
+  markdown?: string;
 }

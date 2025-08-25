@@ -94,6 +94,12 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
     // Update ref when editor changes
     useEffect(() => {
       editorRef.current = editor;
+      console.log(
+        JSON.stringify({
+          nodes: editor?.schema.spec.nodes,
+          marks: editor?.schema.spec.marks,
+        })
+      );
     }, [editor]);
 
     const [currentCollaborationState, setCollaborationState] = useState<RealTimeCollaborationState>();
