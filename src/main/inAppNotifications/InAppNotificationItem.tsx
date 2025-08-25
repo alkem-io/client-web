@@ -10,12 +10,12 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
   switch (item.type) {
     case NotificationEvent.SpaceCollaborationCalloutPublished:
       return <InAppSpaceCollaborationCalloutPublishedView {...item} />;
-    case NotificationEvent.UserMention:
+    case NotificationEvent.UserMentioned:
       return <InAppUserMentionView {...item} />;
-    case NotificationEvent.SpaceCommunityNewMember:
-      return <InAppSpaceCommunityNewMemberView {...item} />;
-    case NotificationEvent.SpaceCommunityNewMemberAdmin:
+    case NotificationEvent.SpaceAdminCommunityNewMember:
       return <InAppSpaceCommunityNewMemberAdminView {...item} />;
+    case NotificationEvent.UserSpaceCommunityJoined:
+      return <InAppSpaceCommunityNewMemberView {...item} />;
 
     default:
       logWarn(`Unsupported Notification type: ${item.type}`, {

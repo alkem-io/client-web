@@ -6,7 +6,7 @@ import {
   useInvitationStateEventMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { InvitationEvent } from '../models/InvitationApplicationConstants';
+import { InvitationEvent } from './InvitationApplicationConstants';
 
 type InvitationActionsContainerProvided = {
   updating: boolean;

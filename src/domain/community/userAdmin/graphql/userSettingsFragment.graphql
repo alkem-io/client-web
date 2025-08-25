@@ -8,37 +8,123 @@ fragment userSettingsFragment on UserSettings {
   }
   notification {
     platform {
-      userProfileRemoved
-      newUserSignUp
-      forumDiscussionComment
-      forumDiscussionCreated
-      spaceCreated
+      admin {
+        userProfileRemoved {
+          email
+          inApp
+        }
+        userProfileCreated {
+          email
+          inApp
+        }
+        spaceCreated {
+          email
+          inApp
+        }
+        userGlobalRoleChanged {
+          email
+          inApp
+        }
+      }
+      # non-admin settings
+      forumDiscussionComment {
+        email
+        inApp
+      }
+      forumDiscussionCreated {
+        email
+        inApp
+      }
     }
     organization {
-      mentioned
-      messageReceived
+      adminMentioned {
+        email
+        inApp
+      }
+      adminMessageReceived {
+        email
+        inApp
+      }
     }
     space {
-      communityApplicationReceived
-      communityApplicationSubmitted
-      communityInvitationUser
-      communityNewMember
-      communityNewMemberAdmin
-      communicationUpdates
-      communicationUpdatesAdmin
-      communicationMessage
-      communicationMessageAdmin
-      collaborationPostCommentCreated
-      collaborationCalloutPublished
-      collaborationPostCreated
-      collaborationPostCreatedAdmin
-      collaborationWhiteboardCreated
+      # Admin related notifications
+      admin {
+        communityApplicationReceived {
+          email
+          inApp
+        }
+        collaborationCalloutContributionCreated {
+          email
+          inApp
+        }
+        communityNewMember {
+          email
+          inApp
+        }
+        communicationMessageReceived {
+          email
+          inApp
+        }
+      }
+      # Member related notifications
+      collaborationCalloutContributionCreated {
+        email
+        inApp
+      }
+      communicationUpdates {
+        email
+        inApp
+      }
+      collaborationCalloutPublished {
+        email
+        inApp
+      }
+      collaborationCalloutComment {
+        email
+        inApp
+      }
+      collaborationCalloutPostContributionComment {
+        email
+        inApp
+      }
     }
     user {
-      mentioned
-      commentReply
-      messageReceived
-      messageSent
+      membership {
+        spaceCommunityInvitationReceived {
+          email
+          inApp
+        }
+        spaceCommunityJoined {
+          email
+          inApp
+        }
+        spaceCommunityApplicationSubmitted {
+          email
+          inApp
+        }
+      }
+      mentioned {
+        email
+        inApp
+      }
+      commentReply {
+        email
+        inApp
+      }
+      messageReceived {
+        email
+        inApp
+      }
+      copyOfMessageSent {
+        email
+        inApp
+      }
+    }
+    virtualContributor {
+      adminSpaceCommunityInvitation {
+        email
+        inApp
+      }
     }
   }
 }

@@ -30,10 +30,10 @@ const updateNotificationsCache = (
 
 // The set of notification event types currently being retrieved
 const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [
-  NotificationEvent.UserMention,
+  NotificationEvent.UserMentioned,
   NotificationEvent.SpaceCollaborationCalloutPublished,
-  NotificationEvent.SpaceCommunityNewMember,
-  NotificationEvent.SpaceCommunityNewMemberAdmin,
+  NotificationEvent.SpaceAdminCommunityNewMember,
+  NotificationEvent.UserSpaceCommunityJoined,
 ];
 
 export const useInAppNotifications = () => {

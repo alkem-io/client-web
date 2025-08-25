@@ -25,7 +25,7 @@ import {
   ApplicationState,
   InvitationEvent,
   InvitationState,
-} from '@/domain/community/models/InvitationApplicationConstants';
+} from '@/domain/community/invitations/InvitationApplicationConstants';
 
 type RenderParams = GridRenderCellParams<MembershipTableItem>;
 type GetterParams = MembershipTableItem | undefined;
