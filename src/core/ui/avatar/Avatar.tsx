@@ -12,27 +12,32 @@ const AvatarSizes: Record<AvatarSize, number> = {
   large: 4,
 };
 
-export interface SizeableAvatarProps {
+export interface CustomAvatarProps extends AvatarProps {
   size?: AvatarSize;
   overlay?: ReactNode;
+  ariaLabel?: string;
+  src?: string;
+  alt?: string;
 }
 
 const Avatar = ({
   size,
   sx,
   overlay,
-  ...props
+  ref,
+  ariaLabel,
+  alt,
+  src,
+  key,
 }: HTMLAttributes<HTMLDivElement> & {
   ref?: React.Ref<HTMLDivElement>;
-} & AvatarProps &
-  SizeableAvatarProps) => {
+} & CustomAvatarProps) => {
   const avatarSize = size && AvatarSizes[size];
-  const { ref } = props;
 
   if (overlay) {
     return (
       <Box ref={ref} position="relative">
-        <Avatar size={size} sx={sx} {...props} />
+        <Avatar key={key} size={size} sx={sx} alt={alt} ariaLabel={ariaLabel} src={src} />
         <Box
           position="absolute"
           top={0}
@@ -51,13 +56,17 @@ const Avatar = ({
 
   return (
     <ErrorHandlingAvatar
+      key={key}
       sx={{
         borderRadius: 0.5,
         width: avatarSize && gutters(avatarSize),
         height: avatarSize && gutters(avatarSize),
         ...sx,
       }}
-      {...props}
+      ref={ref}
+      alt={alt}
+      ariaLabel={ariaLabel}
+      src={src}
     />
   );
 };

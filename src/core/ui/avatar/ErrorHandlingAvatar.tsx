@@ -1,4 +1,4 @@
-import { Avatar as MUIAvatar, AvatarProps } from '@mui/material';
+import { Avatar as MUIAvatar } from '@mui/material';
 import useImageErrorHandler from '../image/useImageErrorHandler';
 import { HTMLAttributes } from 'react';
 import { CustomAvatarProps } from './Avatar';
@@ -9,10 +9,9 @@ const ErrorHandlingAvatar = ({
   src,
   ariaLabel,
   alt,
-}: AvatarProps &
-  HTMLAttributes<HTMLDivElement> & {
-    ref?: React.Ref<HTMLDivElement>;
-  } & CustomAvatarProps) => {
+}: HTMLAttributes<HTMLDivElement> & {
+  ref?: React.Ref<HTMLDivElement>;
+} & CustomAvatarProps) => {
   const reportImageError = useImageErrorHandler();
 
   const handleError = err => {

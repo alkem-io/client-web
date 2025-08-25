@@ -1,4 +1,4 @@
-import { AvatarProps, Box, BoxProps, styled } from '@mui/material';
+import { Box, BoxProps, styled } from '@mui/material';
 import Avatar, { CustomAvatarProps } from '@/core/ui/avatar/Avatar';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +9,9 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { COMMENTS_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
-const UserAvatar = styled(({ src, variant, alt }: AvatarProps & CustomAvatarProps) => (
+const UserAvatar = styled(({ src, variant, alt }: CustomAvatarProps) => (
   <Avatar src={src} variant={variant} alt={alt} />
-))<AvatarProps & CustomAvatarProps>(({ theme }) => ({
+))<CustomAvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
   width: theme.avatarSizeXs,
 }));

@@ -108,11 +108,6 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
               ? t('common.avatar-of', { user: activity.space?.about.profile.displayName })
               : t('common.avatar')
           }
-          avatarAlt={
-            activity.space?.about.profile.displayName
-              ? t('common.avatar-of', { user: activity.space?.about.profile.displayName })
-              : t('common.avatar')
-          }
         />
       ));
     }

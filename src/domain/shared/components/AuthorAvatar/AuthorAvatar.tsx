@@ -1,5 +1,5 @@
-import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
-import { styled, AvatarProps, Tooltip, Link, Box, useTheme } from '@mui/material';
+import { FC, useCallback, useMemo, useRef, useState } from 'react';
+import { styled, Tooltip, Link, Box, useTheme } from '@mui/material';
 import Avatar, { CustomAvatarProps } from '@/core/ui/avatar/Avatar';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 import { AuthorModel } from '../../../community/user/models/AuthorModel';
@@ -9,12 +9,12 @@ import { useTranslation } from 'react-i18next';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
 
-const UserAvatar = styled(({ src, alt }: AvatarProps & CustomAvatarProps) => <Avatar src={src} alt={alt} />)<
-  AvatarProps & CustomAvatarProps
->(({ theme }) => ({
-  height: theme.avatarSizeXs,
-  width: theme.avatarSizeXs,
-}));
+const UserAvatar = styled(({ src, alt }: CustomAvatarProps) => <Avatar src={src} alt={alt} />)<CustomAvatarProps>(
+  ({ theme }) => ({
+    height: theme.avatarSizeXs,
+    width: theme.avatarSizeXs,
+  })
+);
 
 export interface AuthorAvatarProps {
   author: AuthorModel | undefined;
