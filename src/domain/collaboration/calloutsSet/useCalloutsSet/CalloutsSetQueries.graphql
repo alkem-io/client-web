@@ -20,7 +20,6 @@ query CalloutsOnCalloutsSetUsingClassification(
 
 fragment Callout on Callout {
   id
-  calloutTypeDeprecated: type
   sortOrder
   activity
   authorization {
@@ -61,7 +60,6 @@ fragment ClassificationDetails on Callout {
 
 fragment CalloutDetails on Callout {
   id
-  calloutTypeDeprecated: type
   framing {
     id
     profile {

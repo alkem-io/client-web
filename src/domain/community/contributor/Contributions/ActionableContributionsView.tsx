@@ -1,25 +1,22 @@
 import { GridLegacy, Skeleton } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 import { Caption } from '@/core/ui/typography';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import ContributionDetailsCard from '@/domain/community/profile/views/ContributionDetailsCard';
+import ContributionCard, { ContributionCardProps } from './ContributionCard';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import useContributionProvider, {
-  ContributionDetails,
-} from '@/domain/community/profile/useContributionProvider/useContributionProvider';
 
-type ActionableContributionsViewProps = {
+type ActionableContributionsViewProps = Pick<
+  ContributionCardProps,
+  'enableLeave' | 'onLeave' | 'onContributionClick'
+> & {
   title: string;
   subtitle?: string;
   emptyCaption?: string;
   contributions: SpaceHostedItem[] | undefined;
   loading?: boolean;
-  enableLeave?: boolean;
-  onLeave?: () => Promise<unknown>;
-  onContributionClick?: (event: React.MouseEvent<Element, MouseEvent>, contribution: ContributionDetails) => void;
   cards?: PageContentBlockGridProps['cards'];
 };
 
@@ -56,10 +53,9 @@ export const ActionableContributionsView = ({
   loading,
   enableLeave,
   onLeave,
+  onContributionClick,
   cards,
 }: ActionableContributionsViewProps) => {
-  const [leavingRoleSetId, setLeavingRoleSetId] = useState<string | undefined>(undefined);
-
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={title} />
@@ -80,58 +76,13 @@ export const ActionableContributionsView = ({
                 contributionItem={contributionItem}
                 onLeave={onLeave}
                 enableLeave={enableLeave}
-                leavingRoleSetId={leavingRoleSetId}
-                setLeavingRoleSetId={setLeavingRoleSetId}
+                onContributionClick={onContributionClick}
               />
             ))}
           </ScrollableCardsLayoutContainer>
         )}
       </PageContentBlockGrid>
     </PageContentBlock>
-  );
-};
-
-type ContributionCardProps = {
-  contributionItem: SpaceHostedItem;
-  onLeave?: () => Promise<unknown>;
-  enableLeave?: boolean;
-  leavingRoleSetId?: string;
-  setLeavingRoleSetId: React.Dispatch<React.SetStateAction<string | undefined>>;
-};
-
-const ContributionCard: React.FC<ContributionCardProps> = ({
-  contributionItem,
-  onLeave,
-  enableLeave,
-  leavingRoleSetId,
-  setLeavingRoleSetId,
-}) => {
-  const { details, loading, isLeavingCommunity, leaveCommunity } = useContributionProvider({
-    spaceHostedItem: contributionItem,
-  });
-
-  if (loading || !details) {
-    return null;
-  }
-
-  const handleLeaveCommunity = async () => {
-    await leaveCommunity();
-    onLeave?.();
-  };
-
-  return (
-    <ContributionDetailsCard
-      {...details}
-      spaceId={contributionItem.id}
-      tagline={details.about.profile.tagline ?? ''}
-      displayName={details.about.profile.displayName}
-      enableLeave={enableLeave}
-      leavingCommunity={isLeavingCommunity}
-      handleLeaveCommunity={handleLeaveCommunity}
-      leavingCommunityDialogOpen={!!leavingRoleSetId && leavingRoleSetId === details?.roleSetId}
-      onLeaveCommunityDialogOpen={isOpen => setLeavingRoleSetId(isOpen ? details?.roleSetId : undefined)}
-      spaceUri={details?.about?.profile?.url}
-    />
   );
 };
 

@@ -74,7 +74,7 @@ const ContributorCardHorizontal = ({
             visual={
               <Avatar
                 src={profile?.avatar?.uri}
-                ariaLabel="User avatar"
+                aria-label="User avatar"
                 alt={profile?.displayName ? t('common.avatar-of', { user: profile?.displayName }) : t('common.avatar')}
                 size={size}
               >

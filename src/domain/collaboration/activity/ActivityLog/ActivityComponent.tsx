@@ -69,7 +69,7 @@ export interface ActivityComponentProps {
 }
 
 export const ActivityComponent = ({ activities, limit }: ActivityComponentProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const display = useMemo(() => {
     if (!activities) {
@@ -82,7 +82,7 @@ export const ActivityComponent = ({ activities, limit }: ActivityComponentProps)
           return (
             <ActivityViewChooser
               activity={activity}
-              avatarUrl={activity.triggeredBy.profile.avatar?.uri || ''}
+              avatarUrl={activity.triggeredBy.profile.avatar?.uri ?? ''}
               avatarAlt={
                 activity.triggeredBy.profile.displayName
                   ? t('common.avatar-of', { user: activity.triggeredBy.profile.displayName })
@@ -94,7 +94,7 @@ export const ActivityComponent = ({ activities, limit }: ActivityComponentProps)
         })}
       </>
     );
-  }, [activities]);
+  }, [activities, limit, i18n.language]);
 
   return <>{display ?? <ActivityLoadingView rows={3} />}</>;
 };

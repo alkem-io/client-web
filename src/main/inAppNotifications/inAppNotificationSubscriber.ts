@@ -26,13 +26,13 @@ export const InAppNotificationSubscriber = () => {
 
       client.cache.modify({
         fields: {
-          notifications(existingNotifications = []) {
+          notificationsInApp(existingNotifications = []) {
             const newNotificationRef = client.cache.writeFragment({
               data: newNotification,
               fragment: InAppNotificationAllTypesFragmentDoc,
               fragmentName: 'InAppNotificationAllTypes',
             });
-            // unshift
+            // Add new notification to the beginning of the list
             return [newNotificationRef, ...existingNotifications];
           },
         },

@@ -88,7 +88,9 @@ const ProfilePageBanner = ({
           <Avatar
             src={profile?.avatar?.uri}
             size="large"
-            alt={profile?.displayName ? t('common.avatar-of', { user: profile?.displayName }) : t('common.avatar')}
+            aria-label={
+              profile?.displayName ? t('common.avatar-of', { user: profile?.displayName }) : t('common.avatar')
+            }
           />
         }
         header={

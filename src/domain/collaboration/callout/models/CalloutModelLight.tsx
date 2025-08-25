@@ -1,9 +1,8 @@
-import { CalloutFramingType, CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 
 export interface CalloutModelLight {
   id: string;
-  calloutTypeDeprecated: CalloutType;
   framing: {
     profile: {
       displayName: string;
