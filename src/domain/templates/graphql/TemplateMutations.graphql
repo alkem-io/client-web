@@ -128,7 +128,6 @@ mutation UpdateTemplate(
 mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
   updateCallout(calloutData: $calloutData) {
     id
-    calloutTypeDeprecated: type
     framing {
       id
       profile {

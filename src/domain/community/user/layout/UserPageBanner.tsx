@@ -9,7 +9,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 const UserPageBanner = () => {
   const { userModel: currentUser } = useCurrentUserContext();
   const { userId, loading: urlResolverLoading } = useUrlResolver();
-  const { user, loading } = useUserProvider(userId);
+  const { userModel: user, loading } = useUserProvider(userId);
 
   const isCurrentUser = useMemo(() => user?.id === currentUser?.id, [user, currentUser]);
 

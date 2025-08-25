@@ -275,7 +275,6 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       id
       callouts {
         id
-        calloutTypeDeprecated: type
         activity
         sortOrder
         classification {
@@ -625,7 +624,6 @@ export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
-    calloutTypeDeprecated: type
     sortOrder
     activity
     authorization {
@@ -903,7 +901,6 @@ export const CalloutSettingsFullFragmentDoc = gql`
 export const CalloutDetailsFragmentDoc = gql`
   fragment CalloutDetails on Callout {
     id
-    calloutTypeDeprecated: type
     framing {
       id
       profile {
@@ -998,7 +995,6 @@ export const PostSettingsFragmentDoc = gql`
 export const PostSettingsCalloutFragmentDoc = gql`
   fragment PostSettingsCallout on Callout {
     id
-    calloutTypeDeprecated: type
     contributions {
       id
       post {
@@ -1466,6 +1462,52 @@ export const UserDisplayNameFragmentDoc = gql`
     profile {
       id
       displayName
+    }
+  }
+`;
+export const UserSettingsFragmentFragmentDoc = gql`
+  fragment userSettingsFragment on UserSettings {
+    id
+    communication {
+      allowOtherUsersToSendMessages
+    }
+    privacy {
+      contributionRolesPubliclyVisible
+    }
+    notification {
+      platform {
+        userProfileRemoved
+        newUserSignUp
+        forumDiscussionComment
+        forumDiscussionCreated
+        spaceCreated
+      }
+      organization {
+        mentioned
+        messageReceived
+      }
+      space {
+        communityApplicationReceived
+        communityApplicationSubmitted
+        communityInvitationUser
+        communityNewMember
+        communityNewMemberAdmin
+        communicationUpdates
+        communicationUpdatesAdmin
+        communicationMessage
+        communicationMessageAdmin
+        collaborationPostCommentCreated
+        collaborationCalloutPublished
+        collaborationPostCreated
+        collaborationPostCreatedAdmin
+        collaborationWhiteboardCreated
+      }
+      user {
+        mentioned
+        commentReply
+        messageReceived
+        messageSent
+      }
     }
   }
 `;
@@ -2316,7 +2358,6 @@ export const TemplateCardProfileInfoFragmentDoc = gql`
 export const CalloutTemplateContentFragmentDoc = gql`
   fragment CalloutTemplateContent on Callout {
     id
-    calloutTypeDeprecated: type
     framing {
       id
       profile {
@@ -2389,7 +2430,6 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
       id
       callouts {
         id
-        calloutTypeDeprecated: type
         classification {
           id
           flowState: tagset(tagsetName: FLOW_STATE) {
@@ -2543,7 +2583,6 @@ export const CalloutTemplateFragmentDoc = gql`
     ...TemplateProfileInfo
     callout {
       id
-      calloutTypeDeprecated: type
       settings {
         contribution {
           enabled
@@ -2726,8 +2765,19 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
-export const InAppNotificationCalloutPublishedFragmentDoc = gql`
-  fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished {
+export const SpaceNotificationFragmentDoc = gql`
+  fragment spaceNotification on Space {
+    id
+    level
+    about {
+      id
+      ...SpaceAboutCardBanner
+    }
+  }
+  ${SpaceAboutCardBannerFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationPayloadSpaceCollaborationCallout {
     callout {
       id
       framing {
@@ -2743,48 +2793,18 @@ export const InAppNotificationCalloutPublishedFragmentDoc = gql`
       }
     }
     space {
-      id
-      level
-      about {
-        ...SpaceAboutCardBanner
-      }
-    }
-    triggeredBy {
-      id
-      profile {
-        id
-        displayName
-        url
-        visual(type: AVATAR) {
-          ...VisualModel
-        }
-      }
+      ...spaceNotification
     }
   }
   ${VisualModelFragmentDoc}
-  ${SpaceAboutCardBannerFragmentDoc}
+  ${SpaceNotificationFragmentDoc}
 `;
-export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
-  fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMember {
-    triggeredBy {
-      id
-      profile {
-        id
-        displayName
-        url
-        visual(type: AVATAR) {
-          ...VisualModel
-        }
-      }
-    }
+export const InAppNotificationSpaceCommunityContributorFragmentDoc = gql`
+  fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
     space {
-      id
-      level
-      about {
-        ...SpaceAboutCardBanner
-      }
+      ...spaceNotification
     }
-    actor {
+    contributor {
       id
       __typename
       profile {
@@ -2797,11 +2817,23 @@ export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
       }
     }
   }
+  ${SpaceNotificationFragmentDoc}
   ${VisualModelFragmentDoc}
-  ${SpaceAboutCardBannerFragmentDoc}
 `;
 export const InAppNotificationUserMentionedFragmentDoc = gql`
-  fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
+  fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserMessageRoom {
+    comment
+    commentUrl
+    commentOriginName
+  }
+`;
+export const InAppNotificationAllTypesFragmentDoc = gql`
+  fragment InAppNotificationAllTypes on InAppNotification {
+    id
+    type
+    category
+    state
+    triggeredAt
     triggeredBy {
       id
       profile {
@@ -2813,32 +2845,22 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
         }
       }
     }
-    commentUrl
-    comment
-    commentOriginName
-    contributorType
+    payload {
+      type
+      ... on InAppNotificationPayloadSpaceCollaborationCallout {
+        ...InAppNotificationPayloadSpaceCollaborationCallout
+      }
+      ... on InAppNotificationPayloadSpaceCommunityContributor {
+        ...InAppNotificationSpaceCommunityContributor
+      }
+      ... on InAppNotificationPayloadPlatformUserMessageRoom {
+        ...InAppNotificationUserMentioned
+      }
+    }
   }
   ${VisualModelFragmentDoc}
-`;
-export const InAppNotificationAllTypesFragmentDoc = gql`
-  fragment InAppNotificationAllTypes on InAppNotification {
-    id
-    type
-    category
-    state
-    triggeredAt
-    ... on InAppNotificationCalloutPublished {
-      ...InAppNotificationCalloutPublished
-    }
-    ... on InAppNotificationCommunityNewMember {
-      ...InAppNotificationCommunityNewMember
-    }
-    ... on InAppNotificationUserMentioned {
-      ...InAppNotificationUserMentioned
-    }
-  }
-  ${InAppNotificationCalloutPublishedFragmentDoc}
-  ${InAppNotificationCommunityNewMemberFragmentDoc}
+  ${InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc}
+  ${InAppNotificationSpaceCommunityContributorFragmentDoc}
   ${InAppNotificationUserMentionedFragmentDoc}
 `;
 export const SearchResultPostProfileFragmentDoc = gql`
@@ -2957,7 +2979,6 @@ export const SearchResultCalloutFragmentDoc = gql`
     id
     callout {
       id
-      calloutTypeDeprecated: type
       framing {
         id
         profile {
@@ -12298,56 +12319,6 @@ export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserMutation,
   SchemaTypes.DeleteUserMutationVariables
 >;
-export const UpdatePreferenceOnUserDocument = gql`
-  mutation updatePreferenceOnUser($userId: UUID!, $type: PreferenceType!, $value: String!) {
-    updatePreferenceOnUser(preferenceData: { userID: $userId, type: $type, value: $value }) {
-      id
-      value
-    }
-  }
-`;
-export type UpdatePreferenceOnUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdatePreferenceOnUserMutation,
-  SchemaTypes.UpdatePreferenceOnUserMutationVariables
->;
-
-/**
- * __useUpdatePreferenceOnUserMutation__
- *
- * To run a mutation, you first call `useUpdatePreferenceOnUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePreferenceOnUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updatePreferenceOnUserMutation, { data, loading, error }] = useUpdatePreferenceOnUserMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      type: // value for 'type'
- *      value: // value for 'value'
- *   },
- * });
- */
-export function useUpdatePreferenceOnUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdatePreferenceOnUserMutation,
-    SchemaTypes.UpdatePreferenceOnUserMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdatePreferenceOnUserMutation,
-    SchemaTypes.UpdatePreferenceOnUserMutationVariables
-  >(UpdatePreferenceOnUserDocument, options);
-}
-export type UpdatePreferenceOnUserMutationHookResult = ReturnType<typeof useUpdatePreferenceOnUserMutation>;
-export type UpdatePreferenceOnUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnUserMutation>;
-export type UpdatePreferenceOnUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdatePreferenceOnUserMutation,
-  SchemaTypes.UpdatePreferenceOnUserMutationVariables
->;
 export const UserAccountDocument = gql`
   query UserAccount($userId: UUID!) {
     lookup {
@@ -12482,99 +12453,6 @@ export type UserSuspenseQueryHookResult = ReturnType<typeof useUserSuspenseQuery
 export type UserQueryResult = Apollo.QueryResult<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>;
 export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
   return { query: UserDocument, variables: variables };
-}
-export const UserNotificationsPreferencesDocument = gql`
-  query userNotificationsPreferences($userId: UUID!) {
-    lookup {
-      user(ID: $userId) {
-        id
-        preferences {
-          id
-          definition {
-            id
-            description
-            displayName
-            group
-            type
-            valueType
-          }
-          value
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useUserNotificationsPreferencesQuery__
- *
- * To run a query within a React component, call `useUserNotificationsPreferencesQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserNotificationsPreferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserNotificationsPreferencesQuery({
- *   variables: {
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useUserNotificationsPreferencesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.UserNotificationsPreferencesQuery,
-    SchemaTypes.UserNotificationsPreferencesQueryVariables
-  > &
-    ({ variables: SchemaTypes.UserNotificationsPreferencesQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.UserNotificationsPreferencesQuery,
-    SchemaTypes.UserNotificationsPreferencesQueryVariables
-  >(UserNotificationsPreferencesDocument, options);
-}
-export function useUserNotificationsPreferencesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UserNotificationsPreferencesQuery,
-    SchemaTypes.UserNotificationsPreferencesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.UserNotificationsPreferencesQuery,
-    SchemaTypes.UserNotificationsPreferencesQueryVariables
-  >(UserNotificationsPreferencesDocument, options);
-}
-export function useUserNotificationsPreferencesSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.UserNotificationsPreferencesQuery,
-        SchemaTypes.UserNotificationsPreferencesQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.UserNotificationsPreferencesQuery,
-    SchemaTypes.UserNotificationsPreferencesQueryVariables
-  >(UserNotificationsPreferencesDocument, options);
-}
-export type UserNotificationsPreferencesQueryHookResult = ReturnType<typeof useUserNotificationsPreferencesQuery>;
-export type UserNotificationsPreferencesLazyQueryHookResult = ReturnType<
-  typeof useUserNotificationsPreferencesLazyQuery
->;
-export type UserNotificationsPreferencesSuspenseQueryHookResult = ReturnType<
-  typeof useUserNotificationsPreferencesSuspenseQuery
->;
-export type UserNotificationsPreferencesQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserNotificationsPreferencesQuery,
-  SchemaTypes.UserNotificationsPreferencesQueryVariables
->;
-export function refetchUserNotificationsPreferencesQuery(
-  variables: SchemaTypes.UserNotificationsPreferencesQueryVariables
-) {
-  return { query: UserNotificationsPreferencesDocument, variables: variables };
 }
 export const UserModelFullDocument = gql`
   query UserModelFull($userId: UUID!) {
@@ -12915,15 +12793,11 @@ export const UpdateUserSettingsDocument = gql`
     updateUserSettings(settingsData: $settingsData) {
       id
       settings {
-        privacy {
-          contributionRolesPubliclyVisible
-        }
-        communication {
-          allowOtherUsersToSendMessages
-        }
+        ...userSettingsFragment
       }
     }
   }
+  ${UserSettingsFragmentFragmentDoc}
 `;
 export type UpdateUserSettingsMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateUserSettingsMutation,
@@ -12971,16 +12845,12 @@ export const UserSettingsDocument = gql`
       user(ID: $userID) {
         id
         settings {
-          communication {
-            allowOtherUsersToSendMessages
-          }
-          privacy {
-            contributionRolesPubliclyVisible
-          }
+          ...userSettingsFragment
         }
       }
     }
   }
+  ${UserSettingsFragmentFragmentDoc}
 `;
 
 /**
@@ -19180,7 +19050,6 @@ export const SpaceAdminDefaultSpaceTemplatesDetailsDocument = gql`
                     id
                     callouts {
                       id
-                      calloutTypeDeprecated: type
                       sortOrder
                       classification {
                         id
@@ -20458,7 +20327,6 @@ export const ImportTemplateDialogDocument = gql`
           ...TemplateProfileInfo
           callout @include(if: $includeCallout) {
             id
-            calloutTypeDeprecated: type
           }
           contentSpace @include(if: $includeSpace) {
             id
@@ -20559,7 +20427,6 @@ export const ImportTemplateDialogPlatformTemplatesDocument = gql`
             ...TemplateProfileInfo
             callout @include(if: $includeCallout) {
               id
-              calloutTypeDeprecated: type
             }
             contentSpace @include(if: $includeSpace) {
               id
@@ -21280,7 +21147,6 @@ export const UpdateCalloutTemplateDocument = gql`
   mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
     updateCallout(calloutData: $calloutData) {
       id
-      calloutTypeDeprecated: type
       framing {
         id
         profile {
@@ -22421,26 +22287,41 @@ export type InAppNotificationReceivedSubscriptionHookResult = ReturnType<
 export type InAppNotificationReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.InAppNotificationReceivedSubscription>;
 export const InAppNotificationsDocument = gql`
-  query InAppNotifications {
-    notifications {
+  query InAppNotifications($types: [NotificationEvent!]) {
+    notificationsInApp(filter: { types: $types }) {
       id
       type
       category
       state
       triggeredAt
-      ... on InAppNotificationCalloutPublished {
-        ...InAppNotificationCalloutPublished
+      triggeredBy {
+        id
+        profile {
+          id
+          displayName
+          url
+          visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
       }
-      ... on InAppNotificationCommunityNewMember {
-        ...InAppNotificationCommunityNewMember
-      }
-      ... on InAppNotificationUserMentioned {
-        ...InAppNotificationUserMentioned
+      payload {
+        type
+        ... on InAppNotificationPayloadSpaceCollaborationCallout {
+          ...InAppNotificationPayloadSpaceCollaborationCallout
+        }
+        ... on InAppNotificationPayloadSpaceCommunityContributor {
+          ...InAppNotificationSpaceCommunityContributor
+        }
+        ... on InAppNotificationPayloadPlatformUserMessageRoom {
+          ...InAppNotificationUserMentioned
+        }
       }
     }
   }
-  ${InAppNotificationCalloutPublishedFragmentDoc}
-  ${InAppNotificationCommunityNewMemberFragmentDoc}
+  ${VisualModelFragmentDoc}
+  ${InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc}
+  ${InAppNotificationSpaceCommunityContributorFragmentDoc}
   ${InAppNotificationUserMentionedFragmentDoc}
 `;
 
@@ -22456,6 +22337,7 @@ export const InAppNotificationsDocument = gql`
  * @example
  * const { data, loading, error } = useInAppNotificationsQuery({
  *   variables: {
+ *      types: // value for 'types'
  *   },
  * });
  */
@@ -22505,7 +22387,7 @@ export function refetchInAppNotificationsQuery(variables?: SchemaTypes.InAppNoti
   return { query: InAppNotificationsDocument, variables: variables };
 }
 export const UpdateNotificationStateDocument = gql`
-  mutation UpdateNotificationState($ID: UUID!, $state: InAppNotificationState!) {
+  mutation UpdateNotificationState($ID: UUID!, $state: NotificationEventInAppState!) {
     updateNotificationState(notificationData: { ID: $ID, state: $state })
   }
 `;
@@ -23073,7 +22955,6 @@ export const InnovationLibraryDocument = gql`
             ...TemplateProfileInfo
             callout {
               id
-              type
             }
           }
           innovationPack {
