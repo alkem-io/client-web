@@ -22,6 +22,10 @@ const SpaceAvatar = ({
   ref?: React.RefObject<HTMLDivElement>;
 }) => {
   const { t } = useTranslation();
+
+  // Ensure we always have meaningful alt text for accessibility
+  const altText = alt ? t('common.avatar-of', { user: alt }) : t('common.avatar');
+
   return (
     <Avatar
       key={key}
@@ -30,7 +34,7 @@ const SpaceAvatar = ({
       ariaLabel={ariaLabel}
       ref={ref}
       src={src || getDefaultSpaceVisualUrl(VisualType.Avatar, spaceId)}
-      alt={alt ? t('common.avatar-of', { user: alt }) : t('common.avatar')}
+      alt={altText}
     />
   );
 };

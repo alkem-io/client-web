@@ -19,7 +19,15 @@ const ErrorHandlingAvatar = ({
     onError?.(err);
   };
 
-  return <MUIAvatar onError={handleError} src={src} aria-label={ariaLabel} alt={alt} ref={ref} />;
+  return (
+    <MUIAvatar
+      onError={handleError}
+      src={src}
+      aria-label={ariaLabel}
+      slotProps={{ img: { alt: alt || '' } }}
+      ref={ref}
+    />
+  );
 };
 
 export default ErrorHandlingAvatar;
