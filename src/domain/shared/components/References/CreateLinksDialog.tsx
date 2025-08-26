@@ -128,7 +128,7 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
   return (
     <>
       <DialogWithGrid columns={12} open={open} aria-labelledby="link-creation">
-        <DialogHeader icon={<CalloutIcon />} title={title} onClose={handleOnClose} />
+        <DialogHeader id="link-creation" icon={<CalloutIcon />} title={title} onClose={handleOnClose} />
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}

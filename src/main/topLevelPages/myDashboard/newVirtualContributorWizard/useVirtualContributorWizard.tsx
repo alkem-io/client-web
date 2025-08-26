@@ -543,10 +543,11 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     }
 
     return (
-      <DialogWithGrid open={dialogOpen} columns={6}>
+      <DialogWithGrid open={dialogOpen} columns={6} aria-labelledby="virtual-contributor-wizard">
         <StorageConfigContextProvider accountId={myAccountId} locationType="account">
           {step === 'initial' && (
             <CreateNewVirtualContributor
+              titleId="virtual-contributor-wizard"
               onClose={handleCloseWizard}
               loading={loading}
               onCreateKnowledge={handleCreateKnowledge}
@@ -558,12 +559,19 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
               onChangeAvatar={setAvatar}
             />
           )}
-          {step === steps.loadingStep && <LoadingState onClose={handleCloseWizard} />}
+          {step === steps.loadingStep && (
+            <LoadingState titleId="virtual-contributor-wizard" onClose={handleCloseWizard} />
+          )}
           {step === steps.addKnowledge && virtualContributorInput && (
-            <AddContent onClose={handleCloseWizard} onCreateVC={onCreateVcWithKnowledge} />
+            <AddContent
+              titleId="virtual-contributor-wizard"
+              onClose={handleCloseWizard}
+              onCreateVC={onCreateVcWithKnowledge}
+            />
           )}
           {step === steps.chooseCommunity && (
             <ChooseCommunity
+              titleId="virtual-contributor-wizard"
               onClose={handleCloseChooseCommunity}
               vcName={virtualContributorInput?.name}
               spaces={availableSpaces}
@@ -573,6 +581,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           )}
           {step === steps.tryVcInfo && (
             <TryVcInfo
+              titleId="virtual-contributor-wizard"
               vcName={virtualContributorInput?.name ?? ''}
               url={createdVc?.profile.url}
               onClose={handleCloseWizard}
@@ -580,6 +589,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           )}
           {step === steps.existingKnowledge && (
             <ExistingSpace
+              titleId="virtual-contributor-wizard"
               onClose={handleCloseWizard}
               onBack={() => setStep(steps.initial)}
               spaces={availableExistingSpaces}
@@ -588,7 +598,11 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
             />
           )}
           {step === steps.externalProvider && (
-            <CreateExternalAIDialog onCreateExternal={handleCreateExternal} onClose={handleCloseWizard} />
+            <CreateExternalAIDialog
+              titleId="virtual-contributor-wizard"
+              onCreateExternal={handleCreateExternal}
+              onClose={handleCloseWizard}
+            />
           )}
         </StorageConfigContextProvider>
       </DialogWithGrid>

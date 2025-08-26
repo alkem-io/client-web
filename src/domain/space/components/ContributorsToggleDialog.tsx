@@ -99,7 +99,7 @@ const ContributorsToggleDialog = ({ open = false, onClose }: ContributorsToggleD
 
   return (
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">
-      <DialogHeader onClose={onClose} title={t('common.contributors')} />
+      <DialogHeader id="contributors-dialog-title" onClose={onClose} title={t('common.contributors')} />
       <DialogContent>
         {!isAuthenticated && <Caption>{t('pages.contributors.unauthorized')}</Caption>}
         {isAuthenticated && (

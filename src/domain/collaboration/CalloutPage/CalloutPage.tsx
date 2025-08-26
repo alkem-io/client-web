@@ -151,8 +151,12 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
     return (
       <>
         {renderPage(calloutPosition)}
-        <DialogWithGrid open onClose={handleClose}>
-          <DialogHeader title={t('callout.accessForbidden.title')} onClose={handleClose} />
+        <DialogWithGrid open onClose={handleClose} aria-labelledby="callout-access-forbidden-dialog-title">
+          <DialogHeader
+            title={t('callout.accessForbidden.title')}
+            id="callout-access-forbidden-dialog-title"
+            onClose={handleClose}
+          />
           <DialogContent sx={{ paddingTop: 0 }}>
             <Text>{t('callout.accessForbidden.description')}</Text>
           </DialogContent>

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import BlockTitleWithIcon from '../content/BlockTitleWithIcon';
 
 export interface DialogHeaderProps {
+  id?: string;
   icon?: ReactElement<SvgIconProps>;
   title?: ReactNode;
   actions?: ReactNode;
@@ -14,6 +15,7 @@ export interface DialogHeaderProps {
 }
 
 const DialogHeader = ({
+  id,
   icon,
   title,
   actions,
@@ -23,7 +25,7 @@ const DialogHeader = ({
 }: PropsWithChildren<DialogHeaderProps>) => {
   const { t } = useTranslation();
   return (
-    <Box display="flex" alignItems="start" padding={1}>
+    <Box display="flex" alignItems="start" padding={1} id={id}>
       <BlockTitleWithIcon title={title} icon={icon} padding={1} {...titleContainerProps}>
         {children}
       </BlockTitleWithIcon>

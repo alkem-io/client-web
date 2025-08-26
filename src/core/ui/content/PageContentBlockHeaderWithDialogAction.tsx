@@ -11,6 +11,7 @@ interface PageContentBlockHeaderWithDialogActionProps extends PageContentBlockHe
   onDialogClose?: () => void;
   expanded?: boolean;
   showExpand?: boolean;
+  id?: string;
 }
 
 const iconSize = (theme: Theme) => theme.spacing(2);
@@ -21,6 +22,7 @@ const PageContentBlockHeaderWithDialogAction = ({
   onDialogClose,
   actions,
   showExpand = true,
+  id,
   ...headerProps
 }: PropsWithChildren<PageContentBlockHeaderWithDialogActionProps>) => {
   const { t } = useTranslation();
@@ -33,6 +35,7 @@ const PageContentBlockHeaderWithDialogAction = ({
           onClick={expanded ? onDialogClose : onDialogOpen}
           sx={{ svg: { width: iconSize, height: iconSize } }}
           aria-label={t('buttons.expandWindow')}
+          id={id}
         >
           {expanded ? <Close /> : <ExpandContentIcon />}
         </IconButton>
@@ -40,7 +43,7 @@ const PageContentBlockHeaderWithDialogAction = ({
     </>
   );
 
-  return <PageContentBlockHeader {...headerProps} actions={dialogAction} />;
+  return <PageContentBlockHeader {...headerProps} id={id} actions={dialogAction} />;
 };
 
 export default PageContentBlockHeaderWithDialogAction;

@@ -80,13 +80,14 @@ const InvitationDialog = ({
   );
 
   return (
-    <DialogWithGrid columns={12} open={open} onClose={onClose}>
+    <DialogWithGrid columns={12} open={open} onClose={onClose} aria-labelledby="invitation-dialog">
       {invitation && (
         <InvitationHydrator invitation={invitation} withCommunityGuidelines>
           {({ invitation, communityGuidelines }) =>
             invitation && (
               <>
                 <DialogHeader
+                  id="invitation-dialog"
                   title={
                     <Gutters row disablePadding sx={{ whiteSpace: 'break-spaces' }}>
                       <HdrStrongOutlined fontSize="small" />

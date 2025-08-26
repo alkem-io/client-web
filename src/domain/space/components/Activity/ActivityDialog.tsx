@@ -51,7 +51,7 @@ const ActivityDialog = ({ open = false, onClose }: ActivityDialogProps) => {
 
   return (
     <DialogWithGrid open={open} columns={8} aria-labelledby="activity-dialog">
-      <DialogHeader onClose={onClose} title={t('common.contributions')} />
+      <DialogHeader id="activity-dialog" onClose={onClose} title={t('common.contributions')} />
       <DialogContent sx={{ paddingTop: 0 }}>
         <RecentContributionsBlock
           readUsersAccess={permissions.readUsers}
