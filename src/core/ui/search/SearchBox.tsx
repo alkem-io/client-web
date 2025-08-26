@@ -45,9 +45,25 @@ const SearchBox = (<Option extends string | number>({
     }
   };
 
-  const handleKeyUp = ({ code }: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const { code } = event;
     if (code === 'Enter' || code === 'NumpadEnter') {
       onSearch?.(searchOption);
+    }
+    handleEscape(event);
+  };
+
+  const handleKeyUpSearchButton = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    const { code } = event;
+    if (code === 'Enter' || code === 'NumpadEnter') {
+      handleExpand();
+    }
+    handleEscape(event);
+  };
+
+  const handleEscape = ({ code }: React.KeyboardEvent<HTMLInputElement | HTMLButtonElement>) => {
+    if (code === 'Escape') {
+      setIsExpanded(false);
     }
   };
 
@@ -69,7 +85,7 @@ const SearchBox = (<Option extends string | number>({
   const selectOpenStateRef = useRef(false);
 
   const handleClickAway = () => {
-    if (!searchTerms && !selectOpenStateRef.current) {
+    if (!selectOpenStateRef.current) {
       setIsExpanded(false);
     }
   };
@@ -98,7 +114,7 @@ const SearchBox = (<Option extends string | number>({
       <ClickAwayListener onClickAway={handleClickAway}>
         <NavigationItemContainer display="flex" justifyContent="end" position="relative">
           {children}
-          <Collapse in={isExpanded} orientation="horizontal" collapsedSize="1px" sx={{ marginRight: '-1px' }}>
+          <Collapse in={isExpanded} orientation="horizontal" aria-hidden={!isExpanded} sx={{ marginRight: '-1px' }}>
             <Box
               flexGrow={1}
               display="flex"
@@ -141,6 +157,7 @@ const SearchBox = (<Option extends string | number>({
           <NavigationItemButton
             color="primary"
             onClick={isExpanded ? handleClickSearch : handleExpand}
+            onKeyUp={handleKeyUpSearchButton}
             aria-label={t('common.search')}
           >
             <Search />

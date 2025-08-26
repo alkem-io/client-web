@@ -111,11 +111,8 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
           </ListItem>
         );
       case 'divider':
-        return (
-          <ListItem key={index} disablePadding>
-            <Divider />
-          </ListItem>
-        );
+        // see https://mui.com/material-ui/react-divider/#accessibility
+        return <Divider key={index} component="li" aria-hidden="true" />;
       default:
         return null;
     }
