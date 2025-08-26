@@ -151,7 +151,7 @@ const UserAdminNotificationsPage = () => {
         };
         break;
 
-      case NotificationGroup.USER:
+      case NotificationGroup.USER: {
         const userSettings = {
           // Preserve existing user settings
           commentReply: currentSettings.user?.commentReply?.email ?? false,
@@ -177,6 +177,7 @@ const UserAdminNotificationsPage = () => {
 
         settingsVariable.user = userSettings;
         break;
+      }
 
       case NotificationGroup.ORGANIZATION:
         settingsVariable.organization = {
