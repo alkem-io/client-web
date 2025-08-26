@@ -3048,9 +3048,9 @@
         "settings": {
           "communicationUpdateSent": "Receive notification when a new update is shared with a community I am a member of",
           "collaborationCalloutPublished": "Receive a notification when a Callout is published in a community I am a member of",
-          "collaborationCalloutContributionCreated": "Receive notification when a new post is created in a community I am a member of",
-          "collaborationCalloutComment": "Receive a notification when a new whiteboard is created in a community I am a member of",
-          "collaborationCalloutPostContributionComment": "Receive a notification when a new comment is added to a post I follow"
+          "collaborationCalloutContributionCreated": "Receive notification when a new contribution (whiteboard, post, link, memo etc.) is created in a community I am a member of",
+          "collaborationCalloutComment": "Receive a notification when a a comment is made on a Callout in a community I am a member of",
+          "collaborationCalloutPostContributionComment": "Receive a notification when a new comment is added to a post contribution in a community I am a member of"
         }
       },
       "spaceAdmin": {
