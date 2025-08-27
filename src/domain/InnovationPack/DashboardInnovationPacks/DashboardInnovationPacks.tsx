@@ -51,13 +51,13 @@ const DashboardInnovationPacks = ({
         <InnovationPacksView
           filter={filter}
           headerTitle={dialogTitle}
+          headerTitleId="innovation-packs-dialog-title"
           innovationPacks={filteredInnovationPacks}
           onFilterChange={onFilterChange}
           expanded={isDialogOpen}
           onDialogClose={() => setIsDialogOpen(false)}
           sx={{ flexShrink: 1 }}
           loading={loading}
-          id="innovation-packs-dialog-content"
         />
       </DialogWithGrid>
     </>

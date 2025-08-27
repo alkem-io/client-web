@@ -5,12 +5,14 @@ import { BlockTitle, Caption } from '../typography';
 
 type BlockTitleWithIconProps = {
   title: ReactNode;
+  titleId?: string;
   icon?: ReactElement<SvgIconProps>;
   variant?: TypographyProps['variant'];
 };
 
 const BlockTitleWithIcon = ({
   title,
+  titleId,
   icon,
   variant = 'h3',
   children,
@@ -27,7 +29,7 @@ const BlockTitleWithIcon = ({
   >
     {icon && cloneElement(icon, { fontSize: 'small' })}
     {title && typeof title === 'string' ? (
-      <BlockTitle variant={variant} noWrap>
+      <BlockTitle variant={variant} noWrap id={titleId}>
         {title}
       </BlockTitle>
     ) : (

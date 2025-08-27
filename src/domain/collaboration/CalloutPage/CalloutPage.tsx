@@ -172,7 +172,15 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   return (
     <>
       {renderPage(calloutPosition)}
-      <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen} fullHeight disableScrollLock>
+      <DialogWithGrid
+        open
+        columns={12}
+        onClose={handleClose}
+        fullScreen={isSmallScreen}
+        fullHeight
+        disableScrollLock
+        aria-labelledby="callout-title"
+      >
         <DialogContent
           dividers
           sx={{

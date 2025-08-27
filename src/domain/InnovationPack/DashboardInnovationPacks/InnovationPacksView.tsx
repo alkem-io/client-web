@@ -26,11 +26,13 @@ interface InnovationPacksViewProps extends PageContentBlockProps {
   hasMore?: boolean;
   loading?: boolean;
   id?: string;
+  headerTitleId?: string;
 }
 
 const InnovationPacksView = ({
   id,
   headerTitle,
+  headerTitleId,
   innovationPacks,
   filter,
   onFilterChange,
@@ -49,6 +51,7 @@ const InnovationPacksView = ({
     <PageContentBlock {...props}>
       <PageContentBlockHeaderWithDialogAction
         title={headerTitle}
+        titleId={headerTitleId}
         onDialogOpen={onDialogOpen}
         onDialogClose={onDialogClose}
         expanded={expanded}

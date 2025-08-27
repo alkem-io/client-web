@@ -12,6 +12,7 @@ interface PageContentBlockHeaderWithDialogActionProps extends PageContentBlockHe
   expanded?: boolean;
   showExpand?: boolean;
   id?: string;
+  titleId?: string;
 }
 
 const iconSize = (theme: Theme) => theme.spacing(2);
@@ -23,6 +24,7 @@ const PageContentBlockHeaderWithDialogAction = ({
   actions,
   showExpand = true,
   id,
+  titleId,
   ...headerProps
 }: PropsWithChildren<PageContentBlockHeaderWithDialogActionProps>) => {
   const { t } = useTranslation();
@@ -43,7 +45,7 @@ const PageContentBlockHeaderWithDialogAction = ({
     </>
   );
 
-  return <PageContentBlockHeader {...headerProps} id={id} actions={dialogAction} />;
+  return <PageContentBlockHeader {...headerProps} titleId={titleId} id={id} actions={dialogAction} />;
 };
 
 export default PageContentBlockHeaderWithDialogAction;

@@ -54,7 +54,7 @@ const CreateInnovationHubDialog = ({ accountId, open = false, onClose }: CreateI
 
   return (
     <>
-      <DialogWithGrid open={open} onClose={onClose} columns={6} aria-labelledby="create-innovation-hub-dialog">
+      <DialogWithGrid open={open} onClose={onClose} columns={6} aria-labelledby="create-innovation-hub">
         <DialogHeader id="create-innovation-hub" onClose={onClose}>
           <BlockTitle>{t('pages.admin.innovationHubs.create')}</BlockTitle>
         </DialogHeader>
