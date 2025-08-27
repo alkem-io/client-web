@@ -27,7 +27,7 @@ export const mapCalloutTemplateToCalloutForm = (
         profile: ProfileModel & {
           preview?: VisualModel;
         };
-        // markdown: string;
+        markdown?: string;
       };
       link?: {
         uri: string;
@@ -75,7 +75,7 @@ export const mapCalloutTemplateToCalloutForm = (
             profile: {
               displayName: calloutTemplate.framing.memo.profile.displayName,
             },
-            // markdown: calloutTemplate.framing.memo.markdown,
+            markdown: calloutTemplate.framing.memo.markdown,
           }
         : undefined,
       link: calloutTemplate.framing.link

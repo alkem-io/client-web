@@ -26588,6 +26588,14 @@ export type TemplateContentQuery = {
                         };
                       }
                     | undefined;
+                  memo?:
+                    | {
+                        __typename?: 'Memo';
+                        id: string;
+                        markdown?: string | undefined;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
                 };
                 settings: {
                   __typename?: 'CalloutSettings';
@@ -27120,6 +27128,14 @@ export type CalloutTemplateContentFragment = {
           profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }
       | undefined;
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          markdown?: string | undefined;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
   };
   settings: {
     __typename?: 'CalloutSettings';
@@ -27140,6 +27156,13 @@ export type CalloutTemplateContentFragment = {
     postDescription?: string | undefined;
     whiteboardContent?: string | undefined;
   };
+};
+
+export type MemoTemplateDetailsFragment = {
+  __typename?: 'Memo';
+  id: string;
+  markdown?: string | undefined;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
 export type CommunityGuidelinesTemplateContentFragment = {
@@ -27802,6 +27825,7 @@ export type UpdateCalloutTemplateMutation = {
             };
           }
         | undefined;
+      memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';

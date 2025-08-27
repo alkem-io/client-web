@@ -2355,6 +2355,16 @@ export const TemplateCardProfileInfoFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
 `;
+export const MemoTemplateDetailsFragmentDoc = gql`
+  fragment MemoTemplateDetails on Memo {
+    id
+    markdown
+    profile {
+      id
+      displayName
+    }
+  }
+`;
 export const CalloutTemplateContentFragmentDoc = gql`
   fragment CalloutTemplateContent on Callout {
     id
@@ -2385,6 +2395,9 @@ export const CalloutTemplateContentFragmentDoc = gql`
       link {
         ...LinkDetails
       }
+      memo {
+        ...MemoTemplateDetails
+      }
     }
     settings {
       ...CalloutSettingsFull
@@ -2400,6 +2413,7 @@ export const CalloutTemplateContentFragmentDoc = gql`
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
   ${LinkDetailsFragmentDoc}
+  ${MemoTemplateDetailsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
 export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
@@ -21240,6 +21254,10 @@ export const UpdateCalloutTemplateDocument = gql`
               id
             }
           }
+        }
+        memo {
+          id
+          markdown
         }
       }
       contributionDefaults {

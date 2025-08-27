@@ -39,14 +39,15 @@ const MemoPreview = ({ displayName, memo, onClick }: MemoPreviewProps) => {
           backgroundColor="paper"
           maxHeightGutters={10}
           minHeightGutters={10}
-          sx={{ cursor: 'pointer' }}
           containerProps={{
             marginX: gutters(1),
           }}
           overflowMarker={
-            <CaptionContainer>
-              <Caption sx={{ color: theme => theme.palette.primary.main }}>{t('callout.memo.clickToSee')}</Caption>
-            </CaptionContainer>
+            onClick && (
+              <CaptionContainer>
+                <Caption sx={{ color: theme => theme.palette.primary.main }}>{t('callout.memo.clickToSee')}</Caption>
+              </CaptionContainer>
+            )
           }
         >
           {quotedMarkdown}

@@ -413,6 +413,7 @@ export const toUpdateTemplateMutationVariables = (
             type: calloutTemplateData.callout?.framing.type,
             whiteboardContent: calloutTemplateData.callout?.framing.whiteboard?.content,
             link: mapLinkDataToUpdateLinkInput(calloutTemplateData.callout?.framing.link),
+            memoContent: calloutTemplateData.callout?.framing.memo?.markdown,
           },
           settings,
           contributionDefaults: handleContributionDefaults(calloutTemplateData.callout?.contributionDefaults),
