@@ -1884,17 +1884,17 @@
           "subject": "{{spaceName}} - New Post is published \"{{calloutName}}\", have a look!",
           "description": "{{triggeredByName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
-        "USER_MENTION": {
+        "USER_MENTIONED": {
           "subject": "{{triggeredByName}} mentioned you in a comment on {{calloutName}}:",
           "description": ""
         },
-        "SPACE_COMMUNITY_NEW_MEMBER": {
+        "USER_SPACE_COMMUNITY_JOINED": {
           "subject": "{{spaceName}} - Welcome to the Community!",
           "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various posts and whiteboards, further deepen your knowledge about this topic, and connect with other Contributors."
         },
-        "SPACE_COMMUNITY_NEW_MEMBER_ADMIN": {
-          "subject": "{{memberType}} \"{{memberName}}\" joined {{spaceName}}",
-          "description": "{{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
+        "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
+          "subject": "\"{{memberName}}\" joined {{spaceName}}",
+          "description": "{{memberName}} has joined {{spaceName}}, of which you are an admin."
         }
       },
       "emptyInbox": "No pending notifications",
@@ -3046,15 +3046,11 @@
         "title": "Space Settings",
         "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are a member of",
         "settings": {
-          "communicationMention": "Receive a notification when a user tags you in a post or a comment",
-          "communicationUpdates": "Receive notification when a new update is shared with a community I am a member of",
-          "communityApplicationSubmitted": "Receive notification when I apply to join a community",
-          "communityInvitationUser": "Receive a notification when someone invites you to join a community",
-          "communityNewMember": "Receive notification when a new member joins a community I am a member of",
+          "communicationUpdateSent": "Receive notification when a new update is shared with a community I am a member of",
           "collaborationCalloutPublished": "Receive a notification when a Callout is published in a community I am a member of",
-          "collaborationPostCreated": "Receive notification when a new post is created in a community I am a member of",
-          "collaborationWhiteboardCreated": "Receive a notification when a new whiteboard is created in a community I am a member of",
-          "collaborationPostCommentCreated": "Receive a notification when a new comment is added to a post I follow"
+          "collaborationCalloutContributionCreated": "Receive notification when a new contribution (whiteboard, post, link, memo etc.) is created in a community I am a member of",
+          "collaborationCalloutComment": "Receive a notification when a a comment is made on a Callout in a community I am a member of",
+          "collaborationCalloutPostContributionComment": "Receive a notification when a new comment is added to a post contribution in a community I am a member of"
         }
       },
       "spaceAdmin": {
@@ -3062,25 +3058,15 @@
         "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are an admin of",
         "settings": {
           "communityApplicationReceived": "Receive notifications when a new application is received",
-          "communicationUpdatesAdmin": "Receive notifications when there are updates in the communication (admin)",
-          "communityNewMemberAdmin": "Receive notifications when a new member joins the community (admin)",
-          "collaborationPostCreatedAdmin": "Receive notifications when a new post is created (admin)"
-        }
-      },
-      "platformAdmin": {
-        "title": "Platform Admin Settings",
-        "subtitle": "This section is only visible to users that are a global admin on the platform",
-        "settings": {
-          "newUserSignUp": "Receive notifications when a new user signs up",
-          "userProfileRemoved": "Receive notifications when a user profile is removed",
-          "spaceCreated": "Receive notifications when a new space is created"
+          "communityNewMember": "Receive notifications when a new member joins the community",
+          "collaborationCalloutContributionCreated": "Receive notifications when a new callout is created",
+          "communicationMessageReceived": "Receive notifications when a new message is received"
         }
       },
       "organization": {
         "title": "Organization mentions and messaging",
         "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to organizations you manage",
         "settings": {
-          "commentReply": "Receive a notification when someone replies to your comment",
           "mentioned": "Receive notifications when my organization is mentioned",
           "messageReceived": "Receive direct messages to my organization"
         }
@@ -3090,7 +3076,28 @@
         "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to yourself.",
         "settings": {
           "mentioned": "Receive notifications when I am mentioned",
-          "commentReply": "Receive a notification when someone replies to my comment"
+          "commentReply": "Receive a notification when someone replies to my comment",
+          "messageReceived": "Receive a notification when someone sends me a direct message",
+          "copyOfMessageSent": "Receive a notification when I send a direct message"
+        }
+      },
+      "userMembership": {
+        "title": "User membership notifications",
+        "subtitle": "This section allows you to select your preferences regarding notifications related to your membership in communities.",
+        "settings": {
+          "spaceCommunityApplication": "Receive notification when I apply to join a community",
+          "spaceCommunityInvitation": "Receive a notification when someone invites you to join a community",
+          "spaceCommunityJoined": "Receive notification when I join a new Space community"
+        }
+      },
+      "platformAdmin": {
+        "title": "Platform Admin Settings",
+        "subtitle": "This section is only visible to users that are a global admin on the platform",
+        "settings": {
+          "adminUserProfileCreated": "Receive notifications when a new user signs up",
+          "adminUserProfileRemoved": "Receive notifications when a user profile is removed",
+          "adminSpaceCreated": "Receive notifications when a new space is created",
+          "adminUserGlobalRoleChanged": "Receive notifications when a user's global role is changed"
         }
       },
       "forum": {
@@ -3099,6 +3106,13 @@
         "settings": {
           "forumDiscussionComment": "Receive notifications when a new comment is added to a discussion I follow",
           "forumDiscussionCreated": "Receive notifications when a new discussion is created"
+        }
+      },
+      "virtualContributor": {
+        "title": "Virtual Contributor",
+        "subtitle": "This section allows you to select your preferences regarding activities as a virtual contributor",
+        "settings": {
+          "spaceCommunityInvitation": "Receive notifications when a VC I manage is invited to join a community"
         }
       }
     },
