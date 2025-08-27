@@ -18,7 +18,6 @@ export type Scalars = {
   JSON: { input: string; output: string };
   LifecycleDefinition: { input: string; output: string };
   Markdown: { input: string; output: string };
-  MemoContent: { input: string; output: string };
   MessageID: { input: string; output: string };
   NameID: { input: string; output: string };
   SearchCursor: { input: string; output: string };
@@ -2014,10 +2013,12 @@ export type CreateLocationInput = {
 
 export type CreateMemoData = {
   __typename?: 'CreateMemoData';
+  markdown?: Maybe<Scalars['Markdown']['output']>;
   profile?: Maybe<CreateProfileData>;
 };
 
 export type CreateMemoInput = {
+  markdown?: InputMaybe<Scalars['Markdown']['input']>;
   profile?: InputMaybe<CreateProfileInput>;
 };
 
@@ -7310,7 +7311,7 @@ export type UpdateCalloutEntityInput = {
 
 export type UpdateCalloutFramingInput = {
   link?: InputMaybe<UpdateLinkInput>;
-  /** The new content to be used. */
+  /** The new markdown content for the Memo. */
   memoContent?: InputMaybe<Scalars['Markdown']['input']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
@@ -12605,18 +12606,6 @@ export type CreateWhiteboardOnCalloutMutation = {
   };
 };
 
-export type MemoMarkdownQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
-}>;
-
-export type MemoMarkdownQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
-  };
-};
-
 export type CalloutContentQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
 }>;
@@ -12675,7 +12664,7 @@ export type CalloutContentQuery = {
               | {
                   __typename?: 'Memo';
                   id: string;
-                  content?: string | undefined;
+                  markdown?: string | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -14794,6 +14783,18 @@ export type CalloutDetailsFragment = {
       commentsEnabled: boolean;
     };
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+  };
+};
+
+export type MemoMarkdownQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+export type MemoMarkdownQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
   };
 };
 

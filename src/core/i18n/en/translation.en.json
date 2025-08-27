@@ -1419,8 +1419,8 @@
           "url": "URL"
         },
         "memo": {
-          "name": "Initial content",
-          "placeholder": "(Optional) Add some initial content to the memo"
+          "name": "Content",
+          "placeholder": "(Optional) Add some content to the memo"
         }
       },
       "template-step": {

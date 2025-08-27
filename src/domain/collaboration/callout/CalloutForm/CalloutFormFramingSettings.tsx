@@ -26,9 +26,11 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
   edit?: boolean;
+  /** Indicates if the form is used in a template context */
+  template?: boolean;
 }
 
-const CalloutFormFramingSettings = ({ calloutRestrictions, edit }: CalloutFormFramingSettingsProps) => {
+const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: CalloutFormFramingSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
 
@@ -153,6 +155,8 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit }: CalloutFormFr
     }
   }, [calloutRestrictions?.onlyRealTimeWhiteboardFraming]);
 
+  const showMemoContent = !edit || template; // Editable memo content if not in edit mode or if in template mode
+
   return (
     <>
       <PageContentBlock sx={{ marginTop: gutters(-1) }}>
@@ -177,7 +181,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit }: CalloutFormFr
         </PageContentBlock>
       )}
 
-      {!edit && framing.memo && framing.type === CalloutFramingType.Memo && (
+      {showMemoContent && framing.memo && framing.type === CalloutFramingType.Memo && (
         <FormikMarkdownField
           title={t('components.callout-creation.framing.memo.name')}
           placeholder={t('components.callout-creation.framing.memo.placeholder')}

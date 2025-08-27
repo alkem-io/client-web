@@ -1291,8 +1291,9 @@ export type CreateLocationDataFieldPolicy = {
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CreateMemoDataKeySpecifier = ('profile' | CreateMemoDataKeySpecifier)[];
+export type CreateMemoDataKeySpecifier = ('markdown' | 'profile' | CreateMemoDataKeySpecifier)[];
 export type CreateMemoDataFieldPolicy = {
+  markdown?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreatePostDataKeySpecifier = ('tags' | CreatePostDataKeySpecifier)[];
