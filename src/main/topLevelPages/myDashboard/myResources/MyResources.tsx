@@ -37,7 +37,9 @@ const MyResources = () => {
 
   return (
     <PageContentBlock>
-      {innovationHubs?.map(hub => <InnovationHubCardHorizontal key={hub.id} {...hub} size="small" />)}
+      {innovationHubs?.map(hub => (
+        <InnovationHubCardHorizontal key={hub.id} {...hub} size="small" />
+      ))}
       {spaces.map(space => (
         <SpaceCardHorizontal
           key={space.id}
@@ -45,7 +47,11 @@ const MyResources = () => {
           size="small"
           deepness={0}
           seamless
-          sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
+          sx={{
+            display: 'inline-block',
+            maxWidth: '100%',
+            padding: 0,
+          }}
           disableHoverState
           disableTagline
         />
@@ -53,7 +59,9 @@ const MyResources = () => {
       {virtualContributors?.map(vc => (
         <ContributorCardHorizontal key={vc.id} profile={vc.profile} size="small" withUnifiedTitle seamless />
       ))}
-      {innovationPacks?.map(pack => <InnovationPackCardHorizontal key={pack.id} {...pack} size="small" />)}
+      {innovationPacks?.map(pack => (
+        <InnovationPackCardHorizontal key={pack.id} {...pack} size="small" />
+      ))}
     </PageContentBlock>
   );
 };

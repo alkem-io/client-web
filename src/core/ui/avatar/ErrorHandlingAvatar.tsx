@@ -15,18 +15,17 @@ const ErrorHandlingAvatar = ({
 } & CustomAvatarProps) => {
   const reportImageError = useImageErrorHandler();
 
-  const handleError = err => {
-    reportImageError(src, err);
-    onError?.(err);
+  const handleError: React.ReactEventHandler<HTMLImageElement> = e => {
+    reportImageError(src, e);
+    onError?.(e);
   };
 
   return (
     <MUIAvatar
-      onError={handleError}
+      ref={ref}
       src={src}
       aria-label={ariaLabel}
-      slotProps={{ img: { alt: alt || '' } }}
-      ref={ref}
+      slotProps={{ img: { alt: alt || '', onError: handleError } }}
       {...props}
     />
   );
