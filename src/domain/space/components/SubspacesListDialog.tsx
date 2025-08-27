@@ -33,7 +33,7 @@ const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps
   const subspaces = space?.subspaces ?? [];
 
   return (
-    <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="subspaces-list-dialog">
+    <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="subspaces-list-dialog" onClose={onClose}>
       <>
         <DialogHeader
           id="subspaces-list-dialog"

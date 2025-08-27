@@ -36,7 +36,7 @@ export const SpaceCreationDialog: FC<SpaceCreationDialogProps> = ({
   });
 
   return (
-    <DialogWithGrid open={open} maxWidth="xs" fullWidth aria-labelledby="space-creation-dialog-title">
+    <DialogWithGrid open={open} maxWidth="xs" fullWidth aria-labelledby="space-creation-dialog-title" onClose={onClose}>
       <DialogHeader id="space-creation-dialog-title" onClose={onClose} icon={icon}>
         {t('space-creation.dialog-title', { entity: entityName })}
       </DialogHeader>

@@ -29,7 +29,7 @@ const SearchDialog = () => {
   const { t } = useTranslation();
 
   return (
-    <DialogWithGrid open={isSearchDialogOpen} columns={12} aria-labelledby="search-dialog">
+    <DialogWithGrid open={isSearchDialogOpen} columns={12} aria-labelledby="search-dialog" onClose={handleClose}>
       <DialogHeader
         id="search-dialog"
         icon={<Search />}

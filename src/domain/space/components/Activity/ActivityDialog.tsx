@@ -50,7 +50,7 @@ const ActivityDialog = ({ open = false, onClose }: ActivityDialogProps) => {
   const topCallouts = _space?.lookup.space?.collaboration?.calloutsSet?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
   return (
-    <DialogWithGrid open={open} columns={8} aria-labelledby="activity-dialog">
+    <DialogWithGrid open={open} columns={8} aria-labelledby="activity-dialog" onClose={onClose}>
       <DialogHeader id="activity-dialog" onClose={onClose} title={t('common.contributions')} />
       <DialogContent sx={{ paddingTop: 0 }}>
         <RecentContributionsBlock

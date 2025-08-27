@@ -38,7 +38,7 @@ export const DescriptionEditDialog = ({ description, onUpdate, onClose }: Descri
   });
 
   return (
-    <DialogWithGrid open aria-labelledby="description-dialog-title">
+    <DialogWithGrid open aria-labelledby="description-dialog-title" onClose={onClose}>
       <DialogHeader id="description-dialog-title" onClose={onClose}>
         {t('buttons.edit')}
       </DialogHeader>

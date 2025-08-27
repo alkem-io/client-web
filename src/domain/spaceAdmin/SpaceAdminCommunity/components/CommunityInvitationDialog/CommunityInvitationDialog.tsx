@@ -34,7 +34,7 @@ export const CommunityInvitationDialog = ({
   const contributor = data?.lookup.invitation?.contributor;
 
   return (
-    <DialogWithGrid open maxWidth="md" fullWidth aria-labelledby="community-invitation-dialog">
+    <DialogWithGrid open maxWidth="md" fullWidth aria-labelledby="community-invitation-dialog" onClose={onClose}>
       <DialogHeader id="community-invitation-dialog" onClose={onClose}>
         {isPlatformInvitation ? (
           data?.lookup.platformInvitation?.email

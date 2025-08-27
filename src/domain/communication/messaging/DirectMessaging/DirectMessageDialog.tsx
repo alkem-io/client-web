@@ -75,7 +75,14 @@ export const DirectMessageDialog = ({
   };
 
   return (
-    <DialogWithGrid columns={12} open={open} fullWidth maxWidth="md" aria-labelledby="direct-message-dialog">
+    <DialogWithGrid
+      columns={12}
+      open={open}
+      fullWidth
+      maxWidth="md"
+      aria-labelledby="direct-message-dialog"
+      onClose={handleClose}
+    >
       <DialogHeader id="direct-message-dialog" title={title} onClose={handleClose} />
       <Formik
         initialValues={initialValues}

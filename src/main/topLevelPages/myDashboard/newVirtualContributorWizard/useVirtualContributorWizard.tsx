@@ -543,7 +543,12 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     }
 
     return (
-      <DialogWithGrid open={dialogOpen} columns={6} aria-labelledby="virtual-contributor-wizard">
+      <DialogWithGrid
+        open={dialogOpen}
+        columns={6}
+        aria-labelledby="virtual-contributor-wizard"
+        onClose={handleCloseWizard}
+      >
         <StorageConfigContextProvider accountId={myAccountId} locationType="account">
           {step === 'initial' && (
             <CreateNewVirtualContributor

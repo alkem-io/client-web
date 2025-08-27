@@ -190,9 +190,13 @@ const InnovationFlowDragNDropEditor = ({
           )}
         </Droppable>
       </DragDropContext>
-
       {/* Dialogs for Flow States management */}
-      <DialogWithGrid open={Boolean(createFlowState)} aria-labelledby="create-flow-state-dialog-title">
+
+      <DialogWithGrid
+        open={Boolean(createFlowState)}
+        aria-labelledby="create-flow-state-dialog-title"
+        onClose={() => setCreateFlowState(undefined)}
+      >
         <DialogHeader
           icon={<EditOutlined />}
           id="create-flow-state-dialog-title"
@@ -210,7 +214,11 @@ const InnovationFlowDragNDropEditor = ({
           />
         </DialogContent>
       </DialogWithGrid>
-      <DialogWithGrid open={Boolean(editFlowState)} aria-labelledby="edit-flow-state-dialog-title">
+      <DialogWithGrid
+        open={Boolean(editFlowState)}
+        aria-labelledby="edit-flow-state-dialog-title"
+        onClose={() => setEditFlowState(undefined)}
+      >
         <DialogHeader
           icon={<EditOutlined />}
           id="edit-flow-state-dialog-title"

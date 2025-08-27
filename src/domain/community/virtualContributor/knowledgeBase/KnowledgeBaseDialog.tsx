@@ -48,7 +48,7 @@ const KnowledgeBaseDialog = ({ aiPersonaServiceID, onClose, title, id, placehold
 
   if (!hasReadAccess && !loadingPrivileges) {
     return (
-      <DialogWithGrid open columns={6} aria-labelledby="knowledge-base-dialog">
+      <DialogWithGrid open columns={6} aria-labelledby="knowledge-base-dialog" onClose={onClose}>
         <DialogHeader
           id="knowledge-base-dialog"
           onClose={onClose}
@@ -62,7 +62,7 @@ const KnowledgeBaseDialog = ({ aiPersonaServiceID, onClose, title, id, placehold
   }
 
   return (
-    <DialogWithGrid open columns={10} aria-labelledby="knowledge-base-dialog">
+    <DialogWithGrid open columns={10} aria-labelledby="knowledge-base-dialog" onClose={onClose}>
       <DialogHeader id="knowledge-base-dialog" onClose={onClose} title={title} />
       <DialogContent>
         {loadingPrivileges || loading ? (
