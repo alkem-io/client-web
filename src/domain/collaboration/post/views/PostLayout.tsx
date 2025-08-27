@@ -18,7 +18,7 @@ export const PostLayout = ({ currentSection, onClose, children }: PropsWithChild
     disableScrollLock
     aria-labelledby="post-dialog-title"
   >
-    <DialogHeader id="post-dialog-header" onClose={onClose} actions={<PostTabs currentTab={currentSection} />} />
+    <DialogHeader id="post-dialog-title" onClose={onClose} actions={<PostTabs currentTab={currentSection} />} />
     <DialogContent>{children}</DialogContent>
   </DialogWithGrid>
 );
