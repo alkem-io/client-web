@@ -7,10 +7,6 @@ import dayjs from 'dayjs';
 
 interface FormikTimePickerProps extends FormikInputProps, Omit<AlkemioTimePickerProps, 'value' | 'onChange'> {
   startTimeFieldName: string;
-  name: string;
-  label: string;
-  containerProps: { flexGrow: number };
-  disabled: boolean;
 }
 
 const MILLISECONDS_IN_MINUTE = 60 * 1000;

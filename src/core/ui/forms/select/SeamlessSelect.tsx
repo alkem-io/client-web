@@ -17,7 +17,7 @@ type SeamlessSelectProps<Option extends string | number | SearchScope> = {
   onOpen?: () => void;
   onClose?: () => void;
   onChange?: (event: SelectChangeEvent<Option>) => void;
-  value: Option;
+  value?: Option;
 
   /**
    * Set it to true if it's inside a flex box and you expect the options to have long labels that might not fit in the container box.
