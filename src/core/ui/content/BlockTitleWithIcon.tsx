@@ -25,17 +25,16 @@ const BlockTitleWithIcon = ({
     display="flex"
     gap={gutters(0.5)}
     alignItems={icon ? 'center' : 'start'}
+    id={titleId}
     {...props}
   >
     {icon && cloneElement(icon, { fontSize: 'small' })}
     {title && typeof title === 'string' ? (
-      <BlockTitle variant={variant} noWrap id={titleId}>
+      <BlockTitle variant={variant} noWrap>
         {title}
       </BlockTitle>
     ) : (
-      <Caption noWrap id={titleId}>
-        {title}
-      </Caption>
+      <Caption noWrap>{title}</Caption>
     )}
     {children}
   </Box>
