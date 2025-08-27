@@ -7,6 +7,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Box } from '@mui/material';
 import { alpha, styled } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
+import Gutters from '@/core/ui/grid/Gutters';
 
 type MemoPreviewProps = {
   displayName?: string;
@@ -34,11 +35,10 @@ const MemoPreview = ({ displayName, memo, onClick }: MemoPreviewProps) => {
     // add quote styling at the start - avoid having double quote blocks
     const quotedMarkdown = memo.markdown.replace(/^(?!>)|^>>/gm, '> ');
     return (
-      <Box onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default' }}>
+      <Gutters disablePadding onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default', position: 'relative' }}>
         <CroppedMarkdown
           backgroundColor="paper"
           maxHeightGutters={10}
-          minHeightGutters={10}
           containerProps={{
             marginX: gutters(1),
           }}
@@ -52,7 +52,7 @@ const MemoPreview = ({ displayName, memo, onClick }: MemoPreviewProps) => {
         >
           {quotedMarkdown}
         </CroppedMarkdown>
-      </Box>
+      </Gutters>
     );
   }
 };
@@ -61,6 +61,7 @@ export default MemoPreview;
 
 const CaptionContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
+  bottom: 0,
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
