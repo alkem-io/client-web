@@ -2,7 +2,6 @@ import { useCalloutContentLazyQuery } from '@/core/apollo/generated/apollo-hooks
 import {
   AuthorizationPrivilege,
   CalloutContributionType,
-  CalloutFramingType,
   CalloutVisibility,
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -175,7 +174,7 @@ const CalloutSettingsContainer = ({
     return null;
   }
 
-  const canBeSavedAsTemplate = callout.canBeSavedAsTemplate && callout.framing.type !== CalloutFramingType.Memo;
+  const canBeSavedAsTemplate = callout.canBeSavedAsTemplate;
 
   return (
     <>

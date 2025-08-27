@@ -4,6 +4,8 @@ import MarkdownMedia from './MarkdownMedia';
 import MarkdownLink from './MarkdownLink';
 import MarkdownListItem from './MarkdownListItem';
 import createMarkdownList from './MarkdownList';
+import MarkdownBlockquote from './MarkdownBlockquote';
+import MarkdownCode from './MarkdownCode';
 
 const headings = {
   h1: MarkdownHeading,
@@ -23,6 +25,8 @@ const components = {
   ul: createMarkdownList('ul'),
   ol: createMarkdownList('ol'),
   li: MarkdownListItem,
+  blockquote: MarkdownBlockquote,
+  code: MarkdownCode,
 } as const;
 
 export default components;

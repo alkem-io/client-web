@@ -110,6 +110,10 @@ export interface CalloutFormProps {
   children?: FormikConfig<CalloutFormSubmittedValues>['children'];
   calloutRestrictions?: CalloutRestrictions;
   containerProps?: GuttersProps;
+  /** is the form used for editing an existing callout */
+  edit?: boolean;
+  /** is the form used inside a template creation flow */
+  template?: boolean;
 }
 
 const CalloutForm = ({
@@ -118,6 +122,8 @@ const CalloutForm = ({
   onStatusChanged,
   calloutRestrictions,
   containerProps,
+  edit = false,
+  template = false,
   children,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
@@ -170,7 +176,7 @@ const CalloutForm = ({
               temporaryLocation={!Boolean(callout?.id)}
               hideImageOptions={calloutRestrictions?.disableRichMedia}
             />
-            <CalloutFormFramingSettings calloutRestrictions={calloutRestrictions} />
+            <CalloutFormFramingSettings calloutRestrictions={calloutRestrictions} edit={edit} template={template} />
             {formikState.values.framing.profile.id ? (
               <ProfileReferenceSegment
                 profileId={formikState.values.framing.profile.id}
