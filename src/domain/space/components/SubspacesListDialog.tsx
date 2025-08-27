@@ -33,9 +33,10 @@ const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps
   const subspaces = space?.subspaces ?? [];
 
   return (
-    <DialogWithGrid open={open} fullWidth columns={12}>
+    <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="subspaces-list-dialog" onClose={onClose}>
       <>
         <DialogHeader
+          id="subspaces-list-dialog"
           onClose={onClose}
           title={t('common.entitiesWithCount', {
             entityType: t('common.subspaces'),

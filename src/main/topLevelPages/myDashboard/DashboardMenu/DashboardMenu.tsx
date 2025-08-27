@@ -70,33 +70,31 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
     switch (item.type) {
       case 'invites':
         return (
-          <ListItemButton key={index} sx={{ paddingY: gutters(0.75) }} onClick={openMembershipsDialog}>
-            {getItemContent(item)}
-            {pendingInvitationsCount > 0 && (
-              <>
-                <Box sx={{ flexGrow: 1 }} />
-                <BadgeCounter count={pendingInvitationsCount} size="small" />
-              </>
-            )}
-          </ListItemButton>
+          <ListItem key={index} sx={{ paddingY: gutters(0.75) }}>
+            <ListItemButton onClick={openMembershipsDialog}>
+              {getItemContent(item)}
+              {pendingInvitationsCount > 0 && (
+                <>
+                  <Box sx={{ flexGrow: 1 }} />
+                  <BadgeCounter count={pendingInvitationsCount} size="small" />
+                </>
+              )}
+            </ListItemButton>
+          </ListItem>
         );
       case 'link':
         return (
-          <ListItemButton
-            key={index}
-            component={RouterLink}
-            to={item.to ?? ''}
-            disabled={!item.to}
-            sx={{ paddingY: gutters(0.75) }}
-          >
-            {getItemContent(item)}
-          </ListItemButton>
+          <ListItem key={index} sx={{ paddingY: gutters(0.75) }}>
+            <ListItemButton component={RouterLink} to={item.to ?? ''} disabled={!item.to}>
+              {getItemContent(item)}
+            </ListItemButton>
+          </ListItem>
         );
       case 'dialog':
         return (
-          <ListItemButton key={index} sx={{ paddingY: gutters(0.75) }} onClick={openDialog(item.dialog)}>
-            {getItemContent(item)}
-          </ListItemButton>
+          <ListItem key={index} sx={{ paddingY: gutters(0.75) }}>
+            <ListItemButton onClick={openDialog(item.dialog)}>{getItemContent(item)}</ListItemButton>
+          </ListItem>
         );
       case 'switch':
         return (
@@ -113,7 +111,8 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
           </ListItem>
         );
       case 'divider':
-        return <Divider key={index} />;
+        // see https://mui.com/material-ui/react-divider/#accessibility
+        return <Divider key={index} component="li" aria-hidden="true" />;
       default:
         return null;
     }
@@ -123,7 +122,7 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
     return null;
   }
 
-  const renderContent = () => (
+  const renderList = () => (
     <List disablePadding>
       {items.filter(item => item.isVisible(activityEnabled, compact)).map((item, index) => renderMenuItem(item, index))}
     </List>
@@ -148,10 +147,10 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
           </Gutters>
         }
       >
-        {renderContent()}
+        {renderList()}
       </PageContentBlockCollapsible>
     );
   }
 
-  return <PageContentBlock disablePadding>{renderContent()}</PageContentBlock>;
+  return <PageContentBlock disablePadding>{renderList()}</PageContentBlock>;
 };

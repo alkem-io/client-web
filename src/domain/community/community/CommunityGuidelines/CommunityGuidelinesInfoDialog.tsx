@@ -19,8 +19,8 @@ export interface CommunityGuidelinesInfoDialogProps {
 }
 
 const CommunityGuidelinesInfoDialog = ({ open, onClose, guidelines }: CommunityGuidelinesInfoDialogProps) => (
-  <DialogWithGrid open={open} onClose={onClose} columns={8}>
-    <DialogHeader onClose={onClose} title={guidelines?.displayName} />
+  <DialogWithGrid open={open} onClose={onClose} columns={8} aria-labelledby="community-guidelines-info-dialog">
+    <DialogHeader id="community-guidelines-info-dialog" onClose={onClose} title={guidelines?.displayName} />
     <DialogContent>
       <Gutters disablePadding>
         <Box sx={{ wordWrap: 'break-word' }}>

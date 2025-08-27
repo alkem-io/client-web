@@ -86,6 +86,7 @@ const PostCreationDialog = ({
   return (
     <DialogWithGrid open={open} columns={8} aria-labelledby="post-creation-title">
       <DialogHeader
+        id="post-creation-title"
         icon={<CalloutIcon sx={{ marginRight: 1 }} />}
         title={t('components.post-creation.title', { calloutDisplayName: calloutDisplayName })}
         onClose={onCloseClick}

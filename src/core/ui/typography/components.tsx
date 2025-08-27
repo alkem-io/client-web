@@ -3,19 +3,22 @@ import provideStaticProps from '@/core/utils/provideStaticProps';
 
 export const PageTitle = provideStaticProps<TypographyProps, HTMLHeadingElement>(Typography, {
   variant: 'h2',
+  component: 'h1',
 }) as typeof Typography;
 
 export const BlockTitle = provideStaticProps<TypographyProps, HTMLHeadingElement>(Typography, {
   variant: 'h3',
+  component: 'h2',
 }) as typeof Typography;
 
 export const BlockSectionTitle = provideStaticProps<TypographyProps, HTMLHeadingElement>(Typography, {
   variant: 'h4',
+  component: 'h3',
 }) as typeof Typography;
 
 export const Tagline = provideStaticProps<TypographyProps, HTMLHeadingElement>(Typography, {
   variant: 'subtitle1',
-  component: 'h3',
+  component: 'h4',
 } as TypographyProps) as typeof Typography;
 
 export const Text = provideStaticProps<TypographyProps, HTMLParagraphElement>(Typography, {

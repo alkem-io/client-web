@@ -107,6 +107,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
           },
         },
       }}
+      onClose={handleClose}
     >
       <CalendarEventsContainer spaceId={spaceId} parentSpaceId={parentSpaceId}>
         {(

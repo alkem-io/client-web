@@ -42,10 +42,16 @@ const DashboardInnovationPacks = ({
         loading={loading}
       />
 
-      <DialogWithGrid open={isDialogOpen} onClose={() => setIsDialogOpen(false)} columns={12}>
+      <DialogWithGrid
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        columns={12}
+        aria-labelledby="innovation-packs-dialog-title"
+      >
         <InnovationPacksView
           filter={filter}
           headerTitle={dialogTitle}
+          headerTitleId="innovation-packs-dialog-title"
           innovationPacks={filteredInnovationPacks}
           onFilterChange={onFilterChange}
           expanded={isDialogOpen}

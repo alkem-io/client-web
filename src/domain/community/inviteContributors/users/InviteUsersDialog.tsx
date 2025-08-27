@@ -99,8 +99,9 @@ const InviteUsersDialog = ({
   const loading = loadingSpace || resolvingSpace || loadingRoleSet || invitingUsers;
 
   return (
-    <DialogWithGrid open={open} onClose={handleClose} columns={12}>
+    <DialogWithGrid open={open} onClose={handleClose} columns={12} aria-labelledby="invite-users-dialog">
       <DialogHeader
+        id="invite-users-dialog"
         title={t('community.invitations.inviteContributorsDialog.users.title', { spaceName })}
         onClose={handleClose}
       />

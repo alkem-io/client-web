@@ -26,8 +26,8 @@ export const MyMembershipsDialog = ({
   const { link: createSpaceLink } = useCreateSpaceLink();
 
   return (
-    <DialogWithGrid columns={8} open={open} onClose={onClose}>
-      <DialogHeader icon={Icon ? <Icon /> : undefined} title={title} onClose={onClose} />
+    <DialogWithGrid columns={8} open={open} onClose={onClose} aria-labelledby="my-memberships-dialog">
+      <DialogHeader id="my-memberships-dialog" icon={Icon ? <Icon /> : undefined} title={title} onClose={onClose} />
 
       <DialogContent style={{ paddingTop: 0 }}>
         {loading && <Loading />}

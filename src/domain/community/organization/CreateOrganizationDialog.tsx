@@ -47,8 +47,12 @@ export const CreateOrganizationDialog = ({ open, onClose }: CreateOrganizationDi
   };
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} columns={6}>
-      <DialogHeader title={t('common.create-new-entity', { entity: t('common.organization') })} onClose={onClose} />
+    <DialogWithGrid open={open} onClose={onClose} columns={6} aria-labelledby="create-organization-dialog">
+      <DialogHeader
+        id="create-organization-dialog"
+        title={t('common.create-new-entity', { entity: t('common.organization') })}
+        onClose={onClose}
+      />
 
       <DialogContent>
         <Gutters disableGap disablePadding sx={{ display: 'flex' }}>

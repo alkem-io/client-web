@@ -12,8 +12,8 @@ const SpaceWelcomeDialog = ({ onClose }: SpaceWelcomeDialogProps) => {
   const { t } = useTranslation();
 
   return (
-    <DialogWithGrid open onClose={onClose} columns={6}>
-      <DialogHeader title={t('components.spaceWelcomeDialog.title')} onClose={onClose} />
+    <DialogWithGrid open onClose={onClose} columns={6} aria-labelledby="space-welcome-dialog">
+      <DialogHeader id="space-welcome-dialog" title={t('components.spaceWelcomeDialog.title')} onClose={onClose} />
       <DialogContent>
         <Caption alignSelf="center">
           <Trans

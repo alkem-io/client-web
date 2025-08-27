@@ -8,14 +8,15 @@ interface TryVcInfoProps {
   vcName: string;
   url: string | undefined;
   onClose: () => void;
+  titleId?: string;
 }
 
-const TryVcInfo = ({ vcName, url, onClose }: TryVcInfoProps) => {
+const TryVcInfo = ({ vcName, url, onClose, titleId }: TryVcInfoProps) => {
   const { t } = useTranslation();
 
   return (
     <>
-      <DialogHeader title={t('createVirtualContributorWizard.tryInfoSection.title')} onClose={onClose} />
+      <DialogHeader id={titleId} title={t('createVirtualContributorWizard.tryInfoSection.title')} onClose={onClose} />
       <DialogContent>
         <Caption alignSelf="center">
           {t('createVirtualContributorWizard.tryInfoSection.description', { vcName })}

@@ -48,8 +48,12 @@ const KnowledgeBaseDialog = ({ aiPersonaServiceID, onClose, title, id, placehold
 
   if (!hasReadAccess && !loadingPrivileges) {
     return (
-      <DialogWithGrid open columns={6}>
-        <DialogHeader onClose={onClose} title={t('pages.virtualContributorProfile.knowledgeBase.noAccess.title')} />
+      <DialogWithGrid open columns={6} aria-labelledby="knowledge-base-dialog" onClose={onClose}>
+        <DialogHeader
+          id="knowledge-base-dialog"
+          onClose={onClose}
+          title={t('pages.virtualContributorProfile.knowledgeBase.noAccess.title')}
+        />
         <DialogContent>
           <Caption>{t('pages.virtualContributorProfile.knowledgeBase.noAccess.description')}</Caption>
         </DialogContent>
@@ -58,8 +62,8 @@ const KnowledgeBaseDialog = ({ aiPersonaServiceID, onClose, title, id, placehold
   }
 
   return (
-    <DialogWithGrid open columns={10}>
-      <DialogHeader onClose={onClose} title={title} />
+    <DialogWithGrid open columns={10} aria-labelledby="knowledge-base-dialog" onClose={onClose}>
+      <DialogHeader id="knowledge-base-dialog" onClose={onClose} title={title} />
       <DialogContent>
         {loadingPrivileges || loading ? (
           <Loading />

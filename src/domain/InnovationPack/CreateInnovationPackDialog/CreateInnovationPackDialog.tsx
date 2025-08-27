@@ -56,9 +56,9 @@ const CreateInnovationPackDialog = ({
 
   return (
     <>
-      <DialogWithGrid open={open} onClose={onClose} columns={6}>
+      <DialogWithGrid open={open} onClose={onClose} columns={6} aria-labelledby="create-innovation-pack-dialog-title">
         <DialogHeader onClose={onClose}>
-          <BlockTitle>{t('pages.admin.innovation-packs.create')}</BlockTitle>
+          <BlockTitle id="create-innovation-pack-dialog-title">{t('pages.admin.innovation-packs.create')}</BlockTitle>
         </DialogHeader>
         <DialogContent>
           <StorageConfigContextProvider accountId={accountId} locationType="account">

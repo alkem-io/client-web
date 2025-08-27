@@ -81,7 +81,9 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
           >
             <BlockTitle sx={isSmallScreen ? webkitLineClamp(2) : undefined}>{displayName}</BlockTitle>
 
-            <BlockSectionTitle sx={isSmallScreen ? webkitLineClamp(2) : undefined}>{tagline}</BlockSectionTitle>
+            {tagline ? (
+              <BlockSectionTitle sx={isSmallScreen ? webkitLineClamp(2) : undefined}>{tagline}</BlockSectionTitle>
+            ) : null}
 
             {isSmallScreen && (
               <Caption color="primary">

@@ -221,7 +221,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                       <Link key={member.id} href={member.url}>
                         <Avatar
                           src={member.avatarUrl}
-                          aria-label="User avatar"
+                          ariaLabel="User avatar"
                           alt={
                             member.displayName
                               ? t('common.avatar-of', { user: member.displayName })

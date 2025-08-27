@@ -83,8 +83,12 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
   };
 
   return (
-    <DialogWithGrid open={open} columns={4} aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
-      <DialogHeader title={t('callout.sortContributions')} onClose={onClose} />
+    <DialogWithGrid open={open} columns={4} aria-labelledby="callout-sort-contributions-dialog-title" onClose={onClose}>
+      <DialogHeader
+        title={t('callout.sortContributions')}
+        onClose={onClose}
+        id="callout-sort-contributions-dialog-title"
+      />
       <DialogContent>
         {loading && <Loading />}
         <Paper variant="outlined">

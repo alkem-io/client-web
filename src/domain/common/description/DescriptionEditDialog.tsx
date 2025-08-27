@@ -38,8 +38,10 @@ export const DescriptionEditDialog = ({ description, onUpdate, onClose }: Descri
   });
 
   return (
-    <DialogWithGrid open>
-      <DialogHeader onClose={onClose}>{t('buttons.edit')}</DialogHeader>
+    <DialogWithGrid open aria-labelledby="description-dialog-title" onClose={onClose}>
+      <DialogHeader id="description-dialog-title" onClose={onClose}>
+        {t('buttons.edit')}
+      </DialogHeader>
       <DialogContent>
         <Formik
           initialValues={initialValues}

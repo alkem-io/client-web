@@ -127,8 +127,14 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
           </Button>
         }
       />
-      <DialogWithGrid columns={8} open={isAddDialogOpen} onClose={() => setIsAddDialogOpen(false)}>
+      <DialogWithGrid
+        columns={8}
+        open={isAddDialogOpen}
+        onClose={() => setIsAddDialogOpen(false)}
+        aria-labelledby="add-space-dialog"
+      >
         <DialogHeader
+          id="add-space-dialog"
           title={t('common.add')}
           onClose={() => setIsAddDialogOpen(false)}
           actions={

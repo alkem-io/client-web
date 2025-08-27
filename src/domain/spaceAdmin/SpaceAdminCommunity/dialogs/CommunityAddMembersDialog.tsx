@@ -91,8 +91,10 @@ const CommunityAddMembersDialog = ({ onClose, onAdd, fetchAvailableEntities }: C
   };
 
   return (
-    <DialogWithGrid open columns={12} onClose={onClose}>
-      <DialogHeader onClose={onClose}>{t('community.addMember')}</DialogHeader>
+    <DialogWithGrid open columns={12} onClose={onClose} aria-labelledby="community-add-members-dialog">
+      <DialogHeader id="community-add-members-dialog" onClose={onClose}>
+        {t('community.addMember')}
+      </DialogHeader>
       <Gutters>
         {!availableEntities ? (
           <DataGridSkeleton />

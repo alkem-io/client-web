@@ -14,8 +14,14 @@ export const InAppNotificationsDialog = () => {
   const { markNotificationsAsRead } = useInAppNotifications();
 
   return (
-    <DialogWithGrid open={isOpen} columns={8} onClose={() => setIsOpen(false)}>
+    <DialogWithGrid
+      open={isOpen}
+      columns={8}
+      onClose={() => setIsOpen(false)}
+      aria-labelledby="in-app-notifications-dialog"
+    >
       <DialogHeader
+        id="in-app-notifications-dialog"
         icon={<NotificationsNoneOutlinedIcon />}
         onClose={() => setIsOpen(false)}
         actions={

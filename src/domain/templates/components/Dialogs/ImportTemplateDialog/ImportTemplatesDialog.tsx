@@ -122,8 +122,9 @@ const ImportTemplatesDialog = ({
 
   return (
     <>
-      <DialogWithGrid open={open} columns={12} onClose={handleClose}>
+      <DialogWithGrid open={open} columns={12} onClose={handleClose} aria-labelledby="import-templates-dialog">
         <DialogHeader
+          id="import-templates-dialog"
           title={
             templateType
               ? t('pages.admin.generic.sections.templates.import.title', {

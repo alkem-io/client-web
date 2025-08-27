@@ -90,6 +90,11 @@ const SpaceCardHorizontal = ({
     padding: gutters(),
     marginLeft: gutters(deepness * 2),
     borderRadius: 'unset',
+    '&:focus-within': {
+      outline: '2px solid',
+      outlineColor: 'rgba(236, 57, 141, 0.65)',
+      borderRadius: '12px',
+    },
     ...sx,
   };
 

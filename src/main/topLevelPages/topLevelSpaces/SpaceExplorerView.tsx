@@ -269,8 +269,18 @@ export const SpaceExplorerView = ({
         />
       )}
       {infoOpen && (
-        <DialogWithGrid open={infoOpen} onClose={() => setInfoOpen(false)} columns={4} id="space-explorer-info-dialog">
-          <DialogHeader title={t('pages.exploreSpaces.fullName')} onClose={() => setInfoOpen(false)} />
+        <DialogWithGrid
+          open={infoOpen}
+          onClose={() => setInfoOpen(false)}
+          columns={4}
+          id="space-explorer-info-dialog"
+          aria-labelledby="space-explorer-info-dialog-title"
+        >
+          <DialogHeader
+            id="space-explorer-info-dialog-title"
+            title={t('pages.exploreSpaces.fullName')}
+            onClose={() => setInfoOpen(false)}
+          />
           <DialogContent sx={{ paddingTop: 0 }}>
             <WrapperMarkdown caption>{t('pages.exploreSpaces.caption')}</WrapperMarkdown>
           </DialogContent>

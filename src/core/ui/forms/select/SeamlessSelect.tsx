@@ -2,7 +2,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { SearchScope } from '@/main/ui/platformSearch/PlatformSearch';
 import { ExpandMore } from '@mui/icons-material';
-import { Box, MenuItem, Select, SelectProps, TypographyProps } from '@mui/material';
+import { Box, MenuItem, Select, SelectChangeEvent, SelectProps, TypographyProps } from '@mui/material';
 import { ComponentType, ReactNode, useMemo } from 'react';
 
 export interface CustomSelectOption<Option extends string | number | SearchScope> {
@@ -14,6 +14,10 @@ type SeamlessSelectProps<Option extends string | number | SearchScope> = {
   label?: string;
   options: CustomSelectOption<Option>[];
   typographyComponent?: ComponentType<TypographyProps>;
+  onOpen?: () => void;
+  onClose?: () => void;
+  onChange?: (event: SelectChangeEvent<Option>) => void;
+  value?: Option;
 
   /**
    * Set it to true if it's inside a flex box and you expect the options to have long labels that might not fit in the container box.
@@ -27,11 +31,13 @@ const SeamlessSelect = <Option extends string | number>({
   label,
   typographyComponent: Typography = Caption,
   shrink = false,
-  ...props
+  onChange,
+  onClose,
+  onOpen,
+  sx = {},
 }: SeamlessSelectProps<Option>) => {
   const selectedOption = useMemo(() => options.find(option => option.value === value), [value, options]);
 
-  const { sx, ...restProps } = props;
   return (
     <Select
       value={value}
@@ -60,7 +66,9 @@ const SeamlessSelect = <Option extends string | number>({
           </Typography>
         </Box>
       )}
-      {...restProps}
+      onOpen={onOpen}
+      onClose={onClose}
+      onChange={onChange}
     >
       {options.map(({ value, label }, index) => (
         <MenuItem value={value} key={`option_${index}`}>

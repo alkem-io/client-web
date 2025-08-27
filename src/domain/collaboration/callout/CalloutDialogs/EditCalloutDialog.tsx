@@ -175,8 +175,17 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
 
   return (
     <>
-      <DialogWithGrid open={open} onClose={handleCloseButtonClick} fullWidth>
-        <DialogHeader title={t('callout.edit.dialogTitle')} onClose={handleCloseButtonClick} />
+      <DialogWithGrid
+        open={open}
+        onClose={handleCloseButtonClick}
+        fullWidth
+        aria-labelledby="edit-callout-dialog-title"
+      >
+        <DialogHeader
+          title={t('callout.edit.dialogTitle')}
+          onClose={handleCloseButtonClick}
+          id="edit-callout-dialog-title"
+        />
         <DialogContent>
           {loadingCallout ? (
             <Loading />

@@ -32,6 +32,7 @@ type CreateNewVirtualContributorProps = {
   onUseExistingKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExternal: (values: VirtualContributorFromProps) => void;
   loading?: boolean;
+  titleId?: string;
 };
 
 enum VCSourceOptions {
@@ -89,6 +90,7 @@ const CreateNewVirtualContributor = ({
   onUseExternal,
   loading,
   onChangeAvatar,
+  titleId,
 }: CreateNewVirtualContributorProps) => {
   const { t } = useTranslation();
   const { isSmallScreen } = useScreenSize();
@@ -138,7 +140,7 @@ const CreateNewVirtualContributor = ({
 
   return (
     <>
-      <DialogHeader onClose={onClose} title={t('createVirtualContributorWizard.initial.title')} />
+      <DialogHeader id={titleId} onClose={onClose} title={t('createVirtualContributorWizard.initial.title')} />
       <DialogContent sx={{ paddingTop: 0 }}>
         {loading && <Loading />}
 

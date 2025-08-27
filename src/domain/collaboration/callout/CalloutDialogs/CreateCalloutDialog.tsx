@@ -172,8 +172,9 @@ const CreateCalloutDialog = ({
 
   return (
     <>
-      <DialogWithGrid open={open} onClose={handleCloseButtonClick} fullWidth>
+      <DialogWithGrid open={open} onClose={handleCloseButtonClick} fullWidth aria-labelledby="create-callout-dialog">
         <DialogHeader
+          id="create-callout-dialog"
           title={t('callout.create.dialogTitle')}
           onClose={handleCloseButtonClick}
           actions={

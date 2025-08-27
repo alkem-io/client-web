@@ -55,9 +55,18 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
   const disabled = !hasContributePrivileges || collaborationState?.readOnly || notConnected || notSynced;
 
   return (
-    <DialogWithGrid ref={dialogRef} open={open} onClose={handleClose} fullWidth fullHeight fullScreen={fullScreen}>
+    <DialogWithGrid
+      ref={dialogRef}
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      fullHeight
+      fullScreen={fullScreen}
+      aria-labelledby="memo-dialog-title"
+    >
       <DialogHeader
         onClose={handleClose}
+        id="memo-dialog-title"
         actions={
           <>
             <ShareButton url={memo?.profile.url} entityTypeName="memo" disabled={!memo?.profile.url}>
