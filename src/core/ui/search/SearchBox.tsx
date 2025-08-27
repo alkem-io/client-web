@@ -111,7 +111,6 @@ const SearchBox = (<Option extends string | number>({
             in={isExpanded}
             orientation="horizontal"
             aria-hidden={!isExpanded}
-            unmountOnExit
             sx={{ marginRight: '-1px' }}
           >
             <Box

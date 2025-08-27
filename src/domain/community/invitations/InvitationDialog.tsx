@@ -80,7 +80,12 @@ const InvitationDialog = ({
   );
 
   return (
-    <DialogWithGrid columns={12} open={open} onClose={onClose} aria-labelledby="invitation-dialog">
+    <DialogWithGrid
+      columns={12}
+      open={open}
+      onClose={onClose}
+      aria-labelledby={invitation ? 'invitation-dialog' : undefined}
+    >
       {invitation && (
         <InvitationHydrator invitation={invitation} withCommunityGuidelines>
           {({ invitation, communityGuidelines }) =>
