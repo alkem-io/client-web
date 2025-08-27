@@ -33,7 +33,9 @@ const BlockTitleWithIcon = ({
         {title}
       </BlockTitle>
     ) : (
-      <Caption noWrap>{title}</Caption>
+      <Caption noWrap id={titleId}>
+        {title}
+      </Caption>
     )}
     {children}
   </Box>

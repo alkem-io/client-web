@@ -75,7 +75,7 @@ const InsertImageButton = ({
         <AddPhotoAlternateOutlined />
       </MarkdownInputToolbarButton>
       <DialogWithGrid open={isDialogOpen} onClose={closeDialog} aria-labelledby="insert-image-dialog-title">
-        <DialogHeader onClose={closeDialog} id="insert-image-dialog-title">
+        <DialogHeader onClose={closeDialog}>
           <BlockTitle id="insert-image-dialog-title">{t('components.wysiwyg-editor.image.dialogHeader')}</BlockTitle>
         </DialogHeader>
         <Formik initialValues={initialValues} onSubmit={insertImage}>

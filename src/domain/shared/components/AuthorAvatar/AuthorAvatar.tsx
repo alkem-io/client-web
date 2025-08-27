@@ -9,12 +9,10 @@ import { useTranslation } from 'react-i18next';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
 
-const UserAvatar = styled(({ src, alt }: CustomAvatarProps) => <Avatar src={src} alt={alt} />)<CustomAvatarProps>(
-  ({ theme }) => ({
-    height: theme.avatarSizeXs,
-    width: theme.avatarSizeXs,
-  })
-);
+const UserAvatar = styled(Avatar)<CustomAvatarProps>(({ theme }) => ({
+  height: theme.avatarSizeXs,
+  width: theme.avatarSizeXs,
+}));
 
 export interface AuthorAvatarProps {
   author: AuthorModel | undefined;

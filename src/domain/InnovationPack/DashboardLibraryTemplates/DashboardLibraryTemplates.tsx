@@ -88,7 +88,7 @@ const DashboardLibraryTemplates = ({
           onClick={template => setSelectedTemplate(template)}
           sx={{ flexShrink: 1 }}
           loading={loading}
-          headerTitleId="library-templates-dialog-content"
+          headerTitleId="library-templates-dialog-title"
         />
       </DialogWithGrid>
       {selectedTemplate && (

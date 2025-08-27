@@ -9,9 +9,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { COMMENTS_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
-const UserAvatar = styled(({ src, variant, alt, ...rest }: CustomAvatarProps) => (
-  <Avatar src={src} variant={variant} alt={alt} {...rest} />
-))<CustomAvatarProps>(({ theme }) => ({
+const UserAvatar = styled(Avatar)<CustomAvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
   width: theme.avatarSizeXs,
 }));

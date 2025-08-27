@@ -25,8 +25,8 @@ const DialogHeader = ({
 }: PropsWithChildren<DialogHeaderProps>) => {
   const { t } = useTranslation();
   return (
-    <Box display="flex" alignItems="start" padding={1} id={id}>
-      <BlockTitleWithIcon title={title} icon={icon} padding={1} {...titleContainerProps}>
+    <Box display="flex" alignItems="start" padding={1}>
+      <BlockTitleWithIcon title={title} icon={icon} padding={1} titleId={id} {...titleContainerProps}>
         {children}
       </BlockTitleWithIcon>
       <ActionsBar>
