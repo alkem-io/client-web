@@ -1665,45 +1665,6 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutFieldPolicy = {
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type InAppNotificationPayloadSpaceCollaborationPostKeySpecifier = (
-  | 'callout'
-  | 'post'
-  | 'space'
-  | 'type'
-  | InAppNotificationPayloadSpaceCollaborationPostKeySpecifier
-)[];
-export type InAppNotificationPayloadSpaceCollaborationPostFieldPolicy = {
-  callout?: FieldPolicy<any> | FieldReadFunction<any>;
-  post?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type InAppNotificationPayloadSpaceCollaborationPostCommentKeySpecifier = (
-  | 'comment'
-  | 'post'
-  | 'space'
-  | 'type'
-  | InAppNotificationPayloadSpaceCollaborationPostCommentKeySpecifier
-)[];
-export type InAppNotificationPayloadSpaceCollaborationPostCommentFieldPolicy = {
-  comment?: FieldPolicy<any> | FieldReadFunction<any>;
-  post?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type InAppNotificationPayloadSpaceCollaborationWhiteboardKeySpecifier = (
-  | 'callout'
-  | 'space'
-  | 'type'
-  | 'whiteboard'
-  | InAppNotificationPayloadSpaceCollaborationWhiteboardKeySpecifier
-)[];
-export type InAppNotificationPayloadSpaceCollaborationWhiteboardFieldPolicy = {
-  callout?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type InAppNotificationPayloadSpaceCommunicationMessageDirectKeySpecifier = (
   | 'message'
   | 'space'
@@ -4363,6 +4324,7 @@ export type UserSettingsNotificationKeySpecifier = (
   | 'platform'
   | 'space'
   | 'user'
+  | 'virtualContributor'
   | UserSettingsNotificationKeySpecifier
 )[];
 export type UserSettingsNotificationFieldPolicy = {
@@ -4370,76 +4332,112 @@ export type UserSettingsNotificationFieldPolicy = {
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationChannelsKeySpecifier = (
+  | 'email'
+  | 'inApp'
+  | UserSettingsNotificationChannelsKeySpecifier
+)[];
+export type UserSettingsNotificationChannelsFieldPolicy = {
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  inApp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationOrganizationKeySpecifier = (
-  | 'mentioned'
-  | 'messageReceived'
+  | 'adminMentioned'
+  | 'adminMessageReceived'
   | UserSettingsNotificationOrganizationKeySpecifier
 )[];
 export type UserSettingsNotificationOrganizationFieldPolicy = {
-  mentioned?: FieldPolicy<any> | FieldReadFunction<any>;
-  messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminMentioned?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationPlatformKeySpecifier = (
+  | 'admin'
   | 'forumDiscussionComment'
   | 'forumDiscussionCreated'
-  | 'newUserSignUp'
-  | 'spaceCreated'
-  | 'userProfileRemoved'
   | UserSettingsNotificationPlatformKeySpecifier
 )[];
 export type UserSettingsNotificationPlatformFieldPolicy = {
+  admin?: FieldPolicy<any> | FieldReadFunction<any>;
   forumDiscussionComment?: FieldPolicy<any> | FieldReadFunction<any>;
   forumDiscussionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  newUserSignUp?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationPlatformAdminKeySpecifier = (
+  | 'spaceCreated'
+  | 'userGlobalRoleChanged'
+  | 'userProfileCreated'
+  | 'userProfileRemoved'
+  | UserSettingsNotificationPlatformAdminKeySpecifier
+)[];
+export type UserSettingsNotificationPlatformAdminFieldPolicy = {
   spaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  userGlobalRoleChanged?: FieldPolicy<any> | FieldReadFunction<any>;
+  userProfileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   userProfileRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationSpaceKeySpecifier = (
+  | 'admin'
+  | 'collaborationCalloutComment'
+  | 'collaborationCalloutContributionCreated'
+  | 'collaborationCalloutPostContributionComment'
   | 'collaborationCalloutPublished'
-  | 'collaborationPostCommentCreated'
-  | 'collaborationPostCreated'
-  | 'collaborationPostCreatedAdmin'
-  | 'collaborationWhiteboardCreated'
-  | 'communicationMessage'
-  | 'communicationMessageAdmin'
   | 'communicationUpdates'
-  | 'communicationUpdatesAdmin'
-  | 'communityApplicationReceived'
-  | 'communityApplicationSubmitted'
-  | 'communityInvitationUser'
-  | 'communityNewMember'
-  | 'communityNewMemberAdmin'
   | UserSettingsNotificationSpaceKeySpecifier
 )[];
 export type UserSettingsNotificationSpaceFieldPolicy = {
+  admin?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationCalloutComment?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationCalloutContributionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationCalloutPostContributionComment?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationCalloutPublished?: FieldPolicy<any> | FieldReadFunction<any>;
-  collaborationPostCommentCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  collaborationPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  collaborationPostCreatedAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  collaborationWhiteboardCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationMessage?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationMessageAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdates?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationUpdatesAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationSpaceAdminKeySpecifier = (
+  | 'collaborationCalloutContributionCreated'
+  | 'communicationMessageReceived'
+  | 'communityApplicationReceived'
+  | 'communityNewMember'
+  | UserSettingsNotificationSpaceAdminKeySpecifier
+)[];
+export type UserSettingsNotificationSpaceAdminFieldPolicy = {
+  collaborationCalloutContributionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  communicationMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communityApplicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityApplicationSubmitted?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityInvitationUser?: FieldPolicy<any> | FieldReadFunction<any>;
   communityNewMember?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityNewMemberAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationUserKeySpecifier = (
   | 'commentReply'
+  | 'copyOfMessageSent'
+  | 'membership'
   | 'mentioned'
   | 'messageReceived'
-  | 'messageSent'
   | UserSettingsNotificationUserKeySpecifier
 )[];
 export type UserSettingsNotificationUserFieldPolicy = {
   commentReply?: FieldPolicy<any> | FieldReadFunction<any>;
+  copyOfMessageSent?: FieldPolicy<any> | FieldReadFunction<any>;
+  membership?: FieldPolicy<any> | FieldReadFunction<any>;
   mentioned?: FieldPolicy<any> | FieldReadFunction<any>;
   messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
-  messageSent?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationUserMembershipKeySpecifier = (
+  | 'spaceCommunityApplicationSubmitted'
+  | 'spaceCommunityInvitationReceived'
+  | 'spaceCommunityJoined'
+  | UserSettingsNotificationUserMembershipKeySpecifier
+)[];
+export type UserSettingsNotificationUserMembershipFieldPolicy = {
+  spaceCommunityApplicationSubmitted?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceCommunityInvitationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceCommunityJoined?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationVirtualContributorKeySpecifier = (
+  | 'adminSpaceCommunityInvitation'
+  | UserSettingsNotificationVirtualContributorKeySpecifier
+)[];
+export type UserSettingsNotificationVirtualContributorFieldPolicy = {
+  adminSpaceCommunityInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsPrivacyKeySpecifier = ('contributionRolesPubliclyVisible' | UserSettingsPrivacyKeySpecifier)[];
 export type UserSettingsPrivacyFieldPolicy = {
@@ -5234,27 +5232,6 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCollaborationCalloutFieldPolicy;
   };
-  InAppNotificationPayloadSpaceCollaborationPost?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | InAppNotificationPayloadSpaceCollaborationPostKeySpecifier
-      | (() => undefined | InAppNotificationPayloadSpaceCollaborationPostKeySpecifier);
-    fields?: InAppNotificationPayloadSpaceCollaborationPostFieldPolicy;
-  };
-  InAppNotificationPayloadSpaceCollaborationPostComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | InAppNotificationPayloadSpaceCollaborationPostCommentKeySpecifier
-      | (() => undefined | InAppNotificationPayloadSpaceCollaborationPostCommentKeySpecifier);
-    fields?: InAppNotificationPayloadSpaceCollaborationPostCommentFieldPolicy;
-  };
-  InAppNotificationPayloadSpaceCollaborationWhiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | InAppNotificationPayloadSpaceCollaborationWhiteboardKeySpecifier
-      | (() => undefined | InAppNotificationPayloadSpaceCollaborationWhiteboardKeySpecifier);
-    fields?: InAppNotificationPayloadSpaceCollaborationWhiteboardFieldPolicy;
-  };
   InAppNotificationPayloadSpaceCommunicationMessageDirect?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5903,6 +5880,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | UserSettingsNotificationKeySpecifier | (() => undefined | UserSettingsNotificationKeySpecifier);
     fields?: UserSettingsNotificationFieldPolicy;
   };
+  UserSettingsNotificationChannels?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationChannelsKeySpecifier
+      | (() => undefined | UserSettingsNotificationChannelsKeySpecifier);
+    fields?: UserSettingsNotificationChannelsFieldPolicy;
+  };
   UserSettingsNotificationOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5917,6 +5901,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | UserSettingsNotificationPlatformKeySpecifier);
     fields?: UserSettingsNotificationPlatformFieldPolicy;
   };
+  UserSettingsNotificationPlatformAdmin?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationPlatformAdminKeySpecifier
+      | (() => undefined | UserSettingsNotificationPlatformAdminKeySpecifier);
+    fields?: UserSettingsNotificationPlatformAdminFieldPolicy;
+  };
   UserSettingsNotificationSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5924,12 +5915,33 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | UserSettingsNotificationSpaceKeySpecifier);
     fields?: UserSettingsNotificationSpaceFieldPolicy;
   };
+  UserSettingsNotificationSpaceAdmin?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationSpaceAdminKeySpecifier
+      | (() => undefined | UserSettingsNotificationSpaceAdminKeySpecifier);
+    fields?: UserSettingsNotificationSpaceAdminFieldPolicy;
+  };
   UserSettingsNotificationUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
       | UserSettingsNotificationUserKeySpecifier
       | (() => undefined | UserSettingsNotificationUserKeySpecifier);
     fields?: UserSettingsNotificationUserFieldPolicy;
+  };
+  UserSettingsNotificationUserMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationUserMembershipKeySpecifier
+      | (() => undefined | UserSettingsNotificationUserMembershipKeySpecifier);
+    fields?: UserSettingsNotificationUserMembershipFieldPolicy;
+  };
+  UserSettingsNotificationVirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationVirtualContributorKeySpecifier
+      | (() => undefined | UserSettingsNotificationVirtualContributorKeySpecifier);
+    fields?: UserSettingsNotificationVirtualContributorFieldPolicy;
   };
   UserSettingsPrivacy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserSettingsPrivacyKeySpecifier | (() => undefined | UserSettingsPrivacyKeySpecifier);
