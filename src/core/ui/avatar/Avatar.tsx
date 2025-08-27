@@ -29,6 +29,7 @@ const Avatar = ({
   alt,
   src,
   key,
+  ...props
 }: HTMLAttributes<HTMLDivElement> & {
   ref?: React.Ref<HTMLDivElement>;
 } & CustomAvatarProps) => {
@@ -37,7 +38,7 @@ const Avatar = ({
   if (overlay) {
     return (
       <Box ref={ref} position="relative">
-        <Avatar key={key} size={size} sx={sx} alt={alt} ariaLabel={ariaLabel} src={src} />
+        <Avatar key={key} size={size} sx={sx} alt={alt} ariaLabel={ariaLabel} src={src} {...props} />
         <Box
           position="absolute"
           top={0}
@@ -67,6 +68,7 @@ const Avatar = ({
       alt={alt}
       ariaLabel={ariaLabel}
       src={src}
+      {...props}
     />
   );
 };

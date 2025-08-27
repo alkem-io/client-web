@@ -9,6 +9,7 @@ const ErrorHandlingAvatar = ({
   src,
   ariaLabel,
   alt,
+  ...props
 }: HTMLAttributes<HTMLDivElement> & {
   ref?: React.Ref<HTMLDivElement>;
 } & CustomAvatarProps) => {
@@ -26,6 +27,7 @@ const ErrorHandlingAvatar = ({
       aria-label={ariaLabel}
       slotProps={{ img: { alt: alt || '' } }}
       ref={ref}
+      {...props}
     />
   );
 };
