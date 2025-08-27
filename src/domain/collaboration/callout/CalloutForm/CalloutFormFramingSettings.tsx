@@ -25,9 +25,10 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
+  edit?: boolean;
 }
 
-const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingSettingsProps) => {
+const CalloutFormFramingSettings = ({ calloutRestrictions, edit }: CalloutFormFramingSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
 
@@ -59,7 +60,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           link: undefined,
           memo: {
             profile: { displayName: t('common.memo') },
-            markdown: '',
+            markdown: undefined,
           },
         };
         break;
@@ -176,7 +177,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
         </PageContentBlock>
       )}
 
-      {framing.memo && framing.type === CalloutFramingType.Memo && (
+      {!edit && framing.memo && framing.type === CalloutFramingType.Memo && (
         <FormikMarkdownField
           title={t('components.callout-creation.framing.memo.name')}
           placeholder={t('components.callout-creation.framing.memo.placeholder')}

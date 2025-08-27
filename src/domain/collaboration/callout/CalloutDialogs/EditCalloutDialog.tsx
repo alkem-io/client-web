@@ -187,6 +187,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                 callout={callout}
                 onChange={setCalloutFormData}
                 onStatusChanged={handleStatusChange}
+                edit
                 /* Users cannot change the allowedTypes on an already created callout for now */
                 calloutRestrictions={{
                   ...calloutRestrictions,
