@@ -80,6 +80,7 @@ const UserAdminNotificationsPage = () => {
     userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsOrganizationAdmin) ?? false;
   const isSpaceAdmin =
     userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsSpaceAdmin) ?? false;
+  const isSpaceLead = userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsSpaceLead) ?? false;
 
   const userID = userProfile?.id ?? '';
 
@@ -261,7 +262,7 @@ const UserAdminNotificationsPage = () => {
                 }
               />
 
-              {(isPlatformAdmin || isSpaceAdmin) && (
+              {(isPlatformAdmin || isSpaceAdmin || isSpaceLead) && (
                 <SpaceAdminNotificationsSettings
                   currentSpaceAdminSettings={currentSettings.spaceAdmin}
                   onUpdateSettings={(property, value) =>
