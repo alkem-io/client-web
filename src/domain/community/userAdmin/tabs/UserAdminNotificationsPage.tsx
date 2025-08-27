@@ -2,17 +2,45 @@ import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLay
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import { useMemo } from 'react';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { useTranslation } from 'react-i18next';
 import { useUserProvider } from '../../user/hooks/useUserProvider';
 import { useUpdateUserSettingsMutation, useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
 import PageContent from '@/core/ui/content/PageContent';
-import { BlockTitle, Caption } from '@/core/ui/typography/components';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, UpdateUserSettingsNotificationInput } from '@/core/apollo/generated/graphql-schema';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { SpaceNotificationsSettings } from './components/SpaceNotificationsSettings';
+import { SpaceAdminNotificationsSettings } from './components/SpaceAdminNotificationsSettings';
+import { UserNotificationsSettings } from './components/UserNotificationsSettings';
+import { UserMembershipNotificationsSettings } from './components/UserMembershipNotificationsSettings';
+import { OrganizationNotificationsSettings } from './components/OrganizationNotificationsSettings';
+import { PlatformAdminNotificationsSettings } from './components/PlatformAdminNotificationsSettings';
+import { ForumNotificationsSettings } from './components/ForumNotificationsSettings';
+import {
+  NotificationSettings,
+  SpaceNotificationSettings,
+  SpaceAdminNotificationSettings,
+  UserNotificationSettings,
+  OrganizationNotificationSettings,
+  PlatformNotificationSettings,
+  PlatformAdminNotificationSettings,
+} from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
+
+// Notification groups enum for explicit handling
+export enum NotificationGroup {
+  SPACE = 'space',
+  SPACE_ADMIN = 'spaceAdmin',
+  USER = 'user',
+  ORGANIZATION = 'organization',
+  PLATFORM = 'platform',
+  PLATFORM_ADMIN = 'platformAdmin',
+}
+
+type NotificationUpdate = {
+  group: NotificationGroup;
+  property: string;
+  value: boolean;
+};
 
 /**
  * User notification settings page component that allows users to configure their notification preferences.
@@ -21,43 +49,38 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
  * - Responsive two-column layout (desktop) / single column (mobile)
  * - Grouped notification settings by category (Space, Organization, Forum, Platform Admin)
  * - Role-based conditional rendering (Space Admin, Organization Admin, Platform Admin)
+ * - Modular component structure with separate view components for each notification group
  *
  * @returns {JSX.Element} The user notifications settings page
  */
 const UserAdminNotificationsPage = () => {
-  const { t } = useTranslation();
-  // NOTE:
-  // we might have 2 user definitions on this page.
-  // (1) the user whose profile is being viewed;
-  // (2) the currently authenticated user;
-
-  // (1)
+  // User profile being viewed
   const { userId } = useUrlResolver();
   const { userModel: userProfile, loading: isLoadingUser } = useUserProvider(userId);
 
-  // (2)
+  // Current authenticated user
   const {
     userModel: currentUserModel,
     platformPrivilegeWrapper: userWrapper,
     loading: isLoadingUserContext,
   } = useCurrentUserContext();
+
   const notificationPageForCurrentUser = userProfile?.id === currentUserModel?.id;
 
+  // Role-based permissions
   const isPlatformAdmin = useMemo(() => {
-    if (isLoadingUserContext || isLoadingUser) {
-      return false;
-    }
-
+    if (isLoadingUserContext || isLoadingUser) return false;
     if (notificationPageForCurrentUser) {
       return userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
     }
-
     return true; // If viewing another user's page, assume platform admin for now.
   }, [notificationPageForCurrentUser, userWrapper, isLoadingUserContext, isLoadingUser]);
 
-  // TODO: impl
-  const isOrganizationAdmin = true;
-  const isSpaceAdmin = true;
+  const isOrganizationAdmin =
+    userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsOrganizationAdmin) ?? false;
+  const isSpaceAdmin =
+    userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsSpaceAdmin) ?? false;
+  const isSpaceLead = userWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsSpaceLead) ?? false;
 
   const userID = userProfile?.id ?? '';
 
@@ -68,108 +91,144 @@ const UserAdminNotificationsPage = () => {
 
   const [updateUserSettings] = useUpdateUserSettingsMutation();
 
-  const currentSettings = useMemo(() => {
-    const settings = userProfileData?.lookup.user?.settings;
+  // Current settings grouped by category with proper model
+  const currentSettings = useMemo((): NotificationSettings => {
+    const notification = userProfileData?.lookup.user?.settings?.notification;
 
     return {
-      ...settings,
+      space: notification?.space as SpaceNotificationSettings | undefined,
+      spaceAdmin: notification?.space?.admin as SpaceAdminNotificationSettings | undefined,
+      organization: notification?.organization as OrganizationNotificationSettings | undefined,
+      platform: notification?.platform as PlatformNotificationSettings | undefined,
+      platformAdmin: notification?.platform?.admin as PlatformAdminNotificationSettings | undefined,
+      user: notification?.user as UserNotificationSettings | undefined,
     };
-  }, [userProfileData, userID]);
+  }, [userProfileData]);
 
-  if (loading) {
+  if (loading || isLoadingUser) {
     return <Loading />;
   }
 
-  const handleUpdateSettings = async (
-    updates: Partial<{
-      // Space notifications
-      communicationMention: boolean;
-      communicationUpdates: boolean;
-      communityApplicationSubmitted: boolean;
-      communityInvitationUser: boolean;
-      communityNewMember: boolean;
-      collaborationCalloutPublished: boolean;
-      collaborationPostCommentCreated: boolean;
-      collaborationPostCreated: boolean;
-      collaborationWhiteboardCreated: boolean;
+  // Unified update handler that processes a single notification setting update
+  const handleUpdateSettings = async ({ group, property, value }: NotificationUpdate) => {
+    const settingsVariable: UpdateUserSettingsNotificationInput = {};
 
-      // Space Admin notifications
-      communityNewMemberAdmin: boolean;
-      communityApplicationReceived: boolean;
-      collaborationPostCreatedAdmin: boolean;
-      communicationUpdatesAdmin: boolean;
+    switch (group) {
+      case NotificationGroup.SPACE:
+        settingsVariable.space = {
+          // Preserve existing space settings
+          communicationUpdates: currentSettings.space?.communicationUpdates?.email ?? false,
+          collaborationCalloutPublished: currentSettings.space?.collaborationCalloutPublished?.email ?? false,
+          collaborationCalloutPostContributionComment:
+            currentSettings.space?.collaborationCalloutPostContributionComment?.email ?? false,
+          collaborationCalloutContributionCreated:
+            currentSettings.space?.collaborationCalloutContributionCreated?.email ?? false,
+          collaborationCalloutComment: currentSettings.space?.collaborationCalloutComment?.email ?? false,
+          // Override the specific property
+          [property]: value,
+        };
+        break;
 
-      // Organization notifications
-      organizationMentioned: boolean;
-      organizationMessageReceived: boolean;
+      case NotificationGroup.SPACE_ADMIN:
+        settingsVariable.space = {
+          // Preserve existing space settings
+          communicationUpdates: currentSettings.space?.communicationUpdates?.email ?? false,
+          collaborationCalloutPublished: currentSettings.space?.collaborationCalloutPublished?.email ?? false,
+          collaborationCalloutPostContributionComment:
+            currentSettings.space?.collaborationCalloutPostContributionComment?.email ?? false,
+          collaborationCalloutContributionCreated:
+            currentSettings.space?.collaborationCalloutContributionCreated?.email ?? false,
+          collaborationCalloutComment: currentSettings.space?.collaborationCalloutComment?.email ?? false,
+          admin: {
+            // Preserve existing space admin settings
+            communityApplicationReceived: currentSettings.spaceAdmin?.communityApplicationReceived?.email ?? false,
+            communityNewMember: currentSettings.spaceAdmin?.communityNewMember?.email ?? false,
+            collaborationCalloutContributionCreated:
+              currentSettings.spaceAdmin?.collaborationCalloutContributionCreated?.email ?? false,
+            communicationMessageReceived: currentSettings.spaceAdmin?.communicationMessageReceived?.email ?? false,
+            // Override the specific property
+            [property]: value,
+          },
+        };
+        break;
 
-      // Forum notifications
-      forumDiscussionComment: boolean;
-      forumDiscussionCreated: boolean;
-      // Platform Admin notifications
-      newUserSignUp: boolean;
-      userProfileRemoved: boolean;
-      // User notifications
-      commentReply: boolean;
-      userMentioned: boolean;
-      userMessageReceived: boolean;
-    }>
-  ) => {
-    const currentSpaceSettings = currentSettings?.notification?.space;
-    const currentOrgSettings = currentSettings?.notification?.organization;
-    const currentPlatformSettings = currentSettings?.notification?.platform;
-    const currentUserSettings = currentSettings?.notification?.user;
+      case NotificationGroup.USER: {
+        const userSettings = {
+          // Preserve existing user settings
+          commentReply: currentSettings.user?.commentReply?.email ?? false,
+          mentioned: currentSettings.user?.mentioned?.email ?? false,
+          messageReceived: currentSettings.user?.messageReceived?.email ?? false,
+          copyOfMessageSent: currentSettings.user?.copyOfMessageSent?.email ?? false,
+          membership: {
+            spaceCommunityInvitationReceived:
+              currentSettings.user?.membership?.spaceCommunityInvitationReceived?.email ?? false,
+            spaceCommunityJoined: currentSettings.user?.membership?.spaceCommunityJoined?.email ?? false,
+            spaceCommunityApplicationSubmitted:
+              currentSettings.user?.membership?.spaceCommunityApplicationSubmitted?.email ?? false,
+          },
+        };
 
-    const settingsVariable = {
-      notification: {
-        space: {
-          communityApplicationReceived:
-            updates.communityApplicationReceived ?? currentSpaceSettings?.communityApplicationReceived,
-          communityApplicationSubmitted:
-            updates.communityApplicationSubmitted ?? currentSpaceSettings?.communityApplicationSubmitted,
-          collaborationCalloutPublished:
-            updates.collaborationCalloutPublished ?? currentSpaceSettings?.collaborationCalloutPublished,
-          communicationUpdatesAdmin:
-            updates.communicationUpdatesAdmin ?? currentSpaceSettings?.communicationUpdatesAdmin,
-          communicationUpdates: updates.communicationUpdates ?? currentSpaceSettings?.communicationUpdates,
-          communityInvitationUser: updates.communityInvitationUser ?? currentSpaceSettings?.communityInvitationUser,
-          communityNewMember: updates.communityNewMember ?? currentSpaceSettings?.communityNewMember,
-          communityNewMemberAdmin: updates.communityNewMemberAdmin ?? currentSpaceSettings?.communityNewMemberAdmin,
-          collaborationPostCommentCreated:
-            updates.collaborationPostCommentCreated ?? currentSpaceSettings?.collaborationPostCommentCreated,
-          collaborationPostCreated: updates.collaborationPostCreated ?? currentSpaceSettings?.collaborationPostCreated,
-          collaborationPostCreatedAdmin:
-            updates.collaborationPostCreatedAdmin ?? currentSpaceSettings?.collaborationPostCreatedAdmin,
-          collaborationWhiteboardCreated:
-            updates.collaborationWhiteboardCreated ?? currentSpaceSettings?.collaborationWhiteboardCreated,
-          // not updatable yet
-          communicationMessageAdmin: currentSpaceSettings?.communicationMessageAdmin,
-          communicationMessage: currentSpaceSettings?.communicationMessage,
-        },
-        organization: {
-          mentioned: updates.organizationMentioned ?? currentOrgSettings?.mentioned,
-          messageReceived: updates.organizationMessageReceived ?? currentOrgSettings?.messageReceived,
-        },
-        platform: {
-          forumDiscussionComment: updates.forumDiscussionComment ?? currentPlatformSettings?.forumDiscussionComment,
-          forumDiscussionCreated: updates.forumDiscussionCreated ?? currentPlatformSettings?.forumDiscussionCreated,
-          newUserSignUp: updates.newUserSignUp ?? currentPlatformSettings?.newUserSignUp,
-          userProfileRemoved: updates.userProfileRemoved ?? currentPlatformSettings?.userProfileRemoved,
-          // Not updatable yet
-          spaceCreated: currentPlatformSettings?.spaceCreated,
-        },
-        user: {
-          commentReply: updates.commentReply ?? currentUserSettings?.commentReply,
-          mentioned: updates.userMentioned ?? currentUserSettings?.mentioned,
-        },
-      },
-    };
+        // Handle nested membership properties
+        if (property.startsWith('membership.')) {
+          const membershipProperty = property.replace('membership.', '');
+          userSettings.membership[membershipProperty] = value;
+        } else {
+          userSettings[property] = value;
+        }
+
+        settingsVariable.user = userSettings;
+        break;
+      }
+
+      case NotificationGroup.ORGANIZATION:
+        settingsVariable.organization = {
+          // Preserve existing organization settings
+          adminMentioned: currentSettings.organization?.adminMentioned?.email ?? false,
+          adminMessageReceived: currentSettings.organization?.adminMessageReceived?.email ?? false,
+          // Override the specific property
+          [property]: value,
+        };
+        break;
+
+      case NotificationGroup.PLATFORM:
+        settingsVariable.platform = {
+          // Preserve existing platform settings
+          forumDiscussionComment: currentSettings.platform?.forumDiscussionComment?.email ?? false,
+          forumDiscussionCreated: currentSettings.platform?.forumDiscussionCreated?.email ?? false,
+          // Override the specific property
+          [property]: value,
+        };
+        break;
+
+      case NotificationGroup.PLATFORM_ADMIN:
+        settingsVariable.platform = {
+          // Preserve existing platform settings
+          forumDiscussionComment: currentSettings.platform?.forumDiscussionComment?.email ?? false,
+          forumDiscussionCreated: currentSettings.platform?.forumDiscussionCreated?.email ?? false,
+          admin: {
+            // Preserve existing platform admin settings
+            userProfileCreated: currentSettings.platformAdmin?.userProfileCreated?.email ?? false,
+            userProfileRemoved: currentSettings.platformAdmin?.userProfileRemoved?.email ?? false,
+            userGlobalRoleChanged: currentSettings.platformAdmin?.userGlobalRoleChanged?.email ?? false,
+            spaceCreated: currentSettings.platformAdmin?.spaceCreated?.email ?? false,
+            // Override the specific property
+            [property]: value,
+          },
+        };
+        break;
+
+      default:
+        console.warn(`Unknown notification group: ${group}`);
+        return;
+    }
 
     await updateUserSettings({
       variables: {
         settingsData: {
           userID,
-          settings: settingsVariable,
+          settings: {
+            notification: settingsVariable,
+          },
         },
       },
     });
@@ -182,154 +241,62 @@ const UserAdminNotificationsPage = () => {
         {!loading && (
           <>
             <PageContentColumn columns={6}>
-              <PageContentBlock>
-                <BlockTitle>{t('pages.userNotificationsSettings.space.title')}</BlockTitle>
-                <Caption>{t('pages.userNotificationsSettings.space.subtitle')}</Caption>
-                <SwitchSettingsGroup
-                  options={{
-                    communityApplicationSubmitted: {
-                      checked: currentSettings?.notification?.space?.communityApplicationSubmitted || false,
-                      label: t('pages.userNotificationsSettings.space.settings.communityApplicationSubmitted'),
-                    },
-                    collaborationCalloutPublished: {
-                      checked: currentSettings?.notification?.space?.collaborationCalloutPublished || false,
-                      label: t('pages.userNotificationsSettings.space.settings.collaborationCalloutPublished'),
-                    },
-                    communicationUpdates: {
-                      checked: currentSettings?.notification?.space?.communicationUpdates || false,
-                      label: t('pages.userNotificationsSettings.space.settings.communicationUpdates'),
-                    },
-                    communityInvitationUser: {
-                      checked: currentSettings?.notification?.space?.communityInvitationUser || false,
-                      label: t('pages.userNotificationsSettings.space.settings.communityInvitationUser'),
-                    },
-                    communityNewMember: {
-                      checked: currentSettings?.notification?.space?.communityNewMember || false,
-                      label: t('pages.userNotificationsSettings.space.settings.communityNewMember'),
-                    },
-                    collaborationPostCommentCreated: {
-                      checked: currentSettings?.notification?.space?.collaborationPostCommentCreated || false,
-                      label: t('pages.userNotificationsSettings.space.settings.collaborationPostCommentCreated'),
-                    },
-                    collaborationPostCreated: {
-                      checked: currentSettings?.notification?.space?.collaborationPostCreated || false,
-                      label: t('pages.userNotificationsSettings.space.settings.collaborationPostCreated'),
-                    },
-                    collaborationWhiteboardCreated: {
-                      checked: currentSettings?.notification?.space?.collaborationWhiteboardCreated || false,
-                      label: t('pages.userNotificationsSettings.space.settings.collaborationWhiteboardCreated'),
-                    },
-                  }}
-                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                />
-              </PageContentBlock>
+              <SpaceNotificationsSettings
+                currentSpaceSettings={currentSettings.space}
+                onUpdateSettings={(property, value) =>
+                  handleUpdateSettings({ group: NotificationGroup.SPACE, property, value })
+                }
+              />
 
-              {/* User notification settings */}
-              <PageContentBlock>
-                <BlockTitle>{t('pages.userNotificationsSettings.user.title')}</BlockTitle>
-                <Caption>{t('pages.userNotificationsSettings.user.subtitle')}</Caption>
-                <SwitchSettingsGroup
-                  options={{
-                    commentReply: {
-                      checked: currentSettings?.notification?.user?.commentReply || false,
-                      label: t('pages.userNotificationsSettings.user.settings.commentReply'),
-                    },
-                    userMentioned: {
-                      checked: currentSettings?.notification?.user?.mentioned || false,
-                      label: t('pages.userNotificationsSettings.user.settings.mentioned'),
-                    },
-                  }}
-                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                />
-              </PageContentBlock>
+              <UserMembershipNotificationsSettings
+                currentUserSettings={currentSettings.user}
+                onUpdateSettings={(property, value) =>
+                  handleUpdateSettings({ group: NotificationGroup.USER, property, value })
+                }
+              />
 
-              {isSpaceAdmin && (
-                <PageContentBlock>
-                  <BlockTitle>{t('pages.userNotificationsSettings.spaceAdmin.title')}</BlockTitle>
-                  <Caption>{t('pages.userNotificationsSettings.spaceAdmin.subtitle')}</Caption>
-                  <SwitchSettingsGroup
-                    options={{
-                      communityApplicationReceived: {
-                        checked: currentSettings?.notification?.space?.communityApplicationReceived || false,
-                        label: t('pages.userNotificationsSettings.spaceAdmin.settings.communityApplicationReceived'),
-                      },
-                      communicationUpdatesAdmin: {
-                        checked: currentSettings?.notification?.space?.communicationUpdatesAdmin || false,
-                        label: t('pages.userNotificationsSettings.spaceAdmin.settings.communicationUpdatesAdmin'),
-                      },
-                      communityNewMemberAdmin: {
-                        checked: currentSettings?.notification?.space?.communityNewMemberAdmin || false,
-                        label: t('pages.userNotificationsSettings.spaceAdmin.settings.communityNewMemberAdmin'),
-                      },
-                      collaborationPostCreatedAdmin: {
-                        checked: currentSettings?.notification?.space?.collaborationPostCreatedAdmin || false,
-                        label: t('pages.userNotificationsSettings.spaceAdmin.settings.collaborationPostCreatedAdmin'),
-                      },
-                    }}
-                    onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                  />
-                </PageContentBlock>
+              <UserNotificationsSettings
+                currentUserSettings={currentSettings.user}
+                onUpdateSettings={(property, value) =>
+                  handleUpdateSettings({ group: NotificationGroup.USER, property, value })
+                }
+              />
+
+              {(isPlatformAdmin || isSpaceAdmin || isSpaceLead) && (
+                <SpaceAdminNotificationsSettings
+                  currentSpaceAdminSettings={currentSettings.spaceAdmin}
+                  onUpdateSettings={(property, value) =>
+                    handleUpdateSettings({ group: NotificationGroup.SPACE_ADMIN, property, value })
+                  }
+                />
               )}
             </PageContentColumn>
 
             <PageContentColumn columns={6}>
               {isPlatformAdmin && (
-                <PageContentBlock>
-                  <BlockTitle>{t('pages.userNotificationsSettings.platformAdmin.title')}</BlockTitle>
-                  <Caption>{t('pages.userNotificationsSettings.platformAdmin.subtitle')}</Caption>
-                  <SwitchSettingsGroup
-                    options={{
-                      newUserSignUp: {
-                        checked: currentSettings?.notification?.platform?.newUserSignUp || false,
-                        label: t('pages.userNotificationsSettings.platformAdmin.settings.newUserSignUp'),
-                      },
-                      userProfileRemoved: {
-                        checked: currentSettings?.notification?.platform?.userProfileRemoved || false,
-                        label: t('pages.userNotificationsSettings.platformAdmin.settings.userProfileRemoved'),
-                      },
-                    }}
-                    onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                  />
-                </PageContentBlock>
-              )}
-
-              {isOrganizationAdmin && (
-                <PageContentBlock>
-                  <BlockTitle>{t('pages.userNotificationsSettings.organization.title')}</BlockTitle>
-                  <Caption>{t('pages.userNotificationsSettings.organization.subtitle')}</Caption>
-                  <SwitchSettingsGroup
-                    options={{
-                      organizationMentioned: {
-                        checked: currentSettings?.notification?.organization?.mentioned || false,
-                        label: t('pages.userNotificationsSettings.organization.settings.mentioned'),
-                      },
-                      organizationMessageReceived: {
-                        checked: currentSettings?.notification?.organization?.messageReceived || false,
-                        label: t('pages.userNotificationsSettings.organization.settings.messageReceived'),
-                      },
-                    }}
-                    onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                  />
-                </PageContentBlock>
-              )}
-
-              <PageContentBlock>
-                <BlockTitle>{t('pages.userNotificationsSettings.forum.title')}</BlockTitle>
-                <Caption>{t('pages.userNotificationsSettings.forum.subtitle')}</Caption>
-                <SwitchSettingsGroup
-                  options={{
-                    forumDiscussionComment: {
-                      checked: currentSettings?.notification?.platform?.forumDiscussionComment || false,
-                      label: t('pages.userNotificationsSettings.forum.settings.forumDiscussionComment'),
-                    },
-                    forumDiscussionCreated: {
-                      checked: currentSettings?.notification?.platform?.forumDiscussionCreated || false,
-                      label: t('pages.userNotificationsSettings.forum.settings.forumDiscussionCreated'),
-                    },
-                  }}
-                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+                <PlatformAdminNotificationsSettings
+                  currentPlatformAdminSettings={currentSettings.platformAdmin}
+                  onUpdateSettings={(property, value) =>
+                    handleUpdateSettings({ group: NotificationGroup.PLATFORM_ADMIN, property, value })
+                  }
                 />
-              </PageContentBlock>
+              )}
+
+              {(isPlatformAdmin || isOrganizationAdmin) && (
+                <OrganizationNotificationsSettings
+                  currentOrgSettings={currentSettings.organization}
+                  onUpdateSettings={(property, value) =>
+                    handleUpdateSettings({ group: NotificationGroup.ORGANIZATION, property, value })
+                  }
+                />
+              )}
+
+              <ForumNotificationsSettings
+                currentPlatformSettings={currentSettings.platform}
+                onUpdateSettings={(property, value) =>
+                  handleUpdateSettings({ group: NotificationGroup.PLATFORM, property, value })
+                }
+              />
             </PageContentColumn>
           </>
         )}
