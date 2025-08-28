@@ -23,7 +23,7 @@ interface SubspaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconCompon
   spaceDisplayName?: string;
   hideJoin?: boolean;
   isPrivate?: boolean;
-  avatarUris?: string[];
+  avatarUris?: { src: string; alt: string }[];
   label?: ReactNode;
   level?: SpaceLevel;
 }

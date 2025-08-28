@@ -4,18 +4,32 @@ fragment InAppNotificationAllTypes on InAppNotification {
   category
   state
   triggeredAt
-  ... on InAppNotificationCalloutPublished {
-    ...InAppNotificationCalloutPublished
+  triggeredBy {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
   }
-  ... on InAppNotificationCommunityNewMember {
-    ...InAppNotificationCommunityNewMember
-  }
-  ... on InAppNotificationUserMentioned {
-    ...InAppNotificationUserMentioned
+  payload {
+    type
+    ... on InAppNotificationPayloadSpaceCollaborationCallout {
+      ...InAppNotificationPayloadSpaceCollaborationCallout
+    }
+    ... on InAppNotificationPayloadSpaceCommunityContributor {
+      ...InAppNotificationSpaceCommunityContributor
+    }
+    ... on InAppNotificationPayloadPlatformUserMessageRoom {
+      ...InAppNotificationUserMentioned
+    }
   }
 }
 
-fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished {
+fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationPayloadSpaceCollaborationCallout {
   callout {
     id
     framing {
@@ -31,45 +45,16 @@ fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished 
     }
   }
   space {
-    id
-    level
-    about {
-      ...SpaceAboutCardBanner
-    }
-  }
-  triggeredBy {
-    id
-    profile {
-      id
-      displayName
-      url
-      visual(type: AVATAR) {
-        ...VisualModel
-      }
-    }
+    ...spaceNotification
   }
 }
 
-fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMember {
-  triggeredBy {
-    id
-    profile {
-      id
-      displayName
-      url
-      visual(type: AVATAR) {
-        ...VisualModel
-      }
-    }
-  }
+
+fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
   space {
-    id
-    level
-    about {
-      ...SpaceAboutCardBanner
-    }
+    ...spaceNotification
   }
-  actor {
+  contributor {
     id
     __typename # do not remove
     profile {
@@ -83,20 +68,17 @@ fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMem
   }
 }
 
-fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
-  triggeredBy {
+fragment spaceNotification on Space {
+  id
+  level
+  about {
     id
-    profile {
-      id
-      displayName
-      url
-      visual(type: AVATAR) {
-        ...VisualModel
-      }
-    }
+    ...SpaceAboutCardBanner
   }
-  commentUrl
+}
+
+fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserMessageRoom {
   comment
+  commentUrl
   commentOriginName
-  contributorType
 }

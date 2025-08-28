@@ -1,6 +1,8 @@
-query adminSpacesList {
-  spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
-    ...AdminSpace
+query platformAdminSpacesList {
+  platformAdmin {
+    spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
+      ...AdminSpace
+    }
   }
 }
 

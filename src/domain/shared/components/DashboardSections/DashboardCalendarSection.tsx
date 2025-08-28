@@ -110,7 +110,12 @@ const DashboardCalendarSection = ({ spaceId, level }: DashboardCalendarSectionPr
         />
         {hasCreatePrivilege && (
           <Actions>
-            <IconButton onClick={openDialogCreateEvent} size="large" sx={{ padding: 0 }}>
+            <IconButton
+              onClick={openDialogCreateEvent}
+              size="large"
+              sx={{ padding: 0 }}
+              aria-label={t('calendar.add-event')}
+            >
               <RoundedIcon component={Add} size="medium" iconSize="small" />
             </IconButton>
           </Actions>

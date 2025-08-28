@@ -1,115 +1,40 @@
-import { useMemo } from 'react';
-import {
-  RoleSetContributorType,
-  InAppNotificationCategory,
-  InAppNotificationState,
-  NotificationEventType,
-  SpaceLevel,
-  InAppNotificationsQuery,
-} from '@/core/apollo/generated/graphql-schema';
+import { NotificationEventInAppState, NotificationEvent } from '@/core/apollo/generated/graphql-schema';
 import {
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
   useMarkNotificationsAsReadMutation,
-  InAppNotificationsDocument,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import { ApolloCache } from '@apollo/client';
+import { InAppNotificationModel } from './model/InAppNotificationModel';
+import { mapInAppNotificationToModel } from './util/mapInAppNotificationToModel';
+import { useMemo, useCallback } from 'react';
+import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 
-export interface InAppNotificationProps {
-  id: string;
-  type: NotificationEventType;
-  triggeredAt: Date;
-  state: InAppNotificationState;
-  category: InAppNotificationCategory;
-  triggeredBy?: {
-    profile:
-      | {
-          displayName: string;
-          url: string;
-          visual?: {
-            uri: string;
-          };
-        }
-      | undefined;
-  };
-  contributor?: {
-    type: RoleSetContributorType;
-    profile:
-      | {
-          displayName: string;
-          url: string;
-          visual?: {
-            uri: string;
-          };
-        }
-      | undefined;
-  };
-  actor?: {
-    __typename: string;
-    profile:
-      | {
-          displayName: string;
-          url: string;
-          visual?: {
-            uri: string;
-          };
-        }
-      | undefined;
-  };
-  callout?: {
-    framing:
-      | {
-          profile?:
-            | {
-                displayName: string;
-                url: string;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-  space?: {
-    id?: string;
-    level: SpaceLevel;
-    about: {
-      profile:
-        | {
-            displayName: string;
-            url: string;
-            visual?: {
-              uri: string;
-            };
-          }
-        | undefined;
-    };
-  };
-  comment?: string;
-  commentUrl?: string;
-  commentOriginName?: string;
-}
-
-// update the cache as refetching all could be expensive
+// Update the cache as refetching all could be expensive
 const updateNotificationsCache = (
-  cache: ApolloCache<InAppNotificationsQuery>,
+  cache: ApolloCache<unknown>,
   ids: string[],
-  newState: InAppNotificationState
+  newState: NotificationEventInAppState
 ) => {
-  const existingData = cache.readQuery<InAppNotificationsQuery>({
-    query: InAppNotificationsDocument,
-  });
-
-  if (existingData) {
-    const updatedNotifications = existingData.notifications.map(notification =>
-      ids.includes(notification.id) ? { ...notification, state: newState } : notification
-    );
-
-    cache.writeQuery({
-      query: InAppNotificationsDocument,
-      data: { notifications: updatedNotifications },
+  // Modify individual notification objects in the cache
+  ids.forEach(id => {
+    cache.modify({
+      id: cache.identify({ __typename: 'InAppNotification', id }),
+      fields: {
+        state: () => newState,
+      },
     });
-  }
+  });
 };
+
+// The set of notification event types currently being retrieved
+const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [
+  NotificationEvent.UserMentioned,
+  NotificationEvent.SpaceCollaborationCalloutPublished,
+  NotificationEvent.SpaceAdminCommunityNewMember,
+  NotificationEvent.UserSpaceCommunityJoined,
+];
 
 export const useInAppNotifications = () => {
   const { isEnabled } = useInAppNotificationsContext();
@@ -118,46 +43,85 @@ export const useInAppNotifications = () => {
   const [markAsRead] = useMarkNotificationsAsReadMutation();
 
   const { data, loading } = useInAppNotificationsQuery({
+    variables: {
+      types: NOTIFICATION_EVENT_TYPES,
+    },
     skip: !isEnabled,
   });
 
-  const items: InAppNotificationProps[] = useMemo(
-    () => (data?.notifications ?? []).filter(item => item.state !== InAppNotificationState.Archived),
-    [data]
+  // Memoize the filtered and mapped notifications to avoid unnecessary re-processing
+  const notificationsInApp = useMemo(() => {
+    const notifications: InAppNotificationModel[] = [];
+
+    for (const notificationData of data?.notificationsInApp ?? []) {
+      if (notificationData.state === NotificationEventInAppState.Archived) {
+        continue; // Skip archived notifications
+      }
+
+      const notification = mapInAppNotificationToModel(notificationData);
+      if (notification) {
+        notifications.push(notification);
+      } else {
+        logError('Broken InAppNotification', {
+          category: TagCategoryValues.NOTIFICATIONS,
+          label: `id=${notificationData?.id}, type=${notificationData?.type}`,
+        });
+      }
+    }
+
+    return notifications;
+  }, [data?.notificationsInApp]);
+
+  const updateNotificationState = useCallback(
+    async (id: string, status: NotificationEventInAppState) => {
+      try {
+        await updateState({
+          variables: {
+            ID: id,
+            state: status,
+          },
+          update: (cache, result) => {
+            if (result?.data?.updateNotificationState === status) {
+              updateNotificationsCache(cache, [id], status);
+            }
+          },
+        });
+      } catch (error) {
+        console.error('Failed to update notification state:', error);
+      }
+    },
+    [updateState]
   );
 
-  const updateNotificationState = async (id: string, status: InAppNotificationState) => {
-    await updateState({
-      variables: {
-        ID: id,
-        state: status,
-      },
-      update: (cache, data) => {
-        if (data?.data?.updateNotificationState === status) {
-          updateNotificationsCache(cache, [id], status);
-        }
-      },
-    });
-  };
+  const markNotificationsAsRead = useCallback(async () => {
+    const unreadIds = notificationsInApp
+      .filter(item => item.state === NotificationEventInAppState.Unread)
+      .map(item => item.id);
 
-  const markNotificationsAsRead = async () => {
-    const ids = items.filter(item => item.state === InAppNotificationState.Unread).map(item => item.id);
-
-    if (ids.length === 0) {
+    if (unreadIds.length === 0) {
       return;
     }
 
-    await markAsRead({
-      variables: {
-        notificationIds: ids,
-      },
-      update: (cache, data) => {
-        if (data?.data?.markNotificationsAsRead) {
-          updateNotificationsCache(cache, ids, InAppNotificationState.Read);
-        }
-      },
-    });
-  };
+    try {
+      await markAsRead({
+        variables: {
+          notificationIds: unreadIds,
+        },
+        update: (cache, result) => {
+          if (result?.data?.markNotificationsAsRead) {
+            updateNotificationsCache(cache, unreadIds, NotificationEventInAppState.Read);
+          }
+        },
+      });
+    } catch (error) {
+      console.error('Failed to mark notifications as read:', error);
+    }
+  }, [markAsRead, notificationsInApp]);
 
-  return { items, isLoading: loading, updateNotificationState, markNotificationsAsRead };
+  return {
+    notificationsInApp,
+    isLoading: loading,
+    updateNotificationState,
+    markNotificationsAsRead,
+  };
 };

@@ -61,7 +61,7 @@ const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListP
       to={item.uri}
       sx={{ paddingX: 0, marginTop: gutters(1), ...listItemStyles }}
     >
-      <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
+      <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label={t('common.avatar')} />
 
       <BlockSectionTitle minWidth={0} noWrap>
         {item.title}

@@ -56,6 +56,8 @@ export interface FormikCommentInputFieldProps extends InputProps {
   vcInteractions?: CommentInputFieldProps['vcInteractions'];
   vcEnabled?: boolean;
   threadId?: string;
+  title?: string;
+  placeholder?: string;
 }
 
 export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
@@ -72,6 +74,9 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   vcInteractions = [],
   vcEnabled = true,
   threadId = '',
+  title,
+  placeholder,
+  ..._restProps
 }) => {
   const ref = useRef<HTMLElement>(null);
   const emojiButtonRef = useRef(null);
@@ -183,6 +188,8 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
             ref={ref}
             multiline
             size={size}
+            placeholder={placeholder}
+            aria-label={title || placeholder || t('messaging.message')}
             sx={theme => ({
               '::before': compactMode
                 ? undefined
@@ -218,6 +225,8 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
               maxLength,
               onReturnKey: submitOnReturnKey ? submitForm : undefined,
               popperAnchor: ref.current,
+              'aria-label': title || placeholder || t('messaging.message'),
+              placeholder: placeholder,
             }}
             fullWidth
           />

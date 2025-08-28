@@ -8,7 +8,6 @@ query InnovationLibrary($filterTemplateType: [TemplateType!]) {
           ...TemplateProfileInfo
           callout {
             id
-            type
           }
         }
         innovationPack {

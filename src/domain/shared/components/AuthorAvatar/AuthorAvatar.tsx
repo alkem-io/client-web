@@ -93,7 +93,7 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
     <>
       <TooltipElement>
         <Link href={author?.url}>
-          <UserAvatar src={author?.avatarUrl} aria-label={t('common.avatar-of', { user: author?.displayName })}>
+          <UserAvatar src={author?.avatarUrl} alt={t('common.avatar-of', { user: author?.displayName })}>
             {author?.displayName}
           </UserAvatar>
         </Link>

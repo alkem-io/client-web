@@ -118,7 +118,7 @@ const DashboardNavigationItemView = ({
               placement={tooltipPlacement}
               arrow
             >
-              <SpaceAvatar src={avatar?.uri} size="medium" spaceId={id} />
+              <SpaceAvatar src={avatar?.uri} size="medium" spaceId={id} alt={avatar?.alternativeText} />
             </Tooltip>
           }
           visualRight={
