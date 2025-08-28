@@ -85,14 +85,15 @@ export const FormikMultiSelect = ({
       renderTags={(value, getTagProps) =>
         value.map((option, index) => {
           const isFixed = fixedOptions.some(fixed => fixed.id === option.id);
-
+          const { key, ...tagProps } = getTagProps({ index });
           return (
             <Chip
+              key={key}
               variant="outlined"
               label={option.name}
-              {...getTagProps({ index })}
+              {...tagProps}
               disabled={isFixed}
-              onDelete={isFixed ? undefined : getTagProps({ index }).onDelete}
+              onDelete={isFixed ? undefined : tagProps.onDelete}
             />
           );
         })

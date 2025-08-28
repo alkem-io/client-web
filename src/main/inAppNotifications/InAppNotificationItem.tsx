@@ -1,22 +1,22 @@
-import { InAppNotificationCategory, NotificationEventType } from '@/core/apollo/generated/graphql-schema';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
-import { InAppNotificationProps } from './useInAppNotifications';
-import { CollaborationCalloutPublishedView } from './views/CollaborationCalloutPublishedView';
-import { CommunicationUserMentionView } from './views/CommunicationUserMentionView';
-import { CommunityNewMemberAdminView } from './views/CommunityNewMemberAdminView';
-import { CommunityNewMemberView } from './views/CommunityNewMemberView';
+import { InAppNotificationModel } from './model/InAppNotificationModel';
+import { InAppSpaceCollaborationCalloutPublishedView } from './views/InAppSpaceCollaborationCalloutPublishedView';
+import { InAppUserMentionView } from './views/InAppUserMentionView';
+import { NotificationEvent } from '@/core/apollo/generated/graphql-schema';
+import { InAppSpaceCommunityNewMemberAdminView } from './views/InAppSpaceCommunityNewMemberAdminView';
+import { InAppSpaceCommunityNewMemberView } from './views/InAppSpaceCommunityNewMemberView';
 
-export const InAppNotificationItem = ({ ...item }: InAppNotificationProps) => {
+export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
   switch (item.type) {
-    case NotificationEventType.CollaborationCalloutPublished:
-      return <CollaborationCalloutPublishedView {...item} />;
-    case NotificationEventType.CommunicationUserMention:
-      return <CommunicationUserMentionView {...item} />;
-    case NotificationEventType.CommunityNewMember:
-      if (item.category === InAppNotificationCategory.Admin) {
-        return <CommunityNewMemberAdminView {...item} />;
-      }
-      return <CommunityNewMemberView {...item} />;
+    case NotificationEvent.SpaceCollaborationCalloutPublished:
+      return <InAppSpaceCollaborationCalloutPublishedView {...item} />;
+    case NotificationEvent.UserMentioned:
+      return <InAppUserMentionView {...item} />;
+    case NotificationEvent.SpaceAdminCommunityNewMember:
+      return <InAppSpaceCommunityNewMemberAdminView {...item} />;
+    case NotificationEvent.UserSpaceCommunityJoined:
+      return <InAppSpaceCommunityNewMemberView {...item} />;
+
     default:
       logWarn(`Unsupported Notification type: ${item.type}`, {
         category: TagCategoryValues.NOTIFICATIONS,

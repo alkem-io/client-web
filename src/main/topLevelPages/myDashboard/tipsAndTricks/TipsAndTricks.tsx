@@ -25,7 +25,10 @@ export const TipsAndTricks = () => {
         <BadgeCardView
           key={index}
           visual={
-            <Avatar src={item.imageUrl} alt={t('common.avatar-of', { user: item.title })}>
+            <Avatar
+              src={item.imageUrl}
+              alt={item.title ? t('common.avatar-of', { user: item.title }) : t('common.avatar')}
+            >
               {item.title}
             </Avatar>
           }

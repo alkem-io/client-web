@@ -3,12 +3,7 @@ query userSettings($userID: UUID!) {
     user(ID: $userID) {
       id
       settings {
-        communication {
-          allowOtherUsersToSendMessages
-        }
-        privacy {
-          contributionRolesPubliclyVisible
-        }
+        ...userSettingsFragment
       }
     }
   }

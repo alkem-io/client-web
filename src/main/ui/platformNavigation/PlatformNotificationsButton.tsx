@@ -4,18 +4,20 @@ import { useTranslation } from 'react-i18next';
 import BadgeCounter from '@/core/ui/icon/BadgeCounter';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
-import { InAppNotificationState } from '@/core/apollo/generated/graphql-schema';
+import { NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
 
 export const PlatformNotificationsButton = () => {
   const { isEnabled, setIsOpen } = useInAppNotificationsContext();
-  const { items } = useInAppNotifications();
+  const { notificationsInApp } = useInAppNotifications();
   const { t } = useTranslation();
 
   const openNotifications = () => {
     setIsOpen(true);
   };
 
-  const unreadNotificationsCount = items.filter(item => item.state === InAppNotificationState.Unread).length;
+  const unreadNotificationsCount = notificationsInApp.filter(
+    item => item.state === NotificationEventInAppState.Unread
+  ).length;
 
   if (!isEnabled) {
     return null;

@@ -14,6 +14,7 @@ import { MemoStatus, RealTimeCollaborationState } from '../../realTimeCollaborat
 import MemoFooter from './MemoFooter';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
+import CollaborationSettings from '../../realTimeCollaboration/CollaborationSettings/CollaborationSettings';
 
 interface MemoDialogProps {
   open?: boolean;
@@ -47,6 +48,7 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
     handleDialogOpen();
   }, [open]);
 
+  const hasUpdatePrivileges = (memo?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Update);
   const hasContributePrivileges = (memo?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Contribute);
   const notConnected = !collaborationState || collaborationState.status !== MemoStatus.CONNECTED;
   const notSynced = !collaborationState || !collaborationState.synced;
@@ -58,7 +60,9 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
         onClose={handleClose}
         actions={
           <>
-            <ShareButton url={memo?.profile.url} entityTypeName="memo" disabled={!memo?.profile.url} />
+            <ShareButton url={memo?.profile.url} entityTypeName="memo" disabled={!memo?.profile.url}>
+              {hasUpdatePrivileges && <CollaborationSettings element={memo} elementType="memo" />}
+            </ShareButton>
             <FullscreenButton
               element={dialogRef.current || undefined}
               onChange={setFullScreen}

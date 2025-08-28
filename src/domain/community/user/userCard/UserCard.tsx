@@ -73,7 +73,6 @@ const UserCard = ({
         ) : (
           <Avatar
             src={avatarSrc}
-            aria-label="User avatar"
             alt={t('visuals-alt-text.avatar.contributor.text', {
               displayName,
               altText: avatarAltText,

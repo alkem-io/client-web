@@ -120,7 +120,9 @@ const DashboardSpaces = () => {
                 <Avatar
                   variant="square"
                   sx={styles.spaceCardMedia}
-                  alt={profile?.displayName}
+                  alt={
+                    profile?.displayName ? t('common.avatar-of', { user: profile?.displayName }) : t('common.avatar')
+                  }
                   src={profile?.spaceBanner?.uri || getDefaultSpaceVisualUrl(VisualType.Banner, id)}
                 />
               </Card>
