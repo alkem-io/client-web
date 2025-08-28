@@ -101,9 +101,11 @@ const SpacePageBanner = ({ isAdmin, loading: dataLoading = false, watermark, tit
           {bannerTitle}
           {!bannerTitle && (dataLoading || loading) && <Skeleton variant="text" animation="wave" />}
         </PageTitle>
-        <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
-          {profile?.tagline}
-        </Tagline>
+        {profile?.tagline ? (
+          <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
+            {profile?.tagline}
+          </Tagline>
+        ) : null}
       </Title>
     </Root>
   );
