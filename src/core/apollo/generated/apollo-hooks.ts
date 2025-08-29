@@ -2847,6 +2847,80 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
+export const InAppNotificationPayloadOrganizationMessageDirectFragmentDoc = gql`
+  fragment InAppNotificationPayloadOrganizationMessageDirect on InAppNotificationPayloadOrganizationMessageDirect {
+    organizationMessage: message
+    organization {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
+export const InAppNotificationPayloadOrganizationMessageRoomFragmentDoc = gql`
+  fragment InAppNotificationPayloadOrganizationMessageRoom on InAppNotificationPayloadOrganizationMessageRoom {
+    comment
+    roomID
+    organization {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
+export const InAppNotificationPayloadPlatformGlobalRoleChangeFragmentDoc = gql`
+  fragment InAppNotificationPayloadPlatformGlobalRoleChange on InAppNotificationPayloadPlatformGlobalRoleChange {
+    type
+  }
+`;
+export const InAppNotificationPayloadSpaceFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpace on InAppNotificationPayloadSpace {
+    type
+  }
+`;
+export const InAppNotificationPayloadPlatformForumDiscussionFragmentDoc = gql`
+  fragment InAppNotificationPayloadPlatformForumDiscussion on InAppNotificationPayloadPlatformForumDiscussion {
+    type
+  }
+`;
+export const InAppNotificationUserMentionedFragmentDoc = gql`
+  fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserMessageRoom {
+    messageDetails {
+      message
+      parent {
+        displayName
+        url
+      }
+      room {
+        id
+      }
+    }
+  }
+`;
+export const InAppNotificationPayloadPlatformUserFragmentDoc = gql`
+  fragment InAppNotificationPayloadPlatformUser on InAppNotificationPayloadPlatformUser {
+    type
+  }
+`;
+export const InAppNotificationPayloadPlatformUserProfileRemovedFragmentDoc = gql`
+  fragment InAppNotificationPayloadPlatformUserProfileRemoved on InAppNotificationPayloadPlatformUserProfileRemoved {
+    type
+  }
+`;
 export const SpaceNotificationFragmentDoc = gql`
   fragment spaceNotification on Space {
     id
@@ -2902,19 +2976,80 @@ export const InAppNotificationSpaceCommunityContributorFragmentDoc = gql`
   ${SpaceNotificationFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
-export const InAppNotificationUserMentionedFragmentDoc = gql`
-  fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserMessageRoom {
-    messageDetails {
-      message
-      parent {
-        displayName
-        url
-      }
-      room {
+export const InAppNotificationPayloadSpaceCommunityApplicationFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunityApplication on InAppNotificationPayloadSpaceCommunityApplication {
+    space {
+      ...spaceNotification
+    }
+    application {
+      id
+      createdDate
+      contributor {
         id
+        profile {
+          id
+          displayName
+          url
+          visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
       }
     }
   }
+  ${SpaceNotificationFragmentDoc}
+  ${VisualModelFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceCommunicationUpdateFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunicationUpdate on InAppNotificationPayloadSpaceCommunicationUpdate {
+    space {
+      ...spaceNotification
+    }
+    update
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceCommunicationMessageDirectFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunicationMessageDirect on InAppNotificationPayloadSpaceCommunicationMessageDirect {
+    space {
+      ...spaceNotification
+    }
+    spaceCommunicationMessage: message
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceCommunityInvitationFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunityInvitation on InAppNotificationPayloadSpaceCommunityInvitation {
+    space {
+      ...spaceNotification
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunityInvitationPlatform on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
+    space {
+      ...spaceNotification
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
+export const InAppNotificationPayloadUserMessageDirectFragmentDoc = gql`
+  fragment InAppNotificationPayloadUserMessageDirect on InAppNotificationPayloadUserMessageDirect {
+    userMessage: message
+    user {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
 `;
 export const InAppNotificationAllTypesFragmentDoc = gql`
   fragment InAppNotificationAllTypes on InAppNotification {
@@ -2936,21 +3071,73 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
     }
     payload {
       type
+      ... on InAppNotificationPayloadOrganizationMessageDirect {
+        ...InAppNotificationPayloadOrganizationMessageDirect
+      }
+      ... on InAppNotificationPayloadOrganizationMessageRoom {
+        ...InAppNotificationPayloadOrganizationMessageRoom
+      }
+      ... on InAppNotificationPayloadPlatformGlobalRoleChange {
+        ...InAppNotificationPayloadPlatformGlobalRoleChange
+      }
+      ... on InAppNotificationPayloadSpace {
+        ...InAppNotificationPayloadSpace
+      }
+      ... on InAppNotificationPayloadPlatformForumDiscussion {
+        ...InAppNotificationPayloadPlatformForumDiscussion
+      }
+      ... on InAppNotificationPayloadPlatformUserMessageRoom {
+        ...InAppNotificationUserMentioned
+      }
+      ... on InAppNotificationPayloadPlatformUser {
+        ...InAppNotificationPayloadPlatformUser
+      }
+      ... on InAppNotificationPayloadPlatformUserProfileRemoved {
+        ...InAppNotificationPayloadPlatformUserProfileRemoved
+      }
       ... on InAppNotificationPayloadSpaceCollaborationCallout {
         ...InAppNotificationPayloadSpaceCollaborationCallout
       }
       ... on InAppNotificationPayloadSpaceCommunityContributor {
         ...InAppNotificationSpaceCommunityContributor
       }
-      ... on InAppNotificationPayloadPlatformUserMessageRoom {
-        ...InAppNotificationUserMentioned
+      ... on InAppNotificationPayloadSpaceCommunityApplication {
+        ...InAppNotificationPayloadSpaceCommunityApplication
+      }
+      ... on InAppNotificationPayloadSpaceCommunicationUpdate {
+        ...InAppNotificationPayloadSpaceCommunicationUpdate
+      }
+      ... on InAppNotificationPayloadSpaceCommunicationMessageDirect {
+        ...InAppNotificationPayloadSpaceCommunicationMessageDirect
+      }
+      ... on InAppNotificationPayloadSpaceCommunityInvitation {
+        ...InAppNotificationPayloadSpaceCommunityInvitation
+      }
+      ... on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
+        ...InAppNotificationPayloadSpaceCommunityInvitationPlatform
+      }
+      ... on InAppNotificationPayloadUserMessageDirect {
+        ...InAppNotificationPayloadUserMessageDirect
       }
     }
   }
   ${VisualModelFragmentDoc}
+  ${InAppNotificationPayloadOrganizationMessageDirectFragmentDoc}
+  ${InAppNotificationPayloadOrganizationMessageRoomFragmentDoc}
+  ${InAppNotificationPayloadPlatformGlobalRoleChangeFragmentDoc}
+  ${InAppNotificationPayloadSpaceFragmentDoc}
+  ${InAppNotificationPayloadPlatformForumDiscussionFragmentDoc}
+  ${InAppNotificationUserMentionedFragmentDoc}
+  ${InAppNotificationPayloadPlatformUserFragmentDoc}
+  ${InAppNotificationPayloadPlatformUserProfileRemovedFragmentDoc}
   ${InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc}
   ${InAppNotificationSpaceCommunityContributorFragmentDoc}
-  ${InAppNotificationUserMentionedFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityApplicationFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunicationUpdateFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunicationMessageDirectFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityInvitationFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc}
+  ${InAppNotificationPayloadUserMessageDirectFragmentDoc}
 `;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
@@ -22396,22 +22583,74 @@ export const InAppNotificationsDocument = gql`
       }
       payload {
         type
+        ... on InAppNotificationPayloadOrganizationMessageDirect {
+          ...InAppNotificationPayloadOrganizationMessageDirect
+        }
+        ... on InAppNotificationPayloadOrganizationMessageRoom {
+          ...InAppNotificationPayloadOrganizationMessageRoom
+        }
+        ... on InAppNotificationPayloadPlatformGlobalRoleChange {
+          ...InAppNotificationPayloadPlatformGlobalRoleChange
+        }
+        ... on InAppNotificationPayloadSpace {
+          ...InAppNotificationPayloadSpace
+        }
+        ... on InAppNotificationPayloadPlatformForumDiscussion {
+          ...InAppNotificationPayloadPlatformForumDiscussion
+        }
+        ... on InAppNotificationPayloadPlatformUserMessageRoom {
+          ...InAppNotificationUserMentioned
+        }
+        ... on InAppNotificationPayloadPlatformUser {
+          ...InAppNotificationPayloadPlatformUser
+        }
+        ... on InAppNotificationPayloadPlatformUserProfileRemoved {
+          ...InAppNotificationPayloadPlatformUserProfileRemoved
+        }
         ... on InAppNotificationPayloadSpaceCollaborationCallout {
           ...InAppNotificationPayloadSpaceCollaborationCallout
         }
         ... on InAppNotificationPayloadSpaceCommunityContributor {
           ...InAppNotificationSpaceCommunityContributor
         }
-        ... on InAppNotificationPayloadPlatformUserMessageRoom {
-          ...InAppNotificationUserMentioned
+        ... on InAppNotificationPayloadSpaceCommunityApplication {
+          ...InAppNotificationPayloadSpaceCommunityApplication
+        }
+        ... on InAppNotificationPayloadSpaceCommunicationUpdate {
+          ...InAppNotificationPayloadSpaceCommunicationUpdate
+        }
+        ... on InAppNotificationPayloadSpaceCommunicationMessageDirect {
+          ...InAppNotificationPayloadSpaceCommunicationMessageDirect
+        }
+        ... on InAppNotificationPayloadSpaceCommunityInvitation {
+          ...InAppNotificationPayloadSpaceCommunityInvitation
+        }
+        ... on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
+          ...InAppNotificationPayloadSpaceCommunityInvitationPlatform
+        }
+        ... on InAppNotificationPayloadUserMessageDirect {
+          ...InAppNotificationPayloadUserMessageDirect
         }
       }
     }
   }
   ${VisualModelFragmentDoc}
+  ${InAppNotificationPayloadOrganizationMessageDirectFragmentDoc}
+  ${InAppNotificationPayloadOrganizationMessageRoomFragmentDoc}
+  ${InAppNotificationPayloadPlatformGlobalRoleChangeFragmentDoc}
+  ${InAppNotificationPayloadSpaceFragmentDoc}
+  ${InAppNotificationPayloadPlatformForumDiscussionFragmentDoc}
+  ${InAppNotificationUserMentionedFragmentDoc}
+  ${InAppNotificationPayloadPlatformUserFragmentDoc}
+  ${InAppNotificationPayloadPlatformUserProfileRemovedFragmentDoc}
   ${InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc}
   ${InAppNotificationSpaceCommunityContributorFragmentDoc}
-  ${InAppNotificationUserMentionedFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityApplicationFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunicationUpdateFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunicationMessageDirectFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityInvitationFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc}
+  ${InAppNotificationPayloadUserMessageDirectFragmentDoc}
 `;
 
 /**

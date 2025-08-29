@@ -19,14 +19,53 @@ query InAppNotifications($types: [NotificationEvent!]) {
     }
     payload {
       type
+      ... on InAppNotificationPayloadOrganizationMessageDirect {
+        ...InAppNotificationPayloadOrganizationMessageDirect
+      }
+      ... on InAppNotificationPayloadOrganizationMessageRoom {
+        ...InAppNotificationPayloadOrganizationMessageRoom
+      }
+      ... on InAppNotificationPayloadPlatformGlobalRoleChange {
+        ...InAppNotificationPayloadPlatformGlobalRoleChange
+      }
+      ... on InAppNotificationPayloadSpace {
+        ...InAppNotificationPayloadSpace
+      }
+      ... on InAppNotificationPayloadPlatformForumDiscussion {
+        ...InAppNotificationPayloadPlatformForumDiscussion
+      }
+      ... on InAppNotificationPayloadPlatformUserMessageRoom {
+        ...InAppNotificationUserMentioned
+      }
+      ... on InAppNotificationPayloadPlatformUser {
+        ...InAppNotificationPayloadPlatformUser
+      }
+      ... on InAppNotificationPayloadPlatformUserProfileRemoved {
+        ...InAppNotificationPayloadPlatformUserProfileRemoved
+      }
       ... on InAppNotificationPayloadSpaceCollaborationCallout {
         ...InAppNotificationPayloadSpaceCollaborationCallout
       }
       ... on InAppNotificationPayloadSpaceCommunityContributor {
         ...InAppNotificationSpaceCommunityContributor
       }
-      ... on InAppNotificationPayloadPlatformUserMessageRoom {
-        ...InAppNotificationUserMentioned
+      ... on InAppNotificationPayloadSpaceCommunityApplication {
+        ...InAppNotificationPayloadSpaceCommunityApplication
+      }
+      ... on InAppNotificationPayloadSpaceCommunicationUpdate {
+        ...InAppNotificationPayloadSpaceCommunicationUpdate
+      }
+      ... on InAppNotificationPayloadSpaceCommunicationMessageDirect {
+        ...InAppNotificationPayloadSpaceCommunicationMessageDirect
+      }
+      ... on InAppNotificationPayloadSpaceCommunityInvitation {
+        ...InAppNotificationPayloadSpaceCommunityInvitation
+      }
+      ... on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
+        ...InAppNotificationPayloadSpaceCommunityInvitationPlatform
+      }
+      ... on InAppNotificationPayloadUserMessageDirect {
+        ...InAppNotificationPayloadUserMessageDirect
       }
     }
   }

@@ -30,10 +30,35 @@ const updateNotificationsCache = (
 
 // The set of notification event types currently being retrieved
 const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [
-  NotificationEvent.UserMentioned,
-  NotificationEvent.SpaceCollaborationCalloutPublished,
+  NotificationEvent.OrganizationAdminMentioned,
+  NotificationEvent.OrganizationAdminMessage,
+  NotificationEvent.OrganizationMessageSender,
+  NotificationEvent.PlatformAdminGlobalRoleChanged,
+  NotificationEvent.PlatformAdminSpaceCreated,
+  NotificationEvent.PlatformAdminUserProfileCreated,
+  NotificationEvent.PlatformAdminUserProfileRemoved,
+  NotificationEvent.PlatformForumDiscussionComment,
+  NotificationEvent.PlatformForumDiscussionCreated,
+  NotificationEvent.SpaceAdminCollaborationCalloutContribution,
+  NotificationEvent.SpaceAdminCommunityApplication,
   NotificationEvent.SpaceAdminCommunityNewMember,
+  NotificationEvent.SpaceCollaborationCalloutComment,
+  NotificationEvent.SpaceCollaborationCalloutContribution,
+  NotificationEvent.SpaceCollaborationCalloutPostContributionComment,
+  NotificationEvent.SpaceCollaborationCalloutPublished,
+  NotificationEvent.SpaceCommunicationMessageSender,
+  NotificationEvent.SpaceCommunicationUpdate,
+  NotificationEvent.SpaceCommunityInvitationUserPlatform,
+  NotificationEvent.SpaceLeadCommunicationMessage,
+  NotificationEvent.UserCommentReply,
+  NotificationEvent.UserMentioned,
+  NotificationEvent.UserMessage,
+  NotificationEvent.UserMessageSender,
+  NotificationEvent.UserSignUpWelcome,
+  NotificationEvent.UserSpaceCommunityApplication,
+  NotificationEvent.UserSpaceCommunityInvitation,
   NotificationEvent.UserSpaceCommunityJoined,
+  NotificationEvent.VirtualContributorAdminSpaceCommunityInvitation,
 ];
 
 export const useInAppNotifications = () => {
