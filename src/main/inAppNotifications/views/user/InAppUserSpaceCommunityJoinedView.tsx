@@ -1,5 +1,5 @@
-import { InAppNotificationModel } from '../model/InAppNotificationModel';
-import { InAppNotificationBaseView } from './InAppNotificationBaseView';
+import { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 export const InAppUserSpaceCommunityJoinedView = (notification: InAppNotificationModel) => {
   const { payload } = notification;
