@@ -79,6 +79,7 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
                 component="a"
                 flexGrow={1}
                 href=""
+                aria-label={t('common.my-profile')}
                 onClick={event => {
                   event.preventDefault();
                   onClick?.(event);

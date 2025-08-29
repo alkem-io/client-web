@@ -41,6 +41,8 @@ export type Account = {
   agent: Agent;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The base license plan assigned to this Account. Additional entitlements may be added via other means. */
+  baselineLicensePlan: AccountLicensePlan;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The external subscription ID for this Account. */
@@ -72,6 +74,22 @@ export type Account = {
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
   accountID: Scalars['UUID']['input'];
+};
+
+export type AccountLicensePlan = {
+  __typename?: 'AccountLicensePlan';
+  /** The number of Innovation Packs allowed. */
+  innovationPacks: Scalars['Int']['output'];
+  /** The number of Free Spaces allowed. */
+  spaceFree: Scalars['Int']['output'];
+  /** The number of Plus Spaces allowed. */
+  spacePlus: Scalars['Int']['output'];
+  /** The number of Premium Spaces allowed. */
+  spacePremium: Scalars['Int']['output'];
+  /** The number of Starting Pages allowed. */
+  startingPages: Scalars['Int']['output'];
+  /** The number of Virtual Contributors allowed. */
+  virtualContributor: Scalars['Int']['output'];
 };
 
 export type AccountLicenseResetInput = {
@@ -753,6 +771,7 @@ export type AuthenticationProviderConfigUnion = OryConfig;
 
 export enum AuthenticationType {
   Email = 'EMAIL',
+  Github = 'GITHUB',
   Linkedin = 'LINKEDIN',
   Microsoft = 'MICROSOFT',
   Unknown = 'UNKNOWN',
@@ -764,6 +783,8 @@ export type Authorization = {
   createdDate: Scalars['DateTime']['output'];
   /** The set of credential rules that are contained by this Authorization Policy. */
   credentialRules?: Maybe<Array<AuthorizationPolicyRuleCredential>>;
+  /** Does the current User have the specified privilege based on this Authorization Policy. */
+  hasPrivilege: Scalars['Boolean']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** The privileges granted to the current user based on this Authorization Policy. */
@@ -776,6 +797,10 @@ export type Authorization = {
   updatedDate: Scalars['DateTime']['output'];
   /** The set of verified credential rules that are contained by this Authorization Policy. */
   verifiedCredentialRules?: Maybe<Array<AuthorizationPolicyRuleVerifiedCredential>>;
+};
+
+export type AuthorizationHasPrivilegeArgs = {
+  privilege: AuthorizationPrivilege;
 };
 
 export enum AuthorizationCredential {
@@ -863,8 +888,6 @@ export enum AuthorizationPolicyType {
   OrganizationVerification = 'ORGANIZATION_VERIFICATION',
   Platform = 'PLATFORM',
   Post = 'POST',
-  Preference = 'PREFERENCE',
-  PreferenceSet = 'PREFERENCE_SET',
   Profile = 'PROFILE',
   Reference = 'REFERENCE',
   RoleSet = 'ROLE_SET',
@@ -883,6 +906,7 @@ export enum AuthorizationPolicyType {
   Unknown = 'UNKNOWN',
   User = 'USER',
   UserGroup = 'USER_GROUP',
+  UserSettings = 'USER_SETTINGS',
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
   Visual = 'VISUAL',
   Whiteboard = 'WHITEBOARD',
@@ -924,6 +948,12 @@ export enum AuthorizationPrivilege {
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
+  ReceiveNotifications = 'RECEIVE_NOTIFICATIONS',
+  ReceiveNotificationsAdmin = 'RECEIVE_NOTIFICATIONS_ADMIN',
+  ReceiveNotificationsInApp = 'RECEIVE_NOTIFICATIONS_IN_APP',
+  ReceiveNotificationsOrganizationAdmin = 'RECEIVE_NOTIFICATIONS_ORGANIZATION_ADMIN',
+  ReceiveNotificationsSpaceAdmin = 'RECEIVE_NOTIFICATIONS_SPACE_ADMIN',
+  ReceiveNotificationsSpaceLead = 'RECEIVE_NOTIFICATIONS_SPACE_LEAD',
   RolesetEntryRoleApply = 'ROLESET_ENTRY_ROLE_APPLY',
   RolesetEntryRoleAssign = 'ROLESET_ENTRY_ROLE_ASSIGN',
   RolesetEntryRoleAssignOrganization = 'ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION',
@@ -1039,8 +1069,6 @@ export type Callout = {
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float']['output'];
-  /** The type of this Callout. WARNING. This field is deprecated and will be removed in the future. Use `framing.type` + `settings.contribution.allowedTypes` instead. */
-  type: CalloutType;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -1169,14 +1197,6 @@ export type CalloutSettingsFraming = {
   /** Can comment to callout framing. */
   commentsEnabled: Scalars['Boolean']['output'];
 };
-
-export enum CalloutType {
-  LinkCollection = 'LINK_COLLECTION',
-  Post = 'POST',
-  PostCollection = 'POST_COLLECTION',
-  Whiteboard = 'WHITEBOARD',
-  WhiteboardCollection = 'WHITEBOARD_COLLECTION',
-}
 
 export enum CalloutVisibility {
   Draft = 'DRAFT',
@@ -2702,103 +2722,197 @@ export type ISearchResults = {
   spaceResults: ISearchCategoryResult;
 };
 
-/** An in-app notification type. To not be queried directly */
 export type InAppNotification = {
-  /** Which category (role) is this notification targeted to. */
-  category: InAppNotificationCategory;
+  __typename?: 'InAppNotification';
+  /** The category of the notification event. */
+  category: NotificationEventCategory;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** The payload of the notification. */
+  payload: InAppNotificationPayload;
   /** The receiver of the notification. */
   receiver: Contributor;
-  /** The current state of the notification */
-  state: InAppNotificationState;
-  /** When (UTC) was the notification sent. */
+  /** The state of the notification event. */
+  state: NotificationEventInAppState;
+  /** The triggered date of the notification event. */
   triggeredAt: Scalars['DateTime']['output'];
   /** The Contributor who triggered the notification. */
   triggeredBy?: Maybe<Contributor>;
-  /** The type of the notification */
-  type: NotificationEventType;
+  /** The type of the notification event. */
+  type: NotificationEvent;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
 };
 
-export type InAppNotificationCalloutPublished = InAppNotification & {
-  __typename?: 'InAppNotificationCalloutPublished';
+export type InAppNotificationFilterInput = {
+  /** Return Notifications with a type matching one of the provided types. */
+  types?: InputMaybe<Array<NotificationEvent>>;
+};
+
+/** An in-app notification payload. To not be queried directly */
+export type InAppNotificationPayload = {
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadOrganization = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadOrganization';
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadOrganizationMessageDirect = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadOrganizationMessageDirect';
+  /** The message content. */
+  message: Scalars['String']['output'];
+  /** The organization. */
+  organization: Contributor;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadOrganizationMessageRoom = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadOrganizationMessageRoom';
+  /** The comment that mentioned the organization. */
+  comment?: Maybe<Scalars['String']['output']>;
+  /** The organization. */
+  organization: Organization;
+  /** The Room ID with of the comment. */
+  roomID?: Maybe<Scalars['String']['output']>;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadPlatform = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadPlatform';
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadPlatformForumDiscussion = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadPlatformGlobalRoleChange = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadPlatformUser = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadPlatformUser';
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadPlatformUserMessageRoom = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
+  /** The original message ID. */
+  comment?: Maybe<Scalars['String']['output']>;
+  /** The original message ID. */
+  commentOriginName?: Maybe<Scalars['String']['output']>;
+  /** The original message ID. */
+  commentUrl?: Maybe<Scalars['String']['output']>;
+  /** The original message ID. */
+  originalMessageID?: Maybe<Scalars['String']['output']>;
+  /** The room for the message. */
+  roomID?: Maybe<Scalars['String']['output']>;
+  /** The payload type. */
+  type: NotificationEventPayload;
+  /** The User for the message. */
+  user: User;
+};
+
+export type InAppNotificationPayloadPlatformUserProfileRemoved = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadSpace = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpace';
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadSpaceCollaborationCallout = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
   /** The Callout that was published. */
   callout?: Maybe<Callout>;
-  /** Which category (role) is this notification targeted to. */
-  category: InAppNotificationCategory;
-  id: Scalars['UUID']['output'];
-  /** The receiver of the notification. */
-  receiver: Contributor;
   /** Where the callout is located. */
   space?: Maybe<Space>;
-  /** The current state of the notification */
-  state: InAppNotificationState;
-  /** When (UTC) was the notification sent. */
-  triggeredAt: Scalars['DateTime']['output'];
-  /** The Contributor who triggered the notification. */
-  triggeredBy?: Maybe<Contributor>;
-  /** The type of the notification */
-  type: NotificationEventType;
+  /** The payload type. */
+  type: NotificationEventPayload;
 };
 
-/** Which category (role) is this notification targeted to. */
-export enum InAppNotificationCategory {
-  Admin = 'ADMIN',
-  Member = 'MEMBER',
-  Self = 'SELF',
-}
+export type InAppNotificationPayloadSpaceCommunicationMessageDirect = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
+  /** The message content. */
+  message: Scalars['String']['output'];
+  /** The Space where the message was sent. */
+  space: Space;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
 
-export type InAppNotificationCommunityNewMember = InAppNotification & {
-  __typename?: 'InAppNotificationCommunityNewMember';
+export type InAppNotificationPayloadSpaceCommunicationUpdate = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate';
+  /** The Space where the update was sent. */
+  space: Space;
+  /** The payload type. */
+  type: NotificationEventPayload;
+  /** The update content. */
+  update?: Maybe<Scalars['String']['output']>;
+};
+
+export type InAppNotificationPayloadSpaceCommunityApplication = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCommunityApplication';
+  /** The Application that the notification is related to. */
+  application: Application;
+  /** The Space that the application was made to. */
+  space: Space;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadSpaceCommunityContributor = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
   /** The Contributor that joined. */
-  actor?: Maybe<Contributor>;
-  /** Which category (role) is this notification targeted to. */
-  category: InAppNotificationCategory;
-  /** The type of the Contributor that joined. */
-  contributorType: RoleSetContributorType;
-  id: Scalars['UUID']['output'];
-  /** The receiver of the notification. */
-  receiver: Contributor;
+  contributor?: Maybe<Contributor>;
   /** The Space that was joined. */
   space?: Maybe<Space>;
-  /** The current state of the notification */
-  state: InAppNotificationState;
-  /** When (UTC) was the notification sent. */
-  triggeredAt: Scalars['DateTime']['output'];
-  /** The Contributor who triggered the notification. */
-  triggeredBy?: Maybe<Contributor>;
-  /** The type of the notification */
-  type: NotificationEventType;
+  /** The payload type. */
+  type: NotificationEventPayload;
 };
 
-export enum InAppNotificationState {
-  Archived = 'ARCHIVED',
-  Read = 'READ',
-  Unread = 'UNREAD',
-}
+export type InAppNotificationPayloadSpaceCommunityInvitation = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation';
+  /** The Space that the invitation is for. */
+  space: Space;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
 
-export type InAppNotificationUserMentioned = InAppNotification & {
-  __typename?: 'InAppNotificationUserMentioned';
-  /** Which category (role) is this notification targeted to. */
-  category: InAppNotificationCategory;
-  /** The comment that the contributor was mentioned in. */
-  comment: Scalars['String']['output'];
-  /** The display name of the resource where the comment was created. */
-  commentOriginName: Scalars['String']['output'];
-  /** The url of the resource where the comment was created. */
-  commentUrl: Scalars['String']['output'];
-  /** The type of the Contributor that joined. */
-  contributorType: RoleSetContributorType;
-  id: Scalars['UUID']['output'];
-  /** The receiver of the notification. */
-  receiver: Contributor;
-  /** The current state of the notification */
-  state: InAppNotificationState;
-  /** When (UTC) was the notification sent. */
-  triggeredAt: Scalars['DateTime']['output'];
-  /** The Contributor who triggered the notification. */
-  triggeredBy?: Maybe<Contributor>;
-  /** The type of the notification */
-  type: NotificationEventType;
+export type InAppNotificationPayloadSpaceCommunityInvitationPlatform = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform';
+  /** The Space that the invitation is for. */
+  space: Space;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadUserMessageDirect = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadUserMessageDirect';
+  /** The message content. */
+  message?: Maybe<Scalars['String']['output']>;
+  /** The payload type. */
+  type: NotificationEventPayload;
+  /** The User that was sent the message. */
+  user: User;
 };
 
 export type InnovationFlow = {
@@ -3767,7 +3881,7 @@ export type Memo = {
   __typename?: 'Memo';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The binary state V2 of the Yjs document, used to collaborate on the Memo, represented in base64. */
+  /** The last saved binary stateV2 of the Yjs document, used to collaborate on the Memo, represented in base64. */
   content?: Maybe<Scalars['String']['output']>;
   /** The policy governing who can update the Memo content. */
   contentUpdatePolicy: ContentUpdatePolicy;
@@ -3779,6 +3893,8 @@ export type Memo = {
   id: Scalars['UUID']['output'];
   /** Whether the Memo is multi-user enabled on Space level. */
   isMultiUser: Scalars['Boolean']['output'];
+  /** The last saved content of the Memo, represented in Markdown. */
+  markdown?: Maybe<Scalars['Markdown']['output']>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
   /** The Profile for this Memo. */
@@ -3945,6 +4061,8 @@ export type Mutation = {
   assignRoleToVirtualContributor: VirtualContributor;
   /** Assigns a User as a member of the specified User Group. */
   assignUserToGroup: UserGroup;
+  /** Ensure all access privileges for the platform roles are re-calculated */
+  authorizationPlatformRolesAccessReset: Scalars['Boolean']['output'];
   /** Reset the Authorization Policy on all entities */
   authorizationPolicyResetAll: Scalars['String']['output'];
   /** Reset the Authorization Policy on the specified Account. */
@@ -4151,6 +4269,8 @@ export type Mutation = {
   updateAnswerRelevance: Scalars['Boolean']['output'];
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
+  /** Update the baseline License Plan on the specified Account. */
+  updateBaselineLicensePlanOnAccount: Account;
   /** Updates the specified CalendarEvent. */
   updateCalendarEvent: CalendarEvent;
   /** Update a Callout. */
@@ -4192,7 +4312,7 @@ export type Mutation = {
   /** Updates the specified Memo. */
   updateMemo: Memo;
   /** Update notification state and return the notification. */
-  updateNotificationState: InAppNotificationState;
+  updateNotificationState: NotificationEventInAppState;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
   /** Updates the specified Organization platform settings. */
@@ -4203,8 +4323,6 @@ export type Mutation = {
   updatePlatformSettings: PlatformSettings;
   /** Updates the specified Post. */
   updatePost: Post;
-  /** Updates one of the Preferences on a Space */
-  updatePreferenceOnUser: Preference;
   /** Updates the specified Profile. */
   updateProfile: Profile;
   /** Updates the specified Reference. */
@@ -4707,6 +4825,10 @@ export type MutationUpdateApplicationFormOnRoleSetArgs = {
   applicationFormData: UpdateApplicationFormOnRoleSetInput;
 };
 
+export type MutationUpdateBaselineLicensePlanOnAccountArgs = {
+  updateData: UpdateBaselineLicensePlanOnAccount;
+};
+
 export type MutationUpdateCalendarEventArgs = {
   eventData: UpdateCalendarEventInput;
 };
@@ -4809,10 +4931,6 @@ export type MutationUpdatePlatformSettingsArgs = {
 
 export type MutationUpdatePostArgs = {
   postData: UpdatePostInput;
-};
-
-export type MutationUpdatePreferenceOnUserArgs = {
-  preferenceData: UpdateUserPreferenceInput;
 };
 
 export type MutationUpdateProfileArgs = {
@@ -4931,34 +5049,99 @@ export type Nvp = {
   value: Scalars['String']['output'];
 };
 
-/** The type of the notification */
-export enum NotificationEventType {
-  CollaborationCalloutPublished = 'COLLABORATION_CALLOUT_PUBLISHED',
-  CollaborationDiscussionComment = 'COLLABORATION_DISCUSSION_COMMENT',
-  CollaborationPostComment = 'COLLABORATION_POST_COMMENT',
-  CollaborationPostCreated = 'COLLABORATION_POST_CREATED',
-  CollaborationWhiteboardCreated = 'COLLABORATION_WHITEBOARD_CREATED',
-  CommentReply = 'COMMENT_REPLY',
-  CommunicationCommentSent = 'COMMUNICATION_COMMENT_SENT',
-  CommunicationCommunityMessage = 'COMMUNICATION_COMMUNITY_MESSAGE',
-  CommunicationOrganizationMention = 'COMMUNICATION_ORGANIZATION_MENTION',
-  CommunicationOrganizationMessage = 'COMMUNICATION_ORGANIZATION_MESSAGE',
-  CommunicationUpdateSent = 'COMMUNICATION_UPDATE_SENT',
-  CommunicationUserMention = 'COMMUNICATION_USER_MENTION',
-  CommunicationUserMessage = 'COMMUNICATION_USER_MESSAGE',
-  CommunityApplicationCreated = 'COMMUNITY_APPLICATION_CREATED',
-  CommunityInvitationCreated = 'COMMUNITY_INVITATION_CREATED',
-  CommunityInvitationCreatedVc = 'COMMUNITY_INVITATION_CREATED_VC',
-  CommunityNewMember = 'COMMUNITY_NEW_MEMBER',
-  CommunityPlatformInvitationCreated = 'COMMUNITY_PLATFORM_INVITATION_CREATED',
+export enum NotificationEvent {
+  OrganizationAdminMentioned = 'ORGANIZATION_ADMIN_MENTIONED',
+  OrganizationAdminMessage = 'ORGANIZATION_ADMIN_MESSAGE',
+  OrganizationMessageSender = 'ORGANIZATION_MESSAGE_SENDER',
+  PlatformAdminGlobalRoleChanged = 'PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED',
+  PlatformAdminSpaceCreated = 'PLATFORM_ADMIN_SPACE_CREATED',
+  PlatformAdminUserProfileCreated = 'PLATFORM_ADMIN_USER_PROFILE_CREATED',
+  PlatformAdminUserProfileRemoved = 'PLATFORM_ADMIN_USER_PROFILE_REMOVED',
   PlatformForumDiscussionComment = 'PLATFORM_FORUM_DISCUSSION_COMMENT',
   PlatformForumDiscussionCreated = 'PLATFORM_FORUM_DISCUSSION_CREATED',
-  PlatformGlobalRoleChange = 'PLATFORM_GLOBAL_ROLE_CHANGE',
-  PlatformUserInvitedToRole = 'PLATFORM_USER_INVITED_TO_ROLE',
-  PlatformUserRegistered = 'PLATFORM_USER_REGISTERED',
-  PlatformUserRemoved = 'PLATFORM_USER_REMOVED',
-  SpaceCreated = 'SPACE_CREATED',
+  SpaceAdminCollaborationCalloutContribution = 'SPACE_ADMIN_COLLABORATION_CALLOUT_CONTRIBUTION',
+  SpaceAdminCommunityApplication = 'SPACE_ADMIN_COMMUNITY_APPLICATION',
+  SpaceAdminCommunityNewMember = 'SPACE_ADMIN_COMMUNITY_NEW_MEMBER',
+  SpaceCollaborationCalloutComment = 'SPACE_COLLABORATION_CALLOUT_COMMENT',
+  SpaceCollaborationCalloutContribution = 'SPACE_COLLABORATION_CALLOUT_CONTRIBUTION',
+  SpaceCollaborationCalloutPostContributionComment = 'SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT',
+  SpaceCollaborationCalloutPublished = 'SPACE_COLLABORATION_CALLOUT_PUBLISHED',
+  SpaceCommunicationMessageSender = 'SPACE_COMMUNICATION_MESSAGE_SENDER',
+  SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
+  SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
+  SpaceLeadCommunicationMessage = 'SPACE_LEAD_COMMUNICATION_MESSAGE',
+  UserCommentReply = 'USER_COMMENT_REPLY',
+  UserMentioned = 'USER_MENTIONED',
+  UserMessage = 'USER_MESSAGE',
+  UserMessageSender = 'USER_MESSAGE_SENDER',
+  UserSignUpWelcome = 'USER_SIGN_UP_WELCOME',
+  UserSpaceCommunityApplication = 'USER_SPACE_COMMUNITY_APPLICATION',
+  UserSpaceCommunityInvitation = 'USER_SPACE_COMMUNITY_INVITATION',
+  UserSpaceCommunityJoined = 'USER_SPACE_COMMUNITY_JOINED',
+  VirtualContributorAdminSpaceCommunityInvitation = 'VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION',
 }
+
+/** A categorization of notification type. */
+export enum NotificationEventCategory {
+  Organization = 'ORGANIZATION',
+  Platform = 'PLATFORM',
+  SpaceAdmin = 'SPACE_ADMIN',
+  SpaceMember = 'SPACE_MEMBER',
+  User = 'USER',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
+}
+
+export enum NotificationEventInAppState {
+  Archived = 'ARCHIVED',
+  Read = 'READ',
+  Unread = 'UNREAD',
+}
+
+export enum NotificationEventPayload {
+  OrganizationMessageDirect = 'ORGANIZATION_MESSAGE_DIRECT',
+  OrganizationMessageRoom = 'ORGANIZATION_MESSAGE_ROOM',
+  PlatformForumDiscussion = 'PLATFORM_FORUM_DISCUSSION',
+  PlatformForumDiscussionComment = 'PLATFORM_FORUM_DISCUSSION_COMMENT',
+  PlatformGlobalRoleChange = 'PLATFORM_GLOBAL_ROLE_CHANGE',
+  PlatformUserProfileRemoved = 'PLATFORM_USER_PROFILE_REMOVED',
+  Space = 'SPACE',
+  SpaceCollaborationCallout = 'SPACE_COLLABORATION_CALLOUT',
+  SpaceCommunicationMessageDirect = 'SPACE_COMMUNICATION_MESSAGE_DIRECT',
+  SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
+  SpaceCommunityApplication = 'SPACE_COMMUNITY_APPLICATION',
+  SpaceCommunityContributor = 'SPACE_COMMUNITY_CONTRIBUTOR',
+  SpaceCommunityInvitation = 'SPACE_COMMUNITY_INVITATION',
+  SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
+  User = 'USER',
+  UserMessageDirect = 'USER_MESSAGE_DIRECT',
+  UserMessageRoom = 'USER_MESSAGE_ROOM',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
+}
+
+export type NotificationRecipientResult = {
+  __typename?: 'NotificationRecipientResult';
+  /** The email recipients for the notification. */
+  emailRecipients: Array<User>;
+  /** The in-app recipients for the notification. */
+  inAppRecipients: Array<User>;
+  /** The user that triggered the event. */
+  triggeredBy?: Maybe<User>;
+};
+
+export type NotificationRecipientsInput = {
+  /** The type of notification setting to look up recipients for. */
+  eventType: NotificationEvent;
+  /** The ID of the Organization to use to determine recipients. */
+  organizationID?: InputMaybe<Scalars['UUID']['input']>;
+  /** The ID of the space to retrieve the recipients for. */
+  spaceID?: InputMaybe<Scalars['UUID']['input']>;
+  /** The ID of the User that triggered the event. */
+  triggeredBy?: InputMaybe<Scalars['UUID']['input']>;
+  /** The ID of the specific user recipient for user-related notifications (e.g., invitations, mentions). */
+  userID?: InputMaybe<Scalars['UUID']['input']>;
+  /** The ID of the Virtual Contributor to use to determine recipients. */
+  virtualContributorID?: InputMaybe<Scalars['UUID']['input']>;
+};
 
 export enum OpenAiModel {
   Babbage_002 = 'BABBAGE_002',
@@ -5193,6 +5376,14 @@ export type PlatformInnovationHubArgs = {
   subdomain?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type PlatformAccessRole = {
+  __typename?: 'PlatformAccessRole';
+  /** The privileges to be granted for this Platform Access Role. */
+  grantedPrivileges: Array<AuthorizationPrivilege>;
+  /** The role name for this Platform Access Role. */
+  roleName: RoleName;
+};
+
 export type PlatformAdminCommunicationQueryResults = {
   __typename?: 'PlatformAdminCommunicationQueryResults';
   /** All Users that are members of a given room */
@@ -5269,6 +5460,7 @@ export enum PlatformFeatureFlagName {
   CommunicationsDiscussions = 'COMMUNICATIONS_DISCUSSIONS',
   GuidenceEngine = 'GUIDENCE_ENGINE',
   LandingPage = 'LANDING_PAGE',
+  Memo = 'MEMO',
   Notifications = 'NOTIFICATIONS',
   Ssi = 'SSI',
   Subscriptions = 'SUBSCRIPTIONS',
@@ -5362,6 +5554,12 @@ export type PlatformLocations = {
   tips: Scalars['String']['output'];
 };
 
+export type PlatformRolesAccess = {
+  __typename?: 'PlatformRolesAccess';
+  /** The platform roles with their associated privileges. */
+  roles: Array<PlatformAccessRole>;
+};
+
 export type PlatformSettings = {
   __typename?: 'PlatformSettings';
   /** The integration settings for this Platform */
@@ -5387,79 +5585,6 @@ export type Post = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
-
-export type Preference = {
-  __typename?: 'Preference';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The date at which the entity was created. */
-  createdDate: Scalars['DateTime']['output'];
-  /** The definition for the Preference */
-  definition: PreferenceDefinition;
-  /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  /** The date at which the entity was last updated. */
-  updatedDate: Scalars['DateTime']['output'];
-  /** Value of the preference */
-  value: Scalars['String']['output'];
-};
-
-export type PreferenceDefinition = {
-  __typename?: 'PreferenceDefinition';
-  /** The date at which the entity was created. */
-  createdDate: Scalars['DateTime']['output'];
-  /** Preference description */
-  description: Scalars['String']['output'];
-  /** The name */
-  displayName: Scalars['String']['output'];
-  /** The group for the preference within the containing entity type. */
-  group: Scalars['String']['output'];
-  /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  /** The type of the Preference, specific to the Entity it is on. */
-  type: PreferenceType;
-  /** The date at which the entity was last updated. */
-  updatedDate: Scalars['DateTime']['output'];
-  /** Preference value type */
-  valueType: PreferenceValueType;
-};
-
-export enum PreferenceType {
-  NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
-  NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
-  NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
-  NotificationCommentReply = 'NOTIFICATION_COMMENT_REPLY',
-  NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
-  NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
-  NotificationCommunicationMention = 'NOTIFICATION_COMMUNICATION_MENTION',
-  NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
-  NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
-  NotificationCommunityCollaborationInterestAdmin = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_ADMIN',
-  NotificationCommunityCollaborationInterestUser = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_USER',
-  NotificationCommunityInvitationUser = 'NOTIFICATION_COMMUNITY_INVITATION_USER',
-  NotificationCommunityNewMember = 'NOTIFICATION_COMMUNITY_NEW_MEMBER',
-  NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
-  NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
-  NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
-  NotificationDiscussionCommentCreated = 'NOTIFICATION_DISCUSSION_COMMENT_CREATED',
-  NotificationForumDiscussionComment = 'NOTIFICATION_FORUM_DISCUSSION_COMMENT',
-  NotificationForumDiscussionCreated = 'NOTIFICATION_FORUM_DISCUSSION_CREATED',
-  NotificationOrganizationMention = 'NOTIFICATION_ORGANIZATION_MENTION',
-  NotificationOrganizationMessage = 'NOTIFICATION_ORGANIZATION_MESSAGE',
-  NotificationPostCommentCreated = 'NOTIFICATION_POST_COMMENT_CREATED',
-  NotificationPostCreated = 'NOTIFICATION_POST_CREATED',
-  NotificationPostCreatedAdmin = 'NOTIFICATION_POST_CREATED_ADMIN',
-  NotificationUserRemoved = 'NOTIFICATION_USER_REMOVED',
-  NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
-  NotificationWhiteboardCreated = 'NOTIFICATION_WHITEBOARD_CREATED',
-}
-
-export enum PreferenceValueType {
-  Boolean = 'BOOLEAN',
-  Float = 'FLOAT',
-  Int = 'INT',
-  String = 'STRING',
-}
 
 export type Profile = {
   __typename?: 'Profile';
@@ -5559,8 +5684,10 @@ export type Query = {
   lookupByName: LookupByNameQueryResults;
   /** Information about the current authenticated user */
   me: MeQueryResults;
+  /** The notificationRecipients for the provided event on the given entity. */
+  notificationRecipients: NotificationRecipientResult;
   /** Get all notifications for the logged in user. */
-  notifications: Array<InAppNotification>;
+  notificationsInApp: Array<InAppNotification>;
   /** A particular Organization */
   organization: Organization;
   /** The Organizations on this platform */
@@ -5623,6 +5750,14 @@ export type QueryActivityLogOnCollaborationArgs = {
 
 export type QueryExploreSpacesArgs = {
   options?: InputMaybe<ExploreSpacesInput>;
+};
+
+export type QueryNotificationRecipientsArgs = {
+  eventData: NotificationRecipientsInput;
+};
+
+export type QueryNotificationsInAppArgs = {
+  filter?: InputMaybe<InAppNotificationFilterInput>;
 };
 
 export type QueryOrganizationArgs = {
@@ -5795,6 +5930,8 @@ export type RelayPaginatedSpace = {
   license: License;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
+  /** The calculated platform access for this Space. */
+  platformAccess: PlatformRolesAccess;
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
@@ -5935,6 +6072,7 @@ export type Role = {
 
 export enum RoleName {
   Admin = 'ADMIN',
+  Anonymous = 'ANONYMOUS',
   Associate = 'ASSOCIATE',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityReader = 'GLOBAL_COMMUNITY_READER',
@@ -5948,6 +6086,7 @@ export enum RoleName {
   Owner = 'OWNER',
   PlatformBetaTester = 'PLATFORM_BETA_TESTER',
   PlatformVcCampaign = 'PLATFORM_VC_CAMPAIGN',
+  Registered = 'REGISTERED',
 }
 
 export type RoleSet = {
@@ -6457,6 +6596,8 @@ export type Space = {
   license: License;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
+  /** The calculated platform access for this Space. */
+  platformAccess: PlatformRolesAccess;
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
@@ -7071,6 +7212,23 @@ export type UpdateApplicationFormOnRoleSetInput = {
   roleSetID: Scalars['UUID']['input'];
 };
 
+export type UpdateBaselineLicensePlanOnAccount = {
+  /** The Account to update the Baseline License Plan. */
+  accountID: Scalars['UUID']['input'];
+  /** The number of Innovation Packs allowed. */
+  innovationPacks?: InputMaybe<Scalars['Int']['input']>;
+  /** The number of Free Spaces allowed. */
+  spaceFree?: InputMaybe<Scalars['Int']['input']>;
+  /** The number of Plus Spaces allowed. */
+  spacePlus?: InputMaybe<Scalars['Int']['input']>;
+  /** The number of Premium Spaces allowed. */
+  spacePremium?: InputMaybe<Scalars['Int']['input']>;
+  /** The number of Starting Pages allowed. */
+  startingPages?: InputMaybe<Scalars['Int']['input']>;
+  /** The number of Virtual Contributors allowed. */
+  virtualContributor?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type UpdateCalendarEventInput = {
   ID: Scalars['UUID']['input'];
   /** The length of the event in days. */
@@ -7358,7 +7516,7 @@ export type UpdateNotificationStateInput = {
   /** The ID of the notification to update. */
   ID: Scalars['UUID']['input'];
   /** The new state of the notification. */
-  state: InAppNotificationState;
+  state: NotificationEventInAppState;
 };
 
 export type UpdateOrganizationInput = {
@@ -7578,22 +7736,16 @@ export type UpdateUserPlatformSettingsInput = {
   userID: Scalars['String']['input'];
 };
 
-export type UpdateUserPreferenceInput = {
-  /** Type of the user preference */
-  type: PreferenceType;
-  /** ID of the User */
-  userID: Scalars['UUID']['input'];
-  value: Scalars['String']['input'];
-};
-
 export type UpdateUserSettingsCommunicationInput = {
   /** Allow Users to send messages to this User. */
-  allowOtherUsersToSendMessages: Scalars['Boolean']['input'];
+  allowOtherUsersToSendMessages?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateUserSettingsEntityInput = {
   /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
+  /** Settings related to this users Notifications preferences. */
+  notification?: InputMaybe<UpdateUserSettingsNotificationInput>;
   /** Settings related to Privacy. */
   privacy?: InputMaybe<UpdateUserSettingsPrivacyInput>;
 };
@@ -7605,9 +7757,102 @@ export type UpdateUserSettingsInput = {
   userID: Scalars['UUID']['input'];
 };
 
+export type UpdateUserSettingsNotificationInput = {
+  /** Settings related to Organization Notifications. */
+  organization?: InputMaybe<UpdateUserSettingsNotificationOrganizationInput>;
+  /** Settings related to Platform Notifications. */
+  platform?: InputMaybe<UpdateUserSettingsNotificationPlatformInput>;
+  /** Settings related to Space Notifications. */
+  space?: InputMaybe<UpdateUserSettingsNotificationSpaceInput>;
+  /** Settings related to User Notifications. */
+  user?: InputMaybe<UpdateUserSettingsNotificationUserInput>;
+  /** Settings related to Virtual Contributor Notifications. */
+  virtualContributor?: InputMaybe<UpdateUserSettingsNotificationVirtualContributorInput>;
+};
+
+export type UpdateUserSettingsNotificationOrganizationInput = {
+  /** Receive a notification when the organization you are admin of is mentioned */
+  adminMentioned?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive notification when the organization you are admin of is messaged */
+  adminMessageReceived?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateUserSettingsNotificationPlatformAdminInput = {
+  /** [Admin] Receive a notification when a new L0 Space is created */
+  spaceCreated?: InputMaybe<Scalars['Boolean']['input']>;
+  /** [Admin] Receive a notification user is assigned or removed from a global role */
+  userGlobalRoleChanged?: InputMaybe<Scalars['Boolean']['input']>;
+  /** [Admin] Receive notification when a new user signs up */
+  userProfileCreated?: InputMaybe<Scalars['Boolean']['input']>;
+  /** [Admin] Receive a notification when a user profile is removed */
+  userProfileRemoved?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateUserSettingsNotificationPlatformInput = {
+  /** Settings related to Platform Admin Notifications. */
+  admin?: InputMaybe<UpdateUserSettingsNotificationPlatformAdminInput>;
+  /** Receive a notification when a new comment is added to a Discussion I created in the Forum */
+  forumDiscussionComment?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when a new Discussion is created in the Forum */
+  forumDiscussionCreated?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateUserSettingsNotificationSpaceAdminInput = {
+  /** Receive a notification when a contribution is added (admin) */
+  collaborationCalloutContributionCreated?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when a message is sent to a Space I lead */
+  communicationMessageReceived?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when an application is received */
+  communityApplicationReceived?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when a new member joins the community (admin) */
+  communityNewMember?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateUserSettingsNotificationSpaceInput = {
+  /** Settings related to Space Admin Notifications. */
+  admin?: InputMaybe<UpdateUserSettingsNotificationSpaceAdminInput>;
+  /** Receive a notification when a comment is added to a Callout */
+  collaborationCalloutComment?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when a contribution is added */
+  collaborationCalloutContributionCreated?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when a comment is created on a contribution */
+  collaborationCalloutPostContributionComment?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when a callout is published */
+  collaborationCalloutPublished?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification for community updates */
+  communicationUpdates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateUserSettingsNotificationUserInput = {
+  /** Receive a notification when someone replies to a comment I made. */
+  commentReply?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive notification I send a message to a User, Organization or Space. */
+  copyOfMessageSent?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Settings related to User Membership Notifications. */
+  membership?: InputMaybe<UpdateUserSettingsNotificationUserMembershipInput>;
+  /** Receive a notification you are mentioned */
+  mentioned?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive notification when I receive a message. */
+  messageReceived?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateUserSettingsNotificationUserMembershipInput = {
+  /** Receive a notification when an application is submitted */
+  spaceCommunityApplicationSubmitted?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification for community invitation */
+  spaceCommunityInvitationReceived?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Receive a notification when I join a new community */
+  spaceCommunityJoined?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateUserSettingsNotificationVirtualContributorInput = {
+  /** Receive notification when a Virtual Contributor receives an invitation to join a Space. */
+  adminSpaceCommunityInvitation?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type UpdateUserSettingsPrivacyInput = {
   /** Allow contribution roles (communication, lead etc) in Spaces to be visible. */
-  contributionRolesPubliclyVisible: Scalars['Boolean']['input'];
+  contributionRolesPubliclyVisible?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateVirtualContributorInput = {
@@ -7783,8 +8028,6 @@ export type User = Contributor & {
   nameID: Scalars['NameID']['output'];
   /** The phone number for this User. */
   phone?: Maybe<Scalars['String']['output']>;
-  /** The preferences for this user */
-  preferences: Array<Preference>;
   /** The Profile for this User. */
   profile: Profile;
   /** The settings for this User. */
@@ -7801,8 +8044,8 @@ export type UserAuthenticationResult = {
   authenticatedAt?: Maybe<Scalars['DateTime']['output']>;
   /** When the Kratos Account for the user was created */
   createdAt?: Maybe<Scalars['DateTime']['output']>;
-  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
-  method: AuthenticationType;
+  /** The Authentication Methods used for this User. One of email, linkedin, microsoft, github or unknown */
+  methods: Array<AuthenticationType>;
 };
 
 export type UserAuthorizationResetInput = {
@@ -7844,16 +8087,136 @@ export type UserSendMessageInput = {
 
 export type UserSettings = {
   __typename?: 'UserSettings';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
   /** The communication settings for this User. */
   communication: UserSettingsCommunication;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The notification settings for this User. */
+  notification: UserSettingsNotification;
   /** The privacy settings for this User */
   privacy: UserSettingsPrivacy;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type UserSettingsCommunication = {
   __typename?: 'UserSettingsCommunication';
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages: Scalars['Boolean']['output'];
+};
+
+export type UserSettingsNotification = {
+  __typename?: 'UserSettingsNotification';
+  /** The notifications settings for Organization events for this User */
+  organization: UserSettingsNotificationOrganization;
+  /** The notifications settings for Platform events for this User */
+  platform: UserSettingsNotificationPlatform;
+  /** The notifications settings for Space events for this User */
+  space: UserSettingsNotificationSpace;
+  /** The notifications settings for User events for this User */
+  user: UserSettingsNotificationUser;
+  /** The notifications settings for Virtual Contributor events for this User */
+  virtualContributor: UserSettingsNotificationVirtualContributor;
+};
+
+export type UserSettingsNotificationChannels = {
+  __typename?: 'UserSettingsNotificationChannels';
+  /** Receive notifications by email. */
+  email: Scalars['Boolean']['output'];
+  /** Receive notifications by inApp. */
+  inApp: Scalars['Boolean']['output'];
+};
+
+export type UserSettingsNotificationOrganization = {
+  __typename?: 'UserSettingsNotificationOrganization';
+  /** Receive a notification when the organization you are admin of is mentioned */
+  adminMentioned: UserSettingsNotificationChannels;
+  /** Receive notification when the organization you are admin of is messaged */
+  adminMessageReceived: UserSettingsNotificationChannels;
+};
+
+export type UserSettingsNotificationPlatform = {
+  __typename?: 'UserSettingsNotificationPlatform';
+  /** The notifications settings for Platform Admin events for this User */
+  admin: UserSettingsNotificationPlatformAdmin;
+  /** Receive a notification when a new comment is added to a Discussion I created in the Forum */
+  forumDiscussionComment: UserSettingsNotificationChannels;
+  /** Receive a notification when a new Discussion is created in the Forum */
+  forumDiscussionCreated: UserSettingsNotificationChannels;
+};
+
+export type UserSettingsNotificationPlatformAdmin = {
+  __typename?: 'UserSettingsNotificationPlatformAdmin';
+  /** Receive a notification when a new L0 Space is created */
+  spaceCreated: UserSettingsNotificationChannels;
+  /** Receive a notification when a user global role is assigned or removed. */
+  userGlobalRoleChanged: UserSettingsNotificationChannels;
+  /** Receive notification when a new user signs up */
+  userProfileCreated: UserSettingsNotificationChannels;
+  /** Receive a notification when a user profile is removed */
+  userProfileRemoved: UserSettingsNotificationChannels;
+};
+
+export type UserSettingsNotificationSpace = {
+  __typename?: 'UserSettingsNotificationSpace';
+  /** The notifications settings for Space Admin events for this User */
+  admin: UserSettingsNotificationSpaceAdmin;
+  /** Receive a notification when a comment is made on a Callout */
+  collaborationCalloutComment: UserSettingsNotificationChannels;
+  /** Receive a notification when a contribution is created */
+  collaborationCalloutContributionCreated: UserSettingsNotificationChannels;
+  /** Receive a notification when a comment is created on a Post contribution */
+  collaborationCalloutPostContributionComment: UserSettingsNotificationChannels;
+  /** Receive a notification when a callout is published */
+  collaborationCalloutPublished: UserSettingsNotificationChannels;
+  /** Receive a notification for community updates */
+  communicationUpdates: UserSettingsNotificationChannels;
+};
+
+export type UserSettingsNotificationSpaceAdmin = {
+  __typename?: 'UserSettingsNotificationSpaceAdmin';
+  /** Receive a notification when a contribution is created (admin) */
+  collaborationCalloutContributionCreated: UserSettingsNotificationChannels;
+  /** Receive a notification when a message is sent to a Space I lead */
+  communicationMessageReceived: UserSettingsNotificationChannels;
+  /** Receive a notification when an application is received */
+  communityApplicationReceived: UserSettingsNotificationChannels;
+  /** Receive a notification when a new member joins the community (admin) */
+  communityNewMember: UserSettingsNotificationChannels;
+};
+
+export type UserSettingsNotificationUser = {
+  __typename?: 'UserSettingsNotificationUser';
+  /** Receive a notification when someone replies to a comment I made. */
+  commentReply: UserSettingsNotificationChannels;
+  /** Receive notification I send a message to a User, Organization or Space. */
+  copyOfMessageSent: UserSettingsNotificationChannels;
+  /** The notifications settings for membership events for this User */
+  membership: UserSettingsNotificationUserMembership;
+  /** Receive a notification you are mentioned */
+  mentioned: UserSettingsNotificationChannels;
+  /** Receive notification when I receive a direct message. */
+  messageReceived: UserSettingsNotificationChannels;
+};
+
+export type UserSettingsNotificationUserMembership = {
+  __typename?: 'UserSettingsNotificationUserMembership';
+  /** Receive a notification when an application for a Space is submitted */
+  spaceCommunityApplicationSubmitted: UserSettingsNotificationChannels;
+  /** Receive a notification when I am invited to join a Space community */
+  spaceCommunityInvitationReceived: UserSettingsNotificationChannels;
+  /** Receive a notification when I join a Space */
+  spaceCommunityJoined: UserSettingsNotificationChannels;
+};
+
+export type UserSettingsNotificationVirtualContributor = {
+  __typename?: 'UserSettingsNotificationVirtualContributor';
+  /** Receive notification when a Virtual Contributor receives an invitation to join a Space. */
+  adminSpaceCommunityInvitation: UserSettingsNotificationChannels;
 };
 
 export type UserSettingsPrivacy = {
@@ -9594,7 +9957,6 @@ export type CalloutPageCalloutQuery = {
           id: string;
           sortOrder: number;
           activity: number;
-          calloutTypeDeprecated: CalloutType;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -10095,7 +10457,6 @@ export type InnovationFlowSettingsQuery = {
               id: string;
               activity: number;
               sortOrder: number;
-              calloutTypeDeprecated: CalloutType;
               classification?:
                 | {
                     __typename?: 'Classification';
@@ -10252,7 +10613,6 @@ export type InnovationFlowCollaborationFragment = {
       id: string;
       activity: number;
       sortOrder: number;
-      calloutTypeDeprecated: CalloutType;
       classification?:
         | {
             __typename?: 'Classification';
@@ -12377,7 +12737,6 @@ export type UpdateCalloutContentMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -12742,7 +13101,6 @@ export type UpdateCalloutVisibilityMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -13194,7 +13552,6 @@ export type CreateCalloutMutation = {
     id: string;
     sortOrder: number;
     activity: number;
-    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -13570,7 +13927,6 @@ export type CalloutsOnCalloutsSetUsingClassificationQuery = {
             id: string;
             sortOrder: number;
             activity: number;
-            calloutTypeDeprecated: CalloutType;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -13608,7 +13964,6 @@ export type CalloutFragment = {
   id: string;
   sortOrder: number;
   activity: number;
-  calloutTypeDeprecated: CalloutType;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -13636,7 +13991,6 @@ export type CalloutDetailsQuery = {
           id: string;
           sortOrder: number;
           activity: number;
-          calloutTypeDeprecated: CalloutType;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -14090,7 +14444,6 @@ export type CalloutDetailsFragment = {
   id: string;
   sortOrder: number;
   activity: number;
-  calloutTypeDeprecated: CalloutType;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -14900,7 +15253,6 @@ export type PostSettingsQuery = {
       | {
           __typename?: 'Callout';
           id: string;
-          calloutTypeDeprecated: CalloutType;
           contributions: Array<{
             __typename?: 'CalloutContribution';
             id: string;
@@ -15049,7 +15401,6 @@ export type PostSettingsFragment = {
 export type PostSettingsCalloutFragment = {
   __typename?: 'Callout';
   id: string;
-  calloutTypeDeprecated: CalloutType;
   contributions: Array<{
     __typename?: 'CalloutContribution';
     id: string;
@@ -15125,6 +15476,41 @@ export type PostCalloutsInCalloutSetQuery = {
         }
       | undefined;
   };
+};
+
+export type ContentUpdatePolicyQueryVariables = Exact<{
+  elementId: Scalars['UUID']['input'];
+  isWhiteboard: Scalars['Boolean']['input'];
+  isMemo: Scalars['Boolean']['input'];
+}>;
+
+export type ContentUpdatePolicyQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboard?: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy } | undefined;
+    memo?: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy } | undefined;
+  };
+};
+
+export type UpdateWhiteboardContentUpdatePolicyMutationVariables = Exact<{
+  whiteboardId: Scalars['UUID']['input'];
+  contentUpdatePolicy: ContentUpdatePolicy;
+}>;
+
+export type UpdateWhiteboardContentUpdatePolicyMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboard: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
+};
+
+export type UpdateMemoContentUpdatePolicyMutationVariables = Exact<{
+  memoId: Scalars['UUID']['input'];
+  contentUpdatePolicy: ContentUpdatePolicy;
+}>;
+
+export type UpdateMemoContentUpdatePolicyMutation = {
+  __typename?: 'Mutation';
+  updateMemo: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
 export type WhiteboardProfileFragment = {
@@ -15607,28 +15993,6 @@ export type UpdateWhiteboardMutation = {
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
-};
-
-export type WhiteboardContentUpdatePolicyQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
-}>;
-
-export type WhiteboardContentUpdatePolicyQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    whiteboard?: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy } | undefined;
-  };
-};
-
-export type UpdateWhiteboardContentUpdatePolicyMutationVariables = Exact<{
-  whiteboardId: Scalars['UUID']['input'];
-  contentUpdatePolicy: ContentUpdatePolicy;
-}>;
-
-export type UpdateWhiteboardContentUpdatePolicyMutation = {
-  __typename?: 'Mutation';
-  updateWhiteboard: { __typename?: 'Whiteboard'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
 export type LinkDetailsFragment = {
@@ -18619,17 +18983,6 @@ export type DeleteUserMutationVariables = Exact<{
 
 export type DeleteUserMutation = { __typename?: 'Mutation'; deleteUser: { __typename?: 'User'; id: string } };
 
-export type UpdatePreferenceOnUserMutationVariables = Exact<{
-  userId: Scalars['UUID']['input'];
-  type: PreferenceType;
-  value: Scalars['String']['input'];
-}>;
-
-export type UpdatePreferenceOnUserMutation = {
-  __typename?: 'Mutation';
-  updatePreferenceOnUser: { __typename?: 'Preference'; id: string; value: string };
-};
-
 export type UserAccountQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
@@ -18715,37 +19068,6 @@ export type UserQuery = {
                 }>
               | undefined;
           };
-        }
-      | undefined;
-  };
-};
-
-export type UserNotificationsPreferencesQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
-}>;
-
-export type UserNotificationsPreferencesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    user?:
-      | {
-          __typename?: 'User';
-          id: string;
-          preferences: Array<{
-            __typename?: 'Preference';
-            id: string;
-            value: string;
-            definition: {
-              __typename?: 'PreferenceDefinition';
-              id: string;
-              description: string;
-              displayName: string;
-              group: string;
-              type: PreferenceType;
-              valueType: PreferenceValueType;
-            };
-          }>;
         }
       | undefined;
   };
@@ -18971,8 +19293,196 @@ export type UpdateUserSettingsMutation = {
     id: string;
     settings: {
       __typename?: 'UserSettings';
-      privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+      id: string;
       communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+      privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+      notification: {
+        __typename?: 'UserSettingsNotification';
+        platform: {
+          __typename?: 'UserSettingsNotificationPlatform';
+          admin: {
+            __typename?: 'UserSettingsNotificationPlatformAdmin';
+            userProfileRemoved: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+            userProfileCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+            spaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+            userGlobalRoleChanged: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          };
+          forumDiscussionComment: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          forumDiscussionCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+        };
+        organization: {
+          __typename?: 'UserSettingsNotificationOrganization';
+          adminMentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          adminMessageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+        };
+        space: {
+          __typename?: 'UserSettingsNotificationSpace';
+          admin: {
+            __typename?: 'UserSettingsNotificationSpaceAdmin';
+            communityApplicationReceived: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+            };
+            collaborationCalloutContributionCreated: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+            };
+            communityNewMember: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+            communicationMessageReceived: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+            };
+          };
+          collaborationCalloutContributionCreated: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+          };
+          communicationUpdates: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          collaborationCalloutPublished: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+          };
+          collaborationCalloutComment: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+          };
+          collaborationCalloutPostContributionComment: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+          };
+        };
+        user: {
+          __typename?: 'UserSettingsNotificationUser';
+          membership: {
+            __typename?: 'UserSettingsNotificationUserMembership';
+            spaceCommunityInvitationReceived: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+            };
+            spaceCommunityJoined: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+            spaceCommunityApplicationSubmitted: {
+              __typename?: 'UserSettingsNotificationChannels';
+              email: boolean;
+              inApp: boolean;
+            };
+          };
+          mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+          copyOfMessageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+        };
+        virtualContributor: {
+          __typename?: 'UserSettingsNotificationVirtualContributor';
+          adminSpaceCommunityInvitation: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+          };
+        };
+      };
+    };
+  };
+};
+
+export type UserSettingsFragmentFragment = {
+  __typename?: 'UserSettings';
+  id: string;
+  communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+  privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+  notification: {
+    __typename?: 'UserSettingsNotification';
+    platform: {
+      __typename?: 'UserSettingsNotificationPlatform';
+      admin: {
+        __typename?: 'UserSettingsNotificationPlatformAdmin';
+        userProfileRemoved: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+        userProfileCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+        spaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+        userGlobalRoleChanged: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      };
+      forumDiscussionComment: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      forumDiscussionCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+    };
+    organization: {
+      __typename?: 'UserSettingsNotificationOrganization';
+      adminMentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      adminMessageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+    };
+    space: {
+      __typename?: 'UserSettingsNotificationSpace';
+      admin: {
+        __typename?: 'UserSettingsNotificationSpaceAdmin';
+        communityApplicationReceived: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+        };
+        collaborationCalloutContributionCreated: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+        };
+        communityNewMember: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+        communicationMessageReceived: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+        };
+      };
+      collaborationCalloutContributionCreated: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+      };
+      communicationUpdates: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      collaborationCalloutPublished: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+      };
+      collaborationCalloutComment: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      collaborationCalloutPostContributionComment: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+      };
+    };
+    user: {
+      __typename?: 'UserSettingsNotificationUser';
+      membership: {
+        __typename?: 'UserSettingsNotificationUserMembership';
+        spaceCommunityInvitationReceived: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+        };
+        spaceCommunityJoined: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+        spaceCommunityApplicationSubmitted: {
+          __typename?: 'UserSettingsNotificationChannels';
+          email: boolean;
+          inApp: boolean;
+        };
+      };
+      mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+      copyOfMessageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+    };
+    virtualContributor: {
+      __typename?: 'UserSettingsNotificationVirtualContributor';
+      adminSpaceCommunityInvitation: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+      };
     };
   };
 };
@@ -18991,8 +19501,137 @@ export type UserSettingsQuery = {
           id: string;
           settings: {
             __typename?: 'UserSettings';
+            id: string;
             communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
             privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+            notification: {
+              __typename?: 'UserSettingsNotification';
+              platform: {
+                __typename?: 'UserSettingsNotificationPlatform';
+                admin: {
+                  __typename?: 'UserSettingsNotificationPlatformAdmin';
+                  userProfileRemoved: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                  };
+                  userProfileCreated: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                  };
+                  spaceCreated: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+                  userGlobalRoleChanged: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                  };
+                };
+                forumDiscussionComment: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                forumDiscussionCreated: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+              };
+              organization: {
+                __typename?: 'UserSettingsNotificationOrganization';
+                adminMentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+                adminMessageReceived: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+              };
+              space: {
+                __typename?: 'UserSettingsNotificationSpace';
+                admin: {
+                  __typename?: 'UserSettingsNotificationSpaceAdmin';
+                  communityApplicationReceived: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                  };
+                  collaborationCalloutContributionCreated: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                  };
+                  communityNewMember: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                  };
+                  communicationMessageReceived: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                  };
+                };
+                collaborationCalloutContributionCreated: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                communicationUpdates: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                collaborationCalloutPublished: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                collaborationCalloutComment: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                collaborationCalloutPostContributionComment: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+              };
+              user: {
+                __typename?: 'UserSettingsNotificationUser';
+                membership: {
+                  __typename?: 'UserSettingsNotificationUserMembership';
+                  spaceCommunityInvitationReceived: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                  };
+                  spaceCommunityJoined: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                  };
+                  spaceCommunityApplicationSubmitted: {
+                    __typename?: 'UserSettingsNotificationChannels';
+                    email: boolean;
+                    inApp: boolean;
+                  };
+                };
+                mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+                commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+                messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+                copyOfMessageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
+              };
+              virtualContributor: {
+                __typename?: 'UserSettingsNotificationVirtualContributor';
+                adminSpaceCommunityInvitation: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+              };
+            };
           };
         }
       | undefined;
@@ -20027,21 +20666,6 @@ export type DashboardSpacesQuery = {
   }>;
 };
 
-export type PlatformAdminInnovationHubsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlatformAdminInnovationHubsQuery = {
-  __typename?: 'Query';
-  platformAdmin: {
-    __typename?: 'PlatformAdminQueryResults';
-    innovationHubs: Array<{
-      __typename?: 'InnovationHub';
-      id: string;
-      subdomain: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-    }>;
-  };
-};
-
 export type DeleteInnovationHubMutationVariables = Exact<{
   innovationHubId: Scalars['UUID']['input'];
 }>;
@@ -20644,6 +21268,21 @@ export type PlatformRoleSetQuery = {
   platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
 };
 
+export type PlatformAdminInnovationHubsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformAdminInnovationHubsQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    innovationHubs: Array<{
+      __typename?: 'InnovationHub';
+      id: string;
+      subdomain: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    }>;
+  };
+};
+
 export type PlatformAdminInnovationPacksQueryVariables = Exact<{ [key: string]: never }>;
 
 export type PlatformAdminInnovationPacksQuery = {
@@ -20680,40 +21319,46 @@ export type RevokeLicensePlanFromAccountMutation = {
   revokeLicensePlanFromAccount: { __typename?: 'Account'; id: string };
 };
 
-export type AdminGlobalOrganizationsListQueryVariables = Exact<{
+export type PlatformAdminOrganizationsListQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['UUID']['input']>;
   filter?: InputMaybe<OrganizationFilterInput>;
 }>;
 
-export type AdminGlobalOrganizationsListQuery = {
+export type PlatformAdminOrganizationsListQuery = {
   __typename?: 'Query';
-  organizationsPaginated: {
-    __typename?: 'PaginatedOrganization';
-    organization: Array<{
-      __typename?: 'Organization';
-      id: string;
-      account?:
-        | {
-            __typename?: 'Account';
-            id: string;
-            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicensingCredentialBasedCredentialType }>;
-          }
-        | undefined;
-      profile: {
-        __typename?: 'Profile';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    organizations: {
+      __typename?: 'PaginatedOrganization';
+      organization: Array<{
+        __typename?: 'Organization';
         id: string;
-        url: string;
-        displayName: string;
-        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        account?:
+          | {
+              __typename?: 'Account';
+              id: string;
+              subscriptions: Array<{
+                __typename?: 'AccountSubscription';
+                name: LicensingCredentialBasedCredentialType;
+              }>;
+            }
+          | undefined;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+        verification: { __typename?: 'OrganizationVerification'; id: string; state: string };
+      }>;
+      pageInfo: {
+        __typename?: 'PageInfo';
+        startCursor?: string | undefined;
+        endCursor?: string | undefined;
+        hasNextPage: boolean;
       };
-      verification: { __typename?: 'OrganizationVerification'; id: string; state: string };
-    }>;
-    pageInfo: {
-      __typename?: 'PageInfo';
-      startCursor?: string | undefined;
-      endCursor?: string | undefined;
-      hasNextPage: boolean;
     };
   };
 };
@@ -20771,60 +21416,63 @@ export type UpdateSpacePlatformSettingsMutation = {
   updateSpacePlatformSettings: { __typename?: 'Space'; id: string; nameID: string; visibility: SpaceVisibility };
 };
 
-export type AdminSpacesListQueryVariables = Exact<{ [key: string]: never }>;
+export type PlatformAdminSpacesListQueryVariables = Exact<{ [key: string]: never }>;
 
-export type AdminSpacesListQuery = {
+export type PlatformAdminSpacesListQuery = {
   __typename?: 'Query';
-  spaces: Array<{
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    visibility: SpaceVisibility;
-    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
-    about: {
-      __typename?: 'SpaceAbout';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    spaces: Array<{
+      __typename?: 'Space';
       id: string;
-      isContentPublic: boolean;
-      provider:
-        | {
-            __typename?: 'Organization';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          }
-        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-        | {
-            __typename?: 'VirtualContributor';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
-      profile: {
-        __typename?: 'Profile';
+      nameID: string;
+      visibility: SpaceVisibility;
+      subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
+      about: {
+        __typename?: 'SpaceAbout';
         id: string;
-        displayName: string;
-        url: string;
-        tagline?: string | undefined;
-        description?: string | undefined;
-        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-          | undefined;
-        cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-          | undefined;
+        isContentPublic: boolean;
+        provider:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          tagline?: string | undefined;
+          description?: string | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+            | undefined;
+          cardBanner?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+            | undefined;
+        };
+        membership: {
+          __typename?: 'SpaceAboutMembership';
+          myMembershipStatus?: CommunityMembershipStatus | undefined;
+          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+          communityID: string;
+          roleSetID: string;
+        };
+        guidelines: { __typename?: 'CommunityGuidelines'; id: string };
       };
-      membership: {
-        __typename?: 'SpaceAboutMembership';
-        myMembershipStatus?: CommunityMembershipStatus | undefined;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        communityID: string;
-        roleSetID: string;
-      };
-      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
-    };
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-  }>;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    }>;
+  };
 };
 
 export type AdminSpaceFragment = {
@@ -20878,60 +21526,69 @@ export type AdminSpaceFragment = {
     | undefined;
 };
 
-export type UserListQueryVariables = Exact<{
+export type PlatformAdminUsersListQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['UUID']['input']>;
   filter?: InputMaybe<UserFilterInput>;
 }>;
 
-export type UserListQuery = {
+export type PlatformAdminUsersListQuery = {
   __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    users: {
+      __typename?: 'PaginatedUsers';
+      users: Array<{
+        __typename?: 'User';
+        id: string;
+        email: string;
+        account?:
+          | {
+              __typename?: 'Account';
+              id: string;
+              subscriptions: Array<{
+                __typename?: 'AccountSubscription';
+                name: LicensingCredentialBasedCredentialType;
+              }>;
+            }
+          | undefined;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      }>;
+      pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+    };
+  };
+};
+
+export type PlatformAdminVirtualContributorsListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformAdminVirtualContributorsListQuery = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    virtualContributors: Array<{
+      __typename?: 'VirtualContributor';
       id: string;
-      email: string;
-      account?:
-        | {
-            __typename?: 'Account';
-            id: string;
-            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicensingCredentialBasedCredentialType }>;
-          }
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
       profile: {
         __typename?: 'Profile';
         id: string;
-        url: string;
         displayName: string;
-        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        description?: string | undefined;
+        url: string;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
       };
     }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
-};
-
-export type AdminVirtualContributorsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AdminVirtualContributorsQuery = {
-  __typename?: 'Query';
-  virtualContributors: Array<{
-    __typename?: 'VirtualContributor';
-    id: string;
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      url: string;
-      avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-        | undefined;
-    };
-  }>;
 };
 
 export type ShareLinkWithUserMutationVariables = Exact<{
@@ -24983,7 +25640,6 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                     __typename?: 'Callout';
                                     id: string;
                                     sortOrder: number;
-                                    calloutTypeDeprecated: CalloutType;
                                     classification?:
                                       | {
                                           __typename?: 'Classification';
@@ -25574,7 +26230,7 @@ export type ImportTemplateDialogQuery = {
             __typename?: 'Template';
             id: string;
             type: TemplateType;
-            callout?: { __typename?: 'Callout'; id: string; calloutTypeDeprecated: CalloutType } | undefined;
+            callout?: { __typename?: 'Callout'; id: string } | undefined;
             contentSpace?:
               | {
                   __typename?: 'TemplateContentSpace';
@@ -25634,7 +26290,7 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
           __typename?: 'Template';
           id: string;
           type: TemplateType;
-          callout?: { __typename?: 'Callout'; id: string; calloutTypeDeprecated: CalloutType } | undefined;
+          callout?: { __typename?: 'Callout'; id: string } | undefined;
           contentSpace?:
             | {
                 __typename?: 'TemplateContentSpace';
@@ -25738,7 +26394,6 @@ export type AllTemplatesInTemplatesSetQuery = {
               | {
                   __typename?: 'Callout';
                   id: string;
-                  calloutTypeDeprecated: CalloutType;
                   settings: {
                     __typename?: 'CalloutSettings';
                     contribution: {
@@ -25974,7 +26629,6 @@ export type TemplateContentQuery = {
             | {
                 __typename?: 'Callout';
                 id: string;
-                calloutTypeDeprecated: CalloutType;
                 framing: {
                   __typename?: 'CalloutFraming';
                   id: string;
@@ -26211,7 +26865,6 @@ export type TemplateContentQuery = {
                       __typename?: 'Callout';
                       id: string;
                       sortOrder: number;
-                      calloutTypeDeprecated: CalloutType;
                       classification?:
                         | {
                             __typename?: 'Classification';
@@ -26388,7 +27041,6 @@ export type SpaceTemplateContentQuery = {
                 __typename?: 'Callout';
                 id: string;
                 sortOrder: number;
-                calloutTypeDeprecated: CalloutType;
                 classification?:
                   | {
                       __typename?: 'Classification';
@@ -26529,7 +27181,6 @@ export type SpaceTemplateContentQuery = {
 export type CalloutTemplateContentFragment = {
   __typename?: 'Callout';
   id: string;
-  calloutTypeDeprecated: CalloutType;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -26727,7 +27378,6 @@ export type SpaceTemplateContentFragment = {
         __typename?: 'Callout';
         id: string;
         sortOrder: number;
-        calloutTypeDeprecated: CalloutType;
         classification?:
           | {
               __typename?: 'Classification';
@@ -26863,7 +27513,6 @@ export type SpaceTemplateContent_CollaborationFragment = {
       __typename?: 'Callout';
       id: string;
       sortOrder: number;
-      calloutTypeDeprecated: CalloutType;
       classification?:
         | {
             __typename?: 'Classification';
@@ -27021,7 +27670,6 @@ export type CalloutTemplateFragment = {
     | {
         __typename?: 'Callout';
         id: string;
-        calloutTypeDeprecated: CalloutType;
         settings: {
           __typename?: 'CalloutSettings';
           contribution: {
@@ -27308,7 +27956,6 @@ export type UpdateCalloutTemplateMutation = {
   updateCallout: {
     __typename?: 'Callout';
     id: string;
-    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -27416,7 +28063,6 @@ export type TemplatesSetTemplatesFragment = {
       | {
           __typename?: 'Callout';
           id: string;
-          calloutTypeDeprecated: CalloutType;
           settings: {
             __typename?: 'CalloutSettings';
             contribution: {
@@ -29098,20 +29744,183 @@ export type InAppNotificationReceivedSubscriptionVariables = Exact<{ [key: strin
 
 export type InAppNotificationReceivedSubscription = {
   __typename?: 'Subscription';
-  inAppNotificationReceived:
-    | {
-        __typename?: 'InAppNotificationCalloutPublished';
-        id: string;
-        type: NotificationEventType;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
-        triggeredAt: Date;
-        callout?:
-          | {
-              __typename?: 'Callout';
-              id: string;
-              framing: {
-                __typename?: 'CalloutFraming';
+  inAppNotificationReceived: {
+    __typename?: 'InAppNotification';
+    id: string;
+    type: NotificationEvent;
+    category: NotificationEventCategory;
+    state: NotificationEventInAppState;
+    triggeredAt: Date;
+    triggeredBy?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        }
+      | {
+          __typename?: 'User';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        }
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
+    payload:
+      | { __typename?: 'InAppNotificationPayloadOrganization'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadOrganizationMessageDirect'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadOrganizationMessageRoom'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadPlatformUser'; type: NotificationEventPayload }
+      | {
+          __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
+          type: NotificationEventPayload;
+          comment?: string | undefined;
+          commentUrl?: string | undefined;
+          commentOriginName?: string | undefined;
+        }
+      | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
+      | {
+          __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
+          type: NotificationEventPayload;
+          callout?:
+            | {
+                __typename?: 'Callout';
+                id: string;
+                framing: {
+                  __typename?: 'CalloutFraming';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+        }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunityApplication'; type: NotificationEventPayload }
+      | {
+          __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
+          type: NotificationEventPayload;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          contributor?:
+            | {
+                __typename: 'Organization';
                 id: string;
                 profile: {
                   __typename?: 'Profile';
@@ -29128,24 +29937,16 @@ export type InAppNotificationReceivedSubscription = {
                       }
                     | undefined;
                 };
-              };
-            }
-          | undefined;
-        space?:
-          | {
-              __typename?: 'Space';
-              id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
+              }
+            | {
+                __typename: 'User';
                 id: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
                   url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
+                  visual?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -29154,161 +29955,17 @@ export type InAppNotificationReceivedSubscription = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
                 };
-              };
-            }
-          | undefined;
-        triggeredBy?:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'User';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | undefined;
-      }
-    | {
-        __typename?: 'InAppNotificationCommunityNewMember';
-        id: string;
-        type: NotificationEventType;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
-        triggeredAt: Date;
-        triggeredBy?:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'User';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | undefined;
-        space?:
-          | {
-              __typename?: 'Space';
-              id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
+              }
+            | {
+                __typename: 'VirtualContributor';
                 id: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
                   url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
+                  visual?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -29317,171 +29974,199 @@ export type InAppNotificationReceivedSubscription = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
                 };
-              };
-            }
-          | undefined;
-        actor?:
-          | {
-              __typename: 'Organization';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename: 'User';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | undefined;
-      }
-    | {
-        __typename?: 'InAppNotificationUserMentioned';
-        id: string;
-        type: NotificationEventType;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
-        triggeredAt: Date;
-        commentUrl: string;
-        comment: string;
-        commentOriginName: string;
-        contributorType: RoleSetContributorType;
-        triggeredBy?:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'User';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | undefined;
-      };
+              }
+            | undefined;
+        }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadUserMessageDirect'; type: NotificationEventPayload };
+  };
 };
 
-export type InAppNotificationsQueryVariables = Exact<{ [key: string]: never }>;
+export type InAppNotificationsQueryVariables = Exact<{
+  types?: InputMaybe<Array<NotificationEvent> | NotificationEvent>;
+}>;
 
 export type InAppNotificationsQuery = {
   __typename?: 'Query';
-  notifications: Array<
-    | {
-        __typename?: 'InAppNotificationCalloutPublished';
-        id: string;
-        type: NotificationEventType;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
-        triggeredAt: Date;
-        callout?:
-          | {
-              __typename?: 'Callout';
-              id: string;
-              framing: {
-                __typename?: 'CalloutFraming';
+  notificationsInApp: Array<{
+    __typename?: 'InAppNotification';
+    id: string;
+    type: NotificationEvent;
+    category: NotificationEventCategory;
+    state: NotificationEventInAppState;
+    triggeredAt: Date;
+    triggeredBy?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        }
+      | {
+          __typename?: 'User';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        }
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
+    payload:
+      | { __typename?: 'InAppNotificationPayloadOrganization'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadOrganizationMessageDirect'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadOrganizationMessageRoom'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadPlatformUser'; type: NotificationEventPayload }
+      | {
+          __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
+          type: NotificationEventPayload;
+          comment?: string | undefined;
+          commentUrl?: string | undefined;
+          commentOriginName?: string | undefined;
+        }
+      | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
+      | {
+          __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
+          type: NotificationEventPayload;
+          callout?:
+            | {
+                __typename?: 'Callout';
+                id: string;
+                framing: {
+                  __typename?: 'CalloutFraming';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+        }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunityApplication'; type: NotificationEventPayload }
+      | {
+          __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
+          type: NotificationEventPayload;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          contributor?:
+            | {
+                __typename: 'Organization';
                 id: string;
                 profile: {
                   __typename?: 'Profile';
@@ -29498,24 +30183,16 @@ export type InAppNotificationsQuery = {
                       }
                     | undefined;
                 };
-              };
-            }
-          | undefined;
-        space?:
-          | {
-              __typename?: 'Space';
-              id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
+              }
+            | {
+                __typename: 'User';
                 id: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
                   url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
+                  visual?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -29524,161 +30201,17 @@ export type InAppNotificationsQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
                 };
-              };
-            }
-          | undefined;
-        triggeredBy?:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'User';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | undefined;
-      }
-    | {
-        __typename?: 'InAppNotificationCommunityNewMember';
-        id: string;
-        type: NotificationEventType;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
-        triggeredAt: Date;
-        triggeredBy?:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'User';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | undefined;
-        space?:
-          | {
-              __typename?: 'Space';
-              id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
+              }
+            | {
+                __typename: 'VirtualContributor';
                 id: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
                   url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
+                  visual?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -29687,162 +30220,24 @@ export type InAppNotificationsQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
                 };
-              };
-            }
-          | undefined;
-        actor?:
-          | {
-              __typename: 'Organization';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename: 'User';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | undefined;
-      }
-    | {
-        __typename?: 'InAppNotificationUserMentioned';
-        id: string;
-        type: NotificationEventType;
-        category: InAppNotificationCategory;
-        state: InAppNotificationState;
-        triggeredAt: Date;
-        commentUrl: string;
-        comment: string;
-        commentOriginName: string;
-        contributorType: RoleSetContributorType;
-        triggeredBy?:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'User';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }
-          | undefined;
-      }
-  >;
+              }
+            | undefined;
+        }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform'; type: NotificationEventPayload }
+      | { __typename?: 'InAppNotificationPayloadUserMessageDirect'; type: NotificationEventPayload };
+  }>;
 };
 
 export type UpdateNotificationStateMutationVariables = Exact<{
   ID: Scalars['UUID']['input'];
-  state: InAppNotificationState;
+  state: NotificationEventInAppState;
 }>;
 
 export type UpdateNotificationStateMutation = {
   __typename?: 'Mutation';
-  updateNotificationState: InAppNotificationState;
+  updateNotificationState: NotificationEventInAppState;
 };
 
 export type MarkNotificationsAsReadMutationVariables = Exact<{
@@ -29851,13 +30246,247 @@ export type MarkNotificationsAsReadMutationVariables = Exact<{
 
 export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNotificationsAsRead: boolean };
 
-type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
-  __typename?: 'InAppNotificationCalloutPublished';
+export type InAppNotificationAllTypesFragment = {
+  __typename?: 'InAppNotification';
   id: string;
-  type: NotificationEventType;
-  category: InAppNotificationCategory;
-  state: InAppNotificationState;
+  type: NotificationEvent;
+  category: NotificationEventCategory;
+  state: NotificationEventInAppState;
   triggeredAt: Date;
+  triggeredBy?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
+  payload:
+    | { __typename?: 'InAppNotificationPayloadOrganization'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadOrganizationMessageDirect'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadOrganizationMessageRoom'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadPlatformUser'; type: NotificationEventPayload }
+    | {
+        __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
+        type: NotificationEventPayload;
+        comment?: string | undefined;
+        commentUrl?: string | undefined;
+        commentOriginName?: string | undefined;
+      }
+    | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
+    | {
+        __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
+        type: NotificationEventPayload;
+        callout?:
+          | {
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+      }
+    | { __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadSpaceCommunityApplication'; type: NotificationEventPayload }
+    | {
+        __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
+        type: NotificationEventPayload;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        contributor?:
+          | {
+              __typename: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            }
+          | {
+              __typename: 'User';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            }
+          | {
+              __typename: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            }
+          | undefined;
+      }
+    | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform'; type: NotificationEventPayload }
+    | { __typename?: 'InAppNotificationPayloadUserMessageDirect'; type: NotificationEventPayload };
+};
+
+export type InAppNotificationPayloadSpaceCollaborationCalloutFragment = {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
   callout?:
     | {
         __typename?: 'Callout';
@@ -29908,97 +30537,10 @@ type InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment = {
         };
       }
     | undefined;
-  triggeredBy?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'User';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'VirtualContributor';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | undefined;
 };
 
-type InAppNotificationAllTypes_InAppNotificationCommunityNewMember_Fragment = {
-  __typename?: 'InAppNotificationCommunityNewMember';
-  id: string;
-  type: NotificationEventType;
-  category: InAppNotificationCategory;
-  state: InAppNotificationState;
-  triggeredAt: Date;
-  triggeredBy?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'User';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'VirtualContributor';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | undefined;
+export type InAppNotificationSpaceCommunityContributorFragment = {
+  __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
   space?:
     | {
         __typename?: 'Space';
@@ -30030,7 +30572,7 @@ type InAppNotificationAllTypes_InAppNotificationCommunityNewMember_Fragment = {
         };
       }
     | undefined;
-  actor?:
+  contributor?:
     | {
         __typename: 'Organization';
         id: string;
@@ -30073,324 +30615,41 @@ type InAppNotificationAllTypes_InAppNotificationCommunityNewMember_Fragment = {
     | undefined;
 };
 
-type InAppNotificationAllTypes_InAppNotificationUserMentioned_Fragment = {
-  __typename?: 'InAppNotificationUserMentioned';
+export type SpaceNotificationFragment = {
+  __typename?: 'Space';
   id: string;
-  type: NotificationEventType;
-  category: InAppNotificationCategory;
-  state: InAppNotificationState;
-  triggeredAt: Date;
-  commentUrl: string;
-  comment: string;
-  commentOriginName: string;
-  contributorType: RoleSetContributorType;
-  triggeredBy?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'User';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'VirtualContributor';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | undefined;
-};
-
-export type InAppNotificationAllTypesFragment =
-  | InAppNotificationAllTypes_InAppNotificationCalloutPublished_Fragment
-  | InAppNotificationAllTypes_InAppNotificationCommunityNewMember_Fragment
-  | InAppNotificationAllTypes_InAppNotificationUserMentioned_Fragment;
-
-export type InAppNotificationCalloutPublishedFragment = {
-  __typename?: 'InAppNotificationCalloutPublished';
-  callout?:
-    | {
-        __typename?: 'Callout';
-        id: string;
-        framing: {
-          __typename?: 'CalloutFraming';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
+  level: SpaceLevel;
+  about: {
+    __typename?: 'SpaceAbout';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      tagline?: string | undefined;
+      cardBanner?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+        | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
             id: string;
-            displayName: string;
-            url: string;
-            visual?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-          };
-        };
-      }
-    | undefined;
-  space?:
-    | {
-        __typename?: 'Space';
-        id: string;
-        level: SpaceLevel;
-        about: {
-          __typename?: 'SpaceAbout';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-          };
-        };
-      }
-    | undefined;
-  triggeredBy?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'User';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'VirtualContributor';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | undefined;
-};
-
-export type InAppNotificationCommunityNewMemberFragment = {
-  __typename?: 'InAppNotificationCommunityNewMember';
-  triggeredBy?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'User';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'VirtualContributor';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | undefined;
-  space?:
-    | {
-        __typename?: 'Space';
-        id: string;
-        level: SpaceLevel;
-        about: {
-          __typename?: 'SpaceAbout';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-          };
-        };
-      }
-    | undefined;
-  actor?:
-    | {
-        __typename: 'Organization';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename: 'User';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename: 'VirtualContributor';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | undefined;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
+  };
 };
 
 export type InAppNotificationUserMentionedFragment = {
-  __typename?: 'InAppNotificationUserMentioned';
-  commentUrl: string;
-  comment: string;
-  commentOriginName: string;
-  contributorType: RoleSetContributorType;
-  triggeredBy?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'User';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | {
-        __typename?: 'VirtualContributor';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-      }
-    | undefined;
+  __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
+  comment?: string | undefined;
+  commentUrl?: string | undefined;
+  commentOriginName?: string | undefined;
 };
 
 export type UrlResolverQueryVariables = Exact<{
@@ -30625,7 +30884,6 @@ export type SearchQuery = {
             callout: {
               __typename?: 'Callout';
               id: string;
-              calloutTypeDeprecated: CalloutType;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -30728,7 +30986,6 @@ export type SearchQuery = {
             callout: {
               __typename?: 'Callout';
               id: string;
-              calloutTypeDeprecated: CalloutType;
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
@@ -31178,7 +31435,6 @@ export type SearchResultCalloutFragment = {
   callout: {
     __typename?: 'Callout';
     id: string;
-    calloutTypeDeprecated: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
@@ -31492,7 +31748,7 @@ export type InnovationLibraryQuery = {
           __typename?: 'Template';
           id: string;
           type: TemplateType;
-          callout?: { __typename?: 'Callout'; id: string; type: CalloutType } | undefined;
+          callout?: { __typename?: 'Callout'; id: string } | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;

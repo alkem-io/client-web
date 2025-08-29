@@ -1,7 +1,5 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, CardContent, Skeleton } from '@mui/material';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { Skeleton } from '@mui/material';
 import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardHeader from '@/core/ui/card/CardHeader';
 import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
@@ -11,9 +9,6 @@ import { Caption } from '@/core/ui/typography';
 import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
 import InnovationPackIcon from '@/domain/InnovationPack/InnovationPackIcon';
 import CardTags from '@/core/ui/card/CardTags';
-import calloutIcons from '@/domain/collaboration/callout/icons/calloutIcons';
-import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { gutters } from '@/core/ui/grid/utils';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { TemplateCardProps } from './TemplateCard';
 
@@ -22,14 +17,9 @@ interface CalloutTemplateCardProps extends TemplateCardProps {
 }
 
 const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
-  const { t } = useTranslation();
-
-  const hasTags = (template?.profile.defaultTagset?.tags ?? []).length > 0;
-  const footerHeight =
-    template?.callout?.calloutTypeDeprecated === CalloutType.LinkCollection ? (hasTags ? 3 : 1) : hasTags ? 2 : 0;
+  const tags = template?.profile.defaultTagset?.tags ?? [];
+  const footerHeight = tags.length > 0 ? 2 : 0;
   const descriptionHeightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - footerHeight;
-
-  const Icon = template?.callout?.calloutTypeDeprecated && calloutIcons[template.callout.calloutTypeDeprecated];
 
   return (
     <ContributeCard {...props}>
@@ -43,21 +33,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
         <CardDescription heightGutters={descriptionHeightGutters}>{template?.profile.description}</CardDescription>
       </CardDetails>
       <CardDetails>
-        <CardContent sx={{ '&:last-child': { paddingBottom: gutters(0.2) } }}>
-          {template && (
-            <Box display="flex" alignItems="center" marginLeft={-0.5} gap={gutters(0.5)}>
-              {Icon && <RoundedIcon marginLeft={0.5} size="xsmall" component={Icon} flexShrink={0} />}
-              {template.callout?.calloutTypeDeprecated && (
-                <Caption>
-                  {t(`components.calloutTypeSelect.label.${template.callout.calloutTypeDeprecated}` as const)}
-                </Caption>
-              )}
-            </Box>
-          )}
-        </CardContent>
-      </CardDetails>
-      <CardDetails>
-        <CardTags tags={template?.profile.defaultTagset?.tags ?? []} marginY={1} hideIfEmpty />
+        <CardTags tags={tags} marginY={1} hideIfEmpty />
       </CardDetails>
       {innovationPack?.profile.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>

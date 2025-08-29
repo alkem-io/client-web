@@ -30,6 +30,7 @@ const Authorship = ({
         width={gutters()}
         sx={{ background: 'grey' }}
         aria-label={t('common.avatar-of', { user: authorName })}
+        role="img"
       />
       <Caption>{children}</Caption>
       {date && <Caption>{dayjs(date).format(dateFormat)}</Caption>}

@@ -60,7 +60,12 @@ const VirtualContributorsBlock = ({
             key={vc.profile.displayName}
             variant="rounded"
             visual={
-              <Avatar src={vc.profile.avatar?.uri} alt={t('common.avatar-of', { user: vc.profile.displayName })} />
+              <Avatar
+                src={vc.profile.avatar?.uri}
+                alt={
+                  vc.profile.displayName ? t('common.avatar-of', { user: vc.profile.displayName }) : t('common.avatar')
+                }
+              />
             }
             component={RouterLink}
             to={vc.profile.url}

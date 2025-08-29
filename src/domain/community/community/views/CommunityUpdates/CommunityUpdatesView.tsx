@@ -222,7 +222,11 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                         <Avatar
                           src={member.avatarUrl}
                           aria-label="User avatar"
-                          alt={t('common.avatar-of', { user: member.displayName })}
+                          alt={
+                            member.displayName
+                              ? t('common.avatar-of', { user: member.displayName })
+                              : t('common.avatar')
+                          }
                         >
                           {member.displayName?.[0]}
                         </Avatar>

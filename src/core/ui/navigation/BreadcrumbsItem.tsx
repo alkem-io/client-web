@@ -6,10 +6,12 @@ import { CardText } from '../typography';
 import { Expandable } from './Expandable';
 import { ComponentType } from 'react';
 import { useElevationContext } from '../utils/ElevationContext';
+import { useTranslation } from 'react-i18next';
 
 export interface BreadcrumbsItemProps extends Expandable {
   avatar?: {
     uri?: string;
+    alternativeText?: string;
   };
   iconComponent?: ComponentType<SvgIconProps>;
   uri?: string;
@@ -31,6 +33,7 @@ const BreadcrumbsItem = ({
   loading = false,
   children,
 }: BreadcrumbsItemProps) => {
+  const { t } = useTranslation();
   const theme = useTheme();
 
   return (
@@ -49,7 +52,7 @@ const BreadcrumbsItem = ({
       onMouseEnter={() => onExpand?.()}
       onFocus={() => onExpand?.()}
       onBlur={() => onCollapse?.()}
-      aria-label={children}
+      {...(uri ? { 'aria-label': children } : {})}
     >
       <Avatar
         src={avatar?.uri}
@@ -60,6 +63,7 @@ const BreadcrumbsItem = ({
           borderRadius: 0.4,
           backgroundColor: accent ? 'primary.main' : 'transparent',
         }}
+        alt={avatar?.alternativeText || t('common.avatar')}
       >
         {loading && <CircularProgress size={gutters(0.6)(theme)} />}
         {!loading && <SwapColors swap={accent}>{Icon && <Icon fontSize="inherit" color="primary" />}</SwapColors>}

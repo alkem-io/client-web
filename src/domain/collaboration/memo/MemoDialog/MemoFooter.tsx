@@ -19,7 +19,6 @@ import {
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { DialogContent } from '@mui/material';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 interface MemoFooterProps {
@@ -197,9 +196,29 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
           onClose={() => setIsLearnWhyDialogOpen(false)}
         />
         <DialogContent sx={{ paddingTop: 0 }}>
-          <WrapperMarkdown>
-            {t(`pages.memo.readonlyDialog.reason.${collaborationState?.readOnlyCode ?? 'generic'}` as const)}
-          </WrapperMarkdown>
+          <Caption>
+            <Trans
+              i18nKey={`pages.memo.readonlyDialog.reason.${collaborationState?.readOnlyCode ?? 'generic'}` as const}
+              values={{
+                spaceLevel: t(`common.space-level.${spaceLevel}`),
+                ownerName: createdBy?.profile.displayName,
+              }}
+              components={{
+                ownerlink: createdBy ? (
+                  <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
+                ) : (
+                  <span />
+                ),
+                spacelink: spaceAboutProfile ? (
+                  <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument />
+                ) : (
+                  <span />
+                ),
+                signinlink: <RouterLink to={buildLoginUrl(memoUrl)} state={{}} underline="always" />,
+                learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
+              }}
+            />
+          </Caption>
         </DialogContent>
       </DialogWithGrid>
     </>

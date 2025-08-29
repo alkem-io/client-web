@@ -2,12 +2,7 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
   updateUserSettings(settingsData: $settingsData) {
     id
     settings {
-      privacy {
-        contributionRolesPubliclyVisible
-      }
-      communication {
-        allowOtherUsersToSendMessages
-      }
+      ...userSettingsFragment
     }
   }
 }

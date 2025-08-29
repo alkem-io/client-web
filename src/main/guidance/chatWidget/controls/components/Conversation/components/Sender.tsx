@@ -11,6 +11,7 @@ const brRegex = /<br>/g;
 import { Box, IconButton } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import { ISenderRef } from '../Conversation';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   placeholder: string;
@@ -24,6 +25,7 @@ type Props = {
 };
 
 function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt, menuButton, ref }: Props) {
+  const { t } = useTranslation();
   const {
     state: { showChat },
   } = useChatBehavior();
@@ -172,6 +174,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
           spellCheck
           role="textbox"
           contentEditable={!disabledInput}
+          aria-label={t('messaging.message')}
           ref={inputRef}
           tabIndex={0}
           onKeyPress={handlerOnKeyPress}

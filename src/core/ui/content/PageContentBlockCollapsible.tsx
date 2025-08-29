@@ -4,6 +4,7 @@ import { ReactNode, useState } from 'react';
 import PageContentBlock, { PageContentBlockProps } from './PageContentBlock';
 import { gutters } from '../grid/utils';
 import PageContentBlockSeamless from './PageContentBlockSeamless';
+import { useTranslation } from 'react-i18next';
 
 interface ExpandMoreButtonProps extends IconButtonProps {
   collapsed: boolean;
@@ -52,6 +53,7 @@ const PageContentBlockCollapsible = ({
 }: PageContentBlockCollapsibleProps & {
   ref?: React.Ref<HTMLDivElement>;
 }) => {
+  const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const Block = seamless ? PageContentBlockSeamless : PageContentBlock;
@@ -74,7 +76,7 @@ const PageContentBlockCollapsible = ({
             </Box>
           ))}
         {seamless && <Divider sx={{ flexGrow: 1, marginLeft: gutters(0.5) }} />}
-        <ExpandMoreButton collapsed={isCollapsed}>
+        <ExpandMoreButton collapsed={isCollapsed} aria-label={t('buttons.expand')}>
           <ExpandMoreIcon />
         </ExpandMoreButton>
       </Box>

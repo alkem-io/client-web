@@ -1,0 +1,130 @@
+fragment userSettingsFragment on UserSettings {
+  id
+  communication {
+    allowOtherUsersToSendMessages
+  }
+  privacy {
+    contributionRolesPubliclyVisible
+  }
+  notification {
+    platform {
+      admin {
+        userProfileRemoved {
+          email
+          inApp
+        }
+        userProfileCreated {
+          email
+          inApp
+        }
+        spaceCreated {
+          email
+          inApp
+        }
+        userGlobalRoleChanged {
+          email
+          inApp
+        }
+      }
+      # non-admin settings
+      forumDiscussionComment {
+        email
+        inApp
+      }
+      forumDiscussionCreated {
+        email
+        inApp
+      }
+    }
+    organization {
+      adminMentioned {
+        email
+        inApp
+      }
+      adminMessageReceived {
+        email
+        inApp
+      }
+    }
+    space {
+      # Admin related notifications
+      admin {
+        communityApplicationReceived {
+          email
+          inApp
+        }
+        collaborationCalloutContributionCreated {
+          email
+          inApp
+        }
+        communityNewMember {
+          email
+          inApp
+        }
+        communicationMessageReceived {
+          email
+          inApp
+        }
+      }
+      # Member related notifications
+      collaborationCalloutContributionCreated {
+        email
+        inApp
+      }
+      communicationUpdates {
+        email
+        inApp
+      }
+      collaborationCalloutPublished {
+        email
+        inApp
+      }
+      collaborationCalloutComment {
+        email
+        inApp
+      }
+      collaborationCalloutPostContributionComment {
+        email
+        inApp
+      }
+    }
+    user {
+      membership {
+        spaceCommunityInvitationReceived {
+          email
+          inApp
+        }
+        spaceCommunityJoined {
+          email
+          inApp
+        }
+        spaceCommunityApplicationSubmitted {
+          email
+          inApp
+        }
+      }
+      mentioned {
+        email
+        inApp
+      }
+      commentReply {
+        email
+        inApp
+      }
+      messageReceived {
+        email
+        inApp
+      }
+      copyOfMessageSent {
+        email
+        inApp
+      }
+    }
+    virtualContributor {
+      adminSpaceCommunityInvitation {
+        email
+        inApp
+      }
+    }
+  }
+}

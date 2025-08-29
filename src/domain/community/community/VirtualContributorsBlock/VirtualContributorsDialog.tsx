@@ -65,7 +65,14 @@ const VirtualContributorsDialog = ({ open, onClose, virtualContributors }: Virtu
             <BadgeCardView
               variant="rounded"
               visual={
-                <Avatar src={vc.profile.avatar?.uri} alt={t('common.avatar-of', { user: vc.profile.displayName })} />
+                <Avatar
+                  src={vc.profile.avatar?.uri}
+                  alt={
+                    vc.profile.displayName
+                      ? t('common.avatar-of', { user: vc.profile.displayName })
+                      : t('common.avatar')
+                  }
+                />
               }
               component={Wrapper}
               to={vc.profile.url}

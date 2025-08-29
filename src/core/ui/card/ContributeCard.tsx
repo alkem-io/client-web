@@ -5,10 +5,12 @@ import withElevationOnHover from '@/domain/shared/components/withElevationOnHove
 import GridItem from '../grid/GridItem';
 import RouterLink from '../link/RouterLink';
 import ButtonBaseAlignReset from '../button/ButtonBaseAlignReset';
+import { useTranslation } from 'react-i18next';
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 export interface ContributeCardProps {
+  // if you use onClick, the children of this component should not be clickable elements! a11y 4.1.2
   onClick?: MouseEventHandler;
   highlighted?: boolean;
   sx?: SxProps<Theme>;
@@ -31,6 +33,8 @@ const ContributeCard = ({
 }: PropsWithChildren<ContributeCardProps> & {
   ref?: React.Ref<HTMLDivElement>;
 }) => {
+  const { t } = useTranslation();
+
   const getBaseComponentProps = () => {
     if (onClick) {
       return {
@@ -61,6 +65,7 @@ const ContributeCard = ({
           ...sx,
         }}
         ref={ref}
+        aria-label={t('common.contribute')}
       >
         {children}
       </ElevatedPaper>

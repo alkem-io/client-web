@@ -2,7 +2,7 @@ import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-sc
 import { EmptyLocationMapped } from '@/domain/common/location/LocationModelMapped';
 import { ProfileModelFull } from '@/domain/common/profile/ProfileModel';
 import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
-import { OrgVerificationLifecycleEvents } from '@/domain/platformAdmin/domain/organizations/useAdminGlobalOrganizationsList';
+import { OrgVerificationLifecycleEvents } from './OrganizationVerification';
 
 export interface OrganizationModel {
   id: string;

@@ -1,0 +1,39 @@
+query platformAdminOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+  platformAdmin {
+    organizations(first: $first, after: $after, filter: $filter) {
+      organization {
+        id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
+        profile {
+          id
+          url
+          displayName
+          visual(type: AVATAR) {
+            id
+            uri
+          }
+        }
+        verification {
+          id
+          state
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}
+
+mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
+  eventOnOrganizationVerification(eventData: $input) {
+    id
+    nextEvents
+    state
+  }
+}

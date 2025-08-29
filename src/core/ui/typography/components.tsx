@@ -26,8 +26,9 @@ export const CardTitle = provideStaticProps<TypographyProps, HTMLHeadingElement>
   fontWeight: 'bold',
 }) as typeof Typography;
 
-export const CardText = provideStaticProps<TypographyProps, HTMLParagraphElement>(Typography, {
+export const CardText = provideStaticProps<TypographyProps, HTMLDivElement>(Typography, {
   variant: 'body2',
+  component: 'div',
   sx: { color: theme => lighten(theme.palette.text.primary, 0.4) },
 }) as typeof Typography;
 

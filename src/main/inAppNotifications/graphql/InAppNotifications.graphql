@@ -1,29 +1,41 @@
-query InAppNotifications {
-  notifications {
+query InAppNotifications($types: [NotificationEvent!]) {
+  notificationsInApp(
+    filter: { types: $types }  ) {
     id
     type
     category
     state
     triggeredAt
-    ... on InAppNotificationCalloutPublished {
-      ...InAppNotificationCalloutPublished
+    triggeredBy {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
     }
-    ... on InAppNotificationCommunityNewMember {
-      ...InAppNotificationCommunityNewMember
-    }
-    ... on InAppNotificationUserMentioned {
-      ...InAppNotificationUserMentioned
+    payload {
+      type
+      ... on InAppNotificationPayloadSpaceCollaborationCallout {
+        ...InAppNotificationPayloadSpaceCollaborationCallout
+      }
+      ... on InAppNotificationPayloadSpaceCommunityContributor {
+        ...InAppNotificationSpaceCommunityContributor
+      }
+      ... on InAppNotificationPayloadPlatformUserMessageRoom {
+        ...InAppNotificationUserMentioned
+      }
     }
   }
 }
 
-mutation UpdateNotificationState ($ID: UUID!, $state: InAppNotificationState!) {
-  updateNotificationState ( notificationData:  {
-     ID: $ID,
-     state: $state,
-  })
+mutation UpdateNotificationState($ID: UUID!, $state: NotificationEventInAppState!) {
+  updateNotificationState(notificationData: { ID: $ID, state: $state })
 }
 
-mutation MarkNotificationsAsRead ($notificationIds: [String!]!) {
+mutation MarkNotificationsAsRead($notificationIds: [String!]!) {
   markNotificationsAsRead(notificationIds: $notificationIds)
 }

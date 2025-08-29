@@ -133,6 +133,7 @@ function WidgetLayout({
         }),
       })}
       className="chat-widget-container"
+      id="rcw-chat-container"
     >
       {showChat && (
         <Conversation

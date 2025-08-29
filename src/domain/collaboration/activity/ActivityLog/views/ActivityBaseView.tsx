@@ -16,6 +16,7 @@ import ActivityViewFooter from './ActivityViewFooter';
 export interface ActivityBaseViewProps {
   title: ReactNode;
   avatarUrl?: string;
+  avatarAlt?: string;
   loading?: boolean;
   url: string;
   createdDate: Date | string;
@@ -28,6 +29,7 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 
 export const ActivityBaseView = ({
   avatarUrl,
+  avatarAlt,
   title,
   loading,
   url,
@@ -75,7 +77,7 @@ export const ActivityBaseView = ({
               }}
             />
           ) : (
-            <Avatar src={avatarUrl} sx={{ borderRadius: 1.2 }} />
+            <Avatar src={avatarUrl} sx={{ borderRadius: 1.2 }} alt={avatarAlt} />
           )}
         </Badge>
       }

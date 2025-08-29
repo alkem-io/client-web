@@ -38,27 +38,6 @@ export const calloutFilterConfig: FilterConfig = {
   },
 };
 
-/* TODO: Disabled Callout filters for now.
-Object.values(CalloutType).reduce(
-  (filterConfig, calloutType) => {
-    return {
-      ...filterConfig,
-      [calloutType]: {
-        title: `common.enums.calloutType.${calloutType}`,
-        value: [calloutType],
-        typename: calloutType,
-      },
-    } as FilterConfig;
-  },
-  {
-    all: {
-      title: 'common.all',
-      value: Object.values(CalloutType), // TODO: I think this should be `.keys`
-      typename: 'all',
-    },
-  } as FilterConfig
-);*/
-
 export const contributionFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',

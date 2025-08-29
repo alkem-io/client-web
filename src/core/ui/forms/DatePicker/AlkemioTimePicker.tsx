@@ -65,6 +65,9 @@ const AlkemioTimePicker = ({
         MenuProps={{ sx: { '.MuiPaper-root': { maxHeight: gutters(12) } } }}
         fullWidth
         notched
+        inputProps={{
+          'aria-label': typeof timePickerProps.label === 'string' ? timePickerProps.label : undefined,
+        }}
         {...timePickerProps}
       >
         {timeSlots.map(t => (

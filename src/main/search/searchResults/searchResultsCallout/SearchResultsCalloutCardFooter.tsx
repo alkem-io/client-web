@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
-import { CONTRIBUTION_ICON } from '@/domain/collaboration/callout/icons/calloutIcons';
+import { contributionIcons } from '@/domain/collaboration/callout/icons/calloutIcons';
 import React, { useMemo } from 'react';
 import { CalloutContributionType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -63,7 +63,7 @@ const CalloutContributions = ({ callout }: CalloutContributionsProps) => {
   return (
     <Box flexShrink={0} display="flex" gap={1}>
       {Array.from(contributionsCount).map(([type, count]) => {
-        const Icon = CONTRIBUTION_ICON[type];
+        const Icon = contributionIcons[type];
 
         return (
           <Caption display="flex" alignItems="center" gap={0.5} key={type}>

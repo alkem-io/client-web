@@ -99,8 +99,11 @@ const PlatformNavigationUserMenu = ({
             <Avatar
               size="large"
               src={userModel.profile.avatar?.uri}
-              aria-label="User avatar"
-              alt={t('common.avatar-of', { user: userModel.profile?.displayName })}
+              alt={
+                userModel.profile?.displayName
+                  ? t('common.avatar-of', { user: userModel.profile?.displayName })
+                  : t('common.avatar')
+              }
             />
             <BlockTitle lineHeight={gutters(2)}>{userModel.profile.displayName}</BlockTitle>
             {role && (

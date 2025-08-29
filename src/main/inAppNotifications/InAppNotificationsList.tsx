@@ -7,9 +7,9 @@ import Gutters from '@/core/ui/grid/Gutters';
 
 export const InAppNotificationsList = () => {
   const { t } = useTranslation();
-  const { items, isLoading } = useInAppNotifications();
+  const { notificationsInApp, isLoading } = useInAppNotifications();
 
-  if (items.length === 0) {
+  if (notificationsInApp.length === 0) {
     if (isLoading) {
       return (
         <Gutters alignItems={'center'}>
@@ -27,7 +27,7 @@ export const InAppNotificationsList = () => {
 
   return (
     <>
-      {items.map(item => (
+      {notificationsInApp.map(item => (
         <InAppNotificationItem key={`${item.id}-notification`} {...item} />
       ))}
     </>

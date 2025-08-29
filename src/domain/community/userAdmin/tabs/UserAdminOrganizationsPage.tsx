@@ -13,7 +13,7 @@ const UserAdminOrganizationsPage = () => {
   const { t } = useTranslation();
   const { userId } = useUrlResolver();
   const { platformPrivilegeWrapper: currentUser } = useCurrentUserContext();
-  const { user: userModel, loading } = useUserProvider(userId);
+  const { userModel: userModel, loading } = useUserProvider(userId);
   const organizationIds = useUserOrganizationIds(userModel?.id);
 
   return (

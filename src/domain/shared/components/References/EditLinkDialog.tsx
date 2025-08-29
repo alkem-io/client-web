@@ -1,5 +1,4 @@
 import { FC, ReactNode, useMemo } from 'react';
-import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { Box, Button, Dialog, DialogContent, IconButton } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
@@ -9,13 +8,14 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { BlockSectionTitle, BlockTitle } from '@/core/ui/typography';
-import calloutIcons from '@/domain/collaboration/callout/icons/calloutIcons';
+import { contributionIcons } from '@/domain/collaboration/callout/icons/calloutIcons';
 import { Actions } from '@/core/ui/actions/Actions';
 import { gutters } from '@/core/ui/grid/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 
 export interface EditLinkFormValues {
   id: string;
@@ -54,7 +54,7 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
 
-  const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
+  const CalloutIcon = contributionIcons[CalloutContributionType.Link];
 
   const initialValues: EditLinkFormValues = useMemo(() => ({ ...link }), [link]);
 

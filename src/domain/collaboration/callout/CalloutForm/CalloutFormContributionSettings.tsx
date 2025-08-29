@@ -13,8 +13,8 @@ import { CalloutStructuredResponseType } from './CalloutForm';
 import { CalloutFormSubmittedValues } from './CalloutFormModel';
 import BlockIcon from '@mui/icons-material/Block';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
-import calloutIcons from '../../callout/icons/calloutIcons';
-import { CalloutContributionType, CalloutType } from '@/core/apollo/generated/graphql-schema';
+import { contributionIcons, GenericCalloutIcon } from '../../callout/icons/calloutIcons';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import ContributionSettingsDialog from './ContributionSettingsDialog/ContributionSettingsDialog';
 import ContributionsSettingsLink from './ContributionSettingsDialog/ContributionsSettingsLink';
 import ContributionsSettingsPost from './ContributionSettingsDialog/ContributionsSettingsPost';
@@ -116,7 +116,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                   : t('callout.create.contributionSettings.contributionTypes.link.tooltip'),
               },
               {
-                icon: calloutIcons[CalloutType.PostCollection],
+                icon: GenericCalloutIcon,
                 value: CalloutContributionType.Post,
                 label: t('callout.create.contributionSettings.contributionTypes.post.title'),
                 tooltip: calloutRestrictions?.readOnlyAllowedTypes
@@ -124,7 +124,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                   : t('callout.create.contributionSettings.contributionTypes.post.tooltip'),
               },
               {
-                icon: calloutIcons[CalloutType.Whiteboard],
+                icon: contributionIcons[CalloutContributionType.Whiteboard],
                 value: CalloutContributionType.Whiteboard,
                 label: t('callout.create.contributionSettings.contributionTypes.whiteboard.title'),
                 tooltip: calloutRestrictions?.readOnlyAllowedTypes

@@ -11,7 +11,7 @@ import { useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 export const UserProfilePage = () => {
   const { userId, loading: urlResolverLoading } = useUrlResolver();
 
-  const { user: userModel, loading } = useUserProvider(userId);
+  const { userModel: userModel, loading } = useUserProvider(userId);
 
   const { data: userData, loading: loadingUser } = useUserAccountQuery({
     variables: { userId: userId! },

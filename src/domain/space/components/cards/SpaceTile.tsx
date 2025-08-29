@@ -12,6 +12,7 @@ import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from '../../icons/PrivacyIcon';
 import { SpaceAboutTileModel } from '../../about/model/SpaceAboutTile.model';
+import { useTranslation } from 'react-i18next';
 
 type SpaceTileProps = {
   space:
@@ -31,6 +32,7 @@ const SPACE_TITLE_CLASS_NAME = 'SpaceTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 const SpaceTile = ({ space, columns = 3, disableLink }: SpaceTileProps) => {
+  const { t } = useTranslation();
   const isPrivate = space?.about.isContentPublic === false;
 
   const getVisualUrl = () => {
@@ -60,6 +62,11 @@ const SpaceTile = ({ space, columns = 3, disableLink }: SpaceTileProps) => {
 
             <Avatar
               src={getVisualUrl()}
+              alt={
+                space?.about.profile.displayName
+                  ? t('common.avatar-of', { user: space?.about.profile.displayName })
+                  : t('common.avatar')
+              }
               sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO }}
               variant="square"
             >

@@ -47,7 +47,7 @@ const InnovationHubCardHorizontal = ({
 }: InnovationHubCardHorizontalProps) => {
   return (
     <BadgeCardView
-      visual={<SpaceAvatar src={banner?.uri} size={size} />}
+      visual={<SpaceAvatar src={banner?.uri} size={size} alt={displayName} />}
       component={RouterLink}
       to={buildInnovationHubUrl(subdomain)}
       target="_blank"

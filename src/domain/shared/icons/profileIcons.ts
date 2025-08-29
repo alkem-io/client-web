@@ -16,7 +16,11 @@ import {
   PersonOutline,
   SvgIconComponent,
 } from '@mui/icons-material';
-import calloutIcons from '@/domain/collaboration/callout/icons/calloutIcons';
+import {
+  calloutFramingIcons,
+  contributionIcons,
+  GenericCalloutIcon,
+} from '@/domain/collaboration/callout/icons/calloutIcons';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import { warn } from '@/core/logging/sentry/log';
 
@@ -25,7 +29,7 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
     case ProfileType.CalendarEvent:
       return CalendarIcon;
     case ProfileType.CalloutFraming:
-      return calloutIcons.POST;
+      return GenericCalloutIcon;
     case ProfileType.Template:
       return Campaign;
     case ProfileType.Discussion:
@@ -39,7 +43,7 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
     case ProfileType.Organization:
       return CorporateFareOutlined;
     case ProfileType.Post:
-      return calloutIcons.POST;
+      return GenericCalloutIcon;
     case ProfileType.SpaceAbout:
       return SpaceL0Icon;
     case ProfileType.User:
@@ -47,11 +51,11 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
     case ProfileType.UserGroup:
       return PeopleAltOutlined;
     case ProfileType.Whiteboard:
-      return calloutIcons.WHITEBOARD;
+      return calloutFramingIcons.WHITEBOARD;
     case ProfileType.ContributionLink:
-      return calloutIcons.LINK_COLLECTION;
+      return contributionIcons.LINK;
     case ProfileType.CommunityGuidelines:
-      return calloutIcons.POST; // TODO: Choose a more appropriate icon
+      return GenericCalloutIcon; // TODO: Choose a more appropriate icon
     case ProfileType.VirtualPersona:
       return Face5; // TODO: Choose a more appropriate icon
     case ProfileType.VirtualContributor:

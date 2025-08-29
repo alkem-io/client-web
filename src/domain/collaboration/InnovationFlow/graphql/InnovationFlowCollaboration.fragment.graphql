@@ -8,7 +8,6 @@ fragment InnovationFlowCollaboration on Collaboration {
     id
     callouts {
       id
-      calloutTypeDeprecated: type
       activity
       sortOrder
       classification {

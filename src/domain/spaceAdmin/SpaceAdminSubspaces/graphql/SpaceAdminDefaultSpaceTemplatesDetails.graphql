@@ -26,7 +26,6 @@ query SpaceAdminDefaultSpaceTemplatesDetails($spaceId: UUID!) {
                   id
                   callouts {
                     id
-                    calloutTypeDeprecated: type
                     sortOrder
                     classification {
                       id

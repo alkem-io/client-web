@@ -22,7 +22,7 @@ export const useAuthorsDetails = (authorIds: string[]) => {
           displayName: author.profile.displayName,
           firstName: author.firstName,
           lastName: author.lastName,
-          avatarUrl: author.profile.avatar?.uri || '',
+          avatarUrl: author.profile.avatar?.uri ?? '',
           url: author.profile.url,
           tags: author.profile.tagsets?.flatMap(x => x.tags),
           city: author.profile.location?.city,

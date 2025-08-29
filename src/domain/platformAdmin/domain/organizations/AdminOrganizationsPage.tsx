@@ -3,7 +3,7 @@ import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
-import useAdminGlobalOrganizationsList from './useAdminGlobalOrganizationsList';
+import usePlatformAdminOrganizationsList from './usePlatformAdminOrganizationsList';
 import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
 import SimpleSearchableTable, {
   SearchableListItem,
@@ -15,7 +15,7 @@ import LicensePlanDialog from './LicensePlanDialog';
 
 const AdminOrganizationsPage = () => {
   const { t } = useTranslation();
-  const { organizations, licensePlans, ...listProps } = useAdminGlobalOrganizationsList();
+  const { organizations, licensePlans, ...listProps } = usePlatformAdminOrganizationsList();
 
   const { pathname: url } = useResolvedPath('.');
 

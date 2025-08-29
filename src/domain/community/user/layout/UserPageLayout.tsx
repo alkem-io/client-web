@@ -17,7 +17,7 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const { userId, loading: urlResolverLoading } = useUrlResolver();
-  const { user, loading } = useUserProvider(userId);
+  const { userModel: user, loading } = useUserProvider(userId);
 
   const settings = pathname.split('/').includes('settings');
 

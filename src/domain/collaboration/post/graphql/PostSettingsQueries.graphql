@@ -36,7 +36,6 @@ fragment PostSettings on Post {
 
 fragment PostSettingsCallout on Callout {
   id
-  calloutTypeDeprecated: type
   # TODO This is done to find the contributionId for this postId (see usePostSettings), there must be an easier way
   contributions {
     id

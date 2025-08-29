@@ -5,9 +5,14 @@ export type ImageProps = BoxProps<'img'>;
 
 const Image = ({ onError, ...props }: ImageProps) => {
   const reportImageError = useImageErrorHandler();
+  const { src } = props;
+
+  if (!src) {
+    return null;
+  }
 
   const handleError = err => {
-    reportImageError(props.src, err);
+    reportImageError(src, err);
     onError?.(err);
   };
 

@@ -76,6 +76,7 @@ const ContributionDetailsCard = ({
                 onClick={event => {
                   onLeaveCommunityDialogOpen?.(true);
                   event.stopPropagation();
+                  event.preventDefault();
                 }}
                 loading={leavingCommunity}
               >

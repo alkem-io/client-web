@@ -4,12 +4,14 @@ import { gutters } from '../grid/utils';
 import SwapColors from '../palette/SwapColors';
 import { CardText } from '../typography';
 import { ComponentType, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const AVATAR_SIZE_GUTTERS = 0.9;
 
 type SearchResultsScopeCardProps = {
   avatar?: {
     uri?: string;
+    name?: string;
   };
   iconComponent?: ComponentType<SvgIconProps>;
   accent?: boolean;
@@ -27,6 +29,7 @@ const SearchResultsScopeCard = ({
   onDelete,
   children,
 }: PropsWithChildren<SearchResultsScopeCardProps>) => {
+  const { t } = useTranslation();
   const theme = useTheme();
 
   return (
@@ -53,6 +56,7 @@ const SearchResultsScopeCard = ({
               borderRadius: 0.4,
               backgroundColor: accent ? 'primary.main' : 'transparent',
             }}
+            alt={avatar?.name ? t('common.avatar-of', { user: avatar?.name }) : t('common.avatar')}
           >
             {loading && <CircularProgress size={gutters(0.6)(theme)} />}
             {!loading && <SwapColors swap={accent}>{Icon && <Icon fontSize="inherit" color="primary" />}</SwapColors>}
