@@ -41,9 +41,14 @@ export interface InAppNotificationPayloadModel {
         | undefined;
     };
   };
-  roomID?: string;
-  originalMessageID?: string;
-  commentOriginName?: string;
-  comment?: string;
-  commentUrl?: string;
+  messageDetails?: {
+    message: string;
+    parent: {
+      displayName: string;
+      url: string;
+    };
+    room: {
+      id: string;
+    };
+  };
 }
