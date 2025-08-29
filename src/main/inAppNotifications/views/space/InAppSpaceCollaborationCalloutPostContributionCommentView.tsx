@@ -1,4 +1,5 @@
 import { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import { mapInAppNotificationPayloadSpaceCollaborationCalloutToModel } from '../../util/mapInAppNotificationPayloadSpaceCollaborationCalloutToModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 export const InAppSpaceCollaborationCalloutPostContributionCommentView = (notification: InAppNotificationModel) => {
@@ -6,6 +7,12 @@ export const InAppSpaceCollaborationCalloutPostContributionCommentView = (notifi
 
   // do not display notification if these are missing
   if (!triggeredBy?.profile?.displayName || !payload.messageDetails) {
+    return null;
+  }
+
+  const inAppPayloadSpaceCollaborationCallout = mapInAppNotificationPayloadSpaceCollaborationCalloutToModel(payload);
+
+  if (!inAppPayloadSpaceCollaborationCallout) {
     return null;
   }
   const messageDetails = payload.messageDetails;
