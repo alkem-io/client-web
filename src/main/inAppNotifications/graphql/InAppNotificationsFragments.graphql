@@ -78,7 +78,14 @@ fragment spaceNotification on Space {
 }
 
 fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserMessageRoom {
-  comment
-  commentUrl
-  commentOriginName
+  messageDetails {
+    message
+    parent {
+      displayName
+      url
+    }
+    room {
+      id
+    }
+  }
 }

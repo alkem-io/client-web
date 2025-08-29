@@ -2811,16 +2811,8 @@ export type InAppNotificationPayloadPlatformUser = InAppNotificationPayload & {
 
 export type InAppNotificationPayloadPlatformUserMessageRoom = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
-  /** The original message ID. */
-  comment?: Maybe<Scalars['String']['output']>;
-  /** The original message ID. */
-  commentOriginName?: Maybe<Scalars['String']['output']>;
-  /** The original message ID. */
-  commentUrl?: Maybe<Scalars['String']['output']>;
-  /** The original message ID. */
-  originalMessageID?: Maybe<Scalars['String']['output']>;
-  /** The room for the message. */
-  roomID?: Maybe<Scalars['String']['output']>;
+  /** The details of the message. */
+  messageDetails: MessageDetails;
   /** The payload type. */
   type: NotificationEventPayload;
   /** The User for the message. */
@@ -3903,7 +3895,7 @@ export type Memo = {
   updatedDate: Scalars['DateTime']['output'];
 };
 
-/** A message that was sent either as an Update or as part of a Discussion. */
+/** A message that was sent in a chat room */
 export type Message = {
   __typename?: 'Message';
   /** The id for the message event. */
@@ -3931,6 +3923,28 @@ export type MessageAnswerQuestion = {
   question: Scalars['String']['output'];
   /** Message successfully sent. If false, error will have the reason. */
   success: Scalars['Boolean']['output'];
+};
+
+/** Details about a message, including the room it was sent in and the parent entity that is using the room. */
+export type MessageDetails = {
+  __typename?: 'MessageDetails';
+  /** The message that was sent. */
+  message: Scalars['String']['output'];
+  /** The parent entity that is using the room the message was sent in. */
+  parent: MessageParent;
+  /** The Room in which the message that was sent. */
+  room: Room;
+};
+
+/** Details about the parent entity that is using the room the message was sent in. */
+export type MessageParent = {
+  __typename?: 'MessageParent';
+  /** The display name of the parent entity. */
+  displayName: Scalars['String']['output'];
+  /** The ID of the parent entity. */
+  id: Scalars['String']['output'];
+  /** The URL of the parent entity. */
+  url: Scalars['String']['output'];
 };
 
 export type Metadata = {
@@ -29803,9 +29817,12 @@ export type InAppNotificationReceivedSubscription = {
       | {
           __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
           type: NotificationEventPayload;
-          comment?: string | undefined;
-          commentUrl?: string | undefined;
-          commentOriginName?: string | undefined;
+          messageDetails: {
+            __typename?: 'MessageDetails';
+            message: string;
+            parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+            room: { __typename?: 'Room'; id: string };
+          };
         }
       | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
@@ -30042,9 +30059,12 @@ export type InAppNotificationsQuery = {
       | {
           __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
           type: NotificationEventPayload;
-          comment?: string | undefined;
-          commentUrl?: string | undefined;
-          commentOriginName?: string | undefined;
+          messageDetails: {
+            __typename?: 'MessageDetails';
+            message: string;
+            parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+            room: { __typename?: 'Room'; id: string };
+          };
         }
       | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
@@ -30291,9 +30311,12 @@ export type InAppNotificationAllTypesFragment = {
     | {
         __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
         type: NotificationEventPayload;
-        comment?: string | undefined;
-        commentUrl?: string | undefined;
-        commentOriginName?: string | undefined;
+        messageDetails: {
+          __typename?: 'MessageDetails';
+          message: string;
+          parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+          room: { __typename?: 'Room'; id: string };
+        };
       }
     | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
@@ -30601,9 +30624,12 @@ export type SpaceNotificationFragment = {
 
 export type InAppNotificationUserMentionedFragment = {
   __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
-  comment?: string | undefined;
-  commentUrl?: string | undefined;
-  commentOriginName?: string | undefined;
+  messageDetails: {
+    __typename?: 'MessageDetails';
+    message: string;
+    parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+    room: { __typename?: 'Room'; id: string };
+  };
 };
 
 export type UrlResolverQueryVariables = Exact<{

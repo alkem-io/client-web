@@ -5,18 +5,23 @@ export const InAppUserMentionView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;
 
   // do not display notification if these are missing
-  if (!triggeredBy?.profile?.displayName || !payload.commentOriginName) {
+  if (!triggeredBy?.profile?.displayName || !payload.messageDetails) {
     return null;
   }
+  const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
     defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
-    calloutName: payload.commentOriginName,
-    comment: payload.comment,
+    calloutName: messageDetails?.parent?.displayName,
+    comment: messageDetails?.message,
   };
 
   return (
-    <InAppNotificationBaseView notification={notification} values={notificationTextValues} url={payload.commentUrl} />
+    <InAppNotificationBaseView
+      notification={notification}
+      values={notificationTextValues}
+      url={payload.messageDetails?.parent?.url}
+    />
   );
 };

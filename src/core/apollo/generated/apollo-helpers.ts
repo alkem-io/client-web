@@ -1624,21 +1624,13 @@ export type InAppNotificationPayloadPlatformUserFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformUserMessageRoomKeySpecifier = (
-  | 'comment'
-  | 'commentOriginName'
-  | 'commentUrl'
-  | 'originalMessageID'
-  | 'roomID'
+  | 'messageDetails'
   | 'type'
   | 'user'
   | InAppNotificationPayloadPlatformUserMessageRoomKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformUserMessageRoomFieldPolicy = {
-  comment?: FieldPolicy<any> | FieldReadFunction<any>;
-  commentOriginName?: FieldPolicy<any> | FieldReadFunction<any>;
-  commentUrl?: FieldPolicy<any> | FieldReadFunction<any>;
-  originalMessageID?: FieldPolicy<any> | FieldReadFunction<any>;
-  roomID?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageDetails?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2350,6 +2342,18 @@ export type MessageAnswerQuestionFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   question?: FieldPolicy<any> | FieldReadFunction<any>;
   success?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
+export type MessageDetailsFieldPolicy = {
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+  parent?: FieldPolicy<any> | FieldReadFunction<any>;
+  room?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MessageParentKeySpecifier = ('displayName' | 'id' | 'url' | MessageParentKeySpecifier)[];
+export type MessageParentFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MetadataKeySpecifier = ('services' | MetadataKeySpecifier)[];
 export type MetadataFieldPolicy = {
@@ -5403,6 +5407,14 @@ export type StrictTypedTypePolicies = {
   MessageAnswerQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageAnswerQuestionKeySpecifier | (() => undefined | MessageAnswerQuestionKeySpecifier);
     fields?: MessageAnswerQuestionFieldPolicy;
+  };
+  MessageDetails?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MessageDetailsKeySpecifier | (() => undefined | MessageDetailsKeySpecifier);
+    fields?: MessageDetailsFieldPolicy;
+  };
+  MessageParent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MessageParentKeySpecifier | (() => undefined | MessageParentKeySpecifier);
+    fields?: MessageParentFieldPolicy;
   };
   Metadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MetadataKeySpecifier | (() => undefined | MetadataKeySpecifier);
