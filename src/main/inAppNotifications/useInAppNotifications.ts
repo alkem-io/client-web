@@ -78,7 +78,7 @@ export const useInAppNotifications = () => {
   const notificationsInApp = useMemo(() => {
     const notifications: InAppNotificationModel[] = [];
 
-    for (const notificationData of data?.notificationsInApp ?? []) {
+    for (const notificationData of data?.me.notifications ?? []) {
       if (notificationData.state === NotificationEventInAppState.Archived) {
         continue; // Skip archived notifications
       }
@@ -95,7 +95,7 @@ export const useInAppNotifications = () => {
     }
 
     return notifications;
-  }, [data?.notificationsInApp]);
+  }, [data?.me.notifications]);
 
   const updateNotificationState = useCallback(
     async (id: string, status: NotificationEventInAppState) => {

@@ -22564,72 +22564,74 @@ export type InAppNotificationReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.InAppNotificationReceivedSubscription>;
 export const InAppNotificationsDocument = gql`
   query InAppNotifications($types: [NotificationEvent!]) {
-    notificationsInApp(filter: { types: $types }) {
-      id
-      type
-      category
-      state
-      triggeredAt
-      triggeredBy {
+    me {
+      notifications(filter: { types: $types }) {
         id
-        profile {
+        type
+        category
+        state
+        triggeredAt
+        triggeredBy {
           id
-          displayName
-          url
-          visual(type: AVATAR) {
-            ...VisualModel
+          profile {
+            id
+            displayName
+            url
+            visual(type: AVATAR) {
+              ...VisualModel
+            }
           }
         }
-      }
-      payload {
-        type
-        ... on InAppNotificationPayloadOrganizationMessageDirect {
-          ...InAppNotificationPayloadOrganizationMessageDirect
-        }
-        ... on InAppNotificationPayloadOrganizationMessageRoom {
-          ...InAppNotificationPayloadOrganizationMessageRoom
-        }
-        ... on InAppNotificationPayloadPlatformGlobalRoleChange {
-          ...InAppNotificationPayloadPlatformGlobalRoleChange
-        }
-        ... on InAppNotificationPayloadSpace {
-          ...InAppNotificationPayloadSpace
-        }
-        ... on InAppNotificationPayloadPlatformForumDiscussion {
-          ...InAppNotificationPayloadPlatformForumDiscussion
-        }
-        ... on InAppNotificationPayloadPlatformUserMessageRoom {
-          ...InAppNotificationUserMentioned
-        }
-        ... on InAppNotificationPayloadPlatformUser {
-          ...InAppNotificationPayloadPlatformUser
-        }
-        ... on InAppNotificationPayloadPlatformUserProfileRemoved {
-          ...InAppNotificationPayloadPlatformUserProfileRemoved
-        }
-        ... on InAppNotificationPayloadSpaceCollaborationCallout {
-          ...InAppNotificationPayloadSpaceCollaborationCallout
-        }
-        ... on InAppNotificationPayloadSpaceCommunityContributor {
-          ...InAppNotificationSpaceCommunityContributor
-        }
-        ... on InAppNotificationPayloadSpaceCommunityApplication {
-          ...InAppNotificationPayloadSpaceCommunityApplication
-        }
-        ... on InAppNotificationPayloadSpaceCommunicationUpdate {
-          ...InAppNotificationPayloadSpaceCommunicationUpdate
-        }
-        ... on InAppNotificationPayloadSpaceCommunicationMessageDirect {
-          ...InAppNotificationPayloadSpaceCommunicationMessageDirect
-        }
-        ... on InAppNotificationPayloadSpaceCommunityInvitation {
-          ...InAppNotificationPayloadSpaceCommunityInvitation
-        }
-        ... on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
-          ...InAppNotificationPayloadSpaceCommunityInvitationPlatform
-        }
-        ... on InAppNotificationPayloadUserMessageDirect {
-          ...InAppNotificationPayloadUserMessageDirect
+        payload {
+          type
+          ... on InAppNotificationPayloadOrganizationMessageDirect {
+            ...InAppNotificationPayloadOrganizationMessageDirect
+          }
+          ... on InAppNotificationPayloadOrganizationMessageRoom {
+            ...InAppNotificationPayloadOrganizationMessageRoom
+          }
+          ... on InAppNotificationPayloadPlatformGlobalRoleChange {
+            ...InAppNotificationPayloadPlatformGlobalRoleChange
+          }
+          ... on InAppNotificationPayloadSpace {
+            ...InAppNotificationPayloadSpace
+          }
+          ... on InAppNotificationPayloadPlatformForumDiscussion {
+            ...InAppNotificationPayloadPlatformForumDiscussion
+          }
+          ... on InAppNotificationPayloadPlatformUserMessageRoom {
+            ...InAppNotificationUserMentioned
+          }
+          ... on InAppNotificationPayloadPlatformUser {
+            ...InAppNotificationPayloadPlatformUser
+          }
+          ... on InAppNotificationPayloadPlatformUserProfileRemoved {
+            ...InAppNotificationPayloadPlatformUserProfileRemoved
+          }
+          ... on InAppNotificationPayloadSpaceCollaborationCallout {
+            ...InAppNotificationPayloadSpaceCollaborationCallout
+          }
+          ... on InAppNotificationPayloadSpaceCommunityContributor {
+            ...InAppNotificationSpaceCommunityContributor
+          }
+          ... on InAppNotificationPayloadSpaceCommunityApplication {
+            ...InAppNotificationPayloadSpaceCommunityApplication
+          }
+          ... on InAppNotificationPayloadSpaceCommunicationUpdate {
+            ...InAppNotificationPayloadSpaceCommunicationUpdate
+          }
+          ... on InAppNotificationPayloadSpaceCommunicationMessageDirect {
+            ...InAppNotificationPayloadSpaceCommunicationMessageDirect
+          }
+          ... on InAppNotificationPayloadSpaceCommunityInvitation {
+            ...InAppNotificationPayloadSpaceCommunityInvitation
+          }
+          ... on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
+            ...InAppNotificationPayloadSpaceCommunityInvitationPlatform
+          }
+          ... on InAppNotificationPayloadUserMessageDirect {
+            ...InAppNotificationPayloadUserMessageDirect
+          }
         }
       }
     }
@@ -22805,6 +22807,84 @@ export type MarkNotificationsAsReadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MarkNotificationsAsReadMutation,
   SchemaTypes.MarkNotificationsAsReadMutationVariables
 >;
+export const InAppNotificationsUnreadCountDocument = gql`
+  query InAppNotificationsUnreadCount($types: [NotificationEvent!]) {
+    me {
+      notificationsUnreadCount(filter: { types: $types })
+    }
+  }
+`;
+
+/**
+ * __useInAppNotificationsUnreadCountQuery__
+ *
+ * To run a query within a React component, call `useInAppNotificationsUnreadCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInAppNotificationsUnreadCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInAppNotificationsUnreadCountQuery({
+ *   variables: {
+ *      types: // value for 'types'
+ *   },
+ * });
+ */
+export function useInAppNotificationsUnreadCountQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.InAppNotificationsUnreadCountQuery,
+    SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InAppNotificationsUnreadCountQuery,
+    SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+  >(InAppNotificationsUnreadCountDocument, options);
+}
+export function useInAppNotificationsUnreadCountLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InAppNotificationsUnreadCountQuery,
+    SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InAppNotificationsUnreadCountQuery,
+    SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+  >(InAppNotificationsUnreadCountDocument, options);
+}
+export function useInAppNotificationsUnreadCountSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.InAppNotificationsUnreadCountQuery,
+        SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.InAppNotificationsUnreadCountQuery,
+    SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+  >(InAppNotificationsUnreadCountDocument, options);
+}
+export type InAppNotificationsUnreadCountQueryHookResult = ReturnType<typeof useInAppNotificationsUnreadCountQuery>;
+export type InAppNotificationsUnreadCountLazyQueryHookResult = ReturnType<
+  typeof useInAppNotificationsUnreadCountLazyQuery
+>;
+export type InAppNotificationsUnreadCountSuspenseQueryHookResult = ReturnType<
+  typeof useInAppNotificationsUnreadCountSuspenseQuery
+>;
+export type InAppNotificationsUnreadCountQueryResult = Apollo.QueryResult<
+  SchemaTypes.InAppNotificationsUnreadCountQuery,
+  SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+>;
+export function refetchInAppNotificationsUnreadCountQuery(
+  variables?: SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+) {
+  return { query: InAppNotificationsUnreadCountDocument, variables: variables };
+}
 export const UrlResolverDocument = gql`
   query UrlResolver($url: String!) {
     urlResolver(url: $url) {

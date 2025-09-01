@@ -2271,6 +2271,8 @@ export type MeQueryResultsKeySpecifier = (
   | 'communityInvitationsCount'
   | 'id'
   | 'mySpaces'
+  | 'notifications'
+  | 'notificationsUnreadCount'
   | 'spaceMembershipsFlat'
   | 'spaceMembershipsHierarchical'
   | 'user'
@@ -2282,6 +2284,8 @@ export type MeQueryResultsFieldPolicy = {
   communityInvitationsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  notifications?: FieldPolicy<any> | FieldReadFunction<any>;
+  notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsFlat?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsHierarchical?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3176,7 +3180,6 @@ export type QueryKeySpecifier = (
   | 'lookupByName'
   | 'me'
   | 'notificationRecipients'
-  | 'notificationsInApp'
   | 'organization'
   | 'organizations'
   | 'organizationsPaginated'
@@ -3213,7 +3216,6 @@ export type QueryFieldPolicy = {
   lookupByName?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   notificationRecipients?: FieldPolicy<any> | FieldReadFunction<any>;
-  notificationsInApp?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
