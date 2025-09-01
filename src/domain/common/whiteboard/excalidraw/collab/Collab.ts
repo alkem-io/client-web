@@ -209,21 +209,6 @@ class Collab {
                   await this.filesManager.loadFiles({ files: payload.files });
                 }
               }
-
-              const excalidrawModule = await this.excalidrawUtils;
-
-              // Auto-fit content to viewport if zoomToFit is available
-              if ('zoomToFit' in excalidrawModule && typeof excalidrawModule.zoomToFit === 'function') {
-                try {
-                  excalidrawModule.zoomToFit({
-                    targetElements: this.excalidrawAPI.getSceneElementsIncludingDeleted(),
-                    appState: this.excalidrawAPI.getAppState(),
-                    fitToViewport: true,
-                  });
-                } catch (error) {
-                  console.warn('Error calling zoomToFit:', error);
-                }
-              }
             },
             'client-broadcast': async (binaryData: ArrayBuffer) => {
               const strData = new TextDecoder().decode(binaryData);
