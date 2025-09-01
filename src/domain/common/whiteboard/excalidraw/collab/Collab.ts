@@ -209,6 +209,17 @@ class Collab {
                   await this.filesManager.loadFiles({ files: payload.files });
                 }
               }
+              try {
+                this.excalidrawAPI.scrollToContent(payload.elements, {
+                  animate: false,
+                  fitToViewport: true,
+                  // both values help with scaling issue when the content is displayed
+                  viewportZoomFactor: 0.75, // 75% of the viewport, on preview
+                  maxZoom: 1, // 100% zoom, in the whiteboard
+                });
+              } catch (error) {
+                console.warn('Error trying to fit to content:', error, ' - ignoring');
+              }
             },
             'client-broadcast': async (binaryData: ArrayBuffer) => {
               const strData = new TextDecoder().decode(binaryData);
