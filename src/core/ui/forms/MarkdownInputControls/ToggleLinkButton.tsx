@@ -114,9 +114,9 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
       >
         <LinkOutlined />
       </MarkdownInputToolbarButton>
-      <DialogWithGrid open={isDialogOpen} onClose={closeDialog}>
+      <DialogWithGrid open={isDialogOpen} onClose={closeDialog} aria-labelledby="toggle-link-dialog-title">
         <DialogHeader onClose={closeDialog}>
-          <BlockTitle>{t('components.wysiwyg-editor.link.dialogHeader')}</BlockTitle>
+          <BlockTitle id="toggle-link-dialog-title">{t('components.wysiwyg-editor.link.dialogHeader')}</BlockTitle>
         </DialogHeader>
         <Formik initialValues={initialValues} onSubmit={markAsLink}>
           <Form>

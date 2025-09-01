@@ -29,8 +29,13 @@ const SearchDialog = () => {
   const { t } = useTranslation();
 
   return (
-    <DialogWithGrid open={isSearchDialogOpen} columns={12}>
-      <DialogHeader icon={<Search />} title={t('components.searchDialog.headerTitle')} onClose={handleClose} />
+    <DialogWithGrid open={isSearchDialogOpen} columns={12} aria-labelledby="search-dialog" onClose={handleClose}>
+      <DialogHeader
+        id="search-dialog"
+        icon={<Search />}
+        title={t('components.searchDialog.headerTitle')}
+        onClose={handleClose}
+      />
 
       <DialogContent sx={{ paddingTop: 0, scrollBehavior: 'smooth' }}>
         <SearchView

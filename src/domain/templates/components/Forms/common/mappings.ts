@@ -14,6 +14,7 @@ import {
   VisualType,
   CalloutContributionType,
   CreateLinkInput,
+  CreateMemoInput,
 } from '@/core/apollo/generated/graphql-schema';
 import {
   CreateTemplateMutationVariables,
@@ -155,6 +156,22 @@ const mapLinkDataToCreateLinkInput = (linkData?: LinkDetails | undefined): Creat
   };
 };
 
+const mapMemoDataToCreateMemoInput = (memoData?: {
+  markdown?: string;
+  profile?: { displayName?: string };
+}): CreateMemoInput | undefined => {
+  if (!memoData) {
+    return undefined;
+  }
+
+  return {
+    markdown: memoData.markdown,
+    profile: {
+      displayName: memoData.profile?.displayName ?? 'Memo',
+    },
+  };
+};
+
 // Preview images are handled and uploaded in WhiteboardPreviewImages
 // But we need to tell the server that we want it to include the visuals ids in the response to the mutation
 // so we can upload the previews to those visuals
@@ -212,6 +229,7 @@ export const toCreateTemplateMutationVariables = (
           tags,
           whiteboard: handleCreateWhiteboard(calloutTemplateData.callout.framing.whiteboard),
           link: mapLinkDataToCreateLinkInput(calloutTemplateData.callout.framing.link),
+          memo: mapMemoDataToCreateMemoInput(calloutTemplateData.callout.framing.memo),
         },
         settings: mapCalloutSettingsFormToCalloutSettingsModel(calloutTemplateData.callout.settings),
       };
@@ -395,6 +413,7 @@ export const toUpdateTemplateMutationVariables = (
             type: calloutTemplateData.callout?.framing.type,
             whiteboardContent: calloutTemplateData.callout?.framing.whiteboard?.content,
             link: mapLinkDataToUpdateLinkInput(calloutTemplateData.callout?.framing.link),
+            memoContent: calloutTemplateData.callout?.framing.memo?.markdown,
           },
           settings,
           contributionDefaults: handleContributionDefaults(calloutTemplateData.callout?.contributionDefaults),

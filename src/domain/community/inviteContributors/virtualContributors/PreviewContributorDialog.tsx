@@ -78,8 +78,9 @@ const PreviewContributorDialog = ({
   }, [open, contributor?.id]);
 
   return (
-    <DialogWithGrid open={open} columns={12} onClose={onClose}>
+    <DialogWithGrid open={open} columns={12} onClose={onClose} aria-labelledby="preview-contributor-dialog">
       <DialogHeader
+        id="preview-contributor-dialog"
         icon={<VCIcon />}
         title={t('community.invitations.inviteContributorsDialog.vcs.title')}
         onClose={onClose}

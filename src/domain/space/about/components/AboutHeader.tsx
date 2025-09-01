@@ -14,9 +14,10 @@ export interface AboutHeaderProps {
   startIcon?: ReactNode;
   loading?: boolean;
   onClose?: () => void;
+  titleId?: string;
 }
 
-const AboutHeader = ({ title, tagline, loading = false, startIcon, onClose }: AboutHeaderProps) => {
+const AboutHeader = ({ title, tagline, loading = false, startIcon, onClose, titleId }: AboutHeaderProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
   const navigate = useNavigate();
@@ -43,7 +44,9 @@ const AboutHeader = ({ title, tagline, loading = false, startIcon, onClose }: Ab
             <Box display="flex" flexGrow={1} flexDirection="column" justifyContent="center" alignItems="center">
               <Box display="flex" alignItems="center" sx={{ gap: startIcon ? gutters(0.5) : 0 }}>
                 <Box>{startIcon}</Box>
-                <PageTitle paddingY={gutters(0.5)}>{title}</PageTitle>
+                <PageTitle id={titleId} paddingY={gutters(0.5)}>
+                  {title}
+                </PageTitle>
               </Box>
               <Tagline textAlign="center">{tagline}</Tagline>
             </Box>

@@ -90,6 +90,7 @@ const NavigationBar = ({ children }: PropsWithChildren) => {
         <AppBar
           position={isFixed ? 'fixed' : 'absolute'}
           color="transparent"
+          component="nav"
           sx={{
             boxShadow: 'none',
             flexDirection: 'row',

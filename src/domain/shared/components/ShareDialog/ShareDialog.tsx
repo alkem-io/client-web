@@ -35,8 +35,9 @@ export interface ShareDialogProps extends ShareComponentProps {
 export const ShareDialog = ({ open, onClose, entityTypeName, ...props }: ShareDialogProps) => {
   const { t } = useTranslation();
   return (
-    <DialogWithGrid columns={8} open={open} onClose={onClose}>
+    <DialogWithGrid columns={8} open={open} onClose={onClose} aria-labelledby="share-dialog">
       <DialogHeader
+        id="share-dialog"
         title={t('share-dialog.share-this', { entity: t(`common.${entityTypeName}` as const) })}
         onClose={onClose}
       />

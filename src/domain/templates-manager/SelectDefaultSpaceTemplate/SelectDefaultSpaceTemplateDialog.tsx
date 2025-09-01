@@ -71,8 +71,9 @@ const SelectDefaultSpaceTemplateDialog = ({
   );
 
   return (
-    <DialogWithGrid open={open} onClose={onClose}>
+    <DialogWithGrid open={open} onClose={onClose} aria-labelledby="select-default-space-template-dialog">
       <DialogHeader
+        id="select-default-space-template-dialog"
         title={t('pages.admin.space.sections.subspaces.defaultSettings.defaultSpaceTemplate.title')}
         onClose={onClose}
       />
