@@ -35,8 +35,9 @@ const CreateEditTemplateDialogBase = ({
   const titleLabel = editMode ? 'common.edit-entity' : 'common.create-new-entity';
 
   return (
-    <DialogWithGrid columns={12} open={open} onClose={onClose}>
+    <DialogWithGrid columns={12} open={open} onClose={onClose} aria-labelledby="create-edit-template-dialog">
       <DialogHeader
+        id="create-edit-template-dialog"
         title={t(titleLabel, { entity: t(`common.enums.templateType.${templateType}` as const) })}
         onClose={onClose}
       />

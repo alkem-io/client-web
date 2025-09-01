@@ -15,8 +15,15 @@ const ChatWidgetHelpDialog = ({ onClose, ...props }: ChatWidgetHelpDialogProps) 
   const { t } = useTranslation();
 
   return (
-    <DialogWithGrid columns={4} {...props} onClose={onClose} sx={{ zIndex: 10000 }}>
+    <DialogWithGrid
+      columns={4}
+      {...props}
+      onClose={onClose}
+      sx={{ zIndex: 10000 }}
+      aria-labelledby="chat-widget-help-dialog"
+    >
       <DialogHeader
+        id="chat-widget-help-dialog"
         title={
           <Box display="flex" gap={1}>
             <Typography fontSize={gutters()} display="inline">
