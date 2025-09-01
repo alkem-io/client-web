@@ -6,6 +6,7 @@ import MarkdownListItem from './MarkdownListItem';
 import createMarkdownList from './MarkdownList';
 import MarkdownBlockquote from './MarkdownBlockquote';
 import MarkdownCode from './MarkdownCode';
+import MarkdownInlineCode from './MarkdownInlineCode';
 
 const headings = {
   h1: MarkdownHeading,
@@ -26,7 +27,8 @@ const components = {
   ol: createMarkdownList('ol'),
   li: MarkdownListItem,
   blockquote: MarkdownBlockquote,
-  code: MarkdownCode,
+  pre: MarkdownCode, // Block code (code blocks)
+  code: MarkdownInlineCode, // Inline code (code snippets)
 } as const;
 
 export default components;
