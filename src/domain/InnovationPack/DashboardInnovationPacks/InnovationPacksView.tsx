@@ -25,10 +25,14 @@ interface InnovationPacksViewProps extends PageContentBlockProps {
   onDialogClose?: () => void;
   hasMore?: boolean;
   loading?: boolean;
+  id?: string;
+  headerTitleId?: string;
 }
 
 const InnovationPacksView = ({
+  id,
   headerTitle,
+  headerTitleId,
   innovationPacks,
   filter,
   onFilterChange,
@@ -47,10 +51,12 @@ const InnovationPacksView = ({
     <PageContentBlock {...props}>
       <PageContentBlockHeaderWithDialogAction
         title={headerTitle}
+        titleId={headerTitleId}
         onDialogOpen={onDialogOpen}
         onDialogClose={onDialogClose}
         expanded={expanded}
         actions={<MultipleSelect onChange={onFilterChange} value={filter} minLength={2} size="xsmall" inlineTerms />}
+        id={id}
       />
 
       <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
