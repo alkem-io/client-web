@@ -16,24 +16,40 @@ const DashboardDialogs = () => {
   const { data: spacesData } = useLatestContributionsSpacesFlatQuery();
   const flatSpacesWithMemberships = spacesData?.me.spaceMembershipsFlat.map(membership => membership.space);
 
+  const handleClose = () => setIsOpen(undefined);
+
   return (
     <>
-      <DialogWithGrid open={isOpen === DashboardDialog.TipsAndTricks}>
-        <DialogHeader onClose={() => setIsOpen(undefined)}>{t('pages.home.sections.tipsAndTricks.title')}</DialogHeader>
+      <DialogWithGrid
+        open={isOpen === DashboardDialog.TipsAndTricks}
+        onClose={handleClose}
+        aria-labelledby="tips-and-tricks-dialog"
+      >
+        <DialogHeader id="tips-and-tricks-dialog" onClose={handleClose}>
+          {t('pages.home.sections.tipsAndTricks.title')}
+        </DialogHeader>
         <DialogContent>
           <TipsAndTricks />
         </DialogContent>
       </DialogWithGrid>
-      <DialogWithGrid open={isOpen === DashboardDialog.MyActivity}>
-        <DialogHeader onClose={() => setIsOpen(undefined)}>
+      <DialogWithGrid
+        open={isOpen === DashboardDialog.MyActivity}
+        onClose={handleClose}
+        aria-labelledby="my-activity-dialog"
+      >
+        <DialogHeader id="my-activity-dialog" onClose={handleClose}>
           {t('pages.home.sections.myLatestContributions.title')}
         </DialogHeader>
         <DialogContent>
           <MyLatestContributions spaceMemberships={flatSpacesWithMemberships} />
         </DialogContent>
       </DialogWithGrid>
-      <DialogWithGrid open={isOpen === DashboardDialog.MySpaceActivity}>
-        <DialogHeader onClose={() => setIsOpen(undefined)}>
+      <DialogWithGrid
+        open={isOpen === DashboardDialog.MySpaceActivity}
+        onClose={handleClose}
+        aria-labelledby="my-space-activity-dialog"
+      >
+        <DialogHeader id="my-space-activity-dialog" onClose={handleClose}>
           {t('pages.home.sections.latestContributions.title')}
         </DialogHeader>
         <DialogContent>
