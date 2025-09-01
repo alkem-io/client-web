@@ -754,6 +754,7 @@ export const MemoDetailsFragmentDoc = gql`
     profile {
       ...MemoProfile
     }
+    markdown
     authorization {
       id
       myPrivileges
@@ -2437,6 +2438,16 @@ export const TemplateCardProfileInfoFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
 `;
+export const MemoTemplateDetailsFragmentDoc = gql`
+  fragment MemoTemplateDetails on Memo {
+    id
+    markdown
+    profile {
+      id
+      displayName
+    }
+  }
+`;
 export const CalloutTemplateContentFragmentDoc = gql`
   fragment CalloutTemplateContent on Callout {
     id
@@ -2467,6 +2478,9 @@ export const CalloutTemplateContentFragmentDoc = gql`
       link {
         ...LinkDetails
       }
+      memo {
+        ...MemoTemplateDetails
+      }
     }
     settings {
       ...CalloutSettingsFull
@@ -2482,6 +2496,7 @@ export const CalloutTemplateContentFragmentDoc = gql`
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
   ${LinkDetailsFragmentDoc}
+  ${MemoTemplateDetailsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
 export const CommunityGuidelinesTemplateContentFragmentDoc = gql`
@@ -7368,7 +7383,7 @@ export const CalloutContentDocument = gql`
                 uri
               }
             }
-            content
+            markdown
           }
           link {
             ...LinkDetails
@@ -7941,6 +7956,73 @@ export type CalloutDetailsQueryResult = Apollo.QueryResult<
 >;
 export function refetchCalloutDetailsQuery(variables: SchemaTypes.CalloutDetailsQueryVariables) {
   return { query: CalloutDetailsDocument, variables: variables };
+}
+export const MemoMarkdownDocument = gql`
+  query MemoMarkdown($id: UUID!) {
+    lookup {
+      memo(ID: $id) {
+        id
+        markdown
+      }
+    }
+  }
+`;
+
+/**
+ * __useMemoMarkdownQuery__
+ *
+ * To run a query within a React component, call `useMemoMarkdownQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMemoMarkdownQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMemoMarkdownQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMemoMarkdownQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.MemoMarkdownQuery, SchemaTypes.MemoMarkdownQueryVariables> &
+    ({ variables: SchemaTypes.MemoMarkdownQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MemoMarkdownQuery, SchemaTypes.MemoMarkdownQueryVariables>(
+    MemoMarkdownDocument,
+    options
+  );
+}
+export function useMemoMarkdownLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MemoMarkdownQuery, SchemaTypes.MemoMarkdownQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MemoMarkdownQuery, SchemaTypes.MemoMarkdownQueryVariables>(
+    MemoMarkdownDocument,
+    options
+  );
+}
+export function useMemoMarkdownSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.MemoMarkdownQuery, SchemaTypes.MemoMarkdownQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.MemoMarkdownQuery, SchemaTypes.MemoMarkdownQueryVariables>(
+    MemoMarkdownDocument,
+    options
+  );
+}
+export type MemoMarkdownQueryHookResult = ReturnType<typeof useMemoMarkdownQuery>;
+export type MemoMarkdownLazyQueryHookResult = ReturnType<typeof useMemoMarkdownLazyQuery>;
+export type MemoMarkdownSuspenseQueryHookResult = ReturnType<typeof useMemoMarkdownSuspenseQuery>;
+export type MemoMarkdownQueryResult = Apollo.QueryResult<
+  SchemaTypes.MemoMarkdownQuery,
+  SchemaTypes.MemoMarkdownQueryVariables
+>;
+export function refetchMemoMarkdownQuery(variables: SchemaTypes.MemoMarkdownQueryVariables) {
+  return { query: MemoMarkdownDocument, variables: variables };
 }
 export const MemoDetailsDocument = gql`
   query memoDetails($id: UUID!) {
@@ -21449,6 +21531,10 @@ export const UpdateCalloutTemplateDocument = gql`
               id
             }
           }
+        }
+        memo {
+          id
+          markdown
         }
       }
       contributionDefaults {

@@ -18,7 +18,6 @@ export type Scalars = {
   JSON: { input: string; output: string };
   LifecycleDefinition: { input: string; output: string };
   Markdown: { input: string; output: string };
-  MemoContent: { input: string; output: string };
   MessageID: { input: string; output: string };
   NameID: { input: string; output: string };
   SearchCursor: { input: string; output: string };
@@ -2017,10 +2016,12 @@ export type CreateLocationInput = {
 
 export type CreateMemoData = {
   __typename?: 'CreateMemoData';
+  markdown?: Maybe<Scalars['Markdown']['output']>;
   profile?: Maybe<CreateProfileData>;
 };
 
 export type CreateMemoInput = {
+  markdown?: InputMaybe<Scalars['Markdown']['input']>;
   profile?: InputMaybe<CreateProfileInput>;
 };
 
@@ -7289,7 +7290,7 @@ export type UpdateCalloutEntityInput = {
 
 export type UpdateCalloutFramingInput = {
   link?: InputMaybe<UpdateLinkInput>;
-  /** The new content to be used. */
+  /** The new markdown content for the Memo. */
   memoContent?: InputMaybe<Scalars['Markdown']['input']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
@@ -10101,6 +10102,7 @@ export type CalloutPageCalloutQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  markdown?: string | undefined;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -12693,7 +12695,7 @@ export type CalloutContentQuery = {
               | {
                   __typename?: 'Memo';
                   id: string;
-                  content?: string | undefined;
+                  markdown?: string | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12866,6 +12868,7 @@ export type UpdateCalloutContentMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13230,6 +13233,7 @@ export type UpdateCalloutVisibilityMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13681,6 +13685,7 @@ export type CreateCalloutMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -14135,6 +14140,7 @@ export type CalloutDetailsQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  markdown?: string | undefined;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -14573,6 +14579,7 @@ export type CalloutDetailsFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -14810,6 +14817,18 @@ export type CalloutDetailsFragment = {
   };
 };
 
+export type MemoMarkdownQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+export type MemoMarkdownQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
+  };
+};
+
 export type MemoDetailsQueryVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;
@@ -14824,6 +14843,7 @@ export type MemoDetailsQuery = {
           id: string;
           nameID: string;
           createdDate: Date;
+          markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -14907,6 +14927,7 @@ export type MemoDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
+  markdown?: string | undefined;
   contentUpdatePolicy: ContentUpdatePolicy;
   profile: {
     __typename?: 'Profile';
@@ -26790,6 +26811,14 @@ export type TemplateContentQuery = {
                         };
                       }
                     | undefined;
+                  memo?:
+                    | {
+                        __typename?: 'Memo';
+                        id: string;
+                        markdown?: string | undefined;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
                 };
                 settings: {
                   __typename?: 'CalloutSettings';
@@ -27322,6 +27351,14 @@ export type CalloutTemplateContentFragment = {
           profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }
       | undefined;
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          markdown?: string | undefined;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
   };
   settings: {
     __typename?: 'CalloutSettings';
@@ -27342,6 +27379,13 @@ export type CalloutTemplateContentFragment = {
     postDescription?: string | undefined;
     whiteboardContent?: string | undefined;
   };
+};
+
+export type MemoTemplateDetailsFragment = {
+  __typename?: 'Memo';
+  id: string;
+  markdown?: string | undefined;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
 export type CommunityGuidelinesTemplateContentFragment = {
@@ -28004,6 +28048,7 @@ export type UpdateCalloutTemplateMutation = {
             };
           }
         | undefined;
+      memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';

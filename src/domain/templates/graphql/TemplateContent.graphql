@@ -92,6 +92,9 @@ fragment CalloutTemplateContent on Callout {
     link {
       ...LinkDetails
     }
+    memo {
+      ...MemoTemplateDetails
+    }
   }
   settings {
     ...CalloutSettingsFull
@@ -103,6 +106,16 @@ fragment CalloutTemplateContent on Callout {
     whiteboardContent
   }
 }
+
+fragment MemoTemplateDetails on Memo {
+  id
+  markdown
+  profile {
+    id
+    displayName
+  }
+}
+
 
 fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {
   id
