@@ -222,8 +222,14 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
                     highlightedDay={highlightedDay}
                     actions={
                       privileges.canCreateEvents && (
-                        <IconButton onClick={() => setIsCreatingEvent(true)} size="large" sx={{ padding: 0 }}>
-                          <RoundedIcon component={Add} size="medium" iconSize="small" />
+                        <IconButton
+                          onClick={() => setIsCreatingEvent(true)}
+                          size="large"
+                          sx={{
+                            padding: 0,
+                          }}
+                        >
+                          <RoundedIcon component={Add} size="medium" iconSize="small" color="unset" />
                         </IconButton>
                       )
                     }
