@@ -24,7 +24,7 @@ export const InAppNotificationsProvider = ({ children }: { children: ReactNode }
     return Boolean(userModel?.id && platformRoles?.includes(RoleName.PlatformBetaTester));
   }, [userModel, platformRoles]);
 
-  return <InAppNotifications.Provider value={{ isEnabled, isOpen, setIsOpen }}>{children}</InAppNotifications.Provider>;
+  return <InAppNotifications value={{ isEnabled, isOpen, setIsOpen }}>{children}</InAppNotifications>;
 };
 
 export const useInAppNotificationsContext = () => {

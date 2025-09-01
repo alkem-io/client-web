@@ -26,7 +26,7 @@ export const ApmProvider = ({ children }: PropsWithChildren) => {
 
   const value = useMemo(() => ({ apm, setUser }), [apm]);
 
-  return <ApmContext.Provider value={value}>{children}</ApmContext.Provider>;
+  return <ApmContext value={value}>{children}</ApmContext>;
 };
 
 export const ApmUserSetter = () => {

@@ -19,7 +19,7 @@ const AuthenticationProvider = ({ children }: PropsWithChildren) => {
   const { session, isAuthenticated, loading, verified } = useWhoami();
 
   return (
-    <AuthenticationContext.Provider
+    <AuthenticationContext
       value={{
         isAuthenticated,
         loading,
@@ -28,7 +28,7 @@ const AuthenticationProvider = ({ children }: PropsWithChildren) => {
       }}
     >
       {children}
-    </AuthenticationContext.Provider>
+    </AuthenticationContext>
   );
 };
 

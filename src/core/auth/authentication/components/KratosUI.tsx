@@ -252,5 +252,5 @@ interface KratosUIProviderProps extends PropsWithChildren {
 }
 
 export const KratosUIProvider: FC<KratosUIProviderProps> = ({ onBeforeSubmit, children }) => {
-  return <KratosUIContext.Provider value={{ onBeforeSubmit }}>{children}</KratosUIContext.Provider>;
+  return <KratosUIContext value={{ onBeforeSubmit }}>{children}</KratosUIContext>;
 };
