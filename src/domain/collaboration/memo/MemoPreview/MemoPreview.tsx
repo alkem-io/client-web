@@ -38,6 +38,7 @@ const MemoPreview = ({ displayName, memo, onClick }: MemoPreviewProps) => {
       <Gutters disablePadding onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default', position: 'relative' }}>
         <CroppedMarkdown
           backgroundColor="paper"
+          minHeightGutters={3}
           maxHeightGutters={10}
           containerProps={{
             marginX: gutters(1),
