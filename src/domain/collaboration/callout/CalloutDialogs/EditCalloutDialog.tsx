@@ -123,11 +123,6 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
         formData.framing.type === CalloutFramingType.Link
           ? mapLinkDataToUpdateLinkInput(formData.framing.link)
           : undefined,
-      // todo
-      // ...(formData.framing.type === CalloutFramingType.Memo &&
-      //   memo?.markdown && {
-      //     memoContent: memo.markdown,
-      //   }),
     };
 
     // And map the radio button allowed contribution types to an array
