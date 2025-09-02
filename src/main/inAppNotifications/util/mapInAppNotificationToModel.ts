@@ -27,13 +27,7 @@ export const mapInAppNotificationToModel = (inAppNotification?: {
     return undefined;
   } else {
     const profileData = inAppNotification.triggeredBy.profile;
-    if (
-      !profileData ||
-      !profileData.url ||
-      !profileData.displayName ||
-      !profileData.visual ||
-      !profileData.visual.uri
-    ) {
+    if (!profileData || !profileData.url || !profileData.displayName || !profileData.visual) {
       return undefined;
     }
     return {
