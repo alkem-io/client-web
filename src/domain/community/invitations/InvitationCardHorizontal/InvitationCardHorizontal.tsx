@@ -27,11 +27,17 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
   return (
     <BadgeCardView
       component={LinkButton}
-      visual={<SpaceAvatar src={invitation.space.about.profile.cardBanner?.uri} spaceId={invitation.space.id} />}
+      visual={
+        <SpaceAvatar
+          src={invitation.space.about.profile.cardBanner?.uri}
+          spaceId={invitation.space.id}
+          alt={invitation.space.about.profile.displayName}
+        />
+      }
       onClick={onClick}
       outlined
     >
-      <Gutters disablePadding row fullWidth>
+      <Gutters disablePadding row>
         <Box flex={1}>
           <BlockSectionTitle>
             <DetailedActivityDescription

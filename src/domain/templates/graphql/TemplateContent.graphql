@@ -65,7 +65,6 @@ query SpaceTemplateContent($spaceId: UUID!) {
 
 fragment CalloutTemplateContent on Callout {
   id
-  calloutTypeDeprecated: type
   framing {
     id
     profile {
@@ -149,7 +148,6 @@ fragment SpaceTemplateContent_Collaboration on Collaboration {
     id
     callouts {
       id
-      calloutTypeDeprecated: type
       classification {
         id
         flowState: tagset(tagsetName: FLOW_STATE) {

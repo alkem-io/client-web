@@ -6,7 +6,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useTranslation } from 'react-i18next';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import {
-  refetchAdminSpacesListQuery,
+  refetchPlatformAdminSpacesListQuery,
   useAssignLicensePlanToSpaceMutation,
   useRevokeLicensePlanFromSpaceMutation,
   useUpdateSpacePlatformSettingsMutation,
@@ -72,7 +72,7 @@ const SpaceListItem = ({
         nameId: nameId!,
         visibility: visibility!,
       },
-      refetchQueries: [refetchAdminSpacesListQuery()],
+      refetchQueries: [refetchPlatformAdminSpacesListQuery()],
       awaitRefetchQueries: true,
     });
     setSettingsModalOpen(false);

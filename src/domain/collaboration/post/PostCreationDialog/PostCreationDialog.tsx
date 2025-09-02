@@ -2,9 +2,9 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import PostForm, { PostFormOutput } from '../PostForm/PostForm';
-import { CalloutType, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
+import { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import calloutIcons from '@/domain/collaboration/callout/icons/calloutIcons';
+import { GenericCalloutIcon } from '@/domain/collaboration/callout/icons/calloutIcons';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
@@ -38,7 +38,7 @@ const PostCreationDialog = ({
   const { t } = useTranslation();
   const [post, setPost] = useState<PostCreationType>({});
   const [isFormValid, setIsFormValid] = useState(false);
-  const CalloutIcon = calloutIcons[CalloutType.PostCollection];
+  const CalloutIcon = GenericCalloutIcon;
   const [closeConfirmDialogOpen, setCloseConfirmDialogOpen] = useState(false);
 
   const handleClose = () => {

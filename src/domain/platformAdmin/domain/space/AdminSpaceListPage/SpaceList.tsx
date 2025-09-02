@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
 
 import {
-  refetchAdminSpacesListQuery,
-  useAdminSpacesListQuery,
+  refetchPlatformAdminSpacesListQuery,
+  usePlatformAdminSpacesListQuery,
   useDeleteSpaceMutation,
   usePlatformLicensingPlansQuery,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -23,7 +23,7 @@ export const SpaceList: FC = () => {
   const notify = useNotification();
   const { t } = useTranslation();
 
-  const { data: spacesData, loading: loadingSpaces } = useAdminSpacesListQuery();
+  const { data: spacesData, loading: loadingSpaces } = usePlatformAdminSpacesListQuery();
   const { data: platformLicensingData } = usePlatformLicensingPlansQuery();
 
   const allLicensePlans = platformLicensingData?.platform.licensingFramework.plans ?? [];
@@ -34,7 +34,7 @@ export const SpaceList: FC = () => {
   );
   const spaceList = useMemo(() => {
     return (
-      spacesData?.spaces
+      spacesData?.platformAdmin.spaces
         .map(space => {
           if (space.visibility !== SpaceVisibility.Active) {
             return {
@@ -77,7 +77,7 @@ export const SpaceList: FC = () => {
   }, [spacesData]);
 
   const [deleteSpace] = useDeleteSpaceMutation({
-    refetchQueries: [refetchAdminSpacesListQuery()],
+    refetchQueries: [refetchPlatformAdminSpacesListQuery()],
     awaitRefetchQueries: true,
     onCompleted: () => notify(t('pages.admin.space.notifications.space-removed'), 'success'),
   });
