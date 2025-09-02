@@ -56,6 +56,8 @@ const CalendarStyles = styled(Box)(({ theme }) => ({
     background: 'transparent',
     outline: `2px solid ${theme.palette.primary.main}`,
     outlineOffset: '-2px',
+    position: 'relative',
+    borderRadius: '4px',
   },
   '.react-calendar__month-view__weekdays': {
     textTransform: 'capitalize',
@@ -103,6 +105,8 @@ const CalendarStyles = styled(Box)(({ theme }) => ({
     backgroundColor: colors(theme).today.background,
     outline: `2px solid ${theme.palette.primary.main}`,
     outlineOffset: '-2px',
+    position: 'relative',
+    zIndex: 10,
   },
   // Selected date
   '.react-calendar__tile.react-calendar__tile--active': {
@@ -179,16 +183,7 @@ const CalendarStyles = styled(Box)(({ theme }) => ({
   '.react-calendar button:focus-visible': {
     outline: `3px solid ${theme.palette.primary.main}`,
     outlineOffset: '-1px',
-    zIndex: 10,
-  },
-  '.react-calendar__navigation button:focus-visible': {
-    outline: `3px solid ${theme.palette.primary.main}`,
-    outlineOffset: '2px',
-    borderRadius: '4px',
-  },
-  '.react-calendar__tile:focus-visible': {
-    outline: `3px solid ${theme.palette.primary.main}`,
-    outlineOffset: '-1px',
+    position: 'relative',
     zIndex: 10,
   },
 }));
