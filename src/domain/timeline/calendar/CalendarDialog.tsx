@@ -198,7 +198,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
                       dialogTitle={t('calendar.edit-event')}
                       event={eventDetail}
                       onSubmit={(calendarEvent: CalendarEventFormData) =>
-                        handleEditEventSubmit(event.id, calendarEvent, event.profile.tagset!)
+                        handleEditEventSubmit(event.id, calendarEvent, event.profile.tagset as TagsetModel)
                       }
                       onClose={handleClose}
                       isSubmitting={updatingCalendarEvent}
@@ -225,9 +225,11 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
                       privileges.canCreateEvents && (
                         <IconButton
                           onClick={() => setIsCreatingEvent(true)}
+                          aria-label={t('calendar.add-event')}
                           size="large"
                           sx={{
                             padding: 0,
+                            backgroundColor: 'primary.main',
                           }}
                         >
                           <RoundedIcon component={Add} size="medium" iconSize="small" color="unset" />
