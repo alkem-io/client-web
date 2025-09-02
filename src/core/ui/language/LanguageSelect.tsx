@@ -7,10 +7,11 @@ import { Caption } from '../typography';
 interface ChildProps {
   openSelect: (anchorEl: HTMLElement) => void;
   closeSelect: () => void;
+  isOpen: boolean;
 }
 
 interface LanguageSelectProps extends Pick<MenuProps, 'anchorOrigin' | 'transformOrigin'> {
-  children: ({ openSelect, closeSelect }: ChildProps) => ReactNode;
+  children: ({ openSelect, closeSelect, isOpen }: ChildProps) => ReactNode;
   zIndex?: number;
 }
 
@@ -18,7 +19,7 @@ const LanguageSelect = ({ zIndex, children }: LanguageSelectProps) => {
   const { i18n, t } = useTranslation();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const isOpen = Boolean(anchorEl);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -32,13 +33,25 @@ const LanguageSelect = ({ zIndex, children }: LanguageSelectProps) => {
   return (
     <>
       {children({
+        isOpen,
         openSelect: setAnchorEl,
         closeSelect: handleClose,
       })}
-      <Menu open={open} anchorEl={anchorEl} onClose={handleClose} sx={{ '.MuiMenu-list': { padding: 0 }, zIndex }}>
+      <Menu
+        id="language-menu"
+        open={isOpen}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        sx={{ '.MuiMenu-list': { padding: 0 }, zIndex }}
+        slotProps={{
+          list: {
+            'aria-labelledby': 'language-button',
+          },
+        }}
+      >
         {supportedLngs.map(lng => (
           <MenuItem key={lng} selected={lng === i18n.language} onClick={() => handleLanguageSelection(lng)}>
-            <Caption>{t(`languages.${lng}` as const)}</Caption>
+            <Caption lang={lng}>{t(`languages.${lng}` as const)}</Caption>
           </MenuItem>
         ))}
       </Menu>

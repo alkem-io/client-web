@@ -12,6 +12,7 @@ type NavigatableMenuItemProps = {
   tabOnly?: boolean;
   typographyComponent?: ComponentType<TypographyProps>;
   replace?: boolean;
+  id?: string;
 };
 
 const DefaultTypography = props => <BlockSectionTitle textTransform="uppercase" {...props} />;
@@ -24,11 +25,13 @@ const NavigatableMenuItem = ({
   tabOnly = false,
   children,
   typographyComponent: Typography = DefaultTypography,
+  id,
 }: PropsWithChildren<NavigatableMenuItemProps>) => {
   const menuItemProps = route ? { component: RouterLink, replace, to: route, blank: false } : {};
 
   return (
     <MenuItem
+      id={id}
       {...menuItemProps}
       onClick={onClick}
       sx={visibleOnFocus({ skip: !tabOnly })({ paddingX: gutters(), textTransform: 'none' })}
