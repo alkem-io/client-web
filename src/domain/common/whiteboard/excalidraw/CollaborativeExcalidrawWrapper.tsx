@@ -11,7 +11,7 @@ import { useTick } from '@/core/utils/time/tick';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
+import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
 import type {
   AppState,
   BinaryFiles,

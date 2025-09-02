@@ -1,4 +1,4 @@
-import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
+import { ExcalidrawElement } from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
 import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { v4 as uuidv4 } from 'uuid';
 import type {

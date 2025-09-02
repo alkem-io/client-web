@@ -1,5 +1,8 @@
 import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource, SyncableExcalidrawElement } from './data';
-import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
+import type {
+  ExcalidrawElement,
+  OrderedExcalidrawElement,
+} from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
 import { UserIdleState } from './utils';
 import type { DataURL, SocketId } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 
