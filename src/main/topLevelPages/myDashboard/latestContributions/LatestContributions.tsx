@@ -128,24 +128,6 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
     return options;
   }, [t]);
 
-  const renderFilters = () => (
-    <Box display="flex" justifyContent="end" alignItems="center">
-      <SeamlessSelect
-        value={filter.space}
-        options={spaceOptions}
-        label={t('pages.home.sections.latestContributions.filter.space.label')}
-        onChange={handleSpaceSelect}
-        shrink
-      />
-      <SeamlessSelect
-        value={filter.role}
-        options={roleOptions}
-        label={t('pages.home.sections.latestContributions.filter.role.label')}
-        onChange={handleRoleSelect}
-      />
-    </Box>
-  );
-
   const activityFeed = data?.activityFeed?.activityFeed;
 
   const renderActivities = () =>
@@ -169,7 +151,21 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
         disableGap
         sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isSmallScreen ? gutters(30) : 0 }}
       >
-        {renderFilters()}
+        <Box display="flex" justifyContent="end" alignItems="center">
+          <SeamlessSelect
+            value={filter.space}
+            options={spaceOptions}
+            label={t('pages.home.sections.latestContributions.filter.space.label')}
+            onChange={handleSpaceSelect}
+            shrink
+          />
+          <SeamlessSelect
+            value={filter.role}
+            options={roleOptions}
+            label={t('pages.home.sections.latestContributions.filter.role.label')}
+            onChange={handleRoleSelect}
+          />
+        </Box>
 
         {!data && loading ? (
           <Loading />

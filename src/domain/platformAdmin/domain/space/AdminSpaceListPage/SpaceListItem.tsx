@@ -117,11 +117,15 @@ const SpaceListItem = ({
           </ListItemIcon>
         }
       />
-      <DialogWithGrid open={isSettingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
+      <DialogWithGrid
+        open={isSettingsModalOpen}
+        onClose={() => setSettingsModalOpen(false)}
+        aria-labelledby="space-settings-dialog"
+      >
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
           {({ handleSubmit, isValid }) => (
             <>
-              <DialogHeader onClose={() => setSettingsModalOpen(false)}>
+              <DialogHeader id="space-settings-dialog" onClose={() => setSettingsModalOpen(false)}>
                 <BlockTitle>{t('pages.admin.spaces.spaceSettings')}</BlockTitle>
               </DialogHeader>
               <PageContentBlockSeamless>
@@ -158,8 +162,13 @@ const SpaceListItem = ({
           )}
         </Formik>
       </DialogWithGrid>
-      <DialogWithGrid open={isManageLicensePlansDialogOpen} onClose={() => setIsManageLicensePlansDialogOpen(false)}>
+      <DialogWithGrid
+        open={isManageLicensePlansDialogOpen}
+        onClose={() => setIsManageLicensePlansDialogOpen(false)}
+        aria-labelledby="manage-license-plans-dialog"
+      >
         <DialogHeader
+          id="manage-license-plans-dialog"
           title={t('pages.admin.spaces.manageLicensePlans')}
           onClose={() => setIsManageLicensePlansDialogOpen(false)}
         />

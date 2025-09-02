@@ -20,6 +20,7 @@ const FloatingActionButtons = ({ visible = true, floatingActions, ...boxProps }:
         alignItems="center"
         zIndex={FLOATING_ACTION_BUTTONS_Z_INDEX}
         maxHeight="100vh"
+        component="aside"
         {...boxProps}
       >
         <ScrollToTop />

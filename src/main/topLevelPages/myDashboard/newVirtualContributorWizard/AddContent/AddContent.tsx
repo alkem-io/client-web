@@ -9,7 +9,7 @@ import { AddContentForm } from './AddContentForm';
 import { AddContentProps } from './AddContentProps';
 import CancelDialog from '../CancelDialog';
 
-const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
+const AddContent = ({ onClose, onCreateVC, titleId }: AddContentProps) => {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -19,7 +19,7 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
 
   return (
     <>
-      <DialogHeader onClose={onCancel} title={t('createVirtualContributorWizard.addContent.title')} />
+      <DialogHeader onClose={onCancel} title={t('createVirtualContributorWizard.addContent.title')} id={titleId} />
       <DialogContent>
         <Gutters disablePadding paddingBottom={gutters(2)}>
           <Caption>

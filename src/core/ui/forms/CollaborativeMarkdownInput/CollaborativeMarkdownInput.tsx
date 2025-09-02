@@ -138,17 +138,47 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
     }
 
     return (
-      <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
-        <MarkdownInputControls
-          ref={toolbarRef}
-          editor={editor}
-          visible={areControlsVisible()}
-          hideImageOptions={hideImageOptions}
-          onDialogOpen={handleDialogOpen}
-          onDialogClose={handleDialogClose}
-          temporaryLocation={temporaryLocation}
-        />
-        <Box width="100%" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
+      <Box
+        ref={containerRef}
+        width="100%"
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        sx={{
+          height: inputMinHeight,
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative',
+        }}
+      >
+        <Box
+          sx={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 1,
+            borderBottom: '1px solid #efefef',
+          }}
+        >
+          <MarkdownInputControls
+            ref={toolbarRef}
+            editor={editor}
+            visible={areControlsVisible()}
+            hideImageOptions={hideImageOptions}
+            onDialogOpen={handleDialogOpen}
+            onDialogClose={handleDialogClose}
+            temporaryLocation={temporaryLocation}
+          />
+        </Box>
+        <Box
+          width="100%"
+          sx={{
+            flex: 1,
+            overflowY: 'auto',
+            '.ProseMirror': {
+              ...proseMirrorStyles,
+              minHeight: 'auto',
+            },
+          }}
+        >
           <Box position="relative" height="100%" style={{ minHeight: prevEditorHeight }} sx={{ cursor: 'text' }}>
             <EditorContent style={{ height: '100%' }} editor={editor} />
           </Box>

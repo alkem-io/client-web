@@ -224,8 +224,9 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorsDialogProps) => {
     !loading;
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} columns={12}>
+    <DialogWithGrid open={open} onClose={onClose} columns={12} aria-labelledby="invite-vcs-dialog">
       <DialogHeader
+        id="invite-vcs-dialog"
         icon={<VCIcon />}
         title={t('community.invitations.inviteContributorsDialog.vcs.title')}
         onClose={onClose}

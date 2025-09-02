@@ -9,9 +9,10 @@ import CancelDialog from './CancelDialog';
 
 type LoadingStateProps = {
   onClose: () => void;
+  titleId?: string;
 };
 
-const LoadingState = ({ onClose }: LoadingStateProps) => {
+const LoadingState = ({ onClose, titleId }: LoadingStateProps) => {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -21,7 +22,7 @@ const LoadingState = ({ onClose }: LoadingStateProps) => {
 
   return (
     <>
-      <DialogHeader onClose={onCancel} />
+      <DialogHeader onClose={onCancel} id={titleId} />
       <Loading text="" />
       <Gutters padding={gutters(2)} textAlign="center">
         <Caption>{t('createVirtualContributorWizard.loadingInfo.vcSpaceCreation')}</Caption>
