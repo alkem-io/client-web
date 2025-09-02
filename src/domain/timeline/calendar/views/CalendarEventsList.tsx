@@ -112,7 +112,7 @@ const CalendarEventsList = ({
       <Gutters row={!isMediumSmallScreen} minHeight={0} flexGrow={1} paddingRight={0} paddingTop={0}>
         <FullCalendar
           events={sortedEvents}
-          sx={{ flex: 2, minWidth: gutters(15), position: 'relative' }}
+          sx={{ flex: 2, minWidth: gutters(15) }}
           onClickHighlightedDate={onClickHighlightedDate}
           selectedDate={highlightedDay}
           ref={ref}

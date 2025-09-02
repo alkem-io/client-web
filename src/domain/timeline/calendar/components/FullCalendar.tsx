@@ -178,7 +178,7 @@ const FullCalendar: FC<FullCalendarProps & { ref?: React.Ref<HTMLDivElement> }> 
   };
 
   return (
-    <CalendarStyles sx={sx} ref={ref}>
+    <CalendarStyles sx={{ ...sx, position: 'relative' }} ref={ref}>
       <SkipLink anchor={nextBlock} sx={{ position: 'absolute', right: 0, top: 0, zIndex: 99999 }} />
 
       <Calendar
