@@ -35,7 +35,7 @@ export const SettingsPage = ({ flow }: { flow: string }) => {
       <AuthFormHeader title={t('pages.settings.header')} hideMessage />
       <KratosForm ui={settingsFlow?.ui}>
         <AuthPageContentContainer>
-          <KratosUI ui={settingsFlow?.ui} removedFields={REMOVED_FIELDS} />
+          <KratosUI ui={settingsFlow?.ui} removedFields={REMOVED_FIELDS} flowType="settings" />
         </AuthPageContentContainer>
       </KratosForm>
     </AuthenticationLayout>
