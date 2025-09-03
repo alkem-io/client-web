@@ -5,10 +5,7 @@ import type {
   Gesture,
   SocketId,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import type {
-  ExcalidrawElement,
-  OrderedExcalidrawElement,
-} from '@alkemio/excalidraw/dist/types/excalidraw/element/types';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
 import type {
   hashElementsVersion as ExcalidrawHashElementsVersion,
   reconcileElements as ExcalidrawReconcileElements,
@@ -36,7 +33,7 @@ import type {
   ReconciledExcalidrawElement,
   RemoteExcalidrawElement,
 } from '@alkemio/excalidraw/dist/types/excalidraw/data/reconcile';
-import type { Mutable } from '@alkemio/excalidraw/dist/types/excalidraw/utility-types';
+import type { Mutable } from '@alkemio/excalidraw/dist/types/common/src/utility-types';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 type CollabState = {
