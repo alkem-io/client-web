@@ -28,7 +28,7 @@ export const paletteOptions: PaletteOptions = {
   },
   highlight: {
     main: COLOR_POSITIVE_CONTAINER,
-    dark: '#09BCD4',
+    dark: '#1D384A',
     contrastText: '#1D384A',
     light: '#DEEFF6',
   },
@@ -37,10 +37,6 @@ export const paletteOptions: PaletteOptions = {
   },
   icons: {
     dark: '#1C1B1F',
-  },
-  linkText: {
-    main: '#007a99',
-    contrastText: '#007a99',
   },
 };
 
@@ -55,7 +51,6 @@ declare module '@mui/material/styles/createPalette' {
     highlight: PaletteColorOptions;
     space: PaletteColorOptions;
     icons: PaletteColorOptions;
-    linkText: PaletteColorOptions;
   }
 
   interface Palette {
@@ -68,6 +63,5 @@ declare module '@mui/material/styles/createPalette' {
     highlight: PaletteColor;
     space: PaletteColor;
     icons: PaletteColor;
-    linkText: PaletteColor;
   }
 }

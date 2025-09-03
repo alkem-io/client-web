@@ -32,8 +32,8 @@ export const AuthFormHeader = ({
             component={RouterLink}
             to={haveAccountMessage ? _AUTH_LOGIN_PATH : AUTH_SIGN_UP_PATH}
             sx={{
-              '&:hover': { color: theme => theme.palette.linkText.contrastText },
-              color: theme => theme.palette.linkText.contrastText,
+              '&:hover': { color: theme => theme.palette.highlight.dark },
+              color: theme => theme.palette.highlight.dark,
               fontWeight: 'bold',
             }}
           >

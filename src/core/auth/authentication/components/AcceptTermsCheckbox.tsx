@@ -13,7 +13,7 @@ const Link = (props: BoxProps<'a'>) => {
 
 const AcceptTermsCheckbox = ({ value, onChange, ...props }: AcceptTermsCheckboxProps) => {
   const { locations } = useConfig();
-  const tTerms = translateWithElements(<Link sx={{ color: theme => theme.palette.linkText.contrastText }} />);
+  const tTerms = translateWithElements(<Link sx={{ color: theme => theme.palette.highlight.dark }} />);
   const label = tTerms('pages.registration.terms', {
     terms: {
       href: locations?.terms,
