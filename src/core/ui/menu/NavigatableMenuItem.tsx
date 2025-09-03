@@ -1,4 +1,4 @@
-import { ComponentType, MouseEventHandler, PropsWithChildren } from 'react';
+import { AriaAttributes, ComponentType, MouseEventHandler, PropsWithChildren } from 'react';
 import RouterLink from '../link/RouterLink';
 import { ListItemIcon, ListItemText, MenuItem, SvgIconProps, TypographyProps } from '@mui/material';
 import { gutters } from '../grid/utils';
@@ -13,7 +13,7 @@ type NavigatableMenuItemProps = {
   typographyComponent?: ComponentType<TypographyProps>;
   replace?: boolean;
   id?: string;
-};
+} & AriaAttributes;
 
 const DefaultTypography = props => <BlockSectionTitle textTransform="uppercase" {...props} />;
 
@@ -26,6 +26,7 @@ const NavigatableMenuItem = ({
   children,
   typographyComponent: Typography = DefaultTypography,
   id,
+  ...ariaProps
 }: PropsWithChildren<NavigatableMenuItemProps>) => {
   const menuItemProps = route ? { component: RouterLink, replace, to: route, blank: false } : {};
 
@@ -35,6 +36,7 @@ const NavigatableMenuItem = ({
       {...menuItemProps}
       onClick={onClick}
       sx={visibleOnFocus({ skip: !tabOnly })({ paddingX: gutters(), textTransform: 'none' })}
+      {...ariaProps}
     >
       <ListItemIcon>
         <Icon fontSize="small" color="primary" />
