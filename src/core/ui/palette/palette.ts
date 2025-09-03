@@ -5,8 +5,8 @@ const COLOR_POSITIVE_CONTAINER = '#CDE7ED';
 
 export const paletteOptions: PaletteOptions = {
   primary: { main: '#1D384A' },
-  secondary: { main: '#00a88f' },
-  muted: { main: '#A8A8A8' },
+  secondary: { main: '#2f3434ff' },
+  muted: { main: '#A8A8A8', contrastText: '#595959' },
   text: {
     primary: '#181828',
   },
@@ -38,6 +38,10 @@ export const paletteOptions: PaletteOptions = {
   icons: {
     dark: '#1C1B1F',
   },
+  linkText: {
+    main: '#007a99',
+    contrastText: '#007a99',
+  },
 };
 
 declare module '@mui/material/styles/createPalette' {
@@ -51,6 +55,7 @@ declare module '@mui/material/styles/createPalette' {
     highlight: PaletteColorOptions;
     space: PaletteColorOptions;
     icons: PaletteColorOptions;
+    linkText: PaletteColorOptions;
   }
 
   interface Palette {
@@ -62,6 +67,7 @@ declare module '@mui/material/styles/createPalette' {
     neutralLight: PaletteColor;
     highlight: PaletteColor;
     space: PaletteColor;
-    icons: PaletteColorOptions;
+    icons: PaletteColor;
+    linkText: PaletteColor;
   }
 }

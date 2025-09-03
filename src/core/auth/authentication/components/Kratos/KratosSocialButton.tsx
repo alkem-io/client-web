@@ -58,15 +58,15 @@ const KratosSocialButton = ({ node, disabled = false }: KratosSocialButtonProps)
     : node.meta.label?.text;
 
   return (
-    <Tooltip title={label} placement="top" arrow>
-      <Box
-        sx={{
-          height: 55,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+    <Box
+      sx={{
+        height: 55,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Tooltip title={label} placement="top" arrow>
         <Button
           variant="contained"
           sx={{
@@ -85,8 +85,8 @@ const KratosSocialButton = ({ node, disabled = false }: KratosSocialButtonProps)
         >
           {Icon ? <Icon /> : node.meta.label?.text}
         </Button>
-      </Box>
-    </Tooltip>
+      </Tooltip>
+    </Box>
   );
 };
 

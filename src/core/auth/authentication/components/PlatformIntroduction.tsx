@@ -21,8 +21,8 @@ const PlatformIntroduction = ({ label }: PlatformIntroductionProps) => {
         i18nKey={label}
         components={{
           p: <Paragraph textAlign="left" marginY={0} />,
-          terms: <Link sx={{ color: theme => theme.palette.highlight.dark }} href={locations?.terms} />,
-          privacy: <Link sx={{ color: theme => theme.palette.highlight.dark }} href={locations?.privacy} />,
+          terms: <Link sx={{ color: theme => theme.palette.linkText.contrastText }} href={locations?.terms} />,
+          privacy: <Link sx={{ color: theme => theme.palette.linkText.contrastText }} href={locations?.privacy} />,
         }}
       />
     </Box>
