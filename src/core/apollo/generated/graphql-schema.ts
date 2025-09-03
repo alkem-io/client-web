@@ -2830,9 +2830,9 @@ export type InAppNotificationPayloadSpace = InAppNotificationPayload & {
 export type InAppNotificationPayloadSpaceCollaborationCallout = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
   /** The Callout that was published. */
-  callout: Callout;
+  callout?: Maybe<Callout>;
   /** Where the callout is located. */
-  space: Space;
+  space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -2842,7 +2842,7 @@ export type InAppNotificationPayloadSpaceCommunicationMessageDirect = InAppNotif
   /** The message content. */
   message: Scalars['String']['output'];
   /** The Space where the message was sent. */
-  space: Space;
+  space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -2850,7 +2850,7 @@ export type InAppNotificationPayloadSpaceCommunicationMessageDirect = InAppNotif
 export type InAppNotificationPayloadSpaceCommunicationUpdate = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate';
   /** The Space where the update was sent. */
-  space: Space;
+  space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
   /** The update content. */
@@ -2860,9 +2860,9 @@ export type InAppNotificationPayloadSpaceCommunicationUpdate = InAppNotification
 export type InAppNotificationPayloadSpaceCommunityApplication = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunityApplication';
   /** The Application that the notification is related to. */
-  application: Application;
+  application?: Maybe<Application>;
   /** The Space that the application was made to. */
-  space: Space;
+  space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -2870,9 +2870,9 @@ export type InAppNotificationPayloadSpaceCommunityApplication = InAppNotificatio
 export type InAppNotificationPayloadSpaceCommunityContributor = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
   /** The Contributor that joined. */
-  contributor: Contributor;
+  contributor?: Maybe<Contributor>;
   /** The Space that was joined. */
-  space: Space;
+  space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -2880,7 +2880,7 @@ export type InAppNotificationPayloadSpaceCommunityContributor = InAppNotificatio
 export type InAppNotificationPayloadSpaceCommunityInvitation = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation';
   /** The Space that the invitation is for. */
-  space: Space;
+  space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -2888,7 +2888,7 @@ export type InAppNotificationPayloadSpaceCommunityInvitation = InAppNotification
 export type InAppNotificationPayloadSpaceCommunityInvitationPlatform = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform';
   /** The Space that the invitation is for. */
-  space: Space;
+  space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -29960,228 +29960,12 @@ export type InAppNotificationReceivedSubscription = {
       | {
           __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
           type: NotificationEventPayload;
-          callout: {
-            __typename?: 'Callout';
-            id: string;
-            framing: {
-              __typename?: 'CalloutFraming';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
+          callout?:
+            | {
+                __typename?: 'Callout';
                 id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            };
-          };
-          space: {
-            __typename?: 'Space';
-            id: string;
-            level: SpaceLevel;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                tagline?: string | undefined;
-                cardBanner?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
-            };
-          };
-        }
-      | {
-          __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
-          type: NotificationEventPayload;
-          spaceCommunicationMessage: string;
-          space: {
-            __typename?: 'Space';
-            id: string;
-            level: SpaceLevel;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                tagline?: string | undefined;
-                cardBanner?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
-            };
-          };
-        }
-      | {
-          __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate';
-          type: NotificationEventPayload;
-          update?: string | undefined;
-          space: {
-            __typename?: 'Space';
-            id: string;
-            level: SpaceLevel;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                tagline?: string | undefined;
-                cardBanner?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
-            };
-          };
-        }
-      | {
-          __typename?: 'InAppNotificationPayloadSpaceCommunityApplication';
-          type: NotificationEventPayload;
-          space: {
-            __typename?: 'Space';
-            id: string;
-            level: SpaceLevel;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                tagline?: string | undefined;
-                cardBanner?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
-            };
-          };
-          application: {
-            __typename?: 'Application';
-            id: string;
-            createdDate: Date;
-            contributor:
-              | {
-                  __typename?: 'Organization';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    visual?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                  };
-                }
-              | {
-                  __typename?: 'User';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    visual?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                  };
-                }
-              | {
-                  __typename?: 'VirtualContributor';
+                framing: {
+                  __typename?: 'CalloutFraming';
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -30199,47 +29983,277 @@ export type InAppNotificationReceivedSubscription = {
                       | undefined;
                   };
                 };
-          };
+              }
+            | undefined;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+        }
+      | {
+          __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
+          type: NotificationEventPayload;
+          spaceCommunicationMessage: string;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+        }
+      | {
+          __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate';
+          type: NotificationEventPayload;
+          update?: string | undefined;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+        }
+      | {
+          __typename?: 'InAppNotificationPayloadSpaceCommunityApplication';
+          type: NotificationEventPayload;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          application?:
+            | {
+                __typename?: 'Application';
+                id: string;
+                createdDate: Date;
+                contributor:
+                  | {
+                      __typename?: 'Organization';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        url: string;
+                        visual?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
+                    }
+                  | {
+                      __typename?: 'User';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        url: string;
+                        visual?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
+                    }
+                  | {
+                      __typename?: 'VirtualContributor';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        url: string;
+                        visual?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
+                    };
+              }
+            | undefined;
         }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
           type: NotificationEventPayload;
-          space: {
-            __typename?: 'Space';
-            id: string;
-            level: SpaceLevel;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
+          space?:
+            | {
+                __typename?: 'Space';
                 id: string;
-                displayName: string;
-                url: string;
-                tagline?: string | undefined;
-                cardBanner?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
-            };
-          };
-          contributor:
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          contributor?:
             | {
                 __typename: 'Organization';
                 id: string;
@@ -30296,85 +30310,90 @@ export type InAppNotificationReceivedSubscription = {
                       }
                     | undefined;
                 };
-              };
+              }
+            | undefined;
         }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation';
           type: NotificationEventPayload;
-          space: {
-            __typename?: 'Space';
-            id: string;
-            level: SpaceLevel;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
+          space?:
+            | {
+                __typename?: 'Space';
                 id: string;
-                displayName: string;
-                url: string;
-                tagline?: string | undefined;
-                cardBanner?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
-            };
-          };
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
         }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform';
           type: NotificationEventPayload;
-          space: {
-            __typename?: 'Space';
-            id: string;
-            level: SpaceLevel;
-            about: {
-              __typename?: 'SpaceAbout';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
+          space?:
+            | {
+                __typename?: 'Space';
                 id: string;
-                displayName: string;
-                url: string;
-                tagline?: string | undefined;
-                cardBanner?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-              };
-            };
-          };
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
         }
       | {
           __typename?: 'InAppNotificationPayloadUserMessageDirect';
@@ -30562,228 +30581,12 @@ export type InAppNotificationsQuery = {
         | {
             __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
             type: NotificationEventPayload;
-            callout: {
-              __typename?: 'Callout';
-              id: string;
-              framing: {
-                __typename?: 'CalloutFraming';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
+            callout?:
+              | {
+                  __typename?: 'Callout';
                   id: string;
-                  displayName: string;
-                  url: string;
-                  visual?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                };
-              };
-            };
-            space: {
-              __typename?: 'Space';
-              id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              };
-            };
-          }
-        | {
-            __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
-            type: NotificationEventPayload;
-            spaceCommunicationMessage: string;
-            space: {
-              __typename?: 'Space';
-              id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              };
-            };
-          }
-        | {
-            __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate';
-            type: NotificationEventPayload;
-            update?: string | undefined;
-            space: {
-              __typename?: 'Space';
-              id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              };
-            };
-          }
-        | {
-            __typename?: 'InAppNotificationPayloadSpaceCommunityApplication';
-            type: NotificationEventPayload;
-            space: {
-              __typename?: 'Space';
-              id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              };
-            };
-            application: {
-              __typename?: 'Application';
-              id: string;
-              createdDate: Date;
-              contributor:
-                | {
-                    __typename?: 'Organization';
-                    id: string;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      url: string;
-                      visual?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
-                    };
-                  }
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      url: string;
-                      visual?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
-                    };
-                  }
-                | {
-                    __typename?: 'VirtualContributor';
+                  framing: {
+                    __typename?: 'CalloutFraming';
                     id: string;
                     profile: {
                       __typename?: 'Profile';
@@ -30801,47 +30604,277 @@ export type InAppNotificationsQuery = {
                         | undefined;
                     };
                   };
-            };
+                }
+              | undefined;
+            space?:
+              | {
+                  __typename?: 'Space';
+                  id: string;
+                  level: SpaceLevel;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      tagline?: string | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
+            type: NotificationEventPayload;
+            spaceCommunicationMessage: string;
+            space?:
+              | {
+                  __typename?: 'Space';
+                  id: string;
+                  level: SpaceLevel;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      tagline?: string | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate';
+            type: NotificationEventPayload;
+            update?: string | undefined;
+            space?:
+              | {
+                  __typename?: 'Space';
+                  id: string;
+                  level: SpaceLevel;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      tagline?: string | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'InAppNotificationPayloadSpaceCommunityApplication';
+            type: NotificationEventPayload;
+            space?:
+              | {
+                  __typename?: 'Space';
+                  id: string;
+                  level: SpaceLevel;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      tagline?: string | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+            application?:
+              | {
+                  __typename?: 'Application';
+                  id: string;
+                  createdDate: Date;
+                  contributor:
+                    | {
+                        __typename?: 'Organization';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        };
+                      }
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        };
+                      }
+                    | {
+                        __typename?: 'VirtualContributor';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        };
+                      };
+                }
+              | undefined;
           }
         | {
             __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
             type: NotificationEventPayload;
-            space: {
-              __typename?: 'Space';
-              id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
+            space?:
+              | {
+                  __typename?: 'Space';
                   id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              };
-            };
-            contributor:
+                  level: SpaceLevel;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      tagline?: string | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+            contributor?:
               | {
                   __typename: 'Organization';
                   id: string;
@@ -30898,85 +30931,90 @@ export type InAppNotificationsQuery = {
                         }
                       | undefined;
                   };
-                };
+                }
+              | undefined;
           }
         | {
             __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation';
             type: NotificationEventPayload;
-            space: {
-              __typename?: 'Space';
-              id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
+            space?:
+              | {
+                  __typename?: 'Space';
                   id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              };
-            };
+                  level: SpaceLevel;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      tagline?: string | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
           }
         | {
             __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform';
             type: NotificationEventPayload;
-            space: {
-              __typename?: 'Space';
-              id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
+            space?:
+              | {
+                  __typename?: 'Space';
                   id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              };
-            };
+                  level: SpaceLevel;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      tagline?: string | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
           }
         | {
             __typename?: 'InAppNotificationPayloadUserMessageDirect';
@@ -31173,198 +31211,12 @@ export type InAppNotificationAllTypesFragment = {
     | {
         __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
         type: NotificationEventPayload;
-        callout: {
-          __typename?: 'Callout';
-          id: string;
-          framing: {
-            __typename?: 'CalloutFraming';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
+        callout?:
+          | {
+              __typename?: 'Callout';
               id: string;
-              displayName: string;
-              url: string;
-              visual?:
-                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-                | undefined;
-            };
-          };
-        };
-        space: {
-          __typename?: 'Space';
-          id: string;
-          level: SpaceLevel;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              url: string;
-              tagline?: string | undefined;
-              cardBanner?:
-                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-                | undefined;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-            };
-          };
-        };
-      }
-    | {
-        __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
-        type: NotificationEventPayload;
-        spaceCommunicationMessage: string;
-        space: {
-          __typename?: 'Space';
-          id: string;
-          level: SpaceLevel;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              url: string;
-              tagline?: string | undefined;
-              cardBanner?:
-                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-                | undefined;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-            };
-          };
-        };
-      }
-    | {
-        __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate';
-        type: NotificationEventPayload;
-        update?: string | undefined;
-        space: {
-          __typename?: 'Space';
-          id: string;
-          level: SpaceLevel;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              url: string;
-              tagline?: string | undefined;
-              cardBanner?:
-                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-                | undefined;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-            };
-          };
-        };
-      }
-    | {
-        __typename?: 'InAppNotificationPayloadSpaceCommunityApplication';
-        type: NotificationEventPayload;
-        space: {
-          __typename?: 'Space';
-          id: string;
-          level: SpaceLevel;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              url: string;
-              tagline?: string | undefined;
-              cardBanner?:
-                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-                | undefined;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-            };
-          };
-        };
-        application: {
-          __typename?: 'Application';
-          id: string;
-          createdDate: Date;
-          contributor:
-            | {
-                __typename?: 'Organization';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  visual?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                };
-              }
-            | {
-                __typename?: 'User';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  visual?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                };
-              }
-            | {
-                __typename?: 'VirtualContributor';
+              framing: {
+                __typename?: 'CalloutFraming';
                 id: string;
                 profile: {
                   __typename?: 'Profile';
@@ -31382,41 +31234,277 @@ export type InAppNotificationAllTypesFragment = {
                     | undefined;
                 };
               };
-        };
+            }
+          | undefined;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
+        type: NotificationEventPayload;
+        spaceCommunicationMessage: string;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate';
+        type: NotificationEventPayload;
+        update?: string | undefined;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationPayloadSpaceCommunityApplication';
+        type: NotificationEventPayload;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        application?:
+          | {
+              __typename?: 'Application';
+              id: string;
+              createdDate: Date;
+              contributor:
+                | {
+                    __typename?: 'Organization';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  }
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  }
+                | {
+                    __typename?: 'VirtualContributor';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
+            }
+          | undefined;
       }
     | {
         __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
         type: NotificationEventPayload;
-        space: {
-          __typename?: 'Space';
-          id: string;
-          level: SpaceLevel;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
+        space?:
+          | {
+              __typename?: 'Space';
               id: string;
-              displayName: string;
-              url: string;
-              tagline?: string | undefined;
-              cardBanner?:
-                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-                | undefined;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-            };
-          };
-        };
-        contributor:
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        contributor?:
           | {
               __typename: 'Organization';
               id: string;
@@ -31473,73 +31561,90 @@ export type InAppNotificationAllTypesFragment = {
                     }
                   | undefined;
               };
-            };
+            }
+          | undefined;
       }
     | {
         __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation';
         type: NotificationEventPayload;
-        space: {
-          __typename?: 'Space';
-          id: string;
-          level: SpaceLevel;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
+        space?:
+          | {
+              __typename?: 'Space';
               id: string;
-              displayName: string;
-              url: string;
-              tagline?: string | undefined;
-              cardBanner?:
-                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-                | undefined;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-            };
-          };
-        };
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
       }
     | {
         __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform';
         type: NotificationEventPayload;
-        space: {
-          __typename?: 'Space';
-          id: string;
-          level: SpaceLevel;
-          about: {
-            __typename?: 'SpaceAbout';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
+        space?:
+          | {
+              __typename?: 'Space';
               id: string;
-              displayName: string;
-              url: string;
-              tagline?: string | undefined;
-              cardBanner?:
-                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-                | undefined;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-            };
-          };
-        };
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
       }
     | {
         __typename?: 'InAppNotificationPayloadUserMessageDirect';
@@ -31563,86 +31668,92 @@ export type InAppNotificationAllTypesFragment = {
 
 export type InAppNotificationPayloadSpaceCollaborationCalloutFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    framing: {
-      __typename?: 'CalloutFraming';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
+  callout?:
+    | {
+        __typename?: 'Callout';
         id: string;
-        displayName: string;
-        url: string;
-        visual?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-          | undefined;
-      };
-    };
-  };
-  space: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
+        framing: {
+          __typename?: 'CalloutFraming';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
+  space?:
+    | {
+        __typename?: 'Space';
         id: string;
-        displayName: string;
-        url: string;
-        tagline?: string | undefined;
-        cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-          | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
-    };
-  };
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            tagline?: string | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
 };
 
 export type InAppNotificationSpaceCommunityContributorFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
+  space?:
+    | {
+        __typename?: 'Space';
         id: string;
-        displayName: string;
-        url: string;
-        tagline?: string | undefined;
-        cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-          | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
-    };
-  };
-  contributor:
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            tagline?: string | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
+  contributor?:
     | {
         __typename: 'Organization';
         id: string;
@@ -31681,7 +31792,8 @@ export type InAppNotificationSpaceCommunityContributorFragment = {
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
         };
-      };
+      }
+    | undefined;
 };
 
 export type SpaceNotificationFragment = {
@@ -31815,214 +31927,244 @@ export type InAppNotificationPayloadPlatformUserProfileRemovedFragment = {
 
 export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCommunityApplication';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
+  space?:
+    | {
+        __typename?: 'Space';
         id: string;
-        displayName: string;
-        url: string;
-        tagline?: string | undefined;
-        cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-          | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
-    };
-  };
-  application: {
-    __typename?: 'Application';
-    id: string;
-    createdDate: Date;
-    contributor:
-      | {
-          __typename?: 'Organization';
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
           id: string;
           profile: {
             __typename?: 'Profile';
             id: string;
             displayName: string;
             url: string;
-            visual?:
+            tagline?: string | undefined;
+            cardBanner?:
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
-          };
-        }
-      | {
-          __typename?: 'User';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            visual?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-          };
-        }
-      | {
-          __typename?: 'VirtualContributor';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            visual?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
               | undefined;
           };
         };
-  };
+      }
+    | undefined;
+  application?:
+    | {
+        __typename?: 'Application';
+        id: string;
+        createdDate: Date;
+        contributor:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            }
+          | {
+              __typename?: 'User';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            };
+      }
+    | undefined;
 };
 
 export type InAppNotificationPayloadSpaceCommunicationUpdateFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate';
   update?: string | undefined;
-  space: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
+  space?:
+    | {
+        __typename?: 'Space';
         id: string;
-        displayName: string;
-        url: string;
-        tagline?: string | undefined;
-        cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-          | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
-    };
-  };
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            tagline?: string | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
 };
 
 export type InAppNotificationPayloadSpaceCommunicationMessageDirectFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
   spaceCommunicationMessage: string;
-  space: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
+  space?:
+    | {
+        __typename?: 'Space';
         id: string;
-        displayName: string;
-        url: string;
-        tagline?: string | undefined;
-        cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-          | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
-    };
-  };
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            tagline?: string | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
 };
 
 export type InAppNotificationPayloadSpaceCommunityInvitationFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
+  space?:
+    | {
+        __typename?: 'Space';
         id: string;
-        displayName: string;
-        url: string;
-        tagline?: string | undefined;
-        cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-          | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
-    };
-  };
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            tagline?: string | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
 };
 
 export type InAppNotificationPayloadSpaceCommunityInvitationPlatformFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    about: {
-      __typename?: 'SpaceAbout';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
+  space?:
+    | {
+        __typename?: 'Space';
         id: string;
-        displayName: string;
-        url: string;
-        tagline?: string | undefined;
-        cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-          | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
-    };
-  };
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            tagline?: string | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
 };
 
 export type InAppNotificationPayloadUserMessageDirectFragment = {

@@ -42,7 +42,12 @@ const MenuTriggerButton = ({
   const [openState, setOpenState] = useState<OpenState | null>(null);
 
   const handleClose = () => {
-    setOpenState(null);
+    // delay closing of the menu to allow mobile navigation action before it closes
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        setOpenState(null);
+      }, 500);
+    });
   };
 
   const handleTriggerClick: MouseEventHandler<HTMLElement> = event => {
@@ -148,7 +153,7 @@ const MenuTriggerButton = ({
       )}
       {drawer && (
         <Drawer anchor="right" open={!!openState} onClose={handleClose} {...props}>
-          {cloneElement(children, { onClose: handleClose })}
+          {children}
         </Drawer>
       )}
     </>

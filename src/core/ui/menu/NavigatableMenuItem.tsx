@@ -25,21 +25,12 @@ const NavigatableMenuItem = ({
   children,
   typographyComponent: Typography = DefaultTypography,
 }: PropsWithChildren<NavigatableMenuItemProps>) => {
-  // Separate routing props from click handling
-  const menuItemProps = route
-    ? {
-        component: RouterLink,
-        replace,
-        to: route,
-        blank: false,
-        // Don't pass onClick when using routing to avoid conflicts
-        onClick: undefined,
-      }
-    : { onClick };
+  const menuItemProps = route ? { component: RouterLink, replace, to: route, blank: false } : {};
 
   return (
     <MenuItem
       {...menuItemProps}
+      onClick={onClick}
       sx={visibleOnFocus({ skip: !tabOnly })({ paddingX: gutters(), textTransform: 'none' })}
     >
       <ListItemIcon>
