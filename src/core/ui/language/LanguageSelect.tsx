@@ -15,7 +15,7 @@ interface LanguageSelectProps extends Pick<MenuProps, 'anchorOrigin' | 'transfor
   zIndex?: number;
 }
 
-const LanguageSelect = ({ zIndex, children }: LanguageSelectProps) => {
+const LanguageSelect = ({ zIndex, children, anchorOrigin, transformOrigin }: LanguageSelectProps) => {
   const { i18n, t } = useTranslation();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -48,6 +48,8 @@ const LanguageSelect = ({ zIndex, children }: LanguageSelectProps) => {
             'aria-labelledby': 'language-button',
           },
         }}
+        anchorOrigin={anchorOrigin}
+        transformOrigin={transformOrigin}
       >
         {supportedLngs.map(lng => (
           <MenuItem key={lng} selected={lng === i18n.language} onClick={() => handleLanguageSelection(lng)}>
