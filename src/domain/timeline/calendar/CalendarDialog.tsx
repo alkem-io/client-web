@@ -22,6 +22,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { useLocation } from 'react-router-dom';
 import { BlockAnchorProvider } from '@/core/ui/keyboardNavigation/NextBlockAnchor';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
@@ -38,6 +39,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { spaceId, parentSpaceId, calendarEventId } = useUrlResolver();
+  const ensurePresence = useEnsurePresence();
 
   const ref = useRef(null);
 
@@ -185,9 +187,10 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
               const handleEditEventSubmit = async (
                 eventId: string,
                 calendarEvent: CalendarEventFormData,
-                tagset: TagsetModel
+                tagset?: TagsetModel
               ) => {
-                await updateEvent(eventId, calendarEvent, tagset);
+                const tags = ensurePresence(tagset, 'tags');
+                await updateEvent(eventId, calendarEvent, tags);
                 setEditingEventId(undefined);
               };
 
@@ -198,7 +201,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
                       dialogTitle={t('calendar.edit-event')}
                       event={eventDetail}
                       onSubmit={(calendarEvent: CalendarEventFormData) =>
-                        handleEditEventSubmit(event.id, calendarEvent, event.profile.tagset as TagsetModel)
+                        handleEditEventSubmit(event.id, calendarEvent, event.profile.tagset)
                       }
                       onClose={handleClose}
                       isSubmitting={updatingCalendarEvent}
