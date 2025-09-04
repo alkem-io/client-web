@@ -4,7 +4,7 @@ import { Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -33,6 +33,7 @@ interface MemoFooterProps {
       })
     | undefined;
   collaborationState: RealTimeCollaborationState | undefined;
+  contentUpdatePolicy: ContentUpdatePolicy | undefined;
 }
 
 enum ReadonlyReason {
@@ -44,7 +45,7 @@ enum ReadonlyReason {
   NotSynced = 'notSynced',
 }
 
-const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps) => {
+const MemoFooter = ({ memoUrl, createdBy, collaborationState, contentUpdatePolicy }: MemoFooterProps) => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
 
@@ -86,8 +87,20 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
     if (!isAuthenticated) {
       return ReadonlyReason.Unauthenticated;
     }
+    // users can be part of the parent community with the option to be able to contribute
+    // to the content of the child community without being part of it
+    if (!collaborationState?.readOnly) {
+      return null;
+    }
 
-    if (getMyMembershipStatus() !== CommunityMembershipStatus.Member) {
+    if (collaborationState?.readOnly) {
+      return ReadonlyReason.Readonly;
+    }
+
+    if (
+      contentUpdatePolicy === ContentUpdatePolicy.Contributors &&
+      getMyMembershipStatus() !== CommunityMembershipStatus.Member
+    ) {
       return ReadonlyReason.NoMembership;
     }
 
@@ -95,12 +108,7 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
       return ReadonlyReason.NotSynced;
     }
 
-    // The default if none of the above applies but the memo is still read-only.
-    if (collaborationState?.readOnly) {
-      return ReadonlyReason.Readonly;
-    }
-
-    return null;
+    return ReadonlyReason.ContentUpdatePolicy;
   };
 
   const [isLearnWhyDialogOpen, setIsLearnWhyDialogOpen] = useState(false);
