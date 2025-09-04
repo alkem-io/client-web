@@ -8,12 +8,7 @@ query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     child
     spaceDisplayName: parentDisplayName
     space {
-      id
-      ... on Space {
-        about {
-          ...SpaceAboutCardAvatar
-        }
-      }
+      ...ActivityLogSpaceVisuals
     }
     ... on ActivityLogEntryMemberJoined {
       ...ActivityLogMemberJoined
@@ -47,6 +42,23 @@ query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     }
     ... on ActivityLogEntryCalendarEventCreated {
       ...ActivityLogCalendarEventCreated
+    }
+  }
+}
+
+fragment ActivityLogSpaceVisuals on Space {
+  id
+  about {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+      cardBanner: visual(type: CARD) {
+        ...VisualModel
+      }
     }
   }
 }
