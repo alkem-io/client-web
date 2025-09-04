@@ -63,7 +63,7 @@ const CalloutVisibilityChangeDialog = ({
       <Formik initialValues={initialValues} enableReinitialize validateOnMount onSubmit={handleVisibilityChanged}>
         {({ handleSubmit }) => (
           <>
-            <DialogHeader title={title} onClose={onClose} />
+            <DialogHeader title={title} onClose={onClose} id="callout-visibility-dialog-title" />
             <DialogContent>
               <Gutters disablePadding>
                 <Box>

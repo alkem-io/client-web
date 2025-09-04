@@ -159,8 +159,11 @@ const SpaceAboutDialog = ({
       columns={8}
       sx={{ marginTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS), alignItems: 'stretch', pointerEvents: 'auto' }}
       BackdropProps={{ sx: { background: gradient, pointerEvents: 'none' } }}
+      aria-labelledby="space-about-dialog"
+      onClose={onClose}
     >
       <AboutHeader
+        titleId="space-about-dialog"
         title={aboutProfile?.displayName}
         tagline={aboutProfile?.tagline}
         loading={loading}

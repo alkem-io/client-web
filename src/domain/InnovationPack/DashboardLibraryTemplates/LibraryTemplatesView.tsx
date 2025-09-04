@@ -33,6 +33,7 @@ type LibraryTemplatesViewProps = {
   onDialogClose?: () => void;
   hasMore?: boolean;
   loading?: boolean;
+  headerTitleId?: string;
 };
 
 const LibraryTemplatesView = ({
@@ -46,6 +47,7 @@ const LibraryTemplatesView = ({
   onClick,
   hasMore = false,
   loading,
+  headerTitleId,
   ...props
 }: Omit<PageContentBlockProps, 'onClick'> & LibraryTemplatesViewProps) => {
   const { t } = useTranslation();
@@ -59,6 +61,7 @@ const LibraryTemplatesView = ({
         onDialogOpen={onDialogOpen}
         onDialogClose={onDialogClose}
         expanded={expanded}
+        titleId={headerTitleId}
       />
       <Box
         sx={{

@@ -83,8 +83,10 @@ const PendingMembershipsDialog = () => {
         columns={12}
         open={openDialog?.type === PendingMembershipsDialogType.PendingMembershipsList}
         onClose={closeDialog}
+        aria-labelledby="pending-memberships-dialog"
       >
         <DialogHeader
+          id="pending-memberships-dialog"
           title={
             <Gutters row disablePadding>
               <HdrStrongOutlined fontSize="small" />

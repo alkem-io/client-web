@@ -190,8 +190,13 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState }: MemoFooterProps)
 
         {directMessageDialog}
       </Actions>
-      <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
+      <DialogWithGrid
+        open={isLearnWhyDialogOpen}
+        onClose={() => setIsLearnWhyDialogOpen(false)}
+        aria-labelledby="memo-dialog-footer"
+      >
         <DialogHeader
+          id="memo-dialog-footer"
           title={t('pages.whiteboard.readonlyDialog.title')}
           onClose={() => setIsLearnWhyDialogOpen(false)}
         />

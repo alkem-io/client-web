@@ -163,8 +163,12 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   }
 
   return (
-    <DialogWithGrid open={open} onClose={handleClose} columns={8}>
-      <DialogHeader title={t('createVirtualContributorWizard.trySection.title')} onClose={handleClose} />
+    <DialogWithGrid open={open} onClose={handleClose} columns={8} aria-labelledby="try-virtual-contributor-dialog">
+      <DialogHeader
+        id="try-virtual-contributor-dialog"
+        title={t('createVirtualContributorWizard.trySection.title')}
+        onClose={handleClose}
+      />
       <DialogContent>
         {vcDataLoading && demoCalloutCreationLoading && isCalloutLoading ? (
           <Loading />
