@@ -176,10 +176,14 @@ const PlatformNavigationUserMenu = ({
               }}
               zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX + 1}
             >
-              {({ openSelect }) => (
+              {({ openSelect, isOpen }) => (
                 <NavigatableMenuItem
+                  id="language-button"
                   iconComponent={LanguageOutlined}
                   onClick={event => openSelect(event.currentTarget as HTMLElement)}
+                  aria-controls={isOpen ? 'language-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={isOpen ? 'true' : undefined}
                 >
                   {t('buttons.changeLanguage')}
                 </NavigatableMenuItem>
