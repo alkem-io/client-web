@@ -42,6 +42,7 @@ type CalendarEventsListProps = {
   highlightedDay?: Date | null;
   actions?: ReactNode;
   onClose?: DialogHeaderProps['onClose'];
+  dialogTitleId?: string;
 };
 
 const CalendarEventsList = ({
@@ -50,6 +51,7 @@ const CalendarEventsList = ({
   actions,
   onClose,
   ref,
+  dialogTitleId,
 }: CalendarEventsListProps & { ref?: React.Ref<HTMLDivElement> }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -106,7 +108,7 @@ const CalendarEventsList = ({
 
   return (
     <GridProvider columns={12}>
-      <DialogHeader onClose={onClose}>
+      <DialogHeader onClose={onClose} id={dialogTitleId}>
         <BlockTitle>{t('common.events')}</BlockTitle>
       </DialogHeader>
       <Gutters row={!isMediumSmallScreen} minHeight={0} flexGrow={1} paddingRight={0} paddingTop={0}>

@@ -164,6 +164,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
               return (
                 <CalendarEventForm
                   dialogTitle={t('calendar.add-event')}
+                  dialogTitleId="calendar-events-dialog-title"
                   event={emptyCalendarEvent}
                   onSubmit={handleNewEventSubmit}
                   onClose={handleClose}
@@ -199,6 +200,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
                   {({ event: eventDetail }) => (
                     <CalendarEventForm
                       dialogTitle={t('calendar.edit-event')}
+                      dialogTitleId="calendar-events-dialog-title"
                       event={eventDetail}
                       onSubmit={(calendarEvent: CalendarEventFormData) =>
                         handleEditEventSubmit(event.id, calendarEvent, event.profile.tagset)
@@ -221,6 +223,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
               if (!calendarEventId) {
                 return (
                   <CalendarEventsList
+                    dialogTitleId="calendar-events-dialog-title"
                     events={events}
                     onClose={handleClose}
                     highlightedDay={highlightedDay}
