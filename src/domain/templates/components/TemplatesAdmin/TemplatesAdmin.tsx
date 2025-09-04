@@ -348,15 +348,15 @@ const TemplatesAdmin = ({
           />
         </PageContentBlockSeamless>
       )}
-      {shouldRenderTemplateSection(communityGuidelinesTemplates, TemplateType.CommunityGuidelines) && (
+      {shouldRenderTemplateSection(whiteboardTemplates, TemplateType.Whiteboard) && (
         <PageContentBlockSeamless disablePadding>
           <TemplatesGallery
             headerText={t('common.entitiesWithCount', {
-              entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
-              count: communityGuidelinesTemplates?.length ?? 0,
+              entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
+              count: whiteboardTemplates?.length ?? 0,
             })}
-            actions={<GalleryActions templateType={TemplateType.CommunityGuidelines} />}
-            templates={communityGuidelinesTemplates}
+            actions={<GalleryActions templateType={TemplateType.Whiteboard} />}
+            templates={whiteboardTemplates}
             loading={loading}
             buildTemplateLink={buildTemplateLink}
           />
@@ -376,15 +376,15 @@ const TemplatesAdmin = ({
           />
         </PageContentBlockSeamless>
       )}
-      {shouldRenderTemplateSection(whiteboardTemplates, TemplateType.Whiteboard) && (
+      {shouldRenderTemplateSection(communityGuidelinesTemplates, TemplateType.CommunityGuidelines) && (
         <PageContentBlockSeamless disablePadding>
           <TemplatesGallery
             headerText={t('common.entitiesWithCount', {
-              entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
-              count: whiteboardTemplates?.length ?? 0,
+              entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
+              count: communityGuidelinesTemplates?.length ?? 0,
             })}
-            actions={<GalleryActions templateType={TemplateType.Whiteboard} />}
-            templates={whiteboardTemplates}
+            actions={<GalleryActions templateType={TemplateType.CommunityGuidelines} />}
+            templates={communityGuidelinesTemplates}
             loading={loading}
             buildTemplateLink={buildTemplateLink}
           />
