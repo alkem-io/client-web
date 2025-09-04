@@ -3407,6 +3407,25 @@ export const ExploreSpacesSearchFragmentDoc = gql`
   }
   ${ExploreSpacesFragmentDoc}
 `;
+export const ActivityLogSpaceVisualsFragmentDoc = gql`
+  fragment ActivityLogSpaceVisuals on Space {
+    id
+    about {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          ...VisualModel
+        }
+        cardBanner: visual(type: CARD) {
+          ...VisualModel
+        }
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
 export const SpaceMembershipFragmentDoc = gql`
   fragment SpaceMembership on Space {
     id
@@ -24208,12 +24227,7 @@ export const LatestContributionsGroupedDocument = gql`
       child
       spaceDisplayName: parentDisplayName
       space {
-        id
-        ... on Space {
-          about {
-            ...SpaceAboutCardAvatar
-          }
-        }
+        ...ActivityLogSpaceVisuals
       }
       ... on ActivityLogEntryMemberJoined {
         ...ActivityLogMemberJoined
@@ -24250,7 +24264,7 @@ export const LatestContributionsGroupedDocument = gql`
       }
     }
   }
-  ${SpaceAboutCardAvatarFragmentDoc}
+  ${ActivityLogSpaceVisualsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -24338,18 +24352,12 @@ export const LatestContributionsSpacesFlatDocument = gql`
       spaceMembershipsFlat {
         id
         space {
-          id
-          about {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
+          ...ActivityLogSpaceVisuals
         }
       }
     }
   }
+  ${ActivityLogSpaceVisualsFragmentDoc}
 `;
 
 /**

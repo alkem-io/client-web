@@ -6541,6 +6541,7 @@ export type SearchResultSpace = SearchResult & {
 /** The different types of available search results. */
 export enum SearchResultType {
   Callout = 'CALLOUT',
+  Memo = 'MEMO',
   Organization = 'ORGANIZATION',
   Post = 'POST',
   Space = 'SPACE',
@@ -34622,8 +34623,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -34662,8 +34671,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -34706,8 +34723,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -34751,8 +34776,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -34791,8 +34824,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -34840,8 +34881,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -34884,8 +34933,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -34933,8 +34990,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -34982,8 +35047,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -35053,8 +35126,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -35098,8 +35179,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -35114,6 +35203,26 @@ export type LatestContributionsGroupedQuery = {
           | undefined;
       }
   >;
+};
+
+export type ActivityLogSpaceVisualsFragment = {
+  __typename?: 'Space';
+  id: string;
+  about: {
+    __typename?: 'SpaceAbout';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+        | undefined;
+      cardBanner?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+        | undefined;
+    };
+  };
 };
 
 export type LatestContributionsSpacesFlatQueryVariables = Exact<{ [key: string]: never }>;
@@ -35131,7 +35240,17 @@ export type LatestContributionsSpacesFlatQuery = {
         about: {
           __typename?: 'SpaceAbout';
           id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
         };
       };
     }>;

@@ -6,7 +6,7 @@ const StorageConfigContext = createContext<StorageConfigProvided | undefined>(un
 export const StorageConfigContextProvider = ({ children, ...props }: PropsWithChildren<StorageConfigOptions>) => {
   const storageConfig = useStorageConfig(props);
 
-  return <StorageConfigContext.Provider value={storageConfig}>{children}</StorageConfigContext.Provider>;
+  return <StorageConfigContext value={storageConfig}>{children}</StorageConfigContext>;
 };
 
 export const useStorageConfigContext = () => {

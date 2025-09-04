@@ -64,7 +64,7 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
       <KratosForm ui={ui} onClick={handleFormClick}>
         <AuthPageContentContainer>
           {!hideVerificationMessage(verificationFlow) && <BlockTitle>{t('pages.verification.message')}</BlockTitle>}
-          <KratosUI ui={ui} />
+          <KratosUI ui={ui} flowType="verification" />
         </AuthPageContentContainer>
       </KratosForm>
     </AuthenticationLayout>

@@ -35,7 +35,7 @@ const OrganizationProvider = ({ children }: PropsWithChildren) => {
   const displayName = organization?.profile.displayName || '';
 
   return (
-    <OrganizationContext.Provider
+    <OrganizationContext
       value={{
         organization,
         organizationId: organization?.id ?? '',
@@ -46,7 +46,7 @@ const OrganizationProvider = ({ children }: PropsWithChildren) => {
       }}
     >
       {children}
-    </OrganizationContext.Provider>
+    </OrganizationContext>
   );
 };
 

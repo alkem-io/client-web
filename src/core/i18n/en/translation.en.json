@@ -2495,7 +2495,8 @@
           "organization": "Organizations",
           "post": "Posts",
           "whiteboard": "Whiteboards (available soon)",
-          "callout": "Callouts (available soon)"
+          "callout": "Callouts (available soon)",
+          "memo": "Memos (available soon)"
         }
       },
       "spaceFilterTitle": "$t(common.spaces)"

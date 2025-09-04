@@ -8,6 +8,10 @@ const MuiButtonBase: Components<Theme>['MuiButtonBase'] = {
     root: ({ theme }) => ({
       '&.Mui-focusVisible': {
         backgroundColor: theme.palette.highlight.main,
+        color: theme.palette.highlight.contrastText,
+        svg: {
+          color: theme.palette.highlight.contrastText,
+        },
       },
     }),
   },
