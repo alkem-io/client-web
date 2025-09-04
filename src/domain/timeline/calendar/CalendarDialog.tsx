@@ -230,6 +230,12 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose, temporaryLocat
                           sx={{
                             padding: 0,
                             backgroundColor: 'primary.main',
+                            '&:hover': {
+                              backgroundColor: theme => theme.palette.highlight.main,
+                              svg: {
+                                color: theme => theme.palette.highlight.contrastText,
+                              },
+                            },
                           }}
                         >
                           <RoundedIcon component={Add} size="medium" iconSize="small" color="unset" />
