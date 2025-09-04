@@ -51,4 +51,5 @@ export interface InAppNotificationPayloadModel {
       id: string;
     };
   };
+  update?: string; // returning ID, todo: get the content of the update
 }

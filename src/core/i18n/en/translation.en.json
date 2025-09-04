@@ -1899,6 +1899,70 @@
         "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
           "subject": "\"{{memberName}}\" joined {{spaceName}}",
           "description": "{{memberName}} has joined {{spaceName}}, of which you are an admin."
+        },
+        "PLATFORM_FORUM_DISCUSSION_COMMENT": {
+          "subject": "{{triggeredByName}} commented on {{calloutName}} in {{spaceName}}",
+          "description": "{{comment}}"
+        },
+        "USER_COMMENT_REPLY": {
+          "subject": "{{triggeredByName}} commented on your post {{parentName}}",
+          "description": "{{comment}}"
+        },
+        "USER_SPACE_COMMUNITY_INVITATION": {
+          "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
+          "description": "{{spaceName}} - {{spaceDescription}}"
+        },
+        "PLATFORM_FORUM_DISCUSSION_CREATED": {
+          "subject": "{{triggeredByName}} started a new discussion in {{spaceName}}",
+          "description": "{{calloutName}} - {{calloutDescription}}"
+        },
+        "SPACE_COMMUNICATION_UPDATE": {
+          "subject": "{{triggeredByName}} shared an update in {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_CONTRIBUTION": {
+          "subject": "{{triggeredByName}} created a post \"{{calloutName}}\"",
+          "description": "In <b>{{spaceName}}</b>, of which you are a member."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_CONTRIBUTION": {
+          "subject": "{{triggeredByName}} created a post \"{{calloutName}}\"",
+          "description": "In <b>{{spaceName}}</b>, of which you are an admin."
+        },
+        "USER_SPACE_COMMUNITY_APPLICATION": {
+          "subject": "You have successfully applied to join {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_ADMIN_COMMUNITY_APPLICATION": {
+          "subject": "{{triggeredByName}} applied to join {{spaceName}}",
+          "description": "Review the application in space settings"
+        },
+        "USER_MESSAGE_RECEIVED": {
+          "subject": "{{triggeredByName}} sent you a DM",
+          "description": "{{message}}"
+        },
+        "ORGANIZATION_ADMIN_MENTIONED": {
+          "subject": "{{triggeredByName}} mentioned your organization in {{spaceName}}",
+          "description": "{{message}}"
+        },
+        "PLATFORM_FORUM_DISCUSSION_CREATED_FORUM": {
+          "subject": "{{triggeredByName}} started a new discussion in the forum {{forumName}}",
+          "description": "{{discussionName}} - {{discussionDescription}}"
+        },
+        "PLATFORM_FORUM_DISCUSSION_COMMENT_FORUM": {
+          "subject": "{{triggeredByName}} commented on your forum post in {{forumName}}",
+          "description": "{{comment}}"
+        },
+        "PLATFORM_ADMIN_USER_SIGNED_UP": {
+          "subject": "{{triggeredByName}} has signed up to the platform",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
+          "subject": "{{userName}} has been removed from the platform",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_USER_PROFILE_CREATED": {
+          "subject": "{{userName}} has been added to the platform",
+          "description": ""
         }
       },
       "emptyInbox": "No pending notifications",
@@ -3167,7 +3231,6 @@
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
       "login-flow-account-exists": "This email is already associated with an account. If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
-      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "claim-missing": "You haven't verified your Vidua identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Pick a password for your account"
     },

@@ -5,10 +5,10 @@ export const InAppPlatformAdminGlobalRoleChangedView = (notification: InAppNotif
   const { payload, triggeredBy } = notification;
 
   // do not display notification if these are missing
-  if (!triggeredBy?.profile?.displayName || !payload.contributor) {
+  if (!triggeredBy?.profile?.displayName) {
     return null;
   }
-  const contributor = payload.contributor;
+  const contributor = payload?.contributor;
 
   const notificationTextValues = {
     defaultValue: '',

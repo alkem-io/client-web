@@ -19,6 +19,7 @@ export const InAppSpaceAdminCollaborationCalloutContributionView = (notification
     defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     calloutName: callout?.framing?.profile?.displayName,
+    spaceName: payload.space?.about?.profile?.displayName,
   };
 
   return (
