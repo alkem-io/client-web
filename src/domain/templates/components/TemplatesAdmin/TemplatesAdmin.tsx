@@ -285,12 +285,11 @@ const TemplatesAdmin = ({
     }
   };
 
-  // Helper function to determine if a template section should be rendered
   const shouldRenderTemplateSection = <T extends { length: number }>(
     templates: T | undefined,
     templateType: TemplateType
   ): boolean => {
-    return (templates && templates.length > 0) || canCreateTemplates(templateType);
+    return (templates && templates.length > 0) || canCreateTemplates(templateType) || canImportTemplates(templateType);
   };
 
   // Actions (buttons for gallery)
