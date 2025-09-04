@@ -87,27 +87,26 @@ const MemoFooter = ({ memoUrl, createdBy, collaborationState, contentUpdatePolic
     if (!isAuthenticated) {
       return ReadonlyReason.Unauthenticated;
     }
+
+    if (!collaborationState?.synced) {
+      return ReadonlyReason.NotSynced;
+    }
+
+    // we are missing the case where the user can update but the capacity is reached
+
     // users can be part of the parent community with the option to be able to contribute
     // to the content of the child community without being part of it
     if (!collaborationState?.readOnly) {
       return null;
     }
-
-    if (collaborationState?.readOnly) {
-      return ReadonlyReason.Readonly;
-    }
-
+    // policy says only members can contribute, but user is not a member
     if (
       contentUpdatePolicy === ContentUpdatePolicy.Contributors &&
       getMyMembershipStatus() !== CommunityMembershipStatus.Member
     ) {
       return ReadonlyReason.NoMembership;
     }
-
-    if (!collaborationState?.synced) {
-      return ReadonlyReason.NotSynced;
-    }
-
+    // the user is read only because of the policy
     return ReadonlyReason.ContentUpdatePolicy;
   };
 
