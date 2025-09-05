@@ -11,19 +11,22 @@ import { useConfig } from '@/domain/platform/config/useConfig';
  * WARNING: About `mdast-util-gfm-autolink-literal` package.
  * We are not using this package directly, but do not remove the dependency from our package.json
  * See client-web/8607
- * An update on this package used by remark-gfm, has introduced a change that causes a failure on iPad devices.
+ * An update on this package used by remark-gfm, has introduced a change that causes an error on iPad devices.
+ *
  * https://github.com/syntax-tree/mdast-util-gfm-autolink-literal/releases
- * Between version 2.0.0 and 2.0.1 they introduced a regular expression to check email address that is not compatible with iPad browsers (yet)
+ * Between version 2.0.0 and 2.0.1 they introduced a regular expression to check email address that is not compatible with iPad browsers (yet).
+ * That regex starts with `/(?<=` which is a lookbehind assertion, that causes an error that in the browser console reads like: "invalid group specifier name".
  *
  * For reference, the hierarchy of the packages used is as follows:
- * WrapperMarkdown - This component, used to render pieces of markdown
- *   react-markdown - The main package for rendering markdown in React, often shortened as remark
+ * WrapperMarkdown - This component, used to render pieces of markdown.
+ *   react-markdown - The main package for rendering markdown in React, often shortened as "remark".
  *     remark-gfm - A plugin for react-markdown that adds support for GitHub Flavored Markdown (GFM). This adds features like tables, strikethrough, task lists...
  *       mdast-util-gfm - Is a dependency of remark-gfm included in package.json as "^3.0.0"
  *         mdast-util-gfm-autolink-literal - This is the dependency causing issues. mdast-util-gfm includes it in package.json as "^2.0.0".
  *
  * So, as mdast-util-gfm is compatible with any 2.x.x version of mdast-util-gfm-autolink-literal, we want to force npm to use 2.0.0 and not 2.0.1 or higher.
- * They may fix the issue in the future, or Apple may update their browsers to support the regex, so we will monitor this and remove the dependency from our package.json when possible.
+ * They may fix the issue in the future, or Apple may update their browsers to support the regex, 
+ * so we will have to monitor this and remove the dependency from our package.json when possible.
  */
 const allowedNodeTypes = ['iframe'] as const;
 
