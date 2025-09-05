@@ -149,7 +149,7 @@ const SubspaceContextProvider: FC<SubspaceProviderProps> = ({ children }) => {
     state = defaultValue;
   }
 
-  return <SubspaceContext.Provider value={state}>{children}</SubspaceContext.Provider>;
+  return <SubspaceContext value={state}>{children}</SubspaceContext>;
 };
 
 export default SubspaceContextProvider;

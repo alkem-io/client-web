@@ -113,10 +113,19 @@ const DashboardCalendarSection = ({ spaceId, level }: DashboardCalendarSectionPr
             <IconButton
               onClick={openDialogCreateEvent}
               size="large"
-              sx={{ padding: 0 }}
+              sx={{
+                padding: 0,
+                backgroundColor: 'primary.main',
+                '&:hover': {
+                  backgroundColor: theme => theme.palette.highlight.main,
+                  svg: {
+                    color: theme => theme.palette.highlight.contrastText,
+                  },
+                },
+              }}
               aria-label={t('calendar.add-event')}
             >
-              <RoundedIcon component={Add} size="medium" iconSize="small" />
+              <RoundedIcon component={Add} size="medium" iconSize="small" color="unset" />
             </IconButton>
           </Actions>
         )}

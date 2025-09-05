@@ -18,14 +18,14 @@ export const AuthFormHeader = ({
   return (
     <Gutters row justifyContent="space-between" sx={{ paddingBottom: 0 }}>
       <Box>
-        <Typography color="muted">{t('pages.home.sections.welcome.welcomeUnauthenticated')}</Typography>
+        <Typography color="muted.contrastText">{t('pages.home.sections.welcome.welcomeUnauthenticated')}</Typography>
         <Typography sx={{ fontSize: '40px', fontWeight: '500', paddingTop: 2 }} variant="h1">
           {title}
         </Typography>
       </Box>
       {!hideMessage && (
         <Box sx={{ display: 'flex', alignItems: 'end', flexDirection: 'column' }}>
-          <Typography sx={{ whiteSpace: 'nowrap' }} color="muted">
+          <Typography sx={{ whiteSpace: 'nowrap' }} color="muted.contrastText">
             {t(haveAccountMessage ? 'authentication.have-account' : 'authentication.no-account')}
           </Typography>
           <Link

@@ -28,9 +28,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <DashboardContext.Provider value={{ activityEnabled, setActivityEnabled, isOpen, setIsOpen }}>
-      {children}
-    </DashboardContext.Provider>
+    <DashboardContext value={{ activityEnabled, setActivityEnabled, isOpen, setIsOpen }}>{children}</DashboardContext>
   );
 };
 

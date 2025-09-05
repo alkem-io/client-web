@@ -42,7 +42,7 @@ export const FullscreenPreviewProvider = ({ children }: { children: ReactNode })
   };
 
   return (
-    <FullscreenPreviewContext.Provider
+    <FullscreenPreviewContext
       value={{
         state,
         openPreview,
@@ -50,7 +50,7 @@ export const FullscreenPreviewProvider = ({ children }: { children: ReactNode })
       }}
     >
       {children}
-    </FullscreenPreviewContext.Provider>
+    </FullscreenPreviewContext>
   );
 };
 

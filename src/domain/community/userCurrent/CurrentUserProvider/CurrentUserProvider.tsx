@@ -98,7 +98,7 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
   return error ? (
     <ErrorPage error={error} />
   ) : (
-    <CurrentUserContext.Provider value={providedValue}>{children}</CurrentUserContext.Provider>
+    <CurrentUserContext value={providedValue}>{children}</CurrentUserContext>
   );
 };
 
