@@ -1877,6 +1877,7 @@ export const SpaceAboutCardBannerFragmentDoc = gql`
     profile {
       id
       displayName
+      description
       url
       tagline
       cardBanner: visual(type: CARD) {

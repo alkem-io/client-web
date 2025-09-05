@@ -14,7 +14,7 @@ export const InAppSpaceCollaborationCalloutPostContributionCommentView = (notifi
   const notificationTextValues = {
     defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
-    calloutName: messageDetails?.parent?.displayName,
+    contributionName: messageDetails?.parent?.displayName,
     comment: messageDetails?.message,
     spaceName: payload?.space?.about?.profile?.displayName || '',
   };

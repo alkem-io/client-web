@@ -14,6 +14,7 @@ export const InAppUserSpaceCommunityInvitationView = (notification: InAppNotific
     defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     spaceName: space?.about?.profile?.displayName,
+    spaceDescription: space?.about?.profile?.description || '',
   };
 
   return (

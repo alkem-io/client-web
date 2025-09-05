@@ -1906,7 +1906,7 @@
         },
         "USER_COMMENT_REPLY": {
           "subject": "{{triggeredByName}} commented on your post {{parentName}}",
-          "description": "{{comment}}"
+          "description": ""
         },
         "USER_SPACE_COMMUNITY_INVITATION": {
           "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
@@ -1973,7 +1973,7 @@
           "description": ""
         },
         "SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT": {
-          "subject": "{{triggeredByName}} commented on {{calloutName}} in {{spaceName}}",
+          "subject": "{{triggeredByName}} commented on {{contributionName}} (contribution) in {{spaceName}}",
           "description": ""
         }
       },
