@@ -3,6 +3,7 @@ import {
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
   useMarkNotificationsAsReadMutation,
+  useInAppNotificationsUnreadCountQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import { ApolloCache } from '@apollo/client';
@@ -35,6 +36,10 @@ export const useInAppNotifications = () => {
   const [markAsRead] = useMarkNotificationsAsReadMutation();
 
   const { data, loading } = useInAppNotificationsQuery({
+    skip: !isEnabled,
+  });
+
+  const { data: unreadCountData } = useInAppNotificationsUnreadCountQuery({
     skip: !isEnabled,
   });
 
@@ -109,6 +114,7 @@ export const useInAppNotifications = () => {
 
   return {
     notificationsInApp,
+    unreadNotificationsCount: unreadCountData?.me?.notificationsUnreadCount ?? 0,
     isLoading: loading,
     updateNotificationState,
     markNotificationsAsRead,
