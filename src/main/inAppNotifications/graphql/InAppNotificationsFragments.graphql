@@ -77,9 +77,6 @@ fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationP
         id
         displayName
         url
-        visual(type: CARD) {
-          ...VisualModel
-        }
       }
     }
   }

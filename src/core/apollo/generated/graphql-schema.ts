@@ -29968,21 +29968,7 @@ export type InAppNotificationReceivedSubscription = {
                 framing: {
                   __typename?: 'CalloutFraming';
                   id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    visual?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                  };
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                 };
               }
             | undefined;
@@ -30417,9 +30403,7 @@ export type InAppNotificationReceivedSubscription = {
   };
 };
 
-export type InAppNotificationsQueryVariables = Exact<{
-  types?: InputMaybe<Array<NotificationEvent> | NotificationEvent>;
-}>;
+export type InAppNotificationsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InAppNotificationsQuery = {
   __typename?: 'Query';
@@ -30589,21 +30573,7 @@ export type InAppNotificationsQuery = {
                   framing: {
                     __typename?: 'CalloutFraming';
                     id: string;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      url: string;
-                      visual?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
-                    };
+                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                   };
                 }
               | undefined;
@@ -31219,21 +31189,7 @@ export type InAppNotificationAllTypesFragment = {
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  visual?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                };
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
               };
             }
           | undefined;
@@ -31676,15 +31632,7 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutFragment = {
         framing: {
           __typename?: 'CalloutFraming';
           id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            visual?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-          };
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         };
       }
     | undefined;

@@ -1,4 +1,4 @@
-import { NotificationEventInAppState, NotificationEvent } from '@/core/apollo/generated/graphql-schema';
+import { NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
 import {
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
@@ -28,39 +28,6 @@ const updateNotificationsCache = (
   });
 };
 
-// The set of notification event types currently being retrieved
-const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [
-  NotificationEvent.OrganizationAdminMentioned,
-  NotificationEvent.OrganizationAdminMessage,
-  NotificationEvent.OrganizationMessageSender,
-  NotificationEvent.PlatformAdminGlobalRoleChanged,
-  NotificationEvent.PlatformAdminSpaceCreated,
-  NotificationEvent.PlatformAdminUserProfileCreated,
-  NotificationEvent.PlatformAdminUserProfileRemoved,
-  NotificationEvent.PlatformForumDiscussionComment,
-  NotificationEvent.PlatformForumDiscussionCreated,
-  NotificationEvent.SpaceAdminCollaborationCalloutContribution,
-  NotificationEvent.SpaceAdminCommunityApplication,
-  NotificationEvent.SpaceAdminCommunityNewMember,
-  NotificationEvent.SpaceCollaborationCalloutComment,
-  NotificationEvent.SpaceCollaborationCalloutContribution,
-  NotificationEvent.SpaceCollaborationCalloutPostContributionComment,
-  NotificationEvent.SpaceCollaborationCalloutPublished,
-  NotificationEvent.SpaceCommunicationMessageSender,
-  NotificationEvent.SpaceCommunicationUpdate,
-  NotificationEvent.SpaceCommunityInvitationUserPlatform,
-  NotificationEvent.SpaceLeadCommunicationMessage,
-  NotificationEvent.UserCommentReply,
-  NotificationEvent.UserMentioned,
-  NotificationEvent.UserMessage,
-  NotificationEvent.UserMessageSender,
-  NotificationEvent.UserSignUpWelcome,
-  NotificationEvent.UserSpaceCommunityApplication,
-  NotificationEvent.UserSpaceCommunityInvitation,
-  NotificationEvent.UserSpaceCommunityJoined,
-  NotificationEvent.VirtualContributorAdminSpaceCommunityInvitation,
-];
-
 export const useInAppNotifications = () => {
   const { isEnabled } = useInAppNotificationsContext();
 
@@ -68,9 +35,6 @@ export const useInAppNotifications = () => {
   const [markAsRead] = useMarkNotificationsAsReadMutation();
 
   const { data, loading } = useInAppNotificationsQuery({
-    variables: {
-      types: NOTIFICATION_EVENT_TYPES,
-    },
     skip: !isEnabled,
   });
 

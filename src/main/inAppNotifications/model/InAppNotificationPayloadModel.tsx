@@ -52,4 +52,5 @@ export interface InAppNotificationPayloadModel {
     };
   };
   update?: string; // returning ID, todo: get the content of the update
+  spaceCommunicationMessage?: string;
 }

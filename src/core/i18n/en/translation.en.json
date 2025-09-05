@@ -1963,6 +1963,10 @@
         "PLATFORM_ADMIN_USER_PROFILE_CREATED": {
           "subject": "{{userName}} has been added to the platform",
           "description": ""
+        },
+        "SPACE_LEAD_COMMUNICATION_MESSAGE": {
+          "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
+          "description": "{{message}}"
         }
       },
       "emptyInbox": "No pending notifications",
