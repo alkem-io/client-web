@@ -1604,18 +1604,26 @@ export type InAppNotificationPayloadPlatformFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformForumDiscussionKeySpecifier = (
+  | 'comment'
+  | 'discussion'
   | 'type'
   | InAppNotificationPayloadPlatformForumDiscussionKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformForumDiscussionFieldPolicy = {
+  comment?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussion?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformGlobalRoleChangeKeySpecifier = (
+  | 'role'
   | 'type'
+  | 'user'
   | InAppNotificationPayloadPlatformGlobalRoleChangeKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformGlobalRoleChangeFieldPolicy = {
+  role?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformUserKeySpecifier = (
   | 'type'
@@ -1625,30 +1633,26 @@ export type InAppNotificationPayloadPlatformUserFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformUserMessageRoomKeySpecifier = (
-  | 'comment'
-  | 'commentOriginName'
-  | 'commentUrl'
-  | 'originalMessageID'
-  | 'roomID'
+  | 'messageDetails'
   | 'type'
   | 'user'
   | InAppNotificationPayloadPlatformUserMessageRoomKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformUserMessageRoomFieldPolicy = {
-  comment?: FieldPolicy<any> | FieldReadFunction<any>;
-  commentOriginName?: FieldPolicy<any> | FieldReadFunction<any>;
-  commentUrl?: FieldPolicy<any> | FieldReadFunction<any>;
-  originalMessageID?: FieldPolicy<any> | FieldReadFunction<any>;
-  roomID?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageDetails?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformUserProfileRemovedKeySpecifier = (
   | 'type'
+  | 'userDisplayName'
+  | 'userEmail'
   | InAppNotificationPayloadPlatformUserProfileRemovedKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformUserProfileRemovedFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+  userDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadSpaceKeySpecifier = ('type' | InAppNotificationPayloadSpaceKeySpecifier)[];
 export type InAppNotificationPayloadSpaceFieldPolicy = {
@@ -1662,6 +1666,19 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutKeySpecifier = (
 )[];
 export type InAppNotificationPayloadSpaceCollaborationCalloutFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier = (
+  | 'callout'
+  | 'messageDetails'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageDetails?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2280,6 +2297,8 @@ export type MeQueryResultsKeySpecifier = (
   | 'communityInvitationsCount'
   | 'id'
   | 'mySpaces'
+  | 'notifications'
+  | 'notificationsUnreadCount'
   | 'spaceMembershipsFlat'
   | 'spaceMembershipsHierarchical'
   | 'user'
@@ -2291,6 +2310,8 @@ export type MeQueryResultsFieldPolicy = {
   communityInvitationsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  notifications?: FieldPolicy<any> | FieldReadFunction<any>;
+  notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsFlat?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsHierarchical?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2351,6 +2372,18 @@ export type MessageAnswerQuestionFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   question?: FieldPolicy<any> | FieldReadFunction<any>;
   success?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
+export type MessageDetailsFieldPolicy = {
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+  parent?: FieldPolicy<any> | FieldReadFunction<any>;
+  room?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MessageParentKeySpecifier = ('displayName' | 'id' | 'url' | MessageParentKeySpecifier)[];
+export type MessageParentFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MetadataKeySpecifier = ('services' | MetadataKeySpecifier)[];
 export type MetadataFieldPolicy = {
@@ -3173,7 +3206,6 @@ export type QueryKeySpecifier = (
   | 'lookupByName'
   | 'me'
   | 'notificationRecipients'
-  | 'notificationsInApp'
   | 'organization'
   | 'organizations'
   | 'organizationsPaginated'
@@ -3210,7 +3242,6 @@ export type QueryFieldPolicy = {
   lookupByName?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   notificationRecipients?: FieldPolicy<any> | FieldReadFunction<any>;
-  notificationsInApp?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5232,6 +5263,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCollaborationCalloutFieldPolicy;
   };
+  InAppNotificationPayloadSpaceCollaborationCalloutPostComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFieldPolicy;
+  };
   InAppNotificationPayloadSpaceCommunicationMessageDirect?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5404,6 +5442,14 @@ export type StrictTypedTypePolicies = {
   MessageAnswerQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageAnswerQuestionKeySpecifier | (() => undefined | MessageAnswerQuestionKeySpecifier);
     fields?: MessageAnswerQuestionFieldPolicy;
+  };
+  MessageDetails?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MessageDetailsKeySpecifier | (() => undefined | MessageDetailsKeySpecifier);
+    fields?: MessageDetailsFieldPolicy;
+  };
+  MessageParent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MessageParentKeySpecifier | (() => undefined | MessageParentKeySpecifier);
+    fields?: MessageParentFieldPolicy;
   };
   Metadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MetadataKeySpecifier | (() => undefined | MetadataKeySpecifier);

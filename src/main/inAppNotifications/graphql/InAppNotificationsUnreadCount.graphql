@@ -1,0 +1,5 @@
+query InAppNotificationsUnreadCount($types: [NotificationEvent!]) {
+  me {
+    notificationsUnreadCount(filter: { types: $types })
+  }
+}

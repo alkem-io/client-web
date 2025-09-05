@@ -3,6 +3,7 @@ fragment SpaceAboutCardBanner on SpaceAbout {
   profile {
     id
     displayName
+    description
     url
     tagline
     cardBanner: visual(type: CARD) {

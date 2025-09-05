@@ -14,6 +14,18 @@ export interface InAppNotificationPayloadModel {
         }
       | undefined;
   };
+  user?: {
+    type?: RoleSetContributorType;
+    profile:
+      | {
+          displayName: string;
+          url: string;
+          visual?: {
+            uri: string;
+          };
+        }
+      | undefined;
+  };
   callout?: {
     framing:
       | {
@@ -34,6 +46,7 @@ export interface InAppNotificationPayloadModel {
         | {
             displayName?: string;
             url?: string;
+            description?: string;
             visual?: {
               uri?: string;
             };
@@ -41,9 +54,17 @@ export interface InAppNotificationPayloadModel {
         | undefined;
     };
   };
-  roomID?: string;
-  originalMessageID?: string;
-  commentOriginName?: string;
-  comment?: string;
-  commentUrl?: string;
+  messageDetails?: {
+    message: string;
+    parent: {
+      displayName: string;
+      url: string;
+    };
+    room: {
+      id: string;
+    };
+  };
+  update?: string; // returning ID, todo: get the content of the update
+  spaceCommunicationMessage?: string;
+  role?: string;
 }

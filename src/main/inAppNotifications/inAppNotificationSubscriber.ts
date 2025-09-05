@@ -26,14 +26,20 @@ export const InAppNotificationSubscriber = () => {
 
       client.cache.modify({
         fields: {
-          notificationsInApp(existingNotifications = []) {
+          me(existingMe) {
+            if (!existingMe) return existingMe;
+
             const newNotificationRef = client.cache.writeFragment({
               data: newNotification,
               fragment: InAppNotificationAllTypesFragmentDoc,
               fragmentName: 'InAppNotificationAllTypes',
             });
-            // Add new notification to the beginning of the list
-            return [newNotificationRef, ...existingNotifications];
+
+            // Update both the notifications list and the unread count
+            return {
+              ...existingMe,
+              notifications: [newNotificationRef, ...(existingMe.notifications || [])],
+            };
           },
         },
       });
