@@ -1604,18 +1604,26 @@ export type InAppNotificationPayloadPlatformFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformForumDiscussionKeySpecifier = (
+  | 'comment'
+  | 'discussion'
   | 'type'
   | InAppNotificationPayloadPlatformForumDiscussionKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformForumDiscussionFieldPolicy = {
+  comment?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussion?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformGlobalRoleChangeKeySpecifier = (
+  | 'role'
   | 'type'
+  | 'user'
   | InAppNotificationPayloadPlatformGlobalRoleChangeKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformGlobalRoleChangeFieldPolicy = {
+  role?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformUserKeySpecifier = (
   | 'type'
@@ -1637,10 +1645,14 @@ export type InAppNotificationPayloadPlatformUserMessageRoomFieldPolicy = {
 };
 export type InAppNotificationPayloadPlatformUserProfileRemovedKeySpecifier = (
   | 'type'
+  | 'userDisplayName'
+  | 'userEmail'
   | InAppNotificationPayloadPlatformUserProfileRemovedKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformUserProfileRemovedFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+  userDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadSpaceKeySpecifier = ('type' | InAppNotificationPayloadSpaceKeySpecifier)[];
 export type InAppNotificationPayloadSpaceFieldPolicy = {

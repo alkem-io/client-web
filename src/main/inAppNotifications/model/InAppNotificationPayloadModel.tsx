@@ -14,6 +14,18 @@ export interface InAppNotificationPayloadModel {
         }
       | undefined;
   };
+  user?: {
+    type?: RoleSetContributorType;
+    profile:
+      | {
+          displayName: string;
+          url: string;
+          visual?: {
+            uri: string;
+          };
+        }
+      | undefined;
+  };
   callout?: {
     framing:
       | {
@@ -53,4 +65,5 @@ export interface InAppNotificationPayloadModel {
   };
   update?: string; // returning ID, todo: get the content of the update
   spaceCommunicationMessage?: string;
+  role?: string;
 }

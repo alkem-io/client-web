@@ -2789,14 +2789,22 @@ export type InAppNotificationPayloadPlatform = InAppNotificationPayload & {
 
 export type InAppNotificationPayloadPlatformForumDiscussion = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
+  /** The comment ID. */
+  comment: Scalars['String']['output'];
+  /** The discussion ID. */
+  discussion: Scalars['String']['output'];
   /** The payload type. */
   type: NotificationEventPayload;
 };
 
 export type InAppNotificationPayloadPlatformGlobalRoleChange = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
+  /** The new role. */
+  role?: Maybe<Scalars['String']['output']>;
   /** The payload type. */
   type: NotificationEventPayload;
+  /** The User whose role was changed. */
+  user?: Maybe<User>;
 };
 
 export type InAppNotificationPayloadPlatformUser = InAppNotificationPayload & {
@@ -2812,13 +2820,17 @@ export type InAppNotificationPayloadPlatformUserMessageRoom = InAppNotificationP
   /** The payload type. */
   type: NotificationEventPayload;
   /** The User for the message. */
-  user: User;
+  user?: Maybe<User>;
 };
 
 export type InAppNotificationPayloadPlatformUserProfileRemoved = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
   /** The payload type. */
   type: NotificationEventPayload;
+  /** The display name of the User that was removed. */
+  userDisplayName?: Maybe<Scalars['String']['output']>;
+  /** The email of the User that was removed. */
+  userEmail?: Maybe<Scalars['String']['output']>;
 };
 
 export type InAppNotificationPayloadSpace = InAppNotificationPayload & {
@@ -2900,7 +2912,7 @@ export type InAppNotificationPayloadUserMessageDirect = InAppNotificationPayload
   /** The payload type. */
   type: NotificationEventPayload;
   /** The User that was sent the message. */
-  user: User;
+  user?: Maybe<User>;
 };
 
 export type InnovationFlow = {
@@ -29944,7 +29956,32 @@ export type InAppNotificationReceivedSubscription = {
         }
       | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
-      | { __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange'; type: NotificationEventPayload }
+      | {
+          __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
+          type: NotificationEventPayload;
+          role?: string | undefined;
+          user?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
       | { __typename?: 'InAppNotificationPayloadPlatformUser'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
@@ -30386,19 +30423,27 @@ export type InAppNotificationReceivedSubscription = {
           __typename?: 'InAppNotificationPayloadUserMessageDirect';
           type: NotificationEventPayload;
           userMessage?: string | undefined;
-          user: {
-            __typename?: 'User';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              url: string;
-              visual?:
-                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-                | undefined;
-            };
-          };
+          user?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | undefined;
         };
   };
 };
@@ -30549,7 +30594,32 @@ export type InAppNotificationsQuery = {
           }
         | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
         | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
-        | { __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange'; type: NotificationEventPayload }
+        | {
+            __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
+            type: NotificationEventPayload;
+            role?: string | undefined;
+            user?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
         | { __typename?: 'InAppNotificationPayloadPlatformUser'; type: NotificationEventPayload }
         | {
             __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
@@ -30991,25 +31061,27 @@ export type InAppNotificationsQuery = {
             __typename?: 'InAppNotificationPayloadUserMessageDirect';
             type: NotificationEventPayload;
             userMessage?: string | undefined;
-            user: {
-              __typename?: 'User';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            };
+            user?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
           };
     }>;
   };
@@ -31165,7 +31237,32 @@ export type InAppNotificationAllTypesFragment = {
       }
     | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
-    | { __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange'; type: NotificationEventPayload }
+    | {
+        __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
+        type: NotificationEventPayload;
+        role?: string | undefined;
+        user?:
+          | {
+              __typename?: 'User';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            }
+          | undefined;
+      }
     | { __typename?: 'InAppNotificationPayloadPlatformUser'; type: NotificationEventPayload }
     | {
         __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
@@ -31607,19 +31704,27 @@ export type InAppNotificationAllTypesFragment = {
         __typename?: 'InAppNotificationPayloadUserMessageDirect';
         type: NotificationEventPayload;
         userMessage?: string | undefined;
-        user: {
-          __typename?: 'User';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            visual?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-          };
-        };
+        user?:
+          | {
+              __typename?: 'User';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            }
+          | undefined;
       };
 };
 
@@ -31852,6 +31957,22 @@ export type InAppNotificationPayloadOrganizationMessageRoomFragment = {
 export type InAppNotificationPayloadPlatformGlobalRoleChangeFragment = {
   __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
   type: NotificationEventPayload;
+  role?: string | undefined;
+  user?:
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type InAppNotificationPayloadSpaceFragment = {
@@ -32119,19 +32240,21 @@ export type InAppNotificationPayloadSpaceCommunityInvitationPlatformFragment = {
 export type InAppNotificationPayloadUserMessageDirectFragment = {
   __typename?: 'InAppNotificationPayloadUserMessageDirect';
   userMessage?: string | undefined;
-  user: {
-    __typename?: 'User';
-    id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      url: string;
-      visual?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-        | undefined;
-    };
-  };
+  user?:
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type InAppNotificationsUnreadCountQueryVariables = Exact<{

@@ -2900,7 +2900,20 @@ export const InAppNotificationPayloadOrganizationMessageRoomFragmentDoc = gql`
 export const InAppNotificationPayloadPlatformGlobalRoleChangeFragmentDoc = gql`
   fragment InAppNotificationPayloadPlatformGlobalRoleChange on InAppNotificationPayloadPlatformGlobalRoleChange {
     type
+    role
+    user {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
+    }
   }
+  ${VisualModelFragmentDoc}
 `;
 export const InAppNotificationPayloadSpaceFragmentDoc = gql`
   fragment InAppNotificationPayloadSpace on InAppNotificationPayloadSpace {

@@ -8,12 +8,12 @@ export const InAppPlatformAdminGlobalRoleChangedView = (notification: InAppNotif
   if (!triggeredBy?.profile?.displayName) {
     return null;
   }
-  const contributor = payload?.contributor;
 
   const notificationTextValues = {
     defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
-    contributorName: contributor?.profile?.displayName,
+    userName: payload?.user?.profile?.displayName,
+    role: payload?.role || 'global role',
   };
 
   return (

@@ -159,6 +159,18 @@ fragment InAppNotificationPayloadOrganizationMessageRoom on InAppNotificationPay
 
 fragment InAppNotificationPayloadPlatformGlobalRoleChange on InAppNotificationPayloadPlatformGlobalRoleChange {
   type
+  role
+  user {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
 }
 
 fragment InAppNotificationPayloadSpace on InAppNotificationPayloadSpace {
