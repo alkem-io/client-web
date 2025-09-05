@@ -247,11 +247,9 @@ const CalloutSettingsContainer = ({
             {t('common.fullScreen')}
           </MenuItemWithIcon>
         )}
-        {!expanded && (
-          <MenuItemWithIcon key="share" iconComponent={ShareOutlined} onClick={() => setShareDialogOpen(true)}>
-            {t('buttons.share')}
-          </MenuItemWithIcon>
-        )}
+        <MenuItemWithIcon key="share" iconComponent={ShareOutlined} onClick={() => setShareDialogOpen(true)}>
+          {t('buttons.share')}
+        </MenuItemWithIcon>
       </Menu>
       <CalloutContributionsSortDialog open={sortDialogOpen} onClose={handleSortDialogClose} callout={callout} />
       <CalloutVisibilityChangeDialog
