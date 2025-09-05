@@ -18,7 +18,6 @@ export type Scalars = {
   JSON: { input: string; output: string };
   LifecycleDefinition: { input: string; output: string };
   Markdown: { input: string; output: string };
-  MemoContent: { input: string; output: string };
   MessageID: { input: string; output: string };
   NameID: { input: string; output: string };
   SearchCursor: { input: string; output: string };
@@ -2017,10 +2016,12 @@ export type CreateLocationInput = {
 
 export type CreateMemoData = {
   __typename?: 'CreateMemoData';
+  markdown?: Maybe<Scalars['Markdown']['output']>;
   profile?: Maybe<CreateProfileData>;
 };
 
 export type CreateMemoInput = {
+  markdown?: InputMaybe<Scalars['Markdown']['input']>;
   profile?: InputMaybe<CreateProfileInput>;
 };
 
@@ -2842,9 +2843,9 @@ export type InAppNotificationPayloadSpace = InAppNotificationPayload & {
 export type InAppNotificationPayloadSpaceCollaborationCallout = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
   /** The Callout that was published. */
-  callout?: Maybe<Callout>;
+  callout: Callout;
   /** Where the callout is located. */
-  space?: Maybe<Space>;
+  space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -2882,9 +2883,9 @@ export type InAppNotificationPayloadSpaceCommunityApplication = InAppNotificatio
 export type InAppNotificationPayloadSpaceCommunityContributor = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
   /** The Contributor that joined. */
-  contributor?: Maybe<Contributor>;
+  contributor: Contributor;
   /** The Space that was joined. */
-  space?: Maybe<Space>;
+  space: Space;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -6520,6 +6521,7 @@ export type SearchResultSpace = SearchResult & {
 /** The different types of available search results. */
 export enum SearchResultType {
   Callout = 'CALLOUT',
+  Memo = 'MEMO',
   Organization = 'ORGANIZATION',
   Post = 'POST',
   Space = 'SPACE',
@@ -7275,7 +7277,7 @@ export type UpdateCalloutEntityInput = {
 
 export type UpdateCalloutFramingInput = {
   link?: InputMaybe<UpdateLinkInput>;
-  /** The new content to be used. */
+  /** The new markdown content for the Memo. */
   memoContent?: InputMaybe<Scalars['Markdown']['input']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
@@ -10087,6 +10089,7 @@ export type CalloutPageCalloutQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  markdown?: string | undefined;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -12679,7 +12682,7 @@ export type CalloutContentQuery = {
               | {
                   __typename?: 'Memo';
                   id: string;
-                  content?: string | undefined;
+                  markdown?: string | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12852,6 +12855,7 @@ export type UpdateCalloutContentMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13216,6 +13220,7 @@ export type UpdateCalloutVisibilityMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13667,6 +13672,7 @@ export type CreateCalloutMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -14121,6 +14127,7 @@ export type CalloutDetailsQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  markdown?: string | undefined;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -14559,6 +14566,7 @@ export type CalloutDetailsFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -14796,6 +14804,18 @@ export type CalloutDetailsFragment = {
   };
 };
 
+export type MemoMarkdownQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+export type MemoMarkdownQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
+  };
+};
+
 export type MemoDetailsQueryVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;
@@ -14810,6 +14830,7 @@ export type MemoDetailsQuery = {
           id: string;
           nameID: string;
           createdDate: Date;
+          markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -14893,6 +14914,7 @@ export type MemoDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
+  markdown?: string | undefined;
   contentUpdatePolicy: ContentUpdatePolicy;
   profile: {
     __typename?: 'Profile';
@@ -26776,6 +26798,14 @@ export type TemplateContentQuery = {
                         };
                       }
                     | undefined;
+                  memo?:
+                    | {
+                        __typename?: 'Memo';
+                        id: string;
+                        markdown?: string | undefined;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
                 };
                 settings: {
                   __typename?: 'CalloutSettings';
@@ -27308,6 +27338,14 @@ export type CalloutTemplateContentFragment = {
           profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }
       | undefined;
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          markdown?: string | undefined;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
   };
   settings: {
     __typename?: 'CalloutSettings';
@@ -27328,6 +27366,13 @@ export type CalloutTemplateContentFragment = {
     postDescription?: string | undefined;
     whiteboardContent?: string | undefined;
   };
+};
+
+export type MemoTemplateDetailsFragment = {
+  __typename?: 'Memo';
+  id: string;
+  markdown?: string | undefined;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
 export type CommunityGuidelinesTemplateContentFragment = {
@@ -27990,6 +28035,7 @@ export type UpdateCalloutTemplateMutation = {
             };
           }
         | undefined;
+      memo?: { __typename?: 'Memo'; id: string; markdown?: string | undefined } | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
@@ -29812,68 +29858,64 @@ export type InAppNotificationReceivedSubscription = {
       | {
           __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
           type: NotificationEventPayload;
-          callout?:
-            | {
-                __typename?: 'Callout';
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                framing: {
-                  __typename?: 'CalloutFraming';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    visual?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
-          space?:
-            | {
-                __typename?: 'Space';
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            };
+          };
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                level: SpaceLevel;
-                about: {
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
+                displayName: string;
+                url: string;
+                tagline?: string | undefined;
+                cardBanner?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+            };
+          };
         }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate'; type: NotificationEventPayload }
@@ -29881,44 +29923,42 @@ export type InAppNotificationReceivedSubscription = {
       | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
           type: NotificationEventPayload;
-          space?:
-            | {
-                __typename?: 'Space';
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                level: SpaceLevel;
-                about: {
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
-          contributor?:
+                displayName: string;
+                url: string;
+                tagline?: string | undefined;
+                cardBanner?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+            };
+          };
+          contributor:
             | {
                 __typename: 'Organization';
                 id: string;
@@ -29975,8 +30015,7 @@ export type InAppNotificationReceivedSubscription = {
                       }
                     | undefined;
                 };
-              }
-            | undefined;
+              };
         }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform'; type: NotificationEventPayload }
@@ -30058,68 +30097,64 @@ export type InAppNotificationsQuery = {
       | {
           __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
           type: NotificationEventPayload;
-          callout?:
-            | {
-                __typename?: 'Callout';
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                framing: {
-                  __typename?: 'CalloutFraming';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    visual?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
-          space?:
-            | {
-                __typename?: 'Space';
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            };
+          };
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                level: SpaceLevel;
-                about: {
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
+                displayName: string;
+                url: string;
+                tagline?: string | undefined;
+                cardBanner?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+            };
+          };
         }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate'; type: NotificationEventPayload }
@@ -30127,44 +30162,42 @@ export type InAppNotificationsQuery = {
       | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
           type: NotificationEventPayload;
-          space?:
-            | {
-                __typename?: 'Space';
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                level: SpaceLevel;
-                about: {
-                  __typename?: 'SpaceAbout';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
-                      | undefined;
-                  };
-                };
-              }
-            | undefined;
-          contributor?:
+                displayName: string;
+                url: string;
+                tagline?: string | undefined;
+                cardBanner?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+            };
+          };
+          contributor:
             | {
                 __typename: 'Organization';
                 id: string;
@@ -30221,8 +30254,7 @@ export type InAppNotificationsQuery = {
                       }
                     | undefined;
                 };
-              }
-            | undefined;
+              };
         }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation'; type: NotificationEventPayload }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform'; type: NotificationEventPayload }
@@ -30314,68 +30346,52 @@ export type InAppNotificationAllTypesFragment = {
     | {
         __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
         type: NotificationEventPayload;
-        callout?:
-          | {
-              __typename?: 'Callout';
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              framing: {
-                __typename?: 'CalloutFraming';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  visual?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                };
-              };
-            }
-          | undefined;
-        space?:
-          | {
-              __typename?: 'Space';
+              displayName: string;
+              url: string;
+              visual?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
+            };
+          };
+        };
+        space: {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              };
-            }
-          | undefined;
+              displayName: string;
+              url: string;
+              tagline?: string | undefined;
+              cardBanner?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+            };
+          };
+        };
       }
     | { __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate'; type: NotificationEventPayload }
@@ -30383,44 +30399,36 @@ export type InAppNotificationAllTypesFragment = {
     | {
         __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
         type: NotificationEventPayload;
-        space?:
-          | {
-              __typename?: 'Space';
+        space: {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              level: SpaceLevel;
-              about: {
-                __typename?: 'SpaceAbout';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
-              };
-            }
-          | undefined;
-        contributor?:
+              displayName: string;
+              url: string;
+              tagline?: string | undefined;
+              cardBanner?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+            };
+          };
+        };
+        contributor:
           | {
               __typename: 'Organization';
               id: string;
@@ -30477,8 +30485,7 @@ export type InAppNotificationAllTypesFragment = {
                     }
                   | undefined;
               };
-            }
-          | undefined;
+            };
       }
     | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation'; type: NotificationEventPayload }
     | { __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform'; type: NotificationEventPayload }
@@ -30487,92 +30494,86 @@ export type InAppNotificationAllTypesFragment = {
 
 export type InAppNotificationPayloadSpaceCollaborationCalloutFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
-  callout?:
-    | {
-        __typename?: 'Callout';
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
         id: string;
-        framing: {
-          __typename?: 'CalloutFraming';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            visual?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-          };
-        };
-      }
-    | undefined;
-  space?:
-    | {
-        __typename?: 'Space';
+        displayName: string;
+        url: string;
+        visual?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+      };
+    };
+  };
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
         id: string;
-        level: SpaceLevel;
-        about: {
-          __typename?: 'SpaceAbout';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-          };
-        };
-      }
-    | undefined;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+    };
+  };
 };
 
 export type InAppNotificationSpaceCommunityContributorFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
-  space?:
-    | {
-        __typename?: 'Space';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
         id: string;
-        level: SpaceLevel;
-        about: {
-          __typename?: 'SpaceAbout';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-          };
-        };
-      }
-    | undefined;
-  contributor?:
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+          | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+    };
+  };
+  contributor:
     | {
         __typename: 'Organization';
         id: string;
@@ -30611,8 +30612,7 @@ export type InAppNotificationSpaceCommunityContributorFragment = {
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
         };
-      }
-    | undefined;
+      };
 };
 
 export type SpaceNotificationFragment = {
@@ -33080,8 +33080,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -33120,8 +33128,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -33164,8 +33180,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -33209,8 +33233,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -33249,8 +33281,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -33298,8 +33338,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -33342,8 +33390,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -33391,8 +33447,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -33440,8 +33504,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -33511,8 +33583,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -33556,8 +33636,16 @@ export type LatestContributionsGroupedQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -33572,6 +33660,26 @@ export type LatestContributionsGroupedQuery = {
           | undefined;
       }
   >;
+};
+
+export type ActivityLogSpaceVisualsFragment = {
+  __typename?: 'Space';
+  id: string;
+  about: {
+    __typename?: 'SpaceAbout';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+        | undefined;
+      cardBanner?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+        | undefined;
+    };
+  };
 };
 
 export type LatestContributionsSpacesFlatQueryVariables = Exact<{ [key: string]: never }>;
@@ -33589,7 +33697,17 @@ export type LatestContributionsSpacesFlatQuery = {
         about: {
           __typename?: 'SpaceAbout';
           id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
         };
       };
     }>;

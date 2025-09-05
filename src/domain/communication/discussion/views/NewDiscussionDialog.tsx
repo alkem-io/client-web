@@ -44,8 +44,16 @@ const NewDiscussionDialog = ({ open, onClose, forumId, categories }: NewDiscussi
   };
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} fullWidth fullScreen={isSmallScreen}>
-      <DialogHeader onClose={onClose}>{t('pages.forum.new-title')}</DialogHeader>
+    <DialogWithGrid
+      open={open}
+      onClose={onClose}
+      fullWidth
+      fullScreen={isSmallScreen}
+      aria-labelledby="new-discussion-dialog"
+    >
+      <DialogHeader id="new-discussion-dialog" onClose={onClose}>
+        {t('pages.forum.new-title')}
+      </DialogHeader>
       <DialogContent>
         <DiscussionForm onSubmit={handleSubmit} categories={categories} />
       </DialogContent>

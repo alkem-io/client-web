@@ -36,8 +36,8 @@ const LicensePlanDialog = ({
   const sortedLicensePlans = licensePlans?.slice().sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
-    <DialogWithGrid open={open} onClose={onClose}>
-      <DialogHeader title={t('pages.admin.spaces.manageLicensePlans')} onClose={onClose} />
+    <DialogWithGrid open={open} onClose={onClose} aria-labelledby="license-plan-dialog">
+      <DialogHeader id="license-plan-dialog" title={t('pages.admin.spaces.manageLicensePlans')} onClose={onClose} />
       <DialogContent>
         {sortedLicensePlans && (
           <LicensePlansTable

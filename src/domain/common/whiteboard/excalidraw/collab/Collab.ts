@@ -143,7 +143,7 @@ class Collab {
     this.destroySocketClient();
 
     const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted().map(element => {
-      if (isImageElement(element) && element.status === 'saved') {
+      if (isImageElement(element) && 'status' in element && element.status === 'saved') {
         return newElementWith(element, { status: 'pending' });
       }
       return element;
@@ -209,20 +209,16 @@ class Collab {
                   await this.filesManager.loadFiles({ files: payload.files });
                 }
               }
-
-              const excalidrawModule = await this.excalidrawUtils;
-
-              // Auto-fit content to viewport if zoomToFit is available
-              if ('zoomToFit' in excalidrawModule && typeof excalidrawModule.zoomToFit === 'function') {
-                try {
-                  excalidrawModule.zoomToFit({
-                    targetElements: this.excalidrawAPI.getSceneElementsIncludingDeleted(),
-                    appState: this.excalidrawAPI.getAppState(),
-                    fitToViewport: true,
-                  });
-                } catch (error) {
-                  console.warn('Error calling zoomToFit:', error);
-                }
+              try {
+                this.excalidrawAPI.scrollToContent(payload.elements, {
+                  animate: false,
+                  fitToViewport: true,
+                  // both values help with scaling issue when the content is displayed
+                  viewportZoomFactor: 0.75, // 75% of the viewport, on preview
+                  maxZoom: 1, // 100% zoom, in the whiteboard
+                });
+              } catch (error) {
+                console.warn('Error trying to fit to content:', error, ' - ignoring');
               }
             },
             'client-broadcast': async (binaryData: ArrayBuffer) => {

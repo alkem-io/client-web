@@ -98,6 +98,7 @@ const CalloutHeader = ({
     <DialogHeader
       actions={calloutActions ? (expanded ? expandedActions() : collapsedActions()) : null}
       titleContainerProps={{ display: 'block', position: 'relative' }}
+      id="callout-title"
     >
       {hasCalloutDetails && (
         <Authorship

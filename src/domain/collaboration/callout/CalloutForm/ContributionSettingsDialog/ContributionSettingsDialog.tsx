@@ -71,10 +71,11 @@ const ContributionSettingsDialog = ({
 
   return (
     <>
-      <DialogWithGrid columns={6} open={open} onClose={handleBack}>
+      <DialogWithGrid columns={6} open={open} onClose={handleBack} aria-labelledby="contribution-settings-dialog-title">
         <DialogHeader
           title={t('callout.create.contributionSettings.contributionTypes.settings.title')}
           onClose={handleBack}
+          id="contribution-settings-dialog-title"
         />
         <DialogContent>
           <Gutters disablePadding>

@@ -1,3 +1,5 @@
+import './styles.scss';
+
 import { useMemo } from 'react';
 import { EditorOptions, Extensions } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';

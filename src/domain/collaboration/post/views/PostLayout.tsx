@@ -11,8 +11,14 @@ export interface PostLayoutProps {
 }
 
 export const PostLayout = ({ currentSection, onClose, children }: PropsWithChildren<PostLayoutProps>) => (
-  <DialogWithGrid open={!!currentSection} columns={12} onClose={onClose} disableScrollLock>
-    <DialogHeader onClose={onClose} actions={<PostTabs currentTab={currentSection} />} />
+  <DialogWithGrid
+    open={!!currentSection}
+    columns={12}
+    onClose={onClose}
+    disableScrollLock
+    aria-labelledby="post-dialog-title"
+  >
+    <DialogHeader id="post-dialog-title" onClose={onClose} actions={<PostTabs currentTab={currentSection} />} />
     <DialogContent>{children}</DialogContent>
   </DialogWithGrid>
 );
