@@ -13,7 +13,7 @@ export const InAppSpaceLeadCommunicationMessageView = (notification: InAppNotifi
     defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     spaceName: payload?.space?.about?.profile?.displayName || '',
-    message: payload?.spaceCommunicationMessage,
+    comment: payload?.spaceCommunicationMessage,
   };
 
   return (
