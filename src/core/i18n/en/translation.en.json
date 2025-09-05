@@ -1971,6 +1971,10 @@
         "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
           "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}",
           "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT": {
+          "subject": "{{triggeredByName}} commented on {{calloutName}} in {{spaceName}}",
+          "description": "{{message}}"
         }
       },
       "emptyInbox": "No pending notifications",

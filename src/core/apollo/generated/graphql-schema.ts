@@ -2849,6 +2849,18 @@ export type InAppNotificationPayloadSpaceCollaborationCallout = InAppNotificatio
   type: NotificationEventPayload;
 };
 
+export type InAppNotificationPayloadSpaceCollaborationCalloutPostComment = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
+  /** The Callout that was published. */
+  callout?: Maybe<Callout>;
+  /** The details of the message. */
+  messageDetails: MessageDetails;
+  /** The Space where the comment was made. */
+  space?: Maybe<Space>;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
 export type InAppNotificationPayloadSpaceCommunicationMessageDirect = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
   /** The message content. */
@@ -5140,6 +5152,7 @@ export enum NotificationEventPayload {
   PlatformUserProfileRemoved = 'PLATFORM_USER_PROFILE_REMOVED',
   Space = 'SPACE',
   SpaceCollaborationCallout = 'SPACE_COLLABORATION_CALLOUT',
+  SpaceCollaborationCalloutPostComment = 'SPACE_COLLABORATION_CALLOUT_POST_COMMENT',
   SpaceCommunicationMessageDirect = 'SPACE_COMMUNICATION_MESSAGE_DIRECT',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
   SpaceCommunityApplication = 'SPACE_COMMUNITY_APPLICATION',
@@ -30048,6 +30061,64 @@ export type InAppNotificationReceivedSubscription = {
             | undefined;
         }
       | {
+          __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
+          type: NotificationEventPayload;
+          messageDetails: {
+            __typename?: 'MessageDetails';
+            message: string;
+            parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+            room: { __typename?: 'Room'; id: string };
+          };
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          callout?:
+            | {
+                __typename?: 'Callout';
+                id: string;
+                framing: {
+                  __typename?: 'CalloutFraming';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                };
+              }
+            | undefined;
+        }
+      | {
           __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
           type: NotificationEventPayload;
           spaceCommunicationMessage: string;
@@ -30681,6 +30752,64 @@ export type InAppNotificationsQuery = {
                           }
                         | undefined;
                     };
+                  };
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
+            type: NotificationEventPayload;
+            messageDetails: {
+              __typename?: 'MessageDetails';
+              message: string;
+              parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+              room: { __typename?: 'Room'; id: string };
+            };
+            space?:
+              | {
+                  __typename?: 'Space';
+                  id: string;
+                  level: SpaceLevel;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      tagline?: string | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+            callout?:
+              | {
+                  __typename?: 'Callout';
+                  id: string;
+                  framing: {
+                    __typename?: 'CalloutFraming';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                   };
                 }
               | undefined;
@@ -31324,6 +31453,64 @@ export type InAppNotificationAllTypesFragment = {
                       }
                     | undefined;
                 };
+              };
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
+        type: NotificationEventPayload;
+        messageDetails: {
+          __typename?: 'MessageDetails';
+          message: string;
+          parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+          room: { __typename?: 'Room'; id: string };
+        };
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        callout?:
+          | {
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
               };
             }
           | undefined;
@@ -32252,6 +32439,58 @@ export type InAppNotificationPayloadUserMessageDirectFragment = {
           visual?:
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment = {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
+  messageDetails: {
+    __typename?: 'MessageDetails';
+    message: string;
+    parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+    room: { __typename?: 'Room'; id: string };
+  };
+  space?:
+    | {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            tagline?: string | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
+  callout?:
+    | {
+        __typename?: 'Callout';
+        id: string;
+        framing: {
+          __typename?: 'CalloutFraming';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         };
       }
     | undefined;

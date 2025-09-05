@@ -39,6 +39,8 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
       return <InAppSpaceCollaborationCalloutPublishedView {...item} />;
     case NotificationEvent.SpaceCollaborationCalloutContribution:
       return <InAppSpaceCollaborationCalloutContributionView {...item} />;
+    case NotificationEvent.SpaceCollaborationCalloutPostContributionComment:
+      return <InAppSpaceCollaborationCalloutPostContributionCommentView {...item} />;
     case NotificationEvent.UserMentioned:
       return <InAppUserMentionView {...item} />;
     case NotificationEvent.UserSpaceCommunityJoined:
@@ -67,8 +69,6 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
       return <InAppSpaceAdminCommunityApplicationView {...item} />;
     case NotificationEvent.SpaceCollaborationCalloutComment:
       return <InAppSpaceCollaborationCalloutCommentView {...item} />;
-    case NotificationEvent.SpaceCollaborationCalloutPostContributionComment:
-      return <InAppSpaceCollaborationCalloutPostContributionCommentView {...item} />;
     case NotificationEvent.SpaceCommunicationUpdate:
       return <InAppSpaceCommunicationUpdateView {...item} />;
     case NotificationEvent.SpaceCommunicationMessageSender:

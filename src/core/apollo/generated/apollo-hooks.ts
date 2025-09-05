@@ -3075,6 +3075,35 @@ export const InAppNotificationPayloadUserMessageDirectFragmentDoc = gql`
   }
   ${VisualModelFragmentDoc}
 `;
+export const InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCollaborationCalloutPostComment on InAppNotificationPayloadSpaceCollaborationCalloutPostComment {
+    messageDetails {
+      message
+      parent {
+        displayName
+        url
+      }
+      room {
+        id
+      }
+    }
+    space {
+      ...spaceNotification
+    }
+    callout {
+      id
+      framing {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
 export const InAppNotificationAllTypesFragmentDoc = gql`
   fragment InAppNotificationAllTypes on InAppNotification {
     id
@@ -3143,6 +3172,9 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
       ... on InAppNotificationPayloadUserMessageDirect {
         ...InAppNotificationPayloadUserMessageDirect
       }
+      ... on InAppNotificationPayloadSpaceCollaborationCalloutPostComment {
+        ...InAppNotificationPayloadSpaceCollaborationCalloutPostComment
+      }
     }
   }
   ${VisualModelFragmentDoc}
@@ -3162,6 +3194,7 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
   ${InAppNotificationPayloadSpaceCommunityInvitationFragmentDoc}
   ${InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc}
   ${InAppNotificationPayloadUserMessageDirectFragmentDoc}
+  ${InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc}
 `;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {

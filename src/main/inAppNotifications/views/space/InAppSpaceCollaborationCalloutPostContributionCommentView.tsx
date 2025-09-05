@@ -1,5 +1,4 @@
 import { InAppNotificationModel } from '../../model/InAppNotificationModel';
-import { mapInAppNotificationPayloadSpaceCollaborationCalloutToModel } from '../../util/mapInAppNotificationPayloadSpaceCollaborationCalloutToModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 export const InAppSpaceCollaborationCalloutPostContributionCommentView = (notification: InAppNotificationModel) => {
@@ -10,25 +9,21 @@ export const InAppSpaceCollaborationCalloutPostContributionCommentView = (notifi
     return null;
   }
 
-  const inAppPayloadSpaceCollaborationCallout = mapInAppNotificationPayloadSpaceCollaborationCalloutToModel(payload);
-
-  if (!inAppPayloadSpaceCollaborationCallout) {
-    return null;
-  }
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
     defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     calloutName: messageDetails?.parent?.displayName,
-    comment: messageDetails?.message,
+    message: messageDetails?.message,
+    spaceName: payload?.space?.about?.profile?.displayName || '',
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.messageDetails?.parent?.url}
+      url={messageDetails?.parent?.url}
     />
   );
 };
