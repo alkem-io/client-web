@@ -77,7 +77,7 @@
       "type": "Type of Event",
       "multiple-days": "{{days}} days",
       "whole-day": "All Day",
-      "visibleOnParentCalendar": "Also visible on the parent Space calendar"
+      "visibleOnParentCalendar": "Also visible on the parent $t(common.space) calendar"
     },
     "validation": {
       "durationMinutes": {
@@ -180,7 +180,7 @@
     "scrollToTop": "Scroll to top",
     "addSubject": "Add {{subject}}",
     "toolPosition": "Position of tool",
-    "createOwnSpace": "...or click here to create your own Space",
+    "createOwnSpace": "...or click here to create your own $t(common.space)",
     "notifications": "Notifications Button",
     "invite": "Invite",
     "visit": "Visit",
@@ -226,7 +226,7 @@
   },
   "common": {
     "space-level": {
-      "L0": "Space",
+      "L0": "$t(common.space)",
       "L1": "Subspace",
       "L2": "Subsubspace"
     },
@@ -459,8 +459,8 @@
       "templateType": {
         "CALLOUT": "Collaboration Tool Template",
         "CALLOUT_plural": "Collaboration Tool Templates",
-        "SPACE": "Space Template",
-        "SPACE_plural": "Space Templates",
+        "SPACE": "$t(common.space) Template",
+        "SPACE_plural": "$t(common.space) Templates",
         "COMMUNITY_GUIDELINES": "Community Guidelines Template",
         "COMMUNITY_GUIDELINES_plural": "Community Guidelines Templates",
         "INNOVATION_FLOW": "Innovation Flow",
@@ -483,7 +483,7 @@
         "rejected": "Invitation Rejected"
       },
       "invitationExternalStatus": {
-        "invited": "Invited to join Alkemio & this Space"
+        "invited": "Invited to join Alkemio & this $t(common.space)"
       },
       "roleSetContributorType": {
         "USER": "User",
@@ -567,13 +567,13 @@
         "title": "Remove Virtual Contributor",
         "confirm": "Are you sure?"
       },
-      "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
+      "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your $t(common.space). Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
       "searchVC": "Find Virtual Contributor",
       "permissionRequiredTooltip": "To use Virtual Contributors, please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
       "title": "Application Form",
-      "subtitle": "This section allows you to modify the questions for users applying to the Space. <br /><b>Please note</b> that these questions will only be shown when the Membership options (in the block above) are set to \"Applications required\"",
+      "subtitle": "This section allows you to modify the questions for users applying to the $t(common.space). <br /><b>Please note</b> that these questions will only be shown when the Membership options (in the block above) are set to \"Applications required\"",
       "required-question": "Required question",
       "move-up": "Move question one position up",
       "move-down": "Move question one position down",
@@ -585,14 +585,14 @@
       "saveAndDeleteContentSuccessMessage": "Community guidelines content removed and saved successfully.",
       "updatedSuccessfully": "Community guidelines updated successfully.",
       "adminsOnly": "Since there are no Community Guidelines specified, this block is only visible for admins and leads.",
-      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings.",
+      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the $t(common.space) settings.",
       "confirmationDialog": {
         "title": "Updating Community Guidelines",
         "description": "Are you sure you want to replace your existing Community Guidelines? This action cannot be undone."
       },
       "deleteCommunityGuidelines": "Delete Community Guidelines"
     },
-    "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
+    "applicationsHelp": "Here you can find everyone that applied to become a member of this $t(common.space). By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
       "applicationReceived": "Application Received",
       "applicationApproved": "Application Approved",
@@ -601,8 +601,8 @@
     },
     "invitations": {
       "inviteButton": {
-        "USER": "Invite people to this Space",
-        "ORGANIZATION": "Invite people to this Space",
+        "USER": "Invite people to this $t(common.space)",
+        "ORGANIZATION": "Invite people to this $t(common.space)",
         "VIRTUAL": "Invite Virtual Contributor"
       },
       "inviteToRole": "Invite to be a: ",
@@ -612,13 +612,13 @@
           "description": "Search for people below or directly add their email address",
           "descriptionMembers": "Search members from the parent (Sub)Space.",
           "note": "Keep in mind that your personal email address will be visible to anyone you message.",
-          "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the $t(common.space) or click on the button below to directly accept or decline the invitation.",
           "placeholder": "Username or email...",
           "success": "Your invitation was successfully sent to the following recipients:",
           "failure": "We couldn’t send the invitation to the following recipients:",
           "back": "Send another invitation",
           "invitationsSent": "{{count}} invitations will be sent.",
-          "invitationByEmailTooltip": "{{email}} will be invited to sign up to Alkemio and to this Space",
+          "invitationByEmailTooltip": "{{email}} will be invited to sign up to Alkemio and to this $t(common.space)",
           "results": {
             "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Already has an open invitation/application",
             "ALREADY_INVITED_TO_ROLE_SET": "Already has an open invitation/application",
@@ -633,13 +633,13 @@
         },
         "vcs": {
           "title": "Virtual Contributors Store",
-          "dialogTitle": "Invite Virtual Contributor to join this Space",
+          "dialogTitle": "Invite Virtual Contributor to join this $t(common.space)",
           "invitationSent": "Invitation sent successfully",
           "inviteExternalVC": "Invite External VC",
           "inviteBtn": "Invite Virtual Contributor",
-          "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+          "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the $t(common.space) or click on the button below to directly accept or decline the invitation.",
           "onAccount": {
-            "title": "Virtual Contributors linked to this Space's account"
+            "title": "Virtual Contributors linked to this $t(common.space)'s account"
           },
           "inLibrary": {
             "title": "Other Virtual Contributors"
@@ -668,12 +668,12 @@
       },
       "approve": {
         "title": "Approve application from {{user}}",
-        "content": "Are you sure that you want to Approve this application? The user will be added to the Space and will be able to access it.",
+        "content": "Are you sure that you want to Approve this application? The user will be added to the $t(common.space) and will be able to access it.",
         "confirmButton": "Yes, approve"
       },
       "reject": {
         "title": "Reject application from {{user}}",
-        "content": "Are you sure that you want to Reject this application? The user will not be able to access the Space.",
+        "content": "Are you sure that you want to Reject this application? The user will not be able to access the $t(common.space).",
         "confirmButton": "Yes, reject"
       }
     },
@@ -718,7 +718,7 @@
     },
     "unableToAddMemberInfo": {
       "title": "Unable To Add Member",
-      "content": "This member must be added to the parent space first."
+      "content": "This member must be added to the parent $t(common.space) first."
     }
   },
   "callout": {
@@ -825,7 +825,7 @@
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - Only visible for admins",
     "closed": "This discussion is closed so you can no longer comment",
-    "notMember": "You can't reply to this discussion since you're not a member of this Space",
+    "notMember": "You can't reply to this discussion since you're not a member of this $t(common.space)",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All Posts, Whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Allow adding to the Collection",
@@ -1101,18 +1101,18 @@
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
         "title": "Subspace URL",
-        "description": "Enter the URL of the Space or Subspace you want to copy as a template.",
-        "use": "Use this Space",
-        "urlRequired": "Please paste here the URL of the Space you want to copy as a template.",
-        "noRights": "You need administrator rights in the Space you want to copy as a template.",
-        "invalidUrl": "The url is not recognized as a Space URL.",
-        "spaceNotFoundError": "Space not found",
-        "selectAnother": "Update Collaboration from another Space"
+        "description": "Enter the URL of the $t(common.space) or Subspace you want to copy as a template.",
+        "use": "Use this $t(common.space)",
+        "urlRequired": "Please paste here the URL of the $t(common.space) you want to copy as a template.",
+        "noRights": "You need administrator rights in the $t(common.space) you want to copy as a template.",
+        "invalidUrl": "The url is not recognized as a $t(common.space) URL.",
+        "spaceNotFoundError": "$t(common.space) not found",
+        "selectAnother": "Update Collaboration from another $t(common.space)"
       },
       "preview": {
         "info": "Always included: About information & Settings"
       },
-      "recursive": "Also include Subspaces of the selected Space in the template",
+      "recursive": "Also include Subspaces of the selected $t(common.space) in the template",
       "includesSubspaces": "This template also includes these subspaces:"
     },
     "communityGuidelinesTemplates": {
@@ -1124,8 +1124,8 @@
     },
     "platformTemplates": "Platform Templates",
     "loadPlatformTemplates": "Or click here to browse through all platform templates",
-    "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",
-    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings.",
+    "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the $t(common.space) to add these in the template section of the $t(common.space) Settings.",
+    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the $t(common.space) to add it in the template section of the $t(common.space) Settings.",
     "importTemplateDialog": {
       "confirmClose": {
         "title": "Discard template",
@@ -1147,8 +1147,8 @@
       "typeReadonly": "Once a template is created, its type cannot be changed. If you need a different type, please create a new template."
     },
     "shareSettings": {
-      "description": "Based on the settings of the Space that this {{elementName}} is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
-      "disabled": "Based on the settings of the Space that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
+      "description": "Based on the settings of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
+      "disabled": "Based on the settings of the $t(common.space) that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
       "ownedBy": {
         "title": "This {{elementName}} is owned by:"
       },
@@ -1199,7 +1199,7 @@
       "title": "{{space}} statistics"
     },
     "dashboardNavigation": {
-      "help": "Hierarchy of this Space.",
+      "help": "Hierarchy of this $t(common.space).",
       "privateSubspace": "This is a private Subspace. Visit the Subspace and apply to become a member to view it's content.",
       "showAll": "Show all",
       "expand": "Show full hierarchy",
@@ -1243,7 +1243,7 @@
           "activeStateWarning": "This phase is currently the active one and cannot be deleted. You can always rename it or select another one as the active."
         },
         "selectDifferentFlow": {
-          "title": "Find Space Template",
+          "title": "Find $t(common.space) Template",
           "confirmationDialog": {
             "title": "Be careful when changing the flow!",
             "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the first phase of the new flow."
@@ -1521,12 +1521,12 @@
       "apply-pending": "Application pending",
       "join": "Join",
       "acceptInvitation": {
-        "full": "You are invited to become a member of this Space, please click here to accept",
+        "full": "You are invited to become a member of this $t(common.space), please click here to accept",
         "short": "Accept Invitation"
       },
       "joinSpaceFirst": {
-        "full": "To become a member of this Subspace, first become a member of the parent Space",
-        "short": "Please join parent Space first"
+        "full": "To become a member of this Subspace, first become a member of the parent $t(common.space)",
+        "short": "Please join parent $t(common.space) first"
       },
       "joinSubspaceFirst": {
         "full": "To become a member of this Subspace, first become a member of the parent Subspace",
@@ -1543,11 +1543,11 @@
       "extendedMessage": "{{join}} our {{space}} and start making change!",
       "dialog-apply-parent": {
         "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
-        "body": "To join <strong title='subspace name'>'{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. Please add the Subspace you want to join in the Spaces' application form."
+        "body": "To join <strong title='subspace name'>'{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> $t(common.space) first. Please add the Subspace you want to join in the Spaces' application form."
       },
       "dialog-parent-app-pending": {
         "title": "Parent application pending!",
-        "body": "To join <strong title='subspace name'>{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. There is already an application pending for that <strong title='Space name'>'{{spaceName}}'</strong>, so you can also submit a parallel application for <strong title='subspace name'>'{{subspaceName}}'</strong>."
+        "body": "To join <strong title='subspace name'>{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> $t(common.space) first. There is already an application pending for that <strong title='Space name'>'{{spaceName}}'</strong>, so you can also submit a parallel application for <strong title='subspace name'>'{{subspaceName}}'</strong>."
       },
       "dialogApplicationSuccessful": {
         "join": {
@@ -1577,7 +1577,7 @@
     "referenceSegment": {
       "title": "References",
       "addReference": "Add Reference",
-      "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
+      "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this $t(common.space) to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
       "missing-references": "No references yet",
       "tooltips": {
         "add-reference": "Add a reference",
@@ -1602,7 +1602,7 @@
       },
       "read-access": "Allow read access for non-space members to Subspaces",
       "about": "Details",
-      "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
+      "visibility": "This $t(common.space) is currently in <strong>{{visibility}}</strong> mode",
       "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
     "deleteEntity": {
@@ -1905,8 +1905,8 @@
       "markAllAsRead": "Mark all as read"
     },
     "spaceWelcomeDialog": {
-      "title": "\uD83C\uDF89 Your Space is Ready!",
-      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and settings.<br>\uD83D\uDCDD <b>Add content</b> - Create whiteboards, posts, and more.<br>\uD83E\uDD1D <b>Invite collaborators</b> – Find the invitations in the Space Settings.<br>\uD83D\uDCDA <b>Need help?</b> Tutorials are available in your Space if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
+      "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",
+      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and settings.<br>\uD83D\uDCDD <b>Add content</b> - Create whiteboards, posts, and more.<br>\uD83E\uDD1D <b>Invite collaborators</b> – Find the invitations in the $t(common.space) Settings.<br>\uD83D\uDCDA <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
       "button": "Get Started"
     }
   },
@@ -1934,7 +1934,7 @@
     "selectedSpaces": "{{space}} Spaces",
     "foreignSpace": "This {{spaceDisplayName}} is not in the selection of current starting page. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
     "outsideOfSpace": {
-      "forum": "This is the general Alkemio Forum, outside of the <strong>{{space}}</strong> space. You are very much invited to explore and contribute!",
+      "forum": "This is the general Alkemio Forum, outside of the <strong>{{space}}</strong> $t(common.space). You are very much invited to explore and contribute!",
       "subspaces": "Here you can find all Subspaces that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
       "contributors": "Here you can find all people and organizations that are contributing on Alkemio, also in Spaces that are not selected by <strong>{{space}}. Enjoy connecting!</strong>"
     },
@@ -1984,8 +1984,8 @@
         "archivedLink": "/docs"
       },
       "demoNotice": {
-        "demoSpace": "Demo Space",
-        "demoSubspace": "This {{space}} is within a Demo Space."
+        "demoSpace": "Demo $t(common.space)",
+        "demoSubspace": "This {{space}} is within a Demo $t(common.space)."
       }
     },
     "contribute": {
@@ -2000,7 +2000,7 @@
       "fullName": "Template Library",
       "title": "Alkemio's Template Library",
       "subtitle": "Get your (Sub)Space running with these ready-to-use tools. <click>Learn more</click>.",
-      "useTemplateButton": "Access this template from your Space to use it.",
+      "useTemplateButton": "Access this template from your $t(common.space) to use it.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
         "dialogTitle": "$t(common.innovation-packs)"
@@ -2021,7 +2021,7 @@
           },
           "layout": {
             "description": "Here you can edit the layout for this {{entity}}.",
-            "innovationFlowEditor": "Space tabs"
+            "innovationFlowEditor": "$t(common.space) tabs"
           },
           "context": {
             "description": "Here you can edit the context for this {{entity}}, which is publicly visible. This information is also visible to non-members."
@@ -2033,7 +2033,7 @@
             "description": "Here you can post updates that will be visible to all members of this {{entity}}."
           },
           "subspaces": {
-            "description": "Here you can edit Subspaces for this Space."
+            "description": "Here you can edit Subspaces for this $t(common.space)."
           },
           "subsubspaces": {
             "description": "Here you can edit Subspaces for this Subspace."
@@ -2050,9 +2050,9 @@
             "import": {
               "defaultTitle": "Templates Library",
               "title": "$t(common.templateLibrary): {{templateType}}",
-              "subtitle": "Find templates to use in your Space or Subspace. Select the template and click `Import` to add it to your Template set.",
+              "subtitle": "Find templates to use in your $t(common.space) or Subspace. Select the template and click `Import` to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
-              "noTemplates": "No templates in the Space library.",
+              "noTemplates": "No templates in the $t(common.space) library.",
               "imported-successfully-notification": "Template imported successfully"
             },
             "validation": {
@@ -2118,12 +2118,12 @@
             "externalSubAdded": "Successfully created a Wingback account",
             "externalSubErrored": "An error occurred while creating the Wingback account",
             "yourLicense": "Your current license:",
-            "changeLicense": "Change the Space license",
+            "changeLicense": "Change the $t(common.space) license",
             "changeLicense_description": "Contact the Alkemio team to change the license.",
-            "changeLicense_disallowed": "The Space license can only be changed by the host of this Space.",
-            "deleteSpace": "Delete this Space",
-            "deleteSpace_description": "Click here to delete this Space. Be careful, this action cannot be undone.",
-            "deleteSpace_disallowed": "The Space can only be deleted by the host of this Space.",
+            "changeLicense_disallowed": "The $t(common.space) license can only be changed by the host of this $t(common.space).",
+            "deleteSpace": "Delete this $t(common.space)",
+            "deleteSpace_description": "Click here to delete this $t(common.space). Be careful, this action cannot be undone.",
+            "deleteSpace_disallowed": "The $t(common.space) can only be deleted by the host of this $t(common.space).",
             "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
             "licenseUpdated": "License updated successfully",
@@ -2192,7 +2192,7 @@
         "community": {
           "preferences": {
             "title": "Membership",
-            "subtitle": "This section allows you to modify the $t(common.subspace) membership preferences. If both switches are turned off, new members can only be added manually. If both switches are turned on, members of the Space don't have to apply but can directly join."
+            "subtitle": "This section allows you to modify the $t(common.subspace) membership preferences. If both switches are turned off, new members can only be added manually. If both switches are turned on, members of the $t(common.space) don't have to apply but can directly join."
           }
         },
         "notifications": {
@@ -2210,7 +2210,7 @@
         "community": {
           "preferences": {
             "title": "Membership",
-            "subtitle": "This section allows you to modify the $t(common.subspace) membership preferences. If both switches are turned off, new members can only be added manually. If both switches are turned on, members of the Space don't have to apply but can directly join."
+            "subtitle": "This section allows you to modify the $t(common.subspace) membership preferences. If both switches are turned off, new members can only be added manually. If both switches are turned on, members of the $t(common.space) don't have to apply but can directly join."
           }
         },
         "notifications": {
@@ -2223,14 +2223,14 @@
       "space": {
         "sections": {
           "subspaces": {
-            "description": "Here you can edit Subspaces for this Space.",
+            "description": "Here you can edit Subspaces for this $t(common.space).",
             "defaultSettings": {
               "title": "Default Subspace Template",
-              "description": "Choose the default settings that will apply when creating a new Subspace within this Space. These settings can be modified during the creation process or at a later time.",
+              "description": "Choose the default settings that will apply when creating a new Subspace within this $t(common.space). These settings can be modified during the creation process or at a later time.",
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Change Default Template",
                 "title": "Change Default Subspace Template",
-                "description": "Customize the default template for newly created Subspaces.<br/><br/>Below you can choose between the templates collected in the Space Templates library. If you’re looking to create new templates or explore additional templates, <library>click here</library> to access this library."
+                "description": "Customize the default template for newly created Subspaces.<br/><br/>Below you can choose between the templates collected in the $t(common.space) Templates library. If you’re looking to create new templates or explore additional templates, <library>click here</library> to access this library."
               }
             }
           }
@@ -2250,21 +2250,21 @@
           }
         },
         "notifications": {
-          "space-created": "Space created successfully.",
-          "errorCreatingSpace": "An error occurred while creating the Space.",
-          "space-removed": "Space removed successfully."
+          "space-created": "$t(common.space) created successfully.",
+          "errorCreatingSpace": "An error occurred while creating the $t(common.space).",
+          "space-removed": "$t(common.space) removed successfully."
         },
         "settings": {
           "savedSuccessfully": "Settings saved successfully",
           "visibility": {
             "title": "Visibility",
-            "public": "<b>Public:</b> This space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
-            "private": "<b>Private:</b> This space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible.",
-            "publicSubspace": "<b>Public:</b> This Subspace and all its contents are visible to everyone who has access to the Space it belongs to. If the Space itself is public, this Subspace and its contents will be visible to all users, including those outside the Space.",
-            "privateSubspace": "<b>Private:</b> This Subspace is visible to all members of the Space, but its contents are restricted and can only be accessed by members of the Subspace. No application required: All Space members can directly join, without you having to review their application."
+            "public": "<b>Public:</b> This $t(common.space) and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
+            "private": "<b>Private:</b> This $t(common.space) is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible.",
+            "publicSubspace": "<b>Public:</b> This Subspace and all its contents are visible to everyone who has access to the $t(common.space) it belongs to. If the $t(common.space) itself is public, this Subspace and its contents will be visible to all users, including those outside the $t(common.space).",
+            "privateSubspace": "<b>Private:</b> This Subspace is visible to all members of the $t(common.space), but its contents are restricted and can only be accessed by members of the Subspace. No application required: All $t(common.space) members can directly join, without you having to review their application."
           },
           "license-features": {
-            "title": "Space Features",
+            "title": "$t(common.space) Features",
             "features": {
               "WHITEBOARD_MULTI_USER": "Multi-user Whiteboards",
               "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout",
@@ -2273,31 +2273,31 @@
           },
           "membership": {
             "title": "Membership",
-            "open": "<b>No Application required:</b> All Space members can directly join, without you having to review their application.",
+            "open": "<b>No Application required:</b> All $t(common.space) members can directly join, without you having to review their application.",
             "applications": "<b>Application required:</b> If people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
             "invitations": "<b>Invitation only:</b> Users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
             "trustedApplicants": "Trusted applicants",
             "hostOrganizationJoin": "<b>Host organization:</b> Allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited.",
-            "allowSubspaceAdminsToInviteMembers": "<b>Space invitations</b>: Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation.",
-            "allowSubspaceAdminsToInviteMembersSubspace": "<b>Space invitations</b>: Allow admins of Subspaces within this Subspace to invite users directly to their own Subspace. If a user is not yet a member of this Subspace, they will automatically become one upon accepting the invitation. <b>Note: </b>Only users who are already members of the Space can be invited this way."
+            "allowSubspaceAdminsToInviteMembers": "<b>$t(common.space) invitations</b>: Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this $t(common.space), will become so when they accept the Subspace invitation.",
+            "allowSubspaceAdminsToInviteMembersSubspace": "<b>$t(common.space) invitations</b>: Allow admins of Subspaces within this Subspace to invite users directly to their own Subspace. If a user is not yet a member of this Subspace, they will automatically become one upon accepting the invitation. <b>Note: </b>Only users who are already members of the $t(common.space) can be invited this way."
           },
           "memberActions": {
             "title": "Allowed Actions",
             "createBlocks": "<b>Create Posts</b>: Allow members to create posts for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new posts.",
-            "createSubspaces": "<b>Create Subspaces</b>: Allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
-            "eventsFromSubspaces": "<b>Subspace events</b>: Allow events from Subspaces to be visible on this Space calendar as well.",
+            "createSubspaces": "<b>Create Subspaces</b>: Allow members to create Subspaces in this $t(common.space). If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
+            "eventsFromSubspaces": "<b>Subspace events</b>: Allow events from Subspaces to be visible on this $t(common.space) calendar as well.",
             "inheritRights": "Allow members of the parent community to contribute without needing to join first.",
-            "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this Space."
+            "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this $t(common.space)."
           },
           "copySpace": {
             "title": "Copy Subspace",
-            "description": "To utilize this Subspace setup, you can either duplicate it within the same Space or save it as a template for use across the platform. In both scenarios, the innovation flow and all collaboration tools will be replicated. Please note that comments or contributions to a tool will not be included in the template or duplicated Subspace.",
+            "description": "To utilize this Subspace setup, you can either duplicate it within the same $t(common.space) or save it as a template for use across the platform. In both scenarios, the innovation flow and all collaboration tools will be replicated. Please note that comments or contributions to a tool will not be included in the template or duplicated Subspace.",
             "createTemplate": "Create Template",
-            "createTemplateTooltip": "To create a template from this Subspace, you need Space admin permissions.",
+            "createTemplateTooltip": "To create a template from this Subspace, you need $t(common.space) admin permissions.",
             "duplicate": "Duplicate"
           },
           "account": {
-            "vc-section-title": "Virtual Contributors created from this Space",
+            "vc-section-title": "Virtual Contributors created from this $t(common.space)",
             "vc-create-button": "Create Virtual Contributor"
           }
         }
@@ -2336,8 +2336,8 @@
       },
       "spaces": {
         "updateVisibility": "Update Visibility",
-        "spaceSettings": "Space Settings",
-        "changeNameId": "Change Space NameID",
+        "spaceSettings": "$t(common.space) Settings",
+        "changeNameId": "Change $t(common.space) NameID",
         "manageLicensePlans": "Manage License Plans"
       },
       "innovationHub": {
@@ -2364,18 +2364,18 @@
       "AVATAR": {
         "title": "<b>Avatar</b>",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Space card on page banner",
+        "description2": "Usage: $t(common.space) card on page banner",
         "description": "Description: {{alternativeText}}"
       },
       "BANNER": {
         "title": "<b>Page banner</b>",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown on top of the Space (also in the Subspaces) and top left navigation menu.",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown on top of the $t(common.space) (also in the Subspaces) and top left navigation menu.",
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
       "CARD": {
         "title": "<b>Card banner</b>",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in search results and Space overviews.",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in search results and $t(common.space) overviews.",
         "description2": "Usage: Banner on cards",
         "description": "Description: {{alternativeText}}"
       },
@@ -2393,7 +2393,7 @@
     "contributors": {
       "fullName": "Find contributors",
       "shortName": "$t(common.contributors)",
-      "unauthorized": "Please sign in to see the contributors of this Space.",
+      "unauthorized": "Please sign in to see the contributors of this $t(common.space).",
       "search": {
         "title": "Find talent and expertise!",
         "subtitle": "Search for other people and organizations that can help you with your Subspace, for example based on skills or interests.",
@@ -2419,7 +2419,7 @@
       "user-not-logged": "Login or Register to include users in your search results",
       "filter": {
         "type": {
-          "space": "Space type",
+          "space": "$t(common.space) type",
           "contribution": "Contribution type",
           "contributor": "Contributor type"
         },
@@ -2448,7 +2448,7 @@
         "member": "Member Spaces",
         "public": "Public Spaces"
       },
-      "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your space on Alkemio!",
+      "noSpaceMemberships": "You’re not currently a member of any $t(common.space). Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your $t(common.space) on Alkemio!",
       "search": {
         "placeholder": "Search…",
         "noResults": "No results matched your search terms.",
@@ -2472,7 +2472,7 @@
         "myLatestSpacesActivity": "Latest Activity In My Spaces",
         "tipsAndTricks": "Tips & Tricks",
         "myAccount": "My Account",
-        "createSpace": "Create my own Space",
+        "createSpace": "Create my own $t(common.space)",
         "activityView": "Activity View"
       },
       "sections": {
@@ -2480,7 +2480,7 @@
           "title": "Latest Activity in my Spaces",
           "filter": {
             "space": {
-              "label": "Space:",
+              "label": "$t(common.space):",
               "all": "All Spaces"
             },
             "role": {
@@ -2494,7 +2494,7 @@
           "card": {
             "space": "in: <spaceicon /> {{space}}"
           },
-          "noContributions": "Your contributions will appear here once you participate in a Space. You can contribute by posting, commenting, or doing other activities."
+          "noContributions": "Your contributions will appear here once you participate in a $t(common.space). You can contribute by posting, commenting, or doing other activities."
         },
         "createAccountBanner": {
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
@@ -2507,18 +2507,18 @@
           "createYourVCButton": "Create your Virtual Contributor!",
           "vcCampaign": {
             "welcome": "🎉  Welcome to the  Virtual Contributors - Early Access Program!",
-            "clickHere": "Click below to create your Virtual Contributors—up to three available. The ones you created can be found under My Account, along with the Space where you can interact with them. Enjoy!"
+            "clickHere": "Click below to create your Virtual Contributors—up to three available. The ones you created can be found under My Account, along with the $t(common.space) where you can interact with them. Enjoy!"
           }
         },
         "myMemberships": {
           "title": "My Memberships",
-          "noChildMemberships": "You are not a member of a subspace in this Space. Some subspaces do not require you to be a member to contribute, but if you want to receive updates or show the subspace here, become a member anyway!",
+          "noChildMemberships": "You are not a member of a subspace in this $t(common.space). Some subspaces do not require you to be a member to contribute, but if you want to receive updates or show the subspace here, become a member anyway!",
           "seeMore": "That's all! Looking for other Spaces to collaborate in? <spaces>Click here</spaces> to explore all spaces on the platform, or <landing>click here</landing> to create your own!"
         },
         "membershipSuggestions": {
           "title": "Become a member",
           "suggestedSpace": {
-            "join": "Join our @ Alkemio Space!",
+            "join": "Join our @ Alkemio $t(common.space)!",
             "nameId": "welcome-space"
           },
           "searchCommunity": {
@@ -2573,11 +2573,11 @@
         "space": {
           "header": "Explore the Subspace Spaces!",
           "subheader": "",
-          "body": "Each Space is a community with a dedicated space for shared Subspaces. To connect, collaborate and innovate together.",
+          "body": "Each $t(common.space) is a community with a dedicated $t(common.space) for shared Subspaces. To connect, collaborate and innovate together.",
           "body1": "For Users, Spaces are free to join. Explore the membership options, including for public and private Spaces."
         },
         "startingSpace": {
-          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
+          "title": "<big>🎉 Starting a $t(common.space)</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
           "url": "https://welcome.alkem.io/want-to-own-space/"
         },
         "my-spaces": {
@@ -2600,7 +2600,7 @@
           "findMoreUrl": "https://welcome.alkem.io/blog/",
           "items": [
             {
-              "title": "👋 Join the Welcome@Alkemio Space",
+              "title": "👋 Join the Welcome@Alkemio $t(common.space)",
               "description": "To find examples, best practices, tips and tricks",
               "imageUrl": "/my-dashboard/tipsntricks-welcome.webp",
               "url": "https://alkem.io/welcome-space/dashboard"
@@ -2612,13 +2612,13 @@
               "url": "https://alkem.io/docs"
             },
             {
-              "title": "📑 Read more about Alkemio's Space structure",
+              "title": "📑 Read more about Alkemio's $t(common.space) structure",
               "description": "To help you get started smoothly on the platform",
               "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
               "url": "https://alkem.io/docs/structure/space"
             },
             {
-              "title": "⚒️ Start a new Space",
+              "title": "⚒️ Start a new $t(common.space)",
               "description": "To gather contributors for your envisioned change",
               "imageUrl": "/my-dashboard/tipsntricks-space.webp",
               "url": "https://welcome.alkem.io/want-to-own-space/"
@@ -2656,7 +2656,7 @@
       }
     },
     "space": {
-      "title": "Space",
+      "title": "$t(common.space)",
       "application": {
         "applyTitle": "Apply to {{name}}",
         "joinTitle": "Join {{name}}",
@@ -2677,8 +2677,8 @@
         },
         "dashboard": {
           "organization": "Hosted by",
-          "hostTooltip": "The host is the organization responsible for the creation of the Space.",
-          "hostContact": "The hosts are responsible for the content of the Space. Any questions or comments, please reach out.",
+          "hostTooltip": "The host is the organization responsible for the creation of the $t(common.space).",
+          "hostContact": "The hosts are responsible for the content of the $t(common.space). Any questions or comments, please reach out.",
           "leadingOrganizations": "Leading Organizations",
           "community": "Community"
         },
@@ -2686,8 +2686,8 @@
           "header": "Subspaces",
           "subheader": "There is no final frontier",
           "body": "",
-          "no-data": "No Subspaces available for this Space",
-          "description": "Here you can explore the Subspaces hosted in this Space. Filter by key words to show just the topics you care about. "
+          "no-data": "No Subspaces available for this $t(common.space)",
+          "description": "Here you can explore the Subspaces hosted in this $t(common.space). Filter by key words to show just the topics you care about. "
         },
         "contribute": {
           "header": "Contribute"
@@ -2726,7 +2726,7 @@
       },
       "space-host": {
         "title": "Facilitating organization",
-        "help-text": "The Organization that is facilitating this Space."
+        "help-text": "The Organization that is facilitating this $t(common.space)."
       },
       "members": {
         "help-text": "Shows members is this community, including the role they have",
@@ -2767,8 +2767,8 @@
         "how-to": "To create a template create a new whiteboard or use an existing one and save it as a template."
       },
       "space": {
-        "templatesHeader": "Templates defined in this Space",
-        "templatesSubheader": "The templates defined in this Space can be used in every Subspace that this Space hosts."
+        "templatesHeader": "Templates defined in this $t(common.space)",
+        "templatesSubheader": "The templates defined in this $t(common.space) can be used in every Subspace that this $t(common.space) hosts."
       },
       "subspace": {
         "templatesHeader": "Templates defined in this Subspace",
@@ -2776,7 +2776,7 @@
       },
       "whiteboardDisconnected": {
         "title": "Whiteboard connection lost",
-        "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
+        "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your $t(common.space) administrator for assistance.",
         "lastSaved": "The content of this whiteboard was last saved {{lastSaved}}.",
         "offline": "You are currently offline. The whiteboard will try to reconnect when you are back online."
       },
@@ -2790,9 +2790,9 @@
         "title": "View only mode",
         "reason": {
           "inactivity": "You can’t edit this Whiteboard because you were inactive for too long. Please try reopening the whiteboard to continue editing.",
-          "multiUserNotAllowed": "You can’t edit this Whiteboard because this Space only allows one whiteboard editor at a time",
-          "roomCapacityReached": "You can’t edit this Whiteboard because this Space allows for multiple editors simultaneously, but the maximum is reached",
-          "generic": "You can’t edit this Whiteboard for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a member of the Space\n- This Space only allows one whiteboard editor at a time\n- This Space allows for more editors, but the maximum is reached"
+          "multiUserNotAllowed": "You can’t edit this Whiteboard because this $t(common.space) only allows one whiteboard editor at a time",
+          "roomCapacityReached": "You can’t edit this Whiteboard because this $t(common.space) allows for multiple editors simultaneously, but the maximum is reached",
+          "generic": "You can’t edit this Whiteboard for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a member of the $t(common.space)\n- This $t(common.space) only allows one whiteboard editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached"
         }
       },
       "restartCollaboration": "Continue Editing"
@@ -2810,9 +2810,9 @@
         "title": "View only mode",
         "reason": {
           "noUpdateAccess": "You can’t edit this Memo because you don’t have the rights to do so. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings if you want to contribute.",
-          "multiUserNotAllowed": "You can’t edit this Memo because this Space only allows one Memo editor at a time",
-          "roomCapacityReached": "You can’t edit this Memo because this Space allows for multiple editors simultaneously, but the maximum is reached",
-          "generic": "You can’t edit this Memo for one of the following reasons:\n\nYou are not a member of the Space\n- This Space only allows one Memo editor at a time\n- This Space allows for more editors, but the maximum is reached"
+          "multiUserNotAllowed": "You can’t edit this Memo because this $t(common.space) only allows one Memo editor at a time",
+          "roomCapacityReached": "You can’t edit this Memo because this $t(common.space) allows for multiple editors simultaneously, but the maximum is reached",
+          "generic": "You can’t edit this Memo for one of the following reasons:\n\nYou are not a member of the $t(common.space)\n- This $t(common.space) only allows one Memo editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached"
         }
       }
     },
@@ -2908,7 +2908,7 @@
         "space": {
           "confirmation-dialog": {
             "title": "Leaving Space {{space}}",
-            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this Space or its Subspaces. If this Space is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this Space, you will also be automatically removed from there."
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this $t(common.space) or its Subspaces. If this $t(common.space) is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a member of a Subspace inside this $t(common.space), you will also be automatically removed from there."
           }
         },
         "subspace": {
@@ -2923,7 +2923,7 @@
         "help": "Communities the user is a part of",
         "leadSpacesTitle": "(Sub)Spaces I lead",
         "allMembershipsTitle": "(Sub)Spaces I'm in",
-        "noMembership": "Not a member of any Space or SubSpace yet."
+        "noMembership": "Not a member of any $t(common.space) or SubSpace yet."
       },
       "pending-applications": {
         "title": "Pending Applications",
@@ -2958,13 +2958,13 @@
         },
         "context": {
           "title": "Context",
-          "description": "{{name}} uses the following information from the Space it is invited to so it can provide you with meaningful answers:",
-          "bullets": "<ul><li>Space about page: <ul><li>Name, Tagline, location, etc.</li><li>Context information</li><li>Statistics</li></ul></li></ul>"
+          "description": "{{name}} uses the following information from the $t(common.space) it is invited to so it can provide you with meaningful answers:",
+          "bullets": "<ul><li>$t(common.space) about page: <ul><li>Name, Tagline, location, etc.</li><li>Context information</li><li>Statistics</li></ul></li></ul>"
         },
         "privacy": {
           "title": "Privacy",
           "description": "For Alkemio, safeguarding your data is of utmost importance. We are committed to maintaining the security and privacy of your information.",
-          "bullets": "<ul><li>When interacting with a Virtual Contributor, only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your (Space) data is not utilized for training the Virtual Contributor.</li><li>Additionally, please note that questions and answers exchanged with the Virtual Contributor may be visible to the Alkemio team.</li></ul>"
+          "bullets": "<ul><li>When interacting with a Virtual Contributor, only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your ($t(common.space)) data is not utilized for training the Virtual Contributor.</li><li>Additionally, please note that questions and answers exchanged with the Virtual Contributor may be visible to the Alkemio team.</li></ul>"
         },
         "external": {
           "personality": {
@@ -2978,7 +2978,7 @@
       },
       "membership": {
         "title": "Virtual Contributor Memberships",
-        "noMemberships": "This Virtual Contributor is not a member of any space",
+        "noMemberships": "This Virtual Contributor is not a member of any $t(common.space)",
         "pendingInvitations": "Pending Invitations",
         "noPendingInvitations": "No pending invitations"
       },
@@ -3048,7 +3048,7 @@
         "subtitle": "This section allows you to select your preferences regarding receiving messages"
       },
       "space": {
-        "title": "Space Settings",
+        "title": "$t(common.space) Settings",
         "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are a member of",
         "settings": {
           "communicationUpdateSent": "Receive notification when a new update is shared with a community I am a member of",
@@ -3059,7 +3059,7 @@
         }
       },
       "spaceAdmin": {
-        "title": "Space Admin Settings",
+        "title": "$t(common.space) Admin Settings",
         "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are an admin of",
         "settings": {
           "communityApplicationReceived": "Receive notifications when a new application is received",
@@ -3092,7 +3092,7 @@
         "settings": {
           "spaceCommunityApplication": "Receive notification when I apply to join a community",
           "spaceCommunityInvitation": "Receive a notification when someone invites you to join a community",
-          "spaceCommunityJoined": "Receive notification when I join a new Space community"
+          "spaceCommunityJoined": "Receive notification when I join a new $t(common.space) community"
         }
       },
       "platformAdmin": {
@@ -3101,7 +3101,7 @@
         "settings": {
           "adminUserProfileCreated": "Receive notifications when a new user signs up",
           "adminUserProfileRemoved": "Receive notifications when a user profile is removed",
-          "adminSpaceCreated": "Receive notifications when a new space is created",
+          "adminSpaceCreated": "Receive notifications when a new $t(common.space) is created",
           "adminUserGlobalRoleChanged": "Receive notifications when a user's global role is changed"
         }
       },
@@ -3127,7 +3127,7 @@
       "icons": {
         "exploreDocumentation": "Explore Documentation",
         "contactTheTeam": "Contact the Team",
-        "joinTheWelcomeSpace": "Join the Welcome Space"
+        "joinTheWelcomeSpace": "Join the Welcome $t(common.space)"
       },
       "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!",
       "versionNumber": "Version Number: <b>v{{version}}</b>",
@@ -3225,7 +3225,7 @@
     "postLocation": {
       "title": "Post location",
       "label": "Contributing to Callout",
-      "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same Space or Subspace.",
+      "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same $t(common.space) or Subspace.",
       "success": "Successfully moved Post to the new Callout.",
       "error": "Something went wrong when moving the Post, please try again."
     },
@@ -3332,12 +3332,12 @@
     "updates": "Updates"
   },
   "createSpace": {
-    "title": "Create a Space",
-    "addTutorialsLabel": "Add Tutorials to this Space",
+    "title": "Create a $t(common.space)",
+    "addTutorialsLabel": "Add Tutorials to this $t(common.space)",
     "terms": {
-      "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a Space.",
-      "dialogTitle": "Terms and Conditions for creating a Space",
-      "dialogContent": "I understand that as a host, I am responsible for all content within the Space.",
+      "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a $t(common.space).",
+      "dialogTitle": "Terms and Conditions for creating a $t(common.space)",
+      "dialogContent": "I understand that as a host, I am responsible for all content within the $t(common.space).",
       "fullTermsLink": "Click here to read more about the Terms & Conditions."
     },
     "license": {
@@ -3347,7 +3347,7 @@
   },
   "plansTable": {
     "title": "Choose a plan",
-    "subtitle": "To create a safe environment to train your Virtual Contributor, you first need to create a Space. Choose a plan for this Space below.",
+    "subtitle": "To create a safe environment to train your Virtual Contributor, you first need to create a $t(common.space). Choose a plan for this $t(common.space) below.",
     "seeMore": "Click here for the full description of each plan",
     "seeMoreUrl": "https://welcome.alkem.io/pricing/",
     "pricingPeriods": {
@@ -3366,8 +3366,8 @@
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
         "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
-        "disclaimer": "Free Spaces are limited to 1 Space per user",
-        "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
+        "disclaimer": "Free Spaces are limited to 1 $t(common.space) per user",
+        "disabledDisclaimer": "Each user can have 1 free $t(common.space). It seems like you’ve already used yours!"
       },
       {
         "name": "SPACE_LICENSE_PLUS",
@@ -3410,13 +3410,13 @@
         "title": "Free trial",
         "content": "Try our free 30-day trial of the Plus license to unlock exciting features like creating Virtual Contributors and multi-user whiteboard editing. No payment details required! After the trial, choose between upgrading to Plus or continuing with the Free license.<br/><br/>Questions? [Contact our support team anytime](https://welcome.alkem.io/contact).",
         "buttons": {
-          "continue": "Continue with Free Space",
+          "continue": "Continue with Free $t(common.space)",
           "startPlus": "Start Plus Trial"
         }
       },
       "getStarted": {
         "title": "Get started right away!",
-        "content": "Since we don’t want to hold you up any longer, you receive a 30-day free trial. After these 30 days we will ask you to set up your account details in order to continue using your Space. If you have any questions, feel free to contact support here.",
+        "content": "Since we don’t want to hold you up any longer, you receive a 30-day free trial. After these 30 days we will ask you to set up your account details in order to continue using your $t(common.space). If you have any questions, feel free to contact support here.",
         "buttons": {
           "continue": "Continue"
         }
@@ -3440,7 +3440,7 @@
     }
   },
   "createVirtualContributorWizard": {
-    "noSpaces": "Couldn't find any Space hosted by you, please contact us for support.",
+    "noSpaces": "Couldn't find any $t(common.space) hosted by you, please contact us for support.",
     "createdVirtualContributor": {
       "successMessage": "Virtual Contributor '{{name}}' created successfully"
     },
@@ -3459,7 +3459,7 @@
       "externalAI": "External AI"
     },
     "loadingInfo": {
-      "vcSpaceCreation": "A Space for interaction with your Virtual Contributor is being built. This process may take a few moments to complete."
+      "vcSpaceCreation": "A $t(common.space) for interaction with your Virtual Contributor is being built. This process may take a few moments to complete."
     },
     "cancel": {
       "title": "Discard Virtual Contributor",
@@ -3525,32 +3525,32 @@
       "title": "👍That’s it!",
       "subTitle": "To start interacting, simply type @{{vcName}} in a comment. Give it a try in the preview below.",
       "postTitle": "Example post",
-      "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions. Similar to mentioning a human contributor, you can use the ‘@’ symbol followed by the Virtual Contributor’s name.",
-      "continueButton": "Visit Space"
+      "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a $t(common.space) can learn from and contribute to these interactions. Similar to mentioning a human contributor, you can use the ‘@’ symbol followed by the Virtual Contributor’s name.",
+      "continueButton": "Visit $t(common.space)"
     },
     "tryInfoSection": {
       "title": "👍That’s it!",
-      "description": "Your Virtual Contributor is ready! To start interacting, invite the Virtual Contributor to a space and once it’s a member, simply type @{{vcName}} in a comment.\n\nEnjoy!",
+      "description": "Your Virtual Contributor is ready! To start interacting, invite the Virtual Contributor to a $t(common.space) and once it’s a member, simply type @{{vcName}} in a comment.\n\nEnjoy!",
       "goToProfile": "Visit {{vcName}}'s Profile"
     },
     "existingSpace": {
       "title": "Choose a (Sub)Space",
-      "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
+      "description": "Which $t(common.space) or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
       "label": "(Sub)Space",
-      "noSpaces": "You need to be an admin of a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
+      "noSpaces": "You need to be an admin of a $t(common.space) to proceed with this option. To create a Virtual Contributor without a $t(common.space), please go back and follow the Written Knowledge flow."
     },
     "chooseCommunity": {
       "title": "Hello, {{vcName}}!",
-      "description": "Your Virtual Contributor is ready! To start interacting, your Virtual Contributor should be added to a Space. Select one below, or continue without. In that case you will have to add the VC manually through the Community tab of a Space.",
+      "description": "Your Virtual Contributor is ready! To start interacting, your Virtual Contributor should be added to a $t(common.space). Select one below, or continue without. In that case you will have to add the VC manually through the Community tab of a $t(common.space).",
       "label": "Space",
-      "selectSpacesPlaceholder": "Select a Space",
+      "selectSpacesPlaceholder": "Select a $t(common.space)",
       "noSpacesPlaceholder": "No Spaces available",
       "cancelAddToCommunity": "Proceed without membership",
-      "addToCommunity": "Add and go to Space",
-      "createAndAddToCommunity": "Create, add, and go to Space",
+      "addToCommunity": "Add and go to $t(common.space)",
+      "createAndAddToCommunity": "Create, add, and go to $t(common.space)",
       "confirm": {
-        "title": "Continue without Space membership",
-        "description": "A Virtual Contributor can only interact within a Space. Are you sure you want to proceed without adding them to a Space? You can still invite the Virtual Contributor later through the Space’s Community tab."
+        "title": "Continue without $t(common.space) membership",
+        "description": "A Virtual Contributor can only interact within a $t(common.space). Are you sure you want to proceed without adding them to a $t(common.space)? You can still invite the Virtual Contributor later through the $t(common.space)’s Community tab."
       }
     }
   },
