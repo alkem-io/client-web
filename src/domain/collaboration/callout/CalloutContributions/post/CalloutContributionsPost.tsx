@@ -1,12 +1,10 @@
 import { useMemo, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
-import ScrollableCardsLayout from '@/domain/collaboration/callout/components/ScrollableCardsLayout';
 import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
 import { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import CreateContributionButton from '../CreateContributionButton';
 import PostCard, { PostCardPost } from './PostCard';
 import { BaseCalloutViewProps } from '../../CalloutViewTypes';
-import { gutters } from '@/core/ui/grid/utils';
 import CalloutBlockFooter from '../../calloutBlock/CalloutBlockFooter';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import {
@@ -17,6 +15,7 @@ import { TypedCalloutDetails } from '../../models/TypedCallout';
 import { compact, sortBy } from 'lodash';
 import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
+import CardsExpandableContainer from '../../components/CardsExpandableContainer';
 
 interface PostContribution {
   id: string;
@@ -107,7 +106,7 @@ const CalloutContributionsPost = ({
       },
     });
   };
-  const createButton = canCreateContribution && <CreateContributionButton onClick={openCreateDialog} />;
+  const createButton = canCreateContribution ? <CreateContributionButton onClick={openCreateDialog} /> : undefined;
 
   const navigateToPost = (post: PostCardPost) => {
     const state: LocationStateCachedCallout = {
@@ -119,13 +118,14 @@ const CalloutContributionsPost = ({
 
   return (
     <Gutters ref={ref}>
-      <ScrollableCardsLayout
-        items={loading ? [undefined, undefined] : (posts ?? [])}
-        createButton={!isSmallScreen && createButton}
-        maxHeight={gutters(22)}
+      <CardsExpandableContainer
+        items={posts}
+        pagination={{ total: posts.length }}
+        loading={loading}
+        createButton={createButton}
       >
         {post => <PostCard post={post} onClick={navigateToPost} />}
-      </ScrollableCardsLayout>
+      </CardsExpandableContainer>
       {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
         <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
       )}

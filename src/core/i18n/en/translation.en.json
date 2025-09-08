@@ -821,8 +821,15 @@
       "title": "Content not available",
       "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
     },
-    "contributions": "{{count}} Contribution",
-    "contributions_plural": "{{count}} Contributions",
+    "contributions": {
+      "contributionsCount": "{{count}} Contribution",
+      "contributionsCount_plural": "{{count}} Contributions",
+      "contributionsItemsCount": "{{count}} item in this collection",
+      "contributionsItemsCount_plural": "{{count}} items in this collection",
+      "contributionsItemsCountExpand": "{{count}} items in this collection, <click>click here</click> to see all",
+      "contributionsCollapse": "{{count}} items in this collection, <click>click here</click> to hide some",
+      "noContributions": "No contributions yet, be the first to contribute!"
+    },
     "draftNotice": "DRAFT - Only visible for admins",
     "closed": "This discussion is closed so you can no longer comment",
     "notMember": "You can't reply to this discussion since you're not a member of this $t(common.space)",

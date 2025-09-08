@@ -14,7 +14,7 @@ const CalloutBlockFooter = ({ contributionsCount, onCreate }: CalloutBlockFooter
 
   return (
     <Box display="flex" justifyContent="space-between" alignItems="start">
-      <CaptionSmall>{t('callout.contributions', { count: contributionsCount })}</CaptionSmall>
+      <CaptionSmall>{t('callout.contributions.contributionsCount', { count: contributionsCount })}</CaptionSmall>
       <SwapColors>
         <IconButton
           color="primary"
