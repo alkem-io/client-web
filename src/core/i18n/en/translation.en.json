@@ -1936,9 +1936,13 @@
           "subject": "{{triggeredByName}} applied to join {{spaceName}}",
           "description": "Review the application in space settings"
         },
-        "USER_MESSAGE_RECEIVED": {
+        "USER_MESSAGE": {
           "subject": "{{triggeredByName}} sent you a DM",
-          "description": "{{message}}"
+          "description": ""
+        },
+        "USER_MESSAGE_SENDER": {
+          "subject": "You sent a DM to {{receiverName}}",
+          "description": ""
         },
         "ORGANIZATION_ADMIN_MENTIONED": {
           "subject": "{{triggeredByName}} mentioned your organization in {{spaceName}}",

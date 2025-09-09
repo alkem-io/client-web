@@ -67,6 +67,7 @@ export interface InAppNotificationPayloadModel {
       id: string;
     };
   };
+  userMessage?: string;
   update?: string; // returning ID, todo: get the content of the update
   spaceCommunicationMessage?: string;
   role?: string;
