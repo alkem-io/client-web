@@ -44,7 +44,7 @@ export default defineConfig({
             req.url === '/' ||
             req.url === '/index.html' ||
             req.url?.endsWith('/index.html') ||
-            req.url?.endsWith('/home') ||
+            req.url === '/home' ||
             // the files below might not work - headersSent is true
             req.url?.startsWith('/meta.json') ||
             req.url?.startsWith('/env-config.js') ||
