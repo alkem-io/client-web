@@ -18,7 +18,12 @@
     <!-- this file is generated with  /docker/env.sh. The env.sh requires .env.base, which is in line
     built with NODE_ENV=production node buildConfiguration. The purpose of this is to have flexibility
     to have runtime configuration of the react client based on environment variables -->
-    <script src="/env-config.js"></script>
+    <script>
+      // Dynamically load script with cache-busting query
+      const script = document.createElement("script");
+      script.src = "env-config.js?v=" + Date.now(); // add timestamp
+      document.head.appendChild(script);
+    </script>
 
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
