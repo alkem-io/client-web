@@ -75,6 +75,20 @@ export const useInAppNotifications = () => {
         after: data?.notificationsInApp?.pageInfo?.endCursor,
         types: NOTIFICATION_EVENT_TYPES,
       },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+
+        return {
+          ...prev,
+          notificationsInApp: {
+            ...fetchMoreResult.notificationsInApp,
+            inAppNotifications: [
+              ...prev.notificationsInApp.inAppNotifications,
+              ...fetchMoreResult.notificationsInApp.inAppNotifications,
+            ],
+          },
+        };
+      },
     });
   }, [fetchMore, hasMore, loading, data?.notificationsInApp?.pageInfo?.endCursor]);
 
