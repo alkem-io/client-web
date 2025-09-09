@@ -1610,11 +1610,13 @@ export type InAppNotificationPayloadPlatformFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformForumDiscussionKeySpecifier = (
+  | 'comment'
   | 'discussion'
   | 'type'
   | InAppNotificationPayloadPlatformForumDiscussionKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformForumDiscussionFieldPolicy = {
+  comment?: FieldPolicy<any> | FieldReadFunction<any>;
   discussion?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };

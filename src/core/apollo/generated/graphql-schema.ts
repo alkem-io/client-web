@@ -2799,6 +2799,8 @@ export type InAppNotificationPayloadPlatform = InAppNotificationPayload & {
 
 export type InAppNotificationPayloadPlatformForumDiscussion = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
+  /** The comment message. */
+  comment?: Maybe<Scalars['String']['output']>;
   /** The discussion details. */
   discussion?: Maybe<DiscussionDetails>;
   /** The payload type. */
@@ -29979,6 +29981,7 @@ export type InAppNotificationReceivedSubscription = {
       | {
           __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
           type: NotificationEventPayload;
+          comment?: string | undefined;
           discussion?: { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string } | undefined;
         }
       | {
@@ -30759,6 +30762,7 @@ export type InAppNotificationsQuery = {
         | {
             __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
             type: NotificationEventPayload;
+            comment?: string | undefined;
             discussion?: { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string } | undefined;
           }
         | {
@@ -31544,6 +31548,7 @@ export type InAppNotificationAllTypesFragment = {
     | {
         __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
         type: NotificationEventPayload;
+        comment?: string | undefined;
         discussion?: { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string } | undefined;
       }
     | {
@@ -32442,6 +32447,7 @@ export type InAppNotificationPayloadSpaceFragment = {
 export type InAppNotificationPayloadPlatformForumDiscussionFragment = {
   __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
   type: NotificationEventPayload;
+  comment?: string | undefined;
   discussion?: { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string } | undefined;
 };
 

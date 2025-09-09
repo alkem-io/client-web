@@ -192,6 +192,7 @@ fragment InAppNotificationPayloadSpace on InAppNotificationPayloadSpace {
 
 fragment InAppNotificationPayloadPlatformForumDiscussion on InAppNotificationPayloadPlatformForumDiscussion {
   type
+  comment
   discussion {
     id
     displayName

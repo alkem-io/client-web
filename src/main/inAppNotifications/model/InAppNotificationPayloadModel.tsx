@@ -76,4 +76,5 @@ export interface InAppNotificationPayloadModel {
     displayName: string;
     url: string;
   };
+  comment?: string;
 }
