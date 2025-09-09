@@ -1953,11 +1953,11 @@
           "description": ""
         },
         "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
-          "subject": "{{userName}} has been removed from the platform",
+          "subject": "{{userName}} ({{userEmail}}) has been removed from the platform",
           "description": ""
         },
         "PLATFORM_ADMIN_USER_PROFILE_CREATED": {
-          "subject": "{{userName}} has been added to the platform",
+          "subject": "{{triggeredByName}} has signed up to the platform",
           "description": ""
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
