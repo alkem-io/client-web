@@ -47,7 +47,10 @@ export interface InAppNotificationPayloadModel {
             displayName?: string;
             url?: string;
             description?: string;
-            visual?: {
+            avatar?: {
+              uri?: string;
+            };
+            cardBanner?: {
               uri?: string;
             };
           }

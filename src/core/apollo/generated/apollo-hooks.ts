@@ -1877,7 +1877,6 @@ export const SpaceAboutCardBannerFragmentDoc = gql`
     profile {
       id
       displayName
-      description
       url
       tagline
       cardBanner: visual(type: CARD) {
@@ -2956,10 +2955,21 @@ export const SpaceNotificationFragmentDoc = gql`
     level
     about {
       id
-      ...SpaceAboutCardBanner
+      profile {
+        id
+        displayName
+        description
+        url
+        tagline
+        tagset {
+          ...TagsetDetails
+        }
+        ...SubspaceVisuals
+      }
     }
   }
-  ${SpaceAboutCardBannerFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${SubspaceVisualsFragmentDoc}
 `;
 export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
   fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationPayloadSpaceCollaborationCallout {

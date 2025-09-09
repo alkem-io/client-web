@@ -11478,7 +11478,6 @@ export type ActivityLogOnCollaborationQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -11540,7 +11539,6 @@ export type ActivityLogOnCollaborationQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -11606,7 +11604,6 @@ export type ActivityLogOnCollaborationQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -11673,7 +11670,6 @@ export type ActivityLogOnCollaborationQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -11735,7 +11731,6 @@ export type ActivityLogOnCollaborationQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -11806,7 +11801,6 @@ export type ActivityLogOnCollaborationQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -11872,7 +11866,6 @@ export type ActivityLogOnCollaborationQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -11943,7 +11936,6 @@ export type ActivityLogOnCollaborationQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -12014,7 +12006,6 @@ export type ActivityLogOnCollaborationQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -12107,7 +12098,6 @@ export type ActivityLogOnCollaborationQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -12174,7 +12164,6 @@ export type ActivityLogOnCollaborationQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -18783,7 +18772,6 @@ export type PendingMembershipsSpaceQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              description?: string | undefined;
               url: string;
               tagline?: string | undefined;
               avatar?:
@@ -20725,7 +20713,6 @@ export type DashboardSpacesQuery = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
-        description?: string | undefined;
         url: string;
         tagline?: string | undefined;
         cardBanner?:
@@ -22214,7 +22201,6 @@ export type SpaceAboutCardBannerFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
-    description?: string | undefined;
     url: string;
     tagline?: string | undefined;
     cardBanner?:
@@ -22606,7 +22592,6 @@ export type CreateSubspaceMutation = {
         id: string;
         url: string;
         displayName: string;
-        description?: string | undefined;
         tagline?: string | undefined;
         cardBanner?:
           | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
@@ -22716,7 +22701,6 @@ export type SpaceCardFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      description?: string | undefined;
       url: string;
       tagline?: string | undefined;
       cardBanner?:
@@ -22872,7 +22856,6 @@ export type SpaceDashboardNavigationSubspacesQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              description?: string | undefined;
               url: string;
               tagline?: string | undefined;
               cardBanner?:
@@ -23016,7 +22999,6 @@ export type SpaceSubspaceCardsQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                description?: string | undefined;
                 url: string;
                 tagline?: string | undefined;
                 cardBanner?:
@@ -23065,7 +23047,6 @@ export type SubspaceCardFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      description?: string | undefined;
       url: string;
       tagline?: string | undefined;
       cardBanner?:
@@ -23107,7 +23088,6 @@ export type SubspacesOnSpaceFragment = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
-        description?: string | undefined;
         url: string;
         tagline?: string | undefined;
         cardBanner?:
@@ -23514,7 +23494,6 @@ export type SubspacesInSpaceQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                description?: string | undefined;
                 url: string;
                 tagline?: string | undefined;
                 cardBanner?:
@@ -23567,7 +23546,6 @@ export type SubspaceCreatedSubscription = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          description?: string | undefined;
           url: string;
           tagline?: string | undefined;
           cardBanner?:
@@ -30059,15 +30037,6 @@ export type InAppNotificationReceivedSubscription = {
                     description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
                     tagset?:
                       | {
                           __typename?: 'Tagset';
@@ -30076,6 +30045,24 @@ export type InAppNotificationReceivedSubscription = {
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
                         }
                       | undefined;
                   };
@@ -30107,15 +30094,6 @@ export type InAppNotificationReceivedSubscription = {
                     description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
                     tagset?:
                       | {
                           __typename?: 'Tagset';
@@ -30124,6 +30102,24 @@ export type InAppNotificationReceivedSubscription = {
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
                         }
                       | undefined;
                   };
@@ -30161,15 +30157,6 @@ export type InAppNotificationReceivedSubscription = {
                     description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
                     tagset?:
                       | {
                           __typename?: 'Tagset';
@@ -30178,6 +30165,24 @@ export type InAppNotificationReceivedSubscription = {
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
                         }
                       | undefined;
                   };
@@ -30204,15 +30209,6 @@ export type InAppNotificationReceivedSubscription = {
                     description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
                     tagset?:
                       | {
                           __typename?: 'Tagset';
@@ -30221,6 +30217,24 @@ export type InAppNotificationReceivedSubscription = {
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
                         }
                       | undefined;
                   };
@@ -30246,15 +30260,6 @@ export type InAppNotificationReceivedSubscription = {
                     description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
                     tagset?:
                       | {
                           __typename?: 'Tagset';
@@ -30263,6 +30268,24 @@ export type InAppNotificationReceivedSubscription = {
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
                         }
                       | undefined;
                   };
@@ -30353,15 +30376,6 @@ export type InAppNotificationReceivedSubscription = {
                     description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
                     tagset?:
                       | {
                           __typename?: 'Tagset';
@@ -30370,6 +30384,24 @@ export type InAppNotificationReceivedSubscription = {
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
                         }
                       | undefined;
                   };
@@ -30454,15 +30486,6 @@ export type InAppNotificationReceivedSubscription = {
                     description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
                     tagset?:
                       | {
                           __typename?: 'Tagset';
@@ -30471,6 +30494,24 @@ export type InAppNotificationReceivedSubscription = {
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
                         }
                       | undefined;
                   };
@@ -30496,15 +30537,6 @@ export type InAppNotificationReceivedSubscription = {
                     description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
-                    cardBanner?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
                     tagset?:
                       | {
                           __typename?: 'Tagset';
@@ -30513,6 +30545,24 @@ export type InAppNotificationReceivedSubscription = {
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
                         }
                       | undefined;
                   };
@@ -30763,15 +30813,6 @@ export type InAppNotificationsQuery = {
                       description?: string | undefined;
                       url: string;
                       tagline?: string | undefined;
-                      cardBanner?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
                       tagset?:
                         | {
                             __typename?: 'Tagset';
@@ -30780,6 +30821,24 @@ export type InAppNotificationsQuery = {
                             tags: Array<string>;
                             allowedValues: Array<string>;
                             type: TagsetType;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -30811,15 +30870,6 @@ export type InAppNotificationsQuery = {
                       description?: string | undefined;
                       url: string;
                       tagline?: string | undefined;
-                      cardBanner?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
                       tagset?:
                         | {
                             __typename?: 'Tagset';
@@ -30828,6 +30878,24 @@ export type InAppNotificationsQuery = {
                             tags: Array<string>;
                             allowedValues: Array<string>;
                             type: TagsetType;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -30865,15 +30933,6 @@ export type InAppNotificationsQuery = {
                       description?: string | undefined;
                       url: string;
                       tagline?: string | undefined;
-                      cardBanner?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
                       tagset?:
                         | {
                             __typename?: 'Tagset';
@@ -30882,6 +30941,24 @@ export type InAppNotificationsQuery = {
                             tags: Array<string>;
                             allowedValues: Array<string>;
                             type: TagsetType;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -30908,15 +30985,6 @@ export type InAppNotificationsQuery = {
                       description?: string | undefined;
                       url: string;
                       tagline?: string | undefined;
-                      cardBanner?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
                       tagset?:
                         | {
                             __typename?: 'Tagset';
@@ -30925,6 +30993,24 @@ export type InAppNotificationsQuery = {
                             tags: Array<string>;
                             allowedValues: Array<string>;
                             type: TagsetType;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -30950,15 +31036,6 @@ export type InAppNotificationsQuery = {
                       description?: string | undefined;
                       url: string;
                       tagline?: string | undefined;
-                      cardBanner?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
                       tagset?:
                         | {
                             __typename?: 'Tagset';
@@ -30967,6 +31044,24 @@ export type InAppNotificationsQuery = {
                             tags: Array<string>;
                             allowedValues: Array<string>;
                             type: TagsetType;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -31057,15 +31152,6 @@ export type InAppNotificationsQuery = {
                       description?: string | undefined;
                       url: string;
                       tagline?: string | undefined;
-                      cardBanner?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
                       tagset?:
                         | {
                             __typename?: 'Tagset';
@@ -31074,6 +31160,24 @@ export type InAppNotificationsQuery = {
                             tags: Array<string>;
                             allowedValues: Array<string>;
                             type: TagsetType;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -31158,15 +31262,6 @@ export type InAppNotificationsQuery = {
                       description?: string | undefined;
                       url: string;
                       tagline?: string | undefined;
-                      cardBanner?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
                       tagset?:
                         | {
                             __typename?: 'Tagset';
@@ -31175,6 +31270,24 @@ export type InAppNotificationsQuery = {
                             tags: Array<string>;
                             allowedValues: Array<string>;
                             type: TagsetType;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -31200,15 +31313,6 @@ export type InAppNotificationsQuery = {
                       description?: string | undefined;
                       url: string;
                       tagline?: string | undefined;
-                      cardBanner?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
                       tagset?:
                         | {
                             __typename?: 'Tagset';
@@ -31217,6 +31321,24 @@ export type InAppNotificationsQuery = {
                             tags: Array<string>;
                             allowedValues: Array<string>;
                             type: TagsetType;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -31472,15 +31594,6 @@ export type InAppNotificationAllTypesFragment = {
                   description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
                   tagset?:
                     | {
                         __typename?: 'Tagset';
@@ -31489,6 +31602,24 @@ export type InAppNotificationAllTypesFragment = {
                         tags: Array<string>;
                         allowedValues: Array<string>;
                         type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -31520,15 +31651,6 @@ export type InAppNotificationAllTypesFragment = {
                   description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
                   tagset?:
                     | {
                         __typename?: 'Tagset';
@@ -31537,6 +31659,24 @@ export type InAppNotificationAllTypesFragment = {
                         tags: Array<string>;
                         allowedValues: Array<string>;
                         type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -31574,15 +31714,6 @@ export type InAppNotificationAllTypesFragment = {
                   description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
                   tagset?:
                     | {
                         __typename?: 'Tagset';
@@ -31591,6 +31722,24 @@ export type InAppNotificationAllTypesFragment = {
                         tags: Array<string>;
                         allowedValues: Array<string>;
                         type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -31617,15 +31766,6 @@ export type InAppNotificationAllTypesFragment = {
                   description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
                   tagset?:
                     | {
                         __typename?: 'Tagset';
@@ -31634,6 +31774,24 @@ export type InAppNotificationAllTypesFragment = {
                         tags: Array<string>;
                         allowedValues: Array<string>;
                         type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -31659,15 +31817,6 @@ export type InAppNotificationAllTypesFragment = {
                   description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
                   tagset?:
                     | {
                         __typename?: 'Tagset';
@@ -31676,6 +31825,24 @@ export type InAppNotificationAllTypesFragment = {
                         tags: Array<string>;
                         allowedValues: Array<string>;
                         type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -31766,15 +31933,6 @@ export type InAppNotificationAllTypesFragment = {
                   description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
                   tagset?:
                     | {
                         __typename?: 'Tagset';
@@ -31783,6 +31941,24 @@ export type InAppNotificationAllTypesFragment = {
                         tags: Array<string>;
                         allowedValues: Array<string>;
                         type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -31867,15 +32043,6 @@ export type InAppNotificationAllTypesFragment = {
                   description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
                   tagset?:
                     | {
                         __typename?: 'Tagset';
@@ -31884,6 +32051,24 @@ export type InAppNotificationAllTypesFragment = {
                         tags: Array<string>;
                         allowedValues: Array<string>;
                         type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -31909,15 +32094,6 @@ export type InAppNotificationAllTypesFragment = {
                   description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
-                  cardBanner?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
                   tagset?:
                     | {
                         __typename?: 'Tagset';
@@ -31926,6 +32102,24 @@ export type InAppNotificationAllTypesFragment = {
                         tags: Array<string>;
                         allowedValues: Array<string>;
                         type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -31989,9 +32183,6 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutFragment = {
             description?: string | undefined;
             url: string;
             tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -32001,6 +32192,12 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutFragment = {
                   allowedValues: Array<string>;
                   type: TagsetType;
                 }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
           };
         };
@@ -32025,9 +32222,6 @@ export type InAppNotificationSpaceCommunityContributorFragment = {
             description?: string | undefined;
             url: string;
             tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -32037,6 +32231,12 @@ export type InAppNotificationSpaceCommunityContributorFragment = {
                   allowedValues: Array<string>;
                   type: TagsetType;
                 }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
           };
         };
@@ -32099,9 +32299,6 @@ export type SpaceNotificationFragment = {
       description?: string | undefined;
       url: string;
       tagline?: string | undefined;
-      cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-        | undefined;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -32111,6 +32308,12 @@ export type SpaceNotificationFragment = {
             allowedValues: Array<string>;
             type: TagsetType;
           }
+        | undefined;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+        | undefined;
+      cardBanner?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
         | undefined;
     };
   };
@@ -32248,9 +32451,6 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {
             description?: string | undefined;
             url: string;
             tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -32260,6 +32460,12 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {
                   allowedValues: Array<string>;
                   type: TagsetType;
                 }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
           };
         };
@@ -32350,9 +32556,6 @@ export type InAppNotificationPayloadSpaceCommunicationUpdateFragment = {
             description?: string | undefined;
             url: string;
             tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -32362,6 +32565,12 @@ export type InAppNotificationPayloadSpaceCommunicationUpdateFragment = {
                   allowedValues: Array<string>;
                   type: TagsetType;
                 }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
           };
         };
@@ -32387,9 +32596,6 @@ export type InAppNotificationPayloadSpaceCommunicationMessageDirectFragment = {
             description?: string | undefined;
             url: string;
             tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -32399,6 +32605,12 @@ export type InAppNotificationPayloadSpaceCommunicationMessageDirectFragment = {
                   allowedValues: Array<string>;
                   type: TagsetType;
                 }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
           };
         };
@@ -32423,9 +32635,6 @@ export type InAppNotificationPayloadSpaceCommunityInvitationFragment = {
             description?: string | undefined;
             url: string;
             tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -32435,6 +32644,12 @@ export type InAppNotificationPayloadSpaceCommunityInvitationFragment = {
                   allowedValues: Array<string>;
                   type: TagsetType;
                 }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
           };
         };
@@ -32459,9 +32674,6 @@ export type InAppNotificationPayloadSpaceCommunityInvitationPlatformFragment = {
             description?: string | undefined;
             url: string;
             tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -32471,6 +32683,12 @@ export type InAppNotificationPayloadSpaceCommunityInvitationPlatformFragment = {
                   allowedValues: Array<string>;
                   type: TagsetType;
                 }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
           };
         };
@@ -32521,9 +32739,6 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment
             description?: string | undefined;
             url: string;
             tagline?: string | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-              | undefined;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -32533,6 +32748,12 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment
                   allowedValues: Array<string>;
                   type: TagsetType;
                 }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
           };
         };
@@ -33866,7 +34087,6 @@ export type DashboardWithMembershipsQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            description?: string | undefined;
             url: string;
             tagline?: string | undefined;
             spaceBanner?:
@@ -33910,7 +34130,6 @@ export type DashboardWithMembershipsQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              description?: string | undefined;
               url: string;
               tagline?: string | undefined;
               spaceBanner?:
@@ -33956,7 +34175,6 @@ export type DashboardSpaceMembershipFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      description?: string | undefined;
       url: string;
       tagline?: string | undefined;
       spaceBanner?:
@@ -34222,7 +34440,6 @@ export type LatestContributionsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
@@ -34285,7 +34502,6 @@ export type LatestContributionsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
@@ -34352,7 +34568,6 @@ export type LatestContributionsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
@@ -34424,7 +34639,6 @@ export type LatestContributionsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
@@ -34487,7 +34701,6 @@ export type LatestContributionsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
@@ -34559,7 +34772,6 @@ export type LatestContributionsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
@@ -34626,7 +34838,6 @@ export type LatestContributionsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
@@ -34698,7 +34909,6 @@ export type LatestContributionsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
@@ -34770,7 +34980,6 @@ export type LatestContributionsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
@@ -34864,7 +35073,6 @@ export type LatestContributionsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
@@ -34932,7 +35140,6 @@ export type LatestContributionsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    description?: string | undefined;
                     url: string;
                     tagline?: string | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
@@ -35665,7 +35872,6 @@ export type MyMembershipsQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            description?: string | undefined;
             url: string;
             tagline?: string | undefined;
             cardBanner?:
@@ -35710,7 +35916,6 @@ export type MyMembershipsQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              description?: string | undefined;
               url: string;
               tagline?: string | undefined;
               cardBanner?:
@@ -35755,7 +35960,6 @@ export type MyMembershipsQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                description?: string | undefined;
                 url: string;
                 tagline?: string | undefined;
                 cardBanner?:
@@ -35806,7 +36010,6 @@ export type SpaceMembershipFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      description?: string | undefined;
       url: string;
       tagline?: string | undefined;
       cardBanner?:
@@ -35855,7 +36058,6 @@ export type MyResourcesQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                description?: string | undefined;
                 url: string;
                 tagline?: string | undefined;
                 avatar?:
@@ -36305,7 +36507,6 @@ export type RecentSpacesQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            description?: string | undefined;
             url: string;
             tagline?: string | undefined;
             cardBanner?:
@@ -36384,7 +36585,6 @@ export type SpaceExplorerSearchQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  description?: string | undefined;
                   url: string;
                   tagline?: string | undefined;
                   cardBanner?:
@@ -36436,7 +36636,6 @@ export type SpaceExplorerSearchSpaceFragment = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
-        description?: string | undefined;
         url: string;
         tagline?: string | undefined;
         cardBanner?:
@@ -36481,7 +36680,6 @@ export type SpaceExplorerMemberSpacesQuery = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          description?: string | undefined;
           url: string;
           tagline?: string | undefined;
           avatar?:
@@ -36517,7 +36715,6 @@ export type SpaceExplorerMemberSpacesQuery = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
-        description?: string | undefined;
         url: string;
         tagline?: string | undefined;
         cardBanner?:
@@ -36566,7 +36763,6 @@ export type SpaceExplorerAllSpacesQuery = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          description?: string | undefined;
           url: string;
           tagline?: string | undefined;
           cardBanner?:
@@ -36616,7 +36812,6 @@ export type SpaceExplorerSubspacesQuery = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          description?: string | undefined;
           url: string;
           tagline?: string | undefined;
           avatar?:
@@ -36660,7 +36855,6 @@ export type SpaceExplorerSpaceFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      description?: string | undefined;
       url: string;
       tagline?: string | undefined;
       cardBanner?:
@@ -36693,7 +36887,6 @@ export type SpaceExplorerSubspaceFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      description?: string | undefined;
       url: string;
       tagline?: string | undefined;
       avatar?:

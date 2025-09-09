@@ -112,7 +112,17 @@ fragment spaceNotification on Space {
   level
   about {
     id
-    ...SpaceAboutCardBanner
+    profile {
+      id
+      displayName
+      description
+      url
+      tagline
+      tagset {
+        ...TagsetDetails
+      }
+      ...SubspaceVisuals
+    }
   }
 }
 
