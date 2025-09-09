@@ -1,6 +1,8 @@
 import { NotificationEventInAppState, NotificationEvent } from '@/core/apollo/generated/graphql-schema';
 import {
   useInAppNotificationsQuery,
+  useInAppNotificationIdsLazyQuery,
+  useInAppNotificationUnreadCountQuery,
   useUpdateNotificationStateMutation,
   useMarkNotificationsAsReadMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -36,24 +38,51 @@ const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [
   NotificationEvent.UserSpaceCommunityJoined,
 ];
 
+const PAGE_SIZE = 10;
+
 export const useInAppNotifications = () => {
   const { isEnabled } = useInAppNotificationsContext();
 
   const [updateState] = useUpdateNotificationStateMutation();
   const [markAsRead] = useMarkNotificationsAsReadMutation();
+  const [getNotificationIds] = useInAppNotificationIdsLazyQuery();
 
-  const { data, loading } = useInAppNotificationsQuery({
+  // Query for the main notifications list
+  const { data, loading, error, fetchMore } = useInAppNotificationsQuery({
+    variables: {
+      first: PAGE_SIZE,
+      types: NOTIFICATION_EVENT_TYPES,
+    },
+    skip: !isEnabled,
+  });
+
+  // Query for getting the total unread count
+  const { data: countData } = useInAppNotificationUnreadCountQuery({
     variables: {
       types: NOTIFICATION_EVENT_TYPES,
     },
     skip: !isEnabled,
   });
 
+  const hasMore = data?.notificationsInApp?.pageInfo?.hasNextPage;
+
+  const fetchMoreNotifications = useCallback(async () => {
+    if (!hasMore || loading) return;
+
+    await fetchMore({
+      variables: {
+        first: PAGE_SIZE,
+        after: data?.notificationsInApp?.pageInfo?.endCursor,
+        types: NOTIFICATION_EVENT_TYPES,
+      },
+    });
+  }, [fetchMore, hasMore, loading, data?.notificationsInApp?.pageInfo?.endCursor]);
+
   // Memoize the filtered and mapped notifications to avoid unnecessary re-processing
   const notificationsInApp = useMemo(() => {
     const notifications: InAppNotificationModel[] = [];
 
-    for (const notificationData of data?.notificationsInApp ?? []) {
+    for (const notificationData of data?.notificationsInApp?.inAppNotifications ?? []) {
       if (notificationData.state === NotificationEventInAppState.Archived) {
         continue; // Skip archived notifications
       }
@@ -70,7 +99,16 @@ export const useInAppNotifications = () => {
     }
 
     return notifications;
-  }, [data?.notificationsInApp]);
+  }, [data?.notificationsInApp?.inAppNotifications]);
+
+  // Calculate total unread count from the dedicated query
+  const unreadCount = useMemo(() => {
+    return (
+      countData?.notificationsInApp?.inAppNotifications?.filter(
+        notification => notification.state === NotificationEventInAppState.Unread
+      ).length ?? 0
+    );
+  }, [countData?.notificationsInApp?.inAppNotifications]);
 
   const updateNotificationState = useCallback(
     async (id: string, status: NotificationEventInAppState) => {
@@ -94,34 +132,51 @@ export const useInAppNotifications = () => {
   );
 
   const markNotificationsAsRead = useCallback(async () => {
-    const unreadIds = notificationsInApp
-      .filter(item => item.state === NotificationEventInAppState.Unread)
-      .map(item => item.id);
-
-    if (unreadIds.length === 0) {
-      return;
-    }
-
     try {
+      // First, get all notification IDs to find unread ones
+      const { data: idsData } = await getNotificationIds({
+        variables: {
+          types: NOTIFICATION_EVENT_TYPES,
+        },
+      });
+
+      const unreadIds =
+        idsData?.notificationsInApp?.inAppNotifications
+          ?.filter(notification => notification.state === NotificationEventInAppState.Unread)
+          ?.map(notification => notification.id) ?? [];
+
+      if (unreadIds.length === 0) {
+        return;
+      }
+
       await markAsRead({
         variables: {
           notificationIds: unreadIds,
         },
         update: (cache, result) => {
           if (result?.data?.markNotificationsAsRead) {
+            // Update individual notification objects in the cache
             updateNotificationsCache(cache, unreadIds, NotificationEventInAppState.Read);
+
+            // Also refetch the main query to ensure UI consistency
+            cache.evict({ fieldName: 'notificationsInApp' });
+            cache.gc();
           }
         },
       });
     } catch (error) {
       console.error('Failed to mark notifications as read:', error);
     }
-  }, [markAsRead, notificationsInApp]);
+  }, [markAsRead, getNotificationIds]);
 
   return {
     notificationsInApp,
+    unreadCount,
     isLoading: loading,
     updateNotificationState,
     markNotificationsAsRead,
+    fetchMore: fetchMoreNotifications,
+    hasMore,
+    error,
   };
 };

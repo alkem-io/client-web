@@ -22474,35 +22474,43 @@ export type InAppNotificationReceivedSubscriptionHookResult = ReturnType<
 export type InAppNotificationReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.InAppNotificationReceivedSubscription>;
 export const InAppNotificationsDocument = gql`
-  query InAppNotifications($types: [NotificationEvent!]) {
-    notificationsInApp(filter: { types: $types }) {
-      id
-      type
-      category
-      state
-      triggeredAt
-      triggeredBy {
+  query InAppNotifications($first: Int!, $after: UUID, $types: [NotificationEvent!]) {
+    notificationsInApp(first: $first, after: $after, filter: { types: $types }) {
+      inAppNotifications {
         id
-        profile {
+        type
+        category
+        state
+        triggeredAt
+        triggeredBy {
           id
-          displayName
-          url
-          visual(type: AVATAR) {
-            ...VisualModel
+          profile {
+            id
+            displayName
+            url
+            visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+        payload {
+          type
+          ... on InAppNotificationPayloadSpaceCollaborationCallout {
+            ...InAppNotificationPayloadSpaceCollaborationCallout
+          }
+          ... on InAppNotificationPayloadSpaceCommunityContributor {
+            ...InAppNotificationSpaceCommunityContributor
+          }
+          ... on InAppNotificationPayloadPlatformUserMessageRoom {
+            ...InAppNotificationUserMentioned
           }
         }
       }
-      payload {
-        type
-        ... on InAppNotificationPayloadSpaceCollaborationCallout {
-          ...InAppNotificationPayloadSpaceCollaborationCallout
-        }
-        ... on InAppNotificationPayloadSpaceCommunityContributor {
-          ...InAppNotificationSpaceCommunityContributor
-        }
-        ... on InAppNotificationPayloadPlatformUserMessageRoom {
-          ...InAppNotificationUserMentioned
-        }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
       }
     }
   }
@@ -22524,15 +22532,18 @@ export const InAppNotificationsDocument = gql`
  * @example
  * const { data, loading, error } = useInAppNotificationsQuery({
  *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
  *      types: // value for 'types'
  *   },
  * });
  */
 export function useInAppNotificationsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.InAppNotificationsQuery,
     SchemaTypes.InAppNotificationsQueryVariables
-  >
+  > &
+    ({ variables: SchemaTypes.InAppNotificationsQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.InAppNotificationsQuery, SchemaTypes.InAppNotificationsQueryVariables>(
@@ -22570,8 +22581,164 @@ export type InAppNotificationsQueryResult = Apollo.QueryResult<
   SchemaTypes.InAppNotificationsQuery,
   SchemaTypes.InAppNotificationsQueryVariables
 >;
-export function refetchInAppNotificationsQuery(variables?: SchemaTypes.InAppNotificationsQueryVariables) {
+export function refetchInAppNotificationsQuery(variables: SchemaTypes.InAppNotificationsQueryVariables) {
   return { query: InAppNotificationsDocument, variables: variables };
+}
+export const InAppNotificationIdsDocument = gql`
+  query InAppNotificationIds($types: [NotificationEvent!]) {
+    notificationsInApp(first: 1000, filter: { types: $types }) {
+      inAppNotifications {
+        id
+        state
+      }
+    }
+  }
+`;
+
+/**
+ * __useInAppNotificationIdsQuery__
+ *
+ * To run a query within a React component, call `useInAppNotificationIdsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInAppNotificationIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInAppNotificationIdsQuery({
+ *   variables: {
+ *      types: // value for 'types'
+ *   },
+ * });
+ */
+export function useInAppNotificationIdsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.InAppNotificationIdsQuery,
+    SchemaTypes.InAppNotificationIdsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InAppNotificationIdsQuery, SchemaTypes.InAppNotificationIdsQueryVariables>(
+    InAppNotificationIdsDocument,
+    options
+  );
+}
+export function useInAppNotificationIdsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InAppNotificationIdsQuery,
+    SchemaTypes.InAppNotificationIdsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InAppNotificationIdsQuery, SchemaTypes.InAppNotificationIdsQueryVariables>(
+    InAppNotificationIdsDocument,
+    options
+  );
+}
+export function useInAppNotificationIdsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.InAppNotificationIdsQuery,
+        SchemaTypes.InAppNotificationIdsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.InAppNotificationIdsQuery, SchemaTypes.InAppNotificationIdsQueryVariables>(
+    InAppNotificationIdsDocument,
+    options
+  );
+}
+export type InAppNotificationIdsQueryHookResult = ReturnType<typeof useInAppNotificationIdsQuery>;
+export type InAppNotificationIdsLazyQueryHookResult = ReturnType<typeof useInAppNotificationIdsLazyQuery>;
+export type InAppNotificationIdsSuspenseQueryHookResult = ReturnType<typeof useInAppNotificationIdsSuspenseQuery>;
+export type InAppNotificationIdsQueryResult = Apollo.QueryResult<
+  SchemaTypes.InAppNotificationIdsQuery,
+  SchemaTypes.InAppNotificationIdsQueryVariables
+>;
+export function refetchInAppNotificationIdsQuery(variables?: SchemaTypes.InAppNotificationIdsQueryVariables) {
+  return { query: InAppNotificationIdsDocument, variables: variables };
+}
+export const InAppNotificationUnreadCountDocument = gql`
+  query InAppNotificationUnreadCount($types: [NotificationEvent!]) {
+    notificationsInApp(first: 1000, filter: { types: $types }) {
+      inAppNotifications {
+        id
+        state
+      }
+    }
+  }
+`;
+
+/**
+ * __useInAppNotificationUnreadCountQuery__
+ *
+ * To run a query within a React component, call `useInAppNotificationUnreadCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInAppNotificationUnreadCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInAppNotificationUnreadCountQuery({
+ *   variables: {
+ *      types: // value for 'types'
+ *   },
+ * });
+ */
+export function useInAppNotificationUnreadCountQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.InAppNotificationUnreadCountQuery,
+    SchemaTypes.InAppNotificationUnreadCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InAppNotificationUnreadCountQuery,
+    SchemaTypes.InAppNotificationUnreadCountQueryVariables
+  >(InAppNotificationUnreadCountDocument, options);
+}
+export function useInAppNotificationUnreadCountLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InAppNotificationUnreadCountQuery,
+    SchemaTypes.InAppNotificationUnreadCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InAppNotificationUnreadCountQuery,
+    SchemaTypes.InAppNotificationUnreadCountQueryVariables
+  >(InAppNotificationUnreadCountDocument, options);
+}
+export function useInAppNotificationUnreadCountSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.InAppNotificationUnreadCountQuery,
+        SchemaTypes.InAppNotificationUnreadCountQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.InAppNotificationUnreadCountQuery,
+    SchemaTypes.InAppNotificationUnreadCountQueryVariables
+  >(InAppNotificationUnreadCountDocument, options);
+}
+export type InAppNotificationUnreadCountQueryHookResult = ReturnType<typeof useInAppNotificationUnreadCountQuery>;
+export type InAppNotificationUnreadCountLazyQueryHookResult = ReturnType<
+  typeof useInAppNotificationUnreadCountLazyQuery
+>;
+export type InAppNotificationUnreadCountSuspenseQueryHookResult = ReturnType<
+  typeof useInAppNotificationUnreadCountSuspenseQuery
+>;
+export type InAppNotificationUnreadCountQueryResult = Apollo.QueryResult<
+  SchemaTypes.InAppNotificationUnreadCountQuery,
+  SchemaTypes.InAppNotificationUnreadCountQueryVariables
+>;
+export function refetchInAppNotificationUnreadCountQuery(
+  variables?: SchemaTypes.InAppNotificationUnreadCountQueryVariables
+) {
+  return { query: InAppNotificationUnreadCountDocument, variables: variables };
 }
 export const UpdateNotificationStateDocument = gql`
   mutation UpdateNotificationState($ID: UUID!, $state: NotificationEventInAppState!) {

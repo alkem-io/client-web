@@ -1916,6 +1916,25 @@ export type KnowledgeBaseFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type KratosIdentityKeySpecifier = (
+  | 'createdAt'
+  | 'email'
+  | 'firstName'
+  | 'id'
+  | 'isVerified'
+  | 'lastName'
+  | 'verificationStatus'
+  | KratosIdentityKeySpecifier
+)[];
+export type KratosIdentityFieldPolicy = {
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isVerified?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
+  verificationStatus?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LatestReleaseDiscussionKeySpecifier = ('id' | 'nameID' | LatestReleaseDiscussionKeySpecifier)[];
 export type LatestReleaseDiscussionFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2401,6 +2420,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomState'
+  | 'adminIdentityDeleteKratosIdentity'
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
@@ -2581,6 +2601,7 @@ export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminIdentityDeleteKratosIdentity?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2890,6 +2911,17 @@ export type PageInfoFieldPolicy = {
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PaginatedInAppNotificationsKeySpecifier = (
+  | 'inAppNotifications'
+  | 'pageInfo'
+  | 'total'
+  | PaginatedInAppNotificationsKeySpecifier
+)[];
+export type PaginatedInAppNotificationsFieldPolicy = {
+  inAppNotifications?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PaginatedOrganizationKeySpecifier = (
   | 'organization'
   | 'pageInfo'
@@ -2975,8 +3007,16 @@ export type PlatformAdminCommunicationQueryResultsFieldPolicy = {
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PlatformAdminIdentityQueryResultsKeySpecifier = (
+  | 'identities'
+  | PlatformAdminIdentityQueryResultsKeySpecifier
+)[];
+export type PlatformAdminIdentityQueryResultsFieldPolicy = {
+  identities?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PlatformAdminQueryResultsKeySpecifier = (
   | 'communication'
+  | 'identity'
   | 'innovationHubs'
   | 'innovationPacks'
   | 'organizations'
@@ -2987,6 +3027,7 @@ export type PlatformAdminQueryResultsKeySpecifier = (
 )[];
 export type PlatformAdminQueryResultsFieldPolicy = {
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
+  identity?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3165,6 +3206,7 @@ export type QueryKeySpecifier = (
   | 'activityFeed'
   | 'activityFeedGrouped'
   | 'activityLogOnCollaboration'
+  | 'adminIdentitiesUnverified'
   | 'aiServer'
   | 'exploreSpaces'
   | 'getSupportedVerifiedCredentialMetadata'
@@ -3202,6 +3244,7 @@ export type QueryFieldPolicy = {
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminIdentitiesUnverified?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5320,6 +5363,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | KnowledgeBaseKeySpecifier | (() => undefined | KnowledgeBaseKeySpecifier);
     fields?: KnowledgeBaseFieldPolicy;
   };
+  KratosIdentity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | KratosIdentityKeySpecifier | (() => undefined | KratosIdentityKeySpecifier);
+    fields?: KratosIdentityFieldPolicy;
+  };
   LatestReleaseDiscussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LatestReleaseDiscussionKeySpecifier | (() => undefined | LatestReleaseDiscussionKeySpecifier);
     fields?: LatestReleaseDiscussionFieldPolicy;
@@ -5491,6 +5538,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier);
     fields?: PageInfoFieldPolicy;
   };
+  PaginatedInAppNotifications?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PaginatedInAppNotificationsKeySpecifier
+      | (() => undefined | PaginatedInAppNotificationsKeySpecifier);
+    fields?: PaginatedInAppNotificationsFieldPolicy;
+  };
   PaginatedOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PaginatedOrganizationKeySpecifier | (() => undefined | PaginatedOrganizationKeySpecifier);
     fields?: PaginatedOrganizationFieldPolicy;
@@ -5524,6 +5578,13 @@ export type StrictTypedTypePolicies = {
       | PlatformAdminCommunicationQueryResultsKeySpecifier
       | (() => undefined | PlatformAdminCommunicationQueryResultsKeySpecifier);
     fields?: PlatformAdminCommunicationQueryResultsFieldPolicy;
+  };
+  PlatformAdminIdentityQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PlatformAdminIdentityQueryResultsKeySpecifier
+      | (() => undefined | PlatformAdminIdentityQueryResultsKeySpecifier);
+    fields?: PlatformAdminIdentityQueryResultsFieldPolicy;
   };
   PlatformAdminQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

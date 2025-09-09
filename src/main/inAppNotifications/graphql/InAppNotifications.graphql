@@ -1,33 +1,64 @@
-query InAppNotifications($types: [NotificationEvent!]) {
+query InAppNotifications($first: Int!, $after: UUID, $types: [NotificationEvent!]) {
   notificationsInApp(
-    filter: { types: $types }  ) {
-    id
-    type
-    category
-    state
-    triggeredAt
-    triggeredBy {
+    first: $first, after: $after, filter: { types: $types }
+  ) {
+    inAppNotifications {
       id
-      profile {
+      type
+      category
+      state
+      triggeredAt
+      triggeredBy {
         id
-        displayName
-        url
-        visual(type: AVATAR) {
-          ...VisualModel
+        profile {
+          id
+          displayName
+          url
+          visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+      payload {
+        type
+        ... on InAppNotificationPayloadSpaceCollaborationCallout {
+          ...InAppNotificationPayloadSpaceCollaborationCallout
+        }
+        ... on InAppNotificationPayloadSpaceCommunityContributor {
+          ...InAppNotificationSpaceCommunityContributor
+        }
+        ... on InAppNotificationPayloadPlatformUserMessageRoom {
+          ...InAppNotificationUserMentioned
         }
       }
     }
-    payload {
-      type
-      ... on InAppNotificationPayloadSpaceCollaborationCallout {
-        ...InAppNotificationPayloadSpaceCollaborationCallout
-      }
-      ... on InAppNotificationPayloadSpaceCommunityContributor {
-        ...InAppNotificationSpaceCommunityContributor
-      }
-      ... on InAppNotificationPayloadPlatformUserMessageRoom {
-        ...InAppNotificationUserMentioned
-      }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
+
+query InAppNotificationIds($types: [NotificationEvent!]) {
+  notificationsInApp(
+    first: 1000, filter: { types: $types }
+  ) {
+    inAppNotifications {
+      id
+      state
+    }
+  }
+}
+
+query InAppNotificationUnreadCount($types: [NotificationEvent!]) {
+  notificationsInApp(
+    first: 1000, filter: { types: $types }
+  ) {
+    inAppNotifications {
+      id
+      state
     }
   }
 }

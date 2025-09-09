@@ -34,7 +34,17 @@ export const InAppNotificationsDialog = () => {
       >
         {t('common.notifications')}
       </DialogHeader>
-      <DialogContent sx={{ padding: 0 }}>{isOpen && <InAppNotificationsList />}</DialogContent>
+      <DialogContent
+        sx={{
+          padding: 0,
+          maxHeight: '60vh',
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {isOpen && <InAppNotificationsList />}
+      </DialogContent>
     </DialogWithGrid>
   );
 };
