@@ -1906,7 +1906,7 @@
       }
     },
     "members-view": {
-      "title": "Active $t(common.community) $t(common.members)",
+      "title": "Active $t(common.community) $t(common.members)"
     },
     "community-section": {
       "discussions": {
