@@ -1419,6 +1419,12 @@ export type DiscussionFieldPolicy = {
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type DiscussionDetailsKeySpecifier = ('displayName' | 'id' | 'url' | DiscussionDetailsKeySpecifier)[];
+export type DiscussionDetailsFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type DocumentKeySpecifier = (
   | 'authorization'
   | 'createdBy'
@@ -1604,13 +1610,11 @@ export type InAppNotificationPayloadPlatformFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformForumDiscussionKeySpecifier = (
-  | 'comment'
   | 'discussion'
   | 'type'
   | InAppNotificationPayloadPlatformForumDiscussionKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformForumDiscussionFieldPolicy = {
-  comment?: FieldPolicy<any> | FieldReadFunction<any>;
   discussion?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -5133,6 +5137,10 @@ export type StrictTypedTypePolicies = {
   Discussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | DiscussionKeySpecifier | (() => undefined | DiscussionKeySpecifier);
     fields?: DiscussionFieldPolicy;
+  };
+  DiscussionDetails?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | DiscussionDetailsKeySpecifier | (() => undefined | DiscussionDetailsKeySpecifier);
+    fields?: DiscussionDetailsFieldPolicy;
   };
   Document?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | DocumentKeySpecifier | (() => undefined | DocumentKeySpecifier);

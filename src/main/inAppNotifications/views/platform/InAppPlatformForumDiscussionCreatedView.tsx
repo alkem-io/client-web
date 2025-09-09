@@ -5,23 +5,17 @@ export const InAppPlatformForumDiscussionCreatedView = (notification: InAppNotif
   const { payload, triggeredBy } = notification;
 
   // do not display notification if these are missing
-  if (!triggeredBy?.profile?.displayName || !payload.messageDetails) {
+  if (!triggeredBy?.profile?.displayName || !payload.discussion) {
     return null;
   }
-  const messageDetails = payload.messageDetails;
+  const discussion = payload.discussion;
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
-    discussionName: messageDetails?.parent?.displayName,
-    message: messageDetails?.message,
+    discussionName: discussion.displayName,
   };
 
   return (
-    <InAppNotificationBaseView
-      notification={notification}
-      values={notificationTextValues}
-      url={payload.messageDetails?.parent?.url}
-    />
+    <InAppNotificationBaseView notification={notification} values={notificationTextValues} url={discussion?.url} />
   );
 };

@@ -2923,6 +2923,11 @@ export const InAppNotificationPayloadSpaceFragmentDoc = gql`
 export const InAppNotificationPayloadPlatformForumDiscussionFragmentDoc = gql`
   fragment InAppNotificationPayloadPlatformForumDiscussion on InAppNotificationPayloadPlatformForumDiscussion {
     type
+    discussion {
+      id
+      displayName
+      url
+    }
   }
 `;
 export const InAppNotificationUserMentionedFragmentDoc = gql`

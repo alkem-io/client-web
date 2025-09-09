@@ -192,6 +192,11 @@ fragment InAppNotificationPayloadSpace on InAppNotificationPayloadSpace {
 
 fragment InAppNotificationPayloadPlatformForumDiscussion on InAppNotificationPayloadPlatformForumDiscussion {
   type
+  discussion {
+    id
+    displayName
+    url
+  }
 }
 
 fragment InAppNotificationPayloadPlatformUser on InAppNotificationPayloadPlatformUser {

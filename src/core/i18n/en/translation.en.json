@@ -1900,10 +1900,6 @@
           "subject": "\"{{memberName}}\" joined {{spaceName}}",
           "description": "{{memberName}} has joined {{spaceName}}, of which you are an admin."
         },
-        "PLATFORM_FORUM_DISCUSSION_COMMENT": {
-          "subject": "{{triggeredByName}} commented on {{calloutName}} in {{spaceName}}",
-          "description": "{{comment}}"
-        },
         "USER_COMMENT_REPLY": {
           "subject": "{{triggeredByName}} commented on your post {{parentName}}",
           "description": ""
@@ -1911,10 +1907,6 @@
         "USER_SPACE_COMMUNITY_INVITATION": {
           "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
           "description": "{{spaceName}} - {{spaceDescription}}"
-        },
-        "PLATFORM_FORUM_DISCUSSION_CREATED": {
-          "subject": "{{triggeredByName}} started a new discussion in {{spaceName}}",
-          "description": "{{calloutName}} - {{calloutDescription}}"
         },
         "SPACE_COMMUNICATION_UPDATE": {
           "subject": "{{triggeredByName}} shared an update in {{spaceName}}",
@@ -1948,13 +1940,13 @@
           "subject": "{{triggeredByName}} mentioned your organization in {{spaceName}}",
           "description": "{{message}}"
         },
-        "PLATFORM_FORUM_DISCUSSION_CREATED_FORUM": {
-          "subject": "{{triggeredByName}} started a new discussion in the forum {{forumName}}",
-          "description": "{{discussionName}} - {{discussionDescription}}"
+        "PLATFORM_FORUM_DISCUSSION_CREATED": {
+          "subject": "{{triggeredByName}} started a new discussion in the forum {{discussionName}}",
+          "description": ""
         },
-        "PLATFORM_FORUM_DISCUSSION_COMMENT_FORUM": {
-          "subject": "{{triggeredByName}} commented on your forum post in {{forumName}}",
-          "description": "{{comment}}"
+        "PLATFORM_FORUM_DISCUSSION_COMMENT": {
+          "subject": "{{triggeredByName}} commented on your forum post in {{discussionName}}",
+          "description": ""
         },
         "PLATFORM_ADMIN_USER_SIGNED_UP": {
           "subject": "{{triggeredByName}} has signed up to the platform",

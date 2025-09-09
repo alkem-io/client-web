@@ -2517,6 +2517,16 @@ export type Discussion = {
   updatedDate: Scalars['DateTime']['output'];
 };
 
+export type DiscussionDetails = {
+  __typename?: 'DiscussionDetails';
+  /** The discussion display name. */
+  displayName: Scalars['String']['output'];
+  /** The discussion ID. */
+  id: Scalars['String']['output'];
+  /** The discussion URL. */
+  url: Scalars['String']['output'];
+};
+
 export type DiscussionsInput = {
   /** The number of Discussion entries to return; if omitted return all Discussions. */
   limit?: InputMaybe<Scalars['Float']['input']>;
@@ -2789,10 +2799,8 @@ export type InAppNotificationPayloadPlatform = InAppNotificationPayload & {
 
 export type InAppNotificationPayloadPlatformForumDiscussion = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
-  /** The comment ID. */
-  comment: Scalars['String']['output'];
-  /** The discussion ID. */
-  discussion: Scalars['String']['output'];
+  /** The discussion details. */
+  discussion?: Maybe<DiscussionDetails>;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -29968,7 +29976,11 @@ export type InAppNotificationReceivedSubscription = {
           };
         }
       | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
-      | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
+      | {
+          __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
+          type: NotificationEventPayload;
+          discussion?: { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string } | undefined;
+        }
       | {
           __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
           type: NotificationEventPayload;
@@ -30744,7 +30756,11 @@ export type InAppNotificationsQuery = {
             };
           }
         | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
-        | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
+        | {
+            __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
+            type: NotificationEventPayload;
+            discussion?: { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string } | undefined;
+          }
         | {
             __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
             type: NotificationEventPayload;
@@ -31525,7 +31541,11 @@ export type InAppNotificationAllTypesFragment = {
         };
       }
     | { __typename?: 'InAppNotificationPayloadPlatform'; type: NotificationEventPayload }
-    | { __typename?: 'InAppNotificationPayloadPlatformForumDiscussion'; type: NotificationEventPayload }
+    | {
+        __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
+        type: NotificationEventPayload;
+        discussion?: { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string } | undefined;
+      }
     | {
         __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
         type: NotificationEventPayload;
@@ -32422,6 +32442,7 @@ export type InAppNotificationPayloadSpaceFragment = {
 export type InAppNotificationPayloadPlatformForumDiscussionFragment = {
   __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
   type: NotificationEventPayload;
+  discussion?: { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string } | undefined;
 };
 
 export type InAppNotificationPayloadPlatformUserFragment = {
