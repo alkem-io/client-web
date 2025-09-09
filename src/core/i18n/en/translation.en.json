@@ -1968,6 +1968,10 @@
           "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}",
           "description": ""
         },
+        "PLATFORM_ADMIN_SPACE_CREATED": {
+          "subject": "{{triggeredByName}} has created a new Space",
+          "description": "{{spaceName}}"
+        },
         "SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT": {
           "subject": "{{triggeredByName}} commented on {{contributionName}} (contribution) in {{spaceName}}",
           "description": ""
