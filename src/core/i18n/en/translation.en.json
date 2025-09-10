@@ -1934,9 +1934,97 @@
           "subject": "{{spaceName}} - Welcome to the $t(common.community)!",
           "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various $t(common.posts) and $t(common.whiteboards), further deepen your knowledge about this topic, and connect with other Contributors."
         },
+        "USER_COMMENT_REPLY": {
+          "subject": "{{triggeredByName}} commented on your post {{parentName}}",
+          "description": ""
+        },
+        "USER_SPACE_COMMUNITY_INVITATION": {
+          "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
+          "description": "{{spaceName}} - {{spaceDescription}}"
+        },
+        "USER_SPACE_COMMUNITY_APPLICATION": {
+          "subject": "You have successfully applied to join {{spaceName}}",
+          "description": ""
+        },
+        "USER_MESSAGE_SENDER": {
+          "subject": "You sent a DM to {{receiverName}}",
+          "description": ""
+        },
+        "USER_MESSAGE": {
+          "subject": "{{triggeredByName}} sent you a DM",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
+          "subject": "{{spaceName}} - New Post is published \"{{calloutName}}\", have a look!",
+          "description": "{{triggeredByName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
+        },
         "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
           "subject": "\"{{memberName}}\" joined {{spaceName}}",
-          "description": "{{memberName}} has joined {{spaceName}}, of which you are an $t(common.admin)."
+          "description": "{{memberName}} has joined {{spaceName}}, of which you are an admin."
+        },
+        "SPACE_COMMUNICATION_UPDATE": {
+          "subject": "{{triggeredByName}} shared an update in {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_CONTRIBUTION": {
+          "subject": "{{triggeredByName}} created a post \"{{calloutName}}\"",
+          "description": "In <b>{{spaceName}}</b>, of which you are a member."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_CONTRIBUTION": {
+          "subject": "{{triggeredByName}} created a post \"{{calloutName}}\"",
+          "description": "In <b>{{spaceName}}</b>, of which you are an admin."
+        },
+        "SPACE_ADMIN_COMMUNITY_APPLICATION": {
+          "subject": "{{triggeredByName}} applied to join {{spaceName}}",
+          "description": "Review the application in space settings"
+        },
+        "SPACE_LEAD_COMMUNICATION_MESSAGE": {
+          "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT": {
+          "subject": "{{triggeredByName}} commented on {{contributionName}} (contribution) in {{spaceName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_MENTIONED": {
+          "subject": "{{triggeredByName}} mentioned your organization in {{spaceName}}",
+          "description": "{{message}}"
+        },
+        "ORGANIZATION_ADMIN_MESSAGE": {
+          "subject": "{{triggeredByName}} sent a message to your organization {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_MESSAGE_SENDER": {
+          "subject": "You sent a message to {{organizationName}}",
+          "description": ""
+        },
+        "PLATFORM_FORUM_DISCUSSION_CREATED": {
+          "subject": "{{triggeredByName}} started a new discussion in the forum {{discussionName}}",
+          "description": ""
+        },
+        "PLATFORM_FORUM_DISCUSSION_COMMENT": {
+          "subject": "{{triggeredByName}} commented on your forum post in {{discussionName}}",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_USER_SIGNED_UP": {
+          "subject": "{{triggeredByName}} has signed up to the platform",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
+          "subject": "{{userName}} ({{userEmail}}) has been removed from the platform",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_USER_PROFILE_CREATED": {
+          "subject": "{{triggeredByName}} has signed up to the platform",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
+          "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_SPACE_CREATED": {
+          "subject": "{{triggeredByName}} has created a new Space",
+          "description": "{{spaceName}}"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
@@ -3205,7 +3293,7 @@
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
-      "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
+      "login-flow-account-exists": "This email is already associated with an account. If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
       "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "claim-missing": "You haven't verified your Vidua identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Pick a password for your $t(common.account)"
@@ -3411,7 +3499,11 @@
         "name": "SPACE_LICENSE_PLUS",
         "displayName": "Plus",
         "priceDescription": "For Starting Communities, coalitions, programs...",
-        "features": ["Up to 100 $t(common.members)", "Realtime, multi-user $t(common.whiteboards)", "Create your $t(common.virtual-contributor)"],
+        "features": [
+          "Up to 100 $t(common.members)",
+          "Realtime, multi-user $t(common.whiteboards)",
+          "Create your $t(common.virtual-contributor)"
+        ],
         "disclaimer": "",
         "disabledDisclaimer": ""
       },

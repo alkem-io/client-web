@@ -2,7 +2,7 @@ import { NotificationEventInAppState, NotificationEvent } from '@/core/apollo/ge
 import {
   useInAppNotificationsQuery,
   useInAppNotificationIdsLazyQuery,
-  useInAppNotificationUnreadCountQuery,
+  useInAppNotificationsUnreadCountQuery,
   useUpdateNotificationStateMutation,
   useMarkNotificationsAsReadMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -38,8 +38,6 @@ const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [
   NotificationEvent.UserSpaceCommunityJoined,
 ];
 
-const PAGE_SIZE = 10;
-
 export const useInAppNotifications = () => {
   const { isEnabled } = useInAppNotificationsContext();
 
@@ -47,56 +45,25 @@ export const useInAppNotifications = () => {
   const [markAsRead] = useMarkNotificationsAsReadMutation();
   const [getNotificationIds] = useInAppNotificationIdsLazyQuery();
 
-  // Query for the main notifications list
-  const { data, loading, error, fetchMore } = useInAppNotificationsQuery({
-    variables: {
-      first: PAGE_SIZE,
-      types: NOTIFICATION_EVENT_TYPES,
-    },
-    skip: !isEnabled,
-  });
-
-  // Query for getting the total unread count
-  const { data: countData } = useInAppNotificationUnreadCountQuery({
+  const { data, loading, error } = useInAppNotificationsQuery({
     variables: {
       types: NOTIFICATION_EVENT_TYPES,
     },
     skip: !isEnabled,
   });
 
-  const hasMore = data?.notificationsInApp?.pageInfo?.hasNextPage;
-
-  const fetchMoreNotifications = useCallback(async () => {
-    if (!hasMore || loading) return;
-
-    await fetchMore({
-      variables: {
-        first: PAGE_SIZE,
-        after: data?.notificationsInApp?.pageInfo?.endCursor,
-        types: NOTIFICATION_EVENT_TYPES,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev;
-
-        return {
-          ...prev,
-          notificationsInApp: {
-            ...fetchMoreResult.notificationsInApp,
-            inAppNotifications: [
-              ...prev.notificationsInApp.inAppNotifications,
-              ...fetchMoreResult.notificationsInApp.inAppNotifications,
-            ],
-          },
-        };
-      },
-    });
-  }, [fetchMore, hasMore, loading, data?.notificationsInApp?.pageInfo?.endCursor]);
+  const { data: unreadCountData } = useInAppNotificationsUnreadCountQuery({
+    variables: {
+      types: NOTIFICATION_EVENT_TYPES,
+    },
+    skip: !isEnabled,
+  });
 
   // Memoize the filtered and mapped notifications to avoid unnecessary re-processing
   const notificationsInApp = useMemo(() => {
     const notifications: InAppNotificationModel[] = [];
 
-    for (const notificationData of data?.notificationsInApp?.inAppNotifications ?? []) {
+    for (const notificationData of data?.me?.notifications?.inAppNotifications ?? []) {
       if (notificationData.state === NotificationEventInAppState.Archived) {
         continue; // Skip archived notifications
       }
@@ -113,16 +80,12 @@ export const useInAppNotifications = () => {
     }
 
     return notifications;
-  }, [data?.notificationsInApp?.inAppNotifications]);
+  }, [data?.me?.notifications?.inAppNotifications]);
 
   // Calculate total unread count from the dedicated query
   const unreadCount = useMemo(() => {
-    return (
-      countData?.notificationsInApp?.inAppNotifications?.filter(
-        notification => notification.state === NotificationEventInAppState.Unread
-      ).length ?? 0
-    );
-  }, [countData?.notificationsInApp?.inAppNotifications]);
+    return unreadCountData?.me?.notificationsUnreadCount ?? 0;
+  }, [unreadCountData?.me?.notificationsUnreadCount]);
 
   const updateNotificationState = useCallback(
     async (id: string, status: NotificationEventInAppState) => {
@@ -155,7 +118,7 @@ export const useInAppNotifications = () => {
       });
 
       const unreadIds =
-        idsData?.notificationsInApp?.inAppNotifications
+        idsData?.me?.notifications?.inAppNotifications
           ?.filter(notification => notification.state === NotificationEventInAppState.Unread)
           ?.map(notification => notification.id) ?? [];
 
@@ -173,7 +136,7 @@ export const useInAppNotifications = () => {
             updateNotificationsCache(cache, unreadIds, NotificationEventInAppState.Read);
 
             // Also refetch the main query to ensure UI consistency
-            cache.evict({ fieldName: 'notificationsInApp' });
+            cache.evict({ fieldName: 'notifications' });
             cache.gc();
           }
         },
@@ -189,8 +152,6 @@ export const useInAppNotifications = () => {
     isLoading: loading,
     updateNotificationState,
     markNotificationsAsRead,
-    fetchMore: fetchMoreNotifications,
-    hasMore,
     error,
   };
 };

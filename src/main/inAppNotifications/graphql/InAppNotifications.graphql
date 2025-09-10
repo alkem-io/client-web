@@ -1,64 +1,25 @@
-query InAppNotifications($first: Int!, $after: UUID, $types: [NotificationEvent!]) {
-  notificationsInApp(
-    first: $first, after: $after, filter: { types: $types }
-  ) {
-    inAppNotifications {
-      id
-      type
-      category
-      state
-      triggeredAt
-      triggeredBy {
-        id
-        profile {
-          id
-          displayName
-          url
-          visual(type: AVATAR) {
-            ...VisualModel
-          }
-        }
+query InAppNotifications($types: [NotificationEvent!], $first: Int, $after: UUID) {
+  me {
+    notifications(filter: { types: $types }, first: $first, after: $after) {
+      inAppNotifications {
+        ...InAppNotificationAllTypes
       }
-      payload {
-        type
-        ... on InAppNotificationPayloadSpaceCollaborationCallout {
-          ...InAppNotificationPayloadSpaceCollaborationCallout
-        }
-        ... on InAppNotificationPayloadSpaceCommunityContributor {
-          ...InAppNotificationSpaceCommunityContributor
-        }
-        ... on InAppNotificationPayloadPlatformUserMessageRoom {
-          ...InAppNotificationUserMentioned
-        }
+      pageInfo {
+        endCursor
+        hasNextPage
       }
-    }
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
+      total
     }
   }
 }
 
 query InAppNotificationIds($types: [NotificationEvent!]) {
-  notificationsInApp(
-    first: 1000, filter: { types: $types }
-  ) {
-    inAppNotifications {
-      id
-      state
-    }
-  }
-}
-
-query InAppNotificationUnreadCount($types: [NotificationEvent!]) {
-  notificationsInApp(
-    first: 1000, filter: { types: $types }
-  ) {
-    inAppNotifications {
-      id
-      state
+  me {
+    notifications(filter: { types: $types }) {
+      inAppNotifications {
+        id
+        state
+      }
     }
   }
 }

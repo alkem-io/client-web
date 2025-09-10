@@ -2862,16 +2862,126 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
+export const InAppNotificationPayloadOrganizationMessageDirectFragmentDoc = gql`
+  fragment InAppNotificationPayloadOrganizationMessageDirect on InAppNotificationPayloadOrganizationMessageDirect {
+    organizationMessage: message
+    organization {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
+export const InAppNotificationPayloadOrganizationMessageRoomFragmentDoc = gql`
+  fragment InAppNotificationPayloadOrganizationMessageRoom on InAppNotificationPayloadOrganizationMessageRoom {
+    comment
+    roomID
+    organization {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
+export const InAppNotificationPayloadPlatformGlobalRoleChangeFragmentDoc = gql`
+  fragment InAppNotificationPayloadPlatformGlobalRoleChange on InAppNotificationPayloadPlatformGlobalRoleChange {
+    type
+    role
+    user {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
 export const SpaceNotificationFragmentDoc = gql`
   fragment spaceNotification on Space {
     id
     level
     about {
       id
-      ...SpaceAboutCardBanner
+      profile {
+        id
+        displayName
+        description
+        url
+        tagline
+        tagset {
+          ...TagsetDetails
+        }
+        ...SubspaceVisuals
+      }
     }
   }
-  ${SpaceAboutCardBannerFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${SubspaceVisualsFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpace on InAppNotificationPayloadSpace {
+    type
+    space {
+      ...spaceNotification
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
+export const InAppNotificationPayloadPlatformForumDiscussionFragmentDoc = gql`
+  fragment InAppNotificationPayloadPlatformForumDiscussion on InAppNotificationPayloadPlatformForumDiscussion {
+    type
+    comment
+    discussion {
+      id
+      displayName
+      url
+    }
+  }
+`;
+export const InAppNotificationUserMentionedFragmentDoc = gql`
+  fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserMessageRoom {
+    messageDetails {
+      message
+      parent {
+        displayName
+        url
+      }
+      room {
+        id
+      }
+    }
+  }
+`;
+export const InAppNotificationPayloadPlatformUserFragmentDoc = gql`
+  fragment InAppNotificationPayloadPlatformUser on InAppNotificationPayloadPlatformUser {
+    type
+  }
+`;
+export const InAppNotificationPayloadPlatformUserProfileRemovedFragmentDoc = gql`
+  fragment InAppNotificationPayloadPlatformUserProfileRemoved on InAppNotificationPayloadPlatformUserProfileRemoved {
+    type
+    userEmail
+    userDisplayName
+  }
 `;
 export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
   fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationPayloadSpaceCollaborationCallout {
@@ -2883,9 +2993,6 @@ export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
           id
           displayName
           url
-          visual(type: CARD) {
-            ...VisualModel
-          }
         }
       }
     }
@@ -2893,7 +3000,6 @@ export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
       ...spaceNotification
     }
   }
-  ${VisualModelFragmentDoc}
   ${SpaceNotificationFragmentDoc}
 `;
 export const InAppNotificationSpaceCommunityContributorFragmentDoc = gql`
@@ -2917,12 +3023,109 @@ export const InAppNotificationSpaceCommunityContributorFragmentDoc = gql`
   ${SpaceNotificationFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
-export const InAppNotificationUserMentionedFragmentDoc = gql`
-  fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserMessageRoom {
-    comment
-    commentUrl
-    commentOriginName
+export const InAppNotificationPayloadSpaceCommunityApplicationFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunityApplication on InAppNotificationPayloadSpaceCommunityApplication {
+    space {
+      ...spaceNotification
+    }
+    application {
+      id
+      createdDate
+      contributor {
+        id
+        profile {
+          id
+          displayName
+          url
+          visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+    }
   }
+  ${SpaceNotificationFragmentDoc}
+  ${VisualModelFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceCommunicationUpdateFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunicationUpdate on InAppNotificationPayloadSpaceCommunicationUpdate {
+    space {
+      ...spaceNotification
+    }
+    update
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceCommunicationMessageDirectFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunicationMessageDirect on InAppNotificationPayloadSpaceCommunicationMessageDirect {
+    space {
+      ...spaceNotification
+    }
+    spaceCommunicationMessage: message
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceCommunityInvitationFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunityInvitation on InAppNotificationPayloadSpaceCommunityInvitation {
+    space {
+      ...spaceNotification
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunityInvitationPlatform on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
+    space {
+      ...spaceNotification
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
+export const InAppNotificationPayloadUserMessageDirectFragmentDoc = gql`
+  fragment InAppNotificationPayloadUserMessageDirect on InAppNotificationPayloadUserMessageDirect {
+    userMessage: message
+    user {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCollaborationCalloutPostComment on InAppNotificationPayloadSpaceCollaborationCalloutPostComment {
+    messageDetails {
+      message
+      parent {
+        displayName
+        url
+      }
+      room {
+        id
+      }
+    }
+    space {
+      ...spaceNotification
+    }
+    callout {
+      id
+      framing {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
 `;
 export const InAppNotificationAllTypesFragmentDoc = gql`
   fragment InAppNotificationAllTypes on InAppNotification {
@@ -2944,21 +3147,77 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
     }
     payload {
       type
+      ... on InAppNotificationPayloadOrganizationMessageDirect {
+        ...InAppNotificationPayloadOrganizationMessageDirect
+      }
+      ... on InAppNotificationPayloadOrganizationMessageRoom {
+        ...InAppNotificationPayloadOrganizationMessageRoom
+      }
+      ... on InAppNotificationPayloadPlatformGlobalRoleChange {
+        ...InAppNotificationPayloadPlatformGlobalRoleChange
+      }
+      ... on InAppNotificationPayloadSpace {
+        ...InAppNotificationPayloadSpace
+      }
+      ... on InAppNotificationPayloadPlatformForumDiscussion {
+        ...InAppNotificationPayloadPlatformForumDiscussion
+      }
+      ... on InAppNotificationPayloadPlatformUserMessageRoom {
+        ...InAppNotificationUserMentioned
+      }
+      ... on InAppNotificationPayloadPlatformUser {
+        ...InAppNotificationPayloadPlatformUser
+      }
+      ... on InAppNotificationPayloadPlatformUserProfileRemoved {
+        ...InAppNotificationPayloadPlatformUserProfileRemoved
+      }
       ... on InAppNotificationPayloadSpaceCollaborationCallout {
         ...InAppNotificationPayloadSpaceCollaborationCallout
       }
       ... on InAppNotificationPayloadSpaceCommunityContributor {
         ...InAppNotificationSpaceCommunityContributor
       }
-      ... on InAppNotificationPayloadPlatformUserMessageRoom {
-        ...InAppNotificationUserMentioned
+      ... on InAppNotificationPayloadSpaceCommunityApplication {
+        ...InAppNotificationPayloadSpaceCommunityApplication
+      }
+      ... on InAppNotificationPayloadSpaceCommunicationUpdate {
+        ...InAppNotificationPayloadSpaceCommunicationUpdate
+      }
+      ... on InAppNotificationPayloadSpaceCommunicationMessageDirect {
+        ...InAppNotificationPayloadSpaceCommunicationMessageDirect
+      }
+      ... on InAppNotificationPayloadSpaceCommunityInvitation {
+        ...InAppNotificationPayloadSpaceCommunityInvitation
+      }
+      ... on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
+        ...InAppNotificationPayloadSpaceCommunityInvitationPlatform
+      }
+      ... on InAppNotificationPayloadUserMessageDirect {
+        ...InAppNotificationPayloadUserMessageDirect
+      }
+      ... on InAppNotificationPayloadSpaceCollaborationCalloutPostComment {
+        ...InAppNotificationPayloadSpaceCollaborationCalloutPostComment
       }
     }
   }
   ${VisualModelFragmentDoc}
+  ${InAppNotificationPayloadOrganizationMessageDirectFragmentDoc}
+  ${InAppNotificationPayloadOrganizationMessageRoomFragmentDoc}
+  ${InAppNotificationPayloadPlatformGlobalRoleChangeFragmentDoc}
+  ${InAppNotificationPayloadSpaceFragmentDoc}
+  ${InAppNotificationPayloadPlatformForumDiscussionFragmentDoc}
+  ${InAppNotificationUserMentionedFragmentDoc}
+  ${InAppNotificationPayloadPlatformUserFragmentDoc}
+  ${InAppNotificationPayloadPlatformUserProfileRemovedFragmentDoc}
   ${InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc}
   ${InAppNotificationSpaceCommunityContributorFragmentDoc}
-  ${InAppNotificationUserMentionedFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityApplicationFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunicationUpdateFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunicationMessageDirectFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityInvitationFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc}
+  ${InAppNotificationPayloadUserMessageDirectFragmentDoc}
+  ${InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc}
 `;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
@@ -22474,50 +22733,21 @@ export type InAppNotificationReceivedSubscriptionHookResult = ReturnType<
 export type InAppNotificationReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.InAppNotificationReceivedSubscription>;
 export const InAppNotificationsDocument = gql`
-  query InAppNotifications($first: Int!, $after: UUID, $types: [NotificationEvent!]) {
-    notificationsInApp(first: $first, after: $after, filter: { types: $types }) {
-      inAppNotifications {
-        id
-        type
-        category
-        state
-        triggeredAt
-        triggeredBy {
-          id
-          profile {
-            id
-            displayName
-            url
-            visual(type: AVATAR) {
-              ...VisualModel
-            }
-          }
+  query InAppNotifications($types: [NotificationEvent!], $first: Int, $after: UUID) {
+    me {
+      notifications(filter: { types: $types }, first: $first, after: $after) {
+        inAppNotifications {
+          ...InAppNotificationAllTypes
         }
-        payload {
-          type
-          ... on InAppNotificationPayloadSpaceCollaborationCallout {
-            ...InAppNotificationPayloadSpaceCollaborationCallout
-          }
-          ... on InAppNotificationPayloadSpaceCommunityContributor {
-            ...InAppNotificationSpaceCommunityContributor
-          }
-          ... on InAppNotificationPayloadPlatformUserMessageRoom {
-            ...InAppNotificationUserMentioned
-          }
+        pageInfo {
+          endCursor
+          hasNextPage
         }
-      }
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
+        total
       }
     }
   }
-  ${VisualModelFragmentDoc}
-  ${InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc}
-  ${InAppNotificationSpaceCommunityContributorFragmentDoc}
-  ${InAppNotificationUserMentionedFragmentDoc}
+  ${InAppNotificationAllTypesFragmentDoc}
 `;
 
 /**
@@ -22532,18 +22762,17 @@ export const InAppNotificationsDocument = gql`
  * @example
  * const { data, loading, error } = useInAppNotificationsQuery({
  *   variables: {
+ *      types: // value for 'types'
  *      first: // value for 'first'
  *      after: // value for 'after'
- *      types: // value for 'types'
  *   },
  * });
  */
 export function useInAppNotificationsQuery(
-  baseOptions: Apollo.QueryHookOptions<
+  baseOptions?: Apollo.QueryHookOptions<
     SchemaTypes.InAppNotificationsQuery,
     SchemaTypes.InAppNotificationsQueryVariables
-  > &
-    ({ variables: SchemaTypes.InAppNotificationsQueryVariables; skip?: boolean } | { skip: boolean })
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.InAppNotificationsQuery, SchemaTypes.InAppNotificationsQueryVariables>(
@@ -22581,15 +22810,17 @@ export type InAppNotificationsQueryResult = Apollo.QueryResult<
   SchemaTypes.InAppNotificationsQuery,
   SchemaTypes.InAppNotificationsQueryVariables
 >;
-export function refetchInAppNotificationsQuery(variables: SchemaTypes.InAppNotificationsQueryVariables) {
+export function refetchInAppNotificationsQuery(variables?: SchemaTypes.InAppNotificationsQueryVariables) {
   return { query: InAppNotificationsDocument, variables: variables };
 }
 export const InAppNotificationIdsDocument = gql`
   query InAppNotificationIds($types: [NotificationEvent!]) {
-    notificationsInApp(first: 1000, filter: { types: $types }) {
-      inAppNotifications {
-        id
-        state
+    me {
+      notifications(filter: { types: $types }) {
+        inAppNotifications {
+          id
+          state
+        }
       }
     }
   }
@@ -22658,87 +22889,6 @@ export type InAppNotificationIdsQueryResult = Apollo.QueryResult<
 >;
 export function refetchInAppNotificationIdsQuery(variables?: SchemaTypes.InAppNotificationIdsQueryVariables) {
   return { query: InAppNotificationIdsDocument, variables: variables };
-}
-export const InAppNotificationUnreadCountDocument = gql`
-  query InAppNotificationUnreadCount($types: [NotificationEvent!]) {
-    notificationsInApp(first: 1000, filter: { types: $types }) {
-      inAppNotifications {
-        id
-        state
-      }
-    }
-  }
-`;
-
-/**
- * __useInAppNotificationUnreadCountQuery__
- *
- * To run a query within a React component, call `useInAppNotificationUnreadCountQuery` and pass it any options that fit your needs.
- * When your component renders, `useInAppNotificationUnreadCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInAppNotificationUnreadCountQuery({
- *   variables: {
- *      types: // value for 'types'
- *   },
- * });
- */
-export function useInAppNotificationUnreadCountQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.InAppNotificationUnreadCountQuery,
-    SchemaTypes.InAppNotificationUnreadCountQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.InAppNotificationUnreadCountQuery,
-    SchemaTypes.InAppNotificationUnreadCountQueryVariables
-  >(InAppNotificationUnreadCountDocument, options);
-}
-export function useInAppNotificationUnreadCountLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.InAppNotificationUnreadCountQuery,
-    SchemaTypes.InAppNotificationUnreadCountQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.InAppNotificationUnreadCountQuery,
-    SchemaTypes.InAppNotificationUnreadCountQueryVariables
-  >(InAppNotificationUnreadCountDocument, options);
-}
-export function useInAppNotificationUnreadCountSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.InAppNotificationUnreadCountQuery,
-        SchemaTypes.InAppNotificationUnreadCountQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.InAppNotificationUnreadCountQuery,
-    SchemaTypes.InAppNotificationUnreadCountQueryVariables
-  >(InAppNotificationUnreadCountDocument, options);
-}
-export type InAppNotificationUnreadCountQueryHookResult = ReturnType<typeof useInAppNotificationUnreadCountQuery>;
-export type InAppNotificationUnreadCountLazyQueryHookResult = ReturnType<
-  typeof useInAppNotificationUnreadCountLazyQuery
->;
-export type InAppNotificationUnreadCountSuspenseQueryHookResult = ReturnType<
-  typeof useInAppNotificationUnreadCountSuspenseQuery
->;
-export type InAppNotificationUnreadCountQueryResult = Apollo.QueryResult<
-  SchemaTypes.InAppNotificationUnreadCountQuery,
-  SchemaTypes.InAppNotificationUnreadCountQueryVariables
->;
-export function refetchInAppNotificationUnreadCountQuery(
-  variables?: SchemaTypes.InAppNotificationUnreadCountQueryVariables
-) {
-  return { query: InAppNotificationUnreadCountDocument, variables: variables };
 }
 export const UpdateNotificationStateDocument = gql`
   mutation UpdateNotificationState($ID: UUID!, $state: NotificationEventInAppState!) {
@@ -22831,6 +22981,84 @@ export type MarkNotificationsAsReadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MarkNotificationsAsReadMutation,
   SchemaTypes.MarkNotificationsAsReadMutationVariables
 >;
+export const InAppNotificationsUnreadCountDocument = gql`
+  query InAppNotificationsUnreadCount($types: [NotificationEvent!]) {
+    me {
+      notificationsUnreadCount(filter: { types: $types })
+    }
+  }
+`;
+
+/**
+ * __useInAppNotificationsUnreadCountQuery__
+ *
+ * To run a query within a React component, call `useInAppNotificationsUnreadCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInAppNotificationsUnreadCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInAppNotificationsUnreadCountQuery({
+ *   variables: {
+ *      types: // value for 'types'
+ *   },
+ * });
+ */
+export function useInAppNotificationsUnreadCountQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.InAppNotificationsUnreadCountQuery,
+    SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InAppNotificationsUnreadCountQuery,
+    SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+  >(InAppNotificationsUnreadCountDocument, options);
+}
+export function useInAppNotificationsUnreadCountLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InAppNotificationsUnreadCountQuery,
+    SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InAppNotificationsUnreadCountQuery,
+    SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+  >(InAppNotificationsUnreadCountDocument, options);
+}
+export function useInAppNotificationsUnreadCountSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.InAppNotificationsUnreadCountQuery,
+        SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.InAppNotificationsUnreadCountQuery,
+    SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+  >(InAppNotificationsUnreadCountDocument, options);
+}
+export type InAppNotificationsUnreadCountQueryHookResult = ReturnType<typeof useInAppNotificationsUnreadCountQuery>;
+export type InAppNotificationsUnreadCountLazyQueryHookResult = ReturnType<
+  typeof useInAppNotificationsUnreadCountLazyQuery
+>;
+export type InAppNotificationsUnreadCountSuspenseQueryHookResult = ReturnType<
+  typeof useInAppNotificationsUnreadCountSuspenseQuery
+>;
+export type InAppNotificationsUnreadCountQueryResult = Apollo.QueryResult<
+  SchemaTypes.InAppNotificationsUnreadCountQuery,
+  SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+>;
+export function refetchInAppNotificationsUnreadCountQuery(
+  variables?: SchemaTypes.InAppNotificationsUnreadCountQueryVariables
+) {
+  return { query: InAppNotificationsUnreadCountDocument, variables: variables };
+}
 export const UrlResolverDocument = gql`
   query UrlResolver($url: String!) {
     urlResolver(url: $url) {
