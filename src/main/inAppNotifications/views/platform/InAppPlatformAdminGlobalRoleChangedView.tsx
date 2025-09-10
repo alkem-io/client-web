@@ -10,7 +10,6 @@ export const InAppPlatformAdminGlobalRoleChangedView = (notification: InAppNotif
   }
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     userName: payload?.user?.profile?.displayName,
     role: payload?.role || 'global role',

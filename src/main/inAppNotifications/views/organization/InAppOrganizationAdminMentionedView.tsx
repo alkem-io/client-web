@@ -11,7 +11,6 @@ export const InAppOrganizationAdminMentionedView = (notification: InAppNotificat
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     organizationName: messageDetails?.parent?.displayName,
     comment: messageDetails?.message,

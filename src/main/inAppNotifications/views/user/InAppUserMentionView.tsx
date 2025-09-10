@@ -11,7 +11,6 @@ export const InAppUserMentionView = (notification: InAppNotificationModel) => {
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     calloutName: messageDetails?.parent?.displayName,
     comment: messageDetails?.message,

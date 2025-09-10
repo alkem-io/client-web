@@ -68,6 +68,9 @@ fragment InAppNotificationAllTypes on InAppNotification {
     ... on InAppNotificationPayloadSpaceCollaborationCalloutPostComment {
       ...InAppNotificationPayloadSpaceCollaborationCalloutPostComment
     }
+    ... on InAppNotificationPayloadVirtualContributor {
+      ...InAppNotificationPayloadVirtualContributor
+    }
   }
 }
 
@@ -256,6 +259,24 @@ fragment InAppNotificationPayloadSpaceCommunityInvitation on InAppNotificationPa
 fragment InAppNotificationPayloadSpaceCommunityInvitationPlatform on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
   space {
     ...spaceNotification
+  }
+}
+
+fragment InAppNotificationPayloadVirtualContributor on InAppNotificationPayloadVirtualContributor {
+  type
+  space {
+    ...spaceNotification
+  }
+  contributor {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
   }
 }
 

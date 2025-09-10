@@ -1,26 +1,26 @@
 import { InAppNotificationModel } from '../../model/InAppNotificationModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
+import { getInvitationsDialogUrl } from '@/main/routing/urlBuilders';
 
 export const InAppVirtualContributorAdminSpaceCommunityInvitationView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;
 
   // do not display notification if these are missing
-  if (!triggeredBy?.profile?.displayName || !payload.space) {
+  if (!triggeredBy?.profile?.displayName) {
     return null;
   }
-  const space = payload.space;
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
-    spaceName: space?.about?.profile?.displayName,
+    spaceName: payload?.space?.about?.profile?.displayName,
+    contributorName: payload?.contributor?.profile?.displayName,
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.space?.about?.profile?.url}
+      url={getInvitationsDialogUrl()}
     />
   );
 };

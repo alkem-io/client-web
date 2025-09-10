@@ -11,7 +11,6 @@ export const InAppUserSpaceCommunityInvitationView = (notification: InAppNotific
   const space = payload.space;
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     spaceName: space?.about?.profile?.displayName,
     spaceDescription: space?.about?.profile?.description || '',

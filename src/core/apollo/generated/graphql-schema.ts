@@ -2939,6 +2939,15 @@ export type InAppNotificationPayloadUserMessageDirect = InAppNotificationPayload
   user?: Maybe<User>;
 };
 
+export type InAppNotificationPayloadVirtualContributor = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadVirtualContributor';
+  contributor?: Maybe<VirtualContributor>;
+  space?: Maybe<Space>;
+  /** The payload type. */
+  type: NotificationEventPayload;
+  virtualContributorID: Scalars['String']['output'];
+};
+
 export type InnovationFlow = {
   __typename?: 'InnovationFlow';
   /** The authorization rules for the entity */
@@ -30667,6 +30676,78 @@ export type InAppNotificationReceivedSubscription = {
                 };
               }
             | undefined;
+        }
+      | {
+          __typename?: 'InAppNotificationPayloadVirtualContributor';
+          type: NotificationEventPayload;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    url: string;
+                    tagline?: string | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          contributor?:
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | undefined;
         };
   };
 };
@@ -31485,6 +31566,78 @@ export type InAppNotificationsQuery = {
             user?:
               | {
                   __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'InAppNotificationPayloadVirtualContributor';
+            type: NotificationEventPayload;
+            space?:
+              | {
+                  __typename?: 'Space';
+                  id: string;
+                  level: SpaceLevel;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      url: string;
+                      tagline?: string | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+            contributor?:
+              | {
+                  __typename?: 'VirtualContributor';
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -32344,6 +32497,78 @@ export type InAppNotificationAllTypesFragment = {
               };
             }
           | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationPayloadVirtualContributor';
+        type: NotificationEventPayload;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  url: string;
+                  tagline?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        contributor?:
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            }
+          | undefined;
       };
 };
 
@@ -32922,6 +33147,61 @@ export type InAppNotificationPayloadSpaceCommunityInvitationPlatformFragment = {
               | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
               | undefined;
           };
+        };
+      }
+    | undefined;
+};
+
+export type InAppNotificationPayloadVirtualContributorFragment = {
+  __typename?: 'InAppNotificationPayloadVirtualContributor';
+  type: NotificationEventPayload;
+  space?:
+    | {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            tagline?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
+  contributor?:
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+            | undefined;
         };
       }
     | undefined;

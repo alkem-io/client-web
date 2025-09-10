@@ -1766,6 +1766,19 @@ export type InAppNotificationPayloadUserMessageDirectFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InAppNotificationPayloadVirtualContributorKeySpecifier = (
+  | 'contributor'
+  | 'space'
+  | 'type'
+  | 'virtualContributorID'
+  | InAppNotificationPayloadVirtualContributorKeySpecifier
+)[];
+export type InAppNotificationPayloadVirtualContributorFieldPolicy = {
+  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InnovationFlowKeySpecifier = (
   | 'authorization'
   | 'createdDate'
@@ -5333,6 +5346,13 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadUserMessageDirectKeySpecifier
       | (() => undefined | InAppNotificationPayloadUserMessageDirectKeySpecifier);
     fields?: InAppNotificationPayloadUserMessageDirectFieldPolicy;
+  };
+  InAppNotificationPayloadVirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadVirtualContributorKeySpecifier
+      | (() => undefined | InAppNotificationPayloadVirtualContributorKeySpecifier);
+    fields?: InAppNotificationPayloadVirtualContributorFieldPolicy;
   };
   InnovationFlow?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationFlowKeySpecifier | (() => undefined | InnovationFlowKeySpecifier);

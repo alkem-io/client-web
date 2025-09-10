@@ -10,7 +10,6 @@ export const InAppPlatformAdminUserProfileCreatedView = (notification: InAppNoti
   }
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
   };
 

@@ -1956,6 +1956,10 @@
           "subject": "You sent a message to {{organizationName}}",
           "description": ""
         },
+        "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an admin",
+          "description": ""
+        },
         "PLATFORM_FORUM_DISCUSSION_CREATED": {
           "subject": "{{triggeredByName}} started a new discussion in the forum {{discussionName}}",
           "description": ""
