@@ -1,5 +1,4 @@
 import { InAppNotificationModel } from '../../model/InAppNotificationModel';
-import { mapInAppNotificationPayloadSpaceCollaborationCalloutToModel } from '../../util/mapInAppNotificationPayloadSpaceCollaborationCalloutToModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 export const InAppSpaceCollaborationCalloutCommentView = (notification: InAppNotificationModel) => {
@@ -9,16 +8,13 @@ export const InAppSpaceCollaborationCalloutCommentView = (notification: InAppNot
   if (!triggeredBy?.profile?.displayName || !payload.messageDetails) {
     return null;
   }
-  const inAppPayloadSpaceCollaborationCallout = mapInAppNotificationPayloadSpaceCollaborationCalloutToModel(payload);
 
-  if (!inAppPayloadSpaceCollaborationCallout) {
-    return null;
-  }
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
     triggeredByName: triggeredBy?.profile?.displayName,
     calloutName: messageDetails?.parent?.displayName,
+    spaceName: payload.space?.about?.profile?.displayName,
     comment: messageDetails?.message,
   };
 

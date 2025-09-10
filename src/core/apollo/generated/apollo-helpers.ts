@@ -1680,6 +1680,19 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutFieldPolicy = {
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InAppNotificationPayloadSpaceCollaborationCalloutCommentKeySpecifier = (
+  | 'callout'
+  | 'messageDetails'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCollaborationCalloutCommentKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCollaborationCalloutCommentFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageDetails?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier = (
   | 'callout'
   | 'messageDetails'
@@ -5333,6 +5346,13 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadSpaceCollaborationCalloutKeySpecifier
       | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCollaborationCalloutFieldPolicy;
+  };
+  InAppNotificationPayloadSpaceCollaborationCalloutComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCollaborationCalloutCommentKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutCommentKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCollaborationCalloutCommentFieldPolicy;
   };
   InAppNotificationPayloadSpaceCollaborationCalloutPostComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

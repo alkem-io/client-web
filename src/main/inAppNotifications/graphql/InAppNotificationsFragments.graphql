@@ -65,6 +65,9 @@ fragment InAppNotificationAllTypes on InAppNotification {
     ... on InAppNotificationPayloadUserMessageDirect {
       ...InAppNotificationPayloadUserMessageDirect
     }
+    ... on InAppNotificationPayloadSpaceCollaborationCalloutComment {
+      ...InAppNotificationPayloadSpaceCollaborationCalloutComment
+    }
     ... on InAppNotificationPayloadSpaceCollaborationCalloutPostComment {
       ...InAppNotificationPayloadSpaceCollaborationCalloutPostComment
     }
@@ -290,6 +293,32 @@ fragment InAppNotificationPayloadUserMessageDirect on InAppNotificationPayloadUs
       url
       visual(type: AVATAR) {
         ...VisualModel
+      }
+    }
+  }
+}
+fragment InAppNotificationPayloadSpaceCollaborationCalloutComment on InAppNotificationPayloadSpaceCollaborationCalloutComment {
+  messageDetails {
+    message
+    parent {
+      displayName
+      url
+    }
+    room {
+      id
+    }
+  }
+  space {
+    ...spaceNotification
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        url
       }
     }
   }

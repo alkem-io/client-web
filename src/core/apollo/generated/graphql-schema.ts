@@ -2868,6 +2868,18 @@ export type InAppNotificationPayloadSpaceCollaborationCallout = InAppNotificatio
   type: NotificationEventPayload;
 };
 
+export type InAppNotificationPayloadSpaceCollaborationCalloutComment = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
+  /** The Callout that was published. */
+  callout?: Maybe<Callout>;
+  /** The details of the message. */
+  messageDetails: MessageDetails;
+  /** The Space where the comment was made. */
+  space?: Maybe<Space>;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
 export type InAppNotificationPayloadSpaceCollaborationCalloutPostComment = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
   /** The Callout that was published. */
@@ -5208,6 +5220,7 @@ export enum NotificationEventPayload {
   PlatformUserProfileRemoved = 'PLATFORM_USER_PROFILE_REMOVED',
   Space = 'SPACE',
   SpaceCollaborationCallout = 'SPACE_COLLABORATION_CALLOUT',
+  SpaceCollaborationCalloutComment = 'SPACE_COLLABORATION_CALLOUT_COMMENT',
   SpaceCollaborationCalloutPostComment = 'SPACE_COLLABORATION_CALLOUT_POST_COMMENT',
   SpaceCommunicationMessageDirect = 'SPACE_COMMUNICATION_MESSAGE_DIRECT',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
@@ -30208,6 +30221,74 @@ export type InAppNotificationReceivedSubscription = {
             | undefined;
         }
       | {
+          __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
+          type: NotificationEventPayload;
+          messageDetails: {
+            __typename?: 'MessageDetails';
+            message: string;
+            parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+            room: { __typename?: 'Room'; id: string };
+          };
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    url: string;
+                    tagline?: string | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          callout?:
+            | {
+                __typename?: 'Callout';
+                id: string;
+                framing: {
+                  __typename?: 'CalloutFraming';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                };
+              }
+            | undefined;
+        }
+      | {
           __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
           type: NotificationEventPayload;
           messageDetails: {
@@ -31143,6 +31224,74 @@ export type InAppNotificationsQuery = {
                 | undefined;
             }
           | {
+              __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
+              type: NotificationEventPayload;
+              messageDetails: {
+                __typename?: 'MessageDetails';
+                message: string;
+                parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+                room: { __typename?: 'Room'; id: string };
+              };
+              space?:
+                | {
+                    __typename?: 'Space';
+                    id: string;
+                    level: SpaceLevel;
+                    about: {
+                      __typename?: 'SpaceAbout';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        url: string;
+                        tagline?: string | undefined;
+                        tagset?:
+                          | {
+                              __typename?: 'Tagset';
+                              id: string;
+                              name: string;
+                              tags: Array<string>;
+                              allowedValues: Array<string>;
+                              type: TagsetType;
+                            }
+                          | undefined;
+                        avatar?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                        cardBanner?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
+                    };
+                  }
+                | undefined;
+              callout?:
+                | {
+                    __typename?: 'Callout';
+                    id: string;
+                    framing: {
+                      __typename?: 'CalloutFraming';
+                      id: string;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                    };
+                  }
+                | undefined;
+            }
+          | {
               __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
               type: NotificationEventPayload;
               messageDetails: {
@@ -32068,6 +32217,74 @@ export type InAppNotificationAllTypesFragment = {
                       }
                     | undefined;
                 };
+              };
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
+        type: NotificationEventPayload;
+        messageDetails: {
+          __typename?: 'MessageDetails';
+          message: string;
+          parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+          room: { __typename?: 'Room'; id: string };
+        };
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  url: string;
+                  tagline?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        callout?:
+          | {
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
               };
             }
           | undefined;
@@ -33322,6 +33539,62 @@ export type InAppNotificationPayloadUserMessageDirectFragment = {
           visual?:
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type InAppNotificationPayloadSpaceCollaborationCalloutCommentFragment = {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
+  messageDetails: {
+    __typename?: 'MessageDetails';
+    message: string;
+    parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+    room: { __typename?: 'Room'; id: string };
+  };
+  space?:
+    | {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            tagline?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
+  callout?:
+    | {
+        __typename?: 'Callout';
+        id: string;
+        framing: {
+          __typename?: 'CalloutFraming';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         };
       }
     | undefined;
