@@ -25,7 +25,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
  *         mdast-util-gfm-autolink-literal - This is the dependency causing issues. mdast-util-gfm includes it in package.json as "^2.0.0".
  *
  * So, as mdast-util-gfm is compatible with any 2.x.x version of mdast-util-gfm-autolink-literal, we want to force npm to use 2.0.0 and not 2.0.1 or higher.
- * They may fix the issue in the future, or Apple may update their browsers to support the regex, 
+ * They may fix the issue in the future, or Apple may update their browsers to support the regex,
  * so we will have to monitor this and remove the dependency from our package.json when possible.
  */
 const allowedNodeTypes = ['iframe'] as const;

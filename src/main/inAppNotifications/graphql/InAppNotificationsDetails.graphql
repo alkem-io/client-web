@@ -1,0 +1,15 @@
+query InAppNotifications {
+  me {
+    notifications {
+      ...InAppNotificationAllTypes
+    }
+  }
+}
+
+mutation UpdateNotificationState($ID: UUID!, $state: NotificationEventInAppState!) {
+  updateNotificationState(notificationData: { ID: $ID, state: $state })
+}
+
+mutation MarkNotificationsAsRead($notificationIds: [String!]!) {
+  markNotificationsAsRead(notificationIds: $notificationIds)
+}

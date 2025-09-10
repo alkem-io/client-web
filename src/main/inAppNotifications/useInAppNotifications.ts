@@ -1,8 +1,9 @@
-import { NotificationEventInAppState, NotificationEvent } from '@/core/apollo/generated/graphql-schema';
+import { NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
 import {
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
   useMarkNotificationsAsReadMutation,
+  useInAppNotificationsUnreadCountQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import { ApolloCache } from '@apollo/client';
@@ -28,14 +29,6 @@ const updateNotificationsCache = (
   });
 };
 
-// The set of notification event types currently being retrieved
-const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [
-  NotificationEvent.UserMentioned,
-  NotificationEvent.SpaceCollaborationCalloutPublished,
-  NotificationEvent.SpaceAdminCommunityNewMember,
-  NotificationEvent.UserSpaceCommunityJoined,
-];
-
 export const useInAppNotifications = () => {
   const { isEnabled } = useInAppNotificationsContext();
 
@@ -43,9 +36,10 @@ export const useInAppNotifications = () => {
   const [markAsRead] = useMarkNotificationsAsReadMutation();
 
   const { data, loading } = useInAppNotificationsQuery({
-    variables: {
-      types: NOTIFICATION_EVENT_TYPES,
-    },
+    skip: !isEnabled,
+  });
+
+  const { data: unreadCountData } = useInAppNotificationsUnreadCountQuery({
     skip: !isEnabled,
   });
 
@@ -53,7 +47,7 @@ export const useInAppNotifications = () => {
   const notificationsInApp = useMemo(() => {
     const notifications: InAppNotificationModel[] = [];
 
-    for (const notificationData of data?.notificationsInApp ?? []) {
+    for (const notificationData of data?.me.notifications ?? []) {
       if (notificationData.state === NotificationEventInAppState.Archived) {
         continue; // Skip archived notifications
       }
@@ -70,7 +64,7 @@ export const useInAppNotifications = () => {
     }
 
     return notifications;
-  }, [data?.notificationsInApp]);
+  }, [data?.me.notifications]);
 
   const updateNotificationState = useCallback(
     async (id: string, status: NotificationEventInAppState) => {
@@ -120,6 +114,7 @@ export const useInAppNotifications = () => {
 
   return {
     notificationsInApp,
+    unreadNotificationsCount: unreadCountData?.me?.notificationsUnreadCount ?? 0,
     isLoading: loading,
     updateNotificationState,
     markNotificationsAsRead,
