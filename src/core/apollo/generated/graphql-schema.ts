@@ -2733,6 +2733,13 @@ export type ISearchResults = {
   spaceResults: ISearchCategoryResult;
 };
 
+/** Filter for identity verification status */
+export enum IdentityVerificationStatusFilter {
+  All = 'ALL',
+  Unverified = 'UNVERIFIED',
+  Verified = 'VERIFIED',
+}
+
 export type InAppNotification = {
   __typename?: 'InAppNotification';
   /** The category of the notification event. */
@@ -2856,6 +2863,18 @@ export type InAppNotificationPayloadSpaceCollaborationCallout = InAppNotificatio
   /** The Callout that was published. */
   callout?: Maybe<Callout>;
   /** Where the callout is located. */
+  space?: Maybe<Space>;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadSpaceCollaborationCalloutComment = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
+  /** The Callout that was published. */
+  callout?: Maybe<Callout>;
+  /** The details of the message. */
+  messageDetails: MessageDetails;
+  /** The Space where the comment was made. */
   space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
@@ -3173,6 +3192,24 @@ export type KnowledgeBase = {
   profile: Profile;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+};
+
+export type KratosIdentity = {
+  __typename?: 'KratosIdentity';
+  /** The creation date of the identity. */
+  createdAt: Scalars['DateTime']['output'];
+  /** The email address of the identity. */
+  email: Scalars['String']['output'];
+  /** The first name of the user. */
+  firstName?: Maybe<Scalars['String']['output']>;
+  /** The unique identifier of the identity. */
+  id: Scalars['String']['output'];
+  /** Indicates whether the email address is verified. */
+  isVerified: Scalars['Boolean']['output'];
+  /** The last name of the user. */
+  lastName?: Maybe<Scalars['String']['output']>;
+  /** The current verification status of the email address. */
+  verificationStatus: Scalars['String']['output'];
 };
 
 export type LatestReleaseDiscussion = {
@@ -4090,6 +4127,8 @@ export type Mutation = {
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean']['output'];
   /** Allow updating the state flags of a particular rule. */
   adminCommunicationUpdateRoomState: Scalars['Boolean']['output'];
+  /** Delete a Kratos identity by ID. */
+  adminIdentityDeleteKratosIdentity: Scalars['Boolean']['output'];
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String']['output'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
@@ -4454,6 +4493,10 @@ export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
 
 export type MutationAdminCommunicationUpdateRoomStateArgs = {
   roomStateData: CommunicationAdminUpdateRoomStateInput;
+};
+
+export type MutationAdminIdentityDeleteKratosIdentityArgs = {
+  kratosIdentityId: Scalars['UUID']['input'];
 };
 
 export type MutationAdminUpdateContributorAvatarsArgs = {
@@ -5173,6 +5216,7 @@ export enum NotificationEventPayload {
   PlatformUserProfileRemoved = 'PLATFORM_USER_PROFILE_REMOVED',
   Space = 'SPACE',
   SpaceCollaborationCallout = 'SPACE_COLLABORATION_CALLOUT',
+  SpaceCollaborationCalloutComment = 'SPACE_COLLABORATION_CALLOUT_COMMENT',
   SpaceCollaborationCalloutPostComment = 'SPACE_COLLABORATION_CALLOUT_POST_COMMENT',
   SpaceCommunicationMessageDirect = 'SPACE_COMMUNICATION_MESSAGE_DIRECT',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
@@ -5469,10 +5513,22 @@ export type PlatformAdminCommunicationQueryResultsAdminCommunicationMembershipAr
   communicationData: CommunicationAdminMembershipInput;
 };
 
+export type PlatformAdminIdentityQueryResults = {
+  __typename?: 'PlatformAdminIdentityQueryResults';
+  /** Get identities from Kratos with optional filtering. */
+  identities: Array<KratosIdentity>;
+};
+
+export type PlatformAdminIdentityQueryResultsIdentitiesArgs = {
+  filter?: InputMaybe<IdentityVerificationStatusFilter>;
+};
+
 export type PlatformAdminQueryResults = {
   __typename?: 'PlatformAdminQueryResults';
   /** Lookup Communication related information. */
   communication: PlatformAdminCommunicationQueryResults;
+  /** Lookup Identity related information. */
+  identity: PlatformAdminIdentityQueryResults;
   /** Retrieve all Innovation Hubs on the Platform. This is only available to Platform Admins. */
   innovationHubs: Array<InnovationHub>;
   /** Retrieve all Innovation Packs on the Platform. This is only available to Platform Admins. */
@@ -5743,6 +5799,8 @@ export type Query = {
   activityFeedGrouped: Array<ActivityLogEntry>;
   /** Retrieve the ActivityLog for the specified Collaboration */
   activityLogOnCollaboration: Array<ActivityLogEntry>;
+  /** Get all unverified identities from Kratos. */
+  adminIdentitiesUnverified: Array<KratosIdentity>;
   /** Alkemio AiServer */
   aiServer: AiServer;
   /** Active Spaces only, order by most active in the past X days. */
@@ -30152,6 +30210,74 @@ export type InAppNotificationReceivedSubscription = {
             | undefined;
         }
       | {
+          __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
+          type: NotificationEventPayload;
+          messageDetails: {
+            __typename?: 'MessageDetails';
+            message: string;
+            parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+            room: { __typename?: 'Room'; id: string };
+          };
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    url: string;
+                    tagline?: string | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          callout?:
+            | {
+                __typename?: 'Callout';
+                id: string;
+                framing: {
+                  __typename?: 'CalloutFraming';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                };
+              }
+            | undefined;
+        }
+      | {
           __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
           type: NotificationEventPayload;
           messageDetails: {
@@ -31055,6 +31181,74 @@ export type InAppNotificationsQuery = {
                           }
                         | undefined;
                     };
+                  };
+                }
+              | undefined;
+          }
+        | {
+            __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
+            type: NotificationEventPayload;
+            messageDetails: {
+              __typename?: 'MessageDetails';
+              message: string;
+              parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+              room: { __typename?: 'Room'; id: string };
+            };
+            space?:
+              | {
+                  __typename?: 'Space';
+                  id: string;
+                  level: SpaceLevel;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      url: string;
+                      tagline?: string | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+            callout?:
+              | {
+                  __typename?: 'Callout';
+                  id: string;
+                  framing: {
+                    __typename?: 'CalloutFraming';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                   };
                 }
               | undefined;
@@ -31968,6 +32162,74 @@ export type InAppNotificationAllTypesFragment = {
                       }
                     | undefined;
                 };
+              };
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
+        type: NotificationEventPayload;
+        messageDetails: {
+          __typename?: 'MessageDetails';
+          message: string;
+          parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+          room: { __typename?: 'Room'; id: string };
+        };
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  url: string;
+                  tagline?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        callout?:
+          | {
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
               };
             }
           | undefined;
@@ -33222,6 +33484,62 @@ export type InAppNotificationPayloadUserMessageDirectFragment = {
           visual?:
             | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
             | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type InAppNotificationPayloadSpaceCollaborationCalloutCommentFragment = {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
+  messageDetails: {
+    __typename?: 'MessageDetails';
+    message: string;
+    parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+    room: { __typename?: 'Room'; id: string };
+  };
+  space?:
+    | {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            tagline?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
+  callout?:
+    | {
+        __typename?: 'Callout';
+        id: string;
+        framing: {
+          __typename?: 'CalloutFraming';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         };
       }
     | undefined;

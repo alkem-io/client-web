@@ -3098,6 +3098,35 @@ export const InAppNotificationPayloadUserMessageDirectFragmentDoc = gql`
   }
   ${VisualModelFragmentDoc}
 `;
+export const InAppNotificationPayloadSpaceCollaborationCalloutCommentFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCollaborationCalloutComment on InAppNotificationPayloadSpaceCollaborationCalloutComment {
+    messageDetails {
+      message
+      parent {
+        displayName
+        url
+      }
+      room {
+        id
+      }
+    }
+    space {
+      ...spaceNotification
+    }
+    callout {
+      id
+      framing {
+        id
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
 export const InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc = gql`
   fragment InAppNotificationPayloadSpaceCollaborationCalloutPostComment on InAppNotificationPayloadSpaceCollaborationCalloutPostComment {
     messageDetails {
@@ -3216,6 +3245,9 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
       ... on InAppNotificationPayloadUserMessageDirect {
         ...InAppNotificationPayloadUserMessageDirect
       }
+      ... on InAppNotificationPayloadSpaceCollaborationCalloutComment {
+        ...InAppNotificationPayloadSpaceCollaborationCalloutComment
+      }
       ... on InAppNotificationPayloadSpaceCollaborationCalloutPostComment {
         ...InAppNotificationPayloadSpaceCollaborationCalloutPostComment
       }
@@ -3241,6 +3273,7 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
   ${InAppNotificationPayloadSpaceCommunityInvitationFragmentDoc}
   ${InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc}
   ${InAppNotificationPayloadUserMessageDirectFragmentDoc}
+  ${InAppNotificationPayloadSpaceCollaborationCalloutCommentFragmentDoc}
   ${InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc}
   ${InAppNotificationPayloadVirtualContributorFragmentDoc}
 `;

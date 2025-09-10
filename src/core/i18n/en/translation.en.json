@@ -1978,6 +1978,10 @@
           "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
           "description": ""
         },
+        "SPACE_COLLABORATION_CALLOUT_COMMENT": {
+          "subject": "{{triggeredByName}} commented on {{calloutName}} in {{spaceName}}",
+          "description": ""
+        },
         "SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT": {
           "subject": "{{triggeredByName}} commented on {{contributionName}} (contribution) in {{spaceName}}",
           "description": ""
