@@ -2915,10 +2915,36 @@ export const InAppNotificationPayloadPlatformGlobalRoleChangeFragmentDoc = gql`
   }
   ${VisualModelFragmentDoc}
 `;
+export const SpaceNotificationFragmentDoc = gql`
+  fragment spaceNotification on Space {
+    id
+    level
+    about {
+      id
+      profile {
+        id
+        displayName
+        description
+        url
+        tagline
+        tagset {
+          ...TagsetDetails
+        }
+        ...SubspaceVisuals
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${SubspaceVisualsFragmentDoc}
+`;
 export const InAppNotificationPayloadSpaceFragmentDoc = gql`
   fragment InAppNotificationPayloadSpace on InAppNotificationPayloadSpace {
     type
+    space {
+      ...spaceNotification
+    }
   }
+  ${SpaceNotificationFragmentDoc}
 `;
 export const InAppNotificationPayloadPlatformForumDiscussionFragmentDoc = gql`
   fragment InAppNotificationPayloadPlatformForumDiscussion on InAppNotificationPayloadPlatformForumDiscussion {
@@ -2953,29 +2979,9 @@ export const InAppNotificationPayloadPlatformUserFragmentDoc = gql`
 export const InAppNotificationPayloadPlatformUserProfileRemovedFragmentDoc = gql`
   fragment InAppNotificationPayloadPlatformUserProfileRemoved on InAppNotificationPayloadPlatformUserProfileRemoved {
     type
+    userEmail
+    userDisplayName
   }
-`;
-export const SpaceNotificationFragmentDoc = gql`
-  fragment spaceNotification on Space {
-    id
-    level
-    about {
-      id
-      profile {
-        id
-        displayName
-        description
-        url
-        tagline
-        tagset {
-          ...TagsetDetails
-        }
-        ...SubspaceVisuals
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${SubspaceVisualsFragmentDoc}
 `;
 export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
   fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationPayloadSpaceCollaborationCallout {

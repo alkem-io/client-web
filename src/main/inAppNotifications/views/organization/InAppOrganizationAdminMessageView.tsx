@@ -5,23 +5,21 @@ export const InAppOrganizationAdminMessageView = (notification: InAppNotificatio
   const { payload, triggeredBy } = notification;
 
   // do not display notification if these are missing
-  if (!triggeredBy?.profile?.displayName || !payload.messageDetails) {
+  if (!triggeredBy?.profile?.displayName) {
     return null;
   }
-  const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
-    organizationName: messageDetails?.parent?.displayName,
-    message: messageDetails?.message,
+    organizationName: payload?.organization?.profile?.displayName,
+    comment: payload?.organizationMessage,
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.messageDetails?.parent?.url}
+      url={payload?.organization?.profile?.url}
     />
   );
 };

@@ -26,6 +26,18 @@ export interface InAppNotificationPayloadModel {
         }
       | undefined;
   };
+  organization?: {
+    id: string;
+    profile:
+      | {
+          displayName: string;
+          url: string;
+          visual?: {
+            uri: string;
+          };
+        }
+      | undefined;
+  };
   callout?: {
     framing:
       | {
@@ -79,4 +91,5 @@ export interface InAppNotificationPayloadModel {
   comment?: string;
   userEmail?: string;
   userDisplayName?: string;
+  organizationMessage?: string;
 }

@@ -1884,10 +1884,6 @@
         "delete": "Delete Notification"
       },
       "type": {
-        "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
-          "subject": "{{spaceName}} - New Post is published \"{{calloutName}}\", have a look!",
-          "description": "{{triggeredByName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
-        },
         "USER_MENTIONED": {
           "subject": "{{triggeredByName}} mentioned you in a comment on {{calloutName}}:",
           "description": ""
@@ -1896,10 +1892,6 @@
           "subject": "{{spaceName}} - Welcome to the Community!",
           "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various posts and whiteboards, further deepen your knowledge about this topic, and connect with other Contributors."
         },
-        "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
-          "subject": "\"{{memberName}}\" joined {{spaceName}}",
-          "description": "{{memberName}} has joined {{spaceName}}, of which you are an admin."
-        },
         "USER_COMMENT_REPLY": {
           "subject": "{{triggeredByName}} commented on your post {{parentName}}",
           "description": ""
@@ -1907,6 +1899,26 @@
         "USER_SPACE_COMMUNITY_INVITATION": {
           "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
           "description": "{{spaceName}} - {{spaceDescription}}"
+        },
+        "USER_SPACE_COMMUNITY_APPLICATION": {
+          "subject": "You have successfully applied to join {{spaceName}}",
+          "description": ""
+        },
+        "USER_MESSAGE_SENDER": {
+          "subject": "You sent a DM to {{receiverName}}",
+          "description": ""
+        },
+        "USER_MESSAGE": {
+          "subject": "{{triggeredByName}} sent you a DM",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
+          "subject": "{{spaceName}} - New Post is published \"{{calloutName}}\", have a look!",
+          "description": "{{triggeredByName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
+        },
+        "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
+          "subject": "\"{{memberName}}\" joined {{spaceName}}",
+          "description": "{{memberName}} has joined {{spaceName}}, of which you are an admin."
         },
         "SPACE_COMMUNICATION_UPDATE": {
           "subject": "{{triggeredByName}} shared an update in {{spaceName}}",
@@ -1920,25 +1932,29 @@
           "subject": "{{triggeredByName}} created a post \"{{calloutName}}\"",
           "description": "In <b>{{spaceName}}</b>, of which you are an admin."
         },
-        "USER_SPACE_COMMUNITY_APPLICATION": {
-          "subject": "You have successfully applied to join {{spaceName}}",
-          "description": ""
-        },
         "SPACE_ADMIN_COMMUNITY_APPLICATION": {
           "subject": "{{triggeredByName}} applied to join {{spaceName}}",
           "description": "Review the application in space settings"
         },
-        "USER_MESSAGE": {
-          "subject": "{{triggeredByName}} sent you a DM",
+        "SPACE_LEAD_COMMUNICATION_MESSAGE": {
+          "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
           "description": ""
         },
-        "USER_MESSAGE_SENDER": {
-          "subject": "You sent a DM to {{receiverName}}",
+        "SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT": {
+          "subject": "{{triggeredByName}} commented on {{contributionName}} (contribution) in {{spaceName}}",
           "description": ""
         },
         "ORGANIZATION_ADMIN_MENTIONED": {
           "subject": "{{triggeredByName}} mentioned your organization in {{spaceName}}",
           "description": "{{message}}"
+        },
+        "ORGANIZATION_ADMIN_MESSAGE": {
+          "subject": "{{triggeredByName}} sent a message to your organization {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_MESSAGE_SENDER": {
+          "subject": "You sent a message to {{organizationName}}",
+          "description": ""
         },
         "PLATFORM_FORUM_DISCUSSION_CREATED": {
           "subject": "{{triggeredByName}} started a new discussion in the forum {{discussionName}}",
@@ -1960,10 +1976,6 @@
           "subject": "{{triggeredByName}} has signed up to the platform",
           "description": ""
         },
-        "SPACE_LEAD_COMMUNICATION_MESSAGE": {
-          "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
-          "description": ""
-        },
         "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
           "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}",
           "description": ""
@@ -1971,10 +1983,6 @@
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "subject": "{{triggeredByName}} has created a new Space",
           "description": "{{spaceName}}"
-        },
-        "SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT": {
-          "subject": "{{triggeredByName}} commented on {{contributionName}} (contribution) in {{spaceName}}",
-          "description": ""
         }
       },
       "emptyInbox": "No pending notifications",

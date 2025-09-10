@@ -2845,6 +2845,8 @@ export type InAppNotificationPayloadPlatformUserProfileRemoved = InAppNotificati
 
 export type InAppNotificationPayloadSpace = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpace';
+  /** The space details. */
+  space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
 };
@@ -2875,7 +2877,7 @@ export type InAppNotificationPayloadSpaceCommunicationMessageDirect = InAppNotif
   __typename?: 'InAppNotificationPayloadSpaceCommunicationMessageDirect';
   /** The message content. */
   message: Scalars['String']['output'];
-  /** The Space where the message was sent. */
+  /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
@@ -2883,7 +2885,7 @@ export type InAppNotificationPayloadSpaceCommunicationMessageDirect = InAppNotif
 
 export type InAppNotificationPayloadSpaceCommunicationUpdate = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunicationUpdate';
-  /** The Space where the update was sent. */
+  /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
@@ -2895,7 +2897,7 @@ export type InAppNotificationPayloadSpaceCommunityApplication = InAppNotificatio
   __typename?: 'InAppNotificationPayloadSpaceCommunityApplication';
   /** The Application that the notification is related to. */
   application?: Maybe<Application>;
-  /** The Space that the application was made to. */
+  /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
@@ -2905,7 +2907,7 @@ export type InAppNotificationPayloadSpaceCommunityContributor = InAppNotificatio
   __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
   /** The Contributor that joined. */
   contributor?: Maybe<Contributor>;
-  /** The Space that was joined. */
+  /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
@@ -2913,7 +2915,7 @@ export type InAppNotificationPayloadSpaceCommunityContributor = InAppNotificatio
 
 export type InAppNotificationPayloadSpaceCommunityInvitation = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunityInvitation';
-  /** The Space that the invitation is for. */
+  /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
@@ -2921,7 +2923,7 @@ export type InAppNotificationPayloadSpaceCommunityInvitation = InAppNotification
 
 export type InAppNotificationPayloadSpaceCommunityInvitationPlatform = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCommunityInvitationPlatform';
-  /** The Space that the invitation is for. */
+  /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
   type: NotificationEventPayload;
@@ -30021,8 +30023,63 @@ export type InAppNotificationReceivedSubscription = {
             room: { __typename?: 'Room'; id: string };
           };
         }
-      | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
-      | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
+      | {
+          __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
+          type: NotificationEventPayload;
+          userEmail?: string | undefined;
+          userDisplayName?: string | undefined;
+        }
+      | {
+          __typename?: 'InAppNotificationPayloadSpace';
+          type: NotificationEventPayload;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    url: string;
+                    tagline?: string | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+        }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
           type: NotificationEventPayload;
@@ -30802,8 +30859,63 @@ export type InAppNotificationsQuery = {
               room: { __typename?: 'Room'; id: string };
             };
           }
-        | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
-        | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
+        | {
+            __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
+            type: NotificationEventPayload;
+            userEmail?: string | undefined;
+            userDisplayName?: string | undefined;
+          }
+        | {
+            __typename?: 'InAppNotificationPayloadSpace';
+            type: NotificationEventPayload;
+            space?:
+              | {
+                  __typename?: 'Space';
+                  id: string;
+                  level: SpaceLevel;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      url: string;
+                      tagline?: string | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+          }
         | {
             __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
             type: NotificationEventPayload;
@@ -31588,8 +31700,63 @@ export type InAppNotificationAllTypesFragment = {
           room: { __typename?: 'Room'; id: string };
         };
       }
-    | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
-    | { __typename?: 'InAppNotificationPayloadSpace'; type: NotificationEventPayload }
+    | {
+        __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
+        type: NotificationEventPayload;
+        userEmail?: string | undefined;
+        userDisplayName?: string | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationPayloadSpace';
+        type: NotificationEventPayload;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  url: string;
+                  tagline?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+      }
     | {
         __typename?: 'InAppNotificationPayloadSpaceCollaborationCallout';
         type: NotificationEventPayload;
@@ -32442,6 +32609,41 @@ export type InAppNotificationPayloadPlatformGlobalRoleChangeFragment = {
 export type InAppNotificationPayloadSpaceFragment = {
   __typename?: 'InAppNotificationPayloadSpace';
   type: NotificationEventPayload;
+  space?:
+    | {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            tagline?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
 };
 
 export type InAppNotificationPayloadPlatformForumDiscussionFragment = {
@@ -32459,6 +32661,8 @@ export type InAppNotificationPayloadPlatformUserFragment = {
 export type InAppNotificationPayloadPlatformUserProfileRemovedFragment = {
   __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
   type: NotificationEventPayload;
+  userEmail?: string | undefined;
+  userDisplayName?: string | undefined;
 };
 
 export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {

@@ -1660,8 +1660,13 @@ export type InAppNotificationPayloadPlatformUserProfileRemovedFieldPolicy = {
   userDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type InAppNotificationPayloadSpaceKeySpecifier = ('type' | InAppNotificationPayloadSpaceKeySpecifier)[];
+export type InAppNotificationPayloadSpaceKeySpecifier = (
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceKeySpecifier
+)[];
 export type InAppNotificationPayloadSpaceFieldPolicy = {
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadSpaceCollaborationCalloutKeySpecifier = (
