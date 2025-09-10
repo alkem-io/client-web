@@ -1922,10 +1922,6 @@
         "delete": "Delete $t(common.Notification)"
       },
       "type": {
-        "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
-          "subject": "{{spaceName}} - New $t(common.post) is published \"{{calloutName}}\", have a look!",
-          "description": "{{triggeredByName}} published a new $t(common.post) in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
-        },
         "USER_MENTIONED": {
           "subject": "{{triggeredByName}} mentioned you in a $t(common.comment) on {{calloutName}}:",
           "description": ""
