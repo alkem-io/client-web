@@ -5,21 +5,21 @@ export const InAppSpaceLeadCommunicationMessageView = (notification: InAppNotifi
   const { payload, triggeredBy } = notification;
 
   // do not display notification if these are missing
-  if (!triggeredBy?.profile?.displayName || !payload?.spaceCommunicationMessage) {
+  if (!triggeredBy?.profile?.displayName || !payload.spaceCommunicationMessage) {
     return null;
   }
 
   const notificationTextValues = {
     triggeredByName: triggeredBy?.profile?.displayName,
-    spaceName: payload?.space?.about?.profile?.displayName || '',
-    comment: payload?.spaceCommunicationMessage,
+    spaceName: payload.space?.about?.profile?.displayName || '',
+    comment: payload.spaceCommunicationMessage,
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.messageDetails?.parent?.url}
+      url={payload.space?.about?.profile?.url}
     />
   );
 };

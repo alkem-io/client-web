@@ -5,13 +5,13 @@ export const InAppUserMessageView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;
 
   // do not display notification if these are missing
-  if (!triggeredBy?.profile?.displayName || !payload?.userMessage) {
+  if (!triggeredBy?.profile?.displayName || !payload.userMessage) {
     return null;
   }
 
   const notificationTextValues = {
     triggeredByName: triggeredBy?.profile?.displayName,
-    comment: payload?.userMessage,
+    comment: payload.userMessage,
   };
 
   return (

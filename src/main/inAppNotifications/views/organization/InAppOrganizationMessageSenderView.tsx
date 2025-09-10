@@ -11,15 +11,15 @@ export const InAppOrganizationMessageSenderView = (notification: InAppNotificati
 
   const notificationTextValues = {
     triggeredByName: triggeredBy?.profile?.displayName,
-    organizationName: payload?.organization?.profile?.displayName,
-    comment: payload?.organizationMessage,
+    organizationName: payload.organization?.profile?.displayName,
+    comment: payload.organizationMessage,
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload?.organization?.profile?.url}
+      url={payload.organization?.profile?.url}
     />
   );
 };

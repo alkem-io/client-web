@@ -13,7 +13,7 @@ export const InAppSpaceCommunicationUpdateView = (notification: InAppNotificatio
   const notificationTextValues = {
     triggeredByName: triggeredBy?.profile?.displayName,
     spaceName: space?.about?.profile?.displayName,
-    update: payload?.update || '',
+    update: payload.update || '',
   };
 
   return (
