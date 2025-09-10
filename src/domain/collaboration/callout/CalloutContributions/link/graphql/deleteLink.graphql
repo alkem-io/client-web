@@ -1,5 +1,5 @@
-mutation deleteLink($input: DeleteLinkInput!) {
-  deleteLink(deleteData: $input) {
+mutation DeleteLinkAsContribution($ID: UUID!) {
+  deleteLinkAsContribution(ID: $ID) {
     id
   }
 }

@@ -1,11 +1,11 @@
 import {
   WhiteboardDetailsFragmentDoc,
   useCreateWhiteboardOnCalloutMutation,
-  useDeleteWhiteboardMutation,
   useUpdateWhiteboardMutation,
+  useDeleteWhiteboardAsContributionMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { CreateContributionOnCalloutInput } from '@/core/apollo/generated/graphql-schema';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import removeFromCache from '@/core/apollo/utils/removeFromCache';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { useCallback, useMemo } from 'react';
@@ -104,7 +104,9 @@ const WhiteboardActionsContainer = ({ children }: SimpleContainerProps<Whiteboar
     [createWhiteboard]
   );
 
-  const [deleteWhiteboard, { loading: deletingWhiteboard }] = useDeleteWhiteboardMutation({});
+  const [deleteWhiteboard, { loading: deletingWhiteboard }] = useDeleteWhiteboardAsContributionMutation({
+    update: removeFromCache,
+  });
 
   const handleDeleteWhiteboard = useCallback(
     async (whiteboard: Identifiable) => {
@@ -113,16 +115,8 @@ const WhiteboardActionsContainer = ({ children }: SimpleContainerProps<Whiteboar
       }
 
       await deleteWhiteboard({
-        update: (cache, { data }) => {
-          const output = data?.deleteWhiteboard;
-          if (output) {
-            evictFromCache(cache, String(output.id), 'Whiteboard');
-          }
-        },
         variables: {
-          input: {
-            ID: whiteboard.id,
-          },
+          ID: whiteboard.id,
         },
       });
     },

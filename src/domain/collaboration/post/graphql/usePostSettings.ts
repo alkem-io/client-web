@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import { PushFunc, RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
-  useDeletePostMutation,
+  useDeletePostAsContributionMutation,
   usePostSettingsQuery,
   useUpdatePostMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -109,7 +109,7 @@ const usePostSettings = ({
     }
   };
 
-  const [deletePost, { loading: deleting }] = useDeletePostMutation({
+  const [deletePost, { loading: deleting }] = useDeletePostAsContributionMutation({
     update: removeFromCache,
   });
 

@@ -18,8 +18,8 @@ mutation UpdatePost($input: UpdatePostInput!) {
   }
 }
 
-mutation DeletePost($postId: UUID!) {
-  deletePost(deleteData: { ID: $postId}) {
+mutation DeletePostAsContribution($postId: UUID!) {
+  deletePostAsContribution(ID: $postId) {
     id
   }
 }

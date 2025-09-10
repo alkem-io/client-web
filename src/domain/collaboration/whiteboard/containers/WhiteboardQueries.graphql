@@ -111,6 +111,12 @@ mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
   }
 }
 
+mutation DeleteWhiteboardAsContribution($ID: UUID!) {
+  deleteWhiteboardAsContribution(ID: $ID) {
+    id
+  }
+}
+
 mutation updateWhiteboard($input: UpdateWhiteboardEntityInput!) {
   updateWhiteboard(whiteboardData: $input) {
     id

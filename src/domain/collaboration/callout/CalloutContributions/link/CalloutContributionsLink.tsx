@@ -8,7 +8,7 @@ import { Box, IconButton, Link } from '@mui/material';
 import {
   refetchCalloutDetailsQuery,
   useCreateLinkOnCalloutMutation,
-  useDeleteLinkMutation,
+  useDeleteLinkAsContributionMutation,
   useUpdateLinkMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import AddIcon from '@mui/icons-material/Add';
@@ -18,7 +18,7 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import removeFromCache from '@/core/apollo/utils/removeFromCache';
 import { compact, sortBy } from 'lodash';
 import { TypedCalloutDetails } from '../../models/TypedCallout';
 import Loading from '@/core/ui/loading/Loading';
@@ -86,8 +86,8 @@ const CalloutContributionsLink = ({
     refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
   });
   const [updateLink] = useUpdateLinkMutation();
-  const [deleteLink] = useDeleteLinkMutation({
-    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
+  const [deleteLink] = useDeleteLinkAsContributionMutation({
+    update: removeFromCache,
   });
 
   const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
@@ -127,11 +127,8 @@ const CalloutContributionsLink = ({
   const removeNewLink = (linkId: string) =>
     deleteLink({
       variables: {
-        input: {
-          ID: linkId,
-        },
+        ID: linkId,
       },
-      update: (cache, { data }) => data?.deleteLink && evictFromCache(cache, data.deleteLink.id, 'Link'),
     });
 
   const handleSaveNewLinks = useCallback(
@@ -186,9 +183,7 @@ const CalloutContributionsLink = ({
     }
     await deleteLink({
       variables: {
-        input: {
-          ID: deletingLinkId,
-        },
+        ID: deletingLinkId,
       },
     });
     onCalloutUpdate?.();

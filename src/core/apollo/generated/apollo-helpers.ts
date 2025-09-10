@@ -2558,10 +2558,12 @@ export type MutationKeySpecifier = (
   | 'deleteInvitation'
   | 'deleteLicensePlan'
   | 'deleteLink'
+  | 'deleteLinkAsContribution'
   | 'deleteMemo'
   | 'deleteOrganization'
   | 'deletePlatformInvitation'
   | 'deletePost'
+  | 'deletePostAsContribution'
   | 'deleteReference'
   | 'deleteSpace'
   | 'deleteStateOnInnovationFlow'
@@ -2572,6 +2574,7 @@ export type MutationKeySpecifier = (
   | 'deleteUserGroup'
   | 'deleteVirtualContributor'
   | 'deleteWhiteboard'
+  | 'deleteWhiteboardAsContribution'
   | 'eventOnApplication'
   | 'eventOnInvitation'
   | 'eventOnOrganizationVerification'
@@ -2739,10 +2742,12 @@ export type MutationFieldPolicy = {
   deleteInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteLink?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteLinkAsContribution?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteMemo?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePlatformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePost?: FieldPolicy<any> | FieldReadFunction<any>;
+  deletePostAsContribution?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteReference?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteStateOnInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2753,6 +2758,7 @@ export type MutationFieldPolicy = {
   deleteUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteWhiteboardAsContribution?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;

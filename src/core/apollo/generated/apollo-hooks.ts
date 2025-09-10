@@ -7245,49 +7245,53 @@ export type CreateLinkOnCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateLinkOnCalloutMutation,
   SchemaTypes.CreateLinkOnCalloutMutationVariables
 >;
-export const DeleteLinkDocument = gql`
-  mutation deleteLink($input: DeleteLinkInput!) {
-    deleteLink(deleteData: $input) {
+export const DeleteLinkAsContributionDocument = gql`
+  mutation DeleteLinkAsContribution($ID: UUID!) {
+    deleteLinkAsContribution(ID: $ID) {
       id
     }
   }
 `;
-export type DeleteLinkMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteLinkMutation,
-  SchemaTypes.DeleteLinkMutationVariables
+export type DeleteLinkAsContributionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteLinkAsContributionMutation,
+  SchemaTypes.DeleteLinkAsContributionMutationVariables
 >;
 
 /**
- * __useDeleteLinkMutation__
+ * __useDeleteLinkAsContributionMutation__
  *
- * To run a mutation, you first call `useDeleteLinkMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteLinkMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteLinkAsContributionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteLinkAsContributionMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteLinkMutation, { data, loading, error }] = useDeleteLinkMutation({
+ * const [deleteLinkAsContributionMutation, { data, loading, error }] = useDeleteLinkAsContributionMutation({
  *   variables: {
- *      input: // value for 'input'
+ *      ID: // value for 'ID'
  *   },
  * });
  */
-export function useDeleteLinkMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteLinkMutation, SchemaTypes.DeleteLinkMutationVariables>
+export function useDeleteLinkAsContributionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteLinkAsContributionMutation,
+    SchemaTypes.DeleteLinkAsContributionMutationVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.DeleteLinkMutation, SchemaTypes.DeleteLinkMutationVariables>(
-    DeleteLinkDocument,
-    options
-  );
+  return Apollo.useMutation<
+    SchemaTypes.DeleteLinkAsContributionMutation,
+    SchemaTypes.DeleteLinkAsContributionMutationVariables
+  >(DeleteLinkAsContributionDocument, options);
 }
-export type DeleteLinkMutationHookResult = ReturnType<typeof useDeleteLinkMutation>;
-export type DeleteLinkMutationResult = Apollo.MutationResult<SchemaTypes.DeleteLinkMutation>;
-export type DeleteLinkMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteLinkMutation,
-  SchemaTypes.DeleteLinkMutationVariables
+export type DeleteLinkAsContributionMutationHookResult = ReturnType<typeof useDeleteLinkAsContributionMutation>;
+export type DeleteLinkAsContributionMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeleteLinkAsContributionMutation>;
+export type DeleteLinkAsContributionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteLinkAsContributionMutation,
+  SchemaTypes.DeleteLinkAsContributionMutationVariables
 >;
 export const UpdateLinkDocument = gql`
   mutation updateLink($input: UpdateLinkInput!) {
@@ -8468,49 +8472,53 @@ export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePostMutation,
   SchemaTypes.UpdatePostMutationVariables
 >;
-export const DeletePostDocument = gql`
-  mutation DeletePost($postId: UUID!) {
-    deletePost(deleteData: { ID: $postId }) {
+export const DeletePostAsContributionDocument = gql`
+  mutation DeletePostAsContribution($postId: UUID!) {
+    deletePostAsContribution(ID: $postId) {
       id
     }
   }
 `;
-export type DeletePostMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeletePostMutation,
-  SchemaTypes.DeletePostMutationVariables
+export type DeletePostAsContributionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeletePostAsContributionMutation,
+  SchemaTypes.DeletePostAsContributionMutationVariables
 >;
 
 /**
- * __useDeletePostMutation__
+ * __useDeletePostAsContributionMutation__
  *
- * To run a mutation, you first call `useDeletePostMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeletePostMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeletePostAsContributionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePostAsContributionMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deletePostMutation, { data, loading, error }] = useDeletePostMutation({
+ * const [deletePostAsContributionMutation, { data, loading, error }] = useDeletePostAsContributionMutation({
  *   variables: {
  *      postId: // value for 'postId'
  *   },
  * });
  */
-export function useDeletePostMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeletePostMutation, SchemaTypes.DeletePostMutationVariables>
+export function useDeletePostAsContributionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeletePostAsContributionMutation,
+    SchemaTypes.DeletePostAsContributionMutationVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.DeletePostMutation, SchemaTypes.DeletePostMutationVariables>(
-    DeletePostDocument,
-    options
-  );
+  return Apollo.useMutation<
+    SchemaTypes.DeletePostAsContributionMutation,
+    SchemaTypes.DeletePostAsContributionMutationVariables
+  >(DeletePostAsContributionDocument, options);
 }
-export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
-export type DeletePostMutationResult = Apollo.MutationResult<SchemaTypes.DeletePostMutation>;
-export type DeletePostMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeletePostMutation,
-  SchemaTypes.DeletePostMutationVariables
+export type DeletePostAsContributionMutationHookResult = ReturnType<typeof useDeletePostAsContributionMutation>;
+export type DeletePostAsContributionMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeletePostAsContributionMutation>;
+export type DeletePostAsContributionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeletePostAsContributionMutation,
+  SchemaTypes.DeletePostAsContributionMutationVariables
 >;
 export const MoveContributionToCalloutDocument = gql`
   mutation MoveContributionToCallout($contributionId: UUID!, $calloutId: UUID!) {
@@ -9124,6 +9132,56 @@ export type DeleteWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.D
 export type DeleteWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteWhiteboardMutation,
   SchemaTypes.DeleteWhiteboardMutationVariables
+>;
+export const DeleteWhiteboardAsContributionDocument = gql`
+  mutation DeleteWhiteboardAsContribution($ID: UUID!) {
+    deleteWhiteboardAsContribution(ID: $ID) {
+      id
+    }
+  }
+`;
+export type DeleteWhiteboardAsContributionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteWhiteboardAsContributionMutation,
+  SchemaTypes.DeleteWhiteboardAsContributionMutationVariables
+>;
+
+/**
+ * __useDeleteWhiteboardAsContributionMutation__
+ *
+ * To run a mutation, you first call `useDeleteWhiteboardAsContributionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteWhiteboardAsContributionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteWhiteboardAsContributionMutation, { data, loading, error }] = useDeleteWhiteboardAsContributionMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useDeleteWhiteboardAsContributionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteWhiteboardAsContributionMutation,
+    SchemaTypes.DeleteWhiteboardAsContributionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteWhiteboardAsContributionMutation,
+    SchemaTypes.DeleteWhiteboardAsContributionMutationVariables
+  >(DeleteWhiteboardAsContributionDocument, options);
+}
+export type DeleteWhiteboardAsContributionMutationHookResult = ReturnType<
+  typeof useDeleteWhiteboardAsContributionMutation
+>;
+export type DeleteWhiteboardAsContributionMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeleteWhiteboardAsContributionMutation>;
+export type DeleteWhiteboardAsContributionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteWhiteboardAsContributionMutation,
+  SchemaTypes.DeleteWhiteboardAsContributionMutationVariables
 >;
 export const UpdateWhiteboardDocument = gql`
   mutation updateWhiteboard($input: UpdateWhiteboardEntityInput!) {

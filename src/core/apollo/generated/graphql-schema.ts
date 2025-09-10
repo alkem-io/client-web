@@ -4263,6 +4263,8 @@ export type Mutation = {
   deleteLicensePlan: LicensePlan;
   /** Deletes the specified Link. */
   deleteLink: Link;
+  /** Deletes the specified Link. */
+  deleteLinkAsContribution: Link;
   /** Deletes the specified Memo. */
   deleteMemo: Memo;
   /** Deletes the specified Organization. */
@@ -4271,6 +4273,8 @@ export type Mutation = {
   deletePlatformInvitation: PlatformInvitation;
   /** Deletes the specified Post. */
   deletePost: Post;
+  /** Deletes the specified Post. */
+  deletePostAsContribution: Post;
   /** Deletes the specified Reference. */
   deleteReference: Reference;
   /** Deletes the specified Space. */
@@ -4291,6 +4295,8 @@ export type Mutation = {
   deleteVirtualContributor: VirtualContributor;
   /** Deletes the specified Whiteboard. */
   deleteWhiteboard: Whiteboard;
+  /** Deletes the specified Whiteboard. */
+  deleteWhiteboardAsContribution: Whiteboard;
   /** Trigger an event on the Application. */
   eventOnApplication: Application;
   /** Trigger an event on the Invitation. */
@@ -4723,6 +4729,10 @@ export type MutationDeleteLinkArgs = {
   deleteData: DeleteLinkInput;
 };
 
+export type MutationDeleteLinkAsContributionArgs = {
+  ID: Scalars['UUID']['input'];
+};
+
 export type MutationDeleteMemoArgs = {
   memoData: DeleteMemoInput;
 };
@@ -4737,6 +4747,10 @@ export type MutationDeletePlatformInvitationArgs = {
 
 export type MutationDeletePostArgs = {
   deleteData: DeletePostInput;
+};
+
+export type MutationDeletePostAsContributionArgs = {
+  ID: Scalars['UUID']['input'];
 };
 
 export type MutationDeleteReferenceArgs = {
@@ -4777,6 +4791,10 @@ export type MutationDeleteVirtualContributorArgs = {
 
 export type MutationDeleteWhiteboardArgs = {
   whiteboardData: DeleteWhiteboardInput;
+};
+
+export type MutationDeleteWhiteboardAsContributionArgs = {
+  ID: Scalars['UUID']['input'];
 };
 
 export type MutationEventOnApplicationArgs = {
@@ -12477,11 +12495,14 @@ export type CreateLinkOnCalloutMutation = {
   };
 };
 
-export type DeleteLinkMutationVariables = Exact<{
-  input: DeleteLinkInput;
+export type DeleteLinkAsContributionMutationVariables = Exact<{
+  ID: Scalars['UUID']['input'];
 }>;
 
-export type DeleteLinkMutation = { __typename?: 'Mutation'; deleteLink: { __typename?: 'Link'; id: string } };
+export type DeleteLinkAsContributionMutation = {
+  __typename?: 'Mutation';
+  deleteLinkAsContribution: { __typename?: 'Link'; id: string };
+};
 
 export type UpdateLinkMutationVariables = Exact<{
   input: UpdateLinkInput;
@@ -15364,11 +15385,14 @@ export type UpdatePostMutation = {
   };
 };
 
-export type DeletePostMutationVariables = Exact<{
+export type DeletePostAsContributionMutationVariables = Exact<{
   postId: Scalars['UUID']['input'];
 }>;
 
-export type DeletePostMutation = { __typename?: 'Mutation'; deletePost: { __typename?: 'Post'; id: string } };
+export type DeletePostAsContributionMutation = {
+  __typename?: 'Mutation';
+  deletePostAsContribution: { __typename?: 'Post'; id: string };
+};
 
 export type MoveContributionToCalloutMutationVariables = Exact<{
   contributionId: Scalars['UUID']['input'];
@@ -16126,6 +16150,15 @@ export type DeleteWhiteboardMutationVariables = Exact<{
 export type DeleteWhiteboardMutation = {
   __typename?: 'Mutation';
   deleteWhiteboard: { __typename?: 'Whiteboard'; id: string };
+};
+
+export type DeleteWhiteboardAsContributionMutationVariables = Exact<{
+  ID: Scalars['UUID']['input'];
+}>;
+
+export type DeleteWhiteboardAsContributionMutation = {
+  __typename?: 'Mutation';
+  deleteWhiteboardAsContribution: { __typename?: 'Whiteboard'; id: string };
 };
 
 export type UpdateWhiteboardMutationVariables = Exact<{
