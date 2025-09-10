@@ -70,8 +70,8 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
     switch (item.type) {
       case 'invites':
         return (
-          <ListItem key={index} sx={{ paddingY: gutters(0.75) }}>
-            <ListItemButton onClick={openMembershipsDialog}>
+          <ListItem key={index} sx={{ padding: 0 }}>
+            <ListItemButton onClick={openMembershipsDialog} sx={{ paddingY: gutters(0.75) }}>
               {getItemContent(item)}
               {pendingInvitationsCount > 0 && (
                 <>
@@ -84,16 +84,23 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
         );
       case 'link':
         return (
-          <ListItem key={index} sx={{ paddingY: gutters(0.75) }}>
-            <ListItemButton component={RouterLink} to={item.to ?? ''} disabled={!item.to}>
+          <ListItem key={index} sx={{ padding: 0 }}>
+            <ListItemButton
+              component={RouterLink}
+              to={item.to ?? ''}
+              disabled={!item.to}
+              sx={{ paddingY: gutters(0.75) }}
+            >
               {getItemContent(item)}
             </ListItemButton>
           </ListItem>
         );
       case 'dialog':
         return (
-          <ListItem key={index} sx={{ paddingY: gutters(0.75) }}>
-            <ListItemButton onClick={openDialog(item.dialog)}>{getItemContent(item)}</ListItemButton>
+          <ListItem key={index} sx={{ padding: 0 }}>
+            <ListItemButton onClick={openDialog(item.dialog)} sx={{ paddingY: gutters(0.75) }}>
+              {getItemContent(item)}
+            </ListItemButton>
           </ListItem>
         );
       case 'switch':

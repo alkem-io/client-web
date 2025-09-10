@@ -1147,17 +1147,17 @@
       "typeReadonly": "Once a template is created, its type cannot be changed. If you need a different type, please create a new template."
     },
     "shareSettings": {
-      "description": "Based on the settings of the Space that this Whiteboard is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
-      "disabled": "Based on the settings of the Space that this Whiteboard is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
+      "description": "Based on the settings of the Space that this {{elementName}} is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
+      "disabled": "Based on the settings of the Space that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
       "ownedBy": {
-        "title": "This whiteboard is owned by:"
+        "title": "This {{elementName}} is owned by:"
       },
       "editableBy": {
-        "title": "This whiteboard can be edited by:",
+        "title": "This {{elementName}} can be edited by:",
         "options": {
           "CONTRIBUTORS": "Everyone who can contribute in this (sub)space",
           "ADMINS": "The owner and the admins and leads of this (sub)space",
-          "OWNER": "The owner of this whiteboard"
+          "OWNER": "The owner of this {{elementName}}"
         }
       }
     },
@@ -1417,6 +1417,10 @@
         "link": {
           "name": "Call To Action",
           "url": "URL"
+        },
+        "memo": {
+          "name": "Content",
+          "placeholder": "(Optional) Add some content to the memo"
         }
       },
       "template-step": {
@@ -1441,17 +1445,6 @@
     },
     "calloutEdit": {
       "titleWithType": "%{type} bearbeiten"
-    },
-    "calloutTypeSelect": {
-      "title": "Was möchten Sie tun?",
-      "label": {
-        "POST": "Posten",
-        "POST_COLLECTION": "Tags für Einträge",
-        "WHITEBOARD_COLLECTION": "Whiteboard leeren",
-        "LINK_COLLECTION": "Collection of Links and Documents",
-        "WHITEBOARD": "Whiteboard"
-      },
-      "callout-templates-library": "...or have a look at the library!"
     },
     "post-creation": {
       "title": "Senden Sie Ihre Antwort an {{calloutDisplayName}}",
@@ -1891,21 +1884,21 @@
         "delete": "Delete Notification"
       },
       "type": {
-        "COLLABORATION_CALLOUT_PUBLISHED": {
+        "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
           "subject": "{{spaceName}} - New Post is published \"{{calloutName}}\", have a look!",
-          "description": "{{contributorName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
+          "description": "{{triggeredByName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
-        "COMMUNICATION_USER_MENTION": {
-          "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
+        "USER_MENTIONED": {
+          "subject": "{{triggeredByName}} mentioned you in a comment on {{calloutName}}:",
           "description": ""
         },
-        "COMMUNITY_NEW_MEMBER": {
+        "USER_SPACE_COMMUNITY_JOINED": {
           "subject": "{{spaceName}} - Welcome to the Community!",
           "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various posts and whiteboards, further deepen your knowledge about this topic, and connect with other Contributors."
         },
-        "COMMUNITY_NEW_MEMBER_ADMIN": {
-          "subject": "{{memberType}} \"{{memberName}}\" joined {{spaceName}}",
-          "description": "The {{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
+        "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
+          "subject": "\"{{memberName}}\" joined {{spaceName}}",
+          "description": "{{memberName}} has joined {{spaceName}}, of which you are an admin."
         }
       },
       "emptyInbox": "No pending notifications",
@@ -3048,30 +3041,83 @@
       "subheader": "The page you're trying to access is only available to registered users.",
       "subheader2": "Please sign in to continue. Don’t have an account? Sign up for free."
     },
-    "user-notifications-settings": {
+    "userNotificationsSettings": {
       "general": {
-        "title": "Allgemein",
-        "subtitle": "In diesem Abschnitt können Sie Ihre Einstellungen für den Empfang von Nachrichten auswählen"
+        "title": "General",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages"
       },
-      "user-administration": {
-        "title": "Menuereiter \"Administartion\"",
-        "subtitle": "Dieser Abschnitt ist nur für Benutzer sichtbar, die ein globaler Administrator auf der Plattform sind"
+      "space": {
+        "title": "Space Settings",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are a member of",
+        "settings": {
+          "communicationUpdateSent": "Receive notification when a new update is shared with a community I am a member of",
+          "collaborationCalloutPublished": "Receive a notification when a Callout is published in a community I am a member of",
+          "collaborationCalloutContributionCreated": "Receive notification when a new contribution (whiteboard, post, link, memo etc.) is created in a community I am a member of",
+          "collaborationCalloutComment": "Receive a notification when a a comment is made on a Callout in a community I am a member of",
+          "collaborationCalloutPostContributionComment": "Receive a notification when a new comment is added to a post contribution in a community I am a member of"
+        }
       },
-      "community-administration": {
-        "title": "Öffentliche Verwaltung",
-        "subtitle": "In diesem Abschnitt können Sie Ihre Einstellungen für den Empfang von Nachrichten auswählen"
+      "spaceAdmin": {
+        "title": "Space Admin Settings",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are an admin of",
+        "settings": {
+          "communityApplicationReceived": "Receive notifications when a new application is received",
+          "communityNewMember": "Receive notifications when a new member joins the community",
+          "collaborationCalloutContributionCreated": "Receive notifications when a new callout is created",
+          "communicationMessageReceived": "Receive notifications when a new message is received"
+        }
       },
-      "user-communication": {
-        "title": "Erwähnungen und Nachrichten",
-        "subtitle": "In diesem Abschnitt können Sie Ihre Einstellungen für den Empfang von Nachrichten auswählen"
+      "organization": {
+        "title": "Organization mentions and messaging",
+        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to organizations you manage",
+        "settings": {
+          "mentioned": "Receive notifications when my organization is mentioned",
+          "messageReceived": "Receive direct messages to my organization"
+        }
       },
-      "organization-communication": {
-        "title": "Organisation erwähnt und Nachrichten",
-        "subtitle": "In diesem Abschnitt können Sie Ihre Einstellungen für den Empfang von Nachrichten auswählen"
+      "user": {
+        "title": "User mentions and messaging",
+        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to yourself.",
+        "settings": {
+          "mentioned": "Receive notifications when I am mentioned",
+          "commentReply": "Receive a notification when someone replies to my comment",
+          "messageReceived": "Receive a notification when someone sends me a direct message",
+          "copyOfMessageSent": "Receive a notification when I send a direct message"
+        }
+      },
+      "userMembership": {
+        "title": "User membership notifications",
+        "subtitle": "This section allows you to select your preferences regarding notifications related to your membership in communities.",
+        "settings": {
+          "spaceCommunityApplication": "Receive notification when I apply to join a community",
+          "spaceCommunityInvitation": "Receive a notification when someone invites you to join a community",
+          "spaceCommunityJoined": "Receive notification when I join a new Space community"
+        }
+      },
+      "platformAdmin": {
+        "title": "Platform Admin Settings",
+        "subtitle": "This section is only visible to users that are a global admin on the platform",
+        "settings": {
+          "adminUserProfileCreated": "Receive notifications when a new user signs up",
+          "adminUserProfileRemoved": "Receive notifications when a user profile is removed",
+          "adminSpaceCreated": "Receive notifications when a new space is created",
+          "adminUserGlobalRoleChanged": "Receive notifications when a user's global role is changed"
+        }
       },
       "forum": {
         "title": "Forum",
-        "subtitle": "In diesem Abschnitt können Sie Ihre Einstellungen für den Empfang von Nachrichten auswählen"
+        "subtitle": "This section allows you to select your preferences regarding activities in the Forum",
+        "settings": {
+          "forumDiscussionComment": "Receive notifications when a new comment is added to a discussion I follow",
+          "forumDiscussionCreated": "Receive notifications when a new discussion is created"
+        }
+      },
+      "virtualContributor": {
+        "title": "Virtual Contributor",
+        "subtitle": "This section allows you to select your preferences regarding activities as a virtual contributor",
+        "settings": {
+          "spaceCommunityInvitation": "Receive notifications when a VC I manage is invited to join a community"
+        }
       }
     },
     "help-dialog": {

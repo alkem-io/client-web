@@ -1147,17 +1147,17 @@
       "typeReadonly": "crwdns18682:0crwdne18682:0"
     },
     "shareSettings": {
-      "description": "crwdns18684:0crwdne18684:0",
-      "disabled": "crwdns18686:0crwdne18686:0",
+      "description": "crwdns40044:0{{elementName}}crwdne40044:0",
+      "disabled": "crwdns40046:0{{elementName}}crwdne40046:0",
       "ownedBy": {
-        "title": "crwdns18688:0crwdne18688:0"
+        "title": "crwdns40048:0{{elementName}}crwdne40048:0"
       },
       "editableBy": {
-        "title": "crwdns18690:0crwdne18690:0",
+        "title": "crwdns40050:0{{elementName}}crwdne40050:0",
         "options": {
           "CONTRIBUTORS": "crwdns28938:0crwdne28938:0",
           "ADMINS": "crwdns28940:0crwdne28940:0",
-          "OWNER": "crwdns18696:0crwdne18696:0"
+          "OWNER": "crwdns40052:0{{elementName}}crwdne40052:0"
         }
       }
     },
@@ -1417,6 +1417,10 @@
         "link": {
           "name": "crwdns37420:0crwdne37420:0",
           "url": "crwdns37422:0crwdne37422:0"
+        },
+        "memo": {
+          "name": "crwdns40198:0crwdne40198:0",
+          "placeholder": "crwdns40200:0crwdne40200:0"
         }
       },
       "template-step": {
@@ -1441,17 +1445,6 @@
     },
     "calloutEdit": {
       "titleWithType": "crwdns19060:0{{type}}crwdne19060:0"
-    },
-    "calloutTypeSelect": {
-      "title": "crwdns19062:0crwdne19062:0",
-      "label": {
-        "POST": "crwdns19064:0crwdne19064:0",
-        "POST_COLLECTION": "crwdns19066:0crwdne19066:0",
-        "WHITEBOARD_COLLECTION": "crwdns19068:0crwdne19068:0",
-        "LINK_COLLECTION": "crwdns19070:0crwdne19070:0",
-        "WHITEBOARD": "crwdns19072:0crwdne19072:0"
-      },
-      "callout-templates-library": "crwdns19074:0crwdne19074:0"
     },
     "post-creation": {
       "title": "crwdns19076:0{{calloutDisplayName}}crwdne19076:0",
@@ -1891,21 +1884,21 @@
         "delete": "crwdns19494:0crwdne19494:0"
       },
       "type": {
-        "COLLABORATION_CALLOUT_PUBLISHED": {
-          "subject": "crwdns37298:0{{spaceName}}crwdnd37298:0{{calloutName}}crwdne37298:0",
-          "description": "crwdns37300:0{{contributorName}}crwdnd37300:0{{spaceLevel}}crwdnd37300:0{{spaceName}}crwdnd37300:0{{calloutName}}crwdne37300:0"
+        "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
+          "subject": "crwdns40054:0{{spaceName}}crwdnd40054:0{{calloutName}}crwdne40054:0",
+          "description": "crwdns40056:0{{triggeredByName}}crwdnd40056:0{{spaceLevel}}crwdnd40056:0{{spaceName}}crwdnd40056:0{{calloutName}}crwdne40056:0"
         },
-        "COMMUNICATION_USER_MENTION": {
-          "subject": "crwdns19500:0{{commenterName}}crwdnd19500:0{{calloutName}}crwdne19500:0",
-          "description": "crwdns19502:0crwdne19502:0"
+        "USER_MENTIONED": {
+          "subject": "crwdns40144:0{{triggeredByName}}crwdnd40144:0{{calloutName}}crwdne40144:0",
+          "description": "crwdns40146:0crwdne40146:0"
         },
-        "COMMUNITY_NEW_MEMBER": {
-          "subject": "crwdns19504:0{{spaceName}}crwdne19504:0",
-          "description": "crwdns19506:0{{spaceName}}crwdne19506:0"
+        "USER_SPACE_COMMUNITY_JOINED": {
+          "subject": "crwdns40148:0{{spaceName}}crwdne40148:0",
+          "description": "crwdns40150:0{{spaceName}}crwdne40150:0"
         },
-        "COMMUNITY_NEW_MEMBER_ADMIN": {
-          "subject": "crwdns19508:0{{memberType}}crwdnd19508:0{{memberName}}crwdnd19508:0{{spaceName}}crwdne19508:0",
-          "description": "crwdns19510:0{{memberType}}crwdnd19510:0{{memberName}}crwdnd19510:0{{spaceName}}crwdne19510:0"
+        "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
+          "subject": "crwdns40152:0{{memberName}}crwdnd40152:0{{spaceName}}crwdne40152:0",
+          "description": "crwdns40154:0{{memberName}}crwdnd40154:0{{spaceName}}crwdne40154:0"
         }
       },
       "emptyInbox": "crwdns19512:0crwdne19512:0",
@@ -3057,30 +3050,83 @@
       "subheader": "crwdns36924:0crwdne36924:0",
       "subheader2": "crwdns36926:0crwdne36926:0"
     },
-    "user-notifications-settings": {
+    "userNotificationsSettings": {
       "general": {
-        "title": "crwdns20604:0crwdne20604:0",
-        "subtitle": "crwdns20606:0crwdne20606:0"
+        "title": "crwdns40070:0crwdne40070:0",
+        "subtitle": "crwdns40072:0crwdne40072:0"
       },
-      "user-administration": {
-        "title": "crwdns20608:0crwdne20608:0",
-        "subtitle": "crwdns20610:0crwdne20610:0"
+      "space": {
+        "title": "crwdns40074:0crwdne40074:0",
+        "subtitle": "crwdns40076:0crwdne40076:0",
+        "settings": {
+          "communicationUpdateSent": "crwdns40156:0crwdne40156:0",
+          "collaborationCalloutPublished": "crwdns40088:0crwdne40088:0",
+          "collaborationCalloutContributionCreated": "crwdns40158:0crwdne40158:0",
+          "collaborationCalloutComment": "crwdns40160:0crwdne40160:0",
+          "collaborationCalloutPostContributionComment": "crwdns40162:0crwdne40162:0"
+        }
       },
-      "community-administration": {
-        "title": "crwdns20612:0crwdne20612:0",
-        "subtitle": "crwdns20614:0crwdne20614:0"
+      "spaceAdmin": {
+        "title": "crwdns40096:0crwdne40096:0",
+        "subtitle": "crwdns40098:0crwdne40098:0",
+        "settings": {
+          "communityApplicationReceived": "crwdns40100:0crwdne40100:0",
+          "communityNewMember": "crwdns40164:0crwdne40164:0",
+          "collaborationCalloutContributionCreated": "crwdns40166:0crwdne40166:0",
+          "communicationMessageReceived": "crwdns40168:0crwdne40168:0"
+        }
       },
-      "user-communication": {
-        "title": "crwdns20616:0crwdne20616:0",
-        "subtitle": "crwdns20618:0crwdne20618:0"
+      "organization": {
+        "title": "crwdns40118:0crwdne40118:0",
+        "subtitle": "crwdns40120:0crwdne40120:0",
+        "settings": {
+          "mentioned": "crwdns40124:0crwdne40124:0",
+          "messageReceived": "crwdns40126:0crwdne40126:0"
+        }
       },
-      "organization-communication": {
-        "title": "crwdns20620:0crwdne20620:0",
-        "subtitle": "crwdns20622:0crwdne20622:0"
+      "user": {
+        "title": "crwdns40128:0crwdne40128:0",
+        "subtitle": "crwdns40130:0crwdne40130:0",
+        "settings": {
+          "mentioned": "crwdns40132:0crwdne40132:0",
+          "commentReply": "crwdns40134:0crwdne40134:0",
+          "messageReceived": "crwdns40170:0crwdne40170:0",
+          "copyOfMessageSent": "crwdns40172:0crwdne40172:0"
+        }
+      },
+      "userMembership": {
+        "title": "crwdns40174:0crwdne40174:0",
+        "subtitle": "crwdns40176:0crwdne40176:0",
+        "settings": {
+          "spaceCommunityApplication": "crwdns40178:0crwdne40178:0",
+          "spaceCommunityInvitation": "crwdns40180:0crwdne40180:0",
+          "spaceCommunityJoined": "crwdns40182:0crwdne40182:0"
+        }
+      },
+      "platformAdmin": {
+        "title": "crwdns40108:0crwdne40108:0",
+        "subtitle": "crwdns40110:0crwdne40110:0",
+        "settings": {
+          "adminUserProfileCreated": "crwdns40184:0crwdne40184:0",
+          "adminUserProfileRemoved": "crwdns40186:0crwdne40186:0",
+          "adminSpaceCreated": "crwdns40188:0crwdne40188:0",
+          "adminUserGlobalRoleChanged": "crwdns40190:0crwdne40190:0"
+        }
       },
       "forum": {
-        "title": "crwdns20624:0crwdne20624:0",
-        "subtitle": "crwdns20626:0crwdne20626:0"
+        "title": "crwdns40136:0crwdne40136:0",
+        "subtitle": "crwdns40138:0crwdne40138:0",
+        "settings": {
+          "forumDiscussionComment": "crwdns40140:0crwdne40140:0",
+          "forumDiscussionCreated": "crwdns40142:0crwdne40142:0"
+        }
+      },
+      "virtualContributor": {
+        "title": "crwdns40192:0crwdne40192:0",
+        "subtitle": "crwdns40194:0crwdne40194:0",
+        "settings": {
+          "spaceCommunityInvitation": "crwdns40196:0crwdne40196:0"
+        }
       }
     },
     "help-dialog": {

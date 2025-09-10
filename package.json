@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.109.3",
+  "version": "0.110.1",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -78,7 +78,8 @@
   },
   "resolutions": {
     "**/@emotion/styled": "^11.0.0",
-    "unified": "^11.0.5"
+    "unified": "^11.0.5",
+    "mdast-util-gfm-autolink-literal": "2.0.0"
   },
   "dependencies": {
     "@alkemio/excalidraw": "0.18.0-864353b-alkemio-5",
@@ -215,6 +216,7 @@
     "glob-parent": "^5.1.2",
     "got": "11.8.5",
     "nth-check": "^2.0.1",
-    "chokidar": "^3.5.3"
+    "chokidar": "^3.5.3",
+    "mdast-util-gfm-autolink-literal": "2.0.0"
   }
 }

@@ -1147,17 +1147,17 @@
       "typeReadonly": "Zodra een template is aangemaakt, kan het type niet worden gewijzigd. Maak dan een nieuw template aan wanneer je een ander type nodig hebt."
     },
     "shareSettings": {
-      "description": "Op basis van de instellingen van de Space waarin dit whiteboard zich bevindt, kun je bewerken met meerdere gebruikers tegelijk. Als je niet wilt dat anderen dit whiteboard bewerken, wijzig dan onderstaande instellingen.",
-      "disabled": "Op basis van de instellingen van de ruimte waarin dit Whiteboard zich bevindt, is real-time samenwerking niet ingeschakeld. Dit betekent dat maar één gebruiker tegelijk kan bewerken.",
+      "description": "Based on the settings of the Space that this {{elementName}} is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
+      "disabled": "Based on the settings of the Space that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
       "ownedBy": {
-        "title": "De eigenaar van dit whiteboard is:"
+        "title": "This {{elementName}} is owned by:"
       },
       "editableBy": {
-        "title": "Dit whiteboard kan bewerkt worden door:",
+        "title": "This {{elementName}} can be edited by:",
         "options": {
           "CONTRIBUTORS": "Iedereen die kan bijdragen in deze (Sub)Space",
           "ADMINS": "De eigenaar en de beheerders van deze (Sub)Space",
-          "OWNER": "De eigenaar van dit whiteboard"
+          "OWNER": "The owner of this {{elementName}}"
         }
       }
     },
@@ -1417,6 +1417,10 @@
         "link": {
           "name": "Oproep tot actie",
           "url": "URL"
+        },
+        "memo": {
+          "name": "Content",
+          "placeholder": "(Optional) Add some content to the memo"
         }
       },
       "template-step": {
@@ -1441,17 +1445,6 @@
     },
     "calloutEdit": {
       "titleWithType": "{{type}} aanpassen"
-    },
-    "calloutTypeSelect": {
-      "title": "Wat zou je willen toevoegen?",
-      "label": {
-        "POST": "Post",
-        "POST_COLLECTION": "Oproep voor Posts",
-        "WHITEBOARD_COLLECTION": "Oproep voor Whiteboards",
-        "LINK_COLLECTION": "Collectie van links en documenten",
-        "WHITEBOARD": "Whiteboard"
-      },
-      "callout-templates-library": "...of neem een kijkje in de bibliotheek!"
     },
     "post-creation": {
       "title": "Dien je antwoord in voor {{calloutDisplayName}}",
@@ -1891,21 +1884,21 @@
         "delete": "Verwijder meldingen"
       },
       "type": {
-        "COLLABORATION_CALLOUT_PUBLISHED": {
-          "subject": "{{spaceName}} - Nieuwe Post is gepubliceerd\"{{calloutName}}\", neem een kijke!",
-          "description": "{{contributorName}} heeft een nieuwe Post gepubliceerd in {{spaceLevel}}: {{spaceName}}, met naam: {{calloutName}}."
+        "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
+          "subject": "{{spaceName}} - New Post is published \"{{calloutName}}\", have a look!",
+          "description": "{{triggeredByName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
-        "COMMUNICATION_USER_MENTION": {
-          "subject": "{{commenterName}} heeft je genoemd in een reactie op {{calloutName}}:",
+        "USER_MENTIONED": {
+          "subject": "{{triggeredByName}} mentioned you in a comment on {{calloutName}}:",
           "description": ""
         },
-        "COMMUNITY_NEW_MEMBER": {
-          "subject": "{{spaceName}} - Welkom bij de Community!",
-          "description": "Bedankt voor het deelnemen aan {{spaceName}}!<br /> Je kunt nu beginnen bij te dragen aan de verschillende posts en whiteboards, je kennis over dit onderwerp verder verdiepen en verbinden met andere Bijdragers."
+        "USER_SPACE_COMMUNITY_JOINED": {
+          "subject": "{{spaceName}} - Welcome to the Community!",
+          "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various posts and whiteboards, further deepen your knowledge about this topic, and connect with other Contributors."
         },
-        "COMMUNITY_NEW_MEMBER_ADMIN": {
-          "subject": "{{memberType}} \"{{memberName}}\" is lid geworden van {{spaceName}}",
-          "description": "De {{memberType}} {{memberName}} is lid geworden van {{spaceName}}, waarvan je een beheerder bent."
+        "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
+          "subject": "\"{{memberName}}\" joined {{spaceName}}",
+          "description": "{{memberName}} has joined {{spaceName}}, of which you are an admin."
         }
       },
       "emptyInbox": "Geen openstaande uitnodigingen",
@@ -3048,30 +3041,83 @@
       "subheader": "De pagina die je probeert te openen, is alleen beschikbaar voor geregistreerde gebruikers.",
       "subheader2": "Log in om verder te gaan. Heb je nog geen account? Meld je gratis aan."
     },
-    "user-notifications-settings": {
+    "userNotificationsSettings": {
       "general": {
-        "title": "Algemeen",
-        "subtitle": "In deze sectie kun je jouw voorkeur aangeven met betrekking tot het ontvangen van berichten"
+        "title": "General",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages"
       },
-      "user-administration": {
-        "title": "Platform Administratie",
-        "subtitle": "Deze sectie is alleen zichtbaar voor gebruikers die Globale Beheerder zijn op het platform"
+      "space": {
+        "title": "Space Settings",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are a member of",
+        "settings": {
+          "communicationUpdateSent": "Receive notification when a new update is shared with a community I am a member of",
+          "collaborationCalloutPublished": "Receive a notification when a Callout is published in a community I am a member of",
+          "collaborationCalloutContributionCreated": "Receive notification when a new contribution (whiteboard, post, link, memo etc.) is created in a community I am a member of",
+          "collaborationCalloutComment": "Receive a notification when a a comment is made on a Callout in a community I am a member of",
+          "collaborationCalloutPostContributionComment": "Receive a notification when a new comment is added to a post contribution in a community I am a member of"
+        }
       },
-      "community-administration": {
-        "title": "Community administratie",
-        "subtitle": "In deze sectie kunt je jouw voorkeur aangeven met betrekking tot de administratie van de community"
+      "spaceAdmin": {
+        "title": "Space Admin Settings",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages from Spaces you are an admin of",
+        "settings": {
+          "communityApplicationReceived": "Receive notifications when a new application is received",
+          "communityNewMember": "Receive notifications when a new member joins the community",
+          "collaborationCalloutContributionCreated": "Receive notifications when a new callout is created",
+          "communicationMessageReceived": "Receive notifications when a new message is received"
+        }
       },
-      "user-communication": {
-        "title": "Vermeldingen en berichten",
-        "subtitle": "Hier kun je jouw voorkeur aangeven met betrekking tot het ontvangen van berichten of vermeldingen"
+      "organization": {
+        "title": "Organization mentions and messaging",
+        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to organizations you manage",
+        "settings": {
+          "mentioned": "Receive notifications when my organization is mentioned",
+          "messageReceived": "Receive direct messages to my organization"
+        }
       },
-      "organization-communication": {
-        "title": "Verwijzingen en berichten van organisatie",
-        "subtitle": "Hier kun je jouw voorkeur aangeven met betrekking tot het ontvangen van berichten of vermeldingen van organisaties die je beheert"
+      "user": {
+        "title": "User mentions and messaging",
+        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to yourself.",
+        "settings": {
+          "mentioned": "Receive notifications when I am mentioned",
+          "commentReply": "Receive a notification when someone replies to my comment",
+          "messageReceived": "Receive a notification when someone sends me a direct message",
+          "copyOfMessageSent": "Receive a notification when I send a direct message"
+        }
+      },
+      "userMembership": {
+        "title": "User membership notifications",
+        "subtitle": "This section allows you to select your preferences regarding notifications related to your membership in communities.",
+        "settings": {
+          "spaceCommunityApplication": "Receive notification when I apply to join a community",
+          "spaceCommunityInvitation": "Receive a notification when someone invites you to join a community",
+          "spaceCommunityJoined": "Receive notification when I join a new Space community"
+        }
+      },
+      "platformAdmin": {
+        "title": "Platform Admin Settings",
+        "subtitle": "This section is only visible to users that are a global admin on the platform",
+        "settings": {
+          "adminUserProfileCreated": "Receive notifications when a new user signs up",
+          "adminUserProfileRemoved": "Receive notifications when a user profile is removed",
+          "adminSpaceCreated": "Receive notifications when a new space is created",
+          "adminUserGlobalRoleChanged": "Receive notifications when a user's global role is changed"
+        }
       },
       "forum": {
         "title": "Forum",
-        "subtitle": "In deze sectie kun je jouw voorkeur aangeven om notificaties te ontvangen van het Forum"
+        "subtitle": "This section allows you to select your preferences regarding activities in the Forum",
+        "settings": {
+          "forumDiscussionComment": "Receive notifications when a new comment is added to a discussion I follow",
+          "forumDiscussionCreated": "Receive notifications when a new discussion is created"
+        }
+      },
+      "virtualContributor": {
+        "title": "Virtual Contributor",
+        "subtitle": "This section allows you to select your preferences regarding activities as a virtual contributor",
+        "settings": {
+          "spaceCommunityInvitation": "Receive notifications when a VC I manage is invited to join a community"
+        }
       }
     },
     "help-dialog": {
