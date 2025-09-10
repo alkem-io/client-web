@@ -33,12 +33,7 @@ const updateNotificationsCache = (
 };
 
 // The set of notification event types currently being retrieved
-const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [
-  NotificationEvent.UserMentioned,
-  NotificationEvent.SpaceCollaborationCalloutPublished,
-  NotificationEvent.SpaceAdminCommunityNewMember,
-  NotificationEvent.UserSpaceCommunityJoined,
-];
+const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [];
 
 export const useInAppNotifications = () => {
   const { isEnabled } = useInAppNotificationsContext();
