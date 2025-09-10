@@ -10,7 +10,6 @@ export const InAppUserSignUpWelcomeView = (notification: InAppNotificationModel)
   }
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
   };
 

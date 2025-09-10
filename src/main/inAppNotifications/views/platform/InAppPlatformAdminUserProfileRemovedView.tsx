@@ -11,8 +11,8 @@ export const InAppPlatformAdminUserProfileRemovedView = (notification: InAppNoti
 
   const notificationTextValues = {
     triggeredByName: triggeredBy?.profile?.displayName,
-    userEmail: payload?.userEmail || '',
-    userName: payload?.userDisplayName || '',
+    userEmail: payload.userEmail || '',
+    userName: payload.userDisplayName || '',
   };
 
   return <InAppNotificationBaseView notification={notification} values={notificationTextValues} url={''} />;

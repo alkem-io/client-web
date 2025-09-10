@@ -1955,12 +1955,12 @@
           "description": ""
         },
         "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
-          "subject": "{{spaceName}} - New Post is published \"{{calloutName}}\", have a look!",
-          "description": "{{triggeredByName}} published a new Post in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
+          "subject": "{{spaceName}} - New $t(common.post) is published \"{{calloutName}}\", have a look!",
+          "description": "{{triggeredByName}} published a new $t(common.post) in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
         },
         "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
           "subject": "\"{{memberName}}\" joined {{spaceName}}",
-          "description": "{{memberName}} has joined {{spaceName}}, of which you are an admin."
+          "description": "{{memberName}} has joined {{spaceName}}, of which you are an $t(common.admin)."
         },
         "SPACE_COMMUNICATION_UPDATE": {
           "subject": "{{triggeredByName}} shared an update in {{spaceName}}",
@@ -1996,6 +1996,10 @@
         },
         "ORGANIZATION_MESSAGE_SENDER": {
           "subject": "You sent a message to {{organizationName}}",
+          "description": ""
+        },
+        "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an admin",
           "description": ""
         },
         "PLATFORM_FORUM_DISCUSSION_CREATED": {
@@ -3293,7 +3297,7 @@
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
-      "login-flow-account-exists": "This email is already associated with an account. If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
+      "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
       "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "claim-missing": "You haven't verified your Vidua identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Pick a password for your $t(common.account)"

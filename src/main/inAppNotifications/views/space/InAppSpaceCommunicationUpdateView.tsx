@@ -11,10 +11,9 @@ export const InAppSpaceCommunicationUpdateView = (notification: InAppNotificatio
   const space = payload.space;
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     spaceName: space?.about?.profile?.displayName,
-    update: payload?.update || '',
+    update: payload.update || '',
   };
 
   return (

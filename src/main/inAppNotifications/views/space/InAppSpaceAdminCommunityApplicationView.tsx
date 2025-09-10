@@ -11,7 +11,6 @@ export const InAppSpaceAdminCommunityApplicationView = (notification: InAppNotif
   const space = payload.space;
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     spaceName: space?.about?.profile?.displayName,
   };

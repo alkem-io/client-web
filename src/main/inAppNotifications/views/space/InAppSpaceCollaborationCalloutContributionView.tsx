@@ -14,7 +14,6 @@ export const InAppSpaceCollaborationCalloutContributionView = (notification: InA
   }
 
   const notificationTextValues = {
-    defaultValue: '',
     spaceName: inAppPayloadSpaceCollaborationCallout.space.about.profile.displayName,
     spaceLevel: t(`common.space-level.${inAppPayloadSpaceCollaborationCallout.space.level}`),
     calloutName: inAppPayloadSpaceCollaborationCallout.callout.framing.profile.displayName,

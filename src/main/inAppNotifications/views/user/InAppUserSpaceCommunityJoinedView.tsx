@@ -10,8 +10,7 @@ export const InAppUserSpaceCommunityJoinedView = (notification: InAppNotificatio
   }
 
   const notificationTextValues = {
-    defaultValue: '',
-    spaceName: payload?.space?.about?.profile?.displayName,
+    spaceName: payload.space?.about?.profile?.displayName,
   };
 
   return (

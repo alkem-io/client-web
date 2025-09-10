@@ -11,7 +11,6 @@ export const InAppUserCommentReplyView = (notification: InAppNotificationModel) 
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     parentName: messageDetails?.parent?.displayName,
     comment: messageDetails?.message,

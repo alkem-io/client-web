@@ -11,7 +11,6 @@ export const InAppSpaceCommunicationMessageSenderView = (notification: InAppNoti
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
-    defaultValue: '',
     triggeredByName: triggeredBy?.profile?.displayName,
     spaceName: messageDetails?.parent?.displayName,
     message: messageDetails?.message,
