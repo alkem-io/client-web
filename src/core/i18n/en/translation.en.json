@@ -3008,7 +3008,7 @@
     "recovery": {
       "header": "Password recovery",
       "message": {
-        "initial": "Please enter your email address below to receive a recovery code that will allow to reset your password."
+        "initial": "Please enter your email address below to receive a recovery {{type}} that will allow to reset your password."
       }
     },
     "verification": {
