@@ -33,17 +33,9 @@ export const InAppNotificationsDialog = () => {
           </Tooltip>
         }
       >
-        {t('common.notifications')}
+        {t('common.Notifications')}
       </DialogHeader>
-      <DialogContent
-        sx={{
-          padding: 0,
-          maxHeight: '60vh',
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+      <DialogContent sx={{ padding: 0 }}>
         {isOpen && <InAppNotificationsList />}
         <InAppNotificationSubscriber />
       </DialogContent>
