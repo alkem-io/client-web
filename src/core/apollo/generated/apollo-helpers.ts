@@ -3994,6 +3994,7 @@ export type SubscriptionKeySpecifier = (
   | 'calloutPostCreated'
   | 'forumDiscussionUpdated'
   | 'inAppNotificationReceived'
+  | 'notificationsUnreadCount'
   | 'profileVerifiedCredential'
   | 'roomEvents'
   | 'subspaceCreated'
@@ -4005,6 +4006,7 @@ export type SubscriptionFieldPolicy = {
   calloutPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   forumDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   inAppNotificationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;

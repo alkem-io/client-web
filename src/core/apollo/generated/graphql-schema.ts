@@ -7010,6 +7010,8 @@ export type Subscription = {
   forumDiscussionUpdated: Discussion;
   /** New in-app notification received for the currently authenticated user. */
   inAppNotificationReceived: InAppNotification;
+  /** Counter of unread in-app notifications for the currently authenticated user. */
+  notificationsUnreadCount: Scalars['Float']['output'];
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
   /** Receive Room event */
@@ -29920,6 +29922,10 @@ export type GuidanceRoomMessagesQuery = {
       | undefined;
   };
 };
+
+export type NotificationsUnreadCountSubscriptionVariables = Exact<{ [key: string]: never }>;
+
+export type NotificationsUnreadCountSubscription = { __typename?: 'Subscription'; notificationsUnreadCount: number };
 
 export type InAppNotificationReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
 

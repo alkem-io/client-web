@@ -28,6 +28,7 @@ import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotif
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
 import { VersionHandling } from './main/versionHandling';
 import { rem } from '@/core/ui/typography/utils';
+import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 
 // MARKDOWN_CLASS_NAME used in the styles below
 const globalStyles = (theme: Theme) => ({
@@ -116,6 +117,7 @@ const Root: FC = () => {
                                     <ApmUserSetter />
                                     <ScrollToTop />
                                     <InAppNotificationsDialog />
+                                    <InAppNotificationCountSubscriber />
                                     <VersionHandling />
                                     <NotFoundErrorBoundary
                                       errorComponent={
