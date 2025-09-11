@@ -10,7 +10,7 @@ export const InAppUserMessageSenderView = (notification: InAppNotificationModel)
   }
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
+    triggeredByName: triggeredBy.profile.displayName,
     comment: payload.userMessage,
     receiverName: payload.user?.profile?.displayName || '',
   };

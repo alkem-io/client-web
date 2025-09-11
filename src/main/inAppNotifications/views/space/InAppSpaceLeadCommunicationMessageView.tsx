@@ -10,7 +10,7 @@ export const InAppSpaceLeadCommunicationMessageView = (notification: InAppNotifi
   }
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
+    triggeredByName: triggeredBy.profile.displayName,
     spaceName: payload.space?.about?.profile?.displayName || '',
     comment: payload.spaceCommunicationMessage,
   };

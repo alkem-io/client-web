@@ -1,7 +1,14 @@
-query InAppNotifications {
+query InAppNotifications($types: [NotificationEvent!], $first: Int, $after: UUID) {
   me {
-    notifications {
-      ...InAppNotificationAllTypes
+    notifications(filter: { types: $types }, first: $first, after: $after) {
+      inAppNotifications {
+        ...InAppNotificationAllTypes
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      total
     }
   }
 }
