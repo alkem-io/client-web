@@ -7,6 +7,7 @@ import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import { InAppNotificationsList } from './InAppNotificationsList';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
+import { InAppNotificationSubscriber } from '@/main/inAppNotifications/inAppNotificationSubscriber';
 
 export const InAppNotificationsDialog = () => {
   const { t } = useTranslation();
@@ -44,6 +45,7 @@ export const InAppNotificationsDialog = () => {
         }}
       >
         {isOpen && <InAppNotificationsList />}
+        <InAppNotificationSubscriber />
       </DialogContent>
     </DialogWithGrid>
   );

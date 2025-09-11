@@ -10,7 +10,7 @@ import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import { ApolloCache } from '@apollo/client';
 import { InAppNotificationModel } from './model/InAppNotificationModel';
 import { mapInAppNotificationToModel } from './util/mapInAppNotificationToModel';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useEffect, useRef } from 'react';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 
 export const IN_APP_NOTIFICATIONS_PAGE_SIZE = 10;
@@ -36,19 +36,28 @@ const updateNotificationsCache = (
 export const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [];
 
 export const useInAppNotifications = () => {
-  const { isEnabled } = useInAppNotificationsContext();
+  const { isEnabled, isOpen } = useInAppNotificationsContext();
+  const prevIsOpenRef = useRef(isOpen);
 
   const [updateState] = useUpdateNotificationStateMutation();
   const [markAsRead] = useMarkNotificationsAsReadMutation();
   const [getNotificationIds] = useInAppNotificationIdsLazyQuery();
 
-  const { data, loading, error, fetchMore } = useInAppNotificationsQuery({
+  const { data, loading, error, fetchMore, refetch } = useInAppNotificationsQuery({
     variables: {
       types: NOTIFICATION_EVENT_TYPES,
       first: IN_APP_NOTIFICATIONS_PAGE_SIZE,
     },
-    skip: !isEnabled,
+    skip: !isEnabled || !isOpen,
   });
+
+  // Refetch notifications only when the dialog is opened (false -> true transition)
+  useEffect(() => {
+    if (isEnabled && isOpen && !prevIsOpenRef.current && refetch) {
+      refetch();
+    }
+    prevIsOpenRef.current = isOpen;
+  }, [isOpen, isEnabled, refetch]);
 
   const { data: unreadCountData } = useInAppNotificationsUnreadCountQuery({
     variables: {
