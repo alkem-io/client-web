@@ -11,7 +11,7 @@ export const InAppVirtualContributorAdminSpaceCommunityInvitationView = (notific
   }
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
+    triggeredByName: triggeredBy.profile.displayName,
     spaceName: payload.space?.about?.profile?.displayName,
     contributorName: payload.contributor?.profile?.displayName,
   };

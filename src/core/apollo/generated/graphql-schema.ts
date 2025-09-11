@@ -2833,7 +2833,7 @@ export type InAppNotificationPayloadPlatformUser = InAppNotificationPayload & {
 export type InAppNotificationPayloadPlatformUserMessageRoom = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
   /** The details of the message. */
-  messageDetails: MessageDetails;
+  messageDetails?: Maybe<MessageDetails>;
   /** The payload type. */
   type: NotificationEventPayload;
   /** The User for the message. */
@@ -2873,7 +2873,7 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutComment = InAppNoti
   /** The Callout that was published. */
   callout?: Maybe<Callout>;
   /** The details of the message. */
-  messageDetails: MessageDetails;
+  messageDetails?: Maybe<MessageDetails>;
   /** The Space where the comment was made. */
   space?: Maybe<Space>;
   /** The payload type. */
@@ -2885,7 +2885,7 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostComment = InApp
   /** The Callout that was published. */
   callout?: Maybe<Callout>;
   /** The details of the message. */
-  messageDetails: MessageDetails;
+  messageDetails?: Maybe<MessageDetails>;
   /** The Space where the comment was made. */
   space?: Maybe<Space>;
   /** The payload type. */
@@ -7011,7 +7011,7 @@ export type Subscription = {
   /** New in-app notification received for the currently authenticated user. */
   inAppNotificationReceived: InAppNotification;
   /** Counter of unread in-app notifications for the currently authenticated user. */
-  notificationsUnreadCount: Scalars['Float']['output'];
+  notificationsUnreadCount: Scalars['Int']['output'];
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
   /** Receive Room event */
@@ -30100,12 +30100,14 @@ export type InAppNotificationReceivedSubscription = {
       | {
           __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
           type: NotificationEventPayload;
-          messageDetails: {
-            __typename?: 'MessageDetails';
-            message: string;
-            parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-            room: { __typename?: 'Room'; id: string };
-          };
+          messageDetails?:
+            | {
+                __typename?: 'MessageDetails';
+                message: string;
+                parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+                room: { __typename?: 'Room'; id: string };
+              }
+            | undefined;
         }
       | {
           __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
@@ -30229,12 +30231,14 @@ export type InAppNotificationReceivedSubscription = {
       | {
           __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
           type: NotificationEventPayload;
-          messageDetails: {
-            __typename?: 'MessageDetails';
-            message: string;
-            parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-            room: { __typename?: 'Room'; id: string };
-          };
+          messageDetails?:
+            | {
+                __typename?: 'MessageDetails';
+                message: string;
+                parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+                room: { __typename?: 'Room'; id: string };
+              }
+            | undefined;
           space?:
             | {
                 __typename?: 'Space';
@@ -30297,12 +30301,14 @@ export type InAppNotificationReceivedSubscription = {
       | {
           __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
           type: NotificationEventPayload;
-          messageDetails: {
-            __typename?: 'MessageDetails';
-            message: string;
-            parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-            room: { __typename?: 'Room'; id: string };
-          };
+          messageDetails?:
+            | {
+                __typename?: 'MessageDetails';
+                message: string;
+                parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+                room: { __typename?: 'Room'; id: string };
+              }
+            | undefined;
           space?:
             | {
                 __typename?: 'Space';
@@ -31103,12 +31109,14 @@ export type InAppNotificationsQuery = {
           | {
               __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
               type: NotificationEventPayload;
-              messageDetails: {
-                __typename?: 'MessageDetails';
-                message: string;
-                parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-                room: { __typename?: 'Room'; id: string };
-              };
+              messageDetails?:
+                | {
+                    __typename?: 'MessageDetails';
+                    message: string;
+                    parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+                    room: { __typename?: 'Room'; id: string };
+                  }
+                | undefined;
             }
           | {
               __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
@@ -31232,12 +31240,14 @@ export type InAppNotificationsQuery = {
           | {
               __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
               type: NotificationEventPayload;
-              messageDetails: {
-                __typename?: 'MessageDetails';
-                message: string;
-                parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-                room: { __typename?: 'Room'; id: string };
-              };
+              messageDetails?:
+                | {
+                    __typename?: 'MessageDetails';
+                    message: string;
+                    parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+                    room: { __typename?: 'Room'; id: string };
+                  }
+                | undefined;
               space?:
                 | {
                     __typename?: 'Space';
@@ -31300,12 +31310,14 @@ export type InAppNotificationsQuery = {
           | {
               __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
               type: NotificationEventPayload;
-              messageDetails: {
-                __typename?: 'MessageDetails';
-                message: string;
-                parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-                room: { __typename?: 'Room'; id: string };
-              };
+              messageDetails?:
+                | {
+                    __typename?: 'MessageDetails';
+                    message: string;
+                    parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+                    room: { __typename?: 'Room'; id: string };
+                  }
+                | undefined;
               space?:
                 | {
                     __typename?: 'Space';
@@ -32086,12 +32098,14 @@ export type InAppNotificationAllTypesFragment = {
     | {
         __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
         type: NotificationEventPayload;
-        messageDetails: {
-          __typename?: 'MessageDetails';
-          message: string;
-          parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-          room: { __typename?: 'Room'; id: string };
-        };
+        messageDetails?:
+          | {
+              __typename?: 'MessageDetails';
+              message: string;
+              parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+              room: { __typename?: 'Room'; id: string };
+            }
+          | undefined;
       }
     | {
         __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
@@ -32215,12 +32229,14 @@ export type InAppNotificationAllTypesFragment = {
     | {
         __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
         type: NotificationEventPayload;
-        messageDetails: {
-          __typename?: 'MessageDetails';
-          message: string;
-          parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-          room: { __typename?: 'Room'; id: string };
-        };
+        messageDetails?:
+          | {
+              __typename?: 'MessageDetails';
+              message: string;
+              parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+              room: { __typename?: 'Room'; id: string };
+            }
+          | undefined;
         space?:
           | {
               __typename?: 'Space';
@@ -32283,12 +32299,14 @@ export type InAppNotificationAllTypesFragment = {
     | {
         __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
         type: NotificationEventPayload;
-        messageDetails: {
-          __typename?: 'MessageDetails';
-          message: string;
-          parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-          room: { __typename?: 'Room'; id: string };
-        };
+        messageDetails?:
+          | {
+              __typename?: 'MessageDetails';
+              message: string;
+              parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+              room: { __typename?: 'Room'; id: string };
+            }
+          | undefined;
         space?:
           | {
               __typename?: 'Space';
@@ -33046,12 +33064,14 @@ export type SpaceNotificationFragment = {
 
 export type InAppNotificationUserMentionedFragment = {
   __typename?: 'InAppNotificationPayloadPlatformUserMessageRoom';
-  messageDetails: {
-    __typename?: 'MessageDetails';
-    message: string;
-    parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-    room: { __typename?: 'Room'; id: string };
-  };
+  messageDetails?:
+    | {
+        __typename?: 'MessageDetails';
+        message: string;
+        parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+        room: { __typename?: 'Room'; id: string };
+      }
+    | undefined;
 };
 
 export type InAppNotificationPayloadOrganizationMessageDirectFragment = {
@@ -33537,12 +33557,14 @@ export type InAppNotificationPayloadUserMessageDirectFragment = {
 
 export type InAppNotificationPayloadSpaceCollaborationCalloutCommentFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutComment';
-  messageDetails: {
-    __typename?: 'MessageDetails';
-    message: string;
-    parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-    room: { __typename?: 'Room'; id: string };
-  };
+  messageDetails?:
+    | {
+        __typename?: 'MessageDetails';
+        message: string;
+        parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+        room: { __typename?: 'Room'; id: string };
+      }
+    | undefined;
   space?:
     | {
         __typename?: 'Space';
@@ -33593,12 +33615,14 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutCommentFragment = {
 
 export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutPostComment';
-  messageDetails: {
-    __typename?: 'MessageDetails';
-    message: string;
-    parent: { __typename?: 'MessageParent'; displayName: string; url: string };
-    room: { __typename?: 'Room'; id: string };
-  };
+  messageDetails?:
+    | {
+        __typename?: 'MessageDetails';
+        message: string;
+        parent: { __typename?: 'MessageParent'; displayName: string; url: string };
+        room: { __typename?: 'Room'; id: string };
+      }
+    | undefined;
   space?:
     | {
         __typename?: 'Space';

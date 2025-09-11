@@ -11,8 +11,8 @@ export const InAppUserMentionView = (notification: InAppNotificationModel) => {
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
-    calloutName: messageDetails?.parent?.displayName,
+    triggeredByName: triggeredBy.profile.displayName,
+    calloutName: messageDetails.parent?.displayName,
     comment: messageDetails?.message,
   };
 
@@ -20,7 +20,7 @@ export const InAppUserMentionView = (notification: InAppNotificationModel) => {
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.messageDetails?.parent?.url}
+      url={messageDetails.parent?.url}
     />
   );
 };

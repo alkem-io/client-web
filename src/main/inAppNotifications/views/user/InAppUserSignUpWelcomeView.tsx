@@ -10,14 +10,14 @@ export const InAppUserSignUpWelcomeView = (notification: InAppNotificationModel)
   }
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
+    triggeredByName: triggeredBy.profile.displayName,
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={triggeredBy?.profile?.url}
+      url={triggeredBy.profile.url}
     />
   );
 };
