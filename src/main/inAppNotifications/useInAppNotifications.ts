@@ -1,7 +1,6 @@
 import { NotificationEventInAppState, NotificationEvent } from '@/core/apollo/generated/graphql-schema';
 import {
   useInAppNotificationsQuery,
-  useInAppNotificationIdsLazyQuery,
   useInAppNotificationsUnreadCountQuery,
   useUpdateNotificationStateMutation,
   useMarkNotificationsAsReadMutation,
@@ -41,7 +40,6 @@ export const useInAppNotifications = () => {
 
   const [updateState] = useUpdateNotificationStateMutation();
   const [markAsRead] = useMarkNotificationsAsReadMutation();
-  const [getNotificationIds] = useInAppNotificationIdsLazyQuery();
 
   const { data, loading, error, fetchMore, refetch } = useInAppNotificationsQuery({
     variables: {
@@ -158,41 +156,21 @@ export const useInAppNotifications = () => {
 
   const markNotificationsAsRead = useCallback(async () => {
     try {
-      // First, get all notification IDs to find unread ones
-      const { data: idsData } = await getNotificationIds({
-        variables: {
-          types: NOTIFICATION_EVENT_TYPES,
-        },
-      });
-
-      const unreadIds =
-        idsData?.me?.notifications?.inAppNotifications
-          ?.filter(notification => notification.state === NotificationEventInAppState.Unread)
-          ?.map(notification => notification.id) ?? [];
-
-      if (unreadIds.length === 0) {
-        return;
-      }
-
       await markAsRead({
         variables: {
-          notificationIds: unreadIds,
+          notificationIds: [], // empty array means all unread
         },
-        update: (cache, result) => {
+        update: (_, result) => {
           if (result?.data?.markNotificationsAsRead) {
-            // Update individual notification objects in the cache
-            updateNotificationsCache(cache, unreadIds, NotificationEventInAppState.Read);
-
-            // Also refetch the main query to ensure UI consistency
-            cache.evict({ fieldName: 'notifications' });
-            cache.gc();
+            // far simpler than updating the cache manually
+            refetch?.();
           }
         },
       });
     } catch (error) {
       console.error('Failed to mark notifications as read:', error);
     }
-  }, [markAsRead, getNotificationIds]);
+  }, [markAsRead]);
 
   return {
     notificationsInApp,

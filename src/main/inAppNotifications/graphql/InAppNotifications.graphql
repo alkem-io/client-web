@@ -13,17 +13,6 @@ query InAppNotifications($types: [NotificationEvent!], $first: Int, $after: UUID
   }
 }
 
-query InAppNotificationIds($types: [NotificationEvent!]) {
-  me {
-    notifications(filter: { types: $types }) {
-      inAppNotifications {
-        id
-        state
-      }
-    }
-  }
-}
-
 mutation UpdateNotificationState($ID: UUID!, $state: NotificationEventInAppState!) {
   updateNotificationState(notificationData: { ID: $ID, state: $state })
 }

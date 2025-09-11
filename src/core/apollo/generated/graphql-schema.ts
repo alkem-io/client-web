@@ -4311,9 +4311,9 @@ export type Mutation = {
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
-  /** Mark multiple notifications as read. */
+  /** Mark multiple notifications as read. If no IDs are provided, marks all user notifications as read. */
   markNotificationsAsRead: Scalars['Boolean']['output'];
-  /** Mark multiple notifications as unread. */
+  /** Mark multiple notifications as unread. If no IDs are provided, marks all user notifications as unread. */
   markNotificationsAsUnread: Scalars['Boolean']['output'];
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String']['output'];
@@ -31897,21 +31897,6 @@ export type InAppNotificationsQuery = {
             };
       }>;
       pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
-    };
-  };
-};
-
-export type InAppNotificationIdsQueryVariables = Exact<{
-  types?: InputMaybe<Array<NotificationEvent> | NotificationEvent>;
-}>;
-
-export type InAppNotificationIdsQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    notifications: {
-      __typename?: 'PaginatedInAppNotifications';
-      inAppNotifications: Array<{ __typename?: 'InAppNotification'; id: string; state: NotificationEventInAppState }>;
     };
   };
 };
