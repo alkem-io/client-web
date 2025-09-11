@@ -11,16 +11,16 @@ export const InAppUserCommentReplyView = (notification: InAppNotificationModel) 
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
-    parentName: messageDetails?.parent?.displayName,
-    comment: messageDetails?.message,
+    triggeredByName: triggeredBy.profile.displayName,
+    parentName: messageDetails.parent?.displayName,
+    comment: messageDetails.message,
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.messageDetails?.parent?.url}
+      url={messageDetails.parent?.url}
     />
   );
 };

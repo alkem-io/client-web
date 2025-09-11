@@ -1931,7 +1931,7 @@
           "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various $t(common.posts) and $t(common.whiteboards), further deepen your knowledge about this topic, and connect with other Contributors."
         },
         "USER_COMMENT_REPLY": {
-          "subject": "{{triggeredByName}} commented on your post {{parentName}}",
+          "subject": "{{triggeredByName}} replied to your comment {{parentName}}",
           "description": ""
         },
         "USER_SPACE_COMMUNITY_INVITATION": {

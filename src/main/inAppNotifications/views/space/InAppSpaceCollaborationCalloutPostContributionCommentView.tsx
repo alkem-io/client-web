@@ -12,9 +12,9 @@ export const InAppSpaceCollaborationCalloutPostContributionCommentView = (notifi
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
-    contributionName: messageDetails?.parent?.displayName,
-    comment: messageDetails?.message,
+    triggeredByName: triggeredBy.profile.displayName,
+    contributionName: messageDetails.parent?.displayName,
+    comment: messageDetails.message,
     spaceName: payload.space?.about?.profile?.displayName || '',
   };
 
@@ -22,7 +22,7 @@ export const InAppSpaceCollaborationCalloutPostContributionCommentView = (notifi
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={messageDetails?.parent?.url}
+      url={messageDetails.parent?.url}
     />
   );
 };

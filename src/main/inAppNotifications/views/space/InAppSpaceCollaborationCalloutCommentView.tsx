@@ -12,17 +12,17 @@ export const InAppSpaceCollaborationCalloutCommentView = (notification: InAppNot
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
-    calloutName: messageDetails?.parent?.displayName,
+    triggeredByName: triggeredBy.profile.displayName,
+    calloutName: messageDetails.parent?.displayName,
     spaceName: payload.space?.about?.profile?.displayName,
-    comment: messageDetails?.message,
+    comment: messageDetails.message,
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.messageDetails?.parent?.url}
+      url={messageDetails.parent?.url}
     />
   );
 };

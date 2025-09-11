@@ -11,16 +11,16 @@ export const InAppSpaceCommunicationMessageSenderView = (notification: InAppNoti
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
-    spaceName: messageDetails?.parent?.displayName,
-    message: messageDetails?.message,
+    triggeredByName: triggeredBy.profile.displayName,
+    spaceName: messageDetails.parent?.displayName,
+    message: messageDetails.message,
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.messageDetails?.parent?.url}
+      url={messageDetails.parent?.url}
     />
   );
 };

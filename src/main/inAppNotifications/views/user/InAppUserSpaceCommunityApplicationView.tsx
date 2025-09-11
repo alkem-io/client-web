@@ -11,15 +11,15 @@ export const InAppUserSpaceCommunityApplicationView = (notification: InAppNotifi
   const space = payload.space;
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
-    spaceName: space?.about?.profile?.displayName,
+    triggeredByName: triggeredBy.profile.displayName,
+    spaceName: space.about?.profile?.displayName,
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.space?.about?.profile?.url}
+      url={payload.space.about?.profile?.url}
     />
   );
 };
