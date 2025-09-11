@@ -13,7 +13,7 @@ import { mapInAppNotificationToModel } from './util/mapInAppNotificationToModel'
 import { useMemo, useCallback } from 'react';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 
-const IN_APP_NOTIFICATIONS_PAGE_SIZE = 10;
+export const IN_APP_NOTIFICATIONS_PAGE_SIZE = 10;
 
 // Update the cache as refetching all could be expensive
 const updateNotificationsCache = (
@@ -33,7 +33,7 @@ const updateNotificationsCache = (
 };
 
 // The set of notification event types currently being retrieved
-const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [];
+export const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [];
 
 export const useInAppNotifications = () => {
   const { isEnabled } = useInAppNotificationsContext();
