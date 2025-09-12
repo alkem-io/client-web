@@ -114,10 +114,9 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
                 readOnlyAllowedTypes: !createMode,
                 temporaryLocation: createMode,
                 readOnlyContributions: true,
-                // In template mode, only allow None framing type, disable all others
-                disableWhiteboards: true,
-                disableMemos: true,
-                disableLinks: true,
+                disableWhiteboards: !createMode,
+                disableMemos: !createMode,
+                disableLinks: !createMode,
               }}
               onChange={calloutFormValues => {
                 setFieldValue('callout', calloutFormValues);
