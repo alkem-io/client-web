@@ -41,7 +41,7 @@ const InnovationPackProfilePage = () => {
     <>
       <InnovationPackProfileLayout innovationPack={innovationPack} showSettings={canUpdate} loading={loading}>
         <PageContent>
-          <PageContentColumn columns={12}>
+          <PageContentColumn columns={3}>
             <PageContentBlock sx={{ flexDirection: 'row' }}>
               <GridItem columns={6}>
                 <Gutters disablePadding>
@@ -73,6 +73,8 @@ const InnovationPackProfilePage = () => {
                 </Box>
               </GridItem>
             </PageContentBlock>
+          </PageContentColumn>
+          <PageContentColumn columns={9}>
             {loading && <Loading />}
             {!loading && templatesSetId && (
               <TemplatesAdmin templatesSetId={templatesSetId} templateId={templateId} baseUrl={baseUrl} />
