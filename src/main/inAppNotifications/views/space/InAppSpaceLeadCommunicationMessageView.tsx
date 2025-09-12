@@ -19,7 +19,7 @@ export const InAppSpaceLeadCommunicationMessageView = (notification: InAppNotifi
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.space?.about?.profile?.url}
+      url={triggeredBy.profile.url}
     />
   );
 };
