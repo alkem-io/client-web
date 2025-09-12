@@ -40,11 +40,13 @@ const useRestrictedRedirect = <Data extends {}>(
       return;
     }
 
+    const privileges = data ? readPrivileges(data) : undefined;
+
     if (error && isApolloForbiddenError(error)) {
       navigate(redirectUrl, navigateOptions);
     }
 
-    if (data && !readPrivileges(data)?.includes(requiredPrivilege)) {
+    if (data && !privileges?.includes(requiredPrivilege)) {
       navigate(redirectUrl, navigateOptions);
     }
   }, [data, error, skip]);
