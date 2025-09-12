@@ -142,6 +142,11 @@ const DashboardNavigationItemView = ({
           square
           sx={{
             ...getIndentStyle(level, compact),
+            '&.Mui-focusVisible': {
+              outline: '2px solid',
+              outlineColor: 'rgba(236, 57, 141, 0.65)',
+              outlineOffset: '-2px',
+            },
           }}
           onClick={onClick}
         >

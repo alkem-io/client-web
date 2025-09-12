@@ -289,7 +289,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     return emptyResult;
   }, [urlResolverData, urlResolverLoading]);
 
-  return <UrlResolverContext.Provider value={value}>{children}</UrlResolverContext.Provider>;
+  return <UrlResolverContext value={value}>{children}</UrlResolverContext>;
 };
 
 export { UrlResolverProvider, UrlResolverContext };

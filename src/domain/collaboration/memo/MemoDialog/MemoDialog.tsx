@@ -134,7 +134,12 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
         </Box>
       </DialogContent>
       <DialogFooter>
-        <MemoFooter memoUrl={memo?.profile.url} createdBy={memo?.createdBy} collaborationState={collaborationState} />
+        <MemoFooter
+          memoUrl={memo?.profile.url}
+          createdBy={memo?.createdBy}
+          collaborationState={collaborationState}
+          contentUpdatePolicy={memo?.contentUpdatePolicy}
+        />
       </DialogFooter>
     </DialogWithGrid>
   );

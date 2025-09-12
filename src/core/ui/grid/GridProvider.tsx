@@ -16,7 +16,7 @@ const GridProvider = ({ columns, force = false, children }: PropsWithChildren<Gr
     };
   }, [columns, force, parentGridContext]);
 
-  return <GridContext.Provider value={gridProps}>{children}</GridContext.Provider>;
+  return <GridContext value={gridProps}>{children}</GridContext>;
 };
 
 export default GridProvider;

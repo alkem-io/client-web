@@ -7,7 +7,7 @@ interface AcceptTermsContextProps extends PropsWithChildren {
 export const AcceptTermsReactContext = createContext(false);
 
 export const AcceptTermsContext: FC<AcceptTermsContextProps> = ({ hasAcceptedTerms, children }) => {
-  return <AcceptTermsReactContext.Provider value={hasAcceptedTerms}>{children}</AcceptTermsReactContext.Provider>;
+  return <AcceptTermsReactContext value={hasAcceptedTerms}>{children}</AcceptTermsReactContext>;
 };
 
 export const useHasAcceptedTerms = () => useContext(AcceptTermsReactContext);

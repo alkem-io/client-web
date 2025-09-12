@@ -44,7 +44,7 @@ export const SentryTransactionScopeContextProvider = ({ children }: PropsWithChi
 
   const api = useMemo<TransactionScopeStack>(() => ({ push, pop }), []);
 
-  return <TransactionScopeContext.Provider value={api}>{children}</TransactionScopeContext.Provider>;
+  return <TransactionScopeContext value={api}>{children}</TransactionScopeContext>;
 };
 
 interface UseTransactionScopeOptions {
