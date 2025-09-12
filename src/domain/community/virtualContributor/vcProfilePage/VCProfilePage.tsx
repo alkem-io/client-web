@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import VCPageLayout from '../layout/VCPageLayout';
 import VCProfilePageView from './VCProfilePageView';
@@ -10,11 +10,15 @@ import {
 import Loading from '@/core/ui/loading/Loading';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
-import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { isApolloNotFoundError, isApolloForbiddenError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { AiPersonaBodyOfKnowledgeType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
 import { createVirtualContributorModelFull } from '../utils/createVirtualContributorModelFull';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { useLocation } from 'react-router-dom';
+import { AUTH_REQUIRED_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { buildReturnUrlParam } from '@/main/routing/urlBuilders';
+import useNavigate from '@/core/routing/useNavigate';
 
 /**
  * children will have the virtual contributor data available if it is loaded
@@ -35,6 +39,9 @@ type VCProfilePageProps = {
 export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePageProps) => {
   const { t } = useTranslation();
   const { vcId, loading: urlResolverLoading } = useUrlResolver();
+  const { isAuthenticated, loading: authLoading } = useAuthenticationContext();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const { data, loading, error } = useVirtualContributorProfileWithModelCardQuery({
     variables: {
@@ -65,15 +72,52 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
     skip: !bokId || !isBokSpace || !hasSpaceProfileReadAccess,
   });
 
-  useRestrictedRedirect(
-    { data, error, skip: urlResolverLoading || loading },
-    data => data.lookup.virtualContributor?.authorization?.myPrivileges,
-    {
-      requiredPrivilege: AuthorizationPrivilege.Read,
+  // Custom authentication and authorization logic
+  useEffect(() => {
+    if (authLoading || urlResolverLoading || loading) {
+      return; // Still loading, don't redirect yet
     }
-  );
 
-  if (urlResolverLoading || loading || !vcId) {
+    console.log('🔍 VCProfilePage authorization check:', {
+      hasError: !!error,
+      errorMessage: error?.message,
+      errorGraphQLErrors: error?.graphQLErrors,
+      errorNetworkError: error?.networkError,
+      isApolloForbiddenError: error ? isApolloForbiddenError(error) : false,
+      hasData: !!data,
+      isAuthenticated,
+      pathname,
+    });
+
+    const privileges = data?.lookup.virtualContributor?.authorization?.myPrivileges;
+    const hasReadPrivilege = privileges?.includes(AuthorizationPrivilege.Read);
+
+    // Check for authorization errors - either Apollo forbidden error or authorization message patterns
+    const isAuthorizationError =
+      error &&
+      (isApolloForbiddenError(error) ||
+        error.message?.includes('Authorization: unable to grant') ||
+        error.message?.includes('does not have credentials that grant'));
+
+    // If there's an authorization error or the user doesn't have READ privileges
+    if (isAuthorizationError || (data && !hasReadPrivilege)) {
+      console.log('🔍 VCProfilePage: Access denied, redirecting...', {
+        reason: error ? 'Authorization error' : 'Missing READ privilege',
+        isAuthenticated,
+        redirectTarget: !isAuthenticated ? '/required' : '/restricted',
+      });
+
+      if (!isAuthenticated) {
+        // For unauthenticated users, redirect to authentication required page
+        navigate(`${AUTH_REQUIRED_PATH}${buildReturnUrlParam(pathname)}`);
+      } else {
+        // For authenticated users without access, redirect to restricted page
+        navigate(`/restricted?origin=${encodeURI(pathname)}`);
+      }
+    }
+  }, [data, error, authLoading, urlResolverLoading, loading, isAuthenticated, pathname, navigate]);
+
+  if (authLoading || urlResolverLoading || loading || !vcId) {
     return (
       <Loading text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.title') })} />
     );

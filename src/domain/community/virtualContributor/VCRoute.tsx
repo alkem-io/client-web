@@ -27,5 +27,4 @@ export const VCRoute = () => {
     </Routes>
   );
 };
-
 export default VCRoute;
