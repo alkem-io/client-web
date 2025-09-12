@@ -11,7 +11,7 @@ export const InAppOrganizationAdminMentionedView = (notification: InAppNotificat
   const messageDetails = payload.messageDetails;
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
+    triggeredByName: triggeredBy.profile.displayName,
     organizationName: messageDetails?.parent?.displayName,
     comment: messageDetails?.message,
   };
@@ -20,7 +20,7 @@ export const InAppOrganizationAdminMentionedView = (notification: InAppNotificat
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.messageDetails?.parent?.url}
+      url={messageDetails?.parent?.url}
     />
   );
 };

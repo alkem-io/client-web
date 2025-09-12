@@ -16,8 +16,8 @@ export const InAppSpaceAdminCollaborationCalloutContributionView = (notification
   const callout = payload.callout;
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
-    calloutName: callout?.framing?.profile?.displayName,
+    triggeredByName: triggeredBy.profile.displayName,
+    calloutName: callout.framing?.profile?.displayName,
     spaceName: payload.space?.about?.profile?.displayName,
   };
 
@@ -25,7 +25,7 @@ export const InAppSpaceAdminCollaborationCalloutContributionView = (notification
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.callout?.framing?.profile?.url}
+      url={payload.callout.framing?.profile?.url}
     />
   );
 };

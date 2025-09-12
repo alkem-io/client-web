@@ -11,7 +11,7 @@ export const InAppSpaceCommunityInvitationUserPlatformView = (notification: InAp
   const space = payload.space;
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
+    triggeredByName: triggeredBy.profile.displayName,
     spaceName: space?.about?.profile?.displayName,
   };
 

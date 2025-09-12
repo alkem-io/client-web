@@ -22744,6 +22744,42 @@ export type GuidanceRoomMessagesQueryResult = Apollo.QueryResult<
 export function refetchGuidanceRoomMessagesQuery(variables: SchemaTypes.GuidanceRoomMessagesQueryVariables) {
   return { query: GuidanceRoomMessagesDocument, variables: variables };
 }
+export const NotificationsUnreadCountDocument = gql`
+  subscription NotificationsUnreadCount {
+    notificationsUnreadCount
+  }
+`;
+
+/**
+ * __useNotificationsUnreadCountSubscription__
+ *
+ * To run a query within a React component, call `useNotificationsUnreadCountSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNotificationsUnreadCountSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNotificationsUnreadCountSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNotificationsUnreadCountSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.NotificationsUnreadCountSubscription,
+    SchemaTypes.NotificationsUnreadCountSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.NotificationsUnreadCountSubscription,
+    SchemaTypes.NotificationsUnreadCountSubscriptionVariables
+  >(NotificationsUnreadCountDocument, options);
+}
+export type NotificationsUnreadCountSubscriptionHookResult = ReturnType<typeof useNotificationsUnreadCountSubscription>;
+export type NotificationsUnreadCountSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.NotificationsUnreadCountSubscription>;
 export const InAppNotificationReceivedDocument = gql`
   subscription InAppNotificationReceived {
     inAppNotificationReceived {
@@ -22788,10 +22824,17 @@ export type InAppNotificationReceivedSubscriptionHookResult = ReturnType<
 export type InAppNotificationReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.InAppNotificationReceivedSubscription>;
 export const InAppNotificationsDocument = gql`
-  query InAppNotifications {
+  query InAppNotifications($types: [NotificationEvent!], $first: Int, $after: UUID) {
     me {
-      notifications {
-        ...InAppNotificationAllTypes
+      notifications(filter: { types: $types }, first: $first, after: $after) {
+        inAppNotifications {
+          ...InAppNotificationAllTypes
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+        total
       }
     }
   }
@@ -22810,6 +22853,9 @@ export const InAppNotificationsDocument = gql`
  * @example
  * const { data, loading, error } = useInAppNotificationsQuery({
  *   variables: {
+ *      types: // value for 'types'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
  *   },
  * });
  */

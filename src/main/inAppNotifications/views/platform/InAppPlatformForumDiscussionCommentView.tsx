@@ -11,7 +11,7 @@ export const InAppPlatformForumDiscussionCommentView = (notification: InAppNotif
   const discussion = payload.discussion;
 
   const notificationTextValues = {
-    triggeredByName: triggeredBy?.profile?.displayName,
+    triggeredByName: triggeredBy.profile.displayName,
     discussionName: discussion.displayName,
     comment: payload.comment || '',
   };

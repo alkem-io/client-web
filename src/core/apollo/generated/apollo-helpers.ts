@@ -2938,6 +2938,17 @@ export type PageInfoFieldPolicy = {
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PaginatedInAppNotificationsKeySpecifier = (
+  | 'inAppNotifications'
+  | 'pageInfo'
+  | 'total'
+  | PaginatedInAppNotificationsKeySpecifier
+)[];
+export type PaginatedInAppNotificationsFieldPolicy = {
+  inAppNotifications?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PaginatedOrganizationKeySpecifier = (
   | 'organization'
   | 'pageInfo'
@@ -3940,6 +3951,7 @@ export type SubscriptionKeySpecifier = (
   | 'calloutPostCreated'
   | 'forumDiscussionUpdated'
   | 'inAppNotificationReceived'
+  | 'notificationsUnreadCount'
   | 'profileVerifiedCredential'
   | 'roomEvents'
   | 'subspaceCreated'
@@ -3951,6 +3963,7 @@ export type SubscriptionFieldPolicy = {
   calloutPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   forumDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   inAppNotificationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5604,6 +5617,13 @@ export type StrictTypedTypePolicies = {
   PageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier);
     fields?: PageInfoFieldPolicy;
+  };
+  PaginatedInAppNotifications?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PaginatedInAppNotificationsKeySpecifier
+      | (() => undefined | PaginatedInAppNotificationsKeySpecifier);
+    fields?: PaginatedInAppNotificationsFieldPolicy;
   };
   PaginatedOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PaginatedOrganizationKeySpecifier | (() => undefined | PaginatedOrganizationKeySpecifier);

@@ -7,6 +7,7 @@ import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import { InAppNotificationsList } from './InAppNotificationsList';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
+import { InAppNotificationSubscriber } from '@/main/inAppNotifications/inAppNotificationSubscriber';
 
 export const InAppNotificationsDialog = () => {
   const { t } = useTranslation();
@@ -32,9 +33,12 @@ export const InAppNotificationsDialog = () => {
           </Tooltip>
         }
       >
-        {t('common.notifications')}
+        {t('common.Notifications')}
       </DialogHeader>
-      <DialogContent sx={{ padding: 0 }}>{isOpen && <InAppNotificationsList />}</DialogContent>
+      <DialogContent sx={{ padding: 0 }}>
+        {isOpen && <InAppNotificationsList />}
+        <InAppNotificationSubscriber />
+      </DialogContent>
     </DialogWithGrid>
   );
 };

@@ -1,16 +1,16 @@
 import {
-  useInAppNotificationReceivedSubscription,
-  InAppNotificationsDocument,
+  useNotificationsUnreadCountSubscription,
+  InAppNotificationsUnreadCountDocument,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { IN_APP_NOTIFICATIONS_PAGE_SIZE, NOTIFICATION_EVENT_TYPES } from './useInAppNotifications';
+import { NOTIFICATION_EVENT_TYPES } from '@/main/inAppNotifications/useInAppNotifications';
 
-export const InAppNotificationSubscriber = () => {
+export const InAppNotificationCountSubscriber = () => {
   const { isEnabled } = useInAppNotificationsContext();
   const handleError = useApolloErrorHandler();
 
-  useInAppNotificationReceivedSubscription({
+  useNotificationsUnreadCountSubscription({
     skip: !isEnabled,
     onData: ({ client, data: subscriptionData }) => {
       const { data, error } = subscriptionData;
@@ -23,19 +23,18 @@ export const InAppNotificationSubscriber = () => {
         return;
       }
 
-      const { inAppNotificationReceived: newNotification } = data;
+      const { notificationsUnreadCount } = data;
 
-      // Update the notifications query cache
+      // Update the unread count query cache
       client.cache.updateQuery(
         {
-          query: InAppNotificationsDocument,
+          query: InAppNotificationsUnreadCountDocument,
           variables: {
             types: NOTIFICATION_EVENT_TYPES,
-            first: IN_APP_NOTIFICATIONS_PAGE_SIZE,
           },
         },
         existingData => {
-          if (!existingData?.me?.notifications) {
+          if (!existingData?.me) {
             return existingData;
           }
 
@@ -43,10 +42,7 @@ export const InAppNotificationSubscriber = () => {
             ...existingData,
             me: {
               ...existingData.me,
-              notifications: {
-                ...existingData.me.notifications,
-                inAppNotifications: [newNotification, ...(existingData.me.notifications.inAppNotifications || [])],
-              },
+              notificationsUnreadCount,
             },
           };
         }
