@@ -42,10 +42,10 @@ const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
 
   const [updateBodyOfKnowledge, { loading: updateLoading }] = useRefreshBodyOfKnowledgeMutation();
   const { data } = useVirtualContributorKnowledgeBaseLastUpdatedQuery({
-    variables: { aiPersonaServiceID: aiPersonaServiceId ?? '' },
+    variables: { aiPersonaID: aiPersonaServiceId ?? '' },
     skip: !aiPersonaServiceId,
   });
-  const lastUpdated = data?.aiServer.aiPersonaService.bodyOfKnowledgeLastUpdated;
+  const lastUpdated = data?.aiServer.aiPersona.bodyOfKnowledgeLastUpdated;
 
   const refreshIngestion = () => {
     updateBodyOfKnowledge({

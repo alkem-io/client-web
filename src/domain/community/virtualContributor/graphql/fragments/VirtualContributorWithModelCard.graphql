@@ -1,10 +1,11 @@
-fragment AiPersonaWithModelCard on AiPersona {
-  id
-  bodyOfKnowledgeID
-  bodyOfKnowledgeType
-  bodyOfKnowledge
-  engine
-  aiPersonaServiceID
+fragment VirtualContributorWithModelCard on VirtualContributor {
+  aiPersona {
+    id
+    bodyOfKnowledgeID
+    bodyOfKnowledgeType
+    bodyOfKnowledge
+    engine
+  }
   modelCard {
     spaceUsage {
       modelCardEntry

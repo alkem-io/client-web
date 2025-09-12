@@ -234,11 +234,9 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
             description: values.description,
           },
           aiPersona: {
-            aiPersonaService: {
-              engine: values.engine,
-              bodyOfKnowledgeType: values.bodyOfKnowledgeType,
-              bodyOfKnowledgeID: vcBoKId,
-            },
+            engine: values.engine,
+            bodyOfKnowledgeType: values.bodyOfKnowledgeType,
+            bodyOfKnowledgeID: vcBoKId,
           },
           knowledgeBaseData: {
             calloutsSetData: {
@@ -252,7 +250,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       };
 
       if (values.externalConfig) {
-        variables.virtualContributorData.aiPersona.aiPersonaService!.externalConfig = values.externalConfig;
+        variables.virtualContributorData.aiPersona.externalConfig = values.externalConfig;
       }
       const { data } = await createVirtualContributor({ variables });
 

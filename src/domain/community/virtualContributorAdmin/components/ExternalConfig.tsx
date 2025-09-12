@@ -1,4 +1,4 @@
-import { useAiPersonaServiceQuery, useUpdateAiPersonaServiceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useAiPersonaServiceQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
 import * as yup from 'yup';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -31,9 +31,7 @@ const FormikEffect = FormikEffectFactory<FormValueType>();
 
 interface ExternalConfigProps {
   vc: {
-    aiPersona?: {
-      aiPersonaServiceID?: string;
-    };
+    aiPersonaID?: string;
   };
 }
 
@@ -43,16 +41,16 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
   const [externalConfig, setExternalConfig] = useState<ExternalConfigFields>({});
   const [isValid, setIsValid] = useState(false);
 
-  const aiPersonaServiceId = vc?.aiPersona?.aiPersonaServiceID!;
+  const aiPersonaServiceId = vc?.aiPersonaID!;
 
   const { data, loading } = useAiPersonaServiceQuery({
     variables: { id: aiPersonaServiceId },
     skip: !aiPersonaServiceId,
   });
-  const aiPersonaService = data?.aiServer.aiPersonaService;
+  const aiPersonaService = data?.aiServer.aiPersona;
   const isAssistantFieldAvailable = aiPersonaService?.engine === AiPersonaEngine.OpenaiAssistant;
 
-  const [updateAiPersonaService, { loading: updateLoading }] = useUpdateAiPersonaServiceMutation();
+  const [updateAiPersonaService, { loading: updateLoading }] = useUpdateAiPersonaMutation();
 
   const initialValues: FormValueType = useMemo(
     () => ({
@@ -78,7 +76,7 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
     }
     updateAiPersonaService({
       variables: {
-        aiPersonaServiceData: {
+        aiPersonaData: {
           ID: aiPersonaService?.id!,
           externalConfig,
         },

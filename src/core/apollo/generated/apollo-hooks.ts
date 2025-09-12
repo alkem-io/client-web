@@ -2214,14 +2214,15 @@ export const SpacePageFragmentDoc = gql`
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
 `;
-export const AiPersonaWithModelCardFragmentDoc = gql`
-  fragment AiPersonaWithModelCard on AiPersona {
-    id
-    bodyOfKnowledgeID
-    bodyOfKnowledgeType
-    bodyOfKnowledge
-    engine
-    aiPersonaServiceID
+export const VirtualContributorWithModelCardFragmentDoc = gql`
+  fragment VirtualContributorWithModelCard on VirtualContributor {
+    aiPersona {
+      id
+      bodyOfKnowledgeID
+      bodyOfKnowledgeType
+      bodyOfKnowledge
+      engine
+    }
     modelCard {
       spaceUsage {
         modelCardEntry
@@ -2271,13 +2272,11 @@ export const VirtualContributorFullFragmentDoc = gql`
         description
       }
     }
-    aiPersona {
-      ...AiPersonaWithModelCard
-    }
+    ...VirtualContributorWithModelCard
   }
   ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
-  ${AiPersonaWithModelCardFragmentDoc}
+  ${VirtualContributorWithModelCardFragmentDoc}
 `;
 export const AvailableVirtualContributorsForRoleSetPaginatedFragmentDoc = gql`
   fragment AvailableVirtualContributorsForRoleSetPaginated on PaginatedVirtualContributor {
@@ -13575,7 +13574,7 @@ export function refetchCommunityAvailableVCsQuery(variables: SchemaTypes.Communi
 export const AiPersonaServiceDocument = gql`
   query AiPersonaService($id: UUID!) {
     aiServer {
-      aiPersonaService(ID: $id) {
+      aiPersona(ID: $id) {
         id
         prompt
         engine
@@ -13665,13 +13664,13 @@ export const VirtualContributorDocument = gql`
         searchVisibility
         listedInStore
         status
+        aiPersonaID
         aiPersona {
           id
           bodyOfKnowledgeID
           bodyOfKnowledgeType
           bodyOfKnowledge
           engine
-          aiPersonaServiceID
         }
         profile {
           id
@@ -14141,9 +14140,7 @@ export const VirtualContributorProfileWithModelCardDocument = gql`
         searchVisibility
         listedInStore
         status
-        aiPersona {
-          ...AiPersonaWithModelCard
-        }
+        ...VirtualContributorWithModelCard
         profile {
           id
           displayName
@@ -14179,7 +14176,7 @@ export const VirtualContributorProfileWithModelCardDocument = gql`
       }
     }
   }
-  ${AiPersonaWithModelCardFragmentDoc}
+  ${VirtualContributorWithModelCardFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
@@ -14260,53 +14257,53 @@ export function refetchVirtualContributorProfileWithModelCardQuery(
 ) {
   return { query: VirtualContributorProfileWithModelCardDocument, variables: variables };
 }
-export const UpdateAiPersonaServiceDocument = gql`
-  mutation updateAiPersonaService($aiPersonaServiceData: UpdateAiPersonaServiceInput!) {
-    aiServerUpdateAiPersonaService(aiPersonaServiceData: $aiPersonaServiceData) {
+export const UpdateAiPersonaDocument = gql`
+  mutation updateAiPersona($aiPersonaData: UpdateAiPersonaInput!) {
+    aiServerUpdateAiPersona(aiPersonaData: $aiPersonaData) {
       id
       prompt
     }
   }
 `;
-export type UpdateAiPersonaServiceMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateAiPersonaServiceMutation,
-  SchemaTypes.UpdateAiPersonaServiceMutationVariables
+export type UpdateAiPersonaMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateAiPersonaMutation,
+  SchemaTypes.UpdateAiPersonaMutationVariables
 >;
 
 /**
- * __useUpdateAiPersonaServiceMutation__
+ * __useUpdateAiPersonaMutation__
  *
- * To run a mutation, you first call `useUpdateAiPersonaServiceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAiPersonaServiceMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateAiPersonaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAiPersonaMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateAiPersonaServiceMutation, { data, loading, error }] = useUpdateAiPersonaServiceMutation({
+ * const [updateAiPersonaMutation, { data, loading, error }] = useUpdateAiPersonaMutation({
  *   variables: {
- *      aiPersonaServiceData: // value for 'aiPersonaServiceData'
+ *      aiPersonaData: // value for 'aiPersonaData'
  *   },
  * });
  */
-export function useUpdateAiPersonaServiceMutation(
+export function useUpdateAiPersonaMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateAiPersonaServiceMutation,
-    SchemaTypes.UpdateAiPersonaServiceMutationVariables
+    SchemaTypes.UpdateAiPersonaMutation,
+    SchemaTypes.UpdateAiPersonaMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateAiPersonaServiceMutation,
-    SchemaTypes.UpdateAiPersonaServiceMutationVariables
-  >(UpdateAiPersonaServiceDocument, options);
+  return Apollo.useMutation<SchemaTypes.UpdateAiPersonaMutation, SchemaTypes.UpdateAiPersonaMutationVariables>(
+    UpdateAiPersonaDocument,
+    options
+  );
 }
-export type UpdateAiPersonaServiceMutationHookResult = ReturnType<typeof useUpdateAiPersonaServiceMutation>;
-export type UpdateAiPersonaServiceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAiPersonaServiceMutation>;
-export type UpdateAiPersonaServiceMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateAiPersonaServiceMutation,
-  SchemaTypes.UpdateAiPersonaServiceMutationVariables
+export type UpdateAiPersonaMutationHookResult = ReturnType<typeof useUpdateAiPersonaMutation>;
+export type UpdateAiPersonaMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAiPersonaMutation>;
+export type UpdateAiPersonaMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateAiPersonaMutation,
+  SchemaTypes.UpdateAiPersonaMutationVariables
 >;
 export const RefreshBodyOfKnowledgeDocument = gql`
   mutation refreshBodyOfKnowledge($refreshData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
@@ -14545,9 +14542,9 @@ export type VirtualContributorUpdatesSubscriptionHookResult = ReturnType<
 export type VirtualContributorUpdatesSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.VirtualContributorUpdatesSubscription>;
 export const VirtualContributorKnowledgeBaseLastUpdatedDocument = gql`
-  query VirtualContributorKnowledgeBaseLastUpdated($aiPersonaServiceID: UUID!) {
+  query VirtualContributorKnowledgeBaseLastUpdated($aiPersonaID: UUID!) {
     aiServer {
-      aiPersonaService(ID: $aiPersonaServiceID) {
+      aiPersona(ID: $aiPersonaID) {
         bodyOfKnowledgeLastUpdated
       }
     }
@@ -14566,7 +14563,7 @@ export const VirtualContributorKnowledgeBaseLastUpdatedDocument = gql`
  * @example
  * const { data, loading, error } = useVirtualContributorKnowledgeBaseLastUpdatedQuery({
  *   variables: {
- *      aiPersonaServiceID: // value for 'aiPersonaServiceID'
+ *      aiPersonaID: // value for 'aiPersonaID'
  *   },
  * });
  */

@@ -1,0 +1,6 @@
+mutation updateAiPersona($aiPersonaData: UpdateAiPersonaInput!) {
+  aiServerUpdateAiPersona(aiPersonaData: $aiPersonaData) {
+    id
+    prompt
+  }
+}

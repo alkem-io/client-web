@@ -21,7 +21,7 @@ import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType, SpaceLevel } from '@/cor
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
 import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
 import { SpaceBodyOfKnowledgeModel } from '../model/SpaceBodyOfKnowledgeModel';
-import { EMPTY_MODEL_CARD } from '../model/AiPersonaModelCardModel';
+import { EMPTY_MODEL_CARD } from '../model/VirtualContributorModelCardModel';
 
 const OTHER_LINK_GROUP = 'other';
 const SOCIAL_LINK_GROUP = 'social';

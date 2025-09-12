@@ -435,95 +435,54 @@ export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
   qrCodeImg?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AiPersonaKeySpecifier = (
-  | 'aiPersonaServiceID'
   | 'authorization'
   | 'bodyOfKnowledge'
-  | 'bodyOfKnowledgeID'
-  | 'bodyOfKnowledgeType'
-  | 'createdDate'
-  | 'dataAccessMode'
-  | 'description'
-  | 'engine'
-  | 'id'
-  | 'interactionModes'
-  | 'modelCard'
-  | 'updatedDate'
-  | AiPersonaKeySpecifier
-)[];
-export type AiPersonaFieldPolicy = {
-  aiPersonaServiceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
-  engine?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
-  modelCard?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type AiPersonaModelCardKeySpecifier = (
-  | 'aiEngine'
-  | 'monitoring'
-  | 'spaceUsage'
-  | AiPersonaModelCardKeySpecifier
-)[];
-export type AiPersonaModelCardFieldPolicy = {
-  aiEngine?: FieldPolicy<any> | FieldReadFunction<any>;
-  monitoring?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceUsage?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type AiPersonaModelCardFlagKeySpecifier = ('enabled' | 'name' | AiPersonaModelCardFlagKeySpecifier)[];
-export type AiPersonaModelCardFlagFieldPolicy = {
-  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type AiPersonaServiceKeySpecifier = (
-  | 'authorization'
   | 'bodyOfKnowledgeID'
   | 'bodyOfKnowledgeLastUpdated'
   | 'bodyOfKnowledgeType'
   | 'createdDate'
   | 'dataAccessMode'
+  | 'description'
   | 'engine'
   | 'externalConfig'
   | 'id'
+  | 'interactionModes'
   | 'prompt'
   | 'updatedDate'
-  | AiPersonaServiceKeySpecifier
+  | AiPersonaKeySpecifier
 )[];
-export type AiPersonaServiceFieldPolicy = {
+export type AiPersonaFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeLastUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
   engine?: FieldPolicy<any> | FieldReadFunction<any>;
   externalConfig?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
   prompt?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AiServerKeySpecifier = (
-  | 'aiPersonaService'
-  | 'aiPersonaServices'
+  | 'aiPersona'
+  | 'aiPersonas'
   | 'authorization'
   | 'createdDate'
-  | 'defaultAiPersonaService'
+  | 'defaultAiPersona'
   | 'id'
   | 'updatedDate'
   | AiServerKeySpecifier
 )[];
 export type AiServerFieldPolicy = {
-  aiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
-  aiPersonaServices?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiPersonas?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  defaultAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2499,8 +2458,8 @@ export type MutationKeySpecifier = (
   | 'adminWingbackGetCustomerEntitlements'
   | 'aiServerAuthorizationPolicyReset'
   | 'aiServerCreateAiPersonaService'
-  | 'aiServerDeleteAiPersonaService'
-  | 'aiServerUpdateAiPersonaService'
+  | 'aiServerDeleteAiPersona'
+  | 'aiServerUpdateAiPersona'
   | 'applyForEntryRoleOnRoleSet'
   | 'askChatGuidanceQuestion'
   | 'assignLicensePlanToAccount'
@@ -2611,7 +2570,6 @@ export type MutationKeySpecifier = (
   | 'transferInnovationPackToAccount'
   | 'transferSpaceToAccount'
   | 'transferVirtualContributorToAccount'
-  | 'updateAiPersona'
   | 'updateAnswerRelevance'
   | 'updateApplicationFormOnRoleSet'
   | 'updateBaselineLicensePlanOnAccount'
@@ -2680,8 +2638,8 @@ export type MutationFieldPolicy = {
   adminWingbackGetCustomerEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerCreateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
-  aiServerDeleteAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
-  aiServerUpdateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServerDeleteAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServerUpdateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2792,7 +2750,6 @@ export type MutationFieldPolicy = {
   transferInnovationPackToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferSpaceToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferVirtualContributorToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   updateApplicationFormOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   updateBaselineLicensePlanOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4593,11 +4550,17 @@ export type VirtualContributorKeySpecifier = (
   | 'account'
   | 'agent'
   | 'aiPersona'
+  | 'aiPersonaID'
   | 'authorization'
+  | 'bodyOfKnowledge'
   | 'createdDate'
+  | 'dataAccessMode'
+  | 'description'
   | 'id'
+  | 'interactionModes'
   | 'knowledgeBase'
   | 'listedInStore'
+  | 'modelCard'
   | 'nameID'
   | 'profile'
   | 'provider'
@@ -4611,11 +4574,17 @@ export type VirtualContributorFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   aiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiPersonaID?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
   knowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
+  modelCard?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4623,6 +4592,26 @@ export type VirtualContributorFieldPolicy = {
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualContributorModelCardKeySpecifier = (
+  | 'aiEngine'
+  | 'monitoring'
+  | 'spaceUsage'
+  | VirtualContributorModelCardKeySpecifier
+)[];
+export type VirtualContributorModelCardFieldPolicy = {
+  aiEngine?: FieldPolicy<any> | FieldReadFunction<any>;
+  monitoring?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceUsage?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualContributorModelCardFlagKeySpecifier = (
+  | 'enabled'
+  | 'name'
+  | VirtualContributorModelCardFlagKeySpecifier
+)[];
+export type VirtualContributorModelCardFlagFieldPolicy = {
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VirtualContributorSettingsKeySpecifier = ('privacy' | VirtualContributorSettingsKeySpecifier)[];
 export type VirtualContributorSettingsFieldPolicy = {
@@ -4854,18 +4843,6 @@ export type StrictTypedTypePolicies = {
   AiPersona?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiPersonaKeySpecifier | (() => undefined | AiPersonaKeySpecifier);
     fields?: AiPersonaFieldPolicy;
-  };
-  AiPersonaModelCard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AiPersonaModelCardKeySpecifier | (() => undefined | AiPersonaModelCardKeySpecifier);
-    fields?: AiPersonaModelCardFieldPolicy;
-  };
-  AiPersonaModelCardFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AiPersonaModelCardFlagKeySpecifier | (() => undefined | AiPersonaModelCardFlagKeySpecifier);
-    fields?: AiPersonaModelCardFlagFieldPolicy;
-  };
-  AiPersonaService?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AiPersonaServiceKeySpecifier | (() => undefined | AiPersonaServiceKeySpecifier);
-    fields?: AiPersonaServiceFieldPolicy;
   };
   AiServer?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiServerKeySpecifier | (() => undefined | AiServerKeySpecifier);
@@ -6110,6 +6087,20 @@ export type StrictTypedTypePolicies = {
   VirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VirtualContributorKeySpecifier | (() => undefined | VirtualContributorKeySpecifier);
     fields?: VirtualContributorFieldPolicy;
+  };
+  VirtualContributorModelCard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | VirtualContributorModelCardKeySpecifier
+      | (() => undefined | VirtualContributorModelCardKeySpecifier);
+    fields?: VirtualContributorModelCardFieldPolicy;
+  };
+  VirtualContributorModelCardFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | VirtualContributorModelCardFlagKeySpecifier
+      | (() => undefined | VirtualContributorModelCardFlagKeySpecifier);
+    fields?: VirtualContributorModelCardFlagFieldPolicy;
   };
   VirtualContributorSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

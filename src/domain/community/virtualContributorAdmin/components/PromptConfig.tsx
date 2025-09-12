@@ -1,4 +1,4 @@
-import { useAiPersonaServiceQuery, useUpdateAiPersonaServiceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useAiPersonaServiceQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
 import * as yup from 'yup';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -30,9 +30,9 @@ const PromptConfig = ({ vc }) => {
     variables: { id: aiPersonaServiceId },
     skip: !aiPersonaServiceId,
   });
-  const aiPersonaService = data?.aiServer.aiPersonaService;
+  const aiPersonaService = data?.aiServer.aiPersona;
 
-  const [updateAiPersonaService, { loading: updateLoading }] = useUpdateAiPersonaServiceMutation();
+  const [updateAiPersonaService, { loading: updateLoading }] = useUpdateAiPersonaMutation();
 
   const initialValues: FormValueType = useMemo(() => {
     setPrompt(aiPersonaService?.prompt[0] || '');
@@ -48,7 +48,7 @@ const PromptConfig = ({ vc }) => {
   const handleSubmit = () => {
     updateAiPersonaService({
       variables: {
-        aiPersonaServiceData: {
+        aiPersonaData: {
           ID: aiPersonaService?.id!,
           prompt: [prompt],
         },

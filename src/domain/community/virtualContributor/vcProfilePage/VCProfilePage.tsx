@@ -42,7 +42,7 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
     },
     skip: !vcId,
   });
-
+  //
   const isBokSpace =
     data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
   const bokId = data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID;

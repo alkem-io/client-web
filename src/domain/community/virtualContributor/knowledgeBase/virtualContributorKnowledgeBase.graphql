@@ -1,6 +1,6 @@
-query VirtualContributorKnowledgeBaseLastUpdated($aiPersonaServiceID: UUID!) {
+query VirtualContributorKnowledgeBaseLastUpdated($aiPersonaID: UUID!) {
   aiServer {
-    aiPersonaService(ID: $aiPersonaServiceID) {
+    aiPersona(ID: $aiPersonaID) {
       bodyOfKnowledgeLastUpdated
     }
   }
