@@ -1,7 +1,7 @@
-import { InAppNotificationModel } from '../model/InAppNotificationModel';
-import { InAppNotificationBaseView } from './InAppNotificationBaseView';
+import { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
-export const InAppSpaceCommunityNewMemberView = (notification: InAppNotificationModel) => {
+export const InAppUserSpaceCommunityJoinedView = (notification: InAppNotificationModel) => {
   const { payload } = notification;
 
   // do not display notification if these are missing
@@ -10,8 +10,7 @@ export const InAppSpaceCommunityNewMemberView = (notification: InAppNotification
   }
 
   const notificationTextValues = {
-    defaultValue: '',
-    spaceName: payload?.space?.about?.profile?.displayName,
+    spaceName: payload.space?.about?.profile?.displayName,
   };
 
   return (
