@@ -92,6 +92,10 @@ export const isApolloForbiddenPolicyError = (error: ApolloError | undefined) => 
   return false;
 };
 
+export const isApolloAuthorizationError = (error: ApolloError | undefined) => {
+  return (error && isApolloForbiddenError(error)) || isApolloForbiddenPolicyError(error);
+};
+
 export const isUrlResolverError = (error: ApolloError | undefined) => {
   if (error && error.graphQLErrors) {
     const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
