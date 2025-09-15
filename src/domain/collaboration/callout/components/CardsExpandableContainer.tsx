@@ -77,6 +77,7 @@ const PaginationExpander = ({ onClick, itemsCount, totalCount }: PaginationExpan
       </Box>
     );
   }
+  return <Caption>{t('callout.contributions.contributionsCount', { count: itemsCount })}</Caption>;
 };
 
 const CardsExpandableContainer = <Item extends Identifiable>({
