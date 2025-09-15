@@ -1,5 +1,6 @@
 import { InAppNotificationModel } from '../../model/InAppNotificationModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
+import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 
 export const InAppSpaceCommunicationUpdateView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;
@@ -9,18 +10,19 @@ export const InAppSpaceCommunicationUpdateView = (notification: InAppNotificatio
     return null;
   }
   const space = payload.space;
+  const spaceUrl = space?.about?.profile?.url;
 
   const notificationTextValues = {
     triggeredByName: triggeredBy.profile.displayName,
     spaceName: space?.about?.profile?.displayName,
-    update: payload.update || '',
+    comment: payload.update || '',
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.space?.about?.profile?.url}
+      url={spaceUrl ? buildUpdatesUrl(spaceUrl) : undefined}
     />
   );
 };

@@ -2953,6 +2953,8 @@ export const InAppNotificationPayloadPlatformForumDiscussionFragmentDoc = gql`
     discussion {
       id
       displayName
+      description
+      category
       url
     }
   }
