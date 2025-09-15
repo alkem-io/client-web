@@ -84,6 +84,14 @@ export const isApolloForbiddenError = (error: ApolloError | undefined) => {
   return false;
 };
 
+export const isApolloForbiddenPolicyError = (error: ApolloError | undefined) => {
+  if (error && error.graphQLErrors) {
+    const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
+    return extensions.some(extension => extension?.code === AlkemioGraphqlErrorCode.FORBIDDEN_POLICY);
+  }
+  return false;
+};
+
 export const isUrlResolverError = (error: ApolloError | undefined) => {
   if (error && error.graphQLErrors) {
     const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);

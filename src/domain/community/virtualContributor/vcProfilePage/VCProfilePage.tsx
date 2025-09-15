@@ -10,7 +10,11 @@ import {
 import Loading from '@/core/ui/loading/Loading';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { isApolloNotFoundError, isApolloForbiddenError } from '@/core/apollo/hooks/useApolloErrorHandler';
+import {
+  isApolloNotFoundError,
+  isApolloForbiddenError,
+  isApolloForbiddenPolicyError,
+} from '@/core/apollo/hooks/useApolloErrorHandler';
 import { AiPersonaBodyOfKnowledgeType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
 import { createVirtualContributorModelFull } from '../utils/createVirtualContributorModelFull';
@@ -78,35 +82,13 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
       return; // Still loading, don't redirect yet
     }
 
-    console.log('🔍 VCProfilePage authorization check:', {
-      hasError: !!error,
-      errorMessage: error?.message,
-      errorGraphQLErrors: error?.graphQLErrors,
-      errorNetworkError: error?.networkError,
-      isApolloForbiddenError: error ? isApolloForbiddenError(error) : false,
-      hasData: !!data,
-      isAuthenticated,
-      pathname,
-    });
-
     const privileges = data?.lookup.virtualContributor?.authorization?.myPrivileges;
     const hasReadPrivilege = privileges?.includes(AuthorizationPrivilege.Read);
 
-    // Check for authorization errors - either Apollo forbidden error or authorization message patterns
-    const isAuthorizationError =
-      error &&
-      (isApolloForbiddenError(error) ||
-        error.message?.includes('Authorization: unable to grant') ||
-        error.message?.includes('does not have credentials that grant'));
-
+    // Check for authorization errors
+    const isAuthorizationError = error && (isApolloForbiddenPolicyError(error) || isApolloForbiddenError(error));
     // If there's an authorization error or the user doesn't have READ privileges
     if (isAuthorizationError || (data && !hasReadPrivilege)) {
-      console.log('🔍 VCProfilePage: Access denied, redirecting...', {
-        reason: error ? 'Authorization error' : 'Missing READ privilege',
-        isAuthenticated,
-        redirectTarget: !isAuthenticated ? '/required' : '/restricted',
-      });
-
       if (!isAuthenticated) {
         // For unauthenticated users, redirect to authentication required page
         navigate(`${AUTH_REQUIRED_PATH}${buildReturnUrlParam(pathname)}`);
