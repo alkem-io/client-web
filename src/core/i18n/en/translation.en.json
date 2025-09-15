@@ -1963,11 +1963,11 @@
           "description": ""
         },
         "SPACE_COLLABORATION_CALLOUT_CONTRIBUTION": {
-          "subject": "{{triggeredByName}} created a post \"{{calloutName}}\"",
+          "subject": "{{triggeredByName}} created a contribution in \"{{calloutName}}\"",
           "description": "In <b>{{spaceName}}</b>, of which you are a member."
         },
         "SPACE_ADMIN_COLLABORATION_CALLOUT_CONTRIBUTION": {
-          "subject": "{{triggeredByName}} created a post \"{{calloutName}}\"",
+          "subject": "{{triggeredByName}} created a contribution in \"{{calloutName}}\"",
           "description": "In <b>{{spaceName}}</b>, of which you are an admin."
         },
         "SPACE_ADMIN_COMMUNITY_APPLICATION": {
@@ -1996,7 +1996,7 @@
         },
         "ORGANIZATION_ADMIN_MESSAGE": {
           "subject": "{{triggeredByName}} sent a message to your organization {{organizationName}}",
-          "description": ""
+          "description": "See the message in you email inbox"
         },
         "ORGANIZATION_MESSAGE_SENDER": {
           "subject": "You sent a message to {{organizationName}}",
@@ -2007,8 +2007,8 @@
           "description": ""
         },
         "PLATFORM_FORUM_DISCUSSION_CREATED": {
-          "subject": "{{triggeredByName}} started a new discussion in the forum {{discussionName}}",
-          "description": ""
+          "subject": "{{triggeredByName}} started a new discussion in the forum {{category}}",
+          "description": "{{discussionName}}"
         },
         "PLATFORM_FORUM_DISCUSSION_COMMENT": {
           "subject": "{{triggeredByName}} commented on your forum post in {{discussionName}}",

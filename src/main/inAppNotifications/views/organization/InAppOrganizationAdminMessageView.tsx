@@ -12,14 +12,14 @@ export const InAppOrganizationAdminMessageView = (notification: InAppNotificatio
   const notificationTextValues = {
     triggeredByName: triggeredBy.profile.displayName,
     organizationName: payload.organization?.profile?.displayName,
-    comment: payload.organizationMessage,
+    // comment: payload.organizationMessage,
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.organization?.profile?.url}
+      url={triggeredBy.profile?.url}
     />
   );
 };
