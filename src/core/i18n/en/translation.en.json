@@ -860,10 +860,10 @@
       "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
     },
     "contributions": {
-      "contributionsCount": "{{count}} Contribution",
-      "contributionsCount_plural": "{{count}} Contributions",
-      "contributionsItemsCount": "{{count}} item in this collection",
-      "contributionsItemsCount_plural": "{{count}} items in this collection",
+      "contributionsCount_one": "{{count}} Contribution",
+      "contributionsCount_other": "{{count}} Contributions",
+      "contributionsItemsCount_one": "{{count}} item in this collection",
+      "contributionsItemsCount_other": "{{count}} items in this collection",
       "contributionsItemsCountExpand": "{{count}} items in this collection, <click>click here</click> to see all",
       "contributionsCollapse": "{{count}} items in this collection, <click>click here</click> to hide some",
       "noContributions": "No contributions yet, be the first to contribute!"

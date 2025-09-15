@@ -120,7 +120,7 @@ const CalloutContributionsPost = ({
     <Gutters ref={ref}>
       <CardsExpandableContainer
         items={posts}
-        pagination={{ total: posts.length }}
+        pagination={{ total: contributionsCount ?? posts.length }}
         loading={loading}
         createButton={createButton}
       >

@@ -6,6 +6,7 @@ import { Caption } from '@/core/ui/typography';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Box } from '@mui/material';
+import React from 'react';
 import { ReactElement, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -30,12 +31,18 @@ interface PaginationExpander {
 }
 const PaginationExpander = ({ onClick, itemsCount, totalCount }: PaginationExpander) => {
   const { t } = useTranslation();
-
+  if (totalCount === 0 || itemsCount === 0) {
+    return (
+      <Box>
+        <Caption>{t('callout.contributions.noContributions')}</Caption>
+      </Box>
+    );
+  }
   if (itemsCount === totalCount) {
     // All items are loaded
     if (itemsCount <= ITEMS_FIRST_PAGE) {
       // Less than 4 items, no need to show expander
-      return t('callout.contributions.contributionsCount', { count: itemsCount });
+      return <Caption>{t('callout.contributions.contributionsCount', { count: itemsCount })}</Caption>;
     } else {
       // All items are shown, show collapse option
       return (
@@ -69,12 +76,6 @@ const PaginationExpander = ({ onClick, itemsCount, totalCount }: PaginationExpan
         </Caption>
       </Box>
     );
-  } else if (totalCount === 0) {
-    return (
-      <Box>
-        <Caption>{t('callout.contributions.noContributions')}</Caption>
-      </Box>
-    );
   }
 };
 
@@ -102,7 +103,9 @@ const CardsExpandableContainer = <Item extends Identifiable>({
     <>
       <GridProvider columns={isSmallScreen ? 3 : isMediumSmallScreen ? 6 : 12} force>
         <Gutters disablePadding row flexWrap="wrap">
-          {itemsShown.map(item => children(item))}
+          {itemsShown.map(item => (
+            <React.Fragment key={item.id}>{children(item)}</React.Fragment>
+          ))}
         </Gutters>
       </GridProvider>
       <Box display="flex" justifyContent="space-between" alignItems="center">
