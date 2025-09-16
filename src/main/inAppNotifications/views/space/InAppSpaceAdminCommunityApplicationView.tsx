@@ -1,5 +1,6 @@
 import { InAppNotificationModel } from '../../model/InAppNotificationModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
+import { buildSettingsCommunityUrl } from '@/main/routing/urlBuilders';
 
 export const InAppSpaceAdminCommunityApplicationView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;
@@ -9,6 +10,7 @@ export const InAppSpaceAdminCommunityApplicationView = (notification: InAppNotif
     return null;
   }
   const space = payload.space;
+  const spaceUrl = payload.space?.about?.profile?.url;
 
   const notificationTextValues = {
     triggeredByName: triggeredBy.profile.displayName,
@@ -19,7 +21,7 @@ export const InAppSpaceAdminCommunityApplicationView = (notification: InAppNotif
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.space?.about?.profile?.url}
+      url={spaceUrl ? buildSettingsCommunityUrl(spaceUrl) : undefined}
     />
   );
 };

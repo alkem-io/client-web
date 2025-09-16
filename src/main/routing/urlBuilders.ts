@@ -19,6 +19,10 @@ export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
 };
 
+export const buildSettingsCommunityUrl = (entityUrl: string) => {
+  return `${buildSettingsUrl(entityUrl)}/community`;
+};
+
 export const buildVCKnowledgeBaseUrl = (vcUrl: string = '.') => `${vcUrl}/${KNOWLEDGE_BASE_PATH}`;
 
 export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.location.origin) => {
