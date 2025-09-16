@@ -269,7 +269,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     onCompleted: () => {
       clearDeleteState();
       notify(
-        t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.virtual-contributor') }),
+        t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.virtualContributor') }),
         'success'
       );
     },
@@ -395,7 +395,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const getEntityName = (entity: Entities | undefined) => {
     switch (entity) {
       case Entities.VirtualContributor:
-        return t('common.virtual-contributor');
+        return t('common.virtualContributor');
       case Entities.InnovationPack:
         return t('common.innovationPack');
       case Entities.InnovationHub:

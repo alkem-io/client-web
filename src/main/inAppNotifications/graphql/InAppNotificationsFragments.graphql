@@ -204,6 +204,8 @@ fragment InAppNotificationPayloadPlatformForumDiscussion on InAppNotificationPay
   discussion {
     id
     displayName
+    description
+    category
     url
   }
 }
