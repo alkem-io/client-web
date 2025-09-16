@@ -53,6 +53,7 @@ type TemplatesAdminProps = {
   canDeleteTemplates?: TemplatePermissionCallback;
   canImportTemplates?: TemplatePermissionCallback;
   importTemplateOptions?: ImportTemplatesOptions;
+  showCounts?: boolean;
 };
 
 const CreateTemplateButton = (props: ButtonProps) => {
@@ -83,6 +84,7 @@ const TemplatesAdmin = ({
   canCreateTemplates = defaultPermissionDenied,
   canEditTemplates = defaultPermissionDenied,
   canDeleteTemplates = defaultPermissionDenied,
+  showCounts = true,
 }: PropsWithChildren<TemplatesAdminProps>) => {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -322,10 +324,17 @@ const TemplatesAdmin = ({
       {shouldRenderTemplateSection(spaceTemplates, TemplateType.Space) && (
         <PageContentBlockSeamless disablePadding>
           <TemplatesGallery
-            headerText={t('common.entitiesWithCount', {
-              entityType: t(`common.enums.templateType.${TemplateType.Space}_plural`),
-              count: spaceTemplates?.length ?? 0,
-            })}
+            headerText={
+              showCounts
+                ? t('common.entitiesWithCount', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Space}_plural`),
+                    count: spaceTemplates?.length ?? 0,
+                  })
+                : t('common.entities', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Space}_plural`),
+                  })
+            }
+            headerId={TemplateType.Space.toLowerCase()}
             actions={<GalleryActions templateType={TemplateType.Space} />}
             templates={spaceTemplates}
             loading={loading}
@@ -336,10 +345,17 @@ const TemplatesAdmin = ({
       {shouldRenderTemplateSection(calloutTemplates, TemplateType.Callout) && (
         <PageContentBlockSeamless disablePadding>
           <TemplatesGallery
-            headerText={t('common.entitiesWithCount', {
-              entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`),
-              count: calloutTemplates?.length ?? 0,
-            })}
+            headerText={
+              showCounts
+                ? t('common.entitiesWithCount', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`),
+                    count: calloutTemplates?.length ?? 0,
+                  })
+                : t('common.entities', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`),
+                  })
+            }
+            headerId={TemplateType.Callout.toLowerCase()}
             actions={<GalleryActions templateType={TemplateType.Callout} />}
             templates={calloutTemplates}
             loading={loading}
@@ -350,10 +366,17 @@ const TemplatesAdmin = ({
       {shouldRenderTemplateSection(whiteboardTemplates, TemplateType.Whiteboard) && (
         <PageContentBlockSeamless disablePadding>
           <TemplatesGallery
-            headerText={t('common.entitiesWithCount', {
-              entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
-              count: whiteboardTemplates?.length ?? 0,
-            })}
+            headerText={
+              showCounts
+                ? t('common.entitiesWithCount', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
+                    count: whiteboardTemplates?.length ?? 0,
+                  })
+                : t('common.entities', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
+                  })
+            }
+            headerId={TemplateType.Whiteboard.toLowerCase()}
             actions={<GalleryActions templateType={TemplateType.Whiteboard} />}
             templates={whiteboardTemplates}
             loading={loading}
@@ -364,10 +387,17 @@ const TemplatesAdmin = ({
       {shouldRenderTemplateSection(postTemplates, TemplateType.Post) && (
         <PageContentBlockSeamless disablePadding>
           <TemplatesGallery
-            headerText={t('common.entitiesWithCount', {
-              entityType: t(`common.enums.templateType.${TemplateType.Post}_plural`),
-              count: postTemplates?.length ?? 0,
-            })}
+            headerText={
+              showCounts
+                ? t('common.entitiesWithCount', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Post}_plural`),
+                    count: postTemplates?.length ?? 0,
+                  })
+                : t('common.entities', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Post}_plural`),
+                  })
+            }
+            headerId={TemplateType.Post.toLowerCase()}
             actions={<GalleryActions templateType={TemplateType.Post} />}
             templates={postTemplates}
             loading={loading}
@@ -378,10 +408,17 @@ const TemplatesAdmin = ({
       {shouldRenderTemplateSection(communityGuidelinesTemplates, TemplateType.CommunityGuidelines) && (
         <PageContentBlockSeamless disablePadding>
           <TemplatesGallery
-            headerText={t('common.entitiesWithCount', {
-              entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
-              count: communityGuidelinesTemplates?.length ?? 0,
-            })}
+            headerText={
+              showCounts
+                ? t('common.entitiesWithCount', {
+                    entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
+                    count: communityGuidelinesTemplates?.length ?? 0,
+                  })
+                : t('common.entities', {
+                    entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
+                  })
+            }
+            headerId={TemplateType.CommunityGuidelines.toLowerCase()}
             actions={<GalleryActions templateType={TemplateType.CommunityGuidelines} />}
             templates={communityGuidelinesTemplates}
             loading={loading}

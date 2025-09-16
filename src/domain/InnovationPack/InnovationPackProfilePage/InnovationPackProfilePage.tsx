@@ -74,7 +74,12 @@ const InnovationPackProfilePage = () => {
           <PageContentColumn columns={isMediumSmallScreen ? 12 : 9}>
             {loading && <Loading />}
             {!loading && templatesSetId && (
-              <TemplatesAdmin templatesSetId={templatesSetId} templateId={templateId} baseUrl={baseUrl} />
+              <TemplatesAdmin
+                templatesSetId={templatesSetId}
+                templateId={templateId}
+                baseUrl={baseUrl}
+                showCounts={false}
+              />
             )}
           </PageContentColumn>
         </PageContent>
