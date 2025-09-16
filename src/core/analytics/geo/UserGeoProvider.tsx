@@ -50,5 +50,5 @@ export const UserGeoProvider = ({ children }: PropsWithChildren) => {
     })();
   }, [skipOnLocal, geoEndpoint]);
 
-  return <UserGeoContext.Provider value={{ data, loading, error }}>{children}</UserGeoContext.Provider>;
+  return <UserGeoContext value={{ data, loading, error }}>{children}</UserGeoContext>;
 };

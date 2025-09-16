@@ -35,7 +35,7 @@ const KratosForm = ({ ui, children, ...formProps }: KratosFormProps) => {
 
   return (
     <Box component="form" action={ui?.action} method={ui?.method} onSubmit={handleSubmit} noValidate {...formProps}>
-      <KratosFormContext.Provider value={contextValue}>{children}</KratosFormContext.Provider>
+      <KratosFormContext value={contextValue}>{children}</KratosFormContext>
     </Box>
   );
 };

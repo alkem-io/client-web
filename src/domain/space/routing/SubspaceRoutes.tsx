@@ -28,9 +28,9 @@ const InnovationFlowStateContextProvider = ({ children }) => {
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useState('');
 
   return (
-    <InnovationFlowStateContext.Provider value={{ selectedInnovationFlowState, setSelectedInnovationFlowState }}>
+    <InnovationFlowStateContext value={{ selectedInnovationFlowState, setSelectedInnovationFlowState }}>
       {children}
-    </InnovationFlowStateContext.Provider>
+    </InnovationFlowStateContext>
   );
 };
 

@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { InAppNotificationBaseView } from './InAppNotificationBaseView';
-import { InAppNotificationModel } from '../model/InAppNotificationModel';
-import { mapInAppNotificationPayloadSpaceCollaborationCalloutToModel } from '../util/mapInAppNotificationPayloadSpaceCollaborationCalloutToModel';
+import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
+import { InAppNotificationModel } from '../../model/InAppNotificationModel';
+import { mapInAppNotificationPayloadSpaceCollaborationCalloutToModel } from '../../util/mapInAppNotificationPayloadSpaceCollaborationCalloutToModel';
 
-export const InAppSpaceCollaborationCalloutPublishedView = (notification: InAppNotificationModel) => {
+export const InAppSpaceCollaborationCalloutContributionView = (notification: InAppNotificationModel) => {
   const { t } = useTranslation();
 
   const { payload, triggeredBy } = notification;
@@ -14,7 +14,6 @@ export const InAppSpaceCollaborationCalloutPublishedView = (notification: InAppN
   }
 
   const notificationTextValues = {
-    defaultValue: '',
     spaceName: inAppPayloadSpaceCollaborationCallout.space.about.profile.displayName,
     spaceLevel: t(`common.space-level.${inAppPayloadSpaceCollaborationCallout.space.level}`),
     calloutName: inAppPayloadSpaceCollaborationCallout.callout.framing.profile.displayName,

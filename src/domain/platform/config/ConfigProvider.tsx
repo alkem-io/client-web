@@ -57,7 +57,7 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
   }
 
   return (
-    <ConfigContext.Provider
+    <ConfigContext
       value={{
         config,
         serverMetadata,
@@ -66,7 +66,7 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
       }}
     >
       {children}
-    </ConfigContext.Provider>
+    </ConfigContext>
   );
 };
 

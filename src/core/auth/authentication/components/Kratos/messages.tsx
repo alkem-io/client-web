@@ -12,6 +12,7 @@ import { has } from 'lodash';
 
 const messages: Record<string, string> = {
   '1060001': 'successfully-recovered-password',
+  '1060002': 'request-recover-password',
   '1060003': 'request-recover-password',
   '4070005': 'verification-flow-expired',
   '4060005': 'recovery-flow-expired',
@@ -29,8 +30,8 @@ export const useKratosT = () => {
     if (has(messages, kratosMessage.id)) {
       const label = messages[kratosMessage.id];
       const replacement = kratosMessage.context as Record<string, string | number>;
-      // It's hard to convince t() that the constructed label is a valid translation key
 
+      // It's hard to convince t() that the constructed label is a valid translation key
       return (
         <Trans
           i18nKey={`kratos.messages.${label}` as unknown as TransProps<TranslationKey>['i18nKey']}
