@@ -2216,11 +2216,11 @@ export const SpacePageFragmentDoc = gql`
 `;
 export const VirtualContributorWithModelCardFragmentDoc = gql`
   fragment VirtualContributorWithModelCard on VirtualContributor {
+    bodyOfKnowledgeID
+    bodyOfKnowledgeType
+    bodyOfKnowledge
     aiPersona {
       id
-      bodyOfKnowledgeID
-      bodyOfKnowledgeType
-      bodyOfKnowledge
       engine
     }
     modelCard {
@@ -13571,8 +13571,8 @@ export type CommunityAvailableVCsQueryResult = Apollo.QueryResult<
 export function refetchCommunityAvailableVCsQuery(variables: SchemaTypes.CommunityAvailableVCsQueryVariables) {
   return { query: CommunityAvailableVCsDocument, variables: variables };
 }
-export const AiPersonaServiceDocument = gql`
-  query AiPersonaService($id: UUID!) {
+export const AiPersonaDocument = gql`
+  query AiPersona($id: UUID!) {
     aiServer {
       aiPersona(ID: $id) {
         id
@@ -13589,63 +13589,54 @@ export const AiPersonaServiceDocument = gql`
 `;
 
 /**
- * __useAiPersonaServiceQuery__
+ * __useAiPersonaQuery__
  *
- * To run a query within a React component, call `useAiPersonaServiceQuery` and pass it any options that fit your needs.
- * When your component renders, `useAiPersonaServiceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAiPersonaQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAiPersonaQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAiPersonaServiceQuery({
+ * const { data, loading, error } = useAiPersonaQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useAiPersonaServiceQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables> &
-    ({ variables: SchemaTypes.AiPersonaServiceQueryVariables; skip?: boolean } | { skip: boolean })
+export function useAiPersonaQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables> &
+    ({ variables: SchemaTypes.AiPersonaQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables>(
-    AiPersonaServiceDocument,
+  return Apollo.useQuery<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>(AiPersonaDocument, options);
+}
+export function useAiPersonaLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>(
+    AiPersonaDocument,
     options
   );
 }
-export function useAiPersonaServiceLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AiPersonaServiceQuery,
-    SchemaTypes.AiPersonaServiceQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables>(
-    AiPersonaServiceDocument,
-    options
-  );
-}
-export function useAiPersonaServiceSuspenseQuery(
+export function useAiPersonaSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables>
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>
 ) {
   const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables>(
-    AiPersonaServiceDocument,
+  return Apollo.useSuspenseQuery<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>(
+    AiPersonaDocument,
     options
   );
 }
-export type AiPersonaServiceQueryHookResult = ReturnType<typeof useAiPersonaServiceQuery>;
-export type AiPersonaServiceLazyQueryHookResult = ReturnType<typeof useAiPersonaServiceLazyQuery>;
-export type AiPersonaServiceSuspenseQueryHookResult = ReturnType<typeof useAiPersonaServiceSuspenseQuery>;
-export type AiPersonaServiceQueryResult = Apollo.QueryResult<
-  SchemaTypes.AiPersonaServiceQuery,
-  SchemaTypes.AiPersonaServiceQueryVariables
->;
-export function refetchAiPersonaServiceQuery(variables: SchemaTypes.AiPersonaServiceQueryVariables) {
-  return { query: AiPersonaServiceDocument, variables: variables };
+export type AiPersonaQueryHookResult = ReturnType<typeof useAiPersonaQuery>;
+export type AiPersonaLazyQueryHookResult = ReturnType<typeof useAiPersonaLazyQuery>;
+export type AiPersonaSuspenseQueryHookResult = ReturnType<typeof useAiPersonaSuspenseQuery>;
+export type AiPersonaQueryResult = Apollo.QueryResult<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>;
+export function refetchAiPersonaQuery(variables: SchemaTypes.AiPersonaQueryVariables) {
+  return { query: AiPersonaDocument, variables: variables };
 }
 export const VirtualContributorDocument = gql`
   query VirtualContributor($id: UUID!) {
@@ -13665,11 +13656,11 @@ export const VirtualContributorDocument = gql`
         listedInStore
         status
         aiPersonaID
+        bodyOfKnowledgeID
+        bodyOfKnowledgeType
+        bodyOfKnowledge
         aiPersona {
           id
-          bodyOfKnowledgeID
-          bodyOfKnowledgeType
-          bodyOfKnowledge
           engine
         }
         profile {
@@ -14262,6 +14253,9 @@ export const UpdateAiPersonaDocument = gql`
     aiServerUpdateAiPersona(aiPersonaData: $aiPersonaData) {
       id
       prompt
+      externalConfig {
+        apiKey
+      }
     }
   }
 `;

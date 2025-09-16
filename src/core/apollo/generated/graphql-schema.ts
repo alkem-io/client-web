@@ -531,18 +531,10 @@ export type AiPersona = {
   __typename?: 'AiPersona';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** An overview of knowledge provided by this AI Persona. */
-  bodyOfKnowledge?: Maybe<Scalars['Markdown']['output']>;
-  /** The body of knowledge ID used for the AI Persona */
-  bodyOfKnowledgeID?: Maybe<Scalars['UUID']['output']>;
-  /** When was the body of knowledge of the AI Persona last updated. */
+  /** The date when the body of knowledge was last ingested. */
   bodyOfKnowledgeLastUpdated?: Maybe<Scalars['DateTime']['output']>;
-  /** The body of knowledge type used for the AI Persona */
-  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** The required data access by the AI Persona */
-  dataAccessMode: VirtualContributorDataAccessMode;
   /** The description for this AI Persona. */
   description?: Maybe<Scalars['Markdown']['output']>;
   /** The AI Persona Engine being used by this AI Persona. */
@@ -551,21 +543,11 @@ export type AiPersona = {
   externalConfig?: Maybe<ExternalConfig>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
-  /** The interaction modes supported by this AI Persona. */
-  interactionModes: Array<VirtualContributorInteractionMode>;
   /** The prompt used by this AI Persona */
   prompt: Array<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
-
-export enum AiPersonaBodyOfKnowledgeType {
-  AlkemioKnowledgeBase = 'ALKEMIO_KNOWLEDGE_BASE',
-  AlkemioSpace = 'ALKEMIO_SPACE',
-  None = 'NONE',
-  Other = 'OTHER',
-  Website = 'WEBSITE',
-}
 
 export enum AiPersonaEngine {
   CommunityManager = 'COMMUNITY_MANAGER',
@@ -784,7 +766,6 @@ export enum AuthorizationPolicyType {
   Account = 'ACCOUNT',
   Agent = 'AGENT',
   AiPersona = 'AI_PERSONA',
-  AiPersonaService = 'AI_PERSONA_SERVICE',
   AiServer = 'AI_SERVER',
   Application = 'APPLICATION',
   Calendar = 'CALENDAR',
@@ -1561,14 +1542,9 @@ export type ConvertSpaceL2ToSpaceL1Input = {
 };
 
 export type CreateAiPersonaInput = {
-  bodyOfKnowledge?: InputMaybe<Scalars['String']['input']>;
-  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']['input']>;
-  bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
-  dataAccessMode?: InputMaybe<VirtualContributorDataAccessMode>;
   description?: InputMaybe<Scalars['String']['input']>;
   engine?: InputMaybe<AiPersonaEngine>;
   externalConfig?: InputMaybe<ExternalConfigInput>;
-  interactionModes?: InputMaybe<Array<VirtualContributorInteractionMode>>;
   prompt?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
@@ -2197,6 +2173,11 @@ export type CreateVirtualContributorOnAccountInput = {
   accountID: Scalars['UUID']['input'];
   /** The ID of the AiPersona to use for this Collaboration. */
   aiPersona: CreateAiPersonaInput;
+  /** The ID of the body of knowledge (if any) to use. */
+  bodyOfKnowledge?: InputMaybe<Scalars['String']['input']>;
+  bodyOfKnowledgeType?: InputMaybe<VirtualContributorBodyOfKnowledgeType>;
+  dataAccessMode?: InputMaybe<VirtualContributorDataAccessMode>;
+  interactionModes?: InputMaybe<Array<VirtualContributorInteractionMode>>;
   /** The KnowledgeBase to use for this Collaboration. */
   knowledgeBaseData?: InputMaybe<CreateKnowledgeBaseInput>;
   /** A readable identifier, unique within the containing scope. */
@@ -4074,9 +4055,9 @@ export type Mutation = {
   adminWingbackGetCustomerEntitlements: Array<LicensingGrantedEntitlement>;
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
-  /** Creates a new AiPersonaService on the aiServer. */
-  aiServerCreateAiPersonaService: AiPersona;
-  /** Deletes the specified AiPersonaService. */
+  /** Creates a new AiPersona on the aiServer. */
+  aiServerCreateAiPersona: AiPersona;
+  /** Deletes the specified AiPersona. */
   aiServerDeleteAiPersona: AiPersona;
   /** Updates the specified AI Persona. */
   aiServerUpdateAiPersona: AiPersona;
@@ -4440,7 +4421,7 @@ export type MutationAdminWingbackGetCustomerEntitlementsArgs = {
   customerID: Scalars['String']['input'];
 };
 
-export type MutationAiServerCreateAiPersonaServiceArgs = {
+export type MutationAiServerCreateAiPersonaArgs = {
   aiPersonaData: CreateAiPersonaInput;
 };
 
@@ -7258,7 +7239,7 @@ export type UpdateAiPersonaInput = {
   ID: Scalars['UUID']['input'];
   bodyOfKnowledge?: InputMaybe<Scalars['String']['input']>;
   bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']['input']>;
-  bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
+  bodyOfKnowledgeType?: InputMaybe<VirtualContributorBodyOfKnowledgeType>;
   dataAccessMode?: InputMaybe<VirtualContributorDataAccessMode>;
   description?: InputMaybe<Scalars['String']['input']>;
   engine?: InputMaybe<AiPersonaEngine>;
@@ -8349,8 +8330,12 @@ export type VirtualContributor = Contributor & {
   aiPersonaID: Scalars['UUID']['output'];
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
-  /** A overview of knowledge provided by this AI Persona. */
-  bodyOfKnowledge?: Maybe<Scalars['Markdown']['output']>;
+  /** The body of knowledge used by this Virtual Contributor. */
+  bodyOfKnowledge: Scalars['String']['output'];
+  /** The ID of the body of knowledge used by this virtual contributor */
+  bodyOfKnowledgeID: Scalars['String']['output'];
+  /** The type of body of knowledge used by this Virtual Contributor. */
+  bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The type of context sharing that are supported by this AI Persona when used. */
@@ -8361,8 +8346,10 @@ export type VirtualContributor = Contributor & {
   id: Scalars['UUID']['output'];
   /** Interaction modes supported by this AI Persona when used. */
   interactionModes: VirtualContributorInteractionMode;
-  /** The KnowledgeBase being used by this virtual contributor */
-  knowledgeBase?: Maybe<KnowledgeBase>;
+  /** The Knowledge Base linked to this Virtual Contributor as body of knowledge. */
+  knowledgeBase: KnowledgeBase;
+  /** The Space linked to this Virtual Contributor as body of knowledge. */
+  knowledgeSpace?: Maybe<Space>;
   /** Flag to control if this VC is listed in the platform store. */
   listedInStore: Scalars['Boolean']['output'];
   /** The model card information about this Virtual Contributor */
@@ -8382,6 +8369,14 @@ export type VirtualContributor = Contributor & {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
+
+export enum VirtualContributorBodyOfKnowledgeType {
+  AlkemioKnowledgeBase = 'ALKEMIO_KNOWLEDGE_BASE',
+  AlkemioSpace = 'ALKEMIO_SPACE',
+  None = 'NONE',
+  Other = 'OTHER',
+  Website = 'WEBSITE',
+}
 
 export enum VirtualContributorDataAccessMode {
   None = 'NONE',
@@ -19926,11 +19921,11 @@ export type CommunityAvailableVCsQuery = {
   };
 };
 
-export type AiPersonaServiceQueryVariables = Exact<{
+export type AiPersonaQueryVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;
 
-export type AiPersonaServiceQuery = {
+export type AiPersonaQuery = {
   __typename?: 'Query';
   aiServer: {
     __typename?: 'AiServer';
@@ -19967,6 +19962,9 @@ export type VirtualContributorQuery = {
           listedInStore: boolean;
           status: VirtualContributorStatus;
           aiPersonaID: string;
+          bodyOfKnowledgeID: string;
+          bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
+          bodyOfKnowledge: string;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -19974,14 +19972,7 @@ export type VirtualContributorQuery = {
             __typename?: 'VirtualContributorSettings';
             privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
           };
-          aiPersona: {
-            __typename?: 'AiPersona';
-            id: string;
-            bodyOfKnowledgeID?: string | undefined;
-            bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
-            bodyOfKnowledge?: string | undefined;
-            engine: AiPersonaEngine;
-          };
+          aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -20236,6 +20227,9 @@ export type VirtualContributorProfileWithModelCardQuery = {
           searchVisibility: SearchVisibility;
           listedInStore: boolean;
           status: VirtualContributorStatus;
+          bodyOfKnowledgeID: string;
+          bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
+          bodyOfKnowledge: string;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -20337,14 +20331,7 @@ export type VirtualContributorProfileWithModelCardQuery = {
                     | undefined;
                 };
               };
-          aiPersona: {
-            __typename?: 'AiPersona';
-            id: string;
-            bodyOfKnowledgeID?: string | undefined;
-            bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
-            bodyOfKnowledge?: string | undefined;
-            engine: AiPersonaEngine;
-          };
+          aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
           modelCard: {
             __typename?: 'VirtualContributorModelCard';
             spaceUsage?:
@@ -20380,6 +20367,9 @@ export type VirtualContributorProfileWithModelCardQuery = {
 export type VirtualContributorFullFragment = {
   __typename?: 'VirtualContributor';
   id: string;
+  bodyOfKnowledgeID: string;
+  bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
+  bodyOfKnowledge: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -20406,14 +20396,7 @@ export type VirtualContributorFullFragment = {
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
   };
-  aiPersona: {
-    __typename?: 'AiPersona';
-    id: string;
-    bodyOfKnowledgeID?: string | undefined;
-    bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
-    bodyOfKnowledge?: string | undefined;
-    engine: AiPersonaEngine;
-  };
+  aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
   modelCard: {
     __typename?: 'VirtualContributorModelCard';
     spaceUsage?:
@@ -20445,14 +20428,10 @@ export type VirtualContributorFullFragment = {
 
 export type VirtualContributorWithModelCardFragment = {
   __typename?: 'VirtualContributor';
-  aiPersona: {
-    __typename?: 'AiPersona';
-    id: string;
-    bodyOfKnowledgeID?: string | undefined;
-    bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
-    bodyOfKnowledge?: string | undefined;
-    engine: AiPersonaEngine;
-  };
+  bodyOfKnowledgeID: string;
+  bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
+  bodyOfKnowledge: string;
+  aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
   modelCard: {
     __typename?: 'VirtualContributorModelCard';
     spaceUsage?:
@@ -20488,7 +20467,12 @@ export type UpdateAiPersonaMutationVariables = Exact<{
 
 export type UpdateAiPersonaMutation = {
   __typename?: 'Mutation';
-  aiServerUpdateAiPersona: { __typename?: 'AiPersona'; id: string; prompt: Array<string> };
+  aiServerUpdateAiPersona: {
+    __typename?: 'AiPersona';
+    id: string;
+    prompt: Array<string>;
+    externalConfig?: { __typename?: 'ExternalConfig'; apiKey?: string | undefined } | undefined;
+  };
 };
 
 export type RefreshBodyOfKnowledgeMutationVariables = Exact<{
@@ -20611,17 +20595,15 @@ export type VirtualContributorKnowledgeBaseQuery = {
   virtualContributor: {
     __typename?: 'VirtualContributor';
     id: string;
-    knowledgeBase?:
-      | {
-          __typename?: 'KnowledgeBase';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-          calloutsSet: { __typename?: 'CalloutsSet'; id: string };
-        }
-      | undefined;
+    knowledgeBase: {
+      __typename?: 'KnowledgeBase';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+      calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+    };
   };
 };
 
@@ -20634,15 +20616,13 @@ export type VirtualContributorKnowledgePrivilegesQuery = {
   virtualContributor: {
     __typename?: 'VirtualContributor';
     id: string;
-    knowledgeBase?:
-      | {
-          __typename?: 'KnowledgeBase';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
+    knowledgeBase: {
+      __typename?: 'KnowledgeBase';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
   };
 };
 
@@ -24812,6 +24792,9 @@ export type AvailableVirtualContributorsInLibraryQuery = {
         __typename?: 'VirtualContributor';
         searchVisibility: SearchVisibility;
         id: string;
+        bodyOfKnowledgeID: string;
+        bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
+        bodyOfKnowledge: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -24844,14 +24827,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
               }>
             | undefined;
         };
-        aiPersona: {
-          __typename?: 'AiPersona';
-          id: string;
-          bodyOfKnowledgeID?: string | undefined;
-          bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
-          bodyOfKnowledge?: string | undefined;
-          engine: AiPersonaEngine;
-        };
+        aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
         modelCard: {
           __typename?: 'VirtualContributorModelCard';
           spaceUsage?:
@@ -24902,6 +24878,9 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
             virtualContributors: Array<{
               __typename?: 'VirtualContributor';
               id: string;
+              bodyOfKnowledgeID: string;
+              bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
+              bodyOfKnowledge: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -24940,14 +24919,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
                     }>
                   | undefined;
               };
-              aiPersona: {
-                __typename?: 'AiPersona';
-                id: string;
-                bodyOfKnowledgeID?: string | undefined;
-                bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
-                bodyOfKnowledge?: string | undefined;
-                engine: AiPersonaEngine;
-              };
+              aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
               modelCard: {
                 __typename?: 'VirtualContributorModelCard';
                 spaceUsage?:
@@ -25007,6 +24979,9 @@ export type AvailableVirtualContributorsInSpaceQuery = {
                 virtualContributors: Array<{
                   __typename?: 'VirtualContributor';
                   id: string;
+                  bodyOfKnowledgeID: string;
+                  bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
+                  bodyOfKnowledge: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -25045,14 +25020,7 @@ export type AvailableVirtualContributorsInSpaceQuery = {
                         }>
                       | undefined;
                   };
-                  aiPersona: {
-                    __typename?: 'AiPersona';
-                    id: string;
-                    bodyOfKnowledgeID?: string | undefined;
-                    bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
-                    bodyOfKnowledge?: string | undefined;
-                    engine: AiPersonaEngine;
-                  };
+                  aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
                   modelCard: {
                     __typename?: 'VirtualContributorModelCard';
                     spaceUsage?:
@@ -25097,6 +25065,9 @@ export type AvailableVirtualContributorsForRoleSetPaginatedFragment = {
   virtualContributors: Array<{
     __typename?: 'VirtualContributor';
     id: string;
+    bodyOfKnowledgeID: string;
+    bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
+    bodyOfKnowledge: string;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -25123,14 +25094,7 @@ export type AvailableVirtualContributorsForRoleSetPaginatedFragment = {
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
-    aiPersona: {
-      __typename?: 'AiPersona';
-      id: string;
-      bodyOfKnowledgeID?: string | undefined;
-      bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
-      bodyOfKnowledge?: string | undefined;
-      engine: AiPersonaEngine;
-    };
+    aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
     modelCard: {
       __typename?: 'VirtualContributorModelCard';
       spaceUsage?:
@@ -37019,25 +36983,23 @@ export type CreateVirtualContributorOnAccountMutation = {
       url: string;
       avatar?: { __typename?: 'Visual'; id: string } | undefined;
     };
-    knowledgeBase?:
-      | {
-          __typename?: 'KnowledgeBase';
+    knowledgeBase: {
+      __typename?: 'KnowledgeBase';
+      id: string;
+      calloutsSet: {
+        __typename?: 'CalloutsSet';
+        id: string;
+        callouts: Array<{
+          __typename?: 'Callout';
           id: string;
-          calloutsSet: {
-            __typename?: 'CalloutsSet';
+          framing: {
+            __typename?: 'CalloutFraming';
             id: string;
-            callouts: Array<{
-              __typename?: 'Callout';
-              id: string;
-              framing: {
-                __typename?: 'CalloutFraming';
-                id: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-              };
-            }>;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           };
-        }
-      | undefined;
+        }>;
+      };
+    };
   };
 };
 

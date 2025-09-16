@@ -436,34 +436,24 @@ export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
 };
 export type AiPersonaKeySpecifier = (
   | 'authorization'
-  | 'bodyOfKnowledge'
-  | 'bodyOfKnowledgeID'
   | 'bodyOfKnowledgeLastUpdated'
-  | 'bodyOfKnowledgeType'
   | 'createdDate'
-  | 'dataAccessMode'
   | 'description'
   | 'engine'
   | 'externalConfig'
   | 'id'
-  | 'interactionModes'
   | 'prompt'
   | 'updatedDate'
   | AiPersonaKeySpecifier
 )[];
 export type AiPersonaFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeLastUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   engine?: FieldPolicy<any> | FieldReadFunction<any>;
   externalConfig?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
   prompt?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2457,7 +2447,7 @@ export type MutationKeySpecifier = (
   | 'adminWingbackCreateTestCustomer'
   | 'adminWingbackGetCustomerEntitlements'
   | 'aiServerAuthorizationPolicyReset'
-  | 'aiServerCreateAiPersonaService'
+  | 'aiServerCreateAiPersona'
   | 'aiServerDeleteAiPersona'
   | 'aiServerUpdateAiPersona'
   | 'applyForEntryRoleOnRoleSet'
@@ -2637,7 +2627,7 @@ export type MutationFieldPolicy = {
   adminWingbackCreateTestCustomer?: FieldPolicy<any> | FieldReadFunction<any>;
   adminWingbackGetCustomerEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
-  aiServerCreateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServerCreateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerDeleteAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4566,12 +4556,15 @@ export type VirtualContributorKeySpecifier = (
   | 'aiPersonaID'
   | 'authorization'
   | 'bodyOfKnowledge'
+  | 'bodyOfKnowledgeID'
+  | 'bodyOfKnowledgeType'
   | 'createdDate'
   | 'dataAccessMode'
   | 'description'
   | 'id'
   | 'interactionModes'
   | 'knowledgeBase'
+  | 'knowledgeSpace'
   | 'listedInStore'
   | 'modelCard'
   | 'nameID'
@@ -4590,12 +4583,15 @@ export type VirtualContributorFieldPolicy = {
   aiPersonaID?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
   knowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
+  knowledgeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   modelCard?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;

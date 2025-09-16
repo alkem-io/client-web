@@ -1,4 +1,4 @@
-import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaEngine, VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { VirtualContributorModelCard } from './VirtualContributorModelCardModel';
 
@@ -35,13 +35,13 @@ export type VirtualContributorModelFull = {
       url: string;
     };
   };
+  aiPersonaID?: string;
+  bodyOfKnowledge?: string;
+  bodyOfKnowledgeType?: VirtualContributorBodyOfKnowledgeType;
+  bodyOfKnowledgeID?: string;
+  modelCard: VirtualContributorModelCard;
   aiPersona: {
     id: string;
-    bodyOfKnowledge?: string;
-    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType;
-    bodyOfKnowledgeID?: string;
     engine?: AiPersonaEngine;
-    modelCard: VirtualContributorModelCard;
-    aiPersonaServiceID?: string;
   };
 };

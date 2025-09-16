@@ -1,4 +1,4 @@
-query AiPersonaService($id: UUID!) {
+query AiPersona($id: UUID!) {
   aiServer {
     aiPersona(ID: $id) {
       id
@@ -29,11 +29,12 @@ query VirtualContributor($id: UUID!) {
       listedInStore
       status
       aiPersonaID
+      bodyOfKnowledgeID
+      bodyOfKnowledgeType
+      bodyOfKnowledge
+
       aiPersona {
         id
-        bodyOfKnowledgeID
-        bodyOfKnowledgeType
-        bodyOfKnowledge
         engine
       }
       profile {

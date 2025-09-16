@@ -44,7 +44,7 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
     }
   };
 
-  const modelCard = virtualContributor?.aiPersona.modelCard ?? EMPTY_MODEL_CARD;
+  const modelCard = virtualContributor?.modelCard ?? EMPTY_MODEL_CARD;
   const { sections } = useTemporaryHardCodedVCProfilePageData(modelCard);
 
   const renderCellIcon = (iconName: string) => {

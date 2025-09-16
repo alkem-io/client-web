@@ -1,9 +1,9 @@
 fragment VirtualContributorWithModelCard on VirtualContributor {
+  bodyOfKnowledgeID
+  bodyOfKnowledgeType
+  bodyOfKnowledge
   aiPersona {
     id
-    bodyOfKnowledgeID
-    bodyOfKnowledgeType
-    bodyOfKnowledge
     engine
   }
   modelCard {

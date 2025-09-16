@@ -13,7 +13,7 @@ import {
   useSpaceAboutBaseLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
-  AiPersonaBodyOfKnowledgeType,
+  VirtualContributorBodyOfKnowledgeType,
   AuthorizationPrivilege,
   RoleName,
   CreateCalloutInput,
@@ -228,6 +228,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       const variables: CreateVirtualContributorOnAccountMutationVariables = {
         virtualContributorData: {
           accountID: accountId,
+          bodyOfKnowledgeType: values.bodyOfKnowledgeType,
+          bodyOfKnowledge: vcBoKId,
           profileData: {
             displayName: values.name,
             tagline: values.tagline,
@@ -235,8 +237,6 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           },
           aiPersona: {
             engine: values.engine,
-            bodyOfKnowledgeType: values.bodyOfKnowledgeType,
-            bodyOfKnowledgeID: vcBoKId,
           },
           knowledgeBaseData: {
             calloutsSetData: {
@@ -486,7 +486,10 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   // ###STEP 'existingKnowledge' - Existing Knowledge
   const handleCreateVCWithExistingKnowledge = async (selectedKnowledge: SelectableKnowledgeSpace) => {
     if (selectedKnowledge && virtualContributorInput && myAccountId) {
-      const values = { ...virtualContributorInput, bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType.AlkemioSpace };
+      const values = {
+        ...virtualContributorInput,
+        bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType.AlkemioSpace,
+      };
 
       const createdVC = await executeVcCreation({
         values,
@@ -519,7 +522,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         virtualContributorInput.externalConfig.assistantId = externalVcValues.assistantId;
       }
 
-      virtualContributorInput.bodyOfKnowledgeType = AiPersonaBodyOfKnowledgeType.None;
+      virtualContributorInput.bodyOfKnowledgeType = VirtualContributorBodyOfKnowledgeType.None;
 
       const createdVc = await executeVcCreation({
         values: virtualContributorInput,

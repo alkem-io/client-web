@@ -1,4 +1,4 @@
-import { useAiPersonaServiceQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useAiPersonaQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
 import * as yup from 'yup';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -24,32 +24,32 @@ const PromptConfig = ({ vc }) => {
   const notify = useNotification();
   const [prompt, setPrompt] = useState('');
   const [isValid, setIsValid] = useState(false);
-  const aiPersonaServiceId = vc?.aiPersona?.aiPersonaServiceID;
+  const aiPersonaId = vc?.aiPersonaID;
 
-  const { data, loading } = useAiPersonaServiceQuery({
-    variables: { id: aiPersonaServiceId },
-    skip: !aiPersonaServiceId,
+  const { data, loading } = useAiPersonaQuery({
+    variables: { id: aiPersonaId },
+    skip: !aiPersonaId,
   });
-  const aiPersonaService = data?.aiServer.aiPersona;
+  const aiPersona = data?.aiServer.aiPersona;
 
-  const [updateAiPersonaService, { loading: updateLoading }] = useUpdateAiPersonaMutation();
+  const [updateAiPersona, { loading: updateLoading }] = useUpdateAiPersonaMutation();
 
   const initialValues: FormValueType = useMemo(() => {
-    setPrompt(aiPersonaService?.prompt[0] || '');
+    setPrompt(aiPersona?.prompt[0] || '');
     return {
-      prompt: aiPersonaService?.prompt[0] || '',
+      prompt: aiPersona?.prompt[0] || '',
     };
-  }, [aiPersonaService?.id]);
+  }, [aiPersona?.id]);
 
   const validationSchema = yup.object().shape({
     prompt: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   });
 
   const handleSubmit = () => {
-    updateAiPersonaService({
+    updateAiPersona({
       variables: {
         aiPersonaData: {
-          ID: aiPersonaService?.id!,
+          ID: aiPersona?.id!,
           prompt: [prompt],
         },
       },
