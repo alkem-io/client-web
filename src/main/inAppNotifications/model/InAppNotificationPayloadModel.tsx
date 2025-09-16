@@ -86,6 +86,8 @@ export interface InAppNotificationPayloadModel {
   discussion?: {
     id: string;
     displayName: string;
+    description?: string;
+    category?: string;
     url: string;
   };
   comment?: string;
