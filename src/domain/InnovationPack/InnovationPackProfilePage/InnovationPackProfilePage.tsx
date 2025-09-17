@@ -17,6 +17,7 @@ import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/Templat
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import InnovationPackTemplateMenu from './InnovationPackTemplateMenu';
 
 const InnovationPackProfilePage = () => {
   const { t } = useTranslation();
@@ -65,11 +66,20 @@ const InnovationPackProfilePage = () => {
                 {references && !references.length && <Text>{t('components.referenceSegment.missing-references')}</Text>}
               </Gutters>
             </PageContentBlock>
+            <PageContentBlock sx={{ flexDirection: 'column' }}>
+              <PageContentBlockHeader title={t('common.templateTypes')} />
+              <InnovationPackTemplateMenu templatesSetId={templatesSetId} />
+            </PageContentBlock>
           </PageContentColumn>
           <PageContentColumn columns={isMediumSmallScreen ? 12 : 9}>
             {loading && <Loading />}
             {!loading && templatesSetId && (
-              <TemplatesAdmin templatesSetId={templatesSetId} templateId={templateId} baseUrl={baseUrl} />
+              <TemplatesAdmin
+                templatesSetId={templatesSetId}
+                templateId={templateId}
+                baseUrl={baseUrl}
+                showCounts={false}
+              />
             )}
           </PageContentColumn>
         </PageContent>
