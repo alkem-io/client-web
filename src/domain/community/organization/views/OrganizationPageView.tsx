@@ -23,6 +23,7 @@ import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMem
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import Loading from '@/core/ui/loading/Loading';
 import { UseOrganizationProvided } from '../useOrganization/useOrganization';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 type OrganizationPageViewProps = {
   organizationProvided: UseOrganizationProvided;
@@ -36,6 +37,8 @@ export const OrganizationPageView = ({
   loading,
 }: OrganizationPageViewProps) => {
   const { t } = useTranslation();
+
+  const { isMediumSmallScreen } = useScreenSize();
 
   const { permissions, references, organization, capabilities, keywords, associates, contributions } =
     organizationProvided;
@@ -80,11 +83,11 @@ export const OrganizationPageView = ({
 
   return (
     <PageContent>
-      <PageContentColumn columns={4}>
+      <PageContentColumn columns={isMediumSmallScreen ? 12 : 3}>
         <OrganizationProfileView entity={entity} permissions={permissions} />
         <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
       </PageContentColumn>
-      <PageContentColumn columns={8}>
+      <PageContentColumn columns={9}>
         {hasAccountResources && (
           <AccountResourcesView
             title={t('pages.organization.profile.accountResources.sectionTitle')}

@@ -8,7 +8,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import ErrorBlock from '@/core/ui/error/ErrorBlock';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import LinksList from '@/core/ui/list/LinksList';
+import SubspaceLinkList from '@/core/ui/list/SubspaceLinkList';
 import Loading from '@/core/ui/loading/Loading';
 import SearchField from '@/core/ui/search/SearchField';
 import { Caption } from '@/core/ui/typography';
@@ -103,7 +103,7 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
             />
           )}
 
-          <LinksList items={filteredItems} />
+          <SubspaceLinkList items={filteredItems} />
         </PageContentBlock>
       </InfoColumn>
       <ContentColumn>

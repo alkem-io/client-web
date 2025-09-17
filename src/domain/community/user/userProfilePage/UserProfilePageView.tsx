@@ -13,6 +13,7 @@ import AccountResourcesView, {
 } from '@/domain/community/contributor/Account/AccountResourcesView';
 import useFilteredMemberships from '../hooks/useFilteredMemberships';
 import { RoleType } from '../constants/RoleType';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {
   contributions: SpaceHostedItem[] | undefined;
@@ -28,6 +29,8 @@ export const UserProfilePageView = ({
 }: UserProfileViewPageProps) => {
   const { t } = useTranslation();
 
+  const { isMediumSmallScreen } = useScreenSize();
+
   const [filteredMemberships, remainingMemberships] = useFilteredMemberships(contributions, [
     RoleType.Lead,
     RoleType.Admin,
@@ -37,7 +40,7 @@ export const UserProfilePageView = ({
 
   return (
     <PageContent>
-      <PageContentColumn columns={4}>
+      <PageContentColumn columns={isMediumSmallScreen ? 12 : 3}>
         <UserProfileView userModel={userModel} />
         <AssociatedOrganizationsLazilyFetched
           organizationIds={organizationIds ?? []}
@@ -45,7 +48,7 @@ export const UserProfilePageView = ({
           helpText={t('pages.user-profile.associated-organizations.help')}
         />
       </PageContentColumn>
-      <PageContentColumn columns={8}>
+      <PageContentColumn columns={9}>
         {hasAccountResources && (
           <AccountResourcesView
             title={t('pages.user-profile.accountResources.sectionTitle')}

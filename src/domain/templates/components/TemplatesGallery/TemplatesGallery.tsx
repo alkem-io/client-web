@@ -9,6 +9,7 @@ import { times } from 'lodash';
 
 type TemplatesGalleryProps = {
   headerText: string;
+  headerId?: string;
   actions?: ReactNode;
 
   // Provided by the container
@@ -19,6 +20,7 @@ type TemplatesGalleryProps = {
 
 const TemplatesGallery = ({
   headerText,
+  headerId,
   actions,
   templates,
   loading,
@@ -26,7 +28,7 @@ const TemplatesGallery = ({
 }: PropsWithChildren<TemplatesGalleryProps>) => (
   <>
     <PageContentBlock>
-      <PageContentBlockHeader title={headerText} actions={actions} />
+      <PageContentBlockHeader title={headerText} titleId={headerId} actions={actions} />
       <ScrollableCardsLayoutContainer>
         {loading && !templates ? times(3, i => <ContributeCardSkeleton key={i} />) : null}
         {templates?.map(template => (

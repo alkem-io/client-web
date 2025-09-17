@@ -22,6 +22,7 @@ import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizo
 import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
 import { SpaceBodyOfKnowledgeModel } from '../model/SpaceBodyOfKnowledgeModel';
 import { EMPTY_MODEL_CARD } from '../model/AiPersonaModelCardModel';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 const OTHER_LINK_GROUP = 'other';
 const SOCIAL_LINK_GROUP = 'social';
@@ -38,6 +39,8 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
   const navigate = useNavigate();
 
   const { t } = useTranslation();
+
+  const { isMediumSmallScreen } = useScreenSize();
 
   const { hasReadAccess, knowledgeBaseDescription } = useKnowledgeBase({ id: virtualContributor?.id });
 
@@ -87,7 +90,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
 
   return (
     <PageContent>
-      <PageContentColumn columns={4}>
+      <PageContentColumn columns={isMediumSmallScreen ? 12 : 3}>
         <PageContentBlock disableGap>
           <ProfileDetail
             title={t('components.profile.fields.description.title')}
@@ -185,7 +188,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
         )}
       </PageContentColumn>
 
-      <PageContentColumn columns={8}>
+      <PageContentColumn columns={9}>
         <VCProfileContentView virtualContributor={virtualContributor} {...rest} />
       </PageContentColumn>
     </PageContent>
