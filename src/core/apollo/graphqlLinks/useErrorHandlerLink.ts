@@ -6,6 +6,7 @@ import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 // Don't report these errors in the bottom right corner
 const EXCLUDE_FROM_GLOBAL_HANDLER_ERRORS = [
   AlkemioGraphqlErrorCode.FORBIDDEN,
+  AlkemioGraphqlErrorCode.FORBIDDEN_POLICY,
   AlkemioGraphqlErrorCode.URL_RESOLVER_ERROR,
 ];
 
