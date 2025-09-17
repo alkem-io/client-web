@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '../apollo/generated/graphql-schema';
 import { useLocation, useNavigate, NavigateOptions } from 'react-router-dom';
 import { useEffect } from 'react';
-import { isApolloForbiddenError } from '../apollo/hooks/useApolloErrorHandler';
+import { isApolloForbiddenError, isApolloForbiddenPolicyError } from '../apollo/hooks/useApolloErrorHandler';
 
 interface RestrictedRedirectQueryResponse<Data extends {}> {
   data?: Data;
@@ -42,7 +42,7 @@ const useRestrictedRedirect = <Data extends {}>(
 
     const privileges = data ? readPrivileges(data) : undefined;
 
-    if (error && isApolloForbiddenError(error)) {
+    if (error && (isApolloForbiddenError(error) || isApolloForbiddenPolicyError(error))) {
       navigate(redirectUrl, navigateOptions);
     }
 
