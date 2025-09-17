@@ -1,4 +1,4 @@
-import { Link, List, ListItem, ListItemIcon, Skeleton, useTheme } from '@mui/material';
+import { List, ListItem, ListItemIcon, Skeleton, useTheme } from '@mui/material';
 import { ReactNode } from 'react';
 import { times } from 'lodash';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
@@ -6,7 +6,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { SvgIconComponent } from '@mui/icons-material';
 import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
 
-interface Link {
+interface LinkItem {
   id: string;
   title: string;
   url?: string;
@@ -15,7 +15,7 @@ interface Link {
 }
 
 export interface LinksListProps {
-  links?: Link[];
+  links?: LinkItem[];
   loading?: boolean;
   emptyListCaption?: ReactNode;
 }

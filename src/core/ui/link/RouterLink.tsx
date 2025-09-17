@@ -54,7 +54,15 @@ const RouterLink = ({
     [isNativeLink ? 'href' : 'to']: getToParam(),
   };
 
-  return <MuiLink ref={ref} target={shouldOpenNewWindow ? '_blank' : undefined} {...componentProps} {...props} />;
+  return (
+    <MuiLink
+      ref={ref}
+      target={shouldOpenNewWindow ? '_blank' : undefined}
+      rel={shouldOpenNewWindow ? 'noopener' : undefined}
+      {...componentProps}
+      {...props}
+    />
+  );
 };
 
 export default RouterLink;
