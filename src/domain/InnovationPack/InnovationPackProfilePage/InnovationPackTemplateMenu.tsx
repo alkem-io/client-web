@@ -44,6 +44,12 @@ const InnovationPackTemplateMenu = ({ templatesSetId }: InnovationPackTemplateMe
           count: whiteboardTemplates?.length ?? 0,
         },
         {
+          id: 'postTemplates',
+          title: t(`common.enums.templateType.${TemplateType.Post}_plural`),
+          url: postTemplates && postTemplates.length > 0 ? `#${TemplateType.Post.toLowerCase()}` : undefined,
+          count: postTemplates?.length ?? 0,
+        },
+        {
           id: 'communityGuidelinesTemplates',
           title: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
           url:
@@ -51,12 +57,6 @@ const InnovationPackTemplateMenu = ({ templatesSetId }: InnovationPackTemplateMe
               ? `#${TemplateType.CommunityGuidelines.toLowerCase()}`
               : undefined,
           count: communityGuidelinesTemplates?.length ?? 0,
-        },
-        {
-          id: 'postTemplates',
-          title: t(`common.enums.templateType.${TemplateType.Post}_plural`),
-          url: postTemplates && postTemplates.length > 0 ? `#${TemplateType.Post.toLowerCase()}` : undefined,
-          count: postTemplates?.length ?? 0,
         },
       ]}
       emptyListCaption={t('common.noneTemplates')}
