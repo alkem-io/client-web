@@ -93,7 +93,7 @@ export const isApolloForbiddenPolicyError = (error: ApolloError | undefined) => 
 };
 
 export const isApolloAuthorizationError = (error: ApolloError | undefined) => {
-  return (error && isApolloForbiddenError(error)) || isApolloForbiddenPolicyError(error);
+  return error && (isApolloForbiddenError(error) || isApolloForbiddenPolicyError(error));
 };
 
 export const isUrlResolverError = (error: ApolloError | undefined) => {
