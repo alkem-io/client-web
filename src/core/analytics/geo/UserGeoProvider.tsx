@@ -29,13 +29,14 @@ export const UserGeoContext = createContext<UserGeoContextProps>({
 export const UserGeoProvider = ({ children }: PropsWithChildren) => {
   const { geo } = useConfig();
   const geoEndpoint = geo?.endpoint;
+  const disabled = !geo?.enabled;
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
-  const [data, setGeo] = useState<UserGeoData | undefined>();
+  const [data, setGeo] = useState<UserGeoData | undefined>({ latitude: 0, longitude: 0 });
 
   useEffect(() => {
-    if (skipOnLocal || !geoEndpoint) {
+    if (skipOnLocal || !geoEndpoint || disabled) {
       return;
     }
 
@@ -48,7 +49,7 @@ export const UserGeoProvider = ({ children }: PropsWithChildren) => {
       }
       setLoading(false);
     })();
-  }, [skipOnLocal, geoEndpoint]);
+  }, [skipOnLocal, geoEndpoint, disabled]);
 
   return <UserGeoContext value={{ data, loading, error }}>{children}</UserGeoContext>;
 };
