@@ -44,17 +44,22 @@ const useRestrictedRedirect = <Data extends {}>(
       return;
     }
 
-    if (!isAuthenticated) {
-      navigate(`${AUTH_REQUIRED_PATH}${buildReturnUrlParam(pathname)}`);
-      return;
-    }
-
-    const privileges = data ? readPrivileges(data) : undefined;
-
+    // Check for authorization error first
     if (isApolloAuthorizationError(error)) {
-      navigate(redirectUrl, navigateOptions);
-      return;
+      // If we have an authorization error, check authentication
+      if (!isAuthenticated) {
+        // Not authenticated with auth error -> redirect to sign in
+        navigate(`${AUTH_REQUIRED_PATH}${buildReturnUrlParam(pathname)}`);
+        return;
+      } else {
+        // Authenticated but authorization error -> redirect to restricted
+        navigate(redirectUrl, navigateOptions);
+        return;
+      }
     }
+
+    // Check privileges authorization error
+    const privileges = data ? readPrivileges(data) : undefined;
 
     if (data && !privileges?.includes(requiredPrivilege)) {
       navigate(redirectUrl, navigateOptions);
