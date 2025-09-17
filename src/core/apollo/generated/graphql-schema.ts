@@ -2174,7 +2174,7 @@ export type CreateVirtualContributorOnAccountInput = {
   /** The ID of the AiPersona to use for this Collaboration. */
   aiPersona: CreateAiPersonaInput;
   /** The ID of the body of knowledge (if any) to use. */
-  bodyOfKnowledge?: InputMaybe<Scalars['String']['input']>;
+  bodyOfKnowledgeID?: InputMaybe<Scalars['String']['input']>;
   bodyOfKnowledgeType?: InputMaybe<VirtualContributorBodyOfKnowledgeType>;
   dataAccessMode?: InputMaybe<VirtualContributorDataAccessMode>;
   interactionModes?: InputMaybe<Array<VirtualContributorInteractionMode>>;
@@ -8334,10 +8334,10 @@ export type VirtualContributor = Contributor & {
   aiPersonaID: Scalars['UUID']['output'];
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
-  /** The body of knowledge used by this Virtual Contributor. */
-  bodyOfKnowledge: Scalars['String']['output'];
-  /** The ID of the body of knowledge used by this virtual contributor */
-  bodyOfKnowledgeID: Scalars['String']['output'];
+  /** Description of the body of knowledge for this VC. */
+  bodyOfKnowledge?: Maybe<Scalars['Markdown']['output']>;
+  /** The ID of the body of knowledge used by this Virtual Contributor. */
+  bodyOfKnowledgeID: Scalars['UUID']['output'];
   /** The type of body of knowledge used by this Virtual Contributor. */
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   /** The date at which the entity was created. */
@@ -19968,7 +19968,7 @@ export type VirtualContributorQuery = {
           aiPersonaID: string;
           bodyOfKnowledgeID: string;
           bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-          bodyOfKnowledge: string;
+          bodyOfKnowledge?: string | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -20233,7 +20233,7 @@ export type VirtualContributorProfileWithModelCardQuery = {
           status: VirtualContributorStatus;
           bodyOfKnowledgeID: string;
           bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-          bodyOfKnowledge: string;
+          bodyOfKnowledge?: string | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -20373,7 +20373,7 @@ export type VirtualContributorFullFragment = {
   id: string;
   bodyOfKnowledgeID: string;
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-  bodyOfKnowledge: string;
+  bodyOfKnowledge?: string | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -20434,7 +20434,7 @@ export type VirtualContributorWithModelCardFragment = {
   __typename?: 'VirtualContributor';
   bodyOfKnowledgeID: string;
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-  bodyOfKnowledge: string;
+  bodyOfKnowledge?: string | undefined;
   aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
   modelCard: {
     __typename?: 'VirtualContributorModelCard';
@@ -24798,7 +24798,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
         id: string;
         bodyOfKnowledgeID: string;
         bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-        bodyOfKnowledge: string;
+        bodyOfKnowledge?: string | undefined;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -24884,7 +24884,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
               id: string;
               bodyOfKnowledgeID: string;
               bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-              bodyOfKnowledge: string;
+              bodyOfKnowledge?: string | undefined;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -24985,7 +24985,7 @@ export type AvailableVirtualContributorsInSpaceQuery = {
                   id: string;
                   bodyOfKnowledgeID: string;
                   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-                  bodyOfKnowledge: string;
+                  bodyOfKnowledge?: string | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -25071,7 +25071,7 @@ export type AvailableVirtualContributorsForRoleSetPaginatedFragment = {
     id: string;
     bodyOfKnowledgeID: string;
     bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-    bodyOfKnowledge: string;
+    bodyOfKnowledge?: string | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;

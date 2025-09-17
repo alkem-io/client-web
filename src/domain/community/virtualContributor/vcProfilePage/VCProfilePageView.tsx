@@ -153,7 +153,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
                 <Gutters disableGap disablePadding paddingTop={1}>
                   <SpaceCardHorizontal
                     space={{
-                      id: virtualContributor?.bodyOfKnowledge,
+                      id: virtualContributor?.bodyOfKnowledgeID,
                       about: { profile: rest?.bokProfile || defaultProfile },
                       level: SpaceLevel.L0,
                     }}

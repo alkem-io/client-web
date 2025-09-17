@@ -229,7 +229,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         virtualContributorData: {
           accountID: accountId,
           bodyOfKnowledgeType: values.bodyOfKnowledgeType,
-          bodyOfKnowledge: vcBoKId,
+          bodyOfKnowledgeID: vcBoKId,
           profileData: {
             displayName: values.name,
             tagline: values.tagline,
