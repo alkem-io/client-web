@@ -2,7 +2,10 @@ import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '../apollo/generated/graphql-schema';
 import { useLocation, useNavigate, NavigateOptions } from 'react-router-dom';
 import { useEffect } from 'react';
-import { isApolloForbiddenError } from '../apollo/hooks/useApolloErrorHandler';
+import { isApolloAuthorizationError } from '../apollo/hooks/useApolloErrorHandler';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { AUTH_REQUIRED_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { buildReturnUrlParam } from '@/main/routing/urlBuilders';
 
 interface RestrictedRedirectQueryResponse<Data extends {}> {
   data?: Data;
@@ -32,6 +35,7 @@ const useRestrictedRedirect = <Data extends {}>(
 ) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const redirectUrl = `/restricted?origin=${encodeURI(pathname)}`;
 
@@ -40,14 +44,23 @@ const useRestrictedRedirect = <Data extends {}>(
       return;
     }
 
-    if (error && isApolloForbiddenError(error)) {
-      navigate(redirectUrl, navigateOptions);
+    if (!isAuthenticated) {
+      navigate(`${AUTH_REQUIRED_PATH}${buildReturnUrlParam(pathname)}`);
+      return;
     }
 
-    if (data && !readPrivileges(data)?.includes(requiredPrivilege)) {
+    const privileges = data ? readPrivileges(data) : undefined;
+
+    if (isApolloAuthorizationError(error)) {
       navigate(redirectUrl, navigateOptions);
+      return;
     }
-  }, [data, error, skip]);
+
+    if (data && !privileges?.includes(requiredPrivilege)) {
+      navigate(redirectUrl, navigateOptions);
+      return;
+    }
+  }, [data, error, skip, isAuthenticated]);
 };
 
 export default useRestrictedRedirect;
