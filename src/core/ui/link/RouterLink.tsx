@@ -29,29 +29,40 @@ const RouterLink = ({
 }) => {
   const base = useUrlBase();
 
-  if (!isAbsoluteUrl(to) && base && !to.startsWith('/')) {
+  // Handle anchor links (hash fragments) - don't modify them
+  const isAnchorLink = to.startsWith('#');
+
+  if (!isAnchorLink && !isAbsoluteUrl(to) && base && !to.startsWith('/')) {
     to = `${base}/${to}`;
   }
 
   const urlLike = !strict ? normalizeLink(to) : to;
 
-  const isForeign = raw || isAbsoluteUrl(urlLike);
+  const isNativeLink = raw || isAbsoluteUrl(urlLike) || isAnchorLink;
 
-  const shouldOpenNewWindow = blank ?? isForeign;
+  const shouldOpenNewWindow = blank ?? (raw || isAbsoluteUrl(urlLike));
 
   const getToParam = () => {
-    if (isForeign || !keepScroll) {
+    if (isNativeLink || !keepScroll) {
       return urlLike;
     }
     return { pathname: urlLike, state: { keepScroll: true } };
   };
 
   const componentProps = {
-    component: isForeign ? undefined : ReactRouterLink,
-    [isForeign ? 'href' : 'to']: getToParam(),
+    component: isNativeLink ? undefined : ReactRouterLink,
+    [isNativeLink ? 'href' : 'to']: getToParam(),
   };
 
-  return <MuiLink ref={ref} target={shouldOpenNewWindow ? '_blank' : undefined} {...componentProps} {...props} />;
+  return (
+    <MuiLink
+      ref={ref}
+      target={shouldOpenNewWindow ? '_blank' : undefined}
+      rel={shouldOpenNewWindow ? 'noopener' : undefined}
+      {...componentProps}
+      {...props}
+    />
+  );
 };
 
 export default RouterLink;
