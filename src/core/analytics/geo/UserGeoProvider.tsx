@@ -33,10 +33,13 @@ export const UserGeoProvider = ({ children }: PropsWithChildren) => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
-  const [data, setGeo] = useState<UserGeoData | undefined>({ latitude: 0, longitude: 0 });
+  const [data, setGeo] = useState<UserGeoData | undefined>();
 
   useEffect(() => {
     if (skipOnLocal || !geoEndpoint || disabled) {
+      setLoading(false);
+      setGeo(undefined);
+      setError(undefined);
       return;
     }
 
