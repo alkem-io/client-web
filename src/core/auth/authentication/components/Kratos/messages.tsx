@@ -31,13 +31,6 @@ export const useKratosT = () => {
       const label = messages[kratosMessage.id];
       const replacement = kratosMessage.context as Record<string, string | number>;
 
-      // Add type parameter for password recovery messages
-      if (kratosMessage.id === 1060002) {
-        replacement.type = 'link';
-      } else if (kratosMessage.id === 1060003) {
-        replacement.type = 'code';
-      }
-
       // It's hard to convince t() that the constructed label is a valid translation key
       return (
         <Trans

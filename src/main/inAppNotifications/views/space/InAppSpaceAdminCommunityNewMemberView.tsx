@@ -12,14 +12,13 @@ export const InAppSpaceAdminCommunityNewMemberView = (notification: InAppNotific
   const notificationTextValues = {
     spaceName: payload.space?.about?.profile?.displayName,
     memberName: payload.contributor?.profile?.displayName,
-    memberType: '', // todo: missing memberType (Admin, member, lead)
   };
 
   return (
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={payload.space?.about?.profile?.url}
+      url={payload.contributor?.profile?.url}
     />
   );
 };

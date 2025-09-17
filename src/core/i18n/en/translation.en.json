@@ -322,8 +322,8 @@
     "subsubspace": "Subspace",
     "subsubspaces": "Subspaces",
     "spaceSubspace": "(Sub)Space",
-    "spacesSubspaces": "(Sub)Spaces",
     "entities": "{{entityType}}",
+    "spaceSubspaces": "(Sub)Spaces",
     "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
     "Organization": "Organization",
@@ -431,7 +431,7 @@
     "url": "URL",
     "sources": "Sources",
     "license": "License",
-    "virtual-contributor": "Virtual Contributor",
+    "virtualContributor": "Virtual Contributor",
     "virtualContributors": "Virtual Contributors",
     "collaborationTool": "Collaboration tool",
     "optional": "optional",
@@ -529,7 +529,7 @@
       "roleSetContributorType": {
         "USER": "User",
         "ORGANIZATION": "$t(common.Organization)",
-        "VIRTUAL": "$t(common.virtual-contributor)"
+        "VIRTUAL": "$t(common.virtualContributor)"
       }
     },
     "blocks": {
@@ -597,7 +597,7 @@
     "leads": "Leads",
     "members": "$t(common.Members)",
     "host": "Host",
-    "virtualContributor": "$t(common.virtual-contributor)",
+    "virtualContributor": "$t(common.virtualContributor)",
     "members-count": "{{count}} $t(common.Member)",
     "members-count_plural": "{{count}} $t(common.Members)",
     "addMember": "Add $t(common.member)",
@@ -605,11 +605,11 @@
     "virtualContributors": {
       "blockTitle": "$t(common.virtualContributors) ({{count}})",
       "removeDialog": {
-        "title": "Remove $t(common.virtual-contributor)",
+        "title": "Remove $t(common.virtualContributor)",
         "confirm": "Are you sure?"
       },
-      "externalVCsInfo": "At the moment, only Alkemio Support can add an external $t(common.virtual-contributor) to your $t(common.space). Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
-      "searchVC": "Find $t(common.virtual-contributor)",
+      "externalVCsInfo": "At the moment, only Alkemio Support can add an external $t(common.virtualContributor) to your $t(common.space). Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
+      "searchVC": "Find $t(common.virtualContributor)",
       "permissionRequiredTooltip": "To use $t(common.virtualContributors), please upgrade your license or contact the Alkemio team for assistance."
     },
     "application-form": {
@@ -644,7 +644,7 @@
       "inviteButton": {
         "USER": "Invite people to this $t(common.space)",
         "ORGANIZATION": "Invite people to this $t(common.space)",
-        "VIRTUAL": "Invite $t(common.virtual-contributor)"
+        "VIRTUAL": "Invite $t(common.virtualContributor)"
       },
       "inviteToRole": "Invite to be a: ",
       "inviteContributorsDialog": {
@@ -674,11 +674,11 @@
         },
         "vcs": {
           "title": "$t(common.virtualContributors) Store",
-          "dialogTitle": "Invite $t(common.virtual-contributor) to join this $t(common.space)",
+          "dialogTitle": "Invite $t(common.virtualContributor) to join this $t(common.space)",
           "invitationSent": "Invitation sent successfully",
           "inviteExternalVC": "Invite External VC",
-          "inviteBtn": "Invite $t(common.virtual-contributor)",
-          "defaultVCInvitationMessage": "Hi, I would like to invite your $t(common.virtual-contributor) {{name}} to {{space}}. Have a look at the $t(common.space) or click on the button below to directly accept or decline the invitation.",
+          "inviteBtn": "Invite $t(common.virtualContributor)",
+          "defaultVCInvitationMessage": "Hi, I would like to invite your $t(common.virtualContributor) {{name}} to {{space}}. Have a look at the $t(common.space) or click on the button below to directly accept or decline the invitation.",
           "onAccount": {
             "title": "$t(common.virtualContributors) linked to this $t(common.space)'s $t(common.account)"
           },
@@ -722,12 +722,12 @@
       "pendingMemberships": "My Pending $t(common.Memberships)",
       "pendingMembershipsWithCount": "My Pending $t(common.Memberships) ({{count}})",
       "invitationsSectionTitle": "Invitations",
-      "virtualInvitationsSectionTitle": "Invitations for my $t(common.virtual-contributor)",
+      "virtualInvitationsSectionTitle": "Invitations for my $t(common.virtualContributor)",
       "applicationsSectionTitle": "Open applications",
       "invitationDialog": {
         "title": "My Pending $t(common.Membership): {{space}}",
         "vc": {
-          "title": "Pending $t(common.virtual-contributor) $t(common.membership): {{space}}"
+          "title": "Pending $t(common.virtualContributor) $t(common.membership): {{space}}"
         },
         "actions": {
           "hide": "Hide this invitation",
@@ -739,7 +739,7 @@
       "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
       "invitationCardTitle": "{{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
       "you": "you",
-      "vc": "your $t(common.virtual-contributor)"
+      "vc": "your $t(common.virtualContributor)"
     },
     "memberSettings": {
       "title": "$t(common.Member) $t(common.settings)",
@@ -1827,7 +1827,7 @@
         "engines": {
           "external": "OpenAI Generic",
           "externalAssistant": "OpenAI Assistant",
-          "externalVCDescription": "This $t(common.virtual-contributor) utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible."
+          "externalVCDescription": "This $t(common.virtualContributor) utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible."
         },
         "bodyOfKnowledge": {
           "title": "Body of Knowledge",
@@ -1882,7 +1882,7 @@
       },
       "vcInteractions": {
         "disclaimer": "Create a new $t(common.comment) to interact with another VC.",
-        "help": "You can only interact with one $t(common.virtual-contributor) per thread ($t(common.comment) + 'sub’comments). If you’d like to engage with another VC, start a new thread by creating a $t(common.comment) in the bottom input field."
+        "help": "You can only interact with one $t(common.virtualContributor) per thread ($t(common.comment) + 'sub’comments). If you’d like to engage with another VC, start a new thread by creating a $t(common.comment) in the bottom input field."
       }
     },
     "discussionForm": {
@@ -1966,11 +1966,11 @@
           "description": ""
         },
         "SPACE_COLLABORATION_CALLOUT_CONTRIBUTION": {
-          "subject": "{{triggeredByName}} created a post \"{{calloutName}}\"",
+          "subject": "{{triggeredByName}} created a contribution in \"{{calloutName}}\"",
           "description": "In <b>{{spaceName}}</b>, of which you are a member."
         },
         "SPACE_ADMIN_COLLABORATION_CALLOUT_CONTRIBUTION": {
-          "subject": "{{triggeredByName}} created a post \"{{calloutName}}\"",
+          "subject": "{{triggeredByName}} created a contribution in \"{{calloutName}}\"",
           "description": "In <b>{{spaceName}}</b>, of which you are an admin."
         },
         "SPACE_ADMIN_COMMUNITY_APPLICATION": {
@@ -1979,6 +1979,10 @@
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
           "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
+          "description": ""
+        },
+        "SPACE_COMMUNICATION_MESSAGE_SENDER": {
+          "subject": "You sent a message to the leads of {{spaceName}}",
           "description": ""
         },
         "SPACE_COLLABORATION_CALLOUT_COMMENT": {
@@ -1995,7 +1999,7 @@
         },
         "ORGANIZATION_ADMIN_MESSAGE": {
           "subject": "{{triggeredByName}} sent a message to your organization {{organizationName}}",
-          "description": ""
+          "description": "See the message in you email inbox"
         },
         "ORGANIZATION_MESSAGE_SENDER": {
           "subject": "You sent a message to {{organizationName}}",
@@ -2006,8 +2010,8 @@
           "description": ""
         },
         "PLATFORM_FORUM_DISCUSSION_CREATED": {
-          "subject": "{{triggeredByName}} started a new discussion in the forum {{discussionName}}",
-          "description": ""
+          "subject": "{{triggeredByName}} started a new discussion in the forum {{category}}",
+          "description": "{{discussionName}}"
         },
         "PLATFORM_FORUM_DISCUSSION_COMMENT": {
           "subject": "{{triggeredByName}} commented on your forum post in {{discussionName}}",
@@ -2431,7 +2435,7 @@
           },
           "account": {
             "vc-section-title": "$t(common.virtualContributors) created from this $t(common.space)",
-            "vc-create-button": "Create $t(common.virtual-contributor)"
+            "vc-create-button": "Create $t(common.virtualContributor)"
           }
         }
       },
@@ -2637,7 +2641,7 @@
           "seeMoreSubspaces": "See all $t(common.subspaces) I'm a $t(common.member) of"
         },
         "campaignBlock": {
-          "createYourVCButton": "Create your $t(common.virtual-contributor)!",
+          "createYourVCButton": "Create your $t(common.virtualContributor)!",
           "vcCampaign": {
             "welcome": "🎉  Welcome to the  $t(common.virtualContributors) - Early Access Program!",
             "clickHere": "Click below to create your $t(common.virtualContributors)—up to three available. The ones you created can be found under My $t(common.Account), along with the $t(common.space) where you can interact with them. Enjoy!"
@@ -3072,7 +3076,7 @@
       }
     },
     "virtualContributorProfile": {
-      "title": "$t(common.virtual-contributor) $t(common.Profile)",
+      "title": "$t(common.virtualContributor) $t(common.Profile)",
       "defaultName": "Alkemio Help",
       "description": "Description",
       "references": "References",
@@ -3087,7 +3091,7 @@
         },
         "personality": {
           "title": "Basic Prompts & Engine",
-          "description": "To allow people to interact with the body of knowledge described above, Alkemio uses an engine and a basic set of instructions. These instructions make sure that the $t(common.virtual-contributor) for example only answers questions using the specified body of knowledge so you can trust the answers it is giving."
+          "description": "To allow people to interact with the body of knowledge described above, Alkemio uses an engine and a basic set of instructions. These instructions make sure that the $t(common.virtualContributor) for example only answers questions using the specified body of knowledge so you can trust the answers it is giving."
         },
         "context": {
           "title": "Context",
@@ -3097,50 +3101,50 @@
         "privacy": {
           "title": "Privacy",
           "description": "For Alkemio, safeguarding your data is of utmost importance. We are committed to maintaining the security and privacy of your information.",
-          "bullets": "<ul><li>When interacting with a $t(common.virtual-contributor), only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your ($t(common.space)) data is not utilized for training the $t(common.virtual-contributor).</li><li>Additionally, please note that questions and answers exchanged with the $t(common.virtual-contributor) may be visible to the Alkemio team.</li></ul>"
+          "bullets": "<ul><li>When interacting with a $t(common.virtualContributor), only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your ($t(common.space)) data is not utilized for training the $t(common.virtualContributor).</li><li>Additionally, please note that questions and answers exchanged with the $t(common.virtualContributor) may be visible to the Alkemio team.</li></ul>"
         },
         "external": {
           "personality": {
-            "description": "This $t(common.virtual-contributor) operates using the following external AI service: <strong>Mistral</strong>. All questions submitted to this $t(common.virtual-contributor), along with any related $t(common.comments) in a threaded conversation, will be sent to <strong>Mistral</strong>. Please be aware that this data may be used to train and improve their model."
+            "description": "This $t(common.virtualContributor) operates using the following external AI service: <strong>Mistral</strong>. All questions submitted to this $t(common.virtualContributor), along with any related $t(common.comments) in a threaded conversation, will be sent to <strong>Mistral</strong>. Please be aware that this data may be used to train and improve their model."
           },
           "privacy": {
-            "description": "At Alkemio, protecting your data is our top priority. We are fully committed to ensuring the security and privacy of your information. Here’s how we handle your data when interacting with a $t(common.virtual-contributor) (VC):",
-            "bullets": "<ul><li>Only the content of your question and any related $t(common.comments) in a threaded conversation are shared with the AI service that powers the $t(common.virtual-contributor).</li><li>Please be aware that if the $t(common.virtual-contributor) is based on an external AI service, such as Mistral, the data shared may be used to further train and improve that service.</li><li>Additionally, note that questions and answers exchanged with the $t(common.virtual-contributor) may be accessible to the Alkemio team for monitoring or support purposes.</li></ul>"
+            "description": "At Alkemio, protecting your data is our top priority. We are fully committed to ensuring the security and privacy of your information. Here’s how we handle your data when interacting with a $t(common.virtualContributor) (VC):",
+            "bullets": "<ul><li>Only the content of your question and any related $t(common.comments) in a threaded conversation are shared with the AI service that powers the $t(common.virtualContributor).</li><li>Please be aware that if the $t(common.virtualContributor) is based on an external AI service, such as Mistral, the data shared may be used to further train and improve that service.</li><li>Additionally, note that questions and answers exchanged with the $t(common.virtualContributor) may be accessible to the Alkemio team for monitoring or support purposes.</li></ul>"
           }
         }
       },
       "membership": {
-        "title": "$t(common.virtual-contributor) $t(common.Memberships)",
-        "noMemberships": "This $t(common.virtual-contributor) is not a $t(common.member) of any $t(common.space)",
+        "title": "$t(common.virtualContributor) $t(common.Memberships)",
+        "noMemberships": "This $t(common.virtualContributor) is not a $t(common.member) of any $t(common.space)",
         "pendingInvitations": "Pending Invitations",
         "noPendingInvitations": "No pending invitations"
       },
       "settings": {
-        "title": "$t(common.virtual-contributor) $t(common.settings)",
+        "title": "$t(common.virtualContributor) $t(common.settings)",
         "access": {
           "title": "Visibility",
           "listedInStore": "Include in public selection lists.",
           "visibility": {
-            "public": "<b>Public:</b> This $t(common.virtual-contributor) can be invited to all $t(common.spaces) on Alkemio",
-            "private": "<b>Private:</b> This $t(common.virtual-contributor) can be invited to $t(common.spaces) within my $t(common.account).",
-            "hidden": "<b>Hidden:</b> This $t(common.virtual-contributor) cannot be invited."
+            "public": "<b>Public:</b> This $t(common.virtualContributor) can be invited to all $t(common.spaces) on Alkemio",
+            "private": "<b>Private:</b> This $t(common.virtualContributor) can be invited to $t(common.spaces) within my $t(common.account).",
+            "hidden": "<b>Hidden:</b> This $t(common.virtualContributor) cannot be invited."
           }
         },
         "ingestion": {
           "title": "Body of Knowledge",
-          "infoText": "Changes in the body of knowledge are not autmatically reflected in the $t(common.virtual-contributor). You need to manually apply them by clicking the button <bold>'UPDATE KNOWLEDGE'</bold>. It will take a few minutes for the update to complete. You can check back later to see if the update was successful.",
+          "infoText": "Changes in the body of knowledge are not autmatically reflected in the $t(common.virtualContributor). You need to manually apply them by clicking the button <bold>'UPDATE KNOWLEDGE'</bold>. It will take a few minutes for the update to complete. You can check back later to see if the update was successful.",
           "refreshBtn": "Update Knowledge",
           "lastUpdatedLabel": "Last updated: ",
           "never": "Never"
         },
         "prompt": {
           "title": "Prompt",
-          "infoText": "Available variables: [{{availableVariables}}] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this $t(common.virtual-contributor).",
+          "infoText": "Available variables: [{{availableVariables}}] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this $t(common.virtualContributor).",
           "saveBtn": "Save prompt"
         },
         "externalConfig": {
           "title": "External Configuration",
-          "infoText": "The $t(common.virtual-contributor) is powered by an external AI service. Please provide the following information to connect to the service.",
+          "infoText": "The $t(common.virtualContributor) is powered by an external AI service. Please provide the following information to connect to the service.",
           "apiKey": "API Key",
           "apiKeyPlaceholder": "Current key signature is '{{value}}'. By changing this value current key will be overriden and can not be recovered.",
           "assistantId": "Assistant ID",
@@ -3149,15 +3153,15 @@
         },
         "privacy": {
           "title": "Privacy",
-          "description": "Private $t(common.virtual-contributor) Knowledge",
+          "description": "Private $t(common.virtualContributor) Knowledge",
           "tooltip1": "Public: When users visit {{vcName}}'s $t(common.profile), they can see the content of its body of knowledge.",
           "tooltip2": "Private: Only the $t(common.account) $t(common.admins) can see the content of the body of knowledge."
         }
       },
       "knowledgeBase": {
         "noAccess": {
-          "title": "Private $t(common.virtual-contributor) Knowledge",
-          "description": "You don't have access to the knowledge base of this $t(common.virtual-contributor). Please contact the owner of the $t(common.virtual-contributor) for more information."
+          "title": "Private $t(common.virtualContributor) Knowledge",
+          "description": "You don't have access to the knowledge base of this $t(common.virtualContributor). Please contact the owner of the $t(common.virtualContributor) for more information."
         }
       }
     },
@@ -3247,8 +3251,8 @@
         }
       },
       "virtualContributor": {
-        "title": "$t(common.virtual-contributor)",
-        "subtitle": "This section allows you to select your preferences regarding activities as a $t(common.virtual-contributor)",
+        "title": "$t(common.virtualContributor)",
+        "subtitle": "This section allows you to select your preferences regarding activities as a $t(common.virtualContributor)",
         "settings": {
           "spaceCommunityInvitation": "Receive a $t(common.notification) when a VC I manage is invited to join a $t(common.community)"
         }
@@ -3296,7 +3300,7 @@
     "loading-error": "Loading error",
     "messages": {
       "successfully-recovered-password": "Please enter a new password within the next 15 minutes to complete your password reset.",
-      "request-recover-password": "<strong>An email containing a recovery {{type}} has been sent to the email address you provided.</strong><br/> <br/>If you have not received an email, please check the following:<br/> <br/><li> <strong>Check the spelling</strong> of the email address.</li><li> <strong>Ensure you are using the email address</strong> you registered with.</li><li> <strong>Check your spam or junk folder</strong> in case the email was filtered.</li><li> <strong>If you registered using LinkedIn, Microsoft, or another social login,</strong> password recovery via email will not work. Please use the respective social login option instead.</li><br/><br/><i>Note: This does not confirm that an $t(common.account) is registered with this email.</i>",
+      "request-recover-password": "<strong>An email containing a recovery link has been sent to the email address you provided.</strong><br/> <br/>If you have not received an email, please check the following:<br/> <br/><li> <strong>Check the spelling</strong> of the email address.</li><li> <strong>Ensure you are using the email address</strong> you registered with.</li><li> <strong>Check your spam or junk folder</strong> in case the email was filtered.</li><li> <strong>If you registered using LinkedIn, Microsoft, or another social login,</strong> password recovery via email will not work. Please use the respective social login option instead.</li><br/><br/><i>Note: This does not confirm that an $t(common.account) is registered with this email.</i>",
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
@@ -3479,7 +3483,7 @@
   },
   "plansTable": {
     "title": "Choose a plan",
-    "subtitle": "To create a safe environment to train your $t(common.virtual-contributor), you first need to create a $t(common.space). Choose a plan for this $t(common.space) below.",
+    "subtitle": "To create a safe environment to train your $t(common.virtualContributor), you first need to create a $t(common.space). Choose a plan for this $t(common.space) below.",
     "seeMore": "Click here for the full description of each plan",
     "seeMoreUrl": "https://welcome.alkem.io/pricing/",
     "pricingPeriods": {
@@ -3508,7 +3512,7 @@
         "features": [
           "Up to 100 $t(common.members)",
           "Realtime, multi-user $t(common.whiteboards)",
-          "Create your $t(common.virtual-contributor)"
+          "Create your $t(common.virtualContributor)"
         ],
         "disclaimer": "",
         "disabledDisclaimer": ""
@@ -3520,7 +3524,7 @@
         "features": [
           "Up to 250 $t(common.members)",
           "Realtime, multi-user $t(common.whiteboards)",
-          "Create your $t(common.virtual-contributor)",
+          "Create your $t(common.virtualContributor)",
           "$t(common.customHomepage) (with Support)"
         ],
         "disclaimer": "",
@@ -3533,7 +3537,7 @@
         "features": [
           "Up to 250 $t(common.members)",
           "Realtime, multi-user $t(common.whiteboards)",
-          "Create your $t(common.virtual-contributor)",
+          "Create your $t(common.virtualContributor)",
           "$t(common.customHomepage) (with Support)",
           "1 year success program"
         ],
@@ -3561,33 +3565,33 @@
   },
   "virtualContributorSpaceSettings": {
     "create": {
-      "title": "Create a $t(common.virtual-contributor)"
+      "title": "Create a $t(common.virtualContributor)"
     },
     "name": "Name",
     "bodyOfKnowledge": "Body Of Knowledge",
-    "placeholder": "This $t(common.virtual-contributor) is based on its own curated $t(common.collection) of documents, text, and links.",
-    "infoTextBoK": "Select the $t(common.subspace) you want as a body of knowledge for this $t(common.virtual-contributor)",
-    "noSubspacesInfo": "Create a $t(common.subspace) first, and populate it with the relevant information for your $t(common.virtual-contributor).",
+    "placeholder": "This $t(common.virtualContributor) is based on its own curated $t(common.collection) of documents, text, and links.",
+    "infoTextBoK": "Select the $t(common.subspace) you want as a body of knowledge for this $t(common.virtualContributor)",
+    "noSubspacesInfo": "Create a $t(common.subspace) first, and populate it with the relevant information for your $t(common.virtualContributor).",
     "confirmDeletion": {
       "description": "Do you want to delete this {{entity}}? This action is irreversible. All $t(common.profile) information will be removed and people will no longer be able to interact with the {{entity}} "
     },
     "edit": {
-      "title": "Edit $t(common.virtual-contributor) $t(common.Profile)"
+      "title": "Edit $t(common.virtualContributor) $t(common.Profile)"
     }
   },
   "createVirtualContributorWizard": {
     "noSpaces": "Couldn't find any $t(common.space) hosted by you, please contact us for support.",
     "createdVirtualContributor": {
-      "successMessage": "$t(common.virtual-contributor) '{{name}}' created successfully"
+      "successMessage": "$t(common.virtualContributor) '{{name}}' created successfully"
     },
     "autoCreated": {
       "subSpaceVision": "-",
-      "subSpaceTagline": "A Knowledge Base of a $t(common.virtual-contributor)"
+      "subSpaceTagline": "A Knowledge Base of a $t(common.virtualContributor)"
     },
     "initial": {
-      "title": "Create a $t(common.virtual-contributor)",
+      "title": "Create a $t(common.virtualContributor)",
       "profileDescription": "Choose a name and avatar now, or personalize your $t(common.profile) later on the VC $t(common.Profile) page.",
-      "description": "A $t(common.virtual-contributor) allows you to interact with AI on Alkemio. What do you want to make available through your $t(common.virtual-contributor)?",
+      "description": "A $t(common.virtualContributor) allows you to interact with AI on Alkemio. What do you want to make available through your $t(common.virtualContributor)?",
       "createSpace": "Written knowledge in text",
       "useExistingSpace": "The content of a $t(common.spaceSubspace) on Alkemio",
       "useExternalAI": "An external AI",
@@ -3595,16 +3599,16 @@
       "externalAI": "External AI"
     },
     "loadingInfo": {
-      "vcSpaceCreation": "A $t(common.space) for interaction with your $t(common.virtual-contributor) is being built. This process may take a few moments to complete."
+      "vcSpaceCreation": "A $t(common.space) for interaction with your $t(common.virtualContributor) is being built. This process may take a few moments to complete."
     },
     "cancel": {
-      "title": "Discard $t(common.virtual-contributor)",
-      "description": "Are you sure you want to stop creating your $t(common.virtual-contributor)? Your work will not be saved.",
-      "deleted": "$t(common.virtual-contributor) deleted successfully!"
+      "title": "Discard $t(common.virtualContributor)",
+      "description": "Are you sure you want to stop creating your $t(common.virtualContributor)? Your work will not be saved.",
+      "deleted": "$t(common.virtualContributor) deleted successfully!"
     },
     "addContent": {
       "title": "Add knowledge",
-      "description": "What knowledge do you want your $t(common.virtual-contributor) to have? Write it down in $t(common.posts) or upload it in documents.",
+      "description": "What knowledge do you want your $t(common.virtualContributor) to have? Write it down in $t(common.posts) or upload it in documents.",
       "descriptionBold": "You can update, add, and remove content later.",
       "post": {
         "title": "$t(common.post) title",
@@ -3627,8 +3631,8 @@
     },
     "externalAI": {
       "create": {
-        "title": "Create $t(common.virtual-contributor) with an External AI",
-        "subTitle": "Choose a provider and enter your API Key or token to connect your external AI to a $t(common.virtual-contributor)",
+        "title": "Create $t(common.virtualContributor) with an External AI",
+        "subTitle": "Choose a provider and enter your API Key or token to connect your external AI to a $t(common.virtualContributor)",
         "apiKey": {
           "label": "API Key",
           "placeholder": "E.g. sk-proj-Uq3zU..."
@@ -3661,23 +3665,23 @@
       "title": "👍That’s it!",
       "subTitle": "To start interacting, simply type @{{vcName}} in a $t(common.comment). Give it a try in the preview below.",
       "postTitle": "Example $t(common.post)",
-      "postDescription": "At Alkemio, we utilize $t(common.posts) to facilitate collaborative interactions with AI. Unlike private chats, other $t(common.members) within a $t(common.space) can learn from and contribute to these interactions. Similar to mentioning a human contributor, you can use the ‘@’ symbol followed by the $t(common.virtual-contributor)’s name.",
+      "postDescription": "At Alkemio, we utilize $t(common.posts) to facilitate collaborative interactions with AI. Unlike private chats, other $t(common.members) within a $t(common.space) can learn from and contribute to these interactions. Similar to mentioning a human contributor, you can use the ‘@’ symbol followed by the $t(common.virtualContributor)’s name.",
       "continueButton": "Visit $t(common.space)"
     },
     "tryInfoSection": {
       "title": "👍That’s it!",
-      "description": "Your $t(common.virtual-contributor) is ready! To start interacting, invite the $t(common.virtual-contributor) to a $t(common.space) and once it’s a $t(common.member), simply type @{{vcName}} in a $t(common.comment).\n\nEnjoy!",
+      "description": "Your $t(common.virtualContributor) is ready! To start interacting, invite the $t(common.virtualContributor) to a $t(common.space) and once it’s a $t(common.member), simply type @{{vcName}} in a $t(common.comment).\n\nEnjoy!",
       "goToProfile": "Visit {{vcName}}'s $t(common.Profile)"
     },
     "existingSpace": {
       "title": "Choose a $t(common.spaceSubspace)",
-      "description": "Which $t(common.space) or $t(common.subspace) do you want to bring to life with the $t(common.virtual-contributor)? Below you'll be able to choose from all $t(common.spaces) and $t(common.subspaces) that you are $t(common.host) of.",
+      "description": "Which $t(common.space) or $t(common.subspace) do you want to bring to life with the $t(common.virtualContributor)? Below you'll be able to choose from all $t(common.spaces) and $t(common.subspaces) that you are $t(common.host) of.",
       "label": "$t(common.spaceSubspace)",
-      "noSpaces": "You need to be an $t(common.admin) of a $t(common.space) to proceed with this option. To create a $t(common.virtual-contributor) without a $t(common.space), please go back and follow the Written Knowledge flow."
+      "noSpaces": "You need to be an $t(common.admin) of a $t(common.space) to proceed with this option. To create a $t(common.virtualContributor) without a $t(common.space), please go back and follow the Written Knowledge flow."
     },
     "chooseCommunity": {
       "title": "Hello, {{vcName}}!",
-      "description": "Your $t(common.virtual-contributor) is ready! To start interacting, your $t(common.virtual-contributor) should be added to a $t(common.space). Select one below, or continue without. In that case you will have to add the VC manually through the $t(common.community) tab of a $t(common.space).",
+      "description": "Your $t(common.virtualContributor) is ready! To start interacting, your $t(common.virtualContributor) should be added to a $t(common.space). Select one below, or continue without. In that case you will have to add the VC manually through the $t(common.community) tab of a $t(common.space).",
       "label": "Space",
       "selectSpacesPlaceholder": "Select a $t(common.space)",
       "noSpacesPlaceholder": "No $t(common.spaces) available",
@@ -3686,7 +3690,7 @@
       "createAndAddToCommunity": "Create, add, and go to $t(common.space)",
       "confirm": {
         "title": "Continue without $t(common.space) $t(common.membership)",
-        "description": "A $t(common.virtual-contributor) can only interact within a $t(common.space). Are you sure you want to proceed without adding them to a $t(common.space)? You can still invite the $t(common.virtual-contributor) later through the $t(common.space)’s $t(common.community) tab."
+        "description": "A $t(common.virtualContributor) can only interact within a $t(common.space). Are you sure you want to proceed without adding them to a $t(common.space)? You can still invite the $t(common.virtualContributor) later through the $t(common.space)’s $t(common.community) tab."
       }
     }
   },

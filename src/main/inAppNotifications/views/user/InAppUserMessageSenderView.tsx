@@ -3,7 +3,7 @@ import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 
 export const InAppUserMessageSenderView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;
-
+  debugger;
   // do not display notification if these are missing
   if (!triggeredBy?.profile?.displayName || !payload.userMessage) {
     return null;
