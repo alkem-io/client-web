@@ -40,7 +40,14 @@ export const mapToAssociatedOrganization = (
 ): AssociatedOrganization => {
   return {
     key,
-    profile: organization?.profile,
+    profile: {
+      // spread the props here to remove the tagline which is rendered automatically in the card
+      displayName: organization?.profile.displayName || '',
+      avatar: organization?.profile.avatar || undefined,
+      location: organization?.profile.location || undefined,
+      tagsets: organization?.profile.tagsets || undefined,
+      url: organization?.profile.url || '',
+    },
     seamless: true,
     associatesCount: getMetricCount(organization?.metrics || [], MetricType.Associate),
     verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
