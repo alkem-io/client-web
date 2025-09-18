@@ -31,8 +31,7 @@ query VirtualContributor($id: UUID!) {
       aiPersonaID
       bodyOfKnowledgeID
       bodyOfKnowledgeType
-      bodyOfKnowledge
-
+      bodyOfKnowledgeDescription
       aiPersona {
         id
         engine

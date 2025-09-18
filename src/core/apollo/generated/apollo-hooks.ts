@@ -2218,7 +2218,7 @@ export const VirtualContributorWithModelCardFragmentDoc = gql`
   fragment VirtualContributorWithModelCard on VirtualContributor {
     bodyOfKnowledgeID
     bodyOfKnowledgeType
-    bodyOfKnowledge
+    bodyOfKnowledgeDescription
     aiPersona {
       id
       engine
@@ -13660,7 +13660,7 @@ export const VirtualContributorDocument = gql`
         aiPersonaID
         bodyOfKnowledgeID
         bodyOfKnowledgeType
-        bodyOfKnowledge
+        bodyOfKnowledgeDescription
         aiPersona {
           id
           engine

@@ -31,7 +31,7 @@ export interface ContributorProps extends Identifiable {
     url: string;
     references?: ReferenceModel[];
   };
-  bodyOfKnowledge?: string;
+  bodyOfKnowledgeDescription?: string;
   bodyOfKnowledgeType?: VirtualContributorBodyOfKnowledgeType;
   bodyOfKnowledgeID?: string;
   aiPersona?: {

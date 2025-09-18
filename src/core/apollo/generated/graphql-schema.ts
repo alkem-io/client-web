@@ -2171,8 +2171,10 @@ export type CreateUserInput = {
 export type CreateVirtualContributorOnAccountInput = {
   /** The Account where the VirtualContributor is to be created. */
   accountID: Scalars['UUID']['input'];
-  /** The ID of the AiPersona to use for this Collaboration. */
+  /** The AI Persona to use for this Virtual Contributor. */
   aiPersona: CreateAiPersonaInput;
+  /** Description of the body of knowledge for this VC. */
+  bodyOfKnowledgeDescription?: InputMaybe<Scalars['String']['input']>;
   /** The ID of the body of knowledge (if any) to use. */
   bodyOfKnowledgeID?: InputMaybe<Scalars['String']['input']>;
   bodyOfKnowledgeType?: InputMaybe<VirtualContributorBodyOfKnowledgeType>;
@@ -2590,6 +2592,8 @@ export enum ForumDiscussionPrivacy {
 
 export type Geo = {
   __typename?: 'Geo';
+  /** Is the geo functionality enabled. */
+  enabled: Scalars['Boolean']['output'];
   /** Endpoint where geo information is consumed from. */
   endpoint: Scalars['String']['output'];
 };
@@ -8328,14 +8332,14 @@ export type VirtualContributor = Contributor & {
   account?: Maybe<Account>;
   /** The Agent representing this User. */
   agent: Agent;
-  /** The AI Persona powering this Virtual Contributor. */
+  /** The aiPersona behind this Virtual Contributor */
   aiPersona: AiPersona;
   /** The ID of the AI Persona powering this Virtual Contributor. */
   aiPersonaID: Scalars['UUID']['output'];
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** Description of the body of knowledge for this VC. */
-  bodyOfKnowledge?: Maybe<Scalars['Markdown']['output']>;
+  bodyOfKnowledgeDescription?: Maybe<Scalars['Markdown']['output']>;
   /** The ID of the body of knowledge used by this Virtual Contributor. */
   bodyOfKnowledgeID: Scalars['UUID']['output'];
   /** The type of body of knowledge used by this Virtual Contributor. */
@@ -8344,8 +8348,6 @@ export type VirtualContributor = Contributor & {
   createdDate: Scalars['DateTime']['output'];
   /** The type of context sharing that are supported by this AI Persona when used. */
   dataAccessMode: VirtualContributorDataAccessMode;
-  /** The description for this AI Persona. */
-  description?: Maybe<Scalars['Markdown']['output']>;
   /** The ID of the Contributor */
   id: Scalars['UUID']['output'];
   /** Interaction modes supported by this AI Persona when used. */
@@ -19968,7 +19970,7 @@ export type VirtualContributorQuery = {
           aiPersonaID: string;
           bodyOfKnowledgeID: string;
           bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-          bodyOfKnowledge?: string | undefined;
+          bodyOfKnowledgeDescription?: string | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -20233,7 +20235,7 @@ export type VirtualContributorProfileWithModelCardQuery = {
           status: VirtualContributorStatus;
           bodyOfKnowledgeID: string;
           bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-          bodyOfKnowledge?: string | undefined;
+          bodyOfKnowledgeDescription?: string | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -20373,7 +20375,7 @@ export type VirtualContributorFullFragment = {
   id: string;
   bodyOfKnowledgeID: string;
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-  bodyOfKnowledge?: string | undefined;
+  bodyOfKnowledgeDescription?: string | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -20434,7 +20436,7 @@ export type VirtualContributorWithModelCardFragment = {
   __typename?: 'VirtualContributor';
   bodyOfKnowledgeID: string;
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-  bodyOfKnowledge?: string | undefined;
+  bodyOfKnowledgeDescription?: string | undefined;
   aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
   modelCard: {
     __typename?: 'VirtualContributorModelCard';
@@ -24798,7 +24800,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
         id: string;
         bodyOfKnowledgeID: string;
         bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-        bodyOfKnowledge?: string | undefined;
+        bodyOfKnowledgeDescription?: string | undefined;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -24884,7 +24886,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
               id: string;
               bodyOfKnowledgeID: string;
               bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-              bodyOfKnowledge?: string | undefined;
+              bodyOfKnowledgeDescription?: string | undefined;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -24985,7 +24987,7 @@ export type AvailableVirtualContributorsInSpaceQuery = {
                   id: string;
                   bodyOfKnowledgeID: string;
                   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-                  bodyOfKnowledge?: string | undefined;
+                  bodyOfKnowledgeDescription?: string | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -25071,7 +25073,7 @@ export type AvailableVirtualContributorsForRoleSetPaginatedFragment = {
     id: string;
     bodyOfKnowledgeID: string;
     bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
-    bodyOfKnowledge?: string | undefined;
+    bodyOfKnowledgeDescription?: string | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;

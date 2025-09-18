@@ -1,7 +1,7 @@
 fragment VirtualContributorWithModelCard on VirtualContributor {
   bodyOfKnowledgeID
   bodyOfKnowledgeType
-  bodyOfKnowledge
+  bodyOfKnowledgeDescription
   aiPersona {
     id
     engine

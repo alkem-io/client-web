@@ -36,7 +36,7 @@ export type VirtualContributorModelFull = {
     };
   };
   aiPersonaID?: string;
-  bodyOfKnowledge?: string;
+  bodyOfKnowledgeDescription?: string;
   bodyOfKnowledgeType?: VirtualContributorBodyOfKnowledgeType;
   bodyOfKnowledgeID?: string;
   modelCard: VirtualContributorModelCard;

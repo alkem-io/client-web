@@ -1471,8 +1471,9 @@ export type ForumFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type GeoKeySpecifier = ('endpoint' | GeoKeySpecifier)[];
+export type GeoKeySpecifier = ('enabled' | 'endpoint' | GeoKeySpecifier)[];
 export type GeoFieldPolicy = {
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GeoLocationKeySpecifier = ('latitude' | 'longitude' | GeoLocationKeySpecifier)[];
@@ -4564,12 +4565,11 @@ export type VirtualContributorKeySpecifier = (
   | 'aiPersona'
   | 'aiPersonaID'
   | 'authorization'
-  | 'bodyOfKnowledge'
+  | 'bodyOfKnowledgeDescription'
   | 'bodyOfKnowledgeID'
   | 'bodyOfKnowledgeType'
   | 'createdDate'
   | 'dataAccessMode'
-  | 'description'
   | 'id'
   | 'interactionModes'
   | 'knowledgeBase'
@@ -4591,12 +4591,11 @@ export type VirtualContributorFieldPolicy = {
   aiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   aiPersonaID?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
   knowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;

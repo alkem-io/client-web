@@ -6,7 +6,7 @@ export function createVirtualContributorModelFull(virtualContributor: any): Virt
   return {
     id: virtualContributor?.id ?? '',
     settings: virtualContributor?.settings ?? {},
-    bodyOfKnowledge: virtualContributor?.bodyOfKnowledge ?? '',
+    bodyOfKnowledgeDescription: virtualContributor?.bodyOfKnowledgeDescription ?? '',
     bodyOfKnowledgeType: virtualContributor?.bodyOfKnowledgeType ?? undefined,
     bodyOfKnowledgeID: virtualContributor?.bodyOfKnowledgeID ?? '',
     modelCard: createAiPersonaModelCardModelFromFragment(virtualContributor),
