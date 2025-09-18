@@ -104,7 +104,8 @@ const SpaceCardHorizontal = ({
         visual={
           <SpaceAvatar
             size={size}
-            src={space.about.profile.avatar?.uri ?? space.about.profile.cardBanner?.uri}
+            // Use || instead of ?? here, because uri can be an empty string
+            src={space.about.profile.avatar?.uri || space.about.profile.cardBanner?.uri}
             alt={space.about.profile.displayName}
             spaceId={space.id}
           />
