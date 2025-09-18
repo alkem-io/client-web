@@ -33,7 +33,12 @@ const CalloutFramingMemo = ({ callout, onCollapse }: CalloutFramingMemoProps) =>
         displayName={callout.framing.profile.displayName}
         onClick={() => setDialogOpen(true)}
       />
-      <MemoDialog open={dialogOpen} memoId={callout.framing.memo.id} onClose={handleCloseMemoDialog} />
+      <MemoDialog
+        open={dialogOpen}
+        memoId={callout.framing.memo.id}
+        calloutId={callout.id}
+        onClose={handleCloseMemoDialog}
+      />
     </>
   );
 };
