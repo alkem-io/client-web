@@ -340,7 +340,7 @@
     "agreement": "Agreement",
     "agreements": "Agreements",
     "templates": "Templates",
-    "noneTemplates": "None templates",
+    "noneTemplates": "No templates",
     "templateTypes": "Template types",
     "template": "Template",
     "group": "Group",
@@ -1097,7 +1097,7 @@
       "minLength": "{{field}} should be at least {{min}} symbols long",
       "maxLength": "Exceeded the limit of {{max}} characters",
       "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens",
-      "nonBlank": "{{field}} must not consist of just $t(common.spaces)",
+      "nonBlank": "{{field}} must not consist of just spaces",
       "atLeastOne": "At least one {{item}} must be selected.",
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
       "invalidUrl": "Invalid URL",
@@ -1514,7 +1514,7 @@
       },
       "visuals-step": {
         "title": "Visuals",
-        "headline": "Congratulations, you have now successfully created an $t(common.post)!",
+        "headline": "Congratulations, you have now successfully created a $t(common.post)!",
         "explanation": "To further personalize your $t(common.post), please consider adding visuals such as a Banner to the $t(common.post).",
         "bottom-note": "You will still have the possibility to change these visuals under the $t(common.settings) tab as well as adding attachments and a Banner for the $t(common.dashboard) card."
       }
@@ -1584,7 +1584,7 @@
       "extendedMessage": "{{join}} our {{space}} and start making change!",
       "dialog-apply-parent": {
         "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
-        "body": "To join <strong title='subspace name'>'{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> $t(common.space) first. Please add the $t(common.subspace) you want to join in the $t(common.spaces)' application form."
+        "body": "To join <strong title='subspace name'>'{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> $t(common.space) first. Please add the $t(common.subspace) you want to join in the $t(common.space)'s application form."
       },
       "dialog-parent-app-pending": {
         "title": "Parent application pending!",
