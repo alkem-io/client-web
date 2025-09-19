@@ -322,6 +322,7 @@
     "subsubspace": "Subspace",
     "subsubspaces": "Subspaces",
     "spaceSubspace": "(Sub)Space",
+    "entities": "{{entityType}}",
     "spaceSubspaces": "(Sub)Spaces",
     "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
@@ -339,6 +340,8 @@
     "agreement": "Agreement",
     "agreements": "Agreements",
     "templates": "Templates",
+    "noneTemplates": "None templates",
+    "templateTypes": "Template types",
     "template": "Template",
     "group": "Group",
     "groups": "Groups",
@@ -2238,7 +2241,7 @@
             "limitNotice": "Contact the Alkemio team to increase the limits on your $t(common.account)",
             "notAvailable": "Not available",
             "notAvailableNotice": "Contact the Alkemio team to enable this feature on your $t(common.account)",
-            "noTemplates": "This $t(common.innovation-pack) doesn't have any $t(common.template) yet",
+            "noTemplates": "This $t(common.innovationPack) doesn't have any $t(common.template) yet",
             "customHomepages": "$t(common.customHomepages)",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these $t(common.settings), please contact the Alkemio team here.",
@@ -2442,19 +2445,19 @@
         }
       },
       "innovation-packs": {
-        "create": "Create $t(common.innovation-pack)",
+        "create": "Create $t(common.innovationPack)",
         "fields": {
           "provider": "Provider $t(common.organization)",
           "listedInStore": "Listed in Store",
           "searchVisibility": "Search Visibility"
         },
         "back-button": "All $t(common.innovation-packs)",
-        "save-new-for-details": "Save the new $t(common.innovation-pack) to edit the rest of the details",
+        "save-new-for-details": "Save the new $t(common.innovationPack) to edit the rest of the details",
         "saved-successfully": "Saved Successfully",
         "notifications": {
-          "pack-created": "$t(common.innovation-pack) created successfully.",
-          "pack-error": "An error occurred while creating the $t(common.innovation-pack).",
-          "pack-removed": "$t(common.innovation-pack) '{{name}}' removed successfully."
+          "pack-created": "$t(common.innovationPack) created successfully.",
+          "pack-error": "An error occurred while creating the $t(common.innovationPack).",
+          "pack-removed": "$t(common.innovationPack) '{{name}}' removed successfully."
         }
       },
       "innovationHubs": {
@@ -3302,6 +3305,7 @@
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
       "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "claim-missing": "You haven't verified your Vidua identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Pick a password for your $t(common.account)"
     },

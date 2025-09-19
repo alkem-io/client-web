@@ -11,11 +11,12 @@ import { VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/g
 import Loading from '@/core/ui/loading/Loading';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
 import { createVirtualContributorModelFull } from '../utils/createVirtualContributorModelFull';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 
 /**
  * children will have the virtual contributor data available if it is loaded
@@ -36,6 +37,7 @@ type VCProfilePageProps = {
 export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePageProps) => {
   const { t } = useTranslation();
   const { vcId, loading: urlResolverLoading } = useUrlResolver();
+  const { loading: authLoading } = useAuthenticationContext();
 
   const { data, loading, error } = useVirtualContributorProfileWithModelCardQuery({
     variables: {
@@ -44,10 +46,11 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
     skip: !vcId,
   });
   //
+  // TODO: Additional Auth Check
   const isBokSpace =
     data?.lookup.virtualContributor?.bodyOfKnowledgeType === VirtualContributorBodyOfKnowledgeType.AlkemioSpace;
   const bokId = data?.lookup.virtualContributor?.bodyOfKnowledgeID;
-  // TODO: Additional Auth Check
+
   const { data: vcSpaceBoKAuthPrivileges } = useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery({
     variables: {
       spaceId: bokId!,
@@ -74,7 +77,7 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
     }
   );
 
-  if (urlResolverLoading || loading || !vcId) {
+  if (authLoading || urlResolverLoading || loading || !vcId) {
     return (
       <Loading text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.title') })} />
     );

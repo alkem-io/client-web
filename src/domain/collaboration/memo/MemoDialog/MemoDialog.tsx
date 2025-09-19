@@ -7,6 +7,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import useMemoManager from '../MemoManager/useMemoManager';
 import Loading from '@/core/ui/loading/Loading';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useEffect, useRef, useState } from 'react';
 import UserPresencing from '../../realTimeCollaboration/UserPresencing';
@@ -20,9 +21,10 @@ interface MemoDialogProps {
   open?: boolean;
   onClose?: () => void;
   memoId: string;
+  calloutId: string;
 }
 
-const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
+const MemoDialog = ({ open = false, onClose, memoId, calloutId }: MemoDialogProps) => {
   const { t } = useTranslation();
   const [fullScreen, setFullScreen] = useState(false);
   const [forceExitFullscreen, setForceExitFullscreen] = useState(false);
@@ -108,28 +110,30 @@ const MemoDialog = ({ open = false, onClose, memoId }: MemoDialogProps) => {
             </Box>
           )}
           {!loading && memo && (
-            <CharacterCountContextProvider>
-              <OutlinedInput
-                inputComponent={CollaborativeMarkdownInput}
-                disabled={disabled}
-                inputProps={{
-                  controlsVisible: 'always',
-                  collaborationId: memoId,
-                  height: '100%',
-                  onChangeCollaborationState: setCollaborationState,
-                  storageBucketId: memo.profile.storageBucket.id,
-                }}
-                sx={{
-                  '&.MuiOutlinedInput-root': {
-                    padding: gutters(0.5),
-                  },
-                  height: '100%',
-                  alignItems: 'flex-start',
-                }}
-                multiline
-                fullWidth
-              />
-            </CharacterCountContextProvider>
+            <StorageConfigContextProvider locationType="callout" calloutId={calloutId}>
+              <CharacterCountContextProvider>
+                <OutlinedInput
+                  inputComponent={CollaborativeMarkdownInput}
+                  disabled={disabled}
+                  inputProps={{
+                    controlsVisible: 'always',
+                    collaborationId: memoId,
+                    height: '100%',
+                    onChangeCollaborationState: setCollaborationState,
+                    storageBucketId: memo?.profile.storageBucket.id,
+                  }}
+                  sx={{
+                    '&.MuiOutlinedInput-root': {
+                      padding: gutters(0.5),
+                    },
+                    height: '100%',
+                    alignItems: 'flex-start',
+                  }}
+                  multiline
+                  fullWidth
+                />
+              </CharacterCountContextProvider>
+            </StorageConfigContextProvider>
           )}
         </Box>
       </DialogContent>

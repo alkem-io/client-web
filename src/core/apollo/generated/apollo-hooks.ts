@@ -1764,6 +1764,7 @@ export const ConfigurationFragmentDoc = gql`
       endpoint
     }
     geo {
+      enabled
       endpoint
     }
   }

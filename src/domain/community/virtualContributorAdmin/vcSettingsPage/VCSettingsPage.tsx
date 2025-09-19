@@ -61,25 +61,23 @@ export const VCSettingsPage = () => {
     );
   }
 
-  if (!data?.lookup.virtualContributor) {
-    return null;
-  }
-
   return (
     <StorageConfigContextProvider
       locationType="virtualContributor"
-      virtualContributorId={data.lookup.virtualContributor?.id}
+      virtualContributorId={data?.lookup.virtualContributor?.id ?? ''}
     >
       <VCSettingsPageLayout currentTab={SettingsSection.MyProfile}>
         <PageContent background="background.paper">
           <PageContentColumn columns={12}>
             <PageContentBlock>
-              <VirtualContributorForm
-                virtualContributor={data?.lookup.virtualContributor}
-                bokProfile={bokProfile?.lookup.space?.about.profile}
-                avatar={data?.lookup.virtualContributor.profile.avatar}
-                onSave={handleUpdate}
-              />
+              {data?.lookup.virtualContributor && (
+                <VirtualContributorForm
+                  virtualContributor={data?.lookup.virtualContributor}
+                  bokProfile={bokProfile?.lookup.space?.about.profile}
+                  avatar={data?.lookup.virtualContributor.profile.avatar}
+                  onSave={handleUpdate}
+                />
+              )}
             </PageContentBlock>
           </PageContentColumn>
         </PageContent>
