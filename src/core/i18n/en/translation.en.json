@@ -867,14 +867,14 @@
     "draftNotice": "DRAFT - Only visible for $t(common.admins)",
     "closed": "This discussion is closed so you can no longer comment",
     "notMember": "You can't reply to this discussion since you're not a $t(common.member) of this $t(common.space)",
-    "delete-confirm-title": "Delete Callout?",
-    "delete-confirm-text": "All $t(common.posts), $t(common.whiteboards) and messages under the Callout will also be deleted.",
+    "delete-confirm-title": "Delete $t(common.post)?",
+    "delete-confirm-text": "All $t(common.responses) and $t(common.comments) under the $t(common.posts) will also be deleted.",
     "state-permission": "Allow adding to the $t(common.collection)",
     "permission-help-text": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
     "sortContributions": "Sort contributions",
     "saveAsTemplate": "Save as $t(common.template)",
-    "alkemio-link": "Click here to read more about Alkemio's collaboration tools",
+    "alkemio-link": "Click here to read more about Alkemio's $t(common.posts)",
     "link-collection": {
       "add-link": "Add links or documents to {{title}}",
       "edit-link": "Edit {{title}}",
@@ -1174,7 +1174,7 @@
       }
     },
     "notifications": {
-      "templateSaved": "$t(common.template) saved successfully"
+      "templateSaved": "$t(common.Template) saved successfully"
     }
   },
   "innovation-templates": {
@@ -1287,15 +1287,15 @@
           "title": "Find $t(common.space) $t(common.template)",
           "confirmationDialog": {
             "title": "Be careful when changing the flow!",
-            "description": "- By changing the $t(common.innovation-flow), **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the first phase of the new flow."
+            "description": "- By changing the $t(common.innovation-flow), **all changes made to the current flow will be lost**.\n- All existing $t(common.posts) will be grouped under the first phase of the new flow."
           },
           "importCalloutsDialog": {
             "title": "Apply New $t(common.template)",
-            "description": "You are about to apply a new $t(common.template). This action will <b>permanently delete</b> your current $t(common.innovation-flow). However, the existing collaboration tools linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
-            "yes": "Add Collaboration Tools from $t(common.template)",
-            "yesDescription": "This will include the new collaboration tools from the $t(common.template) in addition to your existing ones.",
+            "description": "You are about to apply a new $t(common.template). This action will <b>permanently delete</b> your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "yes": "Add $t(common.posts) from $t(common.template)",
+            "yesDescription": "This will include the new $t(common.posts) from the $t(common.template) in addition to your existing ones.",
             "no": "Only Change the $t(common.innovation-flow)",
-            "noDescription": "This will replace only the $t(common.innovation-flow), keeping your current collaboration tools as they are.",
+            "noDescription": "This will replace only the $t(common.innovation-flow), keeping your current $t(common.posts) as they are.",
             "apply": "Apply new $t(common.template)"
           }
         }
@@ -1934,7 +1934,7 @@
           "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various $t(common.posts) and $t(common.whiteboards), further deepen your knowledge about this topic, and connect with other Contributors."
         },
         "USER_COMMENT_REPLY": {
-          "subject": "{{triggeredByName}} replied to your comment {{parentName}}",
+          "subject": "{{triggeredByName}} replied to your $t(common.comment) {{parentName}}",
           "description": ""
         },
         "USER_SPACE_COMMUNITY_INVITATION": {
@@ -1967,22 +1967,22 @@
         },
         "SPACE_COLLABORATION_CALLOUT_CONTRIBUTION": {
           "subject": "{{triggeredByName}} created a contribution in \"{{calloutName}}\"",
-          "description": "In <b>{{spaceName}}</b>, of which you are a member."
+          "description": "In <b>{{spaceName}}</b>, of which you are a $t(common.member)."
         },
         "SPACE_ADMIN_COLLABORATION_CALLOUT_CONTRIBUTION": {
           "subject": "{{triggeredByName}} created a contribution in \"{{calloutName}}\"",
-          "description": "In <b>{{spaceName}}</b>, of which you are an admin."
+          "description": "In <b>{{spaceName}}</b>, of which you are an $t(common.admin)."
         },
         "SPACE_ADMIN_COMMUNITY_APPLICATION": {
           "subject": "{{triggeredByName}} applied to join {{spaceName}}",
-          "description": "Review the application in space settings"
+          "description": "Review the application in the $(common.space) $t(common.settings)"
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
           "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
           "description": ""
         },
         "SPACE_COMMUNICATION_MESSAGE_SENDER": {
-          "subject": "You sent a message to the leads of {{spaceName}}",
+          "subject": "You sent a message to the $t(common.leads) of {{spaceName}}",
           "description": ""
         },
         "SPACE_COLLABORATION_CALLOUT_COMMENT": {
@@ -2151,17 +2151,17 @@
       "generic": {
         "sections": {
           "profile": {
-            "description": "Here you can edit the public $t(common.profile) for this {{entity}}. This information is also visible to non-members."
+            "description": "Here you can edit the public $t(common.profile) for this {{entity}}. This information is also visible to non-$t(common.members)."
           },
           "about": {
-            "description": "Here you can edit the public $t(common.profile) for this {{entity}}. This information is also visible to non-members."
+            "description": "Here you can edit the public $t(common.profile) for this {{entity}}. This information is also visible to non-$t(common.members)."
           },
           "layout": {
             "description": "Here you can edit the layout for this {{entity}}.",
             "innovationFlowEditor": "$t(common.space) tabs"
           },
           "context": {
-            "description": "Here you can edit the context for this {{entity}}, which is publicly visible. This information is also visible to non-members."
+            "description": "Here you can edit the context for this {{entity}}, which is publicly visible. This information is also visible to non-$t(common.members)."
           },
           "community": {
             "description": "Here you can edit the $t(common.community) $t(common.settings) for this {{entity}}."
@@ -2188,7 +2188,7 @@
               "defaultTitle": "$t(common.templateLibrary)",
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Find $t(common.templates) to use in your $t(common.space) or $t(common.subspace). Select the $t(common.template) and click `Import` to add it to your $t(common.template) set.",
-              "callout-template-import-subtitle": "Find a $t(common.template) for people to use when contributing to your $t(common.callout)",
+              "callout-template-import-subtitle": "Find a $t(common.template) for people to use when contributing to your $t(common.post)",
               "noTemplates": "No $t(common.templates) in the $t(common.space) library.",
               "imported-successfully-notification": "$t(common.template) imported successfully"
             },
@@ -2287,7 +2287,7 @@
         "create-organization": "Create $t(common.organization)",
         "authorization": {
           "title": "Authorization",
-          "subtitle": "This section allows you to modify the $t(common.organizations) authorization"
+          "subtitle": "This section allows you to modify the $t(common.organization)'s authorization"
         },
         "settings": {
           "title": "$t(common.Settings)",
@@ -2420,7 +2420,7 @@
           },
           "memberActions": {
             "title": "Allowed Actions",
-            "createBlocks": "<b>Create $t(common.posts)</b>: Allow $t(common.members) to create $t(common.posts) for collaboration tools & $t(common.posts). If you deactivate this, $t(common.members) will still be able to contribute to existing $t(common.posts) and calls, but will not be able to create new $t(common.posts).",
+            "createBlocks": "<b>Create $t(common.posts)</b>: Allow $t(common.members) to create $t(common.posts). If you deactivate this, $t(common.members) will still be able to contribute to existing $t(common.posts), but will not be able to create new $t(common.posts).",
             "createSubspaces": "<b>Create $t(common.subspaces)</b>: Allow $t(common.members) to create $t(common.subspaces) in this $t(common.space). If you deactivate this, you can still create $t(common.subspaces) yourself and add other people as an $t(common.admin) inside the $t(common.subspace).",
             "eventsFromSubspaces": "<b>$t(common.subspace) events</b>: Allow events from $t(common.subspaces) to be visible on this $t(common.space) calendar as well.",
             "inheritRights": "Allow $t(common.members) of the parent $t(common.community) to contribute without needing to join first.",
@@ -2428,7 +2428,7 @@
           },
           "copySpace": {
             "title": "Copy $t(common.subspace)",
-            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all collaboration tools will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the template or duplicated $t(common.subspace).",
+            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the template or duplicated $t(common.subspace).",
             "createTemplate": "Create $t(common.template)",
             "createTemplateTooltip": "To create a $t(common.template) from this $t(common.subspace), you need $t(common.space) $t(common.admin) permissions.",
             "duplicate": "Duplicate"
