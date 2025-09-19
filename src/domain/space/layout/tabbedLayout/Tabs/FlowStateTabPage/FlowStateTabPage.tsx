@@ -17,11 +17,11 @@ const CreateCalloutDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')
 );
 
-type KnowledgeBasePageProps = {
+type FlowStateTabPageProps = {
   sectionIndex: number;
 };
 
-const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
+const FlowStateTabPage = ({ sectionIndex }: FlowStateTabPageProps) => {
   const { urlInfo, classificationTagsets, flowStateForNewCallouts, tabDescription } = useSpaceTabProvider({
     tabPosition: sectionIndex,
   });
@@ -81,4 +81,4 @@ const SpaceKnowledgeBasePage = ({ sectionIndex }: KnowledgeBasePageProps) => {
   );
 };
 
-export default SpaceKnowledgeBasePage;
+export default FlowStateTabPage;
