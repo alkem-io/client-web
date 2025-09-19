@@ -17,11 +17,15 @@ import { gutters } from '@/core/ui/grid/utils';
 import useNavigate from '@/core/routing/useNavigate';
 import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 import useKnowledgeBase from '../knowledgeBase/useKnowledgeBase';
-import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import {
+  AiPersonaEngine,
+  SpaceLevel,
+  VirtualContributorBodyOfKnowledgeType,
+} from '@/core/apollo/generated/graphql-schema';
 import SpaceCardHorizontal from '@/domain/space/components/cards/SpaceCardHorizontal';
 import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
 import { SpaceBodyOfKnowledgeModel } from '../model/SpaceBodyOfKnowledgeModel';
-import { EMPTY_MODEL_CARD } from '../model/AiPersonaModelCardModel';
+import { EMPTY_MODEL_CARD } from '../model/VirtualContributorModelCardModel';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
 const OTHER_LINK_GROUP = 'other';
@@ -44,16 +48,16 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
 
   const { hasReadAccess, knowledgeBaseDescription } = useKnowledgeBase({ id: virtualContributor?.id });
 
-  const modelCard = virtualContributor?.aiPersona.modelCard || EMPTY_MODEL_CARD;
+  const modelCard = virtualContributor?.modelCard || EMPTY_MODEL_CARD;
 
   const references = virtualContributor?.profile?.references;
-  const bodyOfKnowledgeType = virtualContributor?.aiPersona?.bodyOfKnowledgeType;
+  const bodyOfKnowledgeType = virtualContributor?.bodyOfKnowledgeType;
   const engine = virtualContributor?.aiPersona?.engine;
 
   const isExternal = modelCard.aiEngine.isExternal;
 
-  const hasSpaceKnowledge = bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
-  const hasKnowledgeBase = bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
+  const hasSpaceKnowledge = bodyOfKnowledgeType === VirtualContributorBodyOfKnowledgeType.AlkemioSpace;
+  const hasKnowledgeBase = bodyOfKnowledgeType === VirtualContributorBodyOfKnowledgeType.AlkemioKnowledgeBase;
   const isAssistant = engine === AiPersonaEngine.OpenaiAssistant;
 
   const links = useMemo(() => {
@@ -139,7 +143,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
               <Gutters disableGap disablePadding>
                 <ProfileDetail
                   title={t('components.profile.fields.bodyOfKnowledge.title')}
-                  value={virtualContributor?.aiPersona?.bodyOfKnowledge || ''}
+                  value={virtualContributor?.bodyOfKnowledgeDescription || ''}
                   aria-label="body-of-knowledge"
                 />
 
@@ -152,7 +156,7 @@ export const VCProfilePageView = ({ virtualContributor, ...rest }: VCProfilePage
                 <Gutters disableGap disablePadding paddingTop={1}>
                   <SpaceCardHorizontal
                     space={{
-                      id: virtualContributor?.aiPersona?.bodyOfKnowledgeID,
+                      id: virtualContributor?.bodyOfKnowledgeID,
                       about: { profile: rest?.bokProfile || defaultProfile },
                       level: SpaceLevel.L0,
                     }}

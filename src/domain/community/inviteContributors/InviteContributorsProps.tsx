@@ -1,7 +1,7 @@
 import {
-  AiPersonaBodyOfKnowledgeType,
   AiPersonaEngine,
   RoleSetContributorType,
+  VirtualContributorBodyOfKnowledgeType,
 } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
@@ -31,10 +31,10 @@ export interface ContributorProps extends Identifiable {
     url: string;
     references?: ReferenceModel[];
   };
+  bodyOfKnowledgeDescription?: string;
+  bodyOfKnowledgeType?: VirtualContributorBodyOfKnowledgeType;
+  bodyOfKnowledgeID?: string;
   aiPersona?: {
-    bodyOfKnowledge?: string;
-    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType;
-    bodyOfKnowledgeID?: string;
     engine?: AiPersonaEngine;
   };
 }
