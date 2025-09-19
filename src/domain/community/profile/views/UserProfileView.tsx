@@ -77,7 +77,7 @@ export const UserProfileView = ({ userModel }: UserProfileViewProps) => {
       )}
 
       {socialLinks.length > 0 && (
-        <GridLegacy item display="flex" flexGrow={1} justifyContent="end">
+        <GridLegacy item display="flex" flexGrow={1} justifyContent="start">
           <SocialLinks items={socialLinks} />
         </GridLegacy>
       )}

@@ -1764,6 +1764,7 @@ export const ConfigurationFragmentDoc = gql`
       endpoint
     }
     geo {
+      enabled
       endpoint
     }
   }
@@ -2953,6 +2954,8 @@ export const InAppNotificationPayloadPlatformForumDiscussionFragmentDoc = gql`
     discussion {
       id
       displayName
+      description
+      category
       url
     }
   }

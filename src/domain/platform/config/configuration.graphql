@@ -73,6 +73,7 @@ fragment Configuration on Config {
     endpoint
   }
   geo {
+    enabled
     endpoint
   }
 }

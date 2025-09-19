@@ -1419,8 +1419,17 @@ export type DiscussionFieldPolicy = {
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type DiscussionDetailsKeySpecifier = ('displayName' | 'id' | 'url' | DiscussionDetailsKeySpecifier)[];
+export type DiscussionDetailsKeySpecifier = (
+  | 'category'
+  | 'description'
+  | 'displayName'
+  | 'id'
+  | 'url'
+  | DiscussionDetailsKeySpecifier
+)[];
 export type DiscussionDetailsFieldPolicy = {
+  category?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1513,8 +1522,9 @@ export type ForumFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type GeoKeySpecifier = ('endpoint' | GeoKeySpecifier)[];
+export type GeoKeySpecifier = ('enabled' | 'endpoint' | GeoKeySpecifier)[];
 export type GeoFieldPolicy = {
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GeoLocationKeySpecifier = ('latitude' | 'longitude' | GeoLocationKeySpecifier)[];

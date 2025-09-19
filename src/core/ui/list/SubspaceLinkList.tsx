@@ -34,7 +34,7 @@ const listItemStyles = {
 } as const;
 
 /**
- * LinksList
+ * SubspaceLinkList
  *
  * Renders a vertical list of link items with optional loading state and empty caption.
  * Displays up to a fixed number of items and allows expansion for more.
@@ -45,7 +45,7 @@ const listItemStyles = {
  * @param {string} [props.emptyListCaption] - Caption to display when there are no items.
  * @param {boolean} [props.loading=false] - If true, shows skeleton loaders instead of list items.
  */
-const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListProps) => {
+const SubspaceLinkList = ({ items = [], emptyListCaption, loading = false }: LinksListProps) => {
   const { t } = useTranslation();
   const tooltipPlacement: TooltipProps['placement'] = 'right';
 
@@ -100,4 +100,4 @@ const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListP
   );
 };
 
-export default LinksList;
+export default SubspaceLinkList;

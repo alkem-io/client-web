@@ -2519,6 +2519,10 @@ export type Discussion = {
 
 export type DiscussionDetails = {
   __typename?: 'DiscussionDetails';
+  /** The discussion category. */
+  category?: Maybe<Scalars['String']['output']>;
+  /** The discussion content. */
+  description?: Maybe<Scalars['String']['output']>;
   /** The discussion display name. */
   displayName: Scalars['String']['output'];
   /** The discussion ID. */
@@ -2678,6 +2682,8 @@ export enum ForumDiscussionPrivacy {
 
 export type Geo = {
   __typename?: 'Geo';
+  /** Is the geo functionality enabled. */
+  enabled: Scalars['Boolean']['output'];
   /** Endpoint where geo information is consumed from. */
   endpoint: Scalars['String']['output'];
 };
@@ -21341,7 +21347,7 @@ export type ConfigurationQuery = {
       featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
       sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
       apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
-      geo: { __typename?: 'Geo'; endpoint: string };
+      geo: { __typename?: 'Geo'; enabled: boolean; endpoint: string };
     };
     settings: {
       __typename?: 'PlatformSettings';
@@ -21396,7 +21402,7 @@ export type ConfigurationFragment = {
   featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
-  geo: { __typename?: 'Geo'; endpoint: string };
+  geo: { __typename?: 'Geo'; enabled: boolean; endpoint: string };
 };
 
 export type PlatformLicensingPlansQueryVariables = Exact<{ [key: string]: never }>;
@@ -30068,7 +30074,16 @@ export type InAppNotificationReceivedSubscription = {
           __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
           type: NotificationEventPayload;
           comment?: string | undefined;
-          discussion?: { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string } | undefined;
+          discussion?:
+            | {
+                __typename?: 'DiscussionDetails';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                category?: string | undefined;
+                url: string;
+              }
+            | undefined;
         }
       | {
           __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
@@ -31076,7 +31091,14 @@ export type InAppNotificationsQuery = {
               type: NotificationEventPayload;
               comment?: string | undefined;
               discussion?:
-                | { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string }
+                | {
+                    __typename?: 'DiscussionDetails';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    category?: string | undefined;
+                    url: string;
+                  }
                 | undefined;
             }
           | {
@@ -32066,7 +32088,16 @@ export type InAppNotificationAllTypesFragment = {
         __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
         type: NotificationEventPayload;
         comment?: string | undefined;
-        discussion?: { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string } | undefined;
+        discussion?:
+          | {
+              __typename?: 'DiscussionDetails';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              category?: string | undefined;
+              url: string;
+            }
+          | undefined;
       }
     | {
         __typename?: 'InAppNotificationPayloadPlatformGlobalRoleChange';
@@ -33203,7 +33234,16 @@ export type InAppNotificationPayloadPlatformForumDiscussionFragment = {
   __typename?: 'InAppNotificationPayloadPlatformForumDiscussion';
   type: NotificationEventPayload;
   comment?: string | undefined;
-  discussion?: { __typename?: 'DiscussionDetails'; id: string; displayName: string; url: string } | undefined;
+  discussion?:
+    | {
+        __typename?: 'DiscussionDetails';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        category?: string | undefined;
+        url: string;
+      }
+    | undefined;
 };
 
 export type InAppNotificationPayloadPlatformUserFragment = {
