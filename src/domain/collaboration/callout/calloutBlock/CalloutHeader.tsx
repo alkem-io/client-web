@@ -80,7 +80,7 @@ const CalloutHeader = ({
           authorName={callout.authorName}
         >
           {contributionsCount !== undefined &&
-            `${callout.authorName} • ${t('callout.contributions', {
+            `${callout.authorName} • ${t('callout.contributions.contributionsCount', {
               count: contributionsCount,
             })}`}
           {contributionsCount === undefined && callout.authorName}

@@ -137,7 +137,9 @@ const CommentsComponent = ({
       )}
       {isShowingLastMessage && lastMessage && (
         <>
-          <CaptionSmall onClick={onClickMore}>{t('callout.contributions', { count: messages.length })}</CaptionSmall>
+          <CaptionSmall onClick={onClickMore}>
+            {t('callout.contributions.contributionsCount', { count: messages.length })}
+          </CaptionSmall>
           <MessageView
             key={lastMessage.id}
             message={lastMessage}

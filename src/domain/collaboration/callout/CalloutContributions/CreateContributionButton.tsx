@@ -1,21 +1,15 @@
-import { PropsWithChildren } from 'react';
-import ContributeCard from '@/core/ui/card/ContributeCard';
-import { AddCircleOutline } from '@mui/icons-material';
-import { gutters } from '@/core/ui/grid/utils';
+import { IconButton, IconButtonProps } from '@mui/material';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import AddIcon from '@mui/icons-material/Add';
+import { useTranslation } from 'react-i18next';
 
-const CreateContributionButton = ({ onClick }: PropsWithChildren<{ onClick: () => void }>) => (
-  <ContributeCard
-    onClick={onClick}
-    sx={{
-      alignSelf: 'stretch',
-      fontSize: theme => theme.spacing(5),
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: gutters(12),
-    }}
-  >
-    <AddCircleOutline fontSize="inherit" color="primary" />
-  </ContributeCard>
-);
+const CreateContributionButton = (props: IconButtonProps) => {
+  const { t } = useTranslation();
+  return (
+    <IconButton aria-label={t('common.add')} size="small" {...props}>
+      <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+    </IconButton>
+  );
+};
 
 export default CreateContributionButton;

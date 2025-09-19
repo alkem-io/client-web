@@ -2,12 +2,10 @@ import { useMemo } from 'react';
 import { compact, sortBy } from 'lodash';
 import useNavigate from '@/core/routing/useNavigate';
 import { CalloutLayoutProps } from '../../calloutBlock/CalloutLayoutTypes';
-import ScrollableCardsLayout from '@/domain/collaboration/callout/components/ScrollableCardsLayout';
 import CreateContributionButton from '../CreateContributionButton';
 import { Skeleton } from '@mui/material';
 import WhiteboardCard from './WhiteboardCard';
 import { BaseCalloutViewProps } from '../../CalloutViewTypes';
-import { gutters } from '@/core/ui/grid/utils';
 import CalloutBlockFooter from '../../calloutBlock/CalloutBlockFooter';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { normalizeLink } from '@/core/utils/links';
@@ -16,6 +14,7 @@ import { useCreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/ap
 import { useTranslation } from 'react-i18next';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import Gutters from '@/core/ui/grid/Gutters';
+import CardsExpandableContainer from '../../components/CardsExpandableContainer';
 
 interface WhiteboardContributionProps {
   id: string;
@@ -109,7 +108,7 @@ const CalloutContributionsWhiteboard = ({
       });
     }
   };
-  const createButton = canCreateContribution && <CreateContributionButton onClick={handleCreate} />;
+  const createButton = canCreateContribution ? <CreateContributionButton onClick={handleCreate} /> : undefined;
 
   const showCards = useMemo(
     () => (!loading && whiteboards.length > 0) || callout.settings.contribution.enabled,
@@ -120,15 +119,16 @@ const CalloutContributionsWhiteboard = ({
   return (
     <Gutters ref={ref}>
       {showCards && (
-        <ScrollableCardsLayout
-          items={loading ? [undefined, undefined] : sortedWhiteboards}
-          createButton={!isSmallScreen && createButton}
-          maxHeight={gutters(22)}
+        <CardsExpandableContainer
+          items={sortedWhiteboards}
+          pagination={{ total: sortedWhiteboards.length }}
+          loading={loading}
+          createButton={createButton}
         >
           {whiteboard =>
             whiteboard ? <WhiteboardCard key={whiteboard.id} whiteboard={whiteboard} callout={callout} /> : <Skeleton />
           }
-        </ScrollableCardsLayout>
+        </CardsExpandableContainer>
       )}
       {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
         <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={handleCreate} />
