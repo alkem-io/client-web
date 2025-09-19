@@ -690,6 +690,7 @@ export type CalloutKeySpecifier = (
   | 'comments'
   | 'contributionDefaults'
   | 'contributions'
+  | 'contributionsPaginated'
   | 'createdBy'
   | 'createdDate'
   | 'framing'
@@ -711,6 +712,7 @@ export type CalloutFieldPolicy = {
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributions?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   framing?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2990,6 +2992,17 @@ export type PageInfoFieldPolicy = {
   hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PaginatedContributionsKeySpecifier = (
+  | 'contributions'
+  | 'pageInfo'
+  | 'total'
+  | PaginatedContributionsKeySpecifier
+)[];
+export type PaginatedContributionsFieldPolicy = {
+  contributions?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PaginatedInAppNotificationsKeySpecifier = (
   | 'inAppNotifications'
@@ -5650,6 +5663,10 @@ export type StrictTypedTypePolicies = {
   PageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier);
     fields?: PageInfoFieldPolicy;
+  };
+  PaginatedContributions?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedContributionsKeySpecifier | (() => undefined | PaginatedContributionsKeySpecifier);
+    fields?: PaginatedContributionsFieldPolicy;
   };
   PaginatedInAppNotifications?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

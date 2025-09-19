@@ -28,6 +28,7 @@ interface CalloutContribution {
   link?: Identifiable;
   post?: Identifiable;
   whiteboard?: Identifiable;
+  memo?: Identifiable;
 }
 
 interface CalloutContributionsProps {
@@ -43,6 +44,7 @@ const calloutContributionField: Record<CalloutContributionType, keyof CalloutCon
   [CalloutContributionType.Link]: 'link',
   [CalloutContributionType.Post]: 'post',
   [CalloutContributionType.Whiteboard]: 'whiteboard',
+  [CalloutContributionType.Memo]: 'memo',
 };
 
 const CalloutContributions = ({ callout }: CalloutContributionsProps) => {

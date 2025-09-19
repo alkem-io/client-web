@@ -3,7 +3,7 @@ subscription CalloutPostCreated($calloutId: UUID!) {
     contributionID
     sortOrder
     post {
-      ...ContributeTabPost
+      ...CalloutContributionsPostCard
     }
   }
 }

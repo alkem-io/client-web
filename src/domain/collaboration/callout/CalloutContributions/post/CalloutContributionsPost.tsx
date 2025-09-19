@@ -24,7 +24,7 @@ interface PostContribution {
     id: string;
     url: string;
     displayName: string;
-    description?: string | undefined;
+/*    description?: string | undefined;
     visuals: {
       id: string;
       uri: string;
@@ -34,20 +34,21 @@ interface PostContribution {
       name: string;
       uri: string;
       description?: string;
-    }[];
+    }[];*/
   };
 }
 
 interface CalloutContributionsPostProps extends BaseCalloutViewProps {
   callout: TypedCalloutDetails;
-  contributions:
-    | {
-        id: string;
-        sortOrder: number;
-        post?: PostContribution;
-      }[]
-    | undefined;
-  loading: boolean;
+  contributions: {
+    items: {
+      id: string;
+      sortOrder: number;
+      post?: PostContribution;
+    }[] | undefined;
+    total: number;
+  }
+  loading?: boolean;
 }
 
 const CalloutContributionsPost = ({
@@ -56,7 +57,6 @@ const CalloutContributionsPost = ({
   contributions,
   loading,
   canCreateContribution,
-  contributionsCount,
   calloutRestrictions,
 }: CalloutContributionsPostProps & {
   ref?: React.Ref<HTMLDivElement>;
@@ -72,7 +72,7 @@ const CalloutContributionsPost = ({
     () => ({
       posts: sortBy(
         compact(
-          contributions?.map(
+          contributions.items?.map(
             contribution =>
               contribution.post && {
                 ...contribution.post,
@@ -83,7 +83,7 @@ const CalloutContributionsPost = ({
         ),
         'sortOrder'
       ),
-      postNames: compact(contributions?.map(contribution => contribution.post?.profile.displayName)),
+      postNames: compact(contributions.items?.map(contribution => contribution.post?.profile.displayName)),
     }),
     [contributions]
   );
@@ -120,14 +120,14 @@ const CalloutContributionsPost = ({
     <Gutters ref={ref}>
       <CardsExpandableContainer
         items={posts}
-        pagination={{ total: contributionsCount ?? posts.length }}
+        pagination={{ total: contributions.total }}
         loading={loading}
         createButton={createButton}
       >
         {post => <PostCard post={post} onClick={navigateToPost} />}
       </CardsExpandableContainer>
       {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
-        <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
+        <CalloutBlockFooter contributionsCount={contributions.total} onCreate={openCreateDialog} />
       )}
       <PostCreationDialog
         open={postDialogOpen}

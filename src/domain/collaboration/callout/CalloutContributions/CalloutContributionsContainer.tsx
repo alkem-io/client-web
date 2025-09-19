@@ -3,6 +3,7 @@ import {
   AuthorizationPrivilege,
   CalloutAllowedContributors,
   CalloutContributionsQuery,
+  CalloutContributionsQueryVariables,
   CalloutContributionType,
 } from '@/core/apollo/generated/graphql-schema';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
@@ -10,8 +11,10 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import { Ref, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { CalloutSettingsModelFull } from '../models/CalloutSettingsModel';
+import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import useCalloutPostCreatedSubscription from './post/useCalloutPostCreatedSubscription';
 
+const pageSize = 4;
 interface CalloutContributionsContainerProps extends SimpleContainerProps<CalloutContributionsContainerProvided> {
   callout:
     | (Identifiable & {
@@ -19,7 +22,13 @@ interface CalloutContributionsContainerProps extends SimpleContainerProps<Callou
           myPrivileges?: AuthorizationPrivilege[];
         };
         settings: {
-          contribution: CalloutSettingsModelFull['contribution'];
+          contribution: CalloutSettingsModelFull['contribution']; /*
+              { //!!
+                enabled: boolean;
+                allowedTypes: CalloutContributionType[];
+                canAddContributions: CalloutAllowedContributors;
+                commentsEnabled: boolean;
+              };*/
         };
       })
     | undefined;
@@ -28,17 +37,22 @@ interface CalloutContributionsContainerProps extends SimpleContainerProps<Callou
   skip?: boolean;
 }
 
-interface CalloutContributionsContainerProvided {
+export interface CalloutContributionsContainerProvided {
   ref: Ref<HTMLDivElement>;
-  contributions: Required<CalloutContributionsQuery['lookup']>['callout']['contributions'];
-  contributionsCount: number;
+  contributions: {
+    items: Required<CalloutContributionsQuery['lookup']>['callout']['contributionsPaginated']['contributions'];
+    hasMore: boolean | undefined;
+    fetchMore: () => Promise<void>;
+    fetchAll: () => Promise<void>;
+    total: number;
+  };
+  contributionsCount: number; //!! provided for legacy, try to remove
   canCreateContribution: boolean;
   subscriptionEnabled: boolean;
-  loading;
+  loading?: boolean;
   onCalloutUpdate?: () => Promise<unknown>;
 }
 
-// TODO: add pagination here
 const CalloutContributionsContainer = ({
   callout,
   contributionType,
@@ -54,20 +68,34 @@ const CalloutContributionsContainer = ({
     triggerOnce: true,
   });
 
-  const { data, subscribeToMore, loading, refetch } = useCalloutContributionsQuery({
+  const {
+    data,
+    loading,
+    fetchMore,
+    hasMore,
+    refetch,
+    subscribeToMore,
+  } = usePaginatedQuery<CalloutContributionsQuery, CalloutContributionsQueryVariables>({
+    useQuery: useCalloutContributionsQuery,
+    getPageInfo: data => data.lookup.callout?.contributionsPaginated.pageInfo,
+    options: { skip: !inView || !calloutId || skip },
+    pageSize,
     variables: {
       calloutId: calloutId!,
       includeLink: contributionType === CalloutContributionType.Link,
       includeWhiteboard: contributionType === CalloutContributionType.Whiteboard,
       includePost: contributionType === CalloutContributionType.Post,
+
     },
-    skip: !inView || !calloutId || skip,
   });
 
-  const subscription = useCalloutPostCreatedSubscription(data, data => data?.lookup.callout, subscribeToMore, {
+  // TODO: Server#4508 - Enable subscriptions for links and whiteboards
+  //!!
+  /*const subscription = useCalloutPostCreatedSubscription(data, data => data?.lookup.callout, subscribeToMore, {
     variables: { calloutId: calloutId! },
     skip: !inView || !calloutId || skip || contributionType !== CalloutContributionType.Post,
   });
+  */
 
   const canCreateContribution = useMemo(() => {
     if (
@@ -78,7 +106,7 @@ const CalloutContributionsContainer = ({
       return false;
     }
 
-    const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
+    const calloutPrivileges = callout.authorization?.myPrivileges ?? [];
     const requiredPrivileges = [AuthorizationPrivilege.Contribute];
 
     if (callout.settings.contribution.canAddContributions.includes(CalloutAllowedContributors.Admins)) {
@@ -101,11 +129,17 @@ const CalloutContributionsContainer = ({
     <>
       {children({
         ref: intersectionObserverRef,
-        contributions: data?.lookup.callout?.contributions ?? [],
-        contributionsCount: data?.lookup.callout?.contributions.length ?? 0,
+        contributions: {
+          items: data?.lookup.callout?.contributionsPaginated.contributions ?? [],
+          hasMore,
+          fetchMore,
+          fetchAll: fetchMore,  //!!
+          total: data?.lookup.callout?.contributionsPaginated.total ?? 0,
+        },
+        contributionsCount: data?.lookup.callout?.contributionsPaginated.total ?? 0,
         loading,
         canCreateContribution,
-        subscriptionEnabled: subscription.enabled,
+        subscriptionEnabled: false, //!! subscription.enabled,
         onCalloutUpdate: async () => {
           await onCalloutUpdate?.();
           await refetch();

@@ -31,18 +31,21 @@ interface WhiteboardContributionProps {
 interface CalloutContributionsWhiteboardProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
   contributions: {
-    id: string;
-    sortOrder: number;
-    whiteboard?: {
+    items: {
       id: string;
-      profile: {
+      sortOrder: number;
+      whiteboard?: {
         id: string;
-        url: string;
-        displayName: string;
-        visual?: { id: string; uri: string };
+        profile: {
+          id: string;
+          url: string;
+          displayName: string;
+          visual?: { id: string; uri: string };
+        };
       };
-    };
-  }[];
+    }[] | undefined;
+    total: number
+  }
 }
 
 const CalloutContributionsWhiteboard = ({
@@ -51,7 +54,6 @@ const CalloutContributionsWhiteboard = ({
   contributions,
   loading,
   onCalloutUpdate,
-  contributionsCount,
   canCreateContribution,
 }: CalloutContributionsWhiteboardProps & {
   ref?: React.Ref<HTMLDivElement>;
@@ -63,7 +65,7 @@ const CalloutContributionsWhiteboard = ({
   const whiteboards: WhiteboardContributionProps[] = useMemo(
     () =>
       compact(
-        contributions?.map(
+        contributions.items?.map(
           contribution =>
             contribution.whiteboard && {
               ...contribution.whiteboard,
@@ -131,7 +133,7 @@ const CalloutContributionsWhiteboard = ({
         </CardsExpandableContainer>
       )}
       {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
-        <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={handleCreate} />
+        <CalloutBlockFooter contributionsCount={contributions.total} onCreate={handleCreate} />
       )}
     </Gutters>
   );

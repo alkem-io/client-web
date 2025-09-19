@@ -2,24 +2,69 @@ query CalloutContributions(
   $calloutId: UUID!,
   $includeLink: Boolean! = false,
   $includeWhiteboard: Boolean! = false,
-  $includePost: Boolean! = false
+  $includePost: Boolean! = false,
+  $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, POST],
+  $first: Int!,
+  $after: UUID
 ) {
   lookup {
     callout(ID: $calloutId) {
       id
-      contributions {
-        id
-        sortOrder
-        link @include(if: $includeLink) {
-          ...LinkDetailsWithAuthorization
+      contributionsPaginated(
+        first: $first,
+        after: $after,
+        filter: {
+          types: $filter
         }
-        whiteboard @include(if: $includeWhiteboard)  {
-          ...WhiteboardCollectionCalloutCard
+      ) {
+        contributions {
+          id
+          sortOrder
+          link @include(if: $includeLink) {
+            ...LinkDetailsWithAuthorization
+          }
+          whiteboard @include(if: $includeWhiteboard)  {
+            ...CalloutContributionsWhiteboardCard
+          }
+          post @include(if: $includePost)  {
+            ...CalloutContributionsPostCard
+          }
         }
-        post @include(if: $includePost)  {
-          ...ContributeTabPost
+        pageInfo {
+          ...PageInfo
         }
+        total
       }
     }
   }
 }
+
+
+fragment CalloutContributionsWhiteboardCard on Whiteboard {
+  id
+  profile {
+    id
+    url
+    displayName
+    visual(type: CARD) {
+      ...VisualModel
+    }
+  }
+  createdDate
+}
+
+fragment CalloutContributionsPostCard on Post {
+  id
+  profile {
+    id
+    url
+    displayName
+    description
+  }
+  createdDate
+  authorization {
+    id
+    myPrivileges
+  }
+}
+

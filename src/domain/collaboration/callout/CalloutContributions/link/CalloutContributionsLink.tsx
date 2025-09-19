@@ -57,15 +57,18 @@ export interface FormattedLink {
 interface CalloutContributionsLinkProps extends BaseCalloutViewProps {
   callout: TypedCalloutDetails;
   contributions: {
-    id: string;
-    sortOrder: number;
-    link?: {
+    items: {
       id: string;
-      uri: string;
-      profile: { displayName: string; description?: string };
-      authorization?: { myPrivileges?: AuthorizationPrivilege[] };
-    };
-  }[];
+      sortOrder: number;
+      link?: {
+        id: string;
+        uri: string;
+        profile: { displayName: string; description?: string };
+        authorization?: { myPrivileges?: AuthorizationPrivilege[] };
+      }
+    }[];
+    total: number;
+  };
 }
 
 const CalloutContributionsLink = ({
@@ -198,7 +201,7 @@ const CalloutContributionsLink = ({
 
   const { formattedLinks, sortedFormattedLinks, limitedLinks, isListTruncated } = useMemo(() => {
     const formattedLinks: FormattedLink[] = compact(
-      contributions.map(
+      contributions.items.map(
         contribution =>
           contribution.link &&
           contribution.id && {
@@ -220,7 +223,7 @@ const CalloutContributionsLink = ({
     const sortedFormattedLinks = sortBy(formattedLinks, 'sortOrder');
     const limitedLinks = sortedFormattedLinks?.slice(0, MAX_LINKS_NORMAL_VIEW);
     const isListTruncated =
-      (compact(contributions?.map(contribution => contribution.link))?.length ?? 0) > MAX_LINKS_NORMAL_VIEW;
+      (compact(contributions.items?.map(contribution => contribution.link))?.length ?? 0) > MAX_LINKS_NORMAL_VIEW;
 
     return {
       formattedLinks,
