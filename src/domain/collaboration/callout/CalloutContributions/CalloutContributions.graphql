@@ -39,7 +39,6 @@ query CalloutContributions(
   }
 }
 
-
 fragment CalloutContributionsWhiteboardCard on Whiteboard {
   id
   profile {

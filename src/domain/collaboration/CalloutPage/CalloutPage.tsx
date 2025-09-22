@@ -45,7 +45,7 @@ export interface LocationStateCachedCallout extends NavigationState {
  * @constructor
  */
 const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, children }: CalloutPageProps) => {
-  const { calloutId, loading: urlResolverLoading } = useUrlResolver();
+  const { calloutId, contributionId, loading: urlResolverLoading } = useUrlResolver();
 
   const { t } = useTranslation();
 
@@ -158,6 +158,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
         >
           <CalloutView
             callout={callout}
+            contributionId={contributionId}
             contributionsCount={callout.activity}
             onVisibilityChange={changeCalloutVisibility}
             onCalloutUpdate={refetch}

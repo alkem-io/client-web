@@ -5,6 +5,7 @@ import { BlockTitle, Caption } from '../typography';
 
 type BlockTitleWithIconProps = {
   title: ReactNode;
+  subtitle?: ReactNode;
   titleId?: string;
   icon?: ReactElement<SvgIconProps>;
   variant?: TypographyProps['variant'];
@@ -12,6 +13,7 @@ type BlockTitleWithIconProps = {
 
 const BlockTitleWithIcon = ({
   title,
+  subtitle,
   titleId,
   icon,
   variant = 'h3',
@@ -32,6 +34,7 @@ const BlockTitleWithIcon = ({
     {title && typeof title === 'string' ? (
       <BlockTitle variant={variant} noWrap>
         {title}
+        {subtitle}
       </BlockTitle>
     ) : (
       <Caption noWrap>{title}</Caption>

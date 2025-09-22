@@ -85,7 +85,6 @@ const CalloutContributionsContainer = ({
       includeLink: contributionType === CalloutContributionType.Link,
       includeWhiteboard: contributionType === CalloutContributionType.Whiteboard,
       includePost: contributionType === CalloutContributionType.Post,
-
     },
   });
 

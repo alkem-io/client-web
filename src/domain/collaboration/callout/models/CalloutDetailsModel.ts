@@ -9,6 +9,7 @@ import { ContributionDefaultsModel } from './ContributionDefaultsModel';
 import { CalloutModelExtension, CalloutModelLight } from './CalloutModelLight';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 import { LinkDetails } from '../CalloutContributions/link/models/LinkDetails';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 type ContributorModel = {
   __typename?: string; // 'Organization' | 'User' | 'VirtualContributor';
@@ -70,6 +71,7 @@ export type CalloutDetailsModel = CalloutModelLight & {
   settings: CalloutSettingsModelFull;
   contributionDefaults: ContributionDefaultsModel;
   comments?: CommentsWithMessagesModel | undefined;
+  contributions: (Identifiable & { sortOrder: number })[]
 };
 
 /**
@@ -77,3 +79,9 @@ export type CalloutDetailsModel = CalloutModelLight & {
  * Information queried and extended by the hook useCalloutsSet
  */
 export type CalloutDetailsModelExtended = CalloutModelExtension<CalloutDetailsModel>;
+
+export type CalloutDetailsWithContributions = CalloutDetailsModelExtended & {
+  contributions: {
+
+  }
+}

@@ -24,6 +24,7 @@ import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardFooter from '@/core/ui/card/CardFooter';
 import { gutters } from '@/core/ui/grid/utils';
 import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
+import CalloutContributionPreview from '../CalloutContributions/CalloutContributionPreview/CalloutContributionPreview';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>
@@ -40,6 +41,7 @@ export const CalloutViewSkeleton = () => (
 
 interface CalloutViewProps extends BaseCalloutViewProps {
   callout: CalloutDetailsModelExtended | undefined;
+  contributionId?: string;  // Selected contributionId
   calloutActions?: boolean;
 }
 
@@ -47,6 +49,7 @@ const COMMENTS_CONTAINER_HEIGHT = 400;
 
 const CalloutView = ({
   callout,
+  contributionId,
   loading,
   expanded,
   contributionsCount,
@@ -88,6 +91,9 @@ const CalloutView = ({
 
           {/* Link framing */}
           {callout.framing.type === CalloutFramingType.Link && <CalloutFramingLink callout={callout} />}
+
+          {/* Selected Contribution */}
+          {contributionId && <CalloutContributionPreview callout={callout} contributionId={contributionId} />}
 
           {/* Collaborate with links */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
