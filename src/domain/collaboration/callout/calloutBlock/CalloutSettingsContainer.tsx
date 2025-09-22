@@ -37,7 +37,7 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortModels';
 import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
-import { TypedCalloutDetails } from '../models/TypedCallout';
+import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 import { FormattedLink } from '../CalloutContributions/link/CalloutContributionsLink';
 import { PostCardPost } from '../CalloutContributions/post/PostCard';
 import { WhiteboardCardWhiteboard } from '../CalloutContributions/whiteboard/WhiteboardCard';
@@ -57,14 +57,14 @@ export interface CalloutSettingsContainerProps
   extends CalloutLayoutEvents,
     Partial<CalloutSortProps>,
     SimpleContainerProps<CalloutSettingsProvided> {
-  callout: TypedCalloutDetails;
+  callout: CalloutDetailsModelExtended;
   items?: {
     posts?: PostCardPost[];
     whiteboards?: WhiteboardCardWhiteboard[];
     links?: FormattedLink[];
   };
   expanded?: boolean;
-  onExpand?: () => void;
+  onExpand?: (callout: CalloutDetailsModelExtended) => void;
   disableRichMedia?: boolean;
   calloutRestrictions?: CalloutRestrictions;
 }
@@ -240,7 +240,7 @@ const CalloutSettingsContainer = ({
             key="expand"
             iconComponent={ExpandContentIcon}
             onClick={() => {
-              onExpand?.();
+              onExpand?.(callout);
               setSettingsAnchorEl(null);
             }}
           >

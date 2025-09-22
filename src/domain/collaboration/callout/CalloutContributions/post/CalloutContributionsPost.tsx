@@ -11,7 +11,7 @@ import {
   LocationStateCachedCallout,
   LocationStateKeyCachedCallout,
 } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import { TypedCalloutDetails } from '../../models/TypedCallout';
+import { CalloutDetailsModelExtended } from '../../models/CalloutDetailsModel';
 import { compact, sortBy } from 'lodash';
 import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -24,7 +24,7 @@ interface PostContribution {
     id: string;
     url: string;
     displayName: string;
-/*    description?: string | undefined;
+    /*    description?: string | undefined;
     visuals: {
       id: string;
       uri: string;
@@ -39,15 +39,17 @@ interface PostContribution {
 }
 
 interface CalloutContributionsPostProps extends BaseCalloutViewProps {
-  callout: TypedCalloutDetails;
+  callout: CalloutDetailsModelExtended;
   contributions: {
-    items: {
-      id: string;
-      sortOrder: number;
-      post?: PostContribution;
-    }[] | undefined;
+    items:
+      | {
+          id: string;
+          sortOrder: number;
+          post?: PostContribution;
+        }[]
+      | undefined;
     total: number;
-  }
+  };
   loading?: boolean;
 }
 

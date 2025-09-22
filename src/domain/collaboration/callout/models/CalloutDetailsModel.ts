@@ -1,20 +1,14 @@
 import { AuthorizationPrivilege, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
-import {
-  ClassificationTagsetModel,
-  ClassificationTagsetWithAllowedValuesModel,
-} from '../../calloutsSet/Classification/ClassificationTagset.model';
-import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
-import { CalloutSettingsModelFull } from './CalloutSettingsModel';
-import { CalloutModelLight } from './CalloutModelLight';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
-import { ContributionDefaultsModel } from './ContributionDefaultsModel';
 import { MemoModel } from '../../memo/model/MemoModel';
-
-// TODO: TypedCallout and CalloutModel requires a refactor to avoid duplication
-// TypedCallout was created long ago to provide CalloutModel data + a few additional fields useful for the UI,
-// TypedCallout is quite basic information, then TypedCalloutDetails has more details, and TypedCalloutDetailsWithContributions includes the contributions.
+import { ClassificationTagsetWithAllowedValuesModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
+import { CalloutSettingsModelFull } from './CalloutSettingsModel';
+import { ContributionDefaultsModel } from './ContributionDefaultsModel';
+import { CalloutModelExtension, CalloutModelLight } from './CalloutModelLight';
+import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import { LinkDetails } from '../CalloutContributions/link/models/LinkDetails';
 
 type ContributorModel = {
   __typename?: string; // 'Organization' | 'User' | 'VirtualContributor';
@@ -52,27 +46,7 @@ type CommentsWithMessagesModel = {
   vcInteractions: { id: string; threadID: string; virtualContributorID: string }[];
 };
 
-export type TypedCallout = CalloutModelLight & {
-  authorization?: { myPrivileges?: AuthorizationPrivilege[] };
-  draft: boolean;
-  editable: boolean;
-  movable: boolean;
-  canBeSavedAsTemplate: boolean;
-  classificationTagsets: ClassificationTagsetModel[];
-  authorName?: string;
-  authorAvatarUri?: string;
-  publishedAt?: string;
-};
-
-export type LinkDetails = {
-  id?: string;
-  uri: string;
-  profile: {
-    displayName: string;
-  };
-};
-
-export type TypedCalloutDetails = TypedCallout & {
+export type CalloutDetailsModel = CalloutModelLight & {
   framing: {
     profile: {
       id: string;
@@ -97,3 +71,9 @@ export type TypedCalloutDetails = TypedCallout & {
   contributionDefaults: ContributionDefaultsModel;
   comments?: CommentsWithMessagesModel | undefined;
 };
+
+/**
+ * Extended CalloutDetailsModel with additional properties useful for the UI
+ * Information queried and extended by the hook useCalloutsSet
+ */
+export type CalloutDetailsModelExtended = CalloutModelExtension<CalloutDetailsModel>;

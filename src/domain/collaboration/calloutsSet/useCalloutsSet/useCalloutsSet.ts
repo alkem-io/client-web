@@ -14,7 +14,7 @@ import { cloneDeep } from 'lodash';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 import { ClassificationTagsetModel } from '../Classification/ClassificationTagset.model';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
-import { TypedCallout } from '../../callout/models/TypedCallout';
+import { CalloutModelLightExtended } from '../../callout/models/CalloutModelLight';
 
 interface UseCalloutsSetParams {
   calloutsSetId: string | undefined;
@@ -35,7 +35,7 @@ export interface OrderUpdate {
 
 export interface UseCalloutsSetProvided {
   calloutsSetId: string | undefined;
-  callouts: TypedCallout[] | undefined;
+  callouts: CalloutModelLightExtended[] | undefined;
   canCreateCallout: boolean;
   loading: boolean;
   refetchCallouts: (variables?: Partial<CalloutsOnCalloutsSetUsingClassificationQueryVariables>) => void;
@@ -100,7 +100,7 @@ const useCalloutsSet = ({
 
           const classification = callout.classification;
 
-          const result: TypedCallout = {
+          const result: CalloutModelLightExtended = {
             ...callout,
             classification,
             framing: {

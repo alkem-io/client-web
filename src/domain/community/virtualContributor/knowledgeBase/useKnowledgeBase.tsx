@@ -11,14 +11,14 @@ import {
   useVirtualContributorKnowledgePrivilegesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { TypedCallout } from '@/domain/collaboration/callout/models/TypedCallout';
+import { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
 
 interface useKnowledgeBaseParams {
   id: string | undefined;
 }
 
 interface useKnowledgeBaseProvided {
-  callouts: TypedCallout[] | undefined;
+  callouts: CalloutModelLightExtended[] | undefined;
   calloutsSetId: string;
   canCreateCallout: boolean;
   loading: boolean;

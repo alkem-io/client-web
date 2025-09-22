@@ -1,13 +1,13 @@
 import { Button, SxProps, Theme, Tooltip } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { TypedCalloutDetails } from '../models/TypedCallout';
+import { CalloutDetailsModel } from '../models/CalloutDetailsModel';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import { useTranslation } from 'react-i18next';
 import { Caption } from '@/core/ui/typography';
 import useNavigate from '@/core/routing/useNavigate';
 
 interface CalloutFramingLinkProps {
-  callout: TypedCalloutDetails;
+  callout: CalloutDetailsModel;
   sx?: SxProps<Theme>;
   containerProps?: GuttersProps;
 }

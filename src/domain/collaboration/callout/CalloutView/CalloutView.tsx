@@ -6,7 +6,6 @@ import {
 import { useScreenSize } from '@/core/ui/grid/constants';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { TypedCalloutDetails } from '../models/TypedCallout';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
 import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
@@ -19,9 +18,28 @@ import CalloutContributionsWhiteboard from '../CalloutContributions/whiteboard/C
 import CalloutContributionsPost from '../CalloutContributions/post/CalloutContributionsPost';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { CardHeader, Skeleton } from '@mui/material';
+import ContributeCard from '@/core/ui/card/ContributeCard';
+import CardFooter from '@/core/ui/card/CardFooter';
+import { gutters } from '@/core/ui/grid/utils';
+import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
+
+export const CalloutViewSkeleton = () => (
+  <PageContentBlock>
+    <Skeleton />
+    <ContributeCard>
+      <CardHeader title={<Skeleton />} />
+      <Skeleton sx={{ height: gutters(8), marginX: gutters() }} />
+      <CardFooter>
+        <Skeleton width="100%" />
+      </CardFooter>
+    </ContributeCard>
+  </PageContentBlock>
+);
 
 interface CalloutViewProps extends BaseCalloutViewProps {
-  callout: TypedCalloutDetails;
+  callout: CalloutDetailsModelExtended | undefined;
   calloutActions?: boolean;
 }
 
@@ -45,6 +63,10 @@ const CalloutView = ({
 
   const { isSmallScreen } = useScreenSize();
   const lastMessageOnly = isSmallScreen && !expanded;
+
+  if (!callout || loading) {
+    return <CalloutViewSkeleton />;
+  }
 
   return (
     <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
@@ -134,7 +156,7 @@ const CalloutView = ({
                   loading={loading || props.loading}
                   last={lastMessageOnly}
                   maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
-                  onClickMore={onExpand}
+                  onClickMore={() => onExpand?.(callout)}
                   isMember={myMembershipStatus === CommunityMembershipStatus.Member}
                 />
               )}

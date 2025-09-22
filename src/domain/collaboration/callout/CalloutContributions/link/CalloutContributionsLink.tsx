@@ -20,25 +20,12 @@ import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { compact, sortBy } from 'lodash';
-import { TypedCalloutDetails } from '../../models/TypedCallout';
+import { CalloutDetailsModelExtended } from '../../models/CalloutDetailsModel';
 import Loading from '@/core/ui/loading/Loading';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
 
 const MAX_LINKS_NORMAL_VIEW = 3;
-
-export interface LinkDetails {
-  id: string;
-  uri: string;
-  profile: {
-    displayName: string;
-    description?: string;
-  };
-  authorization?: {
-    myPrivileges: AuthorizationPrivilege[];
-  };
-  sortOrder?: number;
-}
 
 export interface FormattedLink {
   id: string;
@@ -55,7 +42,7 @@ export interface FormattedLink {
 }
 
 interface CalloutContributionsLinkProps extends BaseCalloutViewProps {
-  callout: TypedCalloutDetails;
+  callout: CalloutDetailsModelExtended;
   contributions: {
     items: {
       id: string;
@@ -65,7 +52,7 @@ interface CalloutContributionsLinkProps extends BaseCalloutViewProps {
         uri: string;
         profile: { displayName: string; description?: string };
         authorization?: { myPrivileges?: AuthorizationPrivilege[] };
-      }
+      };
     }[];
     total: number;
   };
@@ -253,7 +240,7 @@ const CalloutContributionsLink = ({
           marginBottom={gutters()}
         >
           {isListTruncated && !expanded && (
-            <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
+            <Caption component={Link} onClick={() => onExpand?.(callout)} sx={{ cursor: 'pointer' }}>
               {t('callout.link-collection.more-links', { count: formattedLinks.length })}
             </Caption>
           )}
