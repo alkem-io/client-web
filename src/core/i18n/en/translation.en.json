@@ -253,8 +253,10 @@
     "add": "Add",
     "added": "Added",
     "remove": "Remove",
-    "callout": "Callout",
-    "callouts": "Callouts",
+    "callout": "$t(common.post)",
+    "callouts": "$t(common.posts)",
+    "Callout": "$t(common.Post)",
+    "Callouts": "$t(common.Posts)",
     "collaborationTools": "Collaboration Tools",
     "createdBy": "Created by",
     "Memo": "Memo",
@@ -304,8 +306,10 @@
     "email": "Email",
     "state": "Phase",
     "states": "Phases",
-    "post": "Post",
-    "posts": "Posts",
+    "post": "post",
+    "posts": "posts",
+    "Post": "Post",
+    "Posts": "Posts",
     "status": "Status",
     "aspect": "Card",
     "aspects": "Cards",
@@ -513,8 +517,8 @@
       },
       "calloutType": {
         "LINK_COLLECTION": "Link $t(common.Collection)",
-        "POST": "$t(common.post)",
-        "POST_COLLECTION": "$t(common.post) $t(common.Collection)",
+        "POST": "$t(common.Post)",
+        "POST_COLLECTION": "$t(common.Post) $t(common.Collection)",
         "WHITEBOARD": "$t(common.Whiteboard)",
         "WHITEBOARD_COLLECTION": "$t(common.Whiteboard) $t(common.Collection)"
       },
@@ -764,9 +768,9 @@
   },
   "callout": {
     "create": {
-      "createButton": "$t(common.post)",
-      "createButtonTooltip": "Add $t(common.post)",
-      "dialogTitle": "Add $t(common.post)",
+      "createButton": "$t(common.Callout)",
+      "createButtonTooltip": "Add $t(common.Callout)",
+      "dialogTitle": "Add $t(common.Callout)",
       "framingSettings": {
         "title": "Additional Content",
         "none": {
@@ -824,7 +828,7 @@
             }
           },
           "post": {
-            "title": "$t(common.posts)",
+            "title": "$t(common.Posts)",
             "tooltip": "Enable responding with $t(common.posts)",
             "settings": {
               "label": "Default text:",
@@ -870,7 +874,7 @@
     "delete-confirm-title": "Delete $t(common.post)?",
     "delete-confirm-text": "All $t(common.responses) and $t(common.comments) under the $t(common.posts) will also be deleted.",
     "state-permission": "Allow adding to the $t(common.collection)",
-    "permission-help-text": "Use the switch below to close this callout for new entries.",
+    "permission-help-text": "Use the switch below to close this $t(common.callout) for new entries.",
     "callout-location": "Location: ",
     "sortContributions": "Sort contributions",
     "saveAsTemplate": "Save as $t(common.template)",
@@ -1122,7 +1126,6 @@
     "calloutTemplates": {
       "name": "$t(common.enums.templateType.CALLOUT)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.CALLOUT_plural)",
-      "type": "Callout type",
       "description": "Description"
     },
     "postTemplates": {
@@ -1437,18 +1440,17 @@
     "callout-creation": {
       "title": "What do you want to ask your $t(common.community)?",
       "titleWithType": "Create {{type}}",
-      "post-type-label": "$t(common.post) label",
+      "post-type-label": "$t(common.Post) label",
       "custom-template": "Custom $t(common.template)",
       "info-step": {
         "title": "Details",
         "description": "Description",
         "type-comments": "$t(common.Comments)",
         "type-comments-help": "Select $t(common.Comments) when you want people to answer in a simple text format, like a message board.",
-        "type-posts": "$t(common.posts)",
+        "type-posts": "$t(common.Posts)",
         "type-posts-help": "Select $t(common.posts) when you want people to answer in a card format.",
         "type-whiteboards": "$t(common.Whiteboards)",
-        "type-whiteboards-help": "Select ‘$t(common.Whiteboards)’ when you want people to answer on a visual $t(common.whiteboard), allowing them to draw and use text.",
-        "unique-title-validation-text": "This title is already used for another $t(common.callout)"
+        "type-whiteboards-help": "Select ‘$t(common.Whiteboards)’ when you want people to answer on a visual $t(common.whiteboard), allowing them to draw and use text."
       },
       "framing": {
         "whiteboard": {
@@ -1492,7 +1494,7 @@
       "type-step": {
         "title": "The type of the additional context to add.",
         "error": "Error occurred while loading the types",
-        "label": "$t(common.post) label",
+        "label": "$t(common.Post) label",
         "type-help-text-short": "Please choose the $t(common.post) label that best matches the context you wish to share."
       },
       "info-step": {
@@ -2188,7 +2190,7 @@
               "defaultTitle": "$t(common.templateLibrary)",
               "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Find $t(common.templates) to use in your $t(common.space) or $t(common.subspace). Select the $t(common.template) and click `Import` to add it to your $t(common.template) set.",
-              "callout-template-import-subtitle": "Find a $t(common.template) for people to use when contributing to your $t(common.post)",
+              "callout-template-import-subtitle": "Find a $t(common.template) for people to use when contributing to your $t(common.callout)",
               "noTemplates": "No $t(common.templates) in the $t(common.space) library.",
               "imported-successfully-notification": "$t(common.template) imported successfully"
             },
@@ -2404,7 +2406,7 @@
             "title": "$t(common.space) Features",
             "features": {
               "WHITEBOARD_MULTI_USER": "Multi-user $t(common.Whiteboards)",
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create $t(common.template) from callout",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create $t(common.template) from $t(common.callout)",
               "VIRTUAL_CONTRIBUTORS": "Interact with $t(common.virtualContributors)"
             }
           },
@@ -2566,10 +2568,11 @@
           "subspace": "$t(common.subspaces)",
           "user": "Users",
           "organization": "$t(common.Organizations)",
-          "post": "$t(common.posts)",
+          "post": "$t(common.Posts)",
           "whiteboard": "$t(common.Whiteboards) (available soon)",
-          "callout": "Callouts (available soon)",
-          "memo": "$t(common.Memos) (available soon)"
+          "callout": "$t(common.Callouts)",
+          "memo": "$t(common.Memos) (available soon)",
+          "response": "$t(common.Responses)"
         }
       },
       "spaceFilterTitle": "$t(common.spaces)"
@@ -3189,10 +3192,10 @@
         "subtitle": "This section allows you to select your preferences regarding receiving messages from $t(common.spaces) you are a $t(common.member) of",
         "settings": {
           "communicationUpdateSent": "Receive a $t(common.notification) when a new update is shared with a $t(common.community) I am a $t(common.member) of",
-          "collaborationCalloutPublished": "Receive a $t(common.notification) when a Callout is published in a $t(common.community) I am a $t(common.member) of",
+          "collaborationCalloutPublished": "Receive a $t(common.notification) when a $t(common.callout) is published in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new contribution ($t(common.whiteboard), $t(common.post), link, $t(common.memo) etc.) is created in a $t(common.community) I am a $t(common.member) of",
-          "collaborationCalloutComment": "Receive a $t(common.notification) when a a $t(common.comment) is made on a Callout in a $t(common.community) I am a $t(common.member) of",
-          "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.post) contribution in a $t(common.community) I am a $t(common.member) of"
+          "collaborationCalloutComment": "Receive a $t(common.notification) when a a $t(common.comment) is made on a $t(common.callout) in a $t(common.community) I am a $t(common.member) of",
+          "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.callout) contribution in a $t(common.community) I am a $t(common.member) of"
         }
       },
       "spaceAdmin": {
@@ -3201,7 +3204,7 @@
         "settings": {
           "communityApplicationReceived": "Receive a $t(common.notification) when a new application is received",
           "communityNewMember": "Receive a $t(common.notification) when a new $t(common.member) joins the $t(common.community)",
-          "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new callout is created",
+          "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new $t(common.callout) is created",
           "communicationMessageReceived": "Receive a $t(common.notification) when a new message is received"
         }
       },
@@ -3356,15 +3359,15 @@
     "new": "New $t(common.post)",
     "edit": "Edit $t(common.post)",
     "type": {
-      "title": "$t(common.post) label",
+      "title": "$t(common.Post) label",
       "help-text": "What type of information do you want to share?"
     },
     "postLocation": {
-      "title": "$t(common.post) location",
-      "label": "Contributing to Callout",
-      "reminder": "Be careful changing the $t(common.posts) location. Moving the $t(common.post) to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this $t(common.post), to retrieve it. Note that you can only move $t(common.posts) within the same $t(common.space) or $t(common.subspace).",
-      "success": "Successfully moved $t(common.post) to the new Callout.",
-      "error": "Something went wrong when moving the $t(common.post), please try again."
+      "title": "$t(common.Post) location",
+      "label": "Contributing to $t(common.callout)",
+      "reminder": "Be careful changing the $t(common.response) location. Moving the $t(common.response) to another $t(common.callout) will make it disappear from the current $t(common.callout). This might make it difficult for people, including the person who created this $t(common.response), to retrieve it. Note that you can only move $t(common.responses) within the same $t(common.space) or $t(common.subspace).",
+      "success": "Successfully moved $t(common.response) to the new $t(common.post).",
+      "error": "Something went wrong when moving the $t(common.response), please try again."
     },
     "delete": {
       "title": "Are you sure you want to delete this $t(common.post)?",
@@ -3612,7 +3615,7 @@
       "description": "What knowledge do you want your $t(common.virtualContributor) to have? Write it down in $t(common.posts) or upload it in documents.",
       "descriptionBold": "You can update, add, and remove content later.",
       "post": {
-        "title": "$t(common.post) title",
+        "title": "$t(common.Post) title",
         "exampleTitle": "Example: About Alkemio",
         "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
         "addAnotherPost": "Add $t(common.post)",
