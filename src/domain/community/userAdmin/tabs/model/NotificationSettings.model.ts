@@ -1,56 +1,60 @@
-// Notification setting item structure
-export interface NotificationSetting {
+// Notification channel settings
+export interface NotificationChannels {
   email: boolean;
-  // inApp: boolean;
+  inApp: boolean;
 }
 
+// Space notification settings
 export interface SpaceNotificationSettings {
-  communicationUpdates: NotificationSetting;
-  collaborationCalloutPublished: NotificationSetting;
-  collaborationCalloutPostContributionComment: NotificationSetting;
-  collaborationCalloutContributionCreated: NotificationSetting;
-  collaborationCalloutComment: NotificationSetting;
+  communicationUpdates?: NotificationChannels;
+  collaborationCalloutPublished?: NotificationChannels;
+  collaborationCalloutPostContributionComment?: NotificationChannels;
+  collaborationCalloutContributionCreated?: NotificationChannels;
+  collaborationCalloutComment?: NotificationChannels;
 }
 
+// Space admin notification settings
 export interface SpaceAdminNotificationSettings {
-  communityApplicationReceived: NotificationSetting;
-  communityNewMember: NotificationSetting;
-  collaborationCalloutContributionCreated: NotificationSetting;
-  communicationMessageReceived: NotificationSetting;
+  communityApplicationReceived?: NotificationChannels;
+  communityNewMember?: NotificationChannels;
+  collaborationCalloutContributionCreated?: NotificationChannels;
+  communicationMessageReceived?: NotificationChannels;
 }
 
-export interface UserMembershipNotificationSettings {
-  spaceCommunityInvitationReceived: NotificationSetting;
-  spaceCommunityJoined: NotificationSetting;
-  spaceCommunityApplicationSubmitted: NotificationSetting;
-}
-
+// User notification settings
 export interface UserNotificationSettings {
-  commentReply: NotificationSetting;
-  mentioned: NotificationSetting;
-  messageReceived: NotificationSetting;
-  copyOfMessageSent: NotificationSetting;
-  membership: UserMembershipNotificationSettings;
+  commentReply?: NotificationChannels;
+  mentioned?: NotificationChannels;
+  messageReceived?: NotificationChannels;
+  copyOfMessageSent?: NotificationChannels;
+  membership?: {
+    spaceCommunityInvitationReceived?: NotificationChannels;
+    spaceCommunityJoined?: NotificationChannels;
+    spaceCommunityApplicationSubmitted?: NotificationChannels;
+  };
 }
 
+// Organization notification settings
 export interface OrganizationNotificationSettings {
-  adminMentioned: NotificationSetting;
-  adminMessageReceived: NotificationSetting;
+  adminMentioned?: NotificationChannels;
+  adminMessageReceived?: NotificationChannels;
 }
 
+// Platform notification settings (Forum)
 export interface PlatformNotificationSettings {
-  forumDiscussionComment: NotificationSetting;
-  forumDiscussionCreated: NotificationSetting;
+  forumDiscussionComment?: NotificationChannels;
+  forumDiscussionCreated?: NotificationChannels;
 }
 
+// Platform admin notification settings
 export interface PlatformAdminNotificationSettings {
-  userProfileCreated: NotificationSetting;
-  userProfileRemoved: NotificationSetting;
-  userGlobalRoleChanged: NotificationSetting;
-  spaceCreated: NotificationSetting;
+  userProfileCreated?: NotificationChannels;
+  userProfileRemoved?: NotificationChannels;
+  userGlobalRoleChanged?: NotificationChannels;
+  spaceCreated?: NotificationChannels;
 }
 
-// Full notification settings structure
+// Complete notification settings
 export interface NotificationSettings {
   space?: SpaceNotificationSettings;
   spaceAdmin?: SpaceAdminNotificationSettings;

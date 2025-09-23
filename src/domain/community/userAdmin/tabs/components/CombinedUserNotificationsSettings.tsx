@@ -1,0 +1,65 @@
+import { useTranslation } from 'react-i18next';
+import { BlockTitle, Caption } from '@/core/ui/typography/components';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import DualSwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/DualSwitchSettingsGroup';
+import { UserNotificationSettings } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
+
+interface CombinedUserNotificationsSettingsProps {
+  currentUserSettings: UserNotificationSettings | undefined;
+  onUpdateSettings: (property: string, type: 'inApp' | 'email', value: boolean) => void;
+}
+
+export const CombinedUserNotificationsSettings = ({
+  currentUserSettings,
+  onUpdateSettings,
+}: CombinedUserNotificationsSettingsProps) => {
+  const { t } = useTranslation();
+
+  const userOptions = {
+    // User interaction notifications
+    commentReply: {
+      inAppChecked: currentUserSettings?.commentReply?.inApp || false,
+      emailChecked: currentUserSettings?.commentReply?.email || false,
+      label: t('pages.userNotificationsSettings.user.settings.commentReply'),
+    },
+    mentioned: {
+      inAppChecked: currentUserSettings?.mentioned?.inApp || false,
+      emailChecked: currentUserSettings?.mentioned?.email || false,
+      label: t('pages.userNotificationsSettings.user.settings.mentioned'),
+    },
+    messageReceived: {
+      inAppChecked: currentUserSettings?.messageReceived?.inApp || false,
+      emailChecked: currentUserSettings?.messageReceived?.email || false,
+      label: t('pages.userNotificationsSettings.user.settings.messageReceived'),
+    },
+    copyOfMessageSent: {
+      inAppChecked: currentUserSettings?.copyOfMessageSent?.inApp || false,
+      emailChecked: currentUserSettings?.copyOfMessageSent?.email || false,
+      label: t('pages.userNotificationsSettings.user.settings.copyOfMessageSent'),
+    },
+    // User membership notifications
+    'membership.spaceCommunityInvitationReceived': {
+      inAppChecked: currentUserSettings?.membership?.spaceCommunityInvitationReceived?.inApp || false,
+      emailChecked: currentUserSettings?.membership?.spaceCommunityInvitationReceived?.email || false,
+      label: t('pages.userNotificationsSettings.userMembership.settings.spaceCommunityInvitation'),
+    },
+    'membership.spaceCommunityJoined': {
+      inAppChecked: currentUserSettings?.membership?.spaceCommunityJoined?.inApp || false,
+      emailChecked: currentUserSettings?.membership?.spaceCommunityJoined?.email || false,
+      label: t('pages.userNotificationsSettings.userMembership.settings.spaceCommunityJoined'),
+    },
+    'membership.spaceCommunityApplicationSubmitted': {
+      inAppChecked: currentUserSettings?.membership?.spaceCommunityApplicationSubmitted?.inApp || false,
+      emailChecked: currentUserSettings?.membership?.spaceCommunityApplicationSubmitted?.email || false,
+      label: t('pages.userNotificationsSettings.userMembership.settings.spaceCommunityApplication'),
+    },
+  };
+
+  return (
+    <PageContentBlock>
+      <BlockTitle>{t('pages.userNotificationsSettings.user.title')}</BlockTitle>
+      <Caption>{t('pages.userNotificationsSettings.user.subtitle')}</Caption>
+      <DualSwitchSettingsGroup options={userOptions} onChange={onUpdateSettings} />
+    </PageContentBlock>
+  );
+};
