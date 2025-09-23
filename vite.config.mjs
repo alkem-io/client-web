@@ -142,5 +142,5 @@ export default defineConfig({
       },
     },
   },
-  optimizeDeps: false,
+  optimizeDeps: { include: ['@emotion/react', '@emotion/styled', '@mui/material/Tooltip'] },
 });
