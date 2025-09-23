@@ -516,7 +516,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
           <SectionWrapper>
             <SearchResultSection
               tagId="collaboration-tools"
-              title={t('common.collaborationTools')}
+              title={t('pages.search.filter.key.callout')}
               filterTitle={t('common.type')}
               count={data?.search?.calloutResults?.total ?? 0}
               filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
@@ -533,7 +533,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
           <SectionWrapper>
             <SearchResultSection
               tagId="responses"
-              title={t('common.responses')}
+              title={t('pages.search.filter.key.response')}
               filterTitle={t('pages.search.filter.type.contribution')}
               count={data?.search?.contributionResults?.total ?? 0}
               filterConfig={contributionFilterConfig}
@@ -623,12 +623,12 @@ function FiltersDescriptionBlock() {
 
       <FiltersDescriptionBlockItem href="#collaboration-tools">
         <DrawOutlined />
-        <Caption>{t('components.searchDialog.collaborationTools')}</Caption>
+        <Caption>{t('pages.search.filter.key.callout')}</Caption>
       </FiltersDescriptionBlockItem>
 
       <FiltersDescriptionBlockItem href="#responses">
         <LibraryBooksOutlined />
-        <Caption>{t('common.responses')}</Caption>
+        <Caption>{t('pages.search.filter.key.response')}</Caption>
       </FiltersDescriptionBlockItem>
 
       <FiltersDescriptionBlockItem href="#contributors">
