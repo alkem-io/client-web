@@ -31,7 +31,9 @@ const FormikEffect = FormikEffectFactory<FormValueType>();
 
 interface ExternalConfigProps {
   vc: {
-    aiPersonaID?: string;
+    aiPersona: {
+      id: string;
+    };
   };
 }
 
@@ -42,7 +44,7 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
   const [isValid, setIsValid] = useState(false);
   const apiKeyRef = useRef<HTMLInputElement>(null);
 
-  const aiPersonaId = vc?.aiPersonaID!;
+  const aiPersonaId = vc?.aiPersona.id!;
 
   const { data, loading } = useAiPersonaQuery({
     variables: { id: aiPersonaId },

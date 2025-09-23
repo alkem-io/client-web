@@ -24,7 +24,7 @@ const PromptConfig = ({ vc }) => {
   const notify = useNotification();
   const [prompt, setPrompt] = useState('');
   const [isValid, setIsValid] = useState(false);
-  const aiPersonaId = vc?.aiPersonaID;
+  const aiPersonaId = vc?.aiPersona.id!;
 
   const { data, loading } = useAiPersonaQuery({
     variables: { id: aiPersonaId },

@@ -27,9 +27,9 @@ interface BodyOfKnowledgeManagementProps {
     profile: {
       displayName: string;
     };
-    aiPersonaID?: string;
     bodyOfKnowledgeType?: VirtualContributorBodyOfKnowledgeType;
     aiPersona?: {
+      id: string;
       engine: AiPersonaEngine;
     };
   };
@@ -38,7 +38,7 @@ interface BodyOfKnowledgeManagementProps {
 const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const aiPersonaID = vc.aiPersonaID;
+  const aiPersonaID = vc.aiPersona?.id;
 
   const [updateBodyOfKnowledge, { loading: updateLoading }] = useRefreshBodyOfKnowledgeMutation();
   const { data } = useVirtualContributorKnowledgeBaseLastUpdatedQuery({

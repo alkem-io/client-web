@@ -13658,7 +13658,6 @@ export const VirtualContributorDocument = gql`
         searchVisibility
         listedInStore
         status
-        aiPersonaID
         bodyOfKnowledgeID
         bodyOfKnowledgeType
         bodyOfKnowledgeDescription

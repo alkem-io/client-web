@@ -28,7 +28,6 @@ query VirtualContributor($id: UUID!) {
       searchVisibility
       listedInStore
       status
-      aiPersonaID
       bodyOfKnowledgeID
       bodyOfKnowledgeType
       bodyOfKnowledgeDescription

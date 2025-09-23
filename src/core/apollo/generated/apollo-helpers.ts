@@ -438,7 +438,6 @@ export type AiPersonaKeySpecifier = (
   | 'authorization'
   | 'bodyOfKnowledgeLastUpdated'
   | 'createdDate'
-  | 'description'
   | 'engine'
   | 'externalConfig'
   | 'id'
@@ -450,7 +449,6 @@ export type AiPersonaFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeLastUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
   engine?: FieldPolicy<any> | FieldReadFunction<any>;
   externalConfig?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4563,13 +4561,13 @@ export type VirtualContributorKeySpecifier = (
   | 'account'
   | 'agent'
   | 'aiPersona'
-  | 'aiPersonaID'
   | 'authorization'
   | 'bodyOfKnowledgeDescription'
   | 'bodyOfKnowledgeID'
   | 'bodyOfKnowledgeType'
   | 'createdDate'
   | 'dataAccessMode'
+  | 'engine'
   | 'id'
   | 'interactionModes'
   | 'knowledgeBase'
@@ -4589,13 +4587,13 @@ export type VirtualContributorFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   aiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
-  aiPersonaID?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  engine?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
   knowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;

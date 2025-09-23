@@ -535,8 +535,6 @@ export type AiPersona = {
   bodyOfKnowledgeLastUpdated?: Maybe<Scalars['DateTime']['output']>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** The description for this AI Persona. */
-  description?: Maybe<Scalars['Markdown']['output']>;
   /** The AI Persona Engine being used by this AI Persona. */
   engine: AiPersonaEngine;
   /** The external configuration for this AI Persona. */
@@ -1542,7 +1540,6 @@ export type ConvertSpaceL2ToSpaceL1Input = {
 };
 
 export type CreateAiPersonaInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
   engine?: InputMaybe<AiPersonaEngine>;
   externalConfig?: InputMaybe<ExternalConfigInput>;
   prompt?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -7245,14 +7242,8 @@ export type TransferCalloutInput = {
 
 export type UpdateAiPersonaInput = {
   ID: Scalars['UUID']['input'];
-  bodyOfKnowledge?: InputMaybe<Scalars['String']['input']>;
-  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']['input']>;
-  bodyOfKnowledgeType?: InputMaybe<VirtualContributorBodyOfKnowledgeType>;
-  dataAccessMode?: InputMaybe<VirtualContributorDataAccessMode>;
-  description?: InputMaybe<Scalars['String']['input']>;
   engine?: InputMaybe<AiPersonaEngine>;
   externalConfig?: InputMaybe<ExternalConfigInput>;
-  interactionModes?: InputMaybe<Array<VirtualContributorInteractionMode>>;
   prompt?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
@@ -7906,6 +7897,10 @@ export type UpdateUserSettingsPrivacyInput = {
 
 export type UpdateVirtualContributorInput = {
   ID: Scalars['UUID']['input'];
+  bodyOfKnowledgeDescription?: InputMaybe<Scalars['String']['input']>;
+  bodyOfKnowledgeType?: InputMaybe<VirtualContributorBodyOfKnowledgeType>;
+  dataAccessMode?: InputMaybe<VirtualContributorDataAccessMode>;
+  interactionModes?: InputMaybe<Array<VirtualContributorInteractionMode>>;
   /** The KnowledgeBase to use for this Collaboration. */
   knowledgeBaseData?: InputMaybe<UpdateKnowledgeBaseInput>;
   /** Flag to control the visibility of the VC in the platform store. */
@@ -8334,8 +8329,6 @@ export type VirtualContributor = Contributor & {
   agent: Agent;
   /** The aiPersona behind this Virtual Contributor */
   aiPersona: AiPersona;
-  /** The ID of the AI Persona powering this Virtual Contributor. */
-  aiPersonaID: Scalars['UUID']['output'];
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** Description of the body of knowledge for this VC. */
@@ -8346,11 +8339,13 @@ export type VirtualContributor = Contributor & {
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** The type of context sharing that are supported by this AI Persona when used. */
+  /** The data access mode defining what data this Virtual Contributor can access. */
   dataAccessMode: VirtualContributorDataAccessMode;
+  /** The engine powering this Virtual Contributor */
+  engine: AiPersonaEngine;
   /** The ID of the Contributor */
   id: Scalars['UUID']['output'];
-  /** Interaction modes supported by this AI Persona when used. */
+  /** Interaction modes supported by this Virtual Contributor. */
   interactionModes: VirtualContributorInteractionMode;
   /** The Knowledge Base linked to this Virtual Contributor as body of knowledge. */
   knowledgeBase: KnowledgeBase;
@@ -19967,7 +19962,6 @@ export type VirtualContributorQuery = {
           searchVisibility: SearchVisibility;
           listedInStore: boolean;
           status: VirtualContributorStatus;
-          aiPersonaID: string;
           bodyOfKnowledgeID: string;
           bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
           bodyOfKnowledgeDescription?: string | undefined;
