@@ -100,7 +100,6 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
 
     useEffect(() => {
       if (!editor) return;
-      const uniqueUsers = editor.storage.collaborationCaret?.users.filter(user => user.id !== undefined) ?? [];
 
       const collaborationState: RealTimeCollaborationState = {
         status,
@@ -109,7 +108,7 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
         readOnly: isReadOnly,
         readOnlyCode: readOnlyCode,
         users:
-          uniqueUsers.map(user => ({
+          editor.storage.collaborationCaret?.users.map(user => ({
             id: user.id,
             profile: {
               displayName: user.name,
