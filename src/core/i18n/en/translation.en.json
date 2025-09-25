@@ -2001,7 +2001,7 @@
         },
         "ORGANIZATION_ADMIN_MESSAGE": {
           "subject": "{{triggeredByName}} sent a message to your $t(common.organization) {{organizationName}}",
-          "description": "See the message in you email inbox"
+          "description": "See the message in your email inbox"
         },
         "ORGANIZATION_MESSAGE_SENDER": {
           "subject": "You sent a message to {{organizationName}}",
