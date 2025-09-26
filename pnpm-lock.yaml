@@ -179,6 +179,12 @@ importers:
       graphql-ws:
         specifier: ^5.6.2
         version: 5.16.2(graphql@16.11.0)
+      hast-util-sanitize:
+        specifier: ^5.0.2
+        version: 5.0.2
+      hast-util-to-mdast:
+        specifier: ^10.1.2
+        version: 10.1.2
       i18next:
         specifier: ^25.5.2
         version: 25.5.2(typescript@5.8.3)
@@ -194,6 +200,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
       markdown-it-link-attributes:
         specifier: ^4.0.1
         version: 4.0.1
@@ -263,6 +272,12 @@ importers:
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
+      remark-parse:
+        specifier: ^11.0.0
+        version: 11.0.0
+      remark-rehype:
+        specifier: ^11.1.2
+        version: 11.1.2
       remark-stringify:
         specifier: ^11.0.0
         version: 11.0.0
