@@ -12,10 +12,10 @@ import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import CalloutCommentsContainer from './CalloutCommentsContainer';
 import CalloutViewLayout from './CalloutViewLayout';
-import CalloutContributionsLink from '../CalloutContributions/link/CalloutContributionsLink';
-import CalloutContributionsContainer from '../CalloutContributions/CalloutContributionsContainer';
-import CalloutContributionsWhiteboard from '../CalloutContributions/whiteboard/CalloutContributionsWhiteboard';
-import CalloutContributionsPost from '../CalloutContributions/post/CalloutContributionsPost';
+import CalloutContributionsLink from '../../calloutContributions/link/CalloutContributionsLink';
+import CalloutContributionsContainer from '../../calloutContributions/CalloutContributionsContainer';
+import CalloutContributionsWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionsWhiteboard';
+import CalloutContributionsPost from '../../calloutContributions/post/CalloutContributionsPost';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -24,7 +24,7 @@ import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardFooter from '@/core/ui/card/CardFooter';
 import { gutters } from '@/core/ui/grid/utils';
 import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
-import CalloutContributionPreview from '../CalloutContributions/CalloutContributionPreview/CalloutContributionPreview';
+import CalloutContributionPreview from '../../calloutContributions/calloutContributionPreview/CalloutContributionPreview';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>

@@ -10,7 +10,7 @@ import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { Ref, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { CalloutSettingsModelFull } from '../models/CalloutSettingsModel';
+import { CalloutSettingsModelFull } from '../callout/models/CalloutSettingsModel';
 import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import useCalloutPostCreatedSubscription from './post/useCalloutPostCreatedSubscription';
 

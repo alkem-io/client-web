@@ -45,7 +45,7 @@ export interface LocationStateCachedCallout extends NavigationState {
  * @constructor
  */
 const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, children }: CalloutPageProps) => {
-  const { calloutId, contributionId, loading: urlResolverLoading } = useUrlResolver();
+  const { calloutsSetId, calloutId, contributionId, loading: urlResolverLoading } = useUrlResolver();
 
   const { t } = useTranslation();
 
@@ -60,8 +60,12 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
     refetch,
   } = useCalloutDetails({
     calloutId,
+    calloutsSetId,
     withClassification: !disableCalloutsClassification,
     skip: !calloutId,
+    overrideCalloutSettings: {
+      movable: true,
+    }
   });
 
   const { isSmallScreen } = useScreenSize();

@@ -38,13 +38,13 @@ import { useTranslation } from 'react-i18next';
 import { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortModels';
 import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
 import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
-import { FormattedLink } from '../CalloutContributions/link/CalloutContributionsLink';
-import { PostCardPost } from '../CalloutContributions/post/PostCard';
-import { WhiteboardCardWhiteboard } from '../CalloutContributions/whiteboard/WhiteboardCard';
+import { FormattedLink } from '../../calloutContributions/link/CalloutContributionsLink';
+import { PostCardPost } from '../../calloutContributions/post/PostCard';
+import { WhiteboardCardWhiteboard } from '../../calloutContributions/whiteboard/WhiteboardCard';
 import { CalloutSummary } from '../CalloutSummary';
 import { CalloutLayoutEvents } from '../CalloutViewTypes';
 import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
-import CalloutContributionsSortDialog from '../CalloutContributions/CalloutsContributionsSortDialog/CalloutContributionsSortDialog';
+import CalloutContributionsSortDialog from '../../calloutContributions/calloutsContributionsSortDialog/CalloutContributionsSortDialog';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 
 interface CalloutSettingsProvided {

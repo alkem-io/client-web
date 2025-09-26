@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { compact, sortBy } from 'lodash';
 import useNavigate from '@/core/routing/useNavigate';
-import { CalloutLayoutProps } from '../../calloutBlock/CalloutLayoutTypes';
+import { CalloutLayoutProps } from '../../callout/calloutBlock/CalloutLayoutTypes';
 import CreateContributionButton from '../CreateContributionButton';
 import { Skeleton } from '@mui/material';
 import WhiteboardCard from './WhiteboardCard';
-import { BaseCalloutViewProps } from '../../CalloutViewTypes';
-import CalloutBlockFooter from '../../calloutBlock/CalloutBlockFooter';
+import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
+import CalloutBlockFooter from '../../callout/calloutBlock/CalloutBlockFooter';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { normalizeLink } from '@/core/utils/links';
 import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
@@ -14,7 +14,7 @@ import { useCreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/ap
 import { useTranslation } from 'react-i18next';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import Gutters from '@/core/ui/grid/Gutters';
-import CardsExpandableContainer from '../../components/CardsExpandableContainer';
+import CardsExpandableContainer from '../../callout/components/CardsExpandableContainer';
 
 interface WhiteboardContributionProps {
   id: string;

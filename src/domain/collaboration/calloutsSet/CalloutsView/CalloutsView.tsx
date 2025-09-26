@@ -20,6 +20,7 @@ const CalloutsViewSkeleton = () => times(3).map(i => <CalloutViewSkeleton key={i
 
 export interface CalloutsViewProps {
   callouts: CalloutModelLightExtended[] | undefined;
+  calloutsSetId: string | undefined;
   onSortOrderUpdate?: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   onCalloutUpdate?: (calloutId: string) => Promise<unknown> | void;
   loading?: boolean;
@@ -31,6 +32,7 @@ export interface CalloutsViewProps {
 
 const CalloutsView = ({
   callouts,
+  calloutsSetId,
   loading = false,
   onSortOrderUpdate,
   onCalloutUpdate,
@@ -119,7 +121,7 @@ const CalloutsView = ({
             <PageContentBlock key={callout.id} disablePadding disableGap {...computedBlockProps}>
               <InViewDetector>
                 {({ inView }) => (
-                  <CalloutDetailsContainer calloutId={callout.id} withClassification skip={!inView}>
+                  <CalloutDetailsContainer calloutId={callout.id} calloutsSetId={calloutsSetId} withClassification skip={!inView}>
                     {({ callout: calloutDetails }) => (
                       <CalloutView
                         callout={calloutDetails}

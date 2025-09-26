@@ -10,7 +10,7 @@ import { WhiteboardIcon } from 'domain/collaboration/whiteboard/icon/WhiteboardI
 import { useTranslation } from 'react-i18next';
 import { Visual } from '@/domain/common/visual/Visual';
 import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import { CalloutLayoutProps } from '../../calloutBlock/CalloutLayoutTypes';
+import { CalloutLayoutProps } from '../../callout/calloutBlock/CalloutLayoutTypes';
 
 export interface WhiteboardCardWhiteboard {
   id: string;

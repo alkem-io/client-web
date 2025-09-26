@@ -86,8 +86,19 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     error: calloutError,
   } = useCalloutDetails({
     calloutId,
+    calloutsSetId,
     withClassification: false,
     skip: !calloutId,
+    overrideCalloutSettings: {
+      canBeSavedAsTemplate: false,
+      classificationTagsets: [],
+      draft: false,
+      editable: true,
+      movable: true,
+      publishedAt: undefined,
+      authorAvatarUri: undefined,
+      authorName: undefined,
+    }
   });
 
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation(options);

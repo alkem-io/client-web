@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { BaseCalloutViewProps } from '../../CalloutViewTypes';
+import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import EditLinkDialog, { EditLinkFormValues } from '@/domain/shared/components/References/EditLinkDialog';
@@ -20,7 +20,7 @@ import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { compact, sortBy } from 'lodash';
-import { CalloutDetailsModelExtended } from '../../models/CalloutDetailsModel';
+import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import Loading from '@/core/ui/loading/Loading';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';

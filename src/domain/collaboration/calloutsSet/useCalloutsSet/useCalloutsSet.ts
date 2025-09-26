@@ -35,6 +35,7 @@ export interface OrderUpdate {
 
 export interface UseCalloutsSetProvided {
   calloutsSetId: string | undefined;
+  calloutsSetAuthorization: { myPrivileges?: AuthorizationPrivilege[] } | undefined;
   callouts: CalloutModelLightExtended[] | undefined;
   canCreateCallout: boolean;
   loading: boolean;
@@ -148,6 +149,7 @@ const useCalloutsSet = ({
 
   return {
     calloutsSetId,
+    calloutsSetAuthorization: calloutsSet?.authorization,
     callouts,
     canCreateCallout,
     loading: calloutsLoading || authorizationLoading,

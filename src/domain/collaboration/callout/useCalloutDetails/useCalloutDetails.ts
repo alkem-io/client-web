@@ -6,6 +6,8 @@ import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 import { useLocation } from 'react-router-dom';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { CalloutModelExtension } from '../models/CalloutModelLight';
+import { useCalloutsSetAuthorization } from '../../calloutsSet/authorization/useCalloutsSetAuthorization';
 
 export interface useCalloutDetailsProvided {
   callout: CalloutDetailsModelExtended | undefined;
@@ -16,20 +18,25 @@ export interface useCalloutDetailsProvided {
 
 export interface useCalloutDetailsProps {
   calloutId: string | undefined;
+  calloutsSetId: string | undefined;
   withClassification: boolean; //!!
   withContributions?: boolean; //!!
+  overrideCalloutSettings?: Partial<CalloutModelExtension<{}>>;
   skip?: boolean;
 }
 
 const useCalloutDetails = ({
   calloutId,
+  calloutsSetId,
   withClassification,
+  overrideCalloutSettings,
   skip,
 }: useCalloutDetailsProps): useCalloutDetailsProvided => {
   const { entitlements, permissions } = useSpacePermissionsAndEntitlements();
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
   const calloutsCanBeSavedAsTemplate = entitlements?.entitledToSaveAsTemplate && permissions.canCreateTemplates;
+  const { canMoveCallouts } = useCalloutsSetAuthorization({ calloutsSetId });
 
   const { data, loading, refetch, error } = useCalloutDetailsQuery({
     variables: {
@@ -52,17 +59,12 @@ const useCalloutDetails = ({
 
     return {
       ...calloutDetails,
-      comments: calloutDetails.comments,
-      // Fake callout properties to show the callout inside the dialog without any controls
       draft: calloutDetails.settings.visibility === CalloutVisibility.Draft,
       editable: calloutDetails.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
-      movable: false,
+      movable: canMoveCallouts,
       canBeSavedAsTemplate: calloutsCanBeSavedAsTemplate,
-      flowStates: undefined,
-      authorization: {
-        myPrivileges: [],
-      },
       classificationTagsets: [],
+      ...overrideCalloutSettings,
     };
   }, [data, loading]);
 

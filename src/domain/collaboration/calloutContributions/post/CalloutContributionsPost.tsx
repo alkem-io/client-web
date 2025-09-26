@@ -4,18 +4,18 @@ import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/P
 import { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import CreateContributionButton from '../CreateContributionButton';
 import PostCard, { PostCardPost } from './PostCard';
-import { BaseCalloutViewProps } from '../../CalloutViewTypes';
-import CalloutBlockFooter from '../../calloutBlock/CalloutBlockFooter';
+import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
+import CalloutBlockFooter from '../../callout/calloutBlock/CalloutBlockFooter';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import {
   LocationStateCachedCallout,
   LocationStateKeyCachedCallout,
 } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import { CalloutDetailsModelExtended } from '../../models/CalloutDetailsModel';
+import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import { compact, sortBy } from 'lodash';
 import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
-import CardsExpandableContainer from '../../components/CardsExpandableContainer';
+import CardsExpandableContainer from '../../callout/components/CardsExpandableContainer';
 
 interface PostContribution {
   id: string;

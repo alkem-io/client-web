@@ -40,7 +40,7 @@ const CalloutsGroupView = ({
   return (
     <>
       {canCreateCallout && createButtonPlace === 'top' && createButton}
-      <CalloutsView {...calloutsViewProps} />
+      <CalloutsView {...calloutsViewProps} calloutsSetId={calloutsSetId} />
       {canCreateCallout && createButtonPlace === 'bottom' && createButton}
       <Suspense fallback={null}>
         <CreateCalloutDialog

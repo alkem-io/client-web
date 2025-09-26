@@ -8,7 +8,7 @@ import { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import { ContributionDefaultsModel } from './ContributionDefaultsModel';
 import { CalloutModelExtension, CalloutModelLight } from './CalloutModelLight';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
-import { LinkDetails } from '../CalloutContributions/link/models/LinkDetails';
+import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
 import { Identifiable } from '@/core/utils/Identifiable';
 
 type ContributorModel = {
