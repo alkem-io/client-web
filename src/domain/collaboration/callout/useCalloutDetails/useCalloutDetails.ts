@@ -20,7 +20,6 @@ export interface useCalloutDetailsProps {
   calloutId: string | undefined;
   calloutsSetId: string | undefined;
   withClassification: boolean; //!!
-  withContributions?: boolean; //!!
   overrideCalloutSettings?: Partial<CalloutModelExtension<{}>>;
   skip?: boolean;
 }

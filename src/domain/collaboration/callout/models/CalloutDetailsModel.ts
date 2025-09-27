@@ -71,7 +71,7 @@ export type CalloutDetailsModel = CalloutModelLight & {
   settings: CalloutSettingsModelFull;
   contributionDefaults: ContributionDefaultsModel;
   comments?: CommentsWithMessagesModel | undefined;
-  contributions: (Identifiable & { sortOrder: number })[]
+  contributions: (Identifiable & { sortOrder: number })[];
 };
 
 /**
@@ -79,9 +79,3 @@ export type CalloutDetailsModel = CalloutModelLight & {
  * Information queried and extended by the hook useCalloutsSet
  */
 export type CalloutDetailsModelExtended = CalloutModelExtension<CalloutDetailsModel>;
-
-export type CalloutDetailsWithContributions = CalloutDetailsModelExtended & {
-  contributions: {
-
-  }
-}
