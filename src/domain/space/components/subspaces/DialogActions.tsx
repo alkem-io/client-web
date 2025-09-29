@@ -9,6 +9,7 @@ import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
 import InnovationFlowSettingsDialog from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import VideoCallDialog from '../VideoCallDialog/VideoCallDialog';
 import { useEffect } from 'react';
 import { GRID_COLUMNS_MOBILE, useScreenSize } from '@/core/ui/grid/constants';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -57,6 +58,7 @@ export const DialogActions = () => {
       <CalloutsListDialog open={currentDialog === SubspaceDialog.Index} onClose={handleClose} />
       <SubspacesListDialog open={currentDialog === SubspaceDialog.Subspaces} onClose={handleClose} />
       <ContributorsToggleDialog open={currentDialog === SubspaceDialog.Contributors} onClose={handleClose} />
+      <VideoCallDialog open={currentDialog === SubspaceDialog.VideoCall} onClose={handleClose} />
       <ActivityDialog open={currentDialog === SubspaceDialog.Activity} onClose={handleClose} />
       <CalendarDialog open={currentDialog === SubspaceDialog.Timeline} onClose={handleClose} temporaryLocation />
       <ShareDialog

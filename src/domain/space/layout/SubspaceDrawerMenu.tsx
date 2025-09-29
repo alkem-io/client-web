@@ -97,6 +97,11 @@ export const SubspaceDrawerMenu = ({
               <DialogActionButton
                 onClick={handleCloseDrawer}
                 actionDisplay="menuItem"
+                dialog={SubspaceDialog.VideoCall}
+              />
+              <DialogActionButton
+                onClick={handleCloseDrawer}
+                actionDisplay="menuItem"
                 dialog={SubspaceDialog.Activity}
               />
               <DialogActionButton

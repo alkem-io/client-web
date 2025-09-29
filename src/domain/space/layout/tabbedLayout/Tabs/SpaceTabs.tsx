@@ -18,12 +18,13 @@ import {
   TabProps,
   useTheme,
 } from '@mui/material';
-import { History, MoreVertOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
+import { History, MoreVertOutlined, SettingsOutlined, ShareOutlined, VideocamOutlined } from '@mui/icons-material';
 import useNavigate from '@/core/routing/useNavigate';
 import getEntityColor from '@/domain/shared/utils/getEntityColor';
 import useShare from '@/core/utils/Share';
 import { gutters } from '@/core/ui/grid/utils';
 import ActivityDialog from '../../../components/Activity/ActivityDialog';
+import VideoCallDialog from '../../../components/VideoCallDialog/VideoCallDialog';
 import { useSpace } from '../../../context/useSpace';
 import { buildSettingsUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import useSpaceTabs from '../layout/useSpaceTabs';
@@ -50,6 +51,7 @@ interface SpacePageTabsProps {
 enum NavigationActions {
   Share = 'share',
   Activity = 'activity',
+  VideoCall = 'videocall',
   More = 'more',
 }
 
@@ -76,6 +78,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isActivityVisible, setIsActivityVisible] = useState(false);
+  const [isVideoCallDialogVisible, setIsVideoCallDialogVisible] = useState(false);
 
   useLayoutEffect(() => {
     onMenuOpen?.(isDrawerOpen);
@@ -106,6 +109,10 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
               switch (nextValue) {
                 case NavigationActions.Share: {
                   share();
+                  return;
+                }
+                case NavigationActions.VideoCall: {
+                  setIsVideoCallDialogVisible(true);
                   return;
                 }
                 case NavigationActions.More:
@@ -187,6 +194,19 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
                 <ListItemButton
                   onClick={() => {
                     setIsDrawerOpen(false);
+                    setIsVideoCallDialogVisible(true);
+                  }}
+                >
+                  <ListItemIcon>
+                    <VideocamOutlined />
+                  </ListItemIcon>
+                  <ListItemText primary={t('spaceDialog.videocall')} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    setIsDrawerOpen(false);
                     share();
                   }}
                 >
@@ -236,12 +256,18 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
           value={NavigationActions.Activity}
           onClick={() => setIsActivityVisible(true)}
         />
+        <HeaderNavigationButton
+          icon={<VideocamOutlined />}
+          value={NavigationActions.VideoCall}
+          onClick={() => setIsVideoCallDialogVisible(true)}
+        />
         {spaceUrl && (
           <HeaderNavigationButton icon={<ShareOutlined />} value={NavigationActions.Share} onClick={share} />
         )}
       </HeaderNavigationTabs>
       {shareDialog}
       <ActivityDialog open={isActivityVisible} onClose={() => setIsActivityVisible(false)} />
+      <VideoCallDialog open={isVideoCallDialogVisible} onClose={() => setIsVideoCallDialogVisible(false)} />
     </>
   );
 };

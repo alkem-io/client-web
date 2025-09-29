@@ -3463,6 +3463,7 @@
     "index": "Index",
     "subspaces": "$t(common.subspaces)",
     "contributors": "Contributors",
+    "videocall": "Video Call",
     "activity": "Activity",
     "calendar": "Calendar",
     "events": "Events",
@@ -3470,6 +3471,12 @@
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
     "settings": "$t(common.Settings)",
     "updates": "Updates"
+  },
+  "videoCall": {
+    "dialog": {
+      "title": "Start Video Call",
+      "content": "This will open a Jitsi video conference in a new tab. You can share this link with other contributors to join the call."
+    }
   },
   "createSpace": {
     "title": "Create a $t(common.space)",

@@ -110,6 +110,7 @@ export const SubspaceInfoColumn = () => {
       >
         <DialogActionButton dialog={SubspaceDialog.Index} />
         <DialogActionButton dialog={SubspaceDialog.Subspaces} />
+        <DialogActionButton dialog={SubspaceDialog.VideoCall} />
         <DialogActionButton dialog={SubspaceDialog.Contributors} />
         <DialogActionButton dialog={SubspaceDialog.Activity} />
         <DialogActionButton dialog={SubspaceDialog.Timeline} />

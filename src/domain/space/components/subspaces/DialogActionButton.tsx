@@ -10,6 +10,7 @@ import {
   SegmentOutlined,
   SettingsOutlined,
   ShareOutlined,
+  VideocamOutlined,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -27,6 +28,7 @@ const ACTION_CONFIG = {
   [SubspaceDialog.Index]: ListOutlined,
   [SubspaceDialog.Subspaces]: SegmentOutlined,
   [SubspaceDialog.Contributors]: GroupsOutlined,
+  [SubspaceDialog.VideoCall]: VideocamOutlined,
   [SubspaceDialog.Activity]: HistoryOutlined,
   [SubspaceDialog.Timeline]: CalendarMonthOutlined,
   [SubspaceDialog.Share]: ShareOutlined,
