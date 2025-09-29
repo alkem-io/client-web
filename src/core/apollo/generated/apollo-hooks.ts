@@ -2184,14 +2184,15 @@ export const SpacePageFragmentDoc = gql`
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
 `;
-export const AiPersonaWithModelCardFragmentDoc = gql`
-  fragment AiPersonaWithModelCard on AiPersona {
-    id
+export const VirtualContributorWithModelCardFragmentDoc = gql`
+  fragment VirtualContributorWithModelCard on VirtualContributor {
     bodyOfKnowledgeID
     bodyOfKnowledgeType
-    bodyOfKnowledge
-    engine
-    aiPersonaServiceID
+    bodyOfKnowledgeDescription
+    aiPersona {
+      id
+      engine
+    }
     modelCard {
       spaceUsage {
         modelCardEntry
@@ -2241,13 +2242,11 @@ export const VirtualContributorFullFragmentDoc = gql`
         description
       }
     }
-    aiPersona {
-      ...AiPersonaWithModelCard
-    }
+    ...VirtualContributorWithModelCard
   }
   ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
-  ${AiPersonaWithModelCardFragmentDoc}
+  ${VirtualContributorWithModelCardFragmentDoc}
 `;
 export const AvailableVirtualContributorsForRoleSetPaginatedFragmentDoc = gql`
   fragment AvailableVirtualContributorsForRoleSetPaginated on PaginatedVirtualContributor {
@@ -13623,10 +13622,10 @@ export type CommunityAvailableVCsQueryResult = Apollo.QueryResult<
 export function refetchCommunityAvailableVCsQuery(variables: SchemaTypes.CommunityAvailableVCsQueryVariables) {
   return { query: CommunityAvailableVCsDocument, variables: variables };
 }
-export const AiPersonaServiceDocument = gql`
-  query AiPersonaService($id: UUID!) {
+export const AiPersonaDocument = gql`
+  query AiPersona($id: UUID!) {
     aiServer {
-      aiPersonaService(ID: $id) {
+      aiPersona(ID: $id) {
         id
         prompt
         engine
@@ -13641,63 +13640,54 @@ export const AiPersonaServiceDocument = gql`
 `;
 
 /**
- * __useAiPersonaServiceQuery__
+ * __useAiPersonaQuery__
  *
- * To run a query within a React component, call `useAiPersonaServiceQuery` and pass it any options that fit your needs.
- * When your component renders, `useAiPersonaServiceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAiPersonaQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAiPersonaQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAiPersonaServiceQuery({
+ * const { data, loading, error } = useAiPersonaQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useAiPersonaServiceQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables> &
-    ({ variables: SchemaTypes.AiPersonaServiceQueryVariables; skip?: boolean } | { skip: boolean })
+export function useAiPersonaQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables> &
+    ({ variables: SchemaTypes.AiPersonaQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables>(
-    AiPersonaServiceDocument,
+  return Apollo.useQuery<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>(AiPersonaDocument, options);
+}
+export function useAiPersonaLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>(
+    AiPersonaDocument,
     options
   );
 }
-export function useAiPersonaServiceLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AiPersonaServiceQuery,
-    SchemaTypes.AiPersonaServiceQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables>(
-    AiPersonaServiceDocument,
-    options
-  );
-}
-export function useAiPersonaServiceSuspenseQuery(
+export function useAiPersonaSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables>
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>
 ) {
   const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.AiPersonaServiceQuery, SchemaTypes.AiPersonaServiceQueryVariables>(
-    AiPersonaServiceDocument,
+  return Apollo.useSuspenseQuery<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>(
+    AiPersonaDocument,
     options
   );
 }
-export type AiPersonaServiceQueryHookResult = ReturnType<typeof useAiPersonaServiceQuery>;
-export type AiPersonaServiceLazyQueryHookResult = ReturnType<typeof useAiPersonaServiceLazyQuery>;
-export type AiPersonaServiceSuspenseQueryHookResult = ReturnType<typeof useAiPersonaServiceSuspenseQuery>;
-export type AiPersonaServiceQueryResult = Apollo.QueryResult<
-  SchemaTypes.AiPersonaServiceQuery,
-  SchemaTypes.AiPersonaServiceQueryVariables
->;
-export function refetchAiPersonaServiceQuery(variables: SchemaTypes.AiPersonaServiceQueryVariables) {
-  return { query: AiPersonaServiceDocument, variables: variables };
+export type AiPersonaQueryHookResult = ReturnType<typeof useAiPersonaQuery>;
+export type AiPersonaLazyQueryHookResult = ReturnType<typeof useAiPersonaLazyQuery>;
+export type AiPersonaSuspenseQueryHookResult = ReturnType<typeof useAiPersonaSuspenseQuery>;
+export type AiPersonaQueryResult = Apollo.QueryResult<SchemaTypes.AiPersonaQuery, SchemaTypes.AiPersonaQueryVariables>;
+export function refetchAiPersonaQuery(variables: SchemaTypes.AiPersonaQueryVariables) {
+  return { query: AiPersonaDocument, variables: variables };
 }
 export const VirtualContributorDocument = gql`
   query VirtualContributor($id: UUID!) {
@@ -13716,13 +13706,12 @@ export const VirtualContributorDocument = gql`
         searchVisibility
         listedInStore
         status
+        bodyOfKnowledgeID
+        bodyOfKnowledgeType
+        bodyOfKnowledgeDescription
         aiPersona {
           id
-          bodyOfKnowledgeID
-          bodyOfKnowledgeType
-          bodyOfKnowledge
           engine
-          aiPersonaServiceID
         }
         profile {
           id
@@ -14192,9 +14181,7 @@ export const VirtualContributorProfileWithModelCardDocument = gql`
         searchVisibility
         listedInStore
         status
-        aiPersona {
-          ...AiPersonaWithModelCard
-        }
+        ...VirtualContributorWithModelCard
         profile {
           id
           displayName
@@ -14230,7 +14217,7 @@ export const VirtualContributorProfileWithModelCardDocument = gql`
       }
     }
   }
-  ${AiPersonaWithModelCardFragmentDoc}
+  ${VirtualContributorWithModelCardFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
@@ -14311,53 +14298,56 @@ export function refetchVirtualContributorProfileWithModelCardQuery(
 ) {
   return { query: VirtualContributorProfileWithModelCardDocument, variables: variables };
 }
-export const UpdateAiPersonaServiceDocument = gql`
-  mutation updateAiPersonaService($aiPersonaServiceData: UpdateAiPersonaServiceInput!) {
-    aiServerUpdateAiPersonaService(aiPersonaServiceData: $aiPersonaServiceData) {
+export const UpdateAiPersonaDocument = gql`
+  mutation updateAiPersona($aiPersonaData: UpdateAiPersonaInput!) {
+    aiServerUpdateAiPersona(aiPersonaData: $aiPersonaData) {
       id
       prompt
+      externalConfig {
+        apiKey
+      }
     }
   }
 `;
-export type UpdateAiPersonaServiceMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateAiPersonaServiceMutation,
-  SchemaTypes.UpdateAiPersonaServiceMutationVariables
+export type UpdateAiPersonaMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateAiPersonaMutation,
+  SchemaTypes.UpdateAiPersonaMutationVariables
 >;
 
 /**
- * __useUpdateAiPersonaServiceMutation__
+ * __useUpdateAiPersonaMutation__
  *
- * To run a mutation, you first call `useUpdateAiPersonaServiceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAiPersonaServiceMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateAiPersonaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAiPersonaMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateAiPersonaServiceMutation, { data, loading, error }] = useUpdateAiPersonaServiceMutation({
+ * const [updateAiPersonaMutation, { data, loading, error }] = useUpdateAiPersonaMutation({
  *   variables: {
- *      aiPersonaServiceData: // value for 'aiPersonaServiceData'
+ *      aiPersonaData: // value for 'aiPersonaData'
  *   },
  * });
  */
-export function useUpdateAiPersonaServiceMutation(
+export function useUpdateAiPersonaMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateAiPersonaServiceMutation,
-    SchemaTypes.UpdateAiPersonaServiceMutationVariables
+    SchemaTypes.UpdateAiPersonaMutation,
+    SchemaTypes.UpdateAiPersonaMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateAiPersonaServiceMutation,
-    SchemaTypes.UpdateAiPersonaServiceMutationVariables
-  >(UpdateAiPersonaServiceDocument, options);
+  return Apollo.useMutation<SchemaTypes.UpdateAiPersonaMutation, SchemaTypes.UpdateAiPersonaMutationVariables>(
+    UpdateAiPersonaDocument,
+    options
+  );
 }
-export type UpdateAiPersonaServiceMutationHookResult = ReturnType<typeof useUpdateAiPersonaServiceMutation>;
-export type UpdateAiPersonaServiceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAiPersonaServiceMutation>;
-export type UpdateAiPersonaServiceMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateAiPersonaServiceMutation,
-  SchemaTypes.UpdateAiPersonaServiceMutationVariables
+export type UpdateAiPersonaMutationHookResult = ReturnType<typeof useUpdateAiPersonaMutation>;
+export type UpdateAiPersonaMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAiPersonaMutation>;
+export type UpdateAiPersonaMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateAiPersonaMutation,
+  SchemaTypes.UpdateAiPersonaMutationVariables
 >;
 export const RefreshBodyOfKnowledgeDocument = gql`
   mutation refreshBodyOfKnowledge($refreshData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
@@ -14596,9 +14586,9 @@ export type VirtualContributorUpdatesSubscriptionHookResult = ReturnType<
 export type VirtualContributorUpdatesSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.VirtualContributorUpdatesSubscription>;
 export const VirtualContributorKnowledgeBaseLastUpdatedDocument = gql`
-  query VirtualContributorKnowledgeBaseLastUpdated($aiPersonaServiceID: UUID!) {
+  query VirtualContributorKnowledgeBaseLastUpdated($aiPersonaID: UUID!) {
     aiServer {
-      aiPersonaService(ID: $aiPersonaServiceID) {
+      aiPersona(ID: $aiPersonaID) {
         bodyOfKnowledgeLastUpdated
       }
     }
@@ -14617,7 +14607,7 @@ export const VirtualContributorKnowledgeBaseLastUpdatedDocument = gql`
  * @example
  * const { data, loading, error } = useVirtualContributorKnowledgeBaseLastUpdatedQuery({
  *   variables: {
- *      aiPersonaServiceID: // value for 'aiPersonaServiceID'
+ *      aiPersonaID: // value for 'aiPersonaID'
  *   },
  * });
  */

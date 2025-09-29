@@ -14,9 +14,7 @@ query VirtualContributorProfileWithModelCard($id: UUID!) {
       searchVisibility
       listedInStore
       status
-      aiPersona {
-        ...AiPersonaWithModelCard
-      }
+      ...VirtualContributorWithModelCard
       profile {
         id
         displayName
