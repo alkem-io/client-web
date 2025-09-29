@@ -8,14 +8,17 @@ import { VideocamOutlined } from '@mui/icons-material';
 export interface VideoCallDialogProps {
   open: boolean;
   onClose: () => void;
+  spaceNameId?: string;
+  spaceId?: string;
 }
 
-const VideoCallDialog = ({ open, onClose }: VideoCallDialogProps) => {
+const VideoCallDialog = ({ open, onClose, spaceNameId, spaceId }: VideoCallDialogProps) => {
   const { t } = useTranslation();
 
   const handleStartVideoCall = () => {
-    // Open Jitsi in a new tab
-    const jitsiUrl = 'https://meet.jit.si/alkemio-video-call-' + Date.now();
+    // Generate unique room ID using space nameID + space UUID
+    const roomId = spaceNameId && spaceId ? `${spaceNameId}-${spaceId}` : `alkemio-${spaceId || Date.now()}`;
+    const jitsiUrl = `https://meet.jit.si/${roomId}`;
     window.open(jitsiUrl, '_blank');
     onClose();
   };
