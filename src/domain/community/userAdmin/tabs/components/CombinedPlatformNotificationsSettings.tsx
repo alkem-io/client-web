@@ -11,8 +11,8 @@ import { ReactNode } from 'react';
 interface CombinedPlatformNotificationsSettingsProps {
   currentPlatformSettings: PlatformNotificationSettings | undefined;
   currentPlatformAdminSettings: PlatformAdminNotificationSettings | undefined;
-  onUpdatePlatformSettings: (property: string, type: 'inApp' | 'email', value: boolean) => void;
-  onUpdatePlatformAdminSettings: (property: string, type: 'inApp' | 'email', value: boolean) => void;
+  onUpdatePlatformSettings: (property: string, type: 'inApp' | 'email', value: boolean) => Promise<void>;
+  onUpdatePlatformAdminSettings: (property: string, type: 'inApp' | 'email', value: boolean) => Promise<void>;
   isPlatformAdmin: boolean;
 }
 
@@ -85,9 +85,9 @@ export const CombinedPlatformNotificationsSettings = ({
     const platformAdminKeys = ['userProfileCreated', 'userProfileRemoved', 'userGlobalRoleChanged', 'spaceCreated'];
 
     if (platformAdminKeys.includes(key)) {
-      onUpdatePlatformAdminSettings(key, type, value);
+      return onUpdatePlatformAdminSettings(key, type, value);
     } else {
-      onUpdatePlatformSettings(key, type, value);
+      return onUpdatePlatformSettings(key, type, value);
     }
   };
 

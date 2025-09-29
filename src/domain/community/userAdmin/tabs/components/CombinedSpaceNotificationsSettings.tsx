@@ -12,8 +12,8 @@ import { NotificationOption, NotificationValidationType } from '@/core/ui/forms/
 interface CombinedSpaceNotificationsSettingsProps {
   currentSpaceSettings: SpaceNotificationSettings | undefined;
   currentSpaceAdminSettings: SpaceAdminNotificationSettings | undefined;
-  onUpdateSettings: (property: string, type: 'inApp' | 'email', value: boolean) => void;
-  onUpdateSpaceAdminSettings: (property: string, type: 'inApp' | 'email', value: boolean) => void;
+  onUpdateSettings: (property: string, type: 'inApp' | 'email', value: boolean) => Promise<void>;
+  onUpdateSpaceAdminSettings: (property: string, type: 'inApp' | 'email', value: boolean) => Promise<void>;
   showSpaceAdminSettings: boolean;
 }
 
@@ -116,7 +116,7 @@ export const CombinedSpaceNotificationsSettings = ({
 
   // Create wrapper functions to match DualSwitchSettingsGroup's expected signature
   const handleSpaceSettingsChange = (key: string | number, type: 'inApp' | 'email', newValue: boolean) => {
-    onUpdateSettings(String(key), type, newValue);
+    return onUpdateSettings(String(key), type, newValue);
   };
 
   const handleSpaceAdminSettingsChange = (key: string | number, type: 'inApp' | 'email', newValue: boolean) => {
@@ -126,7 +126,7 @@ export const CombinedSpaceNotificationsSettings = ({
       keyStr === 'spaceAdminCollaborationCalloutContributionCreated'
         ? 'collaborationCalloutContributionCreated'
         : keyStr;
-    onUpdateSpaceAdminSettings(originalKey, type, newValue);
+    return onUpdateSpaceAdminSettings(originalKey, type, newValue);
   };
 
   return (

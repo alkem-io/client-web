@@ -7,7 +7,7 @@ import { NotificationValidationType } from '@/core/ui/forms/SettingsGroups/types
 
 interface CombinedUserNotificationsSettingsProps {
   currentUserSettings: UserNotificationSettings | undefined;
-  onUpdateSettings: (property: string, type: 'inApp' | 'email', value: boolean) => void;
+  onUpdateSettings: (property: string, type: 'inApp' | 'email', value: boolean) => Promise<void>;
 }
 
 export const CombinedUserNotificationsSettings = ({

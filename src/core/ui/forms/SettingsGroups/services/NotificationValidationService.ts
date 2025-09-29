@@ -71,6 +71,16 @@ export class NotificationValidationService {
   static isChangeAllowed(option: NotificationOption, switchType: 'inApp' | 'email', newValue: boolean): boolean {
     const rules = option.validationRules || [];
 
+    // Disallow any change when fully LOCKED
+    if (rules.some(r => r.type === NotificationValidationType.LOCKED)) {
+      return false;
+    }
+
+    // Disallow email changes when EMAIL_LOCKED
+    if (switchType === 'email' && rules.some(r => r.type === NotificationValidationType.EMAIL_LOCKED)) {
+      return false;
+    }
+
     // If trying to disable and require-at-least-one rule exists
     if (!newValue) {
       const requireAtLeastOneRule = rules.find(rule => rule.type === NotificationValidationType.REQUIRE_AT_LEAST_ONE);

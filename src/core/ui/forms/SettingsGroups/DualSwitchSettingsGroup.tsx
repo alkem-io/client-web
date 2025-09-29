@@ -21,7 +21,7 @@ const LoadingSwitch = ({ loading, ...props }: SwitchProps & { loading?: boolean 
 
 type DualSwitchSettingsGroupProps<T extends Record<string, NotificationOption>> = {
   options: T;
-  onChange: (key: keyof T, type: 'inApp' | 'email', newValue: boolean) => void;
+  onChange: (key: keyof T, type: 'inApp' | 'email', newValue: boolean) => void | Promise<void>;
 };
 
 function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
@@ -48,8 +48,11 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
     }
 
     setItemLoading({ key, type });
-    await onChange(key, type, newValue);
-    setItemLoading(undefined);
+    try {
+      await onChange(key, type, newValue);
+    } finally {
+      setItemLoading(undefined);
+    }
   };
 
   return (
@@ -69,7 +72,8 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
       </GridContainer>
 
       <FormGroup>
-        {Object.entries(options).map(([key, option]) => {
+        {(Object.keys(options) as Array<keyof T>).map(key => {
+          const option = options[key];
           const isInAppLoading = itemLoading?.key === key && itemLoading?.type === 'inApp';
           const isEmailLoading = itemLoading?.key === key && itemLoading?.type === 'email';
           const isAnyLoading = Boolean(itemLoading);
@@ -78,7 +82,7 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
           const switchStates = NotificationValidationService.calculateSwitchStates(option);
 
           return (
-            <GridContainer key={key} disablePadding sx={{ alignItems: 'center', py: 0.5 }}>
+            <GridContainer key={String(key)} disablePadding sx={{ alignItems: 'center', py: 0.5 }}>
               <GridItem columns={inAppColumns}>
                 <Box sx={{ textAlign: 'center' }}>
                   <NotificationSwitchTooltip
