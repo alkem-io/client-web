@@ -11,25 +11,26 @@ import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
 // Import the handler components directly
 import { ClipboardShareHandler } from './platforms/ShareOnClipboard';
 import { AlkemioShareHandler } from './platforms/ShareOnAlkemio';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 
 export interface ShareDialogProps extends ShareComponentProps {
   open: boolean;
   onClose: () => void;
   entityTypeName:
-    | 'space'
-    | 'subspace'
-    | 'subsubspace'
-    | 'user'
-    | 'organization'
-    | 'callout'
-    | 'card'
-    | 'whiteboard'
-    | 'memo'
-    | 'discussion'
-    | 'event'
-    | 'innovationPack'
-    | 'updates'
-    | 'about';
+  | 'space'
+  | 'subspace'
+  | 'user'
+  | 'organization'
+  | 'callout'
+  | 'discussion'
+  | 'event'
+  | 'innovationPack'
+  | 'updates'
+  | 'about'
+  | CalloutContributionType.Post
+  | CalloutContributionType.Whiteboard
+  | CalloutContributionType.Link
+  | CalloutContributionType.Memo;
 }
 
 export const ShareDialog = ({ open, onClose, entityTypeName, ...props }: ShareDialogProps) => {

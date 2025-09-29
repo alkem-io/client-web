@@ -58,6 +58,7 @@ const useCalloutDetails = ({
 
     return {
       ...calloutDetails,
+      calloutsSetId: calloutsSetId,
       draft: calloutDetails.settings.visibility === CalloutVisibility.Draft,
       editable: calloutDetails.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
       movable: canMoveCallouts,

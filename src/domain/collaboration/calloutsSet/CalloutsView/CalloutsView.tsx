@@ -13,10 +13,7 @@ import PageContentBlock, { PageContentBlockProps } from '@/core/ui/content/PageC
 import { times, without } from 'lodash';
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import { CalloutModelLightExtended } from '../../callout/models/CalloutModelLight';
-import useCalloutDetails, { useCalloutDetailsProvided } from '../../callout/useCalloutDetails/useCalloutDetails';
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import { Box } from '@mui/material';
-import { useInView } from 'react-intersection-observer';
+import CalloutInViewWrapper from './CalloutsInViewWrapper';
 
 const CalloutsViewSkeleton = () => times(3).map(i => <CalloutViewSkeleton key={i} />);
 
@@ -110,7 +107,7 @@ const CalloutsView = ({
 
           return (
             <PageContentBlock key={callout.id} disablePadding disableGap {...computedBlockProps}>
-              <CalloutInViewWrapper calloutId={callout.id} calloutsSetId={calloutsSetId}>
+              <CalloutInViewWrapper calloutId={callout.id} calloutsSetId={calloutsSetId} withClassification>
                 {({ callout: calloutDetails, loading, refetch }) => (
                   <CalloutView
                     callout={calloutDetails}
@@ -138,39 +135,3 @@ const CalloutsView = ({
 
 export default CalloutsView;
 
-/**
- * Prints the <CalloutViewSkeleton if CalloutVIew is not in the view of the browser scrolled up, to avoid loading all the callouts at once,
- * skips the loading of the calloutDetails until de callout is inView
- */
-interface CalloutDetailsContainerProvided {
-  callout: useCalloutDetailsProvided['callout'];
-  loading: boolean;
-  refetch: () => Promise<unknown>;
-}
-
-interface CalloutInViewWrapperProps extends SimpleContainerProps<CalloutDetailsContainerProvided> {
-  calloutId: string;
-  calloutsSetId: string | undefined;
-}
-
-const CalloutInViewWrapper = ({ children, calloutId, calloutsSetId }: CalloutInViewWrapperProps) => {
-  const { ref, inView } = useInView({
-    delay: 500,
-    trackVisibility: true,
-    triggerOnce: true,
-  });
-
-  const { callout, loading, refetch } = useCalloutDetails({
-    calloutId,
-    calloutsSetId,
-    withClassification: true,
-    skip: !inView,
-  });
-
-  return (
-    <Box ref={ref}>
-      {inView && children({ callout, loading, refetch })}
-      {!inView && <CalloutViewSkeleton />}
-    </Box>
-  );
-};

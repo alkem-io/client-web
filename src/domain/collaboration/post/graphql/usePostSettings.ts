@@ -50,11 +50,13 @@ export interface PostSettingsContainerState {
 export interface PostSettingsContainerProps {
   postId: string | undefined;
   calloutId: string | undefined;
+  skip?: boolean;
 }
 
 const usePostSettings = ({
   postId,
   calloutId,
+  skip,
 }: PostSettingsContainerProps): PostSettingsContainerEntities &
   PostSettingsContainerActions &
   PostSettingsContainerState => {
@@ -67,7 +69,7 @@ const usePostSettings = ({
       postId: postId!,
       calloutId: calloutId!,
     },
-    skip: !calloutId || !postId,
+    skip: skip || !calloutId || !postId,
   });
 
   const parentCallout = data?.lookup.callout;

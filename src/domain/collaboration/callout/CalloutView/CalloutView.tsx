@@ -25,6 +25,10 @@ import CardFooter from '@/core/ui/card/CardFooter';
 import { gutters } from '@/core/ui/grid/utils';
 import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 import CalloutContributionPreview from '../../calloutContributions/calloutContributionPreview/CalloutContributionPreview';
+import CalloutContributionPreviewPost from '../../calloutContributions/post/CalloutContributionPreviewPost';
+import CalloutContributionPreviewWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionPreviewWhiteboard';
+import CalloutContributionDialogWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionDialogWhiteboard';
+import CalloutContributionDialogPost from '../../calloutContributions/post/CalloutContributionDialogPost';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>
@@ -61,6 +65,7 @@ const CalloutView = ({
 }: CalloutViewProps) => {
   const { space } = useSpace();
   const { subspace } = useSubSpace();
+
   const myMembershipStatus =
     subspace?.about.membership?.myMembershipStatus ?? space?.about.membership?.myMembershipStatus;
 
@@ -92,8 +97,6 @@ const CalloutView = ({
           {/* Link framing */}
           {callout.framing.type === CalloutFramingType.Link && <CalloutFramingLink callout={callout} />}
 
-          {/* Selected Contribution */}
-          {contributionId && <CalloutContributionPreview callout={callout} contributionId={contributionId} />}
 
           {/* Collaborate with links */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
@@ -116,40 +119,62 @@ const CalloutView = ({
 
           {/* Collaborate with Whiteboards */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard) && (
-            <CalloutContributionsContainer
-              callout={callout}
-              onCalloutUpdate={onCalloutUpdate}
-              contributionType={CalloutContributionType.Whiteboard}
-            >
-              {props => (
-                <CalloutContributionsWhiteboard
-                  {...props}
+            <>
+              {contributionId && (
+                /* Selected Contribution */
+                <CalloutContributionPreview
                   callout={callout}
-                  expanded={expanded}
-                  onExpand={onExpand}
-                  onCollapse={onCollapse}
+                  contributionId={contributionId}
+                  previewComponent={CalloutContributionPreviewWhiteboard}
+                  dialogComponent={CalloutContributionDialogWhiteboard}
                 />
               )}
-            </CalloutContributionsContainer>
+              <CalloutContributionsContainer
+                callout={callout}
+                onCalloutUpdate={onCalloutUpdate}
+                contributionType={CalloutContributionType.Whiteboard}
+              >
+                {props => (
+                  <CalloutContributionsWhiteboard
+                    {...props}
+                    callout={callout}
+                    expanded={expanded}
+                    onExpand={onExpand}
+                    onCollapse={onCollapse}
+                  />
+                )}
+              </CalloutContributionsContainer>
+            </>
           )}
 
           {/* Collaborate with Posts */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) && (
-            <CalloutContributionsContainer
-              callout={callout}
-              onCalloutUpdate={onCalloutUpdate}
-              contributionType={CalloutContributionType.Post}
-            >
-              {props => (
-                <CalloutContributionsPost
-                  {...props}
+            <>
+              {contributionId && (
+                /* Selected Contribution */
+                <CalloutContributionPreview
                   callout={callout}
-                  expanded={expanded}
-                  onExpand={onExpand}
-                  onCollapse={onCollapse}
+                  contributionId={contributionId}
+                  previewComponent={CalloutContributionPreviewPost}
+                  dialogComponent={CalloutContributionDialogPost}
                 />
               )}
-            </CalloutContributionsContainer>
+              <CalloutContributionsContainer
+                callout={callout}
+                onCalloutUpdate={onCalloutUpdate}
+                contributionType={CalloutContributionType.Post}
+              >
+                {props => (
+                  <CalloutContributionsPost
+                    {...props}
+                    callout={callout}
+                    expanded={expanded}
+                    onExpand={onExpand}
+                    onCollapse={onCollapse}
+                  />
+                )}
+              </CalloutContributionsContainer>
+            </>
           )}
 
           {/* Framing Comments */}

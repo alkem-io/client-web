@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
-import { Autocomplete, Button, DialogActions, TextField } from '@mui/material';
+import { Autocomplete, Button, DialogActions, DialogContent, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -14,7 +14,6 @@ import {
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
-import { PostDialogSection } from '../views/PostDialogSection';
 import {
   useMoveContributionToCalloutMutation,
   usePostCalloutsInCalloutSetQuery,
@@ -23,17 +22,18 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '@/core/utils/links';
-import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
-import { PostLayout } from '../views/PostLayout';
+import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 
-export interface PostSettingsPageProps {
+export interface PostSettingsPageDialog {
+  open: boolean;
   onClose: () => void;
   calloutId: string | undefined;
   postId: string | undefined;
   calloutsSetId: string | undefined;
 }
 
-const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSettingsPageProps) => {
+const PostSettingsDialog = ({ open, onClose, calloutsSetId, calloutId, postId }: PostSettingsPageDialog) => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
@@ -137,111 +137,120 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
   });
 
   return (
-    <PostLayout currentSection={PostDialogSection.Settings} onClose={onCloseEdit}>
-      <StorageConfigContextProvider locationType="post" postId={postId}>
-        <PostForm
-          edit
-          loading={postSettings.loading || postSettings.updating || isMovingContribution}
-          post={toPostFormInput(postSettings.post)}
-          postNames={postSettings.postsNames}
-          onChange={setPost}
-          onAddReference={postSettings.handleAddReference}
-          onRemoveReference={postSettings.handleRemoveReference}
-          tags={postSettings.post?.profile.tagset?.tags}
-        >
-          {({ isValid, dirty }) => {
-            const canSave = isPostLoaded && dirty && isValid;
+    <DialogWithGrid
+      open={open}
+      columns={12}
+      onClose={onCloseEdit}
+      disableScrollLock
+      aria-labelledby="post-dialog-title"
+    >
+      <DialogHeader id="post-dialog-title" onClose={onCloseEdit} />
+      <DialogContent>
+        <StorageConfigContextProvider locationType="post" postId={postId}>
+          <PostForm
+            edit
+            loading={postSettings.loading || postSettings.updating || isMovingContribution}
+            post={toPostFormInput(postSettings.post)}
+            postNames={postSettings.postsNames}
+            onChange={setPost}
+            onAddReference={postSettings.handleAddReference}
+            onRemoveReference={postSettings.handleRemoveReference}
+            tags={postSettings.post?.profile.tagset?.tags}
+          >
+            {({ isValid, dirty }) => {
+              const canSave = isPostLoaded && dirty && isValid;
 
-            return (
-              <>
-                <Box>
-                  <Typography variant={'h4'}>{t('common.visuals')}</Typography>
-                  {/* Do not show VisualType.Card for Posts for now, see #4362.
+              return (
+                <>
+                  <Box>
+                    <Typography variant={'h4'}>{t('common.visuals')}</Typography>
+                    {/* Do not show VisualType.Card for Posts for now, see #4362.
                       TODO: Maybe in the future we want to remove those visuals from the database,
                       for now Card profiles don't have a Banner because it's not shown anywhere */}
-                  <EditVisualsView visuals={visuals} visualTypes={[VisualType.Banner]} />
-                </Box>
-                {canMoveCard && (
-                  <Box>
-                    <Typography variant={'h4'}>{t('post-edit.postLocation.title')}</Typography>
-                    <Autocomplete
-                      disablePortal
-                      options={calloutsOfTypePost}
-                      value={calloutsOfTypePost.find(({ id }) => id === targetCalloutId)}
-                      getOptionLabel={callout => callout.framing.profile.displayName}
-                      onChange={(event, callout) => {
-                        setTargetCalloutId(callout?.id);
-                      }}
-                      disableClearable
-                      renderInput={params => (
-                        <TextField
-                          {...params}
-                          label={t('post-edit.postLocation.label')}
-                          helperText={t('post-edit.postLocation.reminder')}
-                        />
-                      )}
-                    />
+                    <EditVisualsView visuals={visuals} visualTypes={[VisualType.Banner]} />
                   </Box>
-                )}
-                <DialogFooter>
-                  <DialogActions>
-                    <Button
-                      aria-label="delete-post"
-                      variant="outlined"
-                      color="error"
-                      disabled={!isPostLoaded}
-                      onClick={() => setDeleteConfirmDialogOpen(true)}
-                    >
-                      {t('buttons.delete')}
-                    </Button>
-                    <Button
-                      variant="contained"
-                      disabled={!canSave && !isMoveEnabled}
-                      loading={loading}
-                      onClick={() => handleUpdate(canSave)}
-                    >
-                      {t('buttons.save')}
-                    </Button>
-                  </DialogActions>
-                </DialogFooter>
-              </>
-            );
-          }}
-        </PostForm>
-        <ConfirmationDialog
-          actions={{
-            onConfirm: handleDelete,
-            onCancel: () => setDeleteConfirmDialogOpen(false),
-          }}
-          options={{
-            show: Boolean(deleteConfirmDialogOpen),
-          }}
-          entities={{
-            titleId: 'post-edit.delete.title',
-            contentId: 'post-edit.delete.description',
-            confirmButtonTextId: 'buttons.delete',
-          }}
-        />
-        <ConfirmationDialog
-          actions={{
-            onConfirm: () => {
-              setCloseConfirmDialogOpen(false);
-              onClose();
-            },
-            onCancel: () => setCloseConfirmDialogOpen(false),
-          }}
-          options={{
-            show: closeConfirmDialogOpen,
-          }}
-          entities={{
-            titleId: 'post-edit.closeConfirm.title',
-            contentId: 'post-edit.closeConfirm.description',
-            confirmButtonTextId: 'buttons.yes-close',
-          }}
-        />
-      </StorageConfigContextProvider>
-    </PostLayout>
+                  {canMoveCard && (
+                    <Box>
+                      <Typography variant={'h4'}>{t('post-edit.postLocation.title')}</Typography>
+                      <Autocomplete
+                        disablePortal
+                        options={calloutsOfTypePost}
+                        value={calloutsOfTypePost.find(({ id }) => id === targetCalloutId)}
+                        getOptionLabel={callout => callout.framing.profile.displayName}
+                        onChange={(event, callout) => {
+                          setTargetCalloutId(callout?.id);
+                        }}
+                        disableClearable
+                        renderInput={params => (
+                          <TextField
+                            {...params}
+                            label={t('post-edit.postLocation.label')}
+                            helperText={t('post-edit.postLocation.reminder')}
+                          />
+                        )}
+                      />
+                    </Box>
+                  )}
+                  <DialogFooter>
+                    <DialogActions>
+                      <Button
+                        aria-label="delete-post"
+                        variant="outlined"
+                        color="error"
+                        disabled={!isPostLoaded}
+                        onClick={() => setDeleteConfirmDialogOpen(true)}
+                      >
+                        {t('buttons.delete')}
+                      </Button>
+                      <Button
+                        variant="contained"
+                        disabled={!canSave && !isMoveEnabled}
+                        loading={loading}
+                        onClick={() => handleUpdate(canSave)}
+                      >
+                        {t('buttons.save')}
+                      </Button>
+                    </DialogActions>
+                  </DialogFooter>
+                </>
+              );
+            }}
+          </PostForm>
+          <ConfirmationDialog
+            actions={{
+              onConfirm: handleDelete,
+              onCancel: () => setDeleteConfirmDialogOpen(false),
+            }}
+            options={{
+              show: Boolean(deleteConfirmDialogOpen),
+            }}
+            entities={{
+              titleId: 'post-edit.delete.title',
+              contentId: 'post-edit.delete.description',
+              confirmButtonTextId: 'buttons.delete',
+            }}
+          />
+          <ConfirmationDialog
+            actions={{
+              onConfirm: () => {
+                setCloseConfirmDialogOpen(false);
+                onClose();
+              },
+              onCancel: () => setCloseConfirmDialogOpen(false),
+            }}
+            options={{
+              show: closeConfirmDialogOpen,
+            }}
+            entities={{
+              titleId: 'post-edit.closeConfirm.title',
+              contentId: 'post-edit.closeConfirm.description',
+              confirmButtonTextId: 'buttons.yes-close',
+            }}
+          />
+        </StorageConfigContextProvider>
+      </DialogContent>
+    </DialogWithGrid>
   );
 };
 
-export default PostSettingsPage;
+export default PostSettingsDialog;

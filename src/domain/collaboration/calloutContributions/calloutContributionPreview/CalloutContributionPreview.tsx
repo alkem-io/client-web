@@ -4,26 +4,58 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderCardLike from '@/core/ui/content/PageContentBlockHeaderCardLike';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption } from '@/core/ui/typography';
 import { formatDateTime } from '@/core/utils/time/utils';
-import { CloseOutlined } from '@mui/icons-material';
-import { Box, IconButton, Skeleton, useTheme } from '@mui/material';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import EditIcon from '@mui/icons-material/Edit';
+import { IconButton, Skeleton, useTheme } from '@mui/material';
 import { contributionIcons } from '../../callout/icons/calloutIcons';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
-import Loading from '@/core/ui/loading/Loading';
-import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
 import useNavigate from '@/core/routing/useNavigate';
+import { useState } from 'react';
+import CalloutContributionModel from '../CalloutContributionModel';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { useTranslation } from 'react-i18next';
+
+/**
+ * Properties that a Preview Contribution component must receive
+ */
+export interface CalloutContributionPreviewComponentProps {
+  contribution: CalloutContributionModel | undefined;
+  onOpenContribution: () => void;
+  loading?: boolean;
+}
+/**
+ * Properties that a Preview Dialog component must receive
+ */
+export interface CalloutContributionPreviewDialogProps {
+  calloutsSetId: string | undefined;
+  calloutId: string | undefined;
+  contribution: CalloutContributionModel | undefined;
+  open: boolean;
+  onClose: () => void;
+}
 
 interface CalloutContributionPreviewProps {
   callout: CalloutDetailsModelExtended;
   contributionId: string;
-  // onClose?: () => void;
+  actions?: (contribution: CalloutContributionModel) => React.ReactNode;
+  previewComponent: React.ComponentType<CalloutContributionPreviewComponentProps>;
+  dialogComponent: React.ComponentType<CalloutContributionPreviewDialogProps>;
 }
 
-const CalloutContributionPreview = ({ callout, contributionId }: CalloutContributionPreviewProps) => {
+const CalloutContributionPreview = ({
+  callout,
+  contributionId,
+  actions: renderExtraActions,
+  previewComponent: PreviewComponent,
+  dialogComponent: DialogComponent,
+}: CalloutContributionPreviewProps) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const [contributionDialogOpen, setContributionDialogOpen] = useState(false);
+
   const { data, loading } = useCalloutContributionQuery({
     variables: {
       contributionId,
@@ -32,38 +64,44 @@ const CalloutContributionPreview = ({ callout, contributionId }: CalloutContribu
       includeWhiteboard: callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard),
     },
   });
+  const contribution = data?.lookup.contribution;
 
-  const contributionType = data?.lookup.contribution?.post
+  const contributionType = contribution?.post
     ? CalloutContributionType.Post
-    : data?.lookup.contribution?.link
+    : contribution?.link
       ? CalloutContributionType.Link
-      : data?.lookup.contribution?.whiteboard
+      : contribution?.whiteboard
         ? CalloutContributionType.Whiteboard
         : undefined;
   const Icon = contributionType ? contributionIcons[contributionType] : undefined;
 
   const displayName = loading ? (
-    <Skeleton variant="text" width={gutters(10)(theme)} />
+    <Skeleton variant="text" width={gutters(12)(theme)} />
   ) : (
-    (contributionType === CalloutContributionType.Post && data?.lookup.contribution?.post?.profile.displayName) ||
+    (contributionType === CalloutContributionType.Post && contribution?.post?.profile.displayName) ||
     (contributionType === CalloutContributionType.Whiteboard &&
-      data?.lookup.contribution?.whiteboard?.profile.displayName)
+      contribution?.whiteboard?.profile.displayName)
   );
 
   const author =
     (contributionType === CalloutContributionType.Post &&
-      data?.lookup.contribution?.post?.createdBy?.profile.displayName) ||
+      contribution?.post?.createdBy?.profile.displayName) ||
     (contributionType === CalloutContributionType.Whiteboard &&
-      data?.lookup.contribution?.whiteboard?.createdBy?.profile.displayName);
+      contribution?.whiteboard?.createdBy?.profile.displayName);
 
   const formattedCreatedDate =
     (contributionType === CalloutContributionType.Post &&
-      data?.lookup.contribution?.post?.createdDate &&
-      formatDateTime(data.lookup.contribution.post.createdDate)) ||
+      contribution?.post?.createdDate &&
+      formatDateTime(contribution.post.createdDate)) ||
     (contributionType === CalloutContributionType.Whiteboard &&
-      data?.lookup.contribution?.whiteboard?.createdDate &&
-      formatDateTime(data.lookup.contribution.whiteboard.createdDate));
+      contribution?.whiteboard?.createdDate &&
+      formatDateTime(contribution.whiteboard.createdDate));
 
+  const contributionUrl =
+    (contributionType === CalloutContributionType.Post &&
+      contribution?.post?.profile.url) ||
+    (contributionType === CalloutContributionType.Whiteboard &&
+      contribution?.whiteboard?.profile.url);
   return (
     <Gutters>
       <PageContentBlock>
@@ -75,30 +113,32 @@ const CalloutContributionPreview = ({ callout, contributionId }: CalloutContribu
             <>
               <Caption>{formattedCreatedDate}</Caption>
               {/* TODO: Here the comments to the post */}
-              <IconButton onClick={() => navigate(callout.framing.profile.url)}>
-                <CloseOutlined />
+              <IconButton
+                onClick={() => setContributionDialogOpen(true)}
+                title={t('buttons.edit')}
+                aria-label={t('buttons.edit')}
+                color="primary"
+                size="small"
+              >
+                <EditIcon />
+              </IconButton>
+
+              {renderExtraActions && contribution && renderExtraActions(contribution)}
+              {contributionUrl && <ShareButton url={contributionUrl} entityTypeName={contributionType} />}
+              <IconButton onClick={() => navigate(callout.framing.profile.url)} size="small">
+                <CloseOutlinedIcon />
               </IconButton>
             </>
           }
         />
-        {loading && <Loading />}
-        {contributionType === CalloutContributionType.Post && (
-          <Box bgcolor={theme => theme.palette.background.default} padding={gutters()} margin={gutters(-1)}>
-            <WrapperMarkdown>{data?.lookup.contribution?.post?.profile.description ?? ''}</WrapperMarkdown>
-          </Box>
-        )}
-        {contributionType === CalloutContributionType.Whiteboard && (
-          <Box padding={gutters()} margin={gutters(-1)}>
-            <WhiteboardPreview
-              whiteboard={data?.lookup.contribution?.whiteboard}
-              onClick={() =>
-                data?.lookup.contribution?.whiteboard?.profile.url &&
-                navigate(data?.lookup.contribution?.whiteboard?.profile.url)
-              } //!! this is not correct
-              onClose={onClose}
-            />
-          </Box>
-        )}
+        <PreviewComponent contribution={contribution} loading={loading} onOpenContribution={() => setContributionDialogOpen(false)} />
+        <DialogComponent
+          calloutsSetId={callout.calloutsSetId}
+          calloutId={callout.id}
+          contribution={contribution}
+          open={contributionDialogOpen}
+          onClose={() => setContributionDialogOpen(false)}
+        />
       </PageContentBlock>
     </Gutters>
   );

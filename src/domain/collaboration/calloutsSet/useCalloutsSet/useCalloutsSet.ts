@@ -103,6 +103,7 @@ const useCalloutsSet = ({
 
           const result: CalloutModelLightExtended = {
             ...callout,
+            calloutsSetId: calloutsSet.id,
             classification,
             framing: {
               profile: callout.framing.profile,

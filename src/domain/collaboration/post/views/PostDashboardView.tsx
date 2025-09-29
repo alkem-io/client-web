@@ -24,6 +24,7 @@ import { BlockSectionTitle } from '@/core/ui/typography';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { times } from 'lodash';
 import { useCalloutSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -49,7 +50,11 @@ const isScrolledToBottom = ({
   // This will return true if scrollTop is approximately equal to (scrollHeight - containerHeight), if the comments are scrolled very close to the end
   return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_MISTAKE_TOLERANCE;
 };
-
+/**
+ *
+ * @deprecated
+ * @returns
+ */
 const PostDashboardView = ({ mode, postId, calloutId, vcEnabled }: PostDashboardViewProps) => {
   const { t } = useTranslation();
   const {
@@ -68,15 +73,10 @@ const PostDashboardView = ({ mode, postId, calloutId, vcEnabled }: PostDashboard
     },
     skip: !calloutId,
   });
-  const commentsEnabled = data?.lookup.callout?.settings?.contribution?.commentsEnabled ?? false;
 
   const commentsContainerRef = useRef<HTMLElement>(null);
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
   const wasScrolledToBottomRef = useRef(true);
-  const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
-
-  const deleteComment = (id: string) => (comments.roomId ? actions.deleteMessage(comments.roomId, id) : undefined);
-  const onDeleteComment = (id: string) => setCommentToBeDeleted(id);
 
   const { height: containerHeight = 0 } = useResizeDetector({
     targetRef: commentsContainerRef,
@@ -99,13 +99,6 @@ const PostDashboardView = ({ mode, postId, calloutId, vcEnabled }: PostDashboard
     }
   }, [comments]);
 
-  const commentReactionsMutations = useCommentReactionsMutations(comments.roomId);
-
-  const handleCommentsScroll = () => {
-    prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
-  };
-
-  const canPostComments = permissions.canPostComments && commentsEnabled;
 
   return (
     <PageContentBlock sx={{ flexDirection: 'row' }}>
@@ -115,7 +108,7 @@ const PostDashboardView = ({ mode, postId, calloutId, vcEnabled }: PostDashboard
             {loading || !post?.profile.url ? (
               <Skeleton />
             ) : (
-              <ShareComponent url={post.profile.url} entityTypeName="card" />
+                <ShareComponent url={post.profile.url} entityTypeName={CalloutContributionType.Post} />
             )}
           </PageContentBlock>
         </PageContentColumn>
@@ -145,67 +138,6 @@ const PostDashboardView = ({ mode, postId, calloutId, vcEnabled }: PostDashboard
         <Gutters sx={{ width: '100%' }}>
           <References references={post?.profile.references} />
         </Gutters>
-        {mode === 'messages' && permissions.canReadComments && (
-          <>
-            <PageContentBlock title={`${t('common.comments')} (${comments.messages.length})`}>
-              <ScrollerWithGradient
-                maxHeight={COMMENTS_CONTAINER_HEIGHT}
-                minHeight={0}
-                marginRight={1}
-                flexGrow={1}
-                scrollerRef={commentsContainerRef}
-                onScroll={handleCommentsScroll}
-              >
-                <Gutters gap={0}>
-                  <MessagesThread
-                    messages={comments.messages}
-                    vcInteractions={comments.vcInteractions}
-                    vcEnabled={vcEnabled}
-                    canPostMessages={canPostComments}
-                    onReply={actions.postReply}
-                    canDeleteMessage={permissions.canDeleteComment}
-                    onDeleteMessage={onDeleteComment}
-                    canAddReaction={permissions.canAddReaction}
-                    {...commentReactionsMutations}
-                  />
-                </Gutters>
-              </ScrollerWithGradient>
-              <Box>
-                {canPostComments && (
-                  <PostMessageToCommentsForm
-                    vcEnabled={vcEnabled}
-                    placeholder={t('pages.post.dashboard.comment.placeholder')}
-                    onPostComment={actions.postMessage}
-                  />
-                )}
-                {!canPostComments && (
-                  <Box paddingY={4} display="flex" justifyContent="center">
-                    <BlockSectionTitle>{t('components.discussion.cant-post')}</BlockSectionTitle>
-                  </Box>
-                )}
-              </Box>
-            </PageContentBlock>
-            <ConfirmationDialog
-              actions={{
-                onCancel: () => setCommentToBeDeleted(undefined),
-                onConfirm: async () => {
-                  if (commentToBeDeleted) {
-                    await deleteComment(commentToBeDeleted);
-                  }
-                  setCommentToBeDeleted(undefined);
-                },
-              }}
-              entities={{
-                confirmButtonTextId: 'buttons.delete',
-                contentId: 'components.confirmation-dialog.delete-comment.confirmation-text',
-                titleId: 'components.confirmation-dialog.delete-comment.confirmation-title',
-              }}
-              options={{
-                show: Boolean(commentToBeDeleted),
-              }}
-            />
-          </>
-        )}
       </PageContentColumn>
     </PageContentBlock>
   );

@@ -1,4 +1,4 @@
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
@@ -95,7 +95,7 @@ const WhiteboardView = ({
             fullscreen,
             headerActions: (
               <>
-                <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
+                <ShareButton url={whiteboardShareUrl} entityTypeName={CalloutContributionType.Whiteboard} disabled={!whiteboardShareUrl}>
                   {hasUpdatePrivileges && <CollaborationSettings element={whiteboard} elementType="whiteboard" />}
                 </ShareButton>
 

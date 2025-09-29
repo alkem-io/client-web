@@ -28,6 +28,7 @@ export interface CalloutModelLight {
 }
 
 export type CalloutModelExtension<T> = T & {
+  calloutsSetId: string | undefined;
   authorization?: { myPrivileges?: AuthorizationPrivilege[] };
   draft: boolean;
   editable: boolean;
