@@ -442,6 +442,7 @@ export type AiPersonaKeySpecifier = (
   | 'externalConfig'
   | 'id'
   | 'prompt'
+  | 'promptGraph'
   | 'updatedDate'
   | AiPersonaKeySpecifier
 )[];
@@ -453,6 +454,7 @@ export type AiPersonaFieldPolicy = {
   externalConfig?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+  promptGraph?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AiServerKeySpecifier = (
@@ -2084,12 +2086,14 @@ export type LicensingFieldPolicy = {
 export type LicensingCredentialBasedPolicyCredentialRuleKeySpecifier = (
   | 'credentialType'
   | 'grantedEntitlements'
+  | 'id'
   | 'name'
   | LicensingCredentialBasedPolicyCredentialRuleKeySpecifier
 )[];
 export type LicensingCredentialBasedPolicyCredentialRuleFieldPolicy = {
   credentialType?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicensingGrantedEntitlementKeySpecifier = ('limit' | 'type' | LicensingGrantedEntitlementKeySpecifier)[];
@@ -2449,6 +2453,9 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationUpdateRoomState'
   | 'adminIdentityDeleteKratosIdentity'
   | 'adminInAppNotificationsPrune'
+  | 'adminLicensePolicyCreateCredentialRule'
+  | 'adminLicensePolicyDeleteCredentialRule'
+  | 'adminLicensePolicyUpdateCredentialRule'
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
@@ -2630,6 +2637,9 @@ export type MutationFieldPolicy = {
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminIdentityDeleteKratosIdentity?: FieldPolicy<any> | FieldReadFunction<any>;
   adminInAppNotificationsPrune?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminLicensePolicyCreateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminLicensePolicyDeleteCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminLicensePolicyUpdateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3227,6 +3237,108 @@ export type ProfileCredentialVerifiedKeySpecifier = ('userEmail' | 'vc' | Profil
 export type ProfileCredentialVerifiedFieldPolicy = {
   userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   vc?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphKeySpecifier = ('edges' | 'end' | 'nodes' | 'start' | 'state' | PromptGraphKeySpecifier)[];
+export type PromptGraphFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  end?: FieldPolicy<any> | FieldReadFunction<any>;
+  nodes?: FieldPolicy<any> | FieldReadFunction<any>;
+  start?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDataPointKeySpecifier = (
+  | 'description'
+  | 'name'
+  | 'optional'
+  | 'type'
+  | PromptGraphDataPointKeySpecifier
+)[];
+export type PromptGraphDataPointFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  optional?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDataStructKeySpecifier = ('properties' | 'title' | 'type' | PromptGraphDataStructKeySpecifier)[];
+export type PromptGraphDataStructFieldPolicy = {
+  properties?: FieldPolicy<any> | FieldReadFunction<any>;
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDefinitionKeySpecifier = (
+  | 'edges'
+  | 'end'
+  | 'nodes'
+  | 'start'
+  | 'state'
+  | PromptGraphDefinitionKeySpecifier
+)[];
+export type PromptGraphDefinitionFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  end?: FieldPolicy<any> | FieldReadFunction<any>;
+  nodes?: FieldPolicy<any> | FieldReadFunction<any>;
+  start?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDefinitionDataPointKeySpecifier = (
+  | 'description'
+  | 'name'
+  | 'optional'
+  | 'type'
+  | PromptGraphDefinitionDataPointKeySpecifier
+)[];
+export type PromptGraphDefinitionDataPointFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  optional?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDefinitionDataStructKeySpecifier = (
+  | 'properties'
+  | 'title'
+  | 'type'
+  | PromptGraphDefinitionDataStructKeySpecifier
+)[];
+export type PromptGraphDefinitionDataStructFieldPolicy = {
+  properties?: FieldPolicy<any> | FieldReadFunction<any>;
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDefinitionEdgeKeySpecifier = ('from' | 'to' | PromptGraphDefinitionEdgeKeySpecifier)[];
+export type PromptGraphDefinitionEdgeFieldPolicy = {
+  from?: FieldPolicy<any> | FieldReadFunction<any>;
+  to?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDefinitionNodeKeySpecifier = (
+  | 'input_variables'
+  | 'name'
+  | 'output'
+  | 'prompt'
+  | PromptGraphDefinitionNodeKeySpecifier
+)[];
+export type PromptGraphDefinitionNodeFieldPolicy = {
+  input_variables?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  output?: FieldPolicy<any> | FieldReadFunction<any>;
+  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphEdgeKeySpecifier = ('from' | 'to' | PromptGraphEdgeKeySpecifier)[];
+export type PromptGraphEdgeFieldPolicy = {
+  from?: FieldPolicy<any> | FieldReadFunction<any>;
+  to?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphNodeKeySpecifier = (
+  | 'input_variables'
+  | 'name'
+  | 'output'
+  | 'prompt'
+  | PromptGraphNodeKeySpecifier
+)[];
+export type PromptGraphNodeFieldPolicy = {
+  input_variables?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  output?: FieldPolicy<any> | FieldReadFunction<any>;
+  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PruneInAppNotificationAdminResultKeySpecifier = (
   | 'removedCountExceedingUserLimit'
@@ -4587,6 +4699,7 @@ export type VirtualContributorKeySpecifier = (
   | 'modelCard'
   | 'nameID'
   | 'profile'
+  | 'promptGraphDefinition'
   | 'provider'
   | 'searchVisibility'
   | 'settings'
@@ -4613,6 +4726,7 @@ export type VirtualContributorFieldPolicy = {
   modelCard?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  promptGraphDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5727,6 +5841,58 @@ export type StrictTypedTypePolicies = {
       | ProfileCredentialVerifiedKeySpecifier
       | (() => undefined | ProfileCredentialVerifiedKeySpecifier);
     fields?: ProfileCredentialVerifiedFieldPolicy;
+  };
+  PromptGraph?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphKeySpecifier | (() => undefined | PromptGraphKeySpecifier);
+    fields?: PromptGraphFieldPolicy;
+  };
+  PromptGraphDataPoint?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphDataPointKeySpecifier | (() => undefined | PromptGraphDataPointKeySpecifier);
+    fields?: PromptGraphDataPointFieldPolicy;
+  };
+  PromptGraphDataStruct?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphDataStructKeySpecifier | (() => undefined | PromptGraphDataStructKeySpecifier);
+    fields?: PromptGraphDataStructFieldPolicy;
+  };
+  PromptGraphDefinition?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphDefinitionKeySpecifier | (() => undefined | PromptGraphDefinitionKeySpecifier);
+    fields?: PromptGraphDefinitionFieldPolicy;
+  };
+  PromptGraphDefinitionDataPoint?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PromptGraphDefinitionDataPointKeySpecifier
+      | (() => undefined | PromptGraphDefinitionDataPointKeySpecifier);
+    fields?: PromptGraphDefinitionDataPointFieldPolicy;
+  };
+  PromptGraphDefinitionDataStruct?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PromptGraphDefinitionDataStructKeySpecifier
+      | (() => undefined | PromptGraphDefinitionDataStructKeySpecifier);
+    fields?: PromptGraphDefinitionDataStructFieldPolicy;
+  };
+  PromptGraphDefinitionEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PromptGraphDefinitionEdgeKeySpecifier
+      | (() => undefined | PromptGraphDefinitionEdgeKeySpecifier);
+    fields?: PromptGraphDefinitionEdgeFieldPolicy;
+  };
+  PromptGraphDefinitionNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PromptGraphDefinitionNodeKeySpecifier
+      | (() => undefined | PromptGraphDefinitionNodeKeySpecifier);
+    fields?: PromptGraphDefinitionNodeFieldPolicy;
+  };
+  PromptGraphEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphEdgeKeySpecifier | (() => undefined | PromptGraphEdgeKeySpecifier);
+    fields?: PromptGraphEdgeFieldPolicy;
+  };
+  PromptGraphNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphNodeKeySpecifier | (() => undefined | PromptGraphNodeKeySpecifier);
+    fields?: PromptGraphNodeFieldPolicy;
   };
   PruneInAppNotificationAdminResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
