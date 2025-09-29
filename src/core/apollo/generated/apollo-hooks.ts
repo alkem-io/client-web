@@ -1563,10 +1563,6 @@ export const UserSettingsFragmentFragmentDoc = gql`
             email
             inApp
           }
-          spaceCommunityApplicationSubmitted {
-            email
-            inApp
-          }
         }
         mentioned {
           email
@@ -1577,10 +1573,6 @@ export const UserSettingsFragmentFragmentDoc = gql`
           inApp
         }
         messageReceived {
-          email
-          inApp
-        }
-        copyOfMessageSent {
           email
           inApp
         }
@@ -13309,20 +13301,12 @@ export const UpdateUserSettingsDocument = gql`
               email
               inApp
             }
-            copyOfMessageSent {
-              email
-              inApp
-            }
             membership {
               spaceCommunityInvitationReceived {
                 email
                 inApp
               }
               spaceCommunityJoined {
-                email
-                inApp
-              }
-              spaceCommunityApplicationSubmitted {
                 email
                 inApp
               }

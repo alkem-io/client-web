@@ -112,11 +112,7 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
                 </Box>
               </GridItem>
               <GridItem columns={labelColumns}>
-                <Caption
-                  color={switchStates.inApp.disabled && switchStates.email.disabled ? 'text.disabled' : 'text.primary'}
-                >
-                  {option.label}
-                </Caption>
+                <Caption>{option.label}</Caption>
               </GridItem>
             </GridContainer>
           );

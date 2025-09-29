@@ -21,8 +21,10 @@ import {
   OrganizationNotificationSettings,
   PlatformNotificationSettings,
   PlatformAdminNotificationSettings,
+  VCNotificationSettings,
   NotificationChannels,
 } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
+import { VCNotificationsSettings } from '@/domain/community/userAdmin/tabs/components/VCNotificationsSettings';
 
 // Notification groups enum for explicit handling
 export enum NotificationGroup {
@@ -32,6 +34,7 @@ export enum NotificationGroup {
   ORGANIZATION = 'organization',
   PLATFORM = 'platform',
   PLATFORM_ADMIN = 'platformAdmin',
+  VIRTUAL_CONTRIBUTOR = 'virtualContributor',
 }
 
 type NotificationUpdate = {
@@ -128,6 +131,7 @@ const UserAdminNotificationsPage = () => {
       platform: notification?.platform as PlatformNotificationSettings | undefined,
       platformAdmin: notification?.platform?.admin as PlatformAdminNotificationSettings | undefined,
       user: notification?.user as UserNotificationSettings | undefined,
+      virtualContributor: notification?.virtualContributor as VCNotificationSettings | undefined,
     };
   }, [userProfileData]);
 
@@ -215,13 +219,6 @@ const UserAdminNotificationsPage = () => {
       value,
       currentSettings.user?.messageReceived
     ),
-    copyOfMessageSent: createNotificationChannel(
-      type,
-      property,
-      'copyOfMessageSent',
-      value,
-      currentSettings.user?.copyOfMessageSent
-    ),
     membership: {
       spaceCommunityInvitationReceived: createNotificationChannel(
         type,
@@ -236,13 +233,6 @@ const UserAdminNotificationsPage = () => {
         'membership.spaceCommunityJoined',
         value,
         currentSettings.user?.membership?.spaceCommunityJoined
-      ),
-      spaceCommunityApplicationSubmitted: createNotificationChannel(
-        type,
-        property,
-        'membership.spaceCommunityApplicationSubmitted',
-        value,
-        currentSettings.user?.membership?.spaceCommunityApplicationSubmitted
       ),
     },
   });
@@ -312,6 +302,16 @@ const UserAdminNotificationsPage = () => {
     ),
   });
 
+  const buildVCSettings = (property: string, type: 'inApp' | 'email', value: boolean) => ({
+    adminSpaceCommunityInvitation: createNotificationChannel(
+      type,
+      property,
+      'adminSpaceCommunityInvitation',
+      value,
+      currentSettings.virtualContributor?.adminSpaceCommunityInvitation
+    ),
+  });
+
   // Unified update handler that processes a single notification setting update
   const handleUpdateSettings = async ({ group, property, type, value }: NotificationUpdate) => {
     const settingsVariable: UpdateUserSettingsNotificationInput = {};
@@ -356,6 +356,10 @@ const UserAdminNotificationsPage = () => {
           forumDiscussionCreated: preserveChannel(currentSettings.platform?.forumDiscussionCreated),
           admin: buildPlatformAdminSettings(property, type, value),
         };
+        break;
+
+      case NotificationGroup.VIRTUAL_CONTRIBUTOR:
+        settingsVariable.virtualContributor = buildVCSettings(property, type, value);
         break;
 
       default:
@@ -429,6 +433,14 @@ const UserAdminNotificationsPage = () => {
                   }
                 />
               )}
+
+              {/* 5. Virtual Contributor settings */}
+              <VCNotificationsSettings
+                currentVCSettings={currentSettings.virtualContributor}
+                onUpdateSettings={(property, type, value) =>
+                  handleUpdateSettings({ group: NotificationGroup.VIRTUAL_CONTRIBUTOR, property, type, value })
+                }
+              />
             </PageContentColumn>
           </>
         )}

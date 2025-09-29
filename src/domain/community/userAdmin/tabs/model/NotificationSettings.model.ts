@@ -26,11 +26,9 @@ export interface UserNotificationSettings {
   commentReply?: NotificationChannels;
   mentioned?: NotificationChannels;
   messageReceived?: NotificationChannels;
-  copyOfMessageSent?: NotificationChannels;
   membership?: {
     spaceCommunityInvitationReceived?: NotificationChannels;
     spaceCommunityJoined?: NotificationChannels;
-    spaceCommunityApplicationSubmitted?: NotificationChannels;
   };
 }
 
@@ -54,6 +52,11 @@ export interface PlatformAdminNotificationSettings {
   spaceCreated?: NotificationChannels;
 }
 
+// Virtual Contributor notification settings
+export interface VCNotificationSettings {
+  adminSpaceCommunityInvitation?: NotificationChannels;
+}
+
 // Complete notification settings
 export interface NotificationSettings {
   space?: SpaceNotificationSettings;
@@ -62,4 +65,5 @@ export interface NotificationSettings {
   organization?: OrganizationNotificationSettings;
   platform?: PlatformNotificationSettings;
   platformAdmin?: PlatformAdminNotificationSettings;
+  virtualContributor?: VCNotificationSettings;
 }

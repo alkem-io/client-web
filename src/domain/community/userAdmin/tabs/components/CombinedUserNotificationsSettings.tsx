@@ -39,11 +39,6 @@ export const CombinedUserNotificationsSettings = ({
         },
       ],
     },
-    copyOfMessageSent: {
-      inAppChecked: currentUserSettings?.copyOfMessageSent?.inApp || false,
-      emailChecked: currentUserSettings?.copyOfMessageSent?.email || false,
-      label: t('pages.userNotificationsSettings.user.settings.copyOfMessageSent'),
-    },
     // User membership notifications
     'membership.spaceCommunityInvitationReceived': {
       inAppChecked: currentUserSettings?.membership?.spaceCommunityInvitationReceived?.inApp || false,
@@ -60,11 +55,6 @@ export const CombinedUserNotificationsSettings = ({
       inAppChecked: currentUserSettings?.membership?.spaceCommunityJoined?.inApp || false,
       emailChecked: currentUserSettings?.membership?.spaceCommunityJoined?.email || false,
       label: t('pages.userNotificationsSettings.userMembership.settings.spaceCommunityJoined'),
-    },
-    'membership.spaceCommunityApplicationSubmitted': {
-      inAppChecked: currentUserSettings?.membership?.spaceCommunityApplicationSubmitted?.inApp || false,
-      emailChecked: currentUserSettings?.membership?.spaceCommunityApplicationSubmitted?.email || false,
-      label: t('pages.userNotificationsSettings.userMembership.settings.spaceCommunityApplication'),
     },
   };
 

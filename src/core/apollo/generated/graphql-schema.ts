@@ -1884,6 +1884,12 @@ export type CreateLicensePlanOnLicensingFrameworkInput = {
   type: LicensingCredentialBasedPlanType;
 };
 
+export type CreateLicensePolicyCredentialRuleInput = {
+  credentialType: LicensingCredentialBasedCredentialType;
+  grantedEntitlements: Array<LicensingGrantedEntitlementInput>;
+  name: Scalars['String']['input'];
+};
+
 export type CreateLinkData = {
   __typename?: 'CreateLinkData';
   profile: CreateProfileData;
@@ -2325,6 +2331,10 @@ export type DeleteInvitationInput = {
 };
 
 export type DeleteLicensePlanInput = {
+  ID: Scalars['UUID']['input'];
+};
+
+export type DeleteLicensePolicyCredentialRuleInput = {
   ID: Scalars['UUID']['input'];
 };
 
@@ -3323,12 +3333,19 @@ export type LicensingCredentialBasedPolicyCredentialRule = {
   __typename?: 'LicensingCredentialBasedPolicyCredentialRule';
   credentialType: LicensingCredentialBasedCredentialType;
   grantedEntitlements: Array<LicensingGrantedEntitlement>;
+  id: Scalars['String']['output'];
   name?: Maybe<Scalars['String']['output']>;
 };
 
 export type LicensingGrantedEntitlement = {
   __typename?: 'LicensingGrantedEntitlement';
   limit: Scalars['Float']['output'];
+  /** The entitlement that is granted. */
+  type: LicenseEntitlementType;
+};
+
+export type LicensingGrantedEntitlementInput = {
+  limit: Scalars['Float']['input'];
   /** The entitlement that is granted. */
   type: LicenseEntitlementType;
 };
@@ -4048,6 +4065,12 @@ export type Mutation = {
   adminIdentityDeleteKratosIdentity: Scalars['Boolean']['output'];
   /** Prunes InAppNotifications according to the platform defined criteria. The effects of the pruning are returned. */
   adminInAppNotificationsPrune: PruneInAppNotificationAdminResult;
+  /** Creates a CredentialRule on the LicensePolicy. */
+  adminLicensePolicyCreateCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
+  /** Deletes the specified LicensePolicy. */
+  adminLicensePolicyDeleteCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
+  /** Updates a CredentialRule on the LicensePolicy. */
+  adminLicensePolicyUpdateCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String']['output'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
@@ -4414,6 +4437,18 @@ export type MutationAdminCommunicationUpdateRoomStateArgs = {
 
 export type MutationAdminIdentityDeleteKratosIdentityArgs = {
   kratosIdentityId: Scalars['UUID']['input'];
+};
+
+export type MutationAdminLicensePolicyCreateCredentialRuleArgs = {
+  createData: CreateLicensePolicyCredentialRuleInput;
+};
+
+export type MutationAdminLicensePolicyDeleteCredentialRuleArgs = {
+  deleteData: DeleteLicensePolicyCredentialRuleInput;
+};
+
+export type MutationAdminLicensePolicyUpdateCredentialRuleArgs = {
+  updateData: UpdateLicensePolicyCredentialRuleInput;
 };
 
 export type MutationAdminUpdateContributorAvatarsArgs = {
@@ -7546,6 +7581,13 @@ export type UpdateLicensePlanInput = {
   trialEnabled?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type UpdateLicensePolicyCredentialRuleInput = {
+  ID: Scalars['UUID']['input'];
+  credentialType: LicensingCredentialBasedCredentialType;
+  grantedEntitlements: Array<LicensingGrantedEntitlementInput>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdateLinkInput = {
   ID: Scalars['UUID']['input'];
   /** The Profile of the Link. */
@@ -7883,8 +7925,6 @@ export type UpdateUserSettingsNotificationSpaceInput = {
 export type UpdateUserSettingsNotificationUserInput = {
   /** Receive a notification when someone replies to a comment I made. */
   commentReply?: InputMaybe<NotificationSettingInput>;
-  /** Receive notification I send a message to a User, Organization or Space. */
-  copyOfMessageSent?: InputMaybe<NotificationSettingInput>;
   /** Settings related to User Membership Notifications. */
   membership?: InputMaybe<UpdateUserSettingsNotificationUserMembershipInput>;
   /** Receive a notification you are mentioned */
@@ -7894,8 +7934,6 @@ export type UpdateUserSettingsNotificationUserInput = {
 };
 
 export type UpdateUserSettingsNotificationUserMembershipInput = {
-  /** Receive a notification when an application is submitted */
-  spaceCommunityApplicationSubmitted?: InputMaybe<NotificationSettingInput>;
   /** Receive a notification for community invitation */
   spaceCommunityInvitationReceived?: InputMaybe<NotificationSettingInput>;
   /** Receive a notification when I join a new community */
@@ -19450,7 +19488,6 @@ export type UpdateUserSettingsMutation = {
           mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-          copyOfMessageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           membership: {
             __typename?: 'UserSettingsNotificationUserMembership';
             spaceCommunityInvitationReceived: {
@@ -19459,11 +19496,6 @@ export type UpdateUserSettingsMutation = {
               inApp: boolean;
             };
             spaceCommunityJoined: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-            spaceCommunityApplicationSubmitted: {
-              __typename?: 'UserSettingsNotificationChannels';
-              email: boolean;
-              inApp: boolean;
-            };
           };
         };
         space: {
@@ -19612,16 +19644,10 @@ export type UserSettingsFragmentFragment = {
           inApp: boolean;
         };
         spaceCommunityJoined: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-        spaceCommunityApplicationSubmitted: {
-          __typename?: 'UserSettingsNotificationChannels';
-          email: boolean;
-          inApp: boolean;
-        };
       };
       mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
       commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
       messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-      copyOfMessageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
     };
     virtualContributor: {
       __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -19759,16 +19785,10 @@ export type UserSettingsQuery = {
                     email: boolean;
                     inApp: boolean;
                   };
-                  spaceCommunityApplicationSubmitted: {
-                    __typename?: 'UserSettingsNotificationChannels';
-                    email: boolean;
-                    inApp: boolean;
-                  };
                 };
                 mentioned: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
                 commentReply: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
                 messageReceived: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
-                copyOfMessageSent: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
               };
               virtualContributor: {
                 __typename?: 'UserSettingsNotificationVirtualContributor';

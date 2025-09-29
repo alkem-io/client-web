@@ -16,20 +16,12 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
             email
             inApp
           }
-          copyOfMessageSent {
-            email
-            inApp
-          }
           membership {
             spaceCommunityInvitationReceived {
               email
               inApp
             }
             spaceCommunityJoined {
-              email
-              inApp
-            }
-            spaceCommunityApplicationSubmitted {
               email
               inApp
             }

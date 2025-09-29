@@ -3223,15 +3223,13 @@
         "settings": {
           "mentioned": "Receive a $t(common.notification) when I am mentioned",
           "commentReply": "Receive a $t(common.notification) when someone replies to my $t(common.comment)",
-          "messageReceived": "Receive a $t(common.notification) when someone sends me a direct message",
-          "copyOfMessageSent": "Receive a $t(common.notification) when I send a direct message"
+          "messageReceived": "Receive a $t(common.notification) when someone sends me a direct message"
         }
       },
       "userMembership": {
         "title": "User $t(common.membership) $t(common.notifications)",
         "subtitle": "This section allows you to select your preferences regarding $t(common.notifications) related to your $t(common.membership) in communities.",
         "settings": {
-          "spaceCommunityApplication": "Receive a $t(common.notification) when I apply to join a $t(common.community)",
           "spaceCommunityInvitation": "Receive a $t(common.notification) when someone invites you to join a $t(common.community)",
           "spaceCommunityJoined": "Receive a $t(common.notification) when I join a new $t(common.space) $t(common.community)"
         }
