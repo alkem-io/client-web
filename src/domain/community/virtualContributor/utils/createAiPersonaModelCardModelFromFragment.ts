@@ -1,11 +1,11 @@
-import { AiPersonaModelCardModel, EMPTY_MODEL_CARD } from '../model/AiPersonaModelCardModel';
-import { AiPersonaWithModelCardFragment, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import { VirtualContributorWithModelCardFragment, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import { VirtualContributorModelCard, EMPTY_MODEL_CARD } from '../model/VirtualContributorModelCardModel';
 
 export function createAiPersonaModelCardModelFromFragment(
-  aiPersonaData: AiPersonaWithModelCardFragment | undefined
-): AiPersonaModelCardModel {
-  const engine = aiPersonaData?.engine;
-  const modelCardData = aiPersonaData?.modelCard;
+  vcData: VirtualContributorWithModelCardFragment | undefined
+): VirtualContributorModelCard {
+  const engine = vcData?.aiPersona?.engine;
+  const modelCardData = vcData?.modelCard;
   if (!modelCardData || !engine) return EMPTY_MODEL_CARD;
   return {
     spaceUsage: modelCardData.spaceUsage ?? EMPTY_MODEL_CARD.spaceUsage,
