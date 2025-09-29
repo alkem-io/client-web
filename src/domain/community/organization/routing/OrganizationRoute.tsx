@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router';
+import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import OrganizationPage from '../pages/OrganizationPage';
 import OrganizationAdminRoutes from '@/domain/community/organizationAdmin/OrganizationAdminRoutes';
