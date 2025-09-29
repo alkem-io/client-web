@@ -25371,6 +25371,7 @@ export type SpaceSettingsQuery = {
               allowMembersToCreateSubspaces: boolean;
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
+              allowMembersToVideoCall: boolean;
             };
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
@@ -25394,6 +25395,7 @@ export type SpaceSettingsFragment = {
     allowMembersToCreateSubspaces: boolean;
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
+    allowMembersToVideoCall: boolean;
   };
 };
 
@@ -25421,6 +25423,7 @@ export type UpdateSpaceSettingsMutation = {
         allowMembersToCreateSubspaces: boolean;
         inheritMembershipRights: boolean;
         allowEventsFromSubspaces: boolean;
+        allowMembersToVideoCall: boolean;
       };
     };
   };
@@ -27219,6 +27222,7 @@ export type TemplateContentQuery = {
                     allowMembersToCreateSubspaces: boolean;
                     inheritMembershipRights: boolean;
                     allowEventsFromSubspaces: boolean;
+                    allowMembersToVideoCall: boolean;
                   };
                 };
                 subspaces: Array<{
@@ -27395,6 +27399,7 @@ export type SpaceTemplateContentQuery = {
               allowMembersToCreateSubspaces: boolean;
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
+              allowMembersToVideoCall: boolean;
             };
           };
           subspaces: Array<{
@@ -27738,6 +27743,7 @@ export type SpaceTemplateContentFragment = {
       allowMembersToCreateSubspaces: boolean;
       inheritMembershipRights: boolean;
       allowEventsFromSubspaces: boolean;
+      allowMembersToVideoCall: boolean;
     };
   };
   subspaces: Array<{
@@ -27875,6 +27881,7 @@ export type SpaceTemplateContent_SettingsFragment = {
     allowMembersToCreateSubspaces: boolean;
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
+    allowMembersToVideoCall: boolean;
   };
 };
 
