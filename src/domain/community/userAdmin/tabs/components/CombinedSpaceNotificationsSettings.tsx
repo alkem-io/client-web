@@ -7,7 +7,7 @@ import {
   SpaceNotificationSettings,
   SpaceAdminNotificationSettings,
 } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
-import { ReactNode } from 'react';
+import { NotificationOption, NotificationValidationType } from '@/core/ui/forms/SettingsGroups/types/NotificationTypes';
 
 interface CombinedSpaceNotificationsSettingsProps {
   currentSpaceSettings: SpaceNotificationSettings | undefined;
@@ -16,13 +16,6 @@ interface CombinedSpaceNotificationsSettingsProps {
   onUpdateSpaceAdminSettings: (property: string, type: 'inApp' | 'email', value: boolean) => void;
   showSpaceAdminSettings: boolean;
 }
-
-type NotificationOption = {
-  inAppChecked: boolean;
-  emailChecked: boolean;
-  label: ReactNode;
-  disabled?: boolean;
-};
 
 export const CombinedSpaceNotificationsSettings = ({
   currentSpaceSettings,
@@ -70,20 +63,31 @@ export const CombinedSpaceNotificationsSettings = ({
       options.adminSeparator = {
         inAppChecked: false,
         emailChecked: false,
-        label: '', // Empty label for the divider
-        disabled: true,
+        label: '',
       };
 
       options.communityApplicationReceived = {
         inAppChecked: currentSpaceAdminSettings?.communityApplicationReceived?.inApp || false,
         emailChecked: currentSpaceAdminSettings?.communityApplicationReceived?.email || false,
         label: t('pages.userNotificationsSettings.spaceAdmin.settings.communityApplicationReceived'),
+        validationRules: [
+          {
+            type: NotificationValidationType.EMAIL_LOCKED,
+            message: t('pages.userNotificationsSettings.tooltips.communityApplicationReceived'),
+          },
+        ],
       };
 
       options.communityNewMember = {
         inAppChecked: currentSpaceAdminSettings?.communityNewMember?.inApp || false,
         emailChecked: currentSpaceAdminSettings?.communityNewMember?.email || false,
         label: t('pages.userNotificationsSettings.spaceAdmin.settings.communityNewMember'),
+        validationRules: [
+          {
+            type: NotificationValidationType.REQUIRE_AT_LEAST_ONE,
+            message: t('pages.userNotificationsSettings.tooltips.communityNewMember'),
+          },
+        ],
       };
 
       options.spaceAdminCollaborationCalloutContributionCreated = {
@@ -96,6 +100,12 @@ export const CombinedSpaceNotificationsSettings = ({
         inAppChecked: currentSpaceAdminSettings?.communicationMessageReceived?.inApp || false,
         emailChecked: currentSpaceAdminSettings?.communicationMessageReceived?.email || false,
         label: t('pages.userNotificationsSettings.spaceAdmin.settings.communicationMessageReceived'),
+        validationRules: [
+          {
+            type: NotificationValidationType.LOCKED,
+            message: t('pages.userNotificationsSettings.tooltips.communicationMessageReceived'),
+          },
+        ],
       };
     }
 

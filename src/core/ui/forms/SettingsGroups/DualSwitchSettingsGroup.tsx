@@ -1,10 +1,13 @@
 import { Box, CircularProgress, FormGroup, Switch, SwitchProps } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridItem from '@/core/ui/grid/GridItem';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
+import { NotificationOption } from './types/NotificationTypes';
+import { NotificationValidationService } from './services/NotificationValidationService';
+import { NotificationSwitchTooltip } from './components/NotificationSwitchTooltip';
 
 const LoadingSwitch = ({ loading, ...props }: SwitchProps & { loading?: boolean }) =>
   loading ? (
@@ -15,13 +18,6 @@ const LoadingSwitch = ({ loading, ...props }: SwitchProps & { loading?: boolean 
   ) : (
     <Switch {...props} />
   );
-
-type NotificationOption = {
-  inAppChecked: boolean;
-  emailChecked: boolean;
-  label: ReactNode;
-  disabled?: boolean;
-};
 
 type DualSwitchSettingsGroupProps<T extends Record<string, NotificationOption>> = {
   options: T;
@@ -44,11 +40,16 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
 
   const handleChange = async (key: keyof T, type: 'inApp' | 'email', newValue: boolean) => {
     const option = options[key];
-    if (option) {
-      setItemLoading({ key, type });
-      await onChange(key, type, newValue);
-      setItemLoading(undefined);
+    if (!option) return;
+
+    // Validate the change using the validation service
+    if (!NotificationValidationService.isChangeAllowed(option, type, newValue)) {
+      return; // Prevent invalid changes
     }
+
+    setItemLoading({ key, type });
+    await onChange(key, type, newValue);
+    setItemLoading(undefined);
   };
 
   return (
@@ -65,9 +66,6 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
             <CaptionSmall>{t('common.email')}</CaptionSmall>
           </Box>
         </GridItem>
-        <GridItem columns={labelColumns}>
-          <></>
-        </GridItem>
       </GridContainer>
 
       <FormGroup>
@@ -76,32 +74,49 @@ function DualSwitchSettingsGroup<T extends Record<string, NotificationOption>>({
           const isEmailLoading = itemLoading?.key === key && itemLoading?.type === 'email';
           const isAnyLoading = Boolean(itemLoading);
 
+          // Calculate switch states using the validation service
+          const switchStates = NotificationValidationService.calculateSwitchStates(option);
+
           return (
             <GridContainer key={key} disablePadding sx={{ alignItems: 'center', py: 0.5 }}>
               <GridItem columns={inAppColumns}>
                 <Box sx={{ textAlign: 'center' }}>
-                  <LoadingSwitch
-                    checked={option.inAppChecked}
-                    loading={isInAppLoading}
-                    disabled={option.disabled ?? isAnyLoading}
-                    onChange={(event, newValue) => handleChange(key, 'inApp', newValue)}
-                    size="small"
-                  />
+                  <NotificationSwitchTooltip
+                    message={switchStates.inApp.tooltipMessage}
+                    show={switchStates.inApp.disabled && !switchStates.email.disabled}
+                  >
+                    <LoadingSwitch
+                      checked={option.inAppChecked}
+                      loading={isInAppLoading}
+                      disabled={switchStates.inApp.disabled || isAnyLoading}
+                      onChange={(event, newValue) => handleChange(key, 'inApp', newValue)}
+                      size="small"
+                    />
+                  </NotificationSwitchTooltip>
                 </Box>
               </GridItem>
               <GridItem columns={emailColumns}>
                 <Box sx={{ textAlign: 'center' }}>
-                  <LoadingSwitch
-                    checked={option.emailChecked}
-                    loading={isEmailLoading}
-                    disabled={option.disabled ?? isAnyLoading}
-                    onChange={(event, newValue) => handleChange(key, 'email', newValue)}
-                    size="small"
-                  />
+                  <NotificationSwitchTooltip
+                    message={switchStates.email.tooltipMessage}
+                    show={switchStates.email.disabled}
+                  >
+                    <LoadingSwitch
+                      checked={option.emailChecked}
+                      loading={isEmailLoading}
+                      disabled={switchStates.email.disabled || isAnyLoading}
+                      onChange={(event, newValue) => handleChange(key, 'email', newValue)}
+                      size="small"
+                    />
+                  </NotificationSwitchTooltip>
                 </Box>
               </GridItem>
               <GridItem columns={labelColumns}>
-                <Caption color={option.disabled ? 'text.disabled' : 'text.primary'}>{option.label}</Caption>
+                <Caption
+                  color={switchStates.inApp.disabled && switchStates.email.disabled ? 'text.disabled' : 'text.primary'}
+                >
+                  {option.label}
+                </Caption>
               </GridItem>
             </GridContainer>
           );

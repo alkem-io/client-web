@@ -3260,6 +3260,15 @@
         "settings": {
           "spaceCommunityInvitation": "Receive a $t(common.notification) when a VC I manage is invited to join a $t(common.community)"
         }
+      },
+      "tooltips": {
+        "spaceCommunityInvitationReceived": "These notifications are required and cannot be disabled.",
+        "messageReceived": "These notifications are required and cannot be disabled.",
+        "communicationMessageReceived": "These communication notifications are required and cannot be disabled.",
+        "adminMessageReceived": "These notifications are required and cannot be disabled.",
+        "communityApplicationReceived": "Email notifications for applications cannot be disabled.",
+        "communityNewMember": "New member notifications require at least one notification method to stay enabled.",
+        "adminMentioned": "Organization mentions require at least one notification method to stay enabled."
       }
     },
     "help-dialog": {

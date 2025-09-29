@@ -3,6 +3,7 @@ import { BlockTitle, Caption } from '@/core/ui/typography/components';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import DualSwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/DualSwitchSettingsGroup';
 import { UserNotificationSettings } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
+import { NotificationValidationType } from '@/core/ui/forms/SettingsGroups/types/NotificationTypes';
 
 interface CombinedUserNotificationsSettingsProps {
   currentUserSettings: UserNotificationSettings | undefined;
@@ -31,6 +32,12 @@ export const CombinedUserNotificationsSettings = ({
       inAppChecked: currentUserSettings?.messageReceived?.inApp || false,
       emailChecked: currentUserSettings?.messageReceived?.email || false,
       label: t('pages.userNotificationsSettings.user.settings.messageReceived'),
+      validationRules: [
+        {
+          type: NotificationValidationType.LOCKED,
+          message: t('pages.userNotificationsSettings.tooltips.messageReceived'),
+        },
+      ],
     },
     copyOfMessageSent: {
       inAppChecked: currentUserSettings?.copyOfMessageSent?.inApp || false,
@@ -42,6 +49,12 @@ export const CombinedUserNotificationsSettings = ({
       inAppChecked: currentUserSettings?.membership?.spaceCommunityInvitationReceived?.inApp || false,
       emailChecked: currentUserSettings?.membership?.spaceCommunityInvitationReceived?.email || false,
       label: t('pages.userNotificationsSettings.userMembership.settings.spaceCommunityInvitation'),
+      validationRules: [
+        {
+          type: NotificationValidationType.LOCKED,
+          message: t('pages.userNotificationsSettings.tooltips.spaceCommunityInvitationReceived'),
+        },
+      ],
     },
     'membership.spaceCommunityJoined': {
       inAppChecked: currentUserSettings?.membership?.spaceCommunityJoined?.inApp || false,
