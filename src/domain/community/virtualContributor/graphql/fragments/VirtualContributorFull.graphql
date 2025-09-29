@@ -23,7 +23,5 @@ fragment VirtualContributorFull on VirtualContributor {
       description
     }
   }
-  aiPersona {
-    ...AiPersonaWithModelCard
-  }
+  ...VirtualContributorWithModelCard
 }
