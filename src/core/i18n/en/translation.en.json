@@ -1192,7 +1192,7 @@
       "typeReadonly": "Once a $t(common.template) is created, its type cannot be changed. If you need a different type, please create a new $t(common.template)."
     },
     "shareSettings": {
-      "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the $t(common.settings) below.",
+      "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users \u2028at once. If you do not want others to edit, change the $t(common.settings) below.",
       "disabled": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
       "ownedBy": {
         "title": "This {{elementName}} is owned by:"
@@ -1997,19 +1997,19 @@
           "description": ""
         },
         "ORGANIZATION_ADMIN_MENTIONED": {
-          "subject": "{{triggeredByName}} mentioned your organization in {{spaceName}}",
+          "subject": "{{triggeredByName}} mentioned your $t(common.organization) in {{spaceName}}",
           "description": "{{message}}"
         },
         "ORGANIZATION_ADMIN_MESSAGE": {
-          "subject": "{{triggeredByName}} sent a message to your organization {{organizationName}}",
-          "description": "See the message in you email inbox"
+          "subject": "{{triggeredByName}} sent a message to your $t(common.organization) {{organizationName}}",
+          "description": "See the message in your email inbox"
         },
         "ORGANIZATION_MESSAGE_SENDER": {
           "subject": "You sent a message to {{organizationName}}",
           "description": ""
         },
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
-          "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an admin",
+          "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an $t(common.admin)",
           "description": ""
         },
         "PLATFORM_FORUM_DISCUSSION_CREATED": {
@@ -2037,7 +2037,7 @@
           "description": ""
         },
         "PLATFORM_ADMIN_SPACE_CREATED": {
-          "subject": "{{triggeredByName}} has created a new Space",
+          "subject": "{{triggeredByName}} has created a new $t(common.space)",
           "description": "{{spaceName}}"
         }
       },
@@ -2363,7 +2363,7 @@
       "space": {
         "sections": {
           "subspaces": {
-            "description": "Here you can edit $t(common.subspaces) for this $t(common.space).",
+            "description": "Here you can edit the $t(common.subspaces) in this $t(common.space).",
             "defaultSettings": {
               "title": "Default $t(common.subspace) $t(common.template)",
               "description": "Choose the default $t(common.settings) that will apply when creating a new $t(common.subspace) within this $t(common.space). These $t(common.settings) can be modified during the creation process or at a later time.",
