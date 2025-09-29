@@ -99,7 +99,7 @@
     "@hocuspocus/provider": "^2.15.3",
     "@mui/icons-material": "7.1.0",
     "@mui/material": "7.1.0",
-    "@mui/system": "^5.15.14",
+    "@mui/system": "^7.1.0",
     "@mui/x-data-grid": "7.28.3",
     "@mui/x-date-pickers": "^8.3.0",
     "@mui/types": "^7.4.6",
