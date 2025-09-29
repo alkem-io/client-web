@@ -1,5 +1,28 @@
 # Development setup
 
+## Getting Started
+
+### Prerequisites
+
+- Node.js >= 20.9.0
+- pnpm >= 9 (recommended package manager)
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies: `pnpm install`
+3. Start the development server: `pnpm start`
+
+The application will run on http://localhost:3000 (through traefik reverse proxy).
+
+### Available Scripts
+
+- `pnpm start` - Start development server
+- `pnpm build` - Build for production
+- `pnpm test` - Run tests
+- `pnpm lint` - Run linting
+- `pnpm format` - Format code with Prettier
+
 ## Folder structure
 
 ```javascript
@@ -91,23 +114,19 @@ interface CompositeEntities extends Entities {}
 ```
 
 - **core**
-
   - atomic components.
   - Contextual independant.
   - stateless, except internal UI satate.
   - receive data and callbacks exclusibely from props.
 
 - **pages**
-
   - standalone - always rendered as single component. Almost always used as route render component.
 
 - **layout**
-
   - frame components
   - responsive
 
 - **forms**
-
   - forms definitions
   - forms related components - core form components aware of the form state.
 
