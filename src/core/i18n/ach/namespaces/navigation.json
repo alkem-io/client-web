@@ -1,0 +1,25 @@
+{
+  "topBar": {
+    "sign-in": "crwdns17642:0crwdne17642:0"
+  },
+  "navigation": {
+    "admin": {
+      "settingsMenu": {
+        "quit": "crwdns41172:0$t(common.settings)crwdne41172:0"
+      },
+      "subspace": {
+        "create": "crwdns41174:0$t(common.subspace)crwdne41174:0",
+        "edit": "crwdns41176:0$t(common.subspace)crwdne41176:0"
+      }
+    }
+  },
+  "footer": {
+    "terms": "crwdns19520:0crwdne19520:0",
+    "privacy": "crwdns19522:0crwdne19522:0",
+    "security": "crwdns19524:0crwdne19524:0",
+    "feedback": "crwdns19526:0crwdne19526:0",
+    "support": "crwdns19528:0crwdne19528:0",
+    "about": "crwdns19530:0crwdne19530:0",
+    "copyright": "crwdns36839:0crwdne36839:0"
+  }
+}

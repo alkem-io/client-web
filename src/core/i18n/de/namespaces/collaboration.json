@@ -1,0 +1,178 @@
+{
+  "callout": {
+    "create": {
+      "createButton": "$t(common.post)",
+      "createButtonTooltip": "Add $t(common.post)",
+      "dialogTitle": "Add $t(common.post)",
+      "framingSettings": {
+        "title": "Additional Content",
+        "none": {
+          "title": "None",
+          "tooltip": "No additional content"
+        },
+        "whiteboard": {
+          "title": "$t(common.Whiteboard)",
+          "tooltip": "Add a $t(common.whiteboard) to this $t(common.post)",
+          "onlyRealTimeEditorAvailable": "To edit this $t(common.whiteboard) now, please use the $t(common.whiteboard) editor closing this dialog and opening the $t(common.whiteboard) directly clicking on the preview."
+        },
+        "memo": {
+          "title": "$t(common.Memo)",
+          "tooltip": "Add a collaborative document to this $t(common.post)"
+        },
+        "link": {
+          "title": "Call To Action",
+          "tooltip": "Add a call to action to this $t(common.post)"
+        }
+      },
+      "contributionSettings": {
+        "title": "$t(common.Response) Options",
+        "comments": {
+          "title": "$t(common.Comments)",
+          "enabled": "$t(common.Comments)",
+          "disabled": "No $t(common.Comments)"
+        },
+        "contributionTypes": {
+          "title": "$t(common.Collection)",
+          "settings": {
+            "title": "$t(common.Collection) $t(common.settings)",
+            "membersCanRespond": "$t(common.Members) can add to the $t(common.collection)",
+            "adminCanRespond": "$t(common.Admins) can add to the $t(common.collection)",
+            "commentsOnEachResponse": "Enable $t(common.comments) on each Post in the $t(common.collection)",
+            "confirmBackDialog": {
+              "title": "Are you sure that you want to go back?",
+              "text": "There are unsaved changes in this form, is you close this dialog changes will be lost.",
+              "confirm": "Yes, go back"
+            }
+          },
+          "common": {
+            "defaultDisplayName": "Title"
+          },
+          "none": {
+            "title": "None",
+            "tooltip": "No $t(common.collection)"
+          },
+          "link": {
+            "title": "Links & Files",
+            "tooltip": "Enable responding with links & files",
+            "settings": {
+              "label": "Directly Start",
+              "description": "Add your first links below, after publishing new links can be directly added to the $t(common.post).",
+              "addButton": "Add another link"
+            }
+          },
+          "post": {
+            "title": "$t(common.posts)",
+            "tooltip": "Enable responding with $t(common.posts)",
+            "settings": {
+              "label": "Default text:",
+              "explanation": "Add default text to the $t(common.posts), for example, questions that you like people to answer.",
+              "text": "Default description"
+            }
+          },
+          "whiteboard": {
+            "title": "$t(common.Whiteboards)",
+            "tooltip": "Enable responding with $t(common.whiteboards)",
+            "settings": {
+              "label": "Default $t(common.whiteboard):",
+              "explanation": "Edit the default $t(common.whiteboard)."
+            }
+          },
+          "tooltipDisabled": "Please create a new $t(common.post) if you want a different $t(common.collection) option."
+        }
+      },
+      "importTemplate": {
+        "confirmOverwrite": {
+          "title": "Overwrite current input?",
+          "content": "If you import a $t(common.template), your current input could be overwritten. Are you sure you want to continue?"
+        }
+      },
+      "notification": {
+        "label": "Notify the $t(common.community).",
+        "description": "$t(common.Members) of this $t(common.community) will receive a $t(common.notification) if enabled in their $t(common.notification) $t(common.settings)."
+      },
+      "disabledSubmitTooltip": "Please make sure all titles are filled in."
+    },
+    "edit": {
+      "dialogTitle": "Edit $t(common.post)"
+    },
+    "accessForbidden": {
+      "title": "Content not available",
+      "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
+    },
+    "contributions": "{{count}} Beiträge",
+    "contributions_plural": "{{count}} Beiträge",
+    "draftNotice": "DRAFT - Only visible for $t(common.admins)",
+    "closed": "Dieser Callout ist geschlossen. Sie können die einzelnen Karten trotzdem kommentieren.",
+    "notMember": "You can't reply to this discussion since you're not a $t(common.member) of this $t(common.space)",
+    "delete-confirm-title": "Anruf löschen?",
+    "delete-confirm-text": "All $t(common.posts), $t(common.whiteboards) and messages under the Callout will also be deleted.",
+    "state-permission": "Allow adding to the $t(common.collection)",
+    "permission-help-text": "Use the switch below to close this callout for new entries.",
+    "callout-location": "Standort: ",
+    "sortContributions": "Sort contributions",
+    "saveAsTemplate": "Save as $t(common.template)",
+    "alkemio-link": "Klicken Sie hier, um mehr über Alkemios Kollaborationstools zu erfahren",
+    "link-collection": {
+      "add-link": "Add links or documents to {{title}}",
+      "edit-link": "%{title} bearbeiten",
+      "add-another": "Einen weiteren Link hinzufügen",
+      "delete-link": "Klicken Sie hier, um diesen Benutzer löschen",
+      "save-to-add": "Klicken Sie auf \"Als Entwurf speichern\" oder \"Veröffentlichen\" um Links hinzuzufügen.",
+      "no-links-yet": "Es gibt noch keine Links, seien Sie die ersten, die einen hinzufügen!",
+      "delete-confirm-title": "Diesen Link löschen",
+      "delete-confirm": "Bist du dir sicher, dass du diese Allianz aus {0} entfernen willst?",
+      "cancel-confirm-title": "Bist du sicher?",
+      "cancel-confirm": "Wenn Sie diesen Dialog verlassen, werden Ihre neuen Links nicht gespeichert.",
+      "more-links": "{{count}} Links, hier klicken um alle anzuzeigen",
+      "new-temporary-reference": "Temporäre Link-Id: {{temp}}"
+    },
+    "singleWhiteboard": {
+      "clickToSee": "Click to see the full $t(common.whiteboard)"
+    },
+    "memo": {
+      "clickToSee": "Click to see the full $t(common.memo)"
+    },
+    "calloutsList": {
+      "title": "Index",
+      "filter": {
+        "placeholder": "Search..."
+      }
+    }
+  },
+  "dashboard-updates-section": {
+    "title": "Updates from the $t(common.leads) ({{count}})",
+    "dialog-title": "All updates from the $t(common.leads)",
+    "no-data": "Keine Updates verfügbar."
+  },
+  "dashboard-discussions-section": {
+    "title": "Diskussionen ({{count}})",
+    "no-data-create": "Keine Diskussionen. Erstellen Sie eine neue Diskussion",
+    "no-data-join": "No discussions available. Please join the $t(common.community) to create a discussion"
+  },
+  "post-edit": {
+    "new": "New $t(common.post)",
+    "edit": "Edit $t(common.post)",
+    "type": {
+      "title": "$t(common.post) label",
+      "help-text": "Welche Daten möchten Sie ändern?"
+    },
+    "postLocation": {
+      "title": "$t(common.post) location",
+      "label": "Beitrag zum Callout",
+      "reminder": "Be careful changing the $t(common.posts) location. Moving the $t(common.post) to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this $t(common.post), to retrieve it. Note that you can only move $t(common.posts) within the same $t(common.space) or $t(common.subspace).",
+      "success": "Successfully moved $t(common.post) to the new Callout.",
+      "error": "Something went wrong when moving the $t(common.post), please try again."
+    },
+    "delete": {
+      "title": "Are you sure you want to delete this $t(common.post)?",
+      "description": "Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "closeConfirm": {
+      "title": "Discard $t(common.post)",
+      "description": "Are you sure you want to close this $t(common.post)? Unsaved changes will be lost."
+    }
+  },
+  "contributions-view": {
+    "no-data": "No $t(common.memberships) found"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "authentication": {
+    "or": "or continue with",
+    "no-account": "No $t(common.account)?",
+    "have-account": "Have an $t(common.account)?",
+    "sign-in": "Anmelden",
+    "sign-up": "Registrieren",
+    "sign-out": "Abmelden",
+    "log-out": "Ausloggen",
+    "log-in": "Login",
+    "login": "Login",
+    "register": "Register",
+    "validation": {
+      "fill-fields": "Bitte alle Pflichtfelder ausfüllen!"
+    },
+    "social-login": {
+      "connect": "Mit {provider} verknüpfen",
+      "providers": {
+        "linkedin": "LinkedIn",
+        "microsoft": "Microsoft",
+        "github": "Github",
+        "apple": "Apple",
+        "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
+      }
+    },
+    "signUp": {
+      "signUpEmail": "Registrieren Sie sich mit E-Mail",
+      "alreadyHaveAccount": "Already have an $t(common.account)?"
+    }
+  },
+  "kratos": {
+    "errors": {
+      "401": "Unbestätigte",
+      "session": {
+        "default": "Information über gleichzeitige Sessions:"
+      }
+    },
+    "loading-flow": "Ladefluss",
+    "loading-error": "Ladefehler",
+    "messages": {
+      "successfully-recovered-password": "Bitte geben Sie innerhalb der nächsten 15 Minuten ein neues Passwort ein, um Ihr Passwort zurückzusetzen.",
+      "request-recover-password": "<strong>An email containing a recovery link has been sent to the email address you provided.</strong><br/> <br/>If you have not received an email, please check the following:<br/> <br/><li> <strong>Check the spelling</strong> of the email address.</li><li> <strong>Ensure you are using the email address</strong> you registered with.</li><li> <strong>Check your spam or junk folder</strong> in case the email was filtered.</li><li> <strong>If you registered using LinkedIn, Microsoft, or another social login,</strong> password recovery via email will not work. Please use the respective social login option instead.</li><br/><br/><i>Note: This does not confirm that an $t(common.account) is registered with this email.</i>",
+      "verification-flow-expired": "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie einen neuen an, indem Sie Ihre E-Mail erneut senden.",
+      "recovery-flow-expired": "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie einen neuen an, indem Sie Ihre E-Mail erneut senden.",
+      "verification-flow-continue": "Fortfahren",
+      "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
+      "claim-missing": "You haven't verified your Vidua identity. Please verify your identity and try again or try another sign up method.",
+      "pick-password": "Pick a password for your $t(common.account)"
+    },
+    "fields": {
+      "ID": "ID",
+      "Password": "Passwort",
+      "ShowPassword": "Show Password",
+      "HidePassword": "Hide Password",
+      "E-Mail": "E-Mail",
+      "Email": "$t(kratos.fields.E-Mail)",
+      "First Name": "Vorname",
+      "Last Name": "Nachname",
+      "Sign in": "Anmelden",
+      "Sign in with password": "Sign in",
+      "Sign up": "Next",
+      "Submit": "Einreichen",
+      "Verify code": "Code überprüfen",
+      "Resend code": "Code erneut senden",
+      "Save": "Speichern"
+    }
+  }
+}

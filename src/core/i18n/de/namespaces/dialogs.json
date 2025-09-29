@@ -1,0 +1,38 @@
+{
+  "share-dialog": {
+    "title": "Kopiere den Link unten, um {{entity}} zu teilen",
+    "share-this": "Über diesen {{entity}}",
+    "share-this-on": "Teile diese {{entity}} auf {{platform}}",
+    "or": "oder",
+    "url": "URL",
+    "warning": "Bitte beachten Sie, dass Ihre persönliche E-Mail für den Benutzer sichtbar ist, wenn Sie ihm eine Nachricht senden.",
+    "platforms": {
+      "clipboard": {
+        "title": "Link kopieren",
+        "copy": "Kopieren",
+        "copied": "Kopiert!"
+      },
+      "alkemio": {
+        "name": "Alkemio",
+        "title": "Auf Alkemio teilen",
+        "description": "Teilen Sie diese {{entity}} direkt mit anderen Alkemio-Benutzern. Sie können unten nach Alkemio-Benutzern suchen und eine personalisierte Nachricht anhängen.",
+        "default-template": "Hallo!\n\nIch möchte diese {{entity}} mit Ihnen teilen.\n\nSchau doch mal nach!"
+      },
+      "linkedin": {
+        "title": "Teilen Sie es auf Linkedin"
+      },
+      "twitter": {
+        "title": "Teile auf Twitter"
+      },
+      "whatsapp": {
+        "title": "Auf WhatsApp teilen"
+      },
+      "email": {
+        "title": "Per E-Mail teilen"
+      }
+    }
+  },
+  "aboutDialog": {
+    "applyNotSignedInHelperText": "You’ll be redirected to Sign in to Alkemio first"
+  }
+}

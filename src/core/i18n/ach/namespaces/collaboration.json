@@ -1,0 +1,178 @@
+{
+  "callout": {
+    "create": {
+      "createButton": "crwdns37190:0$t(common.post)crwdne37190:0",
+      "createButtonTooltip": "crwdns37192:0$t(common.post)crwdne37192:0",
+      "dialogTitle": "crwdns37194:0$t(common.post)crwdne37194:0",
+      "framingSettings": {
+        "title": "crwdns37196:0crwdne37196:0",
+        "none": {
+          "title": "crwdns37198:0crwdne37198:0",
+          "tooltip": "crwdns37200:0crwdne37200:0"
+        },
+        "whiteboard": {
+          "title": "crwdns40826:0$t(common.Whiteboard)crwdne40826:0",
+          "tooltip": "crwdns40828:0$t(common.whiteboard)crwdnd40828:0$t(common.post)crwdne40828:0",
+          "onlyRealTimeEditorAvailable": "crwdns40830:0$t(common.whiteboard)crwdnd40830:0$t(common.whiteboard)crwdnd40830:0$t(common.whiteboard)crwdne40830:0"
+        },
+        "memo": {
+          "title": "crwdns40832:0$t(common.Memo)crwdne40832:0",
+          "tooltip": "crwdns40834:0$t(common.post)crwdne40834:0"
+        },
+        "link": {
+          "title": "crwdns37412:0crwdne37412:0",
+          "tooltip": "crwdns40836:0$t(common.post)crwdne40836:0"
+        }
+      },
+      "contributionSettings": {
+        "title": "crwdns40838:0$t(common.Response)crwdne40838:0",
+        "comments": {
+          "title": "crwdns40840:0$t(common.Comments)crwdne40840:0",
+          "enabled": "crwdns40842:0$t(common.Comments)crwdne40842:0",
+          "disabled": "crwdns40844:0$t(common.Comments)crwdne40844:0"
+        },
+        "contributionTypes": {
+          "title": "crwdns40846:0$t(common.Collection)crwdne40846:0",
+          "settings": {
+            "title": "crwdns40848:0$t(common.Collection)crwdnd40848:0$t(common.settings)crwdne40848:0",
+            "membersCanRespond": "crwdns40850:0$t(common.Members)crwdnd40850:0$t(common.collection)crwdne40850:0",
+            "adminCanRespond": "crwdns40852:0$t(common.Admins)crwdnd40852:0$t(common.collection)crwdne40852:0",
+            "commentsOnEachResponse": "crwdns40854:0$t(common.comments)crwdnd40854:0$t(common.collection)crwdne40854:0",
+            "confirmBackDialog": {
+              "title": "crwdns37224:0crwdne37224:0",
+              "text": "crwdns37226:0crwdne37226:0",
+              "confirm": "crwdns37228:0crwdne37228:0"
+            }
+          },
+          "common": {
+            "defaultDisplayName": "crwdns37230:0crwdne37230:0"
+          },
+          "none": {
+            "title": "crwdns37232:0crwdne37232:0",
+            "tooltip": "crwdns40856:0$t(common.collection)crwdne40856:0"
+          },
+          "link": {
+            "title": "crwdns37236:0crwdne37236:0",
+            "tooltip": "crwdns37286:0crwdne37286:0",
+            "settings": {
+              "label": "crwdns37240:0crwdne37240:0",
+              "description": "crwdns40858:0$t(common.post)crwdne40858:0",
+              "addButton": "crwdns37244:0crwdne37244:0"
+            }
+          },
+          "post": {
+            "title": "crwdns40860:0$t(common.posts)crwdne40860:0",
+            "tooltip": "crwdns40862:0$t(common.posts)crwdne40862:0",
+            "settings": {
+              "label": "crwdns37250:0crwdne37250:0",
+              "explanation": "crwdns40864:0$t(common.posts)crwdne40864:0",
+              "text": "crwdns37254:0crwdne37254:0"
+            }
+          },
+          "whiteboard": {
+            "title": "crwdns40866:0$t(common.Whiteboards)crwdne40866:0",
+            "tooltip": "crwdns40868:0$t(common.whiteboards)crwdne40868:0",
+            "settings": {
+              "label": "crwdns40870:0$t(common.whiteboard)crwdne40870:0",
+              "explanation": "crwdns40872:0$t(common.whiteboard)crwdne40872:0"
+            }
+          },
+          "tooltipDisabled": "crwdns40874:0$t(common.post)crwdnd40874:0$t(common.collection)crwdne40874:0"
+        }
+      },
+      "importTemplate": {
+        "confirmOverwrite": {
+          "title": "crwdns37326:0crwdne37326:0",
+          "content": "crwdns40876:0$t(common.template)crwdne40876:0"
+        }
+      },
+      "notification": {
+        "label": "crwdns40878:0$t(common.community)crwdne40878:0",
+        "description": "crwdns40880:0$t(common.Members)crwdnd40880:0$t(common.community)crwdnd40880:0$t(common.notification)crwdnd40880:0$t(common.notification)crwdnd40880:0$t(common.settings)crwdne40880:0"
+      },
+      "disabledSubmitTooltip": "crwdns37306:0crwdne37306:0"
+    },
+    "edit": {
+      "dialogTitle": "crwdns37268:0$t(common.post)crwdne37268:0"
+    },
+    "accessForbidden": {
+      "title": "crwdns18330:0crwdne18330:0",
+      "description": "crwdns18332:0crwdne18332:0"
+    },
+    "contributions": "crwdns18336:0{{count}}crwdne18336:0",
+    "contributions_plural": "crwdns18338:0{{count}}crwdne18338:0",
+    "draftNotice": "crwdns40882:0$t(common.admins)crwdne40882:0",
+    "closed": "crwdns18342:0crwdne18342:0",
+    "notMember": "crwdns40884:0$t(common.member)crwdnd40884:0$t(common.space)crwdne40884:0",
+    "delete-confirm-title": "crwdns18346:0crwdne18346:0",
+    "delete-confirm-text": "crwdns40886:0$t(common.posts)crwdnd40886:0$t(common.whiteboards)crwdne40886:0",
+    "state-permission": "crwdns40888:0$t(common.collection)crwdne40888:0",
+    "permission-help-text": "crwdns18352:0crwdne18352:0",
+    "callout-location": "crwdns18354:0crwdne18354:0",
+    "sortContributions": "crwdns18356:0crwdne18356:0",
+    "saveAsTemplate": "crwdns40890:0$t(common.template)crwdne40890:0",
+    "alkemio-link": "crwdns18360:0crwdne18360:0",
+    "link-collection": {
+      "add-link": "crwdns18362:0{{title}}crwdne18362:0",
+      "edit-link": "crwdns18364:0{{title}}crwdne18364:0",
+      "add-another": "crwdns18366:0crwdne18366:0",
+      "delete-link": "crwdns18368:0crwdne18368:0",
+      "save-to-add": "crwdns18370:0crwdne18370:0",
+      "no-links-yet": "crwdns18372:0crwdne18372:0",
+      "delete-confirm-title": "crwdns18374:0crwdne18374:0",
+      "delete-confirm": "crwdns18376:0{{title}}crwdne18376:0",
+      "cancel-confirm-title": "crwdns18378:0crwdne18378:0",
+      "cancel-confirm": "crwdns18380:0crwdne18380:0",
+      "more-links": "crwdns18382:0{{count}}crwdne18382:0",
+      "new-temporary-reference": "crwdns18384:0{{temp}}crwdne18384:0"
+    },
+    "singleWhiteboard": {
+      "clickToSee": "crwdns40892:0$t(common.whiteboard)crwdne40892:0"
+    },
+    "memo": {
+      "clickToSee": "crwdns40894:0$t(common.memo)crwdne40894:0"
+    },
+    "calloutsList": {
+      "title": "crwdns18400:0crwdne18400:0",
+      "filter": {
+        "placeholder": "crwdns37310:0crwdne37310:0"
+      }
+    }
+  },
+  "dashboard-updates-section": {
+    "title": "crwdns41808:0$t(common.leads)crwdnd41808:0{{count}}crwdne41808:0",
+    "dialog-title": "crwdns41810:0$t(common.leads)crwdne41810:0",
+    "no-data": "crwdns20732:0crwdne20732:0"
+  },
+  "dashboard-discussions-section": {
+    "title": "crwdns20734:0{{count}}crwdne20734:0",
+    "no-data-create": "crwdns20736:0crwdne20736:0",
+    "no-data-join": "crwdns41812:0$t(common.community)crwdne41812:0"
+  },
+  "post-edit": {
+    "new": "crwdns41816:0$t(common.post)crwdne41816:0",
+    "edit": "crwdns41818:0$t(common.post)crwdne41818:0",
+    "type": {
+      "title": "crwdns41820:0$t(common.post)crwdne41820:0",
+      "help-text": "crwdns20748:0crwdne20748:0"
+    },
+    "postLocation": {
+      "title": "crwdns41822:0$t(common.post)crwdne41822:0",
+      "label": "crwdns20752:0crwdne20752:0",
+      "reminder": "crwdns41824:0$t(common.posts)crwdnd41824:0$t(common.post)crwdnd41824:0$t(common.post)crwdnd41824:0$t(common.posts)crwdnd41824:0$t(common.space)crwdnd41824:0$t(common.subspace)crwdne41824:0",
+      "success": "crwdns41826:0$t(common.post)crwdne41826:0",
+      "error": "crwdns41828:0$t(common.post)crwdne41828:0"
+    },
+    "delete": {
+      "title": "crwdns41830:0$t(common.post)crwdne41830:0",
+      "description": "crwdns20762:0crwdne20762:0"
+    },
+    "closeConfirm": {
+      "title": "crwdns41832:0$t(common.post)crwdne41832:0",
+      "description": "crwdns41834:0$t(common.post)crwdne41834:0"
+    }
+  },
+  "contributions-view": {
+    "no-data": "crwdns41840:0$t(common.memberships)crwdne41840:0"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "space-creation": {
+    "dialog-title": "crwdns36866:0{{entity}}crwdne36866:0"
+  },
+  "spaces-filter": {
+    "current-filter": "crwdns20786:0crwdne20786:0",
+    "show-all": "crwdns20788:0crwdne20788:0",
+    "other": "crwdns20790:0crwdne20790:0",
+    "config": [
+      {
+        "key": "crwdns20792:0crwdne20792:0",
+        "name": "crwdns20794:0crwdne20794:0",
+        "tags": [
+          "crwdns20796:0crwdne20796:0",
+          "crwdns20798:0crwdne20798:0"
+        ]
+      },
+      {
+        "key": "crwdns20800:0crwdne20800:0",
+        "name": "crwdns20802:0crwdne20802:0",
+        "tags": [
+          "crwdns20804:0crwdne20804:0",
+          "crwdns20806:0crwdne20806:0"
+        ]
+      },
+      {
+        "key": "crwdns20808:0crwdne20808:0",
+        "name": "crwdns20810:0crwdne20810:0",
+        "tags": [
+          "crwdns20812:0crwdne20812:0",
+          "crwdns20814:0crwdne20814:0"
+        ]
+      },
+      {
+        "key": "crwdns20816:0crwdne20816:0",
+        "name": "crwdns20818:0crwdne20818:0",
+        "tags": [
+          "crwdns20820:0crwdne20820:0",
+          "crwdns20822:0crwdne20822:0"
+        ]
+      },
+      {
+        "key": "crwdns20824:0crwdne20824:0",
+        "name": "crwdns20826:0crwdne20826:0",
+        "tags": [
+          "crwdns20828:0crwdne20828:0",
+          "crwdns20830:0crwdne20830:0"
+        ]
+      }
+    ]
+  },
+  "spaceSearch": {
+    "spaceFilterTitle": "crwdns36910:0$t(common.subspaces)crwdnd36910:0$t(common.subspaces)crwdne36910:0"
+  },
+  "spaceDialog": {
+    "about": "crwdns20842:0crwdne20842:0",
+    "outline": "crwdns20844:0crwdne20844:0",
+    "index": "crwdns20846:0crwdne20846:0",
+    "subspaces": "crwdns41846:0$t(common.subspaces)crwdne41846:0",
+    "contributors": "crwdns20850:0crwdne20850:0",
+    "activity": "crwdns20852:0crwdne20852:0",
+    "calendar": "crwdns36916:0crwdne36916:0",
+    "events": "crwdns20854:0crwdne20854:0",
+    "share": "crwdns20856:0crwdne20856:0",
+    "manageFlow": "crwdns20858:0$t(components.innovationFlowSettings.buttonTooltip)crwdne20858:0",
+    "settings": "crwdns41848:0$t(common.Settings)crwdne41848:0",
+    "updates": "crwdns36918:0crwdne36918:0"
+  },
+  "createSpace": {
+    "title": "crwdns40454:0$t(common.space)crwdne40454:0",
+    "addTutorialsLabel": "crwdns40456:0$t(common.space)crwdne40456:0",
+    "terms": {
+      "checkboxLabel": "crwdns40458:0$t(common.space)crwdne40458:0",
+      "dialogTitle": "crwdns40460:0$t(common.space)crwdne40460:0",
+      "dialogContent": "crwdns41850:0$t(common.host)crwdnd41850:0$t(common.space)crwdne41850:0",
+      "fullTermsLink": "crwdns20872:0crwdne20872:0"
+    },
+    "license": {
+      "noPlansError": "crwdns37400:0crwdne37400:0"
+    },
+    "innovationFlowError": "crwdns41852:0$t(common.template)crwdnd41852:0$t(common.spaces)crwdnd41852:0$t(common.template)crwdne41852:0"
+  }
+}

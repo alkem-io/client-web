@@ -1,0 +1,133 @@
+{
+  "virtualContributorSpaceSettings": {
+    "create": {
+      "title": "Create a $t(common.virtualContributor)"
+    },
+    "name": "Naam",
+    "bodyOfKnowledge": "Kennisbank",
+    "placeholder": "This $t(common.virtualContributor) is based on its own curated $t(common.collection) of documents, text, and links.",
+    "infoTextBoK": "Select the $t(common.subspace) you want as a body of knowledge for this $t(common.virtualContributor)",
+    "noSubspacesInfo": "Create a $t(common.subspace) first, and populate it with the relevant information for your $t(common.virtualContributor).",
+    "confirmDeletion": {
+      "description": "Do you want to delete this {{entity}}? This action is irreversible. All $t(common.profile) information will be removed and people will no longer be able to interact with the {{entity}} "
+    },
+    "edit": {
+      "title": "Edit $t(common.virtualContributor) $t(common.Profile)"
+    }
+  },
+  "createVirtualContributorWizard": {
+    "noSpaces": "Couldn't find any $t(common.space) hosted by you, please contact us for support.",
+    "createdVirtualContributor": {
+      "successMessage": "$t(common.virtualContributor) '{{name}}' created successfully"
+    },
+    "autoCreated": {
+      "subSpaceVision": "-",
+      "subSpaceTagline": "A Knowledge Base of a $t(common.virtualContributor)"
+    },
+    "initial": {
+      "title": "Create a $t(common.virtualContributor)",
+      "profileDescription": "Choose a name and avatar now, or personalize your $t(common.profile) later on the VC $t(common.Profile) page.",
+      "description": "A $t(common.virtualContributor) allows you to interact with AI on Alkemio. What do you want to make available through your $t(common.virtualContributor)?",
+      "createSpace": "Geschreven kennis in tekst",
+      "useExistingSpace": "The content of a $t(common.spaceSubspace) on Alkemio",
+      "useExternalAI": "Een externe AI",
+      "ownAI": "AI mogelijk gemaakt door Alkemio",
+      "externalAI": "Externe AI"
+    },
+    "loadingInfo": {
+      "vcSpaceCreation": "A $t(common.space) for interaction with your $t(common.virtualContributor) is being built. This process may take a few moments to complete."
+    },
+    "cancel": {
+      "title": "Discard $t(common.virtualContributor)",
+      "description": "Are you sure you want to stop creating your $t(common.virtualContributor)? Your work will not be saved.",
+      "deleted": "$t(common.virtualContributor) deleted successfully!"
+    },
+    "addContent": {
+      "title": "Voeg kennis toe",
+      "description": "What knowledge do you want your $t(common.virtualContributor) to have? Write it down in $t(common.posts) or upload it in documents.",
+      "descriptionBold": "Je kunt later inhoud bijwerken, toevoegen en verwijderen.",
+      "post": {
+        "title": "$t(common.post) title",
+        "exampleTitle": "Voorbeeld: Over Alkemio",
+        "exampleDescription": "Tip: Creëer een gestructureerde en specifieke tekst, bijvoorbeeld:\n\n<strong>Achtergrond</strong>\n\nAlkemio, opgericht in 2020, is ontstaan uit frustratie door langzame vooruitgang bij COVID-gerelateerde uitdagingen en een erkenning van de talrijke snel veranderende uitdagingen waar we dagelijks mee te maken hebben.\n\n<strong>Beleid</strong>\n\nOm het vertrouwen te behouden en onze langetermijnvisie te realiseren, hebben we Steward Ownership als kerngroepsstructuur aanvaard. Steward Ownership is...\n",
+        "addAnotherPost": "Add $t(common.post)",
+        "tooltip": "More $t(common.posts) can be added in the Body of Knowledge once the VC is created",
+        "initialPosts": "Initial $t(common.posts)",
+        "delete": "Delete $t(common.post)"
+      },
+      "documents": {
+        "tooltip": "Ondersteunde bestandstypen: Tekst op websites, .pdf, .doc(x), .xls(x). Maximale bestandsgrootte: 20mb",
+        "referenceTitle": "Referentie Titel",
+        "referenceUrl": "Url",
+        "addAnother": "Document toevoegen",
+        "remove": "Document verwijderen",
+        "initialDocuments": "Eerste Links en Documenten"
+      },
+      "submitDisabled": "Add at least one $t(common.post) to continue"
+    },
+    "externalAI": {
+      "create": {
+        "title": "Create $t(common.virtualContributor) with an External AI",
+        "subTitle": "Choose a provider and enter your API Key or token to connect your external AI to a $t(common.virtualContributor)",
+        "apiKey": {
+          "label": "API Sleutel",
+          "placeholder": "Bijv. sk-proj-Uq3zU..."
+        },
+        "assistantId": {
+          "label": "Assistent ID",
+          "placeholder": "Bijv. asst_wTLKgGkKryqR5FlEFleLy5Uq"
+        },
+        "provider": {
+          "title": "Provider",
+          "placeholder": "Selecteer een provider uit deze lijst"
+        }
+      },
+      "comingSoon": {
+        "title": "🚀 Binnenkort beschikbaar!",
+        "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
+        "input": {
+          "label": "AI Service",
+          "placeholder": "Bijvoorbeeld de AI die xx gemaakt heeft om xx"
+        }
+      },
+      "contactOptions": {
+        "title": "Mogen we contact met je opnemen als we vragen hebben over de manier waarop je deze AI service wilt gebruiken?",
+        "option1": "Ja",
+        "option2": "Nee"
+      },
+      "success": "Bericht succesvol verzonden!"
+    },
+    "trySection": {
+      "title": "🎉 Probeer het uit!",
+      "subTitle": "To start interacting, simply type @{{vcName}} in a $t(common.comment). Give it a try in the preview below.",
+      "postTitle": "Example $t(common.post)",
+      "postDescription": "At Alkemio, we utilize $t(common.posts) to facilitate collaborative interactions with AI. Unlike private chats, other $t(common.members) within a $t(common.space) can learn from and contribute to these interactions. Similar to mentioning a human contributor, you can use the ‘@’ symbol followed by the $t(common.virtualContributor)’s name.",
+      "continueButton": "Visit $t(common.space)"
+    },
+    "tryInfoSection": {
+      "title": "👍Dat is het!",
+      "description": "Your $t(common.virtualContributor) is ready! To start interacting, invite the $t(common.virtualContributor) to a $t(common.space) and once it’s a $t(common.member), simply type @{{vcName}} in a $t(common.comment).\n\nEnjoy!",
+      "goToProfile": "Visit {{vcName}}'s $t(common.Profile)"
+    },
+    "existingSpace": {
+      "title": "Choose a $t(common.spaceSubspace)",
+      "description": "Which $t(common.space) or $t(common.subspace) do you want to bring to life with the $t(common.virtualContributor)? Below you'll be able to choose from all $t(common.spaces) and $t(common.subspaces) that you are $t(common.host) of.",
+      "label": "$t(common.spaceSubspace)",
+      "noSpaces": "You need to be an $t(common.admin) of a $t(common.space) to proceed with this option. To create a $t(common.virtualContributor) without a $t(common.space), please go back and follow the Written Knowledge flow."
+    },
+    "chooseCommunity": {
+      "title": "Hallo, {{vcName}}!",
+      "description": "Your $t(common.virtualContributor) is ready! To start interacting, your $t(common.virtualContributor) should be added to a $t(common.space). Select one below, or continue without. In that case you will have to add the VC manually through the $t(common.community) tab of a $t(common.space).",
+      "label": "Space",
+      "selectSpacesPlaceholder": "Select a $t(common.space)",
+      "noSpacesPlaceholder": "No $t(common.spaces) available",
+      "cancelAddToCommunity": "Proceed without $t(common.membership)",
+      "addToCommunity": "Add and go to $t(common.space)",
+      "createAndAddToCommunity": "Create, add, and go to $t(common.space)",
+      "confirm": {
+        "title": "Continue without $t(common.space) $t(common.membership)",
+        "description": "A $t(common.virtualContributor) can only interact within a $t(common.space). Are you sure you want to proceed without adding them to a $t(common.space)? You can still invite the $t(common.virtualContributor) later through the $t(common.space)’s $t(common.community) tab."
+      }
+    }
+  }
+}

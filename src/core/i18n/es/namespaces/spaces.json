@@ -1,0 +1,83 @@
+{
+  "space-creation": {
+    "dialog-title": "Create a new {{entity}}"
+  },
+  "spaces-filter": {
+    "current-filter": "Current filter: ",
+    "show-all": "Show All",
+    "other": "Other",
+    "config": [
+      {
+        "key": "energy-transition",
+        "name": "Energy Transition",
+        "tags": [
+          "Energy Transition",
+          "Energietransitie"
+        ]
+      },
+      {
+        "key": "inclusive-society",
+        "name": "Inclusive Society",
+        "tags": [
+          "Inclusive Society",
+          "Inclusieve Samenleving"
+        ]
+      },
+      {
+        "key": "public-services",
+        "name": "Public Services",
+        "tags": [
+          "Public Services",
+          "Publieke Diensten"
+        ]
+      },
+      {
+        "key": "innovation",
+        "name": "Innovation",
+        "tags": [
+          "Innovation",
+          "Innovatie"
+        ]
+      },
+      {
+        "key": "digitalization-of-society",
+        "name": "Digitalization of Society",
+        "tags": [
+          "Digitalization of Society",
+          "Digitalisering"
+        ]
+      }
+    ]
+  },
+  "spaceSearch": {
+    "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
+  },
+  "spaceDialog": {
+    "about": "About",
+    "outline": "Outline",
+    "index": "Index",
+    "subspaces": "$t(common.subspaces)",
+    "contributors": "Contributors",
+    "activity": "Activity",
+    "calendar": "Calendar",
+    "events": "Events",
+    "share": "Share",
+    "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
+    "settings": "$t(common.Settings)",
+    "updates": "Updates"
+  },
+  "createSpace": {
+    "title": "Create a $t(common.space)",
+    "addTutorialsLabel": "Add Tutorials to this $t(common.space)",
+    "terms": {
+      "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a $t(common.space).",
+      "dialogTitle": "Terms and Conditions for creating a $t(common.space)",
+      "dialogContent": "I understand that as a $t(common.host), I am responsible for all content within the $t(common.space).",
+      "fullTermsLink": "Click here to read more about the Terms & Conditions."
+    },
+    "license": {
+      "noPlansError": "No Available Plans. Please, contact support."
+    },
+    "innovationFlowError": "This $t(common.template) cannot be used for root $t(common.spaces). Please, select another $t(common.template)."
+  }
+}

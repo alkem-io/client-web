@@ -1,0 +1,889 @@
+{
+  "tooltips": {
+    "click-more-info": "Hier tippen für weitere Informationen",
+    "click-delete": "Klick zum Löschen"
+  },
+  "components": {
+    "calloutTemplateDialog": {
+      "typeReadonly": "Once a $t(common.template) is created, its type cannot be changed. If you need a different type, please create a new $t(common.template)."
+    },
+    "shareSettings": {
+      "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users at once. If you do not want others to edit, change the $t(common.settings) below.",
+      "disabled": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
+      "ownedBy": {
+        "title": "This {{elementName}} is owned by:"
+      },
+      "editableBy": {
+        "title": "This {{elementName}} can be edited by:",
+        "options": {
+          "CONTRIBUTORS": "Everyone who can contribute in this $t(common.spaceSubspace)",
+          "ADMINS": "The owner and the $t(common.admins) and $t(common.leads) of this $t(common.spaceSubspace)",
+          "OWNER": "The owner of this {{elementName}}"
+        }
+      }
+    },
+    "navigation": {
+      "exitMenu": "Exit menu",
+      "skipMenu": "Skip main menu"
+    },
+    "search": {
+      "searchScope": {
+        "full": "Search In:",
+        "short": "in:"
+      },
+      "scope": {
+        "platform": "Entire platform",
+        "space": "{{displayName}}"
+      }
+    },
+    "searchDialog": {
+      "headerTitle": "Search results",
+      "spacesAndSubspaces": "$t(common.spaces) & $t(common.subspaces)",
+      "collaborationTools": "Collaboration Tools"
+    },
+    "searchScope": {
+      "currentScope": "Search results for:",
+      "alternativeScope": "Didn’t find what you were looking for? Try searching in:",
+      "platform": "Everywhere on Alkemio"
+    },
+    "poweredBy": {
+      "label": "Powered by",
+      "aria-label": "Powered by Alkemio"
+    },
+    "spaceUnauthorizedDialog": {
+      "message": "This is a private $t(common.community) and most of it’s content is restricted to $t(common.members) only. If you want to join, <apply>click here to apply.</apply>"
+    },
+    "spacePageBannerCard": {
+      "parentSpace": "Part of:"
+    },
+    "spaceMetrics": {
+      "title": "{{space}} statistics"
+    },
+    "dashboardNavigation": {
+      "help": "Hierarchy of this $t(common.space).",
+      "privateSubspace": "This is a private $t(common.subspace). Visit the $t(common.subspace) and apply to become a $t(common.member) to view it's content.",
+      "showAll": "Show all",
+      "expand": "Show full hierarchy",
+      "collapse": "Limit to this $t(common.subspace)"
+    },
+    "dashboardRecentContributions": {
+      "title": "Contributions",
+      "modes": {
+        "switchMode": "Switch View",
+        "recentActivity": "Most Recent",
+        "topCallouts": "Most Active"
+      }
+    },
+    "innovationFlowVisualizer": {
+      "currentState": "Current Phase",
+      "currentStateName": "Current Phase: {{state}}"
+    },
+    "innovationFlowSettings": {
+      "title": "Innovation Flow Settings",
+      "buttonTooltip": "Manage Innovation Flow",
+      "editProfileDialog": {
+        "title": "Edit Details: Innovation Flow"
+      },
+      "stateEditor": {
+        "activeState": "Active Phase",
+        "setActiveState": "Set as Active Phase",
+        "editState": "Edit Details",
+        "deleteState": "Delete",
+        "addState": "Add Phase",
+        "invalidChars": "A phase name cannot contain special characters.",
+        "noRepeatedStates": "A phase with the same name already exists.",
+        "createDialog": {
+          "title": "Create Flow Phase"
+        },
+        "editDialog": {
+          "title": "Edit Details: Flow Phase"
+        },
+        "deleteDialog": {
+          "title": "Delete Phase?",
+          "text": "This action cannot be undone.",
+          "activeStateWarning": "This phase is currently the active one and cannot be deleted. You can always rename it or select another one as the active."
+        },
+        "selectDifferentFlow": {
+          "title": "Find $t(common.space) $t(common.template)",
+          "confirmationDialog": {
+            "title": "Be careful when changing the flow!",
+            "description": "- By changing the $t(common.innovation-flow), **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the first phase of the new flow."
+          },
+          "importCalloutsDialog": {
+            "title": "Apply New $t(common.template)",
+            "description": "You are about to apply a new $t(common.template). This action will <b>permanently delete</b> your current $t(common.innovation-flow). However, the existing collaboration tools linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "yes": "Add Collaboration Tools from $t(common.template)",
+            "yesDescription": "This will include the new collaboration tools from the $t(common.template) in addition to your existing ones.",
+            "no": "Only Change the $t(common.innovation-flow)",
+            "noDescription": "This will replace only the $t(common.innovation-flow), keeping your current collaboration tools as they are.",
+            "apply": "Apply new $t(common.template)"
+          }
+        }
+      }
+    },
+    "confirmation-dialog": {
+      "delete-comment": {
+        "confirmation-title": "Deleting $t(common.comment)",
+        "confirmation-text": "Are you sure you want to delete this $t(common.comment)?"
+      }
+    },
+    "wysiwyg-editor": {
+      "generic": {
+        "add": "$t(common.add)",
+        "cancel": "$t(buttons.cancel)"
+      },
+      "toolbar": {
+        "blocktype.h1": "Überschrift 1",
+        "blocktype.h2": "Überschrift 2",
+        "blocktype.h3": "Überschrift 3",
+        "blocktype.h4": "Überschrift 4",
+        "blocktype.h5": "Überschrift 5",
+        "blocktype.h6": "Überschrift 6",
+        "blocktype.blockquote": "Zitat",
+        "blocktype.code": "Code",
+        "blocktype.blocktype": "Blocktyp",
+        "blocktype.normal": "Normal",
+        "emoji.emoji": "Emoticons",
+        "history.history": "Geschichte",
+        "history.undo": "Rückgängig",
+        "history.redo": "Wiederholen",
+        "image.image": "Visuelle",
+        "image.fileUpload": "Datei hochladen",
+        "image.byURL": "URL Einfügen",
+        "image.dropFileText": "Zum Hochladen hier klicken oder Dateien hierher ziehen",
+        "inline.bold": "Fett",
+        "inline.italic": "Italic",
+        "inline.strikethrough": "Durchgestrichen",
+        "inline.monospace": "Nichtproportional",
+        "link.linkTitle": "Titel des Links",
+        "link.linkTarget": "URL",
+        "link.linkTargetOption": "Link in neuem Fenster öffnen",
+        "link.link": "Link",
+        "link.unlink": "Link entfernen",
+        "list.list": "Liste",
+        "list.unordered": "Aufzählung",
+        "list.ordered": "Geordnete Liste",
+        "list.indent": "Einrücken",
+        "list.outdent": "Einzug entfernen",
+        "remove.remove": "Entfernen",
+        "embed.video": "Embed Video or other Media",
+        "horizontal.line": "Insert horizontal line"
+      },
+      "image": {
+        "dialogHeader": "Bild einfügen"
+      },
+      "link": {
+        "dialogHeader": "Auswahl in Hyperlink umwandeln"
+      },
+      "validation": {
+        "maxLength": "Der resultierende Text geht über die vom Server akzeptierte Größe hinaus."
+      },
+      "embed": {
+        "iframeAria": "{{title}}",
+        "dialogTitle": "Embed Video or other Media",
+        "embedCodeTextAreaAriaLabel": "Empty textarea",
+        "pasteEmbedCode": "Paste the embed/iframe code here",
+        "invalidOrUnsupportedEmbed": "Unfortunately, this code is either not valid or not supported. Please check the code carefully or contact support@alkem.io"
+      }
+    },
+    "top-callouts": {
+      "title": "Top Activity"
+    },
+    "associated-organization": {
+      "confirmation-dialog": {
+        "title": "Organisation verlassen",
+        "text": "Are you sure you want to leave? You might not be able to see the content or make contributions once you're not a $t(common.member) anymore."
+      }
+    },
+    "error-display": {
+      "title": "Uuups!",
+      "went-wrong": "Es sieht aus als wäre etwas schief gelaufen.",
+      "contact-support-sentence": "Wenn dieses Problem weiterhin bestehen bleibt, kontaktiere bitte den Support.",
+      "buttons": {
+        "reload": "Erneut laden",
+        "take-me-home": "Zurück zur Hauptseite",
+        "contact-support": "Kontaktiere den Support"
+      }
+    },
+    "urlResolver": {
+      "errors": {
+        "invalidUrl": "Invalid URL",
+        "invalidUrlOrigin": "Invalid URL origin",
+        "invalidUrlFormat": "Invalid URL format"
+      }
+    },
+    "search-cards": {
+      "matched-terms": "Übereinstimmende Begriffe"
+    },
+    "activity-log-section": {
+      "title": "Bester Beitrag",
+      "activity-sign-in-error-message": "Um die letzten Beiträge zu sehen, melden Sie sich bitte an.",
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a $t(common.member) of this {{spaceLevel}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a $t(common.member) of this {{spaceLevel}}."
+    },
+    "activityLogView": {
+      "description": {
+        "CALLOUT_PUBLISHED": "{{subject}}",
+        "SUBSPACE_CREATED": "{{subject}}",
+        "DISCUSSION_COMMENT": "{{subject}}",
+        "MEMBER_JOINED": "{{subject}} joined",
+        "CALLOUT_POST_COMMENT": "{{subject}}",
+        "CALLOUT_POST_CREATED": "{{subject}}",
+        "CALLOUT_LINK_CREATED": "{{subject}}",
+        "UPDATE_SENT": "{{subject}}",
+        "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
+        "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
+        "CALENDAR_EVENT_CREATED": "{{subject}}"
+      },
+      "detailedDescription": {
+        "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
+      }
+    },
+    "innovationFlow": {
+      "currentState": "Current Phase:",
+      "changeState": "Change Phase to:",
+      "error": "The definition was not able to be visualized"
+    },
+    "activity-tooltip": {
+      "headline": "Alkemio wächst! Insgesamt ist die Plattform jetzt Gastgeber:"
+    },
+    "context-section": {
+      "create-post": "Successfully created the $t(common.post)",
+      "give-feedback": "Feedback geben"
+    },
+    "callout-publish": {
+      "notify-members": "Notify $t(common.members) of the $t(common.community)"
+    },
+    "callout-creation": {
+      "title": "What do you want to ask your $t(common.community)?",
+      "titleWithType": "Erschaffe %{type}",
+      "post-type-label": "$t(common.post) label",
+      "custom-template": "Custom $t(common.template)",
+      "info-step": {
+        "title": "Details",
+        "description": "Beschreibung",
+        "type-comments": "$t(common.Comments)",
+        "type-comments-help": "Select $t(common.Comments) when you want people to answer in a simple text format, like a message board.",
+        "type-posts": "$t(common.posts)",
+        "type-posts-help": "Select $t(common.posts) when you want people to answer in a card format.",
+        "type-whiteboards": "$t(common.Whiteboards)",
+        "type-whiteboards-help": "Select ‘$t(common.Whiteboards)’ when you want people to answer on a visual $t(common.whiteboard), allowing them to draw and use text.",
+        "unique-title-validation-text": "Dieser Titel wird bereits für $tverwendet (common.callout)"
+      },
+      "framing": {
+        "whiteboard": {
+          "title": "$t(common.Whiteboard):",
+          "editDialogTitle": "Edit $t(common.whiteboard)"
+        },
+        "link": {
+          "name": "Call To Action",
+          "url": "URL"
+        },
+        "memo": {
+          "name": "Content",
+          "placeholder": "(Optional) Add some content to the $t(common.memo)"
+        }
+      },
+      "template-step": {
+        "title": "$t(common.templates)",
+        "post-template-label": "Standardtext",
+        "post-template-text": "Add default text to the $t(common.posts), for example questions that you like people to answer.",
+        "post-template-default-description": "Standard Beschreibung",
+        "whiteboard-template-label": "$t(common.template):",
+        "whiteboard-empty-template": "Empty $t(common.template)",
+        "whiteboard-reset-template": "Reset Empty $t(common.template)",
+        "no-post-template-selected": "Please select a $t(common.enums.templateType.WHITEBOARD)",
+        "no-whiteboard-template-selected": "Please select a $t(common.enums.templateType.WHITEBOARD)"
+      },
+      "create-step": {
+        "title": "Erstellen",
+        "post-template-label": "Choose $t(common.post) $t(common.template)"
+      },
+      "closeDialog": {
+        "title": "Discard $t(common.post)",
+        "text": "Are you sure you want to close this $t(common.post)? Unsaved changes will be lost."
+      }
+    },
+    "calloutEdit": {
+      "titleWithType": "%{type} bearbeiten"
+    },
+    "post-creation": {
+      "title": "Senden Sie Ihre Antwort an {{calloutDisplayName}}",
+      "type-step": {
+        "title": "Der Typ des zusätzlichen Kontexts, der hinzugefügt werden soll.",
+        "error": "Ein Fehler ist beim Laden der Regeln aufgetreten",
+        "label": "$t(common.post) label",
+        "type-help-text-short": "Please choose the $t(common.post) label that best matches the context you wish to share."
+      },
+      "info-step": {
+        "title": "Details",
+        "description": "Bitte teilen Sie diese Angaben",
+        "description-placeholder": "A description for this $t(common.post)",
+        "tags-help-text": "Add free form tags to help quickly convey the key information about the $t(common.post). Good tags also help make the $t(common.post) easier to find in searches.",
+        "name-help-text": "A descriptive name for this $t(common.post).",
+        "name-id-help-text": "Name ID-Hilfetext",
+        "unique-name-validation-text": "${path} is already used in another $t(common.post)"
+      },
+      "create-step": {
+        "title": "Erstellen",
+        "type": "Typ",
+        "name": "Namen",
+        "description": "Beschreibung",
+        "links": "Relevante Links",
+        "explanation": "By completing this step the $t(common.post) will be created and you will have the option to add visuals."
+      },
+      "visuals-step": {
+        "title": "Visuelle",
+        "headline": "Congratulations, you have now successfully created an $t(common.post)!",
+        "explanation": "To further personalize your $t(common.post), please consider adding visuals such as a Banner to the $t(common.post).",
+        "bottom-note": "You will still have the possibility to change these visuals under the $t(common.settings) tab as well as adding attachments and a Banner for the $t(common.dashboard) card."
+      }
+    },
+    "visual-upload": {
+      "loading": "Bildladeverhalten",
+      "success": "Foto wurde erfolgreich hochgeladen",
+      "error": "Error occurred while uploading the image",
+      "upload-hover": "Bild hochladen",
+      "no-data": "Noch nicht festgelegt",
+      "entityCreatedErrorUploading": "The {{entity}} was created, but there was an error uploading some images. Please try again."
+    },
+    "tags-component": {
+      "more": "{{count}} mehr",
+      "no-tags": "Keine Tags verfügbar."
+    },
+    "remove-modal": {
+      "title": "Entfernen bestätigen"
+    },
+    "application-dialog": {
+      "title": "Anwendungsdetails",
+      "created": "Erstellt am {{ date}}",
+      "updated": "Zuletzt aktualisiert am {{date}}"
+    },
+    "credential-share-request-dialog": {
+      "title": "Teile deine verifizierten Anmeldeinformationen",
+      "content": "Bitte wählen Sie die Zugangsdaten aus, die Sie auf Ihrer Alkemio gehosteten Brieftasche speichern möchten."
+    },
+    "alkemio-user-credential-offer-dialog": {
+      "title": "Alkemio-Benutzer",
+      "content": "Diese Berechtigung erlaubt es dem Inhaber nachzuweisen, dass er ein verifizierter Alkemio-Benutzer ist."
+    },
+    "alkemio-community-member-credential-offer-dialog": {
+      "title": "Alkemio $t(common.community) $t(common.Member)",
+      "content": "This credential allows the holder to prove that they are a $t(common.member) of the specified $t(common.community) within Alkemio."
+    },
+    "edit-members": {
+      "no-available-members": "No users available to add; please check $t(common.members) of containing $t(common.community)",
+      "user-not-found": "Benutzer wurde nicht gefunden!"
+    },
+    "application-button": {
+      "apply-parent": "Zum übergeordneten Ordner",
+      "apply-disabled": "Anwendung nicht installiert",
+      "apply-not-signed": "In Cyclos anmelden",
+      "apply-pending": "Antrag ausstehend",
+      "join": "Beitreten",
+      "acceptInvitation": {
+        "full": "You are invited to become a $t(common.member) of this $t(common.space), please click here to accept",
+        "short": "Accept Invitation"
+      },
+      "joinSpaceFirst": {
+        "full": "To become a $t(common.member) of this $t(common.subspace), first become a $t(common.member) of the parent $t(common.space)",
+        "short": "Please join parent $t(common.space) first"
+      },
+      "joinSubspaceFirst": {
+        "full": "To become a $t(common.member) of this $t(common.subspace), first become a $t(common.member) of the parent $t(common.subspace)",
+        "short": "Please join parent $t(common.subspace) first"
+      },
+      "contactOpportunityLeads": {
+        "full": "Send a message to $t(common.subspace) $t(common.leads) to become a $t(common.member)",
+        "short": "Send a message to $t(common.subspace) $t(common.leads) to become a $t(common.member)"
+      },
+      "goToSpace": "Go to $t(common.space)",
+      "goToSubspace": "Go to $t(common.subspace)",
+      "parent-pending": "Ausstehende Bewerbung als Nachhilfelehrer",
+      "applyTo": "Anwenden auf",
+      "extendedMessage": "{{join}} our {{space}} and start making change!",
+      "dialog-apply-parent": {
+        "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
+        "body": "To join <strong title='subspace name'>'{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> $t(common.space) first. Please add the $t(common.subspace) you want to join in the $t(common.spaces)' application form."
+      },
+      "dialog-parent-app-pending": {
+        "title": "Ausstehende Bewerbung als Nachhilfelehrer!",
+        "body": "To join <strong title='subspace name'>{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> $t(common.space) first. There is already an application pending for that <strong title='Space name'>'{{spaceName}}'</strong>, so you can also submit a parallel application for <strong title='subspace name'>'{{subspaceName}}'</strong>."
+      },
+      "dialogApplicationSuccessful": {
+        "join": {
+          "body": "Thanks for joining this $t(common.community)!"
+        },
+        "apply": {
+          "body": "Thanks for applying to our $t(common.community)!"
+        }
+      },
+      "dialog-join-parent": {
+        "title": "Join <strong title='Parent community name'>{{parentCommunityName}}</strong>",
+        "body": "You can join this $t(common.community) without applying for a $t(common.membership), but first you have to join <strong title='Parent community name'>{{parentCommunityName}}</strong> and accept the terms and conditions there."
+      }
+    },
+    "organization-verified": {
+      "verified": "Verifiziert",
+      "not-verified": ""
+    },
+    "card-filter": {
+      "title": "Filter"
+    },
+    "backdrop": {
+      "private": "Interested in reading more? Please sign in or join if you are not yet a $t(common.member) of this {{blockName}}!",
+      "authentication": "Bitte melden Sie sich an, um Details über die {{blockName}} zu sehen.",
+      "login": "Bitte melden Sie sich an, um {{blockName}} zu sehen"
+    },
+    "referenceSegment": {
+      "title": "Referenzen",
+      "addReference": "Add Reference",
+      "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the $t(common.members) of this $t(common.space) to be able to access the files, attach it to a $t(common.post) or a $t(common.collection) of links on one of the member pages.",
+      "missing-references": "No references yet",
+      "tooltips": {
+        "add-reference": "Referenz hinzufügen",
+        "remove-reference": "Referenz entfernen"
+      },
+      "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team. <terms>Click here</terms> for the terms and conditions.",
+      "plaintext-helper-text": "Click here for the terms and conditions. You can upload Word, PDF, Excel, or images up to 15 MB",
+      "newReference": "New reference",
+      "newReference_plural": "New reference ({{count}})",
+      "newLink": "New link",
+      "newLink_plural": "New link ({{count}})"
+    },
+    "file-upload": {
+      "uploadFile": "Upload file",
+      "file-size-error": "Die Dateigröße überschreitet die maximale Größe von {0} MB",
+      "file-upload-success": "Datei erfolgreich hochgeladen"
+    },
+    "editSpaceForm": {
+      "host": {
+        "title": "Selbst hosten",
+        "select": "Select a $t(common.host)"
+      },
+      "read-access": "Allow read access for non-space $t(common.members) to $t(common.subspaces)",
+      "about": "Details",
+      "visibility": "This $t(common.space) is currently in <strong>{{visibility}}</strong> mode",
+      "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
+    },
+    "deleteEntity": {
+      "title": "Danger Zone",
+      "description": "Click here to delete this {{entity}}. Be careful, this action cannot be undone.",
+      "confirmDialog": {
+        "title": "Confirm {{entity}} Deletion",
+        "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. <strong>You can only delete a {{entity}} if there are no underlying $t(common.subspaces) associated with it.</strong> If there are any $t(common.subspaces) within this page, please delete them first (you can do so from the {{entity}} $t(common.settings) > $t(common.subspaces) page).",
+        "descriptionShort": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible.",
+        "descriptionShortWithName": "Are you certain you want to delete <strong>{{entity}}</strong>? Keep in mind that this action is irreversible.",
+        "checkbox": "Please check this box if you are certain about deleting this {{entity}}",
+        "confirm": "Yes, delete"
+      }
+    },
+    "nameSegment": {
+      "name": "Namen",
+      "nameID": {
+        "title": "Name ID",
+        "placeholder": "Eindeutige Textbezeichnung, die für URL-Pfade verwendet wird. Hinweis: kann nach der Erstellung nicht geändert werden."
+      }
+    },
+    "visualSegment": {
+      "title": "Anzeige",
+      "avatar": "Avatar",
+      "banner": "Banner",
+      "background": "Hintergrund"
+    },
+    "profileSegment": {
+      "avatar": {
+        "name": "Avatar",
+        "placeholder": "Avatar-URL eingeben..."
+      },
+      "tagline": {
+        "name": "Überschrift",
+        "placeholder": "Titel eingeben"
+      },
+      "description": {
+        "name": "Beschreibung",
+        "placeholder": "Enter a description"
+      },
+      "location": {
+        "title": "Standort",
+        "country": {
+          "name": "Land",
+          "placeholder": "Wählen Sie ein Land aus"
+        },
+        "city": {
+          "name": "City",
+          "placeholder": "Stadt Name"
+        },
+        "addressLine1": {
+          "name": "Adresszeile 1",
+          "placeholder": "Adresszeile 1"
+        },
+        "addressLine2": {
+          "name": "Adresszeile 2",
+          "placeholder": "Adresszeile 2"
+        },
+        "stateOrProvince": {
+          "name": "Bundesland oder Staat",
+          "placeholder": "Bundesland oder Staat"
+        },
+        "postalCode": {
+          "name": "Postleitzahl",
+          "placeholder": "Postleitzahl"
+        },
+        "noLocation": "No location specified"
+      },
+      "socialLinks": {
+        "github": "GitHub",
+        "linkedin": "LinkedIn",
+        "bsky": "BlueSky"
+      }
+    },
+    "organizationSegment": {
+      "contactEmail": {
+        "name": "Kontakt E-Mail",
+        "placeholder": "Geben Sie Ihre E-Mailadresse ein"
+      },
+      "domain": {
+        "name": "Bedeutungsfeld",
+        "placeholder": "Pod-Adresse eingeben"
+      },
+      "legalEntityName": {
+        "name": "Rechtsform",
+        "placeholder": "Enter the legal name of this $t(common.organization)"
+      },
+      "website": {
+        "name": "Webseite",
+        "placeholder": "Website betreten"
+      },
+      "verified": {
+        "name": "Bestätigter Status",
+        "placeholder": "Bestätigter Status"
+      }
+    },
+    "card": {
+      "privacy": {
+        "member": "$t(common.Member)",
+        "private": "Private {{entity}}",
+        "public": "Public {{entity}}"
+      },
+      "parentSpace": "in: {{space}}"
+    },
+    "errorBlock": {
+      "message": "Sorry, an error occurred while loading {{blockName}}."
+    },
+    "loading": {
+      "message": "Lade {{blockName}}..."
+    },
+    "groupForm": {
+      "title": "Gruppe bearbeiten"
+    },
+    "searchableList": {
+      "placeholder": "Suche",
+      "load-more": "Mehr laden",
+      "info": "Zeige {{count}} von {{total}}"
+    },
+    "filter": {
+      "placeholder": "Suche"
+    },
+    "user-selector": {
+      "tooltip": "Start typing to find a space"
+    },
+    "communityUpdates": {
+      "title": "Let your $t(common.community) know what's next",
+      "updatesTitle": "Updates veröffentlichen",
+      "msg-not-empty": "Die Nachricht darf nicht leer sein",
+      "actions": {
+        "add": {
+          "buttonTitle": "Ein Update posten"
+        },
+        "remove": {
+          "confirmationTitle": "Update wird entfernt",
+          "confirmationContent": "Removing a $t(common.community) update is an irreversible. Are you sure you want to continue?",
+          "confirmationButtonTitle": "Ja"
+        }
+      }
+    },
+    "profile": {
+      "fields": {
+        "bio": {
+          "title": "Bio"
+        },
+        "description": {
+          "title": "Beschreibung"
+        },
+        "tagline": {
+          "title": "Überschrift"
+        },
+        "phone": {
+          "title": "Telefon"
+        },
+        "telephone": {
+          "title": "Projektbezogene Rufnummer"
+        },
+        "mobile": {
+          "title": "Mobil"
+        },
+        "keywords": {
+          "title": "Schlüsselwörter"
+        },
+        "skills": {
+          "title": "Fertigkeiten"
+        },
+        "capabilities": {
+          "title": "Kapazitäten"
+        },
+        "links": {
+          "title": "Links"
+        },
+        "location": {
+          "title": "Standort"
+        },
+        "website": {
+          "title": "Webseite"
+        },
+        "references": {
+          "title": "References"
+        },
+        "engines": {
+          "external": "OpenAI Generic",
+          "externalAssistant": "OpenAI Assistant",
+          "externalVCDescription": "This $t(common.virtualContributor) utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible."
+        },
+        "bodyOfKnowledge": {
+          "title": "Body of Knowledge",
+          "privateBokTooltip": "This Body of Knowledge is private",
+          "spaceBokDescription": "Answers {{vcName}} gives are based on the body of knowledge coming from:"
+        }
+      }
+    },
+    "associates": {
+      "name": "Associates",
+      "title": "Zugeordnete ({{count}})",
+      "help": "Users associated with this $t(common.organization)"
+    },
+    "contributions": {
+      "title": "Konten",
+      "leadSpacesTitle": "$t(common.spaceSubspaces) we lead",
+      "allMembershipsTitle": "$t(common.spaceSubspaces) we're in",
+      "help": "The $t(common.spaces) and $t(common.subspaces) that this $t(common.organization) is contributing to"
+    },
+    "discussions-list": {
+      "name": "Diskussionen - {{community}}",
+      "title": "Diskussionen ({{count}})",
+      "posted": "{{name}} on {{- date}} - {{count}} $t(common.comment)",
+      "posted_plural": "{{name}} on {{- date}} - {{count}} $t(common.comments)"
+    },
+    "discussion": {
+      "initiate": "Diskussion initiieren",
+      "posted": "{{name}} initiated on {{- date}} - {{count}} $t(common.comment)",
+      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} $t(common.comments)",
+      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} })",
+      "comment": "{{count}} $t(common.Comment)",
+      "comment_plural": "{{count}} $t(common.Comments)",
+      "contributed": "{{count}} Person hat beigetragen",
+      "contributed_plural": "{{count}} Personen haben beigetragen",
+      "cant-post": "Sie können auf diese Diskussion nicht antworten",
+      "delete-discussion": "Diskussion löschen?",
+      "delete-comment": "Delete $t(common.comment)?"
+    },
+    "post-comment": {
+      "fields": {
+        "description": {
+          "title": "Eine Diskussion kommentieren",
+          "placeholder": "Fügen Sie hier weitere Informationen zur Diskussion hinzu"
+        }
+      },
+      "buttons": {
+        "post": "Post $t(common.comment)"
+      },
+      "tooltip": {
+        "markdown-help": "You can add formatting to your $t(common.comment),\nfor example:\nBold text: **bold**\nItalic text: *italic*\nHeader: ##Title\nLink: [text](url)",
+        "mentions": "Geben Sie ein paar Zeichen ein, um relevante Benutzer zu finden"
+      },
+      "vcInteractions": {
+        "disclaimer": "Create a new $t(common.comment) to interact with another VC.",
+        "help": "You can only interact with one $t(common.virtualContributor) per thread ($t(common.comment) + 'sub’comments). If you’d like to engage with another VC, start a new thread by creating a $t(common.comment) in the bottom input field."
+      }
+    },
+    "discussionForm": {
+      "title": {
+        "title": "Title",
+        "placeholder": "Discussion title"
+      },
+      "category": {
+        "title": "Category"
+      },
+      "description": {
+        "title": "Further information",
+        "placeholder": "Add further information on the discussion here"
+      }
+    },
+    "updateDiscussion": {
+      "buttons": {
+        "post": "Update discussion"
+      }
+    },
+    "newDiscussion": {
+      "buttons": {
+        "post": "Create discussion"
+      }
+    },
+    "members-view": {
+      "title": "Active $t(common.community) $t(common.members)"
+    },
+    "community-section": {
+      "discussions": {
+        "no-data-create": "Keine Diskussionen. Erstellen Sie eine neue Diskussion",
+        "no-data-join": "No discussions. Please join the $t(common.community) to create a discussion",
+        "explore": "Entdecken Sie weitere Diskussionen"
+      }
+    },
+    "inAppNotifications": {
+      "action": {
+        "read": "Mark as read",
+        "unread": "Mark as unread",
+        "delete": "Delete $t(common.Notification)"
+      },
+      "type": {
+        "USER_MENTIONED": {
+          "subject": "{{triggeredByName}} mentioned you in a $t(common.comment) on {{calloutName}}:",
+          "description": ""
+        },
+        "USER_SPACE_COMMUNITY_JOINED": {
+          "subject": "{{spaceName}} - Welcome to the $t(common.community)!",
+          "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various $t(common.posts) and $t(common.whiteboards), further deepen your knowledge about this topic, and connect with other Contributors."
+        },
+        "USER_COMMENT_REPLY": {
+          "subject": "{{triggeredByName}} replied to your comment {{parentName}}",
+          "description": ""
+        },
+        "USER_SPACE_COMMUNITY_INVITATION": {
+          "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
+          "description": "{{spaceName}} - {{spaceDescription}}"
+        },
+        "USER_SPACE_COMMUNITY_APPLICATION": {
+          "subject": "You have successfully applied to join {{spaceName}}",
+          "description": ""
+        },
+        "USER_MESSAGE_SENDER": {
+          "subject": "You sent a DM to {{receiverName}}",
+          "description": ""
+        },
+        "USER_MESSAGE": {
+          "subject": "{{triggeredByName}} sent you a DM",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
+          "subject": "{{spaceName}} - New $t(common.post) is published \"{{calloutName}}\", have a look!",
+          "description": "{{triggeredByName}} published a new $t(common.post) in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}."
+        },
+        "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
+          "subject": "\"{{memberName}}\" joined {{spaceName}}",
+          "description": "{{memberName}} has joined {{spaceName}}, of which you are an $t(common.admin)."
+        },
+        "SPACE_COMMUNICATION_UPDATE": {
+          "subject": "{{triggeredByName}} shared an update in {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_CONTRIBUTION": {
+          "subject": "{{triggeredByName}} created a contribution in \"{{calloutName}}\"",
+          "description": "In <b>{{spaceName}}</b>, of which you are a member."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_CONTRIBUTION": {
+          "subject": "{{triggeredByName}} created a contribution in \"{{calloutName}}\"",
+          "description": "In <b>{{spaceName}}</b>, of which you are an admin."
+        },
+        "SPACE_ADMIN_COMMUNITY_APPLICATION": {
+          "subject": "{{triggeredByName}} applied to join {{spaceName}}",
+          "description": "Review the application in space settings"
+        },
+        "SPACE_LEAD_COMMUNICATION_MESSAGE": {
+          "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
+          "description": ""
+        },
+        "SPACE_COMMUNICATION_MESSAGE_SENDER": {
+          "subject": "You sent a message to the leads of {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_COMMENT": {
+          "subject": "{{triggeredByName}} commented on {{calloutName}} in {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT": {
+          "subject": "{{triggeredByName}} commented on {{contributionName}} (contribution) in {{spaceName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_MENTIONED": {
+          "subject": "{{triggeredByName}} mentioned your organization in {{spaceName}}",
+          "description": "{{message}}"
+        },
+        "ORGANIZATION_ADMIN_MESSAGE": {
+          "subject": "{{triggeredByName}} sent a message to your organization {{organizationName}}",
+          "description": "See the message in you email inbox"
+        },
+        "ORGANIZATION_MESSAGE_SENDER": {
+          "subject": "You sent a message to {{organizationName}}",
+          "description": ""
+        },
+        "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an admin",
+          "description": ""
+        },
+        "PLATFORM_FORUM_DISCUSSION_CREATED": {
+          "subject": "{{triggeredByName}} started a new discussion in the forum {{category}}",
+          "description": "{{discussionName}}"
+        },
+        "PLATFORM_FORUM_DISCUSSION_COMMENT": {
+          "subject": "{{triggeredByName}} commented on your forum post in {{discussionName}}",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_USER_SIGNED_UP": {
+          "subject": "{{triggeredByName}} has signed up to the platform",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
+          "subject": "{{userName}} ({{userEmail}}) has been removed from the platform",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_USER_PROFILE_CREATED": {
+          "subject": "{{triggeredByName}} has signed up to the platform",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
+          "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_SPACE_CREATED": {
+          "subject": "{{triggeredByName}} has created a new Space",
+          "description": "{{spaceName}}"
+        }
+      },
+      "emptyInbox": "No pending $t(common.notifications)",
+      "markAllAsRead": "Mark all as read"
+    },
+    "spaceWelcomeDialog": {
+      "title": "🎉 Your $t(common.space) is Ready!",
+      "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and $t(common.settings).<br>📝 <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>🤝 <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>📚 <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
+      "button": "Get Started"
+    }
+  },
+  "visuals-alt-text": {
+    "alkemio-banner-alt": "Alkemio platform banner",
+    "banner": {
+      "page": {
+        "text": "Seitenbanner: {{altText}}"
+      },
+      "card": {
+        "text": "Seitenbanner: {{altText}}"
+      },
+      "whiteboard": {
+        "text": "Card banner showing a preview of {{displayName}} $t(common.whiteboard)"
+      }
+    },
+    "avatar": {
+      "contributor": {
+        "text": "{{displayName}}'s Avatar: {{altText}}"
+      }
+    }
+  }
+}

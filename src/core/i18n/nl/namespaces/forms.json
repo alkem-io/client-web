@@ -1,0 +1,21 @@
+{
+  "forms": {
+    "validations": {
+      "field": "Veld",
+      "fieldNotPresent": "{{fieldName}} is niet aanwezig",
+      "required": "Dit veld is vereist!",
+      "requiredField": "{{field}} is vereist!",
+      "minLength": "{{field}} moet tenminste {{min}} karakters lang zijn",
+      "maxLength": "Limiet van {{max}} karakters overschreden",
+      "alphaNumeric": "{{field}} kan alleen bestaan uit kleine letters, nummers of koppeltekens",
+      "nonBlank": "{{field}} must not consist of just $t(common.spaces)",
+      "atLeastOne": "Selecteer ten minste één item.",
+      "reservedTopLevelRoute": "Deze URL is gereserveerd voor het platform. Kies alstublieft een andere.",
+      "invalidUrl": "Ongeldige URL",
+      "invalidEmail": "Ongeldig e-mailadres",
+      "duplicateEmail": "E-mailadres is al ingevoerd",
+      "elementMustBeValidUrl": "{{name}} moet een geldige URL zijn",
+      "acceptedTerms": "Je moet de algemene voorwaarden accepteren"
+    }
+  }
+}

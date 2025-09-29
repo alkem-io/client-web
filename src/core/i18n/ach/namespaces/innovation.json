@@ -1,0 +1,23 @@
+{
+  "innovation-templates": {
+    "states": {
+      "title": "crwdns18678:0crwdne18678:0",
+      "placeholder": "crwdns40958:0$t(common.innovation-flow)crwdne40958:0"
+    }
+  },
+  "innovationHub": {
+    "selectedSpaces": "crwdns41178:0{{space}}crwdnd41178:0$t(common.spaces)crwdne41178:0",
+    "foreignSpace": "crwdns36878:0{{spaceDisplayName}}crwdne36878:0",
+    "outsideOfSpace": {
+      "forum": "crwdns41180:0$t(common.forum)crwdnd41180:0{{space}}crwdnd41180:0$t(common.space)crwdne41180:0",
+      "subspaces": "crwdns41182:0$t(common.subspaces)crwdnd41182:0{{space}}crwdne41182:0",
+      "contributors": "crwdns41184:0$t(common.organizations)crwdnd41184:0$t(common.spaces)crwdnd41184:0{{space}}crwdne41184:0"
+    },
+    "goToMainPage": "crwdns41186:0$t(common.spaces)crwdne41186:0",
+    "remove": "crwdns19546:0crwdne19546:0"
+  },
+  "innovation-edit": {
+    "new": "crwdns41836:0$t(common.innovation-flow)crwdne41836:0",
+    "edit": "crwdns41838:0$t(common.innovation-flow)crwdne41838:0"
+  }
+}

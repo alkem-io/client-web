@@ -1,0 +1,69 @@
+{
+  "authentication": {
+    "or": "crwdns37066:0crwdne37066:0",
+    "no-account": "crwdns40522:0$t(common.account)crwdne40522:0",
+    "have-account": "crwdns40524:0$t(common.account)crwdne40524:0",
+    "sign-in": "crwdns17644:0crwdne17644:0",
+    "sign-up": "crwdns17646:0crwdne17646:0",
+    "sign-out": "crwdns17648:0crwdne17648:0",
+    "log-out": "crwdns17650:0crwdne17650:0",
+    "log-in": "crwdns17652:0crwdne17652:0",
+    "login": "crwdns17654:0crwdne17654:0",
+    "register": "crwdns17656:0crwdne17656:0",
+    "validation": {
+      "fill-fields": "crwdns17658:0crwdne17658:0"
+    },
+    "social-login": {
+      "connect": "crwdns17660:0{{provider}}crwdne17660:0",
+      "providers": {
+        "linkedin": "crwdns17662:0crwdne17662:0",
+        "microsoft": "crwdns17664:0crwdne17664:0",
+        "github": "crwdns37072:0crwdne37072:0",
+        "apple": "crwdns37074:0crwdne37074:0",
+        "vidua": "crwdns37076:0crwdne37076:0"
+      }
+    },
+    "signUp": {
+      "signUpEmail": "crwdns17666:0crwdne17666:0",
+      "alreadyHaveAccount": "crwdns40526:0$t(common.account)crwdne40526:0"
+    }
+  },
+  "kratos": {
+    "errors": {
+      "401": "crwdns20664:0crwdne20664:0",
+      "session": {
+        "default": "crwdns20666:0crwdne20666:0"
+      }
+    },
+    "loading-flow": "crwdns20668:0crwdne20668:0",
+    "loading-error": "crwdns20670:0crwdne20670:0",
+    "messages": {
+      "successfully-recovered-password": "crwdns20672:0crwdne20672:0",
+      "request-recover-password": "crwdns42390:0$t(common.account)crwdne42390:0",
+      "verification-flow-expired": "crwdns20674:0crwdne20674:0",
+      "recovery-flow-expired": "crwdns20676:0crwdne20676:0",
+      "verification-flow-continue": "crwdns20678:0crwdne20678:0",
+      "login-flow-account-exists": "crwdns41802:0$t(common.account)crwdne41802:0",
+      "invalid-credentials": "crwdns42464:0crwdne42464:0",
+      "claim-missing": "crwdns37156:0crwdne37156:0",
+      "pick-password": "crwdns41804:0$t(common.account)crwdne41804:0"
+    },
+    "fields": {
+      "ID": "crwdns20684:0crwdne20684:0",
+      "Password": "crwdns20686:0crwdne20686:0",
+      "ShowPassword": "crwdns20688:0crwdne20688:0",
+      "HidePassword": "crwdns20690:0crwdne20690:0",
+      "E-Mail": "crwdns20692:0crwdne20692:0",
+      "Email": "crwdns20694:0$t(kratos.fields.E-Mail)crwdne20694:0",
+      "First Name": "crwdns20696:0crwdne20696:0",
+      "Last Name": "crwdns20698:0crwdne20698:0",
+      "Sign in": "crwdns20700:0crwdne20700:0",
+      "Sign in with password": "crwdns37088:0crwdne37088:0",
+      "Sign up": "crwdns37090:0crwdne37090:0",
+      "Submit": "crwdns20704:0crwdne20704:0",
+      "Verify code": "crwdns20706:0crwdne20706:0",
+      "Resend code": "crwdns20708:0crwdne20708:0",
+      "Save": "crwdns20710:0crwdne20710:0"
+    }
+  }
+}

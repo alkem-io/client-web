@@ -1,0 +1,25 @@
+{
+  "calendar": {
+    "add-event": "Voeg evenement toe",
+    "edit-event": "Evenement wijzigen",
+    "delete-event": "Verwijder evenement",
+    "delete-confirmation": "Weet je zeker dat je het evenement '{{title}}' wilt verwijderen uit de {{entity}}?",
+    "event": {
+      "type": "Type evenement",
+      "multiple-days": "{days} dagen",
+      "whole-day": "Hele dag",
+      "visibleOnParentCalendar": "Ook zichtbaar op de bovenliggende $t(common.space) kalender"
+    },
+    "validation": {
+      "durationMinutes": {
+        "positive": "Evenement eindtijd kan niet voor de starttijd van evenement zijn"
+      }
+    },
+    "no-data": "Geen evenementen gevonden",
+    "no-upcoming-events": "Er zijn momenteel geen evenementen om weer te geven",
+    "past-events": "Afgelopen evenementen",
+    "show-calendar": "Toon Kalender",
+    "defaultEventDescription": "",
+    "adminsOnly": "Aangezien er geen evenementen zijn, is dit blok alleen zichtbaar voor $t(common.admins) en $t(common.leads)"
+  }
+}

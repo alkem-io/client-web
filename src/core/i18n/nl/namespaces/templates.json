@@ -1,0 +1,157 @@
+{
+  "templateDialog": {
+    "profile": {
+      "title": "$t(common.template) description",
+      "help": "This description will be visible to anyone browsing through the $t(common.templates). However, it is not part of the actual {{entityTypeName}} content.",
+      "fields": {
+        "displayName": "$t(common.template) title",
+        "description": "$t(common.template) description",
+        "tags": "$t(common.template) tags"
+      }
+    }
+  },
+  "templateLibrary": {
+    "calloutTemplates": {
+      "name": "$t(common.enums.templateType.CALLOUT)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.CALLOUT_plural)",
+      "type": "Oproep type",
+      "description": "Omschrijving"
+    },
+    "postTemplates": {
+      "name": "$t(common.enums.templateType.POST)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.POST_plural)",
+      "defaultDescription": "Default $t(common.post) content"
+    },
+    "whiteboardTemplates": {
+      "name": "$t(common.enums.templateType.WHITEBOARD)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.WHITEBOARD_plural)",
+      "editTemplateButton": "Edit $t(common.template)",
+      "editDialogTitle": "Edit $t(common.enums.templateType.WHITEBOARD)",
+      "errorImporting": "Error importing $t(common.enums.templateType.WHITEBOARD)"
+    },
+    "spaceTemplates": {
+      "name": "$t(common.enums.templateType.COLLABORATION)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
+      "findByUrl": {
+        "title": "$t(common.subspace) URL",
+        "description": "Enter the URL of the $t(common.space) or $t(common.subspace) you want to copy as a $t(common.template).",
+        "use": "Use this $t(common.space)",
+        "urlRequired": "Please paste here the URL of the $t(common.space) you want to copy as a $t(common.template).",
+        "noRights": "You need $t(common.admin) rights in the $t(common.space) you want to copy as a $t(common.template).",
+        "invalidUrl": "The url is not recognized as a $t(common.space) URL.",
+        "spaceNotFoundError": "$t(common.space) not found",
+        "selectAnother": "Update Collaboration from another $t(common.space)"
+      },
+      "preview": {
+        "info": "Always included: About information & $t(common.settings)"
+      },
+      "recursive": "Also include $t(common.subspaces) of the selected $t(common.space) in the $t(common.template)",
+      "includesSubspaces": "This $t(common.template) also includes these $t(common.subspaces):"
+    },
+    "communityGuidelinesTemplates": {
+      "name": "$t(common.enums.templateType.COMMUNITY_GUIDELINES)",
+      "title": "$t(common.templateLibrary):  $t(common.enums.templateType.COMMUNITY_GUIDELINES_plural)",
+      "content": "Richtlijnen",
+      "guidelinesTitle": "Titel",
+      "guidelinesDescription": "Richtlijnen"
+    },
+    "platformTemplates": "Platform $t(common.templates)",
+    "loadPlatformTemplates": "Or click here to browse through all platform $t(common.templates)",
+    "platformUseDisabled": "Please note that you can only use the $t(common.templates) that are selected for this $t(common.community) (see above). If you would like to use any of the $t(common.templates) below, please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add these in the $t(common.template) section of the $t(common.space) Settings.",
+    "disabledTemplateInfo": "Please note that you can only use the $t(common.templates) that are selected for this $t(common.community), which this is not. If you would like to use this $t(common.template), please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add it in the $t(common.template) section of the $t(common.space) $t(common.settings).",
+    "importTemplateDialog": {
+      "confirmClose": {
+        "title": "Discard $t(common.template)",
+        "description": "Are you sure you want to close this $t(common.template)? Unsaved changes will be lost."
+      }
+    },
+    "notifications": {
+      "templateSaved": "$t(common.template) saved successfully"
+    }
+  },
+  "plansTable": {
+    "title": "Kies een abonnement",
+    "subtitle": "To create a safe environment to train your $t(common.virtualContributor), you first need to create a $t(common.space). Choose a plan for this $t(common.space) below.",
+    "seeMore": "Klik hier voor de volledige beschrijving van elk abonnement",
+    "seeMoreUrl": "https://welcome.alkem.io/pricing/",
+    "pricingPeriods": {
+      "monthly": "/Maand",
+      "lifetime": "/Altijd",
+      "custom": "Aangepaste prijs"
+    },
+    "buttonCaptions": {
+      "choose": "Kies {{planName}}",
+      "startTrial": "Start je gratis proefperiode van 30 dagen",
+      "contactSupport": "Neem contact op"
+    },
+    "plans": [
+      {
+        "name": "SPACE_LICENSE_FREE",
+        "displayName": "Gratis",
+        "priceDescription": "Voor Change-Makers die Alkemio Verkennen",
+        "features": [
+          "Up to 10 $t(common.members)",
+          "Various tools, including standard $t(common.whiteboards)"
+        ],
+        "disclaimer": "Free $t(common.spaces) are limited to 1 $t(common.space) per user",
+        "disabledDisclaimer": "Each user can have 1 free $t(common.space). It seems like you’ve already used yours!"
+      },
+      {
+        "name": "SPACE_LICENSE_PLUS",
+        "displayName": "Plus",
+        "priceDescription": "Voor het Startende Communities, Coalities...",
+        "features": [
+          "Up to 100 $t(common.members)",
+          "Realtime, multi-user $t(common.whiteboards)",
+          "Create your $t(common.virtualContributor)"
+        ],
+        "disclaimer": "",
+        "disabledDisclaimer": ""
+      },
+      {
+        "name": "SPACE_LICENSE_PREMIUM",
+        "displayName": "Premium",
+        "priceDescription": "For Established Communities, $t(common.organizations), coalitions...",
+        "features": [
+          "Up to 250 $t(common.members)",
+          "Realtime, multi-user $t(common.whiteboards)",
+          "Create your $t(common.virtualContributor)",
+          "$t(common.customHomepage) (with Support)"
+        ],
+        "disclaimer": "",
+        "disabledDisclaimer": ""
+      },
+      {
+        "name": "SPACE_LICENSE_ENTERPRISE",
+        "displayName": "Zakelijk",
+        "priceDescription": "Je aangepaste abonnement",
+        "features": [
+          "Up to 250 $t(common.members)",
+          "Realtime, multi-user $t(common.whiteboards)",
+          "Create your $t(common.virtualContributor)",
+          "$t(common.customHomepage) (with Support)",
+          "1 jaar succesprogramma"
+        ],
+        "disclaimer": "",
+        "disabledDisclaimer": ""
+      }
+    ],
+    "confirmationDialogs": {
+      "freeTrial": {
+        "title": "Gratis proefperiode",
+        "content": "Try our free 30-day trial of the Plus license to unlock exciting features like creating $t(common.virtualContributors) and multi-user $t(common.whiteboard) editing. No payment details required! After the trial, choose between upgrading to Plus or continuing with the Free license.<br/><br/>Questions? [Contact our support team anytime](https://welcome.alkem.io/contact).",
+        "buttons": {
+          "continue": "Continue with Free $t(common.space)",
+          "startPlus": "Start Plus Proefperiode"
+        }
+      },
+      "getStarted": {
+        "title": "Ga direct aan de slag!",
+        "content": "Since we don’t want to hold you up any longer, you receive a 30-day free trial. After these 30 days we will ask you to set up your $t(common.account) details in order to continue using your $t(common.space). If you have any questions, feel free to contact support here.",
+        "buttons": {
+          "continue": "Volgende"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "templateDialog": {
+    "profile": {
+      "title": "crwdns40912:0$t(common.template)crwdne40912:0",
+      "help": "crwdns40914:0$t(common.templates)crwdnd40914:0{{entityTypeName}}crwdne40914:0",
+      "fields": {
+        "displayName": "crwdns40916:0$t(common.template)crwdne40916:0",
+        "description": "crwdns40918:0$t(common.template)crwdne40918:0",
+        "tags": "crwdns40920:0$t(common.template)crwdne40920:0"
+      }
+    }
+  },
+  "templateLibrary": {
+    "calloutTemplates": {
+      "name": "crwdns18614:0$t(common.enums.templateType.CALLOUT)crwdne18614:0",
+      "title": "crwdns18616:0$t(common.templateLibrary)crwdnd18616:0$t(common.enums.templateType.CALLOUT_plural)crwdne18616:0",
+      "type": "crwdns18618:0crwdne18618:0",
+      "description": "crwdns18620:0crwdne18620:0"
+    },
+    "postTemplates": {
+      "name": "crwdns18622:0$t(common.enums.templateType.POST)crwdne18622:0",
+      "title": "crwdns18624:0$t(common.templateLibrary)crwdnd18624:0$t(common.enums.templateType.POST_plural)crwdne18624:0",
+      "defaultDescription": "crwdns40922:0$t(common.post)crwdne40922:0"
+    },
+    "whiteboardTemplates": {
+      "name": "crwdns18628:0$t(common.enums.templateType.WHITEBOARD)crwdne18628:0",
+      "title": "crwdns18630:0$t(common.templateLibrary)crwdnd18630:0$t(common.enums.templateType.WHITEBOARD_plural)crwdne18630:0",
+      "editTemplateButton": "crwdns40924:0$t(common.template)crwdne40924:0",
+      "editDialogTitle": "crwdns40926:0$t(common.enums.templateType.WHITEBOARD)crwdne40926:0",
+      "errorImporting": "crwdns40928:0$t(common.enums.templateType.WHITEBOARD)crwdne40928:0"
+    },
+    "spaceTemplates": {
+      "name": "crwdns37124:0$t(common.enums.templateType.COLLABORATION)crwdne37124:0",
+      "title": "crwdns37126:0$t(common.templateLibrary)crwdnd37126:0$t(common.enums.templateType.COLLABORATION_plural)crwdne37126:0",
+      "findByUrl": {
+        "title": "crwdns40930:0$t(common.subspace)crwdne40930:0",
+        "description": "crwdns40932:0$t(common.space)crwdnd40932:0$t(common.subspace)crwdnd40932:0$t(common.template)crwdne40932:0",
+        "use": "crwdns40248:0$t(common.space)crwdne40248:0",
+        "urlRequired": "crwdns40934:0$t(common.space)crwdnd40934:0$t(common.template)crwdne40934:0",
+        "noRights": "crwdns40936:0$t(common.admin)crwdnd40936:0$t(common.space)crwdnd40936:0$t(common.template)crwdne40936:0",
+        "invalidUrl": "crwdns40254:0$t(common.space)crwdne40254:0",
+        "spaceNotFoundError": "crwdns40256:0$t(common.space)crwdne40256:0",
+        "selectAnother": "crwdns40258:0$t(common.space)crwdne40258:0"
+      },
+      "preview": {
+        "info": "crwdns40938:0$t(common.settings)crwdne40938:0"
+      },
+      "recursive": "crwdns40940:0$t(common.subspaces)crwdnd40940:0$t(common.space)crwdnd40940:0$t(common.template)crwdne40940:0",
+      "includesSubspaces": "crwdns40942:0$t(common.template)crwdnd40942:0$t(common.subspaces)crwdne40942:0"
+    },
+    "communityGuidelinesTemplates": {
+      "name": "crwdns18654:0$t(common.enums.templateType.COMMUNITY_GUIDELINES)crwdne18654:0",
+      "title": "crwdns18656:0$t(common.templateLibrary)crwdnd18656:0$t(common.enums.templateType.COMMUNITY_GUIDELINES_plural)crwdne18656:0",
+      "content": "crwdns18658:0crwdne18658:0",
+      "guidelinesTitle": "crwdns18660:0crwdne18660:0",
+      "guidelinesDescription": "crwdns18662:0crwdne18662:0"
+    },
+    "platformTemplates": "crwdns40944:0$t(common.templates)crwdne40944:0",
+    "loadPlatformTemplates": "crwdns40946:0$t(common.templates)crwdne40946:0",
+    "platformUseDisabled": "crwdns40948:0$t(common.templates)crwdnd40948:0$t(common.community)crwdnd40948:0$t(common.templates)crwdnd40948:0$t(common.admin)crwdnd40948:0$t(common.lead)crwdnd40948:0$t(common.space)crwdnd40948:0$t(common.template)crwdnd40948:0$t(common.space)crwdne40948:0",
+    "disabledTemplateInfo": "crwdns40950:0$t(common.templates)crwdnd40950:0$t(common.community)crwdnd40950:0$t(common.template)crwdnd40950:0$t(common.admin)crwdnd40950:0$t(common.lead)crwdnd40950:0$t(common.space)crwdnd40950:0$t(common.template)crwdnd40950:0$t(common.space)crwdnd40950:0$t(common.settings)crwdne40950:0",
+    "importTemplateDialog": {
+      "confirmClose": {
+        "title": "crwdns40952:0$t(common.template)crwdne40952:0",
+        "description": "crwdns40954:0$t(common.template)crwdne40954:0"
+      }
+    },
+    "notifications": {
+      "templateSaved": "crwdns40956:0$t(common.template)crwdne40956:0"
+    }
+  },
+  "plansTable": {
+    "title": "crwdns20874:0crwdne20874:0",
+    "subtitle": "crwdns42392:0$t(common.virtualContributor)crwdnd42392:0$t(common.space)crwdnd42392:0$t(common.space)crwdne42392:0",
+    "seeMore": "crwdns20878:0crwdne20878:0",
+    "seeMoreUrl": "crwdns20880:0crwdne20880:0",
+    "pricingPeriods": {
+      "monthly": "crwdns20882:0crwdne20882:0",
+      "lifetime": "crwdns20884:0crwdne20884:0",
+      "custom": "crwdns20886:0crwdne20886:0"
+    },
+    "buttonCaptions": {
+      "choose": "crwdns20888:0{{planName}}crwdne20888:0",
+      "startTrial": "crwdns20890:0crwdne20890:0",
+      "contactSupport": "crwdns20892:0crwdne20892:0"
+    },
+    "plans": [
+      {
+        "name": "crwdns20894:0crwdne20894:0",
+        "displayName": "crwdns20896:0crwdne20896:0",
+        "priceDescription": "crwdns20898:0crwdne20898:0",
+        "features": [
+          "crwdns41856:0$t(common.members)crwdne41856:0",
+          "crwdns41858:0$t(common.whiteboards)crwdne41858:0"
+        ],
+        "disclaimer": "crwdns41860:0$t(common.spaces)crwdnd41860:0$t(common.space)crwdne41860:0",
+        "disabledDisclaimer": "crwdns40468:0$t(common.space)crwdne40468:0"
+      },
+      {
+        "name": "crwdns20908:0crwdne20908:0",
+        "displayName": "crwdns20910:0crwdne20910:0",
+        "priceDescription": "crwdns20912:0crwdne20912:0",
+        "features": [
+          "crwdns41862:0$t(common.members)crwdne41862:0",
+          "crwdns41864:0$t(common.whiteboards)crwdne41864:0",
+          "crwdns42394:0$t(common.virtualContributor)crwdne42394:0"
+        ],
+        "disclaimer": "crwdns20920:0crwdne20920:0",
+        "disabledDisclaimer": "crwdns20922:0crwdne20922:0"
+      },
+      {
+        "name": "crwdns20924:0crwdne20924:0",
+        "displayName": "crwdns20926:0crwdne20926:0",
+        "priceDescription": "crwdns41868:0$t(common.organizations)crwdne41868:0",
+        "features": [
+          "crwdns41870:0$t(common.members)crwdne41870:0",
+          "crwdns41872:0$t(common.whiteboards)crwdne41872:0",
+          "crwdns42396:0$t(common.virtualContributor)crwdne42396:0",
+          "crwdns41876:0$t(common.customHomepage)crwdne41876:0"
+        ],
+        "disclaimer": "crwdns20938:0crwdne20938:0",
+        "disabledDisclaimer": "crwdns20940:0crwdne20940:0"
+      },
+      {
+        "name": "crwdns20942:0crwdne20942:0",
+        "displayName": "crwdns20944:0crwdne20944:0",
+        "priceDescription": "crwdns20946:0crwdne20946:0",
+        "features": [
+          "crwdns41878:0$t(common.members)crwdne41878:0",
+          "crwdns41880:0$t(common.whiteboards)crwdne41880:0",
+          "crwdns42398:0$t(common.virtualContributor)crwdne42398:0",
+          "crwdns41884:0$t(common.customHomepage)crwdne41884:0",
+          "crwdns20956:0crwdne20956:0"
+        ],
+        "disclaimer": "crwdns20958:0crwdne20958:0",
+        "disabledDisclaimer": "crwdns20960:0crwdne20960:0"
+      }
+    ],
+    "confirmationDialogs": {
+      "freeTrial": {
+        "title": "crwdns20962:0crwdne20962:0",
+        "content": "crwdns41886:0$t(common.virtualContributors)crwdnd41886:0$t(common.whiteboard)crwdnd41886:0https://welcome.alkem.io/contactcrwdne41886:0",
+        "buttons": {
+          "continue": "crwdns40470:0$t(common.space)crwdne40470:0",
+          "startPlus": "crwdns20968:0crwdne20968:0"
+        }
+      },
+      "getStarted": {
+        "title": "crwdns20970:0crwdne20970:0",
+        "content": "crwdns41888:0$t(common.account)crwdnd41888:0$t(common.space)crwdne41888:0",
+        "buttons": {
+          "continue": "crwdns20974:0crwdne20974:0"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "share-dialog": {
+    "title": "crwdns18426:0{{entity}}crwdne18426:0",
+    "share-this": "crwdns18428:0{{entity}}crwdne18428:0",
+    "share-this-on": "crwdns18430:0{{entity}}crwdnd18430:0{{platform}}crwdne18430:0",
+    "or": "crwdns18432:0crwdne18432:0",
+    "url": "crwdns18434:0crwdne18434:0",
+    "warning": "crwdns18436:0crwdne18436:0",
+    "platforms": {
+      "clipboard": {
+        "title": "crwdns18438:0crwdne18438:0",
+        "copy": "crwdns18440:0crwdne18440:0",
+        "copied": "crwdns18442:0crwdne18442:0"
+      },
+      "alkemio": {
+        "name": "crwdns18444:0crwdne18444:0",
+        "title": "crwdns18446:0crwdne18446:0",
+        "description": "crwdns18448:0{{entity}}crwdne18448:0",
+        "default-template": "crwdns18450:0{{entity}}crwdne18450:0"
+      },
+      "linkedin": {
+        "title": "crwdns18452:0crwdne18452:0"
+      },
+      "twitter": {
+        "title": "crwdns18454:0crwdne18454:0"
+      },
+      "whatsapp": {
+        "title": "crwdns18456:0crwdne18456:0"
+      },
+      "email": {
+        "title": "crwdns18458:0crwdne18458:0"
+      }
+    }
+  },
+  "aboutDialog": {
+    "applyNotSignedInHelperText": "crwdns36841:0crwdne36841:0"
+  }
+}

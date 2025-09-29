@@ -1,0 +1,23 @@
+{
+  "innovation-templates": {
+    "states": {
+      "title": "Definição",
+      "placeholder": "Here you can paste the description of the phases to use for this $t(common.innovation-flow)"
+    }
+  },
+  "innovationHub": {
+    "selectedSpaces": "{{space}} $t(common.spaces)",
+    "foreignSpace": "This {{spaceDisplayName}} is not in the selection of current starting page. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
+    "outsideOfSpace": {
+      "forum": "This is the general Alkemio $t(common.forum), outside of the <strong>{{space}}</strong> $t(common.space). You are very much invited to explore and contribute!",
+      "subspaces": "Here you can find all $t(common.subspaces) that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
+      "contributors": "Here you can find all people and $t(common.organizations) that are contributing on Alkemio, also in $t(common.spaces) that are not selected by <strong>{{space}}. Enjoy connecting!</strong>"
+    },
+    "goToMainPage": "Interested in collaborating in other $t(common.spaces)? Click here to see them all on the universal Alkemio homepage.",
+    "remove": "Remover do hub"
+  },
+  "innovation-edit": {
+    "new": "New $t(common.innovation-flow)",
+    "edit": "Edit $t(common.innovation-flow)"
+  }
+}

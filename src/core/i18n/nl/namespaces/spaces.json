@@ -1,0 +1,83 @@
+{
+  "space-creation": {
+    "dialog-title": "Maak nieuwe {{entity}} aan"
+  },
+  "spaces-filter": {
+    "current-filter": "Huidige filter: ",
+    "show-all": "Alles weergeven",
+    "other": "Anders",
+    "config": [
+      {
+        "key": "energie-transitie",
+        "name": "Energie Transitie",
+        "tags": [
+          "Energie Transitie",
+          "Energietransitie"
+        ]
+      },
+      {
+        "key": "inclusieve-samenleving",
+        "name": "Inclusieve Samenleving",
+        "tags": [
+          "Inclusieve Samenleving",
+          "Inclusieve Samenleving"
+        ]
+      },
+      {
+        "key": "publieke-dienstverlening",
+        "name": "Publieke Dienstverlening",
+        "tags": [
+          "Publieke Dienstverlening",
+          "Publieke Dienstverlening"
+        ]
+      },
+      {
+        "key": "innovatie",
+        "name": "Innovatie",
+        "tags": [
+          "Innovatie",
+          "Innovatie"
+        ]
+      },
+      {
+        "key": "digitalisering",
+        "name": "Digitalisering",
+        "tags": [
+          "Digitalisering",
+          "Digitalisering"
+        ]
+      }
+    ]
+  },
+  "spaceSearch": {
+    "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
+  },
+  "spaceDialog": {
+    "about": "Over",
+    "outline": "Overzicht",
+    "index": "Index",
+    "subspaces": "$t(common.subspaces)",
+    "contributors": "Bijdragers",
+    "activity": "Activiteit",
+    "calendar": "Kalender",
+    "events": "Evenementen",
+    "share": "Delen",
+    "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
+    "settings": "$t(common.Settings)",
+    "updates": "Updates"
+  },
+  "createSpace": {
+    "title": "Create a $t(common.space)",
+    "addTutorialsLabel": "Add Tutorials to this $t(common.space)",
+    "terms": {
+      "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a $t(common.space).",
+      "dialogTitle": "Terms and Conditions for creating a $t(common.space)",
+      "dialogContent": "I understand that as a $t(common.host), I am responsible for all content within the $t(common.space).",
+      "fullTermsLink": "Klik hier om meer te lezen over de Algemene Voorwaarden."
+    },
+    "license": {
+      "noPlansError": "Geen beschikbare paketten. Neem contact op met support."
+    },
+    "innovationFlowError": "This $t(common.template) cannot be used for root $t(common.spaces). Please, select another $t(common.template)."
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "chatbot": {
+    "title": "Ajuda",
+    "intro": "Olá, esse é o chat automatizado de orientação da Alkemio. Ele pode fornecer respostas com base na documentação da Alkemio. O que você está procurando?",
+    "infoDialog": {
+      "title": "Central de Ajuda da Alkemio",
+      "content": "Use the Alkemio guidance chat to get answers to your questions about the platform. This __AI-powered personal assistant__ allows you to interact with content from the Alkemio Help Center. It will also provide the sources of the answers.\n\nWant to know more? Click [here](https://alkem.io/vc/guidance) to visit its $t(common.profile)!"
+    },
+    "feedback": {
+      "message": "A resposta é relevante?",
+      "tooltip": "Esta mensagem foi gerada automaticamente com base na documentação da Alkemio. Sua opinião é altamente relevante para nós!"
+    },
+    "menu": {
+      "clear": "Novo Chat",
+      "close": "Fechar janela"
+    },
+    "confirmNewChat": {
+      "title": "Começar um novo chat?",
+      "description": "Começar um novo chat vai apagar o seu histórico de chat atual. Tem certeza de que quer avançar?",
+      "confirm": "Sim, começar um novo chat"
+    },
+    "references": [
+      {
+        "icon": "GradeOutlined",
+        "uri": "https://alkem.io/docs/getting-started/first-steps",
+        "title": "Novo usuário? Visite nossas páginas de introdução!"
+      },
+      {
+        "icon": "NotListedLocationOutlined",
+        "uri": "https://alkem.io/docs",
+        "title": "Ainda tem dúvidas? Leia mais aqui"
+      },
+      {
+        "icon": "EmailOutlined",
+        "uri": "https://alkem.io/docs/support",
+        "title": "Entre em contato com a equipe da Alkemio"
+      }
+    ]
+  }
+}
