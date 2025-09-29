@@ -78,19 +78,14 @@
   },
   "pnpm": {
     "overrides": {
-      "@emotion/styled": "^11.0.0",
+      "@emotion/styled": "^11.13.5",
       "unified": "^11.0.5",
       "mdast-util-gfm-autolink-literal": "2.0.0",
       "glob-parent": "^5.1.2",
       "got": "11.8.5",
       "nth-check": "^2.0.1",
       "chokidar": "^3.5.3"
-    },
-    "ignoredBuiltDependencies": [
-      "esbuild",
-      "husky",
-      "msw"
-    ]
+    }
   },
   "dependencies": {
     "@alkemio/excalidraw": "0.18.0-864353b-alkemio-5",
@@ -104,6 +99,7 @@
     "@hocuspocus/provider": "^2.15.3",
     "@mui/icons-material": "7.1.0",
     "@mui/material": "7.1.0",
+    "@mui/system": "^5.15.14",
     "@mui/x-data-grid": "7.28.3",
     "@mui/x-date-pickers": "^8.3.0",
     "@mui/types": "^7.4.6",
@@ -191,7 +187,8 @@
     "prosemirror-state": "^1.4.3",
     "markdown-it": "^14.1.0",
     "hast-util-sanitize": "^5.0.2",
-    "hast-util-to-mdast": "^10.1.2"
+    "hast-util-to-mdast": "^10.1.2",
+    "mdast-util-to-hast": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.26.0",
