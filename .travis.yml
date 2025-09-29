@@ -5,11 +5,13 @@ node_js:
 cache:
   directories:
     - node_modules
+    - .pnpm-store
 before_install:
   - npm i -g npm@10.7.0
+  - npm install -g pnpm@10.17.1
 install:
-  - npm install
+  - pnpm install
 script:
-  - npm run-script lint:prod
-  - npm run-script test:upload
-  - CI=false npm run-script build
+  - npm run lint:prod
+  - npm run test:upload
+  - CI=false npm run build
