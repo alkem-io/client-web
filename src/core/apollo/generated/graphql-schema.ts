@@ -4046,6 +4046,8 @@ export type Mutation = {
   adminCommunicationUpdateRoomState: Scalars['Boolean']['output'];
   /** Delete a Kratos identity by ID. */
   adminIdentityDeleteKratosIdentity: Scalars['Boolean']['output'];
+  /** Prunes InAppNotifications according to the platform defined criteria. The effects of the pruning are returned. */
+  adminInAppNotificationsPrune: PruneInAppNotificationAdminResult;
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String']['output'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
@@ -5706,6 +5708,14 @@ export enum ProfileType {
   VirtualPersona = 'VIRTUAL_PERSONA',
   Whiteboard = 'WHITEBOARD',
 }
+
+export type PruneInAppNotificationAdminResult = {
+  __typename?: 'PruneInAppNotificationAdminResult';
+  /** The number of InAppNotifications that were removed due to exceeding the maximum allowed per user. */
+  removedCountExceedingUserLimit: Scalars['Int']['output'];
+  /** The number of InAppNotifications that were removed due to being outside the retention period. */
+  removedCountOutsideRetentionPeriod: Scalars['Int']['output'];
+};
 
 export type Query = {
   __typename?: 'Query';

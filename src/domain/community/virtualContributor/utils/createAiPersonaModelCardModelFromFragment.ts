@@ -4,7 +4,7 @@ import { VirtualContributorModelCard, EMPTY_MODEL_CARD } from '../model/VirtualC
 export function createAiPersonaModelCardModelFromFragment(
   vcData: VirtualContributorWithModelCardFragment | undefined
 ): VirtualContributorModelCard {
-  const engine = vcData?.aiPersona.engine;
+  const engine = vcData?.aiPersona?.engine;
   const modelCardData = vcData?.modelCard;
   if (!modelCardData || !engine) return EMPTY_MODEL_CARD;
   return {

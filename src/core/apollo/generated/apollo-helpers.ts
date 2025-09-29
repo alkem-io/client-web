@@ -2448,6 +2448,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomState'
   | 'adminIdentityDeleteKratosIdentity'
+  | 'adminInAppNotificationsPrune'
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
@@ -2628,6 +2629,7 @@ export type MutationFieldPolicy = {
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminIdentityDeleteKratosIdentity?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminInAppNotificationsPrune?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3225,6 +3227,15 @@ export type ProfileCredentialVerifiedKeySpecifier = ('userEmail' | 'vc' | Profil
 export type ProfileCredentialVerifiedFieldPolicy = {
   userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   vc?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PruneInAppNotificationAdminResultKeySpecifier = (
+  | 'removedCountExceedingUserLimit'
+  | 'removedCountOutsideRetentionPeriod'
+  | PruneInAppNotificationAdminResultKeySpecifier
+)[];
+export type PruneInAppNotificationAdminResultFieldPolicy = {
+  removedCountExceedingUserLimit?: FieldPolicy<any> | FieldReadFunction<any>;
+  removedCountOutsideRetentionPeriod?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
   | 'accounts'
@@ -5716,6 +5727,13 @@ export type StrictTypedTypePolicies = {
       | ProfileCredentialVerifiedKeySpecifier
       | (() => undefined | ProfileCredentialVerifiedKeySpecifier);
     fields?: ProfileCredentialVerifiedFieldPolicy;
+  };
+  PruneInAppNotificationAdminResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PruneInAppNotificationAdminResultKeySpecifier
+      | (() => undefined | PruneInAppNotificationAdminResultKeySpecifier);
+    fields?: PruneInAppNotificationAdminResultFieldPolicy;
   };
   Query?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier);
