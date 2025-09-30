@@ -21,6 +21,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { DialogActionButton } from '../components/subspaces/DialogActionButton';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
+import { useVideoCall } from '../hooks/useVideoCall';
 
 export const MENU_STATE_KEY = 'menuState';
 export enum MenuState {
@@ -51,6 +52,8 @@ export const SubspaceInfoColumn = () => {
   const communityId = membership?.communityID;
   const collaboration = subspace?.collaboration;
   const collaborationId = collaboration?.id;
+
+  const { isVideoCallEnabled } = useVideoCall(subspace?.id);
 
   const innovationFlowProvided = useInnovationFlowStates({ collaborationId });
   const [createSpaceState, setCreateSpaceState] = useState<
@@ -101,16 +104,18 @@ export const SubspaceInfoColumn = () => {
         row={!isCollapsed}
         sx={{
           padding: isCollapsed ? gutters(0.5) : 0,
-          justifyContent: 'space-between',
+          justifyContent: 'start',
           columnGap: 0.1,
           backgroundColor: isCollapsed ? undefined : 'transparent',
           border: isCollapsed ? undefined : 'transparent',
           overflow: isCollapsed ? undefined : 'visible',
+          flexWrap: 'wrap',
+          rowGap: '8px',
         }}
       >
         <DialogActionButton dialog={SubspaceDialog.Index} />
         <DialogActionButton dialog={SubspaceDialog.Subspaces} />
-        <DialogActionButton dialog={SubspaceDialog.VideoCall} />
+        {isVideoCallEnabled && <DialogActionButton dialog={SubspaceDialog.VideoCall} />}
         <DialogActionButton dialog={SubspaceDialog.Contributors} />
         <DialogActionButton dialog={SubspaceDialog.Activity} />
         <DialogActionButton dialog={SubspaceDialog.Timeline} />

@@ -135,6 +135,8 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
       defaultSpaceSettings.collaboration.allowMembersToCreateSubspaces,
     allowMembersToCreateCallouts = currentSettings?.collaboration?.allowMembersToCreateCallouts ??
       defaultSpaceSettings.collaboration.allowMembersToCreateCallouts,
+    allowMembersToVideoCall = currentSettings?.collaboration?.allowMembersToVideoCall ??
+      defaultSpaceSettings.collaboration.allowMembersToVideoCall,
     inheritMembershipRights = currentSettings?.collaboration?.inheritMembershipRights ??
       defaultSpaceSettings.collaboration.inheritMembershipRights,
     hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
@@ -150,6 +152,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     allowEventsFromSubspaces?: boolean;
     allowMembersToCreateSubspaces?: boolean;
     allowMembersToCreateCallouts?: boolean;
+    allowMembersToVideoCall?: boolean;
     inheritMembershipRights?: boolean;
     hostOrganizationTrusted?: boolean;
     collaborationSettings?: Partial<SpaceSettingsCollaboration>;
@@ -181,6 +184,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
         allowEventsFromSubspaces,
         allowMembersToCreateSubspaces,
         allowMembersToCreateCallouts,
+        allowMembersToVideoCall,
         inheritMembershipRights,
       } as SpaceSettingsCollaboration,
     };
@@ -339,6 +343,20 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                     label: (
                       <Trans
                         i18nKey="pages.admin.space.settings.memberActions.createBlocks"
+                        components={{ b: <strong /> }}
+                      />
+                    ),
+                  },
+                }}
+                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+              />
+              <SwitchSettingsGroup
+                options={{
+                  allowMembersToVideoCall: {
+                    checked: currentSettings?.collaboration?.allowMembersToVideoCall || false,
+                    label: (
+                      <Trans
+                        i18nKey="pages.admin.space.settings.memberActions.videoCall"
                         components={{ b: <strong /> }}
                       />
                     ),

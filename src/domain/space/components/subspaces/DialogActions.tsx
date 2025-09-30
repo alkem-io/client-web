@@ -18,6 +18,7 @@ import { Dialog } from '@mui/material';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import DashboardNavigation from '../spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
 import useNavigate from '@/core/routing/useNavigate';
+import { useVideoCall } from '../../hooks/useVideoCall';
 
 export const DialogActions = () => {
   const { collaborationId } = useUrlResolver();
@@ -30,6 +31,7 @@ export const DialogActions = () => {
       },
     },
   } = useSubSpace();
+  const { isVideoCallEnabled } = useVideoCall(spaceId);
 
   const dashboardNavigation = useSpaceDashboardNavigation({
     spaceId,
@@ -47,7 +49,7 @@ export const DialogActions = () => {
     }
   }, [isSmallScreen]);
 
-  const { dialog: currentDialog } = useParams();
+  const { dialog: currentDialog, spaceNameId } = useParams();
 
   if (!currentDialog) {
     return null;
@@ -58,7 +60,14 @@ export const DialogActions = () => {
       <CalloutsListDialog open={currentDialog === SubspaceDialog.Index} onClose={handleClose} />
       <SubspacesListDialog open={currentDialog === SubspaceDialog.Subspaces} onClose={handleClose} />
       <ContributorsToggleDialog open={currentDialog === SubspaceDialog.Contributors} onClose={handleClose} />
-      <VideoCallDialog open={currentDialog === SubspaceDialog.VideoCall} onClose={handleClose} />
+      {isVideoCallEnabled && (
+        <VideoCallDialog
+          open={currentDialog === SubspaceDialog.VideoCall}
+          onClose={handleClose}
+          spaceNameId={spaceNameId}
+          spaceId={spaceId}
+        />
+      )}
       <ActivityDialog open={currentDialog === SubspaceDialog.Activity} onClose={handleClose} />
       <CalendarDialog open={currentDialog === SubspaceDialog.Timeline} onClose={handleClose} temporaryLocation />
       <ShareDialog

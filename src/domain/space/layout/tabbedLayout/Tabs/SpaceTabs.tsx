@@ -24,8 +24,9 @@ import getEntityColor from '@/domain/shared/utils/getEntityColor';
 import useShare from '@/core/utils/Share';
 import { gutters } from '@/core/ui/grid/utils';
 import ActivityDialog from '../../../components/Activity/ActivityDialog';
-import VideoCallDialog from '../../../components/VideoCallDialog/VideoCallDialog';
+import VideoCallDialog from '@/domain/space/components/VideoCallDialog/VideoCallDialog';
 import { useSpace } from '../../../context/useSpace';
+import { useVideoCall } from '../../../hooks/useVideoCall';
 import { buildSettingsUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import useSpaceTabs from '../layout/useSpaceTabs';
 import { useLocation } from 'react-router-dom';
@@ -64,6 +65,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
 
   const { space, permissions, loading } = useSpace();
   const { id: spaceId, about } = space;
+  const { isVideoCallEnabled } = useVideoCall(spaceId);
   const { tabs, showSettings } = useSpaceTabs({
     skip: !permissions.canRead || loading,
     spaceId: permissions.canRead ? spaceId : undefined,
@@ -112,7 +114,9 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
                   return;
                 }
                 case NavigationActions.VideoCall: {
-                  setIsVideoCallDialogVisible(true);
+                  if (isVideoCallEnabled) {
+                    setIsVideoCallDialogVisible(true);
+                  }
                   return;
                 }
                 case NavigationActions.More:
@@ -256,18 +260,27 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
           value={NavigationActions.Activity}
           onClick={() => setIsActivityVisible(true)}
         />
-        <HeaderNavigationButton
-          icon={<VideocamOutlined />}
-          value={NavigationActions.VideoCall}
-          onClick={() => setIsVideoCallDialogVisible(true)}
-        />
+        {isVideoCallEnabled && (
+          <HeaderNavigationButton
+            icon={<VideocamOutlined />}
+            value={NavigationActions.VideoCall}
+            onClick={() => setIsVideoCallDialogVisible(true)}
+          />
+        )}
         {spaceUrl && (
           <HeaderNavigationButton icon={<ShareOutlined />} value={NavigationActions.Share} onClick={share} />
         )}
       </HeaderNavigationTabs>
       {shareDialog}
       <ActivityDialog open={isActivityVisible} onClose={() => setIsActivityVisible(false)} />
-      <VideoCallDialog open={isVideoCallDialogVisible} onClose={() => setIsVideoCallDialogVisible(false)} />
+      {isVideoCallEnabled && (
+        <VideoCallDialog
+          open={isVideoCallDialogVisible}
+          onClose={() => setIsVideoCallDialogVisible(false)}
+          spaceNameId={space.nameID}
+          spaceId={spaceId}
+        />
+      )}
     </>
   );
 };

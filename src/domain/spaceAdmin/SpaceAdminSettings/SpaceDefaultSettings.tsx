@@ -16,5 +16,6 @@ export const defaultSpaceSettings = {
     allowMembersToCreateSubspaces: true,
     inheritMembershipRights: true,
     allowEventsFromSubspaces: true,
+    allowMembersToVideoCall: false,
   },
 };
