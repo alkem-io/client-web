@@ -2084,12 +2084,14 @@ export type LicensingFieldPolicy = {
 export type LicensingCredentialBasedPolicyCredentialRuleKeySpecifier = (
   | 'credentialType'
   | 'grantedEntitlements'
+  | 'id'
   | 'name'
   | LicensingCredentialBasedPolicyCredentialRuleKeySpecifier
 )[];
 export type LicensingCredentialBasedPolicyCredentialRuleFieldPolicy = {
   credentialType?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicensingGrantedEntitlementKeySpecifier = ('limit' | 'type' | LicensingGrantedEntitlementKeySpecifier)[];
@@ -2449,6 +2451,9 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationUpdateRoomState'
   | 'adminIdentityDeleteKratosIdentity'
   | 'adminInAppNotificationsPrune'
+  | 'adminLicensePolicyCreateCredentialRule'
+  | 'adminLicensePolicyDeleteCredentialRule'
+  | 'adminLicensePolicyUpdateCredentialRule'
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
@@ -2630,6 +2635,9 @@ export type MutationFieldPolicy = {
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminIdentityDeleteKratosIdentity?: FieldPolicy<any> | FieldReadFunction<any>;
   adminInAppNotificationsPrune?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminLicensePolicyCreateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminLicensePolicyDeleteCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminLicensePolicyUpdateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
