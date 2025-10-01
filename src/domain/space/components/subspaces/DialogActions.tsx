@@ -22,8 +22,7 @@ import { useVideoCall } from '../../hooks/useVideoCall';
 import { getLastSubspaceNameId } from './utils';
 
 export const DialogActions = () => {
-  const urlResolver = useUrlResolver();
-  const { collaborationId } = urlResolver;
+  const { collaborationId } = useUrlResolver();
 
   const {
     subspace: {
