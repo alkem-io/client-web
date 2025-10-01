@@ -6,13 +6,11 @@ import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import { KeyboardTab } from '@mui/icons-material';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { gutters } from '@/core/ui/grid/utils';
-import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import DashboardNavigation from '../components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpaceDashboardNavigation from '../components/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useSubSpace } from '../hooks/useSubSpace';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
@@ -23,35 +21,46 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 import { useVideoCall } from '../hooks/useVideoCall';
 
+interface SubspaceInfoColumnProps {
+  subspace?: {
+    id?: string;
+    authorization?: {
+      myPrivileges?: AuthorizationPrivilege[] | null;
+    };
+    about?: {
+      membership: {
+        roleSetID: string;
+        communityID: string;
+        myMembershipStatus?: CommunityMembershipStatus | string;
+      };
+      profile: { url: string; description?: string };
+    };
+    collaboration?: {
+      id: string;
+    };
+  };
+}
+
 export const MENU_STATE_KEY = 'menuState';
 export enum MenuState {
   EXPANDED = 'expanded',
   COLLAPSED = 'collapsed',
 }
 
-export const SubspaceInfoColumn = () => {
+export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
   const { t } = useTranslation();
   const { isSmallScreen } = useScreenSize();
   const { spaceId, spaceLevel } = useUrlResolver();
-  const { permissions } = useSubSpace();
 
   const dashboardNavigation = useSpaceDashboardNavigation({
     spaceId,
     skip: !spaceId,
   });
-  const { data: subspacePageData } = useSubspacePageQuery({
-    variables: {
-      spaceId: spaceId!,
-    },
-    skip: !spaceId || spaceLevel === SpaceLevel.L0 || !permissions.canRead,
-  });
 
-  const subspace = subspacePageData?.lookup.space;
   const about = subspace?.about;
   const membership = about?.membership;
   const communityId = membership?.communityID;
-  const collaboration = subspace?.collaboration;
-  const collaborationId = collaboration?.id;
+  const collaborationId = subspace?.collaboration?.id;
 
   const { isVideoCallEnabled } = useVideoCall(subspace?.id);
 

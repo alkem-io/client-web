@@ -194,19 +194,21 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
                   <ListItemText primary={t('common.contributions')} />
                 </ListItemButton>
               </ListItem>
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => {
-                    setIsDrawerOpen(false);
-                    setIsVideoCallDialogVisible(true);
-                  }}
-                >
-                  <ListItemIcon>
-                    <VideocamOutlined />
-                  </ListItemIcon>
-                  <ListItemText primary={t('spaceDialog.videocall')} />
-                </ListItemButton>
-              </ListItem>
+              {isVideoCallEnabled && (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      setIsDrawerOpen(false);
+                      setIsVideoCallDialogVisible(true);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <VideocamOutlined />
+                    </ListItemIcon>
+                    <ListItemText primary={t('spaceDialog.videocall')} />
+                  </ListItemButton>
+                </ListItem>
+              )}
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => {
