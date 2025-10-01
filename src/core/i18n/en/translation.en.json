@@ -3464,7 +3464,7 @@
     "index": "Index",
     "subspaces": "$t(common.subspaces)",
     "contributors": "Contributors",
-    "videocall": "Video Call",
+    "videoCall": "Video Call",
     "activity": "Activity",
     "calendar": "Calendar",
     "events": "Events",
@@ -3476,7 +3476,7 @@
   "videoCall": {
     "dialog": {
       "title": "Start Video Call",
-      "content": "This will open a Jitsi video conference in a new tab. You can share this link with other contributors to join the call."
+      "content": "This will open a Jitsi video conference in a new tab. You can share this link with other contributors to join the call. They can also join themselves from here."
     }
   },
   "createSpace": {

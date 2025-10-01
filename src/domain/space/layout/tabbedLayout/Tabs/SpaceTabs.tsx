@@ -52,7 +52,7 @@ interface SpacePageTabsProps {
 enum NavigationActions {
   Share = 'share',
   Activity = 'activity',
-  VideoCall = 'videocall',
+  VideoCall = 'videoCall',
   More = 'more',
 }
 
@@ -205,7 +205,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
                     <ListItemIcon>
                       <VideocamOutlined />
                     </ListItemIcon>
-                    <ListItemText primary={t('spaceDialog.videocall')} />
+                    <ListItemText primary={t('spaceDialog.videoCall')} />
                   </ListItemButton>
                 </ListItem>
               )}
@@ -279,8 +279,8 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
         <VideoCallDialog
           open={isVideoCallDialogVisible}
           onClose={() => setIsVideoCallDialogVisible(false)}
-          spaceNameId={space.nameID}
           spaceId={spaceId}
+          spaceNameId={space.nameID}
         />
       )}
     </>

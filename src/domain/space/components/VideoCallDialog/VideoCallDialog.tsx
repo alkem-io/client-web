@@ -4,22 +4,21 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { BlockTitle } from '@/core/ui/typography';
 import { VideocamOutlined } from '@mui/icons-material';
+import { buildVideoCallUrl } from '@/main/routing/urlBuilders';
 
 export interface VideoCallDialogProps {
   open: boolean;
   onClose: () => void;
+  spaceId: string;
   spaceNameId?: string;
-  spaceId?: string;
 }
 
-const VideoCallDialog = ({ open, onClose, spaceNameId, spaceId }: VideoCallDialogProps) => {
+const VideoCallDialog = ({ open, onClose, spaceId, spaceNameId }: VideoCallDialogProps) => {
   const { t } = useTranslation();
 
   const handleStartVideoCall = () => {
-    // Generate unique room ID using space nameID + space UUID
-    const roomId = spaceNameId && spaceId ? `${spaceNameId}-${spaceId}` : `alkemio-${spaceId || Date.now()}`;
-    const jitsiUrl = `https://meet.jit.si/${roomId}`;
-    window.open(jitsiUrl, '_blank');
+    const videoCallUrl = buildVideoCallUrl(spaceId, spaceNameId);
+    window.open(videoCallUrl, '_blank');
     onClose();
   };
 
