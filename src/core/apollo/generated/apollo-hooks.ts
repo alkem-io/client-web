@@ -1563,10 +1563,6 @@ export const UserSettingsFragmentFragmentDoc = gql`
             email
             inApp
           }
-          spaceCommunityApplicationSubmitted {
-            email
-            inApp
-          }
         }
         mentioned {
           email
@@ -1577,10 +1573,6 @@ export const UserSettingsFragmentFragmentDoc = gql`
           inApp
         }
         messageReceived {
-          email
-          inApp
-        }
-        copyOfMessageSent {
           email
           inApp
         }
@@ -13297,11 +13289,119 @@ export const UpdateUserSettingsDocument = gql`
     updateUserSettings(settingsData: $settingsData) {
       id
       settings {
-        ...userSettingsFragment
+        notification {
+          user {
+            mentioned {
+              email
+              inApp
+            }
+            commentReply {
+              email
+              inApp
+            }
+            messageReceived {
+              email
+              inApp
+            }
+            membership {
+              spaceCommunityInvitationReceived {
+                email
+                inApp
+              }
+              spaceCommunityJoined {
+                email
+                inApp
+              }
+            }
+          }
+          space {
+            communicationUpdates {
+              email
+              inApp
+            }
+            collaborationCalloutPublished {
+              email
+              inApp
+            }
+            collaborationCalloutComment {
+              email
+              inApp
+            }
+            collaborationCalloutContributionCreated {
+              email
+              inApp
+            }
+            collaborationCalloutPostContributionComment {
+              email
+              inApp
+            }
+            admin {
+              communityApplicationReceived {
+                email
+                inApp
+              }
+              communityNewMember {
+                email
+                inApp
+              }
+              collaborationCalloutContributionCreated {
+                email
+                inApp
+              }
+              communicationMessageReceived {
+                email
+                inApp
+              }
+            }
+          }
+          platform {
+            forumDiscussionComment {
+              email
+              inApp
+            }
+            forumDiscussionCreated {
+              email
+              inApp
+            }
+            admin {
+              userProfileCreated {
+                email
+                inApp
+              }
+              userProfileRemoved {
+                email
+                inApp
+              }
+              userGlobalRoleChanged {
+                email
+                inApp
+              }
+              spaceCreated {
+                email
+                inApp
+              }
+            }
+          }
+          organization {
+            adminMentioned {
+              email
+              inApp
+            }
+            adminMessageReceived {
+              email
+              inApp
+            }
+          }
+          virtualContributor {
+            adminSpaceCommunityInvitation {
+              email
+              inApp
+            }
+          }
+        }
       }
     }
   }
-  ${UserSettingsFragmentFragmentDoc}
 `;
 export type UpdateUserSettingsMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateUserSettingsMutation,
