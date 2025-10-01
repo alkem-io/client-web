@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { BlockTitle, Caption } from '@/core/ui/typography/components';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { Divider } from '@mui/material';
 import DualSwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/DualSwitchSettingsGroup';
 import {
   PlatformNotificationSettings,
@@ -80,22 +81,46 @@ export const CombinedPlatformNotificationsSettings = ({
 
   const allOptions = buildOptions();
 
-  const handleChange = (key: string, type: 'inApp' | 'email', value: boolean) => {
-    // Route to appropriate handler based on setting type
-    const platformAdminKeys = ['userProfileCreated', 'userProfileRemoved', 'userGlobalRoleChanged', 'spaceCreated'];
+  // Create wrapper functions to match DualSwitchSettingsGroup's expected signature
+  const handlePlatformSettingsChange = (key: string | number, type: 'inApp' | 'email', newValue: boolean) => {
+    return onUpdatePlatformSettings(String(key), type, newValue);
+  };
 
-    if (platformAdminKeys.includes(key)) {
-      return onUpdatePlatformAdminSettings(key, type, value);
-    } else {
-      return onUpdatePlatformSettings(key, type, value);
-    }
+  const handlePlatformAdminSettingsChange = (key: string | number, type: 'inApp' | 'email', newValue: boolean) => {
+    return onUpdatePlatformAdminSettings(String(key), type, newValue);
   };
 
   return (
     <PageContentBlock>
       <BlockTitle>{t('pages.userNotificationsSettings.platformAdmin.title')}</BlockTitle>
-      <Caption>{t('pages.userNotificationsSettings.platformAdmin.subtitle')}</Caption>
-      <DualSwitchSettingsGroup options={allOptions} onChange={handleChange} />
+      <Caption>{t('pages.userNotificationsSettings.forum.subtitle')}</Caption>
+
+      {/* Forum notifications (always visible) */}
+      <DualSwitchSettingsGroup
+        options={Object.fromEntries(
+          Object.entries(allOptions).filter(
+            ([key]) =>
+              !['userProfileCreated', 'userProfileRemoved', 'userGlobalRoleChanged', 'spaceCreated'].includes(key)
+          )
+        )}
+        onChange={handlePlatformSettingsChange}
+      />
+
+      {/* Divider and platform admin settings */}
+      {isPlatformAdmin && (
+        <>
+          <Divider />
+          <Caption>{t('pages.userNotificationsSettings.platformAdmin.subtitle')}</Caption>
+          <DualSwitchSettingsGroup
+            options={Object.fromEntries(
+              Object.entries(allOptions).filter(([key]) =>
+                ['userProfileCreated', 'userProfileRemoved', 'userGlobalRoleChanged', 'spaceCreated'].includes(key)
+              )
+            )}
+            onChange={handlePlatformAdminSettingsChange}
+          />
+        </>
+      )}
     </PageContentBlock>
   );
 };
