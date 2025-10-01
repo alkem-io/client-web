@@ -119,7 +119,7 @@ export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
           border: isCollapsed ? undefined : 'transparent',
           overflow: isCollapsed ? undefined : 'visible',
           flexWrap: 'wrap',
-          rowGap: '8px',
+          rowGap: gutters(0.2),
         }}
       >
         <DialogActionButton dialog={SubspaceDialog.Index} />
