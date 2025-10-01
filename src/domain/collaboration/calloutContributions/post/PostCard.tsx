@@ -34,22 +34,24 @@ export interface PostContribution extends Identifiable {
        description?: string;
      }[];*/
     };
-  bannerNarrow?: VisualModel;
-  createdBy?: { profile: { displayName: string } };
-  comments?: { messagesCount: number };
-  createdDate: string | Date; // Apollo says Date while actually it's a string
+    bannerNarrow?: VisualModel;
+    createdBy?: { profile: { displayName: string } };
+    comments?: { messagesCount: number };
+    createdDate: string | Date; // Apollo says Date while actually it's a string
   };
 }
 
 interface PostCardProps {
-  postContribution: PostContribution | undefined;
+  contribution: PostContribution | undefined;
+  columns?: number;
+  selected?: boolean;
   onClick: (postContribution: PostContribution) => void;
 }
 
-const PostCard = ({ postContribution, onClick }: PostCardProps) => {
-  const handleClick = useCallback(() => postContribution && onClick(postContribution), [onClick, postContribution]);
+const PostCard = ({ contribution, columns, selected, onClick }: PostCardProps) => {
+  const handleClick = useCallback(() => contribution && onClick(contribution), [onClick, contribution]);
 
-  if (!postContribution || !postContribution.post) {
+  if (!contribution || !contribution.post) {
     return (
       <ContributeCard>
         <CardHeader title={<Skeleton />} iconComponent={PostIcon}>
@@ -62,11 +64,11 @@ const PostCard = ({ postContribution, onClick }: PostCardProps) => {
       </ContributeCard>
     );
   }
-  const post = postContribution.post;
+  const post = contribution.post;
   return (
-    <ContributeCard onClick={handleClick}>
-      <CardHeader title={post.profile.displayName} iconComponent={PostIcon}>
-        <CardHeaderCaption>{post.createdBy?.profile.displayName}</CardHeaderCaption>
+    <ContributeCard onClick={handleClick} columns={columns}>
+      <CardHeader title={post.profile.displayName} iconComponent={PostIcon} contrast={selected}>
+        <CardHeaderCaption color={selected ? 'white' : undefined} >{post.createdBy?.profile.displayName}</CardHeaderCaption>
       </CardHeader>
       <CardDetails>
         <CardDescriptionWithTags tags={post.profile?.tagset?.tags}>{post.profile?.description}</CardDescriptionWithTags>

@@ -70,7 +70,7 @@ const PageContentBlockHeaderCardLike = <D extends React.ElementType = BoxTypeMap
         {children}
       </Box>
       {actions && (
-        <Actions height={gutters()} gap={0}>
+        <Actions>
           {actions}
         </Actions>
       )}

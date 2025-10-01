@@ -22,13 +22,7 @@ interface CalloutContributionsContainerProps extends SimpleContainerProps<Callou
           myPrivileges?: AuthorizationPrivilege[];
         };
         settings: {
-          contribution: CalloutSettingsModelFull['contribution']; /*
-              { //!!
-                enabled: boolean;
-                allowedTypes: CalloutContributionType[];
-                canAddContributions: CalloutAllowedContributors;
-                commentsEnabled: boolean;
-              };*/
+          contribution: CalloutSettingsModelFull['contribution'];
         };
       })
     | undefined;
@@ -131,8 +125,8 @@ const CalloutContributionsContainer = ({
         contributions: {
           items: data?.lookup.callout?.contributionsPaginated.contributions ?? [],
           hasMore,
-          fetchMore,
-          fetchAll: fetchMore,  //!!
+          fetchMore: () => fetchMore(),
+          fetchAll: () => fetchMore(),  //!!
           total: data?.lookup.callout?.contributionsPaginated.total ?? 0,
         },
         contributionsCount: data?.lookup.callout?.contributionsPaginated.total ?? 0,

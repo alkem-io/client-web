@@ -12963,6 +12963,13 @@ export type CalloutContributionsQuery = {
                       displayName: string;
                       description?: string | undefined;
                     };
+                    createdBy?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          profile: { __typename?: 'Profile'; id: string; displayName: string };
+                        }
+                      | undefined;
                     authorization?:
                       | {
                           __typename?: 'Authorization';
@@ -12970,6 +12977,7 @@ export type CalloutContributionsQuery = {
                           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                         }
                       | undefined;
+                    comments: { __typename?: 'Room'; id: string; messagesCount: number };
                   }
                 | undefined;
             }>;
@@ -13005,9 +13013,13 @@ export type CalloutContributionsPostCardFragment = {
   id: string;
   createdDate: Date;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
+  createdBy?:
+    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
+  comments: { __typename?: 'Room'; id: string; messagesCount: number };
 };
 
 export type CalloutContributionQueryVariables = Exact<{
@@ -13415,9 +13427,13 @@ export type CalloutPostCreatedSubscription = {
         displayName: string;
         description?: string | undefined;
       };
+      createdBy?:
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | undefined;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
+      comments: { __typename?: 'Room'; id: string; messagesCount: number };
     };
   };
 };

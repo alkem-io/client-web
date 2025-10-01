@@ -584,9 +584,20 @@ export const CalloutContributionsPostCardFragmentDoc = gql`
       description
     }
     createdDate
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
     authorization {
       id
       myPrivileges
+    }
+    comments {
+      id
+      messagesCount
     }
   }
 `;

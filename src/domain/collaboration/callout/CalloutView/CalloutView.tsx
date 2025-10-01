@@ -15,7 +15,6 @@ import CalloutViewLayout from './CalloutViewLayout';
 import CalloutContributionsLink from '../../calloutContributions/link/CalloutContributionsLink';
 import CalloutContributionsContainer from '../../calloutContributions/CalloutContributionsContainer';
 import CalloutContributionsWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionsWhiteboard';
-import CalloutContributionsPost from '../../calloutContributions/post/CalloutContributionsPost';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -29,6 +28,8 @@ import CalloutContributionPreviewPost from '../../calloutContributions/post/Call
 import CalloutContributionPreviewWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionPreviewWhiteboard';
 import CalloutContributionDialogWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionDialogWhiteboard';
 import CalloutContributionDialogPost from '../../calloutContributions/post/CalloutContributionDialogPost';
+import CalloutContributionsScroller from '../../calloutContributions/CalloutContributionsScroller';
+import PostCard from '../../calloutContributions/post/PostCard';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>
@@ -165,13 +166,20 @@ const CalloutView = ({
                 contributionType={CalloutContributionType.Post}
               >
                 {props => (
-                  <CalloutContributionsPost
+                  <CalloutContributionsScroller
+                    {...props}
+                    callout={callout}
+                    contributionSelectedId={contributionId}
+                    cardComponent={PostCard}
+                    getContributionUrl={contribution => contribution.post?.profile.url}
+                  />
+                  /*<CalloutContributionsPost
                     {...props}
                     callout={callout}
                     expanded={expanded}
                     onExpand={onExpand}
                     onCollapse={onCollapse}
-                  />
+                  />*/
                 )}
               </CalloutContributionsContainer>
             </>

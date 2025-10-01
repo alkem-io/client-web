@@ -8,7 +8,7 @@ import { Caption } from '@/core/ui/typography';
 import { formatDateTime } from '@/core/utils/time/utils';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton, Skeleton, useTheme } from '@mui/material';
+import { IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
 import { contributionIcons } from '../../callout/icons/calloutIcons';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import useNavigate from '@/core/routing/useNavigate';
@@ -16,6 +16,7 @@ import { useState } from 'react';
 import CalloutContributionModel from '../CalloutContributionModel';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { useTranslation } from 'react-i18next';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 
 /**
  * Properties that a Preview Contribution component must receive
@@ -88,13 +89,13 @@ const CalloutContributionPreview = ({
     (contributionType === CalloutContributionType.Whiteboard &&
       contribution?.whiteboard?.createdBy?.profile.displayName);
 
-  const formattedCreatedDate =
-    (contributionType === CalloutContributionType.Post &&
-      contribution?.post?.createdDate &&
-      formatDateTime(contribution.post.createdDate)) ||
+  const createdDate = (contributionType === CalloutContributionType.Post &&
+    contribution?.post?.createdDate) ||
     (contributionType === CalloutContributionType.Whiteboard &&
-      contribution?.whiteboard?.createdDate &&
-      formatDateTime(contribution.whiteboard.createdDate));
+      contribution?.whiteboard?.createdDate);
+  const formattedCreatedDate = createdDate && formatDateTime(createdDate);
+  const formattedEllapsedTime = createdDate && formatTimeElapsed(createdDate, t, 'long');
+
 
   const contributionUrl =
     (contributionType === CalloutContributionType.Post && contribution?.post?.profile.url) ||
@@ -108,7 +109,9 @@ const CalloutContributionPreview = ({
           subtitle={author}
           actions={
             <>
-              <Caption>{formattedCreatedDate}</Caption>
+              <Tooltip title={formattedCreatedDate} arrow>
+                <Caption>{formattedEllapsedTime}</Caption>
+              </Tooltip>
               {/* TODO: Here the comments to the post */}
               <IconButton
                 onClick={() => setContributionDialogOpen(true)}

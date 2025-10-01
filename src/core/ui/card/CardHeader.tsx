@@ -7,22 +7,29 @@ import BadgeCardView from '../list/BadgeCardView';
 
 type CardTitleSectionProps = {
   title?: ReactNode;
+  contrast?: boolean;
   iconComponent?: ComponentType<SvgIconProps>;
 };
 
-const CardHeader = ({ iconComponent, title = '', children }: PropsWithChildren<CardTitleSectionProps>) => {
+const CardHeader = ({ iconComponent, title = '', contrast: contrast, children }: PropsWithChildren<CardTitleSectionProps>) => {
+
   return (
     <BadgeCardView
       flexShrink={0}
-      visual={iconComponent && <RoundedIcon marginLeft={0.5} size="small" component={iconComponent} />}
+      visual={iconComponent && <RoundedIcon marginLeft={0.5} size="small" component={iconComponent} swapColors={contrast} />}
       height={gutters(3)}
       paddingX={1}
       gap={1}
       contentProps={{ paddingLeft: 0.5 }}
+      sx={{
+        borderBottomLeftRadius: 0, borderBottomRightRadius: 0,
+        backgroundColor: contrast ? theme => theme.palette.primary.main : undefined
+      }}
     >
-      <BlockTitle noWrap>{title}</BlockTitle>
+      <BlockTitle noWrap color={contrast ? 'white' : undefined} fontWeight={contrast ? 'bold' : undefined}>{title}</BlockTitle>
       {children}
-    </BadgeCardView>
+    </BadgeCardView >
+
   );
 };
 

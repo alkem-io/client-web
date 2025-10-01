@@ -79,7 +79,7 @@ const CalloutContributionsPost = ({
         loading={loading}
         createButton={createButton}
       >
-        {item => <PostCard postContribution={item} onClick={navigateToPost} />}
+        {item => <PostCard contribution={item} columns={2} onClick={navigateToPost} />}
       </CardsExpandableContainer>
       {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
         <CalloutBlockFooter contributionsCount={contributions.total} onCreate={openCreateDialog} />

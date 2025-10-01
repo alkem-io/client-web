@@ -10,6 +10,7 @@ type CalloutContributionModel = Identifiable & {
     };
     comments: {
       id: string;
+      messagesCount: number;
     };
   };
   whiteboard?: {
