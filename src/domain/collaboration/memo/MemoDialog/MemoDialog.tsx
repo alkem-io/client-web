@@ -65,7 +65,7 @@ const MemoDialog = ({ open = false, onClose, memoId, calloutId }: MemoDialogProp
             <ShareButton url={memo?.profile.url} entityTypeName="memo" disabled={!memo?.profile.url}>
               {hasUpdatePrivileges && <CollaborationSettings element={memo} elementType="memo" />}
             </ShareButton>
-            <FullscreenButton element={dialogRef.current || undefined} />
+            <FullscreenButton />
             <UserPresencing
               collaborationState={collaborationState}
               hideSaveRequestIndicator={
