@@ -304,6 +304,7 @@
     "filterBy": "Filter by...",
     "forum": "Forum",
     "email": "Email",
+    "inApp": "In-app",
     "state": "Phase",
     "states": "Phases",
     "post": "post",
@@ -3195,7 +3196,7 @@
         "subtitle": "This section allows you to select your preferences regarding receiving messages"
       },
       "space": {
-        "title": "$t(common.space) $t(common.settings)",
+        "title": "$t(common.space)",
         "subtitle": "This section allows you to select your preferences regarding receiving messages from $t(common.spaces) you are a $t(common.member) of",
         "settings": {
           "communicationUpdateSent": "Receive a $t(common.notification) when a new update is shared with a $t(common.community) I am a $t(common.member) of",
@@ -3216,7 +3217,7 @@
         }
       },
       "organization": {
-        "title": "$t(common.Organization) mentions and messaging",
+        "title": "$t(common.Organization)",
         "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to $t(common.organizations) you manage",
         "settings": {
           "mentioned": "Receive a $t(common.notification) when my $t(common.organization) is mentioned",
@@ -3224,27 +3225,25 @@
         }
       },
       "user": {
-        "title": "User mentions and messaging",
-        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to yourself.",
+        "title": "User",
+        "subtitle": "This section allows you to select your preferences regarding memberships, mentions and direct messaging to yourself.",
         "settings": {
           "mentioned": "Receive a $t(common.notification) when I am mentioned",
           "commentReply": "Receive a $t(common.notification) when someone replies to my $t(common.comment)",
-          "messageReceived": "Receive a $t(common.notification) when someone sends me a direct message",
-          "copyOfMessageSent": "Receive a $t(common.notification) when I send a direct message"
+          "messageReceived": "Receive a $t(common.notification) when someone sends me a direct message"
         }
       },
       "userMembership": {
         "title": "User $t(common.membership) $t(common.notifications)",
         "subtitle": "This section allows you to select your preferences regarding $t(common.notifications) related to your $t(common.membership) in communities.",
         "settings": {
-          "spaceCommunityApplication": "Receive a $t(common.notification) when I apply to join a $t(common.community)",
           "spaceCommunityInvitation": "Receive a $t(common.notification) when someone invites you to join a $t(common.community)",
           "spaceCommunityJoined": "Receive a $t(common.notification) when I join a new $t(common.space) $t(common.community)"
         }
       },
       "platformAdmin": {
-        "title": "Platform $t(common.admin) $t(common.settings)",
-        "subtitle": "This section is only visible to users that are a global $t(common.admin) on the platform",
+        "title": "Platform",
+        "subtitle": "This section allows you to select your preferences regarding activities on the platform.",
         "settings": {
           "adminUserProfileCreated": "Receive a $t(common.notification) when a new user signs up",
           "adminUserProfileRemoved": "Receive a $t(common.notification) when a user $t(common.profile) is removed",
@@ -3254,7 +3253,7 @@
       },
       "forum": {
         "title": "$t(common.forum)",
-        "subtitle": "This section allows you to select your preferences regarding activities in the $t(common.forum)",
+        "subtitle": "This section allows you to select your preferences regarding activities in the $t(common.forum).",
         "settings": {
           "forumDiscussionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a discussion I follow",
           "forumDiscussionCreated": "Receive a $t(common.notification) when a new discussion is created"
@@ -3262,10 +3261,19 @@
       },
       "virtualContributor": {
         "title": "$t(common.virtualContributor)",
-        "subtitle": "This section allows you to select your preferences regarding activities as a $t(common.virtualContributor)",
+        "subtitle": "This section allows you to select your preferences regarding activities as a $t(common.virtualContributor).",
         "settings": {
           "spaceCommunityInvitation": "Receive a $t(common.notification) when a VC I manage is invited to join a $t(common.community)"
         }
+      },
+      "tooltips": {
+        "spaceCommunityInvitationReceived": "These notifications are required and cannot be disabled.",
+        "messageReceived": "These notifications are required and cannot be disabled.",
+        "communicationMessageReceived": "These communication notifications are required and cannot be disabled.",
+        "adminMessageReceived": "These notifications are required and cannot be disabled.",
+        "communityApplicationReceived": "Email notifications for applications cannot be disabled.",
+        "communityNewMember": "New member notifications require at least one notification method to stay enabled.",
+        "adminMentioned": "Organization mentions require at least one notification method to stay enabled."
       }
     },
     "help-dialog": {

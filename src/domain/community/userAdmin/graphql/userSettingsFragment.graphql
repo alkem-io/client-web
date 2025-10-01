@@ -98,10 +98,6 @@ fragment userSettingsFragment on UserSettings {
           email
           inApp
         }
-        spaceCommunityApplicationSubmitted {
-          email
-          inApp
-        }
       }
       mentioned {
         email
@@ -112,10 +108,6 @@ fragment userSettingsFragment on UserSettings {
         inApp
       }
       messageReceived {
-        email
-        inApp
-      }
-      copyOfMessageSent {
         email
         inApp
       }
