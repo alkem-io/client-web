@@ -1,4 +1,4 @@
-import { AuthorizationPrivilege, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
@@ -7,45 +7,9 @@ import { ClassificationTagsetWithAllowedValuesModel } from '../../calloutsSet/Cl
 import { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import { ContributionDefaultsModel } from './ContributionDefaultsModel';
 import { CalloutModelExtension, CalloutModelLight } from './CalloutModelLight';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
 import { Identifiable } from '@/core/utils/Identifiable';
-
-type ContributorModel = {
-  __typename?: string; // 'Organization' | 'User' | 'VirtualContributor';
-  id: string;
-  profile: {
-    id: string;
-    displayName: string;
-    url: string;
-    description?: string;
-    avatar?: VisualModel;
-    tagsets?: TagsetModel[];
-    location?: {
-      country?: string;
-      city?: string;
-    };
-  };
-};
-
-type CommentsWithMessagesModel = {
-  id: string;
-  messagesCount: number;
-  authorization?: { myPrivileges?: AuthorizationPrivilege[] };
-  messages: {
-    id: string;
-    message: string;
-    timestamp: number;
-    threadID?: string;
-    reactions: {
-      id: string;
-      emoji: string;
-      sender?: { id: string; profile: { displayName: string } };
-    }[];
-    sender?: ContributorModel;
-  }[];
-  vcInteractions: { id: string; threadID: string; virtualContributorID: string }[];
-};
+import { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 
 export type CalloutDetailsModel = CalloutModelLight & {
   framing: {

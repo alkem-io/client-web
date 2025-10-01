@@ -13177,6 +13177,183 @@ export type UpdateContributionsSortOrderMutation = {
   updateContributionsSortOrder: Array<{ __typename?: 'CalloutContribution'; id: string; sortOrder: number }>;
 };
 
+export type CalloutContributionCommentsQueryVariables = Exact<{
+  contributionId: Scalars['UUID']['input'];
+  includePost?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+export type CalloutContributionCommentsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    contribution?:
+      | {
+          __typename?: 'CalloutContribution';
+          id: string;
+          post?:
+            | {
+                __typename?: 'Post';
+                id: string;
+                comments: {
+                  __typename?: 'Room';
+                  id: string;
+                  messagesCount: number;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  messages: Array<{
+                    __typename?: 'Message';
+                    id: string;
+                    message: string;
+                    timestamp: number;
+                    threadID?: string | undefined;
+                    reactions: Array<{
+                      __typename?: 'Reaction';
+                      id: string;
+                      emoji: string;
+                      sender?:
+                        | {
+                            __typename?: 'User';
+                            id: string;
+                            profile: { __typename?: 'Profile'; id: string; displayName: string };
+                          }
+                        | undefined;
+                    }>;
+                    sender?:
+                      | {
+                          __typename?: 'Organization';
+                          id: string;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            url: string;
+                            description?: string | undefined;
+                            avatar?:
+                              | {
+                                  __typename?: 'Visual';
+                                  id: string;
+                                  uri: string;
+                                  name: string;
+                                  alternativeText?: string | undefined;
+                                }
+                              | undefined;
+                            tagsets?:
+                              | Array<{
+                                  __typename?: 'Tagset';
+                                  id: string;
+                                  name: string;
+                                  tags: Array<string>;
+                                  allowedValues: Array<string>;
+                                  type: TagsetType;
+                                }>
+                              | undefined;
+                            location?:
+                              | {
+                                  __typename?: 'Location';
+                                  id: string;
+                                  country?: string | undefined;
+                                  city?: string | undefined;
+                                }
+                              | undefined;
+                          };
+                        }
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            url: string;
+                            description?: string | undefined;
+                            avatar?:
+                              | {
+                                  __typename?: 'Visual';
+                                  id: string;
+                                  uri: string;
+                                  name: string;
+                                  alternativeText?: string | undefined;
+                                }
+                              | undefined;
+                            tagsets?:
+                              | Array<{
+                                  __typename?: 'Tagset';
+                                  id: string;
+                                  name: string;
+                                  tags: Array<string>;
+                                  allowedValues: Array<string>;
+                                  type: TagsetType;
+                                }>
+                              | undefined;
+                            location?:
+                              | {
+                                  __typename?: 'Location';
+                                  id: string;
+                                  country?: string | undefined;
+                                  city?: string | undefined;
+                                }
+                              | undefined;
+                          };
+                        }
+                      | {
+                          __typename?: 'VirtualContributor';
+                          id: string;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            url: string;
+                            description?: string | undefined;
+                            avatar?:
+                              | {
+                                  __typename?: 'Visual';
+                                  id: string;
+                                  uri: string;
+                                  name: string;
+                                  alternativeText?: string | undefined;
+                                }
+                              | undefined;
+                            tagsets?:
+                              | Array<{
+                                  __typename?: 'Tagset';
+                                  id: string;
+                                  name: string;
+                                  tags: Array<string>;
+                                  allowedValues: Array<string>;
+                                  type: TagsetType;
+                                }>
+                              | undefined;
+                            location?:
+                              | {
+                                  __typename?: 'Location';
+                                  id: string;
+                                  country?: string | undefined;
+                                  city?: string | undefined;
+                                }
+                              | undefined;
+                          };
+                        }
+                      | undefined;
+                  }>;
+                  vcInteractions: Array<{
+                    __typename?: 'VcInteraction';
+                    id: string;
+                    threadID: string;
+                    virtualContributorID: string;
+                  }>;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type CreateLinkOnCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
   link: CreateLinkInput;

@@ -59,14 +59,21 @@ const PageContentBlockHeaderCardLike = <D extends React.ElementType = BoxTypeMap
         justifyContent="space-between"
         flexWrap="wrap"
       >
-        <BlockTitleWithIcon title={title} titleId={titleId} subtitle={<Caption>{subtitle}</Caption>}
+        <BlockTitleWithIcon
+          title={title}
+          titleId={titleId}
+          subtitle={<Caption>{subtitle}</Caption>}
           icon={icon ? <RoundedIcon size="xsmall" component={icon} /> : undefined}
           variant={variant}
         />
         {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
         {children}
       </Box>
-      {actions && <Actions height={gutters()}>{actions}</Actions>}
+      {actions && (
+        <Actions height={gutters()} gap={0}>
+          {actions}
+        </Actions>
+      )}
     </Box>
   );
 };

@@ -7,14 +7,17 @@ type CalloutContributionModel = Identifiable & {
       displayName: string;
       description?: string;
       url: string;
-    }
-  }
+    };
+    comments: {
+      id: string;
+    };
+  };
   whiteboard?: {
     id: string;
     profile: {
       preview?: { uri: string };
-    }
-  }
-}
+    };
+  };
+};
 
 export default CalloutContributionModel;

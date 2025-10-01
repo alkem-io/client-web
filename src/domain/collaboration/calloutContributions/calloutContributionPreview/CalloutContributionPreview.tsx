@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
  * Properties that a Preview Contribution component must receive
  */
 export interface CalloutContributionPreviewComponentProps {
+  callout: CalloutDetailsModelExtended;
   contribution: CalloutContributionModel | undefined;
   onOpenContribution: () => void;
   loading?: boolean;
@@ -79,13 +80,11 @@ const CalloutContributionPreview = ({
     <Skeleton variant="text" width={gutters(12)(theme)} />
   ) : (
     (contributionType === CalloutContributionType.Post && contribution?.post?.profile.displayName) ||
-    (contributionType === CalloutContributionType.Whiteboard &&
-      contribution?.whiteboard?.profile.displayName)
+    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.displayName)
   );
 
   const author =
-    (contributionType === CalloutContributionType.Post &&
-      contribution?.post?.createdBy?.profile.displayName) ||
+    (contributionType === CalloutContributionType.Post && contribution?.post?.createdBy?.profile.displayName) ||
     (contributionType === CalloutContributionType.Whiteboard &&
       contribution?.whiteboard?.createdBy?.profile.displayName);
 
@@ -98,10 +97,8 @@ const CalloutContributionPreview = ({
       formatDateTime(contribution.whiteboard.createdDate));
 
   const contributionUrl =
-    (contributionType === CalloutContributionType.Post &&
-      contribution?.post?.profile.url) ||
-    (contributionType === CalloutContributionType.Whiteboard &&
-      contribution?.whiteboard?.profile.url);
+    (contributionType === CalloutContributionType.Post && contribution?.post?.profile.url) ||
+    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.url);
   return (
     <Gutters>
       <PageContentBlock>
@@ -131,7 +128,12 @@ const CalloutContributionPreview = ({
             </>
           }
         />
-        <PreviewComponent contribution={contribution} loading={loading} onOpenContribution={() => setContributionDialogOpen(true)} />
+        <PreviewComponent
+          callout={callout}
+          contribution={contribution}
+          loading={loading}
+          onOpenContribution={() => setContributionDialogOpen(true)}
+        />
         <DialogComponent
           calloutsSetId={callout.calloutsSetId}
           calloutId={callout.id}

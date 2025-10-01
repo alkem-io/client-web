@@ -1,111 +1,101 @@
-import { Box } from '@mui/material';
+import { Box, Button, styled, useTheme } from '@mui/material';
 import CalloutContributionModel from '../CalloutContributionModel';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
+import CalloutContributionCommentsContainer, {
+  CalloutContributionCommentsContainerProps,
+} from '../commentsToContribution/CalloutContributionCommentsContainer';
+import Gutters from '@/core/ui/grid/Gutters';
 
 interface CalloutContributionPreviewPostProps {
+  callout: CalloutContributionCommentsContainerProps['callout']; // Need callout in this contribution preview to check the callout settings about comments inside contributions
   contribution: CalloutContributionModel | undefined;
   loading?: boolean;
 }
 
-const POST_COMMENTS_PROPORTION = { post: 4, comments: 1 } as const;
+const POST_COMMENTS_PROPORTION = { post: 2, comments: 1 } as const;
+const MIN_HEIGHT_DESCRIPTION_GUTTERS = 10; // Minimum height when the description is very short, if long it will grow and expand the entire dialog
+const MAX_HEIGHT_COMMENTS_DESCRIPTION_IS_SHORT = 300; // Maximum height for comments when the description is very short, if description is long comments will grow together with them
 
-const CalloutContributionPreviewPost = ({ contribution }: CalloutContributionPreviewPostProps) => {
+const PostContentWrapper = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  padding: gutters()(theme),
+  flex: POST_COMMENTS_PROPORTION.post,
+  minHeight: gutters(MIN_HEIGHT_DESCRIPTION_GUTTERS)(theme),
+}));
+
+const CommentsExpander = styled(Button)(({ theme }) => ({
+  borderRadius: 0,
+  border: 0,
+  width: gutters()(theme),
+  minWidth: 0,
+  padding: 0,
+  color: theme.palette.divider,
+  // Icon in the button must have preserveAspectRatio="none"
+  '& > svg': {
+    height: gutters(3)(theme),
+    width: gutters()(theme),
+  },
+}));
+
+const CalloutContributionPreviewPost = ({ callout, contribution, loading }: CalloutContributionPreviewPostProps) => {
+  const theme = useTheme();
   const [commentsExpanded, setCommentsExpanded] = useState(false);
+
+  const postContentRef = useRef<HTMLDivElement>(null);
+  const [postContentHeight, setPostContentHeight] = useState(0);
+
+  // Capture the height when PostContentWrapper renders and comments are not expanded
+  useEffect(() => {
+    if (!commentsExpanded && postContentRef.current) {
+      const height = postContentRef.current.offsetHeight;
+      setPostContentHeight(height);
+    }
+  }, [commentsExpanded, contribution]);
+
+  // Calculate max height for comments (minimum gutters(10), or postContentHeight if higher)
+  const commentsMaxHeight = useMemo(() => {
+    const minHeight = MAX_HEIGHT_COMMENTS_DESCRIPTION_IS_SHORT;
+    return Math.max(minHeight, postContentHeight);
+  }, [postContentHeight, theme]);
 
   return (
     <Box margin={gutters(-1)} display="flex" flexDirection="row">
-      <Box bgcolor={theme => theme.palette.background.default} padding={gutters()} flex={POST_COMMENTS_PROPORTION.post}>
+      <PostContentWrapper ref={postContentRef}>
         <WrapperMarkdown>{contribution?.post?.profile.description ?? ''}</WrapperMarkdown>
-      </Box>
+      </PostContentWrapper>
+      <CommentsExpander onClick={() => setCommentsExpanded(!commentsExpanded)}>
+        {commentsExpanded ? (
+          <KeyboardDoubleArrowRightIcon preserveAspectRatio="none" />
+        ) : (
+          <KeyboardDoubleArrowLeftIcon preserveAspectRatio="none" />
+        )}
+      </CommentsExpander>
       <Box flex={commentsExpanded ? POST_COMMENTS_PROPORTION.comments : 0}>
         {commentsExpanded && (
-          <Box>
-            TODO: Comments here...
-            {/*
-            <CommentsComponent
-
-              const commentsEnabled = data?.lookup.callout?.settings?.contribution?.commentsEnabled ?? false;
-
-              const commentsContainerRef = useRef<HTMLElement>(null);
-              const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
-              const wasScrolledToBottomRef = useRef(true);
-              const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
-
-              const deleteComment = (id: string) => (comments.roomId ? actions.deleteMessage(comments.roomId, id) : undefined);
-              const onDeleteComment = (id: string) => setCommentToBeDeleted(id);
-                          const commentReactionsMutations = useCommentReactionsMutations(comments.roomId);
-
-              const handleCommentsScroll = () => {
-                prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
-              };
-
-              const canPostComments = permissions.canPostComments && commentsEnabled;
-
-
-            <ScrollerWithGradient
-              maxHeight={COMMENTS_CONTAINER_HEIGHT}
-              minHeight={0}
-              marginRight={1}
-              flexGrow={1}
-              scrollerRef={commentsContainerRef}
-              onScroll={handleCommentsScroll}
-            >
-              <Gutters gap={0}>
-                <MessagesThread
-                  messages={comments.messages}
-                  vcInteractions={comments.vcInteractions}
-                  vcEnabled={vcEnabled}
-                  canPostMessages={canPostComments}
-                  onReply={actions.postReply}
-                  canDeleteMessage={permissions.canDeleteComment}
-                  onDeleteMessage={onDeleteComment}
-                  canAddReaction={permissions.canAddReaction}
-                  {...commentReactionsMutations}
-                />
-              </Gutters>
-            </ScrollerWithGradient>
-            <Box>
-              {canPostComments && (
-                <PostMessageToCommentsForm
-                  vcEnabled={vcEnabled}
-                  placeholder={t('pages.post.dashboard.comment.placeholder')}
-                  onPostComment={actions.postMessage}
+          <Gutters disableSidePadding disableGap height="100%">
+            <CalloutContributionCommentsContainer callout={callout} contribution={contribution}>
+              {props => (
+                <CommentsComponent
+                  {...props}
+                  commentsEnabled={props.commentsEnabled}
+                  loading={loading || props.loading}
+                  height="100%"
+                  fullHeight
+                  maxHeight={commentsMaxHeight}
+                  isMember={false /* //!! myMembershipStatus === CommunityMembershipStatus.Member*/}
                 />
               )}
-              {!canPostComments && (
-                <Box paddingY={4} display="flex" justifyContent="center">
-                  <BlockSectionTitle>{t('components.discussion.cant-post')}</BlockSectionTitle>
-                </Box>
-              )}
-            </Box>
-            */}
-          </Box>
+            </CalloutContributionCommentsContainer>
+          </Gutters>
         )}
-
       </Box>
-      {/*<ConfirmationDialog
-        actions={{
-          onCancel: () => setCommentToBeDeleted(undefined),
-          onConfirm: async () => {
-            if (commentToBeDeleted) {
-              await deleteComment(commentToBeDeleted);
-            }
-            setCommentToBeDeleted(undefined);
-          },
-        }}
-        entities={{
-          confirmButtonTextId: 'buttons.delete',
-          contentId: 'components.confirmation-dialog.delete-comment.confirmation-text',
-          titleId: 'components.confirmation-dialog.delete-comment.confirmation-title',
-        }}
-        options={{
-          show: Boolean(commentToBeDeleted),
-        }}
-      />*/}
     </Box>
   );
-}
+};
 
 export default CalloutContributionPreviewPost;

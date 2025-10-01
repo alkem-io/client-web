@@ -7475,6 +7475,93 @@ export type UpdateContributionsSortOrderMutationOptions = Apollo.BaseMutationOpt
   SchemaTypes.UpdateContributionsSortOrderMutation,
   SchemaTypes.UpdateContributionsSortOrderMutationVariables
 >;
+export const CalloutContributionCommentsDocument = gql`
+  query CalloutContributionComments($contributionId: UUID!, $includePost: Boolean = false) {
+    lookup {
+      contribution(ID: $contributionId) {
+        id
+        post @include(if: $includePost) {
+          id
+          comments {
+            ...CommentsWithMessages
+          }
+        }
+      }
+    }
+  }
+  ${CommentsWithMessagesFragmentDoc}
+`;
+
+/**
+ * __useCalloutContributionCommentsQuery__
+ *
+ * To run a query within a React component, call `useCalloutContributionCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutContributionCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutContributionCommentsQuery({
+ *   variables: {
+ *      contributionId: // value for 'contributionId'
+ *      includePost: // value for 'includePost'
+ *   },
+ * });
+ */
+export function useCalloutContributionCommentsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutContributionCommentsQuery,
+    SchemaTypes.CalloutContributionCommentsQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutContributionCommentsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CalloutContributionCommentsQuery,
+    SchemaTypes.CalloutContributionCommentsQueryVariables
+  >(CalloutContributionCommentsDocument, options);
+}
+export function useCalloutContributionCommentsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutContributionCommentsQuery,
+    SchemaTypes.CalloutContributionCommentsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CalloutContributionCommentsQuery,
+    SchemaTypes.CalloutContributionCommentsQueryVariables
+  >(CalloutContributionCommentsDocument, options);
+}
+export function useCalloutContributionCommentsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalloutContributionCommentsQuery,
+        SchemaTypes.CalloutContributionCommentsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.CalloutContributionCommentsQuery,
+    SchemaTypes.CalloutContributionCommentsQueryVariables
+  >(CalloutContributionCommentsDocument, options);
+}
+export type CalloutContributionCommentsQueryHookResult = ReturnType<typeof useCalloutContributionCommentsQuery>;
+export type CalloutContributionCommentsLazyQueryHookResult = ReturnType<typeof useCalloutContributionCommentsLazyQuery>;
+export type CalloutContributionCommentsSuspenseQueryHookResult = ReturnType<
+  typeof useCalloutContributionCommentsSuspenseQuery
+>;
+export type CalloutContributionCommentsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutContributionCommentsQuery,
+  SchemaTypes.CalloutContributionCommentsQueryVariables
+>;
+export function refetchCalloutContributionCommentsQuery(
+  variables: SchemaTypes.CalloutContributionCommentsQueryVariables
+) {
+  return { query: CalloutContributionCommentsDocument, variables: variables };
+}
 export const CreateLinkOnCalloutDocument = gql`
   mutation CreateLinkOnCallout($calloutId: UUID!, $link: CreateLinkInput!) {
     createContributionOnCallout(contributionData: { calloutID: $calloutId, type: LINK, link: $link }) {
