@@ -4,6 +4,7 @@ export enum SubspaceDialog {
   Index = 'index',
   Subspaces = 'subspaces',
   Contributors = 'contributors',
+  VideoCall = 'videoCall',
   Activity = 'activity',
   Timeline = 'calendar',
   Share = 'share',
