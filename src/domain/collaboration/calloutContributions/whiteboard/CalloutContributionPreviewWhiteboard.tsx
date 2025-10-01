@@ -6,13 +6,11 @@ import { CalloutContributionPreviewComponentProps } from '../calloutContribution
 interface CalloutContributionPreviewWhiteboardProps extends CalloutContributionPreviewComponentProps { }
 
 const CalloutContributionPreviewWhiteboard = ({ contribution, onOpenContribution, loading }: CalloutContributionPreviewWhiteboardProps) => {
-
   return (
     <Box padding={gutters()} margin={gutters(-1)}>
       <WhiteboardPreview
         whiteboard={contribution?.whiteboard}
         onClick={onOpenContribution}
-        /*onClose={() => setContributionDialogOpen(false)}*/
       />
     </Box>
   );

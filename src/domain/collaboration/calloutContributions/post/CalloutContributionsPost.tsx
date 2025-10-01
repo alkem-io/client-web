@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
 import { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import CreateContributionButton from '../CreateContributionButton';
-import PostCard, { PostCardPost } from './PostCard';
+import PostCard, { PostContribution } from './PostCard';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import CalloutBlockFooter from '../../callout/calloutBlock/CalloutBlockFooter';
 import { useScreenSize } from '@/core/ui/grid/constants';
@@ -12,43 +12,16 @@ import {
   LocationStateKeyCachedCallout,
 } from '@/domain/collaboration/CalloutPage/CalloutPage';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
-import { compact, sortBy } from 'lodash';
 import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
 import CardsExpandableContainer from '../../callout/components/CardsExpandableContainer';
 
-interface PostContribution {
-  id: string;
-  createdDate: Date;
-  profile: {
-    id: string;
-    url: string;
-    displayName: string;
-    /*    description?: string | undefined;
-    visuals: {
-      id: string;
-      uri: string;
-    }[];
-    references?: {
-      id: string;
-      name: string;
-      uri: string;
-      description?: string;
-    }[];*/
-  };
-}
-
 interface CalloutContributionsPostProps extends BaseCalloutViewProps {
   callout: CalloutDetailsModelExtended;
   contributions: {
-    items:
-      | {
-          id: string;
-          sortOrder: number;
-          post?: PostContribution;
-        }[]
-      | undefined;
+    items: PostContribution[] | undefined;
     total: number;
+    fetchAll?: () => Promise<unknown>
   };
   loading?: boolean;
 }
@@ -70,26 +43,6 @@ const CalloutContributionsPost = ({
   const navigate = useNavigate();
   const { isSmallScreen } = useScreenSize();
 
-  const { posts, postNames } = useMemo(
-    () => ({
-      posts: sortBy(
-        compact(
-          contributions.items?.map(
-            contribution =>
-              contribution.post && {
-                ...contribution.post,
-                sortOrder: contribution.sortOrder,
-                contributionId: contribution.id,
-              }
-          )
-        ),
-        'sortOrder'
-      ),
-      postNames: compact(contributions.items?.map(contribution => contribution.post?.profile.displayName)),
-    }),
-    [contributions]
-  );
-
   const [createPost, { loading: creatingPost }] = useCreatePostOnCalloutMutation();
 
   const onCreatePost = async (post: CreatePostInput) => {
@@ -108,23 +61,25 @@ const CalloutContributionsPost = ({
   };
   const createButton = canCreateContribution ? <CreateContributionButton onClick={openCreateDialog} /> : undefined;
 
-  const navigateToPost = (post: PostCardPost) => {
+  const navigateToPost = (postContribution: PostContribution) => {
     const state: LocationStateCachedCallout = {
       [LocationStateKeyCachedCallout]: callout,
       keepScroll: true,
     };
-    navigate(post.profile.url, { state });
+    if (postContribution.post) {
+      navigate(postContribution.post?.profile.url, { state });
+    }
   };
 
   return (
     <Gutters ref={ref}>
       <CardsExpandableContainer
-        items={posts}
-        pagination={{ total: contributions.total }}
+        items={contributions.items}
+        pagination={{ total: contributions.total, fetchAll: async () => await contributions.fetchAll?.() }}
         loading={loading}
         createButton={createButton}
       >
-        {post => <PostCard post={post} onClick={navigateToPost} />}
+        {item => <PostCard postContribution={item} onClick={navigateToPost} />}
       </CardsExpandableContainer>
       {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
         <CalloutBlockFooter contributionsCount={contributions.total} onCreate={openCreateDialog} />
@@ -133,7 +88,6 @@ const CalloutContributionsPost = ({
         open={postDialogOpen}
         onClose={closeCreateDialog}
         onCreate={onCreatePost}
-        postNames={postNames}
         calloutDisplayName={callout.framing.profile.displayName}
         calloutId={callout.id}
         defaultDisplayName={callout.contributionDefaults.defaultDisplayName}

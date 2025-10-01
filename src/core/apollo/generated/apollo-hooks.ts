@@ -970,35 +970,7 @@ export const PostSettingsCalloutFragmentDoc = gql`
         id
       }
     }
-    postNames: contributions {
-      post {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        profile {
-          id
-          displayName
-          description
-          tagset {
-            ...TagsetDetails
-          }
-          references {
-            id
-            name
-            uri
-            description
-          }
-          visuals {
-            ...VisualModel
-          }
-        }
-      }
-    }
   }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualModelFragmentDoc}
 `;
 export const WhiteboardContentFragmentDoc = gql`
   fragment WhiteboardContent on Whiteboard {

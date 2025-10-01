@@ -131,7 +131,7 @@ const CalloutContributionPreview = ({
             </>
           }
         />
-        <PreviewComponent contribution={contribution} loading={loading} onOpenContribution={() => setContributionDialogOpen(false)} />
+        <PreviewComponent contribution={contribution} loading={loading} onOpenContribution={() => setContributionDialogOpen(true)} />
         <DialogComponent
           calloutsSetId={callout.calloutsSetId}
           calloutId={callout.id}

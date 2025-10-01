@@ -1,5 +1,5 @@
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { Autocomplete, Button, DialogActions, DialogContent, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -23,9 +23,11 @@ import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/Sto
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '@/core/utils/links';
-import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { CalloutContributionPreviewDialogProps } from '../calloutContributionPreview/CalloutContributionPreview';
+import { EditOutlined } from '@mui/icons-material';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 interface CalloutContributionDialogPostProps extends CalloutContributionPreviewDialogProps {
 
@@ -53,6 +55,7 @@ const CalloutContributionDialogPost = ({
   const [post, setPost] = useState<PostFormOutput>();
   const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false);
   const [closeConfirmDialogOpen, setCloseConfirmDialogOpen] = useState(false);
+  const [canSave, setCanSave] = useState(false);
 
   const toPostFormInput = (post?: PostSettingsFragment): PostFormInput | undefined =>
     post && {
@@ -100,7 +103,7 @@ const CalloutContributionDialogPost = ({
     post && postSettings.post && !postSettings.updating && !postSettings.deleting && !isMovingContribution
   );
 
-  const handleDelete = useCallback(async () => {
+  const handleDelete = async () => {
     if (!postSettings.post || !post) {
       return;
     }
@@ -110,11 +113,15 @@ const CalloutContributionDialogPost = ({
     onClose();
 
     await postSettings.handleDelete(postSettings.post.id);
-  }, [postSettings, post, onClose]);
+  };
 
-  const onCloseEdit = useCallback(() => {
-    setCloseConfirmDialogOpen(true);
-  }, []);
+  const onCloseEdit = () => {
+    if (canSave) {
+      setCloseConfirmDialogOpen(true);
+    } else {
+      onClose();
+    }
+  };
 
   const [handleUpdate, loading] = useLoadingState(async (shouldUpdate: boolean) => {
     if (!postSettings.contributionId || !postSettings.post || !post) {
@@ -143,37 +150,38 @@ const CalloutContributionDialogPost = ({
       } else if (!shouldUpdate) {
         notify(t('post-edit.postLocation.success'), 'success');
       }
-      const postURL = normalizeLink(data?.moveContributionToCallout.post?.profile.url ?? '');
       await refetchCallouts();
-      navigate(`${postURL}/settings`, { replace: true });
+      const postUrl = data?.moveContributionToCallout.post?.profile.url;
+      if (postUrl) {
+        navigate(buildSettingsUrl(normalizeLink(postUrl)), { replace: true });
+      }
     }
   });
 
   return (
-    <DialogWithGrid
-      open={open}
-      columns={12}
-      onClose={onCloseEdit}
-      disableScrollLock
-      aria-labelledby="post-dialog-title"
-    >
-      <DialogHeader id="post-dialog-title" onClose={onCloseEdit} />
-      <DialogContent>
-        <StorageConfigContextProvider locationType="post" postId={postId}>
-          <PostForm
-            edit
-            loading={postSettings.loading || postSettings.updating || isMovingContribution}
-            post={toPostFormInput(postSettings.post)}
-            postNames={postSettings.postsNames}
-            onChange={setPost}
-            onAddReference={postSettings.handleAddReference}
-            onRemoveReference={postSettings.handleRemoveReference}
-            tags={postSettings.post?.profile.tagset?.tags}
-          >
-            {({ isValid, dirty }) => {
-              const canSave = isPostLoaded && dirty && isValid;
-
-              return (
+    <>
+      <DialogWithGrid
+        open={open}
+        columns={12}
+        onClose={onCloseEdit}
+        aria-labelledby="post-dialog-title"
+      >
+        <DialogHeader id="post-dialog-title" onClose={onCloseEdit} icon={<EditOutlined />}>
+          {t('post-edit.edit')}
+        </DialogHeader>
+        <DialogContent>
+          <StorageConfigContextProvider locationType="post" postId={postId}>
+            <PostForm
+              edit
+              loading={postSettings.loading || postSettings.updating || isMovingContribution}
+              post={toPostFormInput(postSettings.post)}
+              onChange={setPost}
+              canSave={setCanSave}
+              onAddReference={postSettings.handleAddReference}
+              onRemoveReference={postSettings.handleRemoveReference}
+              tags={postSettings.post?.profile.tagset?.tags}
+            >
+              {() => (
                 <>
                   <Box>
                     <Typography variant={'h4'}>{t('common.visuals')}</Typography>
@@ -204,65 +212,64 @@ const CalloutContributionDialogPost = ({
                       />
                     </Box>
                   )}
-                  <DialogFooter>
-                    <DialogActions>
-                      <Button
-                        aria-label="delete-post"
-                        variant="outlined"
-                        color="error"
-                        disabled={!isPostLoaded}
-                        onClick={() => setDeleteConfirmDialogOpen(true)}
-                      >
-                        {t('buttons.delete')}
-                      </Button>
-                      <Button
-                        variant="contained"
-                        disabled={!canSave && !isMoveEnabled}
-                        loading={loading}
-                        onClick={() => handleUpdate(canSave)}
-                      >
-                        {t('buttons.save')}
-                      </Button>
-                    </DialogActions>
-                  </DialogFooter>
                 </>
-              );
-            }}
-          </PostForm>
-          <ConfirmationDialog
-            actions={{
-              onConfirm: handleDelete,
-              onCancel: () => setDeleteConfirmDialogOpen(false),
-            }}
-            options={{
-              show: Boolean(deleteConfirmDialogOpen),
-            }}
-            entities={{
-              titleId: 'post-edit.delete.title',
-              contentId: 'post-edit.delete.description',
-              confirmButtonTextId: 'buttons.delete',
-            }}
-          />
-          <ConfirmationDialog
-            actions={{
-              onConfirm: () => {
-                setCloseConfirmDialogOpen(false);
-                onClose();
-              },
-              onCancel: () => setCloseConfirmDialogOpen(false),
-            }}
-            options={{
-              show: closeConfirmDialogOpen,
-            }}
-            entities={{
-              titleId: 'post-edit.closeConfirm.title',
-              contentId: 'post-edit.closeConfirm.description',
-              confirmButtonTextId: 'buttons.yes-close',
-            }}
-          />
-        </StorageConfigContextProvider>
-      </DialogContent>
-    </DialogWithGrid>
+              )
+              }
+            </PostForm>
+          </StorageConfigContextProvider>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            aria-label="delete-post"
+            variant="outlined"
+            color="error"
+            disabled={!isPostLoaded}
+            onClick={() => setDeleteConfirmDialogOpen(true)}
+          >
+            {t('buttons.delete')}
+          </Button>
+          <Button
+            variant="contained"
+            disabled={!canSave && !isMoveEnabled}
+            loading={loading}
+            onClick={() => handleUpdate(canSave)}
+          >
+            {t('buttons.save')}
+          </Button>
+        </DialogActions>
+      </DialogWithGrid>
+      <ConfirmationDialog
+        actions={{
+          onConfirm: handleDelete,
+          onCancel: () => setDeleteConfirmDialogOpen(false),
+        }}
+        options={{
+          show: Boolean(deleteConfirmDialogOpen),
+        }}
+        entities={{
+          titleId: 'post-edit.delete.title',
+          contentId: 'post-edit.delete.description',
+          confirmButtonTextId: 'buttons.delete',
+        }}
+      />
+      <ConfirmationDialog
+        actions={{
+          onConfirm: () => {
+            setCloseConfirmDialogOpen(false);
+            onClose();
+          },
+          onCancel: () => setCloseConfirmDialogOpen(false),
+        }}
+        options={{
+          show: closeConfirmDialogOpen,
+        }}
+        entities={{
+          titleId: 'post-edit.closeConfirm.title',
+          contentId: 'post-edit.closeConfirm.description',
+          confirmButtonTextId: 'buttons.yes-close',
+        }}
+      />
+    </>
   );
 };
 

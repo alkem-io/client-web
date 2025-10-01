@@ -14,29 +14,42 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import { isNumber } from 'lodash';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 
-export interface PostCardPost extends Identifiable {
-  profile: {
-    url: string;
-    displayName: string;
-    description?: string;
-    tagset?: { tags: string[] };
-  };
+export interface PostContribution extends Identifiable {
+  post?: {
+    profile: {
+      url: string;
+      displayName: string;
+      description?: string;
+      tagset?: { tags: string[] };
+
+      /*
+     visuals: {
+       id: string;
+       uri: string;
+     }[];
+     references?: {
+       id: string;
+       name: string;
+       uri: string;
+       description?: string;
+     }[];*/
+    };
   bannerNarrow?: VisualModel;
   createdBy?: { profile: { displayName: string } };
   comments?: { messagesCount: number };
   createdDate: string | Date; // Apollo says Date while actually it's a string
-  contributionId: string;
+  };
 }
 
 interface PostCardProps {
-  post: PostCardPost | undefined;
-  onClick: (post: PostCardPost) => void;
+  postContribution: PostContribution | undefined;
+  onClick: (postContribution: PostContribution) => void;
 }
 
-const PostCard = ({ post, onClick }: PostCardProps) => {
-  const handleClick = useCallback(() => post && onClick(post), [onClick, post]);
+const PostCard = ({ postContribution, onClick }: PostCardProps) => {
+  const handleClick = useCallback(() => postContribution && onClick(postContribution), [onClick, postContribution]);
 
-  if (!post) {
+  if (!postContribution || !postContribution.post) {
     return (
       <ContributeCard>
         <CardHeader title={<Skeleton />} iconComponent={PostIcon}>
@@ -49,9 +62,10 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
       </ContributeCard>
     );
   }
+  const post = postContribution.post;
   return (
     <ContributeCard onClick={handleClick}>
-      <CardHeader title={post.profile?.displayName} iconComponent={PostIcon}>
+      <CardHeader title={post.profile.displayName} iconComponent={PostIcon}>
         <CardHeaderCaption>{post.createdBy?.profile.displayName}</CardHeaderCaption>
       </CardHeader>
       <CardDetails>

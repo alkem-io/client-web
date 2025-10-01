@@ -13,7 +13,7 @@ import { Trans, useTranslation } from 'react-i18next';
 const ITEMS_FIRST_PAGE = 4;
 
 interface CardsExpandableContainerProps<Item extends Identifiable> {
-  items: Item[];
+  items: Item[] | undefined;
   pagination?: {
     total: number;
     fetchMore?: () => Promise<unknown>;
@@ -81,7 +81,7 @@ const PaginationExpander = ({ onClick, itemsCount, totalCount }: PaginationExpan
 };
 
 const CardsExpandableContainer = <Item extends Identifiable>({
-  items,
+  items = [],
   pagination,
   loading,
   createButton,
@@ -91,14 +91,18 @@ const CardsExpandableContainer = <Item extends Identifiable>({
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const itemsShown = useMemo(() => {
-    if (items.length <= ITEMS_FIRST_PAGE) {
-      return items;
-    }
-    if (isCollapsed) {
+    if (isCollapsed || !pagination) {
       return items.slice(0, ITEMS_FIRST_PAGE);
     }
+    if (items.length <= pagination?.total) {
+      if (pagination?.fetchAll) {
+        pagination?.fetchAll?.();
+      }
+      return items;
+    }
+
     return items;
-  }, [items, isCollapsed]);
+  }, [items, items.length, isCollapsed]);
 
   return (
     <>

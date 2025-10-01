@@ -145,7 +145,6 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
         onClose={handleClose}
         fullScreen={isSmallScreen}
         fullHeight
-        disableScrollLock
         aria-labelledby="callout-title"
       >
         <DialogContent

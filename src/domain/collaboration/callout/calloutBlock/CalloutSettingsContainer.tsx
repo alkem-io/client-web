@@ -39,7 +39,7 @@ import { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortMode
 import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
 import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 import { FormattedLink } from '../../calloutContributions/link/CalloutContributionsLink';
-import { PostCardPost } from '../../calloutContributions/post/PostCard';
+import { PostContribution } from '../../calloutContributions/post/PostCard';
 import { WhiteboardCardWhiteboard } from '../../calloutContributions/whiteboard/WhiteboardCard';
 import { CalloutSummary } from '../CalloutSummary';
 import { CalloutLayoutEvents } from '../CalloutViewTypes';
@@ -59,7 +59,7 @@ export interface CalloutSettingsContainerProps
     SimpleContainerProps<CalloutSettingsProvided> {
   callout: CalloutDetailsModelExtended;
   items?: {
-    posts?: PostCardPost[];
+    posts?: PostContribution[];
     whiteboards?: WhiteboardCardWhiteboard[];
     links?: FormattedLink[];
   };

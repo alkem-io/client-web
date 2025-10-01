@@ -14,7 +14,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { newReferenceName } from '@/domain/common/reference/newReferenceName';
 import removeFromCache from '@/core/apollo/utils/removeFromCache';
-import { compact } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
@@ -55,6 +54,7 @@ export interface PostSettingsContainerProps {
 
 const usePostSettings = ({
   postId,
+  //!! contributionId
   calloutId,
   skip,
 }: PostSettingsContainerProps): PostSettingsContainerEntities &
@@ -73,8 +73,6 @@ const usePostSettings = ({
   });
 
   const parentCallout = data?.lookup.callout;
-
-  const parentCalloutPostNames = compact(parentCallout?.postNames?.map(post => post.post?.profile.displayName));
 
   const post = data?.lookup.post;
   const postContribution = parentCallout?.contributions?.find(x => x.post && x.post.id === postId);
@@ -139,7 +137,6 @@ const usePostSettings = ({
   return {
     contributionId: postContribution?.id,
     post,
-    postsNames: parentCalloutPostNames,
     parentCallout,
     loading,
     error,
