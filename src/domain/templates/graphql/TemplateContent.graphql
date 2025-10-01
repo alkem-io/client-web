@@ -221,6 +221,7 @@ fragment SpaceTemplateContent_Settings on SpaceSettings {
     allowMembersToCreateSubspaces
     inheritMembershipRights
     allowEventsFromSubspaces
+    allowMembersToVideoCall
   }
 }
 

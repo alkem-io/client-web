@@ -543,6 +543,8 @@ export type AiPersona = {
   id: Scalars['UUID']['output'];
   /** The prompt used by this AI Persona */
   prompt: Array<Scalars['String']['output']>;
+  /** The prompt graph for this AI Persona. */
+  promptGraph?: Maybe<PromptGraph>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -2037,6 +2039,8 @@ export type CreateSpaceSettingsCollaborationInput = {
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
   allowMembersToCreateSubspaces: Scalars['Boolean']['input'];
+  /** Flag to control if members can create video calls in this Space. */
+  allowMembersToVideoCall: Scalars['Boolean']['input'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
   inheritMembershipRights: Scalars['Boolean']['input'];
 };
@@ -5751,6 +5755,115 @@ export enum ProfileType {
   Whiteboard = 'WHITEBOARD',
 }
 
+export type PromptGraph = {
+  __typename?: 'PromptGraph';
+  edges?: Maybe<Array<PromptGraphEdge>>;
+  end?: Maybe<Scalars['String']['output']>;
+  nodes?: Maybe<Array<PromptGraphNode>>;
+  start?: Maybe<Scalars['String']['output']>;
+  state?: Maybe<PromptGraphDataStruct>;
+};
+
+export type PromptGraphDataPoint = {
+  __typename?: 'PromptGraphDataPoint';
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  optional?: Maybe<Scalars['Boolean']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
+export type PromptGraphDataPointInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  optional?: InputMaybe<Scalars['Boolean']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PromptGraphDataStruct = {
+  __typename?: 'PromptGraphDataStruct';
+  properties?: Maybe<Array<PromptGraphDataPoint>>;
+  title?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
+export type PromptGraphDataStructInput = {
+  properties?: InputMaybe<Array<PromptGraphDataPointInput>>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PromptGraphDefinition = {
+  __typename?: 'PromptGraphDefinition';
+  edges?: Maybe<Array<PromptGraphDefinitionEdge>>;
+  end?: Maybe<Scalars['String']['output']>;
+  nodes?: Maybe<Array<PromptGraphDefinitionNode>>;
+  start?: Maybe<Scalars['String']['output']>;
+  state?: Maybe<PromptGraphDefinitionDataStruct>;
+};
+
+export type PromptGraphDefinitionDataPoint = {
+  __typename?: 'PromptGraphDefinitionDataPoint';
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  optional?: Maybe<Scalars['Boolean']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
+export type PromptGraphDefinitionDataStruct = {
+  __typename?: 'PromptGraphDefinitionDataStruct';
+  properties?: Maybe<Array<PromptGraphDefinitionDataPoint>>;
+  title?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
+export type PromptGraphDefinitionEdge = {
+  __typename?: 'PromptGraphDefinitionEdge';
+  from?: Maybe<Scalars['String']['output']>;
+  to?: Maybe<Scalars['String']['output']>;
+};
+
+export type PromptGraphDefinitionNode = {
+  __typename?: 'PromptGraphDefinitionNode';
+  input_variables?: Maybe<Array<Scalars['String']['output']>>;
+  name: Scalars['String']['output'];
+  output?: Maybe<PromptGraphDefinitionDataStruct>;
+  prompt?: Maybe<Scalars['String']['output']>;
+};
+
+export type PromptGraphEdge = {
+  __typename?: 'PromptGraphEdge';
+  from?: Maybe<Scalars['String']['output']>;
+  to?: Maybe<Scalars['String']['output']>;
+};
+
+export type PromptGraphEdgeInput = {
+  from?: InputMaybe<Scalars['String']['input']>;
+  to?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PromptGraphInput = {
+  edges?: InputMaybe<Array<PromptGraphEdgeInput>>;
+  end?: InputMaybe<Scalars['String']['input']>;
+  nodes?: InputMaybe<Array<PromptGraphNodeInput>>;
+  start?: InputMaybe<Scalars['String']['input']>;
+  state?: InputMaybe<PromptGraphDataStructInput>;
+};
+
+export type PromptGraphNode = {
+  __typename?: 'PromptGraphNode';
+  input_variables?: Maybe<Array<Scalars['String']['output']>>;
+  name: Scalars['String']['output'];
+  output?: Maybe<PromptGraphDataStruct>;
+  prompt?: Maybe<Scalars['String']['output']>;
+};
+
+export type PromptGraphNodeInput = {
+  input_variables?: InputMaybe<Array<Scalars['String']['input']>>;
+  name: Scalars['String']['input'];
+  output?: InputMaybe<PromptGraphDataStructInput>;
+  prompt?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type PruneInAppNotificationAdminResult = {
   __typename?: 'PruneInAppNotificationAdminResult';
   /** The number of InAppNotifications that were removed due to exceeding the maximum allowed per user. */
@@ -6814,6 +6927,8 @@ export type SpaceSettingsCollaboration = {
   allowMembersToCreateCallouts: Scalars['Boolean']['output'];
   /** Flag to control if members can create subspaces. */
   allowMembersToCreateSubspaces: Scalars['Boolean']['output'];
+  /** Flag to control if members can create video calls in this Space. */
+  allowMembersToVideoCall: Scalars['Boolean']['output'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
   inheritMembershipRights: Scalars['Boolean']['output'];
 };
@@ -7735,6 +7850,8 @@ export type UpdateSpaceSettingsCollaborationInput = {
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
   allowMembersToCreateSubspaces: Scalars['Boolean']['input'];
+  /** Flag to control if members can create video calls in this Space. */
+  allowMembersToVideoCall: Scalars['Boolean']['input'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
   inheritMembershipRights: Scalars['Boolean']['input'];
 };
@@ -8382,8 +8499,8 @@ export type VirtualContributor = Contributor & {
   account?: Maybe<Account>;
   /** The Agent representing this User. */
   agent: Agent;
-  /** The aiPersona behind this Virtual Contributor */
-  aiPersona: AiPersona;
+  /** The AI persona associated with this Virtual Contributor. */
+  aiPersona?: Maybe<AiPersona>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** Description of the body of knowledge for this VC. */
@@ -8414,6 +8531,8 @@ export type VirtualContributor = Contributor & {
   nameID: Scalars['NameID']['output'];
   /** The profile for this Virtual. */
   profile: Profile;
+  /** Prompt graph definition for this Virtual Contributor. */
+  promptGraphDefinition?: Maybe<PromptGraphDefinition>;
   /** The Virtual Contributor provider. */
   provider: Contributor;
   /** Visibility of the VC in searches. */
@@ -20006,7 +20125,7 @@ export type VirtualContributorQuery = {
             __typename?: 'VirtualContributorSettings';
             privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
           };
-          aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
+          aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -20365,7 +20484,7 @@ export type VirtualContributorProfileWithModelCardQuery = {
                     | undefined;
                 };
               };
-          aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
+          aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
           modelCard: {
             __typename?: 'VirtualContributorModelCard';
             spaceUsage?:
@@ -20430,7 +20549,7 @@ export type VirtualContributorFullFragment = {
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
   };
-  aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
+  aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
   modelCard: {
     __typename?: 'VirtualContributorModelCard';
     spaceUsage?:
@@ -20465,7 +20584,7 @@ export type VirtualContributorWithModelCardFragment = {
   bodyOfKnowledgeID: string;
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   bodyOfKnowledgeDescription?: string | undefined;
-  aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
+  aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
   modelCard: {
     __typename?: 'VirtualContributorModelCard';
     spaceUsage?:
@@ -21810,6 +21929,7 @@ export type SpaceAboutDetailsQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          nameID: string;
           level: SpaceLevel;
           visibility: SpaceVisibility;
           about: {
@@ -24861,7 +24981,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
               }>
             | undefined;
         };
-        aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
+        aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
         modelCard: {
           __typename?: 'VirtualContributorModelCard';
           spaceUsage?:
@@ -24953,7 +25073,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
                     }>
                   | undefined;
               };
-              aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
+              aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
               modelCard: {
                 __typename?: 'VirtualContributorModelCard';
                 spaceUsage?:
@@ -25054,7 +25174,7 @@ export type AvailableVirtualContributorsInSpaceQuery = {
                         }>
                       | undefined;
                   };
-                  aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
+                  aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
                   modelCard: {
                     __typename?: 'VirtualContributorModelCard';
                     spaceUsage?:
@@ -25128,7 +25248,7 @@ export type AvailableVirtualContributorsForRoleSetPaginatedFragment = {
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
-    aiPersona: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine };
+    aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
     modelCard: {
       __typename?: 'VirtualContributorModelCard';
       spaceUsage?:
@@ -25234,6 +25354,7 @@ export type SpaceSettingsQuery = {
               allowMembersToCreateSubspaces: boolean;
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
+              allowMembersToVideoCall: boolean;
             };
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
@@ -25257,6 +25378,7 @@ export type SpaceSettingsFragment = {
     allowMembersToCreateSubspaces: boolean;
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
+    allowMembersToVideoCall: boolean;
   };
 };
 
@@ -25284,6 +25406,7 @@ export type UpdateSpaceSettingsMutation = {
         allowMembersToCreateSubspaces: boolean;
         inheritMembershipRights: boolean;
         allowEventsFromSubspaces: boolean;
+        allowMembersToVideoCall: boolean;
       };
     };
   };
@@ -27082,6 +27205,7 @@ export type TemplateContentQuery = {
                     allowMembersToCreateSubspaces: boolean;
                     inheritMembershipRights: boolean;
                     allowEventsFromSubspaces: boolean;
+                    allowMembersToVideoCall: boolean;
                   };
                 };
                 subspaces: Array<{
@@ -27258,6 +27382,7 @@ export type SpaceTemplateContentQuery = {
               allowMembersToCreateSubspaces: boolean;
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
+              allowMembersToVideoCall: boolean;
             };
           };
           subspaces: Array<{
@@ -27601,6 +27726,7 @@ export type SpaceTemplateContentFragment = {
       allowMembersToCreateSubspaces: boolean;
       inheritMembershipRights: boolean;
       allowEventsFromSubspaces: boolean;
+      allowMembersToVideoCall: boolean;
     };
   };
   subspaces: Array<{
@@ -27738,6 +27864,7 @@ export type SpaceTemplateContent_SettingsFragment = {
     allowMembersToCreateSubspaces: boolean;
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
+    allowMembersToVideoCall: boolean;
   };
 };
 
