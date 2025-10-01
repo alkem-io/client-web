@@ -117,6 +117,6 @@ const VIDEO_CALL_BASE_URL = 'https://meet.jit.si/';
 
 export const buildVideoCallUrl = (spaceId: string, spaceNameId?: string) => {
   // Use spaceNameId if available for better readability, otherwise use spaceId only
-  const meetingIdentifier = spaceNameId ? `${spaceNameId}-${spaceId}` : spaceId;
+  const meetingIdentifier = spaceNameId ? `${spaceNameId}-${encodeURIComponent(spaceId)}` : encodeURIComponent(spaceId);
   return `${VIDEO_CALL_BASE_URL}${meetingIdentifier}`;
 };
