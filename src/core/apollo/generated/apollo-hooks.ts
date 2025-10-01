@@ -16867,6 +16867,7 @@ export const SpaceAboutDetailsDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        nameID
         level
         about {
           ...SpaceAboutDetails

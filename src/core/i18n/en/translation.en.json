@@ -3484,7 +3484,7 @@
   "videoCall": {
     "dialog": {
       "title": "Start Video Call",
-      "content": "This will open a Jitsi video conference in a new tab. You can share this link with other contributors to join the call. They can also join themselves from here."
+      "content": "This will open a Jitsi video conference in a new tab. You can share this link with other contributors to join the call. They can also join from here."
     }
   },
   "createSpace": {

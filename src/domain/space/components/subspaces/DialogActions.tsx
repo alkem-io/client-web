@@ -19,7 +19,6 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import DashboardNavigation from '../spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
 import useNavigate from '@/core/routing/useNavigate';
 import { useVideoCall } from '../../hooks/useVideoCall';
-import { getLastSubspaceNameId } from './utils';
 
 export const DialogActions = () => {
   const { collaborationId } = useUrlResolver();
@@ -27,6 +26,7 @@ export const DialogActions = () => {
   const {
     subspace: {
       id: spaceId,
+      nameId,
       about: {
         profile: { url },
         membership: { communityID: communityId },
@@ -51,9 +51,7 @@ export const DialogActions = () => {
     }
   }, [isSmallScreen]);
 
-  const allParams = useParams();
-  const { dialog: currentDialog } = allParams;
-  const spaceNameId = getLastSubspaceNameId(allParams);
+  const { dialog: currentDialog } = useParams();
 
   if (!currentDialog) {
     return null;
@@ -69,7 +67,7 @@ export const DialogActions = () => {
           open={currentDialog === SubspaceDialog.VideoCall}
           onClose={handleClose}
           spaceId={spaceId}
-          spaceNameId={spaceNameId}
+          spaceNameId={nameId}
         />
       )}
       <ActivityDialog open={currentDialog === SubspaceDialog.Activity} onClose={handleClose} />

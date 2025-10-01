@@ -2039,7 +2039,7 @@ export type CreateSpaceSettingsCollaborationInput = {
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
   allowMembersToCreateSubspaces: Scalars['Boolean']['input'];
-  /** Flag to control if members can create video calls in this Space. Only available for Level 0 (L0) spaces. */
+  /** Flag to control if members can create video calls in this Space. */
   allowMembersToVideoCall: Scalars['Boolean']['input'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
   inheritMembershipRights: Scalars['Boolean']['input'];
@@ -6927,7 +6927,7 @@ export type SpaceSettingsCollaboration = {
   allowMembersToCreateCallouts: Scalars['Boolean']['output'];
   /** Flag to control if members can create subspaces. */
   allowMembersToCreateSubspaces: Scalars['Boolean']['output'];
-  /** Flag to control if members can create video calls in this Space. Only available for Level 0 (L0) spaces. */
+  /** Flag to control if members can create video calls in this Space. */
   allowMembersToVideoCall: Scalars['Boolean']['output'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
   inheritMembershipRights: Scalars['Boolean']['output'];
@@ -7850,7 +7850,7 @@ export type UpdateSpaceSettingsCollaborationInput = {
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
   allowMembersToCreateSubspaces: Scalars['Boolean']['input'];
-  /** Flag to control if members can create video calls in this Space. Only available for Level 0 (L0) spaces. */
+  /** Flag to control if members can create video calls in this Space. */
   allowMembersToVideoCall: Scalars['Boolean']['input'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
   inheritMembershipRights: Scalars['Boolean']['input'];
@@ -21929,6 +21929,7 @@ export type SpaceAboutDetailsQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          nameID: string;
           level: SpaceLevel;
           visibility: SpaceVisibility;
           about: {
