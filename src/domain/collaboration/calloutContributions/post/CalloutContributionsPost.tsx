@@ -95,15 +95,13 @@ const CalloutContributionsPost = ({
   const onCreatePost = async (post: CreatePostInput) => {
     return createPost({
       variables: {
-        postData: {
-          calloutID: callout.id,
-          post: {
-            profileData: {
-              displayName: post.profileData.displayName,
-              description: post.profileData.description,
-            },
-            tags: post.tags,
+        calloutId: callout.id,
+        post: {
+          profileData: {
+            displayName: post.profileData.displayName,
+            description: post.profileData.description,
           },
+          tags: post.tags,
         },
       },
     });

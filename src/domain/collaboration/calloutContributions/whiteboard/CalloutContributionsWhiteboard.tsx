@@ -31,21 +31,23 @@ interface WhiteboardContributionProps {
 interface CalloutContributionsWhiteboardProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
   contributions: {
-    items: {
-      id: string;
-      sortOrder: number;
-      whiteboard?: {
-        id: string;
-        profile: {
+    items:
+      | {
           id: string;
-          url: string;
-          displayName: string;
-          visual?: { id: string; uri: string };
-        };
-      };
-    }[] | undefined;
-    total: number
-  }
+          sortOrder: number;
+          whiteboard?: {
+            id: string;
+            profile: {
+              id: string;
+              url: string;
+              displayName: string;
+              visual?: { id: string; uri: string };
+            };
+          };
+        }[]
+      | undefined;
+    total: number;
+  };
 }
 
 const CalloutContributionsWhiteboard = ({
@@ -82,15 +84,13 @@ const CalloutContributionsWhiteboard = ({
   const createNewWhiteboard = async () => {
     const { data } = await createWhiteboard({
       variables: {
-        input: {
-          calloutID: callout.id,
-          whiteboard: {
-            profile: {
-              displayName:
-                callout.contributionDefaults?.defaultDisplayName ?? t('pages.whiteboard.defaultWhiteboardDisplayName'),
-            },
-            content: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
+        calloutId: callout.id,
+        whiteboard: {
+          profile: {
+            displayName:
+              callout.contributionDefaults?.defaultDisplayName ?? t('pages.whiteboard.defaultWhiteboardDisplayName'),
           },
+          content: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
         },
       },
       refetchQueries: [],

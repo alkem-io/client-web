@@ -1,6 +1,9 @@
-
-mutation CreateLinkOnCallout($input: CreateContributionOnCalloutInput!) {
-  createContributionOnCallout(contributionData: $input) {
+mutation CreateLinkOnCallout($calloutId: UUID!, $link: CreateLinkInput!) {
+  createContributionOnCallout(contributionData: {
+    calloutID: $calloutId,
+    type: LINK,
+    link: $link
+  }) {
     link {
       ...LinkDetails
     }

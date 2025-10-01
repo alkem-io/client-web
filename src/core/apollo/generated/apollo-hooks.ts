@@ -6823,707 +6823,6 @@ export function refetchActivityLogOnCollaborationQuery(
 ) {
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
-export const CalloutContributionDocument = gql`
-  query CalloutContribution(
-    $contributionId: UUID!
-    $includeLink: Boolean! = false
-    $includeWhiteboard: Boolean! = false
-    $includePost: Boolean! = false
-  ) {
-    lookup {
-      contribution(ID: $contributionId) {
-        id
-        sortOrder
-        link @include(if: $includeLink) {
-          ...LinkDetailsWithAuthorization
-        }
-        whiteboard @include(if: $includeWhiteboard) {
-          id
-          profile {
-            id
-            url
-            displayName
-            preview: visual(type: BANNER) {
-              ...VisualModel
-            }
-          }
-          createdDate
-          createdBy {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-        }
-        post @include(if: $includePost) {
-          id
-          createdBy {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-          createdDate
-          comments {
-            id
-            messagesCount
-          }
-          profile {
-            id
-            url
-            displayName
-            description
-            visuals {
-              ...VisualModel
-            }
-            tagset {
-              ...TagsetDetails
-            }
-            references {
-              id
-              name
-              uri
-              description
-            }
-          }
-        }
-      }
-    }
-  }
-  ${LinkDetailsWithAuthorizationFragmentDoc}
-  ${VisualModelFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-
-/**
- * __useCalloutContributionQuery__
- *
- * To run a query within a React component, call `useCalloutContributionQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutContributionQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutContributionQuery({
- *   variables: {
- *      contributionId: // value for 'contributionId'
- *      includeLink: // value for 'includeLink'
- *      includeWhiteboard: // value for 'includeWhiteboard'
- *      includePost: // value for 'includePost'
- *   },
- * });
- */
-export function useCalloutContributionQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CalloutContributionQuery,
-    SchemaTypes.CalloutContributionQueryVariables
-  > &
-    ({ variables: SchemaTypes.CalloutContributionQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalloutContributionQuery, SchemaTypes.CalloutContributionQueryVariables>(
-    CalloutContributionDocument,
-    options
-  );
-}
-export function useCalloutContributionLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CalloutContributionQuery,
-    SchemaTypes.CalloutContributionQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CalloutContributionQuery, SchemaTypes.CalloutContributionQueryVariables>(
-    CalloutContributionDocument,
-    options
-  );
-}
-export function useCalloutContributionSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.CalloutContributionQuery,
-        SchemaTypes.CalloutContributionQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.CalloutContributionQuery, SchemaTypes.CalloutContributionQueryVariables>(
-    CalloutContributionDocument,
-    options
-  );
-}
-export type CalloutContributionQueryHookResult = ReturnType<typeof useCalloutContributionQuery>;
-export type CalloutContributionLazyQueryHookResult = ReturnType<typeof useCalloutContributionLazyQuery>;
-export type CalloutContributionSuspenseQueryHookResult = ReturnType<typeof useCalloutContributionSuspenseQuery>;
-export type CalloutContributionQueryResult = Apollo.QueryResult<
-  SchemaTypes.CalloutContributionQuery,
-  SchemaTypes.CalloutContributionQueryVariables
->;
-export function refetchCalloutContributionQuery(variables: SchemaTypes.CalloutContributionQueryVariables) {
-  return { query: CalloutContributionDocument, variables: variables };
-}
-export const CalloutContributionsDocument = gql`
-  query CalloutContributions(
-    $calloutId: UUID!
-    $includeLink: Boolean! = false
-    $includeWhiteboard: Boolean! = false
-    $includePost: Boolean! = false
-    $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, POST]
-    $first: Int!
-    $after: UUID
-  ) {
-    lookup {
-      callout(ID: $calloutId) {
-        id
-        contributionsPaginated(first: $first, after: $after, filter: { types: $filter }) {
-          contributions {
-            id
-            sortOrder
-            link @include(if: $includeLink) {
-              ...LinkDetailsWithAuthorization
-            }
-            whiteboard @include(if: $includeWhiteboard) {
-              ...CalloutContributionsWhiteboardCard
-            }
-            post @include(if: $includePost) {
-              ...CalloutContributionsPostCard
-            }
-          }
-          pageInfo {
-            ...PageInfo
-          }
-          total
-        }
-      }
-    }
-  }
-  ${LinkDetailsWithAuthorizationFragmentDoc}
-  ${CalloutContributionsWhiteboardCardFragmentDoc}
-  ${CalloutContributionsPostCardFragmentDoc}
-  ${PageInfoFragmentDoc}
-`;
-
-/**
- * __useCalloutContributionsQuery__
- *
- * To run a query within a React component, call `useCalloutContributionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutContributionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutContributionsQuery({
- *   variables: {
- *      calloutId: // value for 'calloutId'
- *      includeLink: // value for 'includeLink'
- *      includeWhiteboard: // value for 'includeWhiteboard'
- *      includePost: // value for 'includePost'
- *      filter: // value for 'filter'
- *      first: // value for 'first'
- *      after: // value for 'after'
- *   },
- * });
- */
-export function useCalloutContributionsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CalloutContributionsQuery,
-    SchemaTypes.CalloutContributionsQueryVariables
-  > &
-    ({ variables: SchemaTypes.CalloutContributionsQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalloutContributionsQuery, SchemaTypes.CalloutContributionsQueryVariables>(
-    CalloutContributionsDocument,
-    options
-  );
-}
-export function useCalloutContributionsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CalloutContributionsQuery,
-    SchemaTypes.CalloutContributionsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CalloutContributionsQuery, SchemaTypes.CalloutContributionsQueryVariables>(
-    CalloutContributionsDocument,
-    options
-  );
-}
-export function useCalloutContributionsSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.CalloutContributionsQuery,
-        SchemaTypes.CalloutContributionsQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.CalloutContributionsQuery, SchemaTypes.CalloutContributionsQueryVariables>(
-    CalloutContributionsDocument,
-    options
-  );
-}
-export type CalloutContributionsQueryHookResult = ReturnType<typeof useCalloutContributionsQuery>;
-export type CalloutContributionsLazyQueryHookResult = ReturnType<typeof useCalloutContributionsLazyQuery>;
-export type CalloutContributionsSuspenseQueryHookResult = ReturnType<typeof useCalloutContributionsSuspenseQuery>;
-export type CalloutContributionsQueryResult = Apollo.QueryResult<
-  SchemaTypes.CalloutContributionsQuery,
-  SchemaTypes.CalloutContributionsQueryVariables
->;
-export function refetchCalloutContributionsQuery(variables: SchemaTypes.CalloutContributionsQueryVariables) {
-  return { query: CalloutContributionsDocument, variables: variables };
-}
-export const CalloutContributionsSortOrderDocument = gql`
-  query CalloutContributionsSortOrder($calloutId: UUID!) {
-    lookup {
-      callout(ID: $calloutId) {
-        id
-        contributions {
-          id
-          sortOrder
-          link {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-          whiteboard {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-          post {
-            id
-            profile {
-              id
-              displayName
-            }
-            comments {
-              id
-              messagesCount
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useCalloutContributionsSortOrderQuery__
- *
- * To run a query within a React component, call `useCalloutContributionsSortOrderQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutContributionsSortOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutContributionsSortOrderQuery({
- *   variables: {
- *      calloutId: // value for 'calloutId'
- *   },
- * });
- */
-export function useCalloutContributionsSortOrderQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CalloutContributionsSortOrderQuery,
-    SchemaTypes.CalloutContributionsSortOrderQueryVariables
-  > &
-    ({ variables: SchemaTypes.CalloutContributionsSortOrderQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.CalloutContributionsSortOrderQuery,
-    SchemaTypes.CalloutContributionsSortOrderQueryVariables
-  >(CalloutContributionsSortOrderDocument, options);
-}
-export function useCalloutContributionsSortOrderLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CalloutContributionsSortOrderQuery,
-    SchemaTypes.CalloutContributionsSortOrderQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.CalloutContributionsSortOrderQuery,
-    SchemaTypes.CalloutContributionsSortOrderQueryVariables
-  >(CalloutContributionsSortOrderDocument, options);
-}
-export function useCalloutContributionsSortOrderSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.CalloutContributionsSortOrderQuery,
-        SchemaTypes.CalloutContributionsSortOrderQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.CalloutContributionsSortOrderQuery,
-    SchemaTypes.CalloutContributionsSortOrderQueryVariables
-  >(CalloutContributionsSortOrderDocument, options);
-}
-export type CalloutContributionsSortOrderQueryHookResult = ReturnType<typeof useCalloutContributionsSortOrderQuery>;
-export type CalloutContributionsSortOrderLazyQueryHookResult = ReturnType<
-  typeof useCalloutContributionsSortOrderLazyQuery
->;
-export type CalloutContributionsSortOrderSuspenseQueryHookResult = ReturnType<
-  typeof useCalloutContributionsSortOrderSuspenseQuery
->;
-export type CalloutContributionsSortOrderQueryResult = Apollo.QueryResult<
-  SchemaTypes.CalloutContributionsSortOrderQuery,
-  SchemaTypes.CalloutContributionsSortOrderQueryVariables
->;
-export function refetchCalloutContributionsSortOrderQuery(
-  variables: SchemaTypes.CalloutContributionsSortOrderQueryVariables
-) {
-  return { query: CalloutContributionsSortOrderDocument, variables: variables };
-}
-export const UpdateContributionsSortOrderDocument = gql`
-  mutation UpdateContributionsSortOrder($calloutID: UUID!, $contributionIds: [UUID!]!) {
-    updateContributionsSortOrder(sortOrderData: { calloutID: $calloutID, contributionIDs: $contributionIds }) {
-      id
-      sortOrder
-    }
-  }
-`;
-export type UpdateContributionsSortOrderMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateContributionsSortOrderMutation,
-  SchemaTypes.UpdateContributionsSortOrderMutationVariables
->;
-
-/**
- * __useUpdateContributionsSortOrderMutation__
- *
- * To run a mutation, you first call `useUpdateContributionsSortOrderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateContributionsSortOrderMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateContributionsSortOrderMutation, { data, loading, error }] = useUpdateContributionsSortOrderMutation({
- *   variables: {
- *      calloutID: // value for 'calloutID'
- *      contributionIds: // value for 'contributionIds'
- *   },
- * });
- */
-export function useUpdateContributionsSortOrderMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateContributionsSortOrderMutation,
-    SchemaTypes.UpdateContributionsSortOrderMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateContributionsSortOrderMutation,
-    SchemaTypes.UpdateContributionsSortOrderMutationVariables
-  >(UpdateContributionsSortOrderDocument, options);
-}
-export type UpdateContributionsSortOrderMutationHookResult = ReturnType<typeof useUpdateContributionsSortOrderMutation>;
-export type UpdateContributionsSortOrderMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateContributionsSortOrderMutation>;
-export type UpdateContributionsSortOrderMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateContributionsSortOrderMutation,
-  SchemaTypes.UpdateContributionsSortOrderMutationVariables
->;
-export const CreateLinkOnCalloutDocument = gql`
-  mutation CreateLinkOnCallout($input: CreateContributionOnCalloutInput!) {
-    createContributionOnCallout(contributionData: $input) {
-      link {
-        ...LinkDetails
-      }
-    }
-  }
-  ${LinkDetailsFragmentDoc}
-`;
-export type CreateLinkOnCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateLinkOnCalloutMutation,
-  SchemaTypes.CreateLinkOnCalloutMutationVariables
->;
-
-/**
- * __useCreateLinkOnCalloutMutation__
- *
- * To run a mutation, you first call `useCreateLinkOnCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateLinkOnCalloutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createLinkOnCalloutMutation, { data, loading, error }] = useCreateLinkOnCalloutMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateLinkOnCalloutMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateLinkOnCalloutMutation,
-    SchemaTypes.CreateLinkOnCalloutMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateLinkOnCalloutMutation, SchemaTypes.CreateLinkOnCalloutMutationVariables>(
-    CreateLinkOnCalloutDocument,
-    options
-  );
-}
-export type CreateLinkOnCalloutMutationHookResult = ReturnType<typeof useCreateLinkOnCalloutMutation>;
-export type CreateLinkOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateLinkOnCalloutMutation>;
-export type CreateLinkOnCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateLinkOnCalloutMutation,
-  SchemaTypes.CreateLinkOnCalloutMutationVariables
->;
-export const DeleteLinkDocument = gql`
-  mutation deleteLink($input: DeleteLinkInput!) {
-    deleteLink(deleteData: $input) {
-      id
-    }
-  }
-`;
-export type DeleteLinkMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteLinkMutation,
-  SchemaTypes.DeleteLinkMutationVariables
->;
-
-/**
- * __useDeleteLinkMutation__
- *
- * To run a mutation, you first call `useDeleteLinkMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteLinkMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteLinkMutation, { data, loading, error }] = useDeleteLinkMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteLinkMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteLinkMutation, SchemaTypes.DeleteLinkMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.DeleteLinkMutation, SchemaTypes.DeleteLinkMutationVariables>(
-    DeleteLinkDocument,
-    options
-  );
-}
-export type DeleteLinkMutationHookResult = ReturnType<typeof useDeleteLinkMutation>;
-export type DeleteLinkMutationResult = Apollo.MutationResult<SchemaTypes.DeleteLinkMutation>;
-export type DeleteLinkMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteLinkMutation,
-  SchemaTypes.DeleteLinkMutationVariables
->;
-export const UpdateLinkDocument = gql`
-  mutation updateLink($input: UpdateLinkInput!) {
-    updateLink(linkData: $input) {
-      ...LinkDetails
-    }
-  }
-  ${LinkDetailsFragmentDoc}
-`;
-export type UpdateLinkMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateLinkMutation,
-  SchemaTypes.UpdateLinkMutationVariables
->;
-
-/**
- * __useUpdateLinkMutation__
- *
- * To run a mutation, you first call `useUpdateLinkMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateLinkMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateLinkMutation, { data, loading, error }] = useUpdateLinkMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateLinkMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateLinkMutation, SchemaTypes.UpdateLinkMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateLinkMutation, SchemaTypes.UpdateLinkMutationVariables>(
-    UpdateLinkDocument,
-    options
-  );
-}
-export type UpdateLinkMutationHookResult = ReturnType<typeof useUpdateLinkMutation>;
-export type UpdateLinkMutationResult = Apollo.MutationResult<SchemaTypes.UpdateLinkMutation>;
-export type UpdateLinkMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateLinkMutation,
-  SchemaTypes.UpdateLinkMutationVariables
->;
-export const CalloutPostCreatedDocument = gql`
-  subscription CalloutPostCreated($calloutId: UUID!) {
-    calloutPostCreated(calloutID: $calloutId) {
-      contributionID
-      sortOrder
-      post {
-        ...CalloutContributionsPostCard
-      }
-    }
-  }
-  ${CalloutContributionsPostCardFragmentDoc}
-`;
-
-/**
- * __useCalloutPostCreatedSubscription__
- *
- * To run a query within a React component, call `useCalloutPostCreatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCalloutPostCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutPostCreatedSubscription({
- *   variables: {
- *      calloutId: // value for 'calloutId'
- *   },
- * });
- */
-export function useCalloutPostCreatedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CalloutPostCreatedSubscription,
-    SchemaTypes.CalloutPostCreatedSubscriptionVariables
-  > &
-    ({ variables: SchemaTypes.CalloutPostCreatedSubscriptionVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.CalloutPostCreatedSubscription,
-    SchemaTypes.CalloutPostCreatedSubscriptionVariables
-  >(CalloutPostCreatedDocument, options);
-}
-export type CalloutPostCreatedSubscriptionHookResult = ReturnType<typeof useCalloutPostCreatedSubscription>;
-export type CalloutPostCreatedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CalloutPostCreatedSubscription>;
-export const CreatePostOnCalloutDocument = gql`
-  mutation CreatePostOnCallout($postData: CreateContributionOnCalloutInput!) {
-    createContributionOnCallout(contributionData: $postData) {
-      post {
-        id
-      }
-    }
-  }
-`;
-export type CreatePostOnCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreatePostOnCalloutMutation,
-  SchemaTypes.CreatePostOnCalloutMutationVariables
->;
-
-/**
- * __useCreatePostOnCalloutMutation__
- *
- * To run a mutation, you first call `useCreatePostOnCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreatePostOnCalloutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createPostOnCalloutMutation, { data, loading, error }] = useCreatePostOnCalloutMutation({
- *   variables: {
- *      postData: // value for 'postData'
- *   },
- * });
- */
-export function useCreatePostOnCalloutMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreatePostOnCalloutMutation,
-    SchemaTypes.CreatePostOnCalloutMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreatePostOnCalloutMutation, SchemaTypes.CreatePostOnCalloutMutationVariables>(
-    CreatePostOnCalloutDocument,
-    options
-  );
-}
-export type CreatePostOnCalloutMutationHookResult = ReturnType<typeof useCreatePostOnCalloutMutation>;
-export type CreatePostOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreatePostOnCalloutMutation>;
-export type CreatePostOnCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreatePostOnCalloutMutation,
-  SchemaTypes.CreatePostOnCalloutMutationVariables
->;
-export const CreateWhiteboardOnCalloutDocument = gql`
-  mutation CreateWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
-    createContributionOnCallout(contributionData: $input) {
-      whiteboard {
-        ...WhiteboardDetails
-        profile {
-          url
-        }
-      }
-    }
-  }
-  ${WhiteboardDetailsFragmentDoc}
-`;
-export type CreateWhiteboardOnCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateWhiteboardOnCalloutMutation,
-  SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
->;
-
-/**
- * __useCreateWhiteboardOnCalloutMutation__
- *
- * To run a mutation, you first call `useCreateWhiteboardOnCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateWhiteboardOnCalloutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createWhiteboardOnCalloutMutation, { data, loading, error }] = useCreateWhiteboardOnCalloutMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateWhiteboardOnCalloutMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateWhiteboardOnCalloutMutation,
-    SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CreateWhiteboardOnCalloutMutation,
-    SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
-  >(CreateWhiteboardOnCalloutDocument, options);
-}
-export type CreateWhiteboardOnCalloutMutationHookResult = ReturnType<typeof useCreateWhiteboardOnCalloutMutation>;
-export type CreateWhiteboardOnCalloutMutationResult =
-  Apollo.MutationResult<SchemaTypes.CreateWhiteboardOnCalloutMutation>;
-export type CreateWhiteboardOnCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateWhiteboardOnCalloutMutation,
-  SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
->;
 export const CalloutContentDocument = gql`
   query CalloutContent($calloutId: UUID!) {
     lookup {
@@ -7789,6 +7088,712 @@ export type DeleteCalloutMutationResult = Apollo.MutationResult<SchemaTypes.Dele
 export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutMutation,
   SchemaTypes.DeleteCalloutMutationVariables
+>;
+export const CalloutContributionsDocument = gql`
+  query CalloutContributions(
+    $calloutId: UUID!
+    $includeLink: Boolean! = false
+    $includeWhiteboard: Boolean! = false
+    $includePost: Boolean! = false
+    $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, POST]
+    $first: Int!
+    $after: UUID
+  ) {
+    lookup {
+      callout(ID: $calloutId) {
+        id
+        contributionsPaginated(first: $first, after: $after, filter: { types: $filter }) {
+          contributions {
+            id
+            sortOrder
+            link @include(if: $includeLink) {
+              ...LinkDetailsWithAuthorization
+            }
+            whiteboard @include(if: $includeWhiteboard) {
+              ...CalloutContributionsWhiteboardCard
+            }
+            post @include(if: $includePost) {
+              ...CalloutContributionsPostCard
+            }
+          }
+          pageInfo {
+            ...PageInfo
+          }
+          total
+        }
+      }
+    }
+  }
+  ${LinkDetailsWithAuthorizationFragmentDoc}
+  ${CalloutContributionsWhiteboardCardFragmentDoc}
+  ${CalloutContributionsPostCardFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useCalloutContributionsQuery__
+ *
+ * To run a query within a React component, call `useCalloutContributionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutContributionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutContributionsQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      includeLink: // value for 'includeLink'
+ *      includeWhiteboard: // value for 'includeWhiteboard'
+ *      includePost: // value for 'includePost'
+ *      filter: // value for 'filter'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useCalloutContributionsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutContributionsQuery,
+    SchemaTypes.CalloutContributionsQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutContributionsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutContributionsQuery, SchemaTypes.CalloutContributionsQueryVariables>(
+    CalloutContributionsDocument,
+    options
+  );
+}
+export function useCalloutContributionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutContributionsQuery,
+    SchemaTypes.CalloutContributionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutContributionsQuery, SchemaTypes.CalloutContributionsQueryVariables>(
+    CalloutContributionsDocument,
+    options
+  );
+}
+export function useCalloutContributionsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalloutContributionsQuery,
+        SchemaTypes.CalloutContributionsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutContributionsQuery, SchemaTypes.CalloutContributionsQueryVariables>(
+    CalloutContributionsDocument,
+    options
+  );
+}
+export type CalloutContributionsQueryHookResult = ReturnType<typeof useCalloutContributionsQuery>;
+export type CalloutContributionsLazyQueryHookResult = ReturnType<typeof useCalloutContributionsLazyQuery>;
+export type CalloutContributionsSuspenseQueryHookResult = ReturnType<typeof useCalloutContributionsSuspenseQuery>;
+export type CalloutContributionsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutContributionsQuery,
+  SchemaTypes.CalloutContributionsQueryVariables
+>;
+export function refetchCalloutContributionsQuery(variables: SchemaTypes.CalloutContributionsQueryVariables) {
+  return { query: CalloutContributionsDocument, variables: variables };
+}
+export const CalloutContributionDocument = gql`
+  query CalloutContribution(
+    $contributionId: UUID!
+    $includeLink: Boolean! = false
+    $includeWhiteboard: Boolean! = false
+    $includePost: Boolean! = false
+  ) {
+    lookup {
+      contribution(ID: $contributionId) {
+        id
+        sortOrder
+        link @include(if: $includeLink) {
+          ...LinkDetailsWithAuthorization
+        }
+        whiteboard @include(if: $includeWhiteboard) {
+          id
+          profile {
+            id
+            url
+            displayName
+            preview: visual(type: BANNER) {
+              ...VisualModel
+            }
+          }
+          createdDate
+          createdBy {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
+        post @include(if: $includePost) {
+          id
+          createdBy {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+          createdDate
+          comments {
+            id
+            messagesCount
+          }
+          profile {
+            id
+            url
+            displayName
+            description
+            visuals {
+              ...VisualModel
+            }
+            tagset {
+              ...TagsetDetails
+            }
+            references {
+              id
+              name
+              uri
+              description
+            }
+          }
+        }
+      }
+    }
+  }
+  ${LinkDetailsWithAuthorizationFragmentDoc}
+  ${VisualModelFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+
+/**
+ * __useCalloutContributionQuery__
+ *
+ * To run a query within a React component, call `useCalloutContributionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutContributionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutContributionQuery({
+ *   variables: {
+ *      contributionId: // value for 'contributionId'
+ *      includeLink: // value for 'includeLink'
+ *      includeWhiteboard: // value for 'includeWhiteboard'
+ *      includePost: // value for 'includePost'
+ *   },
+ * });
+ */
+export function useCalloutContributionQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutContributionQuery,
+    SchemaTypes.CalloutContributionQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutContributionQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutContributionQuery, SchemaTypes.CalloutContributionQueryVariables>(
+    CalloutContributionDocument,
+    options
+  );
+}
+export function useCalloutContributionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutContributionQuery,
+    SchemaTypes.CalloutContributionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutContributionQuery, SchemaTypes.CalloutContributionQueryVariables>(
+    CalloutContributionDocument,
+    options
+  );
+}
+export function useCalloutContributionSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalloutContributionQuery,
+        SchemaTypes.CalloutContributionQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutContributionQuery, SchemaTypes.CalloutContributionQueryVariables>(
+    CalloutContributionDocument,
+    options
+  );
+}
+export type CalloutContributionQueryHookResult = ReturnType<typeof useCalloutContributionQuery>;
+export type CalloutContributionLazyQueryHookResult = ReturnType<typeof useCalloutContributionLazyQuery>;
+export type CalloutContributionSuspenseQueryHookResult = ReturnType<typeof useCalloutContributionSuspenseQuery>;
+export type CalloutContributionQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutContributionQuery,
+  SchemaTypes.CalloutContributionQueryVariables
+>;
+export function refetchCalloutContributionQuery(variables: SchemaTypes.CalloutContributionQueryVariables) {
+  return { query: CalloutContributionDocument, variables: variables };
+}
+export const CalloutContributionsSortOrderDocument = gql`
+  query CalloutContributionsSortOrder($calloutId: UUID!) {
+    lookup {
+      callout(ID: $calloutId) {
+        id
+        contributions {
+          id
+          sortOrder
+          link {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+          whiteboard {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+          post {
+            id
+            profile {
+              id
+              displayName
+            }
+            comments {
+              id
+              messagesCount
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCalloutContributionsSortOrderQuery__
+ *
+ * To run a query within a React component, call `useCalloutContributionsSortOrderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutContributionsSortOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutContributionsSortOrderQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useCalloutContributionsSortOrderQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutContributionsSortOrderQuery,
+    SchemaTypes.CalloutContributionsSortOrderQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutContributionsSortOrderQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CalloutContributionsSortOrderQuery,
+    SchemaTypes.CalloutContributionsSortOrderQueryVariables
+  >(CalloutContributionsSortOrderDocument, options);
+}
+export function useCalloutContributionsSortOrderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutContributionsSortOrderQuery,
+    SchemaTypes.CalloutContributionsSortOrderQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CalloutContributionsSortOrderQuery,
+    SchemaTypes.CalloutContributionsSortOrderQueryVariables
+  >(CalloutContributionsSortOrderDocument, options);
+}
+export function useCalloutContributionsSortOrderSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalloutContributionsSortOrderQuery,
+        SchemaTypes.CalloutContributionsSortOrderQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.CalloutContributionsSortOrderQuery,
+    SchemaTypes.CalloutContributionsSortOrderQueryVariables
+  >(CalloutContributionsSortOrderDocument, options);
+}
+export type CalloutContributionsSortOrderQueryHookResult = ReturnType<typeof useCalloutContributionsSortOrderQuery>;
+export type CalloutContributionsSortOrderLazyQueryHookResult = ReturnType<
+  typeof useCalloutContributionsSortOrderLazyQuery
+>;
+export type CalloutContributionsSortOrderSuspenseQueryHookResult = ReturnType<
+  typeof useCalloutContributionsSortOrderSuspenseQuery
+>;
+export type CalloutContributionsSortOrderQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutContributionsSortOrderQuery,
+  SchemaTypes.CalloutContributionsSortOrderQueryVariables
+>;
+export function refetchCalloutContributionsSortOrderQuery(
+  variables: SchemaTypes.CalloutContributionsSortOrderQueryVariables
+) {
+  return { query: CalloutContributionsSortOrderDocument, variables: variables };
+}
+export const UpdateContributionsSortOrderDocument = gql`
+  mutation UpdateContributionsSortOrder($calloutID: UUID!, $contributionIds: [UUID!]!) {
+    updateContributionsSortOrder(sortOrderData: { calloutID: $calloutID, contributionIDs: $contributionIds }) {
+      id
+      sortOrder
+    }
+  }
+`;
+export type UpdateContributionsSortOrderMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateContributionsSortOrderMutation,
+  SchemaTypes.UpdateContributionsSortOrderMutationVariables
+>;
+
+/**
+ * __useUpdateContributionsSortOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateContributionsSortOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateContributionsSortOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateContributionsSortOrderMutation, { data, loading, error }] = useUpdateContributionsSortOrderMutation({
+ *   variables: {
+ *      calloutID: // value for 'calloutID'
+ *      contributionIds: // value for 'contributionIds'
+ *   },
+ * });
+ */
+export function useUpdateContributionsSortOrderMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateContributionsSortOrderMutation,
+    SchemaTypes.UpdateContributionsSortOrderMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateContributionsSortOrderMutation,
+    SchemaTypes.UpdateContributionsSortOrderMutationVariables
+  >(UpdateContributionsSortOrderDocument, options);
+}
+export type UpdateContributionsSortOrderMutationHookResult = ReturnType<typeof useUpdateContributionsSortOrderMutation>;
+export type UpdateContributionsSortOrderMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateContributionsSortOrderMutation>;
+export type UpdateContributionsSortOrderMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateContributionsSortOrderMutation,
+  SchemaTypes.UpdateContributionsSortOrderMutationVariables
+>;
+export const CreateLinkOnCalloutDocument = gql`
+  mutation CreateLinkOnCallout($calloutId: UUID!, $link: CreateLinkInput!) {
+    createContributionOnCallout(contributionData: { calloutID: $calloutId, type: LINK, link: $link }) {
+      link {
+        ...LinkDetails
+      }
+    }
+  }
+  ${LinkDetailsFragmentDoc}
+`;
+export type CreateLinkOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateLinkOnCalloutMutation,
+  SchemaTypes.CreateLinkOnCalloutMutationVariables
+>;
+
+/**
+ * __useCreateLinkOnCalloutMutation__
+ *
+ * To run a mutation, you first call `useCreateLinkOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLinkOnCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLinkOnCalloutMutation, { data, loading, error }] = useCreateLinkOnCalloutMutation({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      link: // value for 'link'
+ *   },
+ * });
+ */
+export function useCreateLinkOnCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateLinkOnCalloutMutation,
+    SchemaTypes.CreateLinkOnCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateLinkOnCalloutMutation, SchemaTypes.CreateLinkOnCalloutMutationVariables>(
+    CreateLinkOnCalloutDocument,
+    options
+  );
+}
+export type CreateLinkOnCalloutMutationHookResult = ReturnType<typeof useCreateLinkOnCalloutMutation>;
+export type CreateLinkOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateLinkOnCalloutMutation>;
+export type CreateLinkOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateLinkOnCalloutMutation,
+  SchemaTypes.CreateLinkOnCalloutMutationVariables
+>;
+export const DeleteLinkDocument = gql`
+  mutation deleteLink($input: DeleteLinkInput!) {
+    deleteLink(deleteData: $input) {
+      id
+    }
+  }
+`;
+export type DeleteLinkMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteLinkMutation,
+  SchemaTypes.DeleteLinkMutationVariables
+>;
+
+/**
+ * __useDeleteLinkMutation__
+ *
+ * To run a mutation, you first call `useDeleteLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteLinkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteLinkMutation, { data, loading, error }] = useDeleteLinkMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteLinkMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteLinkMutation, SchemaTypes.DeleteLinkMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.DeleteLinkMutation, SchemaTypes.DeleteLinkMutationVariables>(
+    DeleteLinkDocument,
+    options
+  );
+}
+export type DeleteLinkMutationHookResult = ReturnType<typeof useDeleteLinkMutation>;
+export type DeleteLinkMutationResult = Apollo.MutationResult<SchemaTypes.DeleteLinkMutation>;
+export type DeleteLinkMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteLinkMutation,
+  SchemaTypes.DeleteLinkMutationVariables
+>;
+export const UpdateLinkDocument = gql`
+  mutation updateLink($input: UpdateLinkInput!) {
+    updateLink(linkData: $input) {
+      ...LinkDetails
+    }
+  }
+  ${LinkDetailsFragmentDoc}
+`;
+export type UpdateLinkMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateLinkMutation,
+  SchemaTypes.UpdateLinkMutationVariables
+>;
+
+/**
+ * __useUpdateLinkMutation__
+ *
+ * To run a mutation, you first call `useUpdateLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLinkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLinkMutation, { data, loading, error }] = useUpdateLinkMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateLinkMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateLinkMutation, SchemaTypes.UpdateLinkMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateLinkMutation, SchemaTypes.UpdateLinkMutationVariables>(
+    UpdateLinkDocument,
+    options
+  );
+}
+export type UpdateLinkMutationHookResult = ReturnType<typeof useUpdateLinkMutation>;
+export type UpdateLinkMutationResult = Apollo.MutationResult<SchemaTypes.UpdateLinkMutation>;
+export type UpdateLinkMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateLinkMutation,
+  SchemaTypes.UpdateLinkMutationVariables
+>;
+export const CalloutPostCreatedDocument = gql`
+  subscription CalloutPostCreated($calloutId: UUID!) {
+    calloutPostCreated(calloutID: $calloutId) {
+      contributionID
+      sortOrder
+      post {
+        ...CalloutContributionsPostCard
+      }
+    }
+  }
+  ${CalloutContributionsPostCardFragmentDoc}
+`;
+
+/**
+ * __useCalloutPostCreatedSubscription__
+ *
+ * To run a query within a React component, call `useCalloutPostCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutPostCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutPostCreatedSubscription({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useCalloutPostCreatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CalloutPostCreatedSubscription,
+    SchemaTypes.CalloutPostCreatedSubscriptionVariables
+  > &
+    ({ variables: SchemaTypes.CalloutPostCreatedSubscriptionVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CalloutPostCreatedSubscription,
+    SchemaTypes.CalloutPostCreatedSubscriptionVariables
+  >(CalloutPostCreatedDocument, options);
+}
+export type CalloutPostCreatedSubscriptionHookResult = ReturnType<typeof useCalloutPostCreatedSubscription>;
+export type CalloutPostCreatedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CalloutPostCreatedSubscription>;
+export const CreatePostOnCalloutDocument = gql`
+  mutation CreatePostOnCallout($calloutId: UUID!, $post: CreatePostInput!) {
+    createContributionOnCallout(contributionData: { calloutID: $calloutId, type: POST, post: $post }) {
+      post {
+        id
+      }
+    }
+  }
+`;
+export type CreatePostOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreatePostOnCalloutMutation,
+  SchemaTypes.CreatePostOnCalloutMutationVariables
+>;
+
+/**
+ * __useCreatePostOnCalloutMutation__
+ *
+ * To run a mutation, you first call `useCreatePostOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePostOnCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPostOnCalloutMutation, { data, loading, error }] = useCreatePostOnCalloutMutation({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      post: // value for 'post'
+ *   },
+ * });
+ */
+export function useCreatePostOnCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreatePostOnCalloutMutation,
+    SchemaTypes.CreatePostOnCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreatePostOnCalloutMutation, SchemaTypes.CreatePostOnCalloutMutationVariables>(
+    CreatePostOnCalloutDocument,
+    options
+  );
+}
+export type CreatePostOnCalloutMutationHookResult = ReturnType<typeof useCreatePostOnCalloutMutation>;
+export type CreatePostOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreatePostOnCalloutMutation>;
+export type CreatePostOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreatePostOnCalloutMutation,
+  SchemaTypes.CreatePostOnCalloutMutationVariables
+>;
+export const CreateWhiteboardOnCalloutDocument = gql`
+  mutation CreateWhiteboardOnCallout($calloutId: UUID!, $whiteboard: CreateWhiteboardInput!) {
+    createContributionOnCallout(
+      contributionData: { calloutID: $calloutId, type: WHITEBOARD, whiteboard: $whiteboard }
+    ) {
+      whiteboard {
+        ...WhiteboardDetails
+        profile {
+          url
+        }
+      }
+    }
+  }
+  ${WhiteboardDetailsFragmentDoc}
+`;
+export type CreateWhiteboardOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateWhiteboardOnCalloutMutation,
+  SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
+>;
+
+/**
+ * __useCreateWhiteboardOnCalloutMutation__
+ *
+ * To run a mutation, you first call `useCreateWhiteboardOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWhiteboardOnCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWhiteboardOnCalloutMutation, { data, loading, error }] = useCreateWhiteboardOnCalloutMutation({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      whiteboard: // value for 'whiteboard'
+ *   },
+ * });
+ */
+export function useCreateWhiteboardOnCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateWhiteboardOnCalloutMutation,
+    SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateWhiteboardOnCalloutMutation,
+    SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
+  >(CreateWhiteboardOnCalloutDocument, options);
+}
+export type CreateWhiteboardOnCalloutMutationHookResult = ReturnType<typeof useCreateWhiteboardOnCalloutMutation>;
+export type CreateWhiteboardOnCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateWhiteboardOnCalloutMutation>;
+export type CreateWhiteboardOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateWhiteboardOnCalloutMutation,
+  SchemaTypes.CreateWhiteboardOnCalloutMutationVariables
 >;
 export const UpdateCalloutsSortOrderDocument = gql`
   mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID!]!) {
@@ -8345,6 +8350,93 @@ export type CalloutSettingsQueryResult = Apollo.QueryResult<
 export function refetchCalloutSettingsQuery(variables: SchemaTypes.CalloutSettingsQueryVariables) {
   return { query: CalloutSettingsDocument, variables: variables };
 }
+export const PostCalloutsInCalloutSetDocument = gql`
+  query PostCalloutsInCalloutSet($calloutsSetId: UUID!) {
+    lookup {
+      calloutsSet(ID: $calloutsSetId) {
+        id
+        callouts(withContributionTypes: [POST]) {
+          id
+          framing {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePostCalloutsInCalloutSetQuery__
+ *
+ * To run a query within a React component, call `usePostCalloutsInCalloutSetQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostCalloutsInCalloutSetQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostCalloutsInCalloutSetQuery({
+ *   variables: {
+ *      calloutsSetId: // value for 'calloutsSetId'
+ *   },
+ * });
+ */
+export function usePostCalloutsInCalloutSetQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.PostCalloutsInCalloutSetQuery,
+    SchemaTypes.PostCalloutsInCalloutSetQueryVariables
+  > &
+    ({ variables: SchemaTypes.PostCalloutsInCalloutSetQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PostCalloutsInCalloutSetQuery, SchemaTypes.PostCalloutsInCalloutSetQueryVariables>(
+    PostCalloutsInCalloutSetDocument,
+    options
+  );
+}
+export function usePostCalloutsInCalloutSetLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PostCalloutsInCalloutSetQuery,
+    SchemaTypes.PostCalloutsInCalloutSetQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PostCalloutsInCalloutSetQuery,
+    SchemaTypes.PostCalloutsInCalloutSetQueryVariables
+  >(PostCalloutsInCalloutSetDocument, options);
+}
+export function usePostCalloutsInCalloutSetSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.PostCalloutsInCalloutSetQuery,
+        SchemaTypes.PostCalloutsInCalloutSetQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.PostCalloutsInCalloutSetQuery,
+    SchemaTypes.PostCalloutsInCalloutSetQueryVariables
+  >(PostCalloutsInCalloutSetDocument, options);
+}
+export type PostCalloutsInCalloutSetQueryHookResult = ReturnType<typeof usePostCalloutsInCalloutSetQuery>;
+export type PostCalloutsInCalloutSetLazyQueryHookResult = ReturnType<typeof usePostCalloutsInCalloutSetLazyQuery>;
+export type PostCalloutsInCalloutSetSuspenseQueryHookResult = ReturnType<
+  typeof usePostCalloutsInCalloutSetSuspenseQuery
+>;
+export type PostCalloutsInCalloutSetQueryResult = Apollo.QueryResult<
+  SchemaTypes.PostCalloutsInCalloutSetQuery,
+  SchemaTypes.PostCalloutsInCalloutSetQueryVariables
+>;
+export function refetchPostCalloutsInCalloutSetQuery(variables: SchemaTypes.PostCalloutsInCalloutSetQueryVariables) {
+  return { query: PostCalloutsInCalloutSetDocument, variables: variables };
+}
 export const PostDocument = gql`
   query Post($postId: UUID!) {
     lookup {
@@ -8681,93 +8773,6 @@ export type PostSettingsQueryResult = Apollo.QueryResult<
 >;
 export function refetchPostSettingsQuery(variables: SchemaTypes.PostSettingsQueryVariables) {
   return { query: PostSettingsDocument, variables: variables };
-}
-export const PostCalloutsInCalloutSetDocument = gql`
-  query PostCalloutsInCalloutSet($calloutsSetId: UUID!) {
-    lookup {
-      calloutsSet(ID: $calloutsSetId) {
-        id
-        callouts(withContributionTypes: [POST]) {
-          id
-          framing {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __usePostCalloutsInCalloutSetQuery__
- *
- * To run a query within a React component, call `usePostCalloutsInCalloutSetQuery` and pass it any options that fit your needs.
- * When your component renders, `usePostCalloutsInCalloutSetQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePostCalloutsInCalloutSetQuery({
- *   variables: {
- *      calloutsSetId: // value for 'calloutsSetId'
- *   },
- * });
- */
-export function usePostCalloutsInCalloutSetQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.PostCalloutsInCalloutSetQuery,
-    SchemaTypes.PostCalloutsInCalloutSetQueryVariables
-  > &
-    ({ variables: SchemaTypes.PostCalloutsInCalloutSetQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.PostCalloutsInCalloutSetQuery, SchemaTypes.PostCalloutsInCalloutSetQueryVariables>(
-    PostCalloutsInCalloutSetDocument,
-    options
-  );
-}
-export function usePostCalloutsInCalloutSetLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PostCalloutsInCalloutSetQuery,
-    SchemaTypes.PostCalloutsInCalloutSetQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.PostCalloutsInCalloutSetQuery,
-    SchemaTypes.PostCalloutsInCalloutSetQueryVariables
-  >(PostCalloutsInCalloutSetDocument, options);
-}
-export function usePostCalloutsInCalloutSetSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.PostCalloutsInCalloutSetQuery,
-        SchemaTypes.PostCalloutsInCalloutSetQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.PostCalloutsInCalloutSetQuery,
-    SchemaTypes.PostCalloutsInCalloutSetQueryVariables
-  >(PostCalloutsInCalloutSetDocument, options);
-}
-export type PostCalloutsInCalloutSetQueryHookResult = ReturnType<typeof usePostCalloutsInCalloutSetQuery>;
-export type PostCalloutsInCalloutSetLazyQueryHookResult = ReturnType<typeof usePostCalloutsInCalloutSetLazyQuery>;
-export type PostCalloutsInCalloutSetSuspenseQueryHookResult = ReturnType<
-  typeof usePostCalloutsInCalloutSetSuspenseQuery
->;
-export type PostCalloutsInCalloutSetQueryResult = Apollo.QueryResult<
-  SchemaTypes.PostCalloutsInCalloutSetQuery,
-  SchemaTypes.PostCalloutsInCalloutSetQueryVariables
->;
-export function refetchPostCalloutsInCalloutSetQuery(variables: SchemaTypes.PostCalloutsInCalloutSetQueryVariables) {
-  return { query: PostCalloutsInCalloutSetDocument, variables: variables };
 }
 export const ContentUpdatePolicyDocument = gql`
   query ContentUpdatePolicy($elementId: UUID!, $isWhiteboard: Boolean!, $isMemo: Boolean!) {

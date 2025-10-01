@@ -94,16 +94,14 @@ const CalloutContributionsLink = ({
   const getNewLinkId = useCallback(async () => {
     const { data } = await createLinkOnCallout({
       variables: {
-        input: {
-          calloutID: callout.id,
-          link: {
-            uri: '',
-            profile: {
-              // Link names have to be unique, if everything goes well this name will never be shown:
-              displayName: t('callout.link-collection.new-temporary-reference', {
-                temp: uuid().slice(0, 4),
-              }),
-            },
+        calloutId: callout.id,
+        link: {
+          uri: '',
+          profile: {
+            // Link names have to be unique, if everything goes well this name will never be shown:
+            displayName: t('callout.link-collection.new-temporary-reference', {
+              temp: uuid().slice(0, 4),
+            }),
           },
         },
       },
