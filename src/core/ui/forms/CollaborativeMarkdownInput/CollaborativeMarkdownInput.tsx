@@ -22,6 +22,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   onChangeCollaborationState?: (state: RealTimeCollaborationState) => void;
   disabled?: boolean;
   storageBucketId?: string;
+  fullScreen?: boolean;
 }
 
 export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
@@ -36,6 +37,7 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
     onChangeCollaborationState,
     disabled,
     storageBucketId = '',
+    fullScreen = false,
   }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
@@ -144,7 +146,7 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
         onFocus={handleFocus}
         onBlur={handleBlur}
         sx={{
-          height: inputMinHeight,
+          height: fullScreen ? '100%' : inputMinHeight,
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
