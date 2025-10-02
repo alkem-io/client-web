@@ -46,16 +46,6 @@ fragment SpaceTemplate on Template {
         }
       }
     }
-    collaboration {
-      id
-      innovationFlow {
-        id
-        states {
-          displayName
-          description
-        }
-      }
-    }
   }
 }
 

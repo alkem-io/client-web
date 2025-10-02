@@ -2732,16 +2732,6 @@ export const SpaceTemplateFragmentDoc = gql`
           }
         }
       }
-      collaboration {
-        id
-        innovationFlow {
-          id
-          states {
-            displayName
-            description
-          }
-        }
-      }
     }
   }
   ${TemplateProfileInfoFragmentDoc}

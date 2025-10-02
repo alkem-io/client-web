@@ -26779,19 +26779,6 @@ export type AllTemplatesInTemplatesSetQuery = {
                         | undefined;
                     };
                   };
-                  collaboration: {
-                    __typename?: 'Collaboration';
-                    id: string;
-                    innovationFlow: {
-                      __typename?: 'InnovationFlow';
-                      id: string;
-                      states: Array<{
-                        __typename?: 'InnovationFlowState';
-                        displayName: string;
-                        description?: string | undefined;
-                      }>;
-                    };
-                  };
                 }
               | undefined;
             profile: {
@@ -28023,19 +28010,6 @@ export type SpaceTemplateFragment = {
               | undefined;
           };
         };
-        collaboration: {
-          __typename?: 'Collaboration';
-          id: string;
-          innovationFlow: {
-            __typename?: 'InnovationFlow';
-            id: string;
-            states: Array<{
-              __typename?: 'InnovationFlowState';
-              displayName: string;
-              description?: string | undefined;
-            }>;
-          };
-        };
       }
     | undefined;
   profile: {
@@ -28496,19 +28470,6 @@ export type TemplatesSetTemplatesFragment = {
               visual?:
                 | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
                 | undefined;
-            };
-          };
-          collaboration: {
-            __typename?: 'Collaboration';
-            id: string;
-            innovationFlow: {
-              __typename?: 'InnovationFlow';
-              id: string;
-              states: Array<{
-                __typename?: 'InnovationFlowState';
-                displayName: string;
-                description?: string | undefined;
-              }>;
             };
           };
         }
