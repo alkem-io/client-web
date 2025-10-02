@@ -5137,7 +5137,6 @@ export enum NotificationEvent {
   UserMessage = 'USER_MESSAGE',
   UserMessageSender = 'USER_MESSAGE_SENDER',
   UserSignUpWelcome = 'USER_SIGN_UP_WELCOME',
-  UserSpaceCommunityApplication = 'USER_SPACE_COMMUNITY_APPLICATION',
   UserSpaceCommunityInvitation = 'USER_SPACE_COMMUNITY_INVITATION',
   UserSpaceCommunityJoined = 'USER_SPACE_COMMUNITY_JOINED',
   VirtualContributorAdminSpaceCommunityInvitation = 'VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION',
@@ -8409,8 +8408,6 @@ export type UserSettingsNotificationUser = {
   __typename?: 'UserSettingsNotificationUser';
   /** Receive a notification when someone replies to a comment I made. */
   commentReply: UserSettingsNotificationChannels;
-  /** Receive notification I send a message to a User, Organization or Space. */
-  copyOfMessageSent: UserSettingsNotificationChannels;
   /** The notifications settings for membership events for this User */
   membership: UserSettingsNotificationUserMembership;
   /** Receive a notification you are mentioned */
@@ -8421,8 +8418,6 @@ export type UserSettingsNotificationUser = {
 
 export type UserSettingsNotificationUserMembership = {
   __typename?: 'UserSettingsNotificationUserMembership';
-  /** Receive a notification when an application for a Space is submitted */
-  spaceCommunityApplicationSubmitted: UserSettingsNotificationChannels;
   /** Receive a notification when I am invited to join a Space community */
   spaceCommunityInvitationReceived: UserSettingsNotificationChannels;
   /** Receive a notification when I join a Space */
