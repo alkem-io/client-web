@@ -1944,10 +1944,6 @@
           "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
           "description": "{{spaceName}} - {{spaceDescription}}"
         },
-        "USER_SPACE_COMMUNITY_APPLICATION": {
-          "subject": "You have successfully applied to join {{spaceName}}",
-          "description": ""
-        },
         "USER_MESSAGE_SENDER": {
           "subject": "You sent a DM to {{receiverName}}",
           "description": ""
