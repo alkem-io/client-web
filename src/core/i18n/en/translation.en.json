@@ -3220,7 +3220,7 @@
       },
       "user": {
         "title": "User",
-        "subtitle": "This section allows you to select your preferences regarding memberships, mentions and direct messaging to yourself.",
+        "subtitle": "This section allows you to select your preferences regarding $t(common.memberships), mentions and direct messaging to yourself.",
         "settings": {
           "mentioned": "Receive a $t(common.notification) when I am mentioned",
           "commentReply": "Receive a $t(common.notification) when someone replies to my $t(common.comment)",
@@ -3261,13 +3261,13 @@
         }
       },
       "tooltips": {
-        "spaceCommunityInvitationReceived": "These notifications are required and cannot be disabled.",
-        "messageReceived": "These notifications are required and cannot be disabled.",
-        "communicationMessageReceived": "These communication notifications are required and cannot be disabled.",
-        "adminMessageReceived": "These notifications are required and cannot be disabled.",
-        "communityApplicationReceived": "Email notifications for applications cannot be disabled.",
-        "communityNewMember": "New member notifications require at least one notification method to stay enabled.",
-        "adminMentioned": "Organization mentions require at least one notification method to stay enabled."
+        "spaceCommunityInvitationReceived": "These $t(common.notifications) are required and cannot be disabled.",
+        "messageReceived": "These $t(common.notifications) are required and cannot be disabled.",
+        "communicationMessageReceived": "These communication $t(common.notifications) are required and cannot be disabled.",
+        "adminMessageReceived": "These $t(common.notifications) are required and cannot be disabled.",
+        "communityApplicationReceived": "Email $t(common.notifications) for applications cannot be disabled.",
+        "communityNewMember": "New member $t(common.notifications) require at least one $t(common.notification) method to stay enabled.",
+        "adminMentioned": "$t(common.Organization) mentions require at least one $t(common.notification) method to stay enabled."
       }
     },
     "help-dialog": {
