@@ -14,12 +14,10 @@ export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
 }
 
 export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
-  contributionsCount: number | undefined;
-  loading?: boolean;
-  canCreateContribution?: boolean;
+  onCalloutUpdate?: () => Promise<unknown> | void;
   expanded?: boolean;
   onExpand?: (callout: CalloutDetailsModelExtended) => void;
   onCollapse?: () => void;
-  onCalloutUpdate?: () => Promise<unknown> | void;
+  loading?: boolean;
   calloutRestrictions?: CalloutRestrictions;
 }

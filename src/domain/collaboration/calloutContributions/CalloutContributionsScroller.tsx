@@ -1,35 +1,35 @@
 import GridProvider from '@/core/ui/grid/GridProvider';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import { Button, styled } from '@mui/material';
-import React, { ComponentType } from 'react';
-import { Identifiable } from '@/core/utils/Identifiable';
+import { Box, Button, styled } from '@mui/material';
+import React, { ComponentType, useEffect, useMemo, useState } from 'react';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../CalloutPage/CalloutPage';
 import { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsModel';
 import useNavigate from '@/core/routing/useNavigate';
+import useCalloutContributions from './useCalloutContributions/useCalloutContributions';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import { AnyContribution } from './useCalloutContributions/AnyContributionType';
 
-interface ContributionCardProps<T> {
-  contribution: T;
+const PAGE_SIZE = 5;
+const COLUMNS_PER_CARD = 2;
+const COLUMNS_SCROLLER = PAGE_SIZE * COLUMNS_PER_CARD + 1;
+
+interface ContributionCardProps {
+  contribution: AnyContribution;
   columns: number;
   onClick: () => void;
   selected?: boolean;
 }
 
-interface CalloutContributionsScrollerProps<T extends Identifiable> {
+interface CalloutContributionsScrollerProps {
   callout: CalloutDetailsModelExtended;
   contributionSelectedId?: string;
-  contributions: {
-    items: T[];
-    total: number;
-  };
-  canCreateContribution: boolean;
+  contributionType: CalloutContributionType;
   loading?: boolean;
-  cardComponent: ComponentType<ContributionCardProps<T>>;
-  getContributionUrl: (contribution: T) => string | undefined;
-  // subscriptionEnabled: boolean;
-  // onCalloutUpdate?: () => Promise<unknown>;
+  cardComponent: ComponentType<ContributionCardProps>;
+  getContributionUrl: (contribution: AnyContribution) => string | undefined;
 }
 
 const ScrollButton = styled(Button)(({ theme }) => ({
@@ -40,19 +40,59 @@ const ScrollButton = styled(Button)(({ theme }) => ({
   color: theme.palette.primary.dark,
 }));
 
-const CalloutContributionsScroller = <T extends Identifiable>({
+const PaginationDot = styled(Box, {
+  shouldForwardProp: prop => prop !== 'selected',
+})<{ selected: boolean }>(({ theme, selected }) => ({
+  width: 10,
+  height: 10,
+  borderRadius: '50%',
+  backgroundColor: selected ? theme.palette.primary.main : theme.palette.divider,
+  cursor: 'pointer',
+  transition: 'background-color 0.3s ease',
+  '&:hover': {
+    opacity: 0.7,
+  },
+}));
+
+const CalloutContributionsScroller = ({
   ref,
   callout,
+  contributionType,
   contributionSelectedId,
-  contributions,
   cardComponent: Card,
   getContributionUrl,
-}: CalloutContributionsScrollerProps<T> & {
+}: CalloutContributionsScrollerProps & {
   ref?: React.Ref<HTMLDivElement>;
 }) => {
   const navigate = useNavigate();
+  const [selectedPage, setSelectedPage] = useState(0);
 
-  const navigateToContribution = (contribution: T) => {
+  const {
+    inViewRef,
+    contributions,
+    //!! canCreateContribution,
+    loading,
+  } = useCalloutContributions({
+    callout,
+    contributionType,
+    pageSize: PAGE_SIZE,
+  });
+
+  useEffect(() => {
+    if (contributions.hasMore && !loading && contributions.total > contributions.items.length) {
+      contributions.setFetchAll(true);
+    }
+  }, [contributions]);
+
+  const pages = useMemo(() => {
+    const chunkedPages: AnyContribution[][] = [];
+    for (let i = 0; i < contributions.items.length; i += PAGE_SIZE) {
+      chunkedPages.push(contributions.items.slice(i, i + PAGE_SIZE));
+    }
+    return chunkedPages;
+  }, [contributions.items]);
+
+  const handleClickOnContribution = (contribution: AnyContribution) => {
     const state: LocationStateCachedCallout = {
       [LocationStateKeyCachedCallout]: callout,
       keepScroll: true,
@@ -64,30 +104,43 @@ const CalloutContributionsScroller = <T extends Identifiable>({
   };
 
   const handleClickLeft = () => {
-
+    setSelectedPage(prev => prev === 0 ? pages.length - 1 : prev - 1);
   };
+
   const handleClickRight = () => {
-
+    setSelectedPage(prev => prev === pages.length - 1 ? 0 : prev + 1);
   };
+
+  const currentPageItems = pages[selectedPage] || [];
+  const fullRow = currentPageItems.length >= PAGE_SIZE; // we have 5 items in this page
 
   return (
-    <Gutters disableSidePadding>
-      <Gutters row disablePadding ref={ref}>
+    <Gutters ref={inViewRef} disableSidePadding>
+      <Gutters row disablePadding justifyContent={fullRow ? 'space-between' : undefined} ref={ref}>
         <ScrollButton onClick={handleClickLeft}><KeyboardDoubleArrowLeftIcon /></ScrollButton>
-        <GridProvider columns={10} force>
-          {contributions.items.map(contribution => (
+        <GridProvider columns={COLUMNS_SCROLLER} force>
+          {currentPageItems.map(contribution => (
             <Card
               key={contribution.id}
               contribution={contribution}
-              onClick={() => navigateToContribution(contribution)}
+              onClick={() => handleClickOnContribution(contribution)}
               selected={contribution.id === contributionSelectedId}
-              columns={2}
+              columns={COLUMNS_PER_CARD}
             />
           ))}
         </GridProvider>
-        <ScrollButton onClick={handleClickRight} sx={{ marginLeft: 'auto' }}><KeyboardDoubleArrowRightIcon /></ScrollButton>
+        <ScrollButton onClick={handleClickRight} sx={{ marginLeft: !fullRow ? 'auto' : undefined }}><KeyboardDoubleArrowRightIcon /></ScrollButton>
       </Gutters>
 
+      <Box display="flex" justifyContent="center" gap={1} mt={2}>
+        {pages.map((_, index) => (
+          <PaginationDot
+            key={index}
+            selected={index === selectedPage}
+            onClick={() => setSelectedPage(index)}
+          />
+        ))}
+      </Box>
     </Gutters>
   );
 };

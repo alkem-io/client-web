@@ -14,7 +14,6 @@ import {
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import { useCreatePostOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
-import CardsExpandableContainer from '../../callout/components/CardsExpandableContainer';
 
 interface CalloutContributionsPostProps extends BaseCalloutViewProps {
   callout: CalloutDetailsModelExtended;
@@ -73,14 +72,6 @@ const CalloutContributionsPost = ({
 
   return (
     <Gutters ref={ref}>
-      <CardsExpandableContainer
-        items={contributions.items}
-        pagination={{ total: contributions.total, fetchAll: async () => await contributions.fetchAll?.() }}
-        loading={loading}
-        createButton={createButton}
-      >
-        {item => <PostCard contribution={item} columns={2} onClick={navigateToPost} />}
-      </CardsExpandableContainer>
       {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
         <CalloutBlockFooter contributionsCount={contributions.total} onCreate={openCreateDialog} />
       )}

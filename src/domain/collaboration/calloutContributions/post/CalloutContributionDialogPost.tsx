@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { Autocomplete, Button, DialogActions, DialogContent, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import PostForm, { PostFormInput, PostFormOutput } from '../../post/PostForm/PostForm';
 import usePostSettings from '../../post/graphql/usePostSettings';
@@ -28,6 +27,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { CalloutContributionPreviewDialogProps } from '../calloutContributionPreview/CalloutContributionPreview';
 import { EditOutlined } from '@mui/icons-material';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import Gutters from '@/core/ui/grid/Gutters';
 
 interface CalloutContributionDialogPostProps extends CalloutContributionPreviewDialogProps {
 
@@ -39,6 +39,7 @@ const CalloutContributionDialogPost = ({
   calloutsSetId,
   calloutId,
   contribution,
+  onCalloutUpdate,
 }: CalloutContributionDialogPostProps) => {
   /*
     onClose: () => void;
@@ -70,6 +71,7 @@ const CalloutContributionDialogPost = ({
   const postSettings = usePostSettings({
     postId,
     calloutId,
+    contributionId: contribution?.id,
     skip: !open,
   });
 
@@ -113,6 +115,7 @@ const CalloutContributionDialogPost = ({
     onClose();
 
     await postSettings.handleDelete(postSettings.post.id);
+    onCalloutUpdate?.();
   };
 
   const onCloseEdit = () => {
@@ -182,16 +185,14 @@ const CalloutContributionDialogPost = ({
               tags={postSettings.post?.profile.tagset?.tags}
             >
               {() => (
-                <>
-                  <Box>
-                    <Typography variant={'h4'}>{t('common.visuals')}</Typography>
-                    {/* Do not show VisualType.Card for Posts for now, see #4362.
-                      TODO: Maybe in the future we want to remove those visuals from the database,
-                      for now Card profiles don't have a Banner because it's not shown anywhere */}
-                    <EditVisualsView visuals={visuals} visualTypes={[VisualType.Banner]} />
-                  </Box>
+                <Gutters>
+                  <Typography variant={'h4'}>{t('common.visuals')}</Typography>
+                  {/* Do not show VisualType.Card for Posts for now, see #4362.
+                    TODO: Maybe in the future we want to remove those visuals from the database,
+                    for now Card profiles don't have a Banner because it's not shown anywhere */}
+                  <EditVisualsView visuals={visuals} visualTypes={[VisualType.Banner]} />
                   {canMoveCard && (
-                    <Box>
+                    <>
                       <Typography variant={'h4'}>{t('post-edit.postLocation.title')}</Typography>
                       <Autocomplete
                         disablePortal
@@ -210,9 +211,9 @@ const CalloutContributionDialogPost = ({
                           />
                         )}
                       />
-                    </Box>
+                    </>
                   )}
-                </>
+                </Gutters>
               )
               }
             </PostForm>

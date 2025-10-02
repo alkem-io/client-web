@@ -1,0 +1,5 @@
+mutation DeleteContribution ($contributionId: UUID!) {
+  deleteContribution(deleteData:  { ID: $contributionId }) {
+    id
+  }
+}

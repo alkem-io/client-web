@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import References from '@/domain/shared/components/References/References';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -24,6 +24,7 @@ import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetails
 import Loading from '@/core/ui/loading/Loading';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
+import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
 
 const MAX_LINKS_NORMAL_VIEW = 3;
 
@@ -33,44 +34,51 @@ export interface FormattedLink {
   name: string;
   description: string | undefined;
   authorization:
-    | {
-        myPrivileges?: AuthorizationPrivilege[];
-      }
-    | undefined;
+  | {
+    myPrivileges?: AuthorizationPrivilege[];
+  }
+  | undefined;
   sortOrder: number;
   contributionId: string;
 }
 
 interface CalloutContributionsLinkProps extends BaseCalloutViewProps {
-  callout: CalloutDetailsModelExtended;
-  contributions: {
-    items: {
-      id: string;
-      sortOrder: number;
-      link?: {
-        id: string;
-        uri: string;
-        profile: { displayName: string; description?: string };
-        authorization?: { myPrivileges?: AuthorizationPrivilege[] };
-      };
-    }[];
-    total: number;
-  };
+  callout: CalloutDetailsModelExtended; //!! move this to BaseCalloutViewProps?
 }
 
 const CalloutContributionsLink = ({
-  ref,
   callout,
-  contributions,
-  canCreateContribution,
   loading,
   expanded,
   onExpand,
   onCalloutUpdate,
-}: CalloutContributionsLinkProps & {
-  ref?: React.Ref<HTMLDivElement>;
-}) => {
+}: CalloutContributionsLinkProps) => {
   const { t } = useTranslation();
+
+  const {
+    inViewRef,
+    contributions: {
+      items: contributions,
+      hasMore,
+      setFetchAll,
+      total: totalContributions,
+    },
+    canCreateContribution,
+    onCalloutUpdate: refetchCalloutAndContributions,
+  } = useCalloutContributions({
+    callout,
+    contributionType: CalloutContributionType.Link,
+    onCalloutUpdate,
+    pageSize: MAX_LINKS_NORMAL_VIEW,
+  });
+
+  // Always show all Links in expanded mode:
+  useEffect(() => {
+    if (expanded && hasMore) {
+      setFetchAll(true);
+    }
+  }, [expanded, hasMore, setFetchAll]);
+
 
   const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
     refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
@@ -141,10 +149,10 @@ const CalloutContributionsLink = ({
         )
       );
 
-      onCalloutUpdate?.();
+      refetchCalloutAndContributions();
       closeAddNewDialog();
     },
-    [updateLink, closeAddNewDialog, onCalloutUpdate, callout]
+    [updateLink, closeAddNewDialog, refetchCalloutAndContributions, callout]
   );
 
   // Edit existing Links:
@@ -162,10 +170,10 @@ const CalloutContributionsLink = ({
           },
         },
       });
-      onCalloutUpdate?.();
+      refetchCalloutAndContributions();
       closeEditDialog();
     },
-    [closeEditDialog, onCalloutUpdate, updateLink, callout]
+    [closeEditDialog, refetchCalloutAndContributions, updateLink, callout]
   );
 
   const handleDeleteLink = useCallback(async () => {
@@ -184,39 +192,29 @@ const CalloutContributionsLink = ({
     closeEditDialog();
   }, [deletingLinkId, closeEditDialog, setDeletingLinkId, onCalloutUpdate, deleteLink, callout]);
 
-  const { formattedLinks, sortedFormattedLinks, limitedLinks, isListTruncated } = useMemo(() => {
-    const formattedLinks: FormattedLink[] = compact(
-      contributions.items.map(
-        contribution =>
-          contribution.link &&
-          contribution.id && {
-            ...contribution.link,
-            sortOrder: contribution.sortOrder ?? 0,
-            contributionId: contribution.id,
-          }
-      )
-    ).map(link => ({
-      id: link.id,
-      uri: link.uri,
-      name: link.profile?.displayName,
-      description: link.profile?.description,
-      authorization: link.authorization,
-      sortOrder: link.sortOrder ?? 0,
-      contributionId: link.contributionId,
-    }));
+  const formattedLinks: FormattedLink[] =
+    sortBy(
+      compact(
+        contributions.map(
+          contribution =>
+            contribution.link &&
+            contribution.id && {
+              ...contribution.link,
+              sortOrder: contribution.sortOrder ?? 0,
+              contributionId: contribution.id,
+            }
+        )
+      ).map(link => ({
+        id: link.id,
+        uri: link.uri,
+        name: link.profile?.displayName,
+        description: link.profile?.description,
+        authorization: link.authorization,
+        sortOrder: link.sortOrder ?? 0,
+        contributionId: link.contributionId,
+      })),
+      'sortOrder');
 
-    const sortedFormattedLinks = sortBy(formattedLinks, 'sortOrder');
-    const limitedLinks = sortedFormattedLinks?.slice(0, MAX_LINKS_NORMAL_VIEW);
-    const isListTruncated =
-      (compact(contributions.items?.map(contribution => contribution.link))?.length ?? 0) > MAX_LINKS_NORMAL_VIEW;
-
-    return {
-      formattedLinks,
-      sortedFormattedLinks,
-      limitedLinks,
-      isListTruncated,
-    };
-  }, [callout, contributions]);
 
   return (
     <StorageConfigContextProvider
@@ -225,21 +223,21 @@ const CalloutContributionsLink = ({
       skip={!addNewLinkDialogOpen && !editLink}
     >
       {loading ? <Loading /> : undefined}
-      <Gutters ref={ref}>
+      <Gutters ref={inViewRef}>
         <References
-          references={expanded ? sortedFormattedLinks : limitedLinks}
+          references={formattedLinks}
           noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
-          onEdit={ref => setEditLink(ref)}
+          onEdit={reference => setEditLink(reference)}
         />
         <Box
           display="flex"
-          justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'}
+          justifyContent={hasMore && !expanded ? 'space-between' : 'end'}
           alignItems="end"
           marginBottom={gutters()}
         >
-          {isListTruncated && !expanded && (
+          {hasMore && !expanded && (
             <Caption component={Link} onClick={() => onExpand?.(callout)} sx={{ cursor: 'pointer' }}>
-              {t('callout.link-collection.more-links', { count: formattedLinks.length })}
+              {t('callout.link-collection.more-links', { count: totalContributions })}
             </Caption>
           )}
           {canCreateContribution && (

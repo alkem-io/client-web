@@ -40,7 +40,7 @@ import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
 import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 import { FormattedLink } from '../../calloutContributions/link/CalloutContributionsLink';
 import { PostContribution } from '../../calloutContributions/post/PostCard';
-import { WhiteboardCardWhiteboard } from '../../calloutContributions/whiteboard/WhiteboardCard';
+import { WhiteboardContribution } from '../../calloutContributions/whiteboard/WhiteboardCard';
 import { CalloutSummary } from '../CalloutSummary';
 import { CalloutLayoutEvents } from '../CalloutViewTypes';
 import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
@@ -60,7 +60,7 @@ export interface CalloutSettingsContainerProps
   callout: CalloutDetailsModelExtended;
   items?: {
     posts?: PostContribution[];
-    whiteboards?: WhiteboardCardWhiteboard[];
+    whiteboards?: WhiteboardContribution[];
     links?: FormattedLink[];
   };
   expanded?: boolean;

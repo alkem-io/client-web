@@ -10,6 +10,7 @@ import CalloutContributionCommentsContainer, {
   CalloutContributionCommentsContainerProps,
 } from '../commentsToContribution/CalloutContributionCommentsContainer';
 import Gutters from '@/core/ui/grid/Gutters';
+import { GUTTER_PX } from '@/core/ui/grid/constants';
 
 interface CalloutContributionPreviewPostProps {
   callout: CalloutContributionCommentsContainerProps['callout']; // Need callout in this contribution preview to check the callout settings about comments inside contributions
@@ -18,8 +19,8 @@ interface CalloutContributionPreviewPostProps {
 }
 
 const POST_COMMENTS_PROPORTION = { post: 2, comments: 1 } as const;
-const MIN_HEIGHT_DESCRIPTION_GUTTERS = 10; // Minimum height when the description is very short, if long it will grow and expand the entire dialog
-const MAX_HEIGHT_COMMENTS_DESCRIPTION_IS_SHORT = 300; // Maximum height for comments when the description is very short, if description is long comments will grow together with them
+const MIN_HEIGHT_DESCRIPTION_GUTTERS = 15; // Minimum height when the description is very short, if long it will grow and expand the entire dialog
+const MAX_HEIGHT_COMMENTS_DESCRIPTION_IS_SHORT = MIN_HEIGHT_DESCRIPTION_GUTTERS * GUTTER_PX; // Maximum height for comments when the description is very short, if description is long comments will grow together with them
 
 const PostContentWrapper = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -41,6 +42,17 @@ const CommentsExpander = styled(Button)(({ theme }) => ({
     width: gutters()(theme),
   },
 }));
+
+const CommentsAnimation = {
+  transitionProperty: 'flex',
+  transitionDuration: '100ms',
+}
+
+const PostDescriptionAnimation = {
+  height: 'calc-size(auto)',  // Not supported in many browsers yet, but will look amazing in the future... //!! maybe find another way
+  transitionProperty: 'height',
+  transitionDuration: '100ms',
+}
 
 const CalloutContributionPreviewPost = ({ callout, contribution, loading }: CalloutContributionPreviewPostProps) => {
   const theme = useTheme();
@@ -65,7 +77,7 @@ const CalloutContributionPreviewPost = ({ callout, contribution, loading }: Call
 
   return (
     <Box margin={gutters(-1)} display="flex" flexDirection="row">
-      <PostContentWrapper ref={postContentRef}>
+      <PostContentWrapper ref={postContentRef} sx={PostDescriptionAnimation}>
         <WrapperMarkdown>{contribution?.post?.profile.description ?? ''}</WrapperMarkdown>
       </PostContentWrapper>
       <CommentsExpander onClick={() => setCommentsExpanded(!commentsExpanded)}>
@@ -75,7 +87,7 @@ const CalloutContributionPreviewPost = ({ callout, contribution, loading }: Call
           <KeyboardDoubleArrowLeftIcon preserveAspectRatio="none" />
         )}
       </CommentsExpander>
-      <Box flex={commentsExpanded ? POST_COMMENTS_PROPORTION.comments : 0}>
+      <Box flex={commentsExpanded ? POST_COMMENTS_PROPORTION.comments : 0} sx={CommentsAnimation} >
         {commentsExpanded && (
           <Gutters disableSidePadding disableGap height="100%">
             <CalloutContributionCommentsContainer callout={callout} contribution={contribution}>

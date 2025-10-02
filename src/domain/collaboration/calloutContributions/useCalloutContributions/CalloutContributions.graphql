@@ -4,35 +4,30 @@ query CalloutContributions(
   $includeWhiteboard: Boolean! = false,
   $includePost: Boolean! = false,
   $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, POST],
-  $first: Int!,
-  $after: UUID
+  $limit: Float,
 ) {
   lookup {
     callout(ID: $calloutId) {
       id
-      contributionsPaginated(
-        first: $first,
-        after: $after,
+      contributions(
         filter: {
           types: $filter
-        }
+        },
+        limit: $limit
       ) {
-        contributions {
-          id
-          sortOrder
-          link @include(if: $includeLink) {
-            ...LinkDetailsWithAuthorization
-          }
-          whiteboard @include(if: $includeWhiteboard)  {
-            ...CalloutContributionsWhiteboardCard
-          }
-          post @include(if: $includePost)  {
-            ...CalloutContributionsPostCard
-          }
+        id
+        sortOrder
+        link @include(if: $includeLink) {
+          ...LinkDetailsWithAuthorization
         }
-        pageInfo {
-          ...PageInfo
+        whiteboard @include(if: $includeWhiteboard)  {
+          ...CalloutContributionsWhiteboardCard
         }
+        post @include(if: $includePost)  {
+          ...CalloutContributionsPostCard
+        }
+      }
+      contributionsPaginated {
         total
       }
     }

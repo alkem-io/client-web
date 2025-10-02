@@ -45,15 +45,15 @@ interface PostCardProps {
   contribution: PostContribution | undefined;
   columns?: number;
   selected?: boolean;
-  onClick: (postContribution: PostContribution) => void;
+  onClick?: (postContribution: PostContribution) => void;
 }
 
 const PostCard = ({ contribution, columns, selected, onClick }: PostCardProps) => {
-  const handleClick = useCallback(() => contribution && onClick(contribution), [onClick, contribution]);
+  const handleClick = useCallback(() => contribution && onClick?.(contribution), [onClick, contribution]);
 
   if (!contribution || !contribution.post) {
     return (
-      <ContributeCard>
+      <ContributeCard columns={columns}>
         <CardHeader title={<Skeleton />} iconComponent={PostIcon}>
           <Skeleton />
         </CardHeader>

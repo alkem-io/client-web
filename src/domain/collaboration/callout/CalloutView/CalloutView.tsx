@@ -13,8 +13,6 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import CalloutCommentsContainer from './CalloutCommentsContainer';
 import CalloutViewLayout from './CalloutViewLayout';
 import CalloutContributionsLink from '../../calloutContributions/link/CalloutContributionsLink';
-import CalloutContributionsContainer from '../../calloutContributions/CalloutContributionsContainer';
-import CalloutContributionsWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionsWhiteboard';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import CalloutFramingLink from '../CalloutFramings/CalloutFramingLink';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -30,6 +28,8 @@ import CalloutContributionDialogWhiteboard from '../../calloutContributions/whit
 import CalloutContributionDialogPost from '../../calloutContributions/post/CalloutContributionDialogPost';
 import CalloutContributionsScroller from '../../calloutContributions/CalloutContributionsScroller';
 import PostCard from '../../calloutContributions/post/PostCard';
+import ContributionsCardsExpandable from '../../calloutContributions/contributionsCardsExpandable/ContributionsCardsExpandable';
+import WhiteboardCard from '../../calloutContributions/whiteboard/WhiteboardCard';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>
@@ -46,6 +46,7 @@ export const CalloutViewSkeleton = () => (
 
 interface CalloutViewProps extends BaseCalloutViewProps {
   callout: CalloutDetailsModelExtended | undefined;
+  contributionsCount: number | undefined;
   contributionId?: string;  // Selected contributionId
   calloutActions?: boolean;
 }
@@ -101,21 +102,13 @@ const CalloutView = ({
 
           {/* Collaborate with links */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link) && (
-            <CalloutContributionsContainer
+            <CalloutContributionsLink
               callout={callout}
+              expanded={expanded}
+              onExpand={onExpand}
+              onCollapse={onCollapse}
               onCalloutUpdate={onCalloutUpdate}
-              contributionType={CalloutContributionType.Link}
-            >
-              {props => (
-                <CalloutContributionsLink
-                  {...props}
-                  callout={callout}
-                  expanded={expanded}
-                  onExpand={onExpand}
-                  onCollapse={onCollapse}
-                />
-              )}
-            </CalloutContributionsContainer>
+            />
           )}
 
           {/* Collaborate with Whiteboards */}
@@ -130,21 +123,29 @@ const CalloutView = ({
                   dialogComponent={CalloutContributionDialogWhiteboard}
                 />
               )}
-              <CalloutContributionsContainer
-                callout={callout}
-                onCalloutUpdate={onCalloutUpdate}
-                contributionType={CalloutContributionType.Whiteboard}
-              >
-                {props => (
-                  <CalloutContributionsWhiteboard
-                    {...props}
-                    callout={callout}
-                    expanded={expanded}
-                    onExpand={onExpand}
-                    onCollapse={onCollapse}
-                  />
-                )}
-              </CalloutContributionsContainer>
+              {/* If there is a contributionId show the scroller */}
+              {contributionId && (
+                <CalloutContributionsScroller
+                  callout={callout}
+                  contributionType={CalloutContributionType.Whiteboard}
+                  contributionSelectedId={contributionId}
+                  cardComponent={WhiteboardCard}
+                  getContributionUrl={contribution => contribution.whiteboard?.profile.url}
+                />
+              )}
+              {/* else show the expandable container with the cards */}
+              {!contributionId && (
+                <ContributionsCardsExpandable
+                  callout={callout}
+                  contributionType={CalloutContributionType.Whiteboard}
+                  expanded={expanded}
+                  onExpand={onExpand}
+                  onCollapse={onCollapse}
+                  onCalloutUpdate={onCalloutUpdate}
+                  contributionCardComponent={WhiteboardCard}
+                  getContributionUrl={contribution => contribution.whiteboard?.profile.url}
+                />
+              )}
             </>
           )}
 
@@ -160,28 +161,29 @@ const CalloutView = ({
                   dialogComponent={CalloutContributionDialogPost}
                 />
               )}
-              <CalloutContributionsContainer
-                callout={callout}
-                onCalloutUpdate={onCalloutUpdate}
-                contributionType={CalloutContributionType.Post}
-              >
-                {props => (
-                  <CalloutContributionsScroller
-                    {...props}
-                    callout={callout}
-                    contributionSelectedId={contributionId}
-                    cardComponent={PostCard}
-                    getContributionUrl={contribution => contribution.post?.profile.url}
-                  />
-                  /*<CalloutContributionsPost
-                    {...props}
-                    callout={callout}
-                    expanded={expanded}
-                    onExpand={onExpand}
-                    onCollapse={onCollapse}
-                  />*/
-                )}
-              </CalloutContributionsContainer>
+              {/* If there is a contributionId show the scroller */}
+              {contributionId && (
+                <CalloutContributionsScroller
+                  callout={callout}
+                  contributionType={CalloutContributionType.Post}
+                  contributionSelectedId={contributionId}
+                  cardComponent={PostCard}
+                  getContributionUrl={contribution => contribution.post?.profile.url}
+                />
+              )}
+              {/* else show the expandable container with the cards */}
+              {!contributionId && (
+                <ContributionsCardsExpandable
+                  callout={callout}
+                  contributionType={CalloutContributionType.Post}
+                  expanded={expanded}
+                  onExpand={onExpand}
+                  onCollapse={onCollapse}
+                  onCalloutUpdate={onCalloutUpdate}
+                  contributionCardComponent={PostCard}
+                  getContributionUrl={contribution => contribution.post?.profile.url}
+                />
+              )}
             </>
           )}
 

@@ -2,6 +2,7 @@ import { ApolloError } from '@apollo/client';
 import { PushFunc, RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
+  useDeleteContributionMutation,
   useDeletePostMutation,
   usePostSettingsQuery,
   useUpdatePostMutation,
@@ -47,15 +48,16 @@ export interface PostSettingsContainerState {
 }
 
 export interface PostSettingsContainerProps {
-  postId: string | undefined;
   calloutId: string | undefined;
+  contributionId: string | undefined;
+  postId: string | undefined;
   skip?: boolean;
 }
 
 const usePostSettings = ({
-  postId,
-  //!! contributionId
   calloutId,
+  contributionId,
+  postId,
   skip,
 }: PostSettingsContainerProps): PostSettingsContainerEntities &
   PostSettingsContainerActions &
@@ -112,9 +114,15 @@ const usePostSettings = ({
   const [deletePost, { loading: deleting }] = useDeletePostMutation({
     update: removeFromCache,
   });
+  const [deleteContribution, { loading: deletingContribution }] = useDeleteContributionMutation({
+    update: removeFromCache,
+  })
 
   const handleDelete = async (postId: string) => {
     await deletePost({ variables: { postId } });
+    if (contributionId) {
+      await deleteContribution({ variables: { contributionId } });
+    }
   };
 
   const handleAddReference = (push: PushFunc, referencesLength: number) => {
@@ -141,7 +149,7 @@ const usePostSettings = ({
     loading,
     error,
     updating,
-    deleting,
+    deleting: deleting || deletingContribution,
     updateError,
     handleUpdate,
     handleAddReference,

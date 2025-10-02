@@ -2336,6 +2336,10 @@ export type DeleteCalloutInput = {
   ID: Scalars['UUID']['input'];
 };
 
+export type DeleteContributionInput = {
+  ID: Scalars['UUID']['input'];
+};
+
 export type DeleteDiscussionInput = {
   ID: Scalars['UUID']['input'];
 };
@@ -4676,7 +4680,7 @@ export type MutationDeleteCalloutArgs = {
 };
 
 export type MutationDeleteContributionArgs = {
-  contributionID: Scalars['String']['input'];
+  deleteData: DeleteContributionInput;
 };
 
 export type MutationDeleteDiscussionArgs = {
@@ -12884,144 +12888,6 @@ export type CalloutSettingsFullFragment = {
   framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
 };
 
-export type CalloutContributionsQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
-  includeLink?: Scalars['Boolean']['input'];
-  includeWhiteboard?: Scalars['Boolean']['input'];
-  includePost?: Scalars['Boolean']['input'];
-  filter?: InputMaybe<Array<CalloutContributionType> | CalloutContributionType>;
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['UUID']['input']>;
-}>;
-
-export type CalloutContributionsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    callout?:
-      | {
-          __typename?: 'Callout';
-          id: string;
-          contributionsPaginated: {
-            __typename?: 'PaginatedContributions';
-            total: number;
-            contributions: Array<{
-              __typename?: 'CalloutContribution';
-              id: string;
-              sortOrder: number;
-              link?:
-                | {
-                    __typename?: 'Link';
-                    id: string;
-                    uri: string;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      description?: string | undefined;
-                    };
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
-                          id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        }
-                      | undefined;
-                  }
-                | undefined;
-              whiteboard?:
-                | {
-                    __typename?: 'Whiteboard';
-                    id: string;
-                    createdDate: Date;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      url: string;
-                      displayName: string;
-                      visual?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
-                    };
-                  }
-                | undefined;
-              post?:
-                | {
-                    __typename?: 'Post';
-                    id: string;
-                    createdDate: Date;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      url: string;
-                      displayName: string;
-                      description?: string | undefined;
-                    };
-                    createdBy?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          profile: { __typename?: 'Profile'; id: string; displayName: string };
-                        }
-                      | undefined;
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
-                          id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        }
-                      | undefined;
-                    comments: { __typename?: 'Room'; id: string; messagesCount: number };
-                  }
-                | undefined;
-            }>;
-            pageInfo: {
-              __typename?: 'PageInfo';
-              startCursor?: string | undefined;
-              endCursor?: string | undefined;
-              hasNextPage: boolean;
-            };
-          };
-        }
-      | undefined;
-  };
-};
-
-export type CalloutContributionsWhiteboardCardFragment = {
-  __typename?: 'Whiteboard';
-  id: string;
-  createdDate: Date;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    url: string;
-    displayName: string;
-    visual?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-      | undefined;
-  };
-};
-
-export type CalloutContributionsPostCardFragment = {
-  __typename?: 'Post';
-  id: string;
-  createdDate: Date;
-  profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
-  createdBy?:
-    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-    | undefined;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-  comments: { __typename?: 'Room'; id: string; messagesCount: number };
-};
-
 export type CalloutContributionQueryVariables = Exact<{
   contributionId: Scalars['UUID']['input'];
   includeLink?: Scalars['Boolean']['input'];
@@ -13366,6 +13232,15 @@ export type CalloutContributionCommentsQuery = {
   };
 };
 
+export type DeleteContributionMutationVariables = Exact<{
+  contributionId: Scalars['UUID']['input'];
+}>;
+
+export type DeleteContributionMutation = {
+  __typename?: 'Mutation';
+  deleteContribution: { __typename?: 'CalloutContribution'; id: string };
+};
+
 export type CreateLinkOnCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
   link: CreateLinkInput;
@@ -13449,6 +13324,134 @@ export type CreatePostOnCalloutMutation = {
     __typename?: 'CalloutContribution';
     post?: { __typename?: 'Post'; id: string } | undefined;
   };
+};
+
+export type CalloutContributionsQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+  includeLink?: Scalars['Boolean']['input'];
+  includeWhiteboard?: Scalars['Boolean']['input'];
+  includePost?: Scalars['Boolean']['input'];
+  filter?: InputMaybe<Array<CalloutContributionType> | CalloutContributionType>;
+  limit?: InputMaybe<Scalars['Float']['input']>;
+}>;
+
+export type CalloutContributionsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          contributions: Array<{
+            __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
+            link?:
+              | {
+                  __typename?: 'Link';
+                  id: string;
+                  uri: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  createdDate: Date;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    url: string;
+                    displayName: string;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+            post?:
+              | {
+                  __typename?: 'Post';
+                  id: string;
+                  createdDate: Date;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    url: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  comments: { __typename?: 'Room'; id: string; messagesCount: number };
+                }
+              | undefined;
+          }>;
+          contributionsPaginated: { __typename?: 'PaginatedContributions'; total: number };
+        }
+      | undefined;
+  };
+};
+
+export type CalloutContributionsWhiteboardCardFragment = {
+  __typename?: 'Whiteboard';
+  id: string;
+  createdDate: Date;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    url: string;
+    displayName: string;
+    visual?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+      | undefined;
+  };
+};
+
+export type CalloutContributionsPostCardFragment = {
+  __typename?: 'Post';
+  id: string;
+  createdDate: Date;
+  profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
+  createdBy?:
+    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  comments: { __typename?: 'Room'; id: string; messagesCount: number };
 };
 
 export type CreateWhiteboardOnCalloutMutationVariables = Exact<{

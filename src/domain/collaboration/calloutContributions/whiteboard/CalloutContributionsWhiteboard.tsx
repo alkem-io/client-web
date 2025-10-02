@@ -14,7 +14,6 @@ import { useCreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/ap
 import { useTranslation } from 'react-i18next';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import Gutters from '@/core/ui/grid/Gutters';
-import CardsExpandableContainer from '../../callout/components/CardsExpandableContainer';
 
 interface WhiteboardContributionProps {
   id: string;
@@ -128,7 +127,7 @@ const CalloutContributionsWhiteboard = ({
           createButton={createButton}
         >
           {whiteboard =>
-            whiteboard ? <WhiteboardCard key={whiteboard.id} whiteboard={whiteboard} callout={callout} /> : <Skeleton />
+            whiteboard ? <WhiteboardCard key={whiteboard.id} contribution={whiteboard} callout={callout} /> : <Skeleton />
           }
         </CardsExpandableContainer>
       )}

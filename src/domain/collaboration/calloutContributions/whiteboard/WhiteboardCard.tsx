@@ -11,20 +11,22 @@ import { useTranslation } from 'react-i18next';
 import { Visual } from '@/domain/common/visual/Visual';
 import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
 import { CalloutLayoutProps } from '../../callout/calloutBlock/CalloutLayoutTypes';
+import { Identifiable } from '@/core/utils/Identifiable';
 
-export interface WhiteboardCardWhiteboard {
-  id: string;
-  profile: {
-    displayName: string;
-    visual?: Visual;
-    url: string;
+export interface WhiteboardContribution extends Identifiable {
+  whiteboard?: {
+    id: string;
+    profile: {
+      displayName: string;
+      visual?: Visual;
+      url: string;
+    };
+    createdDate?: Date | string;
   };
-  createdDate?: Date | string;
-  contributionId: string;
 }
 
 interface WhiteboardCardProps {
-  whiteboard: WhiteboardCardWhiteboard | undefined;
+  contribution: WhiteboardContribution | undefined;
   callout?: CalloutLayoutProps['callout'];
 }
 
@@ -48,8 +50,9 @@ const WhiteboardDefaultImage = () => {
   );
 };
 
-const WhiteboardCard = ({ whiteboard, callout }: WhiteboardCardProps) => {
+const WhiteboardCard = ({ contribution, callout }: WhiteboardCardProps) => {
   const { t } = useTranslation();
+  const whiteboard = contribution?.whiteboard;
 
   const linkState = useMemo(() => {
     return {
