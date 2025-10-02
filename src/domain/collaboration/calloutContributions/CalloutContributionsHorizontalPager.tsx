@@ -10,25 +10,19 @@ import { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsMod
 import useNavigate from '@/core/routing/useNavigate';
 import useCalloutContributions from './useCalloutContributions/useCalloutContributions';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
-import { AnyContribution } from './useCalloutContributions/AnyContributionType';
+import { AnyContribution } from './interfaces/AnyContributionType';
+import { CalloutContributionCardComponentProps } from './interfaces/CalloutContributionCardComponentProps';
 
 const PAGE_SIZE = 5;
 const COLUMNS_PER_CARD = 2;
 const COLUMNS_SCROLLER = PAGE_SIZE * COLUMNS_PER_CARD + 1;
 
-interface ContributionCardProps {
-  contribution: AnyContribution;
-  columns: number;
-  onClick: () => void;
-  selected?: boolean;
-}
-
-interface CalloutContributionsScrollerProps {
+interface CalloutContributionsHorizontalPagerProps {
   callout: CalloutDetailsModelExtended;
   contributionSelectedId?: string;
   contributionType: CalloutContributionType;
   loading?: boolean;
-  cardComponent: ComponentType<ContributionCardProps>;
+  cardComponent: ComponentType<CalloutContributionCardComponentProps>;
   getContributionUrl: (contribution: AnyContribution) => string | undefined;
 }
 
@@ -54,14 +48,14 @@ const PaginationDot = styled(Box, {
   },
 }));
 
-const CalloutContributionsScroller = ({
+const CalloutContributionsHorizontalPager = ({
   ref,
   callout,
   contributionType,
   contributionSelectedId,
   cardComponent: Card,
   getContributionUrl,
-}: CalloutContributionsScrollerProps & {
+}: CalloutContributionsHorizontalPagerProps & {
   ref?: React.Ref<HTMLDivElement>;
 }) => {
   const navigate = useNavigate();
@@ -104,11 +98,11 @@ const CalloutContributionsScroller = ({
   };
 
   const handleClickLeft = () => {
-    setSelectedPage(prev => prev === 0 ? pages.length - 1 : prev - 1);
+    setSelectedPage(prev => (prev === 0 ? pages.length - 1 : prev - 1));
   };
 
   const handleClickRight = () => {
-    setSelectedPage(prev => prev === pages.length - 1 ? 0 : prev + 1);
+    setSelectedPage(prev => (prev === pages.length - 1 ? 0 : prev + 1));
   };
 
   const currentPageItems = pages[selectedPage] || [];
@@ -117,11 +111,14 @@ const CalloutContributionsScroller = ({
   return (
     <Gutters ref={inViewRef} disableSidePadding>
       <Gutters row disablePadding justifyContent={fullRow ? 'space-between' : undefined} ref={ref}>
-        <ScrollButton onClick={handleClickLeft}><KeyboardDoubleArrowLeftIcon /></ScrollButton>
+        <ScrollButton onClick={handleClickLeft} disabled={pages.length < 2}>
+          <KeyboardDoubleArrowLeftIcon />
+        </ScrollButton>
         <GridProvider columns={COLUMNS_SCROLLER} force>
           {currentPageItems.map(contribution => (
             <Card
               key={contribution.id}
+              callout={callout}
               contribution={contribution}
               onClick={() => handleClickOnContribution(contribution)}
               selected={contribution.id === contributionSelectedId}
@@ -129,20 +126,22 @@ const CalloutContributionsScroller = ({
             />
           ))}
         </GridProvider>
-        <ScrollButton onClick={handleClickRight} sx={{ marginLeft: !fullRow ? 'auto' : undefined }}><KeyboardDoubleArrowRightIcon /></ScrollButton>
+        <ScrollButton
+          onClick={handleClickRight}
+          disabled={pages.length < 2}
+          sx={{ marginLeft: !fullRow ? 'auto' : undefined }}
+        >
+          <KeyboardDoubleArrowRightIcon />
+        </ScrollButton>
       </Gutters>
 
       <Box display="flex" justifyContent="center" gap={1} mt={2}>
         {pages.map((_, index) => (
-          <PaginationDot
-            key={index}
-            selected={index === selectedPage}
-            onClick={() => setSelectedPage(index)}
-          />
+          <PaginationDot key={index} selected={index === selectedPage} onClick={() => setSelectedPage(index)} />
         ))}
       </Box>
     </Gutters>
   );
 };
 
-export default CalloutContributionsScroller;
+export default CalloutContributionsHorizontalPager;

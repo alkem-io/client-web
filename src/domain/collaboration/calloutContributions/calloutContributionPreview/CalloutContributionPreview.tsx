@@ -17,27 +17,8 @@ import CalloutContributionModel from '../CalloutContributionModel';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { useTranslation } from 'react-i18next';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-
-/**
- * Properties that a Preview Contribution component must receive
- */
-export interface CalloutContributionPreviewComponentProps {
-  callout: CalloutDetailsModelExtended;
-  contribution: CalloutContributionModel | undefined;
-  onOpenContribution: () => void;
-  loading?: boolean;
-}
-/**
- * Properties that a Preview Dialog component must receive
- */
-export interface CalloutContributionPreviewDialogProps {
-  calloutsSetId: string | undefined;
-  calloutId: string | undefined;
-  contribution: CalloutContributionModel | undefined;
-  onCalloutUpdate?: () => Promise<unknown>;
-  open: boolean;
-  onClose: () => void;
-}
+import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
+import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
 
 interface CalloutContributionPreviewProps {
   callout: CalloutDetailsModelExtended;
@@ -90,13 +71,11 @@ const CalloutContributionPreview = ({
     (contributionType === CalloutContributionType.Whiteboard &&
       contribution?.whiteboard?.createdBy?.profile.displayName);
 
-  const createdDate = (contributionType === CalloutContributionType.Post &&
-    contribution?.post?.createdDate) ||
-    (contributionType === CalloutContributionType.Whiteboard &&
-      contribution?.whiteboard?.createdDate);
+  const createdDate =
+    (contributionType === CalloutContributionType.Post && contribution?.post?.createdDate) ||
+    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.createdDate);
   const formattedCreatedDate = createdDate && formatDateTime(createdDate);
   const formattedEllapsedTime = createdDate && formatTimeElapsed(createdDate, t, 'long');
-
 
   const contributionUrl =
     (contributionType === CalloutContributionType.Post && contribution?.post?.profile.url) ||

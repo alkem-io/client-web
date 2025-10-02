@@ -13301,6 +13301,16 @@ export type CalloutPostCreatedSubscription = {
         url: string;
         displayName: string;
         description?: string | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
       };
       createdBy?:
         | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
@@ -13322,7 +13332,9 @@ export type CreatePostOnCalloutMutation = {
   __typename?: 'Mutation';
   createContributionOnCallout: {
     __typename?: 'CalloutContribution';
-    post?: { __typename?: 'Post'; id: string } | undefined;
+    post?:
+      | { __typename?: 'Post'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } }
+      | undefined;
   };
 };
 
@@ -13387,6 +13399,13 @@ export type CalloutContributionsQuery = {
                         }
                       | undefined;
                   };
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
                 }
               | undefined;
             post?:
@@ -13400,6 +13419,16 @@ export type CalloutContributionsQuery = {
                     url: string;
                     displayName: string;
                     description?: string | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
                   };
                   createdBy?:
                     | {
@@ -13438,13 +13467,32 @@ export type CalloutContributionsWhiteboardCardFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
       | undefined;
   };
+  createdBy?:
+    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | undefined;
 };
 
 export type CalloutContributionsPostCardFragment = {
   __typename?: 'Post';
   id: string;
   createdDate: Date;
-  profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    url: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+  };
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;

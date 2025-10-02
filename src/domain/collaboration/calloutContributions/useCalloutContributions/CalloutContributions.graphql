@@ -45,6 +45,13 @@ fragment CalloutContributionsWhiteboardCard on Whiteboard {
     }
   }
   createdDate
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
 }
 
 fragment CalloutContributionsPostCard on Post {
@@ -53,6 +60,9 @@ fragment CalloutContributionsPostCard on Post {
     id
     url
     displayName
+    tagset {
+      ...TagsetDetails
+    }
     description
   }
   createdDate

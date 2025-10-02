@@ -1,5 +1,6 @@
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export type AnyContribution = Identifiable & {
   link?: {
@@ -12,11 +13,15 @@ export type AnyContribution = Identifiable & {
     };
     authorization?: {
       myPrivileges?: Array<AuthorizationPrivilege>;
-    }
+    };
   };
   whiteboard?: {
     id: string;
     createdDate: Date;
+    createdBy?: {
+      id: string;
+      profile: { displayName: string };
+    };
     profile: {
       id: string;
       url: string;
@@ -35,6 +40,7 @@ export type AnyContribution = Identifiable & {
     profile: {
       id: string;
       url: string;
+      tagset?: TagsetModel;
       displayName: string;
       description?: string | undefined;
     };
@@ -47,4 +53,4 @@ export type AnyContribution = Identifiable & {
     };
     comments: { id: string; messagesCount: number };
   };
-}
+};

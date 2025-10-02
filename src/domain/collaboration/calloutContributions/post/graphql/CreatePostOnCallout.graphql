@@ -6,6 +6,10 @@ mutation CreatePostOnCallout($calloutId: UUID!, $post: CreatePostInput!) {
   }) {
     post {
       id
+      profile {
+        id
+        url
+      }
     }
   }
 }

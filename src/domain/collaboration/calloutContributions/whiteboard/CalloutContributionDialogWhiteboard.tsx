@@ -1,9 +1,8 @@
 import WhiteboardView from '../../whiteboard/WhiteboardsManagement/WhiteboardView';
-import { CalloutContributionPreviewDialogProps } from '../calloutContributionPreview/CalloutContributionPreview';
+import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
 import { WhiteboardProvider } from '../../whiteboard/containers/WhiteboardProvider';
 
-export interface CalloutContributionDialogWhiteboardProps extends CalloutContributionPreviewDialogProps {
-}
+export interface CalloutContributionDialogWhiteboardProps extends CalloutContributionPreviewDialogProps {}
 
 const CalloutContributionDialogWhiteboard = ({ open, onClose }: CalloutContributionDialogWhiteboardProps) => {
   if (!open) {

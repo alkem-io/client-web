@@ -10,8 +10,9 @@ import { WhiteboardIcon } from 'domain/collaboration/whiteboard/icon/WhiteboardI
 import { useTranslation } from 'react-i18next';
 import { Visual } from '@/domain/common/visual/Visual';
 import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import { CalloutLayoutProps } from '../../callout/calloutBlock/CalloutLayoutTypes';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
+import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
 
 export interface WhiteboardContribution extends Identifiable {
   whiteboard?: {
@@ -25,10 +26,7 @@ export interface WhiteboardContribution extends Identifiable {
   };
 }
 
-interface WhiteboardCardProps {
-  contribution: WhiteboardContribution | undefined;
-  callout?: CalloutLayoutProps['callout'];
-}
+interface WhiteboardCardProps extends CalloutContributionCardComponentProps {}
 
 const WHITEBOARD_IMAGE_ASPECT_RATIO = '23/12';
 
@@ -50,7 +48,7 @@ const WhiteboardDefaultImage = () => {
   );
 };
 
-const WhiteboardCard = ({ contribution, callout }: WhiteboardCardProps) => {
+const WhiteboardCard = ({ contribution, columns, callout, selected }: WhiteboardCardProps) => {
   const { t } = useTranslation();
   const whiteboard = contribution?.whiteboard;
 
@@ -62,8 +60,12 @@ const WhiteboardCard = ({ contribution, callout }: WhiteboardCardProps) => {
   }, [callout]);
 
   return (
-    <ContributeCard to={whiteboard?.profile.url} state={linkState}>
-      <CardHeader title={whiteboard?.profile.displayName} iconComponent={WhiteboardIcon} />
+    <ContributeCard to={whiteboard?.profile.url} state={linkState} columns={columns}>
+      <CardHeader title={whiteboard?.profile.displayName} iconComponent={WhiteboardIcon} contrast={selected}>
+        <CardHeaderCaption color={selected ? 'white' : undefined}>
+          {whiteboard?.createdBy?.profile.displayName}
+        </CardHeaderCaption>
+      </CardHeader>
       {whiteboard?.profile.visual?.uri ? (
         <CardImage
           aspectRatio={WHITEBOARD_IMAGE_ASPECT_RATIO}

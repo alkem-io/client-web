@@ -14,7 +14,7 @@ export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
 }
 
 export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
-  onCalloutUpdate?: () => Promise<unknown> | void;
+  onCalloutUpdate?: () => Promise<unknown>;
   expanded?: boolean;
   onExpand?: (callout: CalloutDetailsModelExtended) => void;
   onCollapse?: () => void;

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { Autocomplete, Button, DialogActions, DialogContent, TextField } from '@mui/material';
@@ -24,14 +23,12 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '@/core/utils/links';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { CalloutContributionPreviewDialogProps } from '../calloutContributionPreview/CalloutContributionPreview';
+import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
 import { EditOutlined } from '@mui/icons-material';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import Gutters from '@/core/ui/grid/Gutters';
 
-interface CalloutContributionDialogPostProps extends CalloutContributionPreviewDialogProps {
-
-}
+interface CalloutContributionDialogPostProps extends CalloutContributionPreviewDialogProps {}
 
 const CalloutContributionDialogPost = ({
   open,
@@ -163,12 +160,7 @@ const CalloutContributionDialogPost = ({
 
   return (
     <>
-      <DialogWithGrid
-        open={open}
-        columns={12}
-        onClose={onCloseEdit}
-        aria-labelledby="post-dialog-title"
-      >
+      <DialogWithGrid open={open} columns={12} onClose={onCloseEdit} aria-labelledby="post-dialog-title">
         <DialogHeader id="post-dialog-title" onClose={onCloseEdit} icon={<EditOutlined />}>
           {t('post-edit.edit')}
         </DialogHeader>
@@ -214,8 +206,7 @@ const CalloutContributionDialogPost = ({
                     </>
                   )}
                 </Gutters>
-              )
-              }
+              )}
             </PostForm>
           </StorageConfigContextProvider>
         </DialogContent>

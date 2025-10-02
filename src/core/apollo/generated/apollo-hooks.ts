@@ -571,6 +571,13 @@ export const CalloutContributionsWhiteboardCardFragmentDoc = gql`
       }
     }
     createdDate
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
   }
   ${VisualModelFragmentDoc}
 `;
@@ -581,6 +588,9 @@ export const CalloutContributionsPostCardFragmentDoc = gql`
       id
       url
       displayName
+      tagset {
+        ...TagsetDetails
+      }
       description
     }
     createdDate
@@ -600,6 +610,7 @@ export const CalloutContributionsPostCardFragmentDoc = gql`
       messagesCount
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
@@ -7698,6 +7709,10 @@ export const CreatePostOnCalloutDocument = gql`
     createContributionOnCallout(contributionData: { calloutID: $calloutId, type: POST, post: $post }) {
       post {
         id
+        profile {
+          id
+          url
+        }
       }
     }
   }

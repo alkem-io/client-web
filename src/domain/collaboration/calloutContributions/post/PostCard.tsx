@@ -13,6 +13,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { isNumber } from 'lodash';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 
 export interface PostContribution extends Identifiable {
   post?: {
@@ -41,15 +42,10 @@ export interface PostContribution extends Identifiable {
   };
 }
 
-interface PostCardProps {
-  contribution: PostContribution | undefined;
-  columns?: number;
-  selected?: boolean;
-  onClick?: (postContribution: PostContribution) => void;
-}
+interface PostCardProps extends CalloutContributionCardComponentProps {}
 
 const PostCard = ({ contribution, columns, selected, onClick }: PostCardProps) => {
-  const handleClick = useCallback(() => contribution && onClick?.(contribution), [onClick, contribution]);
+  const handleClick = useCallback(() => contribution && onClick?.(), [onClick, contribution]);
 
   if (!contribution || !contribution.post) {
     return (
@@ -68,7 +64,9 @@ const PostCard = ({ contribution, columns, selected, onClick }: PostCardProps) =
   return (
     <ContributeCard onClick={handleClick} columns={columns}>
       <CardHeader title={post.profile.displayName} iconComponent={PostIcon} contrast={selected}>
-        <CardHeaderCaption color={selected ? 'white' : undefined} >{post.createdBy?.profile.displayName}</CardHeaderCaption>
+        <CardHeaderCaption color={selected ? 'white' : undefined}>
+          {post.createdBy?.profile.displayName}
+        </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
         <CardDescriptionWithTags tags={post.profile?.tagset?.tags}>{post.profile?.description}</CardDescriptionWithTags>

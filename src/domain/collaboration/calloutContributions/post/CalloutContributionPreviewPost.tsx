@@ -1,22 +1,16 @@
 import { Box, Button, styled, useTheme } from '@mui/material';
-import CalloutContributionModel from '../CalloutContributionModel';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
-import CalloutContributionCommentsContainer, {
-  CalloutContributionCommentsContainerProps,
-} from '../commentsToContribution/CalloutContributionCommentsContainer';
+import CalloutContributionCommentsContainer from '../commentsToContribution/CalloutContributionCommentsContainer';
 import Gutters from '@/core/ui/grid/Gutters';
 import { GUTTER_PX } from '@/core/ui/grid/constants';
+import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
 
-interface CalloutContributionPreviewPostProps {
-  callout: CalloutContributionCommentsContainerProps['callout']; // Need callout in this contribution preview to check the callout settings about comments inside contributions
-  contribution: CalloutContributionModel | undefined;
-  loading?: boolean;
-}
+interface CalloutContributionPreviewPostProps extends CalloutContributionPreviewComponentProps {}
 
 const POST_COMMENTS_PROPORTION = { post: 2, comments: 1 } as const;
 const MIN_HEIGHT_DESCRIPTION_GUTTERS = 15; // Minimum height when the description is very short, if long it will grow and expand the entire dialog
@@ -46,13 +40,13 @@ const CommentsExpander = styled(Button)(({ theme }) => ({
 const CommentsAnimation = {
   transitionProperty: 'flex',
   transitionDuration: '100ms',
-}
+};
 
 const PostDescriptionAnimation = {
-  height: 'calc-size(auto)',  // Not supported in many browsers yet, but will look amazing in the future... //!! maybe find another way
+  height: 'calc-size(auto)', // Not supported in many browsers yet, but will look amazing in the future... //!! maybe find another way
   transitionProperty: 'height',
   transitionDuration: '100ms',
-}
+};
 
 const CalloutContributionPreviewPost = ({ callout, contribution, loading }: CalloutContributionPreviewPostProps) => {
   const theme = useTheme();
@@ -87,7 +81,7 @@ const CalloutContributionPreviewPost = ({ callout, contribution, loading }: Call
           <KeyboardDoubleArrowLeftIcon preserveAspectRatio="none" />
         )}
       </CommentsExpander>
-      <Box flex={commentsExpanded ? POST_COMMENTS_PROPORTION.comments : 0} sx={CommentsAnimation} >
+      <Box flex={commentsExpanded ? POST_COMMENTS_PROPORTION.comments : 0} sx={CommentsAnimation}>
         {commentsExpanded && (
           <Gutters disableSidePadding disableGap height="100%">
             <CalloutContributionCommentsContainer callout={callout} contribution={contribution}>
@@ -99,7 +93,7 @@ const CalloutContributionPreviewPost = ({ callout, contribution, loading }: Call
                   height="100%"
                   fullHeight
                   maxHeight={commentsMaxHeight}
-                  isMember={false /* //!! myMembershipStatus === CommunityMembershipStatus.Member*/}
+                  isMember={false /* //!! why was this? myMembershipStatus === CommunityMembershipStatus.Member*/}
                 />
               )}
             </CalloutContributionCommentsContainer>

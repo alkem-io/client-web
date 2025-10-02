@@ -1,9 +1,9 @@
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
-import useCalloutContributions, { useCalloutContributionsProvided } from '../useCalloutContributions/useCalloutContributions';
+import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
 import { Trans, useTranslation } from 'react-i18next';
-import { ComponentType, ReactElement, useEffect, useState } from 'react';
+import { ComponentType, useEffect, useState } from 'react';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import React from 'react';
@@ -13,23 +13,17 @@ import { Caption } from '@/core/ui/typography';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Gutters from '@/core/ui/grid/Gutters';
-import { AnyContribution } from '../useCalloutContributions/AnyContributionType';
+import { AnyContribution } from '../interfaces/AnyContributionType';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import useNavigate from '@/core/routing/useNavigate';
-
-interface CardComponent {
-  contribution: useCalloutContributionsProvided['contributions']['items'][0];
-  callout: CalloutDetailsModelExtended;
-  onClick?: () => void; //!! used?
-  columns?: number; //!! used?
-}
-
+import { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
+import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 
 interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
   callout: CalloutDetailsModelExtended; //!! move this to BaseCalloutViewProps?
   contributionType: CalloutContributionType;
-  contributionCardComponent: ComponentType<CardComponent>;
-  createContributionButton?: ReactElement;
+  contributionCardComponent: ComponentType<CalloutContributionCardComponentProps>;
+  createContributionButtonComponent: ComponentType<CalloutContributionCreateButtonProps>;
   getContributionUrl: (contribution: AnyContribution) => string | undefined;
 }
 
@@ -39,11 +33,11 @@ const ContributionsCardsExpandable = ({
   callout,
   contributionType,
   contributionCardComponent: Card,
+  createContributionButtonComponent: CreateContributionButton,
   getContributionUrl,
-  createContributionButton,
   loading,
   expanded: calloutExpanded,
-  onCalloutUpdate
+  onCalloutUpdate,
 }: ContributionsCardsExpandableProps) => {
   const { isSmallScreen, isMediumSmallScreen } = useScreenSize();
   const navigate = useNavigate();
@@ -51,12 +45,7 @@ const ContributionsCardsExpandable = ({
 
   const {
     inViewRef,
-    contributions: {
-      items: contributions,
-      hasMore,
-      setFetchAll,
-      total: totalContributions,
-    },
+    contributions: { items: contributions, hasMore, setFetchAll, total: totalContributions },
     canCreateContribution,
   } = useCalloutContributions({
     callout,
@@ -70,13 +59,12 @@ const ContributionsCardsExpandable = ({
   //  - Callout expanded means the whole Callout is expanded to a dialog.
   //  - This component's expanded means showing all contributions, not just the first 4.
   useEffect(() => {
-    if ((calloutExpanded && hasMore)) {
+    if (calloutExpanded && hasMore) {
       setFetchAll(true);
     } else {
       setFetchAll(!isCollapsed);
     }
   }, [calloutExpanded, hasMore, setFetchAll, isCollapsed]);
-
 
   const handleClickOnContribution = (contribution: AnyContribution) => {
     const state: LocationStateCachedCallout = {
@@ -94,11 +82,16 @@ const ContributionsCardsExpandable = ({
       <GridProvider columns={isSmallScreen ? 3 : isMediumSmallScreen ? 6 : 12} force>
         <Gutters ref={inViewRef} disablePadding row flexWrap="wrap">
           {contributions.map(contribution => (
-            <Card key={contribution.id} callout={callout} contribution={contribution} onClick={() => handleClickOnContribution(contribution)} />
+            <Card
+              key={contribution.id}
+              callout={callout}
+              contribution={contribution}
+              onClick={() => handleClickOnContribution(contribution)}
+            />
           ))}
         </Gutters>
       </GridProvider>
-      <Gutters display="flex" justifyContent="space-between" alignItems="center">
+      <Gutters display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">
         <PaginationExpander
           onClick={() => setIsCollapsed(!isCollapsed)}
           totalContributions={totalContributions}
@@ -106,15 +99,19 @@ const ContributionsCardsExpandable = ({
           hasMore={hasMore}
         />
         {loading && <Loading />}
-        {!loading && canCreateContribution && createContributionButton}
+        {!loading && (
+          <CreateContributionButton
+            callout={callout}
+            canCreateContribution={canCreateContribution}
+            onContributionCreated={onCalloutUpdate}
+          />
+        )}
       </Gutters>
     </>
   );
-
-}
+};
 
 export default ContributionsCardsExpandable;
-
 
 interface PaginationExpanderProps {
   onClick: () => void;
