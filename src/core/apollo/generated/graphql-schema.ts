@@ -8501,7 +8501,7 @@ export type VirtualContributor = Contributor & {
   /** Description of the body of knowledge for this VC. */
   bodyOfKnowledgeDescription?: Maybe<Scalars['Markdown']['output']>;
   /** The ID of the body of knowledge used by this Virtual Contributor. */
-  bodyOfKnowledgeID: Scalars['UUID']['output'];
+  bodyOfKnowledgeID?: Maybe<Scalars['UUID']['output']>;
   /** The type of body of knowledge used by this Virtual Contributor. */
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   /** The date at which the entity was created. */
@@ -20110,7 +20110,7 @@ export type VirtualContributorQuery = {
           searchVisibility: SearchVisibility;
           listedInStore: boolean;
           status: VirtualContributorStatus;
-          bodyOfKnowledgeID: string;
+          bodyOfKnowledgeID?: string | undefined;
           bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
           bodyOfKnowledgeDescription?: string | undefined;
           authorization?:
@@ -20375,7 +20375,7 @@ export type VirtualContributorProfileWithModelCardQuery = {
           searchVisibility: SearchVisibility;
           listedInStore: boolean;
           status: VirtualContributorStatus;
-          bodyOfKnowledgeID: string;
+          bodyOfKnowledgeID?: string | undefined;
           bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
           bodyOfKnowledgeDescription?: string | undefined;
           authorization?:
@@ -20515,7 +20515,7 @@ export type VirtualContributorProfileWithModelCardQuery = {
 export type VirtualContributorFullFragment = {
   __typename?: 'VirtualContributor';
   id: string;
-  bodyOfKnowledgeID: string;
+  bodyOfKnowledgeID?: string | undefined;
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   bodyOfKnowledgeDescription?: string | undefined;
   profile: {
@@ -20576,7 +20576,7 @@ export type VirtualContributorFullFragment = {
 
 export type VirtualContributorWithModelCardFragment = {
   __typename?: 'VirtualContributor';
-  bodyOfKnowledgeID: string;
+  bodyOfKnowledgeID?: string | undefined;
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   bodyOfKnowledgeDescription?: string | undefined;
   aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
@@ -24941,7 +24941,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
         __typename?: 'VirtualContributor';
         searchVisibility: SearchVisibility;
         id: string;
-        bodyOfKnowledgeID: string;
+        bodyOfKnowledgeID?: string | undefined;
         bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
         bodyOfKnowledgeDescription?: string | undefined;
         profile: {
@@ -25027,7 +25027,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
             virtualContributors: Array<{
               __typename?: 'VirtualContributor';
               id: string;
-              bodyOfKnowledgeID: string;
+              bodyOfKnowledgeID?: string | undefined;
               bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
               bodyOfKnowledgeDescription?: string | undefined;
               profile: {
@@ -25128,7 +25128,7 @@ export type AvailableVirtualContributorsInSpaceQuery = {
                 virtualContributors: Array<{
                   __typename?: 'VirtualContributor';
                   id: string;
-                  bodyOfKnowledgeID: string;
+                  bodyOfKnowledgeID?: string | undefined;
                   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
                   bodyOfKnowledgeDescription?: string | undefined;
                   profile: {
@@ -25214,7 +25214,7 @@ export type AvailableVirtualContributorsForRoleSetPaginatedFragment = {
   virtualContributors: Array<{
     __typename?: 'VirtualContributor';
     id: string;
-    bodyOfKnowledgeID: string;
+    bodyOfKnowledgeID?: string | undefined;
     bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
     bodyOfKnowledgeDescription?: string | undefined;
     profile: {
