@@ -26762,17 +26762,21 @@ export type AllTemplatesInTemplatesSetQuery = {
               | {
                   __typename?: 'TemplateContentSpace';
                   id: string;
-                  collaboration: {
-                    __typename?: 'Collaboration';
+                  about: {
+                    __typename?: 'SpaceAbout';
                     id: string;
-                    innovationFlow: {
-                      __typename?: 'InnovationFlow';
+                    profile: {
+                      __typename?: 'Profile';
                       id: string;
-                      states: Array<{
-                        __typename?: 'InnovationFlowState';
-                        displayName: string;
-                        description?: string | undefined;
-                      }>;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
                     };
                   };
                 }
@@ -27995,17 +27999,15 @@ export type SpaceTemplateFragment = {
     | {
         __typename?: 'TemplateContentSpace';
         id: string;
-        collaboration: {
-          __typename?: 'Collaboration';
+        about: {
+          __typename?: 'SpaceAbout';
           id: string;
-          innovationFlow: {
-            __typename?: 'InnovationFlow';
+          profile: {
+            __typename?: 'Profile';
             id: string;
-            states: Array<{
-              __typename?: 'InnovationFlowState';
-              displayName: string;
-              description?: string | undefined;
-            }>;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
           };
         };
       }
@@ -28459,17 +28461,15 @@ export type TemplatesSetTemplatesFragment = {
       | {
           __typename?: 'TemplateContentSpace';
           id: string;
-          collaboration: {
-            __typename?: 'Collaboration';
+          about: {
+            __typename?: 'SpaceAbout';
             id: string;
-            innovationFlow: {
-              __typename?: 'InnovationFlow';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              states: Array<{
-                __typename?: 'InnovationFlowState';
-                displayName: string;
-                description?: string | undefined;
-              }>;
+              visual?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
             };
           };
         }

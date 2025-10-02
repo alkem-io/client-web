@@ -2723,19 +2723,19 @@ export const SpaceTemplateFragmentDoc = gql`
     ...TemplateProfileInfo
     contentSpace {
       id
-      collaboration {
+      about {
         id
-        innovationFlow {
+        profile {
           id
-          states {
-            displayName
-            description
+          visual(type: CARD) {
+            ...VisualModel
           }
         }
       }
     }
   }
   ${TemplateProfileInfoFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const TemplatesSetTemplatesFragmentDoc = gql`
   fragment TemplatesSetTemplates on TemplatesSet {
