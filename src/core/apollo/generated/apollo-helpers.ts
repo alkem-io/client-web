@@ -4601,7 +4601,6 @@ export type UserSettingsNotificationSpaceAdminFieldPolicy = {
 };
 export type UserSettingsNotificationUserKeySpecifier = (
   | 'commentReply'
-  | 'copyOfMessageSent'
   | 'membership'
   | 'mentioned'
   | 'messageReceived'
@@ -4609,19 +4608,16 @@ export type UserSettingsNotificationUserKeySpecifier = (
 )[];
 export type UserSettingsNotificationUserFieldPolicy = {
   commentReply?: FieldPolicy<any> | FieldReadFunction<any>;
-  copyOfMessageSent?: FieldPolicy<any> | FieldReadFunction<any>;
   membership?: FieldPolicy<any> | FieldReadFunction<any>;
   mentioned?: FieldPolicy<any> | FieldReadFunction<any>;
   messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationUserMembershipKeySpecifier = (
-  | 'spaceCommunityApplicationSubmitted'
   | 'spaceCommunityInvitationReceived'
   | 'spaceCommunityJoined'
   | UserSettingsNotificationUserMembershipKeySpecifier
 )[];
 export type UserSettingsNotificationUserMembershipFieldPolicy = {
-  spaceCommunityApplicationSubmitted?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceCommunityInvitationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceCommunityJoined?: FieldPolicy<any> | FieldReadFunction<any>;
 };
