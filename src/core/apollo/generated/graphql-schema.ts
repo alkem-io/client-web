@@ -26767,6 +26767,23 @@ export type AllTemplatesInTemplatesSetQuery = {
               | {
                   __typename?: 'TemplateContentSpace';
                   id: string;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
                   collaboration: {
                     __typename?: 'Collaboration';
                     id: string;
@@ -28000,6 +28017,17 @@ export type SpaceTemplateFragment = {
     | {
         __typename?: 'TemplateContentSpace';
         id: string;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
+          };
+        };
         collaboration: {
           __typename?: 'Collaboration';
           id: string;
@@ -28464,6 +28492,17 @@ export type TemplatesSetTemplatesFragment = {
       | {
           __typename?: 'TemplateContentSpace';
           id: string;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              visual?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
+            };
+          };
           collaboration: {
             __typename?: 'Collaboration';
             id: string;
