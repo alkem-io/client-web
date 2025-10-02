@@ -1951,10 +1951,6 @@
           "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
           "description": "{{spaceName}} - {{spaceDescription}}"
         },
-        "USER_SPACE_COMMUNITY_APPLICATION": {
-          "subject": "You have successfully applied to join {{spaceName}}",
-          "description": ""
-        },
         "USER_MESSAGE_SENDER": {
           "subject": "You sent a DM to {{receiverName}}",
           "description": ""
@@ -2432,6 +2428,7 @@
             "title": "Allowed Actions",
             "createBlocks": "<b>Create $t(common.posts)</b>: Allow $t(common.members) to create $t(common.posts). If you deactivate this, $t(common.members) will still be able to contribute to existing $t(common.posts), but will not be able to create new $t(common.posts).",
             "createSubspaces": "<b>Create $t(common.subspaces)</b>: Allow $t(common.members) to create $t(common.subspaces) in this $t(common.space). If you deactivate this, you can still create $t(common.subspaces) yourself and add other people as an $t(common.admin) inside the $t(common.subspace).",
+            "videoCall": "<b>Video Call</b>: Allow $t(common.members) to start video calls using Jitsi Meet integration. When enabled, a video call button will appear in the $t(common.space) navigation.",
             "eventsFromSubspaces": "<b>$t(common.subspace) events</b>: Allow events from $t(common.subspaces) to be visible on this $t(common.space) calendar as well.",
             "inheritRights": "Allow $t(common.members) of the parent $t(common.community) to contribute without needing to join first.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an $t(common.admin) in this $t(common.space)."
@@ -3226,7 +3223,7 @@
       },
       "user": {
         "title": "User",
-        "subtitle": "This section allows you to select your preferences regarding memberships, mentions and direct messaging to yourself.",
+        "subtitle": "This section allows you to select your preferences regarding $t(common.memberships), mentions and direct messaging to yourself.",
         "settings": {
           "mentioned": "Receive a $t(common.notification) when I am mentioned",
           "commentReply": "Receive a $t(common.notification) when someone replies to my $t(common.comment)",
@@ -3267,13 +3264,13 @@
         }
       },
       "tooltips": {
-        "spaceCommunityInvitationReceived": "These notifications are required and cannot be disabled.",
-        "messageReceived": "These notifications are required and cannot be disabled.",
-        "communicationMessageReceived": "These communication notifications are required and cannot be disabled.",
-        "adminMessageReceived": "These notifications are required and cannot be disabled.",
-        "communityApplicationReceived": "Email notifications for applications cannot be disabled.",
-        "communityNewMember": "New member notifications require at least one notification method to stay enabled.",
-        "adminMentioned": "Organization mentions require at least one notification method to stay enabled."
+        "spaceCommunityInvitationReceived": "These $t(common.notifications) are required and cannot be disabled.",
+        "messageReceived": "These $t(common.notifications) are required and cannot be disabled.",
+        "communicationMessageReceived": "These communication $t(common.notifications) are required and cannot be disabled.",
+        "adminMessageReceived": "These $t(common.notifications) are required and cannot be disabled.",
+        "communityApplicationReceived": "Email $t(common.notifications) for applications cannot be disabled.",
+        "communityNewMember": "New member $t(common.notifications) require at least one $t(common.notification) method to stay enabled.",
+        "adminMentioned": "$t(common.Organization) mentions require at least one $t(common.notification) method to stay enabled."
       }
     },
     "help-dialog": {
@@ -3478,6 +3475,7 @@
     "index": "Index",
     "subspaces": "$t(common.subspaces)",
     "contributors": "Contributors",
+    "videoCall": "Video Call",
     "activity": "Activity",
     "calendar": "Calendar",
     "events": "Events",
@@ -3485,6 +3483,12 @@
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
     "settings": "$t(common.Settings)",
     "updates": "Updates"
+  },
+  "videoCall": {
+    "dialog": {
+      "title": "Start Video Call",
+      "content": "This will open a Jitsi video conference in a new tab. You can share this link with other contributors to join the call. They can also join from here."
+    }
   },
   "createSpace": {
     "title": "Create a $t(common.space)",

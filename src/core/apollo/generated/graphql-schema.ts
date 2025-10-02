@@ -2063,6 +2063,8 @@ export type CreateSpaceSettingsCollaborationInput = {
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
   allowMembersToCreateSubspaces: Scalars['Boolean']['input'];
+  /** Flag to control if members can create video calls in this Space. */
+  allowMembersToVideoCall: Scalars['Boolean']['input'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
   inheritMembershipRights: Scalars['Boolean']['input'];
 };
@@ -5169,7 +5171,6 @@ export enum NotificationEvent {
   UserMessage = 'USER_MESSAGE',
   UserMessageSender = 'USER_MESSAGE_SENDER',
   UserSignUpWelcome = 'USER_SIGN_UP_WELCOME',
-  UserSpaceCommunityApplication = 'USER_SPACE_COMMUNITY_APPLICATION',
   UserSpaceCommunityInvitation = 'USER_SPACE_COMMUNITY_INVITATION',
   UserSpaceCommunityJoined = 'USER_SPACE_COMMUNITY_JOINED',
   VirtualContributorAdminSpaceCommunityInvitation = 'VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION',
@@ -6966,6 +6967,8 @@ export type SpaceSettingsCollaboration = {
   allowMembersToCreateCallouts: Scalars['Boolean']['output'];
   /** Flag to control if members can create subspaces. */
   allowMembersToCreateSubspaces: Scalars['Boolean']['output'];
+  /** Flag to control if members can create video calls in this Space. */
+  allowMembersToVideoCall: Scalars['Boolean']['output'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
   inheritMembershipRights: Scalars['Boolean']['output'];
 };
@@ -7887,6 +7890,8 @@ export type UpdateSpaceSettingsCollaborationInput = {
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
   allowMembersToCreateSubspaces: Scalars['Boolean']['input'];
+  /** Flag to control if members can create video calls in this Space. */
+  allowMembersToVideoCall: Scalars['Boolean']['input'];
   /** Flag to control if ability to contribute is inherited from parent Space. */
   inheritMembershipRights: Scalars['Boolean']['input'];
 };
@@ -8444,8 +8449,6 @@ export type UserSettingsNotificationUser = {
   __typename?: 'UserSettingsNotificationUser';
   /** Receive a notification when someone replies to a comment I made. */
   commentReply: UserSettingsNotificationChannels;
-  /** Receive notification I send a message to a User, Organization or Space. */
-  copyOfMessageSent: UserSettingsNotificationChannels;
   /** The notifications settings for membership events for this User */
   membership: UserSettingsNotificationUserMembership;
   /** Receive a notification you are mentioned */
@@ -8456,8 +8459,6 @@ export type UserSettingsNotificationUser = {
 
 export type UserSettingsNotificationUserMembership = {
   __typename?: 'UserSettingsNotificationUserMembership';
-  /** Receive a notification when an application for a Space is submitted */
-  spaceCommunityApplicationSubmitted: UserSettingsNotificationChannels;
   /** Receive a notification when I am invited to join a Space community */
   spaceCommunityInvitationReceived: UserSettingsNotificationChannels;
   /** Receive a notification when I join a Space */
@@ -21672,6 +21673,7 @@ export type SpaceAboutDetailsQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          nameID: string;
           level: SpaceLevel;
           visibility: SpaceVisibility;
           about: {
@@ -25096,6 +25098,7 @@ export type SpaceSettingsQuery = {
               allowMembersToCreateSubspaces: boolean;
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
+              allowMembersToVideoCall: boolean;
             };
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
@@ -25119,6 +25122,7 @@ export type SpaceSettingsFragment = {
     allowMembersToCreateSubspaces: boolean;
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
+    allowMembersToVideoCall: boolean;
   };
 };
 
@@ -25146,6 +25150,7 @@ export type UpdateSpaceSettingsMutation = {
         allowMembersToCreateSubspaces: boolean;
         inheritMembershipRights: boolean;
         allowEventsFromSubspaces: boolean;
+        allowMembersToVideoCall: boolean;
       };
     };
   };
@@ -26506,17 +26511,21 @@ export type AllTemplatesInTemplatesSetQuery = {
               | {
                   __typename?: 'TemplateContentSpace';
                   id: string;
-                  collaboration: {
-                    __typename?: 'Collaboration';
+                  about: {
+                    __typename?: 'SpaceAbout';
                     id: string;
-                    innovationFlow: {
-                      __typename?: 'InnovationFlow';
+                    profile: {
+                      __typename?: 'Profile';
                       id: string;
-                      states: Array<{
-                        __typename?: 'InnovationFlowState';
-                        displayName: string;
-                        description?: string | undefined;
-                      }>;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
                     };
                   };
                 }
@@ -26944,6 +26953,7 @@ export type TemplateContentQuery = {
                     allowMembersToCreateSubspaces: boolean;
                     inheritMembershipRights: boolean;
                     allowEventsFromSubspaces: boolean;
+                    allowMembersToVideoCall: boolean;
                   };
                 };
                 subspaces: Array<{
@@ -27120,6 +27130,7 @@ export type SpaceTemplateContentQuery = {
               allowMembersToCreateSubspaces: boolean;
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
+              allowMembersToVideoCall: boolean;
             };
           };
           subspaces: Array<{
@@ -27463,6 +27474,7 @@ export type SpaceTemplateContentFragment = {
       allowMembersToCreateSubspaces: boolean;
       inheritMembershipRights: boolean;
       allowEventsFromSubspaces: boolean;
+      allowMembersToVideoCall: boolean;
     };
   };
   subspaces: Array<{
@@ -27600,6 +27612,7 @@ export type SpaceTemplateContent_SettingsFragment = {
     allowMembersToCreateSubspaces: boolean;
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
+    allowMembersToVideoCall: boolean;
   };
 };
 
@@ -27735,17 +27748,15 @@ export type SpaceTemplateFragment = {
     | {
         __typename?: 'TemplateContentSpace';
         id: string;
-        collaboration: {
-          __typename?: 'Collaboration';
+        about: {
+          __typename?: 'SpaceAbout';
           id: string;
-          innovationFlow: {
-            __typename?: 'InnovationFlow';
+          profile: {
+            __typename?: 'Profile';
             id: string;
-            states: Array<{
-              __typename?: 'InnovationFlowState';
-              displayName: string;
-              description?: string | undefined;
-            }>;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | undefined;
           };
         };
       }
@@ -28199,17 +28210,15 @@ export type TemplatesSetTemplatesFragment = {
       | {
           __typename?: 'TemplateContentSpace';
           id: string;
-          collaboration: {
-            __typename?: 'Collaboration';
+          about: {
+            __typename?: 'SpaceAbout';
             id: string;
-            innovationFlow: {
-              __typename?: 'InnovationFlow';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              states: Array<{
-                __typename?: 'InnovationFlowState';
-                displayName: string;
-                description?: string | undefined;
-              }>;
+              visual?:
+                | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+                | undefined;
             };
           };
         }

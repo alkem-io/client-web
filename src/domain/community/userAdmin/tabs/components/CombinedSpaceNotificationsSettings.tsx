@@ -154,7 +154,7 @@ export const CombinedSpaceNotificationsSettings = ({
       {/* Divider and space admin settings */}
       {showSpaceAdminSettings && (
         <>
-          <Divider sx={{ my: 3 }} />
+          <Divider />
           <Caption>{t('pages.userNotificationsSettings.spaceAdmin.subtitle')}</Caption>
           <DualSwitchSettingsGroup
             options={Object.fromEntries(

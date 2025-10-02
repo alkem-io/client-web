@@ -27,7 +27,6 @@ import { InAppUserCommentReplyView } from './views/user/InAppUserCommentReplyVie
 import { InAppUserMessageView } from './views/user/InAppUserMessageView';
 import { InAppUserMessageSenderView } from './views/user/InAppUserMessageSenderView';
 import { InAppUserSignUpWelcomeView } from './views/user/InAppUserSignUpWelcomeView';
-import { InAppUserSpaceCommunityApplicationView } from './views/user/InAppUserSpaceCommunityApplicationView';
 import { InAppUserSpaceCommunityInvitationView } from './views/user/InAppUserSpaceCommunityInvitationView';
 import { InAppVirtualContributorAdminSpaceCommunityInvitationView } from './views/virtualContributor/InAppVirtualContributorAdminSpaceCommunityInvitationView';
 
@@ -85,8 +84,6 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
       return <InAppUserMessageSenderView {...item} />;
     case NotificationEvent.UserSignUpWelcome:
       return <InAppUserSignUpWelcomeView {...item} />;
-    case NotificationEvent.UserSpaceCommunityApplication:
-      return <InAppUserSpaceCommunityApplicationView {...item} />;
     case NotificationEvent.UserSpaceCommunityInvitation:
       return <InAppUserSpaceCommunityInvitationView {...item} />;
     case NotificationEvent.VirtualContributorAdminSpaceCommunityInvitation:

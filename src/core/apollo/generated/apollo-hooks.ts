@@ -2262,6 +2262,7 @@ export const SpaceSettingsFragmentDoc = gql`
       allowMembersToCreateSubspaces
       inheritMembershipRights
       allowEventsFromSubspaces
+      allowMembersToVideoCall
     }
   }
 `;
@@ -2549,6 +2550,7 @@ export const SpaceTemplateContent_SettingsFragmentDoc = gql`
       allowMembersToCreateSubspaces
       inheritMembershipRights
       allowEventsFromSubspaces
+      allowMembersToVideoCall
     }
   }
 `;
@@ -2684,19 +2686,19 @@ export const SpaceTemplateFragmentDoc = gql`
     ...TemplateProfileInfo
     contentSpace {
       id
-      collaboration {
+      about {
         id
-        innovationFlow {
+        profile {
           id
-          states {
-            displayName
-            description
+          visual(type: CARD) {
+            ...VisualModel
           }
         }
       }
     }
   }
   ${TemplateProfileInfoFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const TemplatesSetTemplatesFragmentDoc = gql`
   fragment TemplatesSetTemplates on TemplatesSet {
@@ -17044,6 +17046,7 @@ export const SpaceAboutDetailsDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        nameID
         level
         about {
           ...SpaceAboutDetails
@@ -19542,6 +19545,7 @@ export const UpdateSpaceSettingsDocument = gql`
           allowMembersToCreateSubspaces
           inheritMembershipRights
           allowEventsFromSubspaces
+          allowMembersToVideoCall
         }
       }
     }
