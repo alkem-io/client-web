@@ -58,12 +58,15 @@ const CreateContributionButtonWhiteboard = ({
   return (
     <>
       {canCreateContribution ? <CreateContributionButton onClick={() => setDialogOpen(true)} /> : undefined}
-      <Dialog open={dialogOpen}>
-        <DialogHeader onClose={() => setDialogOpen(false)} title="Create new Whiteboard" />
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <DialogHeader
+          onClose={() => setDialogOpen(false)}
+          title={t('common.create-new-entity', { entity: t('common.whiteboard') })}
+        />
         <DialogContent>
           <TextField
             fullWidth
-            label="Whiteboard Name"
+            label={t('fields.displayName')}
             variant="outlined"
             onChange={e => setWhiteboardName(e.target.value)}
             value={whiteboardName}
