@@ -81,14 +81,6 @@ const CreateContributionButtonWhiteboard = ({
       </Dialog>
     </>
   );
-  /*
-    //!!
-      const { isSmallScreen } = useScreenSize();
-
-          {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
-        <CalloutBlockFooter contributionsCount={contributions.total} onCreate={openCreateDialog} />
-      )}
-        */
 };
 
 CreateContributionButtonWhiteboard.displayName = 'CreateContributionButtonWhiteboard';

@@ -20,7 +20,6 @@ import { CardHeader, Skeleton } from '@mui/material';
 import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardFooter from '@/core/ui/card/CardFooter';
 import { gutters } from '@/core/ui/grid/utils';
-import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 import CalloutContributionPreview from '../../calloutContributions/calloutContributionPreview/CalloutContributionPreview';
 import CalloutContributionPreviewPost from '../../calloutContributions/post/CalloutContributionPreviewPost';
 import CalloutContributionPreviewWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionPreviewWhiteboard';
@@ -47,7 +46,6 @@ export const CalloutViewSkeleton = () => (
 );
 
 interface CalloutViewProps extends BaseCalloutViewProps {
-  callout: CalloutDetailsModelExtended | undefined;
   contributionsCount: number | undefined;
   contributionId?: string; // Selected contributionId
   calloutActions?: boolean;

@@ -65,14 +65,6 @@ const CreateContributionButtonPost = ({
       />
     </>
   );
-  /*
-  //!! why we had this?
-    const { isSmallScreen } = useScreenSize();
-
-        {isSmallScreen && canCreateContribution && callout.settings.contribution.enabled && (
-      <CalloutBlockFooter contributionsCount={contributions.total} onCreate={openCreateDialog} />
-    )}
-      */
 };
 
 CreateContributionButtonPost.displayName = 'CreateContributionButtonPost';

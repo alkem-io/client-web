@@ -1,6 +1,5 @@
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
-import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
 import { Trans, useTranslation } from 'react-i18next';
 import { ComponentType, useEffect, useState } from 'react';
@@ -20,7 +19,6 @@ import { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContr
 import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 
 interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
-  callout: CalloutDetailsModelExtended; //!! move this to BaseCalloutViewProps?
   contributionType: CalloutContributionType;
   contributionCardComponent: ComponentType<CalloutContributionCardComponentProps>;
   createContributionButtonComponent: ComponentType<CalloutContributionCreateButtonProps>;
@@ -28,6 +26,7 @@ interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
 }
 
 const NON_EXPANDED_PAGE_SIZE = 4;
+const EXPANDED_PAGE_SIZE = 5;
 
 const ContributionsCardsExpandable = ({
   callout,
@@ -43,6 +42,8 @@ const ContributionsCardsExpandable = ({
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(true);
 
+  const pageSize = calloutExpanded ? EXPANDED_PAGE_SIZE : NON_EXPANDED_PAGE_SIZE;
+
   const {
     inViewRef,
     contributions: { items: contributions, hasMore, setFetchAll, total: totalContributions },
@@ -51,7 +52,7 @@ const ContributionsCardsExpandable = ({
     callout,
     contributionType,
     onCalloutUpdate,
-    pageSize: NON_EXPANDED_PAGE_SIZE,
+    pageSize,
   });
 
   // Always show all Links in callout expanded mode:
@@ -77,14 +78,16 @@ const ContributionsCardsExpandable = ({
     }
   };
 
+  const gridColumns = isSmallScreen ? 3 : isMediumSmallScreen ? 6 : calloutExpanded ? 10 : 12;
   return (
     <>
-      <GridProvider columns={isSmallScreen ? 3 : isMediumSmallScreen ? 6 : 12} force>
+      <GridProvider columns={gridColumns} force>
         <Gutters ref={inViewRef} disablePadding row flexWrap="wrap">
           {contributions.map(contribution => (
             <Card
               key={contribution.id}
               callout={callout}
+              columns={calloutExpanded ? 2 : 3}
               contribution={contribution}
               onClick={() => handleClickOnContribution(contribution)}
             />
@@ -95,6 +98,7 @@ const ContributionsCardsExpandable = ({
         <PaginationExpander
           onClick={() => setIsCollapsed(!isCollapsed)}
           totalContributions={totalContributions}
+          pageSize={pageSize}
           isCollapsed={isCollapsed}
           hasMore={hasMore}
         />
@@ -116,10 +120,17 @@ export default ContributionsCardsExpandable;
 interface PaginationExpanderProps {
   onClick: () => void;
   totalContributions: number;
+  pageSize: number;
   isCollapsed: boolean;
   hasMore: boolean;
 }
-const PaginationExpander = ({ onClick, totalContributions, isCollapsed, hasMore }: PaginationExpanderProps) => {
+const PaginationExpander = ({
+  onClick,
+  totalContributions,
+  pageSize,
+  isCollapsed,
+  hasMore,
+}: PaginationExpanderProps) => {
   const { t } = useTranslation();
   if (totalContributions === 0) {
     return (
@@ -145,7 +156,7 @@ const PaginationExpander = ({ onClick, totalContributions, isCollapsed, hasMore 
       </Box>
     );
   } else {
-    if (!hasMore && totalContributions <= NON_EXPANDED_PAGE_SIZE) {
+    if (!hasMore && totalContributions <= pageSize) {
       return <Caption>{t('callout.contributions.contributionsCount', { count: totalContributions })}</Caption>;
     } else {
       return (

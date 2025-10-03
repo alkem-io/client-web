@@ -20,7 +20,6 @@ import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { compact, sortBy } from 'lodash';
-import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import Loading from '@/core/ui/loading/Loading';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -34,17 +33,15 @@ export interface FormattedLink {
   name: string;
   description: string | undefined;
   authorization:
-  | {
-    myPrivileges?: AuthorizationPrivilege[];
-  }
-  | undefined;
+    | {
+        myPrivileges?: AuthorizationPrivilege[];
+      }
+    | undefined;
   sortOrder: number;
   contributionId: string;
 }
 
-interface CalloutContributionsLinkProps extends BaseCalloutViewProps {
-  callout: CalloutDetailsModelExtended; //!! move this to BaseCalloutViewProps?
-}
+interface CalloutContributionsLinkProps extends BaseCalloutViewProps {}
 
 const CalloutContributionsLink = ({
   callout,
@@ -57,12 +54,7 @@ const CalloutContributionsLink = ({
 
   const {
     inViewRef,
-    contributions: {
-      items: contributions,
-      hasMore,
-      setFetchAll,
-      total: totalContributions,
-    },
+    contributions: { items: contributions, hasMore, setFetchAll, total: totalContributions },
     canCreateContribution,
     onCalloutUpdate: refetchCalloutAndContributions,
   } = useCalloutContributions({
@@ -78,7 +70,6 @@ const CalloutContributionsLink = ({
       setFetchAll(true);
     }
   }, [expanded, hasMore, setFetchAll]);
-
 
   const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
     refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
@@ -192,29 +183,28 @@ const CalloutContributionsLink = ({
     closeEditDialog();
   }, [deletingLinkId, closeEditDialog, setDeletingLinkId, onCalloutUpdate, deleteLink, callout]);
 
-  const formattedLinks: FormattedLink[] =
-    sortBy(
-      compact(
-        contributions.map(
-          contribution =>
-            contribution.link &&
-            contribution.id && {
-              ...contribution.link,
-              sortOrder: contribution.sortOrder ?? 0,
-              contributionId: contribution.id,
-            }
-        )
-      ).map(link => ({
-        id: link.id,
-        uri: link.uri,
-        name: link.profile?.displayName,
-        description: link.profile?.description,
-        authorization: link.authorization,
-        sortOrder: link.sortOrder ?? 0,
-        contributionId: link.contributionId,
-      })),
-      'sortOrder');
-
+  const formattedLinks: FormattedLink[] = sortBy(
+    compact(
+      contributions.map(
+        contribution =>
+          contribution.link &&
+          contribution.id && {
+            ...contribution.link,
+            sortOrder: contribution.sortOrder ?? 0,
+            contributionId: contribution.id,
+          }
+      )
+    ).map(link => ({
+      id: link.id,
+      uri: link.uri,
+      name: link.profile?.displayName,
+      description: link.profile?.description,
+      authorization: link.authorization,
+      sortOrder: link.sortOrder ?? 0,
+      contributionId: link.contributionId,
+    })),
+    'sortOrder'
+  );
 
   return (
     <StorageConfigContextProvider

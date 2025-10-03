@@ -7,7 +7,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { formatDateTime } from '@/core/utils/time/utils';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import EditIcon from '@mui/icons-material/Edit';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
 import { contributionIcons } from '../../callout/icons/calloutIcons';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
@@ -100,7 +100,7 @@ const CalloutContributionPreview = ({
                 color="primary"
                 size="small"
               >
-                <EditIcon />
+                <EditOutlinedIcon />
               </IconButton>
 
               {renderExtraActions && contribution && renderExtraActions(contribution)}

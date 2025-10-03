@@ -9,7 +9,7 @@ import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../..
 import { CalloutModelExtension } from '../models/CalloutModelLight';
 import { useCalloutsSetAuthorization } from '../../calloutsSet/authorization/useCalloutsSetAuthorization';
 
-export interface useCalloutDetailsProvided {
+interface useCalloutDetailsProvided {
   callout: CalloutDetailsModelExtended | undefined;
   loading: boolean;
   refetch: () => Promise<unknown>;

@@ -1,8 +1,9 @@
 import { useInView } from 'react-intersection-observer';
-import useCalloutDetails, { useCalloutDetailsProvided } from '../../callout/useCalloutDetails/useCalloutDetails';
+import useCalloutDetails from '../../callout/useCalloutDetails/useCalloutDetails';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { CalloutViewSkeleton } from '../../callout/CalloutView/CalloutView';
 import { Box } from '@mui/material';
+import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 
 /**
  * Checks if the browser is scrolled to the position where the CalloutView is
@@ -10,7 +11,7 @@ import { Box } from '@mui/material';
  * Loads the CalloutDetails when the user scrolls to the position of the CalloutView
  */
 interface CalloutDetailsContainerProvided {
-  callout: useCalloutDetailsProvided['callout'];
+  callout: CalloutDetailsModelExtended;
   loading: boolean;
   refetch: () => Promise<unknown>;
 }
@@ -21,7 +22,12 @@ interface CalloutInViewWrapperProps extends SimpleContainerProps<CalloutDetailsC
   withClassification?: boolean;
 }
 
-const CalloutInViewWrapper = ({ children, calloutId, calloutsSetId, withClassification = false }: CalloutInViewWrapperProps) => {
+const CalloutInViewWrapper = ({
+  children,
+  calloutId,
+  calloutsSetId,
+  withClassification = false,
+}: CalloutInViewWrapperProps) => {
   const { ref, inView } = useInView({
     delay: 500,
     trackVisibility: true,
@@ -37,8 +43,8 @@ const CalloutInViewWrapper = ({ children, calloutId, calloutsSetId, withClassifi
 
   return (
     <Box ref={ref}>
-      {inView && children({ callout, loading, refetch })}
-      {!inView && <CalloutViewSkeleton />}
+      {inView && callout && children({ callout, loading, refetch })}
+      {(!inView || !callout) && <CalloutViewSkeleton />}
     </Box>
   );
 };
