@@ -8539,7 +8539,7 @@ export type VirtualContributor = Contributor & {
   /** Description of the body of knowledge for this VC. */
   bodyOfKnowledgeDescription?: Maybe<Scalars['Markdown']['output']>;
   /** The ID of the body of knowledge used by this Virtual Contributor. */
-  bodyOfKnowledgeID: Scalars['UUID']['output'];
+  bodyOfKnowledgeID?: Maybe<Scalars['UUID']['output']>;
   /** The type of body of knowledge used by this Virtual Contributor. */
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   /** The date at which the entity was created. */
@@ -19820,22 +19820,25 @@ export type AiPersonaQueryVariables = Exact<{
 
 export type AiPersonaQuery = {
   __typename?: 'Query';
-  aiServer: {
-    __typename?: 'AiServer';
-    aiPersona: {
-      __typename?: 'AiPersona';
-      id: string;
-      prompt: Array<string>;
-      engine: AiPersonaEngine;
-      externalConfig?:
-        | {
-            __typename?: 'ExternalConfig';
-            apiKey?: string | undefined;
-            assistantId?: string | undefined;
-            model: OpenAiModel;
-          }
-        | undefined;
-    };
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    aiPersona?:
+      | {
+          __typename?: 'AiPersona';
+          id: string;
+          prompt: Array<string>;
+          engine: AiPersonaEngine;
+          externalConfig?:
+            | {
+                __typename?: 'ExternalConfig';
+                apiKey?: string | undefined;
+                assistantId?: string | undefined;
+                model: OpenAiModel;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -19854,7 +19857,7 @@ export type VirtualContributorQuery = {
           searchVisibility: SearchVisibility;
           listedInStore: boolean;
           status: VirtualContributorStatus;
-          bodyOfKnowledgeID: string;
+          bodyOfKnowledgeID?: string | undefined;
           bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
           bodyOfKnowledgeDescription?: string | undefined;
           authorization?:
@@ -20119,7 +20122,7 @@ export type VirtualContributorProfileWithModelCardQuery = {
           searchVisibility: SearchVisibility;
           listedInStore: boolean;
           status: VirtualContributorStatus;
-          bodyOfKnowledgeID: string;
+          bodyOfKnowledgeID?: string | undefined;
           bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
           bodyOfKnowledgeDescription?: string | undefined;
           authorization?:
@@ -20259,7 +20262,7 @@ export type VirtualContributorProfileWithModelCardQuery = {
 export type VirtualContributorFullFragment = {
   __typename?: 'VirtualContributor';
   id: string;
-  bodyOfKnowledgeID: string;
+  bodyOfKnowledgeID?: string | undefined;
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   bodyOfKnowledgeDescription?: string | undefined;
   profile: {
@@ -20320,7 +20323,7 @@ export type VirtualContributorFullFragment = {
 
 export type VirtualContributorWithModelCardFragment = {
   __typename?: 'VirtualContributor';
-  bodyOfKnowledgeID: string;
+  bodyOfKnowledgeID?: string | undefined;
   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
   bodyOfKnowledgeDescription?: string | undefined;
   aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
@@ -20467,14 +20470,15 @@ export type VirtualContributorUpdatesSubscription = {
 };
 
 export type VirtualContributorKnowledgeBaseLastUpdatedQueryVariables = Exact<{
-  aiPersonaID: Scalars['UUID']['input'];
+  id: Scalars['UUID']['input'];
 }>;
 
 export type VirtualContributorKnowledgeBaseLastUpdatedQuery = {
   __typename?: 'Query';
-  aiServer: {
-    __typename?: 'AiServer';
-    aiPersona: { __typename?: 'AiPersona'; bodyOfKnowledgeLastUpdated?: Date | undefined };
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    aiPersona?: { __typename?: 'AiPersona'; id: string; bodyOfKnowledgeLastUpdated?: Date | undefined } | undefined;
   };
 };
 
@@ -24685,7 +24689,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
         __typename?: 'VirtualContributor';
         searchVisibility: SearchVisibility;
         id: string;
-        bodyOfKnowledgeID: string;
+        bodyOfKnowledgeID?: string | undefined;
         bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
         bodyOfKnowledgeDescription?: string | undefined;
         profile: {
@@ -24771,7 +24775,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
             virtualContributors: Array<{
               __typename?: 'VirtualContributor';
               id: string;
-              bodyOfKnowledgeID: string;
+              bodyOfKnowledgeID?: string | undefined;
               bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
               bodyOfKnowledgeDescription?: string | undefined;
               profile: {
@@ -24872,7 +24876,7 @@ export type AvailableVirtualContributorsInSpaceQuery = {
                 virtualContributors: Array<{
                   __typename?: 'VirtualContributor';
                   id: string;
-                  bodyOfKnowledgeID: string;
+                  bodyOfKnowledgeID?: string | undefined;
                   bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
                   bodyOfKnowledgeDescription?: string | undefined;
                   profile: {
@@ -24958,7 +24962,7 @@ export type AvailableVirtualContributorsForRoleSetPaginatedFragment = {
   virtualContributors: Array<{
     __typename?: 'VirtualContributor';
     id: string;
-    bodyOfKnowledgeID: string;
+    bodyOfKnowledgeID?: string | undefined;
     bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
     bodyOfKnowledgeDescription?: string | undefined;
     profile: {

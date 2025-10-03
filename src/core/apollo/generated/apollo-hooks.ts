@@ -13858,8 +13858,9 @@ export function refetchCommunityAvailableVCsQuery(variables: SchemaTypes.Communi
 }
 export const AiPersonaDocument = gql`
   query AiPersona($id: UUID!) {
-    aiServer {
-      aiPersona(ID: $id) {
+    virtualContributor(ID: $id) {
+      id
+      aiPersona {
         id
         prompt
         engine
@@ -14820,9 +14821,11 @@ export type VirtualContributorUpdatesSubscriptionHookResult = ReturnType<
 export type VirtualContributorUpdatesSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.VirtualContributorUpdatesSubscription>;
 export const VirtualContributorKnowledgeBaseLastUpdatedDocument = gql`
-  query VirtualContributorKnowledgeBaseLastUpdated($aiPersonaID: UUID!) {
-    aiServer {
-      aiPersona(ID: $aiPersonaID) {
+  query VirtualContributorKnowledgeBaseLastUpdated($id: UUID!) {
+    virtualContributor(ID: $id) {
+      id
+      aiPersona {
+        id
         bodyOfKnowledgeLastUpdated
       }
     }
@@ -14841,7 +14844,7 @@ export const VirtualContributorKnowledgeBaseLastUpdatedDocument = gql`
  * @example
  * const { data, loading, error } = useVirtualContributorKnowledgeBaseLastUpdatedQuery({
  *   variables: {
- *      aiPersonaID: // value for 'aiPersonaID'
+ *      id: // value for 'id'
  *   },
  * });
  */
