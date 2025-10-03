@@ -112,3 +112,11 @@ export const buildUserAccountUrl = (profileUrl?: string) => {
 export const buildWelcomeSpaceUrl = () => '/welcome-space';
 
 export const getInvitationsDialogUrl = () => `/home?${URL_PARAM_DIALOG}=${DIALOG_PARAM_VALUES.INVITATIONS}`;
+
+const VIDEO_CALL_BASE_URL = 'https://meet.jit.si/';
+
+export const buildVideoCallUrl = (spaceId: string, spaceNameId?: string) => {
+  // Use spaceNameId if available for better readability, otherwise use spaceId only
+  const meetingIdentifier = spaceNameId ? `${spaceNameId}-${encodeURIComponent(spaceId)}` : encodeURIComponent(spaceId);
+  return `${VIDEO_CALL_BASE_URL}${meetingIdentifier}`;
+};

@@ -1,7 +1,10 @@
-import { AiPersonaModelCardModel } from '../model/AiPersonaModelCardModel';
-import { AiPersonaModelCardEntry, AiPersonaModelCardEntryFlagName } from '@/core/apollo/generated/graphql-schema';
+import {
+  VirtualContributorModelCardEntry,
+  VirtualContributorModelCardEntryFlagName,
+} from '@/core/apollo/generated/graphql-schema';
+import { VirtualContributorModelCard } from '../model/VirtualContributorModelCardModel';
 
-export const useTemporaryHardCodedVCProfilePageData = (modelCard: AiPersonaModelCardModel) => {
+export const useTemporaryHardCodedVCProfilePageData = (modelCard: VirtualContributorModelCard) => {
   // TODO: the logic here should be isGeneric, isAssistant and isExternal = isGeneric || isAssistant;
   const isExternal = modelCard.aiEngine.isExternal;
   const isAssistant = modelCard.aiEngine.isAssistant;
@@ -14,44 +17,44 @@ export const useTemporaryHardCodedVCProfilePageData = (modelCard: AiPersonaModel
         cells: modelCard.spaceUsage
           .map(usage => {
             switch (usage.modelCardEntry) {
-              case AiPersonaModelCardEntry.SpaceCapabilities:
+              case VirtualContributorModelCardEntry.SpaceCapabilities:
                 return {
                   icon: 'functionalCapabilities',
                   title: 'Functional Capabilities',
                   bullets: usage.flags.map(flag => ({
                     icon: flag.enabled ? 'check' : '',
                     text:
-                      flag.name === AiPersonaModelCardEntryFlagName.SpaceCapabilityTagging
+                      flag.name === VirtualContributorModelCardEntryFlagName.SpaceCapabilityTagging
                         ? 'Answer questions in comments'
-                        : flag.name === AiPersonaModelCardEntryFlagName.SpaceCapabilityCreateContent
+                        : flag.name === VirtualContributorModelCardEntryFlagName.SpaceCapabilityCreateContent
                           ? 'Create new posts'
-                          : flag.name === AiPersonaModelCardEntryFlagName.SpaceCapabilityCommunityManagement
+                          : flag.name === VirtualContributorModelCardEntryFlagName.SpaceCapabilityCommunityManagement
                             ? 'Invite other contributors'
                             : flag.name,
                   })),
                 };
-              case AiPersonaModelCardEntry.SpaceDataAccess:
+              case VirtualContributorModelCardEntry.SpaceDataAccess:
                 return {
                   icon: 'cloudUpload',
                   title: 'Data access from the Space where it is a member',
                   bullets: usage.flags.map(flag => ({
                     icon: flag.enabled ? 'check' : '',
                     text:
-                      flag.name === AiPersonaModelCardEntryFlagName.SpaceDataAccessAbout
+                      flag.name === VirtualContributorModelCardEntryFlagName.SpaceDataAccessAbout
                         ? 'About page'
-                        : flag.name === AiPersonaModelCardEntryFlagName.SpaceDataAccessContent
+                        : flag.name === VirtualContributorModelCardEntryFlagName.SpaceDataAccessContent
                           ? 'Posts & Contributions'
-                          : flag.name === AiPersonaModelCardEntryFlagName.SpaceDataAccessSubspaces
+                          : flag.name === VirtualContributorModelCardEntryFlagName.SpaceDataAccessSubspaces
                             ? 'Subspaces'
                             : flag.name,
                   })),
                 };
-              case AiPersonaModelCardEntry.SpaceRoleRequired:
+              case VirtualContributorModelCardEntry.SpaceRoleRequired:
                 return {
                   icon: 'shieldPerson',
                   title: 'Role Requirements',
                   description: usage.flags.some(
-                    flag => flag.name === AiPersonaModelCardEntryFlagName.SpaceRoleMember && flag.enabled
+                    flag => flag.name === VirtualContributorModelCardEntryFlagName.SpaceRoleMember && flag.enabled
                   )
                     ? 'This VC needs to be granted <strong>member rights</strong> to function correctly'
                     : 'No special member rights required',

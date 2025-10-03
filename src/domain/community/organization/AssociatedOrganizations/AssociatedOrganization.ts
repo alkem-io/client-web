@@ -41,14 +41,16 @@ export const mapToAssociatedOrganization = (
   const profile = organization?.profile;
   return {
     key,
-    profile: profile ? {
-      // spread the props here to remove the tagline which is rendered automatically in the card
-      displayName: profile.displayName,
-      avatar: profile.avatar,
-      location: profile.location,
-      tagsets: profile.tagsets,
-      url: profile.url,
-    } : undefined,
+    profile: profile
+      ? {
+          // spread the props here to remove the tagline which is rendered automatically in the card
+          displayName: profile.displayName,
+          avatar: profile.avatar,
+          location: profile.location,
+          tagsets: profile.tagsets,
+          url: profile.url,
+        }
+      : undefined,
     seamless: true,
     associatesCount: getMetricCount(organization?.metrics || [], MetricType.Associate),
     verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,

@@ -16,6 +16,7 @@ interface SpaceSettingsCollaboration {
   allowMembersToCreateSubspaces: boolean;
   inheritMembershipRights: boolean;
   allowEventsFromSubspaces: boolean;
+  allowMembersToVideoCall: boolean;
 }
 
 export interface SpaceSettingsModel {
