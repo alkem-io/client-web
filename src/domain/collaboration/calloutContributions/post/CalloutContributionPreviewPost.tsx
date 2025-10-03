@@ -43,7 +43,7 @@ const CommentsAnimation = {
 };
 
 const PostDescriptionAnimation = {
-  height: 'calc-size(auto)', // Not supported in many browsers yet, but will look amazing in the future... //!! maybe find another way
+  height: 'calc-size(auto)', // Not supported in many browsers yet, but will look amazing in the future...
   transitionProperty: 'height',
   transitionDuration: '100ms',
 };

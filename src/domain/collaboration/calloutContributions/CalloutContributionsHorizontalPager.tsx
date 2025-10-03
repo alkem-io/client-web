@@ -61,12 +61,7 @@ const CalloutContributionsHorizontalPager = ({
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(0);
 
-  const {
-    inViewRef,
-    contributions,
-    //!! canCreateContribution,
-    loading,
-  } = useCalloutContributions({
+  const { inViewRef, contributions, loading } = useCalloutContributions({
     callout,
     contributionType,
     pageSize: PAGE_SIZE,

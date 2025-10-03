@@ -19,7 +19,7 @@ interface useCalloutDetailsProvided {
 export interface useCalloutDetailsProps {
   calloutId: string | undefined;
   calloutsSetId: string | undefined;
-  withClassification: boolean; //!!
+  withClassification: boolean;
   overrideCalloutSettings?: Partial<CalloutModelExtension<{}>>;
   skip?: boolean;
 }
@@ -40,7 +40,7 @@ const useCalloutDetails = ({
   const { data, loading, refetch, error } = useCalloutDetailsQuery({
     variables: {
       calloutId: calloutId!,
-      withClassification, //!! callout.classificationTagsets.length > 0,
+      withClassification,
     },
     skip: skip || !calloutId,
   });
