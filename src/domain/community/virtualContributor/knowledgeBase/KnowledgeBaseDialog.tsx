@@ -85,6 +85,7 @@ const KnowledgeBaseDialog = ({ aiPersonaID, onClose, title, id, placeholder }: K
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
                 createButtonPlace="bottom"
+                disableClassification
                 calloutRestrictions={{
                   disableRichMedia: true,
                   disableWhiteboards: true,

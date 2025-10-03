@@ -27,6 +27,7 @@ export interface CalloutsViewProps {
     | Partial<PageContentBlockProps>
     | ((callout: CalloutModelLightExtended, index: number) => Partial<PageContentBlockProps> | undefined);
   calloutRestrictions?: CalloutRestrictions;
+  disableClassification?: boolean;
 }
 
 const CalloutsView = ({
@@ -37,6 +38,7 @@ const CalloutsView = ({
   onCalloutUpdate,
   blockProps,
   calloutRestrictions,
+  disableClassification,
 }: CalloutsViewProps) => {
   const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
 
@@ -107,7 +109,11 @@ const CalloutsView = ({
 
           return (
             <PageContentBlock key={callout.id} disablePadding disableGap {...computedBlockProps}>
-              <CalloutInViewWrapper calloutId={callout.id} calloutsSetId={calloutsSetId} withClassification>
+              <CalloutInViewWrapper
+                calloutId={callout.id}
+                calloutsSetId={calloutsSetId}
+                withClassification={!disableClassification}
+              >
                 {({ callout: calloutDetails, loading, refetch }) => (
                   <CalloutView
                     callout={calloutDetails}
@@ -134,4 +140,3 @@ const CalloutsView = ({
 };
 
 export default CalloutsView;
-

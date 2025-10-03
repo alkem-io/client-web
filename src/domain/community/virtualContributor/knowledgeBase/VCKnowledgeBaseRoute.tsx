@@ -9,7 +9,7 @@ export const VCKnowledgeBaseRoute = () => {
     <Routes>
       <Route index element={<VCProfilePage openKnowledgeBaseDialog />} />
       <Route
-        path={`/:${nameOfUrl.calloutNameId}`}
+        path={`/:${nameOfUrl.calloutNameId}/*`}
         element={
           <VCProfilePage openKnowledgeBaseDialog>
             {(vc?: { profile: { url: string } }) => (
@@ -22,7 +22,6 @@ export const VCKnowledgeBaseRoute = () => {
           </VCProfilePage>
         }
       />
-      <Route path={`/:${nameOfUrl.calloutNameId}/*`} element={<VCProfilePage openKnowledgeBaseDialog />} />
     </Routes>
   );
 };
