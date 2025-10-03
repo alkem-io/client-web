@@ -1,6 +1,7 @@
 query AiPersona($id: UUID!) {
-  aiServer {
-    aiPersona(ID: $id) {
+  virtualContributor(ID: $id) {
+    id
+    aiPersona {
       id
       prompt
       engine

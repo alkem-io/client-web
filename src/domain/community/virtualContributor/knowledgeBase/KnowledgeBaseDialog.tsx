@@ -18,10 +18,9 @@ type KnowledgeBaseDialogProps = {
   title: string;
   id: string;
   placeholder: string;
-  aiPersonaID: string;
 };
 
-const KnowledgeBaseDialog = ({ aiPersonaID, onClose, title, id, placeholder }: KnowledgeBaseDialogProps) => {
+const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseDialogProps) => {
   const { t } = useTranslation();
   const {
     calloutsSetId,
@@ -36,15 +35,14 @@ const KnowledgeBaseDialog = ({ aiPersonaID, onClose, title, id, placeholder }: K
     ingestKnowledge,
     ingestLoading,
     hasReadAccess,
-
     loadingPrivileges,
   } = useKnowledgeBase({ id });
 
   const { data } = useVirtualContributorKnowledgeBaseLastUpdatedQuery({
-    variables: { aiPersonaID },
-    skip: !aiPersonaID,
+    variables: { id },
+    skip: !id,
   });
-  const lastUpdated = data?.aiServer.aiPersona.bodyOfKnowledgeLastUpdated;
+  const lastUpdated = data?.virtualContributor?.aiPersona?.bodyOfKnowledgeLastUpdated;
 
   if (!hasReadAccess && !loadingPrivileges) {
     return (

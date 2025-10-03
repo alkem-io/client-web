@@ -38,14 +38,14 @@ interface BodyOfKnowledgeManagementProps {
 const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const aiPersonaID = vc.aiPersona?.id;
+  const vcId = vc?.id;
 
   const [updateBodyOfKnowledge, { loading: updateLoading }] = useRefreshBodyOfKnowledgeMutation();
   const { data } = useVirtualContributorKnowledgeBaseLastUpdatedQuery({
-    variables: { aiPersonaID: aiPersonaID ?? '' },
-    skip: !aiPersonaID,
+    variables: { id: vcId },
+    skip: !vcId,
   });
-  const lastUpdated = data?.aiServer.aiPersona.bodyOfKnowledgeLastUpdated;
+  const lastUpdated = data?.virtualContributor?.aiPersona?.bodyOfKnowledgeLastUpdated;
 
   const refreshIngestion = () => {
     updateBodyOfKnowledge({

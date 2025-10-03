@@ -201,7 +201,6 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
       {openKnowledgeBaseDialog && (
         <KnowledgeBaseDialog
           id={virtualContributor?.id ?? ''}
-          aiPersonaID={virtualContributor?.aiPersona?.id ?? ''}
           title={`${name}: ${t('virtualContributorSpaceSettings.bodyOfKnowledge')}`}
           placeholder={t('virtualContributorSpaceSettings.placeholder')}
           onClose={onCloseKnowledgeBase}

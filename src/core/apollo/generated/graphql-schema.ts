@@ -20076,22 +20076,25 @@ export type AiPersonaQueryVariables = Exact<{
 
 export type AiPersonaQuery = {
   __typename?: 'Query';
-  aiServer: {
-    __typename?: 'AiServer';
-    aiPersona: {
-      __typename?: 'AiPersona';
-      id: string;
-      prompt: Array<string>;
-      engine: AiPersonaEngine;
-      externalConfig?:
-        | {
-            __typename?: 'ExternalConfig';
-            apiKey?: string | undefined;
-            assistantId?: string | undefined;
-            model: OpenAiModel;
-          }
-        | undefined;
-    };
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    aiPersona?:
+      | {
+          __typename?: 'AiPersona';
+          id: string;
+          prompt: Array<string>;
+          engine: AiPersonaEngine;
+          externalConfig?:
+            | {
+                __typename?: 'ExternalConfig';
+                apiKey?: string | undefined;
+                assistantId?: string | undefined;
+                model: OpenAiModel;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -20723,14 +20726,15 @@ export type VirtualContributorUpdatesSubscription = {
 };
 
 export type VirtualContributorKnowledgeBaseLastUpdatedQueryVariables = Exact<{
-  aiPersonaID: Scalars['UUID']['input'];
+  id: Scalars['UUID']['input'];
 }>;
 
 export type VirtualContributorKnowledgeBaseLastUpdatedQuery = {
   __typename?: 'Query';
-  aiServer: {
-    __typename?: 'AiServer';
-    aiPersona: { __typename?: 'AiPersona'; bodyOfKnowledgeLastUpdated?: Date | undefined };
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    aiPersona?: { __typename?: 'AiPersona'; id: string; bodyOfKnowledgeLastUpdated?: Date | undefined } | undefined;
   };
 };
 
