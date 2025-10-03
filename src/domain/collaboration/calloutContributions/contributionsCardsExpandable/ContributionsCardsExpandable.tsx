@@ -48,6 +48,7 @@ const ContributionsCardsExpandable = ({
     inViewRef,
     contributions: { items: contributions, hasMore, setFetchAll, total: totalContributions },
     canCreateContribution,
+    onCalloutContributionsUpdate,
   } = useCalloutContributions({
     callout,
     contributionType,
@@ -107,7 +108,7 @@ const ContributionsCardsExpandable = ({
           <CreateContributionButton
             callout={callout}
             canCreateContribution={canCreateContribution}
-            onContributionCreated={onCalloutUpdate}
+            onContributionCreated={onCalloutContributionsUpdate}
           />
         )}
       </Gutters>

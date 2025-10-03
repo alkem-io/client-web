@@ -56,7 +56,7 @@ export interface useCalloutContributionsProvided {
   /**
    * just bubbles up for a callout refetch
    */
-  onCalloutUpdate: () => Promise<unknown>;
+  onCalloutContributionsUpdate: () => Promise<unknown>;
 }
 
 const useCalloutContributions = ({
@@ -157,7 +157,7 @@ const useCalloutContributions = ({
     loading,
     canCreateContribution,
     subscriptionEnabled: subscription.enabled,
-    onCalloutUpdate: async () => {
+    onCalloutContributionsUpdate: async () => {
       await onCalloutUpdate?.();
       await refetch();
     },

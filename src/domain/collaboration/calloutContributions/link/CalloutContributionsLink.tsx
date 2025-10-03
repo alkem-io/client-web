@@ -56,7 +56,7 @@ const CalloutContributionsLink = ({
     inViewRef,
     contributions: { items: contributions, hasMore, setFetchAll, total: totalContributions },
     canCreateContribution,
-    onCalloutUpdate: refetchCalloutAndContributions,
+    onCalloutContributionsUpdate: refetchCalloutAndContributions,
   } = useCalloutContributions({
     callout,
     contributionType: CalloutContributionType.Link,
