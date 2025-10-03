@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 import { Outlet, Navigate } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import SubspaceAboutPage from '../about/SubspaceAboutPage';
 import SubspaceHomePage from '../layout/flowLayout/SubspaceHomePage';
 import Redirect from '@/core/routing/Redirect';
@@ -74,12 +73,12 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
             />
             <Route
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-              element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
+              element={<SubspaceCalloutPage />}
             />
             <Route index element={<SubspaceHomePage />} />
             <Route index path={`:dialog?/:${nameOfUrl.calendarEventNameId}?/*`} element={<SubspaceHomePage />} />
 
-            {/* define l2 subspace routes explicitly  although they are rocursive */}
+            {/* define l2 subspace routes explicitly  although they are recursive */}
             <Route path={`/opportunities/:${nameOfUrl.subsubspaceNameId}/*`}>
               <Route path="explore/*" element={<Redirect to={EntityPageSection.Contribute} />} />
               <Route path={EntityPageSection.Dashboard} element={<Navigate replace to="/" />} />
@@ -90,7 +89,7 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
               />
               <Route
                 path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-                element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
+                element={<SubspaceCalloutPage />}
               />
               <Route index element={<SubspaceHomePage />} />
               <Route index path={`:dialog?/:${nameOfUrl.calendarEventNameId}?/*`} element={<SubspaceHomePage />} />

@@ -1047,6 +1047,8 @@ export type CalloutContributionsCountOutput = {
   __typename?: 'CalloutContributionsCountOutput';
   /** The number of contributions of type Link in this callout */
   link: Scalars['Float']['output'];
+  /** The number of contributions of type Memo in this callout */
+  memo: Scalars['Float']['output'];
   /** The number of contributions of type Post in this callout */
   post: Scalars['Float']['output'];
   /** The number of contributions of type Whiteboard in this callout */
@@ -12259,7 +12261,6 @@ export type UpdateCalloutContentMutation = {
         | {
             __typename?: 'Memo';
             id: string;
-            nameID: string;
             createdDate: Date;
             markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
@@ -12624,7 +12625,6 @@ export type UpdateCalloutVisibilityMutation = {
         | {
             __typename?: 'Memo';
             id: string;
-            nameID: string;
             createdDate: Date;
             markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
@@ -13791,7 +13791,6 @@ export type CreateCalloutMutation = {
         | {
             __typename?: 'Memo';
             id: string;
-            nameID: string;
             createdDate: Date;
             markdown?: string | undefined;
             contentUpdatePolicy: ContentUpdatePolicy;
@@ -14246,7 +14245,6 @@ export type CalloutDetailsQuery = {
               | {
                   __typename?: 'Memo';
                   id: string;
-                  nameID: string;
                   createdDate: Date;
                   markdown?: string | undefined;
                   contentUpdatePolicy: ContentUpdatePolicy;
@@ -14685,7 +14683,6 @@ export type CalloutDetailsFragment = {
       | {
           __typename?: 'Memo';
           id: string;
-          nameID: string;
           createdDate: Date;
           markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
@@ -14949,7 +14946,6 @@ export type MemoDetailsQuery = {
       | {
           __typename?: 'Memo';
           id: string;
-          nameID: string;
           createdDate: Date;
           markdown?: string | undefined;
           contentUpdatePolicy: ContentUpdatePolicy;
@@ -15033,7 +15029,6 @@ export type MemoProfileFragment = {
 export type MemoDetailsFragment = {
   __typename?: 'Memo';
   id: string;
-  nameID: string;
   createdDate: Date;
   markdown?: string | undefined;
   contentUpdatePolicy: ContentUpdatePolicy;

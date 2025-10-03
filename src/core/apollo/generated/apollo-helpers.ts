@@ -717,12 +717,14 @@ export type CalloutContributionDefaultsFieldPolicy = {
 };
 export type CalloutContributionsCountOutputKeySpecifier = (
   | 'link'
+  | 'memo'
   | 'post'
   | 'whiteboard'
   | CalloutContributionsCountOutputKeySpecifier
 )[];
 export type CalloutContributionsCountOutputFieldPolicy = {
   link?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };

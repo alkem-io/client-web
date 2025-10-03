@@ -740,7 +740,6 @@ export const MemoProfileFragmentDoc = gql`
 export const MemoDetailsFragmentDoc = gql`
   fragment MemoDetails on Memo {
     id
-    nameID
     createdDate
     profile {
       ...MemoProfile
