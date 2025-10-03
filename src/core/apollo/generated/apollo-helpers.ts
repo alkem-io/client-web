@@ -639,7 +639,7 @@ export type CalloutKeySpecifier = (
   | 'comments'
   | 'contributionDefaults'
   | 'contributions'
-  | 'contributionsPaginated'
+  | 'contributionsCount'
   | 'createdBy'
   | 'createdDate'
   | 'framing'
@@ -661,7 +661,7 @@ export type CalloutFieldPolicy = {
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributions?: FieldPolicy<any> | FieldReadFunction<any>;
-  contributionsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   framing?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -714,6 +714,17 @@ export type CalloutContributionDefaultsFieldPolicy = {
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutContributionsCountOutputKeySpecifier = (
+  | 'link'
+  | 'post'
+  | 'whiteboard'
+  | CalloutContributionsCountOutputKeySpecifier
+)[];
+export type CalloutContributionsCountOutputFieldPolicy = {
+  link?: FieldPolicy<any> | FieldReadFunction<any>;
+  post?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
@@ -2956,17 +2967,6 @@ export type PageInfoFieldPolicy = {
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PaginatedContributionsKeySpecifier = (
-  | 'contributions'
-  | 'pageInfo'
-  | 'total'
-  | PaginatedContributionsKeySpecifier
-)[];
-export type PaginatedContributionsFieldPolicy = {
-  contributions?: FieldPolicy<any> | FieldReadFunction<any>;
-  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
-  total?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type PaginatedInAppNotificationsKeySpecifier = (
   | 'inAppNotifications'
   | 'pageInfo'
@@ -5068,6 +5068,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CalloutContributionDefaultsKeySpecifier);
     fields?: CalloutContributionDefaultsFieldPolicy;
   };
+  CalloutContributionsCountOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutContributionsCountOutputKeySpecifier
+      | (() => undefined | CalloutContributionsCountOutputKeySpecifier);
+    fields?: CalloutContributionsCountOutputFieldPolicy;
+  };
   CalloutFraming?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutFramingKeySpecifier | (() => undefined | CalloutFramingKeySpecifier);
     fields?: CalloutFramingFieldPolicy;
@@ -5761,10 +5768,6 @@ export type StrictTypedTypePolicies = {
   PageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier);
     fields?: PageInfoFieldPolicy;
-  };
-  PaginatedContributions?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | PaginatedContributionsKeySpecifier | (() => undefined | PaginatedContributionsKeySpecifier);
-    fields?: PaginatedContributionsFieldPolicy;
   };
   PaginatedInAppNotifications?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

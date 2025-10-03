@@ -958,8 +958,8 @@ export type Callout = {
   contributionDefaults: CalloutContributionDefaults;
   /** The Contributions that have been made to this Callout. */
   contributions: Array<CalloutContribution>;
-  /** The Contributions that have been made to this Callout, paginated. */
-  contributionsPaginated: PaginatedContributions;
+  /** The Contributions that have been made to this Callout. */
+  contributionsCount: CalloutContributionsCountOutput;
   /** The user that created this Callout */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
@@ -988,16 +988,8 @@ export type Callout = {
 
 export type CalloutContributionsArgs = {
   filter?: InputMaybe<ContributionsFilterInput>;
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
   shuffle?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-export type CalloutContributionsPaginatedArgs = {
-  after?: InputMaybe<Scalars['UUID']['input']>;
-  before?: InputMaybe<Scalars['UUID']['input']>;
-  filter?: InputMaybe<ContributionsFilterInput>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export enum CalloutAllowedContributors {
@@ -1050,6 +1042,16 @@ export enum CalloutContributionType {
   Post = 'POST',
   Whiteboard = 'WHITEBOARD',
 }
+
+export type CalloutContributionsCountOutput = {
+  __typename?: 'CalloutContributionsCountOutput';
+  /** The number of contributions of type Link in this callout */
+  link: Scalars['Float']['output'];
+  /** The number of contributions of type Post in this callout */
+  post: Scalars['Float']['output'];
+  /** The number of contributions of type Whiteboard in this callout */
+  whiteboard: Scalars['Float']['output'];
+};
 
 export type CalloutFraming = {
   __typename?: 'CalloutFraming';
@@ -5414,13 +5416,6 @@ export type PageInfo = {
   hasPreviousPage: Scalars['Boolean']['output'];
   /** The first cursor of the page result */
   startCursor?: Maybe<Scalars['String']['output']>;
-};
-
-export type PaginatedContributions = {
-  __typename?: 'PaginatedContributions';
-  contributions: Array<CalloutContribution>;
-  pageInfo: PageInfo;
-  total: Scalars['Float']['output'];
 };
 
 export type PaginatedInAppNotifications = {
@@ -13345,7 +13340,7 @@ export type CalloutContributionsQueryVariables = Exact<{
   includeWhiteboard?: Scalars['Boolean']['input'];
   includePost?: Scalars['Boolean']['input'];
   filter?: InputMaybe<Array<CalloutContributionType> | CalloutContributionType>;
-  limit?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 export type CalloutContributionsQuery = {
@@ -13449,7 +13444,12 @@ export type CalloutContributionsQuery = {
                 }
               | undefined;
           }>;
-          contributionsPaginated: { __typename?: 'PaginatedContributions'; total: number };
+          contributionsCount: {
+            __typename?: 'CalloutContributionsCountOutput';
+            link?: number;
+            whiteboard?: number;
+            post?: number;
+          };
         }
       | undefined;
   };

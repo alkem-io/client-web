@@ -12,15 +12,16 @@ import { CalloutSettingsModelFull } from '../../callout/models/CalloutSettingsMo
 import useCalloutPostCreatedSubscription from '../post/useCalloutPostCreatedSubscription';
 
 interface useCalloutContributionsProps {
-  callout: (Identifiable & {
-    authorization?: {
-      myPrivileges?: AuthorizationPrivilege[];
-    };
-    settings: {
-      contribution: CalloutSettingsModelFull['contribution'];
-    };
-  })
-  | undefined;
+  callout:
+    | (Identifiable & {
+        authorization?: {
+          myPrivileges?: AuthorizationPrivilege[];
+        };
+        settings: {
+          contribution: CalloutSettingsModelFull['contribution'];
+        };
+      })
+    | undefined;
   pageSize?: number;
   contributionType: CalloutContributionType;
   onCalloutUpdate?: () => Promise<unknown> | void;
@@ -48,10 +49,6 @@ export interface useCalloutContributionsProvided {
     total: number;
   };
 
-  /**
-   * //!! provided for legacy, try to remove
-   */
-  contributionsCount: number;
   canCreateContribution: boolean;
   subscriptionEnabled: boolean;
   loading?: boolean;
@@ -88,14 +85,9 @@ const useCalloutContributions = ({
     } else {
       setReturnAllResult(false);
     }
-  }
+  };
 
-  const {
-    data,
-    loading,
-    refetch,
-    subscribeToMore,
-  } = useCalloutContributionsQuery({
+  const { data, loading, refetch, subscribeToMore } = useCalloutContributionsQuery({
     variables: {
       calloutId: callout?.id!,
       includeLink: contributionType === CalloutContributionType.Link,
@@ -110,7 +102,6 @@ const useCalloutContributions = ({
     variables: { calloutId: callout?.id! },
     skip: !inView || !callout?.id || skip || contributionType !== CalloutContributionType.Post,
   });
-
 
   const canCreateContribution = useMemo(() => {
     if (
@@ -140,17 +131,29 @@ const useCalloutContributions = ({
     return requiredPrivileges.every(privilege => calloutPrivileges.includes(privilege));
   }, [callout, callout?.settings, callout?.authorization, contributionType]);
 
-  const items = (returnAllResults ? data?.lookup.callout?.contributions : data?.lookup.callout?.contributions.slice(0, pageSize)) ?? [];
+  const items =
+    (returnAllResults ? data?.lookup.callout?.contributions : data?.lookup.callout?.contributions.slice(0, pageSize)) ??
+    [];
+  const totalContributionsCount =
+    (() => {
+      switch (contributionType) {
+        case CalloutContributionType.Link:
+          return data?.lookup.callout?.contributionsCount.link;
+        case CalloutContributionType.Whiteboard:
+          return data?.lookup.callout?.contributionsCount.whiteboard;
+        case CalloutContributionType.Post:
+          return data?.lookup.callout?.contributionsCount.post;
+      }
+    })() ?? 0;
 
   return {
     inViewRef,
     contributions: {
       items,
-      hasMore: (data?.lookup.callout?.contributions.length ?? 0) < (data?.lookup.callout?.contributionsPaginated.total ?? 0),
+      hasMore: (data?.lookup.callout?.contributions.length ?? 0) < totalContributionsCount,
       setFetchAll: handleSetFetchAll,
-      total: data?.lookup.callout?.contributionsPaginated.total ?? 0,
+      total: totalContributionsCount,
     },
-    contributionsCount: data?.lookup.callout?.contributionsPaginated.total ?? 0,
     loading,
     canCreateContribution,
     subscriptionEnabled: subscription.enabled,

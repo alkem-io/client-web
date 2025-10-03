@@ -7767,7 +7767,7 @@ export const CalloutContributionsDocument = gql`
     $includeWhiteboard: Boolean! = false
     $includePost: Boolean! = false
     $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, POST]
-    $limit: Float
+    $limit: Int
   ) {
     lookup {
       callout(ID: $calloutId) {
@@ -7785,8 +7785,10 @@ export const CalloutContributionsDocument = gql`
             ...CalloutContributionsPostCard
           }
         }
-        contributionsPaginated {
-          total
+        contributionsCount {
+          link @include(if: $includeLink)
+          whiteboard @include(if: $includeWhiteboard)
+          post @include(if: $includePost)
         }
       }
     }
