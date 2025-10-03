@@ -93,7 +93,6 @@ const CalloutContributionPreviewPost = ({ callout, contribution, loading }: Call
                   height="100%"
                   fullHeight
                   maxHeight={commentsMaxHeight}
-                  isMember={false /* //!! why was this? myMembershipStatus === CommunityMembershipStatus.Member*/}
                 />
               )}
             </CalloutContributionCommentsContainer>
