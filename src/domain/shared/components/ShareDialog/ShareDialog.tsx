@@ -12,34 +12,45 @@ import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
 import { ClipboardShareHandler } from './platforms/ShareOnClipboard';
 import { AlkemioShareHandler } from './platforms/ShareOnAlkemio';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 export interface ShareDialogProps extends ShareComponentProps {
   open: boolean;
   onClose: () => void;
   entityTypeName:
-  | 'space'
-  | 'subspace'
-  | 'user'
-  | 'organization'
-  | 'callout'
-  | 'discussion'
-  | 'event'
-  | 'innovationPack'
-  | 'updates'
-  | 'about'
-  | CalloutContributionType.Post
-  | CalloutContributionType.Whiteboard
-  | CalloutContributionType.Link
-  | CalloutContributionType.Memo;
+    | 'space'
+    | 'subspace'
+    | 'user'
+    | 'organization'
+    | 'callout'
+    | 'discussion'
+    | 'event'
+    | 'innovationPack'
+    | 'updates'
+    | 'about'
+    | CalloutContributionType.Post
+    | CalloutContributionType.Whiteboard
+    | CalloutContributionType.Link
+    | CalloutContributionType.Memo;
 }
 
 export const ShareDialog = ({ open, onClose, entityTypeName, ...props }: ShareDialogProps) => {
   const { t } = useTranslation();
+
+  // Check if entityTypeName is part of CalloutContributionType enum
+  // TODO: This logic could be cleaner
+  const isCalloutContributionType = Object.values(CalloutContributionType).includes(
+    entityTypeName as CalloutContributionType
+  );
+  const entityTranslationKey: TranslationKey = isCalloutContributionType
+    ? `common.enums.calloutContributionType.${entityTypeName}`
+    : `common.${entityTypeName}`;
+
   return (
     <DialogWithGrid columns={8} open={open} onClose={onClose} aria-labelledby="share-dialog">
       <DialogHeader
         id="share-dialog"
-        title={t('share-dialog.share-this', { entity: t(`common.${entityTypeName}` as const) })}
+        title={t('share-dialog.share-this', { entity: t(entityTranslationKey) })}
         onClose={onClose}
       />
       <DialogContent>

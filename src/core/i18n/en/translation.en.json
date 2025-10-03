@@ -111,7 +111,9 @@
     "next": "Next",
     "edit": "Edit",
     "expand": "Expand",
+    "expandEntity": "Expand {{entity}}",
     "collapse": "Collapse",
+    "collapseEntity": "Collapse {{entity}}",
     "expandWindow": "Expand Window",
     "see-more": "See more",
     "see-all": "More {{subject}}",
@@ -522,6 +524,12 @@
         "POST_COLLECTION": "$t(common.Post) $t(common.Collection)",
         "WHITEBOARD": "$t(common.Whiteboard)",
         "WHITEBOARD_COLLECTION": "$t(common.Whiteboard) $t(common.Collection)"
+      },
+      "calloutContributionType": {
+        "LINK": "$t(common.Link)",
+        "POST": "$t(common.Post)",
+        "WHITEBOARD": "$t(common.Whiteboard)",
+        "MEMO": "$t(common.Memo)"
       },
       "invitationStatus": {
         "invited": "Invited",

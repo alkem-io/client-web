@@ -126,6 +126,7 @@ const CalloutView = ({
               {contributionId && (
                 <CalloutContributionsHorizontalPager
                   callout={callout}
+                  loading={loading}
                   contributionType={CalloutContributionType.Whiteboard}
                   contributionSelectedId={contributionId}
                   cardComponent={WhiteboardCard}
@@ -136,6 +137,7 @@ const CalloutView = ({
               {!contributionId && (
                 <ContributionsCardsExpandable
                   callout={callout}
+                  loading={loading}
                   contributionType={CalloutContributionType.Whiteboard}
                   expanded={expanded}
                   onExpand={onExpand}

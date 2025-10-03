@@ -12,6 +12,8 @@ import useCalloutContributions from './useCalloutContributions/useCalloutContrib
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import { AnyContribution } from './interfaces/AnyContributionType';
 import { CalloutContributionCardComponentProps } from './interfaces/CalloutContributionCardComponentProps';
+import { times } from 'lodash';
+import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
 
 const PAGE_SIZE = 5;
 const COLUMNS_PER_CARD = 2;
@@ -67,19 +69,22 @@ const CalloutContributionsHorizontalPager = ({
     pageSize: PAGE_SIZE,
   });
 
+  const { hasMore, items, setFetchAll, total } = contributions;
+
+  // Always fetch all contributions in this viewer, we'll paginate them in the UI
   useEffect(() => {
-    if (contributions.hasMore && !loading && contributions.total > contributions.items.length) {
-      contributions.setFetchAll(true);
+    if (hasMore && !loading && total > items.length) {
+      setFetchAll(true);
     }
-  }, [contributions]);
+  }, [hasMore, items, loading, setFetchAll, total]);
 
   const pages = useMemo(() => {
     const chunkedPages: AnyContribution[][] = [];
-    for (let i = 0; i < contributions.items.length; i += PAGE_SIZE) {
-      chunkedPages.push(contributions.items.slice(i, i + PAGE_SIZE));
+    for (let i = 0; i < items.length; i += PAGE_SIZE) {
+      chunkedPages.push(items.slice(i, i + PAGE_SIZE));
     }
     return chunkedPages;
-  }, [contributions.items]);
+  }, [items]);
 
   const handleClickOnContribution = (contribution: AnyContribution) => {
     const state: LocationStateCachedCallout = {
@@ -110,16 +115,18 @@ const CalloutContributionsHorizontalPager = ({
           <KeyboardDoubleArrowLeftIcon />
         </ScrollButton>
         <GridProvider columns={COLUMNS_SCROLLER} force>
-          {currentPageItems.map(contribution => (
-            <Card
-              key={contribution.id}
-              callout={callout}
-              contribution={contribution}
-              onClick={() => handleClickOnContribution(contribution)}
-              selected={contribution.id === contributionSelectedId}
-              columns={COLUMNS_PER_CARD}
-            />
-          ))}
+          {loading && times(5, index => <ContributeCardSkeleton key={index} columns={COLUMNS_PER_CARD} />)}
+          {!loading &&
+            currentPageItems.map(contribution => (
+              <Card
+                key={contribution.id}
+                callout={callout}
+                contribution={contribution}
+                onClick={() => handleClickOnContribution(contribution)}
+                selected={contribution.id === contributionSelectedId}
+                columns={COLUMNS_PER_CARD}
+              />
+            ))}
         </GridProvider>
         <ScrollButton
           onClick={handleClickRight}

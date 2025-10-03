@@ -60,7 +60,7 @@ const CalloutContributionDialogPost = ({
       id: post.id,
       profileData: {
         displayName: post.profile.displayName,
-        description: post.profile.description!,
+        description: post.profile.description,
       },
       references: post?.profile.references,
     };

@@ -9,6 +9,7 @@ import CalloutContributionCommentsContainer from '../commentsToContribution/Call
 import Gutters from '@/core/ui/grid/Gutters';
 import { GUTTER_PX } from '@/core/ui/grid/constants';
 import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
+import { useTranslation } from 'react-i18next';
 
 interface CalloutContributionPreviewPostProps extends CalloutContributionPreviewComponentProps {}
 
@@ -49,6 +50,7 @@ const PostDescriptionAnimation = {
 };
 
 const CalloutContributionPreviewPost = ({ callout, contribution, loading }: CalloutContributionPreviewPostProps) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const [commentsExpanded, setCommentsExpanded] = useState(false);
 
@@ -74,7 +76,21 @@ const CalloutContributionPreviewPost = ({ callout, contribution, loading }: Call
       <PostContentWrapper ref={postContentRef} sx={PostDescriptionAnimation}>
         <WrapperMarkdown>{contribution?.post?.profile.description ?? ''}</WrapperMarkdown>
       </PostContentWrapper>
-      <CommentsExpander onClick={() => setCommentsExpanded(!commentsExpanded)}>
+      <CommentsExpander
+        onClick={() => setCommentsExpanded(!commentsExpanded)}
+        aria-label={
+          commentsExpanded
+            ? t('buttons.collapseEntity', { entity: t('common.comments') })
+            : t('buttons.expandEntity', { entity: t('common.comments') })
+        }
+        title={
+          commentsExpanded
+            ? t('buttons.collapseEntity', { entity: t('common.comments') })
+            : t('buttons.expandEntity', { entity: t('common.comments') })
+        }
+        aria-expanded={commentsExpanded}
+        disabled={loading || !contribution}
+      >
         {commentsExpanded ? (
           <KeyboardDoubleArrowRightIcon preserveAspectRatio="none" />
         ) : (
