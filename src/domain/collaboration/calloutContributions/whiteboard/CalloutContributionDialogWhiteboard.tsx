@@ -13,9 +13,7 @@ const CalloutContributionDialogWhiteboard = ({
   onContributionDeleted,
 }: CalloutContributionDialogWhiteboardProps) => {
   const ensurePresence = useEnsurePresence();
-  if (!open) {
-    return null;
-  }
+
   const [deleteContribution] = useDeleteContributionMutation();
 
   const handleWhiteboardDeleted = async () => {
@@ -31,6 +29,10 @@ const CalloutContributionDialogWhiteboard = ({
       },
     });
   };
+
+  if (!open) {
+    return null;
+  }
   return (
     <WhiteboardProvider>
       {(entities, state) => (
