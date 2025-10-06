@@ -27,6 +27,7 @@ interface CalloutContributionsSortDialogProps {
   open: boolean;
   onClose: () => void;
   callout: Identifiable;
+  onUpdateCallout: () => void;
 }
 
 const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContributionsSortDialogProps) => {
@@ -70,6 +71,7 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
         calloutID: callout.id,
         contributionIds: contributions.map(contribution => contribution.id),
       },
+      refetchQueries: ['CalloutDetails', 'CalloutContributions'],
     });
   };
 

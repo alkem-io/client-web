@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
 import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
+import { useColumns } from '@/core/ui/grid/GridContext';
 
 interface CalloutContributionPreviewProps {
   callout: CalloutDetailsModelExtended;
@@ -40,6 +41,7 @@ const CalloutContributionPreview = ({
   const theme = useTheme();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const columns = useColumns();
   const [contributionDialogOpen, setContributionDialogOpen] = useState(false);
 
   const { data, loading } = useCalloutContributionQuery({
@@ -77,7 +79,7 @@ const CalloutContributionPreview = ({
     (contributionType === CalloutContributionType.Post && contribution?.post?.createdDate) ||
     (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.createdDate);
   const formattedCreatedDate = createdDate && formatDateTime(createdDate);
-  const formattedEllapsedTime = createdDate && formatTimeElapsed(createdDate, t, 'long');
+  const formattedElapsedTime = createdDate && formatTimeElapsed(createdDate, t, columns > 6 ? 'long' : 'short');
 
   const contributionUrl =
     (contributionType === CalloutContributionType.Post && contribution?.post?.profile.url) ||
@@ -101,7 +103,7 @@ const CalloutContributionPreview = ({
           actions={
             <>
               <Tooltip title={formattedCreatedDate} arrow>
-                <Caption>{formattedEllapsedTime}</Caption>
+                <Caption whiteSpace="nowrap">{formattedElapsedTime}</Caption>
               </Tooltip>
               {/* TODO: Here the comments to the post */}
               <IconButton

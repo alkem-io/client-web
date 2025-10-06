@@ -14,10 +14,41 @@ import { AnyContribution } from './interfaces/AnyContributionType';
 import { CalloutContributionCardComponentProps } from './interfaces/CalloutContributionCardComponentProps';
 import { times } from 'lodash';
 import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
+import { useColumns } from '@/core/ui/grid/GridContext';
 
-const PAGE_SIZE = 5;
-const COLUMNS_PER_CARD = 2;
-const COLUMNS_SCROLLER = PAGE_SIZE * COLUMNS_PER_CARD + 1;
+const ResponsiveConfiguration: Record<
+  number,
+  {
+    // key: Number of columns available
+    PageSize: number;
+    ColumnsPerCard: number;
+    ColumnsScroller: number; // Columns available for the cards
+    ScrollerButtons: 'small' | 'big'; // Scroller buttons big: next to the cards, small: with the pagination dots
+    SingleRow: boolean; // All cards in a single row
+  }
+> = {
+  [4]: {
+    PageSize: 3,
+    ColumnsPerCard: 4,
+    ColumnsScroller: 4,
+    ScrollerButtons: 'small',
+    SingleRow: false,
+  },
+  [8]: {
+    PageSize: 3,
+    ColumnsPerCard: 2,
+    ColumnsScroller: 6,
+    ScrollerButtons: 'small',
+    SingleRow: true,
+  },
+  [12]: {
+    PageSize: 5,
+    ColumnsPerCard: 2,
+    ColumnsScroller: 11,
+    ScrollerButtons: 'big',
+    SingleRow: true,
+  },
+} as const;
 
 interface CalloutContributionsHorizontalPagerProps {
   callout: CalloutDetailsModelExtended;
@@ -63,10 +94,13 @@ const CalloutContributionsHorizontalPager = ({
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(0);
 
+  const availableColumns = useColumns();
+  const config = ResponsiveConfiguration[availableColumns] ?? ResponsiveConfiguration[12];
+
   const { inViewRef, contributions, loading } = useCalloutContributions({
     callout,
     contributionType,
-    pageSize: PAGE_SIZE,
+    pageSize: config.PageSize,
   });
 
   const { hasMore, items, setFetchAll, total } = contributions;
@@ -80,11 +114,11 @@ const CalloutContributionsHorizontalPager = ({
 
   const pages = useMemo(() => {
     const chunkedPages: AnyContribution[][] = [];
-    for (let i = 0; i < items.length; i += PAGE_SIZE) {
-      chunkedPages.push(items.slice(i, i + PAGE_SIZE));
+    for (let i = 0; i < items.length; i += config.PageSize) {
+      chunkedPages.push(items.slice(i, i + config.PageSize));
     }
     return chunkedPages;
-  }, [items]);
+  }, [items, items.length, config, availableColumns]);
 
   const handleClickOnContribution = (contribution: AnyContribution) => {
     const state: LocationStateCachedCallout = {
@@ -106,16 +140,24 @@ const CalloutContributionsHorizontalPager = ({
   };
 
   const currentPageItems = pages[selectedPage] || [];
-  const fullRow = currentPageItems.length >= PAGE_SIZE; // we have 5 items in this page
+  const fullRow = currentPageItems.length >= config.PageSize; // we have 5 items in this page
 
   return (
     <Gutters ref={inViewRef} disableSidePadding>
-      <Gutters row disablePadding justifyContent={fullRow ? 'space-between' : undefined} ref={ref}>
-        <ScrollButton onClick={handleClickLeft} disabled={pages.length < 2}>
-          <KeyboardDoubleArrowLeftIcon />
-        </ScrollButton>
-        <GridProvider columns={COLUMNS_SCROLLER} force>
-          {loading && times(5, index => <ContributeCardSkeleton key={index} columns={COLUMNS_PER_CARD} />)}
+      <Gutters
+        row
+        disablePadding
+        justifyContent={fullRow ? 'space-between' : undefined}
+        ref={ref}
+        flexWrap={config.SingleRow ? 'nowrap' : 'wrap'}
+      >
+        {config.ScrollerButtons === 'big' && (
+          <ScrollButton onClick={handleClickLeft} disabled={pages.length < 2}>
+            <KeyboardDoubleArrowLeftIcon />
+          </ScrollButton>
+        )}
+        <GridProvider columns={config.ColumnsScroller} force>
+          {loading && times(5, index => <ContributeCardSkeleton key={index} columns={config.ColumnsPerCard} />)}
           {!loading &&
             currentPageItems.map(contribution => (
               <Card
@@ -124,23 +166,35 @@ const CalloutContributionsHorizontalPager = ({
                 contribution={contribution}
                 onClick={() => handleClickOnContribution(contribution)}
                 selected={contribution.id === contributionSelectedId}
-                columns={COLUMNS_PER_CARD}
+                columns={config.ColumnsPerCard}
               />
             ))}
         </GridProvider>
-        <ScrollButton
-          onClick={handleClickRight}
-          disabled={pages.length < 2}
-          sx={{ marginLeft: !fullRow ? 'auto' : undefined }}
-        >
-          <KeyboardDoubleArrowRightIcon />
-        </ScrollButton>
+        {config.ScrollerButtons === 'big' && (
+          <ScrollButton
+            onClick={handleClickRight}
+            disabled={pages.length < 2}
+            sx={{ marginLeft: !fullRow ? 'auto' : undefined }}
+          >
+            <KeyboardDoubleArrowRightIcon />
+          </ScrollButton>
+        )}
       </Gutters>
-
-      <Box display="flex" justifyContent="center" gap={1} mt={2}>
+      {availableColumns} - {items.length} - {pages.length}
+      <Box display="flex" justifyContent="center" alignItems="center" gap={1} mt={2}>
+        {config.ScrollerButtons === 'small' && (
+          <ScrollButton onClick={handleClickLeft} disabled={pages.length < 2}>
+            <KeyboardDoubleArrowLeftIcon />
+          </ScrollButton>
+        )}
         {pages.map((_, index) => (
           <PaginationDot key={index} selected={index === selectedPage} onClick={() => setSelectedPage(index)} />
         ))}
+        {config.ScrollerButtons === 'small' && (
+          <ScrollButton onClick={handleClickRight} disabled={pages.length < 2}>
+            <KeyboardDoubleArrowRightIcon />
+          </ScrollButton>
+        )}
       </Box>
     </Gutters>
   );

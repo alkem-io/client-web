@@ -10,6 +10,7 @@ import { Ref, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { CalloutSettingsModelFull } from '../../callout/models/CalloutSettingsModel';
 import useCalloutPostCreatedSubscription from '../post/useCalloutPostCreatedSubscription';
+import { sortBy } from 'lodash';
 
 interface useCalloutContributionsProps {
   callout:
@@ -131,9 +132,9 @@ const useCalloutContributions = ({
     return requiredPrivileges.every(privilege => calloutPrivileges.includes(privilege));
   }, [callout, callout?.settings, callout?.authorization, contributionType]);
 
-  const items =
-    (returnAllResults ? data?.lookup.callout?.contributions : data?.lookup.callout?.contributions.slice(0, pageSize)) ??
-    [];
+  const sortedContributions = sortBy(data?.lookup.callout?.contributions ?? [], 'sortOrder');
+  const items = returnAllResults ? sortedContributions : sortedContributions.slice(0, pageSize);
+
   const totalContributionsCount =
     (() => {
       switch (contributionType) {
