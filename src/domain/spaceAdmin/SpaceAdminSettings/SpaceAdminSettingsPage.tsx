@@ -28,7 +28,7 @@ import scrollToTop from '@/core/ui/utils/scrollToTop';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
-import { Box, Button, CircularProgress, useTheme } from '@mui/material';
+import { Box, Button, CircularProgress, Link, useTheme } from '@mui/material';
 import { noop } from 'lodash';
 import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -357,7 +357,10 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                     label: (
                       <Trans
                         i18nKey="pages.admin.space.settings.memberActions.videoCall"
-                        components={{ b: <strong /> }}
+                        components={{
+                          b: <strong />,
+                          jitsiInfoLink: <Link href="https://jitsi.org/" target="_blank" rel="noopener noreferrer" />,
+                        }}
                       />
                     ),
                   },
