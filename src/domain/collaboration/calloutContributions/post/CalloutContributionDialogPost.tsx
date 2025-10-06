@@ -82,7 +82,6 @@ const CalloutContributionDialogPost = ({
   const postSettings = usePostSettings({
     postId,
     calloutId,
-    contributionId: contribution?.id,
     skip: !open,
     onPostDeleted,
   });
@@ -139,9 +138,10 @@ const CalloutContributionDialogPost = ({
   };
 
   const [handleUpdate, loading] = useLoadingState(async (shouldUpdate: boolean) => {
-    if (!postSettings.contributionId || !postSettings.post || !post) {
+    if (!postSettings.post || !post) {
       return;
     }
+    const contributionId = ensurePresence(contribution?.id, 'ContributionId');
 
     if (shouldUpdate) {
       await postSettings.handleUpdate({
@@ -156,7 +156,7 @@ const CalloutContributionDialogPost = ({
     if (isMoveEnabled) {
       const { data, errors } = await moveContributionToCallout({
         variables: {
-          contributionId: postSettings.contributionId,
+          contributionId,
           calloutId: targetCalloutId!, // ensured by isMoveEnabled
         },
       });

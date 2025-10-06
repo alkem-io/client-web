@@ -25,7 +25,6 @@ type PostUpdateData = Pick<Post, 'id'> & {
 };
 
 export interface PostSettingsContainerEntities {
-  contributionId?: string;
   post?: PostSettingsFragment;
   postsNames?: string[] | undefined;
   parentCallout: PostSettingsCalloutFragment | undefined;
@@ -48,7 +47,6 @@ export interface PostSettingsContainerState {
 
 export interface PostSettingsContainerProps {
   calloutId: string | undefined;
-  contributionId: string | undefined;
   postId: string | undefined;
   skip?: boolean;
   onPostDeleted?: () => void;
