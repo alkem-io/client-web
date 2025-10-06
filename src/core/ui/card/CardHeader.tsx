@@ -1,5 +1,5 @@
 import { ComponentType, PropsWithChildren, ReactNode } from 'react';
-import { SvgIconProps } from '@mui/material';
+import { SvgIconProps, useTheme } from '@mui/material';
 import { BlockTitle } from '../typography';
 import { gutters } from '../grid/utils';
 import RoundedIcon from '../icon/RoundedIcon';
@@ -11,25 +11,43 @@ type CardTitleSectionProps = {
   iconComponent?: ComponentType<SvgIconProps>;
 };
 
-const CardHeader = ({ iconComponent, title = '', contrast: contrast, children }: PropsWithChildren<CardTitleSectionProps>) => {
+const CardHeader = ({ iconComponent, title = '', contrast, children }: PropsWithChildren<CardTitleSectionProps>) => {
+  const theme = useTheme();
+
+  const cardStyle = contrast
+    ? {
+        backgroundColor: theme.palette.primary.main,
+      }
+    : undefined;
+
+  const titleStyle = contrast
+    ? {
+        color: theme.palette.background.paper,
+        fontWeight: 'bold',
+      }
+    : undefined;
 
   return (
     <BadgeCardView
       flexShrink={0}
-      visual={iconComponent && <RoundedIcon marginLeft={0.5} size="small" component={iconComponent} swapColors={contrast} />}
+      visual={
+        iconComponent && <RoundedIcon marginLeft={0.5} size="small" component={iconComponent} swapColors={contrast} />
+      }
       height={gutters(3)}
       paddingX={1}
       gap={1}
       contentProps={{ paddingLeft: 0.5 }}
       sx={{
-        borderBottomLeftRadius: 0, borderBottomRightRadius: 0,
-        backgroundColor: contrast ? theme => theme.palette.primary.main : undefined
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+        ...cardStyle,
       }}
     >
-      <BlockTitle noWrap color={contrast ? 'white' : undefined} fontWeight={contrast ? 'bold' : undefined}>{title}</BlockTitle>
+      <BlockTitle noWrap {...titleStyle}>
+        {title}
+      </BlockTitle>
       {children}
-    </BadgeCardView >
-
+    </BadgeCardView>
   );
 };
 
