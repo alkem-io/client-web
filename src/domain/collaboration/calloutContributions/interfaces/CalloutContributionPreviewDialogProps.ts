@@ -8,6 +8,7 @@ export interface CalloutContributionPreviewDialogProps {
   calloutId: string | undefined;
   contribution: CalloutContributionModel | undefined;
   onCalloutUpdate?: () => Promise<unknown>;
+  onContributionDeleted: (contributionId: string) => void;
   open: boolean;
   onClose: () => void;
 }

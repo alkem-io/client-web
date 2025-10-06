@@ -2,7 +2,6 @@ import { ApolloError } from '@apollo/client';
 import { PushFunc, RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
-  useDeleteContributionMutation,
   useDeletePostMutation,
   usePostSettingsQuery,
   useUpdatePostMutation,
@@ -52,13 +51,14 @@ export interface PostSettingsContainerProps {
   contributionId: string | undefined;
   postId: string | undefined;
   skip?: boolean;
+  onPostDeleted?: () => void;
 }
 
 const usePostSettings = ({
   calloutId,
-  contributionId,
   postId,
   skip,
+  onPostDeleted,
 }: PostSettingsContainerProps): PostSettingsContainerEntities &
   PostSettingsContainerActions &
   PostSettingsContainerState => {
@@ -77,7 +77,6 @@ const usePostSettings = ({
   const parentCallout = data?.lookup.callout;
 
   const post = data?.lookup.post;
-  const postContribution = parentCallout?.contributions?.find(x => x.post && x.post.id === postId);
 
   const [updatePost, { loading: updating, error: updateError }] = useUpdatePostMutation({
     onCompleted: () => notify('Post updated successfully', 'success'),
@@ -114,15 +113,9 @@ const usePostSettings = ({
   const [deletePost, { loading: deleting }] = useDeletePostMutation({
     update: removeFromCache,
   });
-  const [deleteContribution, { loading: deletingContribution }] = useDeleteContributionMutation({
-    update: removeFromCache,
-  })
-
   const handleDelete = async (postId: string) => {
     await deletePost({ variables: { postId } });
-    if (contributionId) {
-      await deleteContribution({ variables: { contributionId } });
-    }
+    onPostDeleted?.();
   };
 
   const handleAddReference = (push: PushFunc, referencesLength: number) => {
@@ -143,13 +136,12 @@ const usePostSettings = ({
   };
 
   return {
-    contributionId: postContribution?.id,
     post,
     parentCallout,
     loading,
     error,
     updating,
-    deleting: deleting || deletingContribution,
+    deleting: deleting,
     updateError,
     handleUpdate,
     handleAddReference,

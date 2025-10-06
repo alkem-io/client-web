@@ -26,6 +26,7 @@ interface CalloutContributionPreviewProps {
   actions?: (contribution: CalloutContributionModel) => React.ReactNode;
   previewComponent: React.ComponentType<CalloutContributionPreviewComponentProps>;
   dialogComponent: React.ComponentType<CalloutContributionPreviewDialogProps>;
+  onCalloutUpdate?: () => Promise<unknown>;
 }
 
 const CalloutContributionPreview = ({
@@ -34,6 +35,7 @@ const CalloutContributionPreview = ({
   actions: renderExtraActions,
   previewComponent: PreviewComponent,
   dialogComponent: DialogComponent,
+  onCalloutUpdate,
 }: CalloutContributionPreviewProps) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -80,6 +82,15 @@ const CalloutContributionPreview = ({
   const contributionUrl =
     (contributionType === CalloutContributionType.Post && contribution?.post?.profile.url) ||
     (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.url);
+
+  const handleContributionDeleted = (deletedContributionId: string) => {
+    if (contributionId === deletedContributionId) {
+      // Deleted the contribution currently on screen, navigate back to the callout
+      navigate(callout.framing.profile.url);
+    }
+    onCalloutUpdate?.();
+  };
+
   return (
     <Gutters>
       <PageContentBlock>
@@ -123,6 +134,8 @@ const CalloutContributionPreview = ({
           contribution={contribution}
           open={contributionDialogOpen}
           onClose={() => setContributionDialogOpen(false)}
+          onCalloutUpdate={onCalloutUpdate}
+          onContributionDeleted={handleContributionDeleted}
         />
       </PageContentBlock>
     </Gutters>

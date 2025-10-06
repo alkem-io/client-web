@@ -120,6 +120,7 @@ const CalloutView = ({
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewWhiteboard}
                   dialogComponent={CalloutContributionDialogWhiteboard}
+                  onCalloutUpdate={onCalloutUpdate}
                 />
               )}
               {/* If there is a contributionId show the scroller */}
@@ -161,6 +162,7 @@ const CalloutView = ({
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewPost}
                   dialogComponent={CalloutContributionDialogPost}
+                  onCalloutUpdate={onCalloutUpdate}
                 />
               )}
               {/* If there is a contributionId show the scroller */}

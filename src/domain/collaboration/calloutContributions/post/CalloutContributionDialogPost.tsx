@@ -14,6 +14,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
 import {
+  useDeleteContributionMutation,
   useMoveContributionToCalloutMutation,
   usePostCalloutsInCalloutSetQuery,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -36,14 +37,8 @@ const CalloutContributionDialogPost = ({
   calloutsSetId,
   calloutId,
   contribution,
-  onCalloutUpdate,
+  onContributionDeleted,
 }: CalloutContributionDialogPostProps) => {
-  /*
-    onClose: () => void;
-  calloutId: string | undefined;
-  postId: string | undefined;
-  calloutsSetId: string | undefined;
-  */
   const postId = contribution?.post?.id;
 
   const { t } = useTranslation();
@@ -65,11 +60,26 @@ const CalloutContributionDialogPost = ({
       references: post?.profile.references,
     };
 
+  const [deleteContribution] = useDeleteContributionMutation();
+  const onPostDeleted = async () => {
+    await deleteContribution({
+      variables: {
+        contributionId: contribution?.id!,
+      },
+      awaitRefetchQueries: true,
+      refetchQueries: ['CalloutDetails', 'CalloutContributions'],
+      onCompleted: data => {
+        onContributionDeleted(data.deleteContribution.id);
+      },
+    });
+  };
+
   const postSettings = usePostSettings({
     postId,
     calloutId,
     contributionId: contribution?.id,
     skip: !open,
+    onPostDeleted,
   });
 
   const notify = useNotification();
@@ -106,13 +116,13 @@ const CalloutContributionDialogPost = ({
     if (!postSettings.post || !post) {
       return;
     }
+    setDeleteConfirmDialogOpen(false);
 
     // close the dialog optimistically before deleting to prevent errors querying the post settings
     // use the inClose directly as we don't want to show the confirmation dialog
     onClose();
 
     await postSettings.handleDelete(postSettings.post.id);
-    onCalloutUpdate?.();
   };
 
   const onCloseEdit = () => {
