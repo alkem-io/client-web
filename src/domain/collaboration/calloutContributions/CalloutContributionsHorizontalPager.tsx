@@ -17,9 +17,8 @@ import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
 import { useColumns } from '@/core/ui/grid/GridContext';
 
 const ResponsiveConfiguration: Record<
-  number,
+  number, // key: Number of columns available
   {
-    // key: Number of columns available
     PageSize: number;
     ColumnsPerCard: number;
     ColumnsScroller: number; // Columns available for the cards
@@ -95,12 +94,12 @@ const CalloutContributionsHorizontalPager = ({
   const [selectedPage, setSelectedPage] = useState(0);
 
   const availableColumns = useColumns();
-  const config = ResponsiveConfiguration[availableColumns] ?? ResponsiveConfiguration[12];
+  const responsiveConfig = ResponsiveConfiguration[availableColumns] ?? ResponsiveConfiguration[12];
 
   const { inViewRef, contributions, loading } = useCalloutContributions({
     callout,
     contributionType,
-    pageSize: config.PageSize,
+    pageSize: responsiveConfig.PageSize,
   });
 
   const { hasMore, items, setFetchAll, total } = contributions;
@@ -114,11 +113,11 @@ const CalloutContributionsHorizontalPager = ({
 
   const pages = useMemo(() => {
     const chunkedPages: AnyContribution[][] = [];
-    for (let i = 0; i < items.length; i += config.PageSize) {
-      chunkedPages.push(items.slice(i, i + config.PageSize));
+    for (let i = 0; i < items.length; i += responsiveConfig.PageSize) {
+      chunkedPages.push(items.slice(i, i + responsiveConfig.PageSize));
     }
     return chunkedPages;
-  }, [items, items.length, config, availableColumns]);
+  }, [items, items.length, responsiveConfig, availableColumns]);
 
   const handleClickOnContribution = (contribution: AnyContribution) => {
     const state: LocationStateCachedCallout = {
@@ -140,7 +139,7 @@ const CalloutContributionsHorizontalPager = ({
   };
 
   const currentPageItems = pages[selectedPage] || [];
-  const fullRow = currentPageItems.length >= config.PageSize; // we have 5 items in this page
+  const fullRow = currentPageItems.length >= responsiveConfig.PageSize; // we have 5 items in this page
 
   return (
     <Gutters ref={inViewRef} disableSidePadding>
@@ -149,15 +148,16 @@ const CalloutContributionsHorizontalPager = ({
         disablePadding
         justifyContent={fullRow ? 'space-between' : undefined}
         ref={ref}
-        flexWrap={config.SingleRow ? 'nowrap' : 'wrap'}
+        flexWrap={responsiveConfig.SingleRow ? 'nowrap' : 'wrap'}
       >
-        {config.ScrollerButtons === 'big' && (
+        {responsiveConfig.ScrollerButtons === 'big' && (
           <ScrollButton onClick={handleClickLeft} disabled={pages.length < 2}>
             <KeyboardDoubleArrowLeftIcon />
           </ScrollButton>
         )}
-        <GridProvider columns={config.ColumnsScroller} force>
-          {loading && times(5, index => <ContributeCardSkeleton key={index} columns={config.ColumnsPerCard} />)}
+        <GridProvider columns={responsiveConfig.ColumnsScroller} force>
+          {loading &&
+            times(5, index => <ContributeCardSkeleton key={index} columns={responsiveConfig.ColumnsPerCard} />)}
           {!loading &&
             currentPageItems.map(contribution => (
               <Card
@@ -166,11 +166,11 @@ const CalloutContributionsHorizontalPager = ({
                 contribution={contribution}
                 onClick={() => handleClickOnContribution(contribution)}
                 selected={contribution.id === contributionSelectedId}
-                columns={config.ColumnsPerCard}
+                columns={responsiveConfig.ColumnsPerCard}
               />
             ))}
         </GridProvider>
-        {config.ScrollerButtons === 'big' && (
+        {responsiveConfig.ScrollerButtons === 'big' && (
           <ScrollButton
             onClick={handleClickRight}
             disabled={pages.length < 2}
@@ -180,9 +180,8 @@ const CalloutContributionsHorizontalPager = ({
           </ScrollButton>
         )}
       </Gutters>
-      {availableColumns} - {items.length} - {pages.length}
       <Box display="flex" justifyContent="center" alignItems="center" gap={1} mt={2}>
-        {config.ScrollerButtons === 'small' && (
+        {responsiveConfig.ScrollerButtons === 'small' && (
           <ScrollButton onClick={handleClickLeft} disabled={pages.length < 2}>
             <KeyboardDoubleArrowLeftIcon />
           </ScrollButton>
@@ -190,7 +189,7 @@ const CalloutContributionsHorizontalPager = ({
         {pages.map((_, index) => (
           <PaginationDot key={index} selected={index === selectedPage} onClick={() => setSelectedPage(index)} />
         ))}
-        {config.ScrollerButtons === 'small' && (
+        {responsiveConfig.ScrollerButtons === 'small' && (
           <ScrollButton onClick={handleClickRight} disabled={pages.length < 2}>
             <KeyboardDoubleArrowRightIcon />
           </ScrollButton>
