@@ -2,6 +2,7 @@ import WhiteboardView from '../../whiteboard/WhiteboardsManagement/WhiteboardVie
 import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
 import { WhiteboardProvider } from '../../whiteboard/containers/WhiteboardProvider';
 import { useDeleteContributionMutation } from '@/core/apollo/generated/apollo-hooks';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 export interface CalloutContributionDialogWhiteboardProps extends CalloutContributionPreviewDialogProps {}
 
@@ -11,15 +12,17 @@ const CalloutContributionDialogWhiteboard = ({
   contribution,
   onContributionDeleted,
 }: CalloutContributionDialogWhiteboardProps) => {
+  const ensurePresence = useEnsurePresence();
   if (!open) {
     return null;
   }
   const [deleteContribution] = useDeleteContributionMutation();
 
   const handleWhiteboardDeleted = async () => {
+    const contributionId = ensurePresence(contribution?.id, 'ContributionId');
     await deleteContribution({
       variables: {
-        contributionId: contribution?.id!,
+        contributionId,
       },
       awaitRefetchQueries: true,
       refetchQueries: ['CalloutDetails', 'CalloutContributions'],

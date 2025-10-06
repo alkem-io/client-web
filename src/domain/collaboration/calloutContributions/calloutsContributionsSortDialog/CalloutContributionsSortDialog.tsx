@@ -27,7 +27,6 @@ interface CalloutContributionsSortDialogProps {
   open: boolean;
   onClose: () => void;
   callout: Identifiable;
-  onUpdateCallout: () => void;
 }
 
 const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContributionsSortDialogProps) => {

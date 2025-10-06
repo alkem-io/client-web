@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
-import { Autocomplete, Button, DialogActions, DialogContent, TextField } from '@mui/material';
+import { Autocomplete, DialogActions, DialogContent, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Typography from '@mui/material/Typography';
 import PostForm, { PostFormInput, PostFormOutput } from '../../post/PostForm/PostForm';
@@ -28,6 +28,9 @@ import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutCont
 import { EditOutlined } from '@mui/icons-material';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import Gutters from '@/core/ui/grid/Gutters';
+import useEnsurePresence from '@/core/utils/ensurePresence';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import DeleteButton from '@/core/ui/actions/DeleteButton';
 
 interface CalloutContributionDialogPostProps extends CalloutContributionPreviewDialogProps {}
 
@@ -40,7 +43,7 @@ const CalloutContributionDialogPost = ({
   onContributionDeleted,
 }: CalloutContributionDialogPostProps) => {
   const postId = contribution?.post?.id;
-
+  const ensurePresence = useEnsurePresence();
   const { t } = useTranslation();
 
   const navigate = useNavigate();
@@ -62,9 +65,11 @@ const CalloutContributionDialogPost = ({
 
   const [deleteContribution] = useDeleteContributionMutation();
   const onPostDeleted = async () => {
+    const contributionId = ensurePresence(contribution?.id, 'ContributionId');
+
     await deleteContribution({
       variables: {
-        contributionId: contribution?.id!,
+        contributionId,
       },
       awaitRefetchQueries: true,
       refetchQueries: ['CalloutDetails', 'CalloutContributions'],
@@ -221,23 +226,8 @@ const CalloutContributionDialogPost = ({
           </StorageConfigContextProvider>
         </DialogContent>
         <DialogActions>
-          <Button
-            aria-label="delete-post"
-            variant="outlined"
-            color="error"
-            disabled={!isPostLoaded}
-            onClick={() => setDeleteConfirmDialogOpen(true)}
-          >
-            {t('buttons.delete')}
-          </Button>
-          <Button
-            variant="contained"
-            disabled={!canSave && !isMoveEnabled}
-            loading={loading}
-            onClick={() => handleUpdate(canSave)}
-          >
-            {t('buttons.save')}
-          </Button>
+          <DeleteButton disabled={!isPostLoaded} onClick={() => setDeleteConfirmDialogOpen(true)} />
+          <SaveButton disabled={!canSave && !isMoveEnabled} loading={loading} onClick={() => handleUpdate(canSave)} />
         </DialogActions>
       </DialogWithGrid>
       <ConfirmationDialog
