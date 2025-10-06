@@ -24,13 +24,13 @@ const PromptConfig = ({ vc }) => {
   const notify = useNotification();
   const [prompt, setPrompt] = useState('');
   const [isValid, setIsValid] = useState(false);
-  const aiPersonaId = vc?.aiPersona.id!;
+  const vcId = vc?.id;
 
   const { data, loading } = useAiPersonaQuery({
-    variables: { id: aiPersonaId },
-    skip: !aiPersonaId,
+    variables: { id: vcId },
+    skip: !vcId,
   });
-  const aiPersona = data?.aiServer.aiPersona;
+  const aiPersona = data?.virtualContributor?.aiPersona;
 
   const [updateAiPersona, { loading: updateLoading }] = useUpdateAiPersonaMutation();
 
