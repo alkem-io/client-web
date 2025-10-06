@@ -49,7 +49,7 @@ export enum MenuState {
 
 export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
   const { t } = useTranslation();
-  const { isSmallScreen } = useScreenSize();
+  const { isSmallScreen, isMediumLargeScreen } = useScreenSize();
   const { spaceId, spaceLevel } = useUrlResolver();
 
   const dashboardNavigation = useSpaceDashboardNavigation({
@@ -92,6 +92,11 @@ export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
 
   const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false);
 
+  const areAllIconsVisible =
+    isVideoCallEnabled &&
+    subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) &&
+    !isCollapsed;
+
   return (
     <InfoColumn collapsed={isCollapsed}>
       {!isCollapsed && <WelcomeBlock>{about && <SpaceWelcomeBlock spaceAbout={about} />}</WelcomeBlock>}
@@ -113,13 +118,19 @@ export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
         row={!isCollapsed}
         sx={{
           padding: isCollapsed ? gutters(0.5) : 0,
-          justifyContent: 'start',
+          justifyContent: 'space-between',
           columnGap: 0.1,
           backgroundColor: isCollapsed ? undefined : 'transparent',
           border: isCollapsed ? undefined : 'transparent',
           overflow: isCollapsed ? undefined : 'visible',
-          flexWrap: 'wrap',
+          flexWrap: isMediumLargeScreen ? 'nowrap' : 'wrap',
           rowGap: gutters(0.2),
+          ...(areAllIconsVisible && {
+            '& > *': {
+              flex: '1 1 auto',
+              minWidth: 0,
+            },
+          }),
         }}
       >
         <DialogActionButton dialog={SubspaceDialog.Index} />

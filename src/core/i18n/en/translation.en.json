@@ -2421,7 +2421,7 @@
             "title": "Allowed Actions",
             "createBlocks": "<b>Create $t(common.posts)</b>: Allow $t(common.members) to create $t(common.posts). If you deactivate this, $t(common.members) will still be able to contribute to existing $t(common.posts), but will not be able to create new $t(common.posts).",
             "createSubspaces": "<b>Create $t(common.subspaces)</b>: Allow $t(common.members) to create $t(common.subspaces) in this $t(common.space). If you deactivate this, you can still create $t(common.subspaces) yourself and add other people as an $t(common.admin) inside the $t(common.subspace).",
-            "videoCall": "<b>Video Call</b>: Allow $t(common.members) to start video calls using Jitsi Meet integration. When enabled, a video call button will appear in the $t(common.space) navigation.",
+            "videoCall": "<b>Video Call</b>: Show video call button in the tab menu. All members of this Space can use this button to start a Jitsi video conference. Read more about Jitsi <jitsiInfoLink>here</jitsiInfoLink>.",
             "eventsFromSubspaces": "<b>$t(common.subspace) events</b>: Allow events from $t(common.subspaces) to be visible on this $t(common.space) calendar as well.",
             "inheritRights": "Allow $t(common.members) of the parent $t(common.community) to contribute without needing to join first.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an $t(common.admin) in this $t(common.space)."
@@ -3480,7 +3480,7 @@
   "videoCall": {
     "dialog": {
       "title": "Start Video Call",
-      "content": "This will open a Jitsi video conference in a new tab. You can share this link with other contributors to join the call. They can also join from here."
+      "content": "You are about to start a video call using Jitsi, a secure third-party video conferencing service. The call will open in a new browser tab, outside the Alkemio environment. Others can join through the same button or by using the shared URL. Learn more about Jitsi <jitsiLink>here</jitsiLink>."
     }
   },
   "createSpace": {
