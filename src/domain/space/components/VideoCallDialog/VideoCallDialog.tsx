@@ -1,11 +1,10 @@
-import { Button, DialogActions, DialogContent } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { Button, DialogActions, DialogContent, Link } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { BlockTitle } from '@/core/ui/typography';
 import { VideocamOutlined } from '@mui/icons-material';
 import { buildVideoCallUrl } from '@/main/routing/urlBuilders';
-
 export interface VideoCallDialogProps {
   open: boolean;
   onClose: () => void;
@@ -31,7 +30,25 @@ const VideoCallDialog = ({ open, onClose, spaceId, spaceNameId }: VideoCallDialo
         onClose={onClose}
       />
       <DialogContent>
-        <BlockTitle>{t('videoCall.dialog.content')}</BlockTitle>
+        <BlockTitle>
+          <Trans
+            i18nKey="videoCall.dialog.content"
+            components={{
+              jitsiLink: (
+                <Link
+                  underline="always"
+                  sx={{
+                    color: theme => theme.palette.primary.main,
+                    ':hover': { color: theme => theme.palette.secondary.main },
+                  }}
+                  href="https://jitsi.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              ),
+            }}
+          />
+        </BlockTitle>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} variant="outlined">
