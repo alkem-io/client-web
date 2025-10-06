@@ -91,6 +91,11 @@ const CalloutContributionsHorizontalPager = ({
   ref?: React.Ref<HTMLDivElement>;
 }) => {
   const navigate = useNavigate();
+
+  /**
+   * Used to move to the correct page when a contributionId is provided, but only once
+   */
+  const [autoSelectPage, setAutoSelectPage] = useState(true);
   const [selectedPage, setSelectedPage] = useState(0);
 
   const availableColumns = useColumns();
@@ -118,6 +123,21 @@ const CalloutContributionsHorizontalPager = ({
     }
     return chunkedPages;
   }, [items, items.length, responsiveConfig, availableColumns]);
+
+  useEffect(() => {
+    if (!autoSelectPage) {
+      return;
+    }
+    if (contributionSelectedId) {
+      pages.some((page, index) => {
+        if (page.find(contribution => contribution.id === contributionSelectedId)) {
+          setSelectedPage(index);
+          setAutoSelectPage(false);
+          return true; // Break the loop
+        }
+      });
+    }
+  }, [pages, contributionSelectedId]);
 
   const handleClickOnContribution = (contribution: AnyContribution) => {
     const state: LocationStateCachedCallout = {
