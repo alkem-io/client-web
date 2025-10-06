@@ -364,6 +364,8 @@
     "field-required": "This field is required",
     "field-min-length": "This field must be minimum of {{min}} characters",
     "field-max-length": "This field must be maximum of {{max}} characters",
+    "Link": "Link",
+    "link": "link",
     "Membership": "Membership",
     "Memberships": "Memberships",
     "membership": "membership",
