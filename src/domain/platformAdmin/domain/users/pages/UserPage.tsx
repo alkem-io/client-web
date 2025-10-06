@@ -112,7 +112,7 @@ const UserPage: FC<UserPageProps> = ({ readOnly = true }) => {
         editMode={readOnly ? EditMode.readOnly : EditMode.edit}
         onSave={handleSave}
         user={user}
-        avatar={data?.lookup.user?.profile.avatar}
+        avatar={user?.profile.avatar}
         onDelete={() => setModalOpened(true)}
       />
       <ConfirmationDialog
