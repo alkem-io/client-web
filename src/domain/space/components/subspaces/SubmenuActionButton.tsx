@@ -69,8 +69,6 @@ export const SubmenuActionButton = ({ dialogs, icon = <MoreHoriz />, tooltip }: 
               sx: {
                 marginTop: gutters(0.2),
               },
-              // Ensure the menu paper can receive focus
-              tabIndex: 0,
             },
             list: {
               'aria-labelledby': 'submenu-actions',
