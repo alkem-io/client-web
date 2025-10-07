@@ -17,6 +17,8 @@ import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../..
 import useNavigate from '@/core/routing/useNavigate';
 import { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
 import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
+import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
+import { times } from 'lodash';
 
 interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
   contributionType: CalloutContributionType;
@@ -34,7 +36,7 @@ const ContributionsCardsExpandable = ({
   contributionCardComponent: Card,
   createContributionButtonComponent: CreateContributionButton,
   getContributionUrl,
-  loading,
+  loading: loadingCallout,
   expanded: calloutExpanded,
   onCalloutUpdate,
 }: ContributionsCardsExpandableProps) => {
@@ -47,6 +49,7 @@ const ContributionsCardsExpandable = ({
   const {
     inViewRef,
     contributions: { items: contributions, hasMore, setFetchAll, total: totalContributions },
+    loading: loadingContributions,
     canCreateContribution,
     onCalloutContributionsUpdate,
   } = useCalloutContributions({
@@ -93,6 +96,8 @@ const ContributionsCardsExpandable = ({
               onClick={() => handleClickOnContribution(contribution)}
             />
           ))}
+          {loadingContributions &&
+            times(pageSize, index => <ContributeCardSkeleton key={index} columns={calloutExpanded ? 2 : 3} />)}
         </Gutters>
       </GridProvider>
       <Gutters display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">
@@ -103,8 +108,8 @@ const ContributionsCardsExpandable = ({
           isCollapsed={isCollapsed}
           hasMore={hasMore}
         />
-        {loading && <Loading />}
-        {!loading && (
+        {loadingCallout && <Loading />}
+        {!loadingCallout && (
           <CreateContributionButton
             callout={callout}
             canCreateContribution={canCreateContribution}

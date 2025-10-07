@@ -88,7 +88,7 @@ const useCalloutContributions = ({
     }
   };
 
-  const { data, loading, refetch, subscribeToMore } = useCalloutContributionsQuery({
+  const { data, previousData, loading, refetch, subscribeToMore } = useCalloutContributionsQuery({
     variables: {
       calloutId: callout?.id!,
       includeLink: contributionType === CalloutContributionType.Link,
@@ -132,18 +132,32 @@ const useCalloutContributions = ({
     return requiredPrivileges.every(privilege => calloutPrivileges.includes(privilege));
   }, [callout, callout?.settings, callout?.authorization, contributionType]);
 
-  const sortedContributions = sortBy(data?.lookup.callout?.contributions ?? [], 'sortOrder');
-  const items = returnAllResults ? sortedContributions : sortedContributions.slice(0, pageSize);
+  // Use previousData while loading to avoid losing already shown items when the expanded query fires
+  const effectiveData = useMemo(() => {
+    if (fetchAllEnabled && loading) return previousData ?? data;
+    // Also if NOT fetchAllEnabled but loading (refetch) keep previous list
+    if (!fetchAllEnabled && loading) return previousData ?? data;
+    return data;
+  }, [fetchAllEnabled, loading, data, previousData]);
+
+  const items = useMemo(() => {
+    const sortedContributions = sortBy(effectiveData?.lookup.callout?.contributions ?? [], 'sortOrder');
+    if (returnAllResults) {
+      return sortedContributions;
+    } else {
+      return sortedContributions.slice(0, pageSize);
+    }
+  }, [fetchAllEnabled, returnAllResults, loading, effectiveData, pageSize]);
 
   const totalContributionsCount =
     (() => {
       switch (contributionType) {
         case CalloutContributionType.Link:
-          return data?.lookup.callout?.contributionsCount.link;
+          return (effectiveData ?? data)?.lookup.callout?.contributionsCount.link;
         case CalloutContributionType.Whiteboard:
-          return data?.lookup.callout?.contributionsCount.whiteboard;
+          return (effectiveData ?? data)?.lookup.callout?.contributionsCount.whiteboard;
         case CalloutContributionType.Post:
-          return data?.lookup.callout?.contributionsCount.post;
+          return (effectiveData ?? data)?.lookup.callout?.contributionsCount.post;
       }
     })() ?? 0;
 
@@ -151,7 +165,7 @@ const useCalloutContributions = ({
     inViewRef,
     contributions: {
       items,
-      hasMore: (data?.lookup.callout?.contributions.length ?? 0) < totalContributionsCount,
+      hasMore: (effectiveData?.lookup.callout?.contributions.length ?? 0) < totalContributionsCount,
       setFetchAll: handleSetFetchAll,
       total: totalContributionsCount,
     },
