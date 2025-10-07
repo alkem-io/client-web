@@ -1998,10 +1998,6 @@
           "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
           "description": ""
         },
-        "SPACE_COMMUNICATION_MESSAGE_SENDER": {
-          "subject": "You sent a message to the $t(common.leads) of {{spaceName}}",
-          "description": ""
-        },
         "SPACE_COLLABORATION_CALLOUT_COMMENT": {
           "subject": "{{triggeredByName}} commented on {{calloutName}} in {{spaceName}}",
           "description": ""
@@ -3498,7 +3494,7 @@
   "videoCall": {
     "dialog": {
       "title": "Start Video Call",
-      "content": "You are about to start a video call using Jitsi, a secure third-party video conferencing service. The call will open in a new browser tab, outside the Alkemio environment. Others can join through the same button or by using the shared URL. Learn more about Jitsi <jitsiLink>here</jitsiLink>."
+      "content": "You are about to start a video call using Jitsi, a secure third-party video conferencing service. The call will open in a new browser tab, outside the Alkemio environment. Others can join through the same button or by using the shared URL.<br/><br/>Learn more about Jitsi <jitsiLink>here</jitsiLink>, including how to manage access and privacy settings."
     }
   },
   "createSpace": {

@@ -5166,7 +5166,6 @@ export enum NotificationEvent {
   SpaceCollaborationCalloutContribution = 'SPACE_COLLABORATION_CALLOUT_CONTRIBUTION',
   SpaceCollaborationCalloutPostContributionComment = 'SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT',
   SpaceCollaborationCalloutPublished = 'SPACE_COLLABORATION_CALLOUT_PUBLISHED',
-  SpaceCommunicationMessageSender = 'SPACE_COMMUNICATION_MESSAGE_SENDER',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
   SpaceLeadCommunicationMessage = 'SPACE_LEAD_COMMUNICATION_MESSAGE',
@@ -25989,6 +25988,15 @@ export type ImportTemplateDialogQuery = {
               | {
                   __typename?: 'TemplateContentSpace';
                   id: string;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    };
+                  };
                   collaboration: {
                     __typename?: 'Collaboration';
                     id: string;
@@ -26049,6 +26057,15 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
             | {
                 __typename?: 'TemplateContentSpace';
                 id: string;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  };
+                };
                 collaboration: {
                   __typename?: 'Collaboration';
                   id: string;
