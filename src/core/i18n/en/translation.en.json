@@ -1980,10 +1980,6 @@
           "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
           "description": ""
         },
-        "SPACE_COMMUNICATION_MESSAGE_SENDER": {
-          "subject": "You sent a message to the $t(common.leads) of {{spaceName}}",
-          "description": ""
-        },
         "SPACE_COLLABORATION_CALLOUT_COMMENT": {
           "subject": "{{triggeredByName}} commented on {{calloutName}} in {{spaceName}}",
           "description": ""
