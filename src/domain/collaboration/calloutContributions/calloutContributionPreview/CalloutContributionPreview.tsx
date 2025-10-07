@@ -134,14 +134,19 @@ const CalloutContributionPreview = ({
                   <EditOutlinedIcon />
                 </IconButton>
               )}
-              <Box ref={extraActionsPortalRef} />
+              {/* `display: contents` avoids the box to occupy any space if it's empty */}
+              <Box ref={extraActionsPortalRef} display="contents" />
               {contributionUrl && (
                 <ShareButton
                   url={contributionUrl}
                   entityTypeName={calloutContributionTypeToShareDialogKey(contributionType)}
                 />
               )}
-              <IconButton onClick={() => navigate(callout.framing.profile.url)} size="small">
+              <IconButton
+                onClick={() => navigate(callout.framing.profile.url)}
+                size="small"
+                aria-label={t('buttons.close')}
+              >
                 <CloseOutlinedIcon />
               </IconButton>
             </>
