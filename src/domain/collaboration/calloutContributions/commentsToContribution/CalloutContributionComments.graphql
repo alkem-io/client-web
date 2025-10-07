@@ -1,0 +1,21 @@
+query CalloutContributionComments (
+    $contributionId: UUID!
+    $includePost: Boolean = false,
+    # Only comments on Posts implemented for now
+    #$includeWhiteboard: Boolean = false,
+    #$includeLink: Boolean = false,
+    #$includeMemo: Boolean = false,
+) {
+  lookup {
+    contribution(ID: $contributionId) {
+      id
+      post @include(if: $includePost) {
+        id
+        comments {
+          ...CommentsWithMessages
+        }
+      }
+    }
+  }
+}
+

@@ -20,7 +20,6 @@ fragment MemoProfile on Profile {
 
 fragment MemoDetails on Memo {
   id
-  nameID #//!! Maybe Used to name the screenshots uploaded as visuals (banner, card, etc.)
   createdDate
   profile {
     ...MemoProfile

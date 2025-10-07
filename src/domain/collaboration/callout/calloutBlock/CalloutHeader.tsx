@@ -8,22 +8,12 @@ import { BlockTitle } from '@/core/ui/typography';
 import SkipLink from '@/core/ui/keyboardNavigation/SkipLink';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useNextBlockAnchor } from '@/core/ui/keyboardNavigation/NextBlockAnchor';
+import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 
 interface CalloutHeaderProps {
-  callout: {
-    authorAvatarUri?: string;
-    publishedAt?: string;
-    authorName?: string;
-    framing: {
-      profile: {
-        url: string;
-        displayName: string;
-      };
-    };
-    editable?: boolean;
-  };
+  callout: CalloutDetailsModelExtended;
   expanded?: boolean;
-  onExpand?: () => void;
+  onExpand?: (callout: CalloutDetailsModelExtended) => void;
   onCollapse?: () => void;
   settingsOpen?: boolean;
   onOpenSettings?: (event: React.MouseEvent<HTMLElement>) => void;
@@ -80,14 +70,14 @@ const CalloutHeader = ({
           authorName={callout.authorName}
         >
           {contributionsCount !== undefined &&
-            `${callout.authorName} • ${t('callout.contributions', {
+            `${callout.authorName} • ${t('callout.contributions.contributionsCount', {
               count: contributionsCount,
             })}`}
           {contributionsCount === undefined && callout.authorName}
         </Authorship>
       )}
       {!hasCalloutDetails && (
-        <BlockTitle noWrap onClick={onExpand} sx={{ cursor: 'pointer' }}>
+        <BlockTitle noWrap onClick={() => onExpand?.(callout)} sx={{ cursor: 'pointer' }}>
           {callout.framing.profile.displayName}
         </BlockTitle>
       )}
