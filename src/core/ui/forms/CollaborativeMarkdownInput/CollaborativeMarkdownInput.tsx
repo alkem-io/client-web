@@ -22,6 +22,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   onChangeCollaborationState?: (state: RealTimeCollaborationState) => void;
   disabled?: boolean;
   storageBucketId?: string;
+  fullScreen?: boolean;
 }
 
 export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
@@ -36,6 +37,7 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
     onChangeCollaborationState,
     disabled,
     storageBucketId = '',
+    fullScreen = false,
   }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
@@ -108,8 +110,8 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
         readOnly: isReadOnly,
         readOnlyCode: readOnlyCode,
         users:
-          editor.storage.collaborationCursor?.users.map(user => ({
-            id: user.clientId, // TODO:MEMO This needs to be the userId, not the clientId
+          editor.storage.collaborationCaret?.users.map(user => ({
+            id: user.id,
             profile: {
               displayName: user.name,
             },
@@ -127,8 +129,8 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
       lastSaveTime,
       isReadOnly,
       readOnlyCode,
-      editor?.storage.collaborationCursor?.users.length,
-      editor?.storage.collaborationCursor?.users,
+      editor?.storage.collaborationCaret?.users.length,
+      editor?.storage.collaborationCaret?.users,
       currentCollaborationState,
       onChangeCollaborationState,
     ]);
@@ -144,7 +146,7 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
         onFocus={handleFocus}
         onBlur={handleBlur}
         sx={{
-          height: inputMinHeight,
+          height: fullScreen ? '100%' : inputMinHeight,
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',

@@ -7,11 +7,12 @@ import {
   useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery,
   useVirtualContributorProfileWithModelCardQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { AiPersonaBodyOfKnowledgeType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
 import { createVirtualContributorModelFull } from '../utils/createVirtualContributorModelFull';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
@@ -44,10 +45,11 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
     },
     skip: !vcId,
   });
-
+  //
+  // TODO: Additional Auth Check
   const isBokSpace =
-    data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
-  const bokId = data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID;
+    data?.lookup.virtualContributor?.bodyOfKnowledgeType === VirtualContributorBodyOfKnowledgeType.AlkemioSpace;
+  const bokId = data?.lookup.virtualContributor?.bodyOfKnowledgeID;
 
   const { data: vcSpaceBoKAuthPrivileges } = useSpaceBodyOfKnowledgeAuthorizationPrivilegesQuery({
     variables: {

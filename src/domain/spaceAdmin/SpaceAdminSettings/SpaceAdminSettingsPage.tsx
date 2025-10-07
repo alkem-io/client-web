@@ -28,7 +28,7 @@ import scrollToTop from '@/core/ui/utils/scrollToTop';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
-import { Box, Button, CircularProgress, useTheme } from '@mui/material';
+import { Box, Button, CircularProgress, Link, useTheme } from '@mui/material';
 import { noop } from 'lodash';
 import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -135,6 +135,8 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
       defaultSpaceSettings.collaboration.allowMembersToCreateSubspaces,
     allowMembersToCreateCallouts = currentSettings?.collaboration?.allowMembersToCreateCallouts ??
       defaultSpaceSettings.collaboration.allowMembersToCreateCallouts,
+    allowMembersToVideoCall = currentSettings?.collaboration?.allowMembersToVideoCall ??
+      defaultSpaceSettings.collaboration.allowMembersToVideoCall,
     inheritMembershipRights = currentSettings?.collaboration?.inheritMembershipRights ??
       defaultSpaceSettings.collaboration.inheritMembershipRights,
     hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
@@ -150,6 +152,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     allowEventsFromSubspaces?: boolean;
     allowMembersToCreateSubspaces?: boolean;
     allowMembersToCreateCallouts?: boolean;
+    allowMembersToVideoCall?: boolean;
     inheritMembershipRights?: boolean;
     hostOrganizationTrusted?: boolean;
     collaborationSettings?: Partial<SpaceSettingsCollaboration>;
@@ -181,6 +184,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
         allowEventsFromSubspaces,
         allowMembersToCreateSubspaces,
         allowMembersToCreateCallouts,
+        allowMembersToVideoCall,
         inheritMembershipRights,
       } as SpaceSettingsCollaboration,
     };
@@ -340,6 +344,23 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                       <Trans
                         i18nKey="pages.admin.space.settings.memberActions.createBlocks"
                         components={{ b: <strong /> }}
+                      />
+                    ),
+                  },
+                }}
+                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+              />
+              <SwitchSettingsGroup
+                options={{
+                  allowMembersToVideoCall: {
+                    checked: currentSettings?.collaboration?.allowMembersToVideoCall || false,
+                    label: (
+                      <Trans
+                        i18nKey="pages.admin.space.settings.memberActions.videoCall"
+                        components={{
+                          b: <strong />,
+                          jitsiInfoLink: <Link href="https://jitsi.org/" target="_blank" rel="noopener noreferrer" />,
+                        }}
                       />
                     ),
                   },

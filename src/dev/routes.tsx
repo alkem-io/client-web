@@ -1,4 +1,4 @@
-import { Route } from 'react-router';
+import { Route } from 'react-router-dom';
 import TypographyDemo from './ui/TypographyDemo';
 import GridDemo from './ui/GridDemo';
 import DashboardComponentsDemo from './ui/DashboardComponentsDemo';

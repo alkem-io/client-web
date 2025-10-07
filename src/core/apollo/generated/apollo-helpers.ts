@@ -435,95 +435,44 @@ export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
   qrCodeImg?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AiPersonaKeySpecifier = (
-  | 'aiPersonaServiceID'
   | 'authorization'
-  | 'bodyOfKnowledge'
-  | 'bodyOfKnowledgeID'
-  | 'bodyOfKnowledgeType'
-  | 'createdDate'
-  | 'dataAccessMode'
-  | 'description'
-  | 'engine'
-  | 'id'
-  | 'interactionModes'
-  | 'modelCard'
-  | 'updatedDate'
-  | AiPersonaKeySpecifier
-)[];
-export type AiPersonaFieldPolicy = {
-  aiPersonaServiceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
-  engine?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
-  modelCard?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type AiPersonaModelCardKeySpecifier = (
-  | 'aiEngine'
-  | 'monitoring'
-  | 'spaceUsage'
-  | AiPersonaModelCardKeySpecifier
-)[];
-export type AiPersonaModelCardFieldPolicy = {
-  aiEngine?: FieldPolicy<any> | FieldReadFunction<any>;
-  monitoring?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceUsage?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type AiPersonaModelCardFlagKeySpecifier = ('enabled' | 'name' | AiPersonaModelCardFlagKeySpecifier)[];
-export type AiPersonaModelCardFlagFieldPolicy = {
-  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type AiPersonaServiceKeySpecifier = (
-  | 'authorization'
-  | 'bodyOfKnowledgeID'
   | 'bodyOfKnowledgeLastUpdated'
-  | 'bodyOfKnowledgeType'
   | 'createdDate'
-  | 'dataAccessMode'
   | 'engine'
   | 'externalConfig'
   | 'id'
   | 'prompt'
+  | 'promptGraph'
   | 'updatedDate'
-  | AiPersonaServiceKeySpecifier
+  | AiPersonaKeySpecifier
 )[];
-export type AiPersonaServiceFieldPolicy = {
+export type AiPersonaFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeLastUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
   engine?: FieldPolicy<any> | FieldReadFunction<any>;
   externalConfig?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+  promptGraph?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AiServerKeySpecifier = (
-  | 'aiPersonaService'
-  | 'aiPersonaServices'
+  | 'aiPersona'
+  | 'aiPersonas'
   | 'authorization'
   | 'createdDate'
-  | 'defaultAiPersonaService'
+  | 'defaultAiPersona'
   | 'id'
   | 'updatedDate'
   | AiServerKeySpecifier
 )[];
 export type AiServerFieldPolicy = {
-  aiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
-  aiPersonaServices?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiPersonas?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  defaultAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2137,12 +2086,14 @@ export type LicensingFieldPolicy = {
 export type LicensingCredentialBasedPolicyCredentialRuleKeySpecifier = (
   | 'credentialType'
   | 'grantedEntitlements'
+  | 'id'
   | 'name'
   | LicensingCredentialBasedPolicyCredentialRuleKeySpecifier
 )[];
 export type LicensingCredentialBasedPolicyCredentialRuleFieldPolicy = {
   credentialType?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicensingGrantedEntitlementKeySpecifier = ('limit' | 'type' | LicensingGrantedEntitlementKeySpecifier)[];
@@ -2501,6 +2452,10 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomState'
   | 'adminIdentityDeleteKratosIdentity'
+  | 'adminInAppNotificationsPrune'
+  | 'adminLicensePolicyCreateCredentialRule'
+  | 'adminLicensePolicyDeleteCredentialRule'
+  | 'adminLicensePolicyUpdateCredentialRule'
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
@@ -2508,9 +2463,9 @@ export type MutationKeySpecifier = (
   | 'adminWingbackCreateTestCustomer'
   | 'adminWingbackGetCustomerEntitlements'
   | 'aiServerAuthorizationPolicyReset'
-  | 'aiServerCreateAiPersonaService'
-  | 'aiServerDeleteAiPersonaService'
-  | 'aiServerUpdateAiPersonaService'
+  | 'aiServerCreateAiPersona'
+  | 'aiServerDeleteAiPersona'
+  | 'aiServerUpdateAiPersona'
   | 'applyForEntryRoleOnRoleSet'
   | 'askChatGuidanceQuestion'
   | 'assignLicensePlanToAccount'
@@ -2621,7 +2576,6 @@ export type MutationKeySpecifier = (
   | 'transferInnovationPackToAccount'
   | 'transferSpaceToAccount'
   | 'transferVirtualContributorToAccount'
-  | 'updateAiPersona'
   | 'updateAnswerRelevance'
   | 'updateApplicationFormOnRoleSet'
   | 'updateBaselineLicensePlanOnAccount'
@@ -2682,6 +2636,10 @@ export type MutationFieldPolicy = {
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminIdentityDeleteKratosIdentity?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminInAppNotificationsPrune?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminLicensePolicyCreateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminLicensePolicyDeleteCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminLicensePolicyUpdateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2689,9 +2647,9 @@ export type MutationFieldPolicy = {
   adminWingbackCreateTestCustomer?: FieldPolicy<any> | FieldReadFunction<any>;
   adminWingbackGetCustomerEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
-  aiServerCreateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
-  aiServerDeleteAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
-  aiServerUpdateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServerCreateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServerDeleteAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServerUpdateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2802,7 +2760,6 @@ export type MutationFieldPolicy = {
   transferInnovationPackToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferSpaceToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferVirtualContributorToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   updateApplicationFormOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   updateBaselineLicensePlanOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3280,6 +3237,117 @@ export type ProfileCredentialVerifiedKeySpecifier = ('userEmail' | 'vc' | Profil
 export type ProfileCredentialVerifiedFieldPolicy = {
   userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   vc?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphKeySpecifier = ('edges' | 'end' | 'nodes' | 'start' | 'state' | PromptGraphKeySpecifier)[];
+export type PromptGraphFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  end?: FieldPolicy<any> | FieldReadFunction<any>;
+  nodes?: FieldPolicy<any> | FieldReadFunction<any>;
+  start?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDataPointKeySpecifier = (
+  | 'description'
+  | 'name'
+  | 'optional'
+  | 'type'
+  | PromptGraphDataPointKeySpecifier
+)[];
+export type PromptGraphDataPointFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  optional?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDataStructKeySpecifier = ('properties' | 'title' | 'type' | PromptGraphDataStructKeySpecifier)[];
+export type PromptGraphDataStructFieldPolicy = {
+  properties?: FieldPolicy<any> | FieldReadFunction<any>;
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDefinitionKeySpecifier = (
+  | 'edges'
+  | 'end'
+  | 'nodes'
+  | 'start'
+  | 'state'
+  | PromptGraphDefinitionKeySpecifier
+)[];
+export type PromptGraphDefinitionFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  end?: FieldPolicy<any> | FieldReadFunction<any>;
+  nodes?: FieldPolicy<any> | FieldReadFunction<any>;
+  start?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDefinitionDataPointKeySpecifier = (
+  | 'description'
+  | 'name'
+  | 'optional'
+  | 'type'
+  | PromptGraphDefinitionDataPointKeySpecifier
+)[];
+export type PromptGraphDefinitionDataPointFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  optional?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDefinitionDataStructKeySpecifier = (
+  | 'properties'
+  | 'title'
+  | 'type'
+  | PromptGraphDefinitionDataStructKeySpecifier
+)[];
+export type PromptGraphDefinitionDataStructFieldPolicy = {
+  properties?: FieldPolicy<any> | FieldReadFunction<any>;
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDefinitionEdgeKeySpecifier = ('from' | 'to' | PromptGraphDefinitionEdgeKeySpecifier)[];
+export type PromptGraphDefinitionEdgeFieldPolicy = {
+  from?: FieldPolicy<any> | FieldReadFunction<any>;
+  to?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphDefinitionNodeKeySpecifier = (
+  | 'input_variables'
+  | 'name'
+  | 'output'
+  | 'prompt'
+  | PromptGraphDefinitionNodeKeySpecifier
+)[];
+export type PromptGraphDefinitionNodeFieldPolicy = {
+  input_variables?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  output?: FieldPolicy<any> | FieldReadFunction<any>;
+  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphEdgeKeySpecifier = ('from' | 'to' | PromptGraphEdgeKeySpecifier)[];
+export type PromptGraphEdgeFieldPolicy = {
+  from?: FieldPolicy<any> | FieldReadFunction<any>;
+  to?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PromptGraphNodeKeySpecifier = (
+  | 'input_variables'
+  | 'name'
+  | 'output'
+  | 'prompt'
+  | PromptGraphNodeKeySpecifier
+)[];
+export type PromptGraphNodeFieldPolicy = {
+  input_variables?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  output?: FieldPolicy<any> | FieldReadFunction<any>;
+  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PruneInAppNotificationAdminResultKeySpecifier = (
+  | 'removedCountExceedingUserLimit'
+  | 'removedCountOutsideRetentionPeriod'
+  | PruneInAppNotificationAdminResultKeySpecifier
+)[];
+export type PruneInAppNotificationAdminResultFieldPolicy = {
+  removedCountExceedingUserLimit?: FieldPolicy<any> | FieldReadFunction<any>;
+  removedCountOutsideRetentionPeriod?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
   | 'accounts'
@@ -3885,6 +3953,7 @@ export type SpaceSettingsCollaborationKeySpecifier = (
   | 'allowEventsFromSubspaces'
   | 'allowMembersToCreateCallouts'
   | 'allowMembersToCreateSubspaces'
+  | 'allowMembersToVideoCall'
   | 'inheritMembershipRights'
   | SpaceSettingsCollaborationKeySpecifier
 )[];
@@ -3892,6 +3961,7 @@ export type SpaceSettingsCollaborationFieldPolicy = {
   allowEventsFromSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  allowMembersToVideoCall?: FieldPolicy<any> | FieldReadFunction<any>;
   inheritMembershipRights?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsMembershipKeySpecifier = (
@@ -4531,7 +4601,6 @@ export type UserSettingsNotificationSpaceAdminFieldPolicy = {
 };
 export type UserSettingsNotificationUserKeySpecifier = (
   | 'commentReply'
-  | 'copyOfMessageSent'
   | 'membership'
   | 'mentioned'
   | 'messageReceived'
@@ -4539,19 +4608,16 @@ export type UserSettingsNotificationUserKeySpecifier = (
 )[];
 export type UserSettingsNotificationUserFieldPolicy = {
   commentReply?: FieldPolicy<any> | FieldReadFunction<any>;
-  copyOfMessageSent?: FieldPolicy<any> | FieldReadFunction<any>;
   membership?: FieldPolicy<any> | FieldReadFunction<any>;
   mentioned?: FieldPolicy<any> | FieldReadFunction<any>;
   messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationUserMembershipKeySpecifier = (
-  | 'spaceCommunityApplicationSubmitted'
   | 'spaceCommunityInvitationReceived'
   | 'spaceCommunityJoined'
   | UserSettingsNotificationUserMembershipKeySpecifier
 )[];
 export type UserSettingsNotificationUserMembershipFieldPolicy = {
-  spaceCommunityApplicationSubmitted?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceCommunityInvitationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceCommunityJoined?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -4617,12 +4683,21 @@ export type VirtualContributorKeySpecifier = (
   | 'agent'
   | 'aiPersona'
   | 'authorization'
+  | 'bodyOfKnowledgeDescription'
+  | 'bodyOfKnowledgeID'
+  | 'bodyOfKnowledgeType'
   | 'createdDate'
+  | 'dataAccessMode'
+  | 'engine'
   | 'id'
+  | 'interactionModes'
   | 'knowledgeBase'
+  | 'knowledgeSpace'
   | 'listedInStore'
+  | 'modelCard'
   | 'nameID'
   | 'profile'
+  | 'promptGraphDefinition'
   | 'provider'
   | 'searchVisibility'
   | 'settings'
@@ -4635,17 +4710,46 @@ export type VirtualContributorFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   aiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  engine?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
   knowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
+  knowledgeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
+  modelCard?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  promptGraphDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualContributorModelCardKeySpecifier = (
+  | 'aiEngine'
+  | 'monitoring'
+  | 'spaceUsage'
+  | VirtualContributorModelCardKeySpecifier
+)[];
+export type VirtualContributorModelCardFieldPolicy = {
+  aiEngine?: FieldPolicy<any> | FieldReadFunction<any>;
+  monitoring?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceUsage?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualContributorModelCardFlagKeySpecifier = (
+  | 'enabled'
+  | 'name'
+  | VirtualContributorModelCardFlagKeySpecifier
+)[];
+export type VirtualContributorModelCardFlagFieldPolicy = {
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VirtualContributorSettingsKeySpecifier = ('privacy' | VirtualContributorSettingsKeySpecifier)[];
 export type VirtualContributorSettingsFieldPolicy = {
@@ -4877,18 +4981,6 @@ export type StrictTypedTypePolicies = {
   AiPersona?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiPersonaKeySpecifier | (() => undefined | AiPersonaKeySpecifier);
     fields?: AiPersonaFieldPolicy;
-  };
-  AiPersonaModelCard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AiPersonaModelCardKeySpecifier | (() => undefined | AiPersonaModelCardKeySpecifier);
-    fields?: AiPersonaModelCardFieldPolicy;
-  };
-  AiPersonaModelCardFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AiPersonaModelCardFlagKeySpecifier | (() => undefined | AiPersonaModelCardFlagKeySpecifier);
-    fields?: AiPersonaModelCardFlagFieldPolicy;
-  };
-  AiPersonaService?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AiPersonaServiceKeySpecifier | (() => undefined | AiPersonaServiceKeySpecifier);
-    fields?: AiPersonaServiceFieldPolicy;
   };
   AiServer?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiServerKeySpecifier | (() => undefined | AiServerKeySpecifier);
@@ -5748,6 +5840,65 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | ProfileCredentialVerifiedKeySpecifier);
     fields?: ProfileCredentialVerifiedFieldPolicy;
   };
+  PromptGraph?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphKeySpecifier | (() => undefined | PromptGraphKeySpecifier);
+    fields?: PromptGraphFieldPolicy;
+  };
+  PromptGraphDataPoint?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphDataPointKeySpecifier | (() => undefined | PromptGraphDataPointKeySpecifier);
+    fields?: PromptGraphDataPointFieldPolicy;
+  };
+  PromptGraphDataStruct?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphDataStructKeySpecifier | (() => undefined | PromptGraphDataStructKeySpecifier);
+    fields?: PromptGraphDataStructFieldPolicy;
+  };
+  PromptGraphDefinition?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphDefinitionKeySpecifier | (() => undefined | PromptGraphDefinitionKeySpecifier);
+    fields?: PromptGraphDefinitionFieldPolicy;
+  };
+  PromptGraphDefinitionDataPoint?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PromptGraphDefinitionDataPointKeySpecifier
+      | (() => undefined | PromptGraphDefinitionDataPointKeySpecifier);
+    fields?: PromptGraphDefinitionDataPointFieldPolicy;
+  };
+  PromptGraphDefinitionDataStruct?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PromptGraphDefinitionDataStructKeySpecifier
+      | (() => undefined | PromptGraphDefinitionDataStructKeySpecifier);
+    fields?: PromptGraphDefinitionDataStructFieldPolicy;
+  };
+  PromptGraphDefinitionEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PromptGraphDefinitionEdgeKeySpecifier
+      | (() => undefined | PromptGraphDefinitionEdgeKeySpecifier);
+    fields?: PromptGraphDefinitionEdgeFieldPolicy;
+  };
+  PromptGraphDefinitionNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PromptGraphDefinitionNodeKeySpecifier
+      | (() => undefined | PromptGraphDefinitionNodeKeySpecifier);
+    fields?: PromptGraphDefinitionNodeFieldPolicy;
+  };
+  PromptGraphEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphEdgeKeySpecifier | (() => undefined | PromptGraphEdgeKeySpecifier);
+    fields?: PromptGraphEdgeFieldPolicy;
+  };
+  PromptGraphNode?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PromptGraphNodeKeySpecifier | (() => undefined | PromptGraphNodeKeySpecifier);
+    fields?: PromptGraphNodeFieldPolicy;
+  };
+  PruneInAppNotificationAdminResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PruneInAppNotificationAdminResultKeySpecifier
+      | (() => undefined | PruneInAppNotificationAdminResultKeySpecifier);
+    fields?: PruneInAppNotificationAdminResultFieldPolicy;
+  };
   Query?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier);
     fields?: QueryFieldPolicy;
@@ -6140,6 +6291,20 @@ export type StrictTypedTypePolicies = {
   VirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VirtualContributorKeySpecifier | (() => undefined | VirtualContributorKeySpecifier);
     fields?: VirtualContributorFieldPolicy;
+  };
+  VirtualContributorModelCard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | VirtualContributorModelCardKeySpecifier
+      | (() => undefined | VirtualContributorModelCardKeySpecifier);
+    fields?: VirtualContributorModelCardFieldPolicy;
+  };
+  VirtualContributorModelCardFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | VirtualContributorModelCardFlagKeySpecifier
+      | (() => undefined | VirtualContributorModelCardFlagKeySpecifier);
+    fields?: VirtualContributorModelCardFlagFieldPolicy;
   };
   VirtualContributorSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

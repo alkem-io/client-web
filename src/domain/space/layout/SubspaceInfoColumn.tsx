@@ -6,13 +6,11 @@ import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import { KeyboardTab } from '@mui/icons-material';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { gutters } from '@/core/ui/grid/utils';
-import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import DashboardNavigation from '../components/spaceDashboardNavigation/dashboardNavigation/DashboardNavigation';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useSpaceDashboardNavigation from '../components/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useSubSpace } from '../hooks/useSubSpace';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
@@ -21,6 +19,27 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { DialogActionButton } from '../components/subspaces/DialogActionButton';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
+import { useVideoCall } from '../hooks/useVideoCall';
+
+interface SubspaceInfoColumnProps {
+  subspace?: {
+    id?: string;
+    authorization?: {
+      myPrivileges?: AuthorizationPrivilege[] | null;
+    };
+    about?: {
+      membership: {
+        roleSetID: string;
+        communityID: string;
+        myMembershipStatus?: CommunityMembershipStatus | string;
+      };
+      profile: { url: string; description?: string };
+    };
+    collaboration?: {
+      id: string;
+    };
+  };
+}
 
 export const MENU_STATE_KEY = 'menuState';
 export enum MenuState {
@@ -28,29 +47,22 @@ export enum MenuState {
   COLLAPSED = 'collapsed',
 }
 
-export const SubspaceInfoColumn = () => {
+export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
   const { t } = useTranslation();
-  const { isSmallScreen } = useScreenSize();
+  const { isSmallScreen, isMediumLargeScreen } = useScreenSize();
   const { spaceId, spaceLevel } = useUrlResolver();
-  const { permissions } = useSubSpace();
 
   const dashboardNavigation = useSpaceDashboardNavigation({
     spaceId,
     skip: !spaceId,
   });
-  const { data: subspacePageData } = useSubspacePageQuery({
-    variables: {
-      spaceId: spaceId!,
-    },
-    skip: !spaceId || spaceLevel === SpaceLevel.L0 || !permissions.canRead,
-  });
 
-  const subspace = subspacePageData?.lookup.space;
   const about = subspace?.about;
   const membership = about?.membership;
   const communityId = membership?.communityID;
-  const collaboration = subspace?.collaboration;
-  const collaborationId = collaboration?.id;
+  const collaborationId = subspace?.collaboration?.id;
+
+  const { isVideoCallEnabled } = useVideoCall(subspace?.id);
 
   const innovationFlowProvided = useInnovationFlowStates({ collaborationId });
   const [createSpaceState, setCreateSpaceState] = useState<
@@ -80,6 +92,11 @@ export const SubspaceInfoColumn = () => {
 
   const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false);
 
+  const areAllIconsVisible =
+    isVideoCallEnabled &&
+    subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) &&
+    !isCollapsed;
+
   return (
     <InfoColumn collapsed={isCollapsed}>
       {!isCollapsed && <WelcomeBlock>{about && <SpaceWelcomeBlock spaceAbout={about} />}</WelcomeBlock>}
@@ -106,10 +123,19 @@ export const SubspaceInfoColumn = () => {
           backgroundColor: isCollapsed ? undefined : 'transparent',
           border: isCollapsed ? undefined : 'transparent',
           overflow: isCollapsed ? undefined : 'visible',
+          flexWrap: isMediumLargeScreen ? 'nowrap' : 'wrap',
+          rowGap: gutters(0.2),
+          ...(areAllIconsVisible && {
+            '& > *': {
+              flex: '1 1 auto',
+              minWidth: 0,
+            },
+          }),
         }}
       >
         <DialogActionButton dialog={SubspaceDialog.Index} />
         <DialogActionButton dialog={SubspaceDialog.Subspaces} />
+        {isVideoCallEnabled && <DialogActionButton dialog={SubspaceDialog.VideoCall} />}
         <DialogActionButton dialog={SubspaceDialog.Contributors} />
         <DialogActionButton dialog={SubspaceDialog.Activity} />
         <DialogActionButton dialog={SubspaceDialog.Timeline} />

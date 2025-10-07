@@ -25,6 +25,7 @@ interface SubspaceDrawerMenuProps {
   createButton?: React.ReactNode;
   onSelectState: (stateName: string) => void;
   about?: SpaceWelcomeBlockProps['spaceAbout'];
+  isVideoCallEnabled?: boolean;
 }
 
 export const SubspaceDrawerMenu = ({
@@ -34,6 +35,7 @@ export const SubspaceDrawerMenu = ({
   createButton,
   onSelectState,
   about,
+  isVideoCallEnabled = false,
 }: SubspaceDrawerMenuProps) => {
   const { isSmallScreen } = useScreenSize();
 
@@ -94,6 +96,13 @@ export const SubspaceDrawerMenu = ({
                 actionDisplay="menuItem"
                 dialog={SubspaceDialog.Contributors}
               />
+              {isVideoCallEnabled && (
+                <DialogActionButton
+                  onClick={handleCloseDrawer}
+                  actionDisplay="menuItem"
+                  dialog={SubspaceDialog.VideoCall}
+                />
+              )}
               <DialogActionButton
                 onClick={handleCloseDrawer}
                 actionDisplay="menuItem"

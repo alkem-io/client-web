@@ -22,7 +22,11 @@ import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFie
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
-import { VisualType, AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import {
+  VisualType,
+  AiPersonaEngine,
+  VirtualContributorBodyOfKnowledgeType,
+} from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
 type CreateNewVirtualContributorProps = {
@@ -50,7 +54,7 @@ export interface VirtualContributorFromProps {
     assistantId?: string;
   };
   engine: AiPersonaEngine;
-  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
+  bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
 }
 
 const BigButton = ({
@@ -103,7 +107,7 @@ const CreateNewVirtualContributor = ({
     tagline: '',
     description: '',
     engine: AiPersonaEngine.Expert,
-    bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase,
+    bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType.AlkemioKnowledgeBase,
   };
 
   const validationSchema = yup.object().shape({

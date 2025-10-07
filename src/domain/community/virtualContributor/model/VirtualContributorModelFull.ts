@@ -1,6 +1,6 @@
-import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaEngine, VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { AiPersonaModelCardModel } from './AiPersonaModelCardModel';
+import { VirtualContributorModelCard } from './VirtualContributorModelCardModel';
 
 export type VirtualContributorModelFull = {
   id: string;
@@ -35,13 +35,12 @@ export type VirtualContributorModelFull = {
       url: string;
     };
   };
+  bodyOfKnowledgeDescription?: string;
+  bodyOfKnowledgeType?: VirtualContributorBodyOfKnowledgeType;
+  bodyOfKnowledgeID?: string;
+  modelCard: VirtualContributorModelCard;
   aiPersona: {
     id: string;
-    bodyOfKnowledge?: string;
-    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType;
-    bodyOfKnowledgeID?: string;
     engine?: AiPersonaEngine;
-    modelCard: AiPersonaModelCardModel;
-    aiPersonaServiceID?: string;
   };
 };

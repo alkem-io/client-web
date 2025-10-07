@@ -16,6 +16,7 @@ mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
         allowMembersToCreateSubspaces
         inheritMembershipRights
         allowEventsFromSubspaces
+        allowMembersToVideoCall
       }
     }
   }

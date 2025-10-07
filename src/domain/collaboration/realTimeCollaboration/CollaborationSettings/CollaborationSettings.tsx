@@ -57,7 +57,7 @@ const CollaborationSettings = ({ element, elementType }: CollaborationSettingsPr
   return (
     <>
       <Gutters paddingX={0}>
-        <BlockTitle>{t('common.settings')}</BlockTitle>
+        <BlockTitle>{t('common.Settings')}</BlockTitle>
         <Caption>{t('components.shareSettings.description', { elementName })}</Caption>
       </Gutters>
       <Gutters row disablePadding>

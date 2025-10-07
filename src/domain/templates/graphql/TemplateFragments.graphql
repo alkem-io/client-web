@@ -37,13 +37,12 @@ fragment SpaceTemplate on Template {
   ...TemplateProfileInfo
   contentSpace {
     id
-    collaboration {
+    about {
       id
-      innovationFlow {
+      profile {
         id
-        states {
-          displayName
-          description
+        visual(type: CARD) {
+          ...VisualModel
         }
       }
     }

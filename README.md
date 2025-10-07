@@ -25,8 +25,8 @@ Once you can confirm that you have a running Alkemio server, then you can start 
 
 In the project directory, you can run:
 
-- `npm install`
-- `npm start`
+- `pnpm install`
+- `pnpm start`
 
 This runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -91,5 +91,5 @@ We have automated the creation and deployment of containers to docker space via 
 ### Test levels
 
 - Component tests - testing each component in isolation
-  - Run tests with coverage `npm run-script test:coverage`
+  - Run tests with coverage `pnpm run-script test:coverage`
 - UI E2E tests - test are part of [this repository](https://github.com/alkem-io/test-suites/tree/develop/test/functional/e2e)

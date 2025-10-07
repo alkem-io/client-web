@@ -23,7 +23,25 @@ export const useEditorConfig = ({
   additionalExtensions = [],
 }: UseEditorConfigProps): Partial<EditorOptions> => {
   return useMemo(() => {
-    const extensions: Extensions = [StarterKit, ImageExtension, Link, Highlight, Iframe, ...additionalExtensions];
+    const hasCollaboration = additionalExtensions.some(ext => ext.name === 'collaboration');
+
+    // If collaboration is enabled, we don't want to include the undo/redo functionality
+    // as it can conflict with the collaboration extension's own history management.
+    // Therefore, we configure StarterKit to exclude history when collaboration is present.
+    const StarterKitConfigured = StarterKit.configure({
+      // Exclude link since we're adding our own Link extension
+      link: false,
+      undoRedo: hasCollaboration ? false : undefined,
+    });
+
+    const extensions: Extensions = [
+      StarterKitConfigured,
+      ImageExtension,
+      Link,
+      Highlight,
+      Iframe,
+      ...additionalExtensions,
+    ];
 
     return {
       extensions,
