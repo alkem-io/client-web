@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 interface CreateContributionButtonWhiteboardProps extends CalloutContributionCreateButtonProps {}
 
@@ -27,7 +28,7 @@ const CreateContributionButtonWhiteboard = ({
     callout.contributionDefaults?.defaultDisplayName ?? t('pages.whiteboard.defaultWhiteboardDisplayName')
   );
 
-  const createNewWhiteboard = async () => {
+  const [handleCreateWhiteboard, creatingWhiteboard] = useLoadingState(async () => {
     const whiteboardNameMandatory = ensurePresence(whiteboardName);
 
     const { data } = await createWhiteboard({
@@ -53,7 +54,7 @@ const CreateContributionButtonWhiteboard = ({
         },
       });
     }
-  };
+  });
 
   return (
     <>
@@ -74,10 +75,15 @@ const CreateContributionButtonWhiteboard = ({
           />
         </DialogContent>
         <DialogActions>
-          <Button variant="text" onClick={() => setDialogOpen(false)}>
+          <Button variant="text" onClick={() => setDialogOpen(false)} disabled={creatingWhiteboard}>
             {t('buttons.cancel')}
           </Button>
-          <Button variant="contained" onClick={createNewWhiteboard} disabled={!whiteboardName.trim()}>
+          <Button
+            variant="contained"
+            onClick={handleCreateWhiteboard}
+            disabled={!whiteboardName.trim()}
+            loading={creatingWhiteboard}
+          >
             {t('buttons.create')}
           </Button>
         </DialogActions>
