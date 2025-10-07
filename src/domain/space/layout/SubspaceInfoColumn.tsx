@@ -134,7 +134,6 @@ export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
           }),
         }}
       >
-        <SubmenuActionButton dialogs={[SubspaceDialog.Index, SubspaceDialog.Subspaces, SubspaceDialog.Share]} />
         {isVideoCallEnabled && <DialogActionButton dialog={SubspaceDialog.VideoCall} />}
         <DialogActionButton dialog={SubspaceDialog.Contributors} />
         <DialogActionButton dialog={SubspaceDialog.Activity} />
@@ -145,6 +144,7 @@ export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
         {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
           <DialogActionButton dialog={SubspaceDialog.Settings} />
         )}
+        <SubmenuActionButton dialogs={[SubspaceDialog.Index, SubspaceDialog.Subspaces, SubspaceDialog.Share]} />
         {isCollapsed && (
           <ButtonWithTooltip
             tooltip={t('buttons.expand')}

@@ -5,6 +5,8 @@ import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { DialogActionButton } from './DialogActionButton';
 import { SubspaceDialog } from './SubspaceDialog';
 import { useTranslation } from 'react-i18next';
+import SwapColors from '@/core/ui/palette/SwapColors';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface SubmenuActionButtonProps {
   dialogs: SubspaceDialog[];
@@ -36,23 +38,32 @@ export const SubmenuActionButton = ({ dialogs, icon = <MoreHoriz />, tooltip }: 
       >
         {icon}
       </ButtonWithTooltip>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        {dialogs.map(dialog => (
-          <DialogActionButton key={dialog} dialog={dialog} actionDisplay="menuItem" onClick={handleClose} />
-        ))}
-      </Menu>
+      <SwapColors>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          slotProps={{
+            paper: {
+              sx: {
+                marginTop: gutters(0.2),
+              },
+            },
+          }}
+        >
+          {dialogs.map(dialog => (
+            <DialogActionButton key={dialog} dialog={dialog} actionDisplay="menuItem" onClick={handleClose} />
+          ))}
+        </Menu>
+      </SwapColors>
     </>
   );
 };
