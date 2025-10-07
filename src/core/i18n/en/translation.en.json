@@ -177,6 +177,7 @@
     "getHelp": "Get help",
     "saveAsTemplate": "Save as $t(common.template)",
     "skipLink": "Skip to next block",
+    "toggle": "Toggle {{entity}}",
     "toolsMenu": "Tools Menu",
     "userMenu": "User Menu",
     "scrollToTop": "Scroll to top",

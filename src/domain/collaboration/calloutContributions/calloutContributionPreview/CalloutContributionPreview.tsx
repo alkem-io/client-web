@@ -8,12 +8,11 @@ import { Caption } from '@/core/ui/typography';
 import { formatDateTime } from '@/core/utils/time/utils';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
+import { Box, IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
 import { contributionIcons } from '../../callout/icons/calloutIcons';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import useNavigate from '@/core/routing/useNavigate';
-import { useState } from 'react';
-import CalloutContributionModel from '../CalloutContributionModel';
+import { useRef, useState } from 'react';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { useTranslation } from 'react-i18next';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -24,7 +23,6 @@ import { useColumns } from '@/core/ui/grid/GridContext';
 interface CalloutContributionPreviewProps {
   callout: CalloutDetailsModelExtended;
   contributionId: string;
-  actions?: (contribution: CalloutContributionModel) => React.ReactNode;
   previewComponent: React.ComponentType<CalloutContributionPreviewComponentProps>;
   dialogComponent: React.ComponentType<CalloutContributionPreviewDialogProps>;
   onCalloutUpdate?: () => Promise<unknown>;
@@ -33,7 +31,6 @@ interface CalloutContributionPreviewProps {
 const CalloutContributionPreview = ({
   callout,
   contributionId,
-  actions: renderExtraActions,
   previewComponent: PreviewComponent,
   dialogComponent: DialogComponent,
   onCalloutUpdate,
@@ -43,6 +40,7 @@ const CalloutContributionPreview = ({
   const navigate = useNavigate();
   const columns = useColumns();
   const [contributionDialogOpen, setContributionDialogOpen] = useState(false);
+  const extraActionsPortalRef = useRef<HTMLDivElement>(null);
 
   const { allowedTypes } = callout.settings.contribution;
   const { data, loading } = useCalloutContributionQuery({
@@ -136,8 +134,7 @@ const CalloutContributionPreview = ({
                   <EditOutlinedIcon />
                 </IconButton>
               )}
-
-              {renderExtraActions && contribution && renderExtraActions(contribution)}
+              <Box ref={extraActionsPortalRef} />
               {contributionUrl && (
                 <ShareButton
                   url={contributionUrl}
@@ -155,6 +152,7 @@ const CalloutContributionPreview = ({
           contribution={contribution}
           loading={loading}
           onOpenContribution={() => setContributionDialogOpen(true)}
+          extraActionsPortalRef={extraActionsPortalRef}
         />
         <DialogComponent
           calloutsSetId={callout.calloutsSetId}

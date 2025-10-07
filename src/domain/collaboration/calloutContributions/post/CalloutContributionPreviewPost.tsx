@@ -2,6 +2,7 @@ import { Box, Button, ButtonProps, styled, useTheme } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
@@ -13,6 +14,8 @@ import { GUTTER_PX } from '@/core/ui/grid/constants';
 import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
 import { useTranslation } from 'react-i18next';
 import { useColumns } from '@/core/ui/grid/GridContext';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
+import { Tooltip } from '@mui/material';
 
 interface CalloutContributionPreviewPostProps extends CalloutContributionPreviewComponentProps {}
 
@@ -98,8 +101,14 @@ const PostDescriptionAnimation = {
   transitionDuration: '100ms',
 };
 
-const CalloutContributionPreviewPost = ({ callout, contribution, loading }: CalloutContributionPreviewPostProps) => {
+const CalloutContributionPreviewPost = ({
+  callout,
+  contribution,
+  loading,
+  extraActionsPortalRef,
+}: CalloutContributionPreviewPostProps) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const columns = useColumns();
   const responsiveConfig = ResponsiveConfiguration[columns] || ResponsiveConfiguration[12];
 
@@ -122,50 +131,90 @@ const CalloutContributionPreviewPost = ({ callout, contribution, loading }: Call
     return Math.max(minHeight, postContentHeight);
   }, [postContentHeight, theme]);
 
-  return (
-    <Box
-      margin={gutters(-1)}
-      display="flex"
-      flexDirection={responsiveConfig.CommentsPosition === 'right' ? 'row' : 'column'}
-    >
-      <PostContentWrapper
-        ref={postContentRef}
-        sx={PostDescriptionAnimation}
-        flex={responsiveConfig.PostCommentsRatio.post}
-      >
-        <WrapperMarkdown>{contribution?.post?.profile.description ?? ''}</WrapperMarkdown>
-      </PostContentWrapper>
-      <CommentsExpanderButton
+  // Render the comments toggle button in the parent's header via portal
+  const commentsCount = contribution?.post?.comments.messagesCount ?? 0;
+  const extraActionsButton = (
+    <Tooltip title={t('buttons.toggle', { entity: t('common.comments') })} arrow>
+      <Button
+        size="small"
+        variant="outlined"
+        sx={{
+          borderRadius: '4px',
+          borderColor: theme => theme.palette.divider,
+          backgroundColor: commentsExpanded ? theme.palette.primary.main : 'transparent',
+          color: commentsExpanded ? theme.palette.primary.contrastText : theme.palette.text.primary,
+        }}
         onClick={() => setCommentsExpanded(!commentsExpanded)}
-        expanded={commentsExpanded}
-        position={responsiveConfig.CommentsPosition}
+        // color={commentsExpanded ? 'primary' : 'default'}
         disabled={loading || !contribution}
+        aria-label={t('common.Comments')}
       >
-        {commentsExpanded ? (
-          <KeyboardDoubleArrowRightIcon preserveAspectRatio="none" />
-        ) : (
-          <KeyboardDoubleArrowLeftIcon preserveAspectRatio="none" />
+        {commentsCount > 0 && (
+          <Box component="span" marginRight={gutters(0.5)}>
+            {commentsCount}
+          </Box>
         )}
-      </CommentsExpanderButton>
-      <Box flex={commentsExpanded ? responsiveConfig.PostCommentsRatio.comments : 0} sx={CommentsAnimation}>
-        {commentsExpanded && (
-          <Gutters disableSidePadding disableGap height="100%">
-            <CalloutContributionCommentsContainer callout={callout} contribution={contribution}>
-              {props => (
-                <CommentsComponent
-                  {...props}
-                  commentsEnabled={props.commentsEnabled}
-                  loading={loading || props.loading}
-                  height="100%"
-                  fullHeight
-                  maxHeight={commentsMaxHeight}
-                />
-              )}
-            </CalloutContributionCommentsContainer>
-          </Gutters>
-        )}
+        <ForumOutlinedIcon
+          fontSize="small"
+          sx={{
+            color: commentsExpanded
+              ? theme.palette.primary.contrastText
+              : commentsCount > 0
+                ? theme.palette.primary.main
+                : theme.palette.primary.light,
+          }}
+        />
+      </Button>
+    </Tooltip>
+  );
+
+  return (
+    <>
+      {extraActionsPortalRef.current && createPortal(extraActionsButton, extraActionsPortalRef.current)}
+      <Box
+        margin={gutters(-1)}
+        display="flex"
+        flexDirection={responsiveConfig.CommentsPosition === 'right' ? 'row' : 'column'}
+      >
+        <PostContentWrapper
+          ref={postContentRef}
+          sx={PostDescriptionAnimation}
+          flex={responsiveConfig.PostCommentsRatio.post}
+        >
+          <WrapperMarkdown>{contribution?.post?.profile.description ?? ''}</WrapperMarkdown>
+        </PostContentWrapper>
+        <CommentsExpanderButton
+          onClick={() => setCommentsExpanded(!commentsExpanded)}
+          expanded={commentsExpanded}
+          position={responsiveConfig.CommentsPosition}
+          disabled={loading || !contribution}
+        >
+          {commentsExpanded ? (
+            <KeyboardDoubleArrowRightIcon preserveAspectRatio="none" />
+          ) : (
+            <KeyboardDoubleArrowLeftIcon preserveAspectRatio="none" />
+          )}
+        </CommentsExpanderButton>
+        <Box flex={commentsExpanded ? responsiveConfig.PostCommentsRatio.comments : 0} sx={CommentsAnimation}>
+          {commentsExpanded && (
+            <Gutters disableSidePadding disableGap height="100%">
+              <CalloutContributionCommentsContainer callout={callout} contribution={contribution}>
+                {props => (
+                  <CommentsComponent
+                    {...props}
+                    commentsEnabled={props.commentsEnabled}
+                    loading={loading || props.loading}
+                    height="100%"
+                    fullHeight
+                    maxHeight={commentsMaxHeight}
+                  />
+                )}
+              </CalloutContributionCommentsContainer>
+            </Gutters>
+          )}
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
