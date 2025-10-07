@@ -17,6 +17,7 @@ import useInnovationFlowStates from '@/domain/collaboration/InnovationFlow/Innov
 import SpaceWelcomeBlock from '../components/SpaceWelcomeBlock';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { DialogActionButton } from '../components/subspaces/DialogActionButton';
+import { SubmenuActionButton } from '../components/subspaces/SubmenuActionButton';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 import { useVideoCall } from '../hooks/useVideoCall';
@@ -133,13 +134,11 @@ export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
           }),
         }}
       >
-        <DialogActionButton dialog={SubspaceDialog.Index} />
-        <DialogActionButton dialog={SubspaceDialog.Subspaces} />
+        <SubmenuActionButton dialogs={[SubspaceDialog.Index, SubspaceDialog.Subspaces, SubspaceDialog.Share]} />
         {isVideoCallEnabled && <DialogActionButton dialog={SubspaceDialog.VideoCall} />}
         <DialogActionButton dialog={SubspaceDialog.Contributors} />
         <DialogActionButton dialog={SubspaceDialog.Activity} />
         <DialogActionButton dialog={SubspaceDialog.Timeline} />
-        <DialogActionButton dialog={SubspaceDialog.Share} />
         {innovationFlowProvided.canEditInnovationFlow && isSmallScreen && (
           <DialogActionButton dialog={SubspaceDialog.ManageFlow} />
         )}
