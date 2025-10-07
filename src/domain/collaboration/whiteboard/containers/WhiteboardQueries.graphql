@@ -86,7 +86,7 @@ query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
         id
         myPrivileges
       }
-      contributions(IDs: [$contributionId]) {
+      contributions(filter: { IDs: [$contributionId] }) {
         id
         whiteboard {
           ...WhiteboardDetails

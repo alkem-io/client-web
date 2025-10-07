@@ -18,5 +18,6 @@ export const calloutFramingIcons: Record<CalloutFramingType, ComponentType<SvgIc
 export const contributionIcons: Record<CalloutContributionType, ComponentType<SvgIconProps>> = {
   [CalloutContributionType.Link]: ReferenceIcon,
   [CalloutContributionType.Post]: LibraryBooksOutlined,
+  [CalloutContributionType.Memo]: MemoIcon,
   [CalloutContributionType.Whiteboard]: WhiteboardIcon,
 };

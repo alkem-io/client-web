@@ -1,0 +1,16 @@
+mutation CreatePostOnCallout($calloutId: UUID!, $post: CreatePostInput!) {
+  createContributionOnCallout(contributionData: {
+    calloutID: $calloutId,
+    type: POST,
+    post: $post
+  }) {
+    post {
+      id
+      profile {
+        id
+        url
+      }
+    }
+  }
+}
+

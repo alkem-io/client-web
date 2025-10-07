@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import MemoPreview from '../../memo/MemoPreview/MemoPreview';
 import MemoDialog from '../../memo/MemoDialog/MemoDialog';
-import { TypedCalloutDetails } from '../models/TypedCallout';
+import { CalloutDetailsModel } from '../models/CalloutDetailsModel';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
 
 interface CalloutFramingMemoProps {
-  callout: TypedCalloutDetails;
+  callout: CalloutDetailsModel;
   onCollapse?: () => void;
 }
 

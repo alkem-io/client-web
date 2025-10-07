@@ -83,6 +83,7 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
                 onCalloutUpdate={refetchCallout}
                 createButtonPlace="bottom"
+                disableClassification
                 calloutRestrictions={{
                   disableRichMedia: true,
                   disableWhiteboards: true,

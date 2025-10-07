@@ -16,6 +16,7 @@ import MessagesThread from './MessagesThread';
 import { gutters } from '@/core/ui/grid/utils';
 import { CommentInputFieldProps } from './CommentInputField';
 import CalloutClosedMarginal from '@/domain/collaboration/callout/calloutBlock/CalloutClosedMarginal';
+import { Box, BoxProps } from '@mui/material';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
@@ -31,7 +32,9 @@ export interface CommentsComponentProps {
   postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
   postReply: (reply: { messageText: string; threadId: string }) => void;
   handleDeleteMessage: (commentsId: string, messageId: string) => void;
-  maxHeight?: number;
+  maxHeight?: BoxProps['maxHeight'];
+  height?: BoxProps['height'];
+  fullHeight?: boolean;
   loading?: boolean;
   last?: boolean;
   onClickMore?: () => void;
@@ -66,6 +69,8 @@ const CommentsComponent = ({
   canDeleteMessage,
   canAddReaction,
   maxHeight,
+  height,
+  fullHeight,
   loading,
   onClickMore,
   commentsEnabled,
@@ -116,6 +121,7 @@ const CommentsComponent = ({
       {!isShowingLastMessage && hasMessages && (
         <ScrollerWithGradient
           maxHeight={maxHeight}
+          height={height}
           scrollerRef={commentsContainerRef}
           onScroll={handleScroll}
           margin={0}
@@ -137,7 +143,9 @@ const CommentsComponent = ({
       )}
       {isShowingLastMessage && lastMessage && (
         <>
-          <CaptionSmall onClick={onClickMore}>{t('callout.contributions', { count: messages.length })}</CaptionSmall>
+          <CaptionSmall onClick={onClickMore}>
+            {t('callout.contributions.contributionsCount', { count: messages.length })}
+          </CaptionSmall>
           <MessageView
             key={lastMessage.id}
             message={lastMessage}
@@ -151,6 +159,7 @@ const CommentsComponent = ({
           </CaptionSmall>
         </>
       )}
+      {!hasMessages && fullHeight && <Box flex={1} />}
       {canPostMessages && (
         <PostMessageToCommentsForm
           placeholder={t('pages.post.dashboard.comment.placeholder')}
