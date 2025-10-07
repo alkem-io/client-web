@@ -236,7 +236,7 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
                     </IconButton>
                   </BlockSectionTitle>
                 </Box>
-                <Actions padding={gutters()} justifyContent="space-between">
+                <Actions padding={gutters()}>
                   <Button onClick={handleOnClose}>{t('buttons.cancel')}</Button>
                   <Button variant="contained" onClick={() => handleSave(currentLinks)} disabled={!isValid}>
                     {t('buttons.save')}

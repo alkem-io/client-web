@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -91,7 +91,7 @@ const CalloutContributionsLink = ({
   const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
 
   // New Links:
-  const getNewLinkId = useCallback(async () => {
+  const getNewLinkId = async () => {
     const { data } = await createLinkOnCallout({
       variables: {
         calloutId: callout.id,
@@ -110,7 +110,7 @@ const CalloutContributionsLink = ({
       throw new Error('Error creating the new Link');
     }
     return data.createContributionOnCallout.link?.id;
-  }, [createLinkOnCallout, callout]);
+  };
 
   const removeNewLink = (linkId: string) =>
     deleteLink({
@@ -122,53 +122,47 @@ const CalloutContributionsLink = ({
       update: (cache, { data }) => data?.deleteLink && evictFromCache(cache, data.deleteLink.id, 'Link'),
     });
 
-  const handleSaveNewLinks = useCallback(
-    async (links: CreateLinkFormValues[]) => {
-      await Promise.all(
-        links.map(link =>
-          updateLink({
-            variables: {
-              input: {
-                ID: link.id,
-                uri: link.uri,
-                profile: {
-                  displayName: link.name,
-                  description: link.description,
-                },
+  const handleSaveNewLinks = async (links: CreateLinkFormValues[]) => {
+    await Promise.all(
+      links.map(link =>
+        updateLink({
+          variables: {
+            input: {
+              ID: link.id,
+              uri: link.uri,
+              profile: {
+                displayName: link.name,
+                description: link.description,
               },
             },
-          })
-        )
-      );
+          },
+        })
+      )
+    );
 
-      refetchCalloutAndContributions();
-      closeAddNewDialog();
-    },
-    [updateLink, closeAddNewDialog, refetchCalloutAndContributions, callout]
-  );
+    refetchCalloutAndContributions();
+    closeAddNewDialog();
+  };
 
   // Edit existing Links:
-  const handleEditLink = useCallback(
-    async (link: EditLinkFormValues) => {
-      await updateLink({
-        variables: {
-          input: {
-            ID: link.id,
-            uri: link.uri,
-            profile: {
-              displayName: link.name,
-              description: link.description,
-            },
+  const handleEditLink = async (link: EditLinkFormValues) => {
+    await updateLink({
+      variables: {
+        input: {
+          ID: link.id,
+          uri: link.uri,
+          profile: {
+            displayName: link.name,
+            description: link.description,
           },
         },
-      });
-      refetchCalloutAndContributions();
-      closeEditDialog();
-    },
-    [closeEditDialog, refetchCalloutAndContributions, updateLink, callout]
-  );
+      },
+    });
+    refetchCalloutAndContributions();
+    closeEditDialog();
+  };
 
-  const handleDeleteLink = useCallback(async () => {
+  const handleDeleteLink = async () => {
     const deletingLinkId = ensurePresence(deletingLink?.id);
     const deletingContributionId = deletingLink?.contributionId;
 
@@ -189,7 +183,7 @@ const CalloutContributionsLink = ({
     onCalloutUpdate?.();
     setDeletingLink(undefined);
     closeEditDialog();
-  }, [deletingLink, closeEditDialog, setDeletingLink, onCalloutUpdate, deleteLink, callout]);
+  };
 
   const formattedLinks: FormattedLink[] = sortBy(
     compact(
