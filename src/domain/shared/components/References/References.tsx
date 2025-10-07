@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import ReferenceView, { ReferenceViewProps } from './ReferenceView';
 import { Box, BoxProps } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
@@ -6,18 +6,25 @@ import { OpenInNew } from '@mui/icons-material';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { Text } from '@/core/ui/typography';
-import { ReferenceModel, ReferenceModelWithOptionalAuthorization } from '@/domain/common/reference/ReferenceModel';
+import { ReferenceModelWithOptionalAuthorization } from '@/domain/common/reference/ReferenceModel';
 
-interface ReferencesProps {
-  references: ReferenceModelWithOptionalAuthorization[] | undefined;
+interface ReferencesProps<T extends ReferenceModelWithOptionalAuthorization> {
+  references: T[] | undefined;
   noItemsView?: ReactNode;
   icon?: ReferenceViewProps['icon'];
   compact?: boolean;
-  onEdit?: (reference: ReferenceModel) => void;
+  onEdit?: (reference: T) => void;
   containerProps?: BoxProps;
 }
 
-const References: FC<ReferencesProps> = ({ references, onEdit, noItemsView, icon, compact, containerProps }) => {
+const References = <T extends ReferenceModelWithOptionalAuthorization>({
+  references,
+  onEdit,
+  noItemsView,
+  icon,
+  compact,
+  containerProps,
+}: ReferencesProps<T>) => {
   if (!references || references.length === 0) {
     return null;
   }

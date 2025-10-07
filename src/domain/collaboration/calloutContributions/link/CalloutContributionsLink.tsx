@@ -6,8 +6,8 @@ import EditLinkDialog, { EditLinkFormValues } from '@/domain/shared/components/R
 import CreateLinksDialog, { CreateLinkFormValues } from '@/domain/shared/components/References/CreateLinksDialog';
 import { Box, IconButton, Link } from '@mui/material';
 import {
-  refetchCalloutDetailsQuery,
   useCreateLinkOnCalloutMutation,
+  useDeleteContributionMutation,
   useDeleteLinkMutation,
   useUpdateLinkMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -24,14 +24,11 @@ import Loading from '@/core/ui/loading/Loading';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
 import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 const MAX_LINKS_NORMAL_VIEW = 3;
 
-export interface FormattedLink {
-  id: string;
-  uri: string;
-  name: string;
-  description: string | undefined;
+export interface FormattedLink extends EditLinkFormValues {
   authorization:
     | {
         myPrivileges?: AuthorizationPrivilege[];
@@ -51,6 +48,7 @@ const CalloutContributionsLink = ({
   onCalloutUpdate,
 }: CalloutContributionsLinkProps) => {
   const { t } = useTranslation();
+  const ensurePresence = useEnsurePresence();
 
   const {
     inViewRef,
@@ -72,16 +70,19 @@ const CalloutContributionsLink = ({
   }, [expanded, hasMore, setFetchAll]);
 
   const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
-    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
+    refetchQueries: ['CalloutDetails', 'CalloutContributions'],
   });
   const [updateLink] = useUpdateLinkMutation();
   const [deleteLink] = useDeleteLinkMutation({
-    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id, withClassification: false })],
+    refetchQueries: ['CalloutDetails', 'CalloutContributions'],
+  });
+  const [deleteContribution] = useDeleteContributionMutation({
+    refetchQueries: ['CalloutDetails', 'CalloutContributions'],
   });
 
   const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
-  const [editLink, setEditLink] = useState<EditLinkFormValues>();
-  const [deletingLinkId, setDeletingLinkId] = useState<string>();
+  const [editLink, setEditLink] = useState<FormattedLink>();
+  const [deletingLink, setDeletingLink] = useState<FormattedLink>();
 
   const closeAddNewDialog = () => setAddNewLinkDialogOpen(false);
   const closeEditDialog = () => setEditLink(undefined);
@@ -168,9 +169,9 @@ const CalloutContributionsLink = ({
   );
 
   const handleDeleteLink = useCallback(async () => {
-    if (!deletingLinkId) {
-      return;
-    }
+    const deletingLinkId = ensurePresence(deletingLink?.id);
+    const deletingContributionId = deletingLink?.contributionId;
+
     await deleteLink({
       variables: {
         input: {
@@ -178,10 +179,17 @@ const CalloutContributionsLink = ({
         },
       },
     });
+    if (deletingContributionId) {
+      await deleteContribution({
+        variables: {
+          contributionId: deletingContributionId,
+        },
+      });
+    }
     onCalloutUpdate?.();
-    setDeletingLinkId(undefined);
+    setDeletingLink(undefined);
     closeEditDialog();
-  }, [deletingLinkId, closeEditDialog, setDeletingLinkId, onCalloutUpdate, deleteLink, callout]);
+  }, [deletingLink, closeEditDialog, setDeletingLink, onCalloutUpdate, deleteLink, callout]);
 
   const formattedLinks: FormattedLink[] = sortBy(
     compact(
@@ -253,15 +261,15 @@ const CalloutContributionsLink = ({
         link={editLink!}
         onSave={values => handleEditLink(values)}
         canDelete={canDeleteLinks}
-        onDelete={() => setDeletingLinkId(editLink?.id)}
+        onDelete={() => setDeletingLink(editLink)}
       />
       <ConfirmationDialog
         actions={{
           onConfirm: handleDeleteLink,
-          onCancel: () => setDeletingLinkId(undefined),
+          onCancel: () => setDeletingLink(undefined),
         }}
         options={{
-          show: Boolean(deletingLinkId),
+          show: Boolean(deletingLink),
         }}
         entities={{
           titleId: 'callout.link-collection.delete-confirm-title',

@@ -216,9 +216,9 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
                               </Box>
                             </Box>
                           </Gutters>
-                          <Box>
+                          <Gutters disablePadding>
                             <FormikInputField name={`${fieldName}.${index}.description`} title={'Description'} />
-                          </Box>
+                          </Gutters>
                         </Gutters>
                       ))
                     }
