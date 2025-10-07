@@ -20930,6 +20930,16 @@ export const ImportTemplateDialogDocument = gql`
           }
           contentSpace @include(if: $includeSpace) {
             id
+            about {
+              id
+              profile {
+                id
+                visual(type: CARD) {
+                  id
+                  uri
+                }
+              }
+            }
             collaboration {
               id
               innovationFlow {
@@ -21030,6 +21040,16 @@ export const ImportTemplateDialogPlatformTemplatesDocument = gql`
             }
             contentSpace @include(if: $includeSpace) {
               id
+              about {
+                id
+                profile {
+                  id
+                  visual(type: CARD) {
+                    id
+                    uri
+                  }
+                }
+              }
               collaboration {
                 id
                 innovationFlow {

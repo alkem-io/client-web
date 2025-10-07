@@ -20,7 +20,6 @@ import { InAppSpaceAdminCommunityApplicationView } from './views/space/InAppSpac
 import { InAppSpaceAdminCollaborationCalloutContributionView } from './views/space/InAppSpaceAdminCollaborationCalloutContributionView';
 import { InAppSpaceCollaborationCalloutPostContributionCommentView } from './views/space/InAppSpaceCollaborationCalloutPostContributionCommentView';
 import { InAppSpaceCommunicationUpdateView } from './views/space/InAppSpaceCommunicationUpdateView';
-import { InAppSpaceCommunicationMessageSenderView } from './views/space/InAppSpaceCommunicationMessageSenderView';
 import { InAppSpaceCommunityInvitationUserPlatformView } from './views/space/InAppSpaceCommunityInvitationUserPlatformView';
 import { InAppSpaceLeadCommunicationMessageView } from './views/space/InAppSpaceLeadCommunicationMessageView';
 import { InAppUserCommentReplyView } from './views/user/InAppUserCommentReplyView';
@@ -70,8 +69,6 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
       return <InAppSpaceCollaborationCalloutCommentView {...item} />;
     case NotificationEvent.SpaceCommunicationUpdate:
       return <InAppSpaceCommunicationUpdateView {...item} />;
-    case NotificationEvent.SpaceCommunicationMessageSender:
-      return <InAppSpaceCommunicationMessageSenderView {...item} />;
     case NotificationEvent.SpaceCommunityInvitationUserPlatform:
       return <InAppSpaceCommunityInvitationUserPlatformView {...item} />;
     case NotificationEvent.SpaceLeadCommunicationMessage:
