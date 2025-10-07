@@ -113,6 +113,7 @@ const CalloutContributionPreviewPost = ({
   const responsiveConfig = ResponsiveConfiguration[columns] || ResponsiveConfiguration[12];
 
   const [commentsExpanded, setCommentsExpanded] = useState(false);
+  const toggleCommentsExpanded = () => setCommentsExpanded(expanded => !expanded);
 
   const postContentRef = useRef<HTMLDivElement>(null);
   const [postContentHeight, setPostContentHeight] = useState(0);
@@ -144,8 +145,7 @@ const CalloutContributionPreviewPost = ({
           backgroundColor: commentsExpanded ? theme.palette.primary.main : 'transparent',
           color: commentsExpanded ? theme.palette.primary.contrastText : theme.palette.text.primary,
         }}
-        onClick={() => setCommentsExpanded(!commentsExpanded)}
-        // color={commentsExpanded ? 'primary' : 'default'}
+        onClick={toggleCommentsExpanded}
         disabled={loading || !contribution}
         aria-label={t('common.Comments')}
       >
@@ -184,7 +184,7 @@ const CalloutContributionPreviewPost = ({
           <WrapperMarkdown>{contribution?.post?.profile.description ?? ''}</WrapperMarkdown>
         </PostContentWrapper>
         <CommentsExpanderButton
-          onClick={() => setCommentsExpanded(!commentsExpanded)}
+          onClick={toggleCommentsExpanded}
           expanded={commentsExpanded}
           position={responsiveConfig.CommentsPosition}
           disabled={loading || !contribution}
