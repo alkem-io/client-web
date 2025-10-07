@@ -1,24 +1,19 @@
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
-import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
-import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
-import { Trans, useTranslation } from 'react-i18next';
-import { ComponentType, useEffect, useState } from 'react';
-import GridProvider from '@/core/ui/grid/GridProvider';
-import { useScreenSize } from '@/core/ui/grid/constants';
-import React from 'react';
-import { Box } from '@mui/material';
-import Loading from '@/core/ui/loading/Loading';
-import { Caption } from '@/core/ui/typography';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Gutters from '@/core/ui/grid/Gutters';
-import { AnyContribution } from '../interfaces/AnyContributionType';
-import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import useNavigate from '@/core/routing/useNavigate';
-import { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
-import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import Gutters from '@/core/ui/grid/Gutters';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import Loading from '@/core/ui/loading/Loading';
 import { times } from 'lodash';
+import { ComponentType, useEffect, useState } from 'react';
+import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
+import { AnyContribution } from '../interfaces/AnyContributionType';
+import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
+import { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
+import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
+import PaginationExpander from './PaginationExpander';
 
 interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
   contributionType: CalloutContributionType;
@@ -82,7 +77,13 @@ const ContributionsCardsExpandable = ({
     }
   };
 
-  const gridColumns = isSmallScreen ? 3 : isMediumSmallScreen ? 6 : calloutExpanded ? 10 : 12;
+  const gridColumns = (() => {
+    if (isSmallScreen) return 3;
+    if (isMediumSmallScreen) return 6;
+    if (calloutExpanded) return 10;
+    return 12;
+  })();
+
   return (
     <>
       <GridProvider columns={gridColumns} force>
@@ -122,63 +123,3 @@ const ContributionsCardsExpandable = ({
 };
 
 export default ContributionsCardsExpandable;
-
-interface PaginationExpanderProps {
-  onClick: () => void;
-  totalContributions: number;
-  pageSize: number;
-  isCollapsed: boolean;
-  hasMore: boolean;
-}
-const PaginationExpander = ({
-  onClick,
-  totalContributions,
-  pageSize,
-  isCollapsed,
-  hasMore,
-}: PaginationExpanderProps) => {
-  const { t } = useTranslation();
-  if (totalContributions === 0) {
-    return (
-      <Box>
-        <Caption>{t('callout.contributions.noContributions')}</Caption>
-      </Box>
-    );
-  }
-
-  if (!isCollapsed) {
-    return (
-      <Box display="flex" flexDirection="row" alignContent="end" sx={{ cursor: 'pointer' }} onClick={onClick}>
-        <ExpandLessIcon />
-        <Caption>
-          <Trans
-            i18nKey="callout.contributions.contributionsCollapse"
-            components={{
-              click: <strong />,
-            }}
-            values={{ count: totalContributions }}
-          />
-        </Caption>
-      </Box>
-    );
-  } else {
-    if (!hasMore && totalContributions <= pageSize) {
-      return <Caption>{t('callout.contributions.contributionsCount', { count: totalContributions })}</Caption>;
-    } else {
-      return (
-        <Box display="flex" flexDirection="row" alignContent="end" sx={{ cursor: 'pointer' }} onClick={onClick}>
-          <ExpandMoreIcon />
-          <Caption>
-            <Trans
-              i18nKey="callout.contributions.contributionsItemsCountExpand"
-              components={{
-                click: <strong />,
-              }}
-              values={{ count: totalContributions }}
-            />
-          </Caption>
-        </Box>
-      );
-    }
-  }
-};
