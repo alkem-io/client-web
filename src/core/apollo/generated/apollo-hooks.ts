@@ -7095,6 +7095,10 @@ export const CalloutContributionDocument = gql`
       contribution(ID: $contributionId) {
         id
         sortOrder
+        authorization {
+          id
+          myPrivileges
+        }
         link @include(if: $includeLink) {
           ...LinkDetailsWithAuthorization
         }
@@ -8565,112 +8569,6 @@ export type PostCalloutsInCalloutSetQueryResult = Apollo.QueryResult<
 >;
 export function refetchPostCalloutsInCalloutSetQuery(variables: SchemaTypes.PostCalloutsInCalloutSetQueryVariables) {
   return { query: PostCalloutsInCalloutSetDocument, variables: variables };
-}
-export const PostDocument = gql`
-  query Post($postId: UUID!) {
-    lookup {
-      post(ID: $postId) {
-        id
-        createdDate
-        authorization {
-          id
-          myPrivileges
-        }
-        profile {
-          id
-          displayName
-          description
-          url
-          tagset {
-            ...TagsetDetails
-          }
-          references {
-            ...ReferenceDetails
-          }
-          banner: visual(type: BANNER) {
-            ...VisualModel
-          }
-        }
-        createdBy {
-          id
-          profile {
-            id
-            displayName
-            avatar: visual(type: AVATAR) {
-              ...VisualModel
-            }
-            tagsets {
-              ...TagsetDetails
-            }
-          }
-        }
-        comments {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          messages {
-            ...MessageDetails
-          }
-          vcInteractions {
-            id
-            threadID
-            virtualContributorID
-          }
-        }
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${ReferenceDetailsFragmentDoc}
-  ${VisualModelFragmentDoc}
-  ${MessageDetailsFragmentDoc}
-`;
-
-/**
- * __usePostQuery__
- *
- * To run a query within a React component, call `usePostQuery` and pass it any options that fit your needs.
- * When your component renders, `usePostQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePostQuery({
- *   variables: {
- *      postId: // value for 'postId'
- *   },
- * });
- */
-export function usePostQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.PostQuery, SchemaTypes.PostQueryVariables> &
-    ({ variables: SchemaTypes.PostQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.PostQuery, SchemaTypes.PostQueryVariables>(PostDocument, options);
-}
-export function usePostLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PostQuery, SchemaTypes.PostQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.PostQuery, SchemaTypes.PostQueryVariables>(PostDocument, options);
-}
-export function usePostSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<SchemaTypes.PostQuery, SchemaTypes.PostQueryVariables>
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.PostQuery, SchemaTypes.PostQueryVariables>(PostDocument, options);
-}
-export type PostQueryHookResult = ReturnType<typeof usePostQuery>;
-export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>;
-export type PostSuspenseQueryHookResult = ReturnType<typeof usePostSuspenseQuery>;
-export type PostQueryResult = Apollo.QueryResult<SchemaTypes.PostQuery, SchemaTypes.PostQueryVariables>;
-export function refetchPostQuery(variables: SchemaTypes.PostQueryVariables) {
-  return { query: PostDocument, variables: variables };
 }
 export const UpdatePostDocument = gql`
   mutation UpdatePost($input: UpdatePostInput!) {

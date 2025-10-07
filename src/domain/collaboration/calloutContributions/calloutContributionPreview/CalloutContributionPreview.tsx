@@ -1,5 +1,5 @@
 import { useCalloutContributionQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderCardLike from '@/core/ui/content/PageContentBlockHeaderCardLike';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -44,12 +44,13 @@ const CalloutContributionPreview = ({
   const columns = useColumns();
   const [contributionDialogOpen, setContributionDialogOpen] = useState(false);
 
+  const { allowedTypes } = callout.settings.contribution;
   const { data, loading } = useCalloutContributionQuery({
     variables: {
       contributionId,
-      includeLink: callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Link),
-      includePost: callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post),
-      includeWhiteboard: callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard),
+      includeLink: allowedTypes.includes(CalloutContributionType.Link),
+      includePost: allowedTypes.includes(CalloutContributionType.Post),
+      includeWhiteboard: allowedTypes.includes(CalloutContributionType.Whiteboard),
     },
   });
   const contribution = data?.lookup.contribution;
@@ -93,6 +94,25 @@ const CalloutContributionPreview = ({
     onCalloutUpdate?.();
   };
 
+  const calloutContributionTypeToShareDialogKey = (
+    type: CalloutContributionType
+  ): 'post' | 'whiteboard' | 'memo' | 'link' => {
+    switch (type) {
+      case CalloutContributionType.Post:
+        return 'post';
+      case CalloutContributionType.Whiteboard:
+        return 'whiteboard';
+      case CalloutContributionType.Link:
+        return 'link';
+      case CalloutContributionType.Memo:
+        return 'memo';
+    }
+  };
+
+  // Maybe we need to check if we can update the post/whiteboard/memo... inside?
+  const canUpdateContribution =
+    contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+
   return (
     <Gutters>
       <PageContentBlock>
@@ -105,19 +125,25 @@ const CalloutContributionPreview = ({
               <Tooltip title={formattedCreatedDate} arrow>
                 <Caption whiteSpace="nowrap">{formattedElapsedTime}</Caption>
               </Tooltip>
-              {/* TODO: Here the comments to the post */}
-              <IconButton
-                onClick={() => setContributionDialogOpen(true)}
-                title={t('buttons.edit')}
-                aria-label={t('buttons.edit')}
-                color="primary"
-                size="small"
-              >
-                <EditOutlinedIcon />
-              </IconButton>
+              {canUpdateContribution && (
+                <IconButton
+                  onClick={() => setContributionDialogOpen(true)}
+                  title={t('buttons.edit')}
+                  aria-label={t('buttons.edit')}
+                  color="primary"
+                  size="small"
+                >
+                  <EditOutlinedIcon />
+                </IconButton>
+              )}
 
               {renderExtraActions && contribution && renderExtraActions(contribution)}
-              {contributionUrl && <ShareButton url={contributionUrl} entityTypeName={contributionType} />}
+              {contributionUrl && (
+                <ShareButton
+                  url={contributionUrl}
+                  entityTypeName={calloutContributionTypeToShareDialogKey(contributionType)}
+                />
+              )}
               <IconButton onClick={() => navigate(callout.framing.profile.url)} size="small">
                 <CloseOutlinedIcon />
               </IconButton>

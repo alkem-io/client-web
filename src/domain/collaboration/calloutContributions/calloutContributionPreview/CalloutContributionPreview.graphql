@@ -3,6 +3,10 @@ query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false
     contribution(ID: $contributionId) {
       id
       sortOrder
+      authorization {
+        id
+        myPrivileges
+      }
       link @include(if: $includeLink) {
         ...LinkDetailsWithAuthorization
       }
