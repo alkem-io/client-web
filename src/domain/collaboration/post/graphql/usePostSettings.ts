@@ -139,7 +139,7 @@ const usePostSettings = ({
     loading,
     error,
     updating,
-    deleting: deleting,
+    deleting,
     updateError,
     handleUpdate,
     handleAddReference,

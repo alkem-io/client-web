@@ -30,9 +30,7 @@ const CardHeader = ({ iconComponent, title = '', contrast, children }: PropsWith
   return (
     <BadgeCardView
       flexShrink={0}
-      visual={
-        iconComponent && <RoundedIcon marginLeft={0.5} size="small" component={iconComponent} swapColors={contrast} />
-      }
+      visual={iconComponent && <RoundedIcon marginLeft={0.5} size="small" component={iconComponent} />}
       height={gutters(3)}
       paddingX={1}
       gap={1}

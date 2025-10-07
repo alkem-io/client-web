@@ -6,12 +6,7 @@ import Typography from '@mui/material/Typography';
 import PostForm, { PostFormInput, PostFormOutput } from '../../post/PostForm/PostForm';
 import usePostSettings from '../../post/graphql/usePostSettings';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import {
-  PostSettingsFragment,
-  AuthorizationPrivilege,
-  Visual,
-  VisualType,
-} from '@/core/apollo/generated/graphql-schema';
+import { PostSettingsFragment, AuthorizationPrivilege, VisualType } from '@/core/apollo/generated/graphql-schema';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
 import {
   useDeleteContributionMutation,
@@ -111,7 +106,7 @@ const CalloutContributionDialogPost = ({
 
   // TODO This page component exposes too much of inner logic that should be encapsulated
   // either in a container/hook or a rendered view
-  const visuals = (postSettings.post ? postSettings.post.profile.visuals : []) as Visual[];
+  const visuals = postSettings.post?.profile.visuals ?? [];
   const isPostLoaded = Boolean(
     post && postSettings.post && !postSettings.updating && !postSettings.deleting && !isMovingContribution
   );

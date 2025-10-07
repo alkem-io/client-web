@@ -8,7 +8,6 @@ export type RoundedIconProps = Pick<RoundedBadgeProps, 'size' | 'color'> &
     component: ComponentType<SvgIconProps>;
     iconSize?: SvgIconProps['fontSize'] | 'xsmall';
     disabled?: boolean;
-    swapColors?: boolean;
   };
 
 const getFontSize = (theme: Theme) => (iconSize: SvgIconProps['fontSize'] | 'xsmall') => {
