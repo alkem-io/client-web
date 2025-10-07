@@ -13,7 +13,7 @@ import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import UserPresencing from '../../realTimeCollaboration/UserPresencing';
 import { MemoStatus, RealTimeCollaborationState } from '../../realTimeCollaboration/RealTimeCollaborationState';
 import MemoFooter from './MemoFooter';
-import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import CollaborationSettings from '../../realTimeCollaboration/CollaborationSettings/CollaborationSettings';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
@@ -62,7 +62,7 @@ const MemoDialog = ({ open = false, onClose, memoId, calloutId }: MemoDialogProp
         id="memo-dialog-title"
         actions={
           <>
-            <ShareButton url={memo?.profile.url} entityTypeName={CalloutContributionType.Memo} disabled={!memo?.profile.url}>
+            <ShareButton url={memo?.profile.url} entityTypeName="memo" disabled={!memo?.profile.url}>
               {hasUpdatePrivileges && <CollaborationSettings element={memo} elementType="memo" />}
             </ShareButton>
             <FullscreenButton />

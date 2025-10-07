@@ -22,18 +22,6 @@ export interface PostContribution extends Identifiable {
       displayName: string;
       description?: string;
       tagset?: { tags: string[] };
-
-      /*
-     visuals: {
-       id: string;
-       uri: string;
-     }[];
-     references?: {
-       id: string;
-       name: string;
-       uri: string;
-       description?: string;
-     }[];*/
     };
     bannerNarrow?: VisualModel;
     createdBy?: { profile: { displayName: string } };
