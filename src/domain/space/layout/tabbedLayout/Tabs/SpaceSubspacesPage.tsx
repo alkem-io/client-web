@@ -69,7 +69,7 @@ const SpaceSubspacesPage = () => {
           displayName={item.about.profile.displayName}
           banner={item.about.profile.cardBanner}
           tags={item.about.profile.tagset?.tags!}
-          tagline={item.about.profile.tagline!}
+          tagline={item.about.profile.tagline ?? ''}
           vision={item.about.why!}
           spaceUri={item.about.profile.url}
           locked={!item.about.isContentPublic}
