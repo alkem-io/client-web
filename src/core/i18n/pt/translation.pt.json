@@ -253,8 +253,10 @@
     "add": "Adicionar",
     "added": "Adicionado",
     "remove": "Remover",
-    "callout": "Callout",
-    "callouts": "Callouts",
+    "callout": "$t(common.post)",
+    "callouts": "$t(common.posts)",
+    "Callout": "$t(common.Post)",
+    "Callouts": "$t(common.Posts)",
     "collaborationTools": "Ferramentas de Colaboração",
     "createdBy": "Desenvolvido por",
     "Memo": "Memo",
@@ -302,10 +304,13 @@
     "filterBy": "Filtrar por...",
     "forum": "Fórum",
     "email": "E-mail",
+    "inApp": "In-app",
     "state": "Estado",
     "states": "Frases",
-    "post": "Publicação",
-    "posts": "Publicações",
+    "post": "post",
+    "posts": "posts",
+    "Post": "Post",
+    "Posts": "Posts",
     "status": "Status",
     "aspect": "Cartão",
     "aspects": "Cartões",
@@ -340,7 +345,7 @@
     "agreement": "Termos de uso",
     "agreements": "Acordos",
     "templates": "Modelos",
-    "noneTemplates": "None templates",
+    "noneTemplates": "No templates",
     "templateTypes": "Template types",
     "template": "Modelo",
     "group": "Grupo",
@@ -513,8 +518,8 @@
       },
       "calloutType": {
         "LINK_COLLECTION": "Link $t(common.Collection)",
-        "POST": "$t(common.post)",
-        "POST_COLLECTION": "$t(common.post) $t(common.Collection)",
+        "POST": "$t(common.Post)",
+        "POST_COLLECTION": "$t(common.Post) $t(common.Collection)",
         "WHITEBOARD": "$t(common.Whiteboard)",
         "WHITEBOARD_COLLECTION": "$t(common.Whiteboard) $t(common.Collection)"
       },
@@ -764,9 +769,9 @@
   },
   "callout": {
     "create": {
-      "createButton": "$t(common.post)",
-      "createButtonTooltip": "Add $t(common.post)",
-      "dialogTitle": "Add $t(common.post)",
+      "createButton": "$t(common.Callout)",
+      "createButtonTooltip": "Add $t(common.Callout)",
+      "dialogTitle": "Add $t(common.Callout)",
       "framingSettings": {
         "title": "Additional Content",
         "none": {
@@ -824,7 +829,7 @@
             }
           },
           "post": {
-            "title": "$t(common.posts)",
+            "title": "$t(common.Posts)",
             "tooltip": "Enable responding with $t(common.posts)",
             "settings": {
               "label": "Default text:",
@@ -867,14 +872,14 @@
     "draftNotice": "DRAFT - Only visible for $t(common.admins)",
     "closed": "Este Callout está fechado. Você ainda pode comentar nos posts individuais.",
     "notMember": "You can't reply to this discussion since you're not a $t(common.member) of this $t(common.space)",
-    "delete-confirm-title": "Excluir Callout?",
-    "delete-confirm-text": "All $t(common.posts), $t(common.whiteboards) and messages under the Callout will also be deleted.",
+    "delete-confirm-title": "Delete $t(common.post)?",
+    "delete-confirm-text": "All $t(common.responses) and $t(common.comments) under the $t(common.posts) will also be deleted.",
     "state-permission": "Allow adding to the $t(common.collection)",
-    "permission-help-text": "Use the switch below to close this callout for new entries.",
+    "permission-help-text": "Use the switch below to close this $t(common.callout) for new entries.",
     "callout-location": "Localização: ",
     "sortContributions": "Sort contributions",
     "saveAsTemplate": "Save as $t(common.template)",
-    "alkemio-link": "Clique aqui para ler mais sobre as ferramentas de colaboração da Alkemio",
+    "alkemio-link": "Click here to read more about Alkemio's $t(common.posts)",
     "link-collection": {
       "add-link": "Add links or documents to {{title}}",
       "edit-link": "Editar {{title}}",
@@ -1097,7 +1102,7 @@
       "minLength": "{{field}} deve ter pelo menos de {{min}} símbolos",
       "maxLength": "Excedeu o limite de caracteres {{max}}",
       "alphaNumeric": "{{field}} pode conter apenas caracteres latinos minúsculos, números e hífen",
-      "nonBlank": "{{field}} must not consist of just $t(common.spaces)",
+      "nonBlank": "{{field}} must not consist of just spaces",
       "atLeastOne": "Pelo menos um {{item}} deve ser selecionado.",
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
       "invalidUrl": "Invalid URL",
@@ -1122,7 +1127,6 @@
     "calloutTemplates": {
       "name": "$t(common.enums.templateType.CALLOUT)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.CALLOUT_plural)",
-      "type": "Tipo de Callout",
       "description": "Descrição"
     },
     "postTemplates": {
@@ -1188,7 +1192,7 @@
       "typeReadonly": "Once a $t(common.template) is created, its type cannot be changed. If you need a different type, please create a new $t(common.template)."
     },
     "shareSettings": {
-      "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the $t(common.settings) below.",
+      "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users \u2028at once. If you do not want others to edit, change the $t(common.settings) below.",
       "disabled": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
       "ownedBy": {
         "title": "This {{elementName}} is owned by:"
@@ -1287,15 +1291,15 @@
           "title": "Find $t(common.space) $t(common.template)",
           "confirmationDialog": {
             "title": "Be careful when changing the flow!",
-            "description": "- By changing the $t(common.innovation-flow), **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the first phase of the new flow."
+            "description": "- By changing the $t(common.innovation-flow), **all changes made to the current flow will be lost**.\n- All existing $t(common.posts) will be grouped under the first phase of the new flow."
           },
           "importCalloutsDialog": {
             "title": "Apply New $t(common.template)",
-            "description": "You are about to apply a new $t(common.template). This action will <b>permanently delete</b> your current $t(common.innovation-flow). However, the existing collaboration tools linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
-            "yes": "Add Collaboration Tools from $t(common.template)",
-            "yesDescription": "This will include the new collaboration tools from the $t(common.template) in addition to your existing ones.",
+            "description": "You are about to apply a new $t(common.template). This action will <b>permanently delete</b> your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "yes": "Add $t(common.posts) from $t(common.template)",
+            "yesDescription": "This will include the new $t(common.posts) from the $t(common.template) in addition to your existing ones.",
             "no": "Only Change the $t(common.innovation-flow)",
-            "noDescription": "This will replace only the $t(common.innovation-flow), keeping your current collaboration tools as they are.",
+            "noDescription": "This will replace only the $t(common.innovation-flow), keeping your current $t(common.posts) as they are.",
             "apply": "Apply new $t(common.template)"
           }
         }
@@ -1437,18 +1441,17 @@
     "callout-creation": {
       "title": "What do you want to ask your $t(common.community)?",
       "titleWithType": "Criar {{type}}",
-      "post-type-label": "$t(common.post) label",
+      "post-type-label": "$t(common.Post) label",
       "custom-template": "Custom $t(common.template)",
       "info-step": {
         "title": "Detalhes",
         "description": "Descrição",
         "type-comments": "$t(common.Comments)",
         "type-comments-help": "Select $t(common.Comments) when you want people to answer in a simple text format, like a message board.",
-        "type-posts": "$t(common.posts)",
+        "type-posts": "$t(common.Posts)",
         "type-posts-help": "Select $t(common.posts) when you want people to answer in a card format.",
         "type-whiteboards": "$t(common.Whiteboards)",
-        "type-whiteboards-help": "Select ‘$t(common.Whiteboards)’ when you want people to answer on a visual $t(common.whiteboard), allowing them to draw and use text.",
-        "unique-title-validation-text": "Este título já é usado para outro $t(common.callout)"
+        "type-whiteboards-help": "Select ‘$t(common.Whiteboards)’ when you want people to answer on a visual $t(common.whiteboard), allowing them to draw and use text."
       },
       "framing": {
         "whiteboard": {
@@ -1492,7 +1495,7 @@
       "type-step": {
         "title": "O tipo do contexto adicional a ser adicionado.",
         "error": "Ocorreu um erro ao carregar os tipos",
-        "label": "$t(common.post) label",
+        "label": "$t(common.Post) label",
         "type-help-text-short": "Please choose the $t(common.post) label that best matches the context you wish to share."
       },
       "info-step": {
@@ -1514,7 +1517,7 @@
       },
       "visuals-step": {
         "title": "Ilustrações Visuais",
-        "headline": "Congratulations, you have now successfully created an $t(common.post)!",
+        "headline": "Congratulations, you have now successfully created a $t(common.post)!",
         "explanation": "To further personalize your $t(common.post), please consider adding visuals such as a Banner to the $t(common.post).",
         "bottom-note": "You will still have the possibility to change these visuals under the $t(common.settings) tab as well as adding attachments and a Banner for the $t(common.dashboard) card."
       }
@@ -1584,7 +1587,7 @@
       "extendedMessage": "{{join}} our {{space}} and start making change!",
       "dialog-apply-parent": {
         "title": "Candidate-se ao <strong title='Parent community name'>{{parentCommunityName}}</strong>",
-        "body": "To join <strong title='subspace name'>'{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> $t(common.space) first. Please add the $t(common.subspace) you want to join in the $t(common.spaces)' application form."
+        "body": "To join <strong title='subspace name'>'{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> $t(common.space) first. Please add the $t(common.subspace) you want to join in the $t(common.space)'s application form."
       },
       "dialog-parent-app-pending": {
         "title": "Inscrição pendente!",
@@ -1934,16 +1937,12 @@
           "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various $t(common.posts) and $t(common.whiteboards), further deepen your knowledge about this topic, and connect with other Contributors."
         },
         "USER_COMMENT_REPLY": {
-          "subject": "{{triggeredByName}} replied to your comment {{parentName}}",
+          "subject": "{{triggeredByName}} replied to your $t(common.comment) {{parentName}}",
           "description": ""
         },
         "USER_SPACE_COMMUNITY_INVITATION": {
           "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
           "description": "{{spaceName}} - {{spaceDescription}}"
-        },
-        "USER_SPACE_COMMUNITY_APPLICATION": {
-          "subject": "You have successfully applied to join {{spaceName}}",
-          "description": ""
         },
         "USER_MESSAGE_SENDER": {
           "subject": "You sent a DM to {{receiverName}}",
@@ -1967,22 +1966,22 @@
         },
         "SPACE_COLLABORATION_CALLOUT_CONTRIBUTION": {
           "subject": "{{triggeredByName}} created a contribution in \"{{calloutName}}\"",
-          "description": "In <b>{{spaceName}}</b>, of which you are a member."
+          "description": "In <b>{{spaceName}}</b>, of which you are a $t(common.member)."
         },
         "SPACE_ADMIN_COLLABORATION_CALLOUT_CONTRIBUTION": {
           "subject": "{{triggeredByName}} created a contribution in \"{{calloutName}}\"",
-          "description": "In <b>{{spaceName}}</b>, of which you are an admin."
+          "description": "In <b>{{spaceName}}</b>, of which you are an $t(common.admin)."
         },
         "SPACE_ADMIN_COMMUNITY_APPLICATION": {
           "subject": "{{triggeredByName}} applied to join {{spaceName}}",
-          "description": "Review the application in space settings"
+          "description": "Review the application in the $t(common.space) $t(common.settings)"
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
           "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
           "description": ""
         },
         "SPACE_COMMUNICATION_MESSAGE_SENDER": {
-          "subject": "You sent a message to the leads of {{spaceName}}",
+          "subject": "You sent a message to the $t(common.leads) of {{spaceName}}",
           "description": ""
         },
         "SPACE_COLLABORATION_CALLOUT_COMMENT": {
@@ -1994,19 +1993,19 @@
           "description": ""
         },
         "ORGANIZATION_ADMIN_MENTIONED": {
-          "subject": "{{triggeredByName}} mentioned your organization in {{spaceName}}",
+          "subject": "{{triggeredByName}} mentioned your $t(common.organization) in {{spaceName}}",
           "description": "{{message}}"
         },
         "ORGANIZATION_ADMIN_MESSAGE": {
-          "subject": "{{triggeredByName}} sent a message to your organization {{organizationName}}",
-          "description": "See the message in you email inbox"
+          "subject": "{{triggeredByName}} sent a message to your $t(common.organization) {{organizationName}}",
+          "description": "See the message in your email inbox"
         },
         "ORGANIZATION_MESSAGE_SENDER": {
           "subject": "You sent a message to {{organizationName}}",
           "description": ""
         },
         "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
-          "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an admin",
+          "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an $t(common.admin)",
           "description": ""
         },
         "PLATFORM_FORUM_DISCUSSION_CREATED": {
@@ -2034,7 +2033,7 @@
           "description": ""
         },
         "PLATFORM_ADMIN_SPACE_CREATED": {
-          "subject": "{{triggeredByName}} has created a new Space",
+          "subject": "{{triggeredByName}} has created a new $t(common.space)",
           "description": "{{spaceName}}"
         }
       },
@@ -2151,17 +2150,17 @@
       "generic": {
         "sections": {
           "profile": {
-            "description": "Here you can edit the public $t(common.profile) for this {{entity}}. This information is also visible to non-members."
+            "description": "Here you can edit the public $t(common.profile) for this {{entity}}. This information is also visible to non-$t(common.members)."
           },
           "about": {
-            "description": "Here you can edit the public $t(common.profile) for this {{entity}}. This information is also visible to non-members."
+            "description": "Here you can edit the public $t(common.profile) for this {{entity}}. This information is also visible to non-$t(common.members)."
           },
           "layout": {
             "description": "Here you can edit the layout for this {{entity}}.",
             "innovationFlowEditor": "$t(common.space) tabs"
           },
           "context": {
-            "description": "Aqui você pode editar o contexto para este {{entity}}."
+            "description": "Here you can edit the context for this {{entity}}, which is publicly visible. This information is also visible to non-$t(common.members)."
           },
           "community": {
             "description": "Here you can edit the $t(common.community) $t(common.settings) for this {{entity}}."
@@ -2287,7 +2286,7 @@
         "create-organization": "Create $t(common.organization)",
         "authorization": {
           "title": "Authorization",
-          "subtitle": "This section allows you to modify the $t(common.organizations) authorization"
+          "subtitle": "This section allows you to modify the $t(common.organization)'s authorization"
         },
         "settings": {
           "title": "$t(common.Settings)",
@@ -2360,7 +2359,7 @@
       "space": {
         "sections": {
           "subspaces": {
-            "description": "Here you can edit $t(common.subspaces) for this $t(common.space).",
+            "description": "Here you can edit the $t(common.subspaces) in this $t(common.space).",
             "defaultSettings": {
               "title": "Default $t(common.subspace) $t(common.template)",
               "description": "Choose the default $t(common.settings) that will apply when creating a new $t(common.subspace) within this $t(common.space). These $t(common.settings) can be modified during the creation process or at a later time.",
@@ -2404,7 +2403,7 @@
             "title": "$t(common.space) Features",
             "features": {
               "WHITEBOARD_MULTI_USER": "Multi-user $t(common.Whiteboards)",
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create $t(common.template) from callout",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create $t(common.template) from $t(common.callout)",
               "VIRTUAL_CONTRIBUTORS": "Interact with $t(common.virtualContributors)"
             }
           },
@@ -2420,15 +2419,16 @@
           },
           "memberActions": {
             "title": "Ações de membros",
-            "createBlocks": "<b>Create $t(common.posts)</b>: Allow $t(common.members) to create $t(common.posts) for collaboration tools & $t(common.posts). If you deactivate this, $t(common.members) will still be able to contribute to existing $t(common.posts) and calls, but will not be able to create new $t(common.posts).",
+            "createBlocks": "<b>Create $t(common.posts)</b>: Allow $t(common.members) to create $t(common.posts). If you deactivate this, $t(common.members) will still be able to contribute to existing $t(common.posts), but will not be able to create new $t(common.posts).",
             "createSubspaces": "<b>Create $t(common.subspaces)</b>: Allow $t(common.members) to create $t(common.subspaces) in this $t(common.space). If you deactivate this, you can still create $t(common.subspaces) yourself and add other people as an $t(common.admin) inside the $t(common.subspace).",
+            "videoCall": "<b>Video Call</b>: Show video call button in the tab menu. All members of this Space can use this button to start a Jitsi video conference. Read more about Jitsi <jitsiInfoLink>here</jitsiInfoLink>.",
             "eventsFromSubspaces": "<b>$t(common.subspace) events</b>: Allow events from $t(common.subspaces) to be visible on this $t(common.space) calendar as well.",
             "inheritRights": "Allow $t(common.members) of the parent $t(common.community) to contribute without needing to join first.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an $t(common.admin) in this $t(common.space)."
           },
           "copySpace": {
             "title": "Copy $t(common.subspace)",
-            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all collaboration tools will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the template or duplicated $t(common.subspace).",
+            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the template or duplicated $t(common.subspace).",
             "createTemplate": "Create $t(common.template)",
             "createTemplateTooltip": "To create a $t(common.template) from this $t(common.subspace), you need $t(common.space) $t(common.admin) permissions.",
             "duplicate": "Duplicate"
@@ -2566,10 +2566,11 @@
           "subspace": "$t(common.subspaces)",
           "user": "Usuários",
           "organization": "$t(common.Organizations)",
-          "post": "$t(common.posts)",
+          "post": "$t(common.Posts)",
           "whiteboard": "$t(common.Whiteboards) (available soon)",
-          "callout": "Callouts (disponível em breve)",
-          "memo": "$t(common.Memos) (available soon)"
+          "callout": "$t(common.Callouts)",
+          "memo": "$t(common.Memos) (available soon)",
+          "response": "$t(common.Responses)"
         }
       },
       "spaceFilterTitle": "$t(common.spaces)"
@@ -3185,14 +3186,14 @@
         "subtitle": "This section allows you to select your preferences regarding receiving messages"
       },
       "space": {
-        "title": "$t(common.space) $t(common.settings)",
+        "title": "$t(common.space)",
         "subtitle": "This section allows you to select your preferences regarding receiving messages from $t(common.spaces) you are a $t(common.member) of",
         "settings": {
           "communicationUpdateSent": "Receive a $t(common.notification) when a new update is shared with a $t(common.community) I am a $t(common.member) of",
-          "collaborationCalloutPublished": "Receive a $t(common.notification) when a Callout is published in a $t(common.community) I am a $t(common.member) of",
+          "collaborationCalloutPublished": "Receive a $t(common.notification) when a $t(common.callout) is published in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new contribution ($t(common.whiteboard), $t(common.post), link, $t(common.memo) etc.) is created in a $t(common.community) I am a $t(common.member) of",
-          "collaborationCalloutComment": "Receive a $t(common.notification) when a a $t(common.comment) is made on a Callout in a $t(common.community) I am a $t(common.member) of",
-          "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.post) contribution in a $t(common.community) I am a $t(common.member) of"
+          "collaborationCalloutComment": "Receive a $t(common.notification) when a a $t(common.comment) is made on a $t(common.callout) in a $t(common.community) I am a $t(common.member) of",
+          "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.callout) contribution in a $t(common.community) I am a $t(common.member) of"
         }
       },
       "spaceAdmin": {
@@ -3201,12 +3202,12 @@
         "settings": {
           "communityApplicationReceived": "Receive a $t(common.notification) when a new application is received",
           "communityNewMember": "Receive a $t(common.notification) when a new $t(common.member) joins the $t(common.community)",
-          "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new callout is created",
+          "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new $t(common.callout) is created",
           "communicationMessageReceived": "Receive a $t(common.notification) when a new message is received"
         }
       },
       "organization": {
-        "title": "$t(common.Organization) mentions and messaging",
+        "title": "$t(common.Organization)",
         "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to $t(common.organizations) you manage",
         "settings": {
           "mentioned": "Receive a $t(common.notification) when my $t(common.organization) is mentioned",
@@ -3214,27 +3215,25 @@
         }
       },
       "user": {
-        "title": "User mentions and messaging",
-        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to yourself.",
+        "title": "User",
+        "subtitle": "This section allows you to select your preferences regarding $t(common.memberships), mentions and direct messaging to yourself.",
         "settings": {
           "mentioned": "Receive a $t(common.notification) when I am mentioned",
           "commentReply": "Receive a $t(common.notification) when someone replies to my $t(common.comment)",
-          "messageReceived": "Receive a $t(common.notification) when someone sends me a direct message",
-          "copyOfMessageSent": "Receive a $t(common.notification) when I send a direct message"
+          "messageReceived": "Receive a $t(common.notification) when someone sends me a direct message"
         }
       },
       "userMembership": {
         "title": "User $t(common.membership) $t(common.notifications)",
         "subtitle": "This section allows you to select your preferences regarding $t(common.notifications) related to your $t(common.membership) in communities.",
         "settings": {
-          "spaceCommunityApplication": "Receive a $t(common.notification) when I apply to join a $t(common.community)",
           "spaceCommunityInvitation": "Receive a $t(common.notification) when someone invites you to join a $t(common.community)",
           "spaceCommunityJoined": "Receive a $t(common.notification) when I join a new $t(common.space) $t(common.community)"
         }
       },
       "platformAdmin": {
-        "title": "Platform $t(common.admin) $t(common.settings)",
-        "subtitle": "This section is only visible to users that are a global $t(common.admin) on the platform",
+        "title": "Platform",
+        "subtitle": "This section allows you to select your preferences regarding activities on the platform.",
         "settings": {
           "adminUserProfileCreated": "Receive a $t(common.notification) when a new user signs up",
           "adminUserProfileRemoved": "Receive a $t(common.notification) when a user $t(common.profile) is removed",
@@ -3244,7 +3243,7 @@
       },
       "forum": {
         "title": "$t(common.forum)",
-        "subtitle": "This section allows you to select your preferences regarding activities in the $t(common.forum)",
+        "subtitle": "This section allows you to select your preferences regarding activities in the $t(common.forum).",
         "settings": {
           "forumDiscussionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a discussion I follow",
           "forumDiscussionCreated": "Receive a $t(common.notification) when a new discussion is created"
@@ -3252,10 +3251,19 @@
       },
       "virtualContributor": {
         "title": "$t(common.virtualContributor)",
-        "subtitle": "This section allows you to select your preferences regarding activities as a $t(common.virtualContributor)",
+        "subtitle": "This section allows you to select your preferences regarding activities as a $t(common.virtualContributor).",
         "settings": {
           "spaceCommunityInvitation": "Receive a $t(common.notification) when a VC I manage is invited to join a $t(common.community)"
         }
+      },
+      "tooltips": {
+        "spaceCommunityInvitationReceived": "These $t(common.notifications) are required and cannot be disabled.",
+        "messageReceived": "These $t(common.notifications) are required and cannot be disabled.",
+        "communicationMessageReceived": "These communication $t(common.notifications) are required and cannot be disabled.",
+        "adminMessageReceived": "These $t(common.notifications) are required and cannot be disabled.",
+        "communityApplicationReceived": "Email $t(common.notifications) for applications cannot be disabled.",
+        "communityNewMember": "New member $t(common.notifications) require at least one $t(common.notification) method to stay enabled.",
+        "adminMentioned": "$t(common.Organization) mentions require at least one $t(common.notification) method to stay enabled."
       }
     },
     "help-dialog": {
@@ -3356,15 +3364,15 @@
     "new": "New $t(common.post)",
     "edit": "Edit $t(common.post)",
     "type": {
-      "title": "$t(common.post) label",
+      "title": "$t(common.Post) label",
       "help-text": "Que tipo de informação você deseja compartilhar?"
     },
     "postLocation": {
-      "title": "$t(common.post) location",
-      "label": "Contribuindo para Callout",
-      "reminder": "Be careful changing the $t(common.posts) location. Moving the $t(common.post) to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this $t(common.post), to retrieve it. Note that you can only move $t(common.posts) within the same $t(common.space) or $t(common.subspace).",
-      "success": "Successfully moved $t(common.post) to the new Callout.",
-      "error": "Something went wrong when moving the $t(common.post), please try again."
+      "title": "$t(common.Post) location",
+      "label": "Contributing to $t(common.callout)",
+      "reminder": "Be careful changing the $t(common.response) location. Moving the $t(common.response) to another $t(common.callout) will make it disappear from the current $t(common.callout). This might make it difficult for people, including the person who created this $t(common.response), to retrieve it. Note that you can only move $t(common.responses) within the same $t(common.space) or $t(common.subspace).",
+      "success": "Successfully moved $t(common.response) to the new $t(common.post).",
+      "error": "Something went wrong when moving the $t(common.response), please try again."
     },
     "delete": {
       "title": "Are you sure you want to delete this $t(common.post)?",
@@ -3460,6 +3468,7 @@
     "index": "Index",
     "subspaces": "$t(common.subspaces)",
     "contributors": "Contributors",
+    "videoCall": "Video Call",
     "activity": "Activity",
     "calendar": "Calendar",
     "events": "Events",
@@ -3467,6 +3476,12 @@
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
     "settings": "$t(common.Settings)",
     "updates": "Updates"
+  },
+  "videoCall": {
+    "dialog": {
+      "title": "Start Video Call",
+      "content": "You are about to start a video call using Jitsi, a secure third-party video conferencing service. The call will open in a new browser tab, outside the Alkemio environment. Others can join through the same button or by using the shared URL. Learn more about Jitsi <jitsiLink>here</jitsiLink>."
+    }
   },
   "createSpace": {
     "title": "Create a $t(common.space)",
@@ -3612,7 +3627,7 @@
       "description": "What knowledge do you want your $t(common.virtualContributor) to have? Write it down in $t(common.posts) or upload it in documents.",
       "descriptionBold": "You can update, add, and remove content later.",
       "post": {
-        "title": "$t(common.post) title",
+        "title": "$t(common.Post) title",
         "exampleTitle": "Example: About Alkemio",
         "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
         "addAnotherPost": "Add $t(common.post)",
