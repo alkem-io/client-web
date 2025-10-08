@@ -87,7 +87,7 @@ const ContributionsCardsExpandable = ({
   return (
     <>
       <GridProvider columns={gridColumns} force>
-        <Gutters ref={inViewRef} disablePadding row flexWrap="wrap">
+        <Gutters ref={inViewRef} disableVerticalPadding row flexWrap="wrap">
           {contributions.map(contribution => (
             <Card
               key={contribution.id}

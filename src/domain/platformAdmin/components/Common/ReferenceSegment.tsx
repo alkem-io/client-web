@@ -189,14 +189,14 @@ export const ReferenceSegment = ({
                   </Box>
                 </Gutters>
                 {!compactMode && (
-                  <Box>
+                  <Gutters disablePadding>
                     <FormikInputField
                       name={`${fieldName}.${index}.description`}
                       title={'Description'}
                       readOnly={readOnly}
                       disabled={disabled || isRemoving(index)}
                     />
-                  </Box>
+                  </Gutters>
                 )}
                 {index < references.length - 1 && !compactMode && <Divider />}
               </Gutters>
