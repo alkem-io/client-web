@@ -44,6 +44,7 @@ interface PaginatedQueryProvided<Data> {
   pageSize: number;
   firstPageSize: number;
   loadQuery: () => Promise<void>;
+  subscribeToMore?: QueryResult<Data>['subscribeToMore'];
 }
 
 const useQuery = <Data, Variables extends PaginationVariables>(
@@ -52,7 +53,7 @@ const useQuery = <Data, Variables extends PaginationVariables>(
   const { variables, pageSize, firstPageSize = pageSize } = options;
 
   if ('useQuery' in options) {
-    const { data, loading, error, fetchMore, refetch } = options.useQuery({
+    const { data, loading, error, fetchMore, subscribeToMore, refetch } = options.useQuery({
       ...options.options,
       variables: {
         first: firstPageSize,
@@ -65,10 +66,11 @@ const useQuery = <Data, Variables extends PaginationVariables>(
       loading,
       error,
       fetchMore,
+      subscribeToMore,
       refetch: () => refetch(variables as Variables),
     };
   } else {
-    const [loadQuery, { data, loading, error, fetchMore, refetch }] = options.useLazyQuery({
+    const [loadQuery, { data, loading, error, fetchMore, subscribeToMore, refetch }] = options.useLazyQuery({
       ...options.options,
       variables: {
         first: firstPageSize,
@@ -81,6 +83,7 @@ const useQuery = <Data, Variables extends PaginationVariables>(
       loading,
       error,
       fetchMore,
+      subscribeToMore,
       refetch: () => refetch(variables as Variables),
       loadQuery,
     };
@@ -99,6 +102,7 @@ const usePaginatedQuery = <Data, Variables extends PaginationVariables>(
     loading,
     error,
     fetchMore: fetchMoreRaw,
+    subscribeToMore,
     loadQuery: loadQueryRaw = loadNonLazyQuery,
     refetch,
   } = useQuery(options);
@@ -131,6 +135,7 @@ const usePaginatedQuery = <Data, Variables extends PaginationVariables>(
     loading,
     error,
     fetchMore,
+    subscribeToMore,
     refetch,
     hasMore,
     pageSize,

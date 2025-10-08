@@ -15,7 +15,6 @@ import SpaceSubspacesPage from '../layout/tabbedLayout/Tabs/SpaceSubspacesPage';
 import FlowStateTabPage from '../layout/tabbedLayout/Tabs/FlowStateTabPage/FlowStateTabPage';
 import SubspaceRoutes from './SubspaceRoutes';
 import SpaceCalloutPage from '../pages/SpaceCalloutPage';
-import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import Loading from '@/core/ui/loading/Loading';
 import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import { useSectionIndex } from '../layout/useSectionIndex';
@@ -109,7 +108,7 @@ const SpaceRoutes = () => {
 
             <Route
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-              element={<SpaceCalloutPage>{props => <CalloutRoute {...props} />}</SpaceCalloutPage>}
+              element={<SpaceCalloutPage />}
             />
             <Route path={`${EntityPageSection.Settings}/*`} element={<SpaceAdminL0Route />} />
             <Route path={`/:dialog?/:${nameOfUrl.calendarEventNameId}?`} element={<SpaceDashboardPage />} />

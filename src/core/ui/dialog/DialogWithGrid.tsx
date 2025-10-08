@@ -57,7 +57,6 @@ export interface DialogWithGridProps extends MuiDialogProps {
   columns?: GridItemProps['columns'];
   fullHeight?: boolean;
   centeredVertically?: boolean;
-  disableScrollLock?: boolean;
 }
 
 const DialogWithGrid = ({

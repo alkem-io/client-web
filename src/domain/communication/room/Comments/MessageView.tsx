@@ -1,6 +1,6 @@
 import { PropsWithChildren, ReactNode } from 'react';
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
-import { Box, IconButton, Paper, styled, Typography } from '@mui/material';
+import { Box, IconButton, styled, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -79,7 +79,13 @@ export const MessageView = ({
     <Box display="flex" gap={gutters(0.5)}>
       <AuthorAvatar author={author} />
       <Box flexGrow={1} flexShrink={1} minWidth={0}>
-        <Paper sx={{ backgroundColor: root ? undefined : 'background.default', padding: gutters(0.5) }} elevation={0}>
+        <Box
+          sx={{
+            backgroundColor: root ? undefined : 'background.default',
+            padding: gutters(0.5),
+            borderRadius: theme => `${theme.shape.borderRadius}px`,
+          }}
+        >
           {!message.deleted && (
             <Box display="flex" height={gutters()} justifyContent="space-between" alignItems="center">
               <Caption>{author?.displayName || t('messaging.missingAuthor')}</Caption>
@@ -114,7 +120,7 @@ export const MessageView = ({
               </Typography>
             </Box>
           )}
-        </Paper>
+        </Box>
         <MessageActionsContainer>
           {enabledReactions && (
             <Box component="li">

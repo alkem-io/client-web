@@ -370,13 +370,11 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const onCreateLink = async (document: DocumentValues, calloutId: string) => {
     await createLinkOnCallout({
       variables: {
-        input: {
-          calloutID: calloutId,
-          link: {
-            uri: document.url,
-            profile: {
-              displayName: document.name,
-            },
+        calloutId,
+        link: {
+          uri: document.url,
+          profile: {
+            displayName: document.name,
           },
         },
       },

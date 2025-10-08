@@ -2,6 +2,7 @@ import { CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { CalloutSortEvents, CalloutSortProps } from '../calloutsSet/CalloutsView/CalloutSortModels';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
+import { CalloutDetailsModelExtended } from './models/CalloutDetailsModel';
 
 export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
   onVisibilityChange?: (
@@ -13,12 +14,11 @@ export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
 }
 
 export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
-  contributionsCount: number | undefined;
-  loading?: boolean;
-  canCreateContribution?: boolean;
+  callout: CalloutDetailsModelExtended;
+  onCalloutUpdate?: () => Promise<unknown>;
   expanded?: boolean;
-  onExpand?: () => void;
+  onExpand?: (callout: CalloutDetailsModelExtended) => void;
   onCollapse?: () => void;
-  onCalloutUpdate?: () => Promise<unknown> | void;
+  loading?: boolean;
   calloutRestrictions?: CalloutRestrictions;
 }

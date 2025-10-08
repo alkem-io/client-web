@@ -639,6 +639,7 @@ export type CalloutKeySpecifier = (
   | 'comments'
   | 'contributionDefaults'
   | 'contributions'
+  | 'contributionsCount'
   | 'createdBy'
   | 'createdDate'
   | 'framing'
@@ -660,6 +661,7 @@ export type CalloutFieldPolicy = {
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributions?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   framing?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -712,6 +714,19 @@ export type CalloutContributionDefaultsFieldPolicy = {
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutContributionsCountOutputKeySpecifier = (
+  | 'link'
+  | 'memo'
+  | 'post'
+  | 'whiteboard'
+  | CalloutContributionsCountOutputKeySpecifier
+)[];
+export type CalloutContributionsCountOutputFieldPolicy = {
+  link?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
+  post?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
@@ -1081,15 +1096,19 @@ export type ContributorRolesFieldPolicy = {
 };
 export type CreateCalloutContributionDataKeySpecifier = (
   | 'link'
+  | 'memo'
   | 'post'
   | 'sortOrder'
+  | 'type'
   | 'whiteboard'
   | CreateCalloutContributionDataKeySpecifier
 )[];
 export type CreateCalloutContributionDataFieldPolicy = {
   link?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutContributionDefaultsDataKeySpecifier = (
@@ -2242,6 +2261,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'collaboration'
   | 'community'
   | 'communityGuidelines'
+  | 'contribution'
   | 'document'
   | 'innovationFlow'
   | 'innovationHub'
@@ -2282,6 +2302,7 @@ export type LookupQueryResultsFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  contribution?: FieldPolicy<any> | FieldReadFunction<any>;
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5048,6 +5069,13 @@ export type StrictTypedTypePolicies = {
       | CalloutContributionDefaultsKeySpecifier
       | (() => undefined | CalloutContributionDefaultsKeySpecifier);
     fields?: CalloutContributionDefaultsFieldPolicy;
+  };
+  CalloutContributionsCountOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutContributionsCountOutputKeySpecifier
+      | (() => undefined | CalloutContributionsCountOutputKeySpecifier);
+    fields?: CalloutContributionsCountOutputFieldPolicy;
   };
   CalloutFraming?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutFramingKeySpecifier | (() => undefined | CalloutFramingKeySpecifier);
