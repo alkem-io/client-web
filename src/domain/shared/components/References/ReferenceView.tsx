@@ -1,6 +1,5 @@
 import { Box, IconButton, Tooltip, styled, useTheme } from '@mui/material';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
-import { RoundedIconProps } from '@/core/ui/icon/RoundedIcon';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { ReferenceIcon } from './icons/ReferenceIcon';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -11,10 +10,10 @@ import { Attachment as AttachmentIcon } from '@mui/icons-material';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { BoxProps } from '@mui/system';
 
-export interface ReferenceViewProps {
+export interface ReferenceViewProps extends BoxProps {
   reference: ReferenceModel;
-  icon?: RoundedIconProps['component'];
   canEdit?: boolean;
   onClickEdit?: () => void;
 }
@@ -45,13 +44,13 @@ const ReferenceDescription = ({ children }: ReferenceDescriptionProps) => {
   );
 };
 
-const ReferenceView = ({ reference, canEdit, onClickEdit }: ReferenceViewProps) => {
+const ReferenceView = ({ reference, canEdit, onClickEdit, ...containerProps }: ReferenceViewProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const hasEditIcon = Boolean(onClickEdit) && canEdit;
 
   return (
-    <Root>
+    <Root {...containerProps}>
       <BadgeCardView
         component={RouterLink}
         to={reference.uri}

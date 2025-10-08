@@ -25,6 +25,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
 import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import LinkContributionsList from './LinksList';
 
 const MAX_LINKS_NORMAL_VIEW = 3;
 
@@ -216,6 +217,7 @@ const CalloutContributionsLink = ({
     >
       {loading ? <Loading /> : undefined}
       <Gutters ref={inViewRef}>
+        <LinkContributionsList contributions={contributions} />
         <References
           references={formattedLinks}
           noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}

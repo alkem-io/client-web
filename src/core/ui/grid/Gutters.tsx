@@ -7,6 +7,7 @@ export interface GuttersProps extends BoxProps {
   row?: boolean;
   disablePadding?: boolean;
   disableSidePadding?: boolean;
+  disableVerticalPadding?: boolean;
   disableGap?: boolean;
   fullHeight?: boolean;
 }
@@ -16,6 +17,7 @@ const Gutters = ({
   row = false,
   disablePadding = false,
   disableSidePadding = false,
+  disableVerticalPadding = false,
   disableGap = false,
   fullHeight = false,
   ...props
@@ -27,8 +29,8 @@ const Gutters = ({
       ref={ref}
       display="flex"
       flexDirection={row ? 'row' : 'column'}
-      padding={disablePadding ? 0 : gutters()}
-      paddingX={disableSidePadding ? 0 : gutters()}
+      paddingX={disableSidePadding || disablePadding ? 0 : gutters()}
+      paddingY={disableVerticalPadding || disablePadding ? 0 : gutters()}
       gap={disableGap ? undefined : gutters()}
       {...(fullHeight
         ? {
