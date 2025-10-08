@@ -1,0 +1,14 @@
+mutation CreateWhiteboardOnCallout($calloutId: UUID!, $whiteboard: CreateWhiteboardInput!) {
+  createContributionOnCallout(contributionData: {
+    calloutID: $calloutId,
+    type: WHITEBOARD,
+    whiteboard: $whiteboard
+  }) {
+    whiteboard {
+      ...WhiteboardDetails
+      profile {
+        url
+      }
+    }
+  }
+}

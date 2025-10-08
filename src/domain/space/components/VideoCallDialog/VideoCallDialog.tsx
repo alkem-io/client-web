@@ -41,7 +41,7 @@ const VideoCallDialog = ({ open, onClose, spaceId, spaceNameId }: VideoCallDialo
                     color: theme => theme.palette.primary.main,
                     ':hover': { color: theme => theme.palette.secondary.main },
                   }}
-                  href="https://jitsi.org/"
+                  href="https://alkem.io/docs/features/videocall"
                   target="_blank"
                   rel="noopener noreferrer"
                 />

@@ -10,6 +10,7 @@ type CalloutsSetAuthorizationType = {
   calloutsSetPrivileges: AuthorizationPrivilege[];
   canCreateCallout: boolean;
   canReadCalloutsSet: boolean;
+  canMoveCallouts: boolean;
   loading: boolean;
 };
 
@@ -28,11 +29,13 @@ export const useCalloutsSetAuthorization = ({
   const calloutsSetPrivileges = calloutsSetData?.lookup.calloutsSet?.authorization?.myPrivileges ?? [];
   const canReadCalloutsSet = calloutsSetPrivileges.includes(AuthorizationPrivilege.Read);
   const canCreateCallout = calloutsSetPrivileges.includes(AuthorizationPrivilege.CreateCallout);
+  const canMoveCallouts = calloutsSetPrivileges.includes(AuthorizationPrivilege.Update);
 
   return {
     calloutsSetPrivileges,
     canCreateCallout,
     canReadCalloutsSet,
+    canMoveCallouts,
     loading: loadingCalloutsSet,
   };
 };

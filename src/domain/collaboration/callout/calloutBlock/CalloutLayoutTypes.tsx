@@ -1,12 +1,12 @@
 import React, { Ref } from 'react';
-import { TypedCalloutDetails } from '../models/TypedCallout';
+import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 
 export interface CalloutLayoutProps {
-  callout: TypedCalloutDetails;
+  callout: CalloutDetailsModelExtended;
   contributionsCount: number | undefined;
   isMember?: boolean;
   expanded: boolean | undefined;
-  onExpand: (() => void) | undefined;
+  onExpand: ((callout: CalloutDetailsModelExtended) => void) | undefined;
   onCollapse: (() => void) | undefined;
   skipReferences?: boolean;
   contentRef?: Ref<Element>;

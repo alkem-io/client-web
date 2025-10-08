@@ -14,7 +14,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { newReferenceName } from '@/domain/common/reference/newReferenceName';
 import removeFromCache from '@/core/apollo/utils/removeFromCache';
-import { compact } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
@@ -26,7 +25,6 @@ type PostUpdateData = Pick<Post, 'id'> & {
 };
 
 export interface PostSettingsContainerEntities {
-  contributionId?: string;
   post?: PostSettingsFragment;
   postsNames?: string[] | undefined;
   parentCallout: PostSettingsCalloutFragment | undefined;
@@ -48,13 +46,17 @@ export interface PostSettingsContainerState {
 }
 
 export interface PostSettingsContainerProps {
-  postId: string | undefined;
   calloutId: string | undefined;
+  postId: string | undefined;
+  skip?: boolean;
+  onPostDeleted?: () => void;
 }
 
 const usePostSettings = ({
-  postId,
   calloutId,
+  postId,
+  skip,
+  onPostDeleted,
 }: PostSettingsContainerProps): PostSettingsContainerEntities &
   PostSettingsContainerActions &
   PostSettingsContainerState => {
@@ -67,15 +69,12 @@ const usePostSettings = ({
       postId: postId!,
       calloutId: calloutId!,
     },
-    skip: !calloutId || !postId,
+    skip: skip || !calloutId || !postId,
   });
 
   const parentCallout = data?.lookup.callout;
 
-  const parentCalloutPostNames = compact(parentCallout?.postNames?.map(post => post.post?.profile.displayName));
-
   const post = data?.lookup.post;
-  const postContribution = parentCallout?.contributions?.find(x => x.post && x.post.id === postId);
 
   const [updatePost, { loading: updating, error: updateError }] = useUpdatePostMutation({
     onCompleted: () => notify('Post updated successfully', 'success'),
@@ -112,9 +111,9 @@ const usePostSettings = ({
   const [deletePost, { loading: deleting }] = useDeletePostMutation({
     update: removeFromCache,
   });
-
   const handleDelete = async (postId: string) => {
     await deletePost({ variables: { postId } });
+    onPostDeleted?.();
   };
 
   const handleAddReference = (push: PushFunc, referencesLength: number) => {
@@ -135,9 +134,7 @@ const usePostSettings = ({
   };
 
   return {
-    contributionId: postContribution?.id,
     post,
-    postsNames: parentCalloutPostNames,
     parentCallout,
     loading,
     error,
