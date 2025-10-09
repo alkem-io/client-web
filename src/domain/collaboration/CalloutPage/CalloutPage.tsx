@@ -65,7 +65,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
     skip: !calloutId,
     overrideCalloutSettings: {
       movable: true,
-    }
+    },
   });
 
   const { isSmallScreen } = useScreenSize();
@@ -103,6 +103,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutPosition) : parentRoute;
 
   const handleClose = () => {
+    refetch();
     navigate(parentPagePath, {
       state: { keepScroll: true },
       replace: true,

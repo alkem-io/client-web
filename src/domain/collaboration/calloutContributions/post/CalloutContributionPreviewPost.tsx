@@ -16,6 +16,8 @@ import { useTranslation } from 'react-i18next';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import { Tooltip } from '@mui/material';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import References from '@/domain/shared/components/References/References';
 
 interface CalloutContributionPreviewPostProps extends CalloutContributionPreviewComponentProps {}
 
@@ -35,6 +37,9 @@ const ResponsiveConfiguration: Record<
 };
 
 const PostContentWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
   backgroundColor: theme.palette.background.default,
   padding: gutters()(theme),
   minHeight: gutters(MIN_HEIGHT_DESCRIPTION_GUTTERS)(theme),
@@ -168,6 +173,15 @@ const CalloutContributionPreviewPost = ({
     </Tooltip>
   );
 
+  const tags =
+    contribution?.post?.profile.tagset?.tags && contribution.post.profile.tagset.tags.length > 0
+      ? contribution.post.profile.tagset.tags
+      : undefined;
+  const references =
+    contribution?.post?.profile.references && contribution.post.profile.references.length > 0
+      ? contribution.post.profile.references
+      : undefined;
+
   return (
     <>
       {extraActionsPortalRef.current && createPortal(extraActionsButton, extraActionsPortalRef.current)}
@@ -182,6 +196,13 @@ const CalloutContributionPreviewPost = ({
           flex={responsiveConfig.PostCommentsRatio.post}
         >
           <WrapperMarkdown>{contribution?.post?.profile.description ?? ''}</WrapperMarkdown>
+          {(tags || references) && (
+            <Box>
+              <hr />
+              {tags && <TagsComponent variant="filled" tags={tags} marginTop="auto" />}
+              {references && <References references={references} />}
+            </Box>
+          )}
         </PostContentWrapper>
         <CommentsExpanderButton
           onClick={toggleCommentsExpanded}

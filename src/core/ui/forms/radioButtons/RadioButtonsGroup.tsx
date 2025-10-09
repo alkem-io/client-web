@@ -39,7 +39,7 @@ const RadioButtonsGroup = <Value,>({
   };
 
   return (
-    <Gutters row disablePadding flexWrap="wrap">
+    <Gutters row disablePadding disableMargin flexWrap="wrap">
       {options.map(({ value: optionValue, icon: Icon, label, tooltip, disabled }) => (
         <Tooltip title={tooltip} key={String(optionValue)} {...tooltipProps}>
           <span>
