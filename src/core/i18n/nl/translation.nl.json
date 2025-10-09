@@ -111,7 +111,9 @@
     "next": "Volgende",
     "edit": "Pas aan",
     "expand": "Uitklappen",
+    "expandEntity": "{{entity}} uitvouwen",
     "collapse": "Inklappen",
+    "collapseEntity": "{{entity}} inklappen",
     "expandWindow": "Venster vergroten",
     "see-more": "Lees verder",
     "see-all": "Meer {{subject}}",
@@ -175,6 +177,7 @@
     "getHelp": "Krijg hulp",
     "saveAsTemplate": "Opslaan als $t(common.template)",
     "skipLink": "Ga door naar het volgende blok",
+    "toggle": "{{entity}} aan/uitzetten",
     "toolsMenu": "Tools menu",
     "userMenu": "Gebruikersmenu",
     "scrollToTop": "Scroll naar boven",
@@ -362,6 +365,8 @@
     "field-required": "Dit veld is vereist",
     "field-min-length": "Dit veld moet bestaan uit minimaal {{min}} karakters",
     "field-max-length": "Dit veld moet bestaan uit maximaal {{max}} karakters",
+    "Link": "Koppeling",
+    "link": "koppeling",
     "Membership": "Lidmaatschap",
     "Memberships": "Lidmaatschappen",
     "membership": "lidmaatschap",
@@ -523,6 +528,12 @@
         "WHITEBOARD": "$t(common.Whiteboard)",
         "WHITEBOARD_COLLECTION": "$t(common.Whiteboard) $t(common.Collection)"
       },
+      "calloutContributionType": {
+        "LINK": "$t(common.Link)",
+        "POST": "$t(common.Post)",
+        "WHITEBOARD": "$t(common.Whiteboard)",
+        "MEMO": "$t(common.Memo)"
+      },
       "invitationStatus": {
         "invited": "Uitgenodigd",
         "accepted": "Uitnodiging geaccepteerd",
@@ -561,33 +572,33 @@
     "time": {
       "short": {
         "timeAgo": "{{time}}",
-        "second": "{{count}}s",
-        "second_plural": "{{count}}s",
-        "minute": "{{count}}m",
-        "minute_plural": "{{count}}m",
-        "hour": "{{count}}u",
-        "hour_plural": "{{count}}u",
-        "day": "{{count}}d",
-        "day_plural": "{{count}}d",
-        "month": "{{count}}mnd",
-        "month_plural": "{{count}}mnd",
-        "year": "{{count}}j",
-        "year_plural": "{{count}}j"
+        "second_one": "{{count}}s",
+        "second_other": "{{count}}s",
+        "minute_one": "{{count}}m",
+        "minute_other": "{{count}}m",
+        "hour_one": "{{count}}u",
+        "hour_other": "{{count}}u",
+        "day_one": "{{count}}d",
+        "day_other": "{{count}}d",
+        "month_one": "{{count}}mnd",
+        "month_other": "{{count}}mnd",
+        "year_one": "{{count}}j",
+        "year_other": "{{count}}j"
       },
       "long": {
         "timeAgo": "{{time}} geleden",
-        "second": "{{count}} seconden",
-        "second_plural": "{{count}} seconden",
-        "minute": "{{count}} minuut",
-        "minute_plural": "{{count}} minuten",
-        "hour": "{{count}} uur",
-        "hour_plural": "{{count}} uur",
-        "day": "{{count}} dag",
-        "day_plural": "{{count}} dagen",
-        "month": "{{count}} maand",
-        "month_plural": "{{count}} maanden",
-        "year": "{{count}} jaar",
-        "year_plural": "{{count}} jaar"
+        "second_one": "{{count}} seconde",
+        "second_other": "{{count}} seconden",
+        "minute_one": "{{count}} minuut",
+        "minute_other": "{{count}} minuten",
+        "hour_one": "{{count}} uur",
+        "hour_other": "{{count}} uur",
+        "day_one": "{{count}} dag",
+        "day_other": "{{count}} dagen",
+        "month_one": "{{count}} maand",
+        "month_other": "{{count}} maanden",
+        "year_one": "{{count}} jaar",
+        "year_other": "{{count}} jaar"
       }
     },
     "supportEmail": "support@alkem.io",
@@ -867,8 +878,15 @@
       "title": "Inhoud niet beschikbaar",
       "description": "Onze excuses, maar de inhoud die je hebt opgevraagd is niet beschikbaar. Het kan zijn verwijderd, of je hebt mogelijk geen toestemming om het te openen, bijvoorbeeld als het in de conceptmodus is geplaatst."
     },
-    "contributions": "{{count}} Bijdrage",
-    "contributions_plural": "{{count}} Bijdragen",
+    "contributions": {
+      "contributionsCount_one": "{{count}} Bijdrage",
+      "contributionsCount_other": "{{count}} Bijdragen",
+      "contributionsItemsCount_one": "{{count}} item in deze $t(common.collection)",
+      "contributionsItemsCount_other": "{{count}} items in deze $t(common.collection)",
+      "contributionsItemsCountExpand": "{{count}} items in deze $t(common.collection), <click>klik hier</click> om alle items te zien",
+      "contributionsCollapse": "{{count}} items in deze $t(common.collection), <click>klik hier</click> om sommige te verbergen",
+      "noContributions": "Nog geen bijdragen, wees de eerste om bij te dragen!"
+    },
     "draftNotice": "CONCEPT - Alleen zichtbaar voor $t(common.admins)",
     "closed": "Deze oproep is gesloten. Je kunt nog altijd commentaar geven op de individuele kaarten.",
     "notMember": "Je kan niet reageren op deze discussie omdat je geen $t(common.member) van deze $t(common.space) bent",
@@ -1980,10 +1998,6 @@
           "subject": "Als lead van {{spaceName}}, heb je een bericht ontvangen van {{triggeredByName}}",
           "description": ""
         },
-        "SPACE_COMMUNICATION_MESSAGE_SENDER": {
-          "subject": "Je hebt een bericht verzonden naar de $t(common.leads) van {{spaceName}}",
-          "description": ""
-        },
         "SPACE_COLLABORATION_CALLOUT_COMMENT": {
           "subject": "{{triggeredByName}} heeft gereageerd op {{calloutName}} in {{spaceName}}",
           "description": ""
@@ -2052,8 +2066,8 @@
         "quit": "Sluit $t(common.settings)"
       },
       "subspace": {
-        "create": "$t(common.Subspace) maken",
-        "edit": "$t(common.Subspace) bewerken"
+        "create": "$t(common.subspace) maken",
+        "edit": "$t(common.subspace) bewerken"
       }
     }
   },
@@ -2663,7 +2677,16 @@
             "title": "...of zoek je $t(common.community) hieronder",
             "searchSuggestions": "Zoeksuggesties:"
           },
-          "suggestionsArray": ["Innovatie", "Energie", "Inclusief", "3D", "Community", "Transitie", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovatie",
+            "Energie",
+            "Inclusief",
+            "3D",
+            "Community",
+            "Transitie",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "Mijn uitnodigingen",
@@ -3416,27 +3439,42 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": ["Energie Transitie", "Energietransitie"]
+        "tags": [
+          "Energie Transitie",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusieve Samenleving",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
+        "tags": [
+          "Publieke Dienstverlening",
+          "Publieke Dienstverlening"
+        ]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": ["Innovatie", "Innovatie"]
+        "tags": [
+          "Innovatie",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": ["Digitalisering", "Digitalisering"]
+        "tags": [
+          "Digitalisering",
+          "Digitalisering"
+        ]
       }
     ]
   },
@@ -3480,7 +3518,7 @@
   "videoCall": {
     "dialog": {
       "title": "Videooproep starten",
-      "content": "Je staat op het punt een video-oproep te starten met Jitsi, een veilige videoconferentie service van derden. De oproep wordt geopend in een nieuw browsertabblad, buiten de Alkemio omgeving. Anderen kunnen zich aanmelden via dezelfde knop of via de gedeelde URL. Lees meer over Jitsi <jitsiLink>hier</jitsiLink>."
+      "content": "Je staat op het punt een video-oproep te starten met Jitsi, een veilige videoconferentie service van derden. De oproep wordt geopend in een nieuw browsertabblad, buiten de Alkemio omgeving. Anderen kunnen zich aanmelden via dezelfde knop of via de gedeelde URL. <br/><br/>Lees meer over Jitsi <jitsiLink>hier</jitsiLink>, inclusief hoe je toegang en privacy instellingen beheert."
     }
   },
   "createSpace": {
@@ -3517,7 +3555,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Gratis",
         "priceDescription": "Voor Change-Makers die Alkemio Verkennen",
-        "features": ["Tot 10 $t(common.members)", "Diverse tools, waaronder standaard $t(common.whiteboards)"],
+        "features": [
+          "Tot 10 $t(common.members)",
+          "Diverse tools, waaronder standaard $t(common.whiteboards)"
+        ],
         "disclaimer": "Gratis $t(common.spaces) zijn beperkt tot 1 $t(common.space) per gebruiker",
         "disabledDisclaimer": "Elke gebruiker kan 1 gratis $t(common.space) hebben. Het lijkt erop dat je die al hebt gebruikt!"
       },
