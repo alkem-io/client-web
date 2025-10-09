@@ -38,7 +38,7 @@ import {
 } from '@/domain/collaboration/callout/models/mappings';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
-import { LinkDetails } from '@/domain/collaboration/callout/models/TypedCallout';
+import { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
 
 interface EntityWithProfile {
   profile: {

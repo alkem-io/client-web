@@ -13,7 +13,6 @@ export type PostCreationOutput = CreatePostInput;
 
 export type PostCreationDialogProps = {
   open: boolean;
-  postNames: string[];
   onClose: () => void;
   onCreate: (post: PostCreationOutput) => Promise<unknown>;
   calloutDisplayName: string;
@@ -26,7 +25,6 @@ export type PostCreationDialogProps = {
 
 const PostCreationDialog = ({
   open,
-  postNames,
   onClose,
   onCreate,
   calloutDisplayName,
@@ -67,6 +65,7 @@ const PostCreationDialog = ({
       profileData: {
         displayName: newPost.displayName,
         description: newPost.description,
+        tags: newPost.tags,
       },
       ...newPost,
     });
@@ -95,12 +94,10 @@ const PostCreationDialog = ({
         <Box marginBottom={2} marginTop={2}>
           <PostForm
             post={post}
-            postNames={postNames}
             onChange={handleFormChange}
             onStatusChanged={handleFormStatusChange}
             defaultDisplayName={defaultDisplayName}
             descriptionTemplate={defaultDescription}
-            tags={[]}
             disableRichMedia={disableRichMedia}
           />
         </Box>

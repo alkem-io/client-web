@@ -24,6 +24,7 @@ export interface WhiteboardViewProps extends ActiveWhiteboardIdHolder, Whiteboar
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
   preventWhiteboardDeletion?: boolean; // TODO: Temporary solution to avoid single-whiteboard callouts to lose their whiteboard
+  onWhiteboardDeleted?: () => void;
 }
 
 const WhiteboardView = ({
@@ -36,6 +37,7 @@ const WhiteboardView = ({
   displayName,
   readOnlyDisplayName,
   preventWhiteboardDeletion,
+  onWhiteboardDeleted,
   ...whiteboardsState
 }: WhiteboardViewProps) => {
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState<number>(0);
@@ -82,7 +84,10 @@ const WhiteboardView = ({
             onCancel: handleCancel,
             setConsecutiveSaveErrors,
             onUpdate: actions.onUpdate,
-            onDelete: actions.onDelete,
+            onDelete: async () => {
+              await actions.onDelete(whiteboard!);
+              onWhiteboardDeleted?.();
+            },
             setLastSuccessfulSavedDate,
             onChangeDisplayName: actions.onChangeDisplayName,
           }}

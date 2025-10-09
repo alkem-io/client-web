@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import WhiteboardPreview from '../../whiteboard/WhiteboardPreview/WhiteboardPreview';
 import WhiteboardView from '../../whiteboard/WhiteboardsManagement/WhiteboardView';
-import { TypedCalloutDetails } from '../models/TypedCallout';
+import { CalloutDetailsModel } from '../models/CalloutDetailsModel';
 
 interface CalloutFramingWhiteboardProps {
-  callout: TypedCalloutDetails;
+  callout: CalloutDetailsModel;
   onCollapse?: () => void;
 }
 

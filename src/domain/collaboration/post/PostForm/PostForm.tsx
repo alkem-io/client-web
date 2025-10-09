@@ -21,7 +21,6 @@ type FormValue = {
   name: string;
   description: string;
   tagsets: TagsetModel[];
-  postNames: string[];
   references: ReferenceModel[];
 };
 
@@ -38,14 +37,13 @@ export type PostFormOutput = {
 export type PostFormInput = PostCreationType & PostEditFields;
 export interface PostFormProps {
   post?: PostFormInput;
-  postNames?: string[];
   edit?: boolean;
   defaultDisplayName?: string;
   descriptionTemplate?: string;
-  tags: string[] | undefined;
   loading?: boolean;
   onChange?: (post: PostFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
+  canSave?: (canSave: boolean) => void;
   onAddReference?: (push: PushFunc, referencesLength: number) => void;
   onRemoveReference?: (ref: ReferenceModel, remove: RemoveFunc) => void;
   children?: FormikConfig<FormValue>['children'];
@@ -54,14 +52,13 @@ export interface PostFormProps {
 
 const PostForm = ({
   post,
-  postNames,
   defaultDisplayName,
   descriptionTemplate,
-  tags,
   edit = false,
   loading,
   onChange,
   onStatusChanged,
+  canSave,
   onAddReference,
   onRemoveReference,
   children,
@@ -69,18 +66,15 @@ const PostForm = ({
 }: PostFormProps) => {
   const { t } = useTranslation();
 
-  const tagsets: TagsetModel[] = [{ ...EmptyTagset, tags: tags ?? [] }];
-
-  const initialValues: FormValue = useMemo(
-    () => ({
+  const initialValues: FormValue = useMemo(() => {
+    const tagsets: TagsetModel[] = [{ ...EmptyTagset, tags: post?.tags ?? post?.profileData?.tags ?? [] }];
+    return {
       name: post?.profileData?.displayName ?? defaultDisplayName ?? '',
       description: post?.profileData?.description ?? descriptionTemplate ?? '',
       tagsets,
-      postNames: postNames ?? [],
       references: post?.references ?? [],
-    }),
-    [post?.id]
-  );
+    };
+  }, [post]);
 
   const validationSchema = yup.object().shape({
     name: displayNameValidator.required(),
@@ -111,7 +105,7 @@ const PostForm = ({
       {formikState => (
         <>
           <Gutters disablePadding>
-            <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
+            <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} canSave={canSave} />
             <FormikInputField
               name={'name'}
               title={t('common.title')}

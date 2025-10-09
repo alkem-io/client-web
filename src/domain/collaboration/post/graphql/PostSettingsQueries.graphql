@@ -43,30 +43,4 @@ fragment PostSettingsCallout on Callout {
       id
     }
   }
-  postNames: contributions {
-    post {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-      profile {
-        id
-        displayName
-        description
-        tagset {
-          ...TagsetDetails
-        }
-        references {
-          id
-          name
-          uri
-          description
-        }
-        visuals {
-          ...VisualModel
-        }
-      }
-    }
-  }
 }

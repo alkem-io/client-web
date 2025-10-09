@@ -144,6 +144,7 @@ const CreateCalloutDialog = ({
       let contributions: CreateCalloutContributionInput[] = [];
       formData.contributions?.links?.forEach(link => {
         contributions.push({
+          type: CalloutContributionType.Link,
           link: {
             uri: link.uri,
             profile: {

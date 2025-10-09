@@ -1,0 +1,67 @@
+query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false, $includeWhiteboard: Boolean! = false, $includePost: Boolean! = false) {
+  lookup {
+    contribution(ID: $contributionId) {
+      id
+      sortOrder
+      authorization {
+        id
+        myPrivileges
+      }
+      link @include(if: $includeLink) {
+        ...LinkDetailsWithAuthorization
+      }
+      whiteboard @include(if: $includeWhiteboard)  {
+        id
+        profile {
+          id
+          url
+          displayName
+          preview: visual(type: BANNER) {
+            ...VisualModel
+          }
+        }
+        createdDate
+        createdBy {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+      post @include(if: $includePost)  {
+        id
+        createdBy {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+        createdDate
+        comments {
+          id
+          messagesCount
+        }
+        profile {
+          id
+          url
+          displayName
+          description
+          visuals {
+            ...VisualModel
+          }
+          tagset {
+            ...TagsetDetails
+          }
+          references {
+            id
+            name
+            uri
+            description
+          }
+        }
+      }
+    }
+  }
+}

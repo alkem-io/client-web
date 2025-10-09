@@ -1,7 +1,0 @@
-fragment ContributeTabPost on Post {
-  ...PostCard
-  authorization {
-    id
-    myPrivileges
-  }
-}

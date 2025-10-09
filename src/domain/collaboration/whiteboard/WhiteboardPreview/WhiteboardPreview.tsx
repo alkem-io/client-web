@@ -13,10 +13,9 @@ type WhiteboardPreviewProps = {
       }
     | undefined;
   onClick?: MouseEventHandler;
-  onClose?: () => void;
 };
 
-const WhiteboardPreview = ({ displayName, whiteboard, onClick, onClose, ...props }: WhiteboardPreviewProps) => {
+const WhiteboardPreview = ({ displayName, whiteboard, onClick }: WhiteboardPreviewProps) => {
   const { t } = useTranslation();
 
   return (
@@ -26,7 +25,6 @@ const WhiteboardPreview = ({ displayName, whiteboard, onClick, onClose, ...props
       alt={displayName}
       defaultImage={<WhiteboardIcon />}
       onClick={onClick}
-      {...props}
     />
   );
 };

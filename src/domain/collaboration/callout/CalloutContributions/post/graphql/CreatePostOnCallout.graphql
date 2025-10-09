@@ -1,7 +1,0 @@
-mutation CreatePostOnCallout($postData: CreateContributionOnCalloutInput!) {
-  createContributionOnCallout(contributionData: $postData) {
-    post {
-      id
-    }
-  }
-}

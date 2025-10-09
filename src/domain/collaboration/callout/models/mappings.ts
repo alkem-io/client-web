@@ -8,7 +8,7 @@ import { mapTagsetModelToTagsFormValues } from '@/domain/common/tagset/TagsetUti
 import { mapReferenceModelToReferenceFormValues } from '@/domain/common/reference/ReferenceUtils';
 import { mapContributionDefaultsModelToCalloutFormValues } from './ContributionDefaultsModel';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
-import { LinkDetails } from '@/domain/collaboration/callout/models/TypedCallout';
+import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
 
 export const mapCalloutTemplateToCalloutForm = (
   calloutTemplate?: {
