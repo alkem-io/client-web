@@ -40,7 +40,6 @@ export interface PostFormProps {
   edit?: boolean;
   defaultDisplayName?: string;
   descriptionTemplate?: string;
-  tags: string[] | undefined;
   loading?: boolean;
   onChange?: (post: PostFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
@@ -55,7 +54,6 @@ const PostForm = ({
   post,
   defaultDisplayName,
   descriptionTemplate,
-  tags,
   edit = false,
   loading,
   onChange,
@@ -68,17 +66,15 @@ const PostForm = ({
 }: PostFormProps) => {
   const { t } = useTranslation();
 
-  const tagsets: TagsetModel[] = [{ ...EmptyTagset, tags: tags ?? [] }];
-
-  const initialValues: FormValue = useMemo(
-    () => ({
+  const initialValues: FormValue = useMemo(() => {
+    const tagsets: TagsetModel[] = [{ ...EmptyTagset, tags: post?.tags ?? post?.profileData?.tags ?? [] }];
+    return {
       name: post?.profileData?.displayName ?? defaultDisplayName ?? '',
       description: post?.profileData?.description ?? descriptionTemplate ?? '',
       tagsets,
       references: post?.references ?? [],
-    }),
-    [post]
-  );
+    };
+  }, [post]);
 
   const validationSchema = yup.object().shape({
     name: displayNameValidator.required(),

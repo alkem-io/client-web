@@ -65,6 +65,7 @@ const PostCreationDialog = ({
       profileData: {
         displayName: newPost.displayName,
         description: newPost.description,
+        tags: newPost.tags,
       },
       ...newPost,
     });
@@ -97,7 +98,6 @@ const PostCreationDialog = ({
             onStatusChanged={handleFormStatusChange}
             defaultDisplayName={defaultDisplayName}
             descriptionTemplate={defaultDescription}
-            tags={[]}
             disableRichMedia={disableRichMedia}
           />
         </Box>
