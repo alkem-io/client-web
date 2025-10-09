@@ -2067,7 +2067,7 @@
       },
       "subspace": {
         "create": "$t(common.subspace) maken",
-        "edit": "$t(common.Subspace) bewerken"
+        "edit": "$t(common.subspace) bewerken"
       }
     }
   },
