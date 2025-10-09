@@ -24,6 +24,8 @@ import GridProvider from '@/core/ui/grid/GridProvider';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { nameValidator } from '@/core/ui/forms/validator/nameValidator';
 
 const referenceSegmentWithSocialSchema = yup.array().of(
   referenceSegmentValidationObject.shape({
@@ -97,9 +99,9 @@ export const UserForm = ({
   };
 
   const validationSchema = yup.object().shape({
-    displayName: yup.string().required(t('forms.validations.required')),
-    firstName: yup.string().required(t('forms.validations.required')),
-    lastName: yup.string().required(t('forms.validations.required')),
+    displayName: displayNameValidator.required(t('forms.validations.required')),
+    firstName: nameValidator.required(t('forms.validations.requiredField')),
+    lastName: nameValidator.required(t('forms.validations.requiredField')),
     email: yup.string().email('Email is not valid').required(t('forms.validations.required')),
     gender: yup.string(),
     city: yup.string(),
