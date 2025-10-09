@@ -31,6 +31,7 @@ import ContributionsCardsExpandable from '../../calloutContributions/contributio
 import WhiteboardCard from '../../calloutContributions/whiteboard/WhiteboardCard';
 import CreateContributionButtonWhiteboard from '../../calloutContributions/whiteboard/CreateContributionButtonWhiteboard';
 import CreateContributionButtonPost from '../../calloutContributions/post/CreateContributionButtonPost';
+import Gutters from '@/core/ui/grid/Gutters';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>
@@ -194,19 +195,21 @@ const CalloutView = ({
 
           {/* Framing Comments */}
           {callout.comments && (
-            <CalloutCommentsContainer callout={callout}>
-              {props => (
-                <CommentsComponent
-                  {...props}
-                  commentsEnabled={props.commentsEnabled}
-                  loading={loading || props.loading}
-                  last={lastMessageOnly}
-                  maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
-                  onClickMore={() => onExpand?.(callout)}
-                  isMember={myMembershipStatus === CommunityMembershipStatus.Member}
-                />
-              )}
-            </CalloutCommentsContainer>
+            <Gutters disableVerticalPadding>
+              <CalloutCommentsContainer callout={callout}>
+                {props => (
+                  <CommentsComponent
+                    {...props}
+                    commentsEnabled={props.commentsEnabled}
+                    loading={loading || props.loading}
+                    last={lastMessageOnly}
+                    maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
+                    onClickMore={() => onExpand?.(callout)}
+                    isMember={myMembershipStatus === CommunityMembershipStatus.Member}
+                  />
+                )}
+              </CalloutCommentsContainer>
+            </Gutters>
           )}
         </CalloutViewLayout>
       )}
