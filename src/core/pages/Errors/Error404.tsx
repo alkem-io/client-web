@@ -12,7 +12,7 @@ import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { gutters } from '@/core/ui/grid/utils';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link as RouterLink } from 'react-router-dom';
 
 export const Container = styled(Box)(({ theme }) => ({
   margin: theme.spacing(2, 'auto', 2, 'auto'),
@@ -61,10 +61,10 @@ const StyledSearchBox = styled(SearchBar)(({ theme }) => ({
   [theme.breakpoints.down('md')]: { width: '100%' },
 }));
 
-const StyledLink = ({ children, subtitle, ...props }: LinkProps & { subtitle?: string }) => {
+const StyledLink = ({ children, subtitle, to, ...props }: LinkProps & { subtitle?: string; to?: string }) => {
   return (
     <Box marginBottom={theme => theme.spacing(2)}>
-      <Link {...props}>
+      <Link component={RouterLink} reloadDocument to={to || '/'} {...props}>
         <PageTitle>
           {children} <EastOutlined sx={{ verticalAlign: 'middle' }} fontSize="small" />
         </PageTitle>
@@ -74,7 +74,7 @@ const StyledLink = ({ children, subtitle, ...props }: LinkProps & { subtitle?: s
   );
 };
 
-export const Error404 = () => {
+export const Error404 = ({ key }) => {
   const { pathname } = useLocation();
 
   useEffect(() => log404NotFound(), [pathname]);
@@ -83,7 +83,7 @@ export const Error404 = () => {
   const { locations } = useConfig();
 
   return (
-    <PageContent gridContainerProps={{ sx: { paddingTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS) } }}>
+    <PageContent key={key} gridContainerProps={{ sx: { paddingTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS) } }}>
       <PageContentColumn columns={12}>
         <PageContentBlock>
           <Container>
@@ -102,10 +102,10 @@ export const Error404 = () => {
               <Tagline sx={{ marginTop: gutters(2) }}>{t('pages.four-ou-four.message')}</Tagline>
               <StyledSearchBox withRedirect />
               <UsefulLinks>
-                <StyledLink href="/" subtitle={t('pages.four-ou-four.links.home')}>
+                <StyledLink to="/" subtitle={t('pages.four-ou-four.links.home')}>
                   {t('common.home')}
                 </StyledLink>
-                <StyledLink href={locations?.help} subtitle={t('pages.four-ou-four.links.faq')}>
+                <StyledLink to={locations?.help} subtitle={t('pages.four-ou-four.links.faq')}>
                   {t('common.helpCenter')}
                 </StyledLink>
               </UsefulLinks>
