@@ -60,9 +60,16 @@ const ControlsButton = memo(
   ({ editor, command, specs, ...buttonProps }: ControlsButtonProps) => {
     const isActiveArgs = specs && ((typeof specs === 'string' ? [specs] : specs) as Parameters<Editor['isActive']>);
 
-    const getActiveState = () => (isActiveArgs ? editor?.isActive(...isActiveArgs) : false);
+    const getActiveState = () => (isActiveArgs && editor ? editor.isActive(...isActiveArgs) : false);
 
-    const getDisabledState = () => !editor || !command(editor.can().chain().focus()).run();
+    const getDisabledState = () => {
+      if (!editor || !editor.view) return true;
+      try {
+        return !command(editor.can().chain().focus()).run();
+      } catch {
+        return true;
+      }
+    };
 
     const produceButtonState = (prevState: ButtonState = {}) =>
       produce(prevState, nextState => {
@@ -70,7 +77,7 @@ const ControlsButton = memo(
         nextState.disabled = getDisabledState();
       });
 
-    const [state, setState] = useState<ButtonState>(produceButtonState());
+    const [state, setState] = useState<ButtonState>({ disabled: true, active: false });
 
     const refreshOnEditorUpdate = (editor: Editor) => {
       const handleStateChange = async () => {
