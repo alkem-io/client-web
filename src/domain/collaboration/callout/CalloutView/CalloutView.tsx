@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import {
   CalloutContributionType,
   CalloutFramingType,
@@ -68,6 +69,7 @@ const CalloutView = ({
 }: CalloutViewProps) => {
   const { space } = useSpace();
   const { subspace } = useSubSpace();
+  const scrollerRef = useRef<HTMLElement>(null);
 
   const myMembershipStatus =
     subspace?.about.membership?.myMembershipStatus ?? space?.about.membership?.myMembershipStatus;
@@ -85,6 +87,7 @@ const CalloutView = ({
         <CalloutViewLayout
           callout={callout}
           contributionsCount={contributionsCount}
+          contentRef={scrollerRef}
           {...calloutSettingsProvided}
           expanded={expanded}
           onExpand={onExpand}
@@ -200,6 +203,7 @@ const CalloutView = ({
                 {props => (
                   <CommentsComponent
                     {...props}
+                    externalScrollRef={expanded ? scrollerRef : undefined}
                     commentsEnabled={props.commentsEnabled}
                     loading={loading || props.loading}
                     last={lastMessageOnly}

@@ -16,6 +16,7 @@ const CalloutViewLayout = ({
   children,
   contributionsCount,
   expanded = false,
+  contentRef,
   onExpand,
   onCollapse,
   skipReferences,
@@ -65,6 +66,7 @@ const CalloutViewLayout = ({
 
       {/* scrollable content region */}
       <Box
+        ref={contentRef}
         sx={{
           flex: expanded ? '1 1 auto' : '0 0 auto',
           minHeight: 0,

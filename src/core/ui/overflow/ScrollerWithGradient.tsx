@@ -65,7 +65,6 @@ const ScrollerWithGradient = <ScrollerEl extends HTMLElement>({
   orientation = 'vertical',
   maxHeight,
   scrollerRef,
-  onScroll,
   children,
   ...props
 }: PropsWithChildren<ScrollerWithGradientProps<ScrollerEl>> & BoxProps) => {
@@ -84,7 +83,6 @@ const ScrollerWithGradient = <ScrollerEl extends HTMLElement>({
           [orientation === 'vertical' ? 'overflowY' : 'overflowX']: 'auto',
           ...(orientation === 'vertical' ? VERTICAL_SCROLL_CONTENT_SX : {}),
         }}
-        onScroll={onScroll}
       >
         {children}
       </Box>

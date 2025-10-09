@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { last } from 'lodash';
@@ -39,6 +39,7 @@ export interface CommentsComponentProps {
   last?: boolean;
   onClickMore?: () => void;
   commentsEnabled: boolean;
+  externalScrollRef?: RefObject<HTMLElement | null>;
 }
 
 interface ScrollState {
@@ -51,8 +52,6 @@ const isScrolledToBottom = ({
   scrollHeight,
   containerHeight,
 }: ScrollState & { containerHeight: number }) => {
-  // Due to a bug with the zoom in Chromium based browsers we can not check if scrollTop === (scrollHeight - containerHeight)
-  // This will return true if scrollTop is approximately equal to (scrollHeight - containerHeight), if the comments are scrolled very close to the end
   return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_MISTAKE_TOLERANCE;
 };
 
@@ -74,10 +73,12 @@ const CommentsComponent = ({
   loading,
   onClickMore,
   commentsEnabled,
+  externalScrollRef,
 }: CommentsComponentProps) => {
   const { t } = useTranslation();
 
-  const commentsContainerRef = useRef<HTMLElement>(null);
+  const internalCommentsContainerRef = useRef<HTMLElement>(null);
+  const commentsContainerRef = externalScrollRef || internalCommentsContainerRef;
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
   const wasScrolledToBottomRef = useRef(true);
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
@@ -90,6 +91,12 @@ const CommentsComponent = ({
   });
 
   useEffect(() => {
+    console.log('CommentsComponent uE', {
+      containerHeight,
+      internal: internalCommentsContainerRef.current,
+      external: externalScrollRef?.current,
+      decided: commentsContainerRef.current,
+    });
     if (commentsContainerRef.current) {
       wasScrolledToBottomRef.current = isScrolledToBottom({ ...prevScrollTopRef.current, containerHeight });
 
@@ -106,6 +113,15 @@ const CommentsComponent = ({
     }
   }, [messages]);
 
+  useEffect(() => {
+    if (commentsContainerRef.current) {
+      commentsContainerRef.current.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+      commentsContainerRef.current?.removeEventListener('scroll', handleScroll);
+    };
+  }, [commentsContainerRef.current]);
+
   const commentReactionsMutations = useCommentReactionsMutations(commentsId);
 
   const handleScroll = () => {
@@ -119,13 +135,7 @@ const CommentsComponent = ({
   return (
     <>
       {!isShowingLastMessage && hasMessages && (
-        <ScrollerWithGradient
-          maxHeight={maxHeight}
-          height={height}
-          scrollerRef={commentsContainerRef}
-          onScroll={handleScroll}
-          margin={0}
-        >
+        <ScrollerWithGradient maxHeight={maxHeight} height={height} scrollerRef={commentsContainerRef} margin={0}>
           <Gutters gap={0}>
             <MessagesThread
               messages={messages}
