@@ -1787,6 +1787,25 @@ export const AdminSpaceFragmentDoc = gql`
   }
   ${SpaceAboutLightFragmentDoc}
 `;
+export const AdminSpaceV2FragmentDoc = gql`
+  fragment AdminSpaceV2 on Space {
+    id
+    nameID
+    visibility
+    about {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+`;
 export const SpaceAboutCardAvatarFragmentDoc = gql`
   fragment SpaceAboutCardAvatar on SpaceAbout {
     id
@@ -16626,6 +16645,322 @@ export type PlatformAdminSpacesListQueryResult = Apollo.QueryResult<
 >;
 export function refetchPlatformAdminSpacesListQuery(variables?: SchemaTypes.PlatformAdminSpacesListQueryVariables) {
   return { query: PlatformAdminSpacesListDocument, variables: variables };
+}
+export const PlatformAdminSpacesListV2Document = gql`
+  query platformAdminSpacesListV2 {
+    platformAdmin {
+      spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
+        ...AdminSpaceV2
+      }
+    }
+  }
+  ${AdminSpaceV2FragmentDoc}
+`;
+
+/**
+ * __usePlatformAdminSpacesListV2Query__
+ *
+ * To run a query within a React component, call `usePlatformAdminSpacesListV2Query` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformAdminSpacesListV2Query` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformAdminSpacesListV2Query({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformAdminSpacesListV2Query(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformAdminSpacesListV2Query,
+    SchemaTypes.PlatformAdminSpacesListV2QueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.PlatformAdminSpacesListV2Query,
+    SchemaTypes.PlatformAdminSpacesListV2QueryVariables
+  >(PlatformAdminSpacesListV2Document, options);
+}
+export function usePlatformAdminSpacesListV2LazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformAdminSpacesListV2Query,
+    SchemaTypes.PlatformAdminSpacesListV2QueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformAdminSpacesListV2Query,
+    SchemaTypes.PlatformAdminSpacesListV2QueryVariables
+  >(PlatformAdminSpacesListV2Document, options);
+}
+export function usePlatformAdminSpacesListV2SuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.PlatformAdminSpacesListV2Query,
+        SchemaTypes.PlatformAdminSpacesListV2QueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.PlatformAdminSpacesListV2Query,
+    SchemaTypes.PlatformAdminSpacesListV2QueryVariables
+  >(PlatformAdminSpacesListV2Document, options);
+}
+export type PlatformAdminSpacesListV2QueryHookResult = ReturnType<typeof usePlatformAdminSpacesListV2Query>;
+export type PlatformAdminSpacesListV2LazyQueryHookResult = ReturnType<typeof usePlatformAdminSpacesListV2LazyQuery>;
+export type PlatformAdminSpacesListV2SuspenseQueryHookResult = ReturnType<
+  typeof usePlatformAdminSpacesListV2SuspenseQuery
+>;
+export type PlatformAdminSpacesListV2QueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformAdminSpacesListV2Query,
+  SchemaTypes.PlatformAdminSpacesListV2QueryVariables
+>;
+export function refetchPlatformAdminSpacesListV2Query(variables?: SchemaTypes.PlatformAdminSpacesListV2QueryVariables) {
+  return { query: PlatformAdminSpacesListV2Document, variables: variables };
+}
+export const PlatformLicensePlansDocument = gql`
+  query PlatformLicensePlans {
+    platform {
+      licensingFramework {
+        plans {
+          id
+          name
+          sortOrder
+          type
+          licenseCredential
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlatformLicensePlansQuery__
+ *
+ * To run a query within a React component, call `usePlatformLicensePlansQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformLicensePlansQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformLicensePlansQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformLicensePlansQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformLicensePlansQuery,
+    SchemaTypes.PlatformLicensePlansQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformLicensePlansQuery, SchemaTypes.PlatformLicensePlansQueryVariables>(
+    PlatformLicensePlansDocument,
+    options
+  );
+}
+export function usePlatformLicensePlansLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformLicensePlansQuery,
+    SchemaTypes.PlatformLicensePlansQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformLicensePlansQuery, SchemaTypes.PlatformLicensePlansQueryVariables>(
+    PlatformLicensePlansDocument,
+    options
+  );
+}
+export function usePlatformLicensePlansSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.PlatformLicensePlansQuery,
+        SchemaTypes.PlatformLicensePlansQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.PlatformLicensePlansQuery, SchemaTypes.PlatformLicensePlansQueryVariables>(
+    PlatformLicensePlansDocument,
+    options
+  );
+}
+export type PlatformLicensePlansQueryHookResult = ReturnType<typeof usePlatformLicensePlansQuery>;
+export type PlatformLicensePlansLazyQueryHookResult = ReturnType<typeof usePlatformLicensePlansLazyQuery>;
+export type PlatformLicensePlansSuspenseQueryHookResult = ReturnType<typeof usePlatformLicensePlansSuspenseQuery>;
+export type PlatformLicensePlansQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformLicensePlansQuery,
+  SchemaTypes.PlatformLicensePlansQueryVariables
+>;
+export function refetchPlatformLicensePlansQuery(variables?: SchemaTypes.PlatformLicensePlansQueryVariables) {
+  return { query: PlatformLicensePlansDocument, variables: variables };
+}
+export const SpaceSubscriptionsDocument = gql`
+  query SpaceSubscriptions($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        subscriptions {
+          name
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceSubscriptionsQuery__
+ *
+ * To run a query within a React component, call `useSpaceSubscriptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceSubscriptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceSubscriptionsQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceSubscriptionsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceSubscriptionsQuery,
+    SchemaTypes.SpaceSubscriptionsQueryVariables
+  > &
+    ({ variables: SchemaTypes.SpaceSubscriptionsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceSubscriptionsQuery, SchemaTypes.SpaceSubscriptionsQueryVariables>(
+    SpaceSubscriptionsDocument,
+    options
+  );
+}
+export function useSpaceSubscriptionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceSubscriptionsQuery,
+    SchemaTypes.SpaceSubscriptionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceSubscriptionsQuery, SchemaTypes.SpaceSubscriptionsQueryVariables>(
+    SpaceSubscriptionsDocument,
+    options
+  );
+}
+export function useSpaceSubscriptionsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.SpaceSubscriptionsQuery, SchemaTypes.SpaceSubscriptionsQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.SpaceSubscriptionsQuery, SchemaTypes.SpaceSubscriptionsQueryVariables>(
+    SpaceSubscriptionsDocument,
+    options
+  );
+}
+export type SpaceSubscriptionsQueryHookResult = ReturnType<typeof useSpaceSubscriptionsQuery>;
+export type SpaceSubscriptionsLazyQueryHookResult = ReturnType<typeof useSpaceSubscriptionsLazyQuery>;
+export type SpaceSubscriptionsSuspenseQueryHookResult = ReturnType<typeof useSpaceSubscriptionsSuspenseQuery>;
+export type SpaceSubscriptionsQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceSubscriptionsQuery,
+  SchemaTypes.SpaceSubscriptionsQueryVariables
+>;
+export function refetchSpaceSubscriptionsQuery(variables: SchemaTypes.SpaceSubscriptionsQueryVariables) {
+  return { query: SpaceSubscriptionsDocument, variables: variables };
+}
+export const SpaceLicensePlansDocument = gql`
+  query SpaceLicensePlans($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        subscriptions {
+          name
+        }
+      }
+    }
+    platform {
+      licensingFramework {
+        plans {
+          id
+          name
+          sortOrder
+          type
+          licenseCredential
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceLicensePlansQuery__
+ *
+ * To run a query within a React component, call `useSpaceLicensePlansQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceLicensePlansQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceLicensePlansQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceLicensePlansQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceLicensePlansQuery,
+    SchemaTypes.SpaceLicensePlansQueryVariables
+  > &
+    ({ variables: SchemaTypes.SpaceLicensePlansQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceLicensePlansQuery, SchemaTypes.SpaceLicensePlansQueryVariables>(
+    SpaceLicensePlansDocument,
+    options
+  );
+}
+export function useSpaceLicensePlansLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceLicensePlansQuery,
+    SchemaTypes.SpaceLicensePlansQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceLicensePlansQuery, SchemaTypes.SpaceLicensePlansQueryVariables>(
+    SpaceLicensePlansDocument,
+    options
+  );
+}
+export function useSpaceLicensePlansSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.SpaceLicensePlansQuery, SchemaTypes.SpaceLicensePlansQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.SpaceLicensePlansQuery, SchemaTypes.SpaceLicensePlansQueryVariables>(
+    SpaceLicensePlansDocument,
+    options
+  );
+}
+export type SpaceLicensePlansQueryHookResult = ReturnType<typeof useSpaceLicensePlansQuery>;
+export type SpaceLicensePlansLazyQueryHookResult = ReturnType<typeof useSpaceLicensePlansLazyQuery>;
+export type SpaceLicensePlansSuspenseQueryHookResult = ReturnType<typeof useSpaceLicensePlansSuspenseQuery>;
+export type SpaceLicensePlansQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceLicensePlansQuery,
+  SchemaTypes.SpaceLicensePlansQueryVariables
+>;
+export function refetchSpaceLicensePlansQuery(variables: SchemaTypes.SpaceLicensePlansQueryVariables) {
+  return { query: SpaceLicensePlansDocument, variables: variables };
 }
 export const PlatformAdminUsersListDocument = gql`
   query platformAdminUsersList($first: Int!, $after: UUID, $filter: UserFilterInput) {

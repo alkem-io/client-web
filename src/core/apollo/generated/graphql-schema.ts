@@ -21305,6 +21305,114 @@ export type AdminSpaceFragment = {
     | undefined;
 };
 
+export type PlatformAdminSpacesListV2QueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformAdminSpacesListV2Query = {
+  __typename?: 'Query';
+  platformAdmin: {
+    __typename?: 'PlatformAdminQueryResults';
+    spaces: Array<{
+      __typename?: 'Space';
+      id: string;
+      nameID: string;
+      visibility: SpaceVisibility;
+      about: {
+        __typename?: 'SpaceAbout';
+        id: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+      };
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    }>;
+  };
+};
+
+export type AdminSpaceV2Fragment = {
+  __typename?: 'Space';
+  id: string;
+  nameID: string;
+  visibility: SpaceVisibility;
+  about: {
+    __typename?: 'SpaceAbout';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+  };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type PlatformLicensePlansQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformLicensePlansQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    licensingFramework: {
+      __typename?: 'Licensing';
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        sortOrder: number;
+        type: LicensingCredentialBasedPlanType;
+        licenseCredential: LicensingCredentialBasedCredentialType;
+      }>;
+    };
+  };
+};
+
+export type SpaceSubscriptionsQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceSubscriptionsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
+        }
+      | undefined;
+  };
+};
+
+export type SpaceLicensePlansQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceLicensePlansQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
+        }
+      | undefined;
+  };
+  platform: {
+    __typename?: 'Platform';
+    licensingFramework: {
+      __typename?: 'Licensing';
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        sortOrder: number;
+        type: LicensingCredentialBasedPlanType;
+        licenseCredential: LicensingCredentialBasedCredentialType;
+      }>;
+    };
+  };
+};
+
 export type PlatformAdminUsersListQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['UUID']['input']>;
