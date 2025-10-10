@@ -8,7 +8,7 @@ import { mapTagsetModelToTagsFormValues } from '@/domain/common/tagset/TagsetUti
 import { mapReferenceModelToReferenceFormValues } from '@/domain/common/reference/ReferenceUtils';
 import { mapContributionDefaultsModelToCalloutFormValues } from './ContributionDefaultsModel';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
-import { LinkDetails } from '@/domain/collaboration/callout/models/TypedCallout';
+import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
 
 export const mapCalloutTemplateToCalloutForm = (
   calloutTemplate?: {
@@ -24,10 +24,10 @@ export const mapCalloutTemplateToCalloutForm = (
         };
       };
       memo?: {
-        content: string;
         profile: ProfileModel & {
           preview?: VisualModel;
         };
+        markdown?: string;
       };
       link?: {
         uri: string;
@@ -75,8 +75,7 @@ export const mapCalloutTemplateToCalloutForm = (
             profile: {
               displayName: calloutTemplate.framing.memo.profile.displayName,
             },
-            content: calloutTemplate.framing.memo.content,
-            previewImages: [], // TODO: Download the preview images if available
+            markdown: calloutTemplate.framing.memo.markdown,
           }
         : undefined,
       link: calloutTemplate.framing.link

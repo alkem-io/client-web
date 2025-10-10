@@ -26,7 +26,7 @@ export const GlobalErrorProvider: React.FC<{ children: ReactNode }> = ({ childre
   // Set the global error function during initialization
   setGlobalError = setError;
 
-  return <GlobalErrorContext.Provider value={{ error, setError }}>{children}</GlobalErrorContext.Provider>;
+  return <GlobalErrorContext value={{ error, setError }}>{children}</GlobalErrorContext>;
 };
 
 // the global error setter

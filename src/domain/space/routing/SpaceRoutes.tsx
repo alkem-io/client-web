@@ -12,13 +12,13 @@ import { SpaceContext, SpaceContextProvider } from '../context/SpaceContext';
 import { SpacePageLayout } from '../layout/SpacePageLayout';
 import SpaceCommunityPage from '../layout/tabbedLayout/Tabs/SpaceCommunityPage/SpaceCommunityPage';
 import SpaceSubspacesPage from '../layout/tabbedLayout/Tabs/SpaceSubspacesPage';
-import SpaceKnowledgeBasePage from '../layout/tabbedLayout/Tabs/SpaceKnowledgeBase/SpaceKnowledgeBasePage';
+import FlowStateTabPage from '../layout/tabbedLayout/Tabs/FlowStateTabPage/FlowStateTabPage';
 import SubspaceRoutes from './SubspaceRoutes';
 import SpaceCalloutPage from '../pages/SpaceCalloutPage';
-import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import Loading from '@/core/ui/loading/Loading';
 import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import { useSectionIndex } from '../layout/useSectionIndex';
+import useSpaceTabs from '../layout/tabbedLayout/layout/useSpaceTabs';
 
 const LegacyRoutesRedirects = () => {
   const {
@@ -72,13 +72,20 @@ export const SpaceTabbedPages = () => {
   const { spaceId, spaceLevel } = useUrlResolver();
 
   const sectionIndex = useSectionIndex({ spaceId, spaceLevel });
+  const { tabs } = useSpaceTabs({ spaceId, skip: !spaceId });
+
+  // Convert sectionIndex to number for comparison
+  const currentSectionNumber = parseInt(sectionIndex);
+  const totalTabs = tabs.length;
 
   return (
     <>
       {sectionIndex === '0' && <SpaceDashboardPage />}
       {sectionIndex === '1' && <SpaceCommunityPage />}
       {sectionIndex === '2' && <SpaceSubspacesPage />}
-      {sectionIndex === '3' && <SpaceKnowledgeBasePage sectionIndex={3} />}
+      {currentSectionNumber >= 3 && currentSectionNumber < totalTabs && (
+        <FlowStateTabPage sectionIndex={currentSectionNumber} />
+      )}
     </>
   );
 };
@@ -101,7 +108,7 @@ const SpaceRoutes = () => {
 
             <Route
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-              element={<SpaceCalloutPage>{props => <CalloutRoute {...props} />}</SpaceCalloutPage>}
+              element={<SpaceCalloutPage />}
             />
             <Route path={`${EntityPageSection.Settings}/*`} element={<SpaceAdminL0Route />} />
             <Route path={`/:dialog?/:${nameOfUrl.calendarEventNameId}?`} element={<SpaceDashboardPage />} />

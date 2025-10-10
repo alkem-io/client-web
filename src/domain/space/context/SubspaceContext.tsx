@@ -14,6 +14,7 @@ interface SubspacePermissions {
 interface SubspaceContextProps {
   subspace: {
     id: string;
+    nameId: string;
     level: SpaceLevel;
     about: SpaceAboutFullModel;
     authorization?: {
@@ -29,6 +30,7 @@ const defaultValue: SubspaceContextProps = {
   loading: true,
   subspace: {
     id: '',
+    nameId: '',
     level: SpaceLevel.L1,
     about: {
       id: '',
@@ -132,6 +134,7 @@ const SubspaceContextProvider: FC<SubspaceProviderProps> = ({ children }) => {
 
     return {
       id: subspaceData?.id ?? '',
+      nameId: subspaceData?.nameID ?? '',
       level: subspaceData?.level ?? SpaceLevel.L1,
       about,
     };
@@ -149,7 +152,7 @@ const SubspaceContextProvider: FC<SubspaceProviderProps> = ({ children }) => {
     state = defaultValue;
   }
 
-  return <SubspaceContext.Provider value={state}>{children}</SubspaceContext.Provider>;
+  return <SubspaceContext value={state}>{children}</SubspaceContext>;
 };
 
 export default SubspaceContextProvider;

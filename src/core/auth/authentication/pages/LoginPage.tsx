@@ -105,7 +105,7 @@ const LoginPage = ({ flow }: LoginPageProps) => {
       <AuthFormHeader title={t('authentication.sign-in')} />
       <KratosForm ui={loginUi}>
         <AuthPageContentContainer>
-          <KratosUI ui={loginUi} resetPasswordElement={resetPassword} />
+          <KratosUI ui={loginUi} resetPasswordElement={resetPassword} flowType="login" />
         </AuthPageContentContainer>
       </KratosForm>
     </AuthenticationLayout>

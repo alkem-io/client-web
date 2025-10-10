@@ -3,7 +3,7 @@ import { Extensions } from '@tiptap/core';
 import { TiptapCollabProvider, onStatelessParameters } from '@hocuspocus/provider';
 import * as Y from 'yjs';
 import Collaboration from '@tiptap/extension-collaboration';
-import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
+import CollaborationCaret from '@tiptap/extension-collaboration-caret';
 import {
   CollaborationStatus,
   MemoStatus,
@@ -28,7 +28,7 @@ interface UseCollaborationProps {
 }
 
 export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => {
-  const { userName, cursorColor } = useUserCursor();
+  const { userId, userName, cursorColor } = useUserCursor();
   const notify = useNotification();
   const isOnline = useOnlineStatus();
 
@@ -139,9 +139,10 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       Collaboration.extend().configure({
         document: ydoc,
       }),
-      CollaborationCursor.extend().configure({
+      CollaborationCaret.extend().configure({
         provider: provider,
         user: {
+          id: userId,
           name: userName,
           color: cursorColor,
         },

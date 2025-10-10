@@ -1,33 +1,14 @@
-query InAppNotifications($types: [NotificationEvent!]) {
-  notificationsInApp(
-    filter: { types: $types }  ) {
-    id
-    type
-    category
-    state
-    triggeredAt
-    triggeredBy {
-      id
-      profile {
-        id
-        displayName
-        url
-        visual(type: AVATAR) {
-          ...VisualModel
-        }
+query InAppNotifications($types: [NotificationEvent!], $first: Int, $after: UUID) {
+  me {
+    notifications(filter: { types: $types }, first: $first, after: $after) {
+      inAppNotifications {
+        ...InAppNotificationAllTypes
       }
-    }
-    payload {
-      type
-      ... on InAppNotificationPayloadSpaceCollaborationCallout {
-        ...InAppNotificationPayloadSpaceCollaborationCallout
+      pageInfo {
+        endCursor
+        hasNextPage
       }
-      ... on InAppNotificationPayloadSpaceCommunityContributor {
-        ...InAppNotificationSpaceCommunityContributor
-      }
-      ... on InAppNotificationPayloadPlatformUserMessageRoom {
-        ...InAppNotificationUserMentioned
-      }
+      total
     }
   }
 }

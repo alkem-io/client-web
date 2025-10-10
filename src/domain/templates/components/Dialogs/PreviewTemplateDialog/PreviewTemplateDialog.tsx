@@ -41,8 +41,8 @@ const PreviewTemplateDialog = ({
   const { t } = useTranslation();
 
   return (
-    <DialogWithGrid open={open} columns={12} onClose={onClose}>
-      <DialogHeader onClose={onClose}>
+    <DialogWithGrid open={open} columns={12} onClose={onClose} aria-labelledby="preview-template-dialog">
+      <DialogHeader id="preview-template-dialog" onClose={onClose}>
         <BlockTitle>
           {t('common.preview')} — {template.profile.displayName}
         </BlockTitle>

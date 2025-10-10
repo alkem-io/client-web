@@ -192,8 +192,13 @@ const WhiteboardDialogFooter = ({
 
         {directMessageDialog}
       </Actions>
-      <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
+      <DialogWithGrid
+        open={isLearnWhyDialogOpen}
+        onClose={() => setIsLearnWhyDialogOpen(false)}
+        aria-labelledby="whiteboard-dialog-footer"
+      >
         <DialogHeader
+          id="whiteboard-dialog-footer"
           title={t('pages.whiteboard.readonlyDialog.title')}
           onClose={() => setIsLearnWhyDialogOpen(false)}
         />

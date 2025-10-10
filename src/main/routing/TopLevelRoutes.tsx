@@ -153,11 +153,11 @@ export const TopLevelRoutes = () => {
                     path={`/${TopLevelRoutePath.VirtualContributor}/*`}
                     element={
                       <WithApmTransaction path={`:${nameOfUrl.vcNameId}/*`}>
-                        <NoIdentityRedirect>
+                        <NonIdentity>
                           <Suspense fallback={<Loading />}>
                             <VCRoute />
                           </Suspense>
-                        </NoIdentityRedirect>
+                        </NonIdentity>
                       </WithApmTransaction>
                     }
                   />

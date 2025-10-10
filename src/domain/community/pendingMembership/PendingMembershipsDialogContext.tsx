@@ -41,8 +41,6 @@ export const PendingMembershipsDialogProvider = ({ children }) => {
   const [openDialog, setOpenDialog] = useState<PendingMembershipsListDialogDetails | InvitationViewDialogDetails>();
 
   return (
-    <PendingMembershipsDialogContext.Provider value={{ openDialog, setOpenDialog }}>
-      {children}
-    </PendingMembershipsDialogContext.Provider>
+    <PendingMembershipsDialogContext value={{ openDialog, setOpenDialog }}>{children}</PendingMembershipsDialogContext>
   );
 };

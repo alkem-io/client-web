@@ -128,7 +128,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
 
   const loading = urlResolverLoading || loadingSpaceQuery || loadingSpaceEntitlementsQuery || !spaceId;
   return (
-    <SpaceContext.Provider
+    <SpaceContext
       value={{
         space,
         permissions,
@@ -138,7 +138,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
       }}
     >
       {children}
-    </SpaceContext.Provider>
+    </SpaceContext>
   );
 };
 

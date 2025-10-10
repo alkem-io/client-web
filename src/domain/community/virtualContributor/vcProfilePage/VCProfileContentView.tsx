@@ -24,7 +24,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { useTemporaryHardCodedVCProfilePageData } from './useTemporaryHardCodedVCProfilePageData';
 import { SettingsMotionModeIcon } from './SettingsMotionModeIcon';
 import { VirtualContributorModelFull } from '../model/VirtualContributorModelFull';
-import { EMPTY_MODEL_CARD } from '../model/AiPersonaModelCardModel';
+import { EMPTY_MODEL_CARD } from '../model/VirtualContributorModelCardModel';
 
 export type VCProfileContentViewProps = {
   virtualContributor?: VirtualContributorModelFull;
@@ -44,7 +44,7 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
     }
   };
 
-  const modelCard = virtualContributor?.aiPersona.modelCard ?? EMPTY_MODEL_CARD;
+  const modelCard = virtualContributor?.modelCard ?? EMPTY_MODEL_CARD;
   const { sections } = useTemporaryHardCodedVCProfilePageData(modelCard);
 
   const renderCellIcon = (iconName: string) => {
@@ -201,7 +201,6 @@ const VCProfileContentView = ({ virtualContributor, openKnowledgeBaseDialog }: V
       {openKnowledgeBaseDialog && (
         <KnowledgeBaseDialog
           id={virtualContributor?.id ?? ''}
-          aiPersonaServiceID={virtualContributor?.aiPersona?.aiPersonaServiceID ?? ''}
           title={`${name}: ${t('virtualContributorSpaceSettings.bodyOfKnowledge')}`}
           placeholder={t('virtualContributorSpaceSettings.placeholder')}
           onClose={onCloseKnowledgeBase}

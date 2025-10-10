@@ -9,7 +9,7 @@ import PageContent from '@/core/ui/content/PageContent';
 import { Trans, useTranslation } from 'react-i18next';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { AiPersonaEngine, AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaEngine, VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -27,9 +27,9 @@ interface BodyOfKnowledgeManagementProps {
     profile: {
       displayName: string;
     };
+    bodyOfKnowledgeType?: VirtualContributorBodyOfKnowledgeType;
     aiPersona?: {
-      aiPersonaServiceID?: string;
-      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType;
+      id: string;
       engine: AiPersonaEngine;
     };
   };
@@ -38,14 +38,14 @@ interface BodyOfKnowledgeManagementProps {
 const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const aiPersonaServiceId = vc.aiPersona?.aiPersonaServiceID;
+  const vcId = vc?.id;
 
   const [updateBodyOfKnowledge, { loading: updateLoading }] = useRefreshBodyOfKnowledgeMutation();
   const { data } = useVirtualContributorKnowledgeBaseLastUpdatedQuery({
-    variables: { aiPersonaServiceID: aiPersonaServiceId ?? '' },
-    skip: !aiPersonaServiceId,
+    variables: { id: vcId },
+    skip: !vcId,
   });
-  const lastUpdated = data?.aiServer.aiPersonaService.bodyOfKnowledgeLastUpdated;
+  const lastUpdated = data?.virtualContributor?.aiPersona?.bodyOfKnowledgeLastUpdated;
 
   const refreshIngestion = () => {
     updateBodyOfKnowledge({
@@ -81,13 +81,13 @@ const BodyOfKnowledgeManagement = ({ vc }: BodyOfKnowledgeManagementProps) => {
     });
   };
 
-  const type = vc.aiPersona?.bodyOfKnowledgeType;
+  const type = vc.bodyOfKnowledgeType;
   const isGuidanceType = vc.aiPersona?.engine === AiPersonaEngine.Guidance;
 
   const ingestionAvailable =
     isGuidanceType ||
-    type === AiPersonaBodyOfKnowledgeType.AlkemioSpace ||
-    type === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
+    type === VirtualContributorBodyOfKnowledgeType.AlkemioSpace ||
+    type === VirtualContributorBodyOfKnowledgeType.AlkemioKnowledgeBase;
 
   if (!vc || !ingestionAvailable) {
     return null;

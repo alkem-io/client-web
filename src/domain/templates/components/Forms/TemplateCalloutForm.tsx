@@ -60,8 +60,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
                 profile: {
                   displayName: template.callout.framing.memo.profile.displayName,
                 },
-                previewImages: [], // This is not going to work for now :(
-                content: template.callout.framing.memo.content ?? '',
+                markdown: template.callout.framing.memo.markdown,
               }
             : undefined,
           link: template?.callout?.framing?.link
@@ -115,11 +114,15 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
                 readOnlyAllowedTypes: !createMode,
                 temporaryLocation: createMode,
                 readOnlyContributions: true,
-                disableMemos: true,
+                disableWhiteboards: !createMode,
+                disableMemos: !createMode,
+                disableLinks: !createMode,
               }}
               onChange={calloutFormValues => {
                 setFieldValue('callout', calloutFormValues);
               }}
+              edit
+              template
               containerProps={{ disablePadding: true }}
             />
           </>

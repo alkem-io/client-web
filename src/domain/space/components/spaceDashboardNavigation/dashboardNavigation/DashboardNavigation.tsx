@@ -203,7 +203,7 @@ const DashboardNavigation = ({
   }
 
   return (
-    <PageContentBlock disablePadding disableGap>
+    <PageContentBlock sx={{ py: gutters(0.5), px: gutters(0.1) }} disablePadding disableGap>
       {!compact && (
         <Collapse in={!isSnapped || isTopLevel}>
           <RouterLink to={dashboardNavigationRoot?.url ?? ''}>
@@ -257,9 +257,7 @@ const DashboardNavigation = ({
         </Box>
       </Box>
       {isTopLevel &&
-        (showAll ? (
-          <Box height={gutters(0.5)} />
-        ) : (
+        (showAll ? null : (
           <Actions padding={1} justifyContent="center">
             <Button
               startIcon={!compact && <ExpandMore />}

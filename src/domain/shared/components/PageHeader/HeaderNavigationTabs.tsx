@@ -5,6 +5,7 @@ import HeaderNavigationTab from './HeaderNavigationTab';
 import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { t } from 'i18next';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -90,6 +91,7 @@ const HeaderNavigationTabs = ({
             icon={<SettingsOutlined />}
             value={EntityPageSection.Settings}
             to={settingsUrl}
+            aria-label={t('common.space-settings')}
           />
         )}
       </StyledTabs>

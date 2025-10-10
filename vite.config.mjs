@@ -40,13 +40,16 @@ export default defineConfig({
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
           // Check if this is an HTML request (SPA route) that will serve index.html or meta.json
-          const isNoCacheRoute = req.url && (
-            req.url === '/' ||
-            req.url === '/index.html' ||
-            req.url?.endsWith('/index.html') ||
-            req.url === '/meta.json' ||
-            (!req.url.includes('.') && !req.url.startsWith('/api/') && !req.url.startsWith('/@'))
-          );
+          const isNoCacheRoute =
+            req.url &&
+            (req.url === '/' ||
+              req.url === '/index.html' ||
+              req.url?.endsWith('/index.html') ||
+              req.url === '/home' ||
+              // the files below might not work - headersSent is true
+              req.url?.startsWith('/meta.json') ||
+              req.url?.startsWith('/env-config.js') ||
+              (!req.url.includes('.') && !req.url.startsWith('/api/') && !req.url.startsWith('/@')));
 
           if (isNoCacheRoute) {
             // Intercept the response to remove caching headers
@@ -55,17 +58,17 @@ export default defineConfig({
             const originalWrite = res.write;
 
             // Override response methods to set headers just before sending
-            res.send = function(chunk) {
+            res.send = function (chunk) {
               setNoCacheHeaders(res);
               return originalSend.call(this, chunk);
             };
 
-            res.end = function(chunk) {
+            res.end = function (chunk) {
               setNoCacheHeaders(res);
               return originalEnd.call(this, chunk);
             };
 
-            res.write = function(chunk) {
+            res.write = function (chunk) {
               setNoCacheHeaders(res);
               return originalWrite.call(this, chunk);
             };
@@ -87,7 +90,10 @@ export default defineConfig({
               }
 
               // Set comprehensive no-cache headers - most aggressive approach
-              response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, private');
+              response.setHeader(
+                'Cache-Control',
+                'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, private'
+              );
               response.setHeader('Pragma', 'no-cache');
               response.setHeader('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
               response.setHeader('Surrogate-Control', 'no-store');
@@ -102,7 +108,7 @@ export default defineConfig({
           }
           next();
         });
-      }
+      },
     },
     // Plugin to generate meta.json with version info
     {
@@ -113,7 +119,7 @@ export default defineConfig({
       buildStart() {
         generateMetaJson();
       },
-    }
+    },
   ],
   resolve: {
     alias: {
@@ -136,5 +142,5 @@ export default defineConfig({
       },
     },
   },
-  optimizeDeps: { include: ['@emotion/react', '@emotion/styled', '@mui/material/Tooltip'] }
+  optimizeDeps: { include: ['@emotion/react', '@emotion/styled', '@mui/material/Tooltip', '@mui/icons-material'] },
 });

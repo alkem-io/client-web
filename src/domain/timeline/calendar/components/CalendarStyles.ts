@@ -54,6 +54,10 @@ const CalendarStyles = styled(Box)(({ theme }) => ({
   '.react-calendar__navigation button:enabled:hover, & .react-calendar__navigation button:enabled:focus': {
     cursor: 'pointer',
     background: 'transparent',
+    outline: `2px solid ${theme.palette.primary.main}`,
+    outlineOffset: '-2px',
+    position: 'relative',
+    borderRadius: '4px',
   },
   '.react-calendar__month-view__weekdays': {
     textTransform: 'capitalize',
@@ -88,6 +92,8 @@ const CalendarStyles = styled(Box)(({ theme }) => ({
     },
   '.react-calendar__tile:enabled:hover, & .react-calendar__tile:enabled:focus': {
     backgroundColor: colors(theme).background,
+    outline: `2px solid ${theme.palette.primary.main}`,
+    outlineOffset: '-2px',
   },
   // Today's tile
   '.react-calendar__tile--now': {
@@ -97,6 +103,10 @@ const CalendarStyles = styled(Box)(({ theme }) => ({
   },
   '.react-calendar__tile--now:enabled:hover, .react-calendar__tile--now:enabled:focus': {
     backgroundColor: colors(theme).today.background,
+    outline: `2px solid ${theme.palette.primary.main}`,
+    outlineOffset: '-2px',
+    position: 'relative',
+    zIndex: 10,
   },
   // Selected date
   '.react-calendar__tile.react-calendar__tile--active': {
@@ -168,6 +178,13 @@ const CalendarStyles = styled(Box)(({ theme }) => ({
     height: '100%',
     backgroundColor: 'transparent',
     zIndex: 3,
+  },
+  // Enhanced keyboard focus visibility
+  '.react-calendar button:focus-visible': {
+    outline: `3px solid ${theme.palette.primary.main}`,
+    outlineOffset: '-1px',
+    position: 'relative',
+    zIndex: 10,
   },
 }));
 

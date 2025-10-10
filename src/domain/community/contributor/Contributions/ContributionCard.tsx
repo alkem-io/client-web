@@ -32,13 +32,14 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
     <ContributionDetailsCard
       {...details}
       spaceId={contributionItem.id}
-      tagline={details.about.profile.tagline!}
+      tagline={details.about.profile.tagline ?? ''}
       displayName={details.about.profile.displayName}
       enableLeave={enableLeave}
       leavingCommunity={isLeavingCommunity}
       handleLeaveCommunity={handleLeaveCommunity}
       leavingCommunityDialogOpen={!!leavingRoleSetId && leavingRoleSetId === details?.roleSetId}
       onLeaveCommunityDialogOpen={isOpen => setLeavingRoleSetId(isOpen ? details?.roleSetId : undefined)}
+      banner={details.about.profile.cardBanner}
       {...(onContributionClick
         ? { onClick: event => onContributionClick(event, details) }
         : details.about.profile.url

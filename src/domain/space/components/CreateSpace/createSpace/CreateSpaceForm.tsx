@@ -208,8 +208,17 @@ export const CreateSpaceForm = ({
             }
             containerProps={{ sx: { marginLeft: gutters(), width: '100%' } }}
           />
-          <DialogWithGrid columns={8} open={isTermsDialogOpen} onClose={() => setIsTermsDialogOpen(false)}>
-            <DialogHeader title={t('createSpace.terms.dialogTitle')} onClose={() => setIsTermsDialogOpen(false)} />
+          <DialogWithGrid
+            columns={8}
+            open={isTermsDialogOpen}
+            onClose={() => setIsTermsDialogOpen(false)}
+            aria-labelledby="terms-dialog-title"
+          >
+            <DialogHeader
+              id="terms-dialog-title"
+              title={t('createSpace.terms.dialogTitle')}
+              onClose={() => setIsTermsDialogOpen(false)}
+            />
             <DialogContent sx={{ paddingTop: 0 }}>
               <WrapperMarkdown caption>{t('createSpace.terms.dialogContent')}</WrapperMarkdown>
               {config.locations?.terms && (

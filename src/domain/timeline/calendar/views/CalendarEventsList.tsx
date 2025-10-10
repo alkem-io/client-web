@@ -21,6 +21,7 @@ import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { useLocation } from 'react-router-dom';
 import { SpaceAboutMinimalUrlModel } from '@/domain/space/about/model/spaceAboutMinimal.model';
+import React from 'react';
 
 type CalendarEventsListProps = {
   events: {
@@ -41,9 +42,17 @@ type CalendarEventsListProps = {
   highlightedDay?: Date | null;
   actions?: ReactNode;
   onClose?: DialogHeaderProps['onClose'];
+  dialogTitleId?: string;
 };
 
-const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: CalendarEventsListProps) => {
+const CalendarEventsList = ({
+  events,
+  highlightedDay,
+  actions,
+  onClose,
+  ref,
+  dialogTitleId,
+}: CalendarEventsListProps & { ref?: React.Ref<HTMLDivElement> }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const urlQueryParams = useQueryParams();
@@ -99,7 +108,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
 
   return (
     <GridProvider columns={12}>
-      <DialogHeader onClose={onClose}>
+      <DialogHeader onClose={onClose} id={dialogTitleId}>
         <BlockTitle>{t('common.events')}</BlockTitle>
       </DialogHeader>
       <Gutters row={!isMediumSmallScreen} minHeight={0} flexGrow={1} paddingRight={0} paddingTop={0}>
@@ -108,6 +117,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
           sx={{ flex: 2, minWidth: gutters(15) }}
           onClickHighlightedDate={onClickHighlightedDate}
           selectedDate={highlightedDay}
+          ref={ref}
         />
         <Gutters minHeight={0} flex={5}>
           <ScrollerWithGradient orientation="vertical" minHeight={0} flexGrow={1} onScroll={() => scrollTo(undefined)}>

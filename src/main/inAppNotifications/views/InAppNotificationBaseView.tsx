@@ -40,6 +40,13 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
   props: ListItemButtonProps<D, P> & RouterLinkProps
 ) => <ListItemButton component={props.to ? RouterLink : Box} {...props} />;
 
+const getSpaceAvatar = (space?: {
+  id?: string;
+  about?: { profile?: { cardBanner?: { uri?: string }; avatar?: { uri?: string } } };
+}) => {
+  return space?.about?.profile?.avatar?.uri || space?.about?.profile?.cardBanner?.uri || null;
+};
+
 export const InAppNotificationBaseView = ({ notification, values, url }: InAppNotificationBaseViewProps) => {
   const { id, state, triggeredAt, triggeredBy, payload, type } = notification;
 
@@ -153,7 +160,11 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             badgeContent={triggeredBy ? <Avatar size="small" src={triggeredBy?.profile?.visual?.uri} /> : null}
           >
-            <Avatar size="regular" src={getDefaultSpaceVisualUrl(VisualType.Avatar, payload.space?.id)} />
+            <Avatar
+              size="regular"
+              src={getSpaceAvatar(payload.space) || getDefaultSpaceVisualUrl(VisualType.Avatar, payload.space?.id)}
+              alt={t('common.avatar')}
+            />
           </Badge>
         }
       >

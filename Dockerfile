@@ -21,21 +21,22 @@ ENV VITE_APP_BUILD_REVISION=${ARG_BUILD_REVISION}
 ENV VITE_APP_SENTRY_AUTH_TOKEN=${ARG_SENTRY_AUTH_TOKEN}
 
 # Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
+# A wildcard is used to ensure both package.json AND pnpm-lock.yaml are copied
+# where available (pnpm)
+COPY package*.json pnpm-lock.yaml ./
 
-RUN npm i -g npm@10.1.0
-RUN npm install
+# Install pnpm globally
+RUN npm i -g pnpm@10.17.1
+RUN pnpm install
 
 # Everything for now
 COPY . .
 
-# Conditionally run npm run build based on ARG_GRAPHQL_ENDPOINT
+# Conditionally run pnpm run build based on ARG_GRAPHQL_ENDPOINT
 RUN if [ "$ARG_BUILD_ENVIRONMENT" = "development" ]; then \
-  npm run-script build:dev; \
+  pnpm run-script build:dev; \
   else \
-  npm run-script build:sentry; \
+  pnpm run-script build:sentry; \
   fi
 
 FROM nginx:alpine as production-build

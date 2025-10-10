@@ -34,9 +34,11 @@ yarn-error.log*
 public/*config.js
 .build/traefik/access.log
 
+# Optional pnpm cache directory
+.pnpm-debug.log*
+
 # eslint
 .eslintcache
-
 
 # Ignores homeserver.db file
 **/*.db

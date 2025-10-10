@@ -52,7 +52,7 @@ export const ChatBehaviorProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <ChatBehaviorContext.Provider
+    <ChatBehaviorContext
       value={{
         state,
         toggleChat,
@@ -64,7 +64,7 @@ export const ChatBehaviorProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
-    </ChatBehaviorContext.Provider>
+    </ChatBehaviorContext>
   );
 };
 

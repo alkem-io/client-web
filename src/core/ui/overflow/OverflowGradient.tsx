@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { BackgroundColor, overflowBorderGradient } from './utils';
@@ -16,23 +16,15 @@ const OverflowGradient = ({
   overflowMarker,
   ...props
 }: OverflowGradientProps) => {
-  const [hasOverflow, setHasOverflow] = useState(false);
-
-  const updateOverflow = (el: HTMLDivElement | null) => {
-    if (!el) {
-      return;
-    }
-    setHasOverflow(el.scrollHeight > el.clientHeight);
-  };
+  const showOverflowMarker = !!overflowMarker;
 
   return (
     <>
       <Box
-        ref={updateOverflow}
         overflow="hidden"
         position="relative"
         sx={{
-          ':after': hasOverflow
+          ':after': showOverflowMarker
             ? {
                 content: '""',
                 display: 'block',
@@ -48,7 +40,7 @@ const OverflowGradient = ({
         }}
         {...props}
       />
-      {hasOverflow && overflowMarker}
+      {showOverflowMarker && overflowMarker}
     </>
   );
 };

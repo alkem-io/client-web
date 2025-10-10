@@ -92,7 +92,7 @@ const EventForm = ({
                     startTimeFieldName="startDate"
                     label={t('fields.endTime')}
                     containerProps={{ flexGrow: 1 }}
-                    disabled={wholeDay}
+                    disabled={!!wholeDay}
                   />
                 ) : (
                   <FormikTimePicker

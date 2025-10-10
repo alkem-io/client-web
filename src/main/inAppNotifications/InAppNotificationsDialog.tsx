@@ -7,6 +7,7 @@ import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import { InAppNotificationsList } from './InAppNotificationsList';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
+import { InAppNotificationSubscriber } from '@/main/inAppNotifications/inAppNotificationSubscriber';
 
 export const InAppNotificationsDialog = () => {
   const { t } = useTranslation();
@@ -14,8 +15,14 @@ export const InAppNotificationsDialog = () => {
   const { markNotificationsAsRead } = useInAppNotifications();
 
   return (
-    <DialogWithGrid open={isOpen} columns={8} onClose={() => setIsOpen(false)}>
+    <DialogWithGrid
+      open={isOpen}
+      columns={8}
+      onClose={() => setIsOpen(false)}
+      aria-labelledby="in-app-notifications-dialog"
+    >
       <DialogHeader
+        id="in-app-notifications-dialog"
         icon={<NotificationsNoneOutlinedIcon />}
         onClose={() => setIsOpen(false)}
         actions={
@@ -26,9 +33,12 @@ export const InAppNotificationsDialog = () => {
           </Tooltip>
         }
       >
-        {t('common.notifications')}
+        {t('common.Notifications')}
       </DialogHeader>
-      <DialogContent sx={{ padding: 0 }}>{isOpen && <InAppNotificationsList />}</DialogContent>
+      <DialogContent sx={{ padding: 0 }}>
+        {isOpen && <InAppNotificationsList />}
+        <InAppNotificationSubscriber />
+      </DialogContent>
     </DialogWithGrid>
   );
 };

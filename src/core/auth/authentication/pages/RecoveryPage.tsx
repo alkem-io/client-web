@@ -48,7 +48,7 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
               {t('pages.recovery.message.initial')}
             </Box>
           )}
-          <KratosUI ui={recoveryFlow?.ui} />
+          <KratosUI ui={recoveryFlow?.ui} flowType="recovery" />
         </AuthPageContentContainer>
       </KratosForm>
     </AuthenticationLayout>

@@ -1,9 +1,10 @@
 import {
-  InAppNotificationAllTypesFragmentDoc,
   useInAppNotificationReceivedSubscription,
+  InAppNotificationsDocument,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { IN_APP_NOTIFICATIONS_PAGE_SIZE, NOTIFICATION_EVENT_TYPES } from './useInAppNotifications';
 
 export const InAppNotificationSubscriber = () => {
   const { isEnabled } = useInAppNotificationsContext();
@@ -24,19 +25,32 @@ export const InAppNotificationSubscriber = () => {
 
       const { inAppNotificationReceived: newNotification } = data;
 
-      client.cache.modify({
-        fields: {
-          notificationsInApp(existingNotifications = []) {
-            const newNotificationRef = client.cache.writeFragment({
-              data: newNotification,
-              fragment: InAppNotificationAllTypesFragmentDoc,
-              fragmentName: 'InAppNotificationAllTypes',
-            });
-            // Add new notification to the beginning of the list
-            return [newNotificationRef, ...existingNotifications];
+      // Update the notifications query cache
+      client.cache.updateQuery(
+        {
+          query: InAppNotificationsDocument,
+          variables: {
+            types: NOTIFICATION_EVENT_TYPES,
+            first: IN_APP_NOTIFICATIONS_PAGE_SIZE,
           },
         },
-      });
+        existingData => {
+          if (!existingData?.me?.notifications) {
+            return existingData;
+          }
+
+          return {
+            ...existingData,
+            me: {
+              ...existingData.me,
+              notifications: {
+                ...existingData.me.notifications,
+                inAppNotifications: [newNotification, ...(existingData.me.notifications.inAppNotifications || [])],
+              },
+            },
+          };
+        }
+      );
     },
   });
 

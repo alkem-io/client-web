@@ -40,7 +40,7 @@ query CalloutContent($calloutId: UUID!) {
               uri
             }
           }
-          content  # Get the memo content to be able to edit it in single user mode
+          markdown  # Get the memo content to be able to edit it in single user mode
         }
         link {
           ...LinkDetails

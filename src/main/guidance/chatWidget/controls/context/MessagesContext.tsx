@@ -144,7 +144,7 @@ export const MessagesProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <MessagesContext.Provider
+    <MessagesContext
       value={{
         state,
         addUserMessage,
@@ -159,7 +159,7 @@ export const MessagesProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
-    </MessagesContext.Provider>
+    </MessagesContext>
   );
 };
 

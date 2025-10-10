@@ -21,6 +21,7 @@ query SpaceAboutDetails($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
+      nameID
       level
       about {
         ...SpaceAboutDetails

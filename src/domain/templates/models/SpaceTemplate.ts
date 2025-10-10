@@ -14,6 +14,13 @@ export interface SpaceTemplate extends TemplateBase {
    */
   contentSpace?: {
     id: string;
+    about?: {
+      profile?: {
+        visual?: {
+          uri: string;
+        };
+      };
+    };
     collaboration: {
       innovationFlow: {
         states: InnovationFlowState[];

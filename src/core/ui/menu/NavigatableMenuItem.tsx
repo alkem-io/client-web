@@ -1,4 +1,4 @@
-import { ComponentType, MouseEventHandler, PropsWithChildren } from 'react';
+import { AriaAttributes, ComponentType, MouseEventHandler, PropsWithChildren } from 'react';
 import RouterLink from '../link/RouterLink';
 import { ListItemIcon, ListItemText, MenuItem, SvgIconProps, TypographyProps } from '@mui/material';
 import { gutters } from '../grid/utils';
@@ -12,7 +12,8 @@ type NavigatableMenuItemProps = {
   tabOnly?: boolean;
   typographyComponent?: ComponentType<TypographyProps>;
   replace?: boolean;
-};
+  id?: string;
+} & AriaAttributes;
 
 const DefaultTypography = props => <BlockSectionTitle textTransform="uppercase" {...props} />;
 
@@ -24,23 +25,18 @@ const NavigatableMenuItem = ({
   tabOnly = false,
   children,
   typographyComponent: Typography = DefaultTypography,
+  id,
+  ...ariaProps
 }: PropsWithChildren<NavigatableMenuItemProps>) => {
-  // Separate routing props from click handling
-  const menuItemProps = route
-    ? {
-        component: RouterLink,
-        replace,
-        to: route,
-        blank: false,
-        // Don't pass onClick when using routing to avoid conflicts
-        onClick: undefined,
-      }
-    : { onClick };
+  const menuItemProps = route ? { component: RouterLink, replace, to: route, blank: false } : {};
 
   return (
     <MenuItem
+      id={id}
       {...menuItemProps}
+      onClick={onClick}
       sx={visibleOnFocus({ skip: !tabOnly })({ paddingX: gutters(), textTransform: 'none' })}
+      {...ariaProps}
     >
       <ListItemIcon>
         <Icon fontSize="small" color="primary" />

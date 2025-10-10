@@ -10,6 +10,7 @@ import { BoxTypeMap } from '@mui/system';
 
 export interface PageContentBlockHeaderProps {
   title: ReactNode;
+  titleId?: string;
   icon?: ReactElement<SvgIconProps>;
   actions?: ReactNode;
   disclaimer?: ReactNode;
@@ -19,6 +20,7 @@ export interface PageContentBlockHeaderProps {
 
 const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>({
   title,
+  titleId,
   icon,
   actions,
   variant,
@@ -49,7 +51,7 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
         justifyContent="space-between"
         flexWrap="wrap"
       >
-        <BlockTitleWithIcon title={title} icon={icon} variant={variant} />
+        <BlockTitleWithIcon title={title} titleId={titleId} icon={icon} variant={variant} />
         {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
         {children}
       </Box>

@@ -22,7 +22,11 @@ import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownFie
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
-import { VisualType, AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import {
+  VisualType,
+  AiPersonaEngine,
+  VirtualContributorBodyOfKnowledgeType,
+} from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
 type CreateNewVirtualContributorProps = {
@@ -32,6 +36,7 @@ type CreateNewVirtualContributorProps = {
   onUseExistingKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExternal: (values: VirtualContributorFromProps) => void;
   loading?: boolean;
+  titleId?: string;
 };
 
 enum VCSourceOptions {
@@ -49,7 +54,7 @@ export interface VirtualContributorFromProps {
     assistantId?: string;
   };
   engine: AiPersonaEngine;
-  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
+  bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType;
 }
 
 const BigButton = ({
@@ -89,6 +94,7 @@ const CreateNewVirtualContributor = ({
   onUseExternal,
   loading,
   onChangeAvatar,
+  titleId,
 }: CreateNewVirtualContributorProps) => {
   const { t } = useTranslation();
   const { isSmallScreen } = useScreenSize();
@@ -101,7 +107,7 @@ const CreateNewVirtualContributor = ({
     tagline: '',
     description: '',
     engine: AiPersonaEngine.Expert,
-    bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase,
+    bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType.AlkemioKnowledgeBase,
   };
 
   const validationSchema = yup.object().shape({
@@ -138,7 +144,7 @@ const CreateNewVirtualContributor = ({
 
   return (
     <>
-      <DialogHeader onClose={onClose} title={t('createVirtualContributorWizard.initial.title')} />
+      <DialogHeader id={titleId} onClose={onClose} title={t('createVirtualContributorWizard.initial.title')} />
       <DialogContent sx={{ paddingTop: 0 }}>
         {loading && <Loading />}
 

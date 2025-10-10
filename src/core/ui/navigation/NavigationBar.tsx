@@ -8,7 +8,7 @@ import {
   PLATFORM_NAVIGATION_ITEM_ELEVATION,
   PLATFORM_NAVIGATION_MENU_ELEVATION,
 } from '@/main/ui/platformNavigation/constants';
-import { ElevationContextProvider } from '../utils/ElevationContext';
+import { ElevationContext } from '../utils/ElevationContext';
 
 interface NavigationBarContentProps {
   transparent: boolean;
@@ -85,11 +85,12 @@ const NavigationBar = ({ children }: PropsWithChildren) => {
   const hasSurface = isFixed && scrollTop > GUTTER_PX * (NAVIGATION_CONTAINER_HEIGHT_GUTTERS - 2);
 
   return (
-    <ElevationContextProvider value={hasSurface ? 0 : PLATFORM_NAVIGATION_ITEM_ELEVATION}>
+    <ElevationContext value={hasSurface ? 0 : PLATFORM_NAVIGATION_ITEM_ELEVATION}>
       <Slide direction="down" in={!hasScrolledPast || hasSlidIn}>
         <AppBar
           position={isFixed ? 'fixed' : 'absolute'}
           color="transparent"
+          component="nav"
           sx={{
             boxShadow: 'none',
             flexDirection: 'row',
@@ -99,7 +100,7 @@ const NavigationBar = ({ children }: PropsWithChildren) => {
           <NavigationBarContent transparent={!hasSurface}>{children}</NavigationBarContent>
         </AppBar>
       </Slide>
-    </ElevationContextProvider>
+    </ElevationContext>
   );
 };
 

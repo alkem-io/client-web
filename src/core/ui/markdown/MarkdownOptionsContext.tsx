@@ -21,5 +21,5 @@ export const useMarkdownOptions = () => {
 };
 
 export const MarkdownOptionsProvider = ({ children, ...options }: PropsWithChildren<MarkdownOptions>) => {
-  return <MarkdownOptionsContext.Provider value={options}>{children}</MarkdownOptionsContext.Provider>;
+  return <MarkdownOptionsContext value={options}>{children}</MarkdownOptionsContext>;
 };

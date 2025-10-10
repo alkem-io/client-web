@@ -31,9 +31,10 @@ interface ExistingSpaceProps {
   onSubmit: (subspace: SelectableKnowledgeSpace) => Promise<void>;
   loading: boolean;
   spaces: SelectableSpace[];
+  titleId?: string;
 }
 
-const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading }: ExistingSpaceProps) => {
+const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading, titleId }: ExistingSpaceProps) => {
   const { t } = useTranslation();
   const [submitLoading, setSubmitLoading] = useState(false);
 
@@ -104,7 +105,11 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading }: ExistingS
     >
       {({ values, isValid }) => (
         <>
-          <DialogHeader onClose={onClose} title={t('createVirtualContributorWizard.existingSpace.title')} />
+          <DialogHeader
+            id={titleId}
+            onClose={onClose}
+            title={t('createVirtualContributorWizard.existingSpace.title')}
+          />
           <DialogContent>
             {loading && spaces.length === 0 && <Loading />}
             {!loading && spaces.length === 0 && (

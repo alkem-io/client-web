@@ -24,7 +24,7 @@ export const CharacterCountContextProvider = ({ children }: PropsWithChildren) =
     [characterCount, setCharacterCount]
   );
 
-  return <CharacterCountContext.Provider value={contextValue}>{children}</CharacterCountContext.Provider>;
+  return <CharacterCountContext value={contextValue}>{children}</CharacterCountContext>;
 };
 
 const useCharacterCountContext = () => {

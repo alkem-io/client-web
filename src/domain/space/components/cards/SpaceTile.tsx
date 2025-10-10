@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, MouseEventHandler } from 'react';
 import { Avatar, Box, Paper, Skeleton } from '@mui/material';
 import RouterLink from '@/core/ui/link/RouterLink';
 import GridItem from '@/core/ui/grid/GridItem';
@@ -13,6 +13,7 @@ import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from '../../icons/PrivacyIcon';
 import { SpaceAboutTileModel } from '../../about/model/SpaceAboutTile.model';
 import { useTranslation } from 'react-i18next';
+import ButtonBaseAlignReset from '@/core/ui/button/ButtonBaseAlignReset';
 
 type SpaceTileProps = {
   space:
@@ -24,6 +25,9 @@ type SpaceTileProps = {
     | undefined;
   columns?: number;
   disableLink?: boolean;
+  onClick?: MouseEventHandler;
+  to?: string;
+  state?: Record<string, unknown>;
 };
 
 export const RECENT_SPACE_CARD_ASPECT_RATIO = '175/100';
@@ -31,7 +35,7 @@ export const RECENT_SPACE_CARD_ASPECT_RATIO = '175/100';
 const SPACE_TITLE_CLASS_NAME = 'SpaceTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const SpaceTile = ({ space, columns = 3, disableLink }: SpaceTileProps) => {
+const SpaceTile = ({ space, columns = 3, disableLink, onClick, to, state }: SpaceTileProps) => {
   const { t } = useTranslation();
   const isPrivate = space?.about.isContentPublic === false;
 
@@ -43,10 +47,35 @@ const SpaceTile = ({ space, columns = 3, disableLink }: SpaceTileProps) => {
     return getDefaultSpaceVisualUrl(VisualType.Card, space?.id);
   };
 
+  // Determine the component props based on navigation type
+  const getComponentProps = () => {
+    if (disableLink) {
+      return {};
+    }
+    if (onClick) {
+      return {
+        component: ButtonBaseAlignReset,
+        onClick,
+      };
+    }
+    if (to) {
+      return {
+        component: RouterLink,
+        to,
+        state,
+      };
+    }
+    // Default behavior - use space's profile URL
+    return {
+      component: RouterLink,
+      to: space?.about.profile.url ?? '',
+    };
+  };
+
   return (
     <GridItem columns={columns}>
       <ElevatedPaper
-        {...(disableLink ? undefined : { component: RouterLink, to: space?.about.profile.url ?? '' })}
+        {...getComponentProps()}
         sx={{
           position: 'relative',
         }}

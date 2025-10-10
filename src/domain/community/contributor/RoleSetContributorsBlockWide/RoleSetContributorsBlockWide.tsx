@@ -186,8 +186,9 @@ const RoleSetContributorTypesBlockWide = ({
         columns={12}
         onClose={() => setIsDialogOpen(false)}
         fullScreen={isSmallScreen}
+        aria-labelledby="role-set-contributors-dialog"
       >
-        <DialogHeader onClose={() => setIsDialogOpen(false)}>
+        <DialogHeader onClose={() => setIsDialogOpen(false)} id="role-set-contributors-dialog">
           <BlockTitle>{t('pages.generic.sections.community.contributors')}</BlockTitle>
         </DialogHeader>
         <RoleSetContributorsBlockWideContent

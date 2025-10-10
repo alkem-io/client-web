@@ -25,7 +25,7 @@ const GridDemo = () => {
         Dashboard Components Demo
       </PageTitle>
       <PageContent>
-        <PageContentColumn columns={4}>
+        <PageContentColumn columns={3}>
           <PageContentBlock accent>
             <BlockTitle>Block Title</BlockTitle>
             <Text>{loremIpsum}</Text>
@@ -43,7 +43,7 @@ const GridDemo = () => {
             </PageContentBlockGrid>
           </PageContentBlock>
         </PageContentColumn>
-        <PageContentColumn columns={8}>
+        <PageContentColumn columns={9}>
           <PageContentBlock>
             <PageContentBlockHeaderWithDialogAction title="Block with Dialog Action" onDialogOpen={() => {}} />
             <Text>{loremIpsum}</Text>

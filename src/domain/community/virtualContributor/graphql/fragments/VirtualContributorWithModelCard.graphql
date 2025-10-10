@@ -1,0 +1,30 @@
+fragment VirtualContributorWithModelCard on VirtualContributor {
+  bodyOfKnowledgeID
+  bodyOfKnowledgeType
+  bodyOfKnowledgeDescription
+  aiPersona {
+    id
+    engine
+  }
+  modelCard {
+    spaceUsage {
+      modelCardEntry
+      flags {
+        name
+        enabled
+      }
+    }
+    aiEngine {
+      isExternal
+      hostingLocation
+      isUsingOpenWeightsModel
+      isInteractionDataUsedForTraining
+      canAccessWebWhenAnswering
+      areAnswersRestrictedToBodyOfKnowledge
+      additionalTechnicalDetails
+    }
+    monitoring {
+      isUsageMonitoredByAlkemio
+    }
+  }
+}

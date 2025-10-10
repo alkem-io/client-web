@@ -68,8 +68,10 @@ const CommunityMemberSettingsDialog = ({
 
   return (
     <>
-      <DialogWithGrid open columns={12} onClose={onClose}>
-        <DialogHeader onClose={onClose}>{t('community.memberSettings.title')}</DialogHeader>
+      <DialogWithGrid open columns={12} onClose={onClose} aria-labelledby="community-member-settings-dialog">
+        <DialogHeader id="community-member-settings-dialog" onClose={onClose}>
+          {t('community.memberSettings.title')}
+        </DialogHeader>
         <Gutters>
           <ProfileChip
             key={member.id}

@@ -152,6 +152,7 @@ export const CreateSubspaceForm = ({
               />
               <FormikVisualUpload
                 name={nameOf<CreateSubspaceFormValues>('visuals.cardBanner')}
+                altText={nameOf<CreateSubspaceFormValues>('visuals.cardBanner.altText')}
                 visualType={VisualType.Card}
                 flex={1}
                 initialVisualUrl={templateVisuals.cardBannerUrl}

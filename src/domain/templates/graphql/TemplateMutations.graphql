@@ -155,6 +155,10 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
           }
         }
       }
+      memo {
+        id
+        markdown
+      }
     }
     contributionDefaults {
       id

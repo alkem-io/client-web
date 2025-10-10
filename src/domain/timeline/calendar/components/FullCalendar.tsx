@@ -9,6 +9,8 @@ import { gutters } from '@/core/ui/grid/utils';
 import { getEndDateByDuration, startOfDay } from '@/core/utils/time/utils';
 import { useTranslation } from 'react-i18next';
 import CalendarStyles from './CalendarStyles';
+import SkipLink from '@/core/ui/keyboardNavigation/SkipLink';
+import { useNextBlockAnchor } from '@/core/ui/keyboardNavigation/NextBlockAnchor';
 
 export const INTERNAL_DATE_FORMAT = 'YYYY-MM-DD';
 
@@ -87,7 +89,15 @@ const addEventToBucket = (
   obj[key].push(val);
 };
 
-const FullCalendar: FC<FullCalendarProps> = ({ events = [], onClickHighlightedDate, selectedDate = null, sx }) => {
+const FullCalendar: FC<FullCalendarProps & { ref?: React.Ref<HTMLDivElement> }> = ({
+  events = [],
+  onClickHighlightedDate,
+  selectedDate = null,
+  sx,
+  ref,
+}) => {
+  const nextBlock = useNextBlockAnchor();
+
   const highlightedDates = useMemo(() => {
     // The objects look like:
     //  { "yyyy-mm-dd": [...events on this date], "yyyy-mm-dd": [...events], ...}
@@ -168,7 +178,9 @@ const FullCalendar: FC<FullCalendarProps> = ({ events = [], onClickHighlightedDa
   };
 
   return (
-    <CalendarStyles sx={sx}>
+    <CalendarStyles sx={{ ...sx, position: 'relative' }} ref={ref}>
+      <SkipLink anchor={nextBlock} sx={{ position: 'absolute', right: 0, top: 0, zIndex: 99999 }} />
+
       <Calendar
         tileClassName={({ date }) => getClassName(date)}
         tileContent={({ date }) => {

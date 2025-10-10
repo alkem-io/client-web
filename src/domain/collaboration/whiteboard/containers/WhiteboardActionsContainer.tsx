@@ -4,7 +4,7 @@ import {
   useDeleteWhiteboardMutation,
   useUpdateWhiteboardMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CreateContributionOnCalloutInput } from '@/core/apollo/generated/graphql-schema';
+import { CreateWhiteboardInput } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -25,7 +25,8 @@ interface WhiteboardWithPreviewVisuals {
 
 export interface IWhiteboardActions {
   onCreate: (
-    whiteboard: CreateContributionOnCalloutInput,
+    calloutId: string,
+    whiteboard: CreateWhiteboardInput,
     previewImages?: WhiteboardPreviewImage[]
   ) => Promise<{ success: boolean; errors?: string[] }>;
   onDelete: (whiteboard: Identifiable) => Promise<void>;
@@ -56,8 +57,8 @@ const WhiteboardActionsContainer = ({ children }: SimpleContainerProps<Whiteboar
   const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
 
   const handleCreateWhiteboard = useCallback(
-    async (whiteboardContribution: CreateContributionOnCalloutInput, previewImages?: WhiteboardPreviewImage[]) => {
-      if (!whiteboardContribution.calloutID) {
+    async (calloutId: string, whiteboard: CreateWhiteboardInput, previewImages?: WhiteboardPreviewImage[]) => {
+      if (!calloutId) {
         throw new Error('[whiteboard:onCreate]: Missing contextID');
       }
 
@@ -65,7 +66,7 @@ const WhiteboardActionsContainer = ({ children }: SimpleContainerProps<Whiteboar
         update(cache, { data }) {
           cache.modify({
             id: cache.identify({
-              id: whiteboardContribution.calloutID,
+              id: calloutId,
               __typename: 'Callout',
             }),
             fields: {
@@ -84,7 +85,8 @@ const WhiteboardActionsContainer = ({ children }: SimpleContainerProps<Whiteboar
           });
         },
         variables: {
-          input: whiteboardContribution,
+          calloutId,
+          whiteboard,
         },
       });
 

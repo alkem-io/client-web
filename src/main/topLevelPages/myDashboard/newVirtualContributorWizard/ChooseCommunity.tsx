@@ -17,9 +17,10 @@ interface ChooseCommunityProps {
   vcName?: string;
   loading: boolean;
   spaces: SelectableSpace[];
+  titleId?: string;
 }
 
-const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading }: ChooseCommunityProps) => {
+const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading, titleId }: ChooseCommunityProps) => {
   const { t } = useTranslation();
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
@@ -82,6 +83,7 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading }: Ch
       {({ values }) => (
         <>
           <DialogHeader
+            id={titleId}
             onClose={onCancel}
             title={t('createVirtualContributorWizard.chooseCommunity.title', {
               vcName,

@@ -68,7 +68,7 @@ const PageBanner = <CardProps extends { maxWidth?: number | string }>({
 
   return (
     <GridProvider columns={globalGridColumns}>
-      <Box position="relative">
+      <Box component="header" position="relative">
         {ribbon}
         <Overlay fade={fade}>
           <ImageBlurredSides

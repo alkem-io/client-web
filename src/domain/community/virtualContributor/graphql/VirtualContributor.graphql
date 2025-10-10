@@ -1,6 +1,7 @@
-query AiPersonaService($id: UUID!) {
-  aiServer {
-    aiPersonaService(ID: $id) {
+query AiPersona($id: UUID!) {
+  virtualContributor(ID: $id) {
+    id
+    aiPersona {
       id
       prompt
       engine
@@ -28,13 +29,12 @@ query VirtualContributor($id: UUID!) {
       searchVisibility
       listedInStore
       status
+      bodyOfKnowledgeID
+      bodyOfKnowledgeType
+      bodyOfKnowledgeDescription
       aiPersona {
         id
-        bodyOfKnowledgeID
-        bodyOfKnowledgeType
-        bodyOfKnowledge
         engine
-        aiPersonaServiceID
       }
       profile {
         id
@@ -130,9 +130,3 @@ query SpaceBodyOfKnowledgeAbout($spaceId: UUID!) {
     }
   }
 }
-
-
-
-
-
-

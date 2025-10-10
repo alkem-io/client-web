@@ -51,10 +51,17 @@ const InnovationFlowSettingsDialog = ({
 
   return (
     <>
-      <DialogWithGrid open={open} columns={12} onClose={onClose} fullScreen={isSmallScreen}>
+      <DialogWithGrid
+        open={open}
+        columns={12}
+        onClose={onClose}
+        fullScreen={isSmallScreen}
+        aria-labelledby="innovation-flow-settings-dialog-title"
+      >
         <DialogHeader
           icon={<InnovationFlowIcon />}
           title={t('components.innovationFlowSettings.title')}
+          id="innovation-flow-settings-dialog-title"
           onClose={onClose}
           actions={
             <PageContentBlockContextualMenu>

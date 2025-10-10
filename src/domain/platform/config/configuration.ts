@@ -39,6 +39,7 @@ export interface Configuration {
     endpoint: string;
   };
   geo: {
+    enabled: boolean;
     endpoint: string;
   };
   integration: {

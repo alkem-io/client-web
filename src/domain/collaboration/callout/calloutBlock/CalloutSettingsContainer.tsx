@@ -2,7 +2,6 @@ import { useCalloutContentLazyQuery } from '@/core/apollo/generated/apollo-hooks
 import {
   AuthorizationPrivilege,
   CalloutContributionType,
-  CalloutFramingType,
   CalloutVisibility,
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -38,14 +37,14 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortModels';
 import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
-import { TypedCalloutDetails } from '../models/TypedCallout';
-import { FormattedLink } from '../CalloutContributions/link/CalloutContributionsLink';
-import { PostCardPost } from '../CalloutContributions/post/PostCard';
-import { WhiteboardCardWhiteboard } from '../CalloutContributions/whiteboard/WhiteboardCard';
+import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
+import { FormattedLink } from '../../calloutContributions/link/CalloutContributionsLink';
+import { PostContribution } from '../../calloutContributions/post/PostCard';
+import { WhiteboardContribution } from '../../calloutContributions/whiteboard/WhiteboardCard';
 import { CalloutSummary } from '../CalloutSummary';
 import { CalloutLayoutEvents } from '../CalloutViewTypes';
 import CalloutVisibilityChangeDialog from '../visibilityChangeDialog/CalloutVisibilityChangeDialog';
-import CalloutContributionsSortDialog from '../CalloutContributions/CalloutsContributionsSortDialog/CalloutContributionsSortDialog';
+import CalloutContributionsSortDialog from '../../calloutContributions/calloutsContributionsSortDialog/CalloutContributionsSortDialog';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 
 interface CalloutSettingsProvided {
@@ -58,14 +57,14 @@ export interface CalloutSettingsContainerProps
   extends CalloutLayoutEvents,
     Partial<CalloutSortProps>,
     SimpleContainerProps<CalloutSettingsProvided> {
-  callout: TypedCalloutDetails;
+  callout: CalloutDetailsModelExtended;
   items?: {
-    posts?: PostCardPost[];
-    whiteboards?: WhiteboardCardWhiteboard[];
+    posts?: PostContribution[];
+    whiteboards?: WhiteboardContribution[];
     links?: FormattedLink[];
   };
   expanded?: boolean;
-  onExpand?: () => void;
+  onExpand?: (callout: CalloutDetailsModelExtended) => void;
   disableRichMedia?: boolean;
   calloutRestrictions?: CalloutRestrictions;
 }
@@ -175,7 +174,7 @@ const CalloutSettingsContainer = ({
     return null;
   }
 
-  const canBeSavedAsTemplate = callout.canBeSavedAsTemplate && callout.framing.type !== CalloutFramingType.Memo;
+  const canBeSavedAsTemplate = callout.canBeSavedAsTemplate;
 
   return (
     <>
@@ -241,18 +240,16 @@ const CalloutSettingsContainer = ({
             key="expand"
             iconComponent={ExpandContentIcon}
             onClick={() => {
-              onExpand?.();
+              onExpand?.(callout);
               setSettingsAnchorEl(null);
             }}
           >
             {t('common.fullScreen')}
           </MenuItemWithIcon>
         )}
-        {!expanded && (
-          <MenuItemWithIcon key="share" iconComponent={ShareOutlined} onClick={() => setShareDialogOpen(true)}>
-            {t('buttons.share')}
-          </MenuItemWithIcon>
-        )}
+        <MenuItemWithIcon key="share" iconComponent={ShareOutlined} onClick={() => setShareDialogOpen(true)}>
+          {t('buttons.share')}
+        </MenuItemWithIcon>
       </Menu>
       <CalloutContributionsSortDialog open={sortDialogOpen} onClose={handleSortDialogClose} callout={callout} />
       <CalloutVisibilityChangeDialog

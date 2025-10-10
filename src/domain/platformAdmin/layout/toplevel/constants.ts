@@ -11,7 +11,7 @@ export enum AdminSection {
   Organization = 'organizations',
   InnovationPacks = 'innovation-packs',
   InnovationHubs = 'innovation-hubs',
-  VirtualContributors = 'virtual-contributors',
+  VirtualContributors = 'virtualContributors',
   Authorization = 'authorization',
   AuthorizationPolicies = 'authorizationPolicies',
 }

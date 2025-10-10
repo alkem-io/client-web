@@ -1,6 +1,7 @@
 import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
+import { DIALOG_PARAM_VALUES } from '@/main/topLevelPages/myDashboard/useMyDashboardDialogs';
 
 export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 
@@ -16,6 +17,10 @@ export enum TabbedLayoutParams {
 
 export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
+};
+
+export const buildSettingsCommunityUrl = (entityUrl: string) => {
+  return `${buildSettingsUrl(entityUrl)}/community`;
 };
 
 export const buildVCKnowledgeBaseUrl = (vcUrl: string = '.') => `${vcUrl}/${KNOWLEDGE_BASE_PATH}`;
@@ -105,3 +110,13 @@ export const buildUserAccountUrl = (profileUrl?: string) => {
 };
 
 export const buildWelcomeSpaceUrl = () => '/welcome-space';
+
+export const getInvitationsDialogUrl = () => `/home?${URL_PARAM_DIALOG}=${DIALOG_PARAM_VALUES.INVITATIONS}`;
+
+const VIDEO_CALL_BASE_URL = 'https://meet.jit.si/';
+
+export const buildVideoCallUrl = (spaceId: string, spaceNameId?: string) => {
+  // Use spaceNameId if available for better readability, otherwise use spaceId only
+  const meetingIdentifier = spaceNameId ? `${spaceNameId}-${encodeURIComponent(spaceId)}` : encodeURIComponent(spaceId);
+  return `${VIDEO_CALL_BASE_URL}${meetingIdentifier}`;
+};

@@ -115,8 +115,8 @@ const useCustomContext = (user: CurrentUserModel | undefined) => {
 
     if (!userGeoLoading) {
       context.location = {
-        lat: userGeoData?.latitude,
-        lon: userGeoData?.longitude,
+        lat: userGeoData?.latitude ?? 0,
+        lon: userGeoData?.longitude ?? 0,
       };
     }
 

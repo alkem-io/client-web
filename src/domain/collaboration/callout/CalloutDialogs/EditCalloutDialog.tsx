@@ -123,10 +123,6 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
         formData.framing.type === CalloutFramingType.Link
           ? mapLinkDataToUpdateLinkInput(formData.framing.link)
           : undefined,
-      ...(formData.framing.type === CalloutFramingType.Memo &&
-        memo?.content && {
-          memoContent: memo.content,
-        }),
     };
 
     // And map the radio button allowed contribution types to an array
@@ -175,8 +171,17 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
 
   return (
     <>
-      <DialogWithGrid open={open} onClose={handleCloseButtonClick} fullWidth>
-        <DialogHeader title={t('callout.edit.dialogTitle')} onClose={handleCloseButtonClick} />
+      <DialogWithGrid
+        open={open}
+        onClose={handleCloseButtonClick}
+        fullWidth
+        aria-labelledby="edit-callout-dialog-title"
+      >
+        <DialogHeader
+          title={t('callout.edit.dialogTitle')}
+          onClose={handleCloseButtonClick}
+          id="edit-callout-dialog-title"
+        />
         <DialogContent>
           {loadingCallout ? (
             <Loading />
@@ -186,6 +191,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                 callout={callout}
                 onChange={setCalloutFormData}
                 onStatusChanged={handleStatusChange}
+                edit
                 /* Users cannot change the allowedTypes on an already created callout for now */
                 calloutRestrictions={{
                   ...calloutRestrictions,

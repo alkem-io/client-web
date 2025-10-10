@@ -6,7 +6,6 @@ import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import GridItem from '@/core/ui/grid/GridItem';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
@@ -14,14 +13,16 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockSectionTitle, Text } from '@/core/ui/typography';
 import ReferencesListSmallItem from '@/domain/common/reference/ReferencesListSmallItem';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import {} from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useScreenSize } from '@/core/ui/grid/constants';
+import InnovationPackTemplateMenu from './InnovationPackTemplateMenu';
 
 const InnovationPackProfilePage = () => {
   const { t } = useTranslation();
   const { templateId, innovationPackId, loading: resolving } = useUrlResolver();
+  const { isMediumSmallScreen } = useScreenSize();
 
   const { data, loading: loadingInnovationPack } = useInnovationPackProfilePageQuery({
     variables: {
@@ -41,41 +42,44 @@ const InnovationPackProfilePage = () => {
     <>
       <InnovationPackProfileLayout innovationPack={innovationPack} showSettings={canUpdate} loading={loading}>
         <PageContent>
-          <PageContentColumn columns={12}>
+          <PageContentColumn columns={isMediumSmallScreen ? 12 : 3}>
             <PageContentBlock sx={{ flexDirection: 'row' }}>
-              <GridItem columns={6}>
-                <Gutters disablePadding>
-                  <PageContentBlockHeader title={displayName} />
-                  <WrapperMarkdown disableParagraphPadding>{description ?? ''}</WrapperMarkdown>
-                </Gutters>
-              </GridItem>
-              <GridItem columns={6}>
-                <Box>
-                  <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
-                  <Box height={gutters(2)} display="flex" alignItems="center">
-                    <TagsComponent
-                      tags={tagset?.tags ?? []}
-                      variant="filled"
-                      size="medium"
-                      color="primary"
-                      height={gutters(2)}
-                    />
-                  </Box>
-                  <BlockSectionTitle>{t('common.references')}</BlockSectionTitle>
-                  {references?.map(reference => (
-                    <ReferencesListSmallItem key={reference.id} uri={reference.uri}>
-                      {reference.name}
-                    </ReferencesListSmallItem>
-                  ))}
-                  {references && !references.length && (
-                    <Text>{t('components.referenceSegment.missing-references')}</Text>
-                  )}
+              <Gutters disablePadding>
+                <PageContentBlockHeader title={displayName} />
+                <WrapperMarkdown disableParagraphPadding>{description ?? ''}</WrapperMarkdown>
+                <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
+                <Box height={gutters(2)} display="flex" alignItems="center">
+                  <TagsComponent
+                    tags={tagset?.tags ?? []}
+                    variant="filled"
+                    size="medium"
+                    color="primary"
+                    height={gutters(2)}
+                  />
                 </Box>
-              </GridItem>
+                <BlockSectionTitle>{t('common.references')}</BlockSectionTitle>
+                {references?.map(reference => (
+                  <ReferencesListSmallItem key={reference.id} uri={reference.uri}>
+                    {reference.name}
+                  </ReferencesListSmallItem>
+                ))}
+                {references && !references.length && <Text>{t('components.referenceSegment.missing-references')}</Text>}
+              </Gutters>
             </PageContentBlock>
+            <PageContentBlock sx={{ flexDirection: 'column' }}>
+              <PageContentBlockHeader title={t('common.templateTypes')} />
+              <InnovationPackTemplateMenu templatesSetId={templatesSetId} />
+            </PageContentBlock>
+          </PageContentColumn>
+          <PageContentColumn columns={isMediumSmallScreen ? 12 : 9}>
             {loading && <Loading />}
             {!loading && templatesSetId && (
-              <TemplatesAdmin templatesSetId={templatesSetId} templateId={templateId} baseUrl={baseUrl} />
+              <TemplatesAdmin
+                templatesSetId={templatesSetId}
+                templateId={templateId}
+                baseUrl={baseUrl}
+                showCounts={false}
+              />
             )}
           </PageContentColumn>
         </PageContent>

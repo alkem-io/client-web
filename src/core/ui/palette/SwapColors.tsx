@@ -38,6 +38,28 @@ const swapColors = (theme: Theme): Theme => {
           },
         },
       },
+      MuiMenuItem: {
+        styleOverrides: {
+          root: {
+            '&.Mui-focusVisible': {
+              backgroundColor: theme.palette.highlight.main,
+              color: theme.palette.highlight.contrastText,
+              '.MuiListItemIcon-root': {
+                color: theme.palette.highlight.contrastText,
+              },
+              '.MuiListItemText-root': {
+                color: theme.palette.highlight.contrastText,
+              },
+            },
+            '&:focus-visible': {
+              backgroundColor: theme.palette.highlight.main,
+              color: theme.palette.highlight.contrastText,
+              outline: `2px solid ${theme.palette.highlight.light}`,
+              outlineOffset: '-2px',
+            },
+          },
+        },
+      },
     },
   });
 };

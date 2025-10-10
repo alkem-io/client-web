@@ -22,12 +22,12 @@ export const GlobalStateProvider = ({ children }: PropsWithChildren) => {
   const notificationsService = useActorRef(notificationMachine);
 
   return (
-    <GlobalStateContext.Provider
+    <GlobalStateContext
       value={{
         notificationsService,
       }}
     >
       {children}
-    </GlobalStateContext.Provider>
+    </GlobalStateContext>
   );
 };

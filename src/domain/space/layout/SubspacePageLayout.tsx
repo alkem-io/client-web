@@ -31,6 +31,7 @@ import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { useVideoCall } from '../hooks/useVideoCall';
 
 const CreateCalloutDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')
@@ -53,6 +54,7 @@ export const SubspacePageLayout = () => {
   const collaboration = subspace?.collaboration;
   const calloutsSetId = collaboration?.calloutsSet.id;
   const collaborationId = collaboration?.id;
+  const { isVideoCallEnabled } = useVideoCall(subspace?.id);
 
   const {
     currentInnovationFlowStateDisplayName: currentInnovationFlowState,
@@ -115,7 +117,7 @@ export const SubspacePageLayout = () => {
   return (
     <>
       <PageContent>
-        <SubspaceInfoColumn />
+        <SubspaceInfoColumn subspace={subspace} />
         <PageContentColumnBase columns={isCollapsed ? 12 : 9} flexBasis={0} flexGrow={1} flexShrink={1} minWidth={0}>
           <ApplicationButtonContainer spaceId={spaceId} parentSpaceId={parentSpaceId}>
             {(applicationButtonProps, loading) => {
@@ -189,6 +191,7 @@ export const SubspacePageLayout = () => {
         createButton={createButton}
         onSelectState={setSelectedInnovationFlowState!}
         about={about}
+        isVideoCallEnabled={isVideoCallEnabled}
       />
       <DialogActions />
       <FloatingActionButtons

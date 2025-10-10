@@ -67,6 +67,7 @@ const SignUp = () => {
             <KratosUI
               disableInputs={!hasAcceptedTerms}
               ui={signUpFlow?.ui}
+              flowType="registration"
               renderAcceptTermsCheckbox={checkbox => (
                 <KratosVisibleAcceptTermsCheckbox
                   value={hasAcceptedTerms}

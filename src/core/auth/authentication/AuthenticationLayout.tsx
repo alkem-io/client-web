@@ -20,7 +20,7 @@ const AuthenticationLayout = ({ children }: AuthenticationLayoutProps) => {
   const { t } = useTranslation();
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Overlay sx={{ zIndex: 0 }}>
+      <Overlay sx={{ zIndex: 0 }} role="banner">
         <Image
           src="/alkemio-banner/global-banner.svg"
           alt={t('visuals-alt-text.alkemio-banner-alt')}
@@ -28,6 +28,7 @@ const AuthenticationLayout = ({ children }: AuthenticationLayoutProps) => {
         />
       </Overlay>
       <Gutters
+        component="main"
         row
         fullHeight
         sx={{

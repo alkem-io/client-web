@@ -60,7 +60,7 @@ const TableDemo = () => {
         Table Demo
       </PageTitle>
       <PageContent>
-        <PageContentColumn columns={4}>
+        <PageContentColumn columns={3}>
           <PageContentBlock accent>
             <BlockTitle>Block Title</BlockTitle>
             <Text>{loremIpsum}</Text>
@@ -78,7 +78,7 @@ const TableDemo = () => {
             </PageContentBlockGrid>
           </PageContentBlock>
         </PageContentColumn>
-        <PageContentColumn columns={8}>
+        <PageContentColumn columns={9}>
           <PageContentBlock>
             <BlockTitle>Block Title</BlockTitle>
             <DataGridTable rows={users} columns={columns} onDelete={() => {}} />

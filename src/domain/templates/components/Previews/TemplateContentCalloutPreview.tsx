@@ -5,6 +5,7 @@ import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponen
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
 import { findDefaultTagset } from '@/domain/common/tagset/TagsetUtils';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import MemoPreview from '@/domain/collaboration/memo/MemoPreview/MemoPreview';
 
 interface TemplateContentCalloutPreviewProps {
   template?: {
@@ -23,6 +24,9 @@ interface TemplateContentCalloutPreviewProps {
             };
           };
         };
+        memo?: {
+          markdown?: string;
+        };
       };
     };
   };
@@ -31,6 +35,7 @@ interface TemplateContentCalloutPreviewProps {
 const TemplateContentCalloutPreview = ({ template }: TemplateContentCalloutPreviewProps) => {
   const framing = template?.callout?.framing;
   const whiteboard = template?.callout?.framing.whiteboard;
+  const memo = template?.callout?.framing.memo;
 
   return (
     <PageContentBlock>
@@ -38,6 +43,7 @@ const TemplateContentCalloutPreview = ({ template }: TemplateContentCalloutPrevi
       <WrapperMarkdown>{framing?.profile.description ?? ''}</WrapperMarkdown>
       <TagsComponent tags={findDefaultTagset(framing?.profile.tagsets)?.tags ?? framing?.profile.tagset?.tags ?? []} />
       {whiteboard && <WhiteboardPreview whiteboard={whiteboard} displayName={framing?.profile.displayName} />}
+      {memo && <MemoPreview memo={memo} displayName={framing?.profile.displayName} />}
     </PageContentBlock>
   );
 };

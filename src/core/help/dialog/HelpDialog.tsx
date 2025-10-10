@@ -59,8 +59,8 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
   const welcomeSpaceHref = buildWelcomeSpaceUrl();
 
   return (
-    <DialogWithGrid open={open} columns={6} onClose={handleClose}>
-      <DialogHeader title={t('pages.help-dialog.title')} onClose={handleClose} />
+    <DialogWithGrid open={open} columns={6} onClose={handleClose} aria-labelledby="help-dialog-title">
+      <DialogHeader title={t('pages.help-dialog.title')} onClose={handleClose} id="help-dialog-title" />
       <HelpDialogContent>
         <WrapperMarkdown>{t('pages.help-dialog.text')}</WrapperMarkdown>
         <Gutters row disablePadding>

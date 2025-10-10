@@ -142,8 +142,16 @@ export const InsertEmbedCodeButton = ({
         <SmartScreenOutlinedIcon />
       </MarkdownInputToolbarButton>
 
-      <DialogWithGrid open={isDialogOpen} onClose={handleOnCloseDialog}>
-        <DialogHeader title={t('components.wysiwyg-editor.embed.dialogTitle')} onClose={handleOnCloseDialog} />
+      <DialogWithGrid
+        open={isDialogOpen}
+        onClose={handleOnCloseDialog}
+        aria-labelledby="insert-embed-code-dialog-title"
+      >
+        <DialogHeader
+          title={t('components.wysiwyg-editor.embed.dialogTitle')}
+          onClose={handleOnCloseDialog}
+          id="insert-embed-code-dialog-title"
+        />
         <Formik initialValues={initialValues} onSubmit={handleOnSubmitIframe}>
           {({ setFieldValue, values }) => (
             <Form>

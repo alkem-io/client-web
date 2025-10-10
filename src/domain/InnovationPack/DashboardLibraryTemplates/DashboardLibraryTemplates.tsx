@@ -72,7 +72,12 @@ const DashboardLibraryTemplates = ({
         hasMore={filteredLibraryTemplates.length > MAX_TEMPLATES_WHEN_NOT_EXPANDED}
         loading={loading}
       />
-      <DialogWithGrid open={isDialogOpen} onClose={() => setIsDialogOpen(false)} columns={12}>
+      <DialogWithGrid
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        columns={12}
+        aria-labelledby="library-templates-dialog-title"
+      >
         <LibraryTemplatesView
           filter={filter}
           headerTitle={dialogTitle}
@@ -83,6 +88,7 @@ const DashboardLibraryTemplates = ({
           onClick={template => setSelectedTemplate(template)}
           sx={{ flexShrink: 1 }}
           loading={loading}
+          headerTitleId="library-templates-dialog-title"
         />
       </DialogWithGrid>
       {selectedTemplate && (

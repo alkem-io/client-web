@@ -53,6 +53,7 @@ type TemplatesAdminProps = {
   canDeleteTemplates?: TemplatePermissionCallback;
   canImportTemplates?: TemplatePermissionCallback;
   importTemplateOptions?: ImportTemplatesOptions;
+  showCounts?: boolean;
 };
 
 const CreateTemplateButton = (props: ButtonProps) => {
@@ -83,6 +84,7 @@ const TemplatesAdmin = ({
   canCreateTemplates = defaultPermissionDenied,
   canEditTemplates = defaultPermissionDenied,
   canDeleteTemplates = defaultPermissionDenied,
+  showCounts = true,
 }: PropsWithChildren<TemplatesAdminProps>) => {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -285,6 +287,13 @@ const TemplatesAdmin = ({
     }
   };
 
+  const shouldRenderTemplateSection = <T extends { length: number }>(
+    templates: T | undefined,
+    templateType: TemplateType
+  ): boolean => {
+    return (templates && templates.length > 0) || canCreateTemplates(templateType) || canImportTemplates(templateType);
+  };
+
   // Actions (buttons for gallery)
   const GalleryActions = useCallback(
     ({ templateType }: { templateType: TemplateType }) => (
@@ -312,66 +321,111 @@ const TemplatesAdmin = ({
 
   return (
     <>
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`),
-            count: calloutTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.Callout} />}
-          templates={calloutTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.Space}_plural`),
-            count: spaceTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.Space} />}
-          templates={spaceTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
-            count: communityGuidelinesTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.CommunityGuidelines} />}
-          templates={communityGuidelinesTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.Post}_plural`),
-            count: postTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.Post} />}
-          templates={postTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
-            count: whiteboardTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.Whiteboard} />}
-          templates={whiteboardTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
+      {shouldRenderTemplateSection(spaceTemplates, TemplateType.Space) && (
+        <PageContentBlockSeamless disablePadding>
+          <TemplatesGallery
+            headerText={
+              showCounts
+                ? t('common.entitiesWithCount', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Space}_plural`),
+                    count: spaceTemplates?.length ?? 0,
+                  })
+                : t('common.entities', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Space}_plural`),
+                  })
+            }
+            headerId={TemplateType.Space.toLowerCase()}
+            actions={<GalleryActions templateType={TemplateType.Space} />}
+            templates={spaceTemplates}
+            loading={loading}
+            buildTemplateLink={buildTemplateLink}
+          />
+        </PageContentBlockSeamless>
+      )}
+      {shouldRenderTemplateSection(calloutTemplates, TemplateType.Callout) && (
+        <PageContentBlockSeamless disablePadding>
+          <TemplatesGallery
+            headerText={
+              showCounts
+                ? t('common.entitiesWithCount', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`),
+                    count: calloutTemplates?.length ?? 0,
+                  })
+                : t('common.entities', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`),
+                  })
+            }
+            headerId={TemplateType.Callout.toLowerCase()}
+            actions={<GalleryActions templateType={TemplateType.Callout} />}
+            templates={calloutTemplates}
+            loading={loading}
+            buildTemplateLink={buildTemplateLink}
+          />
+        </PageContentBlockSeamless>
+      )}
+      {shouldRenderTemplateSection(whiteboardTemplates, TemplateType.Whiteboard) && (
+        <PageContentBlockSeamless disablePadding>
+          <TemplatesGallery
+            headerText={
+              showCounts
+                ? t('common.entitiesWithCount', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
+                    count: whiteboardTemplates?.length ?? 0,
+                  })
+                : t('common.entities', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
+                  })
+            }
+            headerId={TemplateType.Whiteboard.toLowerCase()}
+            actions={<GalleryActions templateType={TemplateType.Whiteboard} />}
+            templates={whiteboardTemplates}
+            loading={loading}
+            buildTemplateLink={buildTemplateLink}
+          />
+        </PageContentBlockSeamless>
+      )}
+      {shouldRenderTemplateSection(postTemplates, TemplateType.Post) && (
+        <PageContentBlockSeamless disablePadding>
+          <TemplatesGallery
+            headerText={
+              showCounts
+                ? t('common.entitiesWithCount', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Post}_plural`),
+                    count: postTemplates?.length ?? 0,
+                  })
+                : t('common.entities', {
+                    entityType: t(`common.enums.templateType.${TemplateType.Post}_plural`),
+                  })
+            }
+            headerId={TemplateType.Post.toLowerCase()}
+            actions={<GalleryActions templateType={TemplateType.Post} />}
+            templates={postTemplates}
+            loading={loading}
+            buildTemplateLink={buildTemplateLink}
+          />
+        </PageContentBlockSeamless>
+      )}
+      {shouldRenderTemplateSection(communityGuidelinesTemplates, TemplateType.CommunityGuidelines) && (
+        <PageContentBlockSeamless disablePadding>
+          <TemplatesGallery
+            headerText={
+              showCounts
+                ? t('common.entitiesWithCount', {
+                    entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
+                    count: communityGuidelinesTemplates?.length ?? 0,
+                  })
+                : t('common.entities', {
+                    entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
+                  })
+            }
+            headerId={TemplateType.CommunityGuidelines.toLowerCase()}
+            actions={<GalleryActions templateType={TemplateType.CommunityGuidelines} />}
+            templates={communityGuidelinesTemplates}
+            loading={loading}
+            buildTemplateLink={buildTemplateLink}
+          />
+        </PageContentBlockSeamless>
+      )}
       {creatingTemplateType && (
         <CreateTemplateDialog
           open

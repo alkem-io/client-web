@@ -101,8 +101,16 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
 
   return (
     <>
-      <DialogWithGrid open={open} onClose={onClose} columns={isMediumSmallScreen ? 6 : 12} fullScreen={isSmallScreen}>
-        <DialogHeader onClose={onClose}>{t('plansTable.title')}</DialogHeader>
+      <DialogWithGrid
+        open={open}
+        onClose={onClose}
+        columns={isMediumSmallScreen ? 6 : 12}
+        fullScreen={isSmallScreen}
+        aria-labelledby="plans-table-dialog-title"
+      >
+        <DialogHeader onClose={onClose} id="plans-table-dialog-title">
+          {t('plansTable.title')}
+        </DialogHeader>
         <Gutters>
           <GridContainer sameHeight disablePadding disableGap>
             {loading && <Loading text={t('common.loading')} />}

@@ -24,6 +24,7 @@ const PageFooter = ({ logo, copyright, children, ...props }: BoxProps & PropsWit
 
   return (
     <Box
+      component="footer"
       display="flex"
       flexDirection={isMediumSmallScreen ? 'column' : 'row-reverse'}
       gap={gutters(isMediumSmallScreen ? 0 : 1)}

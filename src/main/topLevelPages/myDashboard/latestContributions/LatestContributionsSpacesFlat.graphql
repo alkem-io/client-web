@@ -3,14 +3,7 @@ query LatestContributionsSpacesFlat {
     spaceMembershipsFlat {
       id
       space {
-        id
-        about {
-          id
-          profile {
-            id
-            displayName
-          }
-        }
+        ...ActivityLogSpaceVisuals
       }
     }
   }

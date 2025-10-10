@@ -20,6 +20,7 @@ const DEFAULT_DURATION_MINUTES = 30;
 export interface CalendarEventFormProps {
   event: Partial<CalendarEventDetailData> | undefined;
   dialogTitle: string;
+  dialogTitleId?: string;
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (eventValues: CalendarEventFormData) => void;
   isSubmitting: boolean;
@@ -36,6 +37,7 @@ const typeOptions: FormikSelectValue[] = Object.values(CalendarEventType).map(ty
 const CalendarEventForm = ({
   event,
   dialogTitle,
+  dialogTitleId,
   onSubmit,
   onClose,
   isSubmitting,
@@ -137,7 +139,7 @@ const CalendarEventForm = ({
 
   return (
     <GridProvider columns={12}>
-      <DialogHeader onClose={onClose} title={dialogTitle} />
+      <DialogHeader onClose={onClose} title={dialogTitle} id={dialogTitleId} />
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}

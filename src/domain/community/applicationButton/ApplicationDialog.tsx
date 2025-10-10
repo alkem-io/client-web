@@ -115,8 +115,8 @@ const ApplicationDialog = ({
     : t('pages.space.application.applyTitle', { name: communityName });
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} columns={8}>
-      <DialogHeader onClose={onClose} title={dialogTitle} />
+    <DialogWithGrid open={open} onClose={onClose} columns={8} aria-labelledby="application-dialog">
+      <DialogHeader id="application-dialog" onClose={onClose} title={dialogTitle} />
       <DialogContent>
         <Formik
           initialValues={initialValues}

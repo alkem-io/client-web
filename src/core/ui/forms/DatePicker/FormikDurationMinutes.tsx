@@ -1,11 +1,9 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { useField } from 'formik';
 import { FormikInputProps } from '../FormikInputProps';
 import { addMinutes } from '@/core/utils/time/utils';
 import AlkemioTimePicker, { AlkemioTimePickerProps } from './AlkemioTimePicker';
 import dayjs from 'dayjs';
-import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface FormikTimePickerProps extends FormikInputProps, Omit<AlkemioTimePickerProps, 'value' | 'onChange'> {
   startTimeFieldName: string;
@@ -13,20 +11,15 @@ interface FormikTimePickerProps extends FormikInputProps, Omit<AlkemioTimePicker
 
 const MILLISECONDS_IN_MINUTE = 60 * 1000;
 
-const FormikDurationMinutes = ({ name, startTimeFieldName, ...datePickerProps }: FormikTimePickerProps) => {
-  const [field, meta, helpers] = useField<number>(name);
+const FormikDurationMinutes = ({
+  name,
+  startTimeFieldName,
+  label,
+  containerProps,
+  disabled,
+}: FormikTimePickerProps) => {
+  const [field, , helpers] = useField<number>(name);
   const [startTimeField] = useField<Date | string>(startTimeFieldName);
-
-  const tErr = useValidationMessageTranslation();
-
-  const isError = Boolean(meta.error) && meta.touched;
-
-  const helperText = useMemo(() => {
-    if (!isError) {
-      return;
-    }
-    return tErr(meta.error as TranslationKey, { field: datePickerProps.label as string });
-  }, [isError, meta.error, tErr, datePickerProps.label]);
 
   const handleChange = (endDate: Date) => {
     const startDate = new Date(startTimeField.value);
@@ -72,11 +65,11 @@ const FormikDurationMinutes = ({ name, startTimeFieldName, ...datePickerProps }:
     <AlkemioTimePicker
       value={date}
       onChange={handleChange}
-      error={helperText}
-      onBlur={() => helpers.setTouched(true)}
       minTime={dayjs(startTimeField.value)}
       fullWidth
-      {...datePickerProps}
+      label={label}
+      containerProps={containerProps}
+      disabled={disabled}
     />
   );
 };

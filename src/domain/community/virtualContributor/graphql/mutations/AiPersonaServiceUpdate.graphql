@@ -1,6 +1,0 @@
-mutation updateAiPersonaService($aiPersonaServiceData: UpdateAiPersonaServiceInput!) {
-  aiServerUpdateAiPersonaService(aiPersonaServiceData: $aiPersonaServiceData) {
-    id
-    prompt
-  }
-}

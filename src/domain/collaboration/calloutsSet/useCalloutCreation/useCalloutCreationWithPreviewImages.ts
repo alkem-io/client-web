@@ -54,16 +54,6 @@ export const useCalloutCreationWithPreviewImages = (
       } = callout;
       return { callout: { framing: { whiteboard: restWhiteboard, ...restFraming }, ...restCallout }, previewImages };
     }
-    if (callout.framing.memo) {
-      const {
-        framing: {
-          memo: { previewImages, ...restMemo },
-          ...restFraming
-        },
-        ...restCallout
-      } = callout;
-      return { callout: { framing: { memo: restMemo, ...restFraming }, ...restCallout }, previewImages };
-    }
     return { callout };
   };
 

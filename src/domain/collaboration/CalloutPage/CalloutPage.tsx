@@ -1,11 +1,9 @@
-import { ReactElement, ReactNode, useEffect, useMemo } from 'react';
-import { useCalloutPageCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ReactElement, ReactNode, useEffect } from 'react';
 import CalloutView from '../callout/CalloutView/CalloutView';
-import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useCalloutManager } from '../callout/utils/useCalloutManager';
-import { TypedCalloutDetails } from '../callout/models/TypedCallout';
+import { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsModel';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { DialogContent } from '@mui/material';
 import Loading from '@/core/ui/loading/Loading';
 import { isApolloForbiddenError, isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
@@ -15,11 +13,11 @@ import { Text } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '@/core/routing/ScrollToTop';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { Identifiable } from '@/core/utils/Identifiable';
 import useNavigate from '@/core/routing/useNavigate';
+import useCalloutDetails from '../callout/useCalloutDetails/useCalloutDetails';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -35,7 +33,7 @@ export interface CalloutPageProps {
 export const LocationStateKeyCachedCallout = 'LocationStateKeyCachedCallout';
 
 export interface LocationStateCachedCallout extends NavigationState {
-  [LocationStateKeyCachedCallout]?: TypedCalloutDetails;
+  [LocationStateKeyCachedCallout]?: CalloutDetailsModelExtended;
 }
 
 /**
@@ -47,64 +45,33 @@ export interface LocationStateCachedCallout extends NavigationState {
  * @constructor
  */
 const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, children }: CalloutPageProps) => {
-  const { calloutId, loading: urlResolverLoading } = useUrlResolver();
-
-  const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
+  const { calloutsSetId, calloutId, contributionId, loading: urlResolverLoading } = useUrlResolver();
 
   const { t } = useTranslation();
 
   const navigate = useNavigate();
 
-  const {
-    data: calloutData,
-    loading: isCalloutLoading,
-    refetch: refetchCalloutData,
-    error,
-  } = useCalloutPageCalloutQuery({
-    variables: {
-      calloutId: calloutId!,
-      includeClassification: !disableCalloutsClassification,
-    },
-    skip: !calloutId,
-    fetchPolicy: 'cache-and-network',
-    errorPolicy: 'all',
-  });
-
-  const { entitlements, permissions } = useSpacePermissionsAndEntitlements();
-  const calloutsCanBeSavedAsTemplate = entitlements?.entitledToSaveAsTemplate && permissions.canCreateTemplates;
-
-  const callout = calloutData?.lookup.callout;
-
   const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
 
-  const typedCalloutDetails = useMemo(() => {
-    if (!callout) {
-      return locationState[LocationStateKeyCachedCallout];
-    }
-
-    const draft = callout.settings.visibility === CalloutVisibility.Draft;
-    const editable = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-
-    const result: TypedCalloutDetails = {
-      ...callout,
-      authorization: {
-        myPrivileges: callout.authorization?.myPrivileges,
-      },
-      draft,
-      editable,
-      movable: false,
-      canBeSavedAsTemplate: calloutsCanBeSavedAsTemplate,
-      classificationTagsets: [],
-    };
-    return result;
-  }, [callout, locationState, calloutsCanBeSavedAsTemplate]);
+  const {
+    callout,
+    loading: calloutLoading,
+    error: calloutError,
+    refetch,
+  } = useCalloutDetails({
+    calloutId,
+    calloutsSetId,
+    withClassification: !disableCalloutsClassification,
+    skip: !calloutId,
+    overrideCalloutSettings: {
+      movable: true,
+    },
+  });
 
   const { isSmallScreen } = useScreenSize();
 
-  const calloutFlowState = typedCalloutDetails?.classification?.flowState?.tags[0];
-  const calloutPosition = typedCalloutDetails?.classification?.flowState?.allowedValues?.findIndex(
-    val => val === calloutFlowState
-  );
+  const calloutFlowState = callout?.classification?.flowState?.tags[0];
+  const calloutPosition = callout?.classification?.flowState?.allowedValues?.findIndex(val => val === calloutFlowState);
 
   const calloutSection = calloutPosition && calloutPosition > -1 ? calloutPosition : -1;
 
@@ -121,11 +88,11 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
     }
   }, [calloutSection, currentSection]);
 
-  if ((urlResolverLoading || isCalloutLoading) && !typedCalloutDetails) {
+  if ((urlResolverLoading || calloutLoading) && !callout) {
     return <Loading />;
   }
 
-  if (isApolloNotFoundError(error)) {
+  if (isApolloNotFoundError(calloutError)) {
     return (
       <TopLevelLayout>
         <Error404 />
@@ -136,6 +103,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutPosition) : parentRoute;
 
   const handleClose = () => {
+    refetch();
     navigate(parentPagePath, {
       state: { keepScroll: true },
       replace: true,
@@ -147,12 +115,16 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
     handleClose();
   };
 
-  if (isApolloForbiddenError(error)) {
+  if (isApolloForbiddenError(calloutError)) {
     return (
       <>
         {renderPage(calloutPosition)}
-        <DialogWithGrid open onClose={handleClose}>
-          <DialogHeader title={t('callout.accessForbidden.title')} onClose={handleClose} />
+        <DialogWithGrid open onClose={handleClose} aria-labelledby="callout-access-forbidden-dialog-title">
+          <DialogHeader
+            title={t('callout.accessForbidden.title')}
+            id="callout-access-forbidden-dialog-title"
+            onClose={handleClose}
+          />
           <DialogContent sx={{ paddingTop: 0 }}>
             <Text>{t('callout.accessForbidden.description')}</Text>
           </DialogContent>
@@ -161,14 +133,21 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
     );
   }
 
-  if (!typedCalloutDetails) {
+  if (!callout) {
     return renderPage();
   }
 
   return (
     <>
       {renderPage(calloutPosition)}
-      <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen} fullHeight disableScrollLock>
+      <DialogWithGrid
+        open
+        columns={12}
+        onClose={handleClose}
+        fullScreen={isSmallScreen}
+        fullHeight
+        aria-labelledby="callout-title"
+      >
         <DialogContent
           dividers
           sx={{
@@ -182,10 +161,11 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
           }}
         >
           <CalloutView
-            callout={typedCalloutDetails}
-            contributionsCount={typedCalloutDetails.activity}
+            callout={callout}
+            contributionId={contributionId}
+            contributionsCount={callout.activity}
             onVisibilityChange={changeCalloutVisibility}
-            onCalloutUpdate={refetchCalloutData}
+            onCalloutUpdate={refetch}
             onCalloutDelete={handleDeleteWithClose}
             onCollapse={handleClose}
             expanded

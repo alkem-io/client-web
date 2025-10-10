@@ -116,6 +116,7 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
                 ui={registrationFlowWithAcceptedTerms?.ui}
                 onBeforeSubmit={storeHasAcceptedTerms}
                 acceptTermsComponent={AcceptTerms}
+                flowType="registration"
               />
             </>
           )}

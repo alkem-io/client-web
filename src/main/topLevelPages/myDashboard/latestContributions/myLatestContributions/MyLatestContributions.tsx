@@ -101,7 +101,10 @@ const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsP
           key={activity.id}
           activity={activity as ActivityLogResultType}
           avatarUrl={
-            activity.space?.about.profile.avatar?.uri ?? getDefaultSpaceVisualUrl(VisualType.Avatar, activity.space?.id)
+            // Use || instead of ?? here, because uri can be an empty string
+            activity.space?.about.profile.avatar?.uri ||
+            activity.space?.about.profile.cardBanner?.uri ||
+            getDefaultSpaceVisualUrl(VisualType.Avatar, activity.space?.id)
           }
           avatarAlt={
             activity.space?.about.profile.displayName

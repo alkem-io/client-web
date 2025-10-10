@@ -17,14 +17,62 @@ fragment InAppNotificationAllTypes on InAppNotification {
   }
   payload {
     type
+    ... on InAppNotificationPayloadOrganizationMessageDirect {
+      ...InAppNotificationPayloadOrganizationMessageDirect
+    }
+    ... on InAppNotificationPayloadOrganizationMessageRoom {
+      ...InAppNotificationPayloadOrganizationMessageRoom
+    }
+    ... on InAppNotificationPayloadPlatformGlobalRoleChange {
+      ...InAppNotificationPayloadPlatformGlobalRoleChange
+    }
+    ... on InAppNotificationPayloadSpace {
+      ...InAppNotificationPayloadSpace
+    }
+    ... on InAppNotificationPayloadPlatformForumDiscussion {
+      ...InAppNotificationPayloadPlatformForumDiscussion
+    }
+    ... on InAppNotificationPayloadPlatformUserMessageRoom {
+      ...InAppNotificationUserMentioned
+    }
+    ... on InAppNotificationPayloadPlatformUser {
+      ...InAppNotificationPayloadPlatformUser
+    }
+    ... on InAppNotificationPayloadPlatformUserProfileRemoved {
+      ...InAppNotificationPayloadPlatformUserProfileRemoved
+    }
     ... on InAppNotificationPayloadSpaceCollaborationCallout {
       ...InAppNotificationPayloadSpaceCollaborationCallout
     }
     ... on InAppNotificationPayloadSpaceCommunityContributor {
       ...InAppNotificationSpaceCommunityContributor
     }
-    ... on InAppNotificationPayloadPlatformUserMessageRoom {
-      ...InAppNotificationUserMentioned
+    ... on InAppNotificationPayloadSpaceCommunityApplication {
+      ...InAppNotificationPayloadSpaceCommunityApplication
+    }
+    ... on InAppNotificationPayloadSpaceCommunicationUpdate {
+      ...InAppNotificationPayloadSpaceCommunicationUpdate
+    }
+    ... on InAppNotificationPayloadSpaceCommunicationMessageDirect {
+      ...InAppNotificationPayloadSpaceCommunicationMessageDirect
+    }
+    ... on InAppNotificationPayloadSpaceCommunityInvitation {
+      ...InAppNotificationPayloadSpaceCommunityInvitation
+    }
+    ... on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
+      ...InAppNotificationPayloadSpaceCommunityInvitationPlatform
+    }
+    ... on InAppNotificationPayloadUserMessageDirect {
+      ...InAppNotificationPayloadUserMessageDirect
+    }
+    ... on InAppNotificationPayloadSpaceCollaborationCalloutComment {
+      ...InAppNotificationPayloadSpaceCollaborationCalloutComment
+    }
+    ... on InAppNotificationPayloadSpaceCollaborationCalloutPostComment {
+      ...InAppNotificationPayloadSpaceCollaborationCalloutPostComment
+    }
+    ... on InAppNotificationPayloadVirtualContributor {
+      ...InAppNotificationPayloadVirtualContributor
     }
   }
 }
@@ -38,9 +86,6 @@ fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationP
         id
         displayName
         url
-        visual(type: CARD) {
-          ...VisualModel
-        }
       }
     }
   }
@@ -48,7 +93,6 @@ fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationP
     ...spaceNotification
   }
 }
-
 
 fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
   space {
@@ -73,12 +117,238 @@ fragment spaceNotification on Space {
   level
   about {
     id
-    ...SpaceAboutCardBanner
+    profile {
+      id
+      displayName
+      description
+      url
+      tagline
+      tagset {
+        ...TagsetDetails
+      }
+      ...SubspaceVisuals
+    }
   }
 }
 
 fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserMessageRoom {
+  messageDetails {
+    message
+    parent {
+      displayName
+      url
+    }
+    room {
+      id
+    }
+  }
+}
+
+fragment InAppNotificationPayloadOrganizationMessageDirect on InAppNotificationPayloadOrganizationMessageDirect {
+  organizationMessage: message
+  organization {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+}
+
+fragment InAppNotificationPayloadOrganizationMessageRoom on InAppNotificationPayloadOrganizationMessageRoom {
   comment
-  commentUrl
-  commentOriginName
+  roomID
+  organization {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+}
+
+fragment InAppNotificationPayloadPlatformGlobalRoleChange on InAppNotificationPayloadPlatformGlobalRoleChange {
+  type
+  role
+  user {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+}
+
+fragment InAppNotificationPayloadSpace on InAppNotificationPayloadSpace {
+  type
+  space {
+    ...spaceNotification
+  }
+}
+
+fragment InAppNotificationPayloadPlatformForumDiscussion on InAppNotificationPayloadPlatformForumDiscussion {
+  type
+  comment
+  discussion {
+    id
+    displayName
+    description
+    category
+    url
+  }
+}
+
+fragment InAppNotificationPayloadPlatformUser on InAppNotificationPayloadPlatformUser {
+  type
+}
+
+fragment InAppNotificationPayloadPlatformUserProfileRemoved on InAppNotificationPayloadPlatformUserProfileRemoved {
+  type
+  userEmail
+  userDisplayName
+}
+
+fragment InAppNotificationPayloadSpaceCommunityApplication on InAppNotificationPayloadSpaceCommunityApplication {
+  space {
+    ...spaceNotification
+  }
+  application {
+    id
+    createdDate
+    contributor {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualModel
+        }
+      }
+    }
+  }
+}
+
+fragment InAppNotificationPayloadSpaceCommunicationUpdate on InAppNotificationPayloadSpaceCommunicationUpdate {
+  space {
+    ...spaceNotification
+  }
+  update
+}
+
+fragment InAppNotificationPayloadSpaceCommunicationMessageDirect on InAppNotificationPayloadSpaceCommunicationMessageDirect {
+  space {
+    ...spaceNotification
+  }
+  spaceCommunicationMessage: message
+}
+
+fragment InAppNotificationPayloadSpaceCommunityInvitation on InAppNotificationPayloadSpaceCommunityInvitation {
+  space {
+    ...spaceNotification
+  }
+}
+
+fragment InAppNotificationPayloadSpaceCommunityInvitationPlatform on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
+  space {
+    ...spaceNotification
+  }
+}
+
+fragment InAppNotificationPayloadVirtualContributor on InAppNotificationPayloadVirtualContributor {
+  type
+  space {
+    ...spaceNotification
+  }
+  contributor {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+}
+
+fragment InAppNotificationPayloadUserMessageDirect on InAppNotificationPayloadUserMessageDirect {
+  userMessage: message
+  user {
+    id
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualModel
+      }
+    }
+  }
+}
+fragment InAppNotificationPayloadSpaceCollaborationCalloutComment on InAppNotificationPayloadSpaceCollaborationCalloutComment {
+  messageDetails {
+    message
+    parent {
+      displayName
+      url
+    }
+    room {
+      id
+    }
+  }
+  space {
+    ...spaceNotification
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
+}
+
+fragment InAppNotificationPayloadSpaceCollaborationCalloutPostComment on InAppNotificationPayloadSpaceCollaborationCalloutPostComment {
+  messageDetails {
+    message
+    parent {
+      displayName
+      url
+    }
+    room {
+      id
+    }
+  }
+  space {
+    ...spaceNotification
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
 }

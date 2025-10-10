@@ -20,12 +20,17 @@ import { useMemo } from 'react';
 import { MemoIcon } from '../../memo/icon/MemoIcon';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
+  edit?: boolean;
+  /** Indicates if the form is used in a template context */
+  template?: boolean;
 }
 
-const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingSettingsProps) => {
+const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: CalloutFormFramingSettingsProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
 
@@ -56,9 +61,8 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
           whiteboard: undefined,
           link: undefined,
           memo: {
-            // content: '',
             profile: { displayName: t('common.memo') },
-            previewImages: [],
+            markdown: undefined,
           },
         };
         break;
@@ -151,6 +155,8 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
     }
   }, [calloutRestrictions?.onlyRealTimeWhiteboardFraming]);
 
+  const showMemoContent = !edit || template; // Editable memo content if not in edit mode or if in template mode
+
   return (
     <>
       <PageContentBlock sx={{ marginTop: gutters(-1) }}>
@@ -173,6 +179,17 @@ const CalloutFormFramingSettings = ({ calloutRestrictions }: CalloutFormFramingS
             dialogProps={{ title: t('components.callout-creation.framing.whiteboard.editDialogTitle') }}
           />
         </PageContentBlock>
+      )}
+
+      {showMemoContent && framing.memo && framing.type === CalloutFramingType.Memo && (
+        <FormikMarkdownField
+          title={t('components.callout-creation.framing.memo.name')}
+          placeholder={t('components.callout-creation.framing.memo.placeholder')}
+          rows={10}
+          name={nameOf<CalloutFormSubmittedValues>('framing.memo.markdown')}
+          hideImageOptions
+          maxLength={MARKDOWN_TEXT_LENGTH}
+        />
       )}
 
       {framing.type === CalloutFramingType.Link && (

@@ -1,10 +1,10 @@
 import { groupBy, isEmpty } from 'lodash';
-import { Box, CardContent, GridLegacy, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import OrganizationVerifiedStatus from '@/domain/community/organization/OrganizationVerifiedStatus';
-import { BlockSectionTitle, BlockTitle, CardText } from '@/core/ui/typography';
+import { BlockSectionTitle, CardText } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Gutters from '@/core/ui/grid/Gutters';
 import References from '@/domain/shared/components/References/References';
@@ -44,6 +44,8 @@ const VerifiedBadge = styled(Box)(({ theme }) => ({
   top: theme.spacing(0),
 }));
 
+const TagsWithOffset = styled(TagsComponent)({ marginTop: 5 });
+
 const SOCIAL_LINK_GROUP = 'social';
 const OTHER_LINK_GROUP = 'other';
 
@@ -65,7 +67,7 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
 
   return (
     <PageContentBlock>
-      <CardContent sx={{ position: 'relative' }}>
+      <Gutters disablePadding sx={{ position: 'relative' }}>
         <VerifiedBadge>
           {entity?.verified !== undefined && (
             <OrganizationVerifiedStatus
@@ -74,36 +76,34 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
             />
           )}
         </VerifiedBadge>
-        <GridLegacy container spacing={3.5} direction="column">
-          <Gutters>
-            <ProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
-          </Gutters>
+        <Gutters disablePadding>
+          <ProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
+        </Gutters>
 
-          {entity.tagsets
-            ?.filter(t => t.tags.length > 0)
-            .map((tagset, i) =>
-              tagset.tags.length > 0 ? (
-                <Gutters key={i}>
-                  <BlockTitle>{tagset.name}</BlockTitle>
-                  <TagsComponent tags={tagset.tags} count={5} />
-                </Gutters>
-              ) : null
-            )}
-
-          {!isEmpty(links) && (
-            <Gutters fullHeight maxWidth="100%">
-              <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
-
-              <References
-                references={links[OTHER_LINK_GROUP]}
-                noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
-              />
-
-              <SocialLinks items={socialLinks} />
-            </Gutters>
+        {entity.tagsets
+          ?.filter(t => t.tags.length > 0)
+          .map((tagset, i) =>
+            tagset.tags.length > 0 ? (
+              <Gutters key={i} disablePadding disableGap>
+                <BlockSectionTitle>{tagset.name}</BlockSectionTitle>
+                <TagsWithOffset tags={tagset.tags} count={5} />
+              </Gutters>
+            ) : null
           )}
-        </GridLegacy>
-      </CardContent>
+
+        {!isEmpty(links) && (
+          <Gutters disablePadding fullHeight maxWidth="100%">
+            <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
+
+            <References
+              references={links[OTHER_LINK_GROUP]}
+              noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
+            />
+
+            <SocialLinks items={socialLinks} />
+          </Gutters>
+        )}
+      </Gutters>
     </PageContentBlock>
   );
 };

@@ -20,7 +20,7 @@ export const BlockAnchorProvider = ({
 }: PropsWithChildren<{ blockRef: RefObject<Element | null> }>) => {
   const anchor = useCallback(() => blockRef.current?.nextElementSibling ?? null, [blockRef]);
 
-  return <BlockAnchorContext.Provider value={anchor}>{children}</BlockAnchorContext.Provider>;
+  return <BlockAnchorContext value={anchor}>{children}</BlockAnchorContext>;
 };
 
 type NextBlockAnchorProps<Props extends { anchor?: Anchor }> = {

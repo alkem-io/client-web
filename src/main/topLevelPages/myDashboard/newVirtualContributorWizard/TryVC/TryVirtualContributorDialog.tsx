@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Trans, useTranslation } from 'react-i18next';
@@ -18,12 +18,8 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
 import CalloutView from '@/domain/collaboration/callout/CalloutView/CalloutView';
-import {
-  useCalloutDetailsQuery,
-  useDeleteCalloutMutation,
-  useVirtualContributorQuery,
-} from '@/core/apollo/generated/apollo-hooks';
-import { TypedCalloutDetails } from '@/domain/collaboration/callout/models/TypedCallout';
+import { useDeleteCalloutMutation, useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
+import useCalloutDetails from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
 import { Actions } from '@/core/ui/actions/Actions';
 import { removeVCCreationCache } from './utils';
 import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
@@ -84,39 +80,26 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   };
 
   const {
-    data: calloutData,
-    loading: isCalloutLoading,
-    refetch: refetchCalloutData,
+    callout,
+    loading: calloutLoading,
+    refetch,
     error: calloutError,
-  } = useCalloutDetailsQuery({
-    variables: {
-      calloutId: calloutId!,
-    },
+  } = useCalloutDetails({
+    calloutId,
+    calloutsSetId,
+    withClassification: false,
     skip: !calloutId,
-  });
-
-  const callout = calloutData?.lookup.callout;
-
-  const typedCalloutDetails = useMemo<TypedCalloutDetails | undefined>(() => {
-    if (!callout) {
-      return undefined;
-    }
-
-    return {
-      ...callout,
-      comments: callout.comments,
-      // Fake callout properties to show the callout inside the dialog without any controls
-      draft: callout.settings.visibility === CalloutVisibility.Draft,
-      editable: false,
-      movable: false,
+    overrideCalloutSettings: {
       canBeSavedAsTemplate: false,
-      flowStates: undefined,
-      authorization: {
-        myPrivileges: [],
-      },
       classificationTagsets: [],
-    };
-  }, [callout]);
+      draft: false,
+      editable: true,
+      movable: true,
+      publishedAt: undefined,
+      authorAvatarUri: undefined,
+      authorName: undefined,
+    }
+  });
 
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation(options);
 
@@ -163,10 +146,14 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   }
 
   return (
-    <DialogWithGrid open={open} onClose={handleClose} columns={8}>
-      <DialogHeader title={t('createVirtualContributorWizard.trySection.title')} onClose={handleClose} />
+    <DialogWithGrid open={open} onClose={handleClose} columns={8} aria-labelledby="try-virtual-contributor-dialog">
+      <DialogHeader
+        id="try-virtual-contributor-dialog"
+        title={t('createVirtualContributorWizard.trySection.title')}
+        onClose={handleClose}
+      />
       <DialogContent>
-        {vcDataLoading && demoCalloutCreationLoading && isCalloutLoading ? (
+        {vcDataLoading && demoCalloutCreationLoading && calloutLoading ? (
           <Loading />
         ) : (
           <Gutters disablePadding>
@@ -183,17 +170,17 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
                 />
               </Caption>
             </Box>
-            {!typedCalloutDetails && (
+            {!callout && (
               <Box>
                 <Loading />
               </Box>
             )}
-            {typedCalloutDetails && (
+            {callout && (
               <Paper variant="outlined">
                 <CalloutView
-                  callout={typedCalloutDetails}
-                  contributionsCount={typedCalloutDetails.activity}
-                  onCalloutUpdate={refetchCalloutData}
+                  callout={callout}
+                  contributionsCount={callout.activity}
+                  onCalloutUpdate={refetch}
                   calloutActions={false}
                   onVisibilityChange={undefined}
                   onCalloutDelete={undefined}

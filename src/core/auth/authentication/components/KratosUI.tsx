@@ -33,6 +33,7 @@ interface KratosUIProps extends PropsWithChildren {
    */
   onBeforeSubmit?: () => void;
   disableInputs?: boolean;
+  flowType?: 'login' | 'registration' | 'settings' | 'recovery' | 'verification';
 }
 
 const toAlertVariant = (type: string) => {
@@ -75,6 +76,7 @@ export const KratosUI: FC<KratosUIProps> = ({
   children,
   removedFields = KRATOS_REMOVED_FIELDS_DEFAULT,
   disableInputs = false,
+  flowType,
   ...rest
 }) => {
   const { t } = useTranslation();
@@ -154,7 +156,14 @@ export const KratosUI: FC<KratosUIProps> = ({
         extraProps.autoComplete = 'username';
         break;
       case 'password':
-        extraProps.autoComplete = 'password';
+        // Use correct autocomplete values based on flow type
+        if (flowType === 'registration') {
+          extraProps.autoComplete = 'new-password';
+        } else if (flowType === 'login') {
+          extraProps.autoComplete = 'current-password';
+        } else {
+          extraProps.autoComplete = 'current-password'; // default fallback
+        }
         break;
     }
 
@@ -252,5 +261,5 @@ interface KratosUIProviderProps extends PropsWithChildren {
 }
 
 export const KratosUIProvider: FC<KratosUIProviderProps> = ({ onBeforeSubmit, children }) => {
-  return <KratosUIContext.Provider value={{ onBeforeSubmit }}>{children}</KratosUIContext.Provider>;
+  return <KratosUIContext value={{ onBeforeSubmit }}>{children}</KratosUIContext>;
 };

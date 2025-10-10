@@ -1,5 +1,4 @@
 import { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 
 export interface MemoModel {
   id: string;
@@ -7,11 +6,7 @@ export interface MemoModel {
   authorization?: {
     myPrivileges?: AuthorizationPrivilege[];
   };
-  profile: {
-    displayName: string;
-    preview?: VisualModel;
-    url?: string;
-  };
+  markdown?: string;
   createdBy?: {
     id: string;
     profile: {

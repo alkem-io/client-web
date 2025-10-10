@@ -41,7 +41,7 @@ export const calloutFilterConfig: FilterConfig = {
 export const contributionFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
-    value: [SearchResultType.Post, SearchResultType.Whiteboard],
+    value: [SearchResultType.Post, SearchResultType.Whiteboard, SearchResultType.Memo],
     typename: 'all',
   },
   post: {
@@ -53,6 +53,12 @@ export const contributionFilterConfig: FilterConfig = {
     title: 'pages.search.filter.key.whiteboard',
     value: [SearchResultType.Whiteboard],
     typename: 'whiteboard',
+    disabled: true, // TODO: Needs server work
+  },
+  memo: {
+    title: 'pages.search.filter.key.memo',
+    value: [SearchResultType.Memo],
+    typename: 'memo',
     disabled: true, // TODO: Needs server work
   },
 };

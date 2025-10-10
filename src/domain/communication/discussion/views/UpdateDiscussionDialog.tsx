@@ -38,8 +38,16 @@ const UpdateDiscussionDialog = ({ open, onClose, discussion }: UpdateDiscussionD
   };
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} fullWidth fullScreen={isSmallScreen}>
-      <DialogHeader onClose={onClose}>{t('pages.forum.new-title')}</DialogHeader>
+    <DialogWithGrid
+      open={open}
+      onClose={onClose}
+      fullWidth
+      fullScreen={isSmallScreen}
+      aria-labelledby="update-discussion-dialog"
+    >
+      <DialogHeader id="update-discussion-dialog" onClose={onClose}>
+        {t('pages.forum.new-title')}
+      </DialogHeader>
       <DialogContent>
         <DiscussionForm onSubmit={handleSubmit} discussion={discussion} categories={[discussion.category]} editMode />
       </DialogContent>

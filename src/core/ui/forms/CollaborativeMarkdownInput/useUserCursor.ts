@@ -26,10 +26,12 @@ const useUserCursor = () => {
   const { userModel } = useCurrentUserContext();
   const userIdFirstChar = userModel?.id[0]?.toLowerCase() ?? '0';
 
+  const userId = userModel?.profile.id;
   const userName = userModel?.profile.displayName ?? t('common.anonymous');
   const cursorColor = colors[userIdFirstChar] ?? colors.default;
 
   return {
+    userId,
     userName,
     cursorColor,
   };

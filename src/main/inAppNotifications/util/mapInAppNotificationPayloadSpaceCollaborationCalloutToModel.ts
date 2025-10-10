@@ -55,7 +55,8 @@ export const mapInAppNotificationPayloadSpaceCollaborationCalloutToModel = (payl
     ) {
       return undefined;
     }
-    const result: InAppNotificationPayloadSpaceCollaborationCalloutModel = {
+
+    return {
       type: payload.type,
       callout: {
         id: calloutData.id,
@@ -80,6 +81,5 @@ export const mapInAppNotificationPayloadSpaceCollaborationCalloutToModel = (payl
         },
       },
     };
-    return result;
   }
 };

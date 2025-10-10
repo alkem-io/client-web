@@ -21,6 +21,7 @@ const PROVIDERS = [
 interface CreateExternalAIDialogProps {
   onClose: () => void;
   onCreateExternal: (externalparams: ExternalVcFormValues) => void;
+  titleId?: string;
 }
 
 export interface ExternalVcFormValues {
@@ -29,7 +30,7 @@ export interface ExternalVcFormValues {
   assistantId?: string;
 }
 
-const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose, onCreateExternal }) => {
+const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose, onCreateExternal, titleId }) => {
   const { t } = useTranslation();
 
   const initialValues: ExternalVcFormValues = {
@@ -63,7 +64,11 @@ const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose
     >
       {({ isValid, handleChange, values }) => (
         <>
-          <DialogHeader title={t('createVirtualContributorWizard.externalAI.create.title')} onClose={onClose} />
+          <DialogHeader
+            id={titleId}
+            title={t('createVirtualContributorWizard.externalAI.create.title')}
+            onClose={onClose}
+          />
           <DialogContent sx={{ paddingTop: 0 }}>
             <Caption alignSelf="center">{t('createVirtualContributorWizard.externalAI.create.subTitle')}</Caption>
 

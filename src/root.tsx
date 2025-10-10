@@ -25,10 +25,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
-import { InAppNotificationSubscriber } from './main/inAppNotifications/inAppNotificationSubscriber';
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
 import { VersionHandling } from './main/versionHandling';
 import { rem } from '@/core/ui/typography/utils';
+import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 
 // MARKDOWN_CLASS_NAME used in the styles below
 const globalStyles = (theme: Theme) => ({
@@ -114,10 +114,10 @@ const Root: FC = () => {
                               <UserProvider>
                                 <PendingMembershipsDialogProvider>
                                   <InAppNotificationsProvider>
-                                    <InAppNotificationSubscriber />
                                     <ApmUserSetter />
                                     <ScrollToTop />
                                     <InAppNotificationsDialog />
+                                    <InAppNotificationCountSubscriber />
                                     <VersionHandling />
                                     <NotFoundErrorBoundary
                                       errorComponent={
