@@ -1,4 +1,4 @@
 // New optimized V2 components with lazy loading
-export { default as SpaceListV2 } from './SpaceListV2';
-export { default as SpaceListItemV2 } from './SpaceListItemV2';
+export { default as SpaceList } from './SpaceList';
+export { default as SpaceListItem } from './SpaceListItem';
 export { default as ManageLicensePlansDialog } from './ManageLicensePlansDialog';

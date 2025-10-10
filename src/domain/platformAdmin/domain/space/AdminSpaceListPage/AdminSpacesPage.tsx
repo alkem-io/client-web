@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import SpaceListV2 from './SpaceListV2';
+import SpaceList from './SpaceList';
 import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
 import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
 
@@ -7,12 +7,12 @@ import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
  * AdminSpacesPageV2 - Optimized version
  * Uses lazy loading for license plan data - only fetched when manage license dialog is opened
  */
-const AdminSpacesPageV2: FC = () => {
+const AdminSpacesPage: FC = () => {
   return (
     <AdminLayout currentTab={AdminSection.Space}>
-      <SpaceListV2 />
+      <SpaceList />
     </AdminLayout>
   );
 };
 
-export default AdminSpacesPageV2;
+export default AdminSpacesPage;

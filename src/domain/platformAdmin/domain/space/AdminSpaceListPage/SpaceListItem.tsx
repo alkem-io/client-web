@@ -34,7 +34,7 @@ interface SpaceListItemV2Props extends ListItemLinkProps, SpacePlatformSettings 
   canUpdate: boolean;
 }
 
-const SpaceListItemV2 = ({ spaceId, nameId, visibility, canUpdate, ...props }: SpaceListItemV2Props) => {
+const SpaceListItem = ({ spaceId, nameId, visibility, canUpdate, ...props }: SpaceListItemV2Props) => {
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
   const [isManageLicensePlansDialogOpen, setIsManageLicensePlansDialogOpen] = useState(false);
 
@@ -156,4 +156,4 @@ const SpaceListItemV2 = ({ spaceId, nameId, visibility, canUpdate, ...props }: S
   );
 };
 
-export default SpaceListItemV2;
+export default SpaceListItem;

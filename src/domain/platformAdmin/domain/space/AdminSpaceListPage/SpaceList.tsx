@@ -11,13 +11,13 @@ import { SearchableTableItem } from '@/domain/platformAdmin/components/Searchabl
 import { AuthorizationPrivilege, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import SpaceListItemV2 from './SpaceListItemV2';
+import SpaceListItem from './SpaceListItem';
 
 /**
  * SpaceListV2 - Optimized version that loads minimal data upfront
  * License plan data is fetched on-demand when the manage license dialog is opened
  */
-export const SpaceListV2: FC = () => {
+export const SpaceList: FC = () => {
   const notify = useNotification();
   const { t } = useTranslation();
 
@@ -66,9 +66,9 @@ export const SpaceListV2: FC = () => {
     <ListPage
       data={spaceList}
       onDelete={spaceList.length > 1 ? handleDelete : undefined}
-      itemViewComponent={SpaceListItemV2}
+      itemViewComponent={SpaceListItem}
     />
   );
 };
 
-export default SpaceListV2;
+export default SpaceList;
