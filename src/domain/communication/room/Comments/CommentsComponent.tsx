@@ -80,7 +80,7 @@ const CommentsComponent = ({
   const internalCommentsContainerRef = useRef<HTMLElement>(null);
   const commentsContainerRef = externalScrollRef || internalCommentsContainerRef;
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
-  const wasScrolledToBottomRef = useRef(true);
+  const wasScrolledToBottomRef = useRef(!externalScrollRef); // If there is an external scroll, assume we don't want to scroll to bottom at first load
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
 
   const handleDeleteComment = (id: string) => (commentsId ? handleDeleteMessage(commentsId, id) : undefined);
