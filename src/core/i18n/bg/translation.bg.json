@@ -2677,16 +2677,7 @@
             "title": "...или потърсете вашата $t(common.community) по-долу",
             "searchSuggestions": "Предложения за търсене:"
           },
-          "suggestionsArray": [
-            "Иновация",
-            "Енергия",
-            "Инклюзивност",
-            "3D",
-            "Общност",
-            "Преход",
-            "SSI",
-            "Поверителност"
-          ]
+          "suggestionsArray": ["Иновация", "Енергия", "Инклюзивност", "3D", "Общност", "Преход", "SSI", "Поверителност"]
         },
         "newMemberships": {
           "title": "Моите покани",
@@ -3439,42 +3430,27 @@
       {
         "key": "energy-transition",
         "name": "Енергийна трансформация",
-        "tags": [
-          "Energy Transition",
-          "Energietransitie"
-        ]
+        "tags": ["Energy Transition", "Energietransitie"]
       },
       {
         "key": "inclusive-society",
         "name": "Инклюзивно общество",
-        "tags": [
-          "Inclusive Society",
-          "Inclusieve Samenleving"
-        ]
+        "tags": ["Inclusive Society", "Inclusieve Samenleving"]
       },
       {
         "key": "public-services",
         "name": "Публични услуги",
-        "tags": [
-          "Public Services",
-          "Publieke Diensten"
-        ]
+        "tags": ["Public Services", "Publieke Diensten"]
       },
       {
         "key": "innovation",
         "name": "Иновация",
-        "tags": [
-          "Innovation",
-          "Innovatie"
-        ]
+        "tags": ["Innovation", "Innovatie"]
       },
       {
         "key": "digitalization-of-society",
         "name": "Дигитализация на обществото",
-        "tags": [
-          "Digitalization of Society",
-          "Digitalisering"
-        ]
+        "tags": ["Digitalization of Society", "Digitalisering"]
       }
     ]
   },
@@ -3555,10 +3531,7 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Безплатен",
         "priceDescription": "За промяна-творци, изследващи Alkemio",
-        "features": [
-          "До 10 $t(common.members)",
-          "Различни инструменти, включително стандартни $t(common.whiteboards)"
-        ],
+        "features": ["До 10 $t(common.members)", "Различни инструменти, включително стандартни $t(common.whiteboards)"],
         "disclaimer": "Безплатните $t(common.spaces) са ограничени до 1 $t(common.space) на потребител",
         "disabledDisclaimer": "Всеки потребител може да има 1 безплатен $t(common.space). Изглежда, че вече сте използвали вашия!"
       },
