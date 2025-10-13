@@ -12,7 +12,7 @@ export const organizationSegmentSchema = yup.object().shape({
   contactEmail: emailValidator({ maxLength: SMALL_TEXT_LENGTH }),
   domain: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
   legalEntityName: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
-  website: urlValidator(SMALL_TEXT_LENGTH),
+  website: urlValidator({ maxLength: SMALL_TEXT_LENGTH }),
   verified: textLengthValidator(),
 });
 
