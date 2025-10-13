@@ -110,7 +110,7 @@ export const UserForm = ({
     phone: yup
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
-    avatar: yup.string(),
+    avatar: textLengthValidator(),
     linkedin: yup
       .string()
       .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.linkedin') })),

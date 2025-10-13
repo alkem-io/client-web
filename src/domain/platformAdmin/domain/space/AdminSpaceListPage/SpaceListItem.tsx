@@ -101,7 +101,7 @@ const SpaceListItem = ({
   );
 
   const validationSchema = yup.object().shape({
-    host: yup.object().shape({ id: yup.string() }).required(t('forms.validations.required')),
+    host: yup.object().shape({ id: textLengthValidator() }).required(t('forms.validations.required')),
     nameId: nameSegmentSchema.fields?.nameID || textLengthValidator({ required: true }),
     visibility: textLengthValidator({ required: true }),
   });

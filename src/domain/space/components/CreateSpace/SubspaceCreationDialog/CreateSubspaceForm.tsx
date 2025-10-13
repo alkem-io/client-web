@@ -82,8 +82,11 @@ export const CreateSubspaceForm = ({
       .required(validationRequiredString),
     tagline: textLengthValidator({ minLength: 3, maxLength: SMALL_TEXT_LENGTH }),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-    tags: yup.array().of(yup.string().min(2)).notRequired(),
-    spaceTemplateId: yup.string().nullable(),
+    tags: yup
+      .array()
+      .of(textLengthValidator({ minLength: 2 }))
+      .notRequired(),
+    spaceTemplateId: textLengthValidator().nullable(),
   });
   const level = SpaceLevel.L1;
 

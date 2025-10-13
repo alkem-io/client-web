@@ -19,6 +19,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { nameOf } from '@/core/utils/nameOf';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export interface InnovationPackFormValues {
   profile: {
@@ -76,13 +77,13 @@ const InnovationPackForm = ({
 
   const validationSchema = yup.object().shape({
     profile: yup.object().shape({
-      displayName: nameSegmentSchema.fields?.displayName ?? yup.string(),
+      displayName: nameSegmentSchema.fields?.displayName ?? textLengthValidator(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       references: referenceSegmentSchema,
       tagsets: tagsetsSegmentSchema,
     }),
     listedInStore: yup.boolean(),
-    searchVisibility: yup.string().required(),
+    searchVisibility: textLengthValidator({ required: true }),
   });
 
   return (

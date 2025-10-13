@@ -48,7 +48,7 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
 
   const validationSchema = yup.object().shape({
     aiService: textLengthValidator({ minLength: 3, maxLength: MID_TEXT_LENGTH, required: true }),
-    sendResponse: yup.string().oneOf([ContactOptions.option1, ContactOptions.option2]).required(),
+    sendResponse: textLengthValidator({ required: true }).oneOf([ContactOptions.option1, ContactOptions.option2]),
   });
 
   const filter: UserFilterInput = { email: SUPPORT_EMAIL };

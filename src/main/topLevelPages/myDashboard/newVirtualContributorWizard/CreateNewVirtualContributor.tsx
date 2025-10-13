@@ -119,7 +119,7 @@ const CreateNewVirtualContributor = ({
       .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
       .required(),
     tagline: textLengthValidator({ maxLength: MID_TEXT_LENGTH }),
-    description: yup.string(),
+    description: textLengthValidator(),
   });
 
   const [source, setSource] = useState<VCSourceOptions>();

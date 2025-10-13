@@ -15,6 +15,7 @@ import { EmptyTagset, TagsetModel } from '../tagset/TagsetModel';
 import { ReferenceModel } from '../reference/ReferenceModel';
 import { ProfileModel } from './ProfileModel';
 import { EmptyLocationMapped, LocationModelMapped } from '../location/LocationModelMapped';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export interface ProfileFormValues {
   displayName: string;
@@ -44,7 +45,7 @@ const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0
 
   const validationSchema = yup.object().shape({
     displayName: nameSegmentSchema.fields.displayName,
-    tagline: spaceAboutSegmentSchema.fields?.tagline || yup.string(),
+    tagline: spaceAboutSegmentSchema.fields?.tagline || textLengthValidator(),
     references: referenceSegmentSchema,
     tagsets: tagsetsSegmentSchema,
   });

@@ -64,7 +64,7 @@ const InnovationHubForm = ({ isNew = false, subdomain, profile, loading, onSubmi
   const validationSchema = yup.object().shape({
     subdomain: subdomainValidator,
     profile: yup.object().shape({
-      displayName: nameSegmentSchema.fields?.displayName ?? yup.string(),
+      displayName: nameSegmentSchema.fields?.displayName ?? textLengthValidator(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       tagline: textLengthValidator({ maxLength: MID_TEXT_LENGTH }),
       tagsets: tagsetsSegmentSchema,

@@ -13,6 +13,7 @@ import { Formik, FormikState } from 'formik';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export interface MessageReceiverChipData {
   id: string;
@@ -67,7 +68,7 @@ export const DirectMessageDialog = ({
   };
 
   const validationSchema = yup.object().shape({
-    message: yup.string().required(t('forms.validations.required')),
+    message: textLengthValidator({ required: true }),
   });
 
   const initialValues: SendMessageData = {
