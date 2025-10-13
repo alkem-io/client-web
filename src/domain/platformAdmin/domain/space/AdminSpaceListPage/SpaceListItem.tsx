@@ -26,6 +26,7 @@ import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { FormikSelectValue } from '@/core/ui/forms/FormikSelect';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export interface SpacePlatformSettings {
   nameId: string;
@@ -101,8 +102,8 @@ const SpaceListItem = ({
 
   const validationSchema = yup.object().shape({
     host: yup.object().shape({ id: yup.string() }).required(t('forms.validations.required')),
-    nameId: nameSegmentSchema.fields?.nameID || yup.string().required(t('forms.validations.required')),
-    visibility: yup.string().required(t('forms.validations.required')),
+    nameId: nameSegmentSchema.fields?.nameID || textLengthValidator({ required: true }),
+    visibility: textLengthValidator({ required: true }),
   });
 
   const [isManageLicensePlansDialogOpen, setIsManageLicensePlansDialogOpen] = useState(false);

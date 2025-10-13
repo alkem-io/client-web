@@ -15,6 +15,7 @@ import { Caption } from '@/core/ui/typography';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 interface FormValues {
   spaceTemplateSelectedId: string;
@@ -58,7 +59,7 @@ const SelectDefaultSpaceTemplateDialog = ({
   };
 
   const validationSchema = yup.object().shape({
-    spaceTemplateSelectedId: yup.string().required(),
+    spaceTemplateSelectedId: textLengthValidator({ required: true }),
   });
 
   const spaceTemplates = useMemo(

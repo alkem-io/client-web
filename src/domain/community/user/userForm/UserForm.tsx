@@ -105,8 +105,8 @@ export const UserForm = ({
     firstName: nameValidator.required(t('forms.validations.requiredField')),
     lastName: nameValidator.required(t('forms.validations.requiredField')),
     email: emailValidator.required(t('forms.validations.required')),
-    gender: yup.string(),
-    city: yup.string(),
+    gender: textLengthValidator(),
+    city: textLengthValidator(),
     phone: yup
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),

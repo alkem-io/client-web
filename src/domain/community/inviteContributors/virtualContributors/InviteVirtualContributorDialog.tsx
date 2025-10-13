@@ -17,6 +17,7 @@ import { useVirtualContributorProfileQuery } from '@/core/apollo/generated/apoll
 import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 type MessageDialogProps = {
   open: boolean;
@@ -59,7 +60,7 @@ const InviteVirtualContributorDialog = ({
   });
 
   const validationSchema = yup.object().shape({
-    message: yup.string(),
+    message: textLengthValidator(),
   });
 
   const initialValues: InviteContributorsData = {

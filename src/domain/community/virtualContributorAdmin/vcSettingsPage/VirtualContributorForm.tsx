@@ -27,6 +27,7 @@ import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { SpaceBodyOfKnowledgeModel } from '../../virtualContributor/model/SpaceBodyOfKnowledgeModel';
 import { nameOf } from '@/core/utils/nameOf';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 type VirtualContributorProps = {
   id: string;
@@ -96,11 +97,11 @@ export const VirtualContributorForm = ({
 
   const validationSchema = yup.object().shape({
     profile: yup.object().shape({
-      displayName: nameSegmentSchema.fields?.displayName ?? yup.string().required(),
-      description: profileSegmentSchema.fields?.description ?? yup.string().required(),
+      displayName: nameSegmentSchema.fields?.displayName ?? textLengthValidator({ required: true }),
+      description: profileSegmentSchema.fields?.description ?? textLengthValidator({ required: true }),
     }),
-    hostDisplayName: yup.string(),
-    subSpaceName: yup.string(),
+    hostDisplayName: textLengthValidator(),
+    subSpaceName: textLengthValidator(),
   });
 
   const getUpdatedTagsets = (updatedTagsets: TagsetModel[]) => {
