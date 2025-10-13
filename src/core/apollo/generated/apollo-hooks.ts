@@ -1723,89 +1723,6 @@ export const ConfigurationFragmentDoc = gql`
     }
   }
 `;
-export const SubspaceVisualsFragmentDoc = gql`
-  fragment SubspaceVisuals on Profile {
-    avatar: visual(type: AVATAR) {
-      ...VisualModel
-    }
-    cardBanner: visual(type: CARD) {
-      ...VisualModel
-    }
-  }
-  ${VisualModelFragmentDoc}
-`;
-export const SpaceAboutLightFragmentDoc = gql`
-  fragment SpaceAboutLight on SpaceAbout {
-    id
-    profile {
-      id
-      displayName
-      url
-      tagline
-      description
-      tagset {
-        id
-        tags
-      }
-      ...SubspaceVisuals
-    }
-    isContentPublic
-    membership {
-      myMembershipStatus
-      myPrivileges
-      communityID
-      roleSetID
-    }
-    guidelines {
-      id
-    }
-  }
-  ${SubspaceVisualsFragmentDoc}
-`;
-export const AdminSpaceFragmentDoc = gql`
-  fragment AdminSpace on Space {
-    id
-    nameID
-    visibility
-    subscriptions {
-      name
-    }
-    about {
-      provider {
-        id
-        profile {
-          id
-          displayName
-        }
-      }
-      ...SpaceAboutLight
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${SpaceAboutLightFragmentDoc}
-`;
-export const AdminSpaceV2FragmentDoc = gql`
-  fragment AdminSpaceV2 on Space {
-    id
-    nameID
-    visibility
-    about {
-      id
-      profile {
-        id
-        displayName
-        url
-      }
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-`;
 export const SpaceAboutCardAvatarFragmentDoc = gql`
   fragment SpaceAboutCardAvatar on SpaceAbout {
     id
@@ -2061,6 +1978,45 @@ export const SpaceInfoFragmentDoc = gql`
     }
   }
   ${SpaceAboutDetailsFragmentDoc}
+`;
+export const SubspaceVisualsFragmentDoc = gql`
+  fragment SubspaceVisuals on Profile {
+    avatar: visual(type: AVATAR) {
+      ...VisualModel
+    }
+    cardBanner: visual(type: CARD) {
+      ...VisualModel
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
+export const SpaceAboutLightFragmentDoc = gql`
+  fragment SpaceAboutLight on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      url
+      tagline
+      description
+      tagset {
+        id
+        tags
+      }
+      ...SubspaceVisuals
+    }
+    isContentPublic
+    membership {
+      myMembershipStatus
+      myPrivileges
+      communityID
+      roleSetID
+    }
+    guidelines {
+      id
+    }
+  }
+  ${SubspaceVisualsFragmentDoc}
 `;
 export const SubspacePageSpaceFragmentDoc = gql`
   fragment SubspacePageSpace on Space {
@@ -16576,11 +16532,24 @@ export const PlatformAdminSpacesListDocument = gql`
   query platformAdminSpacesList {
     platformAdmin {
       spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
-        ...AdminSpace
+        id
+        nameID
+        visibility
+        about {
+          id
+          profile {
+            id
+            displayName
+            url
+          }
+        }
+        authorization {
+          id
+          myPrivileges
+        }
       }
     }
   }
-  ${AdminSpaceFragmentDoc}
 `;
 
 /**
@@ -16645,82 +16614,6 @@ export type PlatformAdminSpacesListQueryResult = Apollo.QueryResult<
 >;
 export function refetchPlatformAdminSpacesListQuery(variables?: SchemaTypes.PlatformAdminSpacesListQueryVariables) {
   return { query: PlatformAdminSpacesListDocument, variables: variables };
-}
-export const PlatformAdminSpacesListV2Document = gql`
-  query platformAdminSpacesListV2 {
-    platformAdmin {
-      spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
-        ...AdminSpaceV2
-      }
-    }
-  }
-  ${AdminSpaceV2FragmentDoc}
-`;
-
-/**
- * __usePlatformAdminSpacesListV2Query__
- *
- * To run a query within a React component, call `usePlatformAdminSpacesListV2Query` and pass it any options that fit your needs.
- * When your component renders, `usePlatformAdminSpacesListV2Query` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePlatformAdminSpacesListV2Query({
- *   variables: {
- *   },
- * });
- */
-export function usePlatformAdminSpacesListV2Query(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.PlatformAdminSpacesListV2Query,
-    SchemaTypes.PlatformAdminSpacesListV2QueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.PlatformAdminSpacesListV2Query,
-    SchemaTypes.PlatformAdminSpacesListV2QueryVariables
-  >(PlatformAdminSpacesListV2Document, options);
-}
-export function usePlatformAdminSpacesListV2LazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PlatformAdminSpacesListV2Query,
-    SchemaTypes.PlatformAdminSpacesListV2QueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.PlatformAdminSpacesListV2Query,
-    SchemaTypes.PlatformAdminSpacesListV2QueryVariables
-  >(PlatformAdminSpacesListV2Document, options);
-}
-export function usePlatformAdminSpacesListV2SuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.PlatformAdminSpacesListV2Query,
-        SchemaTypes.PlatformAdminSpacesListV2QueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.PlatformAdminSpacesListV2Query,
-    SchemaTypes.PlatformAdminSpacesListV2QueryVariables
-  >(PlatformAdminSpacesListV2Document, options);
-}
-export type PlatformAdminSpacesListV2QueryHookResult = ReturnType<typeof usePlatformAdminSpacesListV2Query>;
-export type PlatformAdminSpacesListV2LazyQueryHookResult = ReturnType<typeof usePlatformAdminSpacesListV2LazyQuery>;
-export type PlatformAdminSpacesListV2SuspenseQueryHookResult = ReturnType<
-  typeof usePlatformAdminSpacesListV2SuspenseQuery
->;
-export type PlatformAdminSpacesListV2QueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformAdminSpacesListV2Query,
-  SchemaTypes.PlatformAdminSpacesListV2QueryVariables
->;
-export function refetchPlatformAdminSpacesListV2Query(variables?: SchemaTypes.PlatformAdminSpacesListV2QueryVariables) {
-  return { query: PlatformAdminSpacesListV2Document, variables: variables };
 }
 export const PlatformLicensePlansDocument = gql`
   query PlatformLicensePlans {
