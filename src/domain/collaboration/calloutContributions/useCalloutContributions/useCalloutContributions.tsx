@@ -97,6 +97,8 @@ const useCalloutContributions = ({
       limit: fetchAllEnabled ? undefined : pageSize,
     },
     skip: !inView || !callout?.id || skip,
+    fetchPolicy: 'cache-and-network', // Always check network for updates
+    nextFetchPolicy: 'cache-first', // But subsequent fetches can use cache
   });
 
   const subscription = useCalloutPostCreatedSubscription(data, data => data?.lookup.callout, subscribeToMore, {
@@ -134,11 +136,11 @@ const useCalloutContributions = ({
 
   // Use previousData while loading to avoid losing already shown items when the expanded query fires
   const effectiveData = useMemo(() => {
-    if (fetchAllEnabled && loading) return previousData ?? data;
-    // Also if NOT fetchAllEnabled but loading (refetch) keep previous list
-    if (!fetchAllEnabled && loading) return previousData ?? data;
+    if (loading) {
+      return previousData ?? data;
+    }
     return data;
-  }, [fetchAllEnabled, loading, data, previousData]);
+  }, [loading, data, previousData]);
 
   const items = useMemo(() => {
     const sortedContributions = sortBy(effectiveData?.lookup.callout?.contributions ?? [], 'sortOrder');
@@ -147,7 +149,7 @@ const useCalloutContributions = ({
     } else {
       return sortedContributions.slice(0, pageSize);
     }
-  }, [fetchAllEnabled, returnAllResults, loading, effectiveData, pageSize]);
+  }, [effectiveData, returnAllResults, pageSize]);
 
   const totalContributionsCount =
     (() => {
