@@ -118,13 +118,13 @@ const CommentsComponent = ({
   }, [commentsContainerRef.current]);
 
   const onPostComment = async (comment: string) => {
-    return await postMessage(comment).then(() => {
-      if (externalScrollRef?.current) {
-        setTimeout(() => {
-          scroller.scrollToBottom({ container: externalScrollRef.current });
-        }, 100);
-      }
-    });
+    const result = await postMessage(comment);
+    if (externalScrollRef?.current) {
+      setTimeout(() => {
+        scroller.scrollToBottom({ container: externalScrollRef.current });
+      }, 100);
+    }
+    return result;
   };
 
   const commentReactionsMutations = useCommentReactionsMutations(commentsId);
