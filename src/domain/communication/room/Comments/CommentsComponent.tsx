@@ -52,6 +52,8 @@ const isScrolledToBottom = ({
   scrollHeight,
   containerHeight,
 }: ScrollState & { containerHeight: number }) => {
+  // Due to a bug with the zoom in Chromium based browsers we can not check if scrollTop === (scrollHeight - containerHeight)
+  // This will return true if scrollTop is approximately equal to (scrollHeight - containerHeight), if the comments are scrolled very close to the end
   return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_MISTAKE_TOLERANCE;
 };
 
@@ -77,10 +79,9 @@ const CommentsComponent = ({
 }: CommentsComponentProps) => {
   const { t } = useTranslation();
 
-  const internalCommentsContainerRef = useRef<HTMLElement>(null);
-  const commentsContainerRef = externalScrollRef || internalCommentsContainerRef;
+  const commentsContainerRef = useRef<HTMLElement>(null);
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
-  const wasScrolledToBottomRef = useRef(!externalScrollRef); // If there is an external scroll, assume we don't want to scroll to bottom at first load
+  const wasScrolledToBottomRef = useRef(true);
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
 
   const handleDeleteComment = (id: string) => (commentsId ? handleDeleteMessage(commentsId, id) : undefined);
@@ -92,6 +93,7 @@ const CommentsComponent = ({
 
   useEffect(() => {
     if (commentsContainerRef.current) {
+      console.log('set wasScrolledToBottomRef', isScrolledToBottom({ ...prevScrollTopRef.current, containerHeight }));
       wasScrolledToBottomRef.current = isScrolledToBottom({ ...prevScrollTopRef.current, containerHeight });
 
       prevScrollTopRef.current = {
@@ -132,7 +134,7 @@ const CommentsComponent = ({
         <ScrollerWithGradient
           maxHeight={maxHeight}
           height={height}
-          scrollerRef={internalCommentsContainerRef}
+          scrollerRef={commentsContainerRef}
           margin={0}
         >
           <Gutters gap={0}>
