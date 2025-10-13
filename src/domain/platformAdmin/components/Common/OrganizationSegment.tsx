@@ -9,7 +9,7 @@ import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
 
 export const organizationSegmentSchema = yup.object().shape({
-  contactEmail: emailValidator(SMALL_TEXT_LENGTH),
+  contactEmail: emailValidator({ maxLength: SMALL_TEXT_LENGTH }),
   domain: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
   legalEntityName: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
   website: urlValidator(SMALL_TEXT_LENGTH),

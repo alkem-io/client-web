@@ -104,7 +104,7 @@ export const UserForm = ({
     displayName: displayNameValidator.required(t('forms.validations.required')),
     firstName: nameValidator.required(t('forms.validations.requiredField')),
     lastName: nameValidator.required(t('forms.validations.requiredField')),
-    email: emailValidator.required(t('forms.validations.required')),
+    email: emailValidator({ required: true }),
     gender: textLengthValidator(),
     city: textLengthValidator(),
     phone: yup

@@ -3,42 +3,45 @@ import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/Vali
 import { SMALL_TEXT_LENGTH } from '../field-length.constants';
 
 /**
- * Base email validator without max length
- * Uses a custom test with translated error message instead of yup's built-in .email()
- * to support internationalization
- */
-const baseEmailValidator = yup
-  .string()
-  .test('is-valid-email', TranslatedValidatedMessageWithPayload('forms.validations.invalidEmail'), value => {
-    if (!value) return false;
-
-    // Basic email regex validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(value);
-  });
-
-/**
  * Email validator that ensures emails are valid.
  *
- * Can be used in two ways:
- * 1. As a function with max length: `emailValidator(SMALL_TEXT_LENGTH)`
- * 2. As a base validator to chain: `emailValidator.required()`
- *
  * @param maxLength - Maximum allowed length for the email (default: SMALL_TEXT_LENGTH)
+ * @param required - Whether the field is required (default: false)
  * @returns Yup string schema with email validation
  *
  * @example
- * // With human-readable max length
- * emailValidator(SMALL_TEXT_LENGTH)
+ * // Basic usage
+ * emailValidator()
  *
  * @example
- * // Chain with other validators
- * emailValidator.required()
+ * // With max length
+ * emailValidator({ maxLength: SMALL_TEXT_LENGTH })
+ *
+ * @example
+ * // Required email
+ * emailValidator({ required: true })
+ *
+ * @example
+ * // With both options
+ * emailValidator({ maxLength: MID_TEXT_LENGTH, required: true })
  */
-export const emailValidator = Object.assign(
-  (maxLength: number = SMALL_TEXT_LENGTH) =>
-    baseEmailValidator.max(maxLength, ({ max }) =>
-      TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
-    ),
-  baseEmailValidator
-);
+export const emailValidator = (options?: { maxLength?: number; required?: boolean }) => {
+  const { maxLength = SMALL_TEXT_LENGTH, required = false } = options || {};
+
+  let validator = yup
+    .string()
+    .test('is-valid-email', TranslatedValidatedMessageWithPayload('forms.validations.invalidEmail'), value => {
+      if (!value) return !required; // If not required, empty is valid
+
+      // Basic email regex validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(value);
+    })
+    .max(maxLength, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max }));
+
+  if (required) {
+    validator = validator.required(TranslatedValidatedMessageWithPayload('forms.validations.required'));
+  }
+
+  return validator;
+};
