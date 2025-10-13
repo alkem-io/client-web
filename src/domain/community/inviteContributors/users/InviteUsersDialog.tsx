@@ -59,7 +59,7 @@ const InviteUsersDialog = ({
   const validationSchema = yup.object().shape({
     welcomeMessage: textLengthValidator({ required: true }),
     selectedContributors: SelectedContributorsArraySchema.min(1).required(),
-    extraRoles: yup.array().of(yup.string().oneOf(INVITE_USERS_TO_ROLES)).min(1).required(),
+    extraRoles: yup.array().of(textLengthValidator().oneOf(INVITE_USERS_TO_ROLES)).min(1).required(),
   });
 
   const initialValues: InviteUsersData = {
