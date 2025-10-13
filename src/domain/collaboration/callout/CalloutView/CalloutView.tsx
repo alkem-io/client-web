@@ -33,6 +33,9 @@ import WhiteboardCard from '../../calloutContributions/whiteboard/WhiteboardCard
 import CreateContributionButtonWhiteboard from '../../calloutContributions/whiteboard/CreateContributionButtonWhiteboard';
 import CreateContributionButtonPost from '../../calloutContributions/post/CreateContributionButtonPost';
 import Gutters from '@/core/ui/grid/Gutters';
+import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import useNavigate from '@/core/routing/useNavigate';
+import { AnyContribution } from '../../calloutContributions/interfaces/AnyContributionType';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>
@@ -69,6 +72,8 @@ const CalloutView = ({
 }: CalloutViewProps) => {
   const { space } = useSpace();
   const { subspace } = useSubSpace();
+  const navigate = useNavigate();
+  const contributionPreviewRef = useRef<HTMLElement>(null);
   const scrollerRef = useRef<HTMLElement>(null);
 
   const myMembershipStatus =
@@ -80,6 +85,21 @@ const CalloutView = ({
   if (!callout || loading) {
     return <CalloutViewSkeleton />;
   }
+
+  const handleClickOnContribution = (contribution: AnyContribution) => {
+    if (expanded && contributionPreviewRef.current) {
+      contributionPreviewRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    const state: LocationStateCachedCallout = {
+      [LocationStateKeyCachedCallout]: callout,
+      keepScroll: true,
+    };
+    // TODO: When contribution.type is available, use it to decide which url to use
+    const url = contribution.whiteboard?.profile.url ?? contribution.post?.profile.url;
+    if (url) {
+      navigate(url, { state });
+    }
+  };
 
   return (
     <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
@@ -120,6 +140,7 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
+                  ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewWhiteboard}
@@ -135,7 +156,7 @@ const CalloutView = ({
                   contributionType={CalloutContributionType.Whiteboard}
                   contributionSelectedId={contributionId}
                   cardComponent={WhiteboardCard}
-                  getContributionUrl={contribution => contribution.whiteboard?.profile.url}
+                  onClickOnContribution={handleClickOnContribution}
                 />
               )}
               {/* else show the expandable container with the cards */}
@@ -150,7 +171,7 @@ const CalloutView = ({
                   onCalloutUpdate={onCalloutUpdate}
                   contributionCardComponent={WhiteboardCard}
                   createContributionButtonComponent={CreateContributionButtonWhiteboard}
-                  getContributionUrl={contribution => contribution.whiteboard?.profile.url}
+                  onClickOnContribution={handleClickOnContribution}
                 />
               )}
             </>
@@ -162,6 +183,7 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
+                  ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewPost}
@@ -176,7 +198,7 @@ const CalloutView = ({
                   contributionType={CalloutContributionType.Post}
                   contributionSelectedId={contributionId}
                   cardComponent={PostCard}
-                  getContributionUrl={contribution => contribution.post?.profile.url}
+                  onClickOnContribution={handleClickOnContribution}
                 />
               )}
               {/* else show the expandable container with the cards */}
@@ -190,7 +212,7 @@ const CalloutView = ({
                   onCalloutUpdate={onCalloutUpdate}
                   contributionCardComponent={PostCard}
                   createContributionButtonComponent={CreateContributionButtonPost}
-                  getContributionUrl={contribution => contribution.post?.profile.url}
+                  onClickOnContribution={handleClickOnContribution}
                 />
               )}
             </>

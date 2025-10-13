@@ -91,12 +91,6 @@ const CommentsComponent = ({
   });
 
   useEffect(() => {
-    console.log('CommentsComponent uE', {
-      containerHeight,
-      internal: internalCommentsContainerRef.current,
-      external: externalScrollRef?.current,
-      decided: commentsContainerRef.current,
-    });
     if (commentsContainerRef.current) {
       wasScrolledToBottomRef.current = isScrolledToBottom({ ...prevScrollTopRef.current, containerHeight });
 
