@@ -1,5 +1,4 @@
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
-import useNavigate from '@/core/routing/useNavigate';
 import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -7,7 +6,6 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import Loading from '@/core/ui/loading/Loading';
 import { times } from 'lodash';
 import { ComponentType, useEffect, useState } from 'react';
-import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import { AnyContribution } from '../interfaces/AnyContributionType';
 import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
@@ -19,7 +17,7 @@ interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
   contributionType: CalloutContributionType;
   contributionCardComponent: ComponentType<CalloutContributionCardComponentProps>;
   createContributionButtonComponent: ComponentType<CalloutContributionCreateButtonProps>;
-  getContributionUrl: (contribution: AnyContribution) => string | undefined;
+  onClickOnContribution: (contribution: AnyContribution) => void;
 }
 
 const NON_EXPANDED_PAGE_SIZE = 4;
@@ -30,16 +28,15 @@ const ContributionsCardsExpandable = ({
   contributionType,
   contributionCardComponent: Card,
   createContributionButtonComponent: CreateContributionButton,
-  getContributionUrl,
+  onClickOnContribution,
   loading: loadingCallout,
-  expanded: calloutDialogExpanded,
+  expanded: calloutExpanded,
   onCalloutUpdate,
 }: ContributionsCardsExpandableProps) => {
   const { isSmallScreen, isMediumSmallScreen } = useScreenSize();
-  const navigate = useNavigate();
-  const [isCalloutCollapsed, setIsCalloutCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
-  const pageSize = calloutDialogExpanded ? EXPANDED_PAGE_SIZE : NON_EXPANDED_PAGE_SIZE;
+  const pageSize = calloutExpanded ? EXPANDED_PAGE_SIZE : NON_EXPANDED_PAGE_SIZE;
 
   const {
     inViewRef,
@@ -59,28 +56,17 @@ const ContributionsCardsExpandable = ({
   //  - Callout expanded means the whole Callout is expanded to a dialog.
   //  - This component's expanded means showing all contributions, not just the first 4.
   useEffect(() => {
-    if (calloutDialogExpanded && hasMore) {
+    if (calloutExpanded && hasMore) {
       setFetchAll(true);
     } else {
-      setFetchAll(!isCalloutCollapsed);
+      setFetchAll(!isCollapsed);
     }
-  }, [calloutDialogExpanded, hasMore, setFetchAll, isCalloutCollapsed]);
-
-  const handleClickOnContribution = (contribution: AnyContribution) => {
-    const state: LocationStateCachedCallout = {
-      [LocationStateKeyCachedCallout]: callout,
-      keepScroll: true,
-    };
-    const url = getContributionUrl(contribution);
-    if (url) {
-      navigate(url, { state });
-    }
-  };
+  }, [calloutExpanded, hasMore, setFetchAll, isCollapsed]);
 
   const gridColumns = (() => {
     if (isSmallScreen) return 3;
     if (isMediumSmallScreen) return 6;
-    if (calloutDialogExpanded) return 10;
+    if (calloutExpanded) return 10;
     return 12;
   })();
 
@@ -92,21 +78,21 @@ const ContributionsCardsExpandable = ({
             <Card
               key={contribution.id}
               callout={callout}
-              columns={calloutDialogExpanded ? 2 : 3}
+              columns={calloutExpanded ? 2 : 3}
               contribution={contribution}
-              onClick={() => handleClickOnContribution(contribution)}
+              onClick={() => onClickOnContribution(contribution)}
             />
           ))}
           {loadingContributions &&
-            times(pageSize, index => <ContributeCardSkeleton key={index} columns={calloutDialogExpanded ? 2 : 3} />)}
+            times(pageSize, index => <ContributeCardSkeleton key={index} columns={calloutExpanded ? 2 : 3} />)}
         </Gutters>
       </GridProvider>
       <Gutters display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">
         <PaginationExpander
-          onClick={() => setIsCalloutCollapsed(!isCalloutCollapsed)}
+          onClick={() => setIsCollapsed(!isCollapsed)}
           totalContributions={totalContributions}
           pageSize={pageSize}
-          isCollapsed={isCalloutCollapsed}
+          isCollapsed={isCollapsed}
           hasMore={hasMore}
         />
         {loadingCallout && <Loading />}
