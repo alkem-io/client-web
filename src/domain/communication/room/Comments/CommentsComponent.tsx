@@ -29,7 +29,7 @@ export interface CommentsComponentProps {
   isMember?: boolean;
   canAddReaction: boolean;
   canDeleteMessage: (authorId: string | undefined) => boolean;
-  postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
+  postMessage: (message: string) => Promise<FetchResult<unknown>>;
   postReply: (reply: { messageText: string; threadId: string }) => void;
   handleDeleteMessage: (commentsId: string, messageId: string) => void;
   maxHeight?: BoxProps['maxHeight'];
@@ -93,7 +93,6 @@ const CommentsComponent = ({
 
   useEffect(() => {
     if (commentsContainerRef.current) {
-      console.log('set wasScrolledToBottomRef', isScrolledToBottom({ ...prevScrollTopRef.current, containerHeight }));
       wasScrolledToBottomRef.current = isScrolledToBottom({ ...prevScrollTopRef.current, containerHeight });
 
       prevScrollTopRef.current = {
@@ -118,6 +117,16 @@ const CommentsComponent = ({
     };
   }, [commentsContainerRef.current]);
 
+  const onPostComment = async (comment: string) => {
+    return await postMessage(comment).then(() => {
+      if (externalScrollRef?.current) {
+        setTimeout(() => {
+          scroller.scrollToBottom({ container: externalScrollRef.current });
+        }, 100);
+      }
+    });
+  };
+
   const commentReactionsMutations = useCommentReactionsMutations(commentsId);
 
   const handleScroll = () => {
@@ -131,12 +140,7 @@ const CommentsComponent = ({
   return (
     <>
       {!isShowingLastMessage && hasMessages && (
-        <ScrollerWithGradient
-          maxHeight={maxHeight}
-          height={height}
-          scrollerRef={commentsContainerRef}
-          margin={0}
-        >
+        <ScrollerWithGradient maxHeight={maxHeight} height={height} scrollerRef={commentsContainerRef} margin={0}>
           <Gutters gap={0}>
             <MessagesThread
               messages={messages}
@@ -174,7 +178,7 @@ const CommentsComponent = ({
       {canPostMessages && (
         <PostMessageToCommentsForm
           placeholder={t('pages.post.dashboard.comment.placeholder')}
-          onPostComment={postMessage}
+          onPostComment={onPostComment}
           disabled={loading}
           padding={gutters()}
           paddingBottom={0}
