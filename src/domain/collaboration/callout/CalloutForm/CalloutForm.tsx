@@ -37,7 +37,7 @@ export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 export const calloutValidationSchema = yup.object().shape({
   framing: yup.object().shape({
     profile: yup.object().shape({
-      id: yup.string().optional(),
+      id: textLengthValidator(),
       displayName: displayNameValidator.required(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
       tagsets: tagsetsSegmentSchema,
@@ -69,7 +69,7 @@ export const calloutValidationSchema = yup.object().shape({
   contributionDefaults: yup.object().shape({
     defaultDisplayName: displayNameValidator.optional().nullable(),
     postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
-    whiteboardContent: yup.string().nullable(),
+    whiteboardContent: textLengthValidator().nullable(),
   }),
   contributions: yup.object().shape({
     links: referenceSegmentSchema.nullable(),

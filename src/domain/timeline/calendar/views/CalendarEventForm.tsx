@@ -1,7 +1,6 @@
-import React, { ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
 import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
 import { CalendarEventFormData } from '../CalendarEventsContainer';
 import { CalendarEventType } from '@/core/apollo/generated/graphql-schema';
@@ -14,6 +13,7 @@ import { isSameDay } from '@/core/utils/time/utils';
 import EventForm from './EventForm/EventForm';
 import { FormikSelectValue } from '@/core/ui/forms/FormikSelect';
 import GridProvider from '@/core/ui/grid/GridProvider';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const DEFAULT_DURATION_MINUTES = 30;
 
@@ -45,8 +45,6 @@ const CalendarEventForm = ({
   temporaryLocation = false,
   isSubspace = false,
 }: CalendarEventFormProps) => {
-  const { t } = useTranslation();
-
   const handleSubmit = (formValues: Partial<CalendarEventFormData>) => {
     onSubmit(formValues as CalendarEventFormData);
   };
@@ -111,7 +109,7 @@ const CalendarEventForm = ({
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator.required(),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-    type: yup.string().required(t('common.field-required')),
+    type: textLengthValidator({ required: true }),
     visibleOnParentCalendar: yup.boolean().required(),
     durationMinutes: yup
       .number()

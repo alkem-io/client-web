@@ -13,7 +13,7 @@ import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidat
 
 const commonProfileValidationProps = {
   displayName: displayNameValidator.required(),
-  avatar: yup.string().max(MID_TEXT_LENGTH),
+  avatar: textLengthValidator({ maxLength: MID_TEXT_LENGTH }),
   description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   tagline: textLengthValidator({ maxLength: ALT_TEXT_LENGTH }).nullable(),
 };
