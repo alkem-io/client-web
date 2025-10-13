@@ -26,6 +26,8 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { nameValidator } from '@/core/ui/forms/validator/nameValidator';
+import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const referenceSegmentWithSocialSchema = yup.array().of(
   referenceSegmentValidationObject.shape({
@@ -102,7 +104,7 @@ export const UserForm = ({
     displayName: displayNameValidator.required(t('forms.validations.required')),
     firstName: nameValidator.required(t('forms.validations.requiredField')),
     lastName: nameValidator.required(t('forms.validations.requiredField')),
-    email: yup.string().email('Email is not valid').required(t('forms.validations.required')),
+    email: emailValidator.required(t('forms.validations.required')),
     gender: yup.string(),
     city: yup.string(),
     phone: yup
@@ -121,7 +123,7 @@ export const UserForm = ({
     tagsets: tagsetsSegmentSchema,
     references: referenceSegmentWithSocialSchema,
     bio: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-    tagline: yup.string().max(ALT_TEXT_LENGTH),
+    tagline: textLengthValidator({ maxLength: ALT_TEXT_LENGTH }),
   });
 
   /**

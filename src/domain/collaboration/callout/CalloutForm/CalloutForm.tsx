@@ -4,7 +4,7 @@ import {
   CalloutFramingType,
   CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -30,7 +30,7 @@ import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
@@ -54,15 +54,11 @@ export const calloutValidationSchema = yup.object().shape({
       return type === CalloutFramingType.Link
         ? schema
             .shape({
-              uri: urlValidator
-                .max(MID_TEXT_LENGTH, ({ max }) =>
-                  TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
-                )
-                .required(),
+              uri: urlValidator.required(),
               profile: yup
                 .object()
                 .shape({
-                  displayName: yup.string().required(),
+                  displayName: textLengthValidator({ required: true }),
                 })
                 .required(),
             })

@@ -28,6 +28,8 @@ import {
   VirtualContributorBodyOfKnowledgeType,
 } from '@/core/apollo/generated/graphql-schema';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 type CreateNewVirtualContributorProps = {
   onClose: () => void;
@@ -116,7 +118,7 @@ const CreateNewVirtualContributor = ({
       .trim()
       .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
       .required(),
-    tagline: yup.string(),
+    tagline: textLengthValidator({ maxLength: MID_TEXT_LENGTH }),
     description: yup.string(),
   });
 

@@ -9,12 +9,13 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { referenceSegmentValidationObject } from './ReferenceSegment';
 import { socialNames } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const commonProfileValidationProps = {
   displayName: displayNameValidator.required(),
   avatar: yup.string().max(MID_TEXT_LENGTH),
   description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-  tagline: yup.string().nullable().max(ALT_TEXT_LENGTH),
+  tagline: textLengthValidator({ maxLength: ALT_TEXT_LENGTH }).nullable(),
 };
 
 export const profileSegmentSchema = yup.object().shape({
