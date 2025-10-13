@@ -14,7 +14,7 @@ import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 
 interface SubspaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconComponent' | 'expansion'> {
   spaceId?: string;
-  tagline?: string;
+  tagline?: string | null;
   displayName: string;
   vision: string;
   member?: boolean;

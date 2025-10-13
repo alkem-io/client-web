@@ -881,10 +881,10 @@
     "contributions": {
       "contributionsCount_one": "{{count}} Contribution",
       "contributionsCount_other": "{{count}} Contributions",
-      "contributionsItemsCount_one": "{{count}} item in this collection",
-      "contributionsItemsCount_other": "{{count}} items in this collection",
-      "contributionsItemsCountExpand": "{{count}} items in this collection, <click>click here</click> to see all",
-      "contributionsCollapse": "{{count}} items in this collection, <click>click here</click> to hide some",
+      "contributionsItemsCount_one": "{{count}} item in this $t(common.collection)",
+      "contributionsItemsCount_other": "{{count}} items in this $t(common.collection)",
+      "contributionsItemsCountExpand": "{{count}} items in this $t(common.collection), <click>click here</click> to see all",
+      "contributionsCollapse": "{{count}} items in this $t(common.collection), <click>click here</click> to hide some",
       "noContributions": "No contributions yet, be the first to contribute!"
     },
     "draftNotice": "DRAFT - Only visible for $t(common.admins)",
