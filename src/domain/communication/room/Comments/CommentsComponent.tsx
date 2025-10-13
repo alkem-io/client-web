@@ -129,7 +129,12 @@ const CommentsComponent = ({
   return (
     <>
       {!isShowingLastMessage && hasMessages && (
-        <ScrollerWithGradient maxHeight={maxHeight} height={height} scrollerRef={commentsContainerRef} margin={0}>
+        <ScrollerWithGradient
+          maxHeight={maxHeight}
+          height={height}
+          scrollerRef={internalCommentsContainerRef}
+          margin={0}
+        >
           <Gutters gap={0}>
             <MessagesThread
               messages={messages}
