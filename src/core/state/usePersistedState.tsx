@@ -20,14 +20,17 @@ const usePersistedState = <T,>(
 
   const handleChangeState = (value: T | ((currentValue: T) => T)) => {
     try {
-      let newValue: T;
       if (typeof value === 'function') {
-        newValue = (value as (currentValue: T) => T)(state);
+        // Use React's functional update to get the current state
+        setState(currentState => {
+          const newValue = (value as (currentValue: T) => T)(currentState);
+          localStorage.setItem(localStorageKey, JSON.stringify(newValue));
+          return newValue;
+        });
       } else {
-        newValue = value;
+        setState(value);
+        localStorage.setItem(localStorageKey, JSON.stringify(value));
       }
-      setState(newValue);
-      localStorage.setItem(localStorageKey, JSON.stringify(newValue));
     } catch {
       // Ignore write errors
     }
