@@ -36,44 +36,58 @@ textLengthValidator({ maxLength: SMALL_TEXT_LENGTH, required: true });
 
 Validates URLs and optionally enforces max length with human-readable messages.
 
-Can be used in two ways:
+#### Options
 
-1. **As a function** with max length: `urlValidator(MID_TEXT_LENGTH)`
-2. **As a chainable validator**: `urlValidator.max(...).required()`
+```typescript
+interface UrlValidatorOptions {
+  maxLength?: number; // Maximum allowed length (default: MID_TEXT_LENGTH)
+  required?: boolean; // Whether the field is required (default: false)
+}
+```
 
 #### Examples
 
 ```typescript
-// Simple usage with human-readable max length
-website: urlValidator(MID_TEXT_LENGTH);
+// Basic usage (optional URL)
+website: urlValidator();
 
-// Backward compatible - chain with other validators
-uri: urlValidator.max(512).required();
+// With max length
+website: urlValidator({ maxLength: MID_TEXT_LENGTH });
 
-// With default max length (MID_TEXT_LENGTH)
-link: urlValidator();
+// Required URL
+uri: urlValidator({ required: true });
+
+// With both options
+link: urlValidator({ maxLength: SMALL_TEXT_LENGTH, required: true });
 ```
 
 ### `emailValidator`
 
 Validates email addresses and optionally enforces max length with human-readable messages.
 
-Can be used in two ways:
+#### Options
 
-1. **As a function** with max length: `emailValidator(SMALL_TEXT_LENGTH)`
-2. **As a chainable validator**: `emailValidator.required()`
+```typescript
+interface EmailValidatorOptions {
+  maxLength?: number; // Maximum allowed length (default: SMALL_TEXT_LENGTH)
+  required?: boolean; // Whether the field is required (default: false)
+}
+```
 
 #### Examples
 
 ```typescript
-// Simple usage with human-readable max length
-contactEmail: emailValidator(SMALL_TEXT_LENGTH);
+// Basic usage (optional email)
+contactEmail: emailValidator();
 
-// Backward compatible - chain with other validators
-email: emailValidator.required();
+// With max length
+email: emailValidator({ maxLength: SMALL_TEXT_LENGTH });
 
-// With default max length (SMALL_TEXT_LENGTH)
-userEmail: emailValidator();
+// Required email
+userEmail: emailValidator({ required: true });
+
+// With both options
+primaryEmail: emailValidator({ maxLength: MID_TEXT_LENGTH, required: true });
 ```
 
 ## Complete Example
@@ -86,21 +100,22 @@ import { SMALL_TEXT_LENGTH, MID_TEXT_LENGTH } from '@/core/ui/forms/field-length
 
 export const organizationSchema = yup.object().shape({
   // Email with max length
-  contactEmail: emailValidator(SMALL_TEXT_LENGTH),
+  contactEmail: emailValidator({ maxLength: SMALL_TEXT_LENGTH }),
 
   // Simple text fields
   domain: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
   legalEntityName: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
 
   // URL with max length
-  website: urlValidator(MID_TEXT_LENGTH),
+  website: urlValidator({ maxLength: MID_TEXT_LENGTH }),
 
-  // Display name with minimum
+  // Display name with minimum and required
   displayName: textLengthValidator({
     minLength: 3,
     maxLength: SMALL_TEXT_LENGTH,
+    required: true,
     allowOnlySpaces: false,
-  }).required(),
+  }),
 });
 ```
 
