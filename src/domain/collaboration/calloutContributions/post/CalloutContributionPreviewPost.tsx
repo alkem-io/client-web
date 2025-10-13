@@ -18,14 +18,11 @@ import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import { Tooltip } from '@mui/material';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import References from '@/domain/shared/components/References/References';
-import usePersistedState from '@/core/state/usePersistedState';
 
 interface CalloutContributionPreviewPostProps extends CalloutContributionPreviewComponentProps {}
 
 const MIN_HEIGHT_DESCRIPTION_GUTTERS = 15; // Minimum height when the description is very short, if long it will grow and expand the entire dialog
 const MAX_HEIGHT_COMMENTS_DESCRIPTION_IS_SHORT = MIN_HEIGHT_DESCRIPTION_GUTTERS * GUTTER_PX; // Maximum height for comments when the description is very short, if description is long comments will grow together with them
-
-const COMMENTS_EXPANDED_LOCALSTORAGE_KEY = 'postContributionsCommentsExpanded';
 
 const ResponsiveConfiguration: Record<
   number, // key: Number of columns available
@@ -121,7 +118,7 @@ const CalloutContributionPreviewPost = ({
   const responsiveConfig = ResponsiveConfiguration[columns] || ResponsiveConfiguration[12];
 
   // Initialize state from localStorage
-  const [commentsExpanded, setCommentsExpanded] = usePersistedState(COMMENTS_EXPANDED_LOCALSTORAGE_KEY, false);
+  const [commentsExpanded, setCommentsExpanded] = useState(false);
   const toggleCommentsExpanded = () => setCommentsExpanded(expanded => !expanded);
 
   const postContentRef = useRef<HTMLDivElement>(null);
