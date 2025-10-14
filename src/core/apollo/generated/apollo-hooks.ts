@@ -13767,6 +13767,39 @@ export const AiPersonaDocument = gql`
           assistantId
           model
         }
+        promptGraph {
+          start
+          end
+          edges {
+            from
+            to
+          }
+          state {
+            title
+            type
+            properties {
+              description
+              name
+              type
+              optional
+            }
+          }
+          nodes {
+            input_variables
+            name
+            prompt
+            output {
+              title
+              type
+              properties {
+                description
+                name
+                type
+                optional
+              }
+            }
+          }
+        }
       }
     }
   }
