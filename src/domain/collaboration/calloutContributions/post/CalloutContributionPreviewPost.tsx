@@ -117,6 +117,7 @@ const CalloutContributionPreviewPost = ({
   const columns = useColumns();
   const responsiveConfig = ResponsiveConfiguration[columns] || ResponsiveConfiguration[12];
 
+  // Initialize state from localStorage
   const [commentsExpanded, setCommentsExpanded] = useState(false);
   const toggleCommentsExpanded = () => setCommentsExpanded(expanded => !expanded);
 
