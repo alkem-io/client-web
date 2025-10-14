@@ -54,7 +54,7 @@ export const calloutValidationSchema = yup.object().shape({
       return type === CalloutFramingType.Link
         ? schema
             .shape({
-              uri: urlValidator.required(),
+              uri: urlValidator({ required: true }),
               profile: yup
                 .object()
                 .shape({

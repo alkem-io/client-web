@@ -2,6 +2,11 @@ import * as yup from 'yup';
 import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MID_TEXT_LENGTH } from '../field-length.constants';
 
+interface UrlValidatorOptions {
+  maxLength?: number;
+  required?: boolean;
+}
+
 /**
  * URL validator that ensures URLs are valid.
  *
@@ -26,9 +31,7 @@ import { MID_TEXT_LENGTH } from '../field-length.constants';
  * // With both options
  * urlValidator({ maxLength: SMALL_TEXT_LENGTH, required: true })
  */
-export const urlValidator = (options?: { maxLength?: number; required?: boolean }) => {
-  const { maxLength = MID_TEXT_LENGTH, required = false } = options || {};
-
+export const urlValidator = ({ maxLength = MID_TEXT_LENGTH, required = false }: UrlValidatorOptions = {}) => {
   let validator = yup
     .string()
     .test('is-valid-url', TranslatedValidatedMessageWithPayload('forms.validations.invalidUrl'), value => {
