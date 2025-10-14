@@ -71,7 +71,10 @@ const CalloutContributionPreviewPost = ({
   const [commentsExpanded, setCommentsExpanded] = usePersistedState(COMMENTS_EXPANDED_LOCALSTORAGE_KEY, false);
   const toggleCommentsExpanded = () => setCommentsExpanded(expanded => !expanded);
 
-  const { ref: postContentRef, height: postContentHeight } = useResizeDetector();
+  const { ref: postContentRef, height: postContentHeight } = useResizeDetector({
+    refreshMode: 'debounce',
+    refreshRate: 100,
+  });
 
   // Calculate max height for comments (minimum gutters(10), or postContentHeight if higher)
   const commentsMaxHeight = useMemo(() => {
