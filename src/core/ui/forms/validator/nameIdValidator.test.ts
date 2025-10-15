@@ -79,12 +79,12 @@ describe('nameIdValidator', () => {
   });
 
   describe('maxLength validation (NAMEID_MAX_LENGTH)', () => {
-    test('rejects nameIds longer than NAMEID_MAX_LENGTH (25)', async () => {
+    test('rejects nameIds longer than NAMEID_MAX_LENGTH', async () => {
       const longNameId = 'a'.repeat(NAMEID_MAX_LENGTH + 1);
       await expect(nameIdValidator.validate(longNameId)).rejects.toThrow();
     });
 
-    test('accepts nameIds equal to NAMEID_MAX_LENGTH (25)', async () => {
+    test('accepts nameIds equal to NAMEID_MAX_LENGTH', async () => {
       const maxLengthNameId = 'a'.repeat(NAMEID_MAX_LENGTH);
       await expect(nameIdValidator.validate(maxLengthNameId)).resolves.toBe(maxLengthNameId);
     });
