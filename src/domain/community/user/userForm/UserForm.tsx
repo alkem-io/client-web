@@ -101,7 +101,7 @@ export const UserForm = ({
   };
 
   const validationSchema = yup.object().shape({
-    displayName: displayNameValidator.required(t('forms.validations.required')),
+    displayName: displayNameValidator({ required: true }),
     firstName: nameValidator.required(t('forms.validations.requiredField')),
     lastName: nameValidator.required(t('forms.validations.requiredField')),
     email: emailValidator({ required: true }),

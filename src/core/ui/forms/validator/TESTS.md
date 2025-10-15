@@ -63,10 +63,11 @@ Tests display name validation (built on textLengthValidator).
 - ✅ MinLength validation (3 characters)
 - ✅ MaxLength validation (SMALL_TEXT_LENGTH = 128)
 - ✅ AllowOnlySpaces validation (false)
+- ✅ Required flag support (new: validator now accepts `{ required: true }` option)
 - ✅ Edge cases (special chars, numbers, unicode, emojis)
 - ✅ Validation errors
 
-**Test Count:** ~15 tests
+**Test Count:** ~20 tests (increased from ~15 after adding required flag scenarios)
 
 ### 5. `nameValidator.test.ts`
 
@@ -149,7 +150,7 @@ npm test -- --coverage validator
 ## Coverage Summary
 
 **Total Test Files:** 8
-**Total Tests:** ~160 tests
+**Total Tests:** ~165 tests
 **Validators Covered:** 8/8 (100%)
 
 ### Validators Tested:

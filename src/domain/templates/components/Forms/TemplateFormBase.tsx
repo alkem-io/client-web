@@ -74,8 +74,8 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
 
   const validationSchema = yup.object().shape({
     profile: yup.object().shape({
-      displayName: displayNameValidator.required(),
-      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
+      displayName: displayNameValidator({ required: true }),
+      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH, { required: true }),
       tagsets: yup.array().of(
         yup.object().shape({
           tags: yup.array().of(textLengthValidator({ minLength: 2 })),

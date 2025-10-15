@@ -107,7 +107,7 @@ const CalendarEventForm = ({
   };
 
   const validationSchema = yup.object().shape({
-    displayName: displayNameValidator.required(),
+    displayName: displayNameValidator({ required: true }),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     type: textLengthValidator({ required: true }),
     visibleOnParentCalendar: yup.boolean().required(),

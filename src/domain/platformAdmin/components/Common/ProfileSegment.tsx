@@ -12,7 +12,7 @@ import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValid
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const commonProfileValidationProps = {
-  displayName: displayNameValidator.required(),
+  displayName: displayNameValidator({ required: true }),
   avatar: textLengthValidator({ maxLength: MID_TEXT_LENGTH }),
   description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   tagline: textLengthValidator({ maxLength: ALT_TEXT_LENGTH }).nullable(),

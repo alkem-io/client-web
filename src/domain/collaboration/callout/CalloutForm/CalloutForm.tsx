@@ -38,7 +38,7 @@ export const calloutValidationSchema = yup.object().shape({
   framing: yup.object().shape({
     profile: yup.object().shape({
       id: textLengthValidator(),
-      displayName: displayNameValidator.required(),
+      displayName: displayNameValidator({ required: true }),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
       tagsets: tagsetsSegmentSchema,
       references: referenceSegmentSchema,
@@ -67,7 +67,7 @@ export const calloutValidationSchema = yup.object().shape({
     }),
   }),
   contributionDefaults: yup.object().shape({
-    defaultDisplayName: displayNameValidator.optional().nullable(),
+    defaultDisplayName: displayNameValidator().optional().nullable(),
     postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
     whiteboardContent: textLengthValidator().nullable(),
   }),

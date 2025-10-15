@@ -38,7 +38,7 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
   const validationSchema = yup.object().shape({
     title: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH, required: true }),
     category: textLengthValidator({ required: true }).nullable(),
-    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(t('forms.validations.required')),
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH, { required: true }).trim(),
   });
 
   const discussionCategories = useMemo(

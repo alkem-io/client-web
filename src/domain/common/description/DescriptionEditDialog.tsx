@@ -34,7 +34,7 @@ export const DescriptionEditDialog = ({ description, onUpdate, onClose }: Descri
   const [onSave, loading] = useLoadingState(async (values: KnowledgeBaseProfileType) => onUpdate(values));
 
   const validationSchema = yup.object().shape({
-    description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH).required(),
+    description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH, { required: true }),
   });
 
   return (
