@@ -27,8 +27,7 @@ import { useInAppNotificationsContext } from '../InAppNotificationsContext';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { InAppNotificationModel } from '../model/InAppNotificationModel';
-
-const MAX_LENGTH_COMMENT = 150; // 150 characters
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 interface InAppNotificationBaseViewProps {
   notification: InAppNotificationModel;
@@ -53,6 +52,7 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
   const { t } = useTranslation();
   const { updateNotificationState } = useInAppNotifications();
   const { setIsOpen } = useInAppNotificationsContext();
+  const { isMediumSmallScreen: isMobile } = useScreenSize();
 
   const onNotificationClick = useCallback(() => {
     if (state === NotificationEventInAppState.Unread) {
@@ -121,25 +121,31 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
     [values]
   );
 
-  const getTruncatedComment = (comment: string | undefined = '') => {
-    if (comment.length <= MAX_LENGTH_COMMENT) {
-      return comment;
-    }
-
-    return `${comment.slice(0, MAX_LENGTH_COMMENT)}...`;
-  };
-
   const renderComments = useCallback(() => {
     if (values.comment) {
       return (
-        <WrapperMarkdown disableParagraphPadding caption>
-          {getTruncatedComment(values.comment)}
+        <WrapperMarkdown
+          disableParagraphPadding
+          caption
+          sx={{
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            wordBreak: 'break-word',
+            ...(isMobile && {
+              WebkitLineClamp: 1,
+            }),
+          }}
+        >
+          {values.comment}
         </WrapperMarkdown>
       );
     }
 
     return null;
-  }, [values]);
+  }, [values, isMobile]);
 
   const isUnread = state === NotificationEventInAppState.Unread;
 
@@ -149,7 +155,7 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
         component={Wrapper}
         to={url}
         onClick={onNotificationClick}
-        paddingLeft={gutters(2)}
+        paddingLeft={isMobile ? gutters(0.5) : gutters(2)}
         paddingY={gutters(0.5)}
         sx={{
           borderRadius: 0,
@@ -169,14 +175,14 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
         }
       >
         <Gutters row disablePadding>
-          <Gutters column flexGrow={1} disableGap justifyContent={'center'}>
+          <Gutters column flexGrow={1} disablePadding disableGap justifyContent={'center'}>
             <Typography
               variant="h4"
               color="primary"
               sx={{
                 display: 'flex',
                 flexDirection: 'row',
-                alignItems: 'center',
+                alignItems: 'flex-start',
                 fontWeight: isUnread ? 'bold' : 'normal',
                 marginBottom: gutters(0.5),
               }}
@@ -185,30 +191,62 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
                 <Box
                   sx={{
                     width: '10px',
-                    minWidth: '10px', // fix flex layout issue
+                    minWidth: '10px',
                     height: '10px',
                     background: '#09BCD4',
                     borderRadius: '50%',
                     marginRight: gutters(0.5),
+                    marginTop: '6px',
+                    flexShrink: 0,
                   }}
                 />
               )}
-              {renderFormattedTranslation(`components.inAppNotifications.type.${type}.subject`)}
+              <Box
+                component="span"
+                sx={{
+                  flex: 1,
+                  ...(isMobile && {
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    wordBreak: 'break-word',
+                  }),
+                }}
+              >
+                {renderFormattedTranslation(`components.inAppNotifications.type.${type}.subject`)}
+              </Box>
             </Typography>
-            <Typography variant="body2" color="neutral.light">
+            <Typography
+              variant="body2"
+              color="neutral.light"
+              sx={{
+                ...(isMobile && {
+                  display: '-webkit-box',
+                  WebkitLineClamp: 1,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  wordBreak: 'break-word',
+                }),
+              }}
+            >
               {renderFormattedTranslation(`components.inAppNotifications.type.${type}.description`)}
             </Typography>
             {renderComments()}
           </Gutters>
-          <Gutters alignItems={'center'}>
+          <Gutters disablePadding alignItems={'center'}>
             <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>
             <ActionsMenu>{renderActions()}</ActionsMenu>
           </Gutters>
         </Gutters>
       </BadgeCardView>
-      <Gutters row disablePadding disableGap display={'flex'} justifyContent={'center'}>
-        <Divider sx={{ maxWidth: '300px', flex: 1 }} />
-      </Gutters>
+      {!isMobile && (
+        <Gutters row disablePadding disableGap display={'flex'} justifyContent={'center'}>
+          <Divider sx={{ maxWidth: '300px', flex: 1 }} />
+        </Gutters>
+      )}
     </>
   );
 };
