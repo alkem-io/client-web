@@ -35,7 +35,9 @@ export const urlValidator = ({ maxLength = MID_TEXT_LENGTH, required = false }: 
   let validator = yup
     .string()
     .test('is-valid-url', TranslatedValidatedMessageWithPayload('forms.validations.invalidUrl'), value => {
-      if (!value) return !required; // If not required, empty is valid
+      if (!value) {
+        return true;
+      }
 
       try {
         const url = new URL(value);

@@ -31,7 +31,9 @@ export const emailValidator = (options?: { maxLength?: number; required?: boolea
   let validator = yup
     .string()
     .test('is-valid-email', TranslatedValidatedMessageWithPayload('forms.validations.invalidEmail'), value => {
-      if (!value) return !required; // If not required, empty is valid
+      if (!value) {
+        return true;
+      }
 
       // Basic email regex validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

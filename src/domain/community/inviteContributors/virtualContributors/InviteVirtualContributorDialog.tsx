@@ -60,7 +60,7 @@ const InviteVirtualContributorDialog = ({
   });
 
   const validationSchema = yup.object().shape({
-    message: textLengthValidator(),
+    welcomeMessage: textLengthValidator(),
   });
 
   const initialValues: InviteContributorsData = {

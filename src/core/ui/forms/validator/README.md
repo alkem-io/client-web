@@ -13,7 +13,7 @@ A flexible, reusable text validator that provides human-readable translated vali
 ```typescript
 interface TextLengthValidatorOptions {
   minLength?: number; // Minimum allowed length (optional)
-  maxLength: number; // Maximum allowed length (required)
+  maxLength?: number; // Maximum allowed length (optional)
   required?: boolean; // Whether the field is required (default: false)
   allowOnlySpaces?: boolean; // Whether to allow strings with only spaces (default: false)
 }
@@ -97,6 +97,7 @@ import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidat
 import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
 import { SMALL_TEXT_LENGTH, MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import * as yup from 'yup';
 
 export const organizationSchema = yup.object().shape({
   // Email with max length

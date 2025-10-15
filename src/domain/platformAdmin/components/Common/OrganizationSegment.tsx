@@ -7,13 +7,14 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import Gutters from '@/core/ui/grid/Gutters';
 import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
+import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 
 export const organizationSegmentSchema = yup.object().shape({
   contactEmail: emailValidator({ maxLength: SMALL_TEXT_LENGTH }),
   domain: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
   legalEntityName: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
   website: urlValidator({ maxLength: SMALL_TEXT_LENGTH }),
-  verified: textLengthValidator(),
+  verified: yup.mixed<OrganizationVerificationEnum>().oneOf(Object.values(OrganizationVerificationEnum)).notRequired(),
 });
 
 interface OrganizationSegmentProps {

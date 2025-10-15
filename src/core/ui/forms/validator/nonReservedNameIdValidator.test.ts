@@ -96,22 +96,15 @@ describe('nonReservedNameIdValidator', () => {
 
   describe('validation errors', () => {
     test('provides appropriate error for reserved paths', async () => {
-      try {
-        await nonReservedNameIdValidator.validate('admin');
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error).toBeDefined();
-        // Should reference the reserved route error message
-      }
+      await expect(nonReservedNameIdValidator.validate('admin')).rejects.toThrow(
+        'forms.validations.reservedTopLevelRoute'
+      );
     });
 
     test('provides appropriate error for format violations', async () => {
-      try {
-        await nonReservedNameIdValidator.validate('Invalid_Name');
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error).toBeDefined();
-      }
+      await expect(nonReservedNameIdValidator.validate('Invalid_Name')).rejects.toThrow(
+        'forms.validations.alphaNumeric'
+      );
     });
   });
 });

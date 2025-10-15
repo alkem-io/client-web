@@ -87,7 +87,6 @@ const SpaceListItem = ({ spaceId, nameId, visibility, canUpdate, ...props }: Spa
   );
 
   const validationSchema = yup.object().shape({
-    host: yup.object().shape({ id: textLengthValidator() }).required(t('forms.validations.required')),
     nameId: nameSegmentSchema.fields?.nameID || textLengthValidator({ required: true }),
     visibility: textLengthValidator({ required: true }),
   });
