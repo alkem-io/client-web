@@ -62,7 +62,7 @@ export const useKeepElementScroll = ({
         state.scroller = undefined;
       }
     };
-  }, [scrollContainerRef?.current]);
+  }, [scrollContainerRef]);
 
   const clearObservers = () => {
     log('clearObservers');
