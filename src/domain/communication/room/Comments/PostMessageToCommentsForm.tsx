@@ -1,6 +1,7 @@
 import { Box, BoxProps, styled } from '@mui/material';
 import Avatar, { CustomAvatarProps } from '@/core/ui/avatar/Avatar';
 import { Form, Formik, FormikHelpers } from 'formik';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -15,7 +16,7 @@ const UserAvatar = styled(Avatar)<CustomAvatarProps>(({ theme }) => ({
 }));
 
 export interface PostMessageToCommentsFormProps {
-  onPostComment?: (comment: string) => Promise<unknown> | void;
+  onPostComment: (comment: string, responseBoxElement: HTMLDivElement | null) => Promise<unknown> | void;
   title?: string;
   placeholder?: string;
   maxLength?: number;
@@ -41,6 +42,7 @@ const PostMessageToCommentsForm = ({
   ...containerProps
 }: PostMessageToCommentsFormProps & BoxProps) => {
   const { t } = useTranslation();
+  const textBoxElementRef = useRef<HTMLDivElement | null>(null);
 
   const { userModel } = useCurrentUserContext();
 
@@ -56,7 +58,7 @@ const PostMessageToCommentsForm = ({
 
   const handleSubmit = async (values: formValues, { resetForm }: FormikHelpers<formValues>) => {
     if (onPostComment) {
-      const result = await onPostComment(values.post);
+      const result = await onPostComment(values.post, textBoxElementRef.current);
       if (result) {
         resetForm();
       }
@@ -66,7 +68,7 @@ const PostMessageToCommentsForm = ({
   const { isSmallScreen } = useScreenSize();
 
   return (
-    <Box display="flex" alignItems="start" gap={gutters(0.5)} {...containerProps}>
+    <Box ref={textBoxElementRef} display="flex" alignItems="start" gap={gutters(0.5)} {...containerProps}>
       <UserAvatar
         src={userAvatarUri}
         variant="rounded"
@@ -106,5 +108,7 @@ const PostMessageToCommentsForm = ({
     </Box>
   );
 };
+
+PostMessageToCommentsForm.displayName = 'PostMessageToCommentsForm';
 
 export default PostMessageToCommentsForm;
