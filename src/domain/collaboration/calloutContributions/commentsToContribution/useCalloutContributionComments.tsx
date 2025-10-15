@@ -43,8 +43,8 @@ interface CalloutContributionCommentsContainerProvided {
   canAddReaction: boolean;
   canDeleteMessage: (authorId: string | undefined) => boolean;
   postMessage: (message: string) => Promise<FetchResult<unknown>>;
-  postReply: (reply: { messageText: string; threadId: string }) => void;
-  handleDeleteMessage: (commentsId: string, messageId: string) => void;
+  postReply: (reply: { messageText: string; threadId: string }) => Promise<FetchResult<unknown>>;
+  handleDeleteMessage: (commentsId: string, messageId: string) => Promise<unknown>;
   loading: boolean;
   posting: boolean;
 }
