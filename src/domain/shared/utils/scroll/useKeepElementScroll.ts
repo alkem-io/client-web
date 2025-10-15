@@ -57,6 +57,13 @@ export const useKeepElementScroll = ({
     }
     container.style.scrollBehavior = 'smooth';
     state.scroller = container;
+    return () => {
+      log('cleanup');
+      clearObservers();
+      if (state.scroller) {
+        state.scroller = undefined;
+      }
+    };
   }, [scrollContainerRef?.current]);
 
   const clearObservers = () => {
