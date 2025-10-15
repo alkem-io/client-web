@@ -58,7 +58,7 @@ export const calloutValidationSchema = yup.object().shape({
               profile: yup
                 .object()
                 .shape({
-                  displayName: textLengthValidator({ required: true }),
+                  displayName: displayNameValidator({ required: true }),
                 })
                 .required(),
             })

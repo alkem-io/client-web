@@ -30,6 +30,7 @@ import { nameOf } from '@/core/utils/nameOf';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { referenceSegmentValidationObject } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
 import { ALT_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 
 type VirtualContributorProps = {
   id: string;
@@ -99,7 +100,7 @@ export const VirtualContributorForm = ({
 
   const validationSchema = yup.object().shape({
     profile: yup.object().shape({
-      displayName: nameSegmentSchema.fields?.displayName ?? textLengthValidator({ required: true }),
+      displayName: nameSegmentSchema.fields?.displayName ?? displayNameValidator({ required: true }),
       description: profileSegmentSchema.fields?.description ?? textLengthValidator({ required: true }),
       tagline: profileSegmentSchema.fields?.tagline ?? textLengthValidator({ maxLength: ALT_TEXT_LENGTH }).nullable(),
       tagsets: tagsetsSegmentSchema,
