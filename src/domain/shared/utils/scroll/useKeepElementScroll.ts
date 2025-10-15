@@ -16,7 +16,6 @@ interface KeepElementScrollState {
   enabled: boolean;
   scroller: HTMLElement | undefined;
   mutationObserver: MutationObserver | undefined;
-  resizeObserver: ResizeObserver | undefined;
   anchor: HTMLElement | undefined;
   baselineTop: number;
 }
@@ -28,7 +27,7 @@ interface KeepElementScrollState {
  * Behavior:
  *  - Call keepElementScroll(anchorEl) when the user submits a message/reply.
  *  - The hook records the anchor's top offset relative to the scroll container.
- *  - Uses MutationObserver and ResizeObserver to perform discrete immediate scrollTop adjustments with native browser scrolling APIs.
+ *  - Uses MutationObserver to perform discrete immediate scrollTop adjustments with native browser scrolling APIs.
  */
 export const useKeepElementScroll = ({
   scrollContainerRef,
@@ -42,7 +41,6 @@ export const useKeepElementScroll = ({
     enabled: false,
     scroller: undefined,
     mutationObserver: undefined,
-    resizeObserver: undefined,
     anchor: undefined,
     baselineTop: 0,
   });
@@ -73,10 +71,6 @@ export const useKeepElementScroll = ({
       state.mutationObserver.disconnect();
       state.mutationObserver = undefined;
     }
-    if (state.resizeObserver) {
-      state.resizeObserver.disconnect();
-      state.resizeObserver = undefined;
-    }
     state.anchor = undefined;
     state.baselineTop = 0;
     state.enabled = false;
@@ -94,12 +88,6 @@ export const useKeepElementScroll = ({
       compensateScroll();
     });
     state.mutationObserver.observe(state.scroller, { subtree: true, childList: true, characterData: false });
-
-    // Observe size changes (e.g. images loading) - observe the container and the anchor itself
-    state.resizeObserver = new ResizeObserver(() => {
-      log('resizeObserver');
-      compensateScroll();
-    });
 
     const containerRect = state.scroller.getBoundingClientRect();
     const anchorRect = anchorEl.getBoundingClientRect();
