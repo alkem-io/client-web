@@ -74,7 +74,7 @@ const StyledLink = ({ children, subtitle, to, ...props }: LinkProps & { subtitle
   );
 };
 
-export const Error404 = ({ key }) => {
+export const Error404 = () => {
   const { pathname } = useLocation();
 
   useEffect(() => log404NotFound(), [pathname]);
@@ -83,7 +83,10 @@ export const Error404 = ({ key }) => {
   const { locations } = useConfig();
 
   return (
-    <PageContent key={key} gridContainerProps={{ sx: { paddingTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS) } }}>
+    <PageContent
+      key={pathname}
+      gridContainerProps={{ sx: { paddingTop: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS) } }}
+    >
       <PageContentColumn columns={12}>
         <PageContentBlock>
           <Container>
