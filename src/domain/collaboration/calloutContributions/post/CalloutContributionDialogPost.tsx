@@ -54,6 +54,7 @@ const CalloutContributionDialogPost = ({
       profileData: {
         displayName: post.profile.displayName,
         description: post.profile.description,
+        tags: post.profile.tagset?.tags || [],
       },
       references: post?.profile.references,
     };
@@ -184,7 +185,6 @@ const CalloutContributionDialogPost = ({
               canSave={setCanSave}
               onAddReference={postSettings.handleAddReference}
               onRemoveReference={postSettings.handleRemoveReference}
-              tags={postSettings.post?.profile.tagset?.tags}
             >
               {() => (
                 <Gutters>

@@ -32,7 +32,7 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
     <ContributionDetailsCard
       {...details}
       spaceId={contributionItem.id}
-      tagline={details.about.profile.tagline!}
+      tagline={details.about.profile.tagline ?? ''}
       displayName={details.about.profile.displayName}
       enableLeave={enableLeave}
       leavingCommunity={isLeavingCommunity}

@@ -6,6 +6,7 @@ import { gutters } from './utils';
 export interface GuttersProps extends BoxProps {
   row?: boolean;
   disablePadding?: boolean;
+  disableVerticalPadding?: boolean;
   disableSidePadding?: boolean;
   disableVerticalPadding?: boolean;
   disableGap?: boolean;
@@ -16,6 +17,7 @@ const Gutters = ({
   ref,
   row = false,
   disablePadding = false,
+  disableVerticalPadding = false,
   disableSidePadding = false,
   disableVerticalPadding = false,
   disableGap = false,

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { last } from 'lodash';
@@ -29,7 +29,7 @@ export interface CommentsComponentProps {
   isMember?: boolean;
   canAddReaction: boolean;
   canDeleteMessage: (authorId: string | undefined) => boolean;
-  postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
+  postMessage: (message: string) => Promise<FetchResult<unknown>>;
   postReply: (reply: { messageText: string; threadId: string }) => void;
   handleDeleteMessage: (commentsId: string, messageId: string) => void;
   maxHeight?: BoxProps['maxHeight'];
@@ -39,6 +39,7 @@ export interface CommentsComponentProps {
   last?: boolean;
   onClickMore?: () => void;
   commentsEnabled: boolean;
+  externalScrollRef?: RefObject<HTMLElement | null>;
 }
 
 interface ScrollState {
@@ -74,6 +75,7 @@ const CommentsComponent = ({
   loading,
   onClickMore,
   commentsEnabled,
+  externalScrollRef,
 }: CommentsComponentProps) => {
   const { t } = useTranslation();
 
@@ -106,6 +108,25 @@ const CommentsComponent = ({
     }
   }, [messages]);
 
+  useEffect(() => {
+    if (commentsContainerRef.current) {
+      commentsContainerRef.current.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+      commentsContainerRef.current?.removeEventListener('scroll', handleScroll);
+    };
+  }, [commentsContainerRef.current]);
+
+  const onPostComment = async (comment: string) => {
+    const result = await postMessage(comment);
+    if (externalScrollRef?.current) {
+      setTimeout(() => {
+        scroller.scrollToBottom({ container: externalScrollRef.current });
+      }, 100);
+    }
+    return result;
+  };
+
   const commentReactionsMutations = useCommentReactionsMutations(commentsId);
 
   const handleScroll = () => {
@@ -119,13 +140,7 @@ const CommentsComponent = ({
   return (
     <>
       {!isShowingLastMessage && hasMessages && (
-        <ScrollerWithGradient
-          maxHeight={maxHeight}
-          height={height}
-          scrollerRef={commentsContainerRef}
-          onScroll={handleScroll}
-          margin={0}
-        >
+        <ScrollerWithGradient maxHeight={maxHeight} height={height} scrollerRef={commentsContainerRef} margin={0}>
           <Gutters gap={0}>
             <MessagesThread
               messages={messages}
@@ -163,7 +178,7 @@ const CommentsComponent = ({
       {canPostMessages && (
         <PostMessageToCommentsForm
           placeholder={t('pages.post.dashboard.comment.placeholder')}
-          onPostComment={postMessage}
+          onPostComment={onPostComment}
           disabled={loading}
           padding={gutters()}
           paddingBottom={0}
