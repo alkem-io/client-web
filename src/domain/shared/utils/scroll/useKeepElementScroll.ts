@@ -29,9 +29,7 @@ interface KeepElementScrollState {
  *  - The hook records the anchor's top offset relative to the scroll container.
  *  - Uses MutationObserver to perform discrete immediate scrollTop adjustments with native browser scrolling APIs.
  */
-export const useKeepElementScroll = ({
-  scrollContainerRef,
-}: UseKeepElementScrollOptions): KeepElementScrollProvided => {
+const useKeepElementScroll = ({ scrollContainerRef }: UseKeepElementScrollOptions): KeepElementScrollProvided => {
   const log = (_text: string, ..._args: unknown[]) => {
     // TODO: Delete all these log() calls when this component is fully stable
     // console.log(`[useKeepElementScroll] ${_text}`, ..._args);
