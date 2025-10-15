@@ -12,7 +12,11 @@ import { useLocation } from 'react-router-dom';
 const MINIMUM_TERM_LENGTH = 2;
 const getSearchTerms = (searchInput: string) => searchInput.trim();
 
-const SearchBar = ({ ref, ...props }: BoxProps & { withRedirect?: boolean } & { ref?: React.Ref<typeof Box> }) => {
+const SearchBar = ({
+  ref,
+  withRedirect,
+  ...props
+}: BoxProps & { withRedirect?: boolean } & { ref?: React.Ref<typeof Box> }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -46,12 +50,12 @@ const SearchBar = ({ ref, ...props }: BoxProps & { withRedirect?: boolean } & { 
   const handleNavigateToSearchPage = useCallback(() => {
     const terms = getSearchTerms(value);
     const params = new URLSearchParams({ [SEARCH_TERMS_URL_PARAM]: terms });
-    if (props.withRedirect) {
+    if (withRedirect) {
       window.location.href = `/?${params}`;
     } else {
       navigate(`${pathname}?${params}`);
     }
-  }, [isTermValid, value, navigate, props.withRedirect]);
+  }, [isTermValid, value, navigate, withRedirect]);
 
   return (
     <Box ref={ref} flexGrow={1} justifyContent="center" {...props}>
