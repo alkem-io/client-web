@@ -5,9 +5,7 @@ import { Box, Button, styled } from '@mui/material';
 import React, { ComponentType, useEffect, useMemo, useState } from 'react';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../CalloutPage/CalloutPage';
 import { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsModel';
-import useNavigate from '@/core/routing/useNavigate';
 import useCalloutContributions from './useCalloutContributions/useCalloutContributions';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import { AnyContribution } from './interfaces/AnyContributionType';
@@ -55,7 +53,7 @@ interface CalloutContributionsHorizontalPagerProps {
   contributionType: CalloutContributionType;
   loading?: boolean;
   cardComponent: ComponentType<CalloutContributionCardComponentProps>;
-  getContributionUrl: (contribution: AnyContribution) => string | undefined;
+  onClickOnContribution: (contribution: AnyContribution) => void;
 }
 
 const ScrollButton = styled(Button)(({ theme }) => ({
@@ -86,12 +84,10 @@ const CalloutContributionsHorizontalPager = ({
   contributionType,
   contributionSelectedId,
   cardComponent: Card,
-  getContributionUrl,
+  onClickOnContribution,
 }: CalloutContributionsHorizontalPagerProps & {
   ref?: React.Ref<HTMLDivElement>;
 }) => {
-  const navigate = useNavigate();
-
   /**
    * Used to move to the correct page when a contributionId is provided, but only once
    */
@@ -139,17 +135,6 @@ const CalloutContributionsHorizontalPager = ({
     }
   }, [pages, contributionSelectedId]);
 
-  const handleClickOnContribution = (contribution: AnyContribution) => {
-    const state: LocationStateCachedCallout = {
-      [LocationStateKeyCachedCallout]: callout,
-      keepScroll: true,
-    };
-    const url = getContributionUrl(contribution);
-    if (url) {
-      navigate(url, { state });
-    }
-  };
-
   const handleClickLeft = () => {
     setSelectedPage(prev => (prev === 0 ? pages.length - 1 : prev - 1));
   };
@@ -162,7 +147,7 @@ const CalloutContributionsHorizontalPager = ({
   const fullRow = currentPageItems.length >= responsiveConfig.PageSize; // we have 5 items in this page
 
   return (
-    <Gutters ref={inViewRef} disableSidePadding>
+    <Gutters ref={inViewRef}>
       <Gutters
         row
         disablePadding
@@ -184,7 +169,7 @@ const CalloutContributionsHorizontalPager = ({
                 key={contribution.id}
                 callout={callout}
                 contribution={contribution}
-                onClick={() => handleClickOnContribution(contribution)}
+                onClick={() => onClickOnContribution(contribution)}
                 selected={contribution.id === contributionSelectedId}
                 columns={responsiveConfig.ColumnsPerCard}
               />

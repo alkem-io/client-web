@@ -111,7 +111,9 @@
     "next": "Próximo",
     "edit": "Editar",
     "expand": "Expandir",
+    "expandEntity": "Expand {{entity}}",
     "collapse": "Ocultar",
+    "collapseEntity": "Collapse {{entity}}",
     "expandWindow": "Expandir Janela",
     "see-more": "Veja mais",
     "see-all": "Mais {{subject}}",
@@ -175,6 +177,7 @@
     "getHelp": "Obter ajuda",
     "saveAsTemplate": "Save as $t(common.template)",
     "skipLink": "Pular para o próximo bloco",
+    "toggle": "Toggle {{entity}}",
     "toolsMenu": "Menu de ferramentas",
     "userMenu": "Menu de usuário",
     "scrollToTop": "Rolar para o topo",
@@ -362,6 +365,8 @@
     "field-required": "Este campo é obrigatório",
     "field-min-length": "Este campo deve ter no mínimo {{min}} caracteres",
     "field-max-length": "Este campo deve ter no máximo {{max}} caracteres",
+    "Link": "Link",
+    "link": "link",
     "Membership": "Membership",
     "Memberships": "Memberships",
     "membership": "membership",
@@ -523,6 +528,12 @@
         "WHITEBOARD": "$t(common.Whiteboard)",
         "WHITEBOARD_COLLECTION": "$t(common.Whiteboard) $t(common.Collection)"
       },
+      "calloutContributionType": {
+        "LINK": "$t(common.Link)",
+        "POST": "$t(common.Post)",
+        "WHITEBOARD": "$t(common.Whiteboard)",
+        "MEMO": "$t(common.Memo)"
+      },
       "invitationStatus": {
         "invited": "Convidado",
         "accepted": "Convite Aceito",
@@ -561,33 +572,33 @@
     "time": {
       "short": {
         "timeAgo": "{{time}}",
-        "second": "{{count}}s",
-        "second_plural": "{{count}}s",
-        "minute": "{{count}}m",
-        "minute_plural": "{{count}}m",
-        "hour": "{{count}}h",
-        "hour_plural": "{{count}}h",
-        "day": "{{count}}d",
-        "day_plural": "{{count}}d",
-        "month": "{{count}}mo",
-        "month_plural": "{{count}}mo",
-        "year": "{{count}}y",
-        "year_plural": "{{count}}y"
+        "second_one": "{{count}}s",
+        "second_other": "{{count}}s",
+        "minute_one": "{{count}}m",
+        "minute_other": "{{count}}m",
+        "hour_one": "{{count}}h",
+        "hour_other": "{{count}}h",
+        "day_one": "{{count}}d",
+        "day_other": "{{count}}d",
+        "month_one": "{{count}}mo",
+        "month_other": "{{count}}mo",
+        "year_one": "{{count}}y",
+        "year_other": "{{count}}y"
       },
       "long": {
         "timeAgo": "Há {{time}}",
-        "second": "{{count}} segundo",
-        "second_plural": "{{count}} segundos",
-        "minute": "{{count}} minuto",
-        "minute_plural": "{{count}} minutos",
-        "hour": "{{count}} hora",
-        "hour_plural": "{{count}} horas",
-        "day": "{{count}} dia",
-        "day_plural": "{{count}} dias",
-        "month": "{{count}} mês",
-        "month_plural": "{{count}} meses",
-        "year": "{{count}} ano",
-        "year_plural": "{{count}} anos"
+        "second_one": "{{count}} second",
+        "second_other": "{{count}} seconds",
+        "minute_one": "{{count}} minute",
+        "minute_other": "{{count}} minutes",
+        "hour_one": "{{count}} hour",
+        "hour_other": "{{count}} hours",
+        "day_one": "{{count}} day",
+        "day_other": "{{count}} days",
+        "month_one": "{{count}} month",
+        "month_other": "{{count}} months",
+        "year_one": "{{count}} year",
+        "year_other": "{{count}} years"
       }
     },
     "supportEmail": "support@alkem.io",
@@ -867,8 +878,15 @@
       "title": "Content not available",
       "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
     },
-    "contributions": "Contribuição {{count}}",
-    "contributions_plural": "{{count}} contribuições",
+    "contributions": {
+      "contributionsCount_one": "{{count}} Contribution",
+      "contributionsCount_other": "{{count}} Contributions",
+      "contributionsItemsCount_one": "{{count}} item in this $t(common.collection)",
+      "contributionsItemsCount_other": "{{count}} items in this $t(common.collection)",
+      "contributionsItemsCountExpand": "{{count}} items in this $t(common.collection), <click>click here</click> to see all",
+      "contributionsCollapse": "{{count}} items in this $t(common.collection), <click>click here</click> to hide some",
+      "noContributions": "No contributions yet, be the first to contribute!"
+    },
     "draftNotice": "DRAFT - Only visible for $t(common.admins)",
     "closed": "Este Callout está fechado. Você ainda pode comentar nos posts individuais.",
     "notMember": "You can't reply to this discussion since you're not a $t(common.member) of this $t(common.space)",
@@ -1978,10 +1996,6 @@
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
           "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
-          "description": ""
-        },
-        "SPACE_COMMUNICATION_MESSAGE_SENDER": {
-          "subject": "You sent a message to the $t(common.leads) of {{spaceName}}",
           "description": ""
         },
         "SPACE_COLLABORATION_CALLOUT_COMMENT": {
@@ -3480,7 +3494,7 @@
   "videoCall": {
     "dialog": {
       "title": "Start Video Call",
-      "content": "You are about to start a video call using Jitsi, a secure third-party video conferencing service. The call will open in a new browser tab, outside the Alkemio environment. Others can join through the same button or by using the shared URL. Learn more about Jitsi <jitsiLink>here</jitsiLink>."
+      "content": "You are about to start a video call using Jitsi, a secure third-party video conferencing service. The call will open in a new browser tab, outside the Alkemio environment. Others can join through the same button or by using the shared URL.<br/><br/>Learn more about Jitsi <jitsiLink>here</jitsiLink>, including how to manage access and privacy settings."
     }
   },
   "createSpace": {
