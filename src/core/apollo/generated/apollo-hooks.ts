@@ -9991,6 +9991,87 @@ export type SendMessageToCommunityLeadsMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.SendMessageToCommunityLeadsMutation,
   SchemaTypes.SendMessageToCommunityLeadsMutationVariables
 >;
+export const UserMessagingEnabledDocument = gql`
+  query UserMessagingEnabled($id: UUID!) {
+    lookup {
+      user(ID: $id) {
+        id
+        settings {
+          id
+          communication {
+            allowOtherUsersToSendMessages
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserMessagingEnabledQuery__
+ *
+ * To run a query within a React component, call `useUserMessagingEnabledQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserMessagingEnabledQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserMessagingEnabledQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUserMessagingEnabledQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserMessagingEnabledQuery,
+    SchemaTypes.UserMessagingEnabledQueryVariables
+  > &
+    ({ variables: SchemaTypes.UserMessagingEnabledQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserMessagingEnabledQuery, SchemaTypes.UserMessagingEnabledQueryVariables>(
+    UserMessagingEnabledDocument,
+    options
+  );
+}
+export function useUserMessagingEnabledLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserMessagingEnabledQuery,
+    SchemaTypes.UserMessagingEnabledQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserMessagingEnabledQuery, SchemaTypes.UserMessagingEnabledQueryVariables>(
+    UserMessagingEnabledDocument,
+    options
+  );
+}
+export function useUserMessagingEnabledSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.UserMessagingEnabledQuery,
+        SchemaTypes.UserMessagingEnabledQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.UserMessagingEnabledQuery, SchemaTypes.UserMessagingEnabledQueryVariables>(
+    UserMessagingEnabledDocument,
+    options
+  );
+}
+export type UserMessagingEnabledQueryHookResult = ReturnType<typeof useUserMessagingEnabledQuery>;
+export type UserMessagingEnabledLazyQueryHookResult = ReturnType<typeof useUserMessagingEnabledLazyQuery>;
+export type UserMessagingEnabledSuspenseQueryHookResult = ReturnType<typeof useUserMessagingEnabledSuspenseQuery>;
+export type UserMessagingEnabledQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserMessagingEnabledQuery,
+  SchemaTypes.UserMessagingEnabledQueryVariables
+>;
+export function refetchUserMessagingEnabledQuery(variables: SchemaTypes.UserMessagingEnabledQueryVariables) {
+  return { query: UserMessagingEnabledDocument, variables: variables };
+}
 export const AddReactionDocument = gql`
   mutation AddReaction($roomId: UUID!, $messageId: MessageID!, $emoji: Emoji!) {
     addReactionToMessageInRoom(reactionData: { emoji: $emoji, messageID: $messageId, roomID: $roomId }) {

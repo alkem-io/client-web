@@ -1,0 +1,13 @@
+query UserMessagingEnabled ($id: UUID!) {
+  lookup {
+    user(ID: $id) {
+      id
+      settings {
+        id
+        communication {
+          allowOtherUsersToSendMessages
+        }
+      }
+    }
+  }
+}

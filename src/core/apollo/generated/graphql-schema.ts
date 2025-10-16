@@ -861,7 +861,6 @@ export enum AuthorizationPrivilege {
   ReadUserSettings = 'READ_USER_SETTINGS',
   ReceiveNotifications = 'RECEIVE_NOTIFICATIONS',
   ReceiveNotificationsAdmin = 'RECEIVE_NOTIFICATIONS_ADMIN',
-  ReceiveNotificationsInApp = 'RECEIVE_NOTIFICATIONS_IN_APP',
   ReceiveNotificationsOrganizationAdmin = 'RECEIVE_NOTIFICATIONS_ORGANIZATION_ADMIN',
   ReceiveNotificationsSpaceAdmin = 'RECEIVE_NOTIFICATIONS_SPACE_ADMIN',
   ReceiveNotificationsSpaceLead = 'RECEIVE_NOTIFICATIONS_SPACE_LEAD',
@@ -16663,6 +16662,28 @@ export type SendMessageToCommunityLeadsMutationVariables = Exact<{
 }>;
 
 export type SendMessageToCommunityLeadsMutation = { __typename?: 'Mutation'; sendMessageToCommunityLeads: boolean };
+
+export type UserMessagingEnabledQueryVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+export type UserMessagingEnabledQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          settings: {
+            __typename?: 'UserSettings';
+            id: string;
+            communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+          };
+        }
+      | undefined;
+  };
+};
 
 export type AddReactionMutationVariables = Exact<{
   roomId: Scalars['UUID']['input'];
