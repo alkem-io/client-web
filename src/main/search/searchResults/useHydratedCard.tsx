@@ -104,16 +104,6 @@ const hydrateSpaceCard = (
         iconComponent={parentIcon}
         parentSpaceUri={data.parentSpace?.about.profile.url ?? ''}
         locked={!data.parentSpace?.about.isContentPublic}
-        sx={{
-          '& .MuiTypography-root': {
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'normal',
-          },
-        }}
       >
         {data.parentSpace?.about.profile.displayName}
       </CardParentSpaceSegment>

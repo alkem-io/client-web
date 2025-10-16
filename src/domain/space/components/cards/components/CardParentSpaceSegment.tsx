@@ -28,7 +28,17 @@ const CardParentSpaceSegment = ({
       secondaryIcon={locked ? <LockOutlined fontSize="small" color="primary" /> : undefined}
       onClick={stopPropagation}
       disablePadding
-      sx={sx}
+      sx={{
+        '& .MuiTypography-root': {
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'normal',
+        },
+        ...sx,
+      }}
     >
       {children}
     </CardSegmentCaption>
