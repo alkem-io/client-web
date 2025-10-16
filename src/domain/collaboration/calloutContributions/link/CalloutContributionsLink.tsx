@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
-import { Caption, CaptionSmall } from '@/core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import EditLinkDialog from '@/domain/shared/components/References/EditLinkDialog';
 import CreateLinksDialog, { CreateLinkFormValues } from '@/domain/shared/components/References/CreateLinksDialog';
@@ -12,14 +12,12 @@ import {
   useUpdateLinkMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import AddIcon from '@mui/icons-material/Add';
-import References from '@/domain/shared/components/References/References';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import { compact, sortBy } from 'lodash';
 import Loading from '@/core/ui/loading/Loading';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -178,29 +176,6 @@ const CalloutContributionsLink = ({
     closeEditDialog();
   };
 
-  const formattedLinks = sortBy(
-    compact(
-      contributions.map(
-        contribution =>
-          contribution.link &&
-          contribution.id && {
-            ...contribution.link,
-            sortOrder: contribution.sortOrder ?? 0,
-            contributionId: contribution.id,
-          }
-      )
-    ).map(link => ({
-      id: link.id,
-      uri: link.uri,
-      name: link.profile?.displayName,
-      description: link.profile?.description,
-      authorization: link.authorization,
-      sortOrder: link.sortOrder ?? 0,
-      contributionId: link.contributionId,
-    })),
-    'sortOrder'
-  );
-
   return (
     <StorageConfigContextProvider
       locationType="callout"
@@ -213,13 +188,6 @@ const CalloutContributionsLink = ({
           contributions={contributions}
           onEditContribution={contribution => setEditLink(contribution)}
         />
-        <hr />
-        <References
-          references={formattedLinks}
-          noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
-          onEdit={reference => setEditLink(reference)}
-        />
-        <hr />
         <Box
           display="flex"
           justifyContent={hasMore && !expanded ? 'space-between' : 'end'}

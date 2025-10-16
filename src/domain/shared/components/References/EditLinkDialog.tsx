@@ -95,6 +95,8 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
                     <FormikInputField
                       name={nameOf<LinkDetails>('profile.description')}
                       title={t('common.description')}
+                      multiline
+                      rows={3}
                     />
                   </Gutters>
                 </Gutters>

@@ -42,6 +42,13 @@ const ReferenceDescription = ({ children }: { children: string | undefined }) =>
         caption
         sx={{ '& > p': { ...theme.typography.body2 }, color: lighten(theme.palette.text.primary, 0.4) }}
         maxHeightGutters={3}
+        /*overflowMarker={
+          <SeeMore
+            label="buttons.readMore"
+            onClick={() => { }}
+            sx={{ marginTop: -1 }}
+          />
+        }*/
       >
         {children}
       </CroppedMarkdown>
