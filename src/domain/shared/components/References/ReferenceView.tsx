@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { BoxProps } from '@mui/system';
 import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
-import { lighten } from '@mui/material';
+import { lighten } from '@mui/material/styles';
 
 export interface ReferenceViewProps extends BoxProps {
   reference: ReferenceModel;

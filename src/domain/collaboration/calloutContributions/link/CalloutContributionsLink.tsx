@@ -137,10 +137,11 @@ const CalloutContributionsLink = ({
 
   // Edit existing Links:
   const handleEditLink = async (link: LinkDetails) => {
+    const linkId = ensurePresence(link?.id);
     await updateLink({
       variables: {
         input: {
-          ID: link.id!,
+          ID: linkId,
           uri: link.uri,
           profile: {
             displayName: link.profile.displayName,

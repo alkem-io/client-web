@@ -2,7 +2,6 @@ import React, { ReactElement } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { BoxTypeMap } from '@mui/system';
 import { gutters } from './utils';
-import { repeat } from 'lodash';
 import { useScreenSize } from './constants';
 
 export interface GuttersGridProps extends BoxProps {
@@ -21,7 +20,7 @@ const GuttersGrid = ({
     <Box
       ref={ref}
       display="grid"
-      gridTemplateColumns={isMediumSmallScreen ? 'auto' : repeat('auto ', columns).trim()}
+      gridTemplateColumns={isMediumSmallScreen ? 'auto' : 'auto '.repeat(columns).trim()}
       rowGap={gutters()}
       columnGap={gutters()}
       {...props}
