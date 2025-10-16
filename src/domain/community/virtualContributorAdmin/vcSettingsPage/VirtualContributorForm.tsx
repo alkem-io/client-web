@@ -193,10 +193,7 @@ export const VirtualContributorForm = ({
                       {tagsets?.find(
                         tagset => tagset.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase()
                       ) ? (
-                        <TagsetSegment
-                          name={nameOf<VirtualContributorFormValues>('profile.tagsets')}
-                          title={t('common.tags')}
-                        />
+                        <TagsetSegment name={nameOf<VirtualContributorFormValues>('profile.tagsets')} />
                       ) : null}
                       <ProfileReferenceSegment
                         fullWidth
