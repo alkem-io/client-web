@@ -18,21 +18,20 @@ import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema'
 import DeleteButton from '@/core/ui/actions/DeleteButton';
 import { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
 import { nameOf } from '@/core/utils/nameOf';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 
 const validationSchema = yup.object().shape({
   id: yup.string().required(),
-  name: yup
-    .string()
-    .required(TranslatedValidatedMessageWithPayload('forms.validations.required'))
-    .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
-    .max(SMALL_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
-  uri: yup
-    .string()
-    .required()
-    .max(MID_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
-  description: yup
-    .string()
-    .max(LONG_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
+  profile: yup.object().shape({
+    displayName: displayNameValidator({ required: true }),
+    uri: urlValidator
+      .max(MID_TEXT_LENGTH, ({ max }) =>
+        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
+      )
+      .required(),
+    description: textLengthValidator({ maxLength: LONG_TEXT_LENGTH })
+  })
 });
 
 interface EditLinkDialogProps {
@@ -67,7 +66,7 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
           validationSchema={validationSchema}
           enableReinitialize
           validateOnMount
-          onSubmit={() => {}}
+          onSubmit={() => { }}
         >
           {formikState => {
             const { values, isValid } = formikState;

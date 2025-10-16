@@ -22,6 +22,7 @@ export interface ReferenceViewProps extends BoxProps {
 
 const Root = styled(Box)(() => ({
   display: 'flex',
+  alignItems: 'start',
   '.only-on-hover': {
     visibility: 'hidden',
   },
@@ -41,14 +42,6 @@ const ReferenceDescription = ({ children }: { children: string | undefined }) =>
       <CroppedMarkdown
         caption
         sx={{ '& > p': { ...theme.typography.body2 }, color: lighten(theme.palette.text.primary, 0.4) }}
-        maxHeightGutters={3}
-        /*overflowMarker={
-          <SeeMore
-            label="buttons.readMore"
-            onClick={() => { }}
-            sx={{ marginTop: -1 }}
-          />
-        }*/
       >
         {children}
       </CroppedMarkdown>
@@ -75,6 +68,7 @@ const ReferenceView = ({ reference, canEdit, onClickEdit, ...containerProps }: R
         overflow="hidden"
         textOverflow="ellipsis"
         maxWidth={hasEditIcon ? `calc(100% - ${gutters(2)(theme)})` : '100%'}
+        alignItems="start"
       >
         <Tooltip title={reference.uri} placement="top-start" disableInteractive>
           <BlockSectionTitle overflow="hidden" textOverflow="ellipsis">
@@ -85,15 +79,17 @@ const ReferenceView = ({ reference, canEdit, onClickEdit, ...containerProps }: R
       </BadgeCardView>
 
       {hasEditIcon && (
-        <IconButton
-          size="small"
-          onClick={onClickEdit}
-          disabled={!canEdit}
-          className="only-on-hover"
-          aria-label={t('buttons.edit')}
-        >
-          <EditIcon />
-        </IconButton>
+        <Box>
+          <IconButton
+            size="small"
+            onClick={onClickEdit}
+            disabled={!canEdit}
+            className="only-on-hover"
+            aria-label={t('buttons.edit')}
+          >
+            <EditIcon />
+          </IconButton>
+        </Box>
       )}
     </Root>
   );

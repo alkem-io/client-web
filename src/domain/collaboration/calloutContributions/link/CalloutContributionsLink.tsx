@@ -27,7 +27,7 @@ import LinkContributionsList from './LinksList';
 import { LinkContribution } from './models/LinkContribution';
 import { LinkDetails } from './models/LinkDetails';
 
-const MAX_LINKS_NORMAL_VIEW = 8;
+const MAX_LINKS_COMPACT_VIEW = 8;
 
 interface CalloutContributionsLinkProps extends BaseCalloutViewProps {}
 
@@ -50,7 +50,7 @@ const CalloutContributionsLink = ({
     callout,
     contributionType: CalloutContributionType.Link,
     onCalloutUpdate,
-    pageSize: MAX_LINKS_NORMAL_VIEW,
+    pageSize: MAX_LINKS_COMPACT_VIEW,
   });
 
   // Always show all Links in expanded mode:
