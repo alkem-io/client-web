@@ -3,5 +3,6 @@ export type LinkDetails = {
   uri: string;
   profile: {
     displayName: string;
+    description?: string;
   };
 };
