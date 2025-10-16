@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { Link as MuiLink, LinkProps as MuiLinkProps } from '@mui/material';
 import { Link as ReactRouterLink, LinkProps as ReactRouterLinkProps } from 'react-router-dom';
 import { isAbsoluteUrl, normalizeLink } from '@/core/utils/links';
@@ -16,53 +17,47 @@ export interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, P
  * @param to
  * @constructor
  */
-const RouterLink = ({
-  ref,
-  to,
-  raw = false,
-  strict = false,
-  blank,
-  keepScroll = false,
-  ...props
-}: RouterLinkProps & {
-  ref?: React.Ref<HTMLAnchorElement>;
-}) => {
+const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(function RouterLink(
+  { to, raw = false, strict = false, blank, keepScroll = false, underline, sx, ...props },
+  ref
+) {
   const base = useUrlBase();
 
   // Handle anchor links (hash fragments) - don't modify them
   const isAnchorLink = to.startsWith('#');
 
-  if (!isAnchorLink && !isAbsoluteUrl(to) && base && !to.startsWith('/')) {
-    to = `${base}/${to}`;
+  let resolvedTo = to;
+
+  if (!isAnchorLink && !isAbsoluteUrl(resolvedTo) && base && !resolvedTo.startsWith('/')) {
+    resolvedTo = `${base}/${resolvedTo}`;
   }
 
-  const urlLike = !strict ? normalizeLink(to) : to;
-
-  const isNativeLink = raw || isAbsoluteUrl(urlLike) || isAnchorLink;
+  const urlLike = !strict ? normalizeLink(resolvedTo) : resolvedTo;
 
   const shouldOpenNewWindow = blank ?? (raw || isAbsoluteUrl(urlLike));
 
   const getToParam = () => {
-    if (isNativeLink || !keepScroll) {
+    if (!keepScroll) {
       return urlLike;
     }
     return { pathname: urlLike, state: { keepScroll: true } };
   };
 
-  const componentProps = {
-    component: isNativeLink ? undefined : ReactRouterLink,
-    [isNativeLink ? 'href' : 'to']: getToParam(),
-  };
+  const target = shouldOpenNewWindow ? '_blank' : undefined;
+  const rel = shouldOpenNewWindow ? 'noopener' : undefined;
 
   return (
     <MuiLink
       ref={ref}
-      target={shouldOpenNewWindow ? '_blank' : undefined}
-      rel={shouldOpenNewWindow ? 'noopener' : undefined}
-      {...componentProps}
+      component={ReactRouterLink}
+      underline={underline}
+      sx={sx}
+      target={target}
+      rel={rel}
+      to={getToParam()}
       {...props}
     />
   );
-};
+});
 
 export default RouterLink;
