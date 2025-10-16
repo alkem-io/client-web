@@ -26,6 +26,8 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { nameValidator } from '@/core/ui/forms/validator/nameValidator';
+import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const referenceSegmentWithSocialSchema = yup.array().of(
   referenceSegmentValidationObject.shape({
@@ -99,16 +101,15 @@ export const UserForm = ({
   };
 
   const validationSchema = yup.object().shape({
-    displayName: displayNameValidator.required(t('forms.validations.required')),
+    displayName: displayNameValidator({ required: true }),
     firstName: nameValidator.required(t('forms.validations.requiredField')),
     lastName: nameValidator.required(t('forms.validations.requiredField')),
-    email: yup.string().email('Email is not valid').required(t('forms.validations.required')),
-    gender: yup.string(),
-    city: yup.string(),
+    email: emailValidator({ required: true }),
+    gender: textLengthValidator(),
+    city: textLengthValidator(),
     phone: yup
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
-    avatar: yup.string(),
     linkedin: yup
       .string()
       .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.linkedin') })),
@@ -121,7 +122,7 @@ export const UserForm = ({
     tagsets: tagsetsSegmentSchema,
     references: referenceSegmentWithSocialSchema,
     bio: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-    tagline: yup.string().max(ALT_TEXT_LENGTH),
+    tagline: textLengthValidator({ maxLength: ALT_TEXT_LENGTH }),
   });
 
   /**

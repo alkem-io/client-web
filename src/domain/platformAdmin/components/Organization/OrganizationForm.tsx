@@ -27,6 +27,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { TagsetModel, UpdateTagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { EmptyOrganizationModel, OrganizationModel } from '@/domain/community/organization/model/OrganizationModel';
 import { EmptyProfileModel, ProfileModelFull } from '@/domain/common/profile/ProfileModel';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import {
   mapProfileModelToCreateProfileInput,
   mapProfileModelToUpdateProfileInput,
@@ -36,6 +37,9 @@ import SocialSegment from '@/domain/platformAdmin/components/Common/SocialSegmen
 import { socialNames, SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { nameOf } from '@/core/utils/nameOf';
+import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
+import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 
 interface OrganizationFormValues {
   nameID: string;
@@ -113,12 +117,15 @@ export const OrganizationForm: FC<OrganizationFormProps> = ({
 
   const validationSchema = yup.object().shape({
     profile: profileSegmentSchemaWithReferences,
-    nameID: nameSegmentSchema.fields?.nameID || yup.string(),
-    contactEmail: organizationSegmentSchema.fields?.contactEmail || yup.string(),
-    domain: organizationSegmentSchema.fields?.domain || yup.string(),
-    legalEntityName: organizationSegmentSchema.fields?.legalEntityName || yup.string(),
-    website: organizationSegmentSchema.fields?.website || yup.string(),
-    verified: organizationSegmentSchema.fields?.verified || yup.string(),
+    nameID: nameSegmentSchema.fields?.nameID || textLengthValidator(),
+    contactEmail: organizationSegmentSchema.fields?.contactEmail || emailValidator({ maxLength: SMALL_TEXT_LENGTH }),
+    domain: organizationSegmentSchema.fields?.domain || textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
+    legalEntityName:
+      organizationSegmentSchema.fields?.legalEntityName || textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
+    website: organizationSegmentSchema.fields?.website || urlValidator({ maxLength: SMALL_TEXT_LENGTH }),
+    verified:
+      organizationSegmentSchema.fields?.verified ||
+      yup.mixed<OrganizationVerificationEnum>().oneOf(Object.values(OrganizationVerificationEnum)).notRequired(),
     linkedin: yup
       .string()
       .url(t('forms.validations.elementMustBeValidUrl', { name: t('components.profileSegment.socialLinks.linkedin') })),

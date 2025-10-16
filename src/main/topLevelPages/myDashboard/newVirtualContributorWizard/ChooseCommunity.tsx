@@ -10,6 +10,7 @@ import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { SelectableSpace } from './useVirtualContributorWizard';
 import { SelectableKnowledgeSpace } from './ExistingSpace';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 interface ChooseCommunityProps {
   onClose: () => void;
@@ -62,7 +63,7 @@ const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading, titl
   };
 
   const validationSchema = yup.object().shape({
-    spaceId: yup.string(),
+    spaceId: textLengthValidator(),
   });
 
   const onCreate = (values: { spaceId: string }) => {
