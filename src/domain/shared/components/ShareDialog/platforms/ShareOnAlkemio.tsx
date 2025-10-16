@@ -11,6 +11,7 @@ import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } 
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import SendButton from '@/core/ui/actions/SendButton';
 import { useShareLinkWithUserMutation } from '@/core/apollo/generated/apollo-hooks';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const ICON_URL = '/share-dialog/alkemio.png';
 
@@ -60,7 +61,7 @@ export const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = props => {
   );
 
   const validationSchema = yup.object().shape({
-    url: yup.string().required(t('forms.validations.required')),
+    url: textLengthValidator({ required: true }),
     message: yup
       .string()
       .required(t('forms.validations.required'))

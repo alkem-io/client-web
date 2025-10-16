@@ -9,6 +9,7 @@ import * as yup from 'yup';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import { SelectableSpace } from './useVirtualContributorWizard';
 import Loading from '@/core/ui/loading/Loading';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export interface SelectableKnowledgeSpace {
   id: string;
@@ -82,7 +83,7 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading, titleId }: 
   }, [spaces]);
 
   const validationSchema = yup.object().shape({
-    subspaceId: yup.string().required(),
+    subspaceId: textLengthValidator({ required: true }),
   });
 
   const onCreate = async (values: { subspaceId: string }) => {

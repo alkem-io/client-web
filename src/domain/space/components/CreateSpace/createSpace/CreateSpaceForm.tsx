@@ -32,6 +32,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import LinkButton from '@/core/ui/button/LinkButton';
 import { nameIdValidator } from '@/core/ui/forms/validator/nameIdValidator';
 import { SpaceTemplate } from '@/domain/templates/models/SpaceTemplate';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const FormikEffect = FormikEffectFactory<CreateSpaceFormValues>();
 
@@ -96,16 +97,13 @@ export const CreateSpaceForm = ({
       )
       .required(validationRequiredString),
     nameId: nameIdValidator,
-    tagline: yup
-      .string()
-      .trim()
-      .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
-      .max(SMALL_TEXT_LENGTH, ({ max }) =>
-        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
-      ),
+    tagline: textLengthValidator({ minLength: 3, maxLength: SMALL_TEXT_LENGTH }),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-    tags: yup.array().of(yup.string().min(2)).notRequired(),
-    spaceTemplateId: yup.string().nullable(),
+    tags: yup
+      .array()
+      .of(textLengthValidator({ minLength: 2 }))
+      .notRequired(),
+    spaceTemplateId: textLengthValidator().nullable(),
     addTutorialCallouts: yup.boolean(),
     acceptedTerms: yup.boolean().oneOf([true], t('forms.validations.acceptedTerms')),
   });

@@ -12,6 +12,7 @@ import { referenceSegmentSchema } from '@/domain/platformAdmin/components/Common
 import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 type CommunityGuidelinesFormProps = {
   data: FormValues | undefined;
@@ -34,7 +35,7 @@ type FormValues = {
 };
 
 const validationSchema = yup.object().shape({
-  displayName: yup.string().required(),
+  displayName: textLengthValidator({ required: true }),
   description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   references: referenceSegmentSchema,
 });

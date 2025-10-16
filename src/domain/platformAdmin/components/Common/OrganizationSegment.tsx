@@ -1,16 +1,20 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import Gutters from '@/core/ui/grid/Gutters';
+import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
+import { emailValidator } from '@/core/ui/forms/validator/emailValidator';
+import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 
 export const organizationSegmentSchema = yup.object().shape({
-  contactEmail: yup.string().email('Not a valid email').max(SMALL_TEXT_LENGTH),
-  domain: yup.string().max(SMALL_TEXT_LENGTH),
-  legalEntityName: yup.string().max(SMALL_TEXT_LENGTH),
-  website: yup.string().url('Not a valid url').max(SMALL_TEXT_LENGTH),
-  verified: yup.string(),
+  contactEmail: emailValidator({ maxLength: SMALL_TEXT_LENGTH }),
+  domain: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
+  legalEntityName: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
+  website: urlValidator({ maxLength: SMALL_TEXT_LENGTH }),
+  verified: yup.mixed<OrganizationVerificationEnum>().oneOf(Object.values(OrganizationVerificationEnum)).notRequired(),
 });
 
 interface OrganizationSegmentProps {

@@ -188,6 +188,7 @@ export const mapLinkDataToUpdateLinkInput = (linkData: LinkDetails | undefined):
     uri: linkData.uri,
     profile: {
       displayName: linkData.profile.displayName,
+      description: linkData.profile.description,
     },
   };
 };

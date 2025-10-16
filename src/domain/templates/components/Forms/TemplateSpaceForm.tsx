@@ -1,5 +1,4 @@
 import React, { ReactNode, useMemo, useRef, useState } from 'react';
-import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { FormikHelpers, FormikProps } from 'formik';
@@ -15,6 +14,7 @@ import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
 import { nameOf } from '@/core/utils/nameOf';
 import { Box, FormControlLabel, Switch } from '@mui/material';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   spaceId?: string;
@@ -29,7 +29,7 @@ interface TemplateSpaceFormProps {
 }
 
 const validator = {
-  spaceId: yup.string(),
+  spaceId: textLengthValidator(),
 };
 
 /* This form is used for both create and update of Space Template, which is meta data plus TemplateContentSpace.

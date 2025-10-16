@@ -6,8 +6,10 @@ import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/Vali
 
 const translationKey: TranslationKey = 'components.wysiwyg-editor.validation.maxLength';
 
-const MarkdownValidator = (maxLength: MarkdownTextMaxLength) =>
-  string().max(maxLength, ({ max }) => TranslatedValidatedMessageWithPayload(translationKey)({ max }));
+const MarkdownValidator = (maxLength: MarkdownTextMaxLength, options?: { required?: boolean }) => {
+  const base = string().max(maxLength, ({ max }) => TranslatedValidatedMessageWithPayload(translationKey)({ max }));
+  return options?.required ? base.required(TranslatedValidatedMessageWithPayload('forms.validations.required')) : base;
+};
 
 export const isMarkdownMaxLengthError = (
   error: string | ValidationMessageWithPayload
