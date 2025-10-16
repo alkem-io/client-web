@@ -34,6 +34,8 @@ interface KratosUIProps extends PropsWithChildren {
   onBeforeSubmit?: () => void;
   disableInputs?: boolean;
   flowType?: 'login' | 'registration' | 'settings' | 'recovery' | 'verification';
+  onInputChange?: (node: UiNode, value: string) => void;
+  submitDisabled?: boolean;
 }
 
 const toAlertVariant = (type: string) => {
@@ -77,6 +79,8 @@ export const KratosUI: FC<KratosUIProps> = ({
   removedFields = KRATOS_REMOVED_FIELDS_DEFAULT,
   disableInputs = false,
   flowType,
+  onInputChange,
+  submitDisabled = false,
   ...rest
 }) => {
   const { t } = useTranslation();
@@ -140,7 +144,7 @@ export const KratosUI: FC<KratosUIProps> = ({
     }
 
     if (!isInputNode(node)) {
-      return <KratosInput key={key} node={node} />;
+      return <KratosInput key={key} node={node} onValueChange={value => onInputChange?.(node, value)} />;
     }
 
     const variant = guessVariant(node);
@@ -187,13 +191,21 @@ export const KratosUI: FC<KratosUIProps> = ({
             sx={{ paddingY: 1, backgroundColor: theme => theme.palette.highlight.dark }}
             key={key}
             node={node}
-            disabled={disableInputs}
+            disabled={disableInputs || submitDisabled}
           />
         );
       case 'checkbox':
         return <KratosCheckbox key={key} node={node} />;
       default:
-        return <KratosInput key={key} node={node} disabled={disableInputs} {...extraProps} />;
+        return (
+          <KratosInput
+            key={key}
+            node={node}
+            disabled={disableInputs}
+            {...extraProps}
+            onValueChange={value => onInputChange?.(node, value)}
+          />
+        );
     }
   };
 
