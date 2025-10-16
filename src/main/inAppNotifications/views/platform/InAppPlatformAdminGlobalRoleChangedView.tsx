@@ -11,7 +11,7 @@ export const InAppPlatformAdminGlobalRoleChangedView = (notification: InAppNotif
 
   const notificationTextValues = {
     triggeredByName: triggeredBy.profile.displayName,
-    userName: payload.user?.profile?.displayName,
+    userName: payload.user?.profile?.displayName ?? 'Unknown User',
     role: payload.role,
   };
 

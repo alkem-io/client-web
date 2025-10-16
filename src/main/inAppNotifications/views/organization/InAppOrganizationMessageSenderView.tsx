@@ -11,7 +11,7 @@ export const InAppOrganizationMessageSenderView = (notification: InAppNotificati
 
   const notificationTextValues = {
     triggeredByName: triggeredBy.profile.displayName,
-    organizationName: payload.organization?.profile?.displayName,
+    organizationName: payload.organization?.profile?.displayName ?? 'Unknown Organization',
     comment: payload.organizationMessage,
   };
 
