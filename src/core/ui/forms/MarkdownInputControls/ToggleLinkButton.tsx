@@ -3,6 +3,7 @@ import { Editor } from '@tiptap/react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
+import * as yup from 'yup';
 import FormikInputField from '../FormikInputField/FormikInputField';
 import { LinkOutlined } from '@mui/icons-material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -13,6 +14,8 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Selection } from 'prosemirror-state';
 import { BlockTitle } from '@/core/ui/typography';
 import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
+import { urlValidator } from '../validator/urlValidator';
+import { MID_TEXT_LENGTH } from '../field-length.constants';
 
 interface ToggleLinkButtonProps extends Omit<MarkdownInputToolbarButtonProps, 'tooltip'> {
   editor: Editor | null;
@@ -97,6 +100,10 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
 
   const initialValues: LinkProps = { href: 'https://' };
 
+  const validationSchema = yup.object().shape({
+    href: urlValidator({ maxLength: MID_TEXT_LENGTH, required: true }),
+  });
+
   const isDisabled = !editor || !editor.can().toggleLink(initialValues);
 
   const isActive = editor?.isActive('link');
@@ -118,7 +125,7 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
         <DialogHeader onClose={closeDialog}>
           <BlockTitle id="toggle-link-dialog-title">{t('components.wysiwyg-editor.link.dialogHeader')}</BlockTitle>
         </DialogHeader>
-        <Formik initialValues={initialValues} onSubmit={markAsLink}>
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={markAsLink}>
           <Form>
             <Gutters>
               <FormikInputField title={t('common.url')} name="href" />

@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowUpwardIcon from '@mui/icons-material/KeyboardArrowUp';
 import ArrowDownwardIcon from '@mui/icons-material/KeyboardArrowDown';
 import { MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 interface FormQuestionFieldProps {
   index: number;
@@ -22,8 +23,8 @@ interface FormQuestionFieldProps {
 }
 
 export const questionSchema = yup.object().shape({
-  question: yup.string().required().max(MID_TEXT_LENGTH),
-  explanation: yup.string(),
+  question: textLengthValidator({ maxLength: MID_TEXT_LENGTH, required: true }),
+  explanation: textLengthValidator(),
   required: yup.boolean().required(),
 });
 

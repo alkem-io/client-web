@@ -12,12 +12,10 @@ import { Message } from '@/domain/communication/room/models/Message';
 import { CommentInputFieldProps } from '@/domain/communication/room/Comments/CommentInputField';
 import { FetchResult } from '@apollo/client';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import useSubscribeOnRoomEvents from '../../callout/useSubscribeOnRoomEvents';
 import { Identifiable } from '@/core/utils/Identifiable';
 
-export interface CalloutContributionCommentsContainerProps
-  extends SimpleContainerProps<CalloutContributionCommentsContainerProvided> {
+export interface CalloutContributionCommentsContainerProps {
   callout: {
     settings: {
       contribution: {
@@ -45,17 +43,16 @@ interface CalloutContributionCommentsContainerProvided {
   canAddReaction: boolean;
   canDeleteMessage: (authorId: string | undefined) => boolean;
   postMessage: (message: string) => Promise<FetchResult<unknown>>;
-  postReply: (reply: { messageText: string; threadId: string }) => void;
-  handleDeleteMessage: (commentsId: string, messageId: string) => void;
+  postReply: (reply: { messageText: string; threadId: string }) => Promise<FetchResult<unknown>>;
+  handleDeleteMessage: (commentsId: string, messageId: string) => Promise<unknown>;
   loading: boolean;
   posting: boolean;
 }
 
-const CalloutContributionCommentsContainer = ({
+const useCalloutContributionComments = ({
   callout,
   contribution,
-  children,
-}: CalloutContributionCommentsContainerProps) => {
+}: CalloutContributionCommentsContainerProps): CalloutContributionCommentsContainerProvided => {
   const { userModel, isAuthenticated } = useCurrentUserContext();
 
   const { data, loading } = useCalloutContributionCommentsQuery({
@@ -110,25 +107,21 @@ const CalloutContributionCommentsContainer = ({
     isSubscribedToMessages: isSubscribedToComments,
   });
 
-  return (
-    <>
-      {children({
-        commentsId,
-        messages,
-        vcInteractions: room?.vcInteractions ?? [],
-        canReadMessages,
-        commentsEnabled,
-        canPostMessages,
-        postMessage,
-        postReply,
-        canDeleteMessage,
-        handleDeleteMessage,
-        canAddReaction,
-        loading: loading,
-        posting: postingMessage || postingReply || deletingMessage,
-      })}
-    </>
-  );
+  return {
+    commentsId,
+    messages,
+    vcInteractions: room?.vcInteractions ?? [],
+    canReadMessages,
+    commentsEnabled,
+    canPostMessages,
+    postMessage,
+    postReply,
+    canDeleteMessage,
+    handleDeleteMessage,
+    canAddReaction,
+    loading: loading,
+    posting: postingMessage || postingReply || deletingMessage,
+  };
 };
 
-export default CalloutContributionCommentsContainer;
+export default useCalloutContributionComments;

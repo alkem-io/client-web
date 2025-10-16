@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { Formik, FormikHelpers, FormikProps } from 'formik';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { TagsetField } from '@/domain/platformAdmin/components/Common/TagsetSegment';
@@ -73,11 +74,11 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
 
   const validationSchema = yup.object().shape({
     profile: yup.object().shape({
-      displayName: displayNameValidator.required(),
-      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
+      displayName: displayNameValidator({ required: true }),
+      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH, { required: true }),
       tagsets: yup.array().of(
         yup.object().shape({
-          tags: yup.array().of(yup.string().min(2)),
+          tags: yup.array().of(textLengthValidator({ minLength: 2 })),
         })
       ),
     }),

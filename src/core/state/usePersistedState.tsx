@@ -1,15 +1,25 @@
 import { useState } from 'react';
 
+/**
+ * Behaves like React's useState, but persists the state in the browser's localStorage if available.
+ * On initialization, it checks if there's a saved value in localStorage for the given key.
+ * If found, it uses that value; otherwise, it falls back to the provided initial value.
+ * Whenever the state is updated, the new value is also saved to localStorage.
+ * @param localStorageKey
+ * @param initialValue if not set in localStorage, this value will be used as initial state
+ * @returns
+ */
 const usePersistedState = <T,>(
   localStorageKey: string,
   initialValue: T
 ): [T, (value: T | ((currentValue: T) => T)) => void] => {
-  const localStorage = window.localStorage;
+  const getLocalStorage = () => (typeof window !== 'undefined' ? window.localStorage : undefined);
+
   const [state, setState] = useState<T>(() => {
     try {
-      const saved = localStorage.getItem(localStorageKey);
+      const saved = getLocalStorage()?.getItem(localStorageKey) ?? null;
       if (saved === null) {
-        localStorage.setItem(localStorageKey, JSON.stringify(initialValue));
+        getLocalStorage()?.setItem(localStorageKey, JSON.stringify(initialValue));
         return initialValue;
       }
       return JSON.parse(saved) as T;
@@ -20,14 +30,17 @@ const usePersistedState = <T,>(
 
   const handleChangeState = (value: T | ((currentValue: T) => T)) => {
     try {
-      let newValue: T;
       if (typeof value === 'function') {
-        newValue = (value as (currentValue: T) => T)(state);
+        // Use React's functional update to get the current state
+        setState(currentState => {
+          const newValue = (value as (currentValue: T) => T)(currentState);
+          getLocalStorage()?.setItem(localStorageKey, JSON.stringify(newValue));
+          return newValue;
+        });
       } else {
-        newValue = value;
+        setState(value);
+        getLocalStorage()?.setItem(localStorageKey, JSON.stringify(value));
       }
-      setState(newValue);
-      localStorage.setItem(localStorageKey, JSON.stringify(newValue));
     } catch {
       // Ignore write errors
     }
