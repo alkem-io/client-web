@@ -21,7 +21,7 @@ import GlobalStyles from '@mui/material/GlobalStyles';
 import { StyledEngineProvider, Theme } from '@mui/material/styles';
 import { FC } from 'react';
 import { CookiesProvider } from 'react-cookie';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
@@ -119,16 +119,7 @@ const Root: FC = () => {
                                     <InAppNotificationsDialog />
                                     <InAppNotificationCountSubscriber />
                                     <VersionHandling />
-                                    <NotFoundErrorBoundary
-                                      errorComponent={
-                                        <TopLevelLayout>
-                                          <Error404 />
-                                        </TopLevelLayout>
-                                      }
-                                    >
-                                      <TopLevelRoutes />
-                                      <GlobalErrorDialog />
-                                    </NotFoundErrorBoundary>
+                                    <NotFoundBoundaryContainer />
                                   </InAppNotificationsProvider>
                                 </PendingMembershipsDialogProvider>
                               </UserProvider>
@@ -145,6 +136,24 @@ const Root: FC = () => {
         </CookiesProvider>
       </RootThemeProvider>
     </StyledEngineProvider>
+  );
+};
+
+const NotFoundBoundaryContainer: FC = () => {
+  const location = useLocation();
+
+  return (
+    <NotFoundErrorBoundary
+      resetKey={`${location.pathname}${location.search}`}
+      errorComponent={
+        <TopLevelLayout>
+          <Error404 />
+        </TopLevelLayout>
+      }
+    >
+      <TopLevelRoutes />
+      <GlobalErrorDialog />
+    </NotFoundErrorBoundary>
   );
 };
 

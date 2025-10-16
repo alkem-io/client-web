@@ -2,6 +2,7 @@ import React from 'react';
 
 interface Props extends React.PropsWithChildren {
   errorComponent: React.ReactNode;
+  resetKey?: string | number | boolean;
 }
 
 interface State {
@@ -19,6 +20,13 @@ export class NotFoundErrorBoundary extends React.Component<Props, State> {
     return {
       hasError: error instanceof NotFoundError,
     };
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.resetKey !== this.props.resetKey && this.state.hasError) {
+      // Reset the error state when the reset key changes (e.g., on navigation)
+      this.setState({ hasError: false });
+    }
   }
 
   render() {
