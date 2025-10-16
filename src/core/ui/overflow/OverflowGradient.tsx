@@ -10,7 +10,7 @@ export interface OverflowGradientProps extends BoxProps {
 }
 
 /**
- * @deprecated Try to use AutomaticOverflowGradient instead
+ * @deprecated Try to use AutomaticOverflowGradient instead, and remove this one if not used anymore
  */
 const OverflowGradient = ({
   lastLine = false,

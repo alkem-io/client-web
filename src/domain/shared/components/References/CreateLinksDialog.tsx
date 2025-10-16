@@ -84,7 +84,7 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
 
   const [handleSave, isSaving] = useLoadingState(async (currentLinks: CreateLinkFormValues[]) => {
     setHangingLinkIds([]);
-    await onSave(currentLinks);
+    return onSave(currentLinks);
   });
 
   useEffect(() => {

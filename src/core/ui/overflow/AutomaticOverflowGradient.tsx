@@ -23,7 +23,6 @@ const AutomaticOverflowGradient = ({
   const outerRef = useRef<HTMLElement>(null);
   useEffect(() => {
     if (outerRef.current && internalRef.current) {
-      console.log('height changed');
       setIsOverflowing(internalRef.current.scrollHeight > outerRef.current.clientHeight);
     }
   }, [outerRef, internalRef, height, children]);
