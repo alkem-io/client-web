@@ -190,7 +190,9 @@ export const VirtualContributorForm = ({
                       <FormikInputField name="profile.displayName" title={t('components.nameSegment.name')} />
                       <ProfileSegment />
                       {/* use keywords tagset (existing after creation of VC) as tags */}
-                      {tagsets?.find(tagset => tagset.name.toLowerCase() === TagsetReservedName.Keywords) ? (
+                      {tagsets?.find(
+                        tagset => tagset.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase()
+                      ) ? (
                         <TagsetSegment
                           name={nameOf<VirtualContributorFormValues>('profile.tagsets')}
                           title={t('common.tags')}
