@@ -18,7 +18,6 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import Loading from '@/core/ui/loading/Loading';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
 import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
@@ -26,6 +25,7 @@ import useEnsurePresence from '@/core/utils/ensurePresence';
 import LinkContributionsList from './LinksList';
 import { LinkContribution } from './models/LinkContribution';
 import { LinkDetails } from './models/LinkDetails';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 const MAX_LINKS_COMPACT_VIEW = 8;
 
@@ -154,7 +154,7 @@ const CalloutContributionsLink = ({
     closeEditDialog();
   };
 
-  const handleDeleteLink = async () => {
+  const [handleDeleteLink, isDeletingLink] = useLoadingState(async () => {
     const deletingLinkId = ensurePresence(deletingLink?.link?.id);
     const deletingContributionId = deletingLink?.id;
 
@@ -175,7 +175,7 @@ const CalloutContributionsLink = ({
     onCalloutUpdate?.();
     setDeletingLink(undefined);
     closeEditDialog();
-  };
+  });
 
   return (
     <StorageConfigContextProvider
@@ -183,11 +183,12 @@ const CalloutContributionsLink = ({
       calloutId={callout.id}
       skip={!addNewLinkDialogOpen && !editLink}
     >
-      {loading ? <Loading /> : undefined}
       <Gutters ref={inViewRef}>
         <LinkContributionsList
           contributions={contributions}
           onEditContribution={contribution => setEditLink(contribution)}
+          loading={loading}
+          expanded={expanded}
         />
         <Box
           display="flex"
@@ -237,6 +238,9 @@ const CalloutContributionsLink = ({
           titleId: 'callout.link-collection.delete-confirm-title',
           content: t('callout.link-collection.delete-confirm', { title: callout.framing.profile.displayName }),
           confirmButtonTextId: 'buttons.delete',
+        }}
+        state={{
+          isLoading: isDeletingLink,
         }}
       />
     </StorageConfigContextProvider>

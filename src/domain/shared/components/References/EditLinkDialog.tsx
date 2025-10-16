@@ -1,4 +1,4 @@
-import { FC, ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Box, Button, Dialog, DialogContent } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
@@ -20,12 +20,13 @@ import { nameOf } from '@/core/utils/nameOf';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import useLoadingState from '../../utils/useLoadingState';
 
 const validationSchema = yup.object().shape({
   id: yup.string().required(),
+  uri: urlValidator({ required: true }),
   profile: yup.object().shape({
     displayName: displayNameValidator({ required: true }),
-    uri: urlValidator({ required: true }),
     description: textLengthValidator({ maxLength: LONG_TEXT_LENGTH }),
   }),
 });
@@ -40,14 +41,14 @@ interface EditLinkDialogProps {
   onDelete: () => void;
 }
 
-const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, onSave, canDelete, onDelete }) => {
+const EditLinkDialog = ({ open, onClose, title, link, onSave, canDelete, onDelete }: EditLinkDialogProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
 
   const CalloutIcon = contributionIcons[CalloutContributionType.Link];
 
   const initialValues: LinkDetails = useMemo(() => ({ ...link }), [link]);
-
+  const [handleSave, isSaving] = useLoadingState((values: LinkDetails) => onSave(values));
   return (
     <Dialog open={open} aria-labelledby="link-edit" fullWidth maxWidth="lg">
       <DialogHeader onClose={onClose}>
@@ -98,7 +99,7 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
                 <Actions paddingX={gutters()}>
                   {canDelete && <DeleteButton onClick={onDelete} />}
                   <Button onClick={onClose}>{t('buttons.cancel')}</Button>
-                  <Button variant="contained" onClick={() => onSave(values)} disabled={!isValid}>
+                  <Button variant="contained" onClick={() => handleSave(values)} loading={isSaving} disabled={!isValid}>
                     {t('buttons.save')}
                   </Button>
                 </Actions>

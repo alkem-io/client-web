@@ -16,11 +16,12 @@ const GuttersGrid = ({
   ref?: React.Ref<unknown>;
 }) => {
   const { isMediumSmallScreen } = useScreenSize();
+  const gridColumns = isMediumSmallScreen ? 'auto' : (100 / columns + '% ').repeat(columns).trim();
   return (
     <Box
       ref={ref}
       display="grid"
-      gridTemplateColumns={isMediumSmallScreen ? 'auto' : 'auto '.repeat(columns).trim()}
+      gridTemplateColumns={gridColumns}
       rowGap={gutters()}
       columnGap={gutters()}
       {...props}

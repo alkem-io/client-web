@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Button, DialogContent, IconButton, Link, Tooltip } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +22,7 @@ import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/Vali
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { newLinkName } from '@/domain/common/link/newLinkName';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import useLoadingState from '../../utils/useLoadingState';
 
 export interface CreateLinkFormValues {
   id: string;
@@ -60,7 +61,7 @@ export const linkSegmentValidationObject = yup.object().shape({
 });
 export const linkSegmentSchema = yup.array().of(linkSegmentValidationObject);
 
-const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, onAddMore, onRemove, onSave }) => {
+const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }: CreateLinksDialogProps) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
@@ -81,10 +82,10 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
     onClose();
   };
 
-  const handleSave = (currentLinks: CreateLinkFormValues[]) => {
+  const [handleSave, isSaving] = useLoadingState(async (currentLinks: CreateLinkFormValues[]) => {
     setHangingLinkIds([]);
-    onSave(currentLinks);
-  };
+    await onSave(currentLinks);
+  });
 
   useEffect(() => {
     const run = async () => {
@@ -243,7 +244,12 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
                 </Box>
                 <Actions padding={gutters()}>
                   <Button onClick={handleOnClose}>{t('buttons.cancel')}</Button>
-                  <Button variant="contained" onClick={() => handleSave(currentLinks)} disabled={!isValid}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleSave(currentLinks)}
+                    disabled={!isValid}
+                    loading={isSaving}
+                  >
                     {t('buttons.save')}
                   </Button>
                 </Actions>
