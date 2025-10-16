@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import EditLinkDialog, { EditLinkFormValues } from '@/domain/shared/components/References/EditLinkDialog';
+import EditLinkDialog from '@/domain/shared/components/References/EditLinkDialog';
 import CreateLinksDialog, { CreateLinkFormValues } from '@/domain/shared/components/References/CreateLinksDialog';
 import { Box, IconButton, Link } from '@mui/material';
 import {
@@ -26,18 +26,10 @@ import Gutters from '@/core/ui/grid/Gutters';
 import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import LinkContributionsList from './LinksList';
+import { LinkContribution } from './models/LinkContribution';
+import { LinkDetails } from './models/LinkDetails';
 
-const MAX_LINKS_NORMAL_VIEW = 3;
-
-export interface FormattedLink extends EditLinkFormValues {
-  authorization:
-    | {
-        myPrivileges?: AuthorizationPrivilege[];
-      }
-    | undefined;
-  sortOrder: number;
-  contributionId: string;
-}
+const MAX_LINKS_NORMAL_VIEW = 8;
 
 interface CalloutContributionsLinkProps extends BaseCalloutViewProps {}
 
@@ -82,8 +74,8 @@ const CalloutContributionsLink = ({
   });
 
   const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
-  const [editLink, setEditLink] = useState<FormattedLink>();
-  const [deletingLink, setDeletingLink] = useState<FormattedLink>();
+  const [editLink, setEditLink] = useState<LinkContribution>();
+  const [deletingLink, setDeletingLink] = useState<LinkContribution>();
 
   const closeAddNewDialog = () => setAddNewLinkDialogOpen(false);
   const closeEditDialog = () => setEditLink(undefined);
@@ -146,15 +138,15 @@ const CalloutContributionsLink = ({
   };
 
   // Edit existing Links:
-  const handleEditLink = async (link: EditLinkFormValues) => {
+  const handleEditLink = async (link: LinkDetails) => {
     await updateLink({
       variables: {
         input: {
-          ID: link.id,
+          ID: link.id!,
           uri: link.uri,
           profile: {
-            displayName: link.name,
-            description: link.description,
+            displayName: link.profile.displayName,
+            description: link.profile.description,
           },
         },
       },
@@ -164,8 +156,8 @@ const CalloutContributionsLink = ({
   };
 
   const handleDeleteLink = async () => {
-    const deletingLinkId = ensurePresence(deletingLink?.id);
-    const deletingContributionId = deletingLink?.contributionId;
+    const deletingLinkId = ensurePresence(deletingLink?.link?.id);
+    const deletingContributionId = deletingLink?.id;
 
     await deleteLink({
       variables: {
@@ -186,7 +178,7 @@ const CalloutContributionsLink = ({
     closeEditDialog();
   };
 
-  const formattedLinks: FormattedLink[] = sortBy(
+  const formattedLinks = sortBy(
     compact(
       contributions.map(
         contribution =>
@@ -217,12 +209,17 @@ const CalloutContributionsLink = ({
     >
       {loading ? <Loading /> : undefined}
       <Gutters ref={inViewRef}>
-        <LinkContributionsList contributions={contributions} />
+        <LinkContributionsList
+          contributions={contributions}
+          onEditContribution={contribution => setEditLink(contribution)}
+        />
+        <hr />
         <References
           references={formattedLinks}
           noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
           onEdit={reference => setEditLink(reference)}
         />
+        <hr />
         <Box
           display="flex"
           justifyContent={hasMore && !expanded ? 'space-between' : 'end'}
@@ -253,8 +250,8 @@ const CalloutContributionsLink = ({
       <EditLinkDialog
         open={Boolean(editLink)}
         onClose={closeEditDialog}
-        title={<Box>{t('callout.link-collection.edit-link', { title: editLink?.name })}</Box>}
-        link={editLink!}
+        title={<Box>{t('callout.link-collection.edit-link', { title: editLink?.link?.profile.displayName })}</Box>}
+        link={editLink?.link!}
         onSave={values => handleEditLink(values)}
         canDelete={canDeleteLinks}
         onDelete={() => setDeletingLink(editLink)}

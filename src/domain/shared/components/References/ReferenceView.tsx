@@ -1,5 +1,5 @@
 import { Box, IconButton, Tooltip, styled, useTheme } from '@mui/material';
-import { BlockSectionTitle, CardText } from '@/core/ui/typography';
+import { BlockSectionTitle } from '@/core/ui/typography';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { ReferenceIcon } from './icons/ReferenceIcon';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -11,6 +11,8 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { BoxProps } from '@mui/system';
+import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
+import { lighten } from '@mui/material';
 
 export interface ReferenceViewProps extends BoxProps {
   reference: ReferenceModel;
@@ -21,25 +23,28 @@ export interface ReferenceViewProps extends BoxProps {
 const Root = styled(Box)(() => ({
   display: 'flex',
   '.only-on-hover': {
-    display: 'none',
+    visibility: 'hidden',
   },
   '&:hover .only-on-hover': {
-    display: 'block',
+    visibility: 'visible',
   },
 }));
 
-type ReferenceDescriptionProps = {
-  children: string | undefined;
-};
-
-const ReferenceDescription = ({ children }: ReferenceDescriptionProps) => {
+const ReferenceDescription = ({ children }: { children: string | undefined }) => {
+  const theme = useTheme();
   if (!children) {
     return null;
   }
 
   return (
     <Tooltip title={children} placement="top-start" disableInteractive>
-      <CardText noWrap>{children}</CardText>
+      <CroppedMarkdown
+        caption
+        sx={{ '& > p': { ...theme.typography.body2 }, color: lighten(theme.palette.text.primary, 0.4) }}
+        maxHeightGutters={3}
+      >
+        {children}
+      </CroppedMarkdown>
     </Tooltip>
   );
 };

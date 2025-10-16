@@ -16,13 +16,8 @@ import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/Vali
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
-
-export interface EditLinkFormValues {
-  id: string;
-  name: string;
-  uri: string;
-  description?: string;
-}
+import { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
+import { nameOf } from '@/core/utils/nameOf';
 
 const validationSchema = yup.object().shape({
   id: yup.string().required(),
@@ -44,8 +39,8 @@ interface EditLinkDialogProps {
   open: boolean;
   onClose: () => void;
   title: ReactNode;
-  link: EditLinkFormValues;
-  onSave: (values: EditLinkFormValues) => Promise<void>;
+  link: LinkDetails;
+  onSave: (values: LinkDetails) => Promise<void>;
   canDelete?: boolean;
   onDelete: () => void;
 }
@@ -56,7 +51,7 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
 
   const CalloutIcon = contributionIcons[CalloutContributionType.Link];
 
-  const initialValues: EditLinkFormValues = useMemo(() => ({ ...link }), [link]);
+  const initialValues: LinkDetails = useMemo(() => ({ ...link }), [link]);
 
   return (
     <Dialog open={open} aria-labelledby="link-edit" fullWidth maxWidth="lg">
@@ -81,10 +76,14 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
               <>
                 <Gutters>
                   <Gutters row={!isMediumSmallScreen} disablePadding alignItems="start">
-                    <FormikInputField name={'name'} title={t('common.title')} fullWidth={isMediumSmallScreen} />
+                    <FormikInputField
+                      name={nameOf<LinkDetails>('profile.displayName')}
+                      title={t('common.title')}
+                      fullWidth={isMediumSmallScreen}
+                    />
                     <Box flexGrow={1} width={isMediumSmallScreen ? '100%' : undefined}>
                       <FormikFileInput
-                        name={'uri'}
+                        name={nameOf<LinkDetails>('uri')}
                         title={t('common.url')}
                         sx={{ flexGrow: 1 }}
                         entityID={values.id}
@@ -93,7 +92,10 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
                     </Box>
                   </Gutters>
                   <Gutters disablePadding>
-                    <FormikInputField name={'description'} title={'Description'} />
+                    <FormikInputField
+                      name={nameOf<LinkDetails>('profile.description')}
+                      title={t('common.description')}
+                    />
                   </Gutters>
                 </Gutters>
                 <Actions paddingX={gutters()}>
