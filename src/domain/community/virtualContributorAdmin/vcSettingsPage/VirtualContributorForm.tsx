@@ -60,7 +60,7 @@ type VirtualContributorFormProps = {
   virtualContributor: VirtualContributorProps;
   bokProfile?: SpaceBodyOfKnowledgeModel;
   avatar: VisualModelFull | undefined;
-  onSave?: (virtualContributor: UpdateVirtualContributorInput) => void;
+  onSave?: (virtualContributor: UpdateVirtualContributorInput) => Promise<unknown>;
   hasBackNavigation?: boolean;
 };
 

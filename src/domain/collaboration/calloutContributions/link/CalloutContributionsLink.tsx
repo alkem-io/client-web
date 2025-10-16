@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
-import { Caption, CaptionSmall } from '@/core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import EditLinkDialog, { EditLinkFormValues } from '@/domain/shared/components/References/EditLinkDialog';
+import EditLinkDialog from '@/domain/shared/components/References/EditLinkDialog';
 import CreateLinksDialog, { CreateLinkFormValues } from '@/domain/shared/components/References/CreateLinksDialog';
 import { Box, IconButton, Link } from '@mui/material';
 import {
@@ -12,31 +12,22 @@ import {
   useUpdateLinkMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import AddIcon from '@mui/icons-material/Add';
-import References from '@/domain/shared/components/References/References';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { v4 as uuid } from 'uuid';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import { compact, sortBy } from 'lodash';
-import Loading from '@/core/ui/loading/Loading';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
 import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import LinkContributionsList from './LinksList';
+import { LinkContribution } from './models/LinkContribution';
+import { LinkDetails } from './models/LinkDetails';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
-const MAX_LINKS_NORMAL_VIEW = 3;
-
-export interface FormattedLink extends EditLinkFormValues {
-  authorization:
-    | {
-        myPrivileges?: AuthorizationPrivilege[];
-      }
-    | undefined;
-  sortOrder: number;
-  contributionId: string;
-}
+const MAX_LINKS_COMPACT_VIEW = 8;
 
 interface CalloutContributionsLinkProps extends BaseCalloutViewProps {}
 
@@ -59,7 +50,7 @@ const CalloutContributionsLink = ({
     callout,
     contributionType: CalloutContributionType.Link,
     onCalloutUpdate,
-    pageSize: MAX_LINKS_NORMAL_VIEW,
+    pageSize: MAX_LINKS_COMPACT_VIEW,
   });
 
   // Always show all Links in expanded mode:
@@ -81,8 +72,8 @@ const CalloutContributionsLink = ({
   });
 
   const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
-  const [editLink, setEditLink] = useState<FormattedLink>();
-  const [deletingLink, setDeletingLink] = useState<FormattedLink>();
+  const [editLink, setEditLink] = useState<LinkContribution>();
+  const [deletingLink, setDeletingLink] = useState<LinkContribution>();
 
   const closeAddNewDialog = () => setAddNewLinkDialogOpen(false);
   const closeEditDialog = () => setEditLink(undefined);
@@ -145,15 +136,16 @@ const CalloutContributionsLink = ({
   };
 
   // Edit existing Links:
-  const handleEditLink = async (link: EditLinkFormValues) => {
+  const handleEditLink = async (link: LinkDetails) => {
+    const linkId = ensurePresence(link?.id);
     await updateLink({
       variables: {
         input: {
-          ID: link.id,
+          ID: linkId,
           uri: link.uri,
           profile: {
-            displayName: link.name,
-            description: link.description,
+            displayName: link.profile.displayName,
+            description: link.profile.description,
           },
         },
       },
@@ -162,9 +154,9 @@ const CalloutContributionsLink = ({
     closeEditDialog();
   };
 
-  const handleDeleteLink = async () => {
-    const deletingLinkId = ensurePresence(deletingLink?.id);
-    const deletingContributionId = deletingLink?.contributionId;
+  const [handleDeleteLink, isDeletingLink] = useLoadingState(async () => {
+    const deletingLinkId = ensurePresence(deletingLink?.link?.id);
+    const deletingContributionId = deletingLink?.id;
 
     await deleteLink({
       variables: {
@@ -183,30 +175,7 @@ const CalloutContributionsLink = ({
     onCalloutUpdate?.();
     setDeletingLink(undefined);
     closeEditDialog();
-  };
-
-  const formattedLinks: FormattedLink[] = sortBy(
-    compact(
-      contributions.map(
-        contribution =>
-          contribution.link &&
-          contribution.id && {
-            ...contribution.link,
-            sortOrder: contribution.sortOrder ?? 0,
-            contributionId: contribution.id,
-          }
-      )
-    ).map(link => ({
-      id: link.id,
-      uri: link.uri,
-      name: link.profile?.displayName,
-      description: link.profile?.description,
-      authorization: link.authorization,
-      sortOrder: link.sortOrder ?? 0,
-      contributionId: link.contributionId,
-    })),
-    'sortOrder'
-  );
+  });
 
   return (
     <StorageConfigContextProvider
@@ -214,12 +183,12 @@ const CalloutContributionsLink = ({
       calloutId={callout.id}
       skip={!addNewLinkDialogOpen && !editLink}
     >
-      {loading ? <Loading /> : undefined}
       <Gutters ref={inViewRef}>
-        <References
-          references={formattedLinks}
-          noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
-          onEdit={reference => setEditLink(reference)}
+        <LinkContributionsList
+          contributions={contributions}
+          onEditContribution={contribution => setEditLink(contribution)}
+          loading={loading}
+          expanded={expanded}
         />
         <Box
           display="flex"
@@ -251,8 +220,8 @@ const CalloutContributionsLink = ({
       <EditLinkDialog
         open={Boolean(editLink)}
         onClose={closeEditDialog}
-        title={<Box>{t('callout.link-collection.edit-link', { title: editLink?.name })}</Box>}
-        link={editLink!}
+        title={<Box>{t('callout.link-collection.edit-link', { title: editLink?.link?.profile.displayName })}</Box>}
+        link={editLink?.link!}
         onSave={values => handleEditLink(values)}
         canDelete={canDeleteLinks}
         onDelete={() => setDeletingLink(editLink)}
@@ -269,6 +238,9 @@ const CalloutContributionsLink = ({
           titleId: 'callout.link-collection.delete-confirm-title',
           content: t('callout.link-collection.delete-confirm', { title: callout.framing.profile.displayName }),
           confirmButtonTextId: 'buttons.delete',
+        }}
+        state={{
+          isLoading: isDeletingLink,
         }}
       />
     </StorageConfigContextProvider>

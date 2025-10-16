@@ -40,7 +40,7 @@ export const VCSettingsPage = () => {
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
 
   const handleUpdate = virtualContributor => {
-    updateContributorMutation({
+    return updateContributorMutation({
       variables: {
         virtualContributorData: {
           ID: virtualContributor.ID,
