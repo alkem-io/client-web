@@ -17,6 +17,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { CommentInputFieldProps } from './CommentInputField';
 import CalloutClosedMarginal from '@/domain/collaboration/callout/calloutBlock/CalloutClosedMarginal';
 import { Box, BoxProps } from '@mui/material';
+import useKeepElementScroll from '@/domain/shared/utils/scroll/useKeepElementScroll';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
@@ -30,7 +31,7 @@ export interface CommentsComponentProps {
   canAddReaction: boolean;
   canDeleteMessage: (authorId: string | undefined) => boolean;
   postMessage: (message: string) => Promise<FetchResult<unknown>>;
-  postReply: (reply: { messageText: string; threadId: string }) => void;
+  postReply: (reply: { messageText: string; threadId: string }) => Promise<FetchResult<unknown>>;
   handleDeleteMessage: (commentsId: string, messageId: string) => void;
   maxHeight?: BoxProps['maxHeight'];
   height?: BoxProps['height'];
@@ -117,14 +118,23 @@ const CommentsComponent = ({
     };
   }, [commentsContainerRef.current]);
 
-  const onPostComment = async (comment: string) => {
-    const result = await postMessage(comment);
-    if (externalScrollRef?.current) {
-      setTimeout(() => {
-        scroller.scrollToBottom({ container: externalScrollRef.current });
-      }, 100);
+  // KeepElementScroll hook is only used when an external scroll ref is provided,
+  // When we use the internal scroller (ScrollerWithGradient) another approach is
+  // used to keep the scroll position (depends on the useEffect above to only scroll if the user had scrolled to the bottom)
+  const { keepElementScroll } = useKeepElementScroll({ scrollContainerRef: externalScrollRef });
+
+  const handlePostComment = async (comment: string, anchorEl: HTMLDivElement | null) => {
+    if (externalScrollRef?.current && anchorEl) {
+      keepElementScroll(anchorEl);
     }
-    return result;
+    return await postMessage(comment);
+  };
+
+  const handlePostReply = async (reply: { threadId: string; messageText: string }, anchorEl: HTMLDivElement | null) => {
+    if (anchorEl) {
+      keepElementScroll(anchorEl);
+    }
+    return await postReply(reply);
   };
 
   const commentReactionsMutations = useCommentReactionsMutations(commentsId);
@@ -147,7 +157,7 @@ const CommentsComponent = ({
               vcInteractions={vcInteractions}
               loading={loading}
               canPostMessages={canPostMessages}
-              onReply={postReply}
+              onReply={handlePostReply}
               canDeleteMessage={canDeleteMessage}
               onDeleteMessage={onDeleteComment}
               canAddReaction={canAddReaction}
@@ -178,7 +188,7 @@ const CommentsComponent = ({
       {canPostMessages && (
         <PostMessageToCommentsForm
           placeholder={t('pages.post.dashboard.comment.placeholder')}
-          onPostComment={onPostComment}
+          onPostComment={handlePostComment}
           disabled={loading}
           padding={gutters()}
           paddingBottom={0}
