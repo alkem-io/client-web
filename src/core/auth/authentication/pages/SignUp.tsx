@@ -82,7 +82,7 @@ const SignUp = () => {
     if (!lastName && nextLastName) {
       setLastName(nextLastName);
     }
-  }, [signUpFlow]);
+  }, [signUpFlow, firstName, lastName]);
 
   const handleInputChange = useCallback((node: UiNode, value: string) => {
     if (!isInputNode(node)) {
