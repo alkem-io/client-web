@@ -10,6 +10,7 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import Gutters from '@/core/ui/grid/Gutters';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 
 export interface InnovationFlowStateFormValues extends InnovationFlowStateModel {}
 
@@ -41,11 +42,8 @@ const InnovationFlowStateForm = ({
   };
 
   const validationSchema = yup.object().shape({
-    displayName: yup
-      .string()
-      .required()
-      .max(SMALL_TEXT_LENGTH)
-      // Avoid commas in state names, because they are used to separate states in the database
+    displayName: displayNameValidator({ required: true })
+      // Avoid commas in state names, because they are used to separate states (in tagsets) in the database
       // This validation is also performed on the server: domain/collaboration/innovation-flow-states/innovation.flow.state.service.ts
       // Keep them in sync
       .test('no-comma', t('components.innovationFlowSettings.stateEditor.invalidChars'), value => !value?.includes(','))

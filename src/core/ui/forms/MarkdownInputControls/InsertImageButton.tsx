@@ -3,6 +3,7 @@ import { Editor } from '@tiptap/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
+import * as yup from 'yup';
 import FormikFileInput from '../FormikFileInput/FormikFileInput';
 import { AddPhotoAlternateOutlined } from '@mui/icons-material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -13,6 +14,9 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockTitle } from '@/core/ui/typography';
 import FormikInputField from '../FormikInputField/FormikInputField';
 import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
+import { urlValidator } from '../validator/urlValidator';
+import { textLengthValidator } from '../validator/textLengthValidator';
+import { ALT_TEXT_LENGTH, MID_TEXT_LENGTH } from '../field-length.constants';
 
 interface InsertImageButtonProps extends Omit<MarkdownInputToolbarButtonProps, 'tooltip'> {
   editor: Editor | null;
@@ -64,6 +68,11 @@ const InsertImageButton = ({
   const initialValues: ImageProps = { src: 'https://', alt: '' };
   const isDisabled = !editor || !editor.can().setImage(initialValues);
 
+  const validationSchema = yup.object().shape({
+    src: urlValidator({ maxLength: MID_TEXT_LENGTH, required: true }),
+    alt: textLengthValidator({ maxLength: ALT_TEXT_LENGTH }),
+  });
+
   return (
     <>
       <MarkdownInputToolbarButton
@@ -78,7 +87,7 @@ const InsertImageButton = ({
         <DialogHeader onClose={closeDialog}>
           <BlockTitle id="insert-image-dialog-title">{t('components.wysiwyg-editor.image.dialogHeader')}</BlockTitle>
         </DialogHeader>
-        <Formik initialValues={initialValues} onSubmit={insertImage}>
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={insertImage}>
           <Form>
             <Gutters>
               <FormikFileInput title={t('common.url')} name="src" temporaryLocation={temporaryLocation} />

@@ -77,8 +77,8 @@ const PostForm = ({
   }, [post]);
 
   const validationSchema = yup.object().shape({
-    name: displayNameValidator.required(),
-    description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH).required(),
+    name: displayNameValidator({ required: true }),
+    description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH, { required: true }),
     tagsets: tagsetsSegmentSchema,
     references: referenceSegmentSchema,
   });

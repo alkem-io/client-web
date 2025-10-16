@@ -4,6 +4,7 @@ import * as yup from 'yup';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import Gutters from '@/core/ui/grid/Gutters';
 import FormikSubmitButton from '@/domain/shared/components/forms/FormikSubmitButton';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 interface AssignPlanProps {
   onAssignPlan: (licensePlanId: string) => Promise<unknown>;
@@ -30,7 +31,7 @@ const AssignPlan = ({ licensePlans, onAssignPlan, activeLicensePlanIds = [] }: A
   };
 
   const validator = yup.object().shape({
-    licensePlanId: yup.string().required('validation.required'),
+    licensePlanId: textLengthValidator({ required: true }),
   });
 
   return (

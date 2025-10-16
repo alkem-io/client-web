@@ -14,6 +14,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { AiPersonaEngine, OpenAiModel } from '@/core/apollo/generated/graphql-schema';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { Button } from '@mui/material';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 type ExternalConfigFields = {
   apiKey?: string;
@@ -63,8 +64,8 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
   );
 
   const validationSchema = yup.object().shape({
-    apiKey: yup.string().notRequired(),
-    assistantId: isAssistantFieldAvailable ? yup.string().required() : yup.string().notRequired(),
+    apiKey: textLengthValidator(),
+    assistantId: isAssistantFieldAvailable ? textLengthValidator({ required: true }) : textLengthValidator(),
     model: yup.mixed<OpenAiModel>().oneOf(Object.values(OpenAiModel)).required(),
   });
 

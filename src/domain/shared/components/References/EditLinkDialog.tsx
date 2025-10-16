@@ -16,6 +16,7 @@ import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/Vali
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export interface EditLinkFormValues {
   id: string;
@@ -25,7 +26,7 @@ export interface EditLinkFormValues {
 }
 
 const validationSchema = yup.object().shape({
-  id: yup.string().required(),
+  id: textLengthValidator({ required: true }),
   name: yup
     .string()
     .required(TranslatedValidatedMessageWithPayload('forms.validations.required'))

@@ -10,7 +10,7 @@ import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import Gutters from '@/core/ui/grid/Gutters';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { Actions } from '@/core/ui/actions/Actions';
-import { TagsetSegment } from '@/domain/platformAdmin/components/Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platformAdmin/components/Common/TagsetSegment';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { theme } from '@/core/ui/themes/default/Theme';
 import GridContainer from '@/core/ui/grid/GridContainer';
@@ -27,6 +27,10 @@ import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { SpaceBodyOfKnowledgeModel } from '../../virtualContributor/model/SpaceBodyOfKnowledgeModel';
 import { nameOf } from '@/core/utils/nameOf';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { referenceSegmentValidationObject } from '@/domain/platformAdmin/components/Common/ReferenceSegment';
+import { ALT_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 
 type VirtualContributorProps = {
   id: string;
@@ -96,11 +100,14 @@ export const VirtualContributorForm = ({
 
   const validationSchema = yup.object().shape({
     profile: yup.object().shape({
-      displayName: nameSegmentSchema.fields?.displayName ?? yup.string().required(),
-      description: profileSegmentSchema.fields?.description ?? yup.string().required(),
+      displayName: nameSegmentSchema.fields?.displayName ?? displayNameValidator({ required: true }),
+      description: profileSegmentSchema.fields?.description ?? textLengthValidator({ required: true }),
+      tagline: profileSegmentSchema.fields?.tagline ?? textLengthValidator({ maxLength: ALT_TEXT_LENGTH }).nullable(),
+      tagsets: tagsetsSegmentSchema,
+      references: yup.array().of(referenceSegmentValidationObject),
     }),
-    hostDisplayName: yup.string(),
-    subSpaceName: yup.string(),
+    hostDisplayName: textLengthValidator(),
+    subSpaceName: textLengthValidator(),
   });
 
   const getUpdatedTagsets = (updatedTagsets: TagsetModel[]) => {
@@ -182,23 +189,18 @@ export const VirtualContributorForm = ({
                     <Gutters>
                       <FormikInputField name="profile.displayName" title={t('components.nameSegment.name')} />
                       <ProfileSegment />
-                      {
-                        // use keywords tagset (existing after creation of VC) as tags
-                      }
-                      {tagsets?.find(tagset => tagset.name.toLowerCase() === TagsetReservedName.Keywords) ? (
-                        <TagsetSegment
-                          name={nameOf<VirtualContributorFormValues>('profile.tagsets')}
-                          title={t('common.tags')}
-                        />
+                      {/* use keywords tagset (existing after creation of VC) as tags */}
+                      {tagsets?.find(
+                        tagset => tagset.name.toLowerCase() === TagsetReservedName.Keywords.toLowerCase()
+                      ) ? (
+                        <TagsetSegment name={nameOf<VirtualContributorFormValues>('profile.tagsets')} />
                       ) : null}
-
                       <ProfileReferenceSegment
                         fullWidth
                         fieldName="profile.references"
                         profileId={vcProfileId}
                         references={references ?? []}
                       />
-
                       {hostDisplayName && <HostFields />}
                       <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
                         {hasBackNavigation && (
