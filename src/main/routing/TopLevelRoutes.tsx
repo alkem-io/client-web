@@ -228,19 +228,19 @@ export const TopLevelRoutes = () => {
           <Route path={`/${TopLevelRoutePath.Help}`} element={<Navigate to={`/${TopLevelRoutePath.Docs}`} />} />
           <Route path={`/${TopLevelRoutePath.About}`} element={<Navigate to={`/${TopLevelRoutePath.Docs}`} />} />
         </Route>
-        <Route
-          path="*"
-          element={
-            <NonIdentity>
-              <WithApmTransaction path="*">
-                <TopLevelLayout>
-                  <Error404 />
-                </TopLevelLayout>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
       </Route>
+      <Route
+        path="*"
+        element={
+          <NonIdentity>
+            <WithApmTransaction path="*">
+              <TopLevelLayout>
+                <Error404 />
+              </TopLevelLayout>
+            </WithApmTransaction>
+          </NonIdentity>
+        }
+      />
     </Routes>
   );
 };
