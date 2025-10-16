@@ -2796,7 +2796,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
 export const InAppNotificationPayloadOrganizationMessageDirectFragmentDoc = gql`
   fragment InAppNotificationPayloadOrganizationMessageDirect on InAppNotificationPayloadOrganizationMessageDirect {
     organizationMessage: message
-    organization {
+    nullableOrganization: organization {
       id
       profile {
         id
@@ -2937,10 +2937,10 @@ export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
 `;
 export const InAppNotificationSpaceCommunityContributorFragmentDoc = gql`
   fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
-    space {
+    nullableSpace: space {
       ...spaceNotification
     }
-    contributor {
+    nullableContributor: contributor {
       id
       __typename
       profile {
@@ -3008,7 +3008,7 @@ export const InAppNotificationPayloadSpaceCommunityInvitationFragmentDoc = gql`
 `;
 export const InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc = gql`
   fragment InAppNotificationPayloadSpaceCommunityInvitationPlatform on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
-    space {
+    nullableSpace: space {
       ...spaceNotification
     }
   }

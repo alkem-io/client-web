@@ -95,10 +95,10 @@ fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationP
 }
 
 fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
-  space {
+  nullableSpace: space {
     ...spaceNotification
   }
-  contributor {
+  nullableContributor: contributor {
     id
     __typename # do not remove
     profile {
@@ -146,7 +146,7 @@ fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserM
 
 fragment InAppNotificationPayloadOrganizationMessageDirect on InAppNotificationPayloadOrganizationMessageDirect {
   organizationMessage: message
-  organization {
+  nullableOrganization: organization {
     id
     profile {
       id
@@ -262,7 +262,7 @@ fragment InAppNotificationPayloadSpaceCommunityInvitation on InAppNotificationPa
 }
 
 fragment InAppNotificationPayloadSpaceCommunityInvitationPlatform on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
-  space {
+  nullableSpace: space {
     ...spaceNotification
   }
 }
