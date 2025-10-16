@@ -12,26 +12,22 @@ import { contributionIcons } from '@/domain/collaboration/callout/icons/calloutI
 import { Actions } from '@/core/ui/actions/Actions';
 import { gutters } from '@/core/ui/grid/utils';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
 import { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
 import { nameOf } from '@/core/utils/nameOf';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const validationSchema = yup.object().shape({
   id: yup.string().required(),
   profile: yup.object().shape({
     displayName: displayNameValidator({ required: true }),
-    uri: urlValidator
-      .max(MID_TEXT_LENGTH, ({ max }) =>
-        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
-      )
-      .required(),
-    description: textLengthValidator({ maxLength: LONG_TEXT_LENGTH })
-  })
+    uri: urlValidator({ required: true }),
+    description: textLengthValidator({ maxLength: LONG_TEXT_LENGTH }),
+  }),
 });
 
 interface EditLinkDialogProps {
@@ -66,7 +62,7 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
           validationSchema={validationSchema}
           enableReinitialize
           validateOnMount
-          onSubmit={() => { }}
+          onSubmit={() => {}}
         >
           {formikState => {
             const { values, isValid } = formikState;

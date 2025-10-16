@@ -22,6 +22,7 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { EntityVisualUrls } from '@/domain/common/visual/utils/visuals.utils';
 import { nameOf } from '@/core/utils/nameOf';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const FormikEffect = FormikEffectFactory<CreateSubspaceFormValues>();
 
@@ -79,16 +80,13 @@ export const CreateSubspaceForm = ({
         TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
       )
       .required(validationRequiredString),
-    tagline: yup
-      .string()
-      .trim()
-      .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
-      .max(SMALL_TEXT_LENGTH, ({ max }) =>
-        TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
-      ),
+    tagline: textLengthValidator({ minLength: 3, maxLength: SMALL_TEXT_LENGTH }),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-    tags: yup.array().of(yup.string().min(2)).notRequired(),
-    spaceTemplateId: yup.string().nullable(),
+    tags: yup
+      .array()
+      .of(textLengthValidator({ minLength: 2 }))
+      .notRequired(),
+    spaceTemplateId: textLengthValidator().nullable(),
   });
   const level = SpaceLevel.L1;
 

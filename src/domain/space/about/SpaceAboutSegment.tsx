@@ -6,13 +6,14 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export const spaceAboutSegmentSchema = yup.object().shape({
   description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   when: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   why: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   who: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-  tagline: yup.string().max(SMALL_TEXT_LENGTH),
+  tagline: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
 });
 
 export interface ContextSegmentProps {

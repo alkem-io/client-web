@@ -22,6 +22,7 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import AuthorizationPrivilegesForUser from './AuthorizationPrivilegesForUser';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const currentTab = AdminSection.AuthorizationPolicies;
 
@@ -43,7 +44,7 @@ const AuthorizationPoliciesPage = () => {
   };
 
   const validator = yup.object().shape({
-    authorizationPolicyId: yup.string().required(),
+    authorizationPolicyId: textLengthValidator({ required: true }),
   });
 
   const initialValues = {
