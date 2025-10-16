@@ -175,7 +175,7 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
         }
       >
         <Gutters row disablePadding>
-          <Gutters column flexGrow={1} disablePadding disableGap justifyContent={'center'}>
+          <Gutters flexGrow={1} disablePadding disableGap justifyContent={'center'}>
             <Typography
               variant="h4"
               color="primary"
