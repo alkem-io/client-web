@@ -46,11 +46,12 @@ const useCalloutDetails = ({
   });
 
   const result: CalloutDetailsModelExtended | undefined = useMemo(() => {
-    if (locationState[LocationStateKeyCachedCallout]) {
+    const calloutDetails = data?.lookup.callout;
+
+    // Only use cached data if we don't have fresh data yet
+    if (!calloutDetails && locationState[LocationStateKeyCachedCallout]) {
       return locationState[LocationStateKeyCachedCallout];
     }
-
-    const calloutDetails = data?.lookup.callout;
 
     if (!calloutDetails) {
       return;
@@ -58,7 +59,7 @@ const useCalloutDetails = ({
 
     return {
       ...calloutDetails,
-      calloutsSetId: calloutsSetId,
+      calloutsSetId,
       draft: calloutDetails.settings.visibility === CalloutVisibility.Draft,
       editable: calloutDetails.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
       movable: canMoveCallouts,
@@ -66,7 +67,14 @@ const useCalloutDetails = ({
       classificationTagsets: [],
       ...overrideCalloutSettings,
     };
-  }, [data, loading]);
+  }, [
+    data,
+    loading,
+    calloutsSetId,
+    canMoveCallouts,
+    calloutsCanBeSavedAsTemplate,
+    JSON.stringify(overrideCalloutSettings),
+  ]);
 
   return {
     callout: result,
