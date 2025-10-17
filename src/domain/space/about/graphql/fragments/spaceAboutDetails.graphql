@@ -41,6 +41,7 @@ fragment SpaceAboutDetails on SpaceAbout {
           country
         }
       }
+      isContactable
     }
   }
   isContentPublic
@@ -59,6 +60,9 @@ fragment SpaceAboutDetails on SpaceAbout {
         country
       }
       type
+    }
+    ... on User {
+      isContactable
     }
   }
   profile {

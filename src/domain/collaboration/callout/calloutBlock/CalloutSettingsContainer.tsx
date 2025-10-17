@@ -38,7 +38,7 @@ import { useTranslation } from 'react-i18next';
 import { CalloutSortProps } from '../../calloutsSet/CalloutsView/CalloutSortModels';
 import EditCalloutDialog from '../CalloutDialogs/EditCalloutDialog';
 import { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
-import { FormattedLink } from '../../calloutContributions/link/CalloutContributionsLink';
+import { LinkContribution } from '../../calloutContributions/link/models/LinkContribution';
 import { PostContribution } from '../../calloutContributions/post/PostCard';
 import { WhiteboardContribution } from '../../calloutContributions/whiteboard/WhiteboardCard';
 import { CalloutSummary } from '../CalloutSummary';
@@ -61,7 +61,7 @@ export interface CalloutSettingsContainerProps
   items?: {
     posts?: PostContribution[];
     whiteboards?: WhiteboardContribution[];
-    links?: FormattedLink[];
+    links?: LinkContribution[];
   };
   expanded?: boolean;
   onExpand?: (callout: CalloutDetailsModelExtended) => void;
