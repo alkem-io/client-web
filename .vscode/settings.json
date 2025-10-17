@@ -52,5 +52,10 @@
     "xsmall",
     "Български",
     "Українська"
+  ],
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "file": ".github/alkemio-translate.md"
+    }
   ]
 }
