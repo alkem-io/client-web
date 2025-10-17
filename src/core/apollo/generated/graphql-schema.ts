@@ -9504,6 +9504,7 @@ export type UserPendingMembershipsQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
+          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -16664,28 +16665,6 @@ export type SendMessageToCommunityLeadsMutationVariables = Exact<{
 
 export type SendMessageToCommunityLeadsMutation = { __typename?: 'Mutation'; sendMessageToCommunityLeads: boolean };
 
-export type UserMessagingEnabledQueryVariables = Exact<{
-  id: Scalars['UUID']['input'];
-}>;
-
-export type UserMessagingEnabledQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    user?:
-      | {
-          __typename?: 'User';
-          id: string;
-          settings: {
-            __typename?: 'UserSettings';
-            id: string;
-            communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
-          };
-        }
-      | undefined;
-  };
-};
-
 export type AddReactionMutationVariables = Exact<{
   roomId: Scalars['UUID']['input'];
   messageId: Scalars['MessageID']['input'];
@@ -18765,6 +18744,7 @@ export type UserDetailsFragment = {
   lastName: string;
   email: string;
   phone?: string | undefined;
+  isContactable: boolean;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -18865,6 +18845,7 @@ export type UserQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
+          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -18926,12 +18907,12 @@ export type UserModelFullQuery = {
     user?:
       | {
           __typename?: 'User';
-          isContactable: boolean;
           id: string;
           firstName: string;
           lastName: string;
           email: string;
           phone?: string | undefined;
+          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19082,6 +19063,7 @@ export type UpdateUserMutation = {
     lastName: string;
     email: string;
     phone?: string | undefined;
+    isContactable: boolean;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -19473,6 +19455,7 @@ export type CurrentUserFullQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
+          isContactable: boolean;
           account?:
             | {
                 __typename?: 'Account';
