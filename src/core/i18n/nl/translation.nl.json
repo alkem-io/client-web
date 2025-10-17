@@ -2049,6 +2049,10 @@
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "subject": "{{triggeredByName}} heeft een nieuwe $t(common.space) gemaakt",
           "description": "{{spaceName}}"
+        },
+        "USER_SIGN_UP_WELCOME": {
+          "subject": "Welkom bij Alkemio! 🎉",
+          "description": "Je bent nu deel van een gemeenschap die groeit door samenwerking 🤝 Klik om de Startgids te verkennen en begin met deelnemen aan Spaces waar elk inzicht ons allemaal helpt vooruit te komen.\nVragen? E-mail naar support@alkem.io"
         }
       },
       "emptyInbox": "Geen openstaande $t(common.notifications)",
@@ -2677,7 +2681,16 @@
             "title": "...of zoek je $t(common.community) hieronder",
             "searchSuggestions": "Zoeksuggesties:"
           },
-          "suggestionsArray": ["Innovatie", "Energie", "Inclusief", "3D", "Community", "Transitie", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovatie",
+            "Energie",
+            "Inclusief",
+            "3D",
+            "Community",
+            "Transitie",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "Mijn uitnodigingen",
@@ -3430,27 +3443,42 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": ["Energie Transitie", "Energietransitie"]
+        "tags": [
+          "Energie Transitie",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusieve Samenleving",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "publieke-dienstverlening",
         "name": "Publieke Dienstverlening",
-        "tags": ["Publieke Dienstverlening", "Publieke Dienstverlening"]
+        "tags": [
+          "Publieke Dienstverlening",
+          "Publieke Dienstverlening"
+        ]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": ["Innovatie", "Innovatie"]
+        "tags": [
+          "Innovatie",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": ["Digitalisering", "Digitalisering"]
+        "tags": [
+          "Digitalisering",
+          "Digitalisering"
+        ]
       }
     ]
   },
@@ -3531,7 +3559,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Gratis",
         "priceDescription": "Voor Change-Makers die Alkemio Verkennen",
-        "features": ["Tot 10 $t(common.members)", "Diverse tools, waaronder standaard $t(common.whiteboards)"],
+        "features": [
+          "Tot 10 $t(common.members)",
+          "Diverse tools, waaronder standaard $t(common.whiteboards)"
+        ],
         "disclaimer": "Gratis $t(common.spaces) zijn beperkt tot 1 $t(common.space) per gebruiker",
         "disabledDisclaimer": "Elke gebruiker kan 1 gratis $t(common.space) hebben. Het lijkt erop dat je die al hebt gebruikt!"
       },

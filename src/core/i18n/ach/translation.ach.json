@@ -2049,6 +2049,10 @@
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "subject": "crwdns42632:0{{triggeredByName}}crwdnd42632:0$t(common.space)crwdne42632:0",
           "description": "crwdns42058:0{{spaceName}}crwdne42058:0"
+        },
+        "USER_SIGN_UP_WELCOME": {
+          "subject": "Wajoli i Alkemio! 🎉",
+          "description": "Kombedi in iromo luluko pa lworo kom tic kacel 🤝 Dii me neno Buk me Cako ki cako donyo i Kabedo kama tam mo keken konyo wan weng me wot anyim.\nLapeny? Cwal email bot support@alkem.io"
         }
       },
       "emptyInbox": "crwdns41168:0$t(common.notifications)crwdne41168:0",
@@ -3439,27 +3443,42 @@
       {
         "key": "crwdns20792:0crwdne20792:0",
         "name": "crwdns20794:0crwdne20794:0",
-        "tags": ["crwdns20796:0crwdne20796:0", "crwdns20798:0crwdne20798:0"]
+        "tags": [
+          "crwdns20796:0crwdne20796:0",
+          "crwdns20798:0crwdne20798:0"
+        ]
       },
       {
         "key": "crwdns20800:0crwdne20800:0",
         "name": "crwdns20802:0crwdne20802:0",
-        "tags": ["crwdns20804:0crwdne20804:0", "crwdns20806:0crwdne20806:0"]
+        "tags": [
+          "crwdns20804:0crwdne20804:0",
+          "crwdns20806:0crwdne20806:0"
+        ]
       },
       {
         "key": "crwdns20808:0crwdne20808:0",
         "name": "crwdns20810:0crwdne20810:0",
-        "tags": ["crwdns20812:0crwdne20812:0", "crwdns20814:0crwdne20814:0"]
+        "tags": [
+          "crwdns20812:0crwdne20812:0",
+          "crwdns20814:0crwdne20814:0"
+        ]
       },
       {
         "key": "crwdns20816:0crwdne20816:0",
         "name": "crwdns20818:0crwdne20818:0",
-        "tags": ["crwdns20820:0crwdne20820:0", "crwdns20822:0crwdne20822:0"]
+        "tags": [
+          "crwdns20820:0crwdne20820:0",
+          "crwdns20822:0crwdne20822:0"
+        ]
       },
       {
         "key": "crwdns20824:0crwdne20824:0",
         "name": "crwdns20826:0crwdne20826:0",
-        "tags": ["crwdns20828:0crwdne20828:0", "crwdns20830:0crwdne20830:0"]
+        "tags": [
+          "crwdns20828:0crwdne20828:0",
+          "crwdns20830:0crwdne20830:0"
+        ]
       }
     ]
   },

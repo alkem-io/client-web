@@ -61,27 +61,28 @@ echo ""
 echo -e "Source file: ${GREEN}$EN_FILE${NC}"
 echo ""
 
-# Function to get all JSON keys (dot notation paths)
+# Function to get all JSON keys (with their full paths as arrays to preserve structure)
 get_all_keys() {
     local file=$1
     node -e "
         const fs = require('fs');
         const json = JSON.parse(fs.readFileSync('$file', 'utf8'));
 
-        function getAllKeys(obj, prefix = '') {
+        function getAllKeys(obj, prefix = []) {
             let keys = [];
             for (let key in obj) {
-                const newKey = prefix ? \`\${prefix}.\${key}\` : key;
+                const newPath = [...prefix, key];
                 if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
-                    keys = keys.concat(getAllKeys(obj[key], newKey));
+                    keys = keys.concat(getAllKeys(obj[key], newPath));
                 } else {
-                    keys.push(newKey);
+                    keys.push(newPath);
                 }
             }
             return keys;
         }
 
         const keys = getAllKeys(json);
+        // Convert to JSON with each path as an array
         console.log(JSON.stringify(keys));
     "
 }
@@ -89,15 +90,14 @@ get_all_keys() {
 # Function to check if key exists in JSON file
 key_exists() {
     local file=$1
-    local key=$2
+    local keyPath=$2
     node -e "
         const fs = require('fs');
-        const json = JSON.parse(fs.readFileSync('$file', 'utf8'));
+        const json = JSON.parse(fs.readFileSync(process.argv[1], 'utf8'));
+        const pathArray = JSON.parse(process.argv[2]);
 
-        const keys = '$key'.split('.');
         let current = json;
-
-        for (let key of keys) {
+        for (let key of pathArray) {
             if (current && typeof current === 'object' && key in current) {
                 current = current[key];
             } else {
@@ -105,25 +105,26 @@ key_exists() {
             }
         }
         process.exit(0);
-    " 2>/dev/null
+    " "$file" "$keyPath" 2>/dev/null
 }
 
 # Function to add missing key to JSON file
 add_key_to_json() {
     local file=$1
-    local key=$2
+    local keyPath=$2
     local value=$3
 
     node -e "
         const fs = require('fs');
-        const json = JSON.parse(fs.readFileSync('$file', 'utf8'));
+        const json = JSON.parse(fs.readFileSync(process.argv[1], 'utf8'));
+        const pathArray = JSON.parse(process.argv[2]);
+        const value = process.argv[3];
 
-        const keys = '$key'.split('.');
         let current = json;
 
         // Navigate to the parent object
-        for (let i = 0; i < keys.length - 1; i++) {
-            const k = keys[i];
+        for (let i = 0; i < pathArray.length - 1; i++) {
+            const k = pathArray[i];
             if (!(k in current) || typeof current[k] !== 'object' || Array.isArray(current[k])) {
                 current[k] = {};
             }
@@ -131,20 +132,19 @@ add_key_to_json() {
         }
 
         // Set the value
-        const lastKey = keys[keys.length - 1];
+        const lastKey = pathArray[pathArray.length - 1];
         if (!(lastKey in current)) {
-            current[lastKey] = '$value';
+            current[lastKey] = value;
         }
 
         // Write back with proper formatting (2-space indentation)
-        fs.writeFileSync('$file', JSON.stringify(json, null, 2) + '\n', 'utf8');
-    "
+        fs.writeFileSync(process.argv[1], JSON.stringify(json, null, 2) + '\n', 'utf8');
+    " "$file" "$keyPath" "$value"
 }
 
 # Get all keys from English file
 echo -e "${BLUE}Analyzing English translation file...${NC}"
 EN_KEYS=$(get_all_keys "$EN_FILE")
-EN_KEYS_ARRAY=$(echo "$EN_KEYS" | node -e "console.log(JSON.parse(require('fs').readFileSync(0, 'utf-8')).join(' '))")
 
 TOTAL_KEYS=$(echo "$EN_KEYS" | node -e "console.log(JSON.parse(require('fs').readFileSync(0, 'utf-8')).length)")
 echo -e "Found ${GREEN}$TOTAL_KEYS${NC} translation keys in English file"
@@ -169,13 +169,16 @@ for lang in "${LANGUAGES[@]}"; do
     MISSING_COUNT=0
     MISSING_KEYS=()
 
-    # Check each key
-    for key in $EN_KEYS_ARRAY; do
-        if ! key_exists "$LANG_FILE" "$key"; then
-            MISSING_KEYS+=("$key")
+    # Check each key path
+    while IFS= read -r keyPath; do
+        if ! key_exists "$LANG_FILE" "$keyPath"; then
+            MISSING_KEYS+=("$keyPath")
             ((MISSING_COUNT++))
         fi
-    done
+    done < <(echo "$EN_KEYS" | node -e "
+        const keys = JSON.parse(require('fs').readFileSync(0, 'utf-8'));
+        keys.forEach(keyPath => console.log(JSON.stringify(keyPath)));
+    ")
 
     if [ $MISSING_COUNT -eq 0 ]; then
         echo -e "${GREEN}✓ No missing keys${NC}"
@@ -183,9 +186,11 @@ for lang in "${LANGUAGES[@]}"; do
         echo -e "${YELLOW}Found $MISSING_COUNT missing key(s)${NC}"
 
         # Add missing keys
-        for key in "${MISSING_KEYS[@]}"; do
-            echo -e "  ${YELLOW}+${NC} Adding key: $key"
-            add_key_to_json "$LANG_FILE" "$key" "[AI_TRANSLATE]"
+        for keyPath in "${MISSING_KEYS[@]}"; do
+            # Convert path array to readable string for display
+            DISPLAY_KEY=$(echo "$keyPath" | node -e "console.log(JSON.parse(require('fs').readFileSync(0, 'utf-8')).join('.'))")
+            echo -e "  ${YELLOW}+${NC} Adding key: $DISPLAY_KEY"
+            add_key_to_json "$LANG_FILE" "$keyPath" "[AI_TRANSLATE]"
         done
 
         echo -e "${GREEN}✓ Added $MISSING_COUNT key(s) to $lang translation file${NC}"
