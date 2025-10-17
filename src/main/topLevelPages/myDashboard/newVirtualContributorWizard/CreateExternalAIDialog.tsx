@@ -12,6 +12,7 @@ import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
 import ExternalAIComingSoonDialog from './ExternalAIComingSoonDialog';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const PROVIDERS = [
   { id: AiPersonaEngine.OpenaiAssistant, name: 'OpenAI Assistant' },
@@ -40,11 +41,8 @@ const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose
   };
 
   const validationSchema = yup.object().shape({
-    engine: yup
-      .string()
-      .oneOf(PROVIDERS.map(({ id }) => id))
-      .required(),
-    apiKey: yup.string().required(),
+    engine: textLengthValidator({ required: true }).oneOf(PROVIDERS.map(({ id }) => id)),
+    apiKey: textLengthValidator({ required: true }),
     assistantId: yup.string().when(['engine'], ([engine], schema) => {
       return engine === AiPersonaEngine.OpenaiAssistant ? schema.required() : schema;
     }),

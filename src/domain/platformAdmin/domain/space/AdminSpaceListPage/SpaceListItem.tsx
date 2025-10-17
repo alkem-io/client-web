@@ -1,14 +1,12 @@
 import React, { MouseEventHandler, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { Button, CircularProgress, DialogContent, ListItemIcon } from '@mui/material';
+import { Button, CircularProgress, ListItemIcon } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useTranslation } from 'react-i18next';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import {
   refetchPlatformAdminSpacesListQuery,
-  useAssignLicensePlanToSpaceMutation,
-  useRevokeLicensePlanFromSpaceMutation,
   useUpdateSpacePlatformSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import ListItemLink, { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
@@ -20,35 +18,26 @@ import { Actions } from '@/core/ui/actions/Actions';
 import { nameSegmentSchema } from '@/domain/platformAdmin/components/Common/NameSegment';
 import { gutters } from '@/core/ui/grid/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import LicensePlansTable, { LicensePlan } from './LicensePlansTable';
-import AssignPlan from './AssignPlan';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { FormikSelectValue } from '@/core/ui/forms/FormikSelect';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import ManageLicensePlansDialog from './ManageLicensePlansDialog';
 
 export interface SpacePlatformSettings {
   nameId: string;
   visibility: SpaceVisibility;
 }
 
-interface SpaceListItemProps extends ListItemLinkProps, SpacePlatformSettings {
+interface SpaceListItemV2Props extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
-  activeLicensePlanIds: string[] | undefined;
-  licensePlans: LicensePlan[] | undefined;
   canUpdate: boolean;
 }
 
-const SpaceListItem = ({
-  spaceId,
-  nameId,
-  activeLicensePlanIds,
-  licensePlans,
-  visibility,
-  canUpdate,
-  ...props
-}: SpaceListItemProps) => {
+const SpaceListItem = ({ spaceId, nameId, visibility, canUpdate, ...props }: SpaceListItemV2Props) => {
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
+  const [isManageLicensePlansDialogOpen, setIsManageLicensePlansDialogOpen] = useState(false);
 
   const handlePlatformSettingsClick: MouseEventHandler = event => {
     event.preventDefault();
@@ -62,8 +51,6 @@ const SpaceListItem = ({
   };
 
   const [updateSpacePlatformSettings] = useUpdateSpacePlatformSettingsMutation();
-  const [assignLicensePlan] = useAssignLicensePlanToSpaceMutation();
-  const [revokeLicensePlan] = useRevokeLicensePlanFromSpaceMutation();
 
   const [handleSubmit, saving] = useLoadingState(async ({ nameId, visibility }: Partial<SpacePlatformSettings>) => {
     await updateSpacePlatformSettings({
@@ -100,12 +87,9 @@ const SpaceListItem = ({
   );
 
   const validationSchema = yup.object().shape({
-    host: yup.object().shape({ id: yup.string() }).required(t('forms.validations.required')),
-    nameId: nameSegmentSchema.fields?.nameID || yup.string().required(t('forms.validations.required')),
-    visibility: yup.string().required(t('forms.validations.required')),
+    nameId: nameSegmentSchema.fields?.nameID || textLengthValidator({ required: true }),
+    visibility: textLengthValidator({ required: true }),
   });
-
-  const [isManageLicensePlansDialogOpen, setIsManageLicensePlansDialogOpen] = useState(false);
 
   return (
     <>
@@ -162,33 +146,12 @@ const SpaceListItem = ({
           )}
         </Formik>
       </DialogWithGrid>
-      <DialogWithGrid
+      {/* License plans dialog - only loads data when opened */}
+      <ManageLicensePlansDialog
         open={isManageLicensePlansDialogOpen}
         onClose={() => setIsManageLicensePlansDialogOpen(false)}
-        aria-labelledby="manage-license-plans-dialog"
-      >
-        <DialogHeader
-          id="manage-license-plans-dialog"
-          title={t('pages.admin.spaces.manageLicensePlans')}
-          onClose={() => setIsManageLicensePlansDialogOpen(false)}
-        />
-        <DialogContent>
-          {licensePlans && (
-            <LicensePlansTable
-              activeLicensePlanIds={activeLicensePlanIds}
-              licensePlans={licensePlans}
-              onDelete={plan => revokeLicensePlan({ variables: { spaceId, licensePlanId: plan.id } })}
-            />
-          )}
-          {licensePlans && (
-            <AssignPlan
-              onAssignPlan={licensePlanId => assignLicensePlan({ variables: { spaceId, licensePlanId } })}
-              licensePlans={licensePlans}
-              activeLicensePlanIds={activeLicensePlanIds}
-            />
-          )}
-        </DialogContent>
-      </DialogWithGrid>
+        spaceId={spaceId}
+      />
     </>
   );
 };

@@ -9504,6 +9504,7 @@ export type UserPendingMembershipsQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
+          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -18743,6 +18744,7 @@ export type UserDetailsFragment = {
   lastName: string;
   email: string;
   phone?: string | undefined;
+  isContactable: boolean;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -18843,6 +18845,7 @@ export type UserQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
+          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -18904,12 +18907,12 @@ export type UserModelFullQuery = {
     user?:
       | {
           __typename?: 'User';
-          isContactable: boolean;
           id: string;
           firstName: string;
           lastName: string;
           email: string;
           phone?: string | undefined;
+          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19060,6 +19063,7 @@ export type UpdateUserMutation = {
     lastName: string;
     email: string;
     phone?: string | undefined;
+    isContactable: boolean;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -19451,6 +19455,7 @@ export type CurrentUserFullQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
+          isContactable: boolean;
           account?:
             | {
                 __typename?: 'Account';
@@ -21206,46 +21211,10 @@ export type PlatformAdminSpacesListQuery = {
       id: string;
       nameID: string;
       visibility: SpaceVisibility;
-      subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
       about: {
         __typename?: 'SpaceAbout';
         id: string;
-        isContentPublic: boolean;
-        provider:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
-            }
-          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
-            };
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          tagline?: string | undefined;
-          description?: string | undefined;
-          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-          avatar?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-          cardBanner?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-            | undefined;
-        };
-        membership: {
-          __typename?: 'SpaceAboutMembership';
-          myMembershipStatus?: CommunityMembershipStatus | undefined;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          communityID: string;
-          roleSetID: string;
-        };
-        guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       };
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -21254,55 +21223,74 @@ export type PlatformAdminSpacesListQuery = {
   };
 };
 
-export type AdminSpaceFragment = {
-  __typename?: 'Space';
-  id: string;
-  nameID: string;
-  visibility: SpaceVisibility;
-  subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
-  about: {
-    __typename?: 'SpaceAbout';
-    id: string;
-    isContentPublic: boolean;
-    provider:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }
-      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-      | {
-          __typename?: 'VirtualContributor';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        };
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      url: string;
-      tagline?: string | undefined;
-      description?: string | undefined;
-      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-      avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-        | undefined;
-      cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-        | undefined;
+export type PlatformLicensePlansQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformLicensePlansQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    licensingFramework: {
+      __typename?: 'Licensing';
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        sortOrder: number;
+        type: LicensingCredentialBasedPlanType;
+        licenseCredential: LicensingCredentialBasedCredentialType;
+      }>;
     };
-    membership: {
-      __typename?: 'SpaceAboutMembership';
-      myMembershipStatus?: CommunityMembershipStatus | undefined;
-      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      communityID: string;
-      roleSetID: string;
-    };
-    guidelines: { __typename?: 'CommunityGuidelines'; id: string };
   };
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
+};
+
+export type SpaceSubscriptionsQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceSubscriptionsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
+        }
+      | undefined;
+  };
+};
+
+export type SpaceLicensePlansQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceLicensePlansQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
+        }
+      | undefined;
+  };
+  platform: {
+    __typename?: 'Platform';
+    licensingFramework: {
+      __typename?: 'Licensing';
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        sortOrder: number;
+        type: LicensingCredentialBasedPlanType;
+        licenseCredential: LicensingCredentialBasedCredentialType;
+      }>;
+    };
+  };
 };
 
 export type PlatformAdminUsersListQueryVariables = Exact<{

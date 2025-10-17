@@ -4,6 +4,7 @@ import * as yup from 'yup';
 import { toTagsetTitle } from '@/domain/common/tagset/toTagsetTitle';
 import TagsInput from '@/core/ui/forms/tagsInput/TagsInput';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 interface TagsSegmentProps {
   name?: string;
@@ -15,8 +16,8 @@ interface TagsSegmentProps {
 }
 
 export const tagsetSegmentValidationObject = yup.object().shape({
-  name: yup.string(),
-  tags: yup.array().of(yup.string().min(2)),
+  name: textLengthValidator(),
+  tags: yup.array().of(textLengthValidator({ minLength: 2 })),
 });
 export const tagsetsSegmentSchema = yup.array().of(tagsetSegmentValidationObject);
 
