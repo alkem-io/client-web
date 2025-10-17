@@ -5,7 +5,7 @@ import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import VisibilityForm from '../components/VisibilityForm';
 import BodyOfKnowledgeManagement from '../components/BodyOfKnowledgeManagement';
-import PromptConfig from '../components/PromptConfig';
+import PromptConfig from '../components/promptGraph/PromptConfig';
 import ExternalConfig from '../components/ExternalConfig';
 import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
 

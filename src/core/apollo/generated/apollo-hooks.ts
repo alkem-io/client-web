@@ -13788,6 +13788,7 @@ export const AiPersonaDocument = gql`
             input_variables
             name
             prompt
+            system
             output {
               title
               type
