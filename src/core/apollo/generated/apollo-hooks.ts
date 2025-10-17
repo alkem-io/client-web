@@ -1414,6 +1414,7 @@ export const UserDetailsFragmentDoc = gql`
       }
       url
     }
+    isContactable
   }
   ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -13007,7 +13008,6 @@ export const UserModelFullDocument = gql`
   query UserModelFull($userId: UUID!) {
     lookup {
       user(ID: $userId) {
-        isContactable
         ...UserDetails
       }
     }
