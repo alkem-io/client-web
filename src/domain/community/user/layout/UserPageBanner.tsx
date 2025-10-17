@@ -39,7 +39,7 @@ const UserPageBanner = () => {
     <ProfilePageBanner
       entityId={userId}
       profile={profile}
-      onSendMessage={handleSendMessage}
+      onSendMessage={user?.isContactable ? handleSendMessage : undefined}
       settingsUri={user && isCurrentUser ? buildSettingsUrl(user?.profile.url ?? '') : undefined}
       loading={loading || urlResolverLoading}
     />
