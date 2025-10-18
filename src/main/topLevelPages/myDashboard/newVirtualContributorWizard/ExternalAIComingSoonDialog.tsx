@@ -8,13 +8,13 @@ import { Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import { Actions } from '@/core/ui/actions/Actions';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useSendMessageToUsersMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { warn as logWarn } from '@/core/logging/sentry/log';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const SUPPORT_EMAIL = 'support@alkem.io';
 
@@ -47,12 +47,8 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
   };
 
   const validationSchema = yup.object().shape({
-    aiService: yup
-      .string()
-      .required()
-      .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
-      .max(MID_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
-    sendResponse: yup.string().oneOf([ContactOptions.option1, ContactOptions.option2]).required(),
+    aiService: textLengthValidator({ minLength: 3, maxLength: MID_TEXT_LENGTH, required: true }),
+    sendResponse: textLengthValidator({ required: true }).oneOf([ContactOptions.option1, ContactOptions.option2]),
   });
 
   const filter: UserFilterInput = { email: SUPPORT_EMAIL };

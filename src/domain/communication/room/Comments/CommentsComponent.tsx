@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { last } from 'lodash';
@@ -17,6 +17,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { CommentInputFieldProps } from './CommentInputField';
 import CalloutClosedMarginal from '@/domain/collaboration/callout/calloutBlock/CalloutClosedMarginal';
 import { Box, BoxProps } from '@mui/material';
+import useKeepElementScroll from '@/domain/shared/utils/scroll/useKeepElementScroll';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
@@ -29,8 +30,8 @@ export interface CommentsComponentProps {
   isMember?: boolean;
   canAddReaction: boolean;
   canDeleteMessage: (authorId: string | undefined) => boolean;
-  postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
-  postReply: (reply: { messageText: string; threadId: string }) => void;
+  postMessage: (message: string) => Promise<FetchResult<unknown>>;
+  postReply: (reply: { messageText: string; threadId: string }) => Promise<FetchResult<unknown>>;
   handleDeleteMessage: (commentsId: string, messageId: string) => void;
   maxHeight?: BoxProps['maxHeight'];
   height?: BoxProps['height'];
@@ -39,6 +40,7 @@ export interface CommentsComponentProps {
   last?: boolean;
   onClickMore?: () => void;
   commentsEnabled: boolean;
+  externalScrollRef?: RefObject<HTMLElement | null>;
 }
 
 interface ScrollState {
@@ -74,6 +76,7 @@ const CommentsComponent = ({
   loading,
   onClickMore,
   commentsEnabled,
+  externalScrollRef,
 }: CommentsComponentProps) => {
   const { t } = useTranslation();
 
@@ -106,6 +109,34 @@ const CommentsComponent = ({
     }
   }, [messages]);
 
+  useEffect(() => {
+    if (commentsContainerRef.current) {
+      commentsContainerRef.current.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+      commentsContainerRef.current?.removeEventListener('scroll', handleScroll);
+    };
+  }, [commentsContainerRef.current]);
+
+  // KeepElementScroll hook is only used when an external scroll ref is provided,
+  // When we use the internal scroller (ScrollerWithGradient) another approach is
+  // used to keep the scroll position (depends on the useEffect above to only scroll if the user had scrolled to the bottom)
+  const { keepElementScroll } = useKeepElementScroll({ scrollContainerRef: externalScrollRef });
+
+  const handlePostComment = async (comment: string, anchorEl: HTMLDivElement | null) => {
+    if (externalScrollRef?.current && anchorEl) {
+      keepElementScroll(anchorEl);
+    }
+    return await postMessage(comment);
+  };
+
+  const handlePostReply = async (reply: { threadId: string; messageText: string }, anchorEl: HTMLDivElement | null) => {
+    if (anchorEl) {
+      keepElementScroll(anchorEl);
+    }
+    return await postReply(reply);
+  };
+
   const commentReactionsMutations = useCommentReactionsMutations(commentsId);
 
   const handleScroll = () => {
@@ -119,20 +150,14 @@ const CommentsComponent = ({
   return (
     <>
       {!isShowingLastMessage && hasMessages && (
-        <ScrollerWithGradient
-          maxHeight={maxHeight}
-          height={height}
-          scrollerRef={commentsContainerRef}
-          onScroll={handleScroll}
-          margin={0}
-        >
+        <ScrollerWithGradient maxHeight={maxHeight} height={height} scrollerRef={commentsContainerRef} margin={0}>
           <Gutters gap={0}>
             <MessagesThread
               messages={messages}
               vcInteractions={vcInteractions}
               loading={loading}
               canPostMessages={canPostMessages}
-              onReply={postReply}
+              onReply={handlePostReply}
               canDeleteMessage={canDeleteMessage}
               onDeleteMessage={onDeleteComment}
               canAddReaction={canAddReaction}
@@ -163,7 +188,7 @@ const CommentsComponent = ({
       {canPostMessages && (
         <PostMessageToCommentsForm
           placeholder={t('pages.post.dashboard.comment.placeholder')}
-          onPostComment={postMessage}
+          onPostComment={handlePostComment}
           disabled={loading}
           padding={gutters()}
           paddingBottom={0}

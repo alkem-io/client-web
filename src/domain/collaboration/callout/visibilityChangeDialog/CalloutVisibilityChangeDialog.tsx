@@ -12,6 +12,7 @@ import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 
 export type CalloutSummaryFields = {
   framing: {
@@ -58,9 +59,19 @@ const CalloutVisibilityChangeDialog = ({
     sendNotifications: true,
   };
 
+  const validationSchema = yup.object().shape({
+    sendNotifications: yup.boolean(),
+  });
+
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
-      <Formik initialValues={initialValues} enableReinitialize validateOnMount onSubmit={handleVisibilityChanged}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize
+        validateOnMount
+        onSubmit={handleVisibilityChanged}
+      >
         {({ handleSubmit }) => (
           <>
             <DialogHeader title={title} onClose={onClose} id="callout-visibility-dialog-title" />

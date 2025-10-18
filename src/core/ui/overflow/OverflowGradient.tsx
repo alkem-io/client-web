@@ -9,6 +9,9 @@ export interface OverflowGradientProps extends BoxProps {
   overflowMarker?: ReactNode;
 }
 
+/**
+ * @deprecated Try to use AutomaticOverflowGradient instead, and remove this one if not used anymore
+ */
 const OverflowGradient = ({
   lastLine = false,
   backgroundColor,

@@ -19,6 +19,7 @@ import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/Vali
 import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export interface ReferenceSegmentProps extends BoxProps {
   fieldName?: string;
@@ -36,11 +37,11 @@ export interface ReferenceSegmentProps extends BoxProps {
 }
 
 export const referenceSegmentValidationObject = yup.object().shape({
-  name: yup
-    .string()
-    .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
-    .max(SMALL_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max }))
-    .required('forms.validations.required'),
+  name: textLengthValidator({
+    minLength: 3,
+    maxLength: SMALL_TEXT_LENGTH,
+    required: true,
+  }),
   uri: yup
     .string()
     .max(MID_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max }))

@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import {
   CalloutContributionType,
   CalloutFramingType,
@@ -10,7 +11,7 @@ import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
 import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import CalloutCommentsContainer from './CalloutCommentsContainer';
+import useCalloutComments from '../commentsToCallout/useCalloutComments';
 import CalloutViewLayout from './CalloutViewLayout';
 import CalloutContributionsLink from '../../calloutContributions/link/CalloutContributionsLink';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
@@ -31,6 +32,10 @@ import ContributionsCardsExpandable from '../../calloutContributions/contributio
 import WhiteboardCard from '../../calloutContributions/whiteboard/WhiteboardCard';
 import CreateContributionButtonWhiteboard from '../../calloutContributions/whiteboard/CreateContributionButtonWhiteboard';
 import CreateContributionButtonPost from '../../calloutContributions/post/CreateContributionButtonPost';
+import Gutters from '@/core/ui/grid/Gutters';
+import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import useNavigate from '@/core/routing/useNavigate';
+import { AnyContribution } from '../../calloutContributions/interfaces/AnyContributionType';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>
@@ -67,6 +72,9 @@ const CalloutView = ({
 }: CalloutViewProps) => {
   const { space } = useSpace();
   const { subspace } = useSubSpace();
+  const navigate = useNavigate();
+  const contributionPreviewRef = useRef<HTMLElement>(null);
+  const scrollerRef = useRef<HTMLElement>(null);
 
   const myMembershipStatus =
     subspace?.about.membership?.myMembershipStatus ?? space?.about.membership?.myMembershipStatus;
@@ -74,9 +82,26 @@ const CalloutView = ({
   const { isSmallScreen } = useScreenSize();
   const lastMessageOnly = isSmallScreen && !expanded;
 
+  const calloutComments = useCalloutComments(callout);
+
   if (!callout || loading) {
     return <CalloutViewSkeleton />;
   }
+
+  const handleClickOnContribution = (contribution: AnyContribution) => {
+    if (expanded && contributionPreviewRef.current) {
+      contributionPreviewRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    const state: LocationStateCachedCallout = {
+      [LocationStateKeyCachedCallout]: callout,
+      keepScroll: true,
+    };
+    // TODO: When contribution.type is available, use it to decide which url to use
+    const url = contribution.whiteboard?.profile.url ?? contribution.post?.profile.url;
+    if (url) {
+      navigate(url, { state });
+    }
+  };
 
   return (
     <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
@@ -84,6 +109,7 @@ const CalloutView = ({
         <CalloutViewLayout
           callout={callout}
           contributionsCount={contributionsCount}
+          contentRef={scrollerRef}
           {...calloutSettingsProvided}
           expanded={expanded}
           onExpand={onExpand}
@@ -116,6 +142,7 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
+                  ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewWhiteboard}
@@ -131,7 +158,7 @@ const CalloutView = ({
                   contributionType={CalloutContributionType.Whiteboard}
                   contributionSelectedId={contributionId}
                   cardComponent={WhiteboardCard}
-                  getContributionUrl={contribution => contribution.whiteboard?.profile.url}
+                  onClickOnContribution={handleClickOnContribution}
                 />
               )}
               {/* else show the expandable container with the cards */}
@@ -146,7 +173,7 @@ const CalloutView = ({
                   onCalloutUpdate={onCalloutUpdate}
                   contributionCardComponent={WhiteboardCard}
                   createContributionButtonComponent={CreateContributionButtonWhiteboard}
-                  getContributionUrl={contribution => contribution.whiteboard?.profile.url}
+                  onClickOnContribution={handleClickOnContribution}
                 />
               )}
             </>
@@ -158,6 +185,7 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
+                  ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewPost}
@@ -172,7 +200,7 @@ const CalloutView = ({
                   contributionType={CalloutContributionType.Post}
                   contributionSelectedId={contributionId}
                   cardComponent={PostCard}
-                  getContributionUrl={contribution => contribution.post?.profile.url}
+                  onClickOnContribution={handleClickOnContribution}
                 />
               )}
               {/* else show the expandable container with the cards */}
@@ -186,7 +214,7 @@ const CalloutView = ({
                   onCalloutUpdate={onCalloutUpdate}
                   contributionCardComponent={PostCard}
                   createContributionButtonComponent={CreateContributionButtonPost}
-                  getContributionUrl={contribution => contribution.post?.profile.url}
+                  onClickOnContribution={handleClickOnContribution}
                 />
               )}
             </>
@@ -194,19 +222,18 @@ const CalloutView = ({
 
           {/* Framing Comments */}
           {callout.comments && (
-            <CalloutCommentsContainer callout={callout}>
-              {props => (
-                <CommentsComponent
-                  {...props}
-                  commentsEnabled={props.commentsEnabled}
-                  loading={loading || props.loading}
-                  last={lastMessageOnly}
-                  maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
-                  onClickMore={() => onExpand?.(callout)}
-                  isMember={myMembershipStatus === CommunityMembershipStatus.Member}
-                />
-              )}
-            </CalloutCommentsContainer>
+            <Gutters disableVerticalPadding>
+              <CommentsComponent
+                {...calloutComments}
+                externalScrollRef={expanded ? scrollerRef : undefined}
+                commentsEnabled={calloutComments.commentsEnabled}
+                loading={loading || calloutComments.loading}
+                last={lastMessageOnly}
+                maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
+                onClickMore={() => onExpand?.(callout)}
+                isMember={myMembershipStatus === CommunityMembershipStatus.Member}
+              />
+            </Gutters>
           )}
         </CalloutViewLayout>
       )}

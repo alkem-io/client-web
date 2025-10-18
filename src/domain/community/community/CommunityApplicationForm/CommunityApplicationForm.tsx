@@ -34,7 +34,7 @@ interface FormValues {
 }
 
 const validationSchema = yup.object().shape({
-  description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
+  description: MarkdownValidator(MARKDOWN_TEXT_LENGTH, { required: true }),
   questions: yup.array().of(questionSchema),
 });
 

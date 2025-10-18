@@ -17,6 +17,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { VisualModelFull } from '@/domain/common/visual/model/VisualModel';
 import { nameOf } from '@/core/utils/nameOf';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 
 export interface InnovationHubFormValues {
   subdomain: string;
@@ -63,9 +65,9 @@ const InnovationHubForm = ({ isNew = false, subdomain, profile, loading, onSubmi
   const validationSchema = yup.object().shape({
     subdomain: subdomainValidator,
     profile: yup.object().shape({
-      displayName: nameSegmentSchema.fields?.displayName ?? yup.string(),
-      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
-      tagline: yup.string().max(MID_TEXT_LENGTH),
+      displayName: nameSegmentSchema.fields?.displayName ?? displayNameValidator({ required: true }),
+      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH, { required: true }),
+      tagline: textLengthValidator({ maxLength: MID_TEXT_LENGTH }),
       tagsets: tagsetsSegmentSchema,
     }),
   });

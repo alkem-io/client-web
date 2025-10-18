@@ -23,6 +23,7 @@ import InviteUsersFormDialogContent from './InviteUsersFormDialogContent';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Caption } from '@/core/ui/typography';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export const INVITE_USERS_TO_ROLES = [RoleName.Member, RoleName.Lead, RoleName.Admin] as const;
 
@@ -56,9 +57,9 @@ const InviteUsersDialog = ({
   const { inviteContributorsOnRoleSet, loading: loadingRoleSet } = useRoleSetApplicationsAndInvitations({ roleSetId });
 
   const validationSchema = yup.object().shape({
-    welcomeMessage: yup.string().required(),
+    welcomeMessage: textLengthValidator({ required: true }),
     selectedContributors: SelectedContributorsArraySchema.min(1).required(),
-    extraRoles: yup.array().of(yup.string().oneOf(INVITE_USERS_TO_ROLES)).min(1).required(),
+    extraRoles: yup.array().of(textLengthValidator().oneOf(INVITE_USERS_TO_ROLES)).min(1).required(),
   });
 
   const initialValues: InviteUsersData = {

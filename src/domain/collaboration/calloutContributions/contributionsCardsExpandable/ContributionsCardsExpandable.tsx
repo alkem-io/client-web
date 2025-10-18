@@ -1,5 +1,4 @@
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
-import useNavigate from '@/core/routing/useNavigate';
 import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -7,7 +6,6 @@ import { useScreenSize } from '@/core/ui/grid/constants';
 import Loading from '@/core/ui/loading/Loading';
 import { times } from 'lodash';
 import { ComponentType, useEffect, useState } from 'react';
-import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import { AnyContribution } from '../interfaces/AnyContributionType';
 import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
@@ -19,7 +17,7 @@ interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
   contributionType: CalloutContributionType;
   contributionCardComponent: ComponentType<CalloutContributionCardComponentProps>;
   createContributionButtonComponent: ComponentType<CalloutContributionCreateButtonProps>;
-  getContributionUrl: (contribution: AnyContribution) => string | undefined;
+  onClickOnContribution: (contribution: AnyContribution) => void;
 }
 
 const NON_EXPANDED_PAGE_SIZE = 4;
@@ -30,13 +28,12 @@ const ContributionsCardsExpandable = ({
   contributionType,
   contributionCardComponent: Card,
   createContributionButtonComponent: CreateContributionButton,
-  getContributionUrl,
+  onClickOnContribution,
   loading: loadingCallout,
   expanded: calloutExpanded,
   onCalloutUpdate,
 }: ContributionsCardsExpandableProps) => {
   const { isSmallScreen, isMediumSmallScreen } = useScreenSize();
-  const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const pageSize = calloutExpanded ? EXPANDED_PAGE_SIZE : NON_EXPANDED_PAGE_SIZE;
@@ -66,17 +63,6 @@ const ContributionsCardsExpandable = ({
     }
   }, [calloutExpanded, hasMore, setFetchAll, isCollapsed]);
 
-  const handleClickOnContribution = (contribution: AnyContribution) => {
-    const state: LocationStateCachedCallout = {
-      [LocationStateKeyCachedCallout]: callout,
-      keepScroll: true,
-    };
-    const url = getContributionUrl(contribution);
-    if (url) {
-      navigate(url, { state });
-    }
-  };
-
   const gridColumns = (() => {
     if (isSmallScreen) return 3;
     if (isMediumSmallScreen) return 6;
@@ -94,7 +80,7 @@ const ContributionsCardsExpandable = ({
               callout={callout}
               columns={calloutExpanded ? 2 : 3}
               contribution={contribution}
-              onClick={() => handleClickOnContribution(contribution)}
+              onClick={() => onClickOnContribution(contribution)}
             />
           ))}
           {loadingContributions &&
