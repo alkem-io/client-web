@@ -68,6 +68,7 @@ const CalloutView = ({
   onCollapse,
   calloutActions = true,
   onCalloutUpdate,
+  calloutRestrictions,
   ...calloutSettingsProps
 }: CalloutViewProps) => {
   const { space } = useSpace();
@@ -104,7 +105,13 @@ const CalloutView = ({
   };
 
   return (
-    <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
+    <CalloutSettingsContainer
+      callout={callout}
+      expanded={expanded}
+      onExpand={onExpand}
+      calloutRestrictions={calloutRestrictions}
+      {...calloutSettingsProps}
+    >
       {calloutSettingsProvided => (
         <CalloutViewLayout
           callout={callout}
@@ -133,6 +140,7 @@ const CalloutView = ({
               onExpand={onExpand}
               onCollapse={onCollapse}
               onCalloutUpdate={onCalloutUpdate}
+              calloutRestrictions={calloutRestrictions}
             />
           )}
 
@@ -147,6 +155,7 @@ const CalloutView = ({
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewWhiteboard}
                   dialogComponent={CalloutContributionDialogWhiteboard}
+                  calloutRestrictions={calloutRestrictions}
                   onCalloutUpdate={onCalloutUpdate}
                 />
               )}
@@ -174,6 +183,7 @@ const CalloutView = ({
                   contributionCardComponent={WhiteboardCard}
                   createContributionButtonComponent={CreateContributionButtonWhiteboard}
                   onClickOnContribution={handleClickOnContribution}
+                  calloutRestrictions={calloutRestrictions}
                 />
               )}
             </>
@@ -190,6 +200,7 @@ const CalloutView = ({
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewPost}
                   dialogComponent={CalloutContributionDialogPost}
+                  calloutRestrictions={calloutRestrictions}
                   onCalloutUpdate={onCalloutUpdate}
                 />
               )}
@@ -215,6 +226,7 @@ const CalloutView = ({
                   contributionCardComponent={PostCard}
                   createContributionButtonComponent={CreateContributionButtonPost}
                   onClickOnContribution={handleClickOnContribution}
+                  calloutRestrictions={calloutRestrictions}
                 />
               )}
             </>
