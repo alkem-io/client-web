@@ -11,7 +11,7 @@ import { Caption } from '@/core/ui/typography';
 import Loading from '@/core/ui/loading/Loading';
 import { useVirtualContributorKnowledgeBaseLastUpdatedQuery } from '@/core/apollo/generated/apollo-hooks';
 import { formatDateTime } from '@/core/utils/time/utils';
-import { virtualContributorsCalloutRestrictions } from '../utils/virtualContributorsCalloutRestrictions';
+import { virtualContributorsCalloutRestrictions } from './virtualContributorsCalloutRestrictions';
 
 type KnowledgeBaseDialogProps = {
   onClose: () => void;
