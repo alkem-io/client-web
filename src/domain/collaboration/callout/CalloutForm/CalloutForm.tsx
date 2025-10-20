@@ -132,6 +132,7 @@ const CalloutForm = ({
     } else {
       const emptyCallout = cloneDeep(DefaultCalloutFormValues);
       emptyCallout.settings.framing.commentsEnabled = !calloutRestrictions?.disableComments;
+      emptyCallout.settings.contribution.commentsEnabled = !calloutRestrictions?.disableCommentsToContributions;
 
       return emptyCallout;
     }
