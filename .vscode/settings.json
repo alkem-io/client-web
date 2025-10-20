@@ -53,9 +53,7 @@
     "Български",
     "Українська"
   ],
-  "github.copilot.chat.codeGeneration.instructions": [
-    {
-      "file": ".github/alkemio-translate.md"
-    }
-  ]
+  "chat.tools.terminal.autoApprove": {
+    ".scripts/add_missing_translation_keys.sh": true
+  }
 }

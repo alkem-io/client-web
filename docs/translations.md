@@ -14,6 +14,7 @@ The fastest way to translate new strings is using the AI translation agent:
 4. **Review and commit** the generated translations
 
 The AI agent will automatically:
+
 - Sync missing keys to all language files
 - Translate each string with cultural and linguistic accuracy
 - Preserve variables like `{{name}}` and HTML tags
@@ -29,16 +30,16 @@ If you prefer to translate manually:
 
 ## Supported Languages
 
-| Code | Language | Notes |
-|------|----------|-------|
-| `en` | English | Source of truth - never auto-modified |
-| `de` | German | Formal (Sie) form |
-| `es` | Spanish | Neutral Spanish |
-| `fr` | French | Formal (vous) form |
-| `nl` | Dutch | Standard Dutch |
-| `pt` | Portuguese | European Portuguese |
-| `bg` | Bulgarian | Formal Bulgarian |
-| `ach` | Acholi | Culturally sensitive |
+| Code  | Language   | Notes                                 |
+| ----- | ---------- | ------------------------------------- |
+| `en`  | English    | Source of truth - never auto-modified |
+| `de`  | German     | Formal (Sie) form                     |
+| `es`  | Spanish    | Neutral Spanish                       |
+| `fr`  | French     | Formal (vous) form                    |
+| `nl`  | Dutch      | Standard Dutch                        |
+| `pt`  | Portuguese | European Portuguese                   |
+| `bg`  | Bulgarian  | Formal Bulgarian                      |
+| `ach` | Norwegian  | Culturally sensitive                  |
 
 ## Translation Files
 
@@ -59,6 +60,7 @@ src/core/i18n/
 ## Best Practices
 
 ### 1. Preserve Variables
+
 Always keep variable placeholders intact:
 
 ```json
@@ -71,6 +73,7 @@ Always keep variable placeholders intact:
 ```
 
 ### 2. Maintain HTML Tags
+
 Keep all HTML formatting:
 
 ```json
@@ -83,10 +86,13 @@ Keep all HTML formatting:
 ```
 
 ### 3. Use Consistent Terminology
+
 Use the same translation for technical terms throughout the app. Check existing translations for consistency.
 
 ### 4. Check Context
+
 Review similar strings to understand:
+
 - The appropriate formality level
 - How similar phrases are translated
 - Common patterns in that language
@@ -94,15 +100,17 @@ Review similar strings to understand:
 ## Common Translation Patterns
 
 ### Action Buttons
-| English | German | Spanish | French | Dutch |
-|---------|--------|---------|--------|-------|
-| Create | Erstellen | Crear | Créer | Aanmaken |
-| Edit | Bearbeiten | Editar | Modifier | Bewerken |
-| Delete | Löschen | Eliminar | Supprimer | Verwijderen |
-| Save | Speichern | Guardar | Enregistrer | Opslaan |
-| Cancel | Abbrechen | Cancelar | Annuler | Annuleren |
+
+| English | German     | Spanish  | French      | Dutch       |
+| ------- | ---------- | -------- | ----------- | ----------- |
+| Create  | Erstellen  | Crear    | Créer       | Aanmaken    |
+| Edit    | Bearbeiten | Editar   | Modifier    | Bewerken    |
+| Delete  | Löschen    | Eliminar | Supprimer   | Verwijderen |
+| Save    | Speichern  | Guardar  | Enregistrer | Opslaan     |
+| Cancel  | Abbrechen  | Cancelar | Annuler     | Annuleren   |
 
 ### Common UI Elements
+
 - **Dashboard** → Usually kept as "Dashboard" in most languages
 - **Settings** → Einstellungen (de), Configuración (es), Paramètres (fr), Instellingen (nl)
 - **Profile** → Profil (de), Perfil (es), Profil (fr), Profiel (nl)
@@ -122,12 +130,14 @@ After adding translations:
 ### Script Issues
 
 **Problem**: Script doesn't run
+
 ```bash
 # Make it executable
 chmod +x ./.scripts/add_missing_translation_keys.sh
 ```
 
 **Problem**: Script requires jq
+
 ```bash
 # Install jq (required for JSON processing)
 # macOS
@@ -140,22 +150,24 @@ sudo apt-get install jq
 ### Translation Issues
 
 **Problem**: AI agent not responding
+
 - Restart VS Code after adding agent configuration
 - Verify GitHub Copilot extension is installed and signed in
 
 **Problem**: Variables broken after translation
+
 - Check that `{{variable}}` patterns match exactly with the English version
 
 ## Tools
 
 ### Sync Script
+
 **Location**: `.scripts/add_missing_translation_keys.sh`
 
 Synchronizes translation keys from English to all other languages, adding `[AI_TRANSLATE]` placeholders for missing keys.
 
 ### AI Translation Agent
+
 **Command**: `@workspace /alkemio.translate`
 
 Automated translation using GitHub Copilot with language-specific guidelines.
-
-

@@ -1,0 +1,3701 @@
+{
+  "chatbot": {
+    "title": "Hjelp",
+    "intro": "Hei, dette er Alkemios automatiske veiledningschat. Den kan gi deg svar basert på Alkemios dokumentasjon. Hva leter du etter?",
+    "infoDialog": {
+      "title": "Alkemio Hjelp",
+      "content": "Bruk Alkemio veiledningschaten for å få svar på spørsmål om plattformen. Denne __AI-drevne personlige assistenten__ lar deg samhandle med innhold fra Alkemio Hjelpesenter. Den vil også oppgi kildene til svarene.\n\nVil du vite mer? Klikk [her](https://alkem.io/vc/guidance) for å besøke $t(common.profile)!"
+    },
+    "feedback": {
+      "message": "Er svaret relevant?",
+      "tooltip": "Denne meldingen er automatisk generert basert på Alkemios dokumentasjon. Din tilbakemelding er svært viktig for oss!"
+    },
+    "menu": {
+      "clear": "Ny chat",
+      "close": "Lukk vindu"
+    },
+    "confirmNewChat": {
+      "title": "Starte en ny chat?",
+      "description": "Ved å starte en ny chat vil du slette din nåværende chathistorikk. Er du sikker på at du vil fortsette?",
+      "confirm": "Ja, start ny chat"
+    },
+    "references": [
+      {
+        "icon": "GradeOutlined",
+        "uri": "https://alkem.io/docs/getting-started/first-steps",
+        "title": "Ny bruker? Besøk våre Kom i gang-sider!"
+      },
+      {
+        "icon": "NotListedLocationOutlined",
+        "uri": "https://alkem.io/docs",
+        "title": "Har du fortsatt spørsmål? Les mer her"
+      },
+      {
+        "icon": "EmailOutlined",
+        "uri": "https://alkem.io/docs/support",
+        "title": "Kontakt Alkemio-teamet"
+      }
+    ]
+  },
+  "releaseNotes": {
+    "title": "<big>🎉 Plattformoppdatering!</big> <small>Vi har noen spennende nyheter til deg… Klikk her for å lese alt om det!</small>",
+    "url": "/forum/releases/latest?date=4725",
+    "isClickable": "TRUE"
+  },
+  "cookie": {
+    "consent": "Ved å klikke \"Godta alle informasjonskapsler\", godtar du lagring av informasjonskapsler på enheten din for å forbedre nettstedsnavigering og analysere nettstedsbruk.",
+    "settings": "Når du besøker et nettsted, kan informasjon lagres i nettleseren din i form av informasjonskapsler. Denne informasjonen kan være om deg, dine preferanser og enheten din. For det meste brukes denne informasjonen til å få nettstedet til å fungere så godt som mulig. Noen nettsteder bruker den til markedsføringsformål. Siden Alkemio ikke tillater reklame på sitt nettsted, skiller vi bare mellom to typer informasjonskapsler.",
+    "technical": "Teknisk nødvendige informasjonskapsler: gjør det mulig å navigere og bruke grunnleggende funksjoner og å lagre preferanser.",
+    "analysis": "Analyseinformasjonskapsler: gjør det mulig for oss å bestemme hvordan besøkende samhandler med tjenestene våre for å forbedre brukeropplevelsen."
+  },
+  "actions": {
+    "add-entity": "Legg til {{entity}}"
+  },
+  "languages": {
+    "en": "English",
+    "nl": "Nederlands",
+    "es": "Español",
+    "bg": "Български",
+    "ua": "Українська",
+    "de": "Deutsch",
+    "fr": "Français",
+    "pt": "Português (Brasil)",
+    "inContextTool": "Kontekstuell oversettelse"
+  },
+  "fields": {
+    "displayName": "Tittel",
+    "startTime": "Starttid",
+    "endTime": "Sluttid",
+    "name": "Navn"
+  },
+  "calendar": {
+    "add-event": "Legg til hendelse",
+    "edit-event": "Rediger hendelse",
+    "delete-event": "Slett hendelse",
+    "delete-confirmation": "Er du sikker på at du vil slette hendelsen: '{{title}}' fra {{entity}}?",
+    "event": {
+      "type": "Type hendelse",
+      "multiple-days": "{{days}} dager",
+      "whole-day": "Hele dagen",
+      "visibleOnParentCalendar": "Også synlig i overordnet $t(common.space) kalender"
+    },
+    "validation": {
+      "durationMinutes": {
+        "positive": "Hendelsens sluttid kan ikke være før starttiden"
+      }
+    },
+    "no-data": "Ingen hendelser funnet",
+    "no-upcoming-events": "For øyeblikket er det ingen kommende hendelser å vise",
+    "past-events": "Tidligere hendelser",
+    "show-calendar": "Vis kalender",
+    "defaultEventDescription": "",
+    "adminsOnly": "Siden det ikke er noen hendelser, er denne blokken bare synlig for $t(common.admins) og $t(common.leads)"
+  },
+  "buttons": {
+    "leave": "Forlat",
+    "learn-more": "Lær mer",
+    "load-more": "Last mer",
+    "load-count-more": "Last {{count}} til",
+    "apply": "Søk",
+    "explore": "Bidra",
+    "ok": "Ok",
+    "create": "Opprett",
+    "publish": "Publiser",
+    "post": "Legg ut",
+    "unpublish": "Avpubliser",
+    "saveDraft": "Lagre som utkast",
+    "archive": "Arkiver",
+    "save": "Lagre",
+    "continue": "Fortsett",
+    "back": "Tilbake",
+    "next": "Neste",
+    "edit": "Rediger",
+    "expand": "Utvid",
+    "expandEntity": "Utvid {{entity}}",
+    "collapse": "Skjul",
+    "collapseEntity": "Skjul {{entity}}",
+    "expandWindow": "Utvid vindu",
+    "see-more": "Se mer",
+    "see-all": "Mer {{subject}}",
+    "readMore": "Les mer",
+    "home": "Hjem",
+    "take-me-home": "Ta meg hjem",
+    "close": "Lukk",
+    "yes": "Ja",
+    "no": "Nei",
+    "yes-close": "Ja, lukk",
+    "yesContinue": "Ja, fortsett",
+    "yesReplace": "Ja, erstatt",
+    "yesDelete": "Ja, slett",
+    "yesStop": "Ja, stopp",
+    "yesDiscard": "Ja, forkast",
+    "delete": "Slett",
+    "submit": "Send inn",
+    "remove": "Fjern",
+    "cancel": "Avbryt",
+    "upload": "Last opp",
+    "explore-and-connect": "Utforsk og koble til",
+    "send-message": "Send melding",
+    "edit-members": "Rediger $t(common.members)",
+    "insert": "Sett inn",
+    "open": "Åpne",
+    "my-profile": "Min $t(common.profile)",
+    "new": "Ny",
+    "sign-out": "Logg ut",
+    "cancel-project": "Avbryt prosjekt",
+    "create-project": "Opprett prosjekt",
+    "processing": "Behandler...",
+    "details": "Detaljer",
+    "member": "$t(common.Member)",
+    "profile": "Profil",
+    "view-profile": "Vis $t(common.Profile)",
+    "edit-photo": "Rediger bilde",
+    "accept-all-cookies": "Godta alle informasjonskapsler",
+    "confirm-choice": "Bekreft valg",
+    "confirm": "Bekreft",
+    "change-template": "Endre $t(common.template)",
+    "find-template": "Finn $t(common.template)",
+    "change": "Endre",
+    "share": "Del",
+    "view": "Vis",
+    "preview": "Forhåndsvisning",
+    "import": "Importer",
+    "importing": "Importerer...",
+    "go-to-entity": "Gå til {{entity}}",
+    "reply": "Svar",
+    "select": "Velg",
+    "change-field": "Endre {{field}}",
+    "send": "Send",
+    "contactLeads": "Kontakt {{contact}}",
+    "moveUp": "Flytt opp",
+    "moveDown": "Flytt ned",
+    "moveToTop": "Flytt til toppen",
+    "moveToBottom": "Flytt til bunnen",
+    "use": "Bruk",
+    "fullscreen": "Bytt fullskjerm",
+    "changeLanguage": "Endre språk",
+    "getHelp": "Få hjelp",
+    "saveAsTemplate": "Lagre som $t(common.template)",
+    "skipLink": "Hopp til neste blokk",
+    "toggle": "Bytt {{entity}}",
+    "toolsMenu": "Verktøymeny",
+    "userMenu": "Brukermeny",
+    "scrollToTop": "Rull til toppen",
+    "addSubject": "Legg til {{subject}}",
+    "toolPosition": "Plassering av verktøy",
+    "createOwnSpace": "...eller klikk her for å opprette ditt eget $t(common.space)",
+    "notifications": "$t(common.Notifications) knapp",
+    "invite": "Inviter",
+    "visit": "Besøk",
+    "returnToDashboard": "Gå tilbake til $t(common.dashboard) som gjest",
+    "approveApplication": "Godkjenn søknad",
+    "rejectApplication": "Avvis søknad"
+  },
+  "tooltips": {
+    "click-more-info": "Klikk for mer informasjon",
+    "click-delete": "Klikk for å slette"
+  },
+  "topBar": {
+    "sign-in": "Logg inn | Registrer deg"
+  },
+  "authentication": {
+    "or": "eller fortsett med",
+    "no-account": "Ingen $t(common.account)?",
+    "have-account": "Har du en $t(common.account)?",
+    "sign-in": "Logg inn",
+    "sign-up": "Registrer deg",
+    "sign-out": "Logg ut",
+    "log-out": "Logg ut",
+    "log-in": "Logg inn",
+    "login": "Innlogging",
+    "register": "Registrer",
+    "validation": {
+      "fill-fields": "Vennligst fyll ut påkrevde felt!"
+    },
+    "social-login": {
+      "connect": "Koble til med {{provider}}",
+      "providers": {
+        "linkedin": "LinkedIn",
+        "microsoft": "Microsoft",
+        "github": "Github",
+        "apple": "Apple",
+        "vidua": "Vidua. Vidua er en eIDAS-sertifisert leverandør som sikrer trygg og juridisk anerkjent autentisering under EU-standarder."
+      }
+    },
+    "signUp": {
+      "signUpEmail": "Registrer deg med e-post",
+      "alreadyHaveAccount": "Har du allerede en $t(common.account)?"
+    }
+  },
+  "common": {
+    "space-level": {
+      "L0": "$t(common.space)",
+      "L1": "$t(common.subspace)",
+      "L2": "Underunderrom"
+    },
+    "actions": "Handlinger",
+    "Account": "Konto",
+    "account": "konto",
+    "anonymous": "Anonym",
+    "all": "Alle",
+    "knowledge-base": "Kunnskapsbase",
+    "or": "Eller",
+    "permission": "Tillatelse",
+    "permissions": "Tillatelser",
+    "error-generic": "Feil oppstod under lasting",
+    "activity": "Aktivitet",
+    "avatar": "Avatar",
+    "avatar-of": "Avatar av {{user}}",
+    "authorizationPolicies": "Autorisasjonsregler",
+    "beta": "Beta",
+    "inspiration": "Inspirasjon",
+    "name": "Navn",
+    "username": "Brukernavn",
+    "tags": "Tagger",
+    "administration": "Administrasjon",
+    "add": "Legg til",
+    "added": "Lagt til",
+    "remove": "Fjern",
+    "callout": "$t(common.post)",
+    "callouts": "$t(common.posts)",
+    "Callout": "$t(common.Post)",
+    "Callouts": "$t(common.Posts)",
+    "collaborationTools": "Samarbeidsverktøy",
+    "createdBy": "Opprettet av",
+    "Memo": "Notat",
+    "Memos": "Notater",
+    "memo": "notat",
+    "memos": "notater",
+    "Whiteboard": "Tavle",
+    "Whiteboards": "Tavler",
+    "whiteboard": "tavle",
+    "whiteboards": "tavler",
+    "calendar": "Kalender",
+    "Collection": "Samling",
+    "Collections": "Samlinger",
+    "collection": "samling",
+    "collections": "samlinger",
+    "Comment": "Kommentar",
+    "Comments": "Kommentarer",
+    "comment": "kommentar",
+    "comments": "kommentarer",
+    "contributions": "Bidrag",
+    "customHomepage": "Tilpasset hjemmeside",
+    "customHomepages": "Tilpassede hjemmesider",
+    "Response": "Svar",
+    "Responses": "Svar",
+    "response": "svar",
+    "responses": "svar",
+    "card": "Kort",
+    "cards": "Kort",
+    "create": "Opprett",
+    "create-new": "Opprett ny",
+    "create-new-entity": "Opprett ny {{entity}}",
+    "category": "Kategori",
+    "custom": "Tilpasset",
+    "date": "Dato",
+    "description": "Beskrivelse",
+    "noDescription": "Ingen beskrivelse",
+    "event": "Hendelse",
+    "events": "Hendelser",
+    "fullScreen": "Fullskjerm",
+    "about": "Om",
+    "aboutThis": "Om denne {{entity}}",
+    "explore": "Bidra",
+    "edit-entity": "Rediger {{entity}}",
+    "filter": "Filtrer",
+    "filterBy": "Filtrer etter...",
+    "forum": "Forum",
+    "email": "E-post",
+    "inApp": "I appen",
+    "state": "Fase",
+    "states": "Faser",
+    "post": "innlegg",
+    "posts": "innlegg",
+    "Post": "Innlegg",
+    "Posts": "Innlegg",
+    "status": "Status",
+    "aspect": "Kort",
+    "aspects": "Kort",
+    "prompt": "Ledetekst",
+    "host": "vert",
+    "hosts": "verter",
+    "layout": "Layout",
+    "lead": "leder",
+    "leads": "ledere",
+    "space": "Rom",
+    "spaces": "Rom",
+    "subspace": "Underrom",
+    "subspaces": "Underrom",
+    "subsubspace": "Underrom",
+    "subsubspaces": "Underrom",
+    "spaceSubspace": "(Under)rom",
+    "entities": "{{entityType}}",
+    "spaceSubspaces": "(Under)rom",
+    "entitiesWithCount": "{{entityType}} ({{count}})",
+    "contributors": "Bidragsytere",
+    "Organization": "Organisasjon",
+    "Organizations": "Organisasjoner",
+    "organization": "organisasjon",
+    "organizations": "organisasjoner",
+    "communications": "Oppdateringer fra $t(common.leads)",
+    "applications": "Søknader",
+    "introduction": "Introduksjon",
+    "interest": "Interesse",
+    "interests": "Interesser",
+    "project": "Prosjekt",
+    "role": "Rolle",
+    "agreement": "Avtale",
+    "agreements": "Avtaler",
+    "templates": "Maler",
+    "noneTemplates": "Ingen maler",
+    "templateTypes": "Maltyper",
+    "template": "Mal",
+    "group": "Gruppe",
+    "groups": "Grupper",
+    "user-group": "Brukergruppe",
+    "user-groups": "Brukergrupper",
+    "user": "Bruker",
+    "users": "Brukere",
+    "update": "Oppdatering",
+    "updates": "Oppdateringer fra $t(common.leads)",
+    "no-updates": "Ingen oppdateringer fra $t(common.leads)",
+    "no-tags": "Ingen tagger tilgjengelig",
+    "no-references": "Ingen referanser tilgjengelig",
+    "field-required": "Dette feltet er påkrevd",
+    "field-min-length": "Dette feltet må være minst {{min}} tegn",
+    "field-max-length": "Dette feltet kan være maks {{max}} tegn",
+    "Link": "Lenke",
+    "link": "lenke",
+    "Membership": "Medlemskap",
+    "Memberships": "Medlemskap",
+    "membership": "medlemskap",
+    "memberships": "medlemskap",
+    "owner": "Eier",
+    "Admin": "Administrator",
+    "Admins": "Administratorer",
+    "admin": "administrator",
+    "admins": "administratorer",
+    "Member": "Medlem",
+    "Members": "Medlemmer",
+    "member": "medlem",
+    "members": "medlemmer",
+    "empty-string": "",
+    "discussion": "Diskusjon",
+    "discussions": "Diskusjoner",
+    "disassociate": "Fjern tilknytning",
+    "dashboard": "Dashboard",
+    "contribute": "Bidra",
+    "context": "Kontekst",
+    "index": "Profil",
+    "Community": "Samfunn",
+    "community": "samfunn",
+    "library": "Bibliotek",
+    "templateLibrary": "Malbibliotek",
+    "people": "Personer",
+    "Settings": "Innstillinger",
+    "settings": "innstillinger",
+    "space-settings": "$t(common.Settings)",
+    "search": "Søk",
+    "Storage": "Lagring",
+    "storage": "lagring",
+    "type": "Type",
+    "reference": "Referanse",
+    "references": "Referanser",
+    "Notification": "Varsel",
+    "Notifications": "Varsler",
+    "notification": "varsel",
+    "notifications": "varsler",
+    "credentials": "Legitimasjon",
+    "my-profile": "Min $t(common.profile)",
+    "my-memberships": "Mine $t(common.memberships)",
+    "Profile": "Profil",
+    "profile": "profil",
+    "social": "Sosial",
+    "lifecycle": "Livssyklus",
+    "location": "Sted",
+    "home": "Hjem",
+    "visuals": "Visuelle elementer",
+    "authorization": "Autorisasjon",
+    "question": "Spørsmål",
+    "questions": "Spørsmål",
+    "show-more": "Vis mer",
+    "show-all": "Vis alle",
+    "show": "Vis",
+    "lock": "Låst",
+    "title": "Tittel",
+    "visibility": "Synlighet",
+    "warning": "Advarsel",
+    "welcome": "Velkommen",
+    "preview": "Forhåndsvisning",
+    "help": "Hjelp",
+    "helpCenter": "Hjelpesenter",
+    "loading": "Laster...",
+    "innovation-flow": "Innovasjonsflyt",
+    "innovation-flows": "Innovasjonsflyter",
+    "innovation-packs": "Malpakker",
+    "innovation-hub": "Innovasjonsknutepunkt",
+    "innovation-hubs": "Innovasjonsknutepunkter",
+    "innovationPack": "Malpakke",
+    "more": "Mer",
+    "url": "URL",
+    "sources": "Kilder",
+    "license": "Lisens",
+    "virtualContributor": "Virtuell bidragsyter",
+    "virtualContributors": "Virtuelle bidragsytere",
+    "collaborationTool": "Samarbeidsverktøy",
+    "optional": "valgfritt",
+    "unknown": "Ukjent",
+    "menu": "Meny",
+    "genders": {
+      "notSpecified": "ikke spesifisert",
+      "male": "mann",
+      "female": "kvinne"
+    },
+    "spaceTypes": {
+      "space": "$t(common.space)",
+      "space_plural": "$t(common.spaces)",
+      "subspace": "$t(common.subspace)",
+      "subspace_plural": "$t(common.subspaces)",
+      "subsubspace": "$t(common.subsubspace)",
+      "subsubspace_plural": "$t(common.subsubspaces)",
+      "agreement": "$t(common.agreement)",
+      "agreement_plural": "$t(common.agreements)"
+    },
+    "verified-status": {
+      "verified": "Verifisert",
+      "not-verified": ""
+    },
+    "enums": {
+      "licenseEntitlementType": {
+        "SPACE_FREE": "Gratis",
+        "SPACE_PLUS": "Pluss",
+        "SPACE_PREMIUM": "Premium"
+      },
+      "innovationFlowState": {
+        "new": "Ny",
+        "beingRefined": "Under forbedring",
+        "inProgress": "Pågående",
+        "complete": "Fullført",
+        "abandoned": "Forlatt",
+        "archived": "Arkivert"
+      },
+      "space-visibility": {
+        "ACTIVE": "Aktiv",
+        "ARCHIVED": "Arkivert",
+        "DEMO": "Demo"
+      },
+      "searchVisibility": {
+        "ACCOUNT": "$t(common.Account)",
+        "HIDDEN": "Skjult",
+        "PUBLIC": "Offentlig"
+      },
+      "edit-mode": {
+        "new": "Ny",
+        "edit": "Rediger",
+        "read-only": "Skrivebeskyttet"
+      },
+      "discussion-category": {
+        "RELEASES": "Utgivelser",
+        "GENERAL": "Generelt",
+        "IDEAS": "Ideer",
+        "QUESTIONS": "Spørsmål",
+        "SHARING": "Deling",
+        "PLATFORM_FUNCTIONALITIES": "Plattformfunksjonalitet",
+        "COMMUNITY_BUILDING": "$t(common.Community) bygging",
+        "CHALLENGE_CENTRIC": "Utfordringsorientert arbeid",
+        "HELP": "Trenger hjelp?",
+        "OTHER": "Annet"
+      },
+      "templateType": {
+        "CALLOUT": "Samarbeidsverktøy $t(common.template)",
+        "CALLOUT_plural": "Samarbeidsverktøy $t(common.templates)",
+        "SPACE": "$t(common.space) $t(common.template)",
+        "SPACE_plural": "$t(common.space) $t(common.templates)",
+        "COMMUNITY_GUIDELINES": "$t(common.Community) retningslinjer $t(common.template)",
+        "COMMUNITY_GUIDELINES_plural": "$t(common.Community) retningslinjer $t(common.templates)",
+        "INNOVATION_FLOW": "$t(common.innovation-flow)",
+        "INNOVATION_FLOW_plural": "$t(common.innovation-flow) $t(common.templates)",
+        "POST": "Innlegg $t(common.template)",
+        "POST_plural": "Innlegg $t(common.templates)",
+        "WHITEBOARD": "$t(common.Whiteboard) $t(common.template)",
+        "WHITEBOARD_plural": "$t(common.Whiteboard) $t(common.templates)"
+      },
+      "calloutType": {
+        "LINK_COLLECTION": "Lenke $t(common.Collection)",
+        "POST": "$t(common.Post)",
+        "POST_COLLECTION": "$t(common.Post) $t(common.Collection)",
+        "WHITEBOARD": "$t(common.Whiteboard)",
+        "WHITEBOARD_COLLECTION": "$t(common.Whiteboard) $t(common.Collection)"
+      },
+      "calloutContributionType": {
+        "LINK": "Lenke",
+        "POST": "Innlegg",
+        "WHITEBOARD": "Tavle",
+        "MEMO": "Notat"
+      },
+      "invitationStatus": {
+        "invited": "Invitert",
+        "accepted": "Godtatt",
+        "rejected": "Avvist"
+      },
+      "invitationExternalStatus": {
+        "invited": "Invitert"
+      },
+      "roleSetContributorType": {
+        "USER": "Bruker",
+        "ORGANIZATION": "$t(common.Organization)",
+        "VIRTUAL": "$t(common.virtualContributor)"
+      }
+    },
+    "blocks": {
+      "users-contributing": "brukere som bidrar",
+      "all-contributing-users": "alle bidragsytende brukere"
+    },
+    "roles": {
+      "ADMIN": "$t(common.Admin)",
+      "LEAD": "Leder",
+      "HOST": "Vert",
+      "MEMBER": "$t(common.Member)",
+      "ASSOCIATE": "Tilknyttet",
+      "OWNER": "Eier",
+      "GLOBAL_ADMIN": "Global $t(common.Admin)",
+      "GLOBAL_SUPPORT": "Støtte $t(common.Admin)",
+      "GLOBAL_SUPPORT_MANAGER": "Støtteleder",
+      "GLOBAL_PLATFORM_MANAGER": "Plattformleder",
+      "GLOBAL_LICENSE_MANAGER": "Lisensleder",
+      "GLOBAL_COMMUNITY_READER": "$t(common.Community) leder",
+      "GLOBAL_SPACES_READER": "$t(common.spaces) leser",
+      "PLATFORM_BETA_TESTER": "Beta-tester",
+      "PLATFORM_VC_CAMPAIGN": "VC tidlig tilgang"
+    },
+    "time": {
+      "short": {
+        "timeAgo": "{{time}}",
+        "second_one": "{{count}}s",
+        "second_other": "{{count}}s",
+        "minute_one": "{{count}}m",
+        "minute_other": "{{count}}m",
+        "hour_one": "{{count}}t",
+        "hour_other": "{{count}}t",
+        "day_one": "{{count}}d",
+        "day_other": "{{count}}d",
+        "month_one": "{{count}}md",
+        "month_other": "{{count}}md",
+        "year_one": "{{count}}å",
+        "year_other": "{{count}}å"
+      },
+      "long": {
+        "timeAgo": "{{time}} siden",
+        "second_one": "{{count}} sekund",
+        "second_other": "{{count}} sekunder",
+        "minute_one": "{{count}} minutt",
+        "minute_other": "{{count}} minutter",
+        "hour_one": "{{count}} time",
+        "hour_other": "{{count}} timer",
+        "day_one": "{{count}} dag",
+        "day_other": "{{count}} dager",
+        "month_one": "{{count}} måned",
+        "month_other": "{{count}} måneder",
+        "year_one": "{{count}} år",
+        "year_other": "{{count}} år"
+      }
+    },
+    "supportEmail": "support@alkem.io",
+    "options": "Alternativer",
+    "externalLinkDisclaimer": "Denne lenken tar deg til et eksternt nettsted. Alkemio er ikke ansvarlig for innholdet."
+  },
+  "community": {
+    "memberUsers": "$t(common.Member) brukere ({{count}})",
+    "leading-organizations": "Ledende $t(common.Organizations)",
+    "memberOrganizations": "Medlem $t(common.Organizations) ({{count}})",
+    "pendingMemberships": "Ventende søknader og invitasjoner",
+    "leads": "Ledere",
+    "members": "$t(common.Members)",
+    "host": "Vert",
+    "virtualContributor": "$t(common.virtualContributor)",
+    "members-count": "{{count}} $t(common.Member)",
+    "members-count_plural": "{{count}} $t(common.Members)",
+    "addMember": "Legg til $t(common.member)",
+    "unauthorizedPermissionsChange": "Du har ikke tillatelse til å redigere denne brukerens tillatelser",
+    "virtualContributors": {
+      "blockTitle": "$t(common.virtualContributors) ({{count}})",
+      "removeDialog": {
+        "title": "Fjern $t(common.virtualContributor)",
+        "confirm": "Er du sikker?"
+      },
+      "externalVCsInfo": "For øyeblikket kan kun Alkemio Support legge til en ekstern $t(common.virtualContributor) til ditt $t(common.space). Vennligst kontakt Support <click>her</click> hvis du ønsker å gjøre dette, vi hjelper gjerne!",
+      "searchVC": "Finn $t(common.virtualContributor)",
+      "permissionRequiredTooltip": "For å bruke $t(common.virtualContributors), vennligst oppgrader lisensen din eller kontakt Alkemio-teamet for assistanse."
+    },
+    "application-form": {
+      "title": "Søknadsskjema",
+      "subtitle": "Denne seksjonen lar deg endre spørsmålene for brukere som søker om å bli med i $t(common.space). <br /><b>Vennligst merk</b> at disse spørsmålene kun vil vises når $t(common.membership) alternativene (i blokken over) er satt til \"Søknad påkrevd\"",
+      "required-question": "Påkrevd spørsmål",
+      "move-up": "Flytt spørsmål én posisjon opp",
+      "move-down": "Flytt spørsmål én posisjon ned",
+      "delete-question": "Slett spørsmål",
+      "updated-successfully": "Søknadsskjema oppdatert."
+    },
+    "communityGuidelines": {
+      "title": "$t(common.Community) retningslinjer",
+      "saveAndDeleteContentSuccessMessage": "$t(common.Community) retningslinjer innhold fjernet og lagret.",
+      "updatedSuccessfully": "$t(common.Community) retningslinjer oppdatert.",
+      "adminsOnly": "Siden det ikke er spesifisert noen $t(common.community) retningslinjer, er denne blokken kun synlig for $t(common.admins) og $t(common.leads).",
+      "communityGuidelinesRedirect": "Klikk her for å oppdatere $t(common.community) retningslinjene i $t(common.space) $t(common.settings).",
+      "confirmationDialog": {
+        "title": "Oppdaterer $t(common.community) retningslinjer",
+        "description": "Er du sikker på at du vil erstatte dine eksisterende $t(common.community) retningslinjer? Denne handlingen kan ikke angres."
+      },
+      "deleteCommunityGuidelines": "Slett $t(common.community) retningslinjer"
+    },
+    "applicationsHelp": "Her finner du alle som har søkt om å bli $t(common.member) av dette $t(common.space). Ved å klikke på dem kan du gjennomgå søknaden deres og godta eller avvise den.",
+    "applicationStatus": {
+      "applicationReceived": "Søknad mottatt",
+      "applicationApproved": "Søknad godkjent",
+      "applicationRejected": "Søknad avvist",
+      "applicationArchived": "Søknad arkivert"
+    },
+    "invitations": {
+      "inviteButton": {
+        "USER": "Inviter personer til dette $t(common.space)",
+        "ORGANIZATION": "Inviter personer til dette $t(common.space)",
+        "VIRTUAL": "Inviter $t(common.virtualContributor)"
+      },
+      "inviteToRole": "Inviter til å være: ",
+      "inviteContributorsDialog": {
+        "users": {
+          "title": "Inviter andre til å bli med i '{{spaceName}}'",
+          "description": "Søk etter personer nedenfor eller legg direkte til e-postadressen deres",
+          "descriptionMembers": "Søk $t(common.members) fra overordnet $t(common.spaceSubspace).",
+          "note": "Husk at din personlige e-postadresse vil være synlig for alle du sender melding til.",
+          "defaultWelcomeMessage": "Hei, jeg ønsker å invitere deg til {{spaceName}}. Ta en titt på $t(common.space) eller klikk på knappen nedenfor for å godta eller avslå invitasjonen direkte.",
+          "placeholder": "Brukernavn eller e-post...",
+          "success": "Din invitasjon ble sendt til følgende mottakere:",
+          "failure": "Vi kunne ikke sende invitasjonen til følgende mottakere:",
+          "back": "Send en ny invitasjon",
+          "invitationsSent": "{{count}} invitasjoner vil bli sendt.",
+          "invitationByEmailTooltip": "{{email}} vil bli invitert til å registrere seg på Alkemio og til dette $t(common.space)",
+          "results": {
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Har allerede en åpen invitasjon/søknad",
+            "ALREADY_INVITED_TO_ROLE_SET": "Har allerede en åpen invitasjon/søknad",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitasjon til overordnet $t(common.community) var ikke autorisert",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "Invitert til å bli med på plattformen",
+            "INVITED_TO_ROLE_SET": "Invitert til å bli med i $t(common.community)"
+          },
+          "validationErrors": {
+            "required": "Vennligst legg til minst én bidragsyter å invitere",
+            "invalidAddress": "Vennligst fjern ugyldige oppføringer for å fortsette"
+          }
+        },
+        "vcs": {
+          "title": "$t(common.virtualContributors) butikk",
+          "dialogTitle": "Inviter $t(common.virtualContributor) til å bli med i dette $t(common.space)",
+          "invitationSent": "Invitasjon sendt",
+          "inviteExternalVC": "Inviter ekstern VC",
+          "inviteBtn": "Inviter $t(common.virtualContributor)",
+          "defaultVCInvitationMessage": "Hei, jeg ønsker å invitere din $t(common.virtualContributor) {{name}} til {{space}}. Ta en titt på $t(common.space) eller klikk på knappen nedenfor for å godta eller avslå invitasjonen direkte.",
+          "onAccount": {
+            "title": "$t(common.virtualContributors) knyttet til dette $t(common.space)'s $t(common.account)"
+          },
+          "inLibrary": {
+            "title": "Andre $t(common.virtualContributors)"
+          },
+          "emptyMessage": "Ingen tilgjengelige $t(common.virtualContributors)",
+          "successfullyAdded": "{{contributor}} lagt til",
+          "vcFetchErrorMessage": "En feil oppstod ved henting av $t(common.virtualContributors)"
+        },
+        "welcomeMessage": "Invitasjonsmelding"
+      }
+    },
+    "confirmationDialogs": {
+      "delete": {
+        "application": {
+          "title": "Sletter søknad fra '{{user}}'",
+          "content": "Er du sikker på at du vil arkivere denne søknaden? Søknaden vil bli avvist hvis den ikke allerede er det."
+        },
+        "invitation": {
+          "title": "Sletter invitasjon til '{{user}}'",
+          "content": "Er du sikker på at du vil slette denne invitasjonen? Invitasjonen vil bli slettet hvis den ikke allerede er det."
+        },
+        "platformInvitation": {
+          "title": "Sletter invitasjon til '{{user}}'",
+          "content": "Er du sikker på at du vil slette denne invitasjonen? Invitasjonen vil bli slettet hvis den ikke allerede er det."
+        }
+      },
+      "approve": {
+        "title": "Godkjenn søknad fra {{user}}",
+        "content": "Er du sikker på at du vil godkjenne denne søknaden? Brukeren vil bli lagt til i $t(common.space) og vil kunne få tilgang til det.",
+        "confirmButton": "Ja, godkjenn"
+      },
+      "reject": {
+        "title": "Avvis søknad fra {{user}}",
+        "content": "Er du sikker på at du vil avvise denne søknaden? Brukeren vil ikke kunne få tilgang til $t(common.space).",
+        "confirmButton": "Ja, avvis"
+      }
+    },
+    "pendingMembership": {
+      "pendingMemberships": "Mine ventende $t(common.Memberships)",
+      "pendingMembershipsWithCount": "Mine ventende $t(common.Memberships) ({{count}})",
+      "invitationsSectionTitle": "Invitasjoner",
+      "virtualInvitationsSectionTitle": "Invitasjoner for min $t(common.virtualContributor)",
+      "applicationsSectionTitle": "Åpne søknader",
+      "invitationDialog": {
+        "title": "Mitt ventende $t(common.Membership): {{space}}",
+        "vc": {
+          "title": "Ventende $t(common.virtualContributor) $t(common.membership): {{space}}"
+        },
+        "actions": {
+          "hide": "Skjul denne invitasjonen",
+          "reject": "Avslå",
+          "join": "Bli med",
+          "accept": "Godta"
+        }
+      },
+      "invitationTitle": "{{time}} {{user}} inviterte {{invitedEntity}} til <spaceicon /> {{space}}",
+      "invitationCardTitle": "{{user}} inviterte {{invitedEntity}} til <spaceicon /> {{space}}",
+      "you": "deg",
+      "vc": "din $t(common.virtualContributor)"
+    },
+    "memberSettings": {
+      "title": "$t(common.Member) $t(common.settings)",
+      "lead": "Dette $t(common.member) er en <b>$t(common.lead)</b>: Ledere vises som $t(common.hosts) av $t(common.community). ",
+      "admin": "Dette $t(common.member) er en <b>$t(common.admin)</b>: (s)han har rett til å administrere denne $t(common.community) og alt dens innhold og bidragsytere.",
+      "maxLeadsWarning": "Merk at det er et spesifikt <b>maksimalt antall $t(common.leads)</b> for samfunnene. Hvis det maksimale antallet er nådd, vil dette alternativet være deaktivert for andre.",
+      "removeMember": {
+        "sectionTitle": "Fjern $t(common.member)",
+        "remove": "Klikk her for å fjerne denne brukeren fra dette $t(common.community). Vær forsiktig, denne handlingen kan ikke angres.",
+        "dialogTitle": "Er du sikker på at du vil fjerne dette $t(common.member)?",
+        "dialogContent": "Ved å klikke BEKREFT, vil {{member}} bli fjernet fra dette $t(common.community) og alle underliggende $t(common.subspaces) som {{memberFirstName}} kan være $t(common.member) av. {{memberFirstName}}s bidrag vil forbli på plass."
+      }
+    },
+    "removeGuidelinesConfirmationDialog": {
+      "title": "Fjern $t(common.community) retningslinjer innhold",
+      "content": "Er du sikker på at du vil fjerne $t(common.community) retningslinjene? Denne handlingen kan ikke angres."
+    },
+    "unableToAddMemberInfo": {
+      "title": "Kan ikke legge til $t(common.member)",
+      "content": "Dette $t(common.member) må legges til i overordnet $t(common.space) først."
+    }
+  },
+  "callout": {
+    "create": {
+      "createButton": "$t(common.Callout)",
+      "createButtonTooltip": "Legg til $t(common.Callout)",
+      "dialogTitle": "Legg til $t(common.Callout)",
+      "framingSettings": {
+        "title": "Ekstra innhold",
+        "none": {
+          "title": "Ingen",
+          "tooltip": "Ingen ekstra innhold"
+        },
+        "whiteboard": {
+          "title": "$t(common.Whiteboard)",
+          "tooltip": "Legg til en $t(common.whiteboard) til dette $t(common.post)",
+          "onlyRealTimeEditorAvailable": "For å redigere denne $t(common.whiteboard) nå, vennligst bruk $t(common.whiteboard) editoren ved å lukke denne dialogen og åpne $t(common.whiteboard) direkte ved å klikke på forhåndsvisningen."
+        },
+        "memo": {
+          "title": "$t(common.Memo)",
+          "tooltip": "Legg til et samarbeidsdokument til dette $t(common.post)"
+        },
+        "link": {
+          "title": "Handlingsoppfordring",
+          "tooltip": "Legg til en handlingsoppfordring til dette $t(common.post)"
+        }
+      },
+      "contributionSettings": {
+        "title": "$t(common.Response) alternativer",
+        "comments": {
+          "title": "$t(common.Comments)",
+          "enabled": "$t(common.Comments)",
+          "disabled": "Ingen $t(common.Comments)"
+        },
+        "contributionTypes": {
+          "title": "$t(common.Collection)",
+          "settings": {
+            "title": "$t(common.Collection) $t(common.settings)",
+            "membersCanRespond": "$t(common.Members) kan legge til i $t(common.collection)",
+            "adminCanRespond": "$t(common.Admins) kan legge til i $t(common.collection)",
+            "commentsOnEachResponse": "Aktiver $t(common.comments) på hvert innlegg i $t(common.collection)",
+            "confirmBackDialog": {
+              "title": "Er du sikker på at du vil gå tilbake?",
+              "text": "Det er ulagrede endringer i dette skjemaet, hvis du lukker denne dialogen vil endringene gå tapt.",
+              "confirm": "Ja, gå tilbake"
+            }
+          },
+          "common": {
+            "defaultDisplayName": "Tittel"
+          },
+          "none": {
+            "title": "Ingen",
+            "tooltip": "Ingen $t(common.collection)"
+          },
+          "link": {
+            "title": "Lenker og filer",
+            "tooltip": "Aktiver svar med lenker og filer",
+            "settings": {
+              "label": "Start direkte",
+              "description": "Legg til dine første lenker nedenfor, etter publisering kan nye lenker legges direkte til $t(common.post).",
+              "addButton": "Legg til en ny lenke"
+            }
+          },
+          "post": {
+            "title": "$t(common.Posts)",
+            "tooltip": "Aktiver svar med $t(common.posts)",
+            "settings": {
+              "label": "Standardtekst:",
+              "explanation": "Legg til standardtekst til $t(common.posts), for eksempel spørsmål du ønsker folk skal svare på.",
+              "text": "Standardbeskrivelse"
+            }
+          },
+          "whiteboard": {
+            "title": "$t(common.Whiteboards)",
+            "tooltip": "Aktiver svar med $t(common.whiteboards)",
+            "settings": {
+              "label": "Standard $t(common.whiteboard):",
+              "explanation": "Rediger standard $t(common.whiteboard)."
+            }
+          },
+          "tooltipDisabled": "Vennligst opprett et nytt $t(common.post) hvis du ønsker et annet $t(common.collection) alternativ."
+        }
+      },
+      "importTemplate": {
+        "confirmOverwrite": {
+          "title": "Overskrive nåværende input?",
+          "content": "Hvis du importerer en $t(common.template), kan din nåværende input bli overskrevet. Er du sikker på at du vil fortsette?"
+        }
+      },
+      "notification": {
+        "label": "Varsle $t(common.community).",
+        "description": "$t(common.Members) av denne $t(common.community) vil motta et $t(common.notification) hvis aktivert i deres $t(common.notification) $t(common.settings)."
+      },
+      "disabledSubmitTooltip": "Vennligst sørg for at alle titler er fylt ut."
+    },
+    "edit": {
+      "dialogTitle": "Rediger $t(common.post)"
+    },
+    "accessForbidden": {
+      "title": "Innhold ikke tilgjengelig",
+      "description": "Vi beklager, men innholdet du ba om er ikke tilgjengelig. Det kan ha blitt slettet, eller du har kanskje ikke tillatelse til å få tilgang til det, for eksempel hvis det ble satt i utkastmodus."
+    },
+    "contributions": {
+      "contributionsCount_one": "{{count}} bidrag",
+      "contributionsCount_other": "{{count}} bidrag",
+      "contributionsItemsCount_one": "{{count}} element i denne $t(common.collection)",
+      "contributionsItemsCount_other": "{{count}} elementer i denne $t(common.collection)",
+      "contributionsItemsCountExpand": "{{count}} elementer i denne $t(common.collection), <click>klikk her</click> for å se alle",
+      "contributionsCollapse": "{{count}} elementer i denne $t(common.collection), <click>klikk her</click> for å skjule noen",
+      "noContributions": "Ingen bidrag ennå, vær den første til å bidra!"
+    },
+    "draftNotice": "UTKAST - Kun synlig for $t(common.admins)",
+    "closed": "Denne diskusjonen er stengt så du kan ikke lenger kommentere",
+    "notMember": "Du kan ikke svare på denne diskusjonen siden du ikke er $t(common.member) av dette $t(common.space)",
+    "delete-confirm-title": "Slette $t(common.post)?",
+    "delete-confirm-text": "Alle $t(common.responses) og $t(common.comments) under $t(common.posts) vil også bli slettet.",
+    "state-permission": "Tillat å legge til i $t(common.collection)",
+    "permission-help-text": "Bruk bryteren nedenfor for å stenge denne $t(common.callout) for nye oppføringer.",
+    "callout-location": "Plassering: ",
+    "sortContributions": "Sorter bidrag",
+    "saveAsTemplate": "Lagre som $t(common.template)",
+    "alkemio-link": "Klikk her for å lese mer om Alkemios $t(common.posts)",
+    "link-collection": {
+      "add-link": "Legg til lenker eller dokumenter til {{title}}",
+      "edit-link": "Rediger {{title}}",
+      "add-another": "Legg til en ny lenke",
+      "delete-link": "Klikk her for å slette denne lenken",
+      "save-to-add": "Klikk 'Lagre som utkast' eller 'Publiser' for å begynne å legge til lenker.",
+      "no-links-yet": "Det er ingen lenker ennå, vær den første til å legge til en!",
+      "delete-confirm-title": "Slette denne lenken?",
+      "delete-confirm": "Er du sikker på at du vil fjerne denne lenken fra {{title}}?",
+      "cancel-confirm-title": "Er du sikker?",
+      "cancel-confirm": "Hvis du forlater denne dialogen, vil dine nye lenker ikke bli lagret.",
+      "more-links": "{{count}} lenker, klikk her for å vise alle",
+      "new-temporary-reference": "Midlertidig lenke-ID: {{temp}}"
+    },
+    "singleWhiteboard": {
+      "clickToSee": "Klikk for å se hele $t(common.whiteboard)"
+    },
+    "memo": {
+      "clickToSee": "Klikk for å se hele $t(common.memo)"
+    },
+    "calloutsList": {
+      "title": "Indeks",
+      "filter": {
+        "placeholder": "Søk..."
+      }
+    }
+  },
+  "space-creation": {
+    "dialog-title": "Opprett en ny {{entity}}"
+  },
+  "messaging": {
+    "message": "Melding",
+    "message-optional": "Melding (valgfri)",
+    "successfully-sent": "Melding sendt",
+    "messageDeleted": "Denne meldingen er slettet.",
+    "insertEmoji": "Sett inn emoji",
+    "addReaction": "Legg til reaksjon",
+    "addMention": "Nevn noen",
+    "formattingHelp": "Formateringshjelp",
+    "missingAuthor": "Alkemio (virtuell) bidragsyter"
+  },
+  "send-message-dialog": {
+    "direct-message-title": "Send en melding",
+    "community-message-title": "Send en melding til {{contact}}(er)"
+  },
+  "share-dialog": {
+    "title": "Kopier lenken nedenfor for å dele denne {{entity}}",
+    "share-this": "Del denne {{entity}}",
+    "share-this-on": "Del denne {{entity}} på {{platform}}",
+    "or": "eller",
+    "url": "URL",
+    "warning": "Vennligst merk at din personlige e-post vil være synlig for brukeren når du sender dem en melding.",
+    "platforms": {
+      "clipboard": {
+        "title": "Kopier lenke",
+        "copy": "Kopier",
+        "copied": "Kopiert!"
+      },
+      "alkemio": {
+        "name": "Alkemio",
+        "title": "Del på Alkemio",
+        "description": "Del denne {{entity}} direkte med andre Alkemio-brukere. Du kan søke etter Alkemio-brukere nedenfor og legge ved en personlig melding.",
+        "default-template": "Hei!\n\nJeg ønsker å dele denne {{entity}} med deg.\n\nTa en titt!"
+      },
+      "linkedin": {
+        "title": "Del på Linkedin"
+      },
+      "twitter": {
+        "title": "Del på Twitter"
+      },
+      "whatsapp": {
+        "title": "Del på Whatsapp"
+      },
+      "email": {
+        "title": "Del via e-post"
+      }
+    }
+  },
+  "context": {
+    "L0": {
+      "displayName": {
+        "title": "Tittel *",
+        "description": "",
+        "placeholder": ""
+      },
+      "nameId": {
+        "title": "URL",
+        "description": "",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "Slagord",
+        "description": "",
+        "placeholder": ""
+      },
+      "description": {
+        "title": "Hva",
+        "description": "",
+        "placeholder": ""
+      },
+      "when": {
+        "title": "Innvirkning",
+        "description": "",
+        "placeholder": ""
+      },
+      "why": {
+        "title": "Hvorfor",
+        "description": "",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Hvem",
+        "description": "",
+        "placeholder": ""
+      },
+      "tags": {
+        "title": "Tagger",
+        "description": "",
+        "placeholder": "",
+        "tooltip": "Tagger"
+      },
+      "template": {
+        "title": "Mal:",
+        "defaultTemplate": "Standard Alkemio $t(common.template) for $t(common.spaces)"
+      }
+    },
+    "L1": {
+      "displayName": {
+        "title": "Tittel *",
+        "description": "",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "Slagord",
+        "description": "",
+        "placeholder": ""
+      },
+      "description": {
+        "title": "Hva",
+        "description": "",
+        "placeholder": ""
+      },
+      "when": {
+        "title": "Innvirkning",
+        "description": "",
+        "placeholder": ""
+      },
+      "why": {
+        "title": "Hvorfor",
+        "description": "",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Hvem",
+        "description": "",
+        "placeholder": ""
+      },
+      "tags": {
+        "title": "Tagger",
+        "description": "",
+        "placeholder": "",
+        "tooltip": "Tagger"
+      },
+      "template": {
+        "title": "$t(common.template):",
+        "defaultTemplate": "Standard Alkemio $t(common.template) for $t(common.subspaces)"
+      }
+    },
+    "L2": {
+      "displayName": {
+        "title": "Tittel",
+        "description": "Prøv å holde den kort, beskrivende og engasjerende",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "Slagord",
+        "description": "",
+        "placeholder": ""
+      },
+      "description": {
+        "title": "Hva",
+        "description": "",
+        "placeholder": ""
+      },
+      "when": {
+        "title": "Innvirkning",
+        "description": "",
+        "placeholder": ""
+      },
+      "why": {
+        "title": "Hvorfor",
+        "description": "",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Hvem",
+        "description": "",
+        "placeholder": ""
+      },
+      "tags": {
+        "title": "Tagger",
+        "description": "Skriv inn ord som er nøkkelord for ditt $t(common.subspace) for å gjøre det fremtredende og lettere å finne.",
+        "placeholder": ""
+      },
+      "innovationFlow": {
+        "title": "$t(common.subspace) flyt"
+      },
+      "template": {
+        "title": "$t(common.template):",
+        "defaultTemplate": "Standard Alkemio $t(common.template) for $t(common.subspaces)"
+      }
+    }
+  },
+  "forms": {
+    "validations": {
+      "field": "Felt",
+      "fieldNotPresent": "{{fieldName}} er ikke tilstede",
+      "required": "Dette feltet er påkrevd!",
+      "requiredField": "{{field}} er påkrevd!",
+      "minLength": "{{field}} må være minst {{min}} tegn langt",
+      "maxLength": "Overskred grensen på {{max}} tegn",
+      "alphaNumeric": "{{field}} kan kun inneholde små latinske bokstaver, tall og bindestreker",
+      "nonBlank": "{{field}} må ikke bare bestå av mellomrom",
+      "atLeastOne": "Minst én {{item}} må være valgt.",
+      "reservedTopLevelRoute": "Denne URL-en er reservert for plattformen. Vennligst velg en annen.",
+      "invalidUrl": "Ugyldig URL",
+      "invalidEmail": "Ugyldig e-postadresse",
+      "duplicateEmail": "Duplisert e-postadresse",
+      "elementMustBeValidUrl": "{{name}} må være en gyldig URL",
+      "acceptedTerms": "Du må godta vilkårene og betingelsene"
+    }
+  },
+  "templateDialog": {
+    "profile": {
+      "title": "$t(common.template) beskrivelse",
+      "help": "Denne beskrivelsen vil være synlig for alle som blar gjennom $t(common.templates). Den er imidlertid ikke en del av det faktiske {{entityTypeName}} innholdet.",
+      "fields": {
+        "displayName": "$t(common.template) tittel",
+        "description": "$t(common.template) beskrivelse",
+        "tags": "$t(common.template) tagger"
+      }
+    }
+  },
+  "templateLibrary": {
+    "calloutTemplates": {
+      "name": "$t(common.enums.templateType.CALLOUT)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.CALLOUT_plural)",
+      "description": "Beskrivelse"
+    },
+    "postTemplates": {
+      "name": "$t(common.enums.templateType.POST)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.POST_plural)",
+      "defaultDescription": "Standard $t(common.post) innhold"
+    },
+    "whiteboardTemplates": {
+      "name": "$t(common.enums.templateType.WHITEBOARD)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.WHITEBOARD_plural)",
+      "editTemplateButton": "Rediger $t(common.template)",
+      "editDialogTitle": "Rediger $t(common.enums.templateType.WHITEBOARD)",
+      "errorImporting": "Feil ved import av $t(common.enums.templateType.WHITEBOARD)"
+    },
+    "spaceTemplates": {
+      "name": "$t(common.enums.templateType.SPACE)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.SPACE_plural)",
+      "findByUrl": {
+        "title": "Finn en $t(common.space) $t(common.template) ved hjelp av URL",
+        "description": "Legg til URL-en til $t(common.space) du vil bruke som $t(common.template) nedenfor.",
+        "use": "Bruk denne $t(common.space) som $t(common.template)",
+        "urlRequired": "URL er påkrevd",
+        "noRights": "Du har ikke tillatelse til å bruke denne $t(common.space) som $t(common.template)",
+        "invalidUrl": "Ugyldig URL",
+        "spaceNotFoundError": "$t(common.space) ikke funnet",
+        "selectAnother": "Velg en annen $t(common.space)"
+      },
+      "preview": {
+        "info": "$t(common.space) $t(common.template) forhåndsvisning"
+      },
+      "recursive": "Inkluder også $t(common.subspaces) fra valgt $t(common.space) i $t(common.template)",
+      "includesSubspaces": "Denne $t(common.template) inkluderer også disse $t(common.subspaces):"
+    },
+    "communityGuidelinesTemplates": {
+      "name": "$t(common.enums.templateType.COMMUNITY_GUIDELINES)",
+      "title": "$t(common.templateLibrary):  $t(common.enums.templateType.COMMUNITY_GUIDELINES_plural)",
+      "content": "Retningslinjer",
+      "guidelinesTitle": "Tittel",
+      "guidelinesDescription": "Retningslinjer"
+    },
+    "platformTemplates": "Plattform $t(common.templates)",
+    "loadPlatformTemplates": "Eller klikk her for å bla gjennom alle plattform $t(common.templates)",
+    "platformUseDisabled": "Merk at du bare kan bruke $t(common.templates) som er valgt for dette $t(common.community) (se ovenfor). Hvis du ønsker å bruke noen av $t(common.templates) nedenfor, vennligst spør $t(common.admin) eller $t(common.lead) for $t(common.space) om å legge dem til i $t(common.template) seksjonen i $t(common.space) innstillingene.",
+    "disabledTemplateInfo": "Vær oppmerksom på at du bare kan bruke $t(common.templates) som er valgt for dette $t(common.community), noe denne ikke er. Hvis du ønsker å bruke denne $t(common.template), vennligst spør $t(common.admin) eller $t(common.lead) for $t(common.space) om å legge den til i $t(common.template) seksjonen i $t(common.space) $t(common.settings).",
+    "importTemplateDialog": {
+      "confirmClose": {
+        "title": "Forkast $t(common.template)",
+        "description": "Er du sikker på at du vil lukke denne $t(common.template)? Ulagrede endringer vil gå tapt."
+      }
+    },
+    "notifications": {
+      "templateSaved": "$t(common.template) lagret"
+    }
+  },
+  "innovation-templates": {
+    "states": {
+      "title": "Definisjon",
+      "placeholder": "Her kan du lime inn beskrivelsen av fasene som skal brukes for denne $t(common.innovation-flow)"
+    }
+  },
+  "components": {
+    "calloutTemplateDialog": {
+      "typeReadonly": "Når en $t(common.template) er opprettet, kan typen ikke endres. Hvis du trenger en annen type, vennligst opprett en ny $t(common.template)."
+    },
+    "shareSettings": {
+      "description": "Basert på $t(common.settings) til $t(common.space) som denne {{elementName}} er i, kan du redigere med flere brukere samtidig. Hvis du ikke vil at andre skal redigere, endre $t(common.settings) nedenfor.",
+      "disabled": "Basert på $t(common.settings) til $t(common.space) som denne {{elementName}} er i, er sanntidssamarbeid ikke aktivert. Dette betyr at bare én bruker kan redigere om gangen.",
+      "ownedBy": {
+        "title": "Denne {{elementName}} eies av:"
+      },
+      "editableBy": {
+        "title": "Denne {{elementName}} kan redigeres av:",
+        "options": {
+          "CONTRIBUTORS": "Alle som kan bidra i denne $t(common.spaceSubspace)",
+          "ADMINS": "Eieren og $t(common.admins) og $t(common.leads) i denne $t(common.spaceSubspace)",
+          "OWNER": "Eieren av denne {{elementName}}"
+        }
+      }
+    },
+    "navigation": {
+      "exitMenu": "Avslutt meny",
+      "skipMenu": "Hopp over hovedmeny"
+    },
+    "search": {
+      "searchScope": {
+        "full": "Søk i:",
+        "short": "i:"
+      },
+      "scope": {
+        "platform": "Hele plattformen",
+        "space": "{{displayName}}"
+      }
+    },
+    "searchDialog": {
+      "headerTitle": "Søkeresultater",
+      "spacesAndSubspaces": "$t(common.spaces) & $t(common.subspaces)",
+      "collaborationTools": "Samarbeidsverktøy"
+    },
+    "searchScope": {
+      "currentScope": "Søkeresultater for:",
+      "alternativeScope": "Fant du ikke det du lette etter? Prøv å søke i:",
+      "platform": "Alle steder på Alkemio"
+    },
+    "poweredBy": {
+      "label": "Drevet av",
+      "aria-label": "Drevet av Alkemio"
+    },
+    "spaceUnauthorizedDialog": {
+      "message": "Dette er et privat $t(common.community) og mesteparten av innholdet er begrenset til kun $t(common.members). Hvis du vil bli med, <apply>klikk her for å søke.</apply>"
+    },
+    "spacePageBannerCard": {
+      "parentSpace": "Del av:"
+    },
+    "spaceMetrics": {
+      "title": "{{space}} statistikk"
+    },
+    "dashboardNavigation": {
+      "help": "Hierarki for dette $t(common.space).",
+      "privateSubspace": "Dette er et privat $t(common.subspace). Besøk $t(common.subspace) og søk om å bli $t(common.member) for å se innholdet.",
+      "showAll": "Vis alle",
+      "expand": "Vis fullstendig hierarki",
+      "collapse": "Begrens til dette $t(common.subspace)"
+    },
+    "dashboardRecentContributions": {
+      "title": "Bidrag",
+      "modes": {
+        "switchMode": "Bytt visning",
+        "recentActivity": "Nyeste",
+        "topCallouts": "Mest aktive"
+      }
+    },
+    "innovationFlowVisualizer": {
+      "currentState": "Nåværende fase",
+      "currentStateName": "Nåværende fase: {{state}}"
+    },
+    "innovationFlowSettings": {
+      "title": "Administrer flyt",
+      "buttonTooltip": "Administrer flyt",
+      "editProfileDialog": {
+        "title": "Rediger detaljer: Flyt"
+      },
+      "stateEditor": {
+        "activeState": "Aktiv fase",
+        "setActiveState": "Sett som aktiv fase",
+        "editState": "Rediger detaljer",
+        "deleteState": "Slett",
+        "addState": "Legg til fase",
+        "invalidChars": "Et fasenavn kan ikke inneholde spesialtegn.",
+        "noRepeatedStates": "En fase med samme navn eksisterer allerede.",
+        "createDialog": {
+          "title": "Opprett flytfase"
+        },
+        "editDialog": {
+          "title": "Rediger detaljer: Flytfase"
+        },
+        "deleteDialog": {
+          "title": "Slette fase?",
+          "text": "Denne handlingen kan ikke angres.",
+          "activeStateWarning": "Denne fasen er for øyeblikket den aktive og kan ikke slettes. Du kan alltid gi den nytt navn eller velge en annen som den aktive."
+        },
+        "selectDifferentFlow": {
+          "title": "Finn $t(common.space) $t(common.template)",
+          "confirmationDialog": {
+            "title": "Vær forsiktig når du endrer flyten!",
+            "description": "- Ved å endre $t(common.innovation-flow), vil **alle endringer gjort i gjeldende flyt gå tapt**.\n- Alle eksisterende $t(common.posts) vil bli gruppert under første fase av den nye flyten."
+          },
+          "importCalloutsDialog": {
+            "title": "Bruk ny $t(common.template)",
+            "description": "Du er i ferd med å bruke en ny $t(common.template). Denne handlingen vil <b>permanent slette</b> din nåværende $t(common.innovation-flow). Imidlertid vil eksisterende $t(common.posts) knyttet til forskjellige faser forbli og bli gruppert under første fase av det nye oppsettet.<br/><br/>Vennligst velg ett av følgende alternativer:",
+            "yes": "Legg til $t(common.posts) fra $t(common.template)",
+            "yesDescription": "Dette vil inkludere de nye $t(common.posts) fra $t(common.template) i tillegg til dine eksisterende.",
+            "no": "Kun endre $t(common.innovation-flow)",
+            "noDescription": "Dette vil kun erstatte $t(common.innovation-flow) og beholde dine nåværende $t(common.posts) som de er.",
+            "apply": "Bruk ny $t(common.template)"
+          }
+        }
+      }
+    },
+    "confirmation-dialog": {
+      "delete-comment": {
+        "confirmation-title": "Sletter $t(common.comment)",
+        "confirmation-text": "Er du sikker på at du vil slette denne $t(common.comment)?"
+      }
+    },
+    "wysiwyg-editor": {
+      "generic": {
+        "add": "$t(common.add)",
+        "cancel": "$t(buttons.cancel)"
+      },
+      "toolbar": {
+        "blocktype.h1": "Overskrift 1",
+        "blocktype.h2": "Overskrift 2",
+        "blocktype.h3": "Overskrift 3",
+        "blocktype.h4": "Overskrift 4",
+        "blocktype.h5": "Overskrift 5",
+        "blocktype.h6": "Overskrift 6",
+        "blocktype.blockquote": "Blokksitat",
+        "blocktype.code": "Kode",
+        "blocktype.blocktype": "Blokktype",
+        "blocktype.normal": "Normal",
+        "emoji.emoji": "Emojis",
+        "history.history": "Historikk",
+        "history.undo": "Angre",
+        "history.redo": "Gjør om",
+        "image.image": "Bilder",
+        "image.fileUpload": "Last opp fil",
+        "image.byURL": "Lim inn URL",
+        "image.dropFileText": "Slipp filen eller klikk for å laste opp",
+        "inline.bold": "Fet",
+        "inline.italic": "Kursiv",
+        "inline.strikethrough": "Gjennomstreking",
+        "inline.monospace": "Monospace",
+        "link.linkTitle": "Lenketittel",
+        "link.linkTarget": "Lenkemål",
+        "link.linkTargetOption": "Åpne lenke i nytt vindu",
+        "link.link": "Lenke",
+        "link.unlink": "Fjern lenke",
+        "list.list": "Liste",
+        "list.unordered": "Usortert liste",
+        "list.ordered": "Sortert liste",
+        "list.indent": "Innrykk",
+        "list.outdent": "Fjern innrykk",
+        "remove.remove": "Fjern",
+        "embed.video": "Bygg inn video eller annet media",
+        "horizontal.line": "Sett inn horisontal linje"
+      },
+      "image": {
+        "dialogHeader": "Sett inn bilde"
+      },
+      "link": {
+        "dialogHeader": "Konverter utvalg til hyperlenke"
+      },
+      "validation": {
+        "maxLength": "Den resulterende teksten overskrider størrelsen som godtas av serveren."
+      },
+      "embed": {
+        "iframeAria": "{{title}}",
+        "dialogTitle": "Bygg inn video eller annet media",
+        "embedCodeTextAreaAriaLabel": "Tomt tekstområde",
+        "pasteEmbedCode": "Lim inn embed/iframe-kode her",
+        "invalidOrUnsupportedEmbed": "Dessverre er denne koden enten ikke gyldig eller ikke støttet. Vennligst sjekk koden nøye eller kontakt support@alkem.io"
+      }
+    },
+    "top-callouts": {
+      "title": "Høyeste aktivitet"
+    },
+    "associated-organization": {
+      "confirmation-dialog": {
+        "title": "Forlater {{organization}}",
+        "text": "Er du sikker på at du vil forlate? Du kan kanskje ikke se innholdet eller gjøre bidrag når du ikke lenger er $t(common.member)."
+      }
+    },
+    "error-display": {
+      "title": "Oops!",
+      "went-wrong": "Det ser ut til at noe gikk galt.",
+      "contact-support-sentence": "Hvis dette problemet vedvarer, vennligst kontakt support.",
+      "buttons": {
+        "reload": "Last inn på nytt",
+        "take-me-home": "Ta meg hjem",
+        "contact-support": "Kontakt support"
+      }
+    },
+    "urlResolver": {
+      "errors": {
+        "invalidUrl": "Ugyldig URL",
+        "invalidUrlOrigin": "Ugyldig URL-opprinnelse",
+        "invalidUrlFormat": "Ugyldig URL-format"
+      }
+    },
+    "search-cards": {
+      "matched-terms": "Matchende termer"
+    },
+    "activity-log-section": {
+      "title": "Siste bidrag",
+      "activity-sign-in-error-message": "For å se de siste bidragene, vennligst logg inn.",
+      "activity-join-error-message": "For å se de siste bidragene, vennligst bli med hvis du ikke allerede er $t(common.member) av denne {{spaceLevel}}.",
+      "activity-sign-in-and-join-error-message": "For å se de siste bidragene, vennligst logg inn og bli med hvis du ikke allerede er $t(common.member) av denne {{spaceLevel}}."
+    },
+    "activityLogView": {
+      "description": {
+        "CALLOUT_PUBLISHED": "{{subject}}",
+        "SUBSPACE_CREATED": "{{subject}}",
+        "DISCUSSION_COMMENT": "{{subject}}",
+        "MEMBER_JOINED": "{{subject}} ble med",
+        "CALLOUT_POST_COMMENT": "{{subject}}",
+        "CALLOUT_POST_CREATED": "{{subject}}",
+        "CALLOUT_LINK_CREATED": "{{subject}}",
+        "UPDATE_SENT": "{{subject}}",
+        "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
+        "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
+        "CALENDAR_EVENT_CREATED": "{{subject}}"
+      },
+      "detailedDescription": {
+        "parentLink": " i <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
+      }
+    },
+    "innovationFlow": {
+      "currentState": "Nåværende fase:",
+      "changeState": "Endre fase til:",
+      "error": "Definisjonen kunne ikke visualiseres"
+    },
+    "activity-tooltip": {
+      "headline": "Alkemio vokser! Totalt er plattformen nå vert for:"
+    },
+    "context-section": {
+      "create-post": "Opprettet $t(common.post) med hell",
+      "give-feedback": "Gi tilbakemelding"
+    },
+    "callout-publish": {
+      "notify-members": "Varsle $t(common.members) i $t(common.community)"
+    },
+    "callout-creation": {
+      "title": "Hva vil du spørre ditt $t(common.community)?",
+      "titleWithType": "Opprett {{type}}",
+      "post-type-label": "$t(common.Post) etikett",
+      "custom-template": "Tilpasset $t(common.template)",
+      "info-step": {
+        "title": "Detaljer",
+        "description": "Beskrivelse",
+        "type-comments": "$t(common.Comments)",
+        "type-comments-help": "Velg $t(common.Comments) når du vil at folk skal svare i et enkelt tekstformat, som en meldingstavle.",
+        "type-posts": "$t(common.Posts)",
+        "type-posts-help": "Velg $t(common.posts) når du vil at folk skal svare i kortformat.",
+        "type-whiteboards": "$t(common.Whiteboards)",
+        "type-whiteboards-help": "Velg '$t(common.Whiteboards)' når du vil at folk skal svare på en visuell $t(common.whiteboard), som lar dem tegne og bruke tekst."
+      },
+      "framing": {
+        "whiteboard": {
+          "title": "$t(common.Whiteboard):",
+          "editDialogTitle": "Rediger $t(common.whiteboard)"
+        },
+        "link": {
+          "name": "Handling",
+          "url": "URL"
+        },
+        "memo": {
+          "name": "Innhold",
+          "placeholder": "(Valgfritt) Legg til noe innhold i $t(common.memo)"
+        }
+      },
+      "template-step": {
+        "title": "$t(common.templates)",
+        "post-template-label": "Standard tekst:",
+        "post-template-text": "Legg til standard tekst i $t(common.posts), for eksempel spørsmål du vil at folk skal svare på.",
+        "post-template-default-description": "Standardbeskrivelse",
+        "whiteboard-template-label": "$t(common.template):",
+        "whiteboard-empty-template": "Tom $t(common.template)",
+        "whiteboard-reset-template": "Tilbakestill tom $t(common.template)",
+        "no-post-template-selected": "Vennligst velg en $t(common.enums.templateType.WHITEBOARD)",
+        "no-whiteboard-template-selected": "Vennligst velg en $t(common.enums.templateType.WHITEBOARD)"
+      },
+      "create-step": {
+        "title": "Opprett",
+        "post-template-label": "Velg $t(common.post) $t(common.template)"
+      },
+      "closeDialog": {
+        "title": "Forkast $t(common.post)",
+        "text": "Er du sikker på at du vil lukke denne $t(common.post)? Ulagrede endringer vil gå tapt."
+      }
+    },
+    "calloutEdit": {
+      "titleWithType": "Rediger {{type}}"
+    },
+    "post-creation": {
+      "title": "Send inn ditt svar til {{calloutDisplayName}}",
+      "type-step": {
+        "title": "Typen av ekstra kontekst som skal legges til.",
+        "error": "En feil oppstod under lasting av typene",
+        "label": "$t(common.Post) etikett",
+        "type-help-text-short": "Vennligst velg $t(common.post) etiketten som best passer konteksten du ønsker å dele."
+      },
+      "info-step": {
+        "title": "Detaljer",
+        "description": "Vennligst del detaljene",
+        "description-placeholder": "En beskrivelse for denne $t(common.post)",
+        "tags-help-text": "Legg til fritekst-tagger for å raskt formidle nøkkelinformasjonen om $t(common.post). Gode tagger hjelper også med å gjøre $t(common.post) lettere å finne i søk.",
+        "name-help-text": "Et beskrivende navn for denne $t(common.post).",
+        "name-id-help-text": "Navn-ID hjelpetekst",
+        "unique-name-validation-text": "${path} er allerede brukt i en annen $t(common.post)"
+      },
+      "create-step": {
+        "title": "Opprett",
+        "type": "Type",
+        "name": "Navn",
+        "description": "Beskrivelse",
+        "links": "Relevante lenker",
+        "explanation": "Ved å fullføre dette trinnet vil $t(common.post) bli opprettet, og du vil ha muligheten til å legge til bilder."
+      },
+      "visuals-step": {
+        "title": "Bilder",
+        "headline": "Gratulerer, du har nå opprettet en $t(common.post) med hell!",
+        "explanation": "For å personalisere $t(common.post) din ytterligere, vurder å legge til bilder som et banner til $t(common.post).",
+        "bottom-note": "Du vil fortsatt ha muligheten til å endre disse bildene under $t(common.settings) fanen, samt legge til vedlegg og et banner for $t(common.dashboard) kortet."
+      }
+    },
+    "visual-upload": {
+      "loading": "Bilde lastes",
+      "success": "Bilde lastet opp",
+      "error": "En feil oppstod under opplasting av bildet",
+      "upload-hover": "Last opp bilde",
+      "no-data": "Ikke satt ennå",
+      "entityCreatedErrorUploading": "{{entity}} ble opprettet, men det oppstod en feil ved opplasting av noen bilder. Vennligst prøv igjen."
+    },
+    "tags-component": {
+      "more": "+{{count}} flere",
+      "no-tags": "Ingen tagger tilgjengelig."
+    },
+    "remove-modal": {
+      "title": "Bekreft fjerning"
+    },
+    "application-dialog": {
+      "title": "Søknadsdetaljer",
+      "created": "Opprettet {{date}}",
+      "updated": "Sist oppdatert {{date}}"
+    },
+    "credential-share-request-dialog": {
+      "title": "Del dine verifiserte legitimasjoner",
+      "content": "Vennligst velg legitimasjonene du ønsker å lagre i din Alkemio-vertede lommebok."
+    },
+    "alkemio-user-credential-offer-dialog": {
+      "title": "Alkemio-bruker",
+      "content": "Denne legitimasjonen lar innehaveren bevise at de er en verifisert Alkemio-bruker."
+    },
+    "alkemio-community-member-credential-offer-dialog": {
+      "title": "Alkemio $t(common.community) $t(common.Member)",
+      "content": "Denne legitimasjonen lar innehaveren bevise at de er $t(common.member) av det spesifiserte $t(common.community) i Alkemio."
+    },
+    "edit-members": {
+      "no-available-members": "Ingen brukere tilgjengelig for å legge til; vennligst sjekk $t(common.members) i inneholdt $t(common.community)",
+      "user-not-found": "Bruker ikke funnet!"
+    },
+    "application-button": {
+      "apply-parent": "Søk til foreldre",
+      "apply-disabled": "Søknader ikke aktivert",
+      "apply-not-signed": "Logg inn for å søke",
+      "apply-pending": "Søknad venter",
+      "join": "Bli med",
+      "acceptInvitation": {
+        "full": "Du er invitert til å bli $t(common.member) av denne $t(common.space), vennligst klikk her for å godta",
+        "short": "Godta invitasjon"
+      },
+      "joinSpaceFirst": {
+        "full": "For å bli $t(common.member) av denne $t(common.subspace), må du først bli $t(common.member) av overordnet $t(common.space)",
+        "short": "Vennligst bli med i overordnet $t(common.space) først"
+      },
+      "joinSubspaceFirst": {
+        "full": "For å bli $t(common.member) av denne $t(common.subspace), må du først bli $t(common.member) av overordnet $t(common.subspace)",
+        "short": "Vennligst bli med i overordnet $t(common.subspace) først"
+      },
+      "contactOpportunityLeads": {
+        "full": "Send en melding til $t(common.subspace) $t(common.leads) for å bli $t(common.member)",
+        "short": "Send en melding til $t(common.subspace) $t(common.leads) for å bli $t(common.member)"
+      },
+      "goToSpace": "Gå til $t(common.space)",
+      "goToSubspace": "Gå til $t(common.subspace)",
+      "parent-pending": "Overordnet søknad venter",
+      "applyTo": "Søk til",
+      "extendedMessage": "{{join}} vårt {{space}} og begynn å skape endring!",
+      "dialog-apply-parent": {
+        "title": "Søk til <strong title='Parent community name'>{{parentCommunityName}}</strong>",
+        "body": "For å bli med i <strong title='subspace name'>'{{subspaceName}}'</strong> må du først bli med i <strong title='Space name'>'{{spaceName}}'</strong> $t(common.space). Vennligst legg til $t(common.subspace) du ønsker å bli med i på $t(common.space) sitt søknadsskjema."
+      },
+      "dialog-parent-app-pending": {
+        "title": "Overordnet søknad venter!",
+        "body": "For å bli med i <strong title='subspace name'>{{subspaceName}}'</strong> må du først bli med i <strong title='Space name'>'{{spaceName}}'</strong> $t(common.space). Det venter allerede en søknad for <strong title='Space name'>'{{spaceName}}'</strong>, så du kan også sende en parallell søknad for <strong title='subspace name'>'{{subspaceName}}'</strong>."
+      },
+      "dialogApplicationSuccessful": {
+        "join": {
+          "body": "Takk for at du ble med i dette $t(common.community)!"
+        },
+        "apply": {
+          "body": "Takk for at du søkte til vårt $t(common.community)!"
+        }
+      },
+      "dialog-join-parent": {
+        "title": "Bli med i <strong title='Parent community name'>{{parentCommunityName}}</strong>",
+        "body": "Du kan bli med i dette $t(common.community) uten å søke om $t(common.membership), men først må du bli med i <strong title='Parent community name'>{{parentCommunityName}}</strong> og godta vilkårene og betingelsene der."
+      }
+    },
+    "organization-verified": {
+      "verified": "Verifisert",
+      "not-verified": ""
+    },
+    "card-filter": {
+      "title": "Filtrer"
+    },
+    "backdrop": {
+      "private": "Interessert i å lese mer? Vennligst logg inn eller bli med hvis du ikke allerede er $t(common.member) av denne {{blockName}}!",
+      "authentication": "Vennligst logg inn for å se detaljer om {{blockName}}.",
+      "login": "Vennligst logg inn for å se {{blockName}}"
+    },
+    "referenceSegment": {
+      "title": "Referanser",
+      "addReference": "Legg til referanse",
+      "description": "Vær oppmerksom på at alle filer du legger ved her blir offentlig tilgjengelig. Hvis du bare vil at $t(common.members) av denne $t(common.space) skal kunne få tilgang til filene, legg dem ved en $t(common.post) eller en $t(common.collection) av lenker på en av medlemssidene.",
+      "missing-references": "Ingen referanser ennå",
+      "tooltips": {
+        "add-reference": "Legg til en referanse",
+        "remove-reference": "Fjern referansen"
+      },
+      "url-helper-text": "<terms>Klikk her</terms> for vilkårene og betingelsene.",
+      "plaintext-helper-text": "Klikk her for vilkårene og betingelsene. Du kan laste opp Word, PDF, Excel eller bilder opptil 15 MB",
+      "newReference": "Ny referanse",
+      "newReference_plural": "Ny referanse ({{count}})",
+      "newLink": "Ny lenke",
+      "newLink_plural": "Ny lenke ({{count}})"
+    },
+    "file-upload": {
+      "uploadFile": "Last opp fil",
+      "file-size-error": "Filstørrelsen overstiger grensen på {{limit}}MB",
+      "file-upload-success": "Fil lastet opp"
+    },
+    "editSpaceForm": {
+      "host": {
+        "title": "Vert",
+        "select": "Velg en $t(common.host)"
+      },
+      "read-access": "Tillat lesetilgang for ikke-rom $t(common.members) til $t(common.subspaces)",
+      "about": "Detaljer",
+      "visibility": "Denne $t(common.space) er for øyeblikket i <strong>{{visibility}}</strong> modus",
+      "readOnly": "Hvis du vil endre noe av denne informasjonen, vennligst kontakt Alkemio-teamet her."
+    },
+    "deleteEntity": {
+      "title": "Faresone",
+      "description": "Klikk her for å slette denne {{entity}}. Vær forsiktig, denne handlingen kan ikke angres.",
+      "confirmDialog": {
+        "title": "Bekreft sletting av {{entity}}",
+        "description": "Er du sikker på at du vil slette denne {{entity}}? Husk at denne handlingen er irreversibel. <strong>Du kan kun slette en {{entity}} hvis det ikke er noen underliggende $t(common.subspaces) tilknyttet den.</strong> Hvis det er noen $t(common.subspaces) på denne siden, vennligst slett dem først (du kan gjøre dette fra {{entity}} $t(common.settings) > $t(common.subspaces) siden).",
+        "descriptionShort": "Er du sikker på at du vil slette denne {{entity}}? Husk at denne handlingen er irreversibel.",
+        "descriptionShortWithName": "Er du sikker på at du vil slette <strong>{{entity}}</strong>? Husk at denne handlingen er irreversibel.",
+        "checkbox": "Vennligst merk av i denne boksen hvis du er sikker på å slette denne {{entity}}",
+        "confirm": "Ja, slett"
+      }
+    },
+    "nameSegment": {
+      "name": "Navn",
+      "nameID": {
+        "title": "Navn-ID",
+        "placeholder": "Unik tekstlig identifikator, brukt til URL-stier. Merk: kan ikke endres etter opprettelse."
+      }
+    },
+    "visualSegment": {
+      "title": "Visuelt",
+      "avatar": "Avatar",
+      "banner": "Banner",
+      "background": "Bakgrunn"
+    },
+    "profileSegment": {
+      "avatar": {
+        "name": "Avatar",
+        "placeholder": "Skriv inn en avatar-URL..."
+      },
+      "tagline": {
+        "name": "Slagord",
+        "placeholder": "Skriv inn et slagord"
+      },
+      "description": {
+        "name": "Beskrivelse",
+        "placeholder": "Skriv inn en beskrivelse"
+      },
+      "location": {
+        "title": "Plassering",
+        "country": {
+          "name": "Land",
+          "placeholder": "Velg et land"
+        },
+        "city": {
+          "name": "By",
+          "placeholder": "Bynavn"
+        },
+        "addressLine1": {
+          "name": "Adresselinje 1",
+          "placeholder": "Adresselinje 1"
+        },
+        "addressLine2": {
+          "name": "Adresselinje 2",
+          "placeholder": "Adresselinje 2"
+        },
+        "stateOrProvince": {
+          "name": "Stat eller provins",
+          "placeholder": "Stat eller provins"
+        },
+        "postalCode": {
+          "name": "Postnummer",
+          "placeholder": "Postnummer"
+        },
+        "noLocation": "Ingen plassering spesifisert"
+      },
+      "socialLinks": {
+        "github": "GitHub",
+        "linkedin": "LinkedIn",
+        "bsky": "BlueSky"
+      }
+    },
+    "organizationSegment": {
+      "contactEmail": {
+        "name": "Kontakt e-post",
+        "placeholder": "Skriv inn kontakt e-post"
+      },
+      "domain": {
+        "name": "Domene",
+        "placeholder": "Skriv inn domene"
+      },
+      "legalEntityName": {
+        "name": "Juridisk enhetsnavn",
+        "placeholder": "Skriv inn juridisk enhetsnavn"
+      },
+      "website": {
+        "name": "Nettside",
+        "placeholder": "Skriv inn en nettside"
+      },
+      "verified": {
+        "name": "Verifiseringsstatus",
+        "placeholder": "Verifiseringsstatus"
+      }
+    },
+    "card": {
+      "privacy": {
+        "member": "$t(common.Member)",
+        "private": "Privat {{entity}}",
+        "public": "Offentlig {{entity}}"
+      },
+      "parentSpace": "i: {{space}}"
+    },
+    "errorBlock": {
+      "message": "Beklager, en feil oppstod under lasting av {{blockName}}."
+    },
+    "loading": {
+      "message": "Laster {{blockName}}..."
+    },
+    "groupForm": {
+      "title": "Rediger gruppe"
+    },
+    "searchableList": {
+      "placeholder": "Søk",
+      "load-more": "Last flere",
+      "info": "Viser {{count}} av {{total}}"
+    },
+    "filter": {
+      "placeholder": "Søk"
+    },
+    "user-selector": {
+      "tooltip": "Begynn å skrive for å finne brukere"
+    },
+    "communityUpdates": {
+      "title": "La ditt $t(common.community) vite hva som kommer",
+      "updatesTitle": "Publiserte oppdateringer",
+      "msg-not-empty": "Meldingen kan ikke være tom",
+      "actions": {
+        "add": {
+          "buttonTitle": "Publiser oppdatering"
+        },
+        "remove": {
+          "confirmationTitle": "Fjerner oppdatering",
+          "confirmationContent": "Å fjerne en $t(common.community) oppdatering er irreversibelt. Er du sikker på at du vil fortsette?",
+          "confirmationButtonTitle": "Ja"
+        }
+      }
+    },
+    "profile": {
+      "fields": {
+        "bio": {
+          "title": "Bio"
+        },
+        "description": {
+          "title": "Beskrivelse"
+        },
+        "tagline": {
+          "title": "Slagord"
+        },
+        "phone": {
+          "title": "Telefon"
+        },
+        "telephone": {
+          "title": "Telefon"
+        },
+        "mobile": {
+          "title": "Mobil"
+        },
+        "keywords": {
+          "title": "Nøkkelord"
+        },
+        "skills": {
+          "title": "Ferdigheter"
+        },
+        "capabilities": {
+          "title": "Evner"
+        },
+        "links": {
+          "title": "Lenker"
+        },
+        "location": {
+          "title": "Plassering"
+        },
+        "website": {
+          "title": "Nettside"
+        },
+        "references": {
+          "title": "Referanser"
+        },
+        "engines": {
+          "external": "OpenAI Generisk",
+          "externalAssistant": "OpenAI Assistent",
+          "externalVCDescription": "Denne $t(common.virtualContributor) bruker <strong>{{engineName}}</strong>, en ekstern AI-motor. Som et resultat er kunnskapsbasen ikke tilgjengelig."
+        },
+        "bodyOfKnowledge": {
+          "title": "Kunnskapsbase",
+          "privateBokTooltip": "Denne kunnskapsbasen er privat",
+          "spaceBokDescription": "Svarene {{vcName}} gir er basert på kunnskapsbasen som kommer fra:"
+        }
+      }
+    },
+    "associates": {
+      "name": "Tilknyttede",
+      "title": "Tilknyttede ({{count}})",
+      "help": "Brukere tilknyttet denne $t(common.organization)"
+    },
+    "contributions": {
+      "title": "Bidrag",
+      "leadSpacesTitle": "$t(common.spaceSubspaces) vi leder",
+      "allMembershipsTitle": "$t(common.spaceSubspaces) vi er i",
+      "help": "$t(common.spaces) og $t(common.subspaces) som denne $t(common.organization) bidrar til"
+    },
+    "discussions-list": {
+      "name": "Diskusjoner - {{community}}",
+      "title": "Diskusjoner ({{count}})",
+      "posted": "{{name}} {{- date}} - {{count}} $t(common.comment)",
+      "posted_plural": "{{name}} {{- date}} - {{count}} $t(common.comments)"
+    },
+    "discussion": {
+      "initiate": "Start diskusjon",
+      "posted": "{{name}} startet {{- date}} - {{count}} $t(common.comment)",
+      "posted_plural": "{{name}} startet {{- date}} - {{count}} $t(common.comments)",
+      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} })",
+      "comment": "{{count}} $t(common.Comment)",
+      "comment_plural": "{{count}} $t(common.Comments)",
+      "contributed": "{{count}} person bidro",
+      "contributed_plural": "{{count}} personer bidro",
+      "cant-post": "Du kan ikke svare på denne diskusjonen",
+      "delete-discussion": "Slette diskusjon?",
+      "delete-comment": "Slette $t(common.comment)?"
+    },
+    "post-comment": {
+      "fields": {
+        "description": {
+          "title": "Kommenter denne diskusjonen",
+          "placeholder": "Legg til mer informasjon om diskusjonen her"
+        }
+      },
+      "buttons": {
+        "post": "Publiser $t(common.comment)"
+      },
+      "tooltip": {
+        "markdown-help": "Du kan legge til formatering i din $t(common.comment),\nfor eksempel:\nFet tekst: **fet**\nKursiv tekst: *kursiv*\nOverskrift: ##Tittel\nLenke: [tekst](url)",
+        "mentions": "Skriv noen få tegn for å finne relevante brukere"
+      },
+      "vcInteractions": {
+        "disclaimer": "Opprett en ny $t(common.comment) for å samhandle med en annen VC.",
+        "help": "Du kan bare samhandle med én $t(common.virtualContributor) per tråd ($t(common.comment) + 'under'kommentarer). Hvis du vil engasjere deg med en annen VC, start en ny tråd ved å opprette en $t(common.comment) i inntastingsfeltet nederst."
+      }
+    },
+    "discussionForm": {
+      "title": {
+        "title": "Tittel",
+        "placeholder": "Diskusjonstittel"
+      },
+      "category": {
+        "title": "Kategori"
+      },
+      "description": {
+        "title": "Mer informasjon",
+        "placeholder": "Legg til mer informasjon om diskusjonen her"
+      }
+    },
+    "updateDiscussion": {
+      "buttons": {
+        "post": "Oppdater diskusjon"
+      }
+    },
+    "newDiscussion": {
+      "buttons": {
+        "post": "Opprett diskusjon"
+      }
+    },
+    "members-view": {
+      "title": "Aktive $t(common.community) $t(common.members)"
+    },
+    "community-section": {
+      "discussions": {
+        "no-data-create": "Ingen diskusjoner. Opprett en ny diskusjon",
+        "no-data-join": "Ingen diskusjoner. Vennligst bli med i $t(common.community) for å opprette en diskusjon",
+        "explore": "Utforsk diskusjoner"
+      }
+    },
+    "inAppNotifications": {
+      "action": {
+        "read": "Merk som lest",
+        "unread": "Merk som ulest",
+        "delete": "Slett"
+      },
+      "type": {
+        "USER_MENTIONED": {
+          "subject": "Du ble nevnt",
+          "description": "{{triggeredBy}} nevnte deg"
+        },
+        "USER_SPACE_COMMUNITY_JOINED": {
+          "subject": "Ny bruker ble med",
+          "description": "{{triggeredBy}} ble med i {{space}}"
+        },
+        "USER_COMMENT_REPLY": {
+          "subject": "{{triggeredByName}} svarte på din $t(common.comment) {{parentName}}",
+          "description": ""
+        },
+        "USER_SPACE_COMMUNITY_INVITATION": {
+          "subject": "{{triggeredByName}} inviterte deg til å bli med i {{spaceName}}",
+          "description": "{{spaceName}} - {{spaceDescription}}"
+        },
+        "USER_MESSAGE_SENDER": {
+          "subject": "Du sendte en DM til {{receiverName}}",
+          "description": ""
+        },
+        "USER_MESSAGE": {
+          "subject": "{{triggeredByName}} sendte deg en DM",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
+          "subject": "{{spaceName}} - Ny $t(common.post) er publisert \"{{calloutName}}\", ta en titt!",
+          "description": "{{triggeredByName}} publiserte en ny $t(common.post) i {{spaceLevel}}: {{spaceName}}, med navn: {{calloutName}}."
+        },
+        "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
+          "subject": "\"{{memberName}}\" ble med i {{spaceName}}",
+          "description": "{{memberName}} har blitt med i {{spaceName}}, der du er en $t(common.admin)."
+        },
+        "SPACE_COMMUNICATION_UPDATE": {
+          "subject": "{{triggeredByName}} delte en oppdatering i {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_CONTRIBUTION": {
+          "subject": "{{triggeredByName}} opprettet et bidrag i \"{{calloutName}}\"",
+          "description": "I <b>{{spaceName}}</b>, der du er $t(common.member)."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_CONTRIBUTION": {
+          "subject": "{{triggeredByName}} opprettet et bidrag i \"{{calloutName}}\"",
+          "description": "I <b>{{spaceName}}</b>, der du er en $t(common.admin)."
+        },
+        "SPACE_ADMIN_COMMUNITY_APPLICATION": {
+          "subject": "{{triggeredByName}} søkte om å bli med i {{spaceName}}",
+          "description": "Se gjennom søknaden i $t(common.space) $t(common.settings)"
+        },
+        "SPACE_LEAD_COMMUNICATION_MESSAGE": {
+          "subject": "Som leder av {{spaceName}}, har du mottatt en melding fra {{triggeredByName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_COMMENT": {
+          "subject": "{{triggeredByName}} kommenterte på {{calloutName}} i {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT": {
+          "subject": "{{triggeredByName}} kommenterte på {{contributionName}} (bidrag) i {{spaceName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_MENTIONED": {
+          "subject": "{{triggeredByName}} nevnte din $t(common.organization) i {{spaceName}}",
+          "description": "{{message}}"
+        },
+        "ORGANIZATION_ADMIN_MESSAGE": {
+          "subject": "{{triggeredByName}} sendte en melding til din $t(common.organization) {{organizationName}}",
+          "description": "Se meldingen i din e-postinnboks"
+        },
+        "ORGANIZATION_MESSAGE_SENDER": {
+          "subject": "Du sendte en melding til {{organizationName}}",
+          "description": ""
+        },
+        "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "subject": "{{triggeredByName}} har invitert {{contributorName}} til {{spaceName}}, der du er en $t(common.admin)",
+          "description": ""
+        },
+        "PLATFORM_FORUM_DISCUSSION_CREATED": {
+          "subject": "{{triggeredByName}} startet en ny diskusjon i forum {{category}}",
+          "description": "{{discussionName}}"
+        },
+        "PLATFORM_FORUM_DISCUSSION_COMMENT": {
+          "subject": "{{triggeredByName}} kommenterte på ditt foruminnlegg i {{discussionName}}",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_USER_SIGNED_UP": {
+          "subject": "{{triggeredByName}} har registrert seg på plattformen",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
+          "subject": "{{userName}} ({{userEmail}}) har blitt fjernet fra plattformen",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_USER_PROFILE_CREATED": {
+          "subject": "{{triggeredByName}} har registrert seg på plattformen",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
+          "subject": "{{triggeredByName}} har tildelt {{role}} til {{userName}}",
+          "description": ""
+        },
+        "PLATFORM_ADMIN_SPACE_CREATED": {
+          "subject": "{{triggeredByName}} har opprettet en ny $t(common.space)",
+          "description": "{{spaceName}}"
+        },
+        "USER_SIGN_UP_WELCOME": {
+          "subject": "Velkommen til Alkemio! 🎉",
+          "description": "Du er nå en del av et fellesskap som vokser gjennom samarbeid 🤝 Klikk for å utforske Komme i gang-guiden og begynn å delta i rom der hver innsikt hjelper oss alle fremover.\nSpørsmål? Send e-post til support@alkem.io"
+        }
+      },
+      "emptyInbox": "Ingen ventende $t(common.notifications)",
+      "markAllAsRead": "Merk alle som lest"
+    },
+    "spaceWelcomeDialog": {
+      "title": "🎉 Ditt $t(common.space) er klar!",
+      "description": "Nå, gjør det til ditt eget:<br>⚙ <b>Sett det opp</b> – Tilpass strukturen og $t(common.settings).<br>📝 <b>Legg til innhold</b> - Opprett $t(common.whiteboards), $t(common.posts) og mer.<br>🤝 <b>Inviter samarbeidspartnere</b> – Finn invitasjonene i $t(common.space) $t(common.settings).<br>📚 <b>Trenger hjelp?</b> Veiledninger er tilgjengelige i ditt $t(common.space) hvis du valgte å inkludere dem.<br/><br/>✨ Vil ha flere funksjoner? Oppgrader til <b>Plus eller Premium</b> når som helst - bare <contact>kontakt teamet vårt</contact>!",
+      "button": "Kom i gang"
+    }
+  },
+  "navigation": {
+    "admin": {
+      "settingsMenu": {
+        "quit": "Avslutt $t(common.settings)"
+      },
+      "subspace": {
+        "create": "Opprett $t(common.subspace)",
+        "edit": "Rediger $t(common.subspace)"
+      }
+    }
+  },
+  "footer": {
+    "terms": "Vilkår",
+    "privacy": "Personvern",
+    "security": "Sikkerhet",
+    "feedback": "Tilbakemelding",
+    "support": "Støtte",
+    "about": "Om",
+    "copyright": "© 2025 Alkemio B.V."
+  },
+  "innovationHub": {
+    "selectedSpaces": "{{space}} $t(common.spaces)",
+    "foreignSpace": "Denne {{spaceDisplayName}} er ikke i utvalget av gjeldende startside. Du er uansett veldig velkommen til å bidra. <strong>Nyt utforskningen!</strong>",
+    "outsideOfSpace": {
+      "forum": "Dette er det generelle Alkemio $t(common.forum), utenfor <strong>{{space}}</strong> $t(common.space). Du er hjertelig velkommen til å utforske og bidra!",
+      "subspaces": "Her kan du finne alle $t(common.subspaces) som er vert på Alkemio, også de som ikke er valgt av <strong>{{space}}. Nyt utforskningen!</strong>",
+      "contributors": "Her kan du finne alle mennesker og $t(common.organizations) som bidrar på Alkemio, også i $t(common.spaces) som ikke er valgt av <strong>{{space}}. Nyt forbindelsen!</strong>"
+    },
+    "goToMainPage": "Interessert i å samarbeide i andre $t(common.spaces)? Klikk her for å se dem alle på den universelle Alkemio-hjemmesiden.",
+    "remove": "Fjern fra hub"
+  },
+  "pages": {
+    "generic": {
+      "sections": {
+        "dashboard": {
+          "description": "Her kan du se sammendraget for denne {{entity}}. Naviger gjennom de andre fanene for å se mer detaljert informasjon!",
+          "about": "Om denne {{entity}}",
+          "memberOf": "Du er $t(common.member) av denne {{entity}}"
+        },
+        "about": {
+          "description": "Her kan du utforske konteksten til denne {{entity}}, samt $t(common.community)."
+        },
+        "community": {
+          "leading-contributors": "Ledende bidragsytere",
+          "contributors": "Hvem er involvert",
+          "switchMode": "Bytt visning"
+        },
+        "explore": {
+          "description": "Her kan du bidra med dine innsikter til å forstå konteksten. Det handler om å bringe frem visdommen til $t(common.community)."
+        },
+        "discussions": {
+          "description": "Her kan du lese og delta i diskusjoner rundt denne {{entity}}."
+        },
+        "whiteboards": {
+          "description": "$t(common.Whiteboards) kan sees på som digitale $t(common.whiteboards). Her kan du opprette en $t(common.whiteboard) for denne {{entity}} samt finne de som er opprettet av andre."
+        },
+        "profile": {
+          "description": ""
+        },
+        "subEntities": {
+          "list": "Listevisning",
+          "empty": "Ingen {{entities}} funnet.",
+          "empty-list": "Det er ingen {{entities}} ennå.",
+          "searchPlaceholder": "Søk..."
+        },
+        "recommendations": {
+          "title": "Anbefalt av $t(common.host)"
+        }
+      },
+      "archivedNotice": {
+        "archivedSpace": "Arkivert {{space}}. <contact>Lær mer</contact>",
+        "archivedLink": "/docs"
+      },
+      "demoNotice": {
+        "demoSpace": "Demo $t(common.space)",
+        "demoSubspace": "Demo $t(common.subspace)"
+      }
+    },
+    "contribute": {
+      "innovationFlow": {
+        "title": "Denne {{entity}} ledes av <b>{{innovationFlowDisplayName}}</b>. Denne $t(common.innovation-flow) strukturerer prosessen og inviterer deg til å ta spesifikke handlinger per stadium.",
+        "readMore": "Les mer om <b>{{innovationFlowDisplayName}}</b>"
+      },
+      "no-posts": "Ingen $t(common.posts) funnet"
+    },
+    "innovationLibrary": {
+      "shortName": "$t(common.library)",
+      "fullName": "$t(common.templateLibrary)",
+      "title": "Alkemio sitt $t(common.templateLibrary)",
+      "subtitle": "Få ditt $t(common.spaceSubspace) i gang med disse klare-til-bruk verktøyene. <click>Lær mer</click>.",
+      "useTemplateButton": "Få tilgang til denne $t(common.template) fra ditt $t(common.space) for å bruke den.",
+      "innovationPacks": {
+        "headerTitle": "$t(common.innovation-packs)",
+        "dialogTitle": "$t(common.innovation-packs)"
+      },
+      "libraryTemplates": {
+        "headerTitle": "Bla gjennom alle tilgjengelige materialer",
+        "dialogTitle": "Alle materialer"
+      }
+    },
+    "admin": {
+      "generic": {
+        "sections": {
+          "profile": {
+            "description": "Her kan du redigere den offentlige $t(common.profile) for denne {{entity}}. Denne informasjonen er også synlig for ikke-$t(common.members)."
+          },
+          "about": {
+            "description": "Her kan du redigere den offentlige $t(common.profile) for denne {{entity}}. Denne informasjonen er også synlig for ikke-$t(common.members)."
+          },
+          "layout": {
+            "description": "Her kan du redigere oppsettet for denne {{entity}}.",
+            "innovationFlowEditor": "$t(common.space) faner"
+          },
+          "context": {
+            "description": "Her kan du redigere konteksten for denne {{entity}}, som er offentlig synlig. Denne informasjonen er også synlig for ikke-$t(common.members)."
+          },
+          "community": {
+            "description": "Her kan du redigere $t(common.community) $t(common.settings) for denne {{entity}}."
+          },
+          "communications": {
+            "description": "Her kan du legge ut oppdateringer som vil være synlige for alle $t(common.members) av denne {{entity}}."
+          },
+          "subspaces": {
+            "description": "Her kan du redigere $t(common.subspaces) for denne $t(common.space)."
+          },
+          "subsubspaces": {
+            "description": "Her kan du redigere $t(common.subspaces) for denne $t(common.subspace)."
+          },
+          "calendar": {
+            "description": ""
+          },
+          "authorization": {
+            "description": "Her kan du justere autoriserings $t(common.settings) for denne {{entity}}."
+          },
+          "templates": {
+            "description": "Her kan du opprette og redigere $t(common.templates) for denne {{entity}}.",
+            "delete-confirmation": "Er du sikker på at du vil slette $t(common.template) '{{template}}'?",
+            "import": {
+              "defaultTitle": "$t(common.templateLibrary)",
+              "title": "$t(common.templateLibrary): {{templateType}}",
+              "subtitle": "Finn $t(common.templates) å bruke i ditt $t(common.space) eller $t(common.subspace). Velg $t(common.template) og klikk `Importer` for å legge den til ditt $t(common.template) sett.",
+              "callout-template-import-subtitle": "Finn en $t(common.template) for folk å bruke når de bidrar til din $t(common.callout)",
+              "noTemplates": "Ingen $t(common.templates) i $t(common.space) biblioteket.",
+              "imported-successfully-notification": "$t(common.template) importert"
+            },
+            "validation": {
+              "spaceRequired": "Velg en eksisterende $t(common.spaceSubspace) for å fortsette."
+            }
+          },
+          "my-profile": {
+            "description": "Her kan du redigere dine $t(common.profile) detaljer."
+          },
+          "space-settings": {
+            "description": ""
+          },
+          "membership": {
+            "description": "Her kan du se $t(common.membership) informasjonen."
+          },
+          "organizations": {
+            "description": "Her kan du se $t(common.organizations) som brukeren din er tilknyttet."
+          },
+          "notifications": {
+            "description": "Her kan du redigere dine $t(common.notifications) preferanser."
+          },
+          "credentials": {
+            "description": "Her kan du se legitimasjoner."
+          },
+          "storage": {
+            "description": "Her kan du se dokument $t(common.storage) for denne {{entity}}.",
+            "title": "Dokumenter",
+            "directlyStored": "Direkte lagrede dokumenter (Lastet opp før okt 2023)",
+            "emptyStorage": "(Tom)",
+            "grid": {
+              "displayName": "Tittel",
+              "mimeType": "Type",
+              "size": "Størrelse",
+              "uploadedBy": "Lastet opp av",
+              "uploadedAt": "Lastet opp"
+            },
+            "delete": {
+              "title": "Slette dette dokumentet?",
+              "content": "Er du sikker på at du vil slette {{fileName}}?"
+            }
+          },
+          "account": {
+            "description": "Her finner du alle dine $t(common.spaces), $t(common.virtualContributors) og andre vertede ressurser. Hvis du har spørsmål, ta gjerne kontakt med Alkemio-teamet.",
+            "hostedSpaces": "Vertede $t(common.spaces)",
+            "virtualContributors": "$t(common.virtualContributors)",
+            "innovationPacks": "$t(common.innovation-packs)",
+            "genericUsageNotice": "Du har opprettet {{usage}} av dine {{limit}} tilgjengelige {{type}} i din $t(common.account).",
+            "spaceUsageNotice": "Av de tilgjengelige $t(common.spaces) i din $t(common.account), har du opprettet:\n{{freeUsage}} av {{freeLimit}} Gratis $t(common.spaces)\n{{plusUsage}} av {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} av {{premiumLimit}} Premium $t(common.spaces)",
+            "limitNotice": "Kontakt Alkemio-teamet for å øke grensene på din $t(common.account)",
+            "notAvailable": "Ikke tilgjengelig",
+            "notAvailableNotice": "Kontakt Alkemio-teamet for å aktivere denne funksjonen på din $t(common.account)",
+            "noTemplates": "Denne $t(common.innovationPack) har ingen $t(common.template) ennå",
+            "customHomepages": "$t(common.customHomepages)",
+            "hostTitle": "Vert",
+            "contactsLink": "Hvis du vil endre noen av disse $t(common.settings), vennligst kontakt Alkemio-teamet her.",
+            "freeTrialNotice": {
+              "title": "Gratis prøveperiode",
+              "titleWithDaysLeft": "Gratis prøveperiode - {{daysLeft}} dager igjen",
+              "description": "Klikk her for å sette opp ditt fullstendige {{planName}} abonnement"
+            },
+            "externalSubExists": "Denne $t(common.account) har allerede en eksisterende Wingback $t(common.account)",
+            "addExternalSub": "Opprett en Wingback $t(common.account)",
+            "externalSubAdded": "Opprettet en Wingback $t(common.account)",
+            "externalSubErrored": "En feil oppstod under opprettelse av Wingback $t(common.account)",
+            "yourLicense": "Din nåværende lisens:",
+            "changeLicense": "Endre $t(common.space) lisensen",
+            "changeLicense_description": "Kontakt Alkemio-teamet for å endre lisensen.",
+            "changeLicense_disallowed": "$t(common.space) lisensen kan kun endres av $t(common.host) for denne $t(common.space).",
+            "deleteSpace": "Slett denne $t(common.space)",
+            "deleteSpace_description": "Klikk her for å slette denne $t(common.space). Vær forsiktig, denne handlingen kan ikke angres.",
+            "deleteSpace_disallowed": "$t(common.space) kan kun slettes av $t(common.host) for denne $t(common.space).",
+            "moreInfo": "Mer om Alkemio-lisenser finner du <moreinfo>her</moreinfo>.",
+            "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
+            "licenseUpdated": "Lisens oppdatert",
+            "deletedSuccessfully": "{{entity}} slettet"
+          },
+          "settings": {
+            "description": "Her kan du redigere synlighet $t(common.settings) for din {{entity}}."
+          }
+        }
+      },
+      "user": {
+        "settings": {
+          "title": "Innstillinger",
+          "subtitle": "Denne seksjonen lar deg endre brukerinnstillingene",
+          "communication": {
+            "allowOtherUsersToSendMessages": "Tillat andre brukere å sende meg meldinger."
+          },
+          "privacy": {
+            "contributorRolesVisible": "Vis bidragsyterroller til alle registrerte brukere"
+          }
+        }
+      },
+      "organization": {
+        "create-organization": "Opprett $t(common.organization)",
+        "authorization": {
+          "title": "Autorisering",
+          "subtitle": "Denne seksjonen lar deg endre $t(common.organization) sin autorisering"
+        },
+        "settings": {
+          "title": "$t(common.Settings)",
+          "subtitle": "Denne seksjonen lar deg endre $t(common.organization) $t(common.settings)",
+          "membership": {
+            "usersMatchingEmail": "Tillat brukere med e-poster som matcher domenet til $t(common.organization) å tilknytte seg selv."
+          },
+          "privacy": {
+            "title": "Personvern",
+            "subtitle": "Denne seksjonen lar deg endre $t(common.organization) personvern $t(common.settings)",
+            "contributorRolesVisible": "Vis bidragsyterroller til alle registrerte brukere"
+          }
+        },
+        "notifications": {
+          "organization-created": "$t(common.Organization) opprettet.",
+          "organization-removed": "$t(common.Organization) fjernet."
+        },
+        "verification": {
+          "confirm": {
+            "title": "{{action}} {{name}}",
+            "description": "Denne $t(common.organization) er for øyeblikket {{status}}. Vil du {{action}} den?",
+            "status": {
+              "verified": "verifisert",
+              "notVerified": "ikke verifisert"
+            },
+            "action": {
+              "verify": "Verifiser",
+              "unverify": "Fjern verifisering"
+            }
+          }
+        }
+      },
+      "subsubspace": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "Denne seksjonen lar deg endre $t(common.subspace) autoriserings preferanser"
+          }
+        },
+        "community": {
+          "preferences": {
+            "title": "$t(common.Membership)",
+            "subtitle": "Denne seksjonen lar deg endre $t(common.subspace) $t(common.membership) preferanser. Hvis begge bryterne er slått av, kan nye $t(common.members) kun legges til manuelt. Hvis begge bryterne er slått på, trenger ikke $t(common.members) av $t(common.space) å søke, men kan bli med direkte."
+          }
+        },
+        "notifications": {
+          "subsubspace-created": "$t(common.subspace) opprettet.",
+          "subsubspace-removed": "$t(common.subspace) fjernet.",
+          "subsubspace-updated": "$t(common.subspace) oppdatert."
+        }
+      },
+      "subspace": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "Denne seksjonen lar deg endre $t(common.subspace) autoriserings preferanser"
+          }
+        },
+        "community": {
+          "preferences": {
+            "title": "$t(common.Membership)",
+            "subtitle": "Denne seksjonen lar deg endre $t(common.subspace) $t(common.membership) preferanser. Hvis begge bryterne er slått av, kan nye $t(common.members) kun legges til manuelt. Hvis begge bryterne er slått på, trenger ikke $t(common.members) av $t(common.space) å søke, men kan bli med direkte."
+          }
+        },
+        "notifications": {
+          "subspace-created": "$t(common.subspace) opprettet.",
+          "subspace-removed": "$t(common.subspace) fjernet.",
+          "subspace-updated": "$t(common.subspace) oppdatert.",
+          "templateSaved": "$t(common.template) lagret"
+        }
+      },
+      "space": {
+        "sections": {
+          "subspaces": {
+            "description": "Her kan du redigere $t(common.subspaces) i denne $t(common.space).",
+            "defaultSettings": {
+              "title": "Standard $t(common.subspace) $t(common.template)",
+              "description": "Velg standard $t(common.settings) som vil gjelde når du oppretter en ny $t(common.subspace) i denne $t(common.space). Disse $t(common.settings) kan endres under opprettelsesprosessen eller på et senere tidspunkt.",
+              "defaultSpaceTemplate": {
+                "selectDifferentTemplate": "Endre standard $t(common.template)",
+                "title": "Endre standard $t(common.subspace) $t(common.template)",
+                "description": "Tilpass standard $t(common.template) for nyopprettede $t(common.subspaces).<br/><br/>Nedenfor kan du velge mellom $t(common.templates) samlet i $t(common.space) $t(common.templateLibrary). Hvis du ønsker å opprette nye $t(common.templates) eller utforske flere $t(common.templates), <library>klikk her</library> for å få tilgang til dette biblioteket."
+              }
+            }
+          }
+        },
+        "authorization": {
+          "preferences": {
+            "subtitle": "Denne seksjonen lar deg endre $t(common.space) autoriserings preferanser"
+          }
+        },
+        "aria": {
+          "tabs": "$t(common.space) faner"
+        },
+        "community": {
+          "preferences": {
+            "title": "$t(common.Membership)",
+            "subtitle": "Denne seksjonen lar deg endre $t(common.space) $t(common.membership) preferanser"
+          }
+        },
+        "notifications": {
+          "space-created": "$t(common.space) opprettet.",
+          "errorCreatingSpace": "En feil oppstod under opprettelse av $t(common.space).",
+          "space-removed": "$t(common.space) fjernet."
+        },
+        "settings": {
+          "savedSuccessfully": "$t(common.Settings) lagret",
+          "visibility": {
+            "title": "Synlighet",
+            "public": "<b>Offentlig:</b> Denne $t(common.space) og dens innhold er synlig for alle på plattformen. Brukere kan kun bidra hvis de er $t(common.member).",
+            "private": "<b>Privat:</b> Denne $t(common.space) er synlig for alle på plattformen, men innholdet er kun synlig for $t(common.members). Vær oppmerksom på at både informasjonen i $t(common.profile) og konteksten er offentlig synlig.",
+            "publicSubspace": "<b>Offentlig:</b> Denne $t(common.subspace) og alt dens innhold er synlig for alle som har tilgang til $t(common.space) den tilhører. Hvis $t(common.space) selv er offentlig, vil denne $t(common.subspace) og dens innhold være synlig for alle brukere, inkludert de utenfor $t(common.space).",
+            "privateSubspace": "<b>Privat:</b> Denne $t(common.subspace) er synlig for alle $t(common.members) av $t(common.space), men innholdet er begrenset og kan kun tilgås av $t(common.members) av $t(common.subspace). Ingen søknad påkrevd: Alle $t(common.space) $t(common.members) kan bli med direkte, uten at du må vurdere søknaden deres."
+          },
+          "license-features": {
+            "title": "$t(common.space) funksjoner",
+            "features": {
+              "WHITEBOARD_MULTI_USER": "Flerbruker $t(common.Whiteboards)",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Opprett $t(common.template) fra $t(common.callout)",
+              "VIRTUAL_CONTRIBUTORS": "Samhandle med $t(common.virtualContributors)"
+            }
+          },
+          "membership": {
+            "title": "$t(common.Membership)",
+            "open": "<b>Ingen søknad påkrevd:</b> Alle $t(common.space) $t(common.members) kan bli med direkte, uten at du må vurdere søknaden deres.",
+            "applications": "<b>Søknad påkrevd:</b> Hvis folk vil bli $t(common.member), må de fylle ut søknadsskjemaet. Du mottar søknadene deres (<community>se $t(common.community) fane her</community>) og kan velge å godta disse eller ikke. Hvis du vil, kan du velge å la skjemaet være tomt.",
+            "invitations": "<b>Kun invitasjon:</b> Brukere kan bare bli $t(common.member) etter at du har invitert dem (<community>som du kan gjøre fra $t(common.community) fanen her</community>) eller hvis de legges til manuelt. Det er ingen Søk eller Bli med-knapp for andre å klikke på.",
+            "trustedApplicants": "Pålitelige søkere",
+            "hostOrganizationJoin": "<b>Vert $t(common.organization):</b> Tillat folk som er tilknyttet <i>{{host}}</i> å bli med direkte, uten å måtte søke eller bli invitert.",
+            "allowSubspaceAdminsToInviteMembers": "<b>$t(common.space) invitasjoner</b>: Tillat $t(common.admins) av $t(common.subspaces) å invitere brukere til deres $t(common.subspace). Brukere som ikke ennå var $t(common.member) av denne $t(common.space), vil bli det når de godtar $t(common.subspace) invitasjonen.",
+            "allowSubspaceAdminsToInviteMembersSubspace": "<b>$t(common.space) invitasjoner</b>: Tillat $t(common.admins) av $t(common.subspaces) innenfor denne $t(common.subspace) å invitere brukere direkte til deres egen $t(common.subspace). Hvis en bruker ikke ennå er $t(common.member) av denne $t(common.subspace), vil de automatisk bli det når de godtar invitasjonen. <b>Merk: </b>Kun brukere som allerede er $t(common.members) av $t(common.space) kan inviteres på denne måten."
+          },
+          "memberActions": {
+            "title": "Tillatte handlinger",
+            "createBlocks": "<b>Opprett $t(common.posts)</b>: Tillat $t(common.members) å opprette $t(common.posts). Hvis du deaktiverer dette, vil $t(common.members) fortsatt kunne bidra til eksisterende $t(common.posts), men vil ikke kunne opprette nye $t(common.posts).",
+            "createSubspaces": "<b>Opprett $t(common.subspaces)</b>: Tillat $t(common.members) å opprette $t(common.subspaces) i denne $t(common.space). Hvis du deaktiverer dette, kan du fortsatt opprette $t(common.subspaces) selv og legge til andre personer som en $t(common.admin) inne i $t(common.subspace).",
+            "videoCall": "<b>Videosamtale</b>: Vis videosamtale-knapp i fanemenyen. Alle medlemmer av dette rommet kan bruke denne knappen til å starte en Jitsi-videokonferanse. Les mer om Jitsi <jitsiInfoLink>her</jitsiInfoLink>.",
+            "eventsFromSubspaces": "<b>$t(common.subspace) hendelser</b>: Tillat hendelser fra $t(common.subspaces) å også være synlige på denne $t(common.space) kalenderen.",
+            "inheritRights": "Tillat $t(common.members) av overordnet $t(common.community) å bidra uten å måtte bli med først.",
+            "supportAsAdmin": "<b>Alkemio Support</b>: Tillat Alkemio Support-teamet å fungere som en $t(common.admin) i denne $t(common.space)."
+          },
+          "copySpace": {
+            "title": "Kopier $t(common.subspace)",
+            "description": "For å bruke dette $t(common.subspace) oppsettet, kan du enten duplisere det innenfor samme $t(common.space) eller lagre det som en $t(common.template) for bruk på tvers av plattformen. I begge scenarioer vil $t(common.innovation-flow) og alle $t(common.posts) bli replikert. Vær oppmerksom på at $t(common.comments) eller bidrag til et verktøy ikke vil bli inkludert i malen eller det dupliserte $t(common.subspace).",
+            "createTemplate": "Opprett $t(common.template)",
+            "createTemplateTooltip": "For å opprette en $t(common.template) fra denne $t(common.subspace), trenger du $t(common.space) $t(common.admin) tillatelser.",
+            "duplicate": "Dupliser"
+          },
+          "account": {
+            "vc-section-title": "$t(common.virtualContributors) opprettet fra denne $t(common.space)",
+            "vc-create-button": "Opprett $t(common.virtualContributor)"
+          }
+        }
+      },
+      "users": {
+        "notifications": {
+          "user-removed": "Bruker fjernet."
+        }
+      },
+      "innovation-packs": {
+        "create": "Opprett $t(common.innovationPack)",
+        "fields": {
+          "provider": "Leverandør $t(common.organization)",
+          "listedInStore": "Oppført i butikk",
+          "searchVisibility": "Søkesynlighet"
+        },
+        "back-button": "Alle $t(common.innovation-packs)",
+        "save-new-for-details": "Lagre den nye $t(common.innovationPack) for å redigere resten av detaljene",
+        "saved-successfully": "Lagret",
+        "notifications": {
+          "pack-created": "$t(common.innovationPack) opprettet.",
+          "pack-error": "En feil oppstod under opprettelse av $t(common.innovationPack).",
+          "pack-removed": "$t(common.innovationPack) '{{name}}' fjernet."
+        }
+      },
+      "innovationHubs": {
+        "create": "Opprett innovasjonshub",
+        "success": "Innovasjonshubben ble opprettet!",
+        "fields": {
+          "host": "Vert $t(common.Account)",
+          "subdomain": "Subdomene"
+        },
+        "saveForMoreDetails": "Lagre den nye $t(common.innovation-hub) for å redigere resten av detaljene",
+        "back": "Alle $t(common.innovation-hubs)",
+        "saved": "Lagret"
+      },
+      "spaces": {
+        "updateVisibility": "Oppdater synlighet",
+        "spaceSettings": "$t(common.space) $t(common.settings)",
+        "changeNameId": "Endre $t(common.space) navn-ID",
+        "manageLicensePlans": "Administrer lisensplaner"
+      },
+      "innovationHub": {
+        "spaceListFilter": {
+          "header": {
+            "title": "Gjeldende utvalg",
+            "subtitle": "Rekkefølgen nedenfor er rekkefølgen $t(common.spaces) vil være synlige på $t(common.customHomepage)"
+          }
+        }
+      }
+    },
+    "feedback": {
+      "title": "Gi tilbakemelding på denne $t(common.community) konteksten",
+      "success": "Tilbakemelding sendt"
+    },
+    "post": {
+      "dashboard": {
+        "comment": {
+          "placeholder": "Skriv din $t(common.comment) her"
+        }
+      }
+    },
+    "visualEdit": {
+      "AVATAR": {
+        "title": "<b>Avatar</b>",
+        "description1": "Oppløsning: {{width}} bredde x {{height}} høyde (piksler)",
+        "description2": "Bruk: $t(common.space) kort på sidebanner",
+        "description": "Beskrivelse: {{alternativeText}}"
+      },
+      "BANNER": {
+        "title": "<b>Sidebanner</b>",
+        "description1": "Oppløsning: {{width}} bredde x {{height}} høyde (piksler)<br />Vises på toppen av $t(common.space) (også i $t(common.subspaces)) og øverst til venstre i navigasjonsmenyen.",
+        "description2": "Bruk: Banner på $t(common.dashboard) fane",
+        "description": "Beskrivelse: {{alternativeText}}"
+      },
+      "CARD": {
+        "title": "<b>Kortbanner</b>",
+        "description1": "Oppløsning: {{width}} bredde x {{height}} høyde (piksler)<br />Vises i søkeresultater og $t(common.space) oversikter.",
+        "description2": "Bruk: Banner på kort",
+        "description": "Beskrivelse: {{alternativeText}}"
+      },
+      "BANNER_WIDE": {
+        "title": "Bredt banner",
+        "description1": "Oppløsning: {{width}} bredde x {{height}} høyde (piksler)"
+      },
+      "form": {
+        "altText": {
+          "placeholder": "Alternativ tekst",
+          "helpText": "Beskrivelse av bildet for skjermlesere"
+        }
+      }
+    },
+    "contributors": {
+      "fullName": "Finn bidragsytere",
+      "shortName": "$t(common.contributors)",
+      "unauthorized": "Vennligst logg inn for å se bidragsyterne i dette $t(common.space).",
+      "search": {
+        "title": "Finn talent og ekspertise!",
+        "subtitle": "Søk etter andre personer og $t(common.organizations) som kan hjelpe deg med ditt $t(common.subspace), for eksempel basert på ferdigheter eller interesser.",
+        "placeholder": "Søk…"
+      },
+      "organizations": {
+        "title": "$t(common.Organizations)"
+      },
+      "users": {
+        "title": "Brukere"
+      },
+      "virtualContributors": {
+        "title": "$t(common.virtualContributors)"
+      },
+      "availableContributors": "Tilgjengelige {{entity}}"
+    },
+    "search": {
+      "title": "Søk",
+      "subtitle": "Finn $t(common.spaces), bidragsytere og $t(common.subspaces), og innhold fra offentlig tilgjengelige $t(common.spaces) nedenfor",
+      "placeholder": "Søk…",
+      "results-disclaimer": "Disse resultatene representerer kanskje ikke den oppdaterte tilstanden til plattformen. Søkeresultater oppdateres med intervaller.",
+      "max-tags-reached": "Du har nådd grensen på {{max}} søketermer",
+      "user-not-logged": "Logg inn eller registrer deg for å inkludere brukere i søkeresultatene dine",
+      "filter": {
+        "type": {
+          "space": "$t(common.space)-type",
+          "contribution": "Bidragstype",
+          "contributor": "Bidragsytertype"
+        },
+        "key": {
+          "all": "Alle",
+          "space": "$t(common.spaces)",
+          "subspace": "$t(common.subspaces)",
+          "user": "Brukere",
+          "organization": "$t(common.Organizations)",
+          "post": "$t(common.Posts)",
+          "whiteboard": "$t(common.Whiteboards) (tilgjengelig snart)",
+          "callout": "$t(common.Callouts)",
+          "memo": "$t(common.Memos) (tilgjengelig snart)",
+          "response": "$t(common.Responses)"
+        }
+      },
+      "spaceFilterTitle": "$t(common.spaces)"
+    },
+    "exploreSpaces": {
+      "fullName": "Utforsk $t(common.spaces)",
+      "title": "Utforsk $t(common.spaces) som interesserer deg",
+      "shortName": "$t(common.spaces)",
+      "subtitle": "All aktivitet på Alkemio skjer inne i $t(common.spaces) og tilhørende $t(common.subspaces). Utforsk begge for å finne emner hvor du kan bidra!",
+      "caption": "Oppdag et mangfold av $t(common.spaces) som venter på utforskning. Enten du er et erfaret $t(common.member) eller en nysgjerrig nykommer, er det noe her for alle. La oss se nærmere på detaljene:<ol><li><strong>$t(common.member) $t(common.spaces):</strong> Dette er $t(common.spaces) hvor du allerede har $t(common.membership).</li><li><strong>Offentlige $t(common.spaces):</strong> Disse $t(common.spaces) har synlig innhold, og du kan be om å bli med.</li><li><strong>Alle $t(common.spaces):</strong> Denne kategorien inkluderer både offentlige og private $t(common.spaces). I private $t(common.spaces) er kun begrenset innhold synlig, men du kan fortsatt søke om $t(common.membership).</li></ol>",
+      "membershipFilter": {
+        "all": "Alle $t(common.spaces)",
+        "member": "$t(common.Member) $t(common.spaces)",
+        "public": "Offentlige $t(common.spaces)"
+      },
+      "noSpaceMemberships": "Du er for tiden ikke $t(common.member) av noe $t(common.space). Klikk her for å besøke vårt {{welcomeSpace}}, som er et fantastisk utgangspunkt for ditt $t(common.space) på Alkemio!",
+      "search": {
+        "placeholder": "Søk…",
+        "noResults": "Ingen resultater samsvarte med søkeordene dine.",
+        "searching": "Søker…"
+      },
+      "seeAll": "Vis mer",
+      "activeSpacesFilter": "Mest aktive $t(common.spaces)"
+    },
+    "lead-organization": {
+      "search": {
+        "leading-placeholder": "Søk i navn eller tags",
+        "available-placeholder": "Søk i navn"
+      }
+    },
+    "home": {
+      "title": "Mitt $t(common.dashboard)",
+      "subtitle": "Klar til å gjøre litt innvirkning?",
+      "mainNavigation": {
+        "invitations": "Invitasjoner",
+        "myLatestActivity": "Min siste aktivitet",
+        "myLatestSpacesActivity": "Siste aktivitet i mine $t(common.spaces)",
+        "tipsAndTricks": "Tips & triks",
+        "myAccount": "Min $t(common.Account)",
+        "createSpace": "Opprett mitt eget $t(common.space)",
+        "activityView": "Aktivitetsvisning"
+      },
+      "sections": {
+        "latestContributions": {
+          "title": "Siste aktivitet i mine $t(common.spaces)",
+          "filter": {
+            "space": {
+              "label": "$t(common.space):",
+              "all": "Alle $t(common.spaces)"
+            },
+            "role": {
+              "label": "Min rolle:",
+              "all": "Alle roller"
+            }
+          }
+        },
+        "myLatestContributions": {
+          "title": "Min siste aktivitet",
+          "card": {
+            "space": "i: <spaceicon /> {{space}}"
+          },
+          "noContributions": "Bidragene dine vil vises her når du deltar i et $t(common.space). Du kan bidra ved å legge ut innlegg, kommentere eller utføre andre aktiviteter."
+        },
+        "createAccountBanner": {
+          "message": "<big>🚀 Klikk her for å opprette din $t(common.account) og komme i gang!</big> <small>Allerede $t(common.member)? <signin>Logg inn her</signin></small>"
+        },
+        "recentSpaces": {
+          "seeMore": "Utforsk alle dine $t(common.spaces)",
+          "seeMoreSubspaces": "Se alle $t(common.subspaces) jeg er $t(common.member) av"
+        },
+        "campaignBlock": {
+          "createYourVCButton": "Opprett din $t(common.virtualContributor)!",
+          "vcCampaign": {
+            "welcome": "🎉  Velkommen til $t(common.virtualContributors) - Early Access Program!",
+            "clickHere": "Klikk nedenfor for å opprette dine $t(common.virtualContributors)—opptil tre tilgjengelige. De du opprettet kan finnes under Min $t(common.Account), sammen med $t(common.space) hvor du kan samhandle med dem. Kos deg!"
+          }
+        },
+        "myMemberships": {
+          "title": "Mine $t(common.Memberships)",
+          "noChildMemberships": "Du er ikke $t(common.member) av et $t(common.subspace) i dette $t(common.space). Noen $t(common.subspaces) krever ikke at du er $t(common.member) for å bidra, men hvis du vil motta oppdateringer eller vise $t(common.subspace) her, bli medlem uansett!",
+          "seeMore": "Det var alt! Leter du etter andre $t(common.spaces) å samarbeide i? <spaces>Klikk her</spaces> for å utforske alle $t(common.spaces) på plattformen, eller <landing>klikk her</landing> for å opprette ditt eget!"
+        },
+        "membershipSuggestions": {
+          "title": "Bli $t(common.member)",
+          "suggestedSpace": {
+            "join": "Bli med i vårt @ Alkemio $t(common.space)!",
+            "nameId": "welcome-space"
+          },
+          "searchCommunity": {
+            "title": "...eller se etter ditt $t(common.community) nedenfor",
+            "searchSuggestions": "Søkeforslag:"
+          },
+          "suggestionsArray": ["Innovation", "Energi", "Inkluderende", "3D", "Samfunn", "Overgang", "SSI", "Personvern"]
+        },
+        "newMemberships": {
+          "title": "Mine invitasjoner",
+          "openInvitations": "Åpne invitasjoner",
+          "noOpenInvitations": "Ingen åpne invitasjoner",
+          "openApplications": "Åpne søknader",
+          "mySpaces": "Mine $t(common.spaces)",
+          "recentlyJoined": "Nylig blitt med",
+          "seeMore": "Alle ventende $t(common.memberships)",
+          "seeAll": "Se alle mine $t(common.memberships)",
+          "invitation": {
+            "message": "{{space}}",
+            "caption": "Klikk her for å se invitasjonen"
+          },
+          "application": {
+            "message": "{{space}}",
+            "caption": "Søknaden din må fortsatt godkjennes"
+          },
+          "membership": {
+            "message": "{{space}}",
+            "caption": "{{tagline}}"
+          }
+        },
+        "welcome": {
+          "welcomeUnauthenticated": "Velkommen til Alkemio!",
+          "welcomeUnauthenticatedSubtitle": "Trygge $t(common.spaces) for samarbeid",
+          "welcome-back": "Velkommen, {{username}}!",
+          "join": "Vil du bli med i $t(common.community) og se mer?",
+          "existing-user": {
+            "header": "Eksisterende bruker? Hopp rett inn igjen!",
+            "subheader": "Velkommen tilbake! Fortsett der du slapp og begynn å utforske nye $t(common.subspaces).",
+            "more-info": "Mer om Alkemio",
+            "more-info-url": "https://alkemio.foundation/manifesto"
+          },
+          "new-to-alkemio": {
+            "header": "Ny på Alkemio?",
+            "subheader": "Enkelt for deg å engasjere deg på effektive og meningsfulle måter. Finn $t(common.subspaces) å bidra til.",
+            "more-info": "Kontakt oss!",
+            "more-info-url": "https://alkemio.foundation/feedback/"
+          }
+        },
+        "exploreOtherSubspaces": {
+          "header": "Utforsk de andre $t(common.spaces)!"
+        },
+        "space": {
+          "header": "Utforsk $t(common.subspace) $t(common.spaces)!",
+          "subheader": "",
+          "body": "Hvert $t(common.space) er et samfunn med et dedikert $t(common.space) for delte $t(common.subspaces). For å koble sammen, samarbeide og innovere sammen.",
+          "body1": "For brukere er $t(common.spaces) gratis å bli med i. Utforsk $t(common.membership)-alternativene, inkludert for offentlige og private $t(common.spaces)."
+        },
+        "startingSpace": {
+          "title": "<big>🎉 Start et $t(common.space)</big> <small>Klar til å bygge et samfunn på Alkemio? Klikk her for å komme i gang!</small>",
+          "url": "https://welcome.alkem.io/want-to-own-space/"
+        },
+        "my-spaces": {
+          "header": "Mine $t(common.spaces) ({{mySpacesCount}})"
+        },
+        "organizations": {
+          "header": "$t(common.Organizations)",
+          "subheader": "Enhetene som ønsker å drive innovasjon."
+        },
+        "contributors-section": {
+          "title": "Se hvem som driver $t(common.subspaces) på Alkemio"
+        },
+        "forumMessages": {
+          "title": "Siste bidrag i $t(common.forum)",
+          "seeMore": "Bla gjennom resten av $t(common.forum)"
+        },
+        "tipsAndTricks": {
+          "title": "Tips & triks",
+          "findMore": "Finn flere tips & triks",
+          "findMoreUrl": "https://welcome.alkem.io/blog/",
+          "items": [
+            {
+              "title": "👋 Bli med i Welcome@Alkemio $t(common.space)",
+              "description": "For å finne eksempler, beste praksis, tips og triks",
+              "imageUrl": "/my-dashboard/tipsntricks-welcome.webp",
+              "url": "https://alkem.io/welcome-space/dashboard"
+            },
+            {
+              "title": "💭 Ta en titt på dokumentasjonen",
+              "description": "For å finne svar på dine mest presserende spørsmål",
+              "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
+              "url": "https://alkem.io/docs"
+            },
+            {
+              "title": "📑 Les mer om Alkemios $t(common.space)-struktur",
+              "description": "For å hjelpe deg med å komme smidig i gang på plattformen",
+              "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+              "url": "https://alkem.io/docs/structure/space"
+            },
+            {
+              "title": "⚒️ Start et nytt $t(common.space)",
+              "description": "For å samle bidragsytere for din forestilte endring",
+              "imageUrl": "/my-dashboard/tipsntricks-space.webp",
+              "url": "https://welcome.alkem.io/want-to-own-space/"
+            },
+            {
+              "title": "💬 Drevet av generativ AI",
+              "description": "Introduserer Alkemios automatiserte veiledningschat",
+              "imageUrl": "/my-dashboard/tipsntricks-genai.webp",
+              "url": "https://welcome.alkem.io/blog/2024-01-19-chatbot/"
+            }
+          ]
+        },
+        "moreAboutAlkemio": {
+          "title": "Mer om Alkemio",
+          "links": {
+            "foundation": "Alkemio Foundation",
+            "news": "Nyheter & blogg",
+            "github": "Github",
+            "contact": "Kontakt"
+          }
+        }
+      }
+    },
+    "organization": {
+      "profile": {
+        "accountResources": {
+          "sectionTitle": "Ressurser vi er vert for"
+        }
+      },
+      "settings": {
+        "tooltip": "$t(common.Organization) $t(common.settings)"
+      },
+      "verified-status": {
+        "help": "Verifiseringsstatus: har identiteten og informasjonen om denne $t(common.organization) blitt formelt verifisert"
+      }
+    },
+    "space": {
+      "title": "$t(common.space)",
+      "application": {
+        "applyTitle": "Søk til {{name}}",
+        "joinTitle": "Bli med i {{name}}",
+        "subheader": "Hei, så fint at du blir med! Vennligst svar på følgende spørsmål:",
+        "subheaderJoin": "Klikk Bli med-knappen for å begynne å samarbeide!",
+        "finish": "Takk for at du fullførte søknaden din til ",
+        "backButton": "Tilbake",
+        "loading": "Laster spørsmål",
+        "errorBlockName": "spørsmålene"
+      },
+      "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
+        "dashboard": {
+          "organization": "Arrangert av",
+          "hostTooltip": "$t(common.host) er $t(common.organization) som er ansvarlig for opprettelsen av $t(common.space).",
+          "hostContact": "$t(common.hosts) er ansvarlige for innholdet i $t(common.space). Eventuelle spørsmål eller kommentarer, ta kontakt.",
+          "leadingOrganizations": "Ledende $t(common.organizations)",
+          "community": "$t(common.Community)"
+        },
+        "subspaces": {
+          "header": "$t(common.subspaces)",
+          "subheader": "Det er ingen endelig grense",
+          "body": "",
+          "no-data": "Ingen $t(common.subspaces) tilgjengelige for dette $t(common.space)",
+          "description": "Her kan du utforske $t(common.subspaces) som er arrangert i dette $t(common.space). Filtrer etter nøkkelord for å vise bare emnene du bryr deg om. "
+        },
+        "contribute": {
+          "header": "Bidra"
+        },
+        "knowledge-base": {
+          "header": "Kunnskapsbase"
+        }
+      }
+    },
+    "subspace": {
+      "title": "$t(common.subspace)",
+      "organizationBanner": {
+        "load-more": "Og flere ..."
+      },
+      "sections": {
+        "dashboard": {
+          "projects": {
+            "title": "Prosjekter",
+            "help-text": "Prosjekter relatert til dette $t(common.subspace)"
+          }
+        },
+        "opportunities": {
+          "description": "Her kan du utforske $t(common.subspaces) som har blitt identifisert for å gjøre fremskritt. Filtrer etter nøkkelord for å vise bare emnene du bryr deg om."
+        }
+      }
+    },
+    "community": {
+      "title": "{{name}} $t(common.community)-side",
+      "leading-organizations": {
+        "title": "Ledende $t(common.organizations) ({{count}})",
+        "help-text": "Viser forskjellige $t(common.organizations), inkludert rollen du har",
+        "no-data": "Ingen $t(common.organization) leder for øyeblikket"
+      },
+      "member-organizations": {
+        "no-data": "Ingen $t(common.organization) bidrar for øyeblikket"
+      },
+      "space-host": {
+        "title": "Tilretteleggende $t(common.organization)",
+        "help-text": "$t(common.organization) som tilrettelegger for dette $t(common.space)."
+      },
+      "members": {
+        "help-text": "Viser $t(common.members) i dette $t(common.community), inkludert rollen de har",
+        "no-data": "Ingen $t(common.members) tilgjengelige"
+      },
+      "updates": {
+        "title": "Oppdateringer fra $t(common.leads) ({{count}})",
+        "no-data": "Ingen oppdateringer tilgjengelige"
+      }
+    },
+    "whiteboard": {
+      "header": "$t(common.Whiteboards) i denne {{blockName}}",
+      "subheader": "Opprett din tilpassede visualisering og del den med andre.",
+      "createWhiteboard": "Opprett $t(common.whiteboard)",
+      "defaultWhiteboardDisplayName": "$t(common.Whiteboard)",
+      "editDisplayName": "Rediger tittel",
+      "no-whiteboards": "Ingen $t(common.whiteboards) har blitt opprettet ennå. Vær den første til å legge til en.",
+      "locked-by": "{{user}} redigerer for øyeblikket denne $t(common.whiteboard)",
+      "loadingScene": "Laster scene",
+      "last-saved": "Auto-lagret siste endringer: {{datetime}}",
+      "unsuccessful-save": "<p><strong>{{warningMessage}} Kunne ikke lagre endringer. Sist lagret: {{datetime}}.</strong></p> <p>Hvis dette problemet vedvarer, vennligst kontakt teamet. For å unngå å miste fremgang, klikk menyen i øvre venstre hjørne for å lagre din $t(common.whiteboard) på din lokale disk.</p>",
+      "state-actions": {
+        "save-as-template": "Lagre som $t(common.template)",
+        "save-and-check-in": "Lagre & slutt å redigere",
+        "save": "Lagre",
+        "delete": "Slett"
+      },
+      "delete": {
+        "confirmationTitle": "Sletter $t(common.whiteboard)",
+        "confirmationText": "Er du sikker på at du vil slette denne $t(common.whiteboard)? Handlingen kan ikke reverseres."
+      },
+      "deleteContent": {
+        "confirmationTitle": "Sletter $t(common.Whiteboards)-innhold",
+        "confirmationText": "Er du sikker på at du vil slette innholdet i denne $t(common.whiteboard)?"
+      },
+      "template": {
+        "header": "$t(common.templates) definert i Alkemio",
+        "how-to": "For å opprette en $t(common.template), opprett en ny $t(common.whiteboard) eller bruk en eksisterende og lagre den som en $t(common.template)."
+      },
+      "space": {
+        "templatesHeader": "$t(common.templates) definert i dette $t(common.space)",
+        "templatesSubheader": "$t(common.templates) definert i dette $t(common.space) kan brukes i alle $t(common.subspaces) som dette $t(common.space) er vert for."
+      },
+      "subspace": {
+        "templatesHeader": "$t(common.templates) definert i dette $t(common.subspace)",
+        "templatesSubheader": "$t(common.templates) definert i dette $t(common.subspace) innenfor dets omfang."
+      },
+      "whiteboardDisconnected": {
+        "title": "$t(common.Whiteboards) tilkobling mistet",
+        "message": "Beklager ulempen! $t(common.whiteboard) er ikke tilgjengelig for redigering akkurat nå, muligens på grunn av et nettverksproblem eller tap av tilgang. Vennligst prøv å lukke og åpne $t(common.whiteboard) på nytt eller oppdater siden. Hvis problemet vedvarer, ta kontakt med din $t(common.space) $t(common.admin) for assistanse.",
+        "lastSaved": "Innholdet i denne $t(common.whiteboard) ble sist lagret {{lastSaved}}.",
+        "offline": "Du er for øyeblikket frakoblet. $t(common.whiteboard) vil prøve å koble til på nytt når du er tilbake på nett."
+      },
+      "readonlyReason": {
+        "readonly": "<strong>Kun visning-modus</strong> <learnwhy>klikk her for å lære hvorfor</learnwhy>",
+        "contentUpdatePolicy": "Du har ikke rettigheter til å redigere denne $t(common.whiteboard). Be eieren, <ownerlink>{{ownerName}}</ownerlink>, om å endre Dele $t(common.settings) hvis du vil bidra.",
+        "noMembership": "Du må være $t(common.member) av {{spaceLevel}} som denne $t(common.whiteboard) er i, for å kunne redigere. Klikk her for å <spacelink>bli med/søke</spacelink>",
+        "unauthenticated": "Du må være innlogget og $t(common.member) av {{spaceLevel}} som denne $t(common.whiteboard) er i, for å kunne redigere. Klikk her for å <signinlink>logge inn</signinlink>"
+      },
+      "readonlyDialog": {
+        "title": "Kun visning-modus",
+        "reason": {
+          "inactivity": "Du kan ikke redigere denne $t(common.whiteboard) fordi du var inaktiv for lenge. Vennligst prøv å åpne $t(common.whiteboard) på nytt for å fortsette å redigere.",
+          "multiUserNotAllowed": "Du kan ikke redigere denne $t(common.whiteboard) fordi dette $t(common.space) kun tillater én $t(common.whiteboard)-redigerer om gangen",
+          "roomCapacityReached": "Du kan ikke redigere denne $t(common.whiteboard) fordi dette $t(common.space) tillater flere redigerere samtidig, men maksimum er nådd",
+          "generic": "Du kan ikke redigere denne $t(common.whiteboard) av én av følgende grunner:\n\n- Du var inaktiv i 2 timer eller mer\n- Du er ikke $t(common.member) av $t(common.space)\n- Dette $t(common.space) tillater kun én $t(common.whiteboard)-redigerer om gangen\n- Dette $t(common.space) tillater flere redigerere, men maksimum er nådd"
+        }
+      },
+      "restartCollaboration": "Start samarbeid på nytt"
+    },
+    "memo": {
+      "readonlyReason": {
+        "readonly": "<strong>Kun visning-modus</strong> <learnwhy>klikk her for å lære hvorfor</learnwhy>",
+        "contentUpdatePolicy": "Du har ikke rettigheter til å redigere dette $t(common.memo). Be eieren, <ownerlink>{{ownerName}}</ownerlink>, om å endre Dele $t(common.settings) hvis du vil bidra.",
+        "noMembership": "Du må være $t(common.member) av {{spaceLevel}} som dette $t(common.memo) er i, for å kunne redigere. Klikk her for å <spacelink>bli med/søke</spacelink>",
+        "unauthenticated": "Du må være innlogget og $t(common.member) av {{spaceLevel}} som dette $t(common.memo) er i, for å kunne redigere. Klikk her for å <signinlink>logge inn</signinlink>",
+        "connecting": "",
+        "notSynced": " Synkroniserer... Åpne $t(common.memo) på nytt for å aktivere det raskt tilbake. Sikkerhetskopier endringene dine før du lukker."
+      },
+      "readonlyDialog": {
+        "title": "Kun visning-modus",
+        "reason": {
+          "noUpdateAccess": "Du kan ikke redigere dette $t(common.memo) fordi du ikke har rettighetene til å gjøre det. Spør eieren, <ownerlink>{{ownerName}}</ownerlink>, om å endre dele-$t(common.settings) hvis du vil bidra.",
+          "multiUserNotAllowed": "Du kan ikke redigere dette $t(common.memo) fordi dette $t(common.space) kun tillater én $t(common.memo)-redigerer om gangen",
+          "roomCapacityReached": "Du kan ikke redigere dette $t(common.memo) fordi dette $t(common.space) tillater flere redigerere samtidig, men maksimum er nådd",
+          "generic": "Du kan ikke redigere dette $t(common.memo) av én av følgende grunner:\n\nDu er ikke $t(common.member) av $t(common.space)\n- Dette $t(common.space) tillater kun én $t(common.memo)-redigerer om gangen\n- Dette $t(common.space) tillater flere redigerere, men maksimum er nådd"
+        }
+      }
+    },
+    "login": {
+      "title": "Logg inn på Alkemio",
+      "register": "Har du ikke en Alkemio $t(common.account) ennå? <signup>Klikk her for å registrere deg.</signup>"
+    },
+    "about": {
+      "title": "Nytenking om samarbeid",
+      "description": "Alkemio setter $t(common.subspaces) i sentrum, hvor hver $t(common.subspace) gir et sentralt, nøytralt sted for samarbeid.",
+      "powered-by": "Drevet av {{name}} v{{version}}"
+    },
+    "error": {
+      "title": "Oisann!",
+      "line1": "Ser ut som noe gikk galt: <italic>{{message}}</italic>",
+      "line2": "Vennligst sjekk at serveren din ({{graphQLEndpoint}}) er tilgjengelig, og last siden på nytt.",
+      "line3": "Hvis feilen vedvarer, vennligst <contact>kontakt support</contact>.",
+      "buttons": {
+        "reload": "Last på nytt"
+      },
+      "errors": {
+        "LazyLoadError": "Nettverksfeil oppstod. Vennligst prøv å laste siden på nytt.",
+        "unknown": "En ukjent feil oppstod. Vennligst prøv å laste siden på nytt."
+      }
+    },
+    "four-ou-four": {
+      "title": "Noe gikk galt...",
+      "message": "Beklager, siden du leter etter eksisterer enten ikke eller har blitt flyttet, eller du har ikke rettighetene til å få tilgang til den. Dette kan skje fordi du ikke er $t(common.member) av $t(common.community) ennå eller ikke er logget inn. Ikke bekymre deg, teamet vårt er der for å hjelpe!",
+      "links": {
+        "home": "",
+        "faq": "Ta en titt i vår FAQ og dokumentasjon for å finne det du leter etter, eller kontakt teamet."
+      }
+    },
+    "logout": {
+      "loading": "Logger av ..."
+    },
+    "registration": {
+      "header": "Opprett en $t(common.account) for å begynne å bruke Alkemio",
+      "introduction": "<p>Velkommen til Alkemio! Trygge $t(common.spaces) for samarbeid, utdanning og profesjonelle.</p><p>Alkemio er designet for å være til nytte for samfunnet. Vennligst les og aksepter <terms>Bruksvilkårene</terms> og <privacy>Personvernserklæringen</privacy> før du fortsetter.</p>",
+      "introduction-short": "<p>Alkemio er designet for å være til nytte for samfunnet. Vennligst les og aksepter <terms>Bruksvilkårene</terms> og <privacy>Personvernserklæringen</privacy> før du fortsetter.</p>",
+      "terms": "Jeg aksepterer <terms>Bruksvilkårene</terms> og <privacy>Personvernserklæringen</privacy>.",
+      "login": "Har du en $t(common.account)?",
+      "reset-password": "Glemt passord?",
+      "logo-subtitle": "Trygge $t(common.spaces) for samarbeid"
+    },
+    "accept-terms": {
+      "introduction": "<p>Alkemio gjør det enkelt å administrere $t(common.subspaces) og ha bidragsytere, fra hvor som helst, som jobber sammen om løsninger. $t(common.subspaces) står i sentrum. Fokuset er på destinasjonen.</p><p>For å holde plattformen trygg, åpen og konstruktiv, må hver bruker akseptere <terms>Bruksvilkårene</terms> og <privacy>Personvernserklæringen</privacy>. Vennligst les disse dokumentene og aksepter dem nedenfor før du fortsetter.</p>",
+      "greeting": "Hei {{user}}, velkommen til Alkemio!",
+      "continue": "Fortsett til plattformen",
+      "next": "Neste",
+      "tooltip": "Vennligst les og aksepter Bruksvilkårene og Personvernserklæringen før du fortsetter"
+    },
+    "registrationSuccess": {
+      "header": "Nesten der…",
+      "message": "<p>Det siste steget er å verifisere e-postadressen din. Vennligst sjekk innboksen din for en e-post med instruksjoner.</p><p>Hvis du ikke har mottatt en e-post, <resend>klikk her for å sende den igjen.</resend></p>",
+      "continue": "…eller fortsett til plattformen uten å logge inn"
+    },
+    "verification-success": {
+      "header": "Takk for at du verifiserte e-postadressen din!",
+      "subheader": "Din $t(common.profile) er nå fullstendig aktivert på plattformen. Kos deg!",
+      "message": "Vennligst vurder å fylle ut alle $t(common.posts) av din $t(common.profile). Det hjelper både med å søke om å bli med i samfunn og med at andre kan få kontakt med deg."
+    },
+    "recovery": {
+      "header": "Passordgjenoppretting",
+      "message": {
+        "initial": "Vennligst skriv inn e-postadressen din nedenfor for å motta en gjenopprettingslenke som vil la deg tilbakestille passordet ditt."
+      }
+    },
+    "verification": {
+      "header": "E-postverifisering",
+      "message": "For å motta en ny verifikasjonsepost, vennligst skriv inn e-postadressen din nedenfor."
+    },
+    "verification-required": {
+      "header": "E-postverifisering venter.",
+      "message": "Du er nesten der... Ett siste steg er å verifisere e-posten din. <br />Vennligst sjekk innboksen din for en e-post med instruksjoner.<br /><br /><again>Hvis du ikke har mottatt en e-post, klikk på denne lenken for å sende igjen</again>."
+    },
+    "settings": {
+      "header": "Bruker $t(common.settings)"
+    },
+    "user-profile": {
+      "title": "Min $t(common.profile)",
+      "tooltips": {
+        "settings": "Bruker $t(common.profile) $t(common.settings)"
+      },
+      "member-of": "$t(common.Member) av",
+      "applications": {
+        "title": "Ventende søknader"
+      },
+      "accountResources": {
+        "sectionTitle": "Ressurser jeg er vert for"
+      },
+      "membership": {
+        "space": {
+          "confirmation-dialog": {
+            "title": "Forlater rom {{space}}",
+            "text": "Er du sikker på at du vil forlate <b>{{space}}</b>? <br /><br /> Du vil ikke lenger motta oppdateringer eller ha tilgang til delte ressurser fra dette $t(common.space) eller dets $t(common.subspaces). Hvis dette $t(common.space) er offentlig, kan du bli med igjen når som helst, eller hvis privat, vil du trenge en invitasjon for å bli med igjen. <br /><br />Merk at hvis du er $t(common.member) av et $t(common.subspace) inne i dette $t(common.space), vil du også bli automatisk fjernet derfra."
+          }
+        },
+        "subspace": {
+          "confirmation-dialog": {
+            "title": "Forlater $t(common.subspace) {{space}}",
+            "text": "Er du sikker på at du vil forlate <b>{{space}}</b>? <br /><br />Du vil ikke lenger motta oppdateringer eller ha tilgang til delte ressurser fra dette $t(common.subspace) eller dets $t(common.subspaces). Hvis dette $t(common.subspace) er offentlig, kan du bli med igjen når som helst, eller hvis privat, vil du trenge en invitasjon for å bli med igjen. <br /><br />Merk at hvis du er $t(common.member) av et $t(common.subspace) inne i dette $t(common.subspace), vil du også bli automatisk fjernet derfra."
+          }
+        }
+      },
+      "communities": {
+        "title": "Samfunn",
+        "help": "Samfunn brukeren er en del av",
+        "leadSpacesTitle": "$t(common.spaceSubspaces) jeg leder",
+        "allMembershipsTitle": "$t(common.spaceSubspaces) jeg er i",
+        "noMembership": "Ikke $t(common.member) av noe $t(common.space) eller $t(common.subspace) ennå."
+      },
+      "pending-applications": {
+        "title": "Ventende søknader",
+        "help": "Søknader som venter for denne brukeren"
+      },
+      "associated-organizations": {
+        "title": "Tilknyttede $t(common.organizations)",
+        "help": "$t(common.Organizations) som brukeren er relatert til"
+      },
+      "verifiable-credentials": {
+        "title": "Verifiserbare legitimasjoner",
+        "help": "Legitimasjoner som brukeren har utstedt av pålitelige parter"
+      }
+    },
+    "virtualContributorProfile": {
+      "title": "$t(common.virtualContributor) $t(common.Profile)",
+      "defaultName": "Alkemio hjelp",
+      "description": "Beskrivelse",
+      "references": "Referanser",
+      "host": "Vert",
+      "success": "{{entity}} oppdatert vellykket.",
+      "bokIngestStarted": "Innlasting av kunnskapsbase startet. Det kan ta noen minutter å fullføre.",
+      "error": "En feil oppstod.",
+      "sections": {
+        "knowledge": {
+          "title": "Kunnskap",
+          "description": "Svar {{name}} gir er basert på kunnskapsbasen som kommer fra:"
+        },
+        "personality": {
+          "title": "Grunnleggende instruksjoner og motor",
+          "description": "For å la folk samhandle med kunnskapsbasen beskrevet ovenfor, bruker Alkemio en motor og et grunnleggende sett med instruksjoner. Disse instruksjonene sørger for at $t(common.virtualContributor) for eksempel bare svarer på spørsmål ved å bruke den spesifiserte kunnskapsbasen, slik at du kan stole på svarene den gir."
+        },
+        "context": {
+          "title": "Kontekst",
+          "description": "{{name}} bruker følgende informasjon fra $t(common.space) den er invitert til, slik at den kan gi deg meningsfulle svar:",
+          "bullets": "<ul><li>$t(common.space) om-side: <ul><li>Navn, Slagord, plassering, osv.</li><li>Kontekstinformasjon</li><li>Statistikk</li></ul></li></ul>"
+        },
+        "privacy": {
+          "title": "Personvern",
+          "description": "For Alkemio er beskyttelse av dataene dine av største viktighet. Vi er forpliktet til å opprettholde sikkerheten og personvernet til informasjonen din.",
+          "bullets": "<ul><li>Når du samhandler med en $t(common.virtualContributor), brukes kun dataene eksplisitt spesifisert til venstre (Kontekst) for å generere meningsfulle svar.</li><li>Viktig: dine ($t(common.space)) data brukes ikke til trening av $t(common.virtualContributor).</li><li>I tillegg, vær oppmerksom på at spørsmål og svar utvekslet med $t(common.virtualContributor) kan være synlige for Alkemio-teamet.</li></ul>"
+        },
+        "external": {
+          "personality": {
+            "description": "Denne $t(common.virtualContributor) opererer ved å bruke følgende eksterne AI-tjeneste: <strong>Mistral</strong>. Alle spørsmål som sendes til denne $t(common.virtualContributor), sammen med relaterte $t(common.comments) i en trådet samtale, vil bli sendt til <strong>Mistral</strong>. Vær oppmerksom på at disse dataene kan bli brukt til å trene og forbedre modellen deres."
+          },
+          "privacy": {
+            "description": "Hos Alkemio er beskyttelse av dataene dine vår høyeste prioritet. Vi er fullt forpliktet til å sikre sikkerheten og personvernet til informasjonen din. Her er hvordan vi håndterer dataene dine når du samhandler med en $t(common.virtualContributor) (VC):",
+            "bullets": "<ul><li>Kun innholdet i spørsmålet ditt og relaterte $t(common.comments) i en trådet samtale deles med AI-tjenesten som driver $t(common.virtualContributor).</li><li>Vær oppmerksom på at hvis $t(common.virtualContributor) er basert på en ekstern AI-tjeneste, for eksempel Mistral, kan dataene som deles bli brukt til videre trening og forbedring av den tjenesten.</li><li>Merk også at spørsmål og svar utvekslet med $t(common.virtualContributor) kan være tilgjengelige for Alkemio-teamet for overvåkings- eller støtteformål.</li></ul>"
+          }
+        }
+      },
+      "membership": {
+        "title": "$t(common.virtualContributor) $t(common.Memberships)",
+        "noMemberships": "Denne $t(common.virtualContributor) er ikke $t(common.member) av noe $t(common.space)",
+        "pendingInvitations": "Ventende invitasjoner",
+        "noPendingInvitations": "Ingen ventende invitasjoner"
+      },
+      "settings": {
+        "title": "$t(common.virtualContributor) $t(common.settings)",
+        "access": {
+          "title": "Synlighet",
+          "listedInStore": "Inkluder i offentlige utvalgslister.",
+          "visibility": {
+            "public": "<b>Offentlig:</b> Denne $t(common.virtualContributor) kan inviteres til alle $t(common.spaces) på Alkemio",
+            "private": "<b>Privat:</b> Denne $t(common.virtualContributor) kan inviteres til $t(common.spaces) innenfor min $t(common.account).",
+            "hidden": "<b>Skjult:</b> Denne $t(common.virtualContributor) kan ikke inviteres."
+          }
+        },
+        "ingestion": {
+          "title": "Kunnskapsbase",
+          "infoText": "Endringer i kunnskapsbasen gjenspeiles ikke automatisk i $t(common.virtualContributor). Du må manuelt anvende dem ved å klikke på knappen <bold>'OPPDATER KUNNSKAP'</bold>. Det vil ta noen minutter før oppdateringen er fullført. Du kan sjekke tilbake senere for å se om oppdateringen var vellykket.",
+          "refreshBtn": "Oppdater kunnskap",
+          "lastUpdatedLabel": "Sist oppdatert: ",
+          "never": "Aldri"
+        },
+        "prompt": {
+          "title": "Prompt",
+          "infoText": "Tilgjengelige variabler: [{{availableVariables}}] . Ikke inkluder alternativ tekst mellom { } i prompten, da dette vil forstyrre funksjonaliteten til denne $t(common.virtualContributor).",
+          "saveBtn": "Lagre prompt"
+        },
+        "externalConfig": {
+          "title": "Ekstern konfigurasjon",
+          "infoText": "$t(common.virtualContributor) drives av en ekstern AI-tjeneste. Vennligst oppgi følgende informasjon for å koble til tjenesten.",
+          "apiKey": "API-nøkkel",
+          "apiKeyPlaceholder": "Nåværende nøkkelsignatur er '{{value}}'. Ved å endre denne verdien vil nåværende nøkkel bli overskrevet og kan ikke gjenopprettes.",
+          "assistantId": "Assistent-ID",
+          "model": "Modell",
+          "saveBtn": "Lagre konfigurasjon"
+        },
+        "privacy": {
+          "title": "Personvern",
+          "description": "Privat $t(common.virtualContributor)-kunnskap",
+          "tooltip1": "Offentlig: Når brukere besøker {{vcName}}s $t(common.profile), kan de se innholdet i kunnskapsbasen.",
+          "tooltip2": "Privat: Kun $t(common.account) $t(common.admins) kan se innholdet i kunnskapsbasen."
+        }
+      },
+      "knowledgeBase": {
+        "noAccess": {
+          "title": "Privat $t(common.virtualContributor)-kunnskap",
+          "description": "Du har ikke tilgang til kunnskapsbasen til denne $t(common.virtualContributor). Vennligst kontakt eieren av $t(common.virtualContributor) for mer informasjon."
+        }
+      }
+    },
+    "user-credentials": {
+      "your-credentials": {
+        "title": "Mine verifiserbare legitimasjoner",
+        "description": "Alkemio bufrer dine verifiserbare legitimasjoner i din sky-hostede lommebok. Legitimasjonene du deler vil gi deg privilegier i samfunn over hele plattformen.",
+        "add-credential": "Legg til legitimasjon"
+      },
+      "issue": "Utstede",
+      "added-successfully": "Legitimasjon lagt til vellykket"
+    },
+    "authentication-required": {
+      "header": "Tilgang begrenset",
+      "subheader": "Siden du prøver å få tilgang til er kun tilgjengelig for registrerte brukere.",
+      "subheader2": "Vennligst logg inn for å fortsette. Har du ikke en $t(common.account)? Registrer deg gratis."
+    },
+    "userNotificationsSettings": {
+      "general": {
+        "title": "Generelt",
+        "subtitle": "Denne seksjonen lar deg velge preferansene dine angående mottak av meldinger"
+      },
+      "space": {
+        "title": "$t(common.space)",
+        "subtitle": "Denne seksjonen lar deg velge preferansene dine angående mottak av meldinger fra $t(common.spaces) du er $t(common.member) av",
+        "settings": {
+          "communicationUpdateSent": "Motta en $t(common.notification) når en ny oppdatering deles med et $t(common.community) jeg er $t(common.member) av",
+          "collaborationCalloutPublished": "Motta en $t(common.notification) når et $t(common.callout) publiseres i et $t(common.community) jeg er $t(common.member) av",
+          "collaborationCalloutContributionCreated": "Motta en $t(common.notification) når et nytt bidrag ($t(common.whiteboard), $t(common.post), lenke, $t(common.memo) osv.) opprettes i et $t(common.community) jeg er $t(common.member) av",
+          "collaborationCalloutComment": "Motta en $t(common.notification) når en $t(common.comment) gjøres på et $t(common.callout) i et $t(common.community) jeg er $t(common.member) av",
+          "collaborationCalloutPostContributionComment": "Motta en $t(common.notification) når en ny $t(common.comment) legges til et $t(common.callout)-bidrag i et $t(common.community) jeg er $t(common.member) av"
+        }
+      },
+      "spaceAdmin": {
+        "title": "$t(common.space) $t(common.admin) $t(common.settings)",
+        "subtitle": "Denne seksjonen lar deg velge preferansene dine angående mottak av meldinger fra $t(common.spaces) du er $t(common.admin) av",
+        "settings": {
+          "communityApplicationReceived": "Motta en $t(common.notification) når en ny søknad mottas",
+          "communityNewMember": "Motta en $t(common.notification) når et nytt $t(common.member) blir med i $t(common.community)",
+          "collaborationCalloutContributionCreated": "Motta en $t(common.notification) når et nytt $t(common.callout) opprettes",
+          "communicationMessageReceived": "Motta en $t(common.notification) når en ny melding mottas"
+        }
+      },
+      "organization": {
+        "title": "$t(common.Organization)",
+        "subtitle": "Denne seksjonen lar deg velge preferansene dine angående nevninger og direktemeldinger til $t(common.organizations) du administrerer",
+        "settings": {
+          "mentioned": "Motta en $t(common.notification) når min $t(common.organization) nevnes",
+          "messageReceived": "Motta direktemeldinger til min $t(common.organization)"
+        }
+      },
+      "user": {
+        "title": "Bruker",
+        "subtitle": "Denne seksjonen lar deg velge preferansene dine angående $t(common.memberships), nevninger og direktemeldinger til deg selv.",
+        "settings": {
+          "mentioned": "Motta en $t(common.notification) når jeg nevnes",
+          "commentReply": "Motta en $t(common.notification) når noen svarer på min $t(common.comment)",
+          "messageReceived": "Motta en $t(common.notification) når noen sender meg en direktemelding"
+        }
+      },
+      "userMembership": {
+        "title": "Bruker $t(common.membership) $t(common.notifications)",
+        "subtitle": "Denne seksjonen lar deg velge preferansene dine angående $t(common.notifications) relatert til ditt $t(common.membership) i samfunn.",
+        "settings": {
+          "spaceCommunityInvitation": "Motta en $t(common.notification) når noen inviterer deg til å bli med i et $t(common.community)",
+          "spaceCommunityJoined": "Motta en $t(common.notification) når jeg blir med i et nytt $t(common.space) $t(common.community)"
+        }
+      },
+      "platformAdmin": {
+        "title": "Plattform",
+        "subtitle": "Denne seksjonen lar deg velge preferansene dine angående aktiviteter på plattformen.",
+        "settings": {
+          "adminUserProfileCreated": "Motta en $t(common.notification) når en ny bruker registrerer seg",
+          "adminUserProfileRemoved": "Motta en $t(common.notification) når en bruker $t(common.profile) fjernes",
+          "adminSpaceCreated": "Motta en $t(common.notification) når et nytt $t(common.space) opprettes",
+          "adminUserGlobalRoleChanged": "Motta en $t(common.notification) når en brukers globale rolle endres"
+        }
+      },
+      "forum": {
+        "title": "$t(common.forum)",
+        "subtitle": "Denne seksjonen lar deg velge preferansene dine angående aktiviteter i $t(common.forum).",
+        "settings": {
+          "forumDiscussionComment": "Motta en $t(common.notification) når en ny $t(common.comment) legges til en diskusjon jeg følger",
+          "forumDiscussionCreated": "Motta en $t(common.notification) når en ny diskusjon opprettes"
+        }
+      },
+      "virtualContributor": {
+        "title": "$t(common.virtualContributor)",
+        "subtitle": "Denne seksjonen lar deg velge preferansene dine angående aktiviteter som en $t(common.virtualContributor).",
+        "settings": {
+          "spaceCommunityInvitation": "Motta en $t(common.notification) når en VC jeg administrerer inviteres til å bli med i et $t(common.community)"
+        }
+      },
+      "tooltips": {
+        "spaceCommunityInvitationReceived": "Disse $t(common.notifications) er påkrevd og kan ikke deaktiveres.",
+        "messageReceived": "Disse $t(common.notifications) er påkrevd og kan ikke deaktiveres.",
+        "communicationMessageReceived": "Disse kommunikasjons-$t(common.notifications) er påkrevd og kan ikke deaktiveres.",
+        "adminMessageReceived": "Disse $t(common.notifications) er påkrevd og kan ikke deaktiveres.",
+        "communityApplicationReceived": "E-post $t(common.notifications) for søknader kan ikke deaktiveres.",
+        "communityNewMember": "Nytt medlem $t(common.notifications) krever at minst én $t(common.notification)-metode forblir aktivert.",
+        "adminMentioned": "$t(common.Organization)-nevninger krever at minst én $t(common.notification)-metode forblir aktivert."
+      }
+    },
+    "help-dialog": {
+      "title": "Leter etter hjelp?",
+      "text": "Vi er her for å hjelpe deg med å få mest mulig ut av Alkemio-plattformen og skape innvirkning på emnene du bryr deg om. Klikk nedenfor for å finne svar, kontakte teamet vårt, eller komme i gang!",
+      "icons": {
+        "exploreDocumentation": "Utforsk dokumentasjon",
+        "contactTheTeam": "Kontakt teamet",
+        "joinTheWelcomeSpace": "Bli med i Velkomst-$t(common.space)"
+      },
+      "tips-and-tricks": "Leter etter tips & triks? Finn dem i blogginnleggene her!",
+      "versionNumber": "Versjonsnummer: <b>v{{version}}</b>",
+      "serverVersionNumber": "Serverversjonsnummer: <b>v{{version}}</b>"
+    },
+    "forum": {
+      "title": "Velkommen til Alkemio $t(common.forum)",
+      "subtitle": "Bli med i samtalen! Møt fellesskapet, del innsikt og utforsk hvordan du kan gjøre en forskjell.",
+      "fullName": "Utforsk $t(common.forum)",
+      "shortName": "$t(common.forum)",
+      "new-title": "Start ny diskusjon",
+      "back": "Tilbake til $t(common.forum)"
+    },
+    "documentation": {
+      "title": "Dokumentasjon",
+      "subtitle": "Plattformhåndbok & støtte"
+    }
+  },
+  "operations": {
+    "user-group": {
+      "updated-successfully": "Gruppe {{name}} har blitt oppdatert!",
+      "deleted-successfully": "Gruppe {{name}} slettet vellykket"
+    }
+  },
+  "kratos": {
+    "errors": {
+      "401": "Uautentisert",
+      "session": {
+        "default": "Kan ikke hente øktinformasjon!"
+      }
+    },
+    "loading-flow": "Laster flyt",
+    "loading-error": "Lastingsfeil",
+    "messages": {
+      "successfully-recovered-password": "Vennligst skriv inn et nytt passord innen de neste 15 minuttene for å fullføre tilbakestillingen av passordet.",
+      "request-recover-password": "<strong>En e-post som inneholder en gjenopprettingslenke har blitt sendt til e-postadressen du oppga.</strong><br/> <br/>Hvis du ikke har mottatt en e-post, vennligst sjekk følgende:<br/> <br/><li> <strong>Sjekk stavemåten</strong> til e-postadressen.</li><li> <strong>Forsikre deg om at du bruker e-postadressen</strong> du registrerte deg med.</li><li> <strong>Sjekk søppel- eller spam-mappen din</strong> i tilfelle e-posten ble filtrert.</li><li> <strong>Hvis du registrerte deg ved å bruke LinkedIn, Microsoft eller en annen sosial pålogging,</strong> vil ikke passordgjenoppretting via e-post fungere. Vennligst bruk respektive sosiale påloggingsalternativ i stedet.</li><br/><br/><i>Merk: Dette bekrefter ikke at en $t(common.account) er registrert med denne e-posten.</i>",
+      "verification-flow-expired": "Verifikasjonslenken har utløpt. Vennligst be om en ny ved å sende inn e-posten din igjen.",
+      "recovery-flow-expired": "Denne passordtilbakestillingslenken har utløpt. Vennligst be om en ny ved å sende inn e-posten din igjen.",
+      "verification-flow-continue": "Fortsett",
+      "login-flow-account-exists": "Denne e-postadressen er allerede assosiert med en $t(common.account). Hvis du tidligere registrerte deg via LinkedIn, GitHub eller Microsoft, vennligst bruk den påloggingsmetoden. Ellers tilbakestill passordet ditt.",
+      "invalid-credentials": "E-postadressen eller passordet du skrev inn er ugyldig. Vennligst sjekk legitimasjonen din og prøv igjen. Prøver du å registrere deg i stedet? Du kan gjøre det ved å klikke på lenken ovenfor.",
+      "claim-missing": "Du har ikke verifisert din Vidua-identitet. Vennligst verifiser identiteten din og prøv igjen eller prøv en annen registreringsmetode.",
+      "pick-password": "Velg et passord for din $t(common.account)"
+    },
+    "fields": {
+      "ID": "ID",
+      "Password": "Passord",
+      "ShowPassword": "Vis passord",
+      "HidePassword": "Skjul passord",
+      "E-Mail": "E-post",
+      "Email": "$t(kratos.fields.E-Mail)",
+      "First Name": "Fornavn",
+      "Last Name": "Etternavn",
+      "Sign in": "Logg inn",
+      "Sign in with password": "Logg inn",
+      "Sign up": "Neste",
+      "Submit": "Send inn",
+      "Verify code": "Verifiser kode",
+      "Resend code": "Send kode på nytt",
+      "Save": "Lagre"
+    }
+  },
+  "apollo": {
+    "errors": {
+      "generic": "En feil oppstod",
+      "generic-with-code": "En feil oppstod med kode {{code}}",
+      "ENTITY_NOT_FOUND": "Enhet ikke funnet",
+      "COMMUNITY_MEMBERSHIP": "$t(common.Community) $t(common.membership)-feil: {{message}}",
+      "FORMAT_NOT_SUPPORTED": "Format støttes ikke",
+      "BAD_USER_INPUT": "Ugyldig brukerinput: {{message}}",
+      "NOT_SUPPORTED": "Støttes ikke: {{message}}",
+      "OPERATION_NOT_ALLOWED": "{{message}}"
+    }
+  },
+  "dashboard-updates-section": {
+    "title": "Oppdateringer fra $t(common.leads) ({{count}})",
+    "dialog-title": "Alle oppdateringer fra $t(common.leads)",
+    "no-data": "Ingen oppdateringer tilgjengelige."
+  },
+  "dashboard-discussions-section": {
+    "title": "Diskusjoner ({{count}})",
+    "no-data-create": "Ingen diskusjoner tilgjengelige. Opprett en ny diskusjon",
+    "no-data-join": "Ingen diskusjoner tilgjengelige. Vennligst bli med i $t(common.community) for å opprette en diskusjon"
+  },
+  "dashboard-community-section": {
+    "title": "$t(common.Community)"
+  },
+  "post-edit": {
+    "new": "Nytt $t(common.post)",
+    "edit": "Rediger $t(common.post)",
+    "type": {
+      "title": "$t(common.Post)-etikett",
+      "help-text": "Hvilken type informasjon vil du dele?"
+    },
+    "postLocation": {
+      "title": "$t(common.Post)-plassering",
+      "label": "Bidrar til $t(common.callout)",
+      "reminder": "Vær forsiktig når du endrer $t(common.response)-plasseringen. Flytting av $t(common.response) til et annet $t(common.callout) vil gjøre det borte fra nåværende $t(common.callout). Dette kan gjøre det vanskelig for folk, inkludert personen som opprettet denne $t(common.response), å hente det. Merk at du bare kan flytte $t(common.responses) innenfor samme $t(common.space) eller $t(common.subspace).",
+      "success": "Vellykket flyttet $t(common.response) til det nye $t(common.post).",
+      "error": "Noe gikk galt ved flytting av $t(common.response), vennligst prøv igjen."
+    },
+    "delete": {
+      "title": "Er du sikker på at du vil slette dette $t(common.post)?",
+      "description": "Denne handlingen kan ikke angres"
+    },
+    "closeConfirm": {
+      "title": "Forkast $t(common.post)",
+      "description": "Er du sikker på at du vil lukke dette $t(common.post)? Ulagrede endringer vil gå tapt."
+    }
+  },
+  "innovation-edit": {
+    "new": "Ny $t(common.innovation-flow)",
+    "edit": "Rediger $t(common.innovation-flow)"
+  },
+  "contributors-section": {
+    "title": "Bidragsytere"
+  },
+  "contributions-view": {
+    "no-data": "Ingen $t(common.memberships) funnet"
+  },
+  "credentials-view": {
+    "no-data": "Ingen legitimasjoner har blitt presentert"
+  },
+  "associated-organizations-view": {
+    "no-data": "Ingen {{name, lowercase}} tilgjengelige"
+  },
+  "dashboard-contributors-section": {
+    "dialog-title": "Bidragsytere",
+    "more": "...pluss {{count}} flere"
+  },
+  "associates-view": {
+    "less": "vis mindre",
+    "more": "...pluss {{count}} flere",
+    "sign-in": "Vennligst logg inn for å se brukerne som er assosiert med denne $t(common.organization)."
+  },
+  "spaces-filter": {
+    "current-filter": "Nåværende filter: ",
+    "show-all": "Vis alle",
+    "other": "Annet",
+    "config": [
+      {
+        "key": "energy-transition",
+        "name": "Energiomstilling",
+        "tags": ["Energy Transition", "Energietransitie"]
+      },
+      {
+        "key": "inclusive-society",
+        "name": "Inkluderende samfunn",
+        "tags": ["Inclusive Society", "Inclusieve Samenleving"]
+      },
+      {
+        "key": "public-services",
+        "name": "Offentlige tjenester",
+        "tags": ["Public Services", "Publieke Diensten"]
+      },
+      {
+        "key": "innovation",
+        "name": "Innovasjon",
+        "tags": ["Innovation", "Innovatie"]
+      },
+      {
+        "key": "digitalization-of-society",
+        "name": "Digitalisering av samfunnet",
+        "tags": ["Digitalization of Society", "Digitalisering"]
+      }
+    ]
+  },
+  "spaceSearch": {
+    "spaceFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
+  },
+  "visuals-alt-text": {
+    "alkemio-banner-alt": "Alkemio plattformbanner",
+    "banner": {
+      "page": {
+        "text": "Sidebanner: {{altText}}"
+      },
+      "card": {
+        "text": "Kortbanner: {{altText}}"
+      },
+      "whiteboard": {
+        "text": "Kortbanner som viser en forhåndsvisning av {{displayName}} $t(common.whiteboard)"
+      }
+    },
+    "avatar": {
+      "contributor": {
+        "text": "{{displayName}}s avatar: {{altText}}"
+      }
+    }
+  },
+  "spaceDialog": {
+    "about": "Om",
+    "outline": "Oversikt",
+    "index": "Indeks",
+    "subspaces": "$t(common.subspaces)",
+    "contributors": "Bidragsytere",
+    "videoCall": "Videosamtale",
+    "activity": "Aktivitet",
+    "calendar": "Kalender",
+    "events": "Hendelser",
+    "share": "Del",
+    "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
+    "settings": "$t(common.Settings)",
+    "updates": "Oppdateringer"
+  },
+  "videoCall": {
+    "dialog": {
+      "title": "Start videosamtale",
+      "content": "Du er i ferd med å starte en videosamtale ved å bruke Jitsi, en sikker tredjeparts videokonferansetjeneste. Samtalen vil åpne seg i en ny nettleserfane, utenfor Alkemio-miljøet. Andre kan bli med via samme knapp eller ved å bruke den delte URL-en.<br/><br/>Lær mer om Jitsi <jitsiLink>her</jitsiLink>, inkludert hvordan du administrerer tilgangs- og personverninnstillinger."
+    }
+  },
+  "createSpace": {
+    "title": "Opprett et $t(common.space)",
+    "addTutorialsLabel": "Legg til opplæringer i dette $t(common.space)",
+    "terms": {
+      "checkboxLabel": "Jeg har lest og akseptert <terms>vilkårene og avtalene (klikk her for å åpne dem)</terms> for å opprette et $t(common.space).",
+      "dialogTitle": "Vilkår og betingelser for å opprette et $t(common.space)",
+      "dialogContent": "Jeg forstår at som $t(common.host) er jeg ansvarlig for alt innhold innenfor $t(common.space).",
+      "fullTermsLink": "Klikk her for å lese mer om vilkår og betingelser."
+    },
+    "license": {
+      "noPlansError": "Ingen tilgjengelige planer. Vennligst kontakt support."
+    },
+    "innovationFlowError": "Denne $t(common.template) kan ikke brukes for rot-$t(common.spaces). Vennligst velg en annen $t(common.template)."
+  },
+  "plansTable": {
+    "title": "Velg en plan",
+    "subtitle": "For å skape et trygt miljø for å trene din $t(common.virtualContributor), må du først opprette et $t(common.space). Velg en plan for dette $t(common.space) nedenfor.",
+    "seeMore": "Klikk her for full beskrivelse av hver plan",
+    "seeMoreUrl": "https://welcome.alkem.io/pricing/",
+    "pricingPeriods": {
+      "monthly": "/måned",
+      "lifetime": "/livstid",
+      "custom": "Tilpasset prissetting"
+    },
+    "buttonCaptions": {
+      "choose": "Velg {{planName}}",
+      "startTrial": "Start din 30 dagers gratisprøveperiode",
+      "contactSupport": "Kontakt oss"
+    },
+    "plans": [
+      {
+        "name": "SPACE_LICENSE_FREE",
+        "displayName": "Gratis",
+        "priceDescription": "For endringsmakere som utforsker Alkemio",
+        "features": ["Opptil 10 $t(common.members)", "Diverse verktøy, inkludert standard $t(common.whiteboards)"],
+        "disclaimer": "Gratis $t(common.spaces) er begrenset til 1 $t(common.space) per bruker",
+        "disabledDisclaimer": "Hver bruker kan ha 1 gratis $t(common.space). Det ser ut som du allerede har brukt ditt!"
+      }
+    ],
+    "confirmationDialogs": {
+      "freeTrial": {
+        "title": "Gratisprøveperiode",
+        "content": "Prøv vår gratis 30-dagers prøveperiode av Plus-lisensen for å låse opp spennende funksjoner som å opprette $t(common.virtualContributors) og flerbruker $t(common.whiteboard)-redigering. Ingen betalingsdetaljer kreves! Etter prøveperioden kan du velge mellom å oppgradere til Plus eller fortsette med gratis-lisensen.<br/><br/>Spørsmål? [Kontakt vårt supportteam når som helst](https://welcome.alkem.io/contact).",
+        "buttons": {
+          "continue": "Fortsett med gratis $t(common.space)",
+          "startPlus": "Start Plus-prøveperiode"
+        }
+      },
+      "getStarted": {
+        "title": "Kom i gang med en gang!",
+        "content": "Siden vi ikke vil holde deg opp lenger, får du en 30-dagers gratisprøveperiode. Etter disse 30 dagene vil vi be deg om å sette opp dine $t(common.account)-detaljer for å fortsette å bruke ditt $t(common.space). Hvis du har spørsmål, er det bare å kontakte support her.",
+        "buttons": {
+          "continue": "Fortsett"
+        }
+      }
+    }
+  },
+  "virtualContributorSpaceSettings": {
+    "create": {
+      "title": "Opprett en $t(common.virtualContributor)"
+    },
+    "name": "Navn",
+    "bodyOfKnowledge": "Kunnskapsbase",
+    "placeholder": "Denne $t(common.virtualContributor) er basert på sin egen kuraterte $t(common.collection) av dokumenter, tekst og lenker.",
+    "infoTextBoK": "Velg $t(common.subspace) du vil ha som kunnskapsbase for denne $t(common.virtualContributor)",
+    "noSubspacesInfo": "Opprett en $t(common.subspace) først, og fyll den med relevant informasjon for din $t(common.virtualContributor).",
+    "confirmDeletion": {
+      "description": "Vil du slette denne {{entity}}? Denne handlingen kan ikke reverseres. All $t(common.profile) informasjon vil bli fjernet og folk vil ikke lenger kunne samhandle med {{entity}} "
+    },
+    "edit": {
+      "title": "Rediger $t(common.virtualContributor) $t(common.Profile)"
+    }
+  },
+  "createVirtualContributorWizard": {
+    "noSpaces": "Kunne ikke finne noe $t(common.space) arrangert av deg, vennligst kontakt oss for støtte.",
+    "createdVirtualContributor": {
+      "successMessage": "$t(common.virtualContributor) '{{name}}' opprettet vellykket"
+    },
+    "autoCreated": {
+      "subSpaceVision": "-",
+      "subSpaceTagline": "En kunnskapsbase for en $t(common.virtualContributor)"
+    },
+    "initial": {
+      "title": "Opprett en $t(common.virtualContributor)",
+      "profileDescription": "Velg et navn og avatar nå, eller personaliser din $t(common.profile) senere på VC $t(common.Profile)-siden.",
+      "description": "En $t(common.virtualContributor) lar deg samhandle med AI på Alkemio. Hva ønsker du å gjøre tilgjengelig gjennom din $t(common.virtualContributor)?",
+      "createSpace": "Skriftlig kunnskap i tekst",
+      "useExistingSpace": "Innholdet i et $t(common.spaceSubspace) på Alkemio",
+      "useExternalAI": "En ekstern AI",
+      "ownAI": "AI drevet av Alkemio",
+      "externalAI": "Ekstern AI"
+    },
+    "loadingInfo": {
+      "vcSpaceCreation": "Et $t(common.space) for interaksjon med din $t(common.virtualContributor) bygges. Denne prosessen kan ta noen øyeblikk å fullføre."
+    },
+    "cancel": {
+      "title": "Forkast $t(common.virtualContributor)",
+      "description": "Er du sikker på at du vil slutte å opprette din $t(common.virtualContributor)? Arbeidet ditt vil ikke bli lagret.",
+      "deleted": "$t(common.virtualContributor) slettet vellykket!"
+    },
+    "addContent": {
+      "title": "Legg til kunnskap",
+      "description": "Hvilken kunnskap vil du at din $t(common.virtualContributor) skal ha? Skriv det ned i $t(common.posts) eller last det opp i dokumenter.",
+      "descriptionBold": "Du kan oppdatere, legge til og fjerne innhold senere.",
+      "post": {
+        "title": "$t(common.Post)-tittel",
+        "exampleTitle": "Eksempel: Om Alkemio",
+        "exampleDescription": "Tips: Opprett en strukturert og spesifikk tekst, for eksempel:\n\n<strong>Bakgrunn</strong>\n\nAlkemio, grunnlagt i 2020, ble født av frustrasjon over treg fremgang på COVID-relaterte utfordringer og en anerkjennelse av de tallrike raskt bevegelige utfordringene vi møter daglig.\n\n<strong>Styring</strong>\n\nFor å opprettholde tillit og realisere vår langsiktige visjon, har vi tatt i bruk Steward Ownership som vår kjernegruppestruktur. Steward ownership er...\n",
+        "addAnotherPost": "Legg til $t(common.post)",
+        "tooltip": "Flere $t(common.posts) kan legges til i kunnskapsbasen når VC er opprettet",
+        "initialPosts": "Innledende $t(common.posts)",
+        "delete": "Slett $t(common.post)"
+      },
+      "documents": {
+        "tooltip": "Støttede filformater: Tekst på nettsider, .pdf, .doc(x), .xls(x). Maksimal filstørrelse: 20mb",
+        "referenceTitle": "Referansetittel",
+        "referenceUrl": "URL",
+        "addAnother": "Legg til dokument",
+        "remove": "Fjern dokument",
+        "initialDocuments": "Innledende lenker og dokumenter"
+      },
+      "submitDisabled": "Legg til minst ett $t(common.post) for å fortsette"
+    },
+    "externalAI": {
+      "create": {
+        "title": "Opprett $t(common.virtualContributor) med en ekstern AI",
+        "subTitle": "Velg en leverandør og skriv inn din API-nøkkel eller token for å koble din eksterne AI til en $t(common.virtualContributor)",
+        "apiKey": {
+          "label": "API-nøkkel",
+          "placeholder": "F.eks. sk-proj-Uq3zU..."
+        },
+        "assistantId": {
+          "label": "Assistent-ID",
+          "placeholder": "F.eks. asst_wTLKgGkKryqR5FlEFleLy5Uq"
+        },
+        "provider": {
+          "title": "Leverandør",
+          "placeholder": "Velg en leverandør fra denne listen"
+        }
+      },
+      "comingSoon": {
+        "title": "🚀 Kommer snart!",
+        "subTitle": "Leter etter en annen AI-tjeneste? Gi oss beskjed!",
+        "input": {
+          "label": "AI-tjeneste",
+          "placeholder": "F.eks. AI-en som xx opprettet for å xx"
+        }
+      },
+      "contactOptions": {
+        "title": "Kan vi kontakte deg hvis vi har spørsmål om måten du vil bruke denne AI-tjenesten på?",
+        "option1": "Ja",
+        "option2": "Nei"
+      },
+      "success": "Melding sendt!"
+    },
+    "trySection": {
+      "title": "👍Det er det!",
+      "subTitle": "For å begynne å samhandle, bare skriv @{{vcName}} i en $t(common.comment). Prøv det i forhåndsvisningen nedenfor.",
+      "postTitle": "Ditt spørsmål",
+      "postDescription": "Still et spørsmål om innholdet du la til",
+      "continueButton": "Fortsett med å opprette"
+    },
+    "tryInfoSection": {
+      "title": "Prøv din $t(common.virtualContributor)!",
+      "description": "Din $t(common.virtualContributor) er opprettet! Prøv å stille den et spørsmål ved å besøke dens $t(common.profile).",
+      "goToProfile": "Gå til $t(common.profile)"
+    },
+    "existingSpace": {
+      "title": "Velg en kunnskapsbase",
+      "description": "Hvilken $t(common.spaceSubspace) vil du at din $t(common.virtualContributor) skal basere svarene sine på?",
+      "label": "Velg $t(common.spaceSubspace)",
+      "noSpaces": "Ingen $t(common.spaces) eller $t(common.subspaces) tilgjengelige"
+    },
+    "chooseCommunity": {
+      "title": "Velg samfunn",
+      "description": "Inviter din $t(common.virtualContributor) til et samfunn for å gjøre den tilgjengelig for andre.",
+      "label": "Velg samfunn",
+      "selectSpacesPlaceholder": "Velg et samfunn fra listen",
+      "noSpacesPlaceholder": "Ingen samfunn tilgjengelige",
+      "cancelAddToCommunity": "Hopp over for nå",
+      "addToCommunity": "Legg til i samfunn",
+      "createAndAddToCommunity": "Opprett og legg til i samfunn",
+      "confirm": {
+        "title": "Bekreft invitasjon",
+        "description": "Er du sikker på at du vil invitere din $t(common.virtualContributor) til {{spaceName}}?"
+      }
+    }
+  },
+  "aboutDialog": {
+    "applyNotSignedInHelperText": "Du må være pålogget for å søke. Vennligst logg inn eller registrer deg for å fortsette."
+  },
+  "snackbars": {
+    "appVersion": {
+      "message": "En ny versjon av Alkemio er tilgjengelig. Vennligst last siden på nytt for å oppdatere.",
+      "recurringMessage": "Fortsatt ser det ut som du bruker en gammel versjon. Vennligst last siden på nytt."
+    }
+  }
+}

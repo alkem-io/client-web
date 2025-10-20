@@ -32,7 +32,7 @@ I18N_DIR="$(cd "$SCRIPT_DIR/../src/core/i18n" && pwd)"
 EN_FILE="$I18N_DIR/en/translation.en.json"
 
 # Language codes (excluding English)
-LANGUAGES=("de" "es" "fr" "nl" "pt" "bg" "ach")
+LANGUAGES=("de" "es" "fr" "nl" "pt" "bg" "no")
 
 # Check if Node.js is available
 if ! command -v node &> /dev/null; then
