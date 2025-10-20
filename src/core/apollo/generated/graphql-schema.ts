@@ -8731,10 +8731,44 @@ export type Whiteboard = {
   isMultiUser: Scalars['Boolean']['output'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
+  /** The preview settings for the Whiteboard. */
+  previewSettings: WhiteboardPreviewSettings;
   /** The Profile for this Whiteboard. */
   profile: Profile;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+};
+
+export type WhiteboardPreviewCoordinates = {
+  __typename?: 'WhiteboardPreviewCoordinates';
+  /** The height. */
+  height: Scalars['Float']['output'];
+  /** The width. */
+  width: Scalars['Float']['output'];
+  /** The x coordinate. */
+  x: Scalars['Float']['output'];
+  /** The y coordinate. */
+  y: Scalars['Float']['output'];
+};
+
+export enum WhiteboardPreviewMode {
+  Auto = 'AUTO',
+  Custom = 'CUSTOM',
+  Fixed = 'FIXED',
+}
+
+export type WhiteboardPreviewSettings = {
+  __typename?: 'WhiteboardPreviewSettings';
+  /** The coordinates for the preview. */
+  coordinates?: Maybe<WhiteboardPreviewCoordinates>;
+  /**
+   * The preview mode.
+   *       AUTO: Generate Whiteboard preview automatically when closing the dialog
+   *       CUSTOM: Generate Whiteboard preview based on user-defined coordinates when closing the dialog
+   *       FIXED: Use a fixed Whiteboard preview that does not change when closing the dialog
+   *
+   */
+  mode: WhiteboardPreviewMode;
 };
 
 export type UploadFileOnReferenceMutationVariables = Exact<{
@@ -12262,6 +12296,13 @@ export type UpdateCalloutContentMutation = {
                   };
                 }
               | undefined;
+            previewSettings: {
+              __typename?: 'WhiteboardPreviewSettings';
+              mode: WhiteboardPreviewMode;
+              coordinates?:
+                | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+                | undefined;
+            };
           }
         | undefined;
       memo?:
@@ -12627,6 +12668,13 @@ export type UpdateCalloutVisibilityMutation = {
                   };
                 }
               | undefined;
+            previewSettings: {
+              __typename?: 'WhiteboardPreviewSettings';
+              mode: WhiteboardPreviewMode;
+              coordinates?:
+                | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+                | undefined;
+            };
           }
         | undefined;
       memo?:
@@ -13607,6 +13655,13 @@ export type CreateWhiteboardOnCalloutMutation = {
                 };
               }
             | undefined;
+          previewSettings: {
+            __typename?: 'WhiteboardPreviewSettings';
+            mode: WhiteboardPreviewMode;
+            coordinates?:
+              | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+              | undefined;
+          };
         }
       | undefined;
   };
@@ -13798,6 +13853,13 @@ export type CreateCalloutMutation = {
                   };
                 }
               | undefined;
+            previewSettings: {
+              __typename?: 'WhiteboardPreviewSettings';
+              mode: WhiteboardPreviewMode;
+              coordinates?:
+                | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+                | undefined;
+            };
           }
         | undefined;
       memo?:
@@ -14253,6 +14315,19 @@ export type CalloutDetailsQuery = {
                         };
                       }
                     | undefined;
+                  previewSettings: {
+                    __typename?: 'WhiteboardPreviewSettings';
+                    mode: WhiteboardPreviewMode;
+                    coordinates?:
+                      | {
+                          __typename?: 'WhiteboardPreviewCoordinates';
+                          x: number;
+                          y: number;
+                          width: number;
+                          height: number;
+                        }
+                      | undefined;
+                  };
                 }
               | undefined;
             memo?:
@@ -14692,6 +14767,13 @@ export type CalloutDetailsFragment = {
                 };
               }
             | undefined;
+          previewSettings: {
+            __typename?: 'WhiteboardPreviewSettings';
+            mode: WhiteboardPreviewMode;
+            coordinates?:
+              | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+              | undefined;
+          };
         }
       | undefined;
     memo?:
@@ -15471,6 +15553,13 @@ export type WhiteboardDetailsFragment = {
         };
       }
     | undefined;
+  previewSettings: {
+    __typename?: 'WhiteboardPreviewSettings';
+    mode: WhiteboardPreviewMode;
+    coordinates?:
+      | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+      | undefined;
+  };
 };
 
 export type WhiteboardContentFragment = { __typename?: 'Whiteboard'; id: string; content: string };
@@ -15576,6 +15665,13 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                     };
                   }
                 | undefined;
+              previewSettings: {
+                __typename?: 'WhiteboardPreviewSettings';
+                mode: WhiteboardPreviewMode;
+                coordinates?:
+                  | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+                  | undefined;
+              };
             }
           | undefined;
       }>;
@@ -15670,6 +15766,13 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                     };
                   }
                 | undefined;
+              previewSettings: {
+                __typename?: 'WhiteboardPreviewSettings';
+                mode: WhiteboardPreviewMode;
+                coordinates?:
+                  | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+                  | undefined;
+              };
             }
           | undefined;
       };
@@ -15787,6 +15890,19 @@ export type WhiteboardFromCalloutQuery = {
                         };
                       }
                     | undefined;
+                  previewSettings: {
+                    __typename?: 'WhiteboardPreviewSettings';
+                    mode: WhiteboardPreviewMode;
+                    coordinates?:
+                      | {
+                          __typename?: 'WhiteboardPreviewCoordinates';
+                          x: number;
+                          y: number;
+                          width: number;
+                          height: number;
+                        }
+                      | undefined;
+                  };
                 }
               | undefined;
           }>;
@@ -26561,6 +26677,19 @@ export type TemplateContentQuery = {
                               };
                             }
                           | undefined;
+                        previewSettings: {
+                          __typename?: 'WhiteboardPreviewSettings';
+                          mode: WhiteboardPreviewMode;
+                          coordinates?:
+                            | {
+                                __typename?: 'WhiteboardPreviewCoordinates';
+                                x: number;
+                                y: number;
+                                width: number;
+                                height: number;
+                              }
+                            | undefined;
+                        };
                       }
                     | undefined;
                   link?:
@@ -27108,6 +27237,13 @@ export type CalloutTemplateContentFragment = {
                 };
               }
             | undefined;
+          previewSettings: {
+            __typename?: 'WhiteboardPreviewSettings';
+            mode: WhiteboardPreviewMode;
+            coordinates?:
+              | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+              | undefined;
+          };
         }
       | undefined;
     link?:

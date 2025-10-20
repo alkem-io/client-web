@@ -723,6 +723,15 @@ export const WhiteboardDetailsFragmentDoc = gql`
         }
       }
     }
+    previewSettings {
+      mode
+      coordinates {
+        x
+        y
+        width
+        height
+      }
+    }
   }
   ${WhiteboardProfileFragmentDoc}
   ${VisualModelFragmentDoc}

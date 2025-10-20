@@ -4856,6 +4856,7 @@ export type WhiteboardKeySpecifier = (
   | 'id'
   | 'isMultiUser'
   | 'nameID'
+  | 'previewSettings'
   | 'profile'
   | 'updatedDate'
   | WhiteboardKeySpecifier
@@ -4869,8 +4870,27 @@ export type WhiteboardFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  previewSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WhiteboardPreviewCoordinatesKeySpecifier = (
+  | 'height'
+  | 'width'
+  | 'x'
+  | 'y'
+  | WhiteboardPreviewCoordinatesKeySpecifier
+)[];
+export type WhiteboardPreviewCoordinatesFieldPolicy = {
+  height?: FieldPolicy<any> | FieldReadFunction<any>;
+  width?: FieldPolicy<any> | FieldReadFunction<any>;
+  x?: FieldPolicy<any> | FieldReadFunction<any>;
+  y?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WhiteboardPreviewSettingsKeySpecifier = ('coordinates' | 'mode' | WhiteboardPreviewSettingsKeySpecifier)[];
+export type WhiteboardPreviewSettingsFieldPolicy = {
+  coordinates?: FieldPolicy<any> | FieldReadFunction<any>;
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StrictTypedTypePolicies = {
   APM?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
@@ -6373,6 +6393,20 @@ export type StrictTypedTypePolicies = {
   Whiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardKeySpecifier | (() => undefined | WhiteboardKeySpecifier);
     fields?: WhiteboardFieldPolicy;
+  };
+  WhiteboardPreviewCoordinates?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | WhiteboardPreviewCoordinatesKeySpecifier
+      | (() => undefined | WhiteboardPreviewCoordinatesKeySpecifier);
+    fields?: WhiteboardPreviewCoordinatesFieldPolicy;
+  };
+  WhiteboardPreviewSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | WhiteboardPreviewSettingsKeySpecifier
+      | (() => undefined | WhiteboardPreviewSettingsKeySpecifier);
+    fields?: WhiteboardPreviewSettingsFieldPolicy;
   };
 };
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

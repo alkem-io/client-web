@@ -30,6 +30,8 @@ import whiteboardSchema from '../validation/whiteboardSchema';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
+import { WhiteboardPreviewSettings } from '../WhiteboardPreviewImages/WhiteboardPreviewSettings';
+import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 
 export interface WhiteboardDetails {
   id: string;
@@ -54,6 +56,7 @@ export interface WhiteboardDetails {
       avatar?: { id: string; uri: string };
     };
   };
+  previewSettings: WhiteboardPreviewSettings;
 }
 
 interface WhiteboardDialogProps {
@@ -71,6 +74,7 @@ interface WhiteboardDialogProps {
     onDelete: (whiteboard: Identifiable) => Promise<void>;
     setLastSuccessfulSavedDate: (date: Date) => void;
     setConsecutiveSaveErrors: React.Dispatch<React.SetStateAction<number>>;
+    onClosePreviewSettingsDialog?: () => void;
   };
   options: {
     show: boolean;
@@ -82,6 +86,7 @@ interface WhiteboardDialogProps {
     allowFilesAttached?: boolean;
     readOnlyDisplayName?: boolean;
     editDisplayName?: boolean;
+    previewSettingsDialogOpen?: boolean;
   };
   state?: {
     loadingWhiteboardValue?: boolean;
@@ -348,6 +353,12 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
         state={{
           isLoading: isDeleting,
         }}
+      />
+      <WhiteboardPreviewSettingsDialog
+        open={options.previewSettingsDialogOpen}
+        onClose={() => actions.onClosePreviewSettingsDialog?.()}
+        whiteboard={whiteboard}
+        excalidrawAPI={excalidrawAPI}
       />
     </>
   );

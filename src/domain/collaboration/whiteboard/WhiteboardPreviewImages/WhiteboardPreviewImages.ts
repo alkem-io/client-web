@@ -5,6 +5,7 @@ import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
 import { BannerDimensions, BannerNarrowDimensions } from './WhiteboardDimensions';
 import type { exportToBlob as ExcalidrawExportToBlob } from '@alkemio/excalidraw';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { WhiteboardPreviewSettings } from './WhiteboardPreviewSettings';
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
@@ -36,6 +37,7 @@ interface WhiteboardWithPreviewImageDimensions {
     preview?: PreviewImageDimensions;
     visual?: PreviewImageDimensions;
   };
+  previewSettings: WhiteboardPreviewSettings;
 }
 
 export const generateWhiteboardPreviewImages = async <Whiteboard extends WhiteboardWithPreviewImageDimensions>(
