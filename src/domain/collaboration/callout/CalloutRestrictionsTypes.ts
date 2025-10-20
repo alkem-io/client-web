@@ -8,11 +8,11 @@ export interface CalloutRestrictions {
    */
   disableRichMedia?: boolean;
   /**
-   * Disables comments to Callout framing
+   * Disables comments on Callout framing
    */
   disableComments?: boolean;
   /**
-   * Disables comments to Callout Contributions/Responses
+   * Disables comments on Callout contributions/responses
    */
   disableCommentsToContributions?: boolean;
   /**
