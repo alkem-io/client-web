@@ -30,22 +30,22 @@ If you prefer to translate manually:
 
 ## Supported Languages
 
-| Code  | Language   | Notes                                 |
-| ----- | ---------- | ------------------------------------- |
-| `en`  | English    | Source of truth - never auto-modified |
-| `de`  | German     | Formal (Sie) form                     |
-| `es`  | Spanish    | Neutral Spanish                       |
-| `fr`  | French     | Formal (vous) form                    |
-| `nl`  | Dutch      | Standard Dutch                        |
-| `pt`  | Portuguese | European Portuguese                   |
-| `bg`  | Bulgarian  | Formal Bulgarian                      |
-| `ach` | Norwegian  | Culturally sensitive                  |
+| Code | Language   | Notes                                 |
+| ---- | ---------- | ------------------------------------- |
+| `en` | English    | Source of truth - never auto-modified |
+| `de` | German     | Formal (Sie) form                     |
+| `es` | Spanish    | Neutral Spanish                       |
+| `fr` | French     | Formal (vous) form                    |
+| `nl` | Dutch      | Standard Dutch                        |
+| `pt` | Portuguese | European Portuguese                   |
+| `bg` | Bulgarian  | Formal Bulgarian                      |
+| `no` | Norwegian  | Formal Norwegian                      |
 
 ## Translation Files
 
 All translation files are located in `src/core/i18n/`:
 
-```
+```text
 src/core/i18n/
 ├── en/translation.en.json    (source of truth)
 ├── de/translation.de.json
@@ -54,7 +54,7 @@ src/core/i18n/
 ├── nl/translation.nl.json
 ├── pt/translation.pt.json
 ├── bg/translation.bg.json
-└── ach/translation.ach.json
+└── no/translation.no.json
 ```
 
 ## Best Practices
