@@ -3892,7 +3892,7 @@ export type MeQueryResults = {
   mySpaces: Array<MySpaceResults>;
   /** Get all notifications for the logged in user. */
   notifications: PaginatedInAppNotifications;
-  /** The number of unread notifications for the current authenticated user. */
+  /** The total number of unread notifications for the current authenticated user across all notification types. */
   notificationsUnreadCount: Scalars['Float']['output'];
   /** The Spaces the current user is a member of as a flat list. */
   spaceMembershipsFlat: Array<CommunityMembershipResult>;
@@ -3924,10 +3924,6 @@ export type MeQueryResultsNotificationsArgs = {
   filter?: InputMaybe<NotificationEventsFilterInput>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type MeQueryResultsNotificationsUnreadCountArgs = {
-  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
@@ -4290,9 +4286,9 @@ export type Mutation = {
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
-  /** Mark multiple notifications as read. If no IDs are provided, marks all user notifications as read. */
+  /** Mark notifications as read. If no filter is provided, marks all user notifications as read. If filter with types is provided, marks only those notification types as read. */
   markNotificationsAsRead: Scalars['Boolean']['output'];
-  /** Mark multiple notifications as unread. If no IDs are provided, marks all user notifications as unread. */
+  /** Mark notifications as unread. If no filter is provided, marks all user notifications as unread. If filter with types is provided, marks only those notification types as unread. */
   markNotificationsAsUnread: Scalars['Boolean']['output'];
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String']['output'];
@@ -4805,11 +4801,11 @@ export type MutationLicenseResetOnAccountArgs = {
 };
 
 export type MutationMarkNotificationsAsReadArgs = {
-  notificationIds: Array<Scalars['String']['input']>;
+  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MutationMarkNotificationsAsUnreadArgs = {
-  notificationIds: Array<Scalars['String']['input']>;
+  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MutationMessageUserArgs = {
@@ -31586,7 +31582,7 @@ export type UpdateNotificationStateMutation = {
 };
 
 export type MarkNotificationsAsReadMutationVariables = Exact<{
-  notificationIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+  types: Array<NotificationEvent> | NotificationEvent;
 }>;
 
 export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNotificationsAsRead: boolean };
@@ -33351,9 +33347,7 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment
     | undefined;
 };
 
-export type InAppNotificationsUnreadCountQueryVariables = Exact<{
-  types?: InputMaybe<Array<NotificationEvent> | NotificationEvent>;
-}>;
+export type InAppNotificationsUnreadCountQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InAppNotificationsUnreadCountQuery = {
   __typename?: 'Query';

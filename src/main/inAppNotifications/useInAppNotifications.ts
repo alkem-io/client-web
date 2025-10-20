@@ -68,9 +68,6 @@ export const useInAppNotifications = () => {
   }, [isOpen, isEnabled, selectedFilter, refetch]);
 
   const { data: unreadCountData } = useInAppNotificationsUnreadCountQuery({
-    variables: {
-      types: notificationTypes,
-    },
     skip: !isEnabled,
   });
 
@@ -168,7 +165,7 @@ export const useInAppNotifications = () => {
     try {
       await markAsRead({
         variables: {
-          notificationIds: [], // empty array means all unread
+          types: notificationTypes as NotificationEvent[],
         },
         update: (_, result) => {
           if (result?.data?.markNotificationsAsRead) {
@@ -180,7 +177,7 @@ export const useInAppNotifications = () => {
     } catch (error) {
       console.error('Failed to mark notifications as read:', error);
     }
-  }, [markAsRead]);
+  }, [markAsRead, notificationTypes, refetch]);
 
   return {
     notificationsInApp,

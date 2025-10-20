@@ -41,8 +41,7 @@ export const InAppNotificationsFilterChips = ({
       <Box
         sx={{
           ...stickyStyles,
-          padding: 2,
-          paddingBottom: 1,
+          padding: 1,
         }}
       >
         <Select
@@ -72,8 +71,7 @@ export const InAppNotificationsFilterChips = ({
         ...stickyStyles,
         display: 'flex',
         gap: 1,
-        padding: 2,
-        paddingBottom: 1,
+        padding: 1,
         flexWrap: 'wrap',
       }}
     >
