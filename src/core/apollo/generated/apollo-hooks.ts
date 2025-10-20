@@ -2949,10 +2949,10 @@ export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
 `;
 export const InAppNotificationSpaceCommunityContributorFragmentDoc = gql`
   fragment InAppNotificationSpaceCommunityContributor on InAppNotificationPayloadSpaceCommunityContributor {
-    nullableSpace: space {
+    space {
       ...spaceNotification
     }
-    nullableContributor: contributor {
+    contributor {
       id
       __typename
       profile {
@@ -3020,7 +3020,7 @@ export const InAppNotificationPayloadSpaceCommunityInvitationFragmentDoc = gql`
 `;
 export const InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc = gql`
   fragment InAppNotificationPayloadSpaceCommunityInvitationPlatform on InAppNotificationPayloadSpaceCommunityInvitationPlatform {
-    nullableSpace: space {
+    space {
       ...spaceNotification
     }
   }

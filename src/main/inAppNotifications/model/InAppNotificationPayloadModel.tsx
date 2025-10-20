@@ -95,11 +95,8 @@ export interface InAppNotificationPayloadModel {
   userDisplayName?: string;
   organizationMessage?: string;
 }
-// nullable aliases are required because you can have different nullability for the same field name
-// conditionally by payload type
+// nullable aliases are required because you can have different nullability for the same field name conditionally by payload type
 // to be mapped to InAppNotificationPayloadModel
 export interface InAppNotificationIncomingPayloadModel extends InAppNotificationPayloadModel {
-  nullableContributor?: InAppNotificationPayloadModel['contributor'];
   nullableOrganization?: InAppNotificationPayloadModel['organization'];
-  nullableSpace?: InAppNotificationPayloadModel['space'];
 }
