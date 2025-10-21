@@ -1,9 +1,12 @@
-import { gutters } from '@/core/ui/grid/utils';
 import RouterLink from '@/core/ui/link/RouterLink';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { Button, GridLegacy, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { BlockTitle } from '@/core/ui/typography';
+import Gutters from '@/core/ui/grid/Gutters';
 
 interface ListPageProps extends PropsWithChildren {
   title?: string;
@@ -14,29 +17,29 @@ export const SearchableListLayout: FC<ListPageProps> = ({ title, newLink, childr
   const { t } = useTranslation();
 
   return (
-    <GridLegacy container spacing={2} justifyContent="center">
-      {(title || newLink) && (
-        <GridLegacy container item xs={10} paddingX={gutters(1)}>
-          <GridLegacy item xs={10}>
+    <PageContent>
+      <PageContentColumn columns={12}>
+        {(title || newLink) && (
+          <Gutters paddingY={0} sx={{ width: '100%' }}>
             {title && (
-              <Typography variant="h3" mb={1} fontWeight="medium">
-                {title}
-              </Typography>
+              <Gutters row justifyContent="space-between" alignItems="center" disablePadding>
+                <BlockTitle>{title}</BlockTitle>
+              </Gutters>
             )}
-          </GridLegacy>
-          <GridLegacy container item justifyContent="flex-end" xs={2}>
             {newLink && (
-              <Button startIcon={<AddOutlinedIcon />} variant="contained" component={RouterLink} to={newLink}>
-                {t('buttons.create')}
-              </Button>
+              <Gutters disablePadding disableGap alignItems={'flex-end'}>
+                <Button startIcon={<AddOutlinedIcon />} variant="contained" component={RouterLink} to={newLink}>
+                  {t('buttons.create')}
+                </Button>
+              </Gutters>
             )}
-          </GridLegacy>
-        </GridLegacy>
-      )}
-      <GridLegacy item xs={10}>
-        {children}
-      </GridLegacy>
-    </GridLegacy>
+          </Gutters>
+        )}
+        <Gutters disablePadding sx={{ width: '100%' }}>
+          {children}
+        </Gutters>
+      </PageContentColumn>
+    </PageContent>
   );
 };
 
