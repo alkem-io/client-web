@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import {
   refetchPlatformAdminInnovationPacksQuery,
   usePlatformAdminInnovationPacksQuery,
@@ -19,6 +19,9 @@ import {
 } from '@/domain/platformAdmin/components/AdminListItemLayout';
 import { InnovationPackTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
 
+const INITIAL_PAGE_SIZE = 10;
+const PAGE_SIZE = 10;
+
 const AdminInnovationPacksPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -31,6 +34,12 @@ const AdminInnovationPacksPage = () => {
   });
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [displayedItemsCount, setDisplayedItemsCount] = useState(INITIAL_PAGE_SIZE);
+
+  // Reset pagination when search term changes
+  useEffect(() => {
+    setDisplayedItemsCount(INITIAL_PAGE_SIZE);
+  }, [searchTerm]);
 
   const columns: AdminTableColumn<InnovationPackTableItem>[] = useMemo(
     () => [
@@ -56,7 +65,7 @@ const AdminInnovationPacksPage = () => {
     []
   );
 
-  const innovationPacksList = useMemo(() => {
+  const allInnovationPacks = useMemo(() => {
     const packs = data?.platformAdmin.innovationPacks ?? [];
 
     return packs
@@ -75,6 +84,20 @@ const AdminInnovationPacksPage = () => {
       .filter(pack => !searchTerm || pack.value.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [data, searchTerm]);
 
+  // Paginated packs for display
+  const innovationPacksList = useMemo(() => {
+    return allInnovationPacks.slice(0, displayedItemsCount);
+  }, [allInnovationPacks, displayedItemsCount]);
+
+  const hasMore = displayedItemsCount < allInnovationPacks.length;
+
+  const fetchMore = useCallback(async () => {
+    setDisplayedItemsCount(prev => {
+      const next = prev + PAGE_SIZE;
+      return Math.min(next, allInnovationPacks.length);
+    });
+  }, [allInnovationPacks.length]);
+
   const handleDelete = async (item: InnovationPackTableItem) => {
     await deleteInnovationPack({
       variables: {
@@ -92,12 +115,14 @@ const AdminInnovationPacksPage = () => {
           data={innovationPacksList}
           columns={columns}
           onDelete={handleDelete}
-          loading={loading}
-          fetchMore={() => Promise.resolve()}
-          pageSize={innovationPacksList.length}
+          loading={false}
+          fetchMore={fetchMore}
+          pageSize={PAGE_SIZE}
+          firstPageSize={INITIAL_PAGE_SIZE}
           searchTerm={searchTerm}
           onSearchTermChange={setSearchTerm}
-          hasMore={false}
+          totalCount={allInnovationPacks.length}
+          hasMore={hasMore}
         />
       </SearchableListLayout>
     </AdminLayout>

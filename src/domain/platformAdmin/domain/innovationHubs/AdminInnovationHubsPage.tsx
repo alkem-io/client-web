@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
 import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
 import {
@@ -18,6 +18,9 @@ import {
 } from '@/domain/platformAdmin/components/AdminListItemLayout';
 import { InnovationHubTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
 
+const INITIAL_PAGE_SIZE = 10;
+const PAGE_SIZE = 10;
+
 const AdminInnovationHubsPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -30,6 +33,12 @@ const AdminInnovationHubsPage = () => {
   });
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [displayedItemsCount, setDisplayedItemsCount] = useState(INITIAL_PAGE_SIZE);
+
+  // Reset pagination when search term changes
+  useEffect(() => {
+    setDisplayedItemsCount(INITIAL_PAGE_SIZE);
+  }, [searchTerm]);
 
   const columns: AdminTableColumn<InnovationHubTableItem>[] = useMemo(
     () => [
@@ -55,7 +64,7 @@ const AdminInnovationHubsPage = () => {
     []
   );
 
-  const innovationHubsList = useMemo(() => {
+  const allInnovationHubs = useMemo(() => {
     const hubs = data?.platformAdmin.innovationHubs ?? [];
 
     return hubs
@@ -74,6 +83,20 @@ const AdminInnovationHubsPage = () => {
       .filter(hub => !searchTerm || hub.value.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [data, searchTerm]);
 
+  // Paginated hubs for display
+  const innovationHubsList = useMemo(() => {
+    return allInnovationHubs.slice(0, displayedItemsCount);
+  }, [allInnovationHubs, displayedItemsCount]);
+
+  const hasMore = displayedItemsCount < allInnovationHubs.length;
+
+  const fetchMore = useCallback(async () => {
+    setDisplayedItemsCount(prev => {
+      const next = prev + PAGE_SIZE;
+      return Math.min(next, allInnovationHubs.length);
+    });
+  }, [allInnovationHubs.length]);
+
   const handleDelete = async (item: InnovationHubTableItem) => {
     await deleteInnovationHub({
       variables: {
@@ -91,12 +114,14 @@ const AdminInnovationHubsPage = () => {
           data={innovationHubsList}
           columns={columns}
           onDelete={handleDelete}
-          loading={loading}
-          fetchMore={() => Promise.resolve()}
-          pageSize={innovationHubsList.length}
+          loading={false}
+          fetchMore={fetchMore}
+          pageSize={PAGE_SIZE}
+          firstPageSize={INITIAL_PAGE_SIZE}
           searchTerm={searchTerm}
           onSearchTermChange={setSearchTerm}
-          hasMore={false}
+          totalCount={allInnovationHubs.length}
+          hasMore={hasMore}
         />
       </SearchableListLayout>
     </AdminLayout>

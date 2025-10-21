@@ -55,6 +55,7 @@ export interface AdminSearchableTableItem {
 /**
  * Enhanced table component for admin pages with support for custom columns
  * Maintains the table structure with headers while allowing flexible column configuration
+ * Handles pagination internally via useLazyLoading
  */
 const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
   data = [],

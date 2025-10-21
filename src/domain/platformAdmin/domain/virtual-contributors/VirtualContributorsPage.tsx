@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState, useEffect } from 'react';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
 import { usePlatformAdminVirtualContributorsListQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -12,9 +12,18 @@ import {
 } from '@/domain/platformAdmin/components/AdminListItemLayout';
 import { VirtualContributorTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
 
+const INITIAL_PAGE_SIZE = 10;
+const PAGE_SIZE = 10;
+
 const VirtualContributorsPage: FC = () => {
   const { data, loading } = usePlatformAdminVirtualContributorsListQuery();
   const [searchTerm, setSearchTerm] = useState('');
+  const [displayedItemsCount, setDisplayedItemsCount] = useState(INITIAL_PAGE_SIZE);
+
+  // Reset pagination when search term changes
+  useEffect(() => {
+    setDisplayedItemsCount(INITIAL_PAGE_SIZE);
+  }, [searchTerm]);
 
   const columns: AdminTableColumn<VirtualContributorTableItem>[] = useMemo(
     () => [
@@ -42,7 +51,7 @@ const VirtualContributorsPage: FC = () => {
     []
   );
 
-  const virtualContributorsList = useMemo(() => {
+  const allVirtualContributors = useMemo(() => {
     const vcs = data?.platformAdmin.virtualContributors ?? [];
 
     return vcs
@@ -61,6 +70,20 @@ const VirtualContributorsPage: FC = () => {
       .filter(vc => !searchTerm || vc.value.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [data, searchTerm]);
 
+  // Paginated VCs for display
+  const virtualContributorsList = useMemo(() => {
+    return allVirtualContributors.slice(0, displayedItemsCount);
+  }, [allVirtualContributors, displayedItemsCount]);
+
+  const hasMore = displayedItemsCount < allVirtualContributors.length;
+
+  const fetchMore = async () => {
+    setDisplayedItemsCount(prev => {
+      const next = prev + PAGE_SIZE;
+      return Math.min(next, allVirtualContributors.length);
+    });
+  };
+
   if (loading) return <Loading text={'Loading virtual contributors'} />;
 
   return (
@@ -69,12 +92,14 @@ const VirtualContributorsPage: FC = () => {
         <AdminSearchableTable
           data={virtualContributorsList}
           columns={columns}
-          loading={loading}
-          fetchMore={() => Promise.resolve()}
-          pageSize={virtualContributorsList.length}
+          loading={false}
+          fetchMore={fetchMore}
+          pageSize={PAGE_SIZE}
+          firstPageSize={INITIAL_PAGE_SIZE}
           searchTerm={searchTerm}
           onSearchTermChange={setSearchTerm}
-          hasMore={false}
+          totalCount={allVirtualContributors.length}
+          hasMore={hasMore}
         />
       </SearchableListLayout>
     </AdminLayout>
