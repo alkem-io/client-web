@@ -131,7 +131,12 @@ const CalloutForm = ({
       return callout;
     } else {
       const emptyCallout = cloneDeep(DefaultCalloutFormValues);
-      emptyCallout.settings.framing.commentsEnabled = !calloutRestrictions?.disableComments;
+      if (typeof calloutRestrictions?.disableComments === 'boolean') {
+        emptyCallout.settings.framing.commentsEnabled = !calloutRestrictions.disableComments;
+      }
+      if (typeof calloutRestrictions?.disableCommentsToContributions === 'boolean') {
+        emptyCallout.settings.contribution.commentsEnabled = !calloutRestrictions.disableCommentsToContributions;
+      }
 
       return emptyCallout;
     }

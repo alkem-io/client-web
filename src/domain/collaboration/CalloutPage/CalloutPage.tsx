@@ -18,6 +18,7 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { Identifiable } from '@/core/utils/Identifiable';
 import useNavigate from '@/core/routing/useNavigate';
 import useCalloutDetails from '../callout/useCalloutDetails/useCalloutDetails';
+import { CalloutRestrictions } from '../callout/CalloutRestrictionsTypes';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -27,6 +28,7 @@ export interface CalloutPageProps {
   renderPage: (position?: number) => ReactElement | undefined;
   parentRoute: string | ((position: number | undefined) => string);
   disableCalloutsClassification?: boolean;
+  calloutRestrictions?: CalloutRestrictions;
   children?: (props: CalloutLocation) => ReactNode;
 }
 
@@ -44,7 +46,13 @@ export interface LocationStateCachedCallout extends NavigationState {
  *                   (such as routes for Post/Whiteboard dialogs).
  * @constructor
  */
-const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, children }: CalloutPageProps) => {
+const CalloutPage = ({
+  parentRoute,
+  renderPage,
+  disableCalloutsClassification,
+  calloutRestrictions,
+  children,
+}: CalloutPageProps) => {
   const { calloutsSetId, calloutId, contributionId, loading: urlResolverLoading } = useUrlResolver();
 
   const { t } = useTranslation();
@@ -181,6 +189,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
             onCalloutUpdate={refetch}
             onCalloutDelete={handleDeleteWithClose}
             onCollapse={handleClose}
+            calloutRestrictions={calloutRestrictions}
             expanded
           />
         </DialogContent>

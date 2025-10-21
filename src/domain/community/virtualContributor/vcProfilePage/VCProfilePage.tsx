@@ -17,6 +17,7 @@ import { VirtualContributorModelFull } from '../model/VirtualContributorModelFul
 import { createVirtualContributorModelFull } from '../utils/createVirtualContributorModelFull';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 /**
  * children will have the virtual contributor data available if it is loaded
@@ -95,14 +96,14 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePa
   const virtualContributorModel: VirtualContributorModelFull = createVirtualContributorModelFull(virtualContributor);
 
   return (
-    <>
+    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={vcId}>
       <VCProfilePageView
         bokProfile={isBokSpace ? bokProfile?.lookup.space?.about.profile : undefined}
         virtualContributor={virtualContributorModel}
         openKnowledgeBaseDialog={openKnowledgeBaseDialog}
       />
       {children?.(data?.lookup.virtualContributor)}
-    </>
+    </StorageConfigContextProvider>
   );
 };
 
