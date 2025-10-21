@@ -29,5 +29,5 @@
 
 - Translation files are located in `/src/core/i18n/{language}/translation.{language}.json`
 - English (`en`) is the source of truth
-- For AI-assisted translations, see `.github/alkemio-translate.md`
+- For AI-assisted translations, see `.github/prompts/alkemio.translate.prompt.md`
 - Use `@workspace /alkemio.translate` to invoke the translation agent

@@ -10,10 +10,9 @@
 #
 # What it does:
 # 1. Reads the English translation file (translation.en.json) as the source of truth
-# 2. For each other language directory (de, es, fr, nl, pt, bg, ach)
-# 3. Identifies missing keys in the target language file
-# 4. Adds missing keys with a placeholder value: "[AI_TRANSLATE]"
-# 5. Preserves existing translations and JSON structure
+# 2. For each other language directory identifies missing keys in the target language file
+# 3. Adds missing keys with a placeholder value: "[AI_TRANSLATE]"
+# 4. Preserves existing translations and JSON structure
 ###############################################################################
 
 set -e  # Exit on error
