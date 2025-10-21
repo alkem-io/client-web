@@ -154,7 +154,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
 
     const previewImages =
       shouldUploadPreviewImages && !filesManager.loading.downloadingFiles
-        ? await generateWhiteboardPreviewImages(whiteboard, state)
+        ? await generateWhiteboardPreviewImages(whiteboard, excalidrawAPI)
         : undefined;
 
     const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;

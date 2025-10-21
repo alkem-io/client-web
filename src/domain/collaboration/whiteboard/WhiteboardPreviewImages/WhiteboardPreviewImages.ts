@@ -1,17 +1,10 @@
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import getWhiteboardPreviewDimensions from './getWhiteboardPreviewDimensions';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
 import { BannerDimensions, BannerNarrowDimensions } from './WhiteboardDimensions';
-import type { exportToBlob as ExcalidrawExportToBlob } from '@alkemio/excalidraw';
-import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { WhiteboardPreviewSettings } from './WhiteboardPreviewSettings';
-
-type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
-
-type ExcalidrawUtils = {
-  exportToBlob: typeof ExcalidrawExportToBlob;
-};
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import getWhiteboardPreviewImage from './getWhiteboardPreviewImage';
 
 export interface PreviewImageDimensions {
   maxWidth: number;
@@ -42,37 +35,30 @@ interface WhiteboardWithPreviewImageDimensions {
 
 export const generateWhiteboardPreviewImages = async <Whiteboard extends WhiteboardWithPreviewImageDimensions>(
   whiteboard: Whiteboard,
-  excalidrawState: RelevantExcalidrawState | undefined
+  excalidrawAPI?: ExcalidrawImperativeAPI | null
 ) => {
-  if (!excalidrawState) {
+  if (!excalidrawAPI) {
     return;
   }
-  const { appState, elements, files } = excalidrawState;
 
   const previewImages: WhiteboardPreviewImage[] = [];
 
-  const { exportToBlob } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
-
   previewImages.push({
     visualType: VisualType.Banner,
-    imageData: await exportToBlob({
-      appState,
-      elements,
-      files: files ?? null,
-      getDimensions: getWhiteboardPreviewDimensions(whiteboard?.profile?.preview ?? BannerDimensions),
-      mimeType: 'image/png',
-    }),
+    imageData: await getWhiteboardPreviewImage(
+      excalidrawAPI,
+      { mimeType: 'image/png' },
+      getWhiteboardPreviewDimensions(whiteboard?.profile?.preview ?? BannerDimensions)
+    ),
   });
 
   previewImages.push({
     visualType: VisualType.Card,
-    imageData: await exportToBlob({
-      appState,
-      elements,
-      files: files ?? null,
-      getDimensions: getWhiteboardPreviewDimensions(whiteboard?.profile?.visual ?? BannerNarrowDimensions),
-      mimeType: 'image/png',
-    }),
+    imageData: await getWhiteboardPreviewImage(
+      excalidrawAPI,
+      { mimeType: 'image/png' },
+      getWhiteboardPreviewDimensions(whiteboard?.profile?.visual ?? BannerNarrowDimensions)
+    ),
   });
 
   return previewImages;

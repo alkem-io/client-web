@@ -98,7 +98,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
 
     const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
-    const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
+    const previewImages = await generateWhiteboardPreviewImages(whiteboard, excalidrawAPI);
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
     if (!formikRef.current?.isValid) {
