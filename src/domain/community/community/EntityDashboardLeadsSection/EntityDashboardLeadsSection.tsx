@@ -68,6 +68,7 @@ const EntityDashboardLeadsSection = ({
       id: user.id,
       profile: user.profile,
       seamless: true,
+      isContactable: user.isContactable,
       onContact: () => {
         sendMessage(getMessageType(ProfileType.User), {
           id: user.id,

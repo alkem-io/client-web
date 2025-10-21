@@ -62,6 +62,9 @@ fragment InnovationPackProviderProfileWithAvatar on Contributor {
     }
     url
   }
+  ... on User {
+    isContactable
+  }
 }
 
 fragment InnovationPackCard on InnovationPack {

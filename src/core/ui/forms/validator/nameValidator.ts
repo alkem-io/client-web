@@ -1,10 +1,8 @@
-import * as yup from 'yup';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { textLengthValidator } from './textLengthValidator';
+import { SMALL_TEXT_LENGTH } from '../field-length.constants';
 
-export const nameValidator = yup
-  .string()
-  .test(
-    'is-not-spaces',
-    TranslatedValidatedMessageWithPayload('forms.validations.nonBlank'),
-    value => !value || !/^[\s]*$/.test(value)
-  );
+export const nameValidator = textLengthValidator({
+  minLength: 1,
+  maxLength: SMALL_TEXT_LENGTH,
+  allowOnlySpaces: false,
+});

@@ -3439,42 +3439,27 @@
       {
         "key": "energy-transition",
         "name": "Transición energética",
-        "tags": [
-          "Transición energética",
-          "Energietransitie"
-        ]
+        "tags": ["Transición energética", "Energietransitie"]
       },
       {
         "key": "inclusive-society",
         "name": "Sociedad inclusiva",
-        "tags": [
-          "Sociedad inclusiva",
-          "Inclusieve Samenleving"
-        ]
+        "tags": ["Sociedad inclusiva", "Inclusieve Samenleving"]
       },
       {
         "key": "public-services",
         "name": "Servicios públicos",
-        "tags": [
-          "Servicios públicos",
-          "Publieke Diensten"
-        ]
+        "tags": ["Servicios públicos", "Publieke Diensten"]
       },
       {
         "key": "innovation",
         "name": "Innovación",
-        "tags": [
-          "Innovación",
-          "Innovatie"
-        ]
+        "tags": ["Innovación", "Innovatie"]
       },
       {
         "key": "digitalization-of-society",
         "name": "Digitalización de la sociedad",
-        "tags": [
-          "Digitalización de la sociedad",
-          "Digitalisering"
-        ]
+        "tags": ["Digitalización de la sociedad", "Digitalisering"]
       }
     ]
   },

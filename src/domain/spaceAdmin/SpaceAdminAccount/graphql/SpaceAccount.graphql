@@ -23,6 +23,9 @@ query SpaceAccount($spaceId: UUID!) {
             }
             url
           }
+          ... on User {
+            isContactable
+          }
         }
       }
       activeSubscription {

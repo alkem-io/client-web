@@ -1,30 +1,21 @@
 query platformAdminSpacesList {
   platformAdmin {
     spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
-      ...AdminSpace
-    }
-  }
-}
-
-fragment AdminSpace on Space {
-  id
-  nameID # Used for the space form
-  visibility
-  subscriptions {
-    name
-  }
-  about {
-    provider {
       id
-      profile {
+      nameID
+      visibility
+      about {
         id
-        displayName
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+      authorization {
+        id
+        myPrivileges
       }
     }
-    ...SpaceAboutLight
-  }
-  authorization {
-    id
-    myPrivileges
   }
 }

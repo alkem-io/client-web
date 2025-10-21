@@ -1,0 +1,22 @@
+query SpaceLicensePlans($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      subscriptions {
+        name
+      }
+    }
+  }
+  platform {
+    licensingFramework {
+      plans {
+        id
+        name
+        sortOrder
+        type
+        licenseCredential
+      }
+    }
+  }
+}
+

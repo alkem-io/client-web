@@ -21,7 +21,10 @@ const CreateContributionButtonPost = ({
   const openCreateDialog = () => setPostDialogOpen(true);
   const closeCreateDialog = () => setPostDialogOpen(false);
 
-  const [createPost, { loading: creatingPost }] = useCreatePostOnCalloutMutation();
+  const [createPost, { loading: creatingPost }] = useCreatePostOnCalloutMutation({
+    refetchQueries: ['CalloutContributions'],
+    awaitRefetchQueries: true,
+  });
 
   const onCreatePost = async (post: CreatePostInput) => {
     const result = await createPost({

@@ -7,7 +7,7 @@ import { env } from '@/main/env';
 export const defaultNS = 'translation';
 
 const defaultLang = 'en';
-export const supportedLngs = [defaultLang, 'nl', 'es', 'bg', 'de', 'fr', 'pt'];
+export const supportedLngs = [defaultLang, 'nl', 'es', 'bg', 'de', 'fr'];
 
 if (env?.VITE_APP_IN_CONTEXT_TRANSLATION === 'true') {
   supportedLngs.push('inContextTool');

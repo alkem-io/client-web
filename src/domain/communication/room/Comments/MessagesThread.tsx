@@ -12,7 +12,7 @@ export interface MessagesThreadProps {
   vcEnabled?: boolean;
   loading?: boolean;
   canPostMessages: boolean;
-  onReply: (reply: { threadId: string; messageText: string }) => void;
+  onReply: (reply: { threadId: string; messageText: string }, responseBoxElement: HTMLDivElement | null) => void;
   canDeleteMessage: (authorId: string | undefined) => boolean;
   onDeleteMessage: MessageViewProps['onDelete'];
   canAddReaction: MessageViewProps['canAddReaction'];
@@ -59,12 +59,15 @@ const MessagesThread = ({
                 vcEnabled={vcEnabled}
                 threadId={message.id}
                 placeholder={t('pages.post.dashboard.comment.placeholder')}
-                onPostComment={(messageText: string) =>
+                onPostComment={(messageText, responseBoxElement) =>
                   message &&
-                  onReply({
-                    threadId: message.id,
-                    messageText,
-                  })
+                  onReply(
+                    {
+                      threadId: message.id,
+                      messageText,
+                    },
+                    responseBoxElement
+                  )
                 }
                 disabled={loading}
               />

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { UiContainer } from '@ory/kratos-client';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { UiContainer, UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
 import { PARAM_NAME_RETURN_URL } from '../constants/authentication.constants';
@@ -10,7 +10,12 @@ import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptT
 import PlatformIntroduction from '../components/PlatformIntroduction';
 import { useTranslation } from 'react-i18next';
 import KratosForm from '../components/Kratos/KratosForm';
-import { KRATOS_INPUT_NAME_CSRF, KRATOS_REQUIRED_FIELDS } from '../components/Kratos/constants';
+import {
+  KRATOS_INPUT_NAME_CSRF,
+  KRATOS_REQUIRED_FIELDS,
+  KRATOS_TRAIT_NAME_FIRST_NAME,
+  KRATOS_TRAIT_NAME_LAST_NAME,
+} from '../components/Kratos/constants';
 import { isInputNode, isSubmitButton } from '../components/Kratos/helpers';
 import { useReturnUrl } from '../utils/useSignUpReturnUrl';
 import { useQueryParams } from '@/core/routing/useQueryParams';
@@ -34,14 +39,75 @@ const SignUp = () => {
   const { t } = useTranslation();
 
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   // Sign Up flow is a flow reduced to just showing Accept Terms checkbox, Email and a selection of Sign Up options.
   const signUpFlow =
     flow &&
     produce(flow, nextFlow => {
-      // sort the nodes aplphabetically by name so `Accept terms` goes above `Email` field - not ideal but should do
+      // sort the nodes alphabetically by name so `Accept terms` goes above `Email` field - not ideal but should do
       nextFlow.ui.nodes = sortBy(getMinimalSocialLoginNodes(nextFlow.ui), ['attributes.name']);
     });
+
+  useEffect(() => {
+    if (!signUpFlow) {
+      return;
+    }
+
+    const getNodeValueByName = (nodeName: string) => {
+      const node = signUpFlow.ui.nodes.find(
+        candidate => isInputNode(candidate) && candidate.attributes.name === nodeName
+      ) as (UiNode & { attributes: UiNodeInputAttributes }) | undefined;
+
+      const nodeValue = node?.attributes.value;
+      if (typeof nodeValue === 'string') {
+        return nodeValue;
+      }
+
+      if (typeof nodeValue === 'number') {
+        return String(nodeValue);
+      }
+
+      return '';
+    };
+
+    const nextFirstName = getNodeValueByName(KRATOS_TRAIT_NAME_FIRST_NAME);
+    const nextLastName = getNodeValueByName(KRATOS_TRAIT_NAME_LAST_NAME);
+
+    if (!firstName && nextFirstName) {
+      setFirstName(nextFirstName);
+    }
+
+    if (!lastName && nextLastName) {
+      setLastName(nextLastName);
+    }
+  }, [signUpFlow, firstName, lastName]);
+
+  const handleInputChange = useCallback((node: UiNode, value: string) => {
+    if (!isInputNode(node)) {
+      return;
+    }
+
+    const inputName = node.attributes.name;
+
+    if (inputName === KRATOS_TRAIT_NAME_FIRST_NAME) {
+      setFirstName(value);
+      return;
+    }
+
+    if (inputName === KRATOS_TRAIT_NAME_LAST_NAME) {
+      setLastName(value);
+    }
+  }, []);
+
+  const isSubmitDisabled = useMemo(() => {
+    if (!hasAcceptedTerms) {
+      return true;
+    }
+
+    return firstName.trim().length < 1 || lastName.trim().length < 1;
+  }, [firstName, hasAcceptedTerms, lastName]);
 
   // Sign Up inits a new flow, otherwise Kratos complains about missing fields like email
   // which a user had no chance to fill because they weren't even on the page.
@@ -66,6 +132,8 @@ const SignUp = () => {
           <AcceptTermsContext hasAcceptedTerms={hasAcceptedTerms}>
             <KratosUI
               disableInputs={!hasAcceptedTerms}
+              submitDisabled={isSubmitDisabled}
+              onInputChange={handleInputChange}
               ui={signUpFlow?.ui}
               flowType="registration"
               renderAcceptTermsCheckbox={checkbox => (

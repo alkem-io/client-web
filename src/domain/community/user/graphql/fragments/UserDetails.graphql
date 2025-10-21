@@ -28,4 +28,5 @@ fragment UserDetails on User {
     }
     url
   }
+  isContactable
 }

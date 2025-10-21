@@ -1,4 +1,4 @@
-import { FC, ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Box, Button, Dialog, DialogContent } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
@@ -12,52 +12,43 @@ import { contributionIcons } from '@/domain/collaboration/callout/icons/calloutI
 import { Actions } from '@/core/ui/actions/Actions';
 import { gutters } from '@/core/ui/grid/utils';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
-
-export interface EditLinkFormValues {
-  id: string;
-  name: string;
-  uri: string;
-  description?: string;
-}
+import { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
+import { nameOf } from '@/core/utils/nameOf';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import useLoadingState from '../../utils/useLoadingState';
 
 const validationSchema = yup.object().shape({
   id: yup.string().required(),
-  name: yup
-    .string()
-    .required(TranslatedValidatedMessageWithPayload('forms.validations.required'))
-    .min(3, ({ min }) => TranslatedValidatedMessageWithPayload('forms.validations.minLength')({ min }))
-    .max(SMALL_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
-  uri: yup
-    .string()
-    .required()
-    .max(MID_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
-  description: yup
-    .string()
-    .max(LONG_TEXT_LENGTH, ({ max }) => TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })),
+  uri: urlValidator({ required: true }),
+  profile: yup.object().shape({
+    displayName: displayNameValidator({ required: true }),
+    description: textLengthValidator({ maxLength: LONG_TEXT_LENGTH }),
+  }),
 });
 
 interface EditLinkDialogProps {
   open: boolean;
   onClose: () => void;
   title: ReactNode;
-  link: EditLinkFormValues;
-  onSave: (values: EditLinkFormValues) => Promise<void>;
+  link: LinkDetails;
+  onSave: (values: LinkDetails) => Promise<void>;
   canDelete?: boolean;
   onDelete: () => void;
 }
 
-const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, onSave, canDelete, onDelete }) => {
+const EditLinkDialog = ({ open, onClose, title, link, onSave, canDelete, onDelete }: EditLinkDialogProps) => {
   const { t } = useTranslation();
   const { isMediumSmallScreen } = useScreenSize();
 
   const CalloutIcon = contributionIcons[CalloutContributionType.Link];
 
-  const initialValues: EditLinkFormValues = useMemo(() => ({ ...link }), [link]);
-
+  const initialValues: LinkDetails = useMemo(() => ({ ...link }), [link]);
+  const [handleSave, isSaving] = useLoadingState((values: LinkDetails) => onSave(values));
   return (
     <Dialog open={open} aria-labelledby="link-edit" fullWidth maxWidth="lg">
       <DialogHeader onClose={onClose}>
@@ -81,10 +72,14 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
               <>
                 <Gutters>
                   <Gutters row={!isMediumSmallScreen} disablePadding alignItems="start">
-                    <FormikInputField name={'name'} title={t('common.title')} fullWidth={isMediumSmallScreen} />
+                    <FormikInputField
+                      name={nameOf<LinkDetails>('profile.displayName')}
+                      title={t('common.title')}
+                      fullWidth={isMediumSmallScreen}
+                    />
                     <Box flexGrow={1} width={isMediumSmallScreen ? '100%' : undefined}>
                       <FormikFileInput
-                        name={'uri'}
+                        name={nameOf<LinkDetails>('uri')}
                         title={t('common.url')}
                         sx={{ flexGrow: 1 }}
                         entityID={values.id}
@@ -93,13 +88,18 @@ const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, o
                     </Box>
                   </Gutters>
                   <Gutters disablePadding>
-                    <FormikInputField name={'description'} title={'Description'} />
+                    <FormikInputField
+                      name={nameOf<LinkDetails>('profile.description')}
+                      title={t('common.description')}
+                      multiline
+                      rows={3}
+                    />
                   </Gutters>
                 </Gutters>
                 <Actions paddingX={gutters()}>
                   {canDelete && <DeleteButton onClick={onDelete} />}
                   <Button onClick={onClose}>{t('buttons.cancel')}</Button>
-                  <Button variant="contained" onClick={() => onSave(values)} disabled={!isValid}>
+                  <Button variant="contained" onClick={() => handleSave(values)} loading={isSaving} disabled={!isValid}>
                     {t('buttons.save')}
                   </Button>
                 </Actions>

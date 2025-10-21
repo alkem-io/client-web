@@ -41,7 +41,8 @@ const CreateContributionButtonWhiteboard = ({
           content: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
         },
       },
-      refetchQueries: [],
+      refetchQueries: ['CalloutContributions'],
+      awaitRefetchQueries: true,
     });
 
     await onContributionCreated?.();

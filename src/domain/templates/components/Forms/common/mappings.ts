@@ -152,6 +152,7 @@ const mapLinkDataToCreateLinkInput = (linkData?: LinkDetails | undefined): Creat
     uri: linkData.uri,
     profile: {
       displayName: linkData.profile?.displayName ?? '',
+      description: linkData.profile?.description,
     },
   };
 };

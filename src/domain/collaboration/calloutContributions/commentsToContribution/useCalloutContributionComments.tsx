@@ -1,4 +1,3 @@
-import { useMessages } from '@/domain/communication/room/Comments/useMessages';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useCallback, useMemo } from 'react';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
@@ -12,12 +11,11 @@ import { Message } from '@/domain/communication/room/models/Message';
 import { CommentInputFieldProps } from '@/domain/communication/room/Comments/CommentInputField';
 import { FetchResult } from '@apollo/client';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import useSubscribeOnRoomEvents from '../../callout/useSubscribeOnRoomEvents';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 
-export interface CalloutContributionCommentsContainerProps
-  extends SimpleContainerProps<CalloutContributionCommentsContainerProvided> {
+export interface CalloutContributionCommentsContainerProps {
   callout: {
     settings: {
       contribution: {
@@ -44,18 +42,17 @@ interface CalloutContributionCommentsContainerProvided {
   canPostMessages: boolean;
   canAddReaction: boolean;
   canDeleteMessage: (authorId: string | undefined) => boolean;
-  postMessage: (message: string) => Promise<FetchResult<unknown>> | void;
-  postReply: (reply: { messageText: string; threadId: string }) => void;
-  handleDeleteMessage: (commentsId: string, messageId: string) => void;
+  postMessage: (message: string) => Promise<FetchResult<unknown>>;
+  postReply: (reply: { messageText: string; threadId: string }) => Promise<FetchResult<unknown>>;
+  handleDeleteMessage: (commentsId: string, messageId: string) => Promise<unknown>;
   loading: boolean;
   posting: boolean;
 }
 
-const CalloutContributionCommentsContainer = ({
+const useCalloutContributionComments = ({
   callout,
   contribution,
-  children,
-}: CalloutContributionCommentsContainerProps) => {
+}: CalloutContributionCommentsContainerProps): CalloutContributionCommentsContainerProvided => {
   const { userModel, isAuthenticated } = useCurrentUserContext();
 
   const { data, loading } = useCalloutContributionCommentsQuery({
@@ -73,8 +70,18 @@ const CalloutContributionCommentsContainer = ({
   const room = data?.lookup.contribution?.post?.comments; // || data?.lookup.contribution?.whiteboard?.comments || data?.lookup.contribution?.link?.comments || data?.lookup.contribution?.memo?.comments;
 
   const commentsId = room?.id;
-  const fetchedMessages = useMemo(() => room?.messages ?? [], [room]);
-  const messages = useMessages(fetchedMessages);
+  const messages = useMemo(
+    () =>
+      (room?.messages ?? []).map(message => ({
+        id: message.id,
+        threadID: message.threadID,
+        message: message.message,
+        author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
+        createdAt: new Date(message.timestamp),
+        reactions: message.reactions,
+      })),
+    [room?.messages]
+  );
 
   const commentsPrivileges = room?.authorization?.myPrivileges ?? [];
   const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
@@ -110,25 +117,21 @@ const CalloutContributionCommentsContainer = ({
     isSubscribedToMessages: isSubscribedToComments,
   });
 
-  return (
-    <>
-      {children({
-        commentsId,
-        messages,
-        vcInteractions: room?.vcInteractions ?? [],
-        canReadMessages,
-        commentsEnabled,
-        canPostMessages,
-        postMessage,
-        postReply,
-        canDeleteMessage,
-        handleDeleteMessage,
-        canAddReaction,
-        loading: loading,
-        posting: postingMessage || postingReply || deletingMessage,
-      })}
-    </>
-  );
+  return {
+    commentsId,
+    messages,
+    vcInteractions: room?.vcInteractions ?? [],
+    canReadMessages,
+    commentsEnabled,
+    canPostMessages,
+    postMessage,
+    postReply,
+    canDeleteMessage,
+    handleDeleteMessage,
+    canAddReaction,
+    loading: loading,
+    posting: postingMessage || postingReply || deletingMessage,
+  };
 };
 
-export default CalloutContributionCommentsContainer;
+export default useCalloutContributionComments;
