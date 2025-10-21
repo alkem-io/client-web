@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import VCProfilePage from '../vcProfilePage/VCProfilePage';
 import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
 import { buildVCKnowledgeBaseUrl } from '@/main/routing/urlBuilders';
+import { virtualContributorsCalloutRestrictions } from './virtualContributorsCalloutRestrictions';
 
 export const VCKnowledgeBaseRoute = () => {
   return (
@@ -17,6 +18,7 @@ export const VCKnowledgeBaseRoute = () => {
                 parentRoute={buildVCKnowledgeBaseUrl(vc?.profile.url)}
                 renderPage={() => <></>}
                 disableCalloutsClassification
+                calloutRestrictions={virtualContributorsCalloutRestrictions}
               />
             )}
           </VCProfilePage>
