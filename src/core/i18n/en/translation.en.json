@@ -913,8 +913,8 @@
       "more-links": "{{count}} links, click here to show all",
       "new-temporary-reference": "Temporary Link Id: {{temp}}"
     },
-    "singleWhiteboard": {
-      "clickToSee": "Click to see the full $t(common.whiteboard)"
+    "whiteboard": {
+      "clickToSee": "Click to open $t(common.whiteboard)"
     },
     "memo": {
       "clickToSee": "Click to see the full $t(common.memo)"

@@ -1,15 +1,8 @@
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import type { exportToBlob as ExcalidrawExportToBlob } from '@excalidraw/utils';
-
-type ExcalidrawGetDimensionsFunction = (
-  width: number,
-  height: number
-) => {
-  width: number;
-  height: number;
-  scale?: number;
-};
+import { PreviewImageDimensions } from './WhiteboardPreviewImages';
+import { BannerDimensions } from './WhiteboardDimensions';
 
 type ExcalidrawUtils = {
   exportToBlob: typeof ExcalidrawExportToBlob;
@@ -17,14 +10,7 @@ type ExcalidrawUtils = {
 
 const getWhiteboardPreviewImage = async (
   excalidrawAPI: ExcalidrawImperativeAPI,
-  opts: {
-    mimeType?: string;
-    quality?: number;
-    exportPadding?: number;
-  } = {
-    mimeType: 'image/png',
-  },
-  getDimensions?: ExcalidrawGetDimensionsFunction
+  desiredDimensions: PreviewImageDimensions = BannerDimensions
 ): Promise<Blob> => {
   const appState = excalidrawAPI.getAppState(),
     elements = excalidrawAPI.getSceneElements(),
@@ -41,9 +27,21 @@ const getWhiteboardPreviewImage = async (
     { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
   );
 
-  if (typeof opts.exportPadding === 'undefined') {
-    opts.exportPadding = Math.max(maxX - minX, maxY - minY) * 0.2; // 20% of the biggest dimension as padding
-  }
+  const exportPadding = Math.max(maxX - minX, maxY - minY) * 0.2; // 20% of the biggest dimension as padding
+
+  const getDimensions = (width: number, height: number) => {
+    if (desiredDimensions.minWidth > width) {
+      width = desiredDimensions.minWidth;
+    }
+    if (desiredDimensions.minHeight > height) {
+      height = desiredDimensions.minHeight;
+    }
+    return {
+      width,
+      height,
+      scale: 1,
+    };
+  };
 
   const { exportToBlob } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
 
@@ -52,7 +50,8 @@ const getWhiteboardPreviewImage = async (
     elements,
     files: files ?? null,
     getDimensions,
-    ...opts,
+    mimeType: 'image/png',
+    exportPadding,
   });
 };
 

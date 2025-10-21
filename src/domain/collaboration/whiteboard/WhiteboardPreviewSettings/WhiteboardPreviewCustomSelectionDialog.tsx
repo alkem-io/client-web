@@ -7,13 +7,13 @@ import { Check, Close, Replay } from '@mui/icons-material';
 import Loading from '@/core/ui/loading/Loading';
 import ReactCrop, { Crop } from 'react-image-crop';
 import { useCallback, useRef, useState } from 'react';
+import { BannerDimensions } from '../WhiteboardPreviewImages/WhiteboardDimensions';
 
 interface CropConfig {
-  aspectRatio?: number;
-  maxHeight?: number;
-  minHeight?: number;
-  maxWidth?: number;
-  minWidth?: number;
+  maxHeight: number;
+  minHeight: number;
+  maxWidth: number;
+  minWidth: number;
 }
 
 interface WhiteboardPreviewCustomSelectionDialogProps {
@@ -23,38 +23,37 @@ interface WhiteboardPreviewCustomSelectionDialogProps {
   config?: CropConfig;
 }
 
-const ASPECT_RATIO = 1;
-// const MAX_WIDTH = 400;
-// const MIN_WIDTH = 200;
-// const MAX_HEIGHT = 400;
-// const MIN_HEIGHT = 200;
-
 const WhiteboardPreviewCustomSelectionDialog = ({
   open,
   onClose,
   whiteboardPreviewImage,
-  config,
+  config = BannerDimensions,
 }: WhiteboardPreviewCustomSelectionDialogProps) => {
   const { t } = useTranslation();
   const imgRef = useRef<HTMLImageElement>(null);
 
-  const {
-    aspectRatio = ASPECT_RATIO,
-    // maxHeight = MAX_HEIGHT,
-    // minHeight = MIN_HEIGHT,
-    // maxWidth = MAX_WIDTH,
-    // minWidth = MIN_WIDTH,
-  } = config ?? {};
+  const { maxHeight, minHeight, maxWidth, minWidth } = config;
+  const aspectRatio = maxWidth / maxHeight;
 
-  const onCropChange = (newCrop: Crop) => {
+  const onCropChange = (crop: Crop) => {
+    const newCrop = { ...crop };
     if (!newCrop.width || !newCrop.height) {
       return;
     }
-    newCrop.height = Math.max(0, newCrop.height);
-    newCrop.width = Math.max(0, newCrop.width);
+    //console.log('onCropChange', config, newCrop);
+    newCrop.height = Math.min(Math.max(minHeight, newCrop.height), maxHeight);
+
+    console.log({
+      newCropWidth: newCrop.width,
+      minWidth,
+      maxWidth,
+      max_minWidth_newCropWidth: Math.max(minWidth, newCrop.width),
+      min_maxWidth_thePrevious: Math.min(Math.max(minWidth, newCrop.width), maxWidth),
+    });
+    newCrop.width = Math.min(Math.max(minWidth, newCrop.width), maxWidth);
     newCrop.x = Math.max(0, newCrop.x);
     newCrop.y = Math.max(0, newCrop.y);
-    setCrop(newCrop);
+    setCrop({ ...newCrop, unit: 'px' });
   };
 
   const [crop, setCrop] = useState<Crop | undefined>(undefined);
@@ -63,25 +62,48 @@ const WhiteboardPreviewCustomSelectionDialog = ({
     (img: HTMLImageElement) => {
       imgRef.current = img;
 
-      const aspect = aspectRatio;
-      // calculate in ratio
-      const widthRatio = img.width / aspect < img.height * aspect ? 1 : (img.height * aspect) / img.width;
-      const heightRatio = img.width / aspect > img.height * aspect ? 1 : img.width / aspect / img.height;
-
-      // calculate in pixels
-      const width = img.width * widthRatio;
-      const height = img.height * heightRatio;
-
-      const y = ((1 - heightRatio) / 2) * img.height;
-      const x = ((1 - widthRatio) / 2) * img.width;
-
-      setCrop({
-        unit: 'px',
-        width,
-        height,
-        x,
-        y,
-      });
+      const imageAspectRatio = img.width / img.height;
+      let x = 0,
+        y = 0;
+      console.log('onLoad', { imageAspectRatio, aspectRatio });
+      if (imageAspectRatio > aspectRatio) {
+        // Image is wider than desired aspect ratio
+        // Try to take full height:
+        const cropHeight = Math.min(img.height, maxHeight);
+        const cropWidth = cropHeight * aspectRatio;
+        x = Math.max(
+          0,
+          Math.min(
+            img.width / 2 - cropWidth / 2, // desired x, centered horizontally
+            img.width - cropWidth // max x to not overflow
+          )
+        );
+        onCropChange({
+          unit: 'px',
+          width: cropWidth,
+          height: cropHeight,
+          x,
+          y,
+        });
+      } else {
+        // Try to take full width:
+        const cropWidth = Math.min(img.width, maxWidth);
+        const cropHeight = cropWidth / aspectRatio;
+        y = Math.max(
+          0,
+          Math.min(
+            img.height / 2 - cropHeight / 2, // desired y, centered vertically
+            img.height - cropHeight // max y to not overflow
+          )
+        );
+        onCropChange({
+          unit: 'px',
+          width: cropWidth,
+          height: cropHeight,
+          x,
+          y,
+        });
+      }
 
       return false; // Return false if you set crop state in here.
     },
@@ -100,7 +122,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
         {whiteboardPreviewImage && (
           <Box>
             {whiteboardPreviewImage && (
-              <ReactCrop aspect={aspectRatio} crop={crop} onChange={onCropChange}>
+              <ReactCrop aspect={aspectRatio} crop={crop} onChange={onCropChange} keepSelection>
                 <img
                   src={whiteboardPreviewImage}
                   crossOrigin="anonymous"

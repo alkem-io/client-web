@@ -18,6 +18,7 @@ import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { useUpdateWhiteboardPreviewSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useTheme } from '@mui/material';
 import WhiteboardPreviewCustomSelectionDialog from './WhiteboardPreviewCustomSelectionDialog';
+import { BannerDimensions } from '../WhiteboardPreviewImages/WhiteboardDimensions';
 
 interface WhiteboardPreviewSettingsDialogProps {
   open?: boolean;
@@ -65,10 +66,7 @@ const WhiteboardPreviewSettingsDialog = ({
     }
 
     (async () => {
-      const image = await getWhiteboardPreviewImage(excalidrawAPI, undefined, (...params) => {
-        console.log('Getting dimensions', params);
-        return { width: params[0], height: params[1] };
-      });
+      const image = await getWhiteboardPreviewImage(excalidrawAPI);
       const reader = new FileReader();
       const loadFile = () => setWhiteboardPreviewImage(reader.result as string);
       reader.addEventListener('load', loadFile);
@@ -161,6 +159,7 @@ const WhiteboardPreviewSettingsDialog = ({
         open={cropDialogOpen}
         onClose={handleCropDialogClose}
         whiteboardPreviewImage={whiteboardPreviewImage}
+        config={BannerDimensions}
       />
     </>
   );
