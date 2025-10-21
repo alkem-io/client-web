@@ -1,7 +1,7 @@
 import React, { MouseEventHandler, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { Box, Button, Chip, CircularProgress, ListItemIcon, Typography } from '@mui/material';
+import { Button, Chip, CircularProgress, ListItemIcon } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useTranslation } from 'react-i18next';
 import { SpacePrivacyMode, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
@@ -24,6 +24,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { FormikSelectValue } from '@/core/ui/forms/FormikSelect';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import ManageLicensePlansDialog from './ManageLicensePlansDialog';
+import { AdminListItemLayout, AccountOwnerColumn } from '@/domain/platformAdmin/components/AdminListItemLayout';
 
 export interface SpacePlatformSettings {
   nameId: string;
@@ -106,41 +107,40 @@ const SpaceListItem = ({
       <ListItemLink
         {...props}
         primary={
-          <Box display="flex" alignItems="center" gap={2} width="100%">
-            {/* Name Column */}
-            <Box flex={2} minWidth={0}>
-              <Typography variant="body1" fontWeight={500} noWrap>
-                {props.primary}
-              </Typography>
-            </Box>
-
-            {/* Visibility Column */}
-            <Box flex={1} minWidth="100px">
-              <Chip
-                label={visibility}
-                size="small"
-                color={visibility === SpaceVisibility.Active ? 'success' : 'default'}
-                variant="outlined"
-              />
-            </Box>
-
-            {/* Privacy Mode Column */}
-            <Box flex={1} minWidth="100px">
-              <Chip
-                label={privacyMode}
-                size="small"
-                color={privacyMode === SpacePrivacyMode.Public ? 'info' : 'default'}
-                variant="outlined"
-              />
-            </Box>
-
-            {/* Account Owner Column */}
-            <Box flex={1} minWidth="150px">
-              <Typography variant="body2" color="text.secondary" noWrap title={accountOwner}>
-                {accountOwner || 'N/A'}
-              </Typography>
-            </Box>
-          </Box>
+          <AdminListItemLayout
+            name={props.primary}
+            columns={[
+              {
+                flex: 1,
+                minWidth: '100px',
+                content: (
+                  <Chip
+                    label={visibility}
+                    size="small"
+                    color={visibility === SpaceVisibility.Active ? 'success' : 'default'}
+                    variant="outlined"
+                  />
+                ),
+              },
+              {
+                flex: 1,
+                minWidth: '100px',
+                content: (
+                  <Chip
+                    label={privacyMode}
+                    size="small"
+                    color={privacyMode === SpacePrivacyMode.Public ? 'info' : 'default'}
+                    variant="outlined"
+                  />
+                ),
+              },
+              {
+                flex: 1,
+                minWidth: '150px',
+                content: <AccountOwnerColumn accountOwner={accountOwner} />,
+              },
+            ]}
+          />
         }
         actions={
           <ListItemIcon onClick={saving ? undefined : handlePlatformSettingsClick}>
