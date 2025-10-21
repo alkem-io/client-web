@@ -1,4 +1,3 @@
-import { useMessages } from '@/domain/communication/room/Comments/useMessages';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useCallback, useMemo } from 'react';
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayoutTypes';
@@ -10,13 +9,9 @@ import { Message } from '@/domain/communication/room/models/Message';
 import { CommentInputFieldProps } from '@/domain/communication/room/Comments/CommentInputField';
 import { FetchResult } from '@apollo/client';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
-import { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 
-interface CalloutCommentsContainerProps extends SimpleContainerProps<CalloutCommentsContainerProvided> {
-  callout: CalloutLayoutProps['callout'] | undefined;
-}
-
-interface CalloutCommentsContainerProvided {
+interface useCalloutCommentsProvided {
   commentsId: string | undefined;
   messages: Message[] | undefined;
   vcInteractions: CommentInputFieldProps['vcInteractions'];
@@ -26,16 +21,26 @@ interface CalloutCommentsContainerProvided {
   canAddReaction: boolean;
   canDeleteMessage: (authorId: string | undefined) => boolean;
   postMessage: (message: string) => Promise<FetchResult<unknown>>;
-  postReply: (reply: { messageText: string; threadId: string }) => void;
+  postReply: (reply: { messageText: string; threadId: string }) => Promise<FetchResult<unknown>>;
   handleDeleteMessage: (commentsId: string, messageId: string) => void;
   loading?: boolean;
 }
 
-const CalloutCommentsContainer = ({ callout, children }: CalloutCommentsContainerProps) => {
+const useCalloutComments = (callout: CalloutLayoutProps['callout'] | undefined): useCalloutCommentsProvided => {
   const { userModel, isAuthenticated } = useCurrentUserContext();
   const commentsId = callout?.comments?.id;
-  const fetchedMessages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
-  const messages = useMessages(fetchedMessages);
+  const messages = useMemo(
+    () =>
+      (callout?.comments?.messages ?? []).map(message => ({
+        id: message.id,
+        threadID: message.threadID,
+        message: message.message,
+        author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
+        createdAt: new Date(message.timestamp),
+        reactions: message.reactions,
+      })),
+    [callout?.comments?.messages]
+  );
 
   const commentsPrivileges = callout?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
@@ -71,24 +76,20 @@ const CalloutCommentsContainer = ({ callout, children }: CalloutCommentsContaine
     isSubscribedToMessages: isSubscribedToComments,
   });
 
-  return (
-    <>
-      {children({
-        commentsId,
-        messages,
-        vcInteractions: callout?.comments?.vcInteractions ?? [],
-        canReadMessages,
-        commentsEnabled,
-        canPostMessages,
-        postMessage,
-        postReply,
-        canDeleteMessage,
-        handleDeleteMessage,
-        canAddReaction,
-        loading: postingMessage || postingReply || deletingMessage,
-      })}
-    </>
-  );
+  return {
+    commentsId,
+    messages,
+    vcInteractions: callout?.comments?.vcInteractions ?? [],
+    canReadMessages,
+    commentsEnabled,
+    canPostMessages,
+    postMessage,
+    postReply,
+    canDeleteMessage,
+    handleDeleteMessage,
+    canAddReaction,
+    loading: postingMessage || postingReply || deletingMessage,
+  };
 };
 
-export default CalloutCommentsContainer;
+export default useCalloutComments;

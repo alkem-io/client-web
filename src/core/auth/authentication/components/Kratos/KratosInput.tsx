@@ -7,12 +7,21 @@ import { useTranslation } from 'react-i18next';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode, isRequired } from './helpers';
 import { KratosInputExtraProps, KratosProps } from './KratosProps';
 import IconButton from '@mui/material/IconButton';
+import { KRATOS_TRAIT_NAME_FIRST_NAME, KRATOS_TRAIT_NAME_LAST_NAME } from './constants';
 
 interface KratosInputProps extends KratosProps, KratosInputExtraProps {
   disabled?: boolean;
+  onValueChange?: (value: string) => void;
 }
 
-export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCorrect, autoComplete, disabled }) => {
+export const KratosInput: FC<KratosInputProps> = ({
+  node,
+  autoCapitalize,
+  autoCorrect,
+  autoComplete,
+  disabled,
+  onValueChange,
+}) => {
   const { t } = useTranslation();
   const attributes = useMemo(() => node.attributes as UiNodeInputAttributes, [node]);
   const [value, setValue] = useState(getNodeValue(node));
@@ -23,6 +32,7 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
   const invalid = isInvalidNode(node) || (touched && !value);
   const name = getNodeName(node);
   const required = isRequired(node);
+  const isNameField = name === KRATOS_TRAIT_NAME_FIRST_NAME || name === KRATOS_TRAIT_NAME_LAST_NAME;
   const isInputTextObscured = inputType === 'password';
 
   let helperText = '';
@@ -64,8 +74,6 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
       <TextField
         name={name}
         label={getNodeTitle(node, t)}
-        onBlur={() => setTouched(true)}
-        onChange={e => setValue(e.target.value)}
         value={value ? String(value) : ''}
         variant={'outlined'}
         type={inputType}
@@ -77,7 +85,13 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
         fullWidth
         InputProps={{ ...InputProps }}
         InputLabelProps={{ shrink: true }}
+        inputProps={isNameField ? { minLength: 1 } : undefined}
         sx={{ marginY: inputType === 'hidden' ? 0 : 0.5 }}
+        onChange={e => {
+          setValue(e.target.value);
+          onValueChange?.(e.target.value);
+        }}
+        onBlur={() => setTouched(true)}
       />
     </Tooltip>
   );

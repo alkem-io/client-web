@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import ReferenceView, { ReferenceViewProps } from './ReferenceView';
+import ReferenceView from './ReferenceView';
 import { Box, BoxProps } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import { OpenInNew } from '@mui/icons-material';
@@ -11,7 +11,6 @@ import { ReferenceModelWithOptionalAuthorization } from '@/domain/common/referen
 interface ReferencesProps<T extends ReferenceModelWithOptionalAuthorization> {
   references: T[] | undefined;
   noItemsView?: ReactNode;
-  icon?: ReferenceViewProps['icon'];
   compact?: boolean;
   onEdit?: (reference: T) => void;
   containerProps?: BoxProps;
@@ -21,7 +20,6 @@ const References = <T extends ReferenceModelWithOptionalAuthorization>({
   references,
   onEdit,
   noItemsView,
-  icon,
   compact,
   containerProps,
 }: ReferencesProps<T>) => {
@@ -57,7 +55,6 @@ const References = <T extends ReferenceModelWithOptionalAuthorization>({
               <ReferenceView
                 key={reference.id}
                 reference={reference}
-                icon={icon}
                 canEdit={reference.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update)}
                 onClickEdit={onEdit ? () => onEdit?.(reference) : undefined}
               />

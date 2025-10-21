@@ -4,7 +4,7 @@ import {
   CalloutFramingType,
   CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -30,15 +30,15 @@ import CalloutFormFramingSettings from './CalloutFormFramingSettings';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from './CalloutFormModel';
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 import ProfileReferenceSegment from '@/domain/platformAdmin/components/Common/ProfileReferenceSegment';
-import { TranslatedValidatedMessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 export type CalloutStructuredResponseType = 'none' | CalloutContributionType;
 
 export const calloutValidationSchema = yup.object().shape({
   framing: yup.object().shape({
     profile: yup.object().shape({
-      id: yup.string().optional(),
-      displayName: displayNameValidator.required(),
+      id: textLengthValidator(),
+      displayName: displayNameValidator({ required: true }),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
       tagsets: tagsetsSegmentSchema,
       references: referenceSegmentSchema,
@@ -54,15 +54,11 @@ export const calloutValidationSchema = yup.object().shape({
       return type === CalloutFramingType.Link
         ? schema
             .shape({
-              uri: urlValidator
-                .max(MID_TEXT_LENGTH, ({ max }) =>
-                  TranslatedValidatedMessageWithPayload('forms.validations.maxLength')({ max })
-                )
-                .required(),
+              uri: urlValidator({ required: true }),
               profile: yup
                 .object()
                 .shape({
-                  displayName: yup.string().required(),
+                  displayName: displayNameValidator({ required: true }),
                 })
                 .required(),
             })
@@ -71,9 +67,9 @@ export const calloutValidationSchema = yup.object().shape({
     }),
   }),
   contributionDefaults: yup.object().shape({
-    defaultDisplayName: displayNameValidator.optional().nullable(),
+    defaultDisplayName: displayNameValidator().optional().nullable(),
     postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).nullable(),
-    whiteboardContent: yup.string().nullable(),
+    whiteboardContent: textLengthValidator().nullable(),
   }),
   contributions: yup.object().shape({
     links: referenceSegmentSchema.nullable(),
@@ -135,7 +131,12 @@ const CalloutForm = ({
       return callout;
     } else {
       const emptyCallout = cloneDeep(DefaultCalloutFormValues);
-      emptyCallout.settings.framing.commentsEnabled = !calloutRestrictions?.disableComments;
+      if (typeof calloutRestrictions?.disableComments === 'boolean') {
+        emptyCallout.settings.framing.commentsEnabled = !calloutRestrictions.disableComments;
+      }
+      if (typeof calloutRestrictions?.disableCommentsToContributions === 'boolean') {
+        emptyCallout.settings.contribution.commentsEnabled = !calloutRestrictions.disableCommentsToContributions;
+      }
 
       return emptyCallout;
     }

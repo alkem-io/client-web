@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useEffect } from 'react';
+import { ReactElement, ReactNode, useEffect, useRef } from 'react';
 import CalloutView from '../callout/CalloutView/CalloutView';
 import { useCalloutManager } from '../callout/utils/useCalloutManager';
 import { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsModel';
@@ -18,6 +18,7 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { Identifiable } from '@/core/utils/Identifiable';
 import useNavigate from '@/core/routing/useNavigate';
 import useCalloutDetails from '../callout/useCalloutDetails/useCalloutDetails';
+import { CalloutRestrictions } from '../callout/CalloutRestrictionsTypes';
 
 type CalloutLocation = {
   parentPagePath: string;
@@ -27,6 +28,7 @@ export interface CalloutPageProps {
   renderPage: (position?: number) => ReactElement | undefined;
   parentRoute: string | ((position: number | undefined) => string);
   disableCalloutsClassification?: boolean;
+  calloutRestrictions?: CalloutRestrictions;
   children?: (props: CalloutLocation) => ReactNode;
 }
 
@@ -44,7 +46,13 @@ export interface LocationStateCachedCallout extends NavigationState {
  *                   (such as routes for Post/Whiteboard dialogs).
  * @constructor
  */
-const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, children }: CalloutPageProps) => {
+const CalloutPage = ({
+  parentRoute,
+  renderPage,
+  disableCalloutsClassification,
+  calloutRestrictions,
+  children,
+}: CalloutPageProps) => {
   const { calloutsSetId, calloutId, contributionId, loading: urlResolverLoading } = useUrlResolver();
 
   const { t } = useTranslation();
@@ -78,15 +86,28 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
   let [searchParams, setSearchParams] = useSearchParams();
   const currentSection = parseInt(searchParams.get('tab') || '-1') + 1;
 
+  // Track previous contributionId to detect when we're navigating between contributions
+  const prevContributionIdRef = useRef<string | undefined>(contributionId);
+
   useEffect(() => {
+    const isNavigatingBetweenContributions = prevContributionIdRef.current !== contributionId;
+    prevContributionIdRef.current = contributionId;
+
+    // Don't update search params if we're viewing a specific contribution (post, whiteboard, etc.)
+    // UNLESS we're navigating from one contribution to another
+    // This prevents navigation loops when users click activity links to contributions
+    if (contributionId && !isNavigatingBetweenContributions) {
+      return;
+    }
+
     if (calloutSection < 0) {
       return;
     }
 
     if (currentSection !== calloutSection) {
-      setSearchParams({ tab: `${calloutSection + 1}` });
+      setSearchParams({ tab: `${calloutSection + 1}` }, { replace: true });
     }
-  }, [calloutSection, currentSection]);
+  }, [calloutSection, currentSection, contributionId, setSearchParams]);
 
   if ((urlResolverLoading || calloutLoading) && !callout) {
     return <Loading />;
@@ -168,6 +189,7 @@ const CalloutPage = ({ parentRoute, renderPage, disableCalloutsClassification, c
             onCalloutUpdate={refetch}
             onCalloutDelete={handleDeleteWithClose}
             onCollapse={handleClose}
+            calloutRestrictions={calloutRestrictions}
             expanded
           />
         </DialogContent>

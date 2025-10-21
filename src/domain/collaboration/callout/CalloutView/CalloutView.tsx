@@ -11,7 +11,7 @@ import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CalloutFramingWhiteboard from '../CalloutFramings/CalloutFramingWhiteboard';
 import CalloutFramingMemo from '../CalloutFramings/CalloutFramingMemo';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import CalloutCommentsContainer from './CalloutCommentsContainer';
+import useCalloutComments from '../commentsToCallout/useCalloutComments';
 import CalloutViewLayout from './CalloutViewLayout';
 import CalloutContributionsLink from '../../calloutContributions/link/CalloutContributionsLink';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
@@ -68,6 +68,7 @@ const CalloutView = ({
   onCollapse,
   calloutActions = true,
   onCalloutUpdate,
+  calloutRestrictions,
   ...calloutSettingsProps
 }: CalloutViewProps) => {
   const { space } = useSpace();
@@ -81,6 +82,8 @@ const CalloutView = ({
 
   const { isSmallScreen } = useScreenSize();
   const lastMessageOnly = isSmallScreen && !expanded;
+
+  const calloutComments = useCalloutComments(callout);
 
   if (!callout || loading) {
     return <CalloutViewSkeleton />;
@@ -102,7 +105,13 @@ const CalloutView = ({
   };
 
   return (
-    <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
+    <CalloutSettingsContainer
+      callout={callout}
+      expanded={expanded}
+      onExpand={onExpand}
+      calloutRestrictions={calloutRestrictions}
+      {...calloutSettingsProps}
+    >
       {calloutSettingsProvided => (
         <CalloutViewLayout
           callout={callout}
@@ -131,6 +140,7 @@ const CalloutView = ({
               onExpand={onExpand}
               onCollapse={onCollapse}
               onCalloutUpdate={onCalloutUpdate}
+              calloutRestrictions={calloutRestrictions}
             />
           )}
 
@@ -145,6 +155,7 @@ const CalloutView = ({
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewWhiteboard}
                   dialogComponent={CalloutContributionDialogWhiteboard}
+                  calloutRestrictions={calloutRestrictions}
                   onCalloutUpdate={onCalloutUpdate}
                 />
               )}
@@ -172,6 +183,7 @@ const CalloutView = ({
                   contributionCardComponent={WhiteboardCard}
                   createContributionButtonComponent={CreateContributionButtonWhiteboard}
                   onClickOnContribution={handleClickOnContribution}
+                  calloutRestrictions={calloutRestrictions}
                 />
               )}
             </>
@@ -188,6 +200,7 @@ const CalloutView = ({
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewPost}
                   dialogComponent={CalloutContributionDialogPost}
+                  calloutRestrictions={calloutRestrictions}
                   onCalloutUpdate={onCalloutUpdate}
                 />
               )}
@@ -213,6 +226,7 @@ const CalloutView = ({
                   contributionCardComponent={PostCard}
                   createContributionButtonComponent={CreateContributionButtonPost}
                   onClickOnContribution={handleClickOnContribution}
+                  calloutRestrictions={calloutRestrictions}
                 />
               )}
             </>
@@ -221,20 +235,16 @@ const CalloutView = ({
           {/* Framing Comments */}
           {callout.comments && (
             <Gutters disableVerticalPadding>
-              <CalloutCommentsContainer callout={callout}>
-                {props => (
-                  <CommentsComponent
-                    {...props}
-                    externalScrollRef={expanded ? scrollerRef : undefined}
-                    commentsEnabled={props.commentsEnabled}
-                    loading={loading || props.loading}
-                    last={lastMessageOnly}
-                    maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
-                    onClickMore={() => onExpand?.(callout)}
-                    isMember={myMembershipStatus === CommunityMembershipStatus.Member}
-                  />
-                )}
-              </CalloutCommentsContainer>
+              <CommentsComponent
+                {...calloutComments}
+                externalScrollRef={expanded ? scrollerRef : undefined}
+                commentsEnabled={calloutComments.commentsEnabled}
+                loading={loading || calloutComments.loading}
+                last={lastMessageOnly}
+                maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
+                onClickMore={() => onExpand?.(callout)}
+                isMember={myMembershipStatus === CommunityMembershipStatus.Member}
+              />
             </Gutters>
           )}
         </CalloutViewLayout>

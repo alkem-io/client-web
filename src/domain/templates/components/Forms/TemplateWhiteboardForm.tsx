@@ -11,6 +11,7 @@ import { TemplateType, VisualType } from '@/core/apollo/generated/graphql-schema
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 interface TemplateContentWhiteboard {
   content: string;
@@ -34,7 +35,7 @@ interface TemplateWhiteboardFormProps {
 
 const validator = {
   whiteboard: yup.object().shape({
-    content: yup.string(),
+    content: textLengthValidator(),
   }),
 };
 

@@ -17,4 +17,7 @@ fragment ContributorDetails on Contributor {
       city
     }
   }
+  ... on User {
+    isContactable
+  }
 }

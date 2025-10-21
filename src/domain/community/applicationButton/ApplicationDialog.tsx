@@ -16,6 +16,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { useApplicationDialogQuery, useApplyForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 
 const FormikEffect = FormikEffectFactory<Record<string, string>>();
 
@@ -66,8 +67,8 @@ const ApplicationDialog = ({
         (acc, val) =>
           acc.shape({
             [val.question]: val.required
-              ? yup.string().required(t('forms.validations.required')).max(val.maxLength, 'forms.validations.maxLength')
-              : yup.string().max(val.maxLength, 'forms.validations.maxLength'),
+              ? textLengthValidator({ maxLength: val.maxLength, required: true })
+              : textLengthValidator({ maxLength: val.maxLength }),
           }),
         yup.object()
       ),
