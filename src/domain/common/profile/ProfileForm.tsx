@@ -48,7 +48,6 @@ const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0
     tagline: spaceAboutSegmentSchema.fields?.tagline || textLengthValidator(),
     location: yup.object().shape({
       city: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
-      country: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH }),
     }),
     references: referenceSegmentSchema,
     tagsets: tagsetsSegmentSchema,
