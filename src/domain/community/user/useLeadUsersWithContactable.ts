@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { UserIsContactableDocument } from '@/core/apollo/generated/apollo-hooks';
 import { ContributorViewModel } from '../community/utils/ContributorViewModel';
+import { useCurrentUserContext } from '../userCurrent/useCurrentUserContext';
 
 interface UseLeadUsersWithContactableResult {
   leadUsersWithContactable: ContributorViewModel[];
@@ -10,7 +11,8 @@ interface UseLeadUsersWithContactableResult {
 
 /**
  * Hook to enrich lead users with their isContactable status.
- * Fetches isContactable separately to avoid authorization errors on the main space query.
+ * Only fetches isContactable for authenticated users to avoid authorization errors.
+ * For unauthenticated users or when authorization might fail, defaults to false.
  *
  * @param leadUsers - Array of lead users without isContactable status
  * @returns Lead users enriched with isContactable status and loading state
@@ -21,10 +23,22 @@ export const useLeadUsersWithContactable = (
   const [getUserContactable] = useLazyQuery(UserIsContactableDocument);
   const [leadUsersWithContactable, setLeadUsersWithContactable] = useState<ContributorViewModel[]>([]);
   const [loading, setLoading] = useState(false);
+  const { isAuthenticated } = useCurrentUserContext();
 
   useEffect(() => {
     if (!leadUsers || leadUsers.length === 0) {
       setLeadUsersWithContactable([]);
+      return;
+    }
+
+    // If user is not authenticated, don't attempt to fetch isContactable
+    // to avoid authorization errors. Default to false for all users.
+    if (!isAuthenticated) {
+      const usersWithDefaultContactable = leadUsers.map(user => ({
+        ...user,
+        isContactable: false,
+      }));
+      setLeadUsersWithContactable(usersWithDefaultContactable);
       return;
     }
 
@@ -34,18 +48,26 @@ export const useLeadUsersWithContactable = (
         const enrichedUsers = await Promise.all(
           leadUsers.map(async user => {
             try {
-              const { data } = await getUserContactable({
+              const { data, error } = await getUserContactable({
                 variables: { userId: user.id },
-                // Don't throw errors if authorization fails for a specific user
-                errorPolicy: 'ignore',
+                // Return partial data even if there are errors
+                errorPolicy: 'all',
               });
+
+              // If there's an error or no data, default to false
+              if (error || !data?.lookup?.user) {
+                return {
+                  ...user,
+                  isContactable: false,
+                };
+              }
 
               return {
                 ...user,
-                isContactable: data?.lookup?.user?.isContactable ?? false,
+                isContactable: data.lookup.user.isContactable ?? false,
               };
             } catch {
-              // If authorization fails for this user, default to false
+              // If query fails, default to false
               return {
                 ...user,
                 isContactable: false,
@@ -61,7 +83,7 @@ export const useLeadUsersWithContactable = (
     };
 
     fetchContactableStatus();
-  }, [leadUsers, getUserContactable]);
+  }, [leadUsers, getUserContactable, isAuthenticated]);
 
   return {
     leadUsersWithContactable,
