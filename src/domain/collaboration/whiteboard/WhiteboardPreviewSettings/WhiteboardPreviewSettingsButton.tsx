@@ -1,5 +1,5 @@
 import { IconButton, IconButtonProps } from '@mui/material';
-import WhiteboardPreviewSettingsIcon from './WhiteboardPreviewSettingsIcon.svg?react';
+import { WhiteboardPreviewSettingsIcon } from './icons/WhiteboardPreviewIcons';
 
 const WhiteboardPreviewSettingsButton = (props: IconButtonProps) => {
   return (

@@ -8147,8 +8147,34 @@ export type UpdateWhiteboardEntityInput = {
   contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
+  /** The preview settings for the Whiteboard. */
+  previewSettings?: InputMaybe<UpdateWhiteboardPreviewSettingsInput>;
   /** The Profile of this entity. */
   profile?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateWhiteboardPreviewCoordinatesInput = {
+  /** The height. */
+  height: Scalars['Float']['input'];
+  /** The width. */
+  width: Scalars['Float']['input'];
+  /** The x coordinate. */
+  x: Scalars['Float']['input'];
+  /** The y coordinate. */
+  y: Scalars['Float']['input'];
+};
+
+export type UpdateWhiteboardPreviewSettingsInput = {
+  /** The coordinates for the preview. */
+  coordinates?: InputMaybe<UpdateWhiteboardPreviewCoordinatesInput>;
+  /**
+   * The preview mode.
+   *       AUTO: Generate Whiteboard preview automatically when closing the dialog
+   *       CUSTOM: Generate Whiteboard preview based on user-defined coordinates when closing the dialog
+   *       FIXED: Use a fixed Whiteboard preview that does not change when closing the dialog
+   *
+   */
+  mode?: InputMaybe<WhiteboardPreviewMode>;
 };
 
 export type UrlResolverQueryResultCalendar = {
@@ -15427,6 +15453,26 @@ export type UpdateMemoContentUpdatePolicyMutationVariables = Exact<{
 export type UpdateMemoContentUpdatePolicyMutation = {
   __typename?: 'Mutation';
   updateMemo: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
+};
+
+export type UpdateWhiteboardPreviewSettingsMutationVariables = Exact<{
+  whiteboardId: Scalars['UUID']['input'];
+  previewSettings: UpdateWhiteboardPreviewSettingsInput;
+}>;
+
+export type UpdateWhiteboardPreviewSettingsMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboard: {
+    __typename?: 'Whiteboard';
+    id: string;
+    previewSettings: {
+      __typename?: 'WhiteboardPreviewSettings';
+      mode: WhiteboardPreviewMode;
+      coordinates?:
+        | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+        | undefined;
+    };
+  };
 };
 
 export type WhiteboardProfileFragment = {

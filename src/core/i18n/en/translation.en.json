@@ -163,6 +163,7 @@
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
     "reply": "Reply",
+    "reset": "Reset",
     "select": "Select",
     "change-field": "Change {{field}}",
     "send": "Send",
@@ -2951,7 +2952,30 @@
           "generic": "You can’t edit this $t(common.whiteboard) for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a $t(common.member) of the $t(common.space)\n- This $t(common.space) only allows one $t(common.whiteboard) editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached"
         }
       },
-      "restartCollaboration": "Continue Editing"
+      "restartCollaboration": "Continue Editing",
+      "previewSettings": {
+        "title": "Preview Settings",
+        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
+        "modes": {
+          "auto": {
+            "title": "Auto Preview",
+            "description": "We'll automatically generate the best preview from your whiteboard content."
+          },
+          "custom": {
+            "title": "Manual Selection",
+            "description": "Choose exactly which part of your whiteboard to show as a preview."
+          },
+          "fixed": {
+            "title": "Fixed Preview",
+            "description": "Set a specific image that will always be shown as the preview."
+          }
+        },
+        "cropDialog": {
+          "reset": "$t(buttons.reset)",
+          "cancel": "$t(buttons.cancel)",
+          "confirm": "Confirm Selection"
+        }
+      }
     },
     "memo": {
       "readonlyReason": {
