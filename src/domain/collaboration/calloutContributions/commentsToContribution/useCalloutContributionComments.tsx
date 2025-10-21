@@ -1,4 +1,3 @@
-import { useMessages } from '@/domain/communication/room/Comments/useMessages';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useCallback, useMemo } from 'react';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
@@ -14,6 +13,7 @@ import { FetchResult } from '@apollo/client';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '../../callout/useSubscribeOnRoomEvents';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 
 export interface CalloutContributionCommentsContainerProps {
   callout: {
@@ -70,8 +70,18 @@ const useCalloutContributionComments = ({
   const room = data?.lookup.contribution?.post?.comments; // || data?.lookup.contribution?.whiteboard?.comments || data?.lookup.contribution?.link?.comments || data?.lookup.contribution?.memo?.comments;
 
   const commentsId = room?.id;
-  const fetchedMessages = useMemo(() => room?.messages ?? [], [room]);
-  const messages = useMessages(fetchedMessages);
+  const messages = useMemo(
+    () =>
+      (room?.messages ?? []).map(message => ({
+        id: message.id,
+        threadID: message.threadID,
+        message: message.message,
+        author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
+        createdAt: new Date(message.timestamp),
+        reactions: message.reactions,
+      })),
+    [room?.messages]
+  );
 
   const commentsPrivileges = room?.authorization?.myPrivileges ?? [];
   const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);

@@ -28,6 +28,7 @@ export interface UserModel {
     communities: Community[];
     organizations: Organization[];
   };
+  isContactable: boolean;
 }
 
 interface Community {
@@ -59,6 +60,7 @@ export const defaultUser: UserModel = {
     organizations: [],
     communities: [],
   },
+  isContactable: false,
 };
 
 /*
