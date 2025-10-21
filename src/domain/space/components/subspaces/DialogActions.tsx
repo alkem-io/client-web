@@ -33,7 +33,7 @@ export const DialogActions = () => {
       },
     },
   } = useSubSpace();
-  const { isVideoCallEnabled } = useVideoCall(spaceId);
+  const { isVideoCallEnabled, storageAggregatorId } = useVideoCall(spaceId);
 
   const dashboardNavigation = useSpaceDashboardNavigation({
     spaceId,
@@ -66,7 +66,7 @@ export const DialogActions = () => {
         <VideoCallDialog
           open={currentDialog === SubspaceDialog.VideoCall}
           onClose={handleClose}
-          spaceId={spaceId}
+          storageAggregatorId={storageAggregatorId ?? ''}
           spaceNameId={nameId}
         />
       )}

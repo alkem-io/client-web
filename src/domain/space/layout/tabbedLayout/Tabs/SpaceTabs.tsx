@@ -65,7 +65,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
 
   const { space, permissions, loading } = useSpace();
   const { id: spaceId, about } = space;
-  const { isVideoCallEnabled } = useVideoCall(spaceId);
+  const { isVideoCallEnabled, storageAggregatorId } = useVideoCall(spaceId);
   const { tabs, showSettings } = useSpaceTabs({
     skip: !permissions.canRead || loading,
     spaceId: permissions.canRead ? spaceId : undefined,
@@ -207,7 +207,7 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
         <VideoCallDialog
           open={isVideoCallDialogVisible}
           onClose={() => setIsVideoCallDialogVisible(false)}
-          spaceId={spaceId}
+          storageAggregatorId={storageAggregatorId ?? ''}
           spaceNameId={space.nameID}
         />
       )}

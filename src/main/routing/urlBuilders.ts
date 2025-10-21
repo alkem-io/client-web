@@ -115,8 +115,11 @@ export const getInvitationsDialogUrl = () => `/home?${URL_PARAM_DIALOG}=${DIALOG
 
 const VIDEO_CALL_BASE_URL = 'https://meet.jit.si/';
 
-export const buildVideoCallUrl = (spaceId: string, spaceNameId?: string) => {
-  // Use spaceNameId if available for better readability, otherwise use spaceId only
-  const meetingIdentifier = spaceNameId ? `${spaceNameId}-${encodeURIComponent(spaceId)}` : encodeURIComponent(spaceId);
+export const buildVideoCallUrl = (storageAggregatorId: string, spaceNameId?: string) => {
+  // Use spaceNameId if available for better readability, otherwise use storageAggregatorId only
+  // storageAggregatorId is behind authorization, so unauthorized users cannot access the video call URL
+  const meetingIdentifier = spaceNameId
+    ? `${spaceNameId}-${encodeURIComponent(storageAggregatorId)}`
+    : encodeURIComponent(storageAggregatorId);
   return `${VIDEO_CALL_BASE_URL}${meetingIdentifier}`;
 };

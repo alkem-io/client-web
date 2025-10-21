@@ -5863,6 +5863,7 @@ export type PromptGraphDefinitionNode = {
   name: Scalars['String']['output'];
   output?: Maybe<PromptGraphDefinitionDataStruct>;
   prompt?: Maybe<Scalars['String']['output']>;
+  system: Scalars['Boolean']['output'];
 };
 
 export type PromptGraphEdge = {
@@ -5890,6 +5891,7 @@ export type PromptGraphNode = {
   name: Scalars['String']['output'];
   output?: Maybe<PromptGraphDataStruct>;
   prompt?: Maybe<Scalars['String']['output']>;
+  system: Scalars['Boolean']['output'];
 };
 
 export type PromptGraphNodeInput = {
@@ -5897,6 +5899,7 @@ export type PromptGraphNodeInput = {
   name: Scalars['String']['input'];
   output?: InputMaybe<PromptGraphDataStructInput>;
   prompt?: InputMaybe<Scalars['String']['input']>;
+  system: Scalars['Boolean']['input'];
 };
 
 export type PruneInAppNotificationAdminResult = {
@@ -23343,6 +23346,20 @@ export type SpacePermissionsAndEntitlementsQuery = {
               }
             | undefined;
         }
+      | undefined;
+  };
+};
+
+export type SpaceStorageAggregatorIdQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceStorageAggregatorIdQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | { __typename?: 'Space'; id: string; storageAggregator: { __typename?: 'StorageAggregator'; id: string } }
       | undefined;
   };
 };

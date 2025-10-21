@@ -18611,6 +18611,86 @@ export function refetchSpacePermissionsAndEntitlementsQuery(
 ) {
   return { query: SpacePermissionsAndEntitlementsDocument, variables: variables };
 }
+export const SpaceStorageAggregatorIdDocument = gql`
+  query SpaceStorageAggregatorId($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        storageAggregator {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceStorageAggregatorIdQuery__
+ *
+ * To run a query within a React component, call `useSpaceStorageAggregatorIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceStorageAggregatorIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceStorageAggregatorIdQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceStorageAggregatorIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  > &
+    ({ variables: SchemaTypes.SpaceStorageAggregatorIdQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceStorageAggregatorIdQuery, SchemaTypes.SpaceStorageAggregatorIdQueryVariables>(
+    SpaceStorageAggregatorIdDocument,
+    options
+  );
+}
+export function useSpaceStorageAggregatorIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  >(SpaceStorageAggregatorIdDocument, options);
+}
+export function useSpaceStorageAggregatorIdSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.SpaceStorageAggregatorIdQuery,
+        SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  >(SpaceStorageAggregatorIdDocument, options);
+}
+export type SpaceStorageAggregatorIdQueryHookResult = ReturnType<typeof useSpaceStorageAggregatorIdQuery>;
+export type SpaceStorageAggregatorIdLazyQueryHookResult = ReturnType<typeof useSpaceStorageAggregatorIdLazyQuery>;
+export type SpaceStorageAggregatorIdSuspenseQueryHookResult = ReturnType<
+  typeof useSpaceStorageAggregatorIdSuspenseQuery
+>;
+export type SpaceStorageAggregatorIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceStorageAggregatorIdQuery,
+  SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+>;
+export function refetchSpaceStorageAggregatorIdQuery(variables: SchemaTypes.SpaceStorageAggregatorIdQueryVariables) {
+  return { query: SpaceStorageAggregatorIdDocument, variables: variables };
+}
 export const SubspacePageDocument = gql`
   query SubspacePage($spaceId: UUID!) {
     lookup {

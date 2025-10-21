@@ -8,15 +8,15 @@ import { buildVideoCallUrl } from '@/main/routing/urlBuilders';
 export interface VideoCallDialogProps {
   open: boolean;
   onClose: () => void;
-  spaceId: string;
+  storageAggregatorId: string;
   spaceNameId?: string;
 }
 
-const VideoCallDialog = ({ open, onClose, spaceId, spaceNameId }: VideoCallDialogProps) => {
+const VideoCallDialog = ({ open, onClose, storageAggregatorId, spaceNameId }: VideoCallDialogProps) => {
   const { t } = useTranslation();
 
   const handleStartVideoCall = () => {
-    const videoCallUrl = buildVideoCallUrl(spaceId, spaceNameId);
+    const videoCallUrl = buildVideoCallUrl(storageAggregatorId, spaceNameId);
     window.open(videoCallUrl, '_blank');
     onClose();
   };
