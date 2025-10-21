@@ -1,75 +1,36 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
 import { usePlatformAdminVirtualContributorsListQuery } from '@/core/apollo/generated/apollo-hooks';
-import Avatar from '@/core/ui/avatar/Avatar';
-import { BlockTitle, CardTitle } from '@/core/ui/typography';
-import { useTranslation } from 'react-i18next';
-import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import RouterLink from '@/core/ui/link/RouterLink';
 import Loading from '@/core/ui/loading/Loading';
-import { GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import ListPage from '@/domain/platformAdmin/components/ListPage';
+import VirtualContributorListItem from './VirtualContributorListItem';
 
 const VirtualContributorsPage: FC = () => {
-  const { t } = useTranslation();
-  const { data, loading: loadingVCs } = usePlatformAdminVirtualContributorsListQuery();
+  const { data, loading } = usePlatformAdminVirtualContributorsListQuery();
+
+  const virtualContributorsList = useMemo(() => {
+    const vcs = data?.platformAdmin.virtualContributors ?? [];
+
+    return vcs.map(vc => {
+      const accountOwner = vc.account?.host?.profile?.displayName || 'N/A';
+
+      return {
+        id: vc.id,
+        value: vc.profile.displayName,
+        url: vc.profile.url,
+        listedInStore: vc.listedInStore,
+        searchVisibility: vc.searchVisibility,
+        accountOwner,
+      };
+    });
+  }, [data]);
+
+  if (loading) return <Loading text={'Loading virtual contributors'} />;
 
   return (
     <AdminLayout currentTab={AdminSection.VirtualContributors}>
-      <GridLegacy container spacing={2} justifyContent="center">
-        <GridLegacy item xs={10}>
-          {loadingVCs && <Loading />}
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-              <TableHead>
-                <TableRow
-                  sx={{
-                    width: '100%',
-                    background: theme => theme.palette.primary.main,
-                    verticalAlign: 'middle',
-                  }}
-                >
-                  <TableCell component="th" scope="row">
-                    <CardTitle color="primary.contrastText">Name</CardTitle>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data?.platformAdmin.virtualContributors.map((virtualContributor, i) => (
-                  <TableRow
-                    key={virtualContributor.id}
-                    sx={{
-                      backgroundColor: i % 2 === 0 ? 'inherit' : 'action.hover',
-                      '&:last-child td, &:last-child th': { border: 0 },
-                    }}
-                  >
-                    <TableCell component="td" scope="row" sx={{ width: '100%', paddingY: 1, verticalAlign: 'middle' }}>
-                      <BadgeCardView
-                        key={virtualContributor.id}
-                        sx={{ flex: 1 }}
-                        visual={
-                          <Avatar
-                            src={virtualContributor.profile.avatar?.uri}
-                            alt={
-                              virtualContributor.profile.displayName
-                                ? t('common.avatar-of', { user: virtualContributor.profile.displayName })
-                                : t('common.avatar')
-                            }
-                          />
-                        }
-                        component={RouterLink}
-                        to={virtualContributor.profile.url}
-                      >
-                        <BlockTitle>{virtualContributor.profile.displayName}</BlockTitle>
-                      </BadgeCardView>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </GridLegacy>
-      </GridLegacy>
+      <ListPage data={virtualContributorsList} itemViewComponent={VirtualContributorListItem} />
     </AdminLayout>
   );
 };

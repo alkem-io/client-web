@@ -5863,6 +5863,7 @@ export type PromptGraphDefinitionNode = {
   name: Scalars['String']['output'];
   output?: Maybe<PromptGraphDefinitionDataStruct>;
   prompt?: Maybe<Scalars['String']['output']>;
+  system: Scalars['Boolean']['output'];
 };
 
 export type PromptGraphEdge = {
@@ -5890,6 +5891,7 @@ export type PromptGraphNode = {
   name: Scalars['String']['output'];
   output?: Maybe<PromptGraphDataStruct>;
   prompt?: Maybe<Scalars['String']['output']>;
+  system: Scalars['Boolean']['output'];
 };
 
 export type PromptGraphNodeInput = {
@@ -5897,6 +5899,7 @@ export type PromptGraphNodeInput = {
   name: Scalars['String']['input'];
   output?: InputMaybe<PromptGraphDataStructInput>;
   prompt?: InputMaybe<Scalars['String']['input']>;
+  system: Scalars['Boolean']['input'];
 };
 
 export type PruneInAppNotificationAdminResult = {
@@ -21084,6 +21087,25 @@ export type PlatformAdminInnovationHubsQuery = {
       __typename?: 'InnovationHub';
       id: string;
       subdomain: string;
+      listedInStore: boolean;
+      searchVisibility: SearchVisibility;
+      account: {
+        __typename?: 'Account';
+        id: string;
+        host?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | undefined;
+      };
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
   };
@@ -21098,6 +21120,20 @@ export type PlatformAdminInnovationPacksQuery = {
     innovationPacks: Array<{
       __typename?: 'InnovationPack';
       id: string;
+      listedInStore: boolean;
+      searchVisibility: SearchVisibility;
+      provider:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
   };
@@ -21233,6 +21269,27 @@ export type PlatformAdminSpacesListQuery = {
       id: string;
       nameID: string;
       visibility: SpaceVisibility;
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      };
+      account: {
+        __typename?: 'Account';
+        id: string;
+        host?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | undefined;
+      };
       about: {
         __typename?: 'SpaceAbout';
         id: string;
@@ -21363,6 +21420,31 @@ export type PlatformAdminVirtualContributorsListQuery = {
     virtualContributors: Array<{
       __typename?: 'VirtualContributor';
       id: string;
+      listedInStore: boolean;
+      searchVisibility: SearchVisibility;
+      account?:
+        | {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
+          }
+        | undefined;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;

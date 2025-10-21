@@ -33,12 +33,16 @@ export const SpaceList: FC = () => {
           : space.about.profile.displayName;
 
       const canUpdate = (space.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Update);
+      const accountOwner = space.account?.host?.profile?.displayName || 'N/A';
+      const privacyMode = space.settings.privacy.mode;
 
       return {
         id: space.id,
         spaceId: space.id,
         nameId: space.nameID,
         visibility: space.visibility,
+        privacyMode,
+        accountOwner,
         url: buildSettingsUrl(space.about.profile.url),
         value: displayName,
         canUpdate,

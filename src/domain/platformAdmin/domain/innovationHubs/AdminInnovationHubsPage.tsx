@@ -1,59 +1,59 @@
-import { useMemo, useState } from 'react';
-import { sortBy } from 'lodash';
+import { useMemo } from 'react';
 import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
-import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
 import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
 import {
   refetchPlatformAdminInnovationHubsQuery,
   usePlatformAdminInnovationHubsQuery,
   useDeleteInnovationHubMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import SimpleSearchableTable from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
+import ListPage from '@/domain/platformAdmin/components/ListPage';
+import { SearchableTableItem } from '@/domain/platformAdmin/components/SearchableTable';
+import InnovationHubListItem from './InnovationHubListItem';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useTranslation } from 'react-i18next';
+import Loading from '@/core/ui/loading/Loading';
 
 const AdminInnovationHubsPage = () => {
+  const { t } = useTranslation();
+  const notify = useNotification();
   const { data, loading } = usePlatformAdminInnovationHubsQuery();
+
   const [deleteInnovationHub] = useDeleteInnovationHubMutation({
     refetchQueries: [refetchPlatformAdminInnovationHubsQuery()],
+    awaitRefetchQueries: true,
+    onCompleted: () => notify(t('pages.admin.innovation-hub.notifications.hub-removed'), 'success'),
   });
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const innovationHubsList = useMemo(() => {
+    const hubs = data?.platformAdmin.innovationHubs ?? [];
 
-  const handleDelete = async (innovationHubId: string) =>
-    await deleteInnovationHub({
+    return hubs.map(hub => {
+      const accountOwner = hub.account?.host?.profile?.displayName || 'N/A';
+
+      return {
+        id: hub.id,
+        value: hub.profile.displayName,
+        url: hub.profile.url,
+        listedInStore: hub.listedInStore,
+        searchVisibility: hub.searchVisibility,
+        accountOwner,
+      };
+    });
+  }, [data]);
+
+  const handleDelete = (item: SearchableTableItem) => {
+    deleteInnovationHub({
       variables: {
-        innovationHubId,
+        innovationHubId: item.id,
       },
     });
+  };
 
-  const innovationHubs = useMemo(
-    () =>
-      sortBy(
-        data?.platformAdmin.innovationHubs
-          .map(hub => ({
-            value: hub.profile.displayName,
-            url: hub.profile.url,
-            ...hub,
-          }))
-          .filter(ip => !searchTerm || ip.profile.displayName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1),
-        ip => ip.profile.displayName.toLowerCase() // sortBy
-      ),
-    [data, searchTerm]
-  );
+  if (loading) return <Loading text={'Loading innovation hubs'} />;
 
   return (
     <AdminLayout currentTab={AdminSection.InnovationHubs}>
-      <SearchableListLayout>
-        <SimpleSearchableTable
-          data={innovationHubs}
-          onDelete={item => handleDelete(item.id)}
-          loading={loading}
-          fetchMore={() => Promise.resolve()}
-          pageSize={data?.platformAdmin.innovationHubs.length ?? 0}
-          searchTerm={searchTerm}
-          onSearchTermChange={setSearchTerm}
-          hasMore={false}
-        />
-      </SearchableListLayout>
+      <ListPage data={innovationHubsList} onDelete={handleDelete} itemViewComponent={InnovationHubListItem} />
     </AdminLayout>
   );
 };

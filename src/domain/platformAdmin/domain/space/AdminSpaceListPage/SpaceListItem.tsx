@@ -1,10 +1,10 @@
 import React, { MouseEventHandler, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { Button, CircularProgress, ListItemIcon } from '@mui/material';
+import { Box, Button, Chip, CircularProgress, ListItemIcon, Typography } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useTranslation } from 'react-i18next';
-import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { SpacePrivacyMode, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import {
   refetchPlatformAdminSpacesListQuery,
   useUpdateSpacePlatformSettingsMutation,
@@ -33,9 +33,19 @@ export interface SpacePlatformSettings {
 interface SpaceListItemV2Props extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
   canUpdate: boolean;
+  privacyMode: SpacePrivacyMode;
+  accountOwner?: string;
 }
 
-const SpaceListItem = ({ spaceId, nameId, visibility, canUpdate, ...props }: SpaceListItemV2Props) => {
+const SpaceListItem = ({
+  spaceId,
+  nameId,
+  visibility,
+  privacyMode,
+  accountOwner,
+  canUpdate,
+  ...props
+}: SpaceListItemV2Props) => {
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
   const [isManageLicensePlansDialogOpen, setIsManageLicensePlansDialogOpen] = useState(false);
 
@@ -95,6 +105,43 @@ const SpaceListItem = ({ spaceId, nameId, visibility, canUpdate, ...props }: Spa
     <>
       <ListItemLink
         {...props}
+        primary={
+          <Box display="flex" alignItems="center" gap={2} width="100%">
+            {/* Name Column */}
+            <Box flex={2} minWidth={0}>
+              <Typography variant="body1" fontWeight={500} noWrap>
+                {props.primary}
+              </Typography>
+            </Box>
+
+            {/* Visibility Column */}
+            <Box flex={1} minWidth="100px">
+              <Chip
+                label={visibility}
+                size="small"
+                color={visibility === SpaceVisibility.Active ? 'success' : 'default'}
+                variant="outlined"
+              />
+            </Box>
+
+            {/* Privacy Mode Column */}
+            <Box flex={1} minWidth="100px">
+              <Chip
+                label={privacyMode}
+                size="small"
+                color={privacyMode === SpacePrivacyMode.Public ? 'info' : 'default'}
+                variant="outlined"
+              />
+            </Box>
+
+            {/* Account Owner Column */}
+            <Box flex={1} minWidth="150px">
+              <Typography variant="body2" color="text.secondary" noWrap title={accountOwner}>
+                {accountOwner || 'N/A'}
+              </Typography>
+            </Box>
+          </Box>
+        }
         actions={
           <ListItemIcon onClick={saving ? undefined : handlePlatformSettingsClick}>
             {saving ? <CircularProgress size={24} /> : <SettingsOutlinedIcon />}
