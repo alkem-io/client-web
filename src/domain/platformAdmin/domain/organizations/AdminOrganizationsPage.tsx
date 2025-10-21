@@ -5,13 +5,12 @@ import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
 import usePlatformAdminOrganizationsList from './usePlatformAdminOrganizationsList';
 import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
-import SimpleSearchableTable, {
-  SearchableListItem,
-} from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
+import { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 import { IconButton } from '@mui/material';
 import { TuneOutlined, VerifiedUser, VerifiedUserOutlined } from '@mui/icons-material';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import LicensePlanDialog from './LicensePlanDialog';
+import AdminSearchableTable from '@/domain/platformAdmin/components/AdminSearchableTable';
 
 const AdminOrganizationsPage = () => {
   const { t } = useTranslation();
@@ -92,7 +91,7 @@ const AdminOrganizationsPage = () => {
   return (
     <AdminLayout currentTab={AdminSection.Organization}>
       <SearchableListLayout newLink={`${url}/new`}>
-        <SimpleSearchableTable data={organizations} {...listProps} itemActions={getActions} />
+        <AdminSearchableTable data={organizations} columns={[]} {...listProps} itemActions={getActions} />
       </SearchableListLayout>
       <ConfirmationDialog
         actions={{

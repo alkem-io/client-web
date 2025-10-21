@@ -12,7 +12,7 @@ import {
   TableRow,
 } from '@mui/material';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import RemoveModal from '@/core/ui/dialogs/RemoveModal';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -30,26 +30,39 @@ export interface AdminTableColumn<Item extends AdminSearchableTableItem = AdminS
   render: (item: Item) => ReactNode;
 }
 
+export interface AdminSearchableTableItem {
+  id: string;
+  value: string;
+  url: string; // link target for the Name column
+  // Additional properties for custom columns should be declared in the extending item interface
+}
+
 export interface AdminSearchableTableProps<Item extends AdminSearchableTableItem> {
-  data: Item[] | undefined;
+  data?: Item[]; // optional, defaults to empty array
   columns: AdminTableColumn<Item>[];
   onDelete?: (item: Item) => void;
   loading: boolean;
-  fetchMore: () => Promise<void>;
+  fetchMore?: () => Promise<void>; // now optional to enable client-side mode
   pageSize: number;
   firstPageSize?: number;
   searchTerm: string;
   onSearchTermChange: (searchTerm: string) => void;
   totalCount?: number;
-  hasMore: boolean | undefined;
+  hasMore?: boolean; // optional for client-side mode
   itemActions?: (item: Item) => ReactNode;
+  clientSide?: boolean; // when true, component performs lazy loading over provided full dataset
 }
 
-export interface AdminSearchableTableItem {
+export interface SearchableListItem {
   id: string;
+  accountId?: string;
   value: string;
   url: string;
-  [key: string]: unknown; // Allow additional properties for custom columns
+  verified?: boolean;
+  activeLicensePlanIds?: string[];
+  avatar?: {
+    uri: string;
+  };
 }
 
 /**
@@ -70,10 +83,28 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
   totalCount,
   hasMore = false,
   itemActions,
+  clientSide = false,
 }: AdminSearchableTableProps<Item>) => {
   const { t } = useTranslation();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const [itemToRemove, setItemToRemove] = useState<AdminSearchableTableItem | null>(null);
+  // client-side lazy loading state
+  const [displayedCount, setDisplayedCount] = useState(firstPageSize);
+
+  // Reset displayed items when data changes or search term changes (client-side mode only)
+  useEffect(() => {
+    if (clientSide) {
+      setDisplayedCount(firstPageSize);
+    }
+  }, [clientSide, firstPageSize, searchTerm, data]);
+
+  const effectiveData = clientSide ? data.slice(0, displayedCount) : data;
+  const internalHasMore = clientSide ? displayedCount < data.length : !!hasMore && !!fetchMore;
+  const internalFetchMore = clientSide
+    ? async () => {
+        setDisplayedCount(prev => Math.min(prev + pageSize, data.length));
+      }
+    : fetchMore || (async () => {});
 
   const Loader = useMemo(
     () =>
@@ -89,9 +120,9 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
   );
 
   const loader = useLazyLoading(Loader, {
-    hasMore,
+    hasMore: internalHasMore,
     loading,
-    fetchMore,
+    fetchMore: internalFetchMore,
   });
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,7 +161,10 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
         />
       </FormControl>
       {typeof totalCount === 'undefined' ? null : (
-        <InputLabel> {t('components.searchableList.info', { count: data.length, total: totalCount })}</InputLabel>
+        <InputLabel>
+          {' '}
+          {t('components.searchableList.info', { count: effectiveData.length, total: totalCount })}
+        </InputLabel>
       )}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -167,9 +201,9 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading && !data
+            {loading && !effectiveData
               ? times(firstPageSize, i => <LoadingListItem key={`__loading_${i}`} />)
-              : data.map((item, index) => (
+              : effectiveData.map((item, index) => (
                   <TableRow
                     key={item.id}
                     sx={{

@@ -3,12 +3,11 @@ import AdminLayout from '@/domain/platformAdmin/layout/toplevel/AdminLayout';
 import { AdminSection } from '@/domain/platformAdmin/layout/toplevel/constants';
 import useAdminGlobalUserList from '@/domain/platformAdmin/domain/users/useAdminGlobalUserList';
 import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
-import SimpleSearchableTable, {
-  SearchableListItem,
-} from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
+import { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 import { IconButton } from '@mui/material';
 import { TuneOutlined } from '@mui/icons-material';
 import LicensePlanDialog from '@/domain/platformAdmin/domain/organizations/LicensePlanDialog';
+import AdminSearchableTable from '@/domain/platformAdmin/components/AdminSearchableTable';
 
 const AdminUsersPage: FC = () => {
   const { userList, licensePlans, ...listProps } = useAdminGlobalUserList();
@@ -42,7 +41,7 @@ const AdminUsersPage: FC = () => {
   return (
     <AdminLayout currentTab={AdminSection.User}>
       <SearchableListLayout>
-        <SimpleSearchableTable data={userList} {...listProps} itemActions={getActions} />
+        <AdminSearchableTable data={userList} columns={[]} {...listProps} itemActions={getActions} />
       </SearchableListLayout>
       {selectedItem?.accountId && (
         <LicensePlanDialog
