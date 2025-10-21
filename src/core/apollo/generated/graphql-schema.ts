@@ -19072,6 +19072,18 @@ export type UserOrganizationIdsQuery = {
   };
 };
 
+export type UserIsContactableQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+}>;
+
+export type UserIsContactableQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    user?: { __typename?: 'User'; id: string; isContactable: boolean } | undefined;
+  };
+};
+
 export type UpdateUserMutationVariables = Exact<{
   input: UpdateUserInput;
 }>;
@@ -21498,7 +21510,6 @@ export type SpaceAboutDetailsQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                isContactable: boolean;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -21545,7 +21556,6 @@ export type SpaceAboutDetailsQuery = {
                 }
               | {
                   __typename?: 'User';
-                  isContactable: boolean;
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -21729,7 +21739,6 @@ export type SpaceAboutFullQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                isContactable: boolean;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -21776,7 +21785,6 @@ export type SpaceAboutFullQuery = {
                 }
               | {
                   __typename?: 'User';
-                  isContactable: boolean;
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -21979,7 +21987,6 @@ export type SpaceAboutDetailsFragment = {
     leadUsers: Array<{
       __typename?: 'User';
       id: string;
-      isContactable: boolean;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -22014,7 +22021,6 @@ export type SpaceAboutDetailsFragment = {
       }
     | {
         __typename?: 'User';
-        isContactable: boolean;
         id: string;
         profile: {
           __typename?: 'Profile';
@@ -22884,7 +22890,6 @@ export type UpdateSpaceMutation = {
         leadUsers: Array<{
           __typename?: 'User';
           id: string;
-          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -22919,7 +22924,6 @@ export type UpdateSpaceMutation = {
           }
         | {
             __typename?: 'User';
-            isContactable: boolean;
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -23062,7 +23066,6 @@ export type SpaceInfoFragment = {
       leadUsers: Array<{
         __typename?: 'User';
         id: string;
-        isContactable: boolean;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -23097,7 +23100,6 @@ export type SpaceInfoFragment = {
         }
       | {
           __typename?: 'User';
-          isContactable: boolean;
           id: string;
           profile: {
             __typename?: 'Profile';
@@ -23572,7 +23574,6 @@ export type SpacePageQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                isContactable: boolean;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -23714,8 +23715,8 @@ export type SpacePageQuery = {
                 }
               | {
                   __typename?: 'User';
-                  isContactable: boolean;
                   id: string;
+                  isContactable: boolean;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -23868,7 +23869,6 @@ export type SpacePageFragment = {
       leadUsers: Array<{
         __typename?: 'User';
         id: string;
-        isContactable: boolean;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -23992,8 +23992,8 @@ export type SpacePageFragment = {
         }
       | {
           __typename?: 'User';
-          isContactable: boolean;
           id: string;
+          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;

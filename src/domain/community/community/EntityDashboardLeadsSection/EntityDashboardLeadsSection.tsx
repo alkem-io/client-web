@@ -10,6 +10,7 @@ import ContributorCardHorizontal, { ContributorCardHorizontalProps } from '@/cor
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { ContributorViewModel } from '../utils/ContributorViewModel';
 import { ProfileType } from '@/core/apollo/generated/graphql-schema';
+import { useLeadUsersWithContactable } from '@/domain/community/user/useLeadUsersWithContactable';
 
 const OrganizationCardTransparent = (props: ContributorCardHorizontalProps) => <ContributorCardHorizontal {...props} />;
 
@@ -40,6 +41,9 @@ const EntityDashboardLeadsSection = ({
 
   const { userModel } = useCurrentUserContext();
 
+  // Fetch isContactable status for lead users separately to avoid authorization errors
+  const { leadUsersWithContactable } = useLeadUsersWithContactable(leadUsers);
+
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
@@ -64,7 +68,7 @@ const EntityDashboardLeadsSection = ({
   );
 
   const leadUsersMapped = useMemo(() => {
-    return leadUsers?.map(user => ({
+    return leadUsersWithContactable?.map(user => ({
       id: user.id,
       profile: user.profile,
       seamless: true,
@@ -79,7 +83,7 @@ const EntityDashboardLeadsSection = ({
         });
       },
     }));
-  }, [leadUsers]);
+  }, [leadUsersWithContactable]);
 
   const leadUsersSectionVisible = !!leadUsersMapped && leadUsersMapped.length > 0;
   const leadOrganizationsSectionVisible = !!leadOrganizationsMapped && leadOrganizationsMapped.length > 0;

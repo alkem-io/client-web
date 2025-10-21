@@ -1,0 +1,8 @@
+query UserIsContactable($userId: UUID!) {
+  lookup {
+    user(ID: $userId) {
+      id
+      isContactable
+    }
+  }
+}

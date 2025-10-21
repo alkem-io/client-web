@@ -1918,7 +1918,6 @@ export const SpaceAboutDetailsFragmentDoc = gql`
             country
           }
         }
-        isContactable
       }
     }
     isContentPublic
@@ -1937,9 +1936,6 @@ export const SpaceAboutDetailsFragmentDoc = gql`
           country
         }
         type
-      }
-      ... on User {
-        isContactable
       }
     }
     profile {
@@ -13303,6 +13299,79 @@ export type UserOrganizationIdsQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserOrganizationIdsQuery(variables: SchemaTypes.UserOrganizationIdsQueryVariables) {
   return { query: UserOrganizationIdsDocument, variables: variables };
+}
+export const UserIsContactableDocument = gql`
+  query UserIsContactable($userId: UUID!) {
+    lookup {
+      user(ID: $userId) {
+        id
+        isContactable
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserIsContactableQuery__
+ *
+ * To run a query within a React component, call `useUserIsContactableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserIsContactableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserIsContactableQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUserIsContactableQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserIsContactableQuery,
+    SchemaTypes.UserIsContactableQueryVariables
+  > &
+    ({ variables: SchemaTypes.UserIsContactableQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserIsContactableQuery, SchemaTypes.UserIsContactableQueryVariables>(
+    UserIsContactableDocument,
+    options
+  );
+}
+export function useUserIsContactableLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserIsContactableQuery,
+    SchemaTypes.UserIsContactableQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserIsContactableQuery, SchemaTypes.UserIsContactableQueryVariables>(
+    UserIsContactableDocument,
+    options
+  );
+}
+export function useUserIsContactableSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.UserIsContactableQuery, SchemaTypes.UserIsContactableQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.UserIsContactableQuery, SchemaTypes.UserIsContactableQueryVariables>(
+    UserIsContactableDocument,
+    options
+  );
+}
+export type UserIsContactableQueryHookResult = ReturnType<typeof useUserIsContactableQuery>;
+export type UserIsContactableLazyQueryHookResult = ReturnType<typeof useUserIsContactableLazyQuery>;
+export type UserIsContactableSuspenseQueryHookResult = ReturnType<typeof useUserIsContactableSuspenseQuery>;
+export type UserIsContactableQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserIsContactableQuery,
+  SchemaTypes.UserIsContactableQueryVariables
+>;
+export function refetchUserIsContactableQuery(variables: SchemaTypes.UserIsContactableQueryVariables) {
+  return { query: UserIsContactableDocument, variables: variables };
 }
 export const UpdateUserDocument = gql`
   mutation updateUser($input: UpdateUserInput!) {
