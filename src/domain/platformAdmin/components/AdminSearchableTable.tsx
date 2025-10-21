@@ -178,7 +178,7 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
               }}
             >
               {/* Name column header */}
-              <TableCell component="th" scope="row" sx={{ flex: 2 }}>
+              <TableCell component="th" scope="col" sx={{ flex: 2 }}>
                 <CardTitle color="primary.contrastText">Name</CardTitle>
               </TableCell>
 
@@ -187,7 +187,7 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
                 <TableCell
                   key={index}
                   component="th"
-                  scope="row"
+                  scope="col"
                   sx={{ flex: column.flex || 1, minWidth: column.minWidth || '100px' }}
                 >
                   <CardTitle color="primary.contrastText">{column.header}</CardTitle>
@@ -195,7 +195,7 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
               ))}
 
               {/* Actions column header */}
-              <TableCell component="th" scope="row" sx={{ minWidth: '100px' }}>
+              <TableCell component="th" scope="col" sx={{ minWidth: '100px' }}>
                 <CardTitle color="primary.contrastText">Actions</CardTitle>
               </TableCell>
             </TableRow>

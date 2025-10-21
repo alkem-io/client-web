@@ -138,7 +138,7 @@ export const SpaceList: FC = () => {
       <AdminSearchableTable
         data={spaceList}
         columns={columns}
-        onDelete={spaceList.length > 1 ? handleDelete : undefined}
+        onDelete={handleDelete}
         loading={false}
         fetchMore={fetchMore}
         pageSize={PAGE_SIZE}

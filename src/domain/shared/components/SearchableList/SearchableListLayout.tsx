@@ -13,7 +13,7 @@ interface ListPageProps extends PropsWithChildren {
   newLink?: string;
 }
 
-export const SearchableListLayout: FC<ListPageProps> = ({ title, newLink, children }) => {
+const SearchableListLayout: FC<ListPageProps> = ({ title, newLink, children }) => {
   const { t } = useTranslation();
 
   return (
