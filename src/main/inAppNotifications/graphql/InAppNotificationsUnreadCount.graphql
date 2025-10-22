@@ -1,5 +1,5 @@
-query InAppNotificationsUnreadCount($types: [NotificationEvent!]) {
+query InAppNotificationsUnreadCount {
   me {
-    notificationsUnreadCount(filter: { types: $types })
+    notificationsUnreadCount
   }
 }
