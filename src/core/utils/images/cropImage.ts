@@ -16,7 +16,8 @@ const cropImage = async (blob: Blob, getCropConfig: CropConfigFunction): Promise
     img.onload = () => {
       const crop = getCropConfig(img.width, img.height);
       if (!crop) {
-        return blob;
+        resolve(blob);
+        return;
       }
       // Create a canvas with the crop dimensions
       const canvas = document.createElement('canvas');
