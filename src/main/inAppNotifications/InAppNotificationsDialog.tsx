@@ -8,10 +8,11 @@ import { InAppNotificationsList } from './InAppNotificationsList';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 import { InAppNotificationSubscriber } from '@/main/inAppNotifications/inAppNotificationSubscriber';
+import { InAppNotificationsFilterChips } from './InAppNotificationsFilterChips';
 
 export const InAppNotificationsDialog = () => {
   const { t } = useTranslation();
-  const { isOpen, setIsOpen } = useInAppNotificationsContext();
+  const { isOpen, setIsOpen, selectedFilter, setSelectedFilter } = useInAppNotificationsContext();
   const { markNotificationsAsRead } = useInAppNotifications();
 
   return (
@@ -36,6 +37,7 @@ export const InAppNotificationsDialog = () => {
         {t('common.Notifications')}
       </DialogHeader>
       <DialogContent sx={{ padding: 0 }}>
+        <InAppNotificationsFilterChips selectedFilter={selectedFilter} onFilterChange={setSelectedFilter} />
         {isOpen && <InAppNotificationsList />}
         <InAppNotificationSubscriber />
       </DialogContent>
