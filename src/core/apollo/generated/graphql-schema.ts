@@ -9506,7 +9506,6 @@ export type UserPendingMembershipsQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -18746,7 +18745,6 @@ export type UserDetailsFragment = {
   lastName: string;
   email: string;
   phone?: string | undefined;
-  isContactable: boolean;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -18847,7 +18845,6 @@ export type UserQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -18909,12 +18906,12 @@ export type UserModelFullQuery = {
     user?:
       | {
           __typename?: 'User';
+          isContactable: boolean;
           id: string;
           firstName: string;
           lastName: string;
           email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19065,7 +19062,6 @@ export type UpdateUserMutation = {
     lastName: string;
     email: string;
     phone?: string | undefined;
-    isContactable: boolean;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -19457,7 +19453,6 @@ export type CurrentUserFullQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           account?:
             | {
                 __typename?: 'Account';
