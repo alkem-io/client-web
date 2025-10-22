@@ -1,47 +1,79 @@
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Checkbox, Button, IconButton } from '@mui/material';
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  Select,
+  MenuItem,
+  Checkbox,
+  Button,
+  IconButton,
+} from '@mui/material';
 import { BlockTitle } from '@/core/ui/typography';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
+import { useTranslation } from 'react-i18next';
+
+export interface PropertyTableProps {
+  nodeName: string;
+  properties: any[];
+  editingProperty?: { nodeName: string; index: number; data: any } | null;
+  isPropertyEditing?: (nodeName: string, index: number) => boolean;
+  onEdit?: (nodeName: string, index: number, prop: any) => void;
+  onSave?: (nodeName: string, index: number) => void;
+  onDelete?: (nodeName: string, index: number) => void;
+  onAdd?: (nodeName: string) => void;
+  onCancel?: () => void;
+  onFieldChange?: (field: string, value: any) => void;
+  readOnly?: boolean;
+}
 
 export const PropertyTable = ({
   nodeName,
   properties,
-  editingProperty,
-  isPropertyEditing,
-  onEdit,
-  onSave,
-  onDelete,
-  onAdd,
-  onCancel,
-  onFieldChange,
+  editingProperty = null,
+  isPropertyEditing = () => false,
+  onEdit = () => { },
+  onSave = () => { },
+  onDelete = () => { },
+  onAdd = () => { },
+  onCancel = () => { },
+  onFieldChange = () => { },
   readOnly = false,
-}: {
-  nodeName: string;
-  properties: any[];
-  editingProperty: { nodeName: string; index: number; data: any } | null;
-  isPropertyEditing: (nodeName: string, index: number) => boolean;
-  onEdit: (nodeName: string, index: number, prop: any) => void;
-  onSave: (nodeName: string, index: number) => void;
-  onDelete: (nodeName: string, index: number) => void;
-  onAdd: (nodeName: string) => void;
-  onCancel: () => void;
-  onFieldChange: (field: string, value: any) => void;
-  readOnly?: boolean;
-}) => {
+}: PropertyTableProps) => {
+  const { t } = useTranslation();
+
   return (
     <Box sx={{ marginTop: 2 }}>
-      <BlockTitle variant="h6">Output Properties</BlockTitle>
+      <BlockTitle variant="h6">
+        {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.title')}
+      </BlockTitle>
       <TableContainer component={Paper} sx={{ marginTop: 1 }}>
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Optional</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>
+                {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.columns.name')}
+              </TableCell>
+              <TableCell>
+                {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.columns.type')}
+              </TableCell>
+              <TableCell>
+                {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.columns.optional')}
+              </TableCell>
+              <TableCell>
+                {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.columns.description')}
+              </TableCell>
+              <TableCell>
+                {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.columns.actions')}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -65,12 +97,16 @@ export const PropertyTable = ({
                   </TableCell>
                   <TableCell>
                     {isEditing ? (
-                      <TextField
+                      <Select
                         size="small"
-                        value={displayData.type || ''}
+                        value={displayData.type || 'string'}
                         onChange={e => onFieldChange('type', e.target.value)}
                         fullWidth
-                      />
+                      >
+                        <MenuItem value="string">
+                          {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.typeOptions.string')}
+                        </MenuItem>
+                      </Select>
                     ) : (
                       prop.type || 'N/A'
                     )}
@@ -82,9 +118,9 @@ export const PropertyTable = ({
                         onChange={e => onFieldChange('optional', e.target.checked)}
                       />
                     ) : prop.optional ? (
-                      'Yes'
+                      t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.yes')
                     ) : (
-                      'No'
+                      t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.no')
                     )}
                   </TableCell>
                   <TableCell>
@@ -97,7 +133,8 @@ export const PropertyTable = ({
                         multiline
                       />
                     ) : (
-                      prop.description || 'N/A'
+                      prop.description ||
+                      t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.notAvailable')
                     )}
                   </TableCell>
                   <TableCell>
@@ -145,7 +182,7 @@ export const PropertyTable = ({
       {!readOnly && (
         <Box sx={{ display: 'flex', justifyContent: 'flex-start', marginTop: 1 }}>
           <Button variant="outlined" size="small" onClick={() => onAdd(nodeName)}>
-            + Add Property
+            {`+ ${t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.addProperty')}`}
           </Button>
         </Box>
       )}

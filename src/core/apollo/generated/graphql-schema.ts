@@ -7450,6 +7450,7 @@ export type UpdateAiPersonaInput = {
   engine?: InputMaybe<AiPersonaEngine>;
   externalConfig?: InputMaybe<ExternalConfigInput>;
   prompt?: InputMaybe<Array<Scalars['String']['input']>>;
+  promptGraph?: InputMaybe<PromptGraphInput>;
 };
 
 export type UpdateApplicationFormOnRoleSetInput = {
@@ -20221,6 +20222,57 @@ export type UpdateAiPersonaMutation = {
     __typename?: 'AiPersona';
     id: string;
     prompt: Array<string>;
+    promptGraph?:
+      | {
+          __typename?: 'PromptGraph';
+          start?: string | undefined;
+          end?: string | undefined;
+          edges?:
+            | Array<{ __typename?: 'PromptGraphEdge'; from?: string | undefined; to?: string | undefined }>
+            | undefined;
+          state?:
+            | {
+                __typename?: 'PromptGraphDataStruct';
+                title?: string | undefined;
+                type?: string | undefined;
+                properties?:
+                  | Array<{
+                      __typename?: 'PromptGraphDataPoint';
+                      description?: string | undefined;
+                      name: string;
+                      type?: string | undefined;
+                      optional?: boolean | undefined;
+                    }>
+                  | undefined;
+              }
+            | undefined;
+          nodes?:
+            | Array<{
+                __typename?: 'PromptGraphNode';
+                input_variables?: Array<string> | undefined;
+                name: string;
+                prompt?: string | undefined;
+                system: boolean;
+                output?:
+                  | {
+                      __typename?: 'PromptGraphDataStruct';
+                      title?: string | undefined;
+                      type?: string | undefined;
+                      properties?:
+                        | Array<{
+                            __typename?: 'PromptGraphDataPoint';
+                            description?: string | undefined;
+                            name: string;
+                            type?: string | undefined;
+                            optional?: boolean | undefined;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
     externalConfig?: { __typename?: 'ExternalConfig'; apiKey?: string | undefined } | undefined;
   };
 };

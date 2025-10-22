@@ -16,30 +16,23 @@ import {
 } from '@mui/material';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Lock from '@mui/icons-material/Lock';
-import startCase from 'lodash/startCase';
+import { sortBy, isEqual, startCase } from 'lodash';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { FormValueType } from './types';
-import { prepareGraph } from './prepareGraph';
+import { prepareGraph, extractVariablesFromText } from './utils';
 import { PropertyTable } from './PropertyTable';
 import { NodeVariables } from './NodeVariables';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Actions } from '@/core/ui/actions/Actions';
 import Button from '@mui/material/Button';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
+import { useTranslation } from 'react-i18next';
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-export const PromptConfigForm = ({
-  promptGraph,
-  setPrompt,
-  setIsValid,
-  isValid,
-  loading,
-  updateLoading,
-  handleSubmit,
-  t,
-}) => {
+export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handleSubmit }) => {
+  const { t } = useTranslation();
   const { values, setFieldValue } = useFormikContext<FormValueType>();
   const [editingProperty, setEditingProperty] = useState<{ nodeName: string; index: number; data: any } | null>(null);
   const availableInputVariables = useRef<Record<string, string[]>>({
@@ -120,33 +113,9 @@ export const PromptConfigForm = ({
     return editingProperty?.nodeName === nodeName && editingProperty?.index === index;
   };
 
-  useEffect(() => {
-    setFieldValue('prompt', values.prompt);
-  }, [values.prompt, setFieldValue]);
-
-  const extractVariablesFromText = (text: string) => {
-    const vars: string[] = [];
-    if (!text) {
-      return vars;
-    }
-    const re = /\{\{.*?\}\}|\{([A-Za-z0-9_\\]+)\}/g;
-    let m: RegExpExecArray | null;
-    while ((m = re.exec(text)) !== null) {
-      if (m[1]) {
-        vars.push(m[1].replaceAll('\\', ''));
-      }
-    }
-    return Array.from(new Set(vars));
-  };
-
-  const arraysEqual = (a: string[] = [], b: string[] = []) => {
-    if (a.length !== b.length) return false;
-    const sa = [...a].sort();
-    const sb = [...b].sort();
-    for (let i = 0; i < sa.length; i++) if (sa[i] !== sb[i]) return false;
-    return true;
-  };
-
+  // useEffect(() => {
+  //   setFieldValue('prompt', values.prompt);
+  // }, [values.prompt, setFieldValue]);
   useEffect(() => {
     if (!values || !values.nodes) return;
     const nodeNames = Object.keys(values.nodes);
@@ -154,7 +123,7 @@ export const PromptConfigForm = ({
       const promptText = values.nodes?.[nodeName]?.prompt || '';
       const extracted = extractVariablesFromText(promptText);
       const existing = values.nodes?.[nodeName]?.input_variables || [];
-      if (!arraysEqual(existing, extracted)) {
+      if (!isEqual(sortBy(existing), sortBy(extracted))) {
         setFieldValue(`nodes.${nodeName}.input_variables`, extracted);
       }
     });
@@ -190,76 +159,79 @@ export const PromptConfigForm = ({
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Box sx={{ flex: '0 0 70%' }}>
               <BlockTitle variant="h5" sx={{ marginBottom: 0 }}>
-                Steps
+                {t('pages.virtualContributorProfile.settings.promptGraph.stepsTitle')}
               </BlockTitle>
 
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left', marginY: 2 }}>
-                  {graphPath.map((node, index) => {
+                {graphPath.map((node, index) => {
                   const hasNextNode = index < graphPath.length - 1;
-                    return (
-                      <Box key={`${typeof node === 'string' ? node : node.name}-${index}`} sx={{ width: '100%' }}>
+                  return (
+                    <Box key={`${typeof node === 'string' ? node : node.name}-${index}`} sx={{ width: '100%' }}>
                       <>
-                          {node && typeof node === 'object' ? (
-                            <Accordion sx={{ marginBottom: 1 }}>
-                              <AccordionSummary expandIcon={<ExpandMore />}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                  <span>{startCase(node.name)}</span>
-                                  {node.system ? (
-                                    <Tooltip title="System Node - not editable">
-                                      <Lock fontSize="small" sx={{ color: 'text.secondary' }} />
-                                    </Tooltip>
-                                  ) : null}
-                                </Box>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                {(() => {
-                                  // For system nodes, only render a read-only output properties table
-                                  const propertiesArray =
-                                    values.nodes[node.name]?.output?.properties || node.output?.properties || [];
-                                  if (node.system) {
-                                    return propertiesArray && propertiesArray.length > 0 ? (
-                                      <PropertyTable nodeName={node.name} properties={propertiesArray} readOnly />
-                                    ) : null;
-                                  }
+                        {node && typeof node === 'object' ? (
+                          <Accordion sx={{ marginBottom: 1 }}>
+                            <AccordionSummary expandIcon={<ExpandMore />}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <span>{startCase(node.name)}</span>
+                                {node.system ? (
+                                  <Tooltip
+                                    title={t('pages.virtualContributorProfile.settings.promptGraph.systemNodeTooltip')}
+                                  >
+                                    <Lock fontSize="small" sx={{ color: 'text.secondary' }} />
+                                  </Tooltip>
+                                ) : null}
+                              </Box>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              {(() => {
+                                // For system nodes, only render a read-only output properties table
+                                const propertiesArray =
+                                  values.nodes[node.name]?.output?.properties || node.output?.properties || [];
 
-                                  // Non-system nodes: render variables, prompt input and editable properties
-                                  return (
-                                    <>
-                                      <NodeVariables
-                                        variables={values.nodes?.[node.name]?.input_variables || node.input_variables}
-                                        available={availableInputVariables.current[node.name]}
-                                      />
-                                      <FormikMarkdownField
-                                        name={`nodes.${node.name}.prompt`}
-                                        title="Prompt"
-                                        maxLength={MARKDOWN_TEXT_LENGTH}
-                                        onChange={value => {
-                                          setFieldValue(`nodes.${node.name}.prompt`, value);
-                                        }}
-                                      />
-                                      {(() => {
-                                        const propertiesArray =
-                                          values.nodes[node.name]?.output?.properties || node.output?.properties || [];
-                                        return propertiesArray.length > 0 ? (
-                                          <PropertyTable
-                                            nodeName={node.name}
-                                            properties={propertiesArray}
-                                            editingProperty={editingProperty}
-                                            isPropertyEditing={isPropertyEditing}
-                                            onEdit={handleEditProperty}
-                                            onSave={handleSaveProperty}
-                                            onDelete={handleDeleteProperty}
-                                            onAdd={handleAddProperty}
-                                            onCancel={handleCancelEdit}
-                                            onFieldChange={handleFieldChange}
-                                          />
-                                        ) : null;
-                                      })()}
-                                    </>
-                                  );
-                                })()}
-                              </AccordionDetails>
-                            </Accordion>
+                                if (node.system) {
+                                  return propertiesArray && propertiesArray.length > 0 ? (
+                                    <PropertyTable nodeName={node.name} properties={propertiesArray} readOnly />
+                                  ) : null;
+                                }
+
+                                // Non-system nodes: render variables, prompt input and editable properties
+                                return (
+                                  <>
+                                    <NodeVariables
+                                      variables={values.nodes?.[node.name]?.input_variables || node.input_variables}
+                                      available={availableInputVariables.current[node.name]}
+                                    />
+                                    <FormikMarkdownField
+                                      name={`nodes.${node.name}.prompt`}
+                                      title={t('pages.virtualContributorProfile.settings.promptGraph.promptFieldTitle')}
+                                      maxLength={MARKDOWN_TEXT_LENGTH}
+                                      onChange={value => {
+                                        setFieldValue(`nodes.${node.name}.prompt`, value);
+                                      }}
+                                    />
+                                    {(() => {
+                                      const propertiesArray =
+                                        values.nodes[node.name]?.output?.properties || node.output?.properties || [];
+                                      return propertiesArray.length > 0 ? (
+                                        <PropertyTable
+                                          nodeName={node.name}
+                                          properties={propertiesArray}
+                                          editingProperty={editingProperty}
+                                          isPropertyEditing={isPropertyEditing}
+                                          onEdit={handleEditProperty}
+                                          onSave={handleSaveProperty}
+                                          onDelete={handleDeleteProperty}
+                                          onAdd={handleAddProperty}
+                                          onCancel={handleCancelEdit}
+                                          onFieldChange={handleFieldChange}
+                                        />
+                                      ) : null;
+                                    })()}
+                                  </>
+                                );
+                              })()}
+                            </AccordionDetails>
+                          </Accordion>
                         ) : (
                           <Box
                             sx={{
@@ -285,7 +257,9 @@ export const PromptConfigForm = ({
               </Box>
             </Box>
             <Box sx={{ flex: '0 0 30%' }}>
-              <Caption sx={{ fontWeight: 600 }}>State Properties</Caption>
+              <Caption sx={{ fontWeight: 600 }}>
+                {t('pages.virtualContributorProfile.settings.promptGraph.statePropertiesTitle')}
+              </Caption>
               {(() => {
                 const stateProps = (promptGraph?.state?.properties ||
                   promptGraph?.state?.output?.properties ||
@@ -295,25 +269,42 @@ export const PromptConfigForm = ({
                     <Table size="small">
                       <TableHead>
                         <TableRow sx={{ borderBottom: '2px solid', borderColor: 'divider' }}>
-                          <TableCell>Name</TableCell>
-                          <TableCell>Type</TableCell>
-                          <TableCell>Optional</TableCell>
+                          <TableCell>
+                            {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.columns.name')}
+                          </TableCell>
+                          <TableCell>
+                            {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.columns.type')}
+                          </TableCell>
+                          <TableCell>
+                            {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.columns.optional')}
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {stateProps.map((prop, idx) => (
                           <>
                             <TableRow key={`row-main-${idx}`}>
-                              <TableCell>{prop?.name || 'N/A'}</TableCell>
-                              <TableCell>{prop?.type || 'N/A'}</TableCell>
-                              <TableCell>{prop?.optional ? 'Yes' : 'No'}</TableCell>
+                              <TableCell>
+                                {prop?.name ||
+                                  t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.notAvailable')}
+                              </TableCell>
+                              <TableCell>
+                                {prop?.type ||
+                                  t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.notAvailable')}
+                              </TableCell>
+                              <TableCell>
+                                {prop?.optional
+                                  ? t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.yes')
+                                  : t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.no')}
+                              </TableCell>
                             </TableRow>
                             <TableRow
                               key={`row-desc-${idx}`}
                               sx={{ borderBottom: '2px solid', borderColor: 'divider' }}
                             >
                               <TableCell colSpan={3} sx={{ color: 'text.secondary' }}>
-                                {prop?.description || 'N/A'}
+                                {prop?.description ||
+                                  t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.notAvailable')}
                               </TableCell>
                             </TableRow>
                           </>
@@ -322,14 +313,16 @@ export const PromptConfigForm = ({
                     </Table>
                   </TableContainer>
                 ) : (
-                  <Caption sx={{ marginTop: 1 }}>No state properties</Caption>
+                  <Caption sx={{ marginTop: 1 }}>
+                    {t('pages.virtualContributorProfile.settings.promptGraph.noStateProperties')}
+                  </Caption>
                 );
               })()}
             </Box>
           </Box>
 
           <Button variant="outlined" sx={{ marginTop: 1 }}>
-            + Add
+            {`+ ${t('pages.virtualContributorProfile.settings.promptGraph.addButton')}`}
           </Button>
         </Box>
         <Actions>
@@ -342,4 +335,4 @@ export const PromptConfigForm = ({
   );
 };
 
-export default PromptConfigForm;
+export default PromptGraphConfigForm;

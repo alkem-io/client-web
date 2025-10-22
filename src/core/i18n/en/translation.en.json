@@ -3161,6 +3161,38 @@
           "infoText": "Available variables: [{{availableVariables}}] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this $t(common.virtualContributor).",
           "saveBtn": "Save prompt"
         },
+        "promptGraph": {
+          "title": "Prompt Graph",
+          "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
+          "warning": "Warning: Advanced mode is intended for experienced users only. Incorrect or complex configurations may negatively affect system performance and can break the Virtual Contributor's functionality.",
+          "stepsTitle": "Steps",
+          "systemNodeTooltip": "System Node - not editable",
+          "promptFieldTitle": "Prompt",
+          "statePropertiesTitle": "State Properties",
+          "noStateProperties": "No state properties",
+          "addButton": "Add",
+          "editBtn": "Edit Prompt Graph",
+          "advancedSettingsButton": "Prompt graph advanced mode",
+          "propertyTable": {
+            "title": "Output Properties",
+            "columns": {
+              "name": "Name",
+              "type": "Type",
+              "optional": "Optional",
+              "description": "Description",
+              "actions": "Actions"
+            },
+            "yes": "Yes",
+            "no": "No",
+            "notAvailable": "N/A",
+            "addProperty": "Add Property",
+            "typeOptions": {
+              "string": "string",
+              "number": "number",
+              "boolean": "boolean"
+            }
+          }
+        },
         "externalConfig": {
           "title": "External Configuration",
           "infoText": "The $t(common.virtualContributor) is powered by an external AI service. Please provide the following information to connect to the service.",

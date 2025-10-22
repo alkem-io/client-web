@@ -14457,6 +14457,40 @@ export const UpdateAiPersonaDocument = gql`
     aiServerUpdateAiPersona(aiPersonaData: $aiPersonaData) {
       id
       prompt
+      promptGraph {
+        start
+        end
+        edges {
+          from
+          to
+        }
+        state {
+          title
+          type
+          properties {
+            description
+            name
+            type
+            optional
+          }
+        }
+        nodes {
+          input_variables
+          name
+          prompt
+          system
+          output {
+            title
+            type
+            properties {
+              description
+              name
+              type
+              optional
+            }
+          }
+        }
+      }
       externalConfig {
         apiKey
       }
