@@ -1292,16 +1292,6 @@ export type CommunicationAdminUpdateRoomStateInput = {
   roomID: Scalars['String']['input'];
 };
 
-export type CommunicationRoom = {
-  __typename?: 'CommunicationRoom';
-  /** The display name of the room */
-  displayName: Scalars['String']['output'];
-  /** The identifier of the room */
-  id: Scalars['String']['output'];
-  /** The messages that have been sent to the Room. */
-  messages: Array<Message>;
-};
-
 export type CommunicationSendMessageToCommunityLeadsInput = {
   /** The Community the message is being sent to */
   communityId: Scalars['UUID']['input'];
@@ -1316,7 +1306,7 @@ export type CommunicationSendMessageToOrganizationInput = {
   organizationId: Scalars['UUID']['input'];
 };
 
-export type CommunicationSendMessageToUserInput = {
+export type CommunicationSendMessageToUsersInput = {
   /** The message being sent */
   message: Scalars['String']['input'];
   /** All Users the message is being sent to */
@@ -3892,7 +3882,7 @@ export type MeQueryResults = {
   mySpaces: Array<MySpaceResults>;
   /** Get all notifications for the logged in user. */
   notifications: PaginatedInAppNotifications;
-  /** The number of unread notifications for the current authenticated user. */
+  /** The total number of unread notifications for the current authenticated user across all notification types. */
   notificationsUnreadCount: Scalars['Float']['output'];
   /** The Spaces the current user is a member of as a flat list. */
   spaceMembershipsFlat: Array<CommunityMembershipResult>;
@@ -3924,10 +3914,6 @@ export type MeQueryResultsNotificationsArgs = {
   filter?: InputMaybe<NotificationEventsFilterInput>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type MeQueryResultsNotificationsUnreadCountArgs = {
-  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
@@ -4290,12 +4276,10 @@ export type Mutation = {
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
-  /** Mark multiple notifications as read. If no IDs are provided, marks all user notifications as read. */
+  /** Mark notifications as read. If no filter is provided, marks all user notifications as read. If filter with types is provided, marks only those notification types as read. */
   markNotificationsAsRead: Scalars['Boolean']['output'];
-  /** Mark multiple notifications as unread. If no IDs are provided, marks all user notifications as unread. */
+  /** Mark notifications as unread. If no filter is provided, marks all user notifications as unread. If filter with types is provided, marks only those notification types as unread. */
   markNotificationsAsUnread: Scalars['Boolean']['output'];
-  /** Sends a message on the specified User`s behalf and returns the room id */
-  messageUser: Scalars['String']['output'];
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
   /** Refresh the Bodies of Knowledge on All VCs */
@@ -4340,8 +4324,10 @@ export type Mutation = {
   sendMessageToOrganization: Scalars['Boolean']['output'];
   /** Sends an comment message. Returns the id of the new Update message. */
   sendMessageToRoom: Message;
-  /** Send message to a User. */
-  sendMessageToUser: Scalars['Boolean']['output'];
+  /** Sends a message on the specified User`s behalf and returns the room id */
+  sendMessageToUserDirect: Scalars['String']['output'];
+  /** Send message to multiple Users. */
+  sendMessageToUsers: Scalars['Boolean']['output'];
   /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
   transferCallout: Callout;
   /** Transfer the specified InnovationHub to another Account. */
@@ -4805,15 +4791,11 @@ export type MutationLicenseResetOnAccountArgs = {
 };
 
 export type MutationMarkNotificationsAsReadArgs = {
-  notificationIds: Array<Scalars['String']['input']>;
+  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MutationMarkNotificationsAsUnreadArgs = {
-  notificationIds: Array<Scalars['String']['input']>;
-};
-
-export type MutationMessageUserArgs = {
-  messageData: UserSendMessageInput;
+  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MutationMoveContributionToCalloutArgs = {
@@ -4892,8 +4874,12 @@ export type MutationSendMessageToRoomArgs = {
   messageData: RoomSendMessageInput;
 };
 
-export type MutationSendMessageToUserArgs = {
-  messageData: CommunicationSendMessageToUserInput;
+export type MutationSendMessageToUserDirectArgs = {
+  messageData: UserSendMessageInput;
+};
+
+export type MutationSendMessageToUsersArgs = {
+  messageData: CommunicationSendMessageToUsersInput;
 };
 
 export type MutationTransferCalloutArgs = {
@@ -8262,8 +8248,6 @@ export type User = Contributor & {
   authentication?: Maybe<UserAuthenticationResult>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
-  /** The Community rooms this user is a member of */
-  communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The direct rooms this user is a member of */
@@ -9506,7 +9490,6 @@ export type UserPendingMembershipsQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -16649,11 +16632,11 @@ export type ForumDiscussionUpdatedSubscription = {
   };
 };
 
-export type SendMessageToUserMutationVariables = Exact<{
-  messageData: CommunicationSendMessageToUserInput;
+export type SendMessageToUsersMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToUsersInput;
 }>;
 
-export type SendMessageToUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+export type SendMessageToUsersMutation = { __typename?: 'Mutation'; sendMessageToUsers: boolean };
 
 export type SendMessageToOrganizationMutationVariables = Exact<{
   messageData: CommunicationSendMessageToOrganizationInput;
@@ -18746,7 +18729,6 @@ export type UserDetailsFragment = {
   lastName: string;
   email: string;
   phone?: string | undefined;
-  isContactable: boolean;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -18847,7 +18829,6 @@ export type UserQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -18909,12 +18890,12 @@ export type UserModelFullQuery = {
     user?:
       | {
           __typename?: 'User';
+          isContactable: boolean;
           id: string;
           firstName: string;
           lastName: string;
           email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19065,7 +19046,6 @@ export type UpdateUserMutation = {
     lastName: string;
     email: string;
     phone?: string | undefined;
-    isContactable: boolean;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -19457,7 +19437,6 @@ export type CurrentUserFullQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           account?:
             | {
                 __typename?: 'Account';
@@ -21361,10 +21340,10 @@ export type PlatformAdminVirtualContributorsListQuery = {
 };
 
 export type ShareLinkWithUserMutationVariables = Exact<{
-  messageData: CommunicationSendMessageToUserInput;
+  messageData: CommunicationSendMessageToUsersInput;
 }>;
 
-export type ShareLinkWithUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+export type ShareLinkWithUserMutation = { __typename?: 'Mutation'; sendMessageToUsers: boolean };
 
 export type PageInfoFragment = {
   __typename?: 'PageInfo';
@@ -31560,7 +31539,7 @@ export type UpdateNotificationStateMutation = {
 };
 
 export type MarkNotificationsAsReadMutationVariables = Exact<{
-  notificationIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+  types: Array<NotificationEvent> | NotificationEvent;
 }>;
 
 export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNotificationsAsRead: boolean };
@@ -33325,9 +33304,7 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment
     | undefined;
 };
 
-export type InAppNotificationsUnreadCountQueryVariables = Exact<{
-  types?: InputMaybe<Array<NotificationEvent> | NotificationEvent>;
-}>;
+export type InAppNotificationsUnreadCountQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InAppNotificationsUnreadCountQuery = {
   __typename?: 'Query';

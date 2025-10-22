@@ -1,6 +1,7 @@
 query UserModelFull($userId: UUID!) {
   lookup {
     user(ID: $userId) {
+      isContactable
       ...UserDetails
     }
   }
