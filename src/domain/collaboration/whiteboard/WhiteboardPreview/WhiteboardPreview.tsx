@@ -1,7 +1,7 @@
 import { WhiteboardIcon } from '../icon/WhiteboardIcon';
 import { useTranslation } from 'react-i18next';
 import { MouseEventHandler } from 'react';
-import { Box, Button, ButtonBase, ButtonProps, styled } from '@mui/material';
+import { Box, Button, ButtonBase, ButtonProps, styled, Theme } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import Centered from '@/core/ui/utils/Centered';
@@ -26,6 +26,8 @@ const Container = styled(Box)(({ theme }) => ({
   border: '1px solid',
   borderColor: theme.palette.divider,
   margin: gutters(1)(theme),
+  overflow: 'hidden',
+  cursor: 'pointer',
   borderRadius: theme.shape.borderRadius,
   // Button appearing only on hover:
   '& .only-on-hover': {
@@ -49,43 +51,35 @@ const Container = styled(Box)(({ theme }) => ({
     width: '100%',
     height: '100%',
     borderRadius: theme.shape.borderRadius,
-    cursor: 'pointer',
     // backgroundColor: theme.palette.background.default,
-    backdropFilter: 'blur(2px)',
+    backdropFilter: 'blur(3px)',
     zIndex: 1,
   },
 }));
 
-const ImageContainer = styled(ButtonBase)(({ theme }) => ({
+const ImageContainer = styled(ButtonBase)(() => ({
   position: 'relative',
-  aspectRatio: '2.5',
-  overflow: 'hidden',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderRadius: theme.shape.borderRadius,
   width: '100%',
+  aspectRatio: '2.5',
 }));
+
+// Common styles for the two buttons shown in the preview:
+// on top of the preview, with slightly less rounded corners and with background
+const buttonsInPreview = (theme: Theme) => ({
+  position: 'absolute',
+  borderColor: theme.palette.divider,
+  borderRadius: `${theme.shape.borderRadiusSquare}px`,
+  zIndex: 2,
+  backgroundColor: theme.palette.background.paper,
+  '&:hover': {
+    backgroundColor: theme.palette.background.default,
+  },
+});
 
 const OpenWhiteboardButton = (props: ButtonProps) => {
   const { t } = useTranslation();
   return (
-    <Button
-      variant="outlined"
-      className="only-on-hover"
-      sx={{
-        position: 'absolute',
-        borderColor: theme => theme.palette.divider,
-        borderRadius: theme => `${theme.shape.borderRadiusSquare}px`,
-        zIndex: 2,
-        backgroundColor: theme => theme.palette.background.paper,
-        '&:hover': {
-          backgroundColor: theme => theme.palette.background.default,
-        },
-        ...props.sx,
-      }}
-      {...props}
-    >
+    <Button variant="outlined" className="only-on-hover" sx={theme => buttonsInPreview(theme)} {...props}>
       {t('callout.whiteboard.clickToSee')}
     </Button>
   );
@@ -93,21 +87,18 @@ const OpenWhiteboardButton = (props: ButtonProps) => {
 
 const WhiteboardChipButton = (props: ButtonProps) => {
   const { t } = useTranslation();
+
   return (
     <Button
       variant="outlined"
       startIcon={<WhiteboardIcon />}
       size="small"
-      sx={{
-        position: 'absolute',
-        top: gutters(1),
-        left: gutters(1),
+      sx={theme => ({
+        ...buttonsInPreview(theme),
+        top: gutters(1)(theme),
+        left: gutters(1)(theme),
         textTransform: 'none',
-        borderColor: theme => theme.palette.divider,
-        borderRadius: theme => `${theme.shape.borderRadiusSquare}px`,
-        zIndex: 2,
-        ...props.sx,
-      }}
+      })}
       {...props}
     >
       {t('common.Whiteboard')}
@@ -123,7 +114,7 @@ const WhiteboardPreview = ({ displayName, whiteboard, onClick }: WhiteboardPrevi
     <Container onClick={onClick}>
       <ImageContainer>
         {!imageSrc && defaultImage && <Centered>{defaultImage}</Centered>}
-        {imageSrc && <ImageFadeIn sx={{ minHeight: '100%' }} alt={displayName} onClick={onClick} />}
+        {imageSrc && <ImageFadeIn src={imageSrc} alt={displayName} onClick={onClick} width="100%" height="100%" />}
       </ImageContainer>
       <WhiteboardChipButton onClick={onClick} />
       <OpenWhiteboardButton onClick={onClick} />

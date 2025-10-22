@@ -4,7 +4,7 @@ import { WhiteboardPreviewSettings } from './WhiteboardPreviewSettings';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import getWhiteboardPreviewImage from './getWhiteboardPreviewImage';
 import { getDefaultCropConfigForWhiteboardPreview } from './getDefaultCropConfigForWhiteboardPreview';
-import { WhiteboardPreviewVisualDimensions } from './WhiteboardDimensions';
+import { CardVisualDimensions, WhiteboardPreviewVisualDimensions } from './WhiteboardDimensions';
 
 export interface PreviewImageDimensions {
   maxWidth: number;
@@ -42,6 +42,7 @@ export const generateWhiteboardPreviewImages = async <Whiteboard extends Whitebo
   if (!excalidrawAPI || !whiteboard) {
     return;
   }
+  // Skip generation if not forced and mode is Fixed
   if (!force && whiteboard?.previewSettings.mode === WhiteboardPreviewMode.Fixed) {
     return;
   }
@@ -61,7 +62,18 @@ export const generateWhiteboardPreviewImages = async <Whiteboard extends Whitebo
           );
         }
       } else if (visualType === VisualType.Card) {
-        return whiteboard.previewSettings.coordinates;
+        /*if (whiteboard.previewSettings.mode !== WhiteboardPreviewMode.Auto && whiteboard.previewSettings.coordinates) {
+          return whiteboard.previewSettings.coordinates;
+        } else {
+
+        }*/
+        return getDefaultCropConfigForWhiteboardPreview(
+          imageWidth,
+          imageHeight,
+          CardVisualDimensions.aspectRatio,
+          CardVisualDimensions.maxWidth,
+          CardVisualDimensions.maxHeight
+        );
       }
     };
   };
@@ -117,11 +129,11 @@ export const useUploadWhiteboardVisuals = () => {
         }
       }
       if (visualsIds.previewVisualId) {
-        const previewImage = previewImages?.find(pi => pi.visualType === VisualType.Banner);
+        const previewImage = previewImages?.find(pi => pi.visualType === VisualType.WhiteboardPreview);
         if (previewImage) {
           await uploadVisual({
             variables: {
-              file: new File([previewImage.imageData], `/Whiteboard-${whiteboardNameId}-banner.png`, {
+              file: new File([previewImage.imageData], `/Whiteboard-${whiteboardNameId}-whiteboard-preview.png`, {
                 type: 'image/png',
               }),
               uploadData: {

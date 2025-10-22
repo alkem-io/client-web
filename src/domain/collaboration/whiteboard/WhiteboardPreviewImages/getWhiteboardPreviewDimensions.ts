@@ -7,7 +7,7 @@ type ExcalidrawDimensions = {
 };
 
 /**
- *
+ * @deprecated ? //!!
  * @param params The Alkemio Visual expected dimensions
  * @returns Returns a function that will be called by Excalidraw API when
  * exporting a Whiteboard to an image

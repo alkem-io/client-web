@@ -24,3 +24,11 @@ export const WhiteboardPreviewVisualDimensions: PreviewImageDimensions = {
   maxHeight: 614,
   aspectRatio: 2.5,
 };
+
+export const CardVisualDimensions: PreviewImageDimensions = {
+  minWidth: 307,
+  maxWidth: 410,
+  minHeight: 192,
+  maxHeight: 256,
+  aspectRatio: 1.6,
+};

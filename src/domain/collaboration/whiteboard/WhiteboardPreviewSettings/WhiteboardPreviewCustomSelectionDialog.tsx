@@ -109,7 +109,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
         onClose={onClose}
         icon={<WhiteboardPreviewSettingsIcon />}
       />
-      <DialogContent>
+      <DialogContent sx={{ userSelect: 'none' }}>
         {!whiteboardPreviewImage && <Loading />}
         {whiteboardPreviewImage && (
           <Box>
@@ -125,10 +125,14 @@ const WhiteboardPreviewCustomSelectionDialog = ({
             )}
           </Box>
         )}
-        <pre>{JSON.stringify(crop)}</pre>
       </DialogContent>
       <DialogFooter>
         <DialogActions>
+          <Box>
+            <pre>Img:{JSON.stringify({ width: imgRef.current?.width, height: imgRef.current?.height })}</pre>
+            <pre>Constraints:{JSON.stringify(constraints)}</pre>
+            <pre>Crop:{JSON.stringify(crop)}</pre>
+          </Box>
           <Button variant="outlined" startIcon={<Replay />} onClick={resetCrop}>
             {t('pages.whiteboard.previewSettings.cropDialog.reset')}
           </Button>
