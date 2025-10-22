@@ -50,9 +50,6 @@ export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
       }
       url
     }
-    ... on User {
-      isContactable
-    }
   }
   ${VisualModelFragmentDoc}
 `;
@@ -367,7 +364,6 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
       ... on User {
         firstName
         lastName
-        isContactable
       }
     }
   }
@@ -832,9 +828,6 @@ export const ContributorDetailsFragmentDoc = gql`
         country
         city
       }
-    }
-    ... on User {
-      isContactable
     }
   }
   ${VisualModelFragmentDoc}
@@ -1918,7 +1911,6 @@ export const SpaceAboutDetailsFragmentDoc = gql`
             country
           }
         }
-        isContactable
       }
     }
     isContentPublic
@@ -1937,9 +1929,6 @@ export const SpaceAboutDetailsFragmentDoc = gql`
           country
         }
         type
-      }
-      ... on User {
-        isContactable
       }
     }
     profile {
@@ -12964,7 +12953,6 @@ export const UserDocument = gql`
   query user($id: UUID!) {
     lookup {
       user(ID: $id) {
-        email
         ...UserDetails
       }
     }
@@ -19005,9 +18993,6 @@ export const SpaceAccountDocument = gql`
                 country
               }
               url
-            }
-            ... on User {
-              isContactable
             }
           }
         }
