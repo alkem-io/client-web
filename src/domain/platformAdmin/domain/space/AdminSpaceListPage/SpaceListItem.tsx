@@ -1,10 +1,10 @@
 import React, { MouseEventHandler, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { Button, CircularProgress, ListItemIcon } from '@mui/material';
+import { Button, Chip, CircularProgress, ListItemIcon } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useTranslation } from 'react-i18next';
-import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { SpacePrivacyMode, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import {
   refetchPlatformAdminSpacesListQuery,
   useUpdateSpacePlatformSettingsMutation,
@@ -24,6 +24,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { FormikSelectValue } from '@/core/ui/forms/FormikSelect';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import ManageLicensePlansDialog from './ManageLicensePlansDialog';
+import { AdminListItemLayout, AccountOwnerColumn } from '@/domain/platformAdmin/components/AdminListItemLayout';
 
 export interface SpacePlatformSettings {
   nameId: string;
@@ -33,9 +34,19 @@ export interface SpacePlatformSettings {
 interface SpaceListItemV2Props extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
   canUpdate: boolean;
+  privacyMode: SpacePrivacyMode;
+  accountOwner?: string;
 }
 
-const SpaceListItem = ({ spaceId, nameId, visibility, canUpdate, ...props }: SpaceListItemV2Props) => {
+const SpaceListItem = ({
+  spaceId,
+  nameId,
+  visibility,
+  privacyMode,
+  accountOwner,
+  canUpdate,
+  ...props
+}: SpaceListItemV2Props) => {
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
   const [isManageLicensePlansDialogOpen, setIsManageLicensePlansDialogOpen] = useState(false);
 
@@ -95,6 +106,42 @@ const SpaceListItem = ({ spaceId, nameId, visibility, canUpdate, ...props }: Spa
     <>
       <ListItemLink
         {...props}
+        primary={
+          <AdminListItemLayout
+            name={props.primary}
+            columns={[
+              {
+                flex: 1,
+                minWidth: '100px',
+                content: (
+                  <Chip
+                    label={visibility}
+                    size="small"
+                    color={visibility === SpaceVisibility.Active ? 'success' : 'default'}
+                    variant="outlined"
+                  />
+                ),
+              },
+              {
+                flex: 1,
+                minWidth: '100px',
+                content: (
+                  <Chip
+                    label={privacyMode}
+                    size="small"
+                    color={privacyMode === SpacePrivacyMode.Public ? 'info' : 'default'}
+                    variant="outlined"
+                  />
+                ),
+              },
+              {
+                flex: 1,
+                minWidth: '150px',
+                content: <AccountOwnerColumn accountOwner={accountOwner} />,
+              },
+            ]}
+          />
+        }
         actions={
           <ListItemIcon onClick={saving ? undefined : handlePlatformSettingsClick}>
             {saving ? <CircularProgress size={24} /> : <SettingsOutlinedIcon />}

@@ -12,31 +12,45 @@ import {
   TableRow,
 } from '@mui/material';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import RemoveModal from '@/core/ui/dialogs/RemoveModal';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
-import LoadingListItem from './LoadingListItem';
+import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
 import { times } from 'lodash';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContent from '@/core/ui/content/PageContent';
-import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import { BlockTitle, CardTitle } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 
-export interface SearchableListProps<Item extends SearchableListItem> {
-  data: Item[] | undefined;
-  active?: number | string;
+export interface AdminTableColumn<Item extends AdminSearchableTableItem = AdminSearchableTableItem> {
+  header: string;
+  flex?: number;
+  minWidth?: string;
+  render: (item: Item) => ReactNode;
+}
+
+export interface AdminSearchableTableItem {
+  id: string;
+  value: string;
+  url: string; // link target for the Name column
+  // Additional properties for custom columns should be declared in the extending item interface
+}
+
+export interface AdminSearchableTableProps<Item extends AdminSearchableTableItem> {
+  data?: Item[]; // optional, defaults to empty array
+  columns?: AdminTableColumn<Item>[];
   onDelete?: (item: Item) => void;
   loading: boolean;
-  fetchMore: () => Promise<void>;
+  fetchMore?: () => Promise<void>; // now optional to enable client-side mode
   pageSize: number;
   firstPageSize?: number;
   searchTerm: string;
   onSearchTermChange: (searchTerm: string) => void;
   totalCount?: number;
-  hasMore: boolean | undefined;
+  hasMore?: boolean; // optional for client-side mode
   itemActions?: (item: Item) => ReactNode;
+  clientSide?: boolean; // when true, component performs lazy loading over provided full dataset
 }
 
 export interface SearchableListItem {
@@ -52,10 +66,13 @@ export interface SearchableListItem {
 }
 
 /**
- * @deprecated - use AdminSearchableTable instead
+ * Enhanced table component for admin pages with support for custom columns
+ * Maintains the table structure with headers while allowing flexible column configuration
+ * Handles pagination internally via useLazyLoading
  */
-const SimpleSearchableList = <Item extends SearchableListItem>({
+const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
   data = [],
+  columns = [],
   onDelete,
   loading,
   fetchMore,
@@ -66,10 +83,28 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
   totalCount,
   hasMore = false,
   itemActions,
-}: SearchableListProps<Item>) => {
+  clientSide = false,
+}: AdminSearchableTableProps<Item>) => {
   const { t } = useTranslation();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
-  const [itemToRemove, setItemToRemove] = useState<SearchableListItem | null>(null);
+  const [itemToRemove, setItemToRemove] = useState<AdminSearchableTableItem | null>(null);
+  // client-side lazy loading state
+  const [displayedCount, setDisplayedCount] = useState(firstPageSize);
+
+  // Reset displayed items when data changes or search term changes (client-side mode only)
+  useEffect(() => {
+    if (clientSide) {
+      setDisplayedCount(firstPageSize);
+    }
+  }, [clientSide, firstPageSize, searchTerm, data]);
+
+  const effectiveData = clientSide ? data.slice(0, displayedCount) : data;
+  const internalHasMore = clientSide ? displayedCount < data.length : !!hasMore && !!fetchMore;
+  const internalFetchMore = clientSide
+    ? async () => {
+        setDisplayedCount(prev => Math.min(prev + pageSize, data.length));
+      }
+    : fetchMore || (async () => {});
 
   const Loader = useMemo(
     () =>
@@ -85,9 +120,9 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
   );
 
   const loader = useLazyLoading(Loader, {
-    hasMore,
+    hasMore: internalHasMore,
     loading,
-    fetchMore,
+    fetchMore: internalFetchMore,
   });
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +137,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
     }
   };
 
-  const openModal = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: SearchableListItem): void => {
+  const openModal = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: AdminSearchableTableItem): void => {
     e.preventDefault();
     setModalOpened(true);
     setItemToRemove(item);
@@ -126,7 +161,10 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
         />
       </FormControl>
       {typeof totalCount === 'undefined' ? null : (
-        <InputLabel> {t('components.searchableList.info', { count: data.length, total: totalCount })}</InputLabel>
+        <InputLabel>
+          {' '}
+          {t('components.searchableList.info', { count: effectiveData.length, total: totalCount })}
+        </InputLabel>
       )}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -139,21 +177,33 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
                 background: theme => theme.palette.primary.main,
               }}
             >
-              <TableCell component="th" scope="row">
+              {/* Name column header */}
+              <TableCell component="th" scope="col" sx={{ flex: 2 }}>
                 <CardTitle color="primary.contrastText">Name</CardTitle>
               </TableCell>
-              <TableCell component="th" scope="row" sx={{ flex: 1 }}>
-                &nbsp;
-              </TableCell>
-              <TableCell component="th" scope="row">
+
+              {/* Custom column headers */}
+              {columns.map((column, index) => (
+                <TableCell
+                  key={index}
+                  component="th"
+                  scope="col"
+                  sx={{ flex: column.flex || 1, minWidth: column.minWidth || '100px' }}
+                >
+                  <CardTitle color="primary.contrastText">{column.header}</CardTitle>
+                </TableCell>
+              ))}
+
+              {/* Actions column header */}
+              <TableCell component="th" scope="col" sx={{ minWidth: '100px' }}>
                 <CardTitle color="primary.contrastText">Actions</CardTitle>
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading && !data
+            {loading && !effectiveData
               ? times(firstPageSize, i => <LoadingListItem key={`__loading_${i}`} />)
-              : data.map((item, index) => (
+              : effectiveData.map((item, index) => (
                   <TableRow
                     key={item.id}
                     sx={{
@@ -161,26 +211,32 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
                       '&:last-child td, &:last-child th': { border: 0 },
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'space-between',
                     }}
                   >
-                    <TableCell component="th" scope="row" sx={{ paddingY: 1 }}>
-                      {item.avatar ? (
-                        <ContributorCardHorizontal
-                          profile={{
-                            displayName: item.value,
-                            url: item.url,
-                            avatar: item.avatar,
-                          }}
-                          seamless
-                        />
-                      ) : (
-                        <BlockTitle component={RouterLink} to={item.url}>
-                          {item.value}
-                        </BlockTitle>
-                      )}
+                    {/* Name column */}
+                    <TableCell component="th" scope="row" sx={{ paddingY: 1, flex: 2 }}>
+                      <BlockTitle component={RouterLink} to={item.url}>
+                        {item.value}
+                      </BlockTitle>
                     </TableCell>
-                    <TableCell component="th" scope="row" sx={{ paddingY: 1 }}>
+
+                    {/* Custom columns */}
+                    {columns.map((column, colIndex) => (
+                      <TableCell
+                        key={colIndex}
+                        component="td"
+                        sx={{
+                          paddingY: 1,
+                          flex: column.flex || 1,
+                          minWidth: column.minWidth || '100px',
+                        }}
+                      >
+                        {column.render(item)}
+                      </TableCell>
+                    ))}
+
+                    {/* Actions column */}
+                    <TableCell component="td" sx={{ paddingY: 1, minWidth: '100px' }}>
                       <Actions>
                         {renderItemActions(item)}
                         {onDelete && (
@@ -206,4 +262,4 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
   );
 };
 
-export default SimpleSearchableList;
+export default AdminSearchableTable;
