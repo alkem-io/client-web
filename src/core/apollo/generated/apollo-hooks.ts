@@ -15954,6 +15954,18 @@ export const PlatformAdminInnovationHubsDocument = gql`
       innovationHubs {
         id
         subdomain
+        listedInStore
+        searchVisibility
+        account {
+          id
+          host {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
         profile {
           id
           displayName
@@ -16036,6 +16048,15 @@ export const PlatformAdminInnovationPacksDocument = gql`
     platformAdmin {
       innovationPacks {
         id
+        listedInStore
+        searchVisibility
+        provider {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
         profile {
           id
           displayName
@@ -16539,6 +16560,21 @@ export const PlatformAdminSpacesListDocument = gql`
         id
         nameID
         visibility
+        settings {
+          privacy {
+            mode
+          }
+        }
+        account {
+          id
+          host {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
         about {
           id
           profile {
@@ -16963,6 +16999,18 @@ export const PlatformAdminVirtualContributorsListDocument = gql`
     platformAdmin {
       virtualContributors {
         id
+        listedInStore
+        searchVisibility
+        account {
+          id
+          host {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
         authorization {
           id
           myPrivileges
