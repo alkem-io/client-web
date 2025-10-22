@@ -11,5 +11,4 @@ export interface AuthorModel {
   city?: string;
   country?: string;
   type?: ProfileType;
-  isContactable: boolean;
 }
