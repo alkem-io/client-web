@@ -1,5 +1,5 @@
-mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
-  sendMessageToUser(messageData: $messageData)
+mutation sendMessageToUsers($messageData: CommunicationSendMessageToUsersInput!) {
+  sendMessageToUsers(messageData: $messageData)
 }
 
 mutation sendMessageToOrganization($messageData: CommunicationSendMessageToOrganizationInput!) {

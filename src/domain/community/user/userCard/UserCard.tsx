@@ -42,7 +42,7 @@ const UserCard = ({
   url,
   roleName,
   loading,
-  isContactable = false,
+  isContactable = true,
   onContact,
   onCardClick = noop,
   isExpandable = true,
