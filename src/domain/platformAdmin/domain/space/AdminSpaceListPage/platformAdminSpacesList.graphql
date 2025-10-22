@@ -4,6 +4,21 @@ query platformAdminSpacesList {
       id
       nameID
       visibility
+      settings {
+        privacy {
+          mode
+        }
+      }
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
       about {
         id
         profile {

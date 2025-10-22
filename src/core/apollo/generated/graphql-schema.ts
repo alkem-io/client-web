@@ -1292,16 +1292,6 @@ export type CommunicationAdminUpdateRoomStateInput = {
   roomID: Scalars['String']['input'];
 };
 
-export type CommunicationRoom = {
-  __typename?: 'CommunicationRoom';
-  /** The display name of the room */
-  displayName: Scalars['String']['output'];
-  /** The identifier of the room */
-  id: Scalars['String']['output'];
-  /** The messages that have been sent to the Room. */
-  messages: Array<Message>;
-};
-
 export type CommunicationSendMessageToCommunityLeadsInput = {
   /** The Community the message is being sent to */
   communityId: Scalars['UUID']['input'];
@@ -1316,7 +1306,7 @@ export type CommunicationSendMessageToOrganizationInput = {
   organizationId: Scalars['UUID']['input'];
 };
 
-export type CommunicationSendMessageToUserInput = {
+export type CommunicationSendMessageToUsersInput = {
   /** The message being sent */
   message: Scalars['String']['input'];
   /** All Users the message is being sent to */
@@ -3892,7 +3882,7 @@ export type MeQueryResults = {
   mySpaces: Array<MySpaceResults>;
   /** Get all notifications for the logged in user. */
   notifications: PaginatedInAppNotifications;
-  /** The number of unread notifications for the current authenticated user. */
+  /** The total number of unread notifications for the current authenticated user across all notification types. */
   notificationsUnreadCount: Scalars['Float']['output'];
   /** The Spaces the current user is a member of as a flat list. */
   spaceMembershipsFlat: Array<CommunityMembershipResult>;
@@ -3924,10 +3914,6 @@ export type MeQueryResultsNotificationsArgs = {
   filter?: InputMaybe<NotificationEventsFilterInput>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type MeQueryResultsNotificationsUnreadCountArgs = {
-  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
@@ -4290,12 +4276,10 @@ export type Mutation = {
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
-  /** Mark multiple notifications as read. If no IDs are provided, marks all user notifications as read. */
+  /** Mark notifications as read. If no filter is provided, marks all user notifications as read. If filter with types is provided, marks only those notification types as read. */
   markNotificationsAsRead: Scalars['Boolean']['output'];
-  /** Mark multiple notifications as unread. If no IDs are provided, marks all user notifications as unread. */
+  /** Mark notifications as unread. If no filter is provided, marks all user notifications as unread. If filter with types is provided, marks only those notification types as unread. */
   markNotificationsAsUnread: Scalars['Boolean']['output'];
-  /** Sends a message on the specified User`s behalf and returns the room id */
-  messageUser: Scalars['String']['output'];
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
   /** Refresh the Bodies of Knowledge on All VCs */
@@ -4340,8 +4324,10 @@ export type Mutation = {
   sendMessageToOrganization: Scalars['Boolean']['output'];
   /** Sends an comment message. Returns the id of the new Update message. */
   sendMessageToRoom: Message;
-  /** Send message to a User. */
-  sendMessageToUser: Scalars['Boolean']['output'];
+  /** Sends a message on the specified User`s behalf and returns the room id */
+  sendMessageToUserDirect: Scalars['String']['output'];
+  /** Send message to multiple Users. */
+  sendMessageToUsers: Scalars['Boolean']['output'];
   /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
   transferCallout: Callout;
   /** Transfer the specified InnovationHub to another Account. */
@@ -4805,15 +4791,11 @@ export type MutationLicenseResetOnAccountArgs = {
 };
 
 export type MutationMarkNotificationsAsReadArgs = {
-  notificationIds: Array<Scalars['String']['input']>;
+  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MutationMarkNotificationsAsUnreadArgs = {
-  notificationIds: Array<Scalars['String']['input']>;
-};
-
-export type MutationMessageUserArgs = {
-  messageData: UserSendMessageInput;
+  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MutationMoveContributionToCalloutArgs = {
@@ -4892,8 +4874,12 @@ export type MutationSendMessageToRoomArgs = {
   messageData: RoomSendMessageInput;
 };
 
-export type MutationSendMessageToUserArgs = {
-  messageData: CommunicationSendMessageToUserInput;
+export type MutationSendMessageToUserDirectArgs = {
+  messageData: UserSendMessageInput;
+};
+
+export type MutationSendMessageToUsersArgs = {
+  messageData: CommunicationSendMessageToUsersInput;
 };
 
 export type MutationTransferCalloutArgs = {
@@ -8288,8 +8274,6 @@ export type User = Contributor & {
   authentication?: Maybe<UserAuthenticationResult>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
-  /** The Community rooms this user is a member of */
-  communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The direct rooms this user is a member of */
@@ -8889,7 +8873,6 @@ export type InnovationPackProfilePageQuery = {
               }
             | {
                 __typename?: 'User';
-                isContactable: boolean;
                 id: string;
                 profile: {
                   __typename?: 'Profile';
@@ -8952,6 +8935,21 @@ export type InnovationPackProfilePageQuery = {
                   uri: string;
                 }>
               | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
           };
           templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
         }
@@ -8987,6 +8985,21 @@ export type InnovationPackProfileFragment = {
     | undefined;
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+    | undefined;
+  avatar?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        alternativeText?: string | undefined;
+      }
     | undefined;
 };
 
@@ -9026,7 +9039,6 @@ export type AdminInnovationPackQuery = {
               }
             | {
                 __typename?: 'User';
-                isContactable: boolean;
                 id: string;
                 profile: {
                   __typename?: 'Profile';
@@ -9088,6 +9100,21 @@ export type AdminInnovationPackQuery = {
                   description?: string | undefined;
                   uri: string;
                 }>
+              | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
               | undefined;
           };
           templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
@@ -9130,7 +9157,6 @@ type InnovationPackProviderProfileWithAvatar_Organization_Fragment = {
 
 type InnovationPackProviderProfileWithAvatar_User_Fragment = {
   __typename?: 'User';
-  isContactable: boolean;
   id: string;
   profile: {
     __typename?: 'Profile';
@@ -9209,7 +9235,6 @@ export type InnovationPackCardFragment = {
       }
     | {
         __typename?: 'User';
-        isContactable: boolean;
         id: string;
         profile: {
           __typename?: 'Profile';
@@ -9571,7 +9596,6 @@ export type UserPendingMembershipsQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -10754,7 +10778,6 @@ export type ActivityLogMemberJoinedFragment = {
         __typename?: 'User';
         firstName: string;
         lastName: string;
-        isContactable: boolean;
         id: string;
         profile: {
           __typename?: 'Profile';
@@ -11082,7 +11105,6 @@ export type ActivityCreatedSubscription = {
                 __typename?: 'User';
                 firstName: string;
                 lastName: string;
-                isContactable: boolean;
                 id: string;
                 profile: {
                   __typename?: 'Profile';
@@ -11288,7 +11310,6 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
         __typename?: 'User';
         firstName: string;
         lastName: string;
-        isContactable: boolean;
         id: string;
         profile: {
           __typename?: 'Profile';
@@ -11956,7 +11977,6 @@ export type ActivityLogOnCollaborationQuery = {
               __typename?: 'User';
               firstName: string;
               lastName: string;
-              isContactable: boolean;
               id: string;
               profile: {
                 __typename?: 'Profile';
@@ -12487,7 +12507,6 @@ export type UpdateCalloutContentMutation = {
                 }
               | {
                   __typename?: 'User';
-                  isContactable: boolean;
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -12859,7 +12878,6 @@ export type UpdateCalloutVisibilityMutation = {
                 }
               | {
                   __typename?: 'User';
-                  isContactable: boolean;
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -13228,7 +13246,6 @@ export type CalloutContributionCommentsQuery = {
                         }
                       | {
                           __typename?: 'User';
-                          isContactable: boolean;
                           id: string;
                           profile: {
                             __typename?: 'Profile';
@@ -14044,7 +14061,6 @@ export type CreateCalloutMutation = {
                 }
               | {
                   __typename?: 'User';
-                  isContactable: boolean;
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -14544,7 +14560,6 @@ export type CalloutDetailsQuery = {
                       }
                     | {
                         __typename?: 'User';
-                        isContactable: boolean;
                         id: string;
                         profile: {
                           __typename?: 'Profile';
@@ -14958,7 +14973,6 @@ export type CalloutDetailsFragment = {
               }
             | {
                 __typename?: 'User';
-                isContactable: boolean;
                 id: string;
                 profile: {
                   __typename?: 'Profile';
@@ -16193,7 +16207,6 @@ export type CreateDiscussionMutation = {
             }
           | {
               __typename?: 'User';
-              isContactable: boolean;
               id: string;
               profile: {
                 __typename?: 'Profile';
@@ -16337,7 +16350,6 @@ export type UpdateDiscussionMutation = {
             }
           | {
               __typename?: 'User';
-              isContactable: boolean;
               id: string;
               profile: {
                 __typename?: 'Profile';
@@ -16478,7 +16490,6 @@ export type DiscussionDetailsFragment = {
           }
         | {
             __typename?: 'User';
-            isContactable: boolean;
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -16713,7 +16724,6 @@ export type PlatformDiscussionQuery = {
                     }
                   | {
                       __typename?: 'User';
-                      isContactable: boolean;
                       id: string;
                       profile: {
                         __typename?: 'Profile';
@@ -16830,11 +16840,11 @@ export type ForumDiscussionUpdatedSubscription = {
   };
 };
 
-export type SendMessageToUserMutationVariables = Exact<{
-  messageData: CommunicationSendMessageToUserInput;
+export type SendMessageToUsersMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToUsersInput;
 }>;
 
-export type SendMessageToUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+export type SendMessageToUsersMutation = { __typename?: 'Mutation'; sendMessageToUsers: boolean };
 
 export type SendMessageToOrganizationMutationVariables = Exact<{
   messageData: CommunicationSendMessageToOrganizationInput;
@@ -16908,7 +16918,6 @@ export type MessageDetailsFragment = {
       }
     | {
         __typename?: 'User';
-        isContactable: boolean;
         id: string;
         profile: {
           __typename?: 'Profile';
@@ -17024,7 +17033,6 @@ export type CommentsWithMessagesFragment = {
         }
       | {
           __typename?: 'User';
-          isContactable: boolean;
           id: string;
           profile: {
             __typename?: 'Profile';
@@ -17269,7 +17277,6 @@ export type RoomEventsSubscription = {
                 }
               | {
                   __typename?: 'User';
-                  isContactable: boolean;
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -17438,7 +17445,6 @@ export type CommunityUpdatesQuery = {
                     }
                   | {
                       __typename?: 'User';
-                      isContactable: boolean;
                       id: string;
                       profile: {
                         __typename?: 'Profile';
@@ -18043,7 +18049,6 @@ type ContributorDetails_Organization_Fragment = {
 
 type ContributorDetails_User_Fragment = {
   __typename?: 'User';
-  isContactable: boolean;
   id: string;
   profile: {
     __typename?: 'Profile';
@@ -18932,7 +18937,6 @@ export type UserDetailsFragment = {
   lastName: string;
   email: string;
   phone?: string | undefined;
-  isContactable: boolean;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -19028,12 +19032,11 @@ export type UserQuery = {
     user?:
       | {
           __typename?: 'User';
-          email: string;
           id: string;
           firstName: string;
           lastName: string;
+          email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19095,12 +19098,12 @@ export type UserModelFullQuery = {
     user?:
       | {
           __typename?: 'User';
+          isContactable: boolean;
           id: string;
           firstName: string;
           lastName: string;
           email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19251,7 +19254,6 @@ export type UpdateUserMutation = {
     lastName: string;
     email: string;
     phone?: string | undefined;
-    isContactable: boolean;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -19643,7 +19645,6 @@ export type CurrentUserFullQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
-          isContactable: boolean;
           account?:
             | {
                 __typename?: 'Account';
@@ -21250,6 +21251,25 @@ export type PlatformAdminInnovationHubsQuery = {
       __typename?: 'InnovationHub';
       id: string;
       subdomain: string;
+      listedInStore: boolean;
+      searchVisibility: SearchVisibility;
+      account: {
+        __typename?: 'Account';
+        id: string;
+        host?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | undefined;
+      };
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
   };
@@ -21264,6 +21284,20 @@ export type PlatformAdminInnovationPacksQuery = {
     innovationPacks: Array<{
       __typename?: 'InnovationPack';
       id: string;
+      listedInStore: boolean;
+      searchVisibility: SearchVisibility;
+      provider:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
   };
@@ -21399,6 +21433,27 @@ export type PlatformAdminSpacesListQuery = {
       id: string;
       nameID: string;
       visibility: SpaceVisibility;
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      };
+      account: {
+        __typename?: 'Account';
+        id: string;
+        host?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | undefined;
+      };
       about: {
         __typename?: 'SpaceAbout';
         id: string;
@@ -21529,6 +21584,31 @@ export type PlatformAdminVirtualContributorsListQuery = {
     virtualContributors: Array<{
       __typename?: 'VirtualContributor';
       id: string;
+      listedInStore: boolean;
+      searchVisibility: SearchVisibility;
+      account?:
+        | {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
+          }
+        | undefined;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
@@ -21547,10 +21627,10 @@ export type PlatformAdminVirtualContributorsListQuery = {
 };
 
 export type ShareLinkWithUserMutationVariables = Exact<{
-  messageData: CommunicationSendMessageToUserInput;
+  messageData: CommunicationSendMessageToUsersInput;
 }>;
 
-export type ShareLinkWithUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+export type ShareLinkWithUserMutation = { __typename?: 'Mutation'; sendMessageToUsers: boolean };
 
 export type PageInfoFragment = {
   __typename?: 'PageInfo';
@@ -21664,7 +21744,6 @@ export type SpaceAboutDetailsQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                isContactable: boolean;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -21711,7 +21790,6 @@ export type SpaceAboutDetailsQuery = {
                 }
               | {
                   __typename?: 'User';
-                  isContactable: boolean;
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -21895,7 +21973,6 @@ export type SpaceAboutFullQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                isContactable: boolean;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -21942,7 +22019,6 @@ export type SpaceAboutFullQuery = {
                 }
               | {
                   __typename?: 'User';
-                  isContactable: boolean;
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -22145,7 +22221,6 @@ export type SpaceAboutDetailsFragment = {
     leadUsers: Array<{
       __typename?: 'User';
       id: string;
-      isContactable: boolean;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -22180,7 +22255,6 @@ export type SpaceAboutDetailsFragment = {
       }
     | {
         __typename?: 'User';
-        isContactable: boolean;
         id: string;
         profile: {
           __typename?: 'Profile';
@@ -23050,7 +23124,6 @@ export type UpdateSpaceMutation = {
         leadUsers: Array<{
           __typename?: 'User';
           id: string;
-          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -23085,7 +23158,6 @@ export type UpdateSpaceMutation = {
           }
         | {
             __typename?: 'User';
-            isContactable: boolean;
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -23228,7 +23300,6 @@ export type SpaceInfoFragment = {
       leadUsers: Array<{
         __typename?: 'User';
         id: string;
-        isContactable: boolean;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -23263,7 +23334,6 @@ export type SpaceInfoFragment = {
         }
       | {
           __typename?: 'User';
-          isContactable: boolean;
           id: string;
           profile: {
             __typename?: 'Profile';
@@ -23513,6 +23583,20 @@ export type SpacePermissionsAndEntitlementsQuery = {
   };
 };
 
+export type SpaceStorageAggregatorIdQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceStorageAggregatorIdQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | { __typename?: 'Space'; id: string; storageAggregator: { __typename?: 'StorageAggregator'; id: string } }
+      | undefined;
+  };
+};
+
 export type SubspacePageQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
 }>;
@@ -23738,7 +23822,6 @@ export type SpacePageQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                isContactable: boolean;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -23880,7 +23963,6 @@ export type SpacePageQuery = {
                 }
               | {
                   __typename?: 'User';
-                  isContactable: boolean;
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -24034,7 +24116,6 @@ export type SpacePageFragment = {
       leadUsers: Array<{
         __typename?: 'User';
         id: string;
-        isContactable: boolean;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -24158,7 +24239,6 @@ export type SpacePageFragment = {
         }
       | {
           __typename?: 'User';
-          isContactable: boolean;
           id: string;
           profile: {
             __typename?: 'Profile';
@@ -24341,7 +24421,6 @@ export type SpaceAccountQuery = {
                 }
               | {
                   __typename: 'User';
-                  isContactable: boolean;
                   id: string;
                   authorization?:
                     | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -28660,7 +28739,6 @@ export type CalendarEventDetailsQuery = {
                   }
                 | {
                     __typename?: 'User';
-                    isContactable: boolean;
                     id: string;
                     profile: {
                       __typename?: 'Profile';
@@ -28910,7 +28988,6 @@ export type CalendarEventDetailsFragment = {
           }
         | {
             __typename?: 'User';
-            isContactable: boolean;
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -29147,7 +29224,6 @@ export type CreateCalendarEventMutation = {
             }
           | {
               __typename?: 'User';
-              isContactable: boolean;
               id: string;
               profile: {
                 __typename?: 'Profile';
@@ -29380,7 +29456,6 @@ export type UpdateCalendarEventMutation = {
             }
           | {
               __typename?: 'User';
-              isContactable: boolean;
               id: string;
               profile: {
                 __typename?: 'Profile';
@@ -29677,7 +29752,6 @@ export type GuidanceRoomMessagesQuery = {
                 }
               | {
                   __typename?: 'User';
-                  isContactable: boolean;
                   id: string;
                   profile: {
                     __typename?: 'Profile';
@@ -31772,7 +31846,7 @@ export type UpdateNotificationStateMutation = {
 };
 
 export type MarkNotificationsAsReadMutationVariables = Exact<{
-  notificationIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+  types: Array<NotificationEvent> | NotificationEvent;
 }>;
 
 export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNotificationsAsRead: boolean };
@@ -33537,9 +33611,7 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment
     | undefined;
 };
 
-export type InAppNotificationsUnreadCountQueryVariables = Exact<{
-  types?: InputMaybe<Array<NotificationEvent> | NotificationEvent>;
-}>;
+export type InAppNotificationsUnreadCountQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InAppNotificationsUnreadCountQuery = {
   __typename?: 'Query';
@@ -34757,7 +34829,6 @@ export type InnovationLibraryQuery = {
             }
           | {
               __typename?: 'User';
-              isContactable: boolean;
               id: string;
               profile: {
                 __typename?: 'Profile';
@@ -35798,7 +35869,6 @@ export type LatestContributionsQuery = {
                 __typename?: 'User';
                 firstName: string;
                 lastName: string;
-                isContactable: boolean;
                 id: string;
                 profile: {
                   __typename?: 'Profile';
@@ -36438,7 +36508,6 @@ export type LatestContributionsGroupedQuery = {
               __typename?: 'User';
               firstName: string;
               lastName: string;
-              isContactable: boolean;
               id: string;
               profile: {
                 __typename?: 'Profile';

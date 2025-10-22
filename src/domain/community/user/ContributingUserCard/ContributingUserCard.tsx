@@ -1,6 +1,6 @@
 import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import { useCallback, useState } from 'react';
-import { useSendMessageToUserMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useSendMessageToUsersMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
 import { ContributorCardProps } from '@/domain/community/contributor/ContributorCard/ContributorCard';
 import UserCard from '../userCard/UserCard';
@@ -27,7 +27,7 @@ const ContributingUserCard = ({ id, isContactable, ...contributorCardProps }: Co
     },
   ];
 
-  const [sendMessageToUser] = useSendMessageToUserMutation();
+  const [sendMessageToUser] = useSendMessageToUsersMutation();
 
   const handleSendMessage = useCallback(
     async (messageText: string) => {

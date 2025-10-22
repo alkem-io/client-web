@@ -27,7 +27,6 @@ export const useAuthorsDetails = (authorIds: string[]) => {
           tags: author.profile.tagsets?.flatMap(x => x.tags),
           city: author.profile.location?.city,
           country: COUNTRIES_BY_CODE[author.profile.location?.country || ''],
-          isContactable: author.isContactable,
         };
       }),
     [authorData]

@@ -2057,7 +2057,13 @@
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
-      "markAllAsRead": "Mark all as read"
+      "markAllAsRead": "Mark all as read",
+      "filters": {
+        "all": "All",
+        "messagesAndReplies": "Messages & Replies",
+        "space": "Space notifications",
+        "platform": "Platform notifications"
+      }
     },
     "spaceWelcomeDialog": {
       "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",
@@ -2552,7 +2558,7 @@
       "unauthorized": "Please sign in to see the contributors of this $t(common.space).",
       "search": {
         "title": "Find talent and expertise!",
-        "subtitle": "Search for other people and $t(common.organizations) that can help you with your $t(common.subspace), for example based on skills or interests.",
+        "subtitle": "Search for other people and $t(common.organizations) that can help you with your $t(common.space), for example based on skills or interests.",
         "placeholder": "Search…"
       },
       "organizations": {
@@ -3355,7 +3361,6 @@
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
       "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
-      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "claim-missing": "You haven't verified your Vidua identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Pick a password for your $t(common.account)"
     },
@@ -3523,6 +3528,9 @@
     "dialog": {
       "title": "Start Video Call",
       "content": "You are about to start a video call using Jitsi, a secure third-party video conferencing service. The call will open in a new browser tab, outside the Alkemio environment. Others can join through the same button or by using the shared URL.<br/><br/>Learn more about Jitsi <jitsiLink>here</jitsiLink>, including how to manage access and privacy settings."
+    },
+    "error": {
+      "emptyUrl": "Unable to generate video call URL. Please refresh the page and try again."
     }
   },
   "createSpace": {

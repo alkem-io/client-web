@@ -12,6 +12,20 @@ export const TagsetDetailsFragmentDoc = gql`
     type
   }
 `;
+export const VisualModelFullFragmentDoc = gql`
+  fragment VisualModelFull on Visual {
+    id
+    uri
+    name
+    allowedTypes
+    aspectRatio
+    maxHeight
+    maxWidth
+    minHeight
+    minWidth
+    alternativeText
+  }
+`;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
     id
@@ -28,8 +42,12 @@ export const InnovationPackProfileFragmentDoc = gql`
       uri
     }
     url
+    avatar: visual(type: AVATAR) {
+      ...VisualModelFull
+    }
   }
   ${TagsetDetailsFragmentDoc}
+  ${VisualModelFullFragmentDoc}
 `;
 export const VisualModelFragmentDoc = gql`
   fragment VisualModel on Visual {
@@ -49,9 +67,6 @@ export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
         ...VisualModel
       }
       url
-    }
-    ... on User {
-      isContactable
     }
   }
   ${VisualModelFragmentDoc}
@@ -367,7 +382,6 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
       ... on User {
         firstName
         lastName
-        isContactable
       }
     }
   }
@@ -658,20 +672,6 @@ export const ReferenceDetailsFragmentDoc = gql`
     description
   }
 `;
-export const VisualModelFullFragmentDoc = gql`
-  fragment VisualModelFull on Visual {
-    id
-    uri
-    name
-    allowedTypes
-    aspectRatio
-    maxHeight
-    maxWidth
-    minHeight
-    minWidth
-    alternativeText
-  }
-`;
 export const WhiteboardProfileFragmentDoc = gql`
   fragment WhiteboardProfile on Profile {
     id
@@ -841,9 +841,6 @@ export const ContributorDetailsFragmentDoc = gql`
         country
         city
       }
-    }
-    ... on User {
-      isContactable
     }
   }
   ${VisualModelFragmentDoc}
@@ -1430,7 +1427,6 @@ export const UserDetailsFragmentDoc = gql`
       }
       url
     }
-    isContactable
   }
   ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -1927,7 +1923,6 @@ export const SpaceAboutDetailsFragmentDoc = gql`
             country
           }
         }
-        isContactable
       }
     }
     isContentPublic
@@ -1946,9 +1941,6 @@ export const SpaceAboutDetailsFragmentDoc = gql`
           country
         }
         type
-      }
-      ... on User {
-        isContactable
       }
     }
     profile {
@@ -9938,50 +9930,50 @@ export function useForumDiscussionUpdatedSubscription(
 export type ForumDiscussionUpdatedSubscriptionHookResult = ReturnType<typeof useForumDiscussionUpdatedSubscription>;
 export type ForumDiscussionUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ForumDiscussionUpdatedSubscription>;
-export const SendMessageToUserDocument = gql`
-  mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
-    sendMessageToUser(messageData: $messageData)
+export const SendMessageToUsersDocument = gql`
+  mutation sendMessageToUsers($messageData: CommunicationSendMessageToUsersInput!) {
+    sendMessageToUsers(messageData: $messageData)
   }
 `;
-export type SendMessageToUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.SendMessageToUserMutation,
-  SchemaTypes.SendMessageToUserMutationVariables
+export type SendMessageToUsersMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendMessageToUsersMutation,
+  SchemaTypes.SendMessageToUsersMutationVariables
 >;
 
 /**
- * __useSendMessageToUserMutation__
+ * __useSendMessageToUsersMutation__
  *
- * To run a mutation, you first call `useSendMessageToUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSendMessageToUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSendMessageToUsersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageToUsersMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [sendMessageToUserMutation, { data, loading, error }] = useSendMessageToUserMutation({
+ * const [sendMessageToUsersMutation, { data, loading, error }] = useSendMessageToUsersMutation({
  *   variables: {
  *      messageData: // value for 'messageData'
  *   },
  * });
  */
-export function useSendMessageToUserMutation(
+export function useSendMessageToUsersMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.SendMessageToUserMutation,
-    SchemaTypes.SendMessageToUserMutationVariables
+    SchemaTypes.SendMessageToUsersMutation,
+    SchemaTypes.SendMessageToUsersMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.SendMessageToUserMutation, SchemaTypes.SendMessageToUserMutationVariables>(
-    SendMessageToUserDocument,
+  return Apollo.useMutation<SchemaTypes.SendMessageToUsersMutation, SchemaTypes.SendMessageToUsersMutationVariables>(
+    SendMessageToUsersDocument,
     options
   );
 }
-export type SendMessageToUserMutationHookResult = ReturnType<typeof useSendMessageToUserMutation>;
-export type SendMessageToUserMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUserMutation>;
-export type SendMessageToUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.SendMessageToUserMutation,
-  SchemaTypes.SendMessageToUserMutationVariables
+export type SendMessageToUsersMutationHookResult = ReturnType<typeof useSendMessageToUsersMutation>;
+export type SendMessageToUsersMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUsersMutation>;
+export type SendMessageToUsersMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendMessageToUsersMutation,
+  SchemaTypes.SendMessageToUsersMutationVariables
 >;
 export const SendMessageToOrganizationDocument = gql`
   mutation sendMessageToOrganization($messageData: CommunicationSendMessageToOrganizationInput!) {
@@ -13036,7 +13028,6 @@ export const UserDocument = gql`
   query user($id: UUID!) {
     lookup {
       user(ID: $id) {
-        email
         ...UserDetails
       }
     }
@@ -13092,6 +13083,7 @@ export const UserModelFullDocument = gql`
   query UserModelFull($userId: UUID!) {
     lookup {
       user(ID: $userId) {
+        isContactable
         ...UserDetails
       }
     }
@@ -16034,6 +16026,18 @@ export const PlatformAdminInnovationHubsDocument = gql`
       innovationHubs {
         id
         subdomain
+        listedInStore
+        searchVisibility
+        account {
+          id
+          host {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
         profile {
           id
           displayName
@@ -16116,6 +16120,15 @@ export const PlatformAdminInnovationPacksDocument = gql`
     platformAdmin {
       innovationPacks {
         id
+        listedInStore
+        searchVisibility
+        provider {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
         profile {
           id
           displayName
@@ -16619,6 +16632,21 @@ export const PlatformAdminSpacesListDocument = gql`
         id
         nameID
         visibility
+        settings {
+          privacy {
+            mode
+          }
+        }
+        account {
+          id
+          host {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
         about {
           id
           profile {
@@ -17043,6 +17071,18 @@ export const PlatformAdminVirtualContributorsListDocument = gql`
     platformAdmin {
       virtualContributors {
         id
+        listedInStore
+        searchVisibility
+        account {
+          id
+          host {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
         authorization {
           id
           myPrivileges
@@ -17134,8 +17174,8 @@ export function refetchPlatformAdminVirtualContributorsListQuery(
   return { query: PlatformAdminVirtualContributorsListDocument, variables: variables };
 }
 export const ShareLinkWithUserDocument = gql`
-  mutation shareLinkWithUser($messageData: CommunicationSendMessageToUserInput!) {
-    sendMessageToUser(messageData: $messageData)
+  mutation shareLinkWithUser($messageData: CommunicationSendMessageToUsersInput!) {
+    sendMessageToUsers(messageData: $messageData)
   }
 `;
 export type ShareLinkWithUserMutationFn = Apollo.MutationFunction<
@@ -18683,6 +18723,86 @@ export function refetchSpacePermissionsAndEntitlementsQuery(
 ) {
   return { query: SpacePermissionsAndEntitlementsDocument, variables: variables };
 }
+export const SpaceStorageAggregatorIdDocument = gql`
+  query SpaceStorageAggregatorId($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        storageAggregator {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceStorageAggregatorIdQuery__
+ *
+ * To run a query within a React component, call `useSpaceStorageAggregatorIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceStorageAggregatorIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceStorageAggregatorIdQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceStorageAggregatorIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  > &
+    ({ variables: SchemaTypes.SpaceStorageAggregatorIdQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceStorageAggregatorIdQuery, SchemaTypes.SpaceStorageAggregatorIdQueryVariables>(
+    SpaceStorageAggregatorIdDocument,
+    options
+  );
+}
+export function useSpaceStorageAggregatorIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  >(SpaceStorageAggregatorIdDocument, options);
+}
+export function useSpaceStorageAggregatorIdSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.SpaceStorageAggregatorIdQuery,
+        SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  >(SpaceStorageAggregatorIdDocument, options);
+}
+export type SpaceStorageAggregatorIdQueryHookResult = ReturnType<typeof useSpaceStorageAggregatorIdQuery>;
+export type SpaceStorageAggregatorIdLazyQueryHookResult = ReturnType<typeof useSpaceStorageAggregatorIdLazyQuery>;
+export type SpaceStorageAggregatorIdSuspenseQueryHookResult = ReturnType<
+  typeof useSpaceStorageAggregatorIdSuspenseQuery
+>;
+export type SpaceStorageAggregatorIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceStorageAggregatorIdQuery,
+  SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+>;
+export function refetchSpaceStorageAggregatorIdQuery(variables: SchemaTypes.SpaceStorageAggregatorIdQueryVariables) {
+  return { query: SpaceStorageAggregatorIdDocument, variables: variables };
+}
 export const SubspacePageDocument = gql`
   query SubspacePage($spaceId: UUID!) {
     lookup {
@@ -18997,9 +19117,6 @@ export const SpaceAccountDocument = gql`
                 country
               }
               url
-            }
-            ... on User {
-              isContactable
             }
           }
         }
@@ -23467,8 +23584,8 @@ export type UpdateNotificationStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateNotificationStateMutationVariables
 >;
 export const MarkNotificationsAsReadDocument = gql`
-  mutation MarkNotificationsAsRead($notificationIds: [String!]!) {
-    markNotificationsAsRead(notificationIds: $notificationIds)
+  mutation MarkNotificationsAsRead($types: [NotificationEvent!]!) {
+    markNotificationsAsRead(filter: { types: $types })
   }
 `;
 export type MarkNotificationsAsReadMutationFn = Apollo.MutationFunction<
@@ -23489,7 +23606,7 @@ export type MarkNotificationsAsReadMutationFn = Apollo.MutationFunction<
  * @example
  * const [markNotificationsAsReadMutation, { data, loading, error }] = useMarkNotificationsAsReadMutation({
  *   variables: {
- *      notificationIds: // value for 'notificationIds'
+ *      types: // value for 'types'
  *   },
  * });
  */
@@ -23512,9 +23629,9 @@ export type MarkNotificationsAsReadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MarkNotificationsAsReadMutationVariables
 >;
 export const InAppNotificationsUnreadCountDocument = gql`
-  query InAppNotificationsUnreadCount($types: [NotificationEvent!]) {
+  query InAppNotificationsUnreadCount {
     me {
-      notificationsUnreadCount(filter: { types: $types })
+      notificationsUnreadCount
     }
   }
 `;
@@ -23531,7 +23648,6 @@ export const InAppNotificationsUnreadCountDocument = gql`
  * @example
  * const { data, loading, error } = useInAppNotificationsUnreadCountQuery({
  *   variables: {
- *      types: // value for 'types'
  *   },
  * });
  */

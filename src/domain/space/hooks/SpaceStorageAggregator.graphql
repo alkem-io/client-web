@@ -1,0 +1,10 @@
+query SpaceStorageAggregatorId($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      storageAggregator {
+        id
+      }
+    }
+  }
+}

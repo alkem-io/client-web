@@ -21,7 +21,6 @@ export interface AuthorData extends Identifiable {
       country?: string;
     };
   };
-  isContactable?: boolean;
 }
 
 export const buildAuthorFromUser = (user: AuthorData): AuthorModel => {
@@ -40,7 +39,6 @@ export const buildAuthorFromUser = (user: AuthorData): AuthorModel => {
     city: user.profile.location?.city,
     country: user.profile.location?.country,
     type: user.profile.type,
-    isContactable: user.isContactable ?? false,
   };
   return result;
 };

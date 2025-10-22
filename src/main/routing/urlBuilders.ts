@@ -115,8 +115,11 @@ export const getInvitationsDialogUrl = () => `/home?${URL_PARAM_DIALOG}=${DIALOG
 
 const VIDEO_CALL_BASE_URL = 'https://meet.jit.si/';
 
-export const buildVideoCallUrl = (spaceId: string, spaceNameId?: string) => {
-  // Use spaceNameId if available for better readability, otherwise use spaceId only
-  const meetingIdentifier = spaceNameId ? `${spaceNameId}-${encodeURIComponent(spaceId)}` : encodeURIComponent(spaceId);
+export const buildVideoCallUrl = (videoUrlId?: string, spaceNameId?: string) => {
+  if (!videoUrlId || !spaceNameId) {
+    return '';
+  }
+
+  const meetingIdentifier = `${encodeURIComponent(spaceNameId)}-${encodeURIComponent(videoUrlId)}`;
   return `${VIDEO_CALL_BASE_URL}${meetingIdentifier}`;
 };
