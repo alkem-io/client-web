@@ -1292,16 +1292,6 @@ export type CommunicationAdminUpdateRoomStateInput = {
   roomID: Scalars['String']['input'];
 };
 
-export type CommunicationRoom = {
-  __typename?: 'CommunicationRoom';
-  /** The display name of the room */
-  displayName: Scalars['String']['output'];
-  /** The identifier of the room */
-  id: Scalars['String']['output'];
-  /** The messages that have been sent to the Room. */
-  messages: Array<Message>;
-};
-
 export type CommunicationSendMessageToCommunityLeadsInput = {
   /** The Community the message is being sent to */
   communityId: Scalars['UUID']['input'];
@@ -1316,7 +1306,7 @@ export type CommunicationSendMessageToOrganizationInput = {
   organizationId: Scalars['UUID']['input'];
 };
 
-export type CommunicationSendMessageToUserInput = {
+export type CommunicationSendMessageToUsersInput = {
   /** The message being sent */
   message: Scalars['String']['input'];
   /** All Users the message is being sent to */
@@ -4294,8 +4284,6 @@ export type Mutation = {
   markNotificationsAsRead: Scalars['Boolean']['output'];
   /** Mark multiple notifications as unread. If no IDs are provided, marks all user notifications as unread. */
   markNotificationsAsUnread: Scalars['Boolean']['output'];
-  /** Sends a message on the specified User`s behalf and returns the room id */
-  messageUser: Scalars['String']['output'];
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
   /** Refresh the Bodies of Knowledge on All VCs */
@@ -4340,8 +4328,10 @@ export type Mutation = {
   sendMessageToOrganization: Scalars['Boolean']['output'];
   /** Sends an comment message. Returns the id of the new Update message. */
   sendMessageToRoom: Message;
-  /** Send message to a User. */
-  sendMessageToUser: Scalars['Boolean']['output'];
+  /** Sends a message on the specified User`s behalf and returns the room id */
+  sendMessageToUserDirect: Scalars['String']['output'];
+  /** Send message to multiple Users. */
+  sendMessageToUsers: Scalars['Boolean']['output'];
   /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
   transferCallout: Callout;
   /** Transfer the specified InnovationHub to another Account. */
@@ -4812,10 +4802,6 @@ export type MutationMarkNotificationsAsUnreadArgs = {
   notificationIds: Array<Scalars['String']['input']>;
 };
 
-export type MutationMessageUserArgs = {
-  messageData: UserSendMessageInput;
-};
-
 export type MutationMoveContributionToCalloutArgs = {
   moveContributionData: MoveCalloutContributionInput;
 };
@@ -4892,8 +4878,12 @@ export type MutationSendMessageToRoomArgs = {
   messageData: RoomSendMessageInput;
 };
 
-export type MutationSendMessageToUserArgs = {
-  messageData: CommunicationSendMessageToUserInput;
+export type MutationSendMessageToUserDirectArgs = {
+  messageData: UserSendMessageInput;
+};
+
+export type MutationSendMessageToUsersArgs = {
+  messageData: CommunicationSendMessageToUsersInput;
 };
 
 export type MutationTransferCalloutArgs = {
@@ -8262,8 +8252,6 @@ export type User = Contributor & {
   authentication?: Maybe<UserAuthenticationResult>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
-  /** The Community rooms this user is a member of */
-  communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The direct rooms this user is a member of */
@@ -16649,11 +16637,11 @@ export type ForumDiscussionUpdatedSubscription = {
   };
 };
 
-export type SendMessageToUserMutationVariables = Exact<{
-  messageData: CommunicationSendMessageToUserInput;
+export type SendMessageToUsersMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToUsersInput;
 }>;
 
-export type SendMessageToUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+export type SendMessageToUsersMutation = { __typename?: 'Mutation'; sendMessageToUsers: boolean };
 
 export type SendMessageToOrganizationMutationVariables = Exact<{
   messageData: CommunicationSendMessageToOrganizationInput;
@@ -21361,10 +21349,10 @@ export type PlatformAdminVirtualContributorsListQuery = {
 };
 
 export type ShareLinkWithUserMutationVariables = Exact<{
-  messageData: CommunicationSendMessageToUserInput;
+  messageData: CommunicationSendMessageToUsersInput;
 }>;
 
-export type ShareLinkWithUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+export type ShareLinkWithUserMutation = { __typename?: 'Mutation'; sendMessageToUsers: boolean };
 
 export type PageInfoFragment = {
   __typename?: 'PageInfo';
