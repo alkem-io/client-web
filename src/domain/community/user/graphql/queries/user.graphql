@@ -1,7 +1,6 @@
 query user($id: UUID!) {
   lookup {
     user(ID: $id) {
-      email
       ...UserDetails
     }
   }

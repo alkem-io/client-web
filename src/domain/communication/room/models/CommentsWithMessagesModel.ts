@@ -17,7 +17,6 @@ type ContributorModel = {
       city?: string;
     };
   };
-  isContactable?: boolean;
 };
 
 export type CommentsWithMessagesModel = {
