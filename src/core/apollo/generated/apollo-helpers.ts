@@ -909,12 +909,6 @@ export type CommunicationAdminRoomResultFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   members?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunicationRoomKeySpecifier = ('displayName' | 'id' | 'messages' | CommunicationRoomKeySpecifier)[];
-export type CommunicationRoomFieldPolicy = {
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  messages?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type CommunityKeySpecifier = (
   | 'authorization'
   | 'communication'
@@ -2568,7 +2562,6 @@ export type MutationKeySpecifier = (
   | 'licenseResetOnAccount'
   | 'markNotificationsAsRead'
   | 'markNotificationsAsUnread'
-  | 'messageUser'
   | 'moveContributionToCallout'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
@@ -2591,7 +2584,8 @@ export type MutationKeySpecifier = (
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
-  | 'sendMessageToUser'
+  | 'sendMessageToUserDirect'
+  | 'sendMessageToUsers'
   | 'transferCallout'
   | 'transferInnovationHubToAccount'
   | 'transferInnovationPackToAccount'
@@ -2752,7 +2746,6 @@ export type MutationFieldPolicy = {
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
-  messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2775,7 +2768,8 @@ export type MutationFieldPolicy = {
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  sendMessageToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageToUserDirect?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationPackToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3335,6 +3329,7 @@ export type PromptGraphDefinitionNodeKeySpecifier = (
   | 'name'
   | 'output'
   | 'prompt'
+  | 'system'
   | PromptGraphDefinitionNodeKeySpecifier
 )[];
 export type PromptGraphDefinitionNodeFieldPolicy = {
@@ -3342,6 +3337,7 @@ export type PromptGraphDefinitionNodeFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   output?: FieldPolicy<any> | FieldReadFunction<any>;
   prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+  system?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PromptGraphEdgeKeySpecifier = ('from' | 'to' | PromptGraphEdgeKeySpecifier)[];
 export type PromptGraphEdgeFieldPolicy = {
@@ -3353,6 +3349,7 @@ export type PromptGraphNodeKeySpecifier = (
   | 'name'
   | 'output'
   | 'prompt'
+  | 'system'
   | PromptGraphNodeKeySpecifier
 )[];
 export type PromptGraphNodeFieldPolicy = {
@@ -3360,6 +3357,7 @@ export type PromptGraphNodeFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   output?: FieldPolicy<any> | FieldReadFunction<any>;
   prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+  system?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PruneInAppNotificationAdminResultKeySpecifier = (
   | 'removedCountExceedingUserLimit'
@@ -4438,7 +4436,6 @@ export type UserKeySpecifier = (
   | 'agent'
   | 'authentication'
   | 'authorization'
-  | 'communityRooms'
   | 'createdDate'
   | 'directRooms'
   | 'email'
@@ -4461,7 +4458,6 @@ export type UserFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authentication?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5143,10 +5139,6 @@ export type StrictTypedTypePolicies = {
       | CommunicationAdminRoomResultKeySpecifier
       | (() => undefined | CommunicationAdminRoomResultKeySpecifier);
     fields?: CommunicationAdminRoomResultFieldPolicy;
-  };
-  CommunicationRoom?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CommunicationRoomKeySpecifier | (() => undefined | CommunicationRoomKeySpecifier);
-    fields?: CommunicationRoomFieldPolicy;
   };
   Community?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityKeySpecifier | (() => undefined | CommunityKeySpecifier);

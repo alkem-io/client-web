@@ -50,9 +50,6 @@ export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
       }
       url
     }
-    ... on User {
-      isContactable
-    }
   }
   ${VisualModelFragmentDoc}
 `;
@@ -367,7 +364,6 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
       ... on User {
         firstName
         lastName
-        isContactable
       }
     }
   }
@@ -832,9 +828,6 @@ export const ContributorDetailsFragmentDoc = gql`
         country
         city
       }
-    }
-    ... on User {
-      isContactable
     }
   }
   ${VisualModelFragmentDoc}
@@ -1421,7 +1414,6 @@ export const UserDetailsFragmentDoc = gql`
       }
       url
     }
-    isContactable
   }
   ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -1918,7 +1910,6 @@ export const SpaceAboutDetailsFragmentDoc = gql`
             country
           }
         }
-        isContactable
       }
     }
     isContentPublic
@@ -1937,9 +1928,6 @@ export const SpaceAboutDetailsFragmentDoc = gql`
           country
         }
         type
-      }
-      ... on User {
-        isContactable
       }
     }
     profile {
@@ -9866,50 +9854,50 @@ export function useForumDiscussionUpdatedSubscription(
 export type ForumDiscussionUpdatedSubscriptionHookResult = ReturnType<typeof useForumDiscussionUpdatedSubscription>;
 export type ForumDiscussionUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ForumDiscussionUpdatedSubscription>;
-export const SendMessageToUserDocument = gql`
-  mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
-    sendMessageToUser(messageData: $messageData)
+export const SendMessageToUsersDocument = gql`
+  mutation sendMessageToUsers($messageData: CommunicationSendMessageToUsersInput!) {
+    sendMessageToUsers(messageData: $messageData)
   }
 `;
-export type SendMessageToUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.SendMessageToUserMutation,
-  SchemaTypes.SendMessageToUserMutationVariables
+export type SendMessageToUsersMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendMessageToUsersMutation,
+  SchemaTypes.SendMessageToUsersMutationVariables
 >;
 
 /**
- * __useSendMessageToUserMutation__
+ * __useSendMessageToUsersMutation__
  *
- * To run a mutation, you first call `useSendMessageToUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSendMessageToUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSendMessageToUsersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageToUsersMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [sendMessageToUserMutation, { data, loading, error }] = useSendMessageToUserMutation({
+ * const [sendMessageToUsersMutation, { data, loading, error }] = useSendMessageToUsersMutation({
  *   variables: {
  *      messageData: // value for 'messageData'
  *   },
  * });
  */
-export function useSendMessageToUserMutation(
+export function useSendMessageToUsersMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.SendMessageToUserMutation,
-    SchemaTypes.SendMessageToUserMutationVariables
+    SchemaTypes.SendMessageToUsersMutation,
+    SchemaTypes.SendMessageToUsersMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.SendMessageToUserMutation, SchemaTypes.SendMessageToUserMutationVariables>(
-    SendMessageToUserDocument,
+  return Apollo.useMutation<SchemaTypes.SendMessageToUsersMutation, SchemaTypes.SendMessageToUsersMutationVariables>(
+    SendMessageToUsersDocument,
     options
   );
 }
-export type SendMessageToUserMutationHookResult = ReturnType<typeof useSendMessageToUserMutation>;
-export type SendMessageToUserMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUserMutation>;
-export type SendMessageToUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.SendMessageToUserMutation,
-  SchemaTypes.SendMessageToUserMutationVariables
+export type SendMessageToUsersMutationHookResult = ReturnType<typeof useSendMessageToUsersMutation>;
+export type SendMessageToUsersMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUsersMutation>;
+export type SendMessageToUsersMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendMessageToUsersMutation,
+  SchemaTypes.SendMessageToUsersMutationVariables
 >;
 export const SendMessageToOrganizationDocument = gql`
   mutation sendMessageToOrganization($messageData: CommunicationSendMessageToOrganizationInput!) {
@@ -12964,7 +12952,6 @@ export const UserDocument = gql`
   query user($id: UUID!) {
     lookup {
       user(ID: $id) {
-        email
         ...UserDetails
       }
     }
@@ -13020,6 +13007,7 @@ export const UserModelFullDocument = gql`
   query UserModelFull($userId: UUID!) {
     lookup {
       user(ID: $userId) {
+        isContactable
         ...UserDetails
       }
     }
@@ -17062,8 +17050,8 @@ export function refetchPlatformAdminVirtualContributorsListQuery(
   return { query: PlatformAdminVirtualContributorsListDocument, variables: variables };
 }
 export const ShareLinkWithUserDocument = gql`
-  mutation shareLinkWithUser($messageData: CommunicationSendMessageToUserInput!) {
-    sendMessageToUser(messageData: $messageData)
+  mutation shareLinkWithUser($messageData: CommunicationSendMessageToUsersInput!) {
+    sendMessageToUsers(messageData: $messageData)
   }
 `;
 export type ShareLinkWithUserMutationFn = Apollo.MutationFunction<
@@ -18925,9 +18913,6 @@ export const SpaceAccountDocument = gql`
                 country
               }
               url
-            }
-            ... on User {
-              isContactable
             }
           }
         }
