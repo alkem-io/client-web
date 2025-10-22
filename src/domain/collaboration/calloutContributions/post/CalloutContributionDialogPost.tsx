@@ -35,6 +35,7 @@ const CalloutContributionDialogPost = ({
   calloutsSetId,
   calloutId,
   contribution,
+  calloutRestrictions,
   onContributionDeleted,
 }: CalloutContributionDialogPostProps) => {
   const postId = contribution?.post?.id;
@@ -185,6 +186,7 @@ const CalloutContributionDialogPost = ({
               canSave={setCanSave}
               onAddReference={postSettings.handleAddReference}
               onRemoveReference={postSettings.handleRemoveReference}
+              disableRichMedia={calloutRestrictions?.disableRichMedia}
             >
               {() => (
                 <Gutters>

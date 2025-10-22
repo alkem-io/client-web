@@ -71,7 +71,6 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
                   country={author.country}
                   url={author.url}
                   onContact={() => setContactDialogVisible(true)}
-                  isContactable={author.isContactable}
                 />
               </GridProvider>
             }

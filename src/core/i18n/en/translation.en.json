@@ -2551,7 +2551,7 @@
       "unauthorized": "Please sign in to see the contributors of this $t(common.space).",
       "search": {
         "title": "Find talent and expertise!",
-        "subtitle": "Search for other people and $t(common.organizations) that can help you with your $t(common.subspace), for example based on skills or interests.",
+        "subtitle": "Search for other people and $t(common.organizations) that can help you with your $t(common.space), for example based on skills or interests.",
         "placeholder": "Search…"
       },
       "organizations": {

@@ -3329,6 +3329,7 @@ export type PromptGraphDefinitionNodeKeySpecifier = (
   | 'name'
   | 'output'
   | 'prompt'
+  | 'system'
   | PromptGraphDefinitionNodeKeySpecifier
 )[];
 export type PromptGraphDefinitionNodeFieldPolicy = {
@@ -3336,6 +3337,7 @@ export type PromptGraphDefinitionNodeFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   output?: FieldPolicy<any> | FieldReadFunction<any>;
   prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+  system?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PromptGraphEdgeKeySpecifier = ('from' | 'to' | PromptGraphEdgeKeySpecifier)[];
 export type PromptGraphEdgeFieldPolicy = {
@@ -3347,6 +3349,7 @@ export type PromptGraphNodeKeySpecifier = (
   | 'name'
   | 'output'
   | 'prompt'
+  | 'system'
   | PromptGraphNodeKeySpecifier
 )[];
 export type PromptGraphNodeFieldPolicy = {
@@ -3354,6 +3357,7 @@ export type PromptGraphNodeFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   output?: FieldPolicy<any> | FieldReadFunction<any>;
   prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+  system?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PruneInAppNotificationAdminResultKeySpecifier = (
   | 'removedCountExceedingUserLimit'

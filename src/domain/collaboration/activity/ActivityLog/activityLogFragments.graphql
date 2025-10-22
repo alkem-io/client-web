@@ -13,7 +13,6 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     ... on User {
       firstName
       lastName
-      isContactable
     }
   }
 }
