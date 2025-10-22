@@ -8874,6 +8874,21 @@ export type InnovationPackProfilePageQuery = {
                   uri: string;
                 }>
               | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
           };
           templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
         }
@@ -8909,6 +8924,21 @@ export type InnovationPackProfileFragment = {
     | undefined;
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+    | undefined;
+  avatar?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        alternativeText?: string | undefined;
+      }
     | undefined;
 };
 
@@ -9009,6 +9039,21 @@ export type AdminInnovationPackQuery = {
                   description?: string | undefined;
                   uri: string;
                 }>
+              | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
               | undefined;
           };
           templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
