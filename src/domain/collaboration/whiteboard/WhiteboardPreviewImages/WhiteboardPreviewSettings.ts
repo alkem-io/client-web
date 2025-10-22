@@ -2,7 +2,7 @@ import { WhiteboardPreviewCoordinates, WhiteboardPreviewMode } from '@/core/apol
 
 export interface WhiteboardPreviewSettings {
   mode: WhiteboardPreviewMode;
-  coords?: {
+  coordinates?: {
     x: WhiteboardPreviewCoordinates['x'];
     y: WhiteboardPreviewCoordinates['y'];
     width: WhiteboardPreviewCoordinates['width'];

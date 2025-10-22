@@ -1,16 +1,17 @@
-import getWhiteboardPreviewDimensions from './getWhiteboardPreviewDimensions';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
-import { BannerDimensions, BannerNarrowDimensions } from './WhiteboardDimensions';
 import { WhiteboardPreviewSettings } from './WhiteboardPreviewSettings';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import getWhiteboardPreviewImage from './getWhiteboardPreviewImage';
+import { getDefaultCropConfigForWhiteboardPreview } from './getDefaultCropConfigForWhiteboardPreview';
+import { WhiteboardPreviewVisualDimensions } from './WhiteboardDimensions';
 
 export interface PreviewImageDimensions {
   maxWidth: number;
   maxHeight: number;
   minWidth: number;
   minHeight: number;
+  aspectRatio: number;
   minScale?: number;
 }
 
@@ -35,20 +36,44 @@ interface WhiteboardWithPreviewImageDimensions {
 
 export const generateWhiteboardPreviewImages = async <Whiteboard extends WhiteboardWithPreviewImageDimensions>(
   whiteboard: Whiteboard,
-  excalidrawAPI?: ExcalidrawImperativeAPI | null
+  excalidrawAPI?: ExcalidrawImperativeAPI | null,
+  force: boolean = false
 ) => {
-  if (!excalidrawAPI) {
+  if (!excalidrawAPI || !whiteboard) {
     return;
   }
+  if (!force && whiteboard?.previewSettings.mode === WhiteboardPreviewMode.Fixed) {
+    return;
+  }
+
+  const calculateCropConfig = (visualType: VisualType) => {
+    return (imageWidth: number, imageHeight: number) => {
+      if (visualType === VisualType.WhiteboardPreview) {
+        if (whiteboard.previewSettings.mode !== WhiteboardPreviewMode.Auto && whiteboard.previewSettings.coordinates) {
+          return whiteboard.previewSettings.coordinates;
+        } else {
+          return getDefaultCropConfigForWhiteboardPreview(
+            imageWidth,
+            imageHeight,
+            WhiteboardPreviewVisualDimensions.aspectRatio,
+            WhiteboardPreviewVisualDimensions.maxWidth,
+            WhiteboardPreviewVisualDimensions.maxHeight
+          );
+        }
+      } else if (visualType === VisualType.Card) {
+        return whiteboard.previewSettings.coordinates;
+      }
+    };
+  };
 
   const previewImages: WhiteboardPreviewImage[] = [];
 
   previewImages.push({
-    visualType: VisualType.Banner,
+    visualType: VisualType.WhiteboardPreview,
     imageData: await getWhiteboardPreviewImage(
       excalidrawAPI,
-      { mimeType: 'image/png' },
-      getWhiteboardPreviewDimensions(whiteboard?.profile?.preview ?? BannerDimensions)
+      whiteboard?.profile?.preview,
+      calculateCropConfig(VisualType.WhiteboardPreview)
     ),
   });
 
@@ -56,8 +81,8 @@ export const generateWhiteboardPreviewImages = async <Whiteboard extends Whitebo
     visualType: VisualType.Card,
     imageData: await getWhiteboardPreviewImage(
       excalidrawAPI,
-      { mimeType: 'image/png' },
-      getWhiteboardPreviewDimensions(whiteboard?.profile?.visual ?? BannerNarrowDimensions)
+      whiteboard?.profile?.visual,
+      calculateCropConfig(VisualType.Card)
     ),
   });
 

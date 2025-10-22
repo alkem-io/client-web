@@ -5863,6 +5863,7 @@ export type PromptGraphDefinitionNode = {
   name: Scalars['String']['output'];
   output?: Maybe<PromptGraphDefinitionDataStruct>;
   prompt?: Maybe<Scalars['String']['output']>;
+  system: Scalars['Boolean']['output'];
 };
 
 export type PromptGraphEdge = {
@@ -5890,6 +5891,7 @@ export type PromptGraphNode = {
   name: Scalars['String']['output'];
   output?: Maybe<PromptGraphDataStruct>;
   prompt?: Maybe<Scalars['String']['output']>;
+  system: Scalars['Boolean']['output'];
 };
 
 export type PromptGraphNodeInput = {
@@ -5897,6 +5899,7 @@ export type PromptGraphNodeInput = {
   name: Scalars['String']['input'];
   output?: InputMaybe<PromptGraphDataStructInput>;
   prompt?: InputMaybe<Scalars['String']['input']>;
+  system: Scalars['Boolean']['input'];
 };
 
 export type PruneInAppNotificationAdminResult = {
@@ -8732,6 +8735,7 @@ export enum VisualType {
   Banner = 'BANNER',
   BannerWide = 'BANNER_WIDE',
   Card = 'CARD',
+  WhiteboardPreview = 'WHITEBOARD_PREVIEW',
 }
 
 export type VisualUploadImageInput = {

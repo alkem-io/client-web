@@ -2,7 +2,8 @@ import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import type { exportToBlob as ExcalidrawExportToBlob } from '@excalidraw/utils';
 import { PreviewImageDimensions } from './WhiteboardPreviewImages';
-import { BannerDimensions } from './WhiteboardDimensions';
+import { WhiteboardPreviewVisualDimensions } from './WhiteboardDimensions';
+import cropImage, { CropConfigFunction } from '@/core/utils/images/cropImage';
 
 type ExcalidrawUtils = {
   exportToBlob: typeof ExcalidrawExportToBlob;
@@ -10,7 +11,8 @@ type ExcalidrawUtils = {
 
 const getWhiteboardPreviewImage = async (
   excalidrawAPI: ExcalidrawImperativeAPI,
-  desiredDimensions: PreviewImageDimensions = BannerDimensions
+  desiredDimensions: PreviewImageDimensions = WhiteboardPreviewVisualDimensions,
+  crop?: CropConfigFunction
 ): Promise<Blob> => {
   const appState = excalidrawAPI.getAppState(),
     elements = excalidrawAPI.getSceneElements(),
@@ -45,7 +47,7 @@ const getWhiteboardPreviewImage = async (
 
   const { exportToBlob } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
 
-  return exportToBlob({
+  const blob = exportToBlob({
     appState,
     elements,
     files: files ?? null,
@@ -53,6 +55,12 @@ const getWhiteboardPreviewImage = async (
     mimeType: 'image/png',
     exportPadding,
   });
+
+  if (crop) {
+    return cropImage(await blob, crop);
+  } else {
+    return blob;
+  }
 };
 
 export default getWhiteboardPreviewImage;

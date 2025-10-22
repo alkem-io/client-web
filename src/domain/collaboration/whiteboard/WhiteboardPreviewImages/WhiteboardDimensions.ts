@@ -6,6 +6,7 @@ export const BannerNarrowDimensions: PreviewImageDimensions = {
   maxWidth: 410,
   minHeight: 192,
   minWidth: 307,
+  aspectRatio: 1.6,
 };
 
 export const BannerDimensions: PreviewImageDimensions = {
@@ -13,4 +14,13 @@ export const BannerDimensions: PreviewImageDimensions = {
   maxWidth: 1536,
   minHeight: 64,
   maxHeight: 256,
+  aspectRatio: 6,
+};
+
+export const WhiteboardPreviewVisualDimensions: PreviewImageDimensions = {
+  minWidth: 385,
+  maxWidth: 1535,
+  minHeight: 154,
+  maxHeight: 614,
+  aspectRatio: 2.5,
 };

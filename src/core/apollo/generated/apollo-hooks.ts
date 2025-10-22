@@ -681,7 +681,7 @@ export const WhiteboardProfileFragmentDoc = gql`
     visual(type: CARD) {
       ...VisualModelFull
     }
-    preview: visual(type: BANNER) {
+    preview: visual(type: WHITEBOARD_PREVIEW) {
       ...VisualModelFull
     }
     tagset {
@@ -2495,7 +2495,7 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
           whiteboard {
             id
             profile {
-              preview: visual(type: BANNER) {
+              preview: visual(type: WHITEBOARD_PREVIEW) {
                 ...VisualModel
               }
             }
@@ -2599,7 +2599,7 @@ export const WhiteboardTemplateContentFragmentDoc = gql`
     profile {
       id
       displayName
-      preview: visual(type: BANNER) {
+      preview: visual(type: WHITEBOARD_PREVIEW) {
         name
         uri
       }
@@ -6838,7 +6838,7 @@ export const CalloutContentDocument = gql`
             profile {
               id
               displayName
-              preview: visual(type: BANNER) {
+              preview: visual(type: WHITEBOARD_PREVIEW) {
                 id
                 name
                 uri
@@ -7104,7 +7104,7 @@ export const CalloutContributionDocument = gql`
             id
             url
             displayName
-            preview: visual(type: BANNER) {
+            preview: visual(type: WHITEBOARD_PREVIEW) {
               ...VisualModel
             }
           }
@@ -21889,7 +21889,7 @@ export const CreateTemplateDocument = gql`
             nameID
             profile {
               id
-              previewVisual: visual(type: BANNER) {
+              previewVisual: visual(type: WHITEBOARD_PREVIEW) {
                 id
               }
             }
@@ -22182,7 +22182,7 @@ export const UpdateCalloutTemplateDocument = gql`
           nameID
           profile {
             id
-            previewVisual: visual(type: BANNER) {
+            previewVisual: visual(type: WHITEBOARD_PREVIEW) {
               id
             }
           }

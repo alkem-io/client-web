@@ -18,7 +18,8 @@ import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { useUpdateWhiteboardPreviewSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useTheme } from '@mui/material';
 import WhiteboardPreviewCustomSelectionDialog from './WhiteboardPreviewCustomSelectionDialog';
-import { BannerDimensions } from '../WhiteboardPreviewImages/WhiteboardDimensions';
+import { WhiteboardPreviewVisualDimensions } from '../WhiteboardPreviewImages/WhiteboardDimensions';
+import { CropConfig } from '@/core/utils/images/cropImage';
 
 interface WhiteboardPreviewSettingsDialogProps {
   open?: boolean;
@@ -96,10 +97,24 @@ const WhiteboardPreviewSettingsDialog = ({
     setCropDialogOpen(true);
   };
 
+  const handleCropChanged = async (newCrop: CropConfig) => {
+    setCropDialogOpen(false);
+    await updateWhiteboardPreviewSettings({
+      variables: {
+        whiteboardId: whiteboard.id,
+        previewSettings: {
+          mode: WhiteboardPreviewMode.Custom,
+          coordinates: newCrop,
+        },
+      },
+    });
+    onClose();
+  };
+
   const handleCropDialogClose = () => {
     setCropDialogOpen(false);
     setSelectedMode(whiteboard.previewSettings.mode); // Set whatever mode was selected before
-    // onClose();
+    onClose();
   };
 
   return (
@@ -158,8 +173,10 @@ const WhiteboardPreviewSettingsDialog = ({
       <WhiteboardPreviewCustomSelectionDialog
         open={cropDialogOpen}
         onClose={handleCropDialogClose}
+        onChangeCrop={handleCropChanged}
         whiteboardPreviewImage={whiteboardPreviewImage}
-        config={BannerDimensions}
+        currentCropConfig={whiteboard.previewSettings.coordinates}
+        constraints={WhiteboardPreviewVisualDimensions}
       />
     </>
   );

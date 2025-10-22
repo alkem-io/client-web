@@ -27,12 +27,20 @@ const Container = styled(Box)(({ theme }) => ({
   borderColor: theme.palette.divider,
   margin: gutters(1)(theme),
   borderRadius: theme.shape.borderRadius,
+  // Button appearing only on hover:
   '& .only-on-hover': {
     display: 'none',
   },
   '&:hover .only-on-hover': {
     display: 'block',
   },
+  [theme.breakpoints.down('sm')]: {
+    // But always on small screens:
+    '& .only-on-hover': {
+      display: 'block',
+    },
+  },
+  // Background blur on hover
   '&:hover::before': {
     content: '""',
     position: 'absolute',
@@ -41,20 +49,16 @@ const Container = styled(Box)(({ theme }) => ({
     width: '100%',
     height: '100%',
     borderRadius: theme.shape.borderRadius,
+    cursor: 'pointer',
     // backgroundColor: theme.palette.background.default,
     backdropFilter: 'blur(2px)',
     zIndex: 1,
-  },
-  [theme.breakpoints.down('sm')]: {
-    '& .only-on-hover': {
-      display: 'block',
-    },
   },
 }));
 
 const ImageContainer = styled(ButtonBase)(({ theme }) => ({
   position: 'relative',
-  height: gutters(13)(theme),
+  aspectRatio: '2.5',
   overflow: 'hidden',
   display: 'flex',
   alignItems: 'center',
@@ -116,8 +120,8 @@ const WhiteboardPreview = ({ displayName, whiteboard, onClick }: WhiteboardPrevi
   const defaultImage = <WhiteboardIcon />;
 
   return (
-    <Container>
-      <ImageContainer onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default' }}>
+    <Container onClick={onClick}>
+      <ImageContainer>
         {!imageSrc && defaultImage && <Centered>{defaultImage}</Centered>}
         {imageSrc && <ImageFadeIn sx={{ minHeight: '100%' }} alt={displayName} onClick={onClick} />}
       </ImageContainer>
