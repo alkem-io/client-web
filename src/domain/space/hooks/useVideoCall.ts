@@ -5,8 +5,9 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { defaultSpaceSettings } from '../../spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { buildVideoCallUrl } from '@/main/routing/urlBuilders';
 
-export const useVideoCall = (spaceId?: string, requiredPrivilege = AuthorizationPrivilege.Read) => {
+export const useVideoCall = (spaceId?: string, spaceNameId = '', requiredPrivilege = AuthorizationPrivilege.Read) => {
   const { data, loading: loadingAuthorizationPrivileges } = useSpacePrivilegesQuery({
     variables: { spaceId: spaceId! },
     skip: !spaceId,
@@ -31,9 +32,12 @@ export const useVideoCall = (spaceId?: string, requiredPrivilege = Authorization
       defaultSpaceSettings.collaboration.allowMembersToVideoCall
   );
 
+  const videoCallUrl = buildVideoCallUrl(storageAggregatorId, spaceNameId);
+
   return {
     isVideoCallEnabled: allowMembersToVideoCall,
     videoUrlId: storageAggregatorId,
+    videoCallUrl,
     loading: loadingSpaceSettings || loadingAuthorizationPrivileges || loadingStorageAggregator,
   };
 };

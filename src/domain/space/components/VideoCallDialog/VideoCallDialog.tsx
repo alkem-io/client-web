@@ -4,8 +4,10 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { BlockTitle } from '@/core/ui/typography';
 import { VideocamOutlined } from '@mui/icons-material';
-import { buildVideoCallUrl } from '@/main/routing/urlBuilders';
 import { useVideoCall } from '../../hooks/useVideoCall';
+import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useState, useEffect } from 'react';
 export interface VideoCallDialogProps {
   open: boolean;
   onClose: () => void;
@@ -15,10 +17,33 @@ export interface VideoCallDialogProps {
 
 const VideoCallDialog = ({ open, onClose, spaceNameId, spaceId }: VideoCallDialogProps) => {
   const { t } = useTranslation();
-  const { videoUrlId } = useVideoCall(spaceId);
+  const { videoCallUrl } = useVideoCall(spaceId, spaceNameId);
+  const notify = useNotification();
+  const [hasLoggedError, setHasLoggedError] = useState(false);
+
+  // Reset error flag when dialog opens
+  useEffect(() => {
+    if (open) {
+      setHasLoggedError(false);
+    }
+  }, [open]);
 
   const handleStartVideoCall = () => {
-    const videoCallUrl = buildVideoCallUrl(videoUrlId, spaceNameId);
+    if (!videoCallUrl) {
+      // Log to Sentry only once per dialog open
+      if (!hasLoggedError) {
+        logError(new Error('Attempted to open video call with empty URL'), {
+          category: TagCategoryValues.UI,
+          label: 'VIDEO_CALL_EMPTY_URL',
+        });
+        setHasLoggedError(true);
+      }
+
+      // Notify user
+      notify(t('videoCall.error.emptyUrl'), 'error');
+      return;
+    }
+
     window.open(videoCallUrl, '_blank');
     onClose();
   };

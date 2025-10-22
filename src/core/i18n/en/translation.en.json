@@ -3504,6 +3504,9 @@
     "dialog": {
       "title": "Start Video Call",
       "content": "You are about to start a video call using Jitsi, a secure third-party video conferencing service. The call will open in a new browser tab, outside the Alkemio environment. Others can join through the same button or by using the shared URL.<br/><br/>Learn more about Jitsi <jitsiLink>here</jitsiLink>, including how to manage access and privacy settings."
+    },
+    "error": {
+      "emptyUrl": "Unable to generate video call URL. Please refresh the page and try again."
     }
   },
   "createSpace": {
