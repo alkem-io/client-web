@@ -146,7 +146,7 @@ fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserM
 
 fragment InAppNotificationPayloadOrganizationMessageDirect on InAppNotificationPayloadOrganizationMessageDirect {
   organizationMessage: message
-  organization {
+  nullableOrganization: organization {
     id
     profile {
       id

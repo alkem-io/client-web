@@ -4,9 +4,12 @@ import {
   NotificationEventInAppState,
 } from '@/core/apollo/generated/graphql-schema';
 import { InAppNotificationModel } from '../model/InAppNotificationModel';
-import { InAppNotificationPayloadModel } from '../model/InAppNotificationPayloadModel';
+import {
+  InAppNotificationIncomingPayloadModel,
+  InAppNotificationPayloadModel,
+} from '../model/InAppNotificationPayloadModel';
 
-export const mapInAppNotificationToModel = (inAppNotification?: {
+export type IncomingInAppNotification = {
   id: string;
   type: NotificationEvent;
   triggeredAt: Date;
@@ -21,8 +24,12 @@ export const mapInAppNotificationToModel = (inAppNotification?: {
       };
     };
   };
-  payload: InAppNotificationPayloadModel;
-}): InAppNotificationModel | undefined => {
+  payload: InAppNotificationIncomingPayloadModel;
+};
+
+export const mapInAppNotificationToModel = (
+  inAppNotification?: IncomingInAppNotification
+): InAppNotificationModel | undefined => {
   if (!inAppNotification || !inAppNotification.triggeredBy) {
     return undefined;
   } else {
@@ -45,7 +52,20 @@ export const mapInAppNotificationToModel = (inAppNotification?: {
           },
         },
       },
-      payload: inAppNotification.payload,
+      payload: mapIncomingToPayloadModel(inAppNotification.payload),
     } as InAppNotificationModel;
   }
+};
+
+const mapIncomingToPayloadModel = (
+  incomingInAppPayload: InAppNotificationIncomingPayloadModel
+): InAppNotificationPayloadModel => {
+  const clonedPayload: InAppNotificationIncomingPayloadModel = { ...incomingInAppPayload };
+  // Map the nullable aliases to their corresponding fields
+  // is the alias is defined the normal field would be undefined and vice versa
+  clonedPayload.organization = incomingInAppPayload.nullableOrganization ?? incomingInAppPayload.organization;
+  // Remove nullable fields as they are not needed in the model
+  delete clonedPayload.nullableOrganization;
+
+  return clonedPayload as InAppNotificationPayloadModel;
 };

@@ -2056,7 +2056,9 @@
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
-      "markAllAsRead": "Mark all as read"
+      "markAllAsRead": "Mark all as read",
+      "unknownUser": "Unknown $t(common.user)",
+      "unknownOrganization": "Unknown $t(common.organization)"
     },
     "spaceWelcomeDialog": {
       "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",
