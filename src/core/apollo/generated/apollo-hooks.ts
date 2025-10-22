@@ -23428,8 +23428,8 @@ export type UpdateNotificationStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateNotificationStateMutationVariables
 >;
 export const MarkNotificationsAsReadDocument = gql`
-  mutation MarkNotificationsAsRead($notificationIds: [String!]!) {
-    markNotificationsAsRead(notificationIds: $notificationIds)
+  mutation MarkNotificationsAsRead($types: [NotificationEvent!]!) {
+    markNotificationsAsRead(filter: { types: $types })
   }
 `;
 export type MarkNotificationsAsReadMutationFn = Apollo.MutationFunction<
@@ -23450,7 +23450,7 @@ export type MarkNotificationsAsReadMutationFn = Apollo.MutationFunction<
  * @example
  * const [markNotificationsAsReadMutation, { data, loading, error }] = useMarkNotificationsAsReadMutation({
  *   variables: {
- *      notificationIds: // value for 'notificationIds'
+ *      types: // value for 'types'
  *   },
  * });
  */
@@ -23473,9 +23473,9 @@ export type MarkNotificationsAsReadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MarkNotificationsAsReadMutationVariables
 >;
 export const InAppNotificationsUnreadCountDocument = gql`
-  query InAppNotificationsUnreadCount($types: [NotificationEvent!]) {
+  query InAppNotificationsUnreadCount {
     me {
-      notificationsUnreadCount(filter: { types: $types })
+      notificationsUnreadCount
     }
   }
 `;
@@ -23492,7 +23492,6 @@ export const InAppNotificationsUnreadCountDocument = gql`
  * @example
  * const { data, loading, error } = useInAppNotificationsUnreadCountQuery({
  *   variables: {
- *      types: // value for 'types'
  *   },
  * });
  */
