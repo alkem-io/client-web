@@ -11,7 +11,7 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Formik } from 'formik';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { FormValueType } from './types';
+import { DataPoint, FormValueType, PromptGraphNode } from './types';
 import PromptGraphConfigForm from './PromptGraphConfigForm';
 import { transformNodesMapToArray } from './utils';
 
@@ -39,8 +39,11 @@ const PromptGraphConfig = ({ vc }) => {
     const promptGraphCopy = JSON.parse(JSON.stringify(promptGraph));
 
     // Build nodes object from the copied promptGraph nodes keyed by node.name
-    const nodesData: Record<string, { input_variables: string[]; prompt: string; output?: { properties: any[] } }> = {};
-    promptGraphCopy.nodes?.forEach((node: any) => {
+    const nodesData: Record<
+      string,
+      { input_variables: string[]; prompt: string; output?: { properties: DataPoint[] } }
+    > = {};
+    promptGraphCopy.nodes?.forEach((node: PromptGraphNode) => {
       if (node?.name) {
         nodesData[node.name] = {
           input_variables: node.input_variables || [],
@@ -51,8 +54,8 @@ const PromptGraphConfig = ({ vc }) => {
     });
 
     return {
-      prompt: aiPersona?.prompt[0] || '',
       nodes: nodesData,
+      state: promptGraphCopy.state || { properties: [] },
     };
   }, [aiPersona?.id]);
 
@@ -60,7 +63,7 @@ const PromptGraphConfig = ({ vc }) => {
     prompt: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   });
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: FormValueType) => {
     // Transform the nodes map from the form into an array of promptGraph nodes
     const transformedNodes = transformNodesMapToArray(values?.nodes);
 
@@ -112,7 +115,7 @@ const PromptGraphConfig = ({ vc }) => {
               validationSchema={validationSchema}
               enableReinitialize
               validateOnMount
-              onSubmit={() => { }}
+              onSubmit={() => {}}
             >
               <PromptGraphConfigForm
                 promptGraph={promptGraph}

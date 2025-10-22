@@ -20,18 +20,19 @@ import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
+import { DataPoint } from './types';
 
 export interface PropertyTableProps {
   nodeName: string;
-  properties: any[];
-  editingProperty?: { nodeName: string; index: number; data: any } | null;
+  properties: DataPoint[];
+  editingProperty?: { nodeName: string; index: number; data: DataPoint } | null;
   isPropertyEditing?: (nodeName: string, index: number) => boolean;
-  onEdit?: (nodeName: string, index: number, prop: any) => void;
+  onEdit?: (nodeName: string, index: number, prop) => void;
   onSave?: (nodeName: string, index: number) => void;
   onDelete?: (nodeName: string, index: number) => void;
   onAdd?: (nodeName: string) => void;
   onCancel?: () => void;
-  onFieldChange?: (field: string, value: any) => void;
+  onFieldChange?: (field: string, value) => void;
   readOnly?: boolean;
 }
 
@@ -40,12 +41,12 @@ export const PropertyTable = ({
   properties,
   editingProperty = null,
   isPropertyEditing = () => false,
-  onEdit = () => { },
-  onSave = () => { },
-  onDelete = () => { },
-  onAdd = () => { },
-  onCancel = () => { },
-  onFieldChange = () => { },
+  onEdit = () => {},
+  onSave = () => {},
+  onDelete = () => {},
+  onAdd = () => {},
+  onCancel = () => {},
+  onFieldChange = () => {},
   readOnly = false,
 }: PropertyTableProps) => {
   const { t } = useTranslation();
@@ -99,6 +100,7 @@ export const PropertyTable = ({
                     {isEditing ? (
                       <Select
                         size="small"
+                        defaultValue={displayData.type || 'string'}
                         value={displayData.type || 'string'}
                         onChange={e => onFieldChange('type', e.target.value)}
                         fullWidth
@@ -151,7 +153,7 @@ export const PropertyTable = ({
                                   editingProperty &&
                                   editingProperty.data &&
                                   (editingProperty.data.name || '').trim() &&
-                                  (editingProperty.data.type || '').trim() &&
+                                  // (editingProperty.data.type || '').trim() &&
                                   (editingProperty.data.description || '').trim()
                                 )
                               }

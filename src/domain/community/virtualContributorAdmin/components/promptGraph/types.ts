@@ -1,7 +1,13 @@
+export type DataPoint = {
+  description: string;
+  name: string;
+  type: string;
+  optional: boolean;
+};
 export type FormNodeValue = {
   input_variables: string[];
   prompt: string;
-  output?: { properties: any[] };
+  output?: { properties: DataPoint[] };
 };
 
 export type PromptGraphNode = {
@@ -12,11 +18,17 @@ export type PromptGraphNode = {
   output?: {
     title: string;
     type: string;
-    properties: any[];
+    properties: DataPoint[];
   };
 };
 
+export type PromptGraphState = {
+  title: string;
+  type: string;
+  properties: DataPoint[];
+};
+
 export type FormValueType = {
-  prompt: string;
   nodes: Record<string, FormNodeValue>;
+  state: PromptGraphState;
 };

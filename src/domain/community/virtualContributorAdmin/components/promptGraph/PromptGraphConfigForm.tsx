@@ -1,28 +1,16 @@
 import { useFormikContext } from 'formik';
 import { useEffect, useRef, useState } from 'react';
-import {
-  Box,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Tooltip,
-} from '@mui/material';
+import { Box, Accordion, AccordionSummary, AccordionDetails, Tooltip } from '@mui/material';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Lock from '@mui/icons-material/Lock';
 import { sortBy, isEqual, startCase } from 'lodash';
-import { BlockTitle, Caption } from '@/core/ui/typography';
+import { BlockTitle } from '@/core/ui/typography';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { FormValueType } from './types';
+import { DataPoint, FormValueType } from './types';
 import { prepareGraph, extractVariablesFromText } from './utils';
 import { PropertyTable } from './PropertyTable';
 import { NodeVariables } from './NodeVariables';
+import StateProps from './StateProps';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Actions } from '@/core/ui/actions/Actions';
 import Button from '@mui/material/Button';
@@ -34,12 +22,14 @@ const FormikEffect = FormikEffectFactory<FormValueType>();
 export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handleSubmit }) => {
   const { t } = useTranslation();
   const { values, setFieldValue } = useFormikContext<FormValueType>();
-  const [editingProperty, setEditingProperty] = useState<{ nodeName: string; index: number; data: any } | null>(null);
+  const [editingProperty, setEditingProperty] = useState<{ nodeName: string; index: number; data: DataPoint } | null>(
+    null
+  );
   const availableInputVariables = useRef<Record<string, string[]>>({
     START: ['conversation', 'display_name', 'description'],
   });
 
-  const handleEditProperty = (nodeName: string, index: number, property: any) => {
+  const handleEditProperty = (nodeName: string, index: number, property) => {
     setEditingProperty({ nodeName, index, data: { ...property } });
   };
 
@@ -49,7 +39,16 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
     const updatedProperties = [...currentProperties];
     updatedProperties[index] = editingProperty.data;
     setFieldValue(`nodes.${nodeName}.output.properties`, updatedProperties);
-    setEditingProperty(null);
+
+    const currentSateProperties = values.state?.properties || [];
+    const propIndex = currentSateProperties.findIndex(prop => prop.name === editingProperty.data.name);
+    if (propIndex === -1) {
+      const updatedStateProperties = [...currentSateProperties];
+      updatedStateProperties.push(editingProperty.data);
+      setFieldValue('state.properties', updatedStateProperties);
+
+      setEditingProperty(null);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -97,7 +96,7 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
     setEditingProperty({ nodeName, index: newIndex, data: { ...newProperty } });
   };
 
-  const handleFieldChange = (field: string, value: any) => {
+  const handleFieldChange = (field: string, value) => {
     if (editingProperty) {
       setEditingProperty({
         ...editingProperty,
@@ -132,7 +131,7 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
   const graphPath = prepareGraph(promptGraph);
 
   useEffect(() => {
-    graphPath.forEach((node: any, index: number) => {
+    graphPath.forEach((node, index: number) => {
       const nodeName = node.name || node;
       if (!nodeName || typeof nodeName !== 'string') return;
 
@@ -143,7 +142,7 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
         const prevNodeName = prevNode.name || prevNode;
         if (!prevNodeName || typeof prevNodeName !== 'string') return;
 
-        const prevOutputProps = values.nodes?.[prevNodeName]?.output?.properties?.map((prop: any) => prop.name) || [];
+        const prevOutputProps = values.nodes?.[prevNodeName]?.output?.properties?.map(prop => prop.name) || [];
         availableInputVariables.current[nodeName] = (availableInputVariables.current[prevNodeName] || []).concat(
           prevOutputProps
         );
@@ -157,7 +156,7 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
       <Box>
         <Box>
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Box sx={{ flex: '0 0 70%' }}>
+            <Box>
               <BlockTitle variant="h5" sx={{ marginBottom: 0 }}>
                 {t('pages.virtualContributorProfile.settings.promptGraph.stepsTitle')}
               </BlockTitle>
@@ -256,78 +255,17 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
                 })}
               </Box>
             </Box>
-            <Box sx={{ flex: '0 0 30%' }}>
-              <Caption sx={{ fontWeight: 600 }}>
-                {t('pages.virtualContributorProfile.settings.promptGraph.statePropertiesTitle')}
-              </Caption>
-              {(() => {
-                const stateProps = (promptGraph?.state?.properties ||
-                  promptGraph?.state?.output?.properties ||
-                  []) as any[];
-                return stateProps && stateProps.length > 0 ? (
-                  <TableContainer component={Paper} sx={{ marginTop: 1 }}>
-                    <Table size="small">
-                      <TableHead>
-                        <TableRow sx={{ borderBottom: '2px solid', borderColor: 'divider' }}>
-                          <TableCell>
-                            {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.columns.name')}
-                          </TableCell>
-                          <TableCell>
-                            {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.columns.type')}
-                          </TableCell>
-                          <TableCell>
-                            {t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.columns.optional')}
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {stateProps.map((prop, idx) => (
-                          <>
-                            <TableRow key={`row-main-${idx}`}>
-                              <TableCell>
-                                {prop?.name ||
-                                  t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.notAvailable')}
-                              </TableCell>
-                              <TableCell>
-                                {prop?.type ||
-                                  t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.notAvailable')}
-                              </TableCell>
-                              <TableCell>
-                                {prop?.optional
-                                  ? t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.yes')
-                                  : t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.no')}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow
-                              key={`row-desc-${idx}`}
-                              sx={{ borderBottom: '2px solid', borderColor: 'divider' }}
-                            >
-                              <TableCell colSpan={3} sx={{ color: 'text.secondary' }}>
-                                {prop?.description ||
-                                  t('pages.virtualContributorProfile.settings.promptGraph.propertyTable.notAvailable')}
-                              </TableCell>
-                            </TableRow>
-                          </>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                ) : (
-                  <Caption sx={{ marginTop: 1 }}>
-                    {t('pages.virtualContributorProfile.settings.promptGraph.noStateProperties')}
-                  </Caption>
-                );
-              })()}
-            </Box>
+            {/* disabled for now - state should be handled by the form */}
+            {false && <StateProps promptGraph={promptGraph} />}
           </Box>
-
-          <Button variant="outlined" sx={{ marginTop: 1 }}>
-            {`+ ${t('pages.virtualContributorProfile.settings.promptGraph.addButton')}`}
-          </Button>
+          {/* add node functionality to be implemented */}
+          {/* <Button variant="outlined" sx={{ marginTop: 1 }}> */}
+          {/*   {`+ ${t('pages.virtualContributorProfile.settings.promptGraph.addButton')}`} */}
+          {/* </Button> */}
         </Box>
         <Actions>
           <Button variant="contained" disabled={!isValid} onClick={() => handleSubmit(values)}>
-            {t('pages.virtualContributorProfile.settings.prompt.saveBtn')}
+            {t('pages.virtualContributorProfile.settings.promptGraph.saveBtn')}
           </Button>
         </Actions>
       </Box>
