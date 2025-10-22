@@ -23420,6 +23420,20 @@ export type SpacePermissionsAndEntitlementsQuery = {
   };
 };
 
+export type SpaceStorageAggregatorIdQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceStorageAggregatorIdQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | { __typename?: 'Space'; id: string; storageAggregator: { __typename?: 'StorageAggregator'; id: string } }
+      | undefined;
+  };
+};
+
 export type SubspacePageQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
 }>;
