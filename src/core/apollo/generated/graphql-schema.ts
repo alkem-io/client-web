@@ -5863,6 +5863,7 @@ export type PromptGraphDefinitionNode = {
   name: Scalars['String']['output'];
   output?: Maybe<PromptGraphDefinitionDataStruct>;
   prompt?: Maybe<Scalars['String']['output']>;
+  system: Scalars['Boolean']['output'];
 };
 
 export type PromptGraphEdge = {
@@ -5890,6 +5891,7 @@ export type PromptGraphNode = {
   name: Scalars['String']['output'];
   output?: Maybe<PromptGraphDataStruct>;
   prompt?: Maybe<Scalars['String']['output']>;
+  system: Scalars['Boolean']['output'];
 };
 
 export type PromptGraphNodeInput = {
@@ -5897,6 +5899,7 @@ export type PromptGraphNodeInput = {
   name: Scalars['String']['input'];
   output?: InputMaybe<PromptGraphDataStructInput>;
   prompt?: InputMaybe<Scalars['String']['input']>;
+  system: Scalars['Boolean']['input'];
 };
 
 export type PruneInAppNotificationAdminResult = {
@@ -19069,18 +19072,6 @@ export type UserOrganizationIdsQuery = {
     __typename?: 'ContributorRoles';
     id: string;
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string }>;
-  };
-};
-
-export type UserIsContactableQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
-}>;
-
-export type UserIsContactableQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    user?: { __typename?: 'User'; id: string; isContactable: boolean } | undefined;
   };
 };
 
