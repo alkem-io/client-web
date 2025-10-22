@@ -24,15 +24,15 @@ export const useVideoCall = (spaceId?: string, requiredPrivilege = Authorization
     skip: !spaceId || !hasRequiredPrivilege || loadingAuthorizationPrivileges,
   });
 
-  const allowMembersToVideoCall =
-    spaceSettings?.lookup?.space?.settings.collaboration.allowMembersToVideoCall ??
-    defaultSpaceSettings.collaboration.allowMembersToVideoCall;
-
   const storageAggregatorId = storageData?.lookup?.space?.storageAggregator?.id;
+
+  const allowMembersToVideoCall =
+    (spaceSettings?.lookup?.space?.settings.collaboration.allowMembersToVideoCall && storageAggregatorId) ||
+    defaultSpaceSettings.collaboration.allowMembersToVideoCall;
 
   return {
     isVideoCallEnabled: allowMembersToVideoCall,
-    storageAggregatorId,
+    videoUrlId: storageAggregatorId,
     loading: loadingSpaceSettings || loadingAuthorizationPrivileges || loadingStorageAggregator,
   };
 };

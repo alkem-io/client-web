@@ -5,18 +5,20 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { BlockTitle } from '@/core/ui/typography';
 import { VideocamOutlined } from '@mui/icons-material';
 import { buildVideoCallUrl } from '@/main/routing/urlBuilders';
+import { useVideoCall } from '../../hooks/useVideoCall';
 export interface VideoCallDialogProps {
   open: boolean;
   onClose: () => void;
-  storageAggregatorId: string;
   spaceNameId?: string;
+  spaceId?: string;
 }
 
-const VideoCallDialog = ({ open, onClose, storageAggregatorId, spaceNameId }: VideoCallDialogProps) => {
+const VideoCallDialog = ({ open, onClose, spaceNameId, spaceId }: VideoCallDialogProps) => {
   const { t } = useTranslation();
+  const { videoUrlId } = useVideoCall(spaceId);
 
   const handleStartVideoCall = () => {
-    const videoCallUrl = buildVideoCallUrl(storageAggregatorId, spaceNameId);
+    const videoCallUrl = buildVideoCallUrl(videoUrlId, spaceNameId);
     window.open(videoCallUrl, '_blank');
     onClose();
   };
