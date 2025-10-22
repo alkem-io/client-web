@@ -12,6 +12,20 @@ export const TagsetDetailsFragmentDoc = gql`
     type
   }
 `;
+export const VisualModelFullFragmentDoc = gql`
+  fragment VisualModelFull on Visual {
+    id
+    uri
+    name
+    allowedTypes
+    aspectRatio
+    maxHeight
+    maxWidth
+    minHeight
+    minWidth
+    alternativeText
+  }
+`;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
     id
@@ -28,8 +42,12 @@ export const InnovationPackProfileFragmentDoc = gql`
       uri
     }
     url
+    avatar: visual(type: AVATAR) {
+      ...VisualModelFull
+    }
   }
   ${TagsetDetailsFragmentDoc}
+  ${VisualModelFullFragmentDoc}
 `;
 export const VisualModelFragmentDoc = gql`
   fragment VisualModel on Visual {
@@ -652,20 +670,6 @@ export const ReferenceDetailsFragmentDoc = gql`
     name
     uri
     description
-  }
-`;
-export const VisualModelFullFragmentDoc = gql`
-  fragment VisualModelFull on Visual {
-    id
-    uri
-    name
-    allowedTypes
-    aspectRatio
-    maxHeight
-    maxWidth
-    minHeight
-    minWidth
-    alternativeText
   }
 `;
 export const WhiteboardProfileFragmentDoc = gql`
