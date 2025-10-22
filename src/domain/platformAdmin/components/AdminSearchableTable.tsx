@@ -39,7 +39,7 @@ export interface AdminSearchableTableItem {
 
 export interface AdminSearchableTableProps<Item extends AdminSearchableTableItem> {
   data?: Item[]; // optional, defaults to empty array
-  columns: AdminTableColumn<Item>[];
+  columns?: AdminTableColumn<Item>[];
   onDelete?: (item: Item) => void;
   loading: boolean;
   fetchMore?: () => Promise<void>; // now optional to enable client-side mode
@@ -72,7 +72,7 @@ export interface SearchableListItem {
  */
 const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
   data = [],
-  columns,
+  columns = [],
   onDelete,
   loading,
   fetchMore,

@@ -91,7 +91,7 @@ const AdminOrganizationsPage = () => {
   return (
     <AdminLayout currentTab={AdminSection.Organization}>
       <SearchableListLayout newLink={`${url}/new`}>
-        <AdminSearchableTable data={organizations} columns={[]} {...listProps} itemActions={getActions} />
+        <AdminSearchableTable data={organizations} {...listProps} itemActions={getActions} />
       </SearchableListLayout>
       <ConfirmationDialog
         actions={{

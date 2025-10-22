@@ -41,7 +41,7 @@ const AdminUsersPage: FC = () => {
   return (
     <AdminLayout currentTab={AdminSection.User}>
       <SearchableListLayout>
-        <AdminSearchableTable data={userList} columns={[]} {...listProps} itemActions={getActions} />
+        <AdminSearchableTable data={userList} {...listProps} itemActions={getActions} />
       </SearchableListLayout>
       {selectedItem?.accountId && (
         <LicensePlanDialog
