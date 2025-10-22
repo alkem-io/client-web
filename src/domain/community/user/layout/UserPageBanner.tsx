@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useSendMessageToUserMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useSendMessageToUsersMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useUserProvider } from '../hooks/useUserProvider';
@@ -15,7 +15,7 @@ const UserPageBanner = () => {
 
   const profile = user?.profile;
 
-  const [sendMessageToUser] = useSendMessageToUserMutation();
+  const [sendMessageToUser] = useSendMessageToUsersMutation();
 
   const handleSendMessage = useCallback(
     async (messageText: string) => {
@@ -39,7 +39,7 @@ const UserPageBanner = () => {
     <ProfilePageBanner
       entityId={userId}
       profile={profile}
-      onSendMessage={user?.isContactable ? handleSendMessage : undefined}
+      onSendMessage={handleSendMessage}
       settingsUri={user && isCurrentUser ? buildSettingsUrl(user?.profile.url ?? '') : undefined}
       loading={loading || urlResolverLoading}
     />
