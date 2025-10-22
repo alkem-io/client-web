@@ -120,8 +120,6 @@ export const buildVideoCallUrl = (videoUrlId?: string, spaceNameId?: string) => 
     return '';
   }
 
-  const meetingIdentifier = spaceNameId
-    ? `${spaceNameId}-${encodeURIComponent(videoUrlId)}`
-    : encodeURIComponent(videoUrlId);
+  const meetingIdentifier = `${encodeURIComponent(spaceNameId)}-${encodeURIComponent(videoUrlId)}`;
   return `${VIDEO_CALL_BASE_URL}${meetingIdentifier}`;
 };

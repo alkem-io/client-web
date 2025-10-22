@@ -26,9 +26,10 @@ export const useVideoCall = (spaceId?: string, requiredPrivilege = Authorization
 
   const storageAggregatorId = storageData?.lookup?.space?.storageAggregator?.id;
 
-  const allowMembersToVideoCall =
+  const allowMembersToVideoCall = Boolean(
     (spaceSettings?.lookup?.space?.settings.collaboration.allowMembersToVideoCall && storageAggregatorId) ||
-    defaultSpaceSettings.collaboration.allowMembersToVideoCall;
+      defaultSpaceSettings.collaboration.allowMembersToVideoCall
+  );
 
   return {
     isVideoCallEnabled: allowMembersToVideoCall,
