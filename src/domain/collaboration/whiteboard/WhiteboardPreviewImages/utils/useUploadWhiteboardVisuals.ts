@@ -8,8 +8,7 @@ interface VisualsIds {
 }
 
 /**
- * Receives the images exported by Excalidraw in the code above if there is a visualId to upload them to.
- * @returns
+ * Receives the images exported by Excalidraw in getWhiteboardPreviewImage and uploads them if there is a visualId to upload them to.
  */
 export const useUploadWhiteboardVisuals = () => {
   const [uploadVisual, { loading }] = useUploadVisualMutation({});

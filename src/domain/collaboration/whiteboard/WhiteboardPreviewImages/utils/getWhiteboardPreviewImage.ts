@@ -8,7 +8,7 @@ import resizeImage from '@/core/utils/images/resizeImage';
 import { error as logError } from '@/core/logging/sentry/log';
 import createFallbackWhiteboardPreview from './createFallbackWhiteboardPreview';
 
-const EXPORT_PADDING = 0.2; // 20% padding of the biggest dimension as padding
+const EXPORT_PADDING = 0.1; // 10% padding of the biggest dimension as padding
 
 type ExcalidrawUtils = {
   exportToBlob: typeof ExcalidrawExportToBlob;

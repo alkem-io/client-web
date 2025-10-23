@@ -64,20 +64,20 @@ const WhiteboardPreviewSettingsDialog = ({
   const [selectedMode, setSelectedMode] = useState<WhiteboardPreviewMode>(whiteboard.previewSettings.mode);
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
 
-  const [whiteboardPreviewImage, setWhiteboardPreviewImage] = useState<string>(); // blob data url
+  const [whiteboardPreviewImageDataUrl, setWhiteboardPreviewImageDataUrl] = useState<string>();
   useEffect(() => {
-    if (!open || !excalidrawAPI) {
+    if (!open || !cropDialogOpen || !excalidrawAPI) {
       return;
     }
 
     (async () => {
       const { image } = await getWhiteboardPreviewImage(excalidrawAPI);
       const reader = new FileReader();
-      const loadFile = () => setWhiteboardPreviewImage(reader.result as string);
+      const loadFile = () => setWhiteboardPreviewImageDataUrl(reader.result as string);
       reader.addEventListener('load', loadFile);
       reader.readAsDataURL(image);
     })();
-  }, [open, whiteboard, excalidrawAPI]);
+  }, [open, cropDialogOpen, whiteboard, excalidrawAPI]);
 
   const [updateWhiteboardPreviewSettings] = useUpdateWhiteboardPreviewSettingsMutation();
 
@@ -224,7 +224,7 @@ const WhiteboardPreviewSettingsDialog = ({
         open={cropDialogOpen}
         onClose={handleCropDialogClose}
         onChangeCrop={handleCropChanged}
-        whiteboardPreviewImage={whiteboardPreviewImage}
+        whiteboardPreviewImage={whiteboardPreviewImageDataUrl}
         cropConfig={whiteboard.previewSettings.coordinates}
         constraints={WhiteboardPreviewVisualDimensions}
       />

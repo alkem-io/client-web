@@ -5,6 +5,7 @@ import { Box, Button, ButtonBase, ButtonProps, styled, Theme } from '@mui/materi
 import { gutters } from '@/core/ui/grid/utils';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import Centered from '@/core/ui/utils/Centered';
+import { WhiteboardPreviewVisualDimensions } from '../WhiteboardPreviewImages/WhiteboardDimensions';
 
 type WhiteboardPreviewProps = {
   displayName?: string;
@@ -59,7 +60,7 @@ const Container = styled(Box)(({ theme }) => ({
 const ImageContainer = styled(ButtonBase)(() => ({
   position: 'relative',
   width: '100%',
-  aspectRatio: '2.5',
+  aspectRatio: WhiteboardPreviewVisualDimensions.aspectRatio,
 }));
 
 // Common styles for the two buttons shown in the preview:

@@ -78,6 +78,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
   const imgRef = useRef<HTMLImageElement>(null);
+  const [ready, setReady] = useState(false);
 
   const { aspectRatio } = constraints;
 
@@ -117,6 +118,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
   const onLoad = useCallback(
     (img: HTMLImageElement) => {
       imgRef.current = img;
+      setReady(true);
       const aspectRatioTolerance = 0.01; // Allow 1% difference
 
       const currentCropConfig = translateCropConfig({ cropConfig, img, inverse: true });
@@ -174,28 +176,14 @@ const WhiteboardPreviewCustomSelectionDialog = ({
       </DialogContent>
       <DialogFooter>
         <DialogActions>
-          <Box overflow="auto">
-            <pre>
-              Img:{JSON.stringify({ width: imgRef.current?.width, height: imgRef.current?.height })}
-              <br />
-              ImgOrig:{JSON.stringify({ width: imgRef.current?.naturalWidth, height: imgRef.current?.naturalHeight })}
-              <br />
-              Constraints:{JSON.stringify(constraints)}
-              ConstraintsT:
-              {JSON.stringify(translateImageDimensions({ constraints, img: imgRef.current, inverse: true }))}
-              <br />
-              Crop:{JSON.stringify(crop)}
-              <br />
-            </pre>
-          </Box>
-          <Button variant="outlined" startIcon={<Replay />} onClick={resetCrop}>
+          <Button variant="outlined" startIcon={<Replay />} onClick={resetCrop} disabled={!ready}>
             {t('pages.whiteboard.previewSettings.cropDialog.reset')}
           </Button>
           <Divider orientation="vertical" flexItem />
           <Button variant="outlined" startIcon={<Close />} onClick={onClose}>
             {t('pages.whiteboard.previewSettings.cropDialog.cancel')}
           </Button>
-          <Button variant="contained" startIcon={<Check />} onClick={handleConfirmCrop}>
+          <Button variant="contained" startIcon={<Check />} onClick={handleConfirmCrop} disabled={!ready}>
             {t('pages.whiteboard.previewSettings.cropDialog.confirm')}
           </Button>
         </DialogActions>
