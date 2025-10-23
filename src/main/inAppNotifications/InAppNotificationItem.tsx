@@ -29,6 +29,7 @@ import { InAppUserSignUpWelcomeView } from './views/user/InAppUserSignUpWelcomeV
 import { InAppUserSpaceCommunityInvitationView } from './views/user/InAppUserSpaceCommunityInvitationView';
 import { InAppVirtualContributorAdminSpaceCommunityInvitationView } from './views/virtualContributor/InAppVirtualContributorAdminSpaceCommunityInvitationView';
 import { InAppUserSpaceCommunityApplicationDeclined } from '@/main/inAppNotifications/views/user/InAppUserSpaceCommunityApplicationDeclined';
+import { InAppVirtualContributorAdminSpaceCommunityInvitationDeclinedView } from './views/virtualContributor/InAppVirtualContributorAdminSpaceCommunityInvitationDeclinedView';
 
 export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
   switch (item.type) {
@@ -88,6 +89,8 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
       return <InAppUserSpaceCommunityApplicationDeclined {...item} />;
     case NotificationEvent.VirtualContributorAdminSpaceCommunityInvitation:
       return <InAppVirtualContributorAdminSpaceCommunityInvitationView {...item} />;
+    case NotificationEvent.VirtualContributorAdminSpaceCommunityInvitationDeclined:
+      return <InAppVirtualContributorAdminSpaceCommunityInvitationDeclinedView {...item} />;
 
     default:
       logWarn(`Unsupported Notification type: ${item.type}`, {

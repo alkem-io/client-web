@@ -53,6 +53,7 @@ const PLATFORM_NOTIFICATION_TYPES: NotificationEvent[] = [
 // Virtual Contributor notifications
 const VIRTUAL_CONTRIBUTOR_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.VirtualContributorAdminSpaceCommunityInvitation,
+  NotificationEvent.VirtualContributorAdminSpaceCommunityInvitationDeclined,
 ];
 
 // Messages & Replies filter combines User and Organization notifications
