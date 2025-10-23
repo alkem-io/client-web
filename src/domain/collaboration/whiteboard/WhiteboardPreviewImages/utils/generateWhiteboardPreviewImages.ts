@@ -1,5 +1,5 @@
 import { VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
-import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings';
+import { WhiteboardPreviewSettings } from '../model/WhiteboardPreviewSettings';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { getDefaultCropConfigForWhiteboardPreview } from './getDefaultCropConfigForWhiteboardPreview';
 import { CardVisualDimensions, WhiteboardPreviewVisualDimensions } from '../WhiteboardDimensions';

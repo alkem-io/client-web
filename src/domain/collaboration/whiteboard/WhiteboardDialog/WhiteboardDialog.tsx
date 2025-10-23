@@ -30,7 +30,7 @@ import whiteboardSchema from '../validation/whiteboardSchema';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
-import { WhiteboardPreviewSettings } from '../WhiteboardPreviewImages/WhiteboardPreviewSettings';
+import { WhiteboardPreviewSettings } from '../WhiteboardPreviewImages/model/WhiteboardPreviewSettings';
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 
 export interface WhiteboardDetails {

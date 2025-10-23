@@ -11,11 +11,13 @@ const cropImage = async (blob: Blob, getCropConfig: CropConfigFunction): Promise
   // Create an image from the blob
   const img = new Image();
   const imageUrl = URL.createObjectURL(blob);
+  const cleanup = () => URL.revokeObjectURL(imageUrl);
 
   return new Promise<Blob>((resolve, reject) => {
     img.onload = () => {
       const crop = getCropConfig(img.width, img.height);
       if (!crop) {
+        cleanup();
         resolve(blob);
         return;
       }
@@ -43,9 +45,7 @@ const cropImage = async (blob: Blob, getCropConfig: CropConfigFunction): Promise
         crop.height // destination height
       );
 
-      // Clean up the object URL
-      URL.revokeObjectURL(imageUrl);
-
+      cleanup();
       // Convert canvas to blob
       canvas.toBlob(croppedBlob => {
         if (croppedBlob) {
@@ -57,7 +57,7 @@ const cropImage = async (blob: Blob, getCropConfig: CropConfigFunction): Promise
     };
 
     img.onerror = () => {
-      URL.revokeObjectURL(imageUrl);
+      cleanup();
       reject(new Error('Failed to load image'));
     };
 

@@ -17,13 +17,10 @@ const resizeImage = async (blob: Blob, getResizeDimensions: ResizeConfigFunction
   // Create an image from the blob
   const img = new Image();
   const imageUrl = URL.createObjectURL(blob);
+  const cleanup = () => URL.revokeObjectURL(imageUrl);
 
   return new Promise<Blob>((resolve, reject) => {
     img.onload = () => {
-      const cleanup = () => {
-        URL.revokeObjectURL(imageUrl);
-      };
-
       try {
         const { width, height, keepRatio } = getResizeDimensions(img.width, img.height);
 
@@ -94,7 +91,7 @@ const resizeImage = async (blob: Blob, getResizeDimensions: ResizeConfigFunction
     };
 
     img.onerror = () => {
-      URL.revokeObjectURL(imageUrl);
+      cleanup();
       reject(new Error('Failed to load image'));
     };
 

@@ -1,5 +1,18 @@
 import { PreviewImageDimensions } from '../model/WhiteboardPreviewImagesModels';
 
+/**
+ * Creates a crop configuration function that calculates the largest possible crop centered in the original image,
+ * while maintaining the aspect ratio and dimension constraints.
+ *
+ * The returned function receives an image's width and height, and returns cropping coordinates (x, y, width, height)
+ * that are within the image boundaries and meet the constraints' maxWidth, maxHeight, and aspectRatio.
+ *
+ * If the image doesn't meet the minimum width or height restrictions, it returns undefined to keep the image
+ * as is (see cropImage implementation).
+ *
+ * @param constraints - The dimension constraints including minWidth, minHeight, maxWidth, maxHeight, and aspectRatio
+ * @returns A function that takes image dimensions and returns crop coordinates or undefined
+ */
 const cropImageWithConstraints = (constraints: PreviewImageDimensions) => {
   return (imageWidth, imageHeight) => {
     // Check if image meets minimum dimensions
