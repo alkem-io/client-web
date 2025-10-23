@@ -17,6 +17,9 @@ export const getDefaultCropConfigForWhiteboardPreview = (
   if (imageWidth === 0 || imageHeight === 0) {
     throw new Error('Image dimensions must be greater than zero');
   }
+  if (aspectRatio <= 0) {
+    throw new Error('Aspect ratio must be greater than zero');
+  }
 
   const imageAspectRatio = imageWidth / imageHeight;
   let x = 0,
@@ -24,8 +27,13 @@ export const getDefaultCropConfigForWhiteboardPreview = (
   if (imageAspectRatio > aspectRatio) {
     // Image is wider than desired aspect ratio
     // Try to take full height:
-    const cropHeight = Math.min(imageHeight, maxHeight);
-    const cropWidth = cropHeight * aspectRatio;
+    let cropHeight = Math.min(imageHeight, maxHeight);
+    let cropWidth = cropHeight * aspectRatio;
+    // Clamp width to image width
+    if (cropWidth > imageWidth) {
+      cropWidth = imageWidth;
+      cropHeight = cropWidth / aspectRatio;
+    }
     x = Math.max(
       0,
       Math.min(
@@ -41,8 +49,13 @@ export const getDefaultCropConfigForWhiteboardPreview = (
     };
   } else {
     // Try to take full width:
-    const cropWidth = Math.min(imageWidth, maxWidth);
-    const cropHeight = cropWidth / aspectRatio;
+    let cropWidth = Math.min(imageWidth, maxWidth);
+    let cropHeight = cropWidth / aspectRatio;
+    // Clamp height to image height
+    if (cropHeight > imageHeight) {
+      cropHeight = imageHeight;
+      cropWidth = cropHeight * aspectRatio;
+    }
     y = Math.max(
       0,
       Math.min(
