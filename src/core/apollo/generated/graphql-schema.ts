@@ -5159,6 +5159,7 @@ export enum NotificationEvent {
   UserMessage = 'USER_MESSAGE',
   UserMessageSender = 'USER_MESSAGE_SENDER',
   UserSignUpWelcome = 'USER_SIGN_UP_WELCOME',
+  UserSpaceCommunityApplicationDeclined = 'USER_SPACE_COMMUNITY_APPLICATION_DECLINED',
   UserSpaceCommunityInvitation = 'USER_SPACE_COMMUNITY_INVITATION',
   UserSpaceCommunityJoined = 'USER_SPACE_COMMUNITY_JOINED',
   VirtualContributorAdminSpaceCommunityInvitation = 'VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION',
@@ -8077,7 +8078,7 @@ export type UpdateUserSettingsNotificationUserInput = {
 export type UpdateUserSettingsNotificationUserMembershipInput = {
   /** Receive a notification for community invitation */
   spaceCommunityInvitationReceived?: InputMaybe<NotificationSettingInput>;
-  /** Receive a notification when I join a new community */
+  /** Receive a notification when I join a new community or when my application is declined */
   spaceCommunityJoined?: InputMaybe<NotificationSettingInput>;
 };
 
@@ -8469,7 +8470,7 @@ export type UserSettingsNotificationUserMembership = {
   __typename?: 'UserSettingsNotificationUserMembership';
   /** Receive a notification when I am invited to join a Space community */
   spaceCommunityInvitationReceived: UserSettingsNotificationChannels;
-  /** Receive a notification when I join a Space */
+  /** Receive a notification when I join a Space or when my application is declined */
   spaceCommunityJoined: UserSettingsNotificationChannels;
 };
 

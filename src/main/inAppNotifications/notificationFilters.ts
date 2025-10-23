@@ -15,6 +15,7 @@ const USER_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.UserMessageSender,
   NotificationEvent.UserSignUpWelcome,
   NotificationEvent.UserSpaceCommunityInvitation,
+  NotificationEvent.UserSpaceCommunityApplicationDeclined,
   NotificationEvent.UserSpaceCommunityJoined,
 ];
 
