@@ -51,10 +51,10 @@ const getWhiteboardPreviewImage = async (
     log('Original image dimensions:', { width, height });
 
     if (width <= desiredDimensions.minWidth || height <= desiredDimensions.minHeight) {
-      log('image is smaller than min dimensions, exporting at 3x scale');
+      log('image is smaller than min dimensions, exporting at 2x scale');
       return {
-        width: desiredDimensions.minWidth * 2,
-        height: desiredDimensions.minHeight * 2,
+        width: Math.max(desiredDimensions.minWidth * 2, width * 2),
+        height: Math.max(desiredDimensions.minHeight * 2, height * 2),
         scale: 2,
       };
     }
@@ -79,19 +79,22 @@ const getWhiteboardPreviewImage = async (
     exportPadding,
   })
     .then(blob =>
+      // Resize to twice the maximum size to ensure good quality of the image, if not it's pixelated
       resizeImage(blob, (imageWidth, imageHeight) => ({
-        width: Math.min(imageWidth, desiredDimensions.maxWidth),
-        height: Math.min(imageHeight, desiredDimensions.maxHeight),
+        width: Math.min(imageWidth, desiredDimensions.maxWidth * 2),
+        height: Math.min(imageHeight, desiredDimensions.maxHeight * 2),
         keepRatio: true,
       }))
     )
     .catch(error => {
       errorGenerating = true;
+      log('Error generating whiteboard preview image:', error);
       logError(error);
       return createFallbackWhiteboardPreview(desiredDimensions.maxWidth, desiredDimensions.maxHeight);
     });
 
   if (crop) {
+    log('Cropping image');
     return {
       image: await cropImage(blob, crop),
       error: errorGenerating,
