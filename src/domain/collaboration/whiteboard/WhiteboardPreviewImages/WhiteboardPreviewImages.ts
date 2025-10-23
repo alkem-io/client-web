@@ -2,9 +2,10 @@ import { VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graph
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
 import { WhiteboardPreviewSettings } from './WhiteboardPreviewSettings';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import getWhiteboardPreviewImage from './getWhiteboardPreviewImage';
-import { getDefaultCropConfigForWhiteboardPreview } from './getDefaultCropConfigForWhiteboardPreview';
+import { getDefaultCropConfigForWhiteboardPreview } from './utils/getDefaultCropConfigForWhiteboardPreview';
 import { CardVisualDimensions, WhiteboardPreviewVisualDimensions } from './WhiteboardDimensions';
+import cropImage from '@/core/utils/images/cropImage';
+import getWhiteboardPreviewImage from './utils/getWhiteboardPreviewImage';
 
 export interface PreviewImageDimensions {
   maxWidth: number;
@@ -47,55 +48,46 @@ export const generateWhiteboardPreviewImages = async <Whiteboard extends Whitebo
     return;
   }
 
-  const calculateCropConfig = (visualType: VisualType) => {
-    return (imageWidth: number, imageHeight: number) => {
-      if (visualType === VisualType.WhiteboardPreview) {
-        if (whiteboard.previewSettings.mode !== WhiteboardPreviewMode.Auto && whiteboard.previewSettings.coordinates) {
-          return whiteboard.previewSettings.coordinates;
-        } else {
-          return getDefaultCropConfigForWhiteboardPreview(
-            imageWidth,
-            imageHeight,
-            WhiteboardPreviewVisualDimensions.aspectRatio,
-            WhiteboardPreviewVisualDimensions.maxWidth,
-            WhiteboardPreviewVisualDimensions.maxHeight
-          );
-        }
-      } else if (visualType === VisualType.Card) {
-        /*if (whiteboard.previewSettings.mode !== WhiteboardPreviewMode.Auto && whiteboard.previewSettings.coordinates) {
-          return whiteboard.previewSettings.coordinates;
-        } else {
-
-        }*/
-        return getDefaultCropConfigForWhiteboardPreview(
-          imageWidth,
-          imageHeight,
-          CardVisualDimensions.aspectRatio,
-          CardVisualDimensions.maxWidth,
-          CardVisualDimensions.maxHeight
-        );
-      }
-    };
+  const calculateCropConfig = (imageWidth: number, imageHeight: number) => {
+    if (whiteboard.previewSettings.mode !== WhiteboardPreviewMode.Auto && whiteboard.previewSettings.coordinates) {
+      return whiteboard.previewSettings.coordinates;
+    } else {
+      return getDefaultCropConfigForWhiteboardPreview(
+        imageWidth,
+        imageHeight,
+        WhiteboardPreviewVisualDimensions.aspectRatio,
+        WhiteboardPreviewVisualDimensions.maxWidth,
+        WhiteboardPreviewVisualDimensions.maxHeight
+      );
+    }
   };
 
   const previewImages: WhiteboardPreviewImage[] = [];
 
-  previewImages.push({
-    visualType: VisualType.WhiteboardPreview,
-    imageData: await getWhiteboardPreviewImage(
-      excalidrawAPI,
-      whiteboard?.profile?.preview,
-      calculateCropConfig(VisualType.WhiteboardPreview)
-    ),
-  });
+  const { image: whiteboardPreview, error } = await getWhiteboardPreviewImage(
+    excalidrawAPI,
+    whiteboard?.profile?.preview,
+    calculateCropConfig
+  );
+  if (error) {
+    // If there was an error generating the preview, just return an empty array to avoid overwriting existing previews
+    return previewImages;
+  }
+
+  const cardPreview = await cropImage(whiteboardPreview, () => ({
+    width: CardVisualDimensions.maxWidth,
+    height: CardVisualDimensions.maxHeight,
+    x: 0,
+    y: 0,
+  }));
 
   previewImages.push({
-    visualType: VisualType.Card,
-    imageData: await getWhiteboardPreviewImage(
-      excalidrawAPI,
-      whiteboard?.profile?.visual,
-      calculateCropConfig(VisualType.Card)
-    ),
+    visualType: VisualType.WhiteboardPreview,
+    imageData: whiteboardPreview,
+  });
+  previewImages.push({
+    visualType: VisualType.Card, //!!
+    imageData: cardPreview,
   });
 
   return previewImages;

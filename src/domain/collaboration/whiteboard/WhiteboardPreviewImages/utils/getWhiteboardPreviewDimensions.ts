@@ -1,4 +1,4 @@
-import { PreviewImageDimensions } from './WhiteboardPreviewImages';
+import { PreviewImageDimensions } from '../WhiteboardPreviewImages';
 
 type ExcalidrawDimensions = {
   width: number;

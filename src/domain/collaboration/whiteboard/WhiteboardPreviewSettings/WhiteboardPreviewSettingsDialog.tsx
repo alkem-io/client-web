@@ -2,7 +2,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
 import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { useEffect, useState } from 'react';
-import getWhiteboardPreviewImage from '../WhiteboardPreviewImages/getWhiteboardPreviewImage';
+import getWhiteboardPreviewImage from '../WhiteboardPreviewImages/utils/getWhiteboardPreviewImage';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import { Button, CircularProgress, DialogActions, DialogContent, styled } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
@@ -73,7 +73,7 @@ const WhiteboardPreviewSettingsDialog = ({
     }
 
     (async () => {
-      const image = await getWhiteboardPreviewImage(excalidrawAPI);
+      const { image } = await getWhiteboardPreviewImage(excalidrawAPI);
       const reader = new FileReader();
       const loadFile = () => setWhiteboardPreviewImage(reader.result as string);
       reader.addEventListener('load', loadFile);

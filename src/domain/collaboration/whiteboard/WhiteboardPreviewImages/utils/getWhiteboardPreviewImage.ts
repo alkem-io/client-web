@@ -1,9 +1,12 @@
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import type { exportToBlob as ExcalidrawExportToBlob } from '@excalidraw/utils';
-import { PreviewImageDimensions } from './WhiteboardPreviewImages';
-import { WhiteboardPreviewVisualDimensions } from './WhiteboardDimensions';
+import { PreviewImageDimensions } from '../WhiteboardPreviewImages';
+import { WhiteboardPreviewVisualDimensions } from '../WhiteboardDimensions';
 import cropImage, { CropConfigFunction } from '@/core/utils/images/cropImage';
+import resizeImage from '@/core/utils/images/resizeImage';
+import { error as logError } from '@/core/logging/sentry/log';
+import createFallbackWhiteboardPreview from './createFallbackWhiteboardPreview';
 
 type ExcalidrawUtils = {
   exportToBlob: typeof ExcalidrawExportToBlob;
@@ -13,7 +16,7 @@ const getWhiteboardPreviewImage = async (
   excalidrawAPI: ExcalidrawImperativeAPI,
   desiredDimensions: PreviewImageDimensions = WhiteboardPreviewVisualDimensions,
   crop?: CropConfigFunction
-): Promise<Blob> => {
+): Promise<{ image: Blob; error: boolean }> => {
   const appState = excalidrawAPI.getAppState(),
     elements = excalidrawAPI.getSceneElements(),
     files = excalidrawAPI.getFiles();
@@ -32,34 +35,55 @@ const getWhiteboardPreviewImage = async (
   const exportPadding = Math.max(maxX - minX, maxY - minY) * 0.2; // 20% of the biggest dimension as padding
 
   const getDimensions = (width: number, height: number) => {
-    if (desiredDimensions.minWidth > width) {
-      width = desiredDimensions.minWidth;
+    console.log('Original image dimensions:', { width, height });
+
+    if (width <= desiredDimensions.minWidth || height <= desiredDimensions.minHeight) {
+      console.log('image is smaller than min dimensions, exporting at 3x scale');
+      return {
+        width: desiredDimensions.minWidth * 2,
+        height: desiredDimensions.minHeight * 2,
+        scale: 2,
+      };
     }
-    if (desiredDimensions.minHeight > height) {
-      height = desiredDimensions.minHeight;
-    }
+    console.log('Exporting image with dimensions:', { width, height });
     return {
-      width,
-      height,
+      width: width,
+      height: height,
       scale: 1,
     };
   };
 
   const { exportToBlob } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
+  let errorGenerating = false;
 
-  const blob = exportToBlob({
+  const blob = await exportToBlob({
     appState,
     elements,
     files: files ?? null,
     getDimensions,
     mimeType: 'image/png',
     exportPadding,
-  });
+  })
+    .then(blob =>
+      resizeImage(blob, (imageWidth, imageHeight) => ({
+        width: Math.min(imageWidth, desiredDimensions.maxWidth),
+        height: Math.min(imageHeight, desiredDimensions.maxHeight),
+        keepRatio: true,
+      }))
+    )
+    .catch(error => {
+      errorGenerating = true;
+      logError(error);
+      return createFallbackWhiteboardPreview(desiredDimensions.maxWidth, desiredDimensions.maxHeight);
+    });
 
   if (crop) {
-    return cropImage(await blob, crop);
+    return {
+      image: await cropImage(blob, crop),
+      error: errorGenerating,
+    };
   } else {
-    return blob;
+    return { image: blob, error: errorGenerating };
   }
 };
 

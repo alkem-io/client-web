@@ -11,7 +11,7 @@ import { WhiteboardPreviewVisualDimensions } from '../WhiteboardPreviewImages/Wh
 import { PreviewImageDimensions } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { CropConfig } from '@/core/utils/images/cropImage';
-import { getDefaultCropConfigForWhiteboardPreview } from '../WhiteboardPreviewImages/getDefaultCropConfigForWhiteboardPreview';
+import { getDefaultCropConfigForWhiteboardPreview } from '../WhiteboardPreviewImages/utils/getDefaultCropConfigForWhiteboardPreview';
 
 interface WhiteboardPreviewCustomSelectionDialogProps {
   open: boolean;
@@ -167,13 +167,17 @@ const WhiteboardPreviewCustomSelectionDialog = ({
       </DialogContent>
       <DialogFooter>
         <DialogActions>
-          <Box>
-            <pre>Img:{JSON.stringify({ width: imgRef.current?.width, height: imgRef.current?.height })}</pre>
+          <Box overflow="auto">
             <pre>
+              Img:{JSON.stringify({ width: imgRef.current?.width, height: imgRef.current?.height })}
+              <br />
               ImgOrig:{JSON.stringify({ width: imgRef.current?.naturalWidth, height: imgRef.current?.naturalHeight })}
+              <br />
+              Constraints:{JSON.stringify({ maxHeight, minHeight, maxWidth, minWidth, aspectRatio })}
+              <br />
+              Crop:{JSON.stringify(crop)}
+              <br />
             </pre>
-            <pre>Constraints:{JSON.stringify(constraints)}</pre>
-            <pre>Crop:{JSON.stringify(crop)}</pre>
           </Box>
           <Button variant="outlined" startIcon={<Replay />} onClick={resetCrop}>
             {t('pages.whiteboard.previewSettings.cropDialog.reset')}

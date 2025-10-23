@@ -2962,6 +2962,7 @@
       "previewSettings": {
         "title": "Preview Settings",
         "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
         "modes": {
           "auto": {
             "title": "Auto Preview",
