@@ -79,27 +79,34 @@ const WhiteboardPreviewCustomSelectionDialog = ({
   const ensurePresence = useEnsurePresence();
   const imgRef = useRef<HTMLImageElement>(null);
 
-  const { maxHeight, minHeight, maxWidth, minWidth, aspectRatio } = translateImageDimensions({
-    constraints,
-    img: imgRef.current,
-    inverse: false,
-  });
+  const { aspectRatio } = constraints;
 
   const [crop, setCrop] = useState<Crop | undefined>(undefined);
   const onCropChange = (crop: CropConfig) => {
+    const { maxHeight, minHeight, maxWidth, minWidth } = translateImageDimensions({
+      constraints,
+      img: imgRef.current,
+      inverse: true,
+    });
+
     const newCrop = { ...crop };
-    if (!newCrop.width || !newCrop.height || newCrop.width <= 0 || newCrop.height <= 0) {
+    if (!newCrop.width || !newCrop.height || newCrop.width <= minWidth || newCrop.height <= minHeight) {
       return;
     }
-    newCrop.height = Math.min(Math.max(minHeight, newCrop.height), maxHeight);
-    newCrop.width = Math.min(Math.max(minWidth, newCrop.width), maxWidth);
     newCrop.x = Math.max(0, newCrop.x);
     newCrop.y = Math.max(0, newCrop.y);
-    setCrop({ ...newCrop, unit: 'px' });
+    newCrop.height = Math.min(Math.max(minHeight, newCrop.height), maxHeight);
+    newCrop.width = Math.min(Math.max(minWidth, newCrop.width), maxWidth);
+    setCrop({ x: newCrop.x, y: newCrop.y, width: newCrop.width, height: newCrop.height, unit: 'px' });
   };
 
   const resetCrop = () => {
     const img = ensurePresence(imgRef.current);
+    const { maxHeight, maxWidth } = translateImageDimensions({
+      constraints,
+      img,
+      inverse: true,
+    });
     if (!img.width || !img.height) {
       throw new Error('Image not loaded yet');
     }
@@ -173,7 +180,9 @@ const WhiteboardPreviewCustomSelectionDialog = ({
               <br />
               ImgOrig:{JSON.stringify({ width: imgRef.current?.naturalWidth, height: imgRef.current?.naturalHeight })}
               <br />
-              Constraints:{JSON.stringify({ maxHeight, minHeight, maxWidth, minWidth, aspectRatio })}
+              Constraints:{JSON.stringify(constraints)}
+              ConstraintsT:
+              {JSON.stringify(translateImageDimensions({ constraints, img: imgRef.current, inverse: true }))}
               <br />
               Crop:{JSON.stringify(crop)}
               <br />

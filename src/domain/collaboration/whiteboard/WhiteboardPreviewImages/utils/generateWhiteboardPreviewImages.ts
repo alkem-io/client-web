@@ -6,6 +6,7 @@ import { CardVisualDimensions, WhiteboardPreviewVisualDimensions } from '../Whit
 import cropImage from '@/core/utils/images/cropImage';
 import getWhiteboardPreviewImage from './getWhiteboardPreviewImage';
 import { PreviewImageDimensions, WhiteboardPreviewImage } from '../model/WhiteboardPreviewImagesModels';
+import cropImageWithConstraints from './cropImageWithConstraints';
 
 interface WhiteboardWithPreviewImageDimensions {
   profile?: {
@@ -54,19 +55,14 @@ export const generateWhiteboardPreviewImages = async <Whiteboard extends Whitebo
     return previewImages;
   }
 
-  const cardPreview = await cropImage(whiteboardPreview, () => ({
-    width: CardVisualDimensions.maxWidth,
-    height: CardVisualDimensions.maxHeight,
-    x: 0,
-    y: 0,
-  }));
+  const cardPreview = await cropImage(whiteboardPreview, cropImageWithConstraints(CardVisualDimensions));
 
   previewImages.push({
     visualType: VisualType.WhiteboardPreview,
     imageData: whiteboardPreview,
   });
   previewImages.push({
-    visualType: VisualType.Card, //!!
+    visualType: VisualType.Card,
     imageData: cardPreview,
   });
 

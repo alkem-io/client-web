@@ -148,7 +148,6 @@ const WhiteboardPreviewSettingsDialog = ({
   const handleCropDialogClose = () => {
     setCropDialogOpen(false);
     setSelectedMode(whiteboard.previewSettings.mode); // Set whatever mode was selected before
-    onClose();
   };
 
   return (

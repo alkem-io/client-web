@@ -18,9 +18,9 @@ export const BannerDimensions: PreviewImageDimensions = {
 };
 
 export const WhiteboardPreviewVisualDimensions: PreviewImageDimensions = {
-  minWidth: 300,
+  minWidth: 500,
   maxWidth: 1800,
-  minHeight: 120,
+  minHeight: 200,
   maxHeight: 720,
   aspectRatio: 2.5,
 };
