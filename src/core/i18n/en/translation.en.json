@@ -2055,7 +2055,7 @@
           "description": "You’re now part of a community that grows through collaboration \uD83E\uDD1D Click to explore the Getting Started Guide and start participating in $t(common.spaces) where every insight helps us all move forward.\nQuestions? Email support@alkem.io"
         },
         "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
-          "subject": "{{triggeredByName}} declined your invitation for {{spaceName}}",
+          "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
           "description": ""
         }
       },
