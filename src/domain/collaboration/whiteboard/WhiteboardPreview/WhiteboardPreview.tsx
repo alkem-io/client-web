@@ -51,7 +51,6 @@ const Container = styled(Box)(({ theme }) => ({
     width: '100%',
     height: '100%',
     borderRadius: theme.shape.borderRadius,
-    // backgroundColor: theme.palette.background.default,
     backdropFilter: 'blur(3px)',
     zIndex: 1,
   },

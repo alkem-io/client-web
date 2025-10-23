@@ -11,6 +11,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import {
   WhiteboardPreviewModeAutoIcon,
   WhiteboardPreviewModeCustomIcon,
+  WhiteboardPreviewModeFixedIcon,
   WhiteboardPreviewSettingsIcon,
 } from './icons/WhiteboardPreviewIcons';
 import { Box } from '@mui/system';
@@ -20,6 +21,11 @@ import { useTheme } from '@mui/material';
 import WhiteboardPreviewCustomSelectionDialog from './WhiteboardPreviewCustomSelectionDialog';
 import { WhiteboardPreviewVisualDimensions } from '../WhiteboardPreviewImages/WhiteboardDimensions';
 import { CropConfig } from '@/core/utils/images/cropImage';
+import {
+  generateWhiteboardPreviewImages,
+  useUploadWhiteboardVisuals,
+} from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 interface WhiteboardPreviewSettingsDialogProps {
   open?: boolean;
@@ -75,9 +81,9 @@ const WhiteboardPreviewSettingsDialog = ({
     })();
   }, [open, whiteboard, excalidrawAPI]);
 
-  const [updateWhiteboardPreviewSettings, { loading }] = useUpdateWhiteboardPreviewSettingsMutation();
+  const [updateWhiteboardPreviewSettings] = useUpdateWhiteboardPreviewSettingsMutation();
 
-  const handleClickOnAuto = async () => {
+  const [handleClickOnAuto, loadingAuto] = useLoadingState(async () => {
     setSelectedMode(WhiteboardPreviewMode.Auto);
     if (whiteboard.previewSettings.mode !== WhiteboardPreviewMode.Auto) {
       await updateWhiteboardPreviewSettings({
@@ -90,26 +96,43 @@ const WhiteboardPreviewSettingsDialog = ({
       });
     }
     onClose();
-  };
+  });
 
   const handleClickOnCustom = async () => {
     setSelectedMode(WhiteboardPreviewMode.Custom);
     setCropDialogOpen(true);
   };
 
-  const handleCropChanged = async (newCrop: CropConfig) => {
+  const handleClickOnFixed = async () => {
+    setSelectedMode(WhiteboardPreviewMode.Fixed);
+    setCropDialogOpen(true);
+  };
+
+  const { uploadVisuals } = useUploadWhiteboardVisuals();
+  const [handleCropChanged, loadingCustom] = useLoadingState(async (newCrop: CropConfig) => {
     setCropDialogOpen(false);
     await updateWhiteboardPreviewSettings({
       variables: {
         whiteboardId: whiteboard.id,
         previewSettings: {
-          mode: WhiteboardPreviewMode.Custom,
+          mode: selectedMode,
           coordinates: newCrop,
         },
       },
     });
+    if (selectedMode === WhiteboardPreviewMode.Fixed) {
+      const previewImages = await generateWhiteboardPreviewImages(whiteboard, excalidrawAPI, true);
+      await uploadVisuals(
+        previewImages,
+        {
+          cardVisualId: whiteboard.profile.visual?.id,
+          previewVisualId: whiteboard.profile.preview?.id,
+        },
+        whiteboard.nameID
+      );
+    }
     onClose();
-  };
+  });
 
   const handleCropDialogClose = () => {
     setCropDialogOpen(false);
@@ -130,7 +153,7 @@ const WhiteboardPreviewSettingsDialog = ({
           <ModeButton
             variant="outlined"
             startIcon={
-              selectedMode === WhiteboardPreviewMode.Auto && loading ? (
+              selectedMode === WhiteboardPreviewMode.Auto && loadingAuto ? (
                 <CircularProgress size={gutters(1)(theme)} />
               ) : (
                 <WhiteboardPreviewModeAutoIcon />
@@ -147,7 +170,7 @@ const WhiteboardPreviewSettingsDialog = ({
           <ModeButton
             variant="outlined"
             startIcon={
-              selectedMode === WhiteboardPreviewMode.Custom && loading ? (
+              selectedMode === WhiteboardPreviewMode.Custom && loadingCustom ? (
                 <CircularProgress size={gutters(1)(theme)} />
               ) : (
                 <WhiteboardPreviewModeCustomIcon />
@@ -159,6 +182,23 @@ const WhiteboardPreviewSettingsDialog = ({
             <Box>
               {t('pages.whiteboard.previewSettings.modes.custom.title')}
               <Caption>{t('pages.whiteboard.previewSettings.modes.custom.description')}</Caption>
+            </Box>
+          </ModeButton>
+          <ModeButton
+            variant="outlined"
+            startIcon={
+              selectedMode === WhiteboardPreviewMode.Fixed && loadingCustom ? (
+                <CircularProgress size={gutters(1)(theme)} />
+              ) : (
+                <WhiteboardPreviewModeFixedIcon />
+              )
+            }
+            selected={selectedMode === WhiteboardPreviewMode.Fixed}
+            onClick={handleClickOnFixed}
+          >
+            <Box>
+              {t('pages.whiteboard.previewSettings.modes.fixed.title')}
+              <Caption>{t('pages.whiteboard.previewSettings.modes.fixed.description')}</Caption>
             </Box>
           </ModeButton>
         </DialogContent>
@@ -175,7 +215,7 @@ const WhiteboardPreviewSettingsDialog = ({
         onClose={handleCropDialogClose}
         onChangeCrop={handleCropChanged}
         whiteboardPreviewImage={whiteboardPreviewImage}
-        currentCropConfig={whiteboard.previewSettings.coordinates}
+        cropConfig={whiteboard.previewSettings.coordinates}
         constraints={WhiteboardPreviewVisualDimensions}
       />
     </>
