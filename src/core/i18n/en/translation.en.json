@@ -2053,6 +2053,10 @@
         "USER_SIGN_UP_WELCOME": {
           "subject": "Welcome to Alkemio! \uD83C\uDF89",
           "description": "You’re now part of a community that grows through collaboration \uD83E\uDD1D Click to explore the Getting Started Guide and start participating in $t(common.spaces) where every insight helps us all move forward.\nQuestions? Email support@alkem.io"
+        },
+        "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
+          "description": ""
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
