@@ -21,10 +21,8 @@ import { useTheme } from '@mui/material';
 import WhiteboardPreviewCustomSelectionDialog from './WhiteboardPreviewCustomSelectionDialog';
 import { WhiteboardPreviewVisualDimensions } from '../WhiteboardPreviewImages/WhiteboardDimensions';
 import { CropConfig } from '@/core/utils/images/cropImage';
-import {
-  generateWhiteboardPreviewImages,
-  useUploadWhiteboardVisuals,
-} from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { generateWhiteboardPreviewImages } from '../WhiteboardPreviewImages/utils/generateWhiteboardPreviewImages';
+import { useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/utils/useUploadWhiteboardVisuals';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 interface WhiteboardPreviewSettingsDialogProps {
@@ -121,7 +119,20 @@ const WhiteboardPreviewSettingsDialog = ({
       },
     });
     if (selectedMode === WhiteboardPreviewMode.Fixed) {
-      const previewImages = await generateWhiteboardPreviewImages(whiteboard, excalidrawAPI, true);
+      const previewImages = await generateWhiteboardPreviewImages(
+        {
+          profile: {
+            preview: whiteboard.profile.preview,
+            visual: whiteboard.profile.visual,
+          },
+          previewSettings: {
+            mode: WhiteboardPreviewMode.Fixed,
+            coordinates: newCrop,
+          },
+        },
+        excalidrawAPI,
+        true
+      );
       await uploadVisuals(
         previewImages,
         {

@@ -23,8 +23,8 @@ import { useTranslation } from 'react-i18next';
 import {
   PreviewImageDimensions,
   WhiteboardPreviewImage,
-  generateWhiteboardPreviewImages,
-} from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+} from '../WhiteboardPreviewImages/model/WhiteboardPreviewImagesModels';
+import { generateWhiteboardPreviewImages } from '../WhiteboardPreviewImages/utils/generateWhiteboardPreviewImages';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';

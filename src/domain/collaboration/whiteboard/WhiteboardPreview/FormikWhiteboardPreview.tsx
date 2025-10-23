@@ -4,7 +4,7 @@ import { MouseEventHandler, useMemo, useState, useImperativeHandle, ReactNode } 
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import SingleUserWhiteboardDialog from '../WhiteboardDialog/SingleUserWhiteboardDialog';
 import { BlockTitle } from '@/core/ui/typography';
-import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/model/WhiteboardPreviewImagesModels';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';

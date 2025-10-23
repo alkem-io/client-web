@@ -22,10 +22,8 @@ import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  WhiteboardPreviewImage,
-  generateWhiteboardPreviewImages,
-} from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/model/WhiteboardPreviewImagesModels';
+import { generateWhiteboardPreviewImages } from '../WhiteboardPreviewImages/utils/generateWhiteboardPreviewImages';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import whiteboardSchema from '../validation/whiteboardSchema';

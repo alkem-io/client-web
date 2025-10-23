@@ -26,25 +26,16 @@ const resizeImage = async (blob: Blob, getResizeDimensions: ResizeConfigFunction
 
       try {
         const { width, height, keepRatio } = getResizeDimensions(img.width, img.height);
-        //!!
-        console.log('Resizing image with dimensions:', {
-          originalWidth: img.width,
-          originalHeight: img.height,
-          width,
-          height,
-          keepRatio,
-        });
 
         if (width === img.width && height === img.height) {
+          // No resizing needed, returning original blob
           cleanup();
           resolve(blob);
-          console.log('No resizing needed, returning original blob');
           return;
         }
         if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
           cleanup();
           resolve(blob);
-          console.log('something weird resizing');
           return;
         }
 

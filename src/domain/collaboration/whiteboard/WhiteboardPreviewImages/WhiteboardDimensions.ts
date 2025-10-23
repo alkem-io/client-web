@@ -1,4 +1,4 @@
-import { PreviewImageDimensions } from './WhiteboardPreviewImages';
+import { PreviewImageDimensions } from './model/WhiteboardPreviewImagesModels';
 
 // TODO: This should be coming from the server:
 export const BannerNarrowDimensions: PreviewImageDimensions = {

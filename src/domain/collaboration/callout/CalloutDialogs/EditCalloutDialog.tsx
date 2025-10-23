@@ -26,7 +26,7 @@ import {
   mapLinkDataToUpdateLinkInput,
 } from '../models/mappings';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
-import { useUploadWhiteboardVisuals } from '../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { useUploadWhiteboardVisuals } from '../../whiteboard/WhiteboardPreviewImages/utils/useUploadWhiteboardVisuals';
 
 export interface EditCalloutDialogProps {
   open?: boolean;

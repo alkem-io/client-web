@@ -1,3 +1,12 @@
+/**
+ * Gets the default crop config for a whiteboard, which is the maximum centered crop keeping aspect ratio
+ * @param imageWidth
+ * @param imageHeight
+ * @param aspectRatio
+ * @param maxWidth
+ * @param maxHeight
+ * @returns
+ */
 export const getDefaultCropConfigForWhiteboardPreview = (
   imageWidth: number,
   imageHeight: number,

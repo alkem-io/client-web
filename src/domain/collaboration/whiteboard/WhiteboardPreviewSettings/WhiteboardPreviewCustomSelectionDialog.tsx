@@ -8,7 +8,7 @@ import Loading from '@/core/ui/loading/Loading';
 import ReactCrop, { Crop } from 'react-image-crop';
 import { useCallback, useRef, useState } from 'react';
 import { WhiteboardPreviewVisualDimensions } from '../WhiteboardPreviewImages/WhiteboardDimensions';
-import { PreviewImageDimensions } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { PreviewImageDimensions } from '../WhiteboardPreviewImages/model/WhiteboardPreviewImagesModels';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { CropConfig } from '@/core/utils/images/cropImage';
 import { getDefaultCropConfigForWhiteboardPreview } from '../WhiteboardPreviewImages/utils/getDefaultCropConfigForWhiteboardPreview';
