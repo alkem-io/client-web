@@ -28,6 +28,7 @@ import { InAppUserMessageSenderView } from './views/user/InAppUserMessageSenderV
 import { InAppUserSignUpWelcomeView } from './views/user/InAppUserSignUpWelcomeView';
 import { InAppUserSpaceCommunityInvitationView } from './views/user/InAppUserSpaceCommunityInvitationView';
 import { InAppVirtualContributorAdminSpaceCommunityInvitationView } from './views/virtualContributor/InAppVirtualContributorAdminSpaceCommunityInvitationView';
+import { InAppUserSpaceCommunityApplicationDeclined } from '@/main/inAppNotifications/views/user/InAppUserSpaceCommunityApplicationDeclined';
 
 export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
   switch (item.type) {
@@ -83,6 +84,8 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationModel) => {
       return <InAppUserSignUpWelcomeView {...item} />;
     case NotificationEvent.UserSpaceCommunityInvitation:
       return <InAppUserSpaceCommunityInvitationView {...item} />;
+    case NotificationEvent.UserSpaceCommunityApplicationDeclined:
+      return <InAppUserSpaceCommunityApplicationDeclined {...item} />;
     case NotificationEvent.VirtualContributorAdminSpaceCommunityInvitation:
       return <InAppVirtualContributorAdminSpaceCommunityInvitationView {...item} />;
 
