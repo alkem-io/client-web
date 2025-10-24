@@ -1994,6 +1994,10 @@
           "subject": "{{triggeredByName}} applied to join {{spaceName}}",
           "description": "Review the application in the $t(common.space) $t(common.settings)"
         },
+        "SPACE_ADMIN_VIRTUAL_CONTRIBUTOR_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your invitation for {{contributorName}} to join {{spaceName}}",
+          "description": ""
+        },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
           "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
           "description": ""
