@@ -681,7 +681,7 @@ export const WhiteboardProfileFragmentDoc = gql`
     visual(type: CARD) {
       ...VisualModelFull
     }
-    preview: visual(type: BANNER) {
+    preview: visual(type: WHITEBOARD_PREVIEW) {
       ...VisualModelFull
     }
     tagset {
@@ -721,6 +721,15 @@ export const WhiteboardDetailsFragmentDoc = gql`
         avatar: visual(type: AVATAR) {
           ...VisualModel
         }
+      }
+    }
+    previewSettings {
+      mode
+      coordinates {
+        x
+        y
+        width
+        height
       }
     }
   }
@@ -2478,7 +2487,7 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
           whiteboard {
             id
             profile {
-              preview: visual(type: BANNER) {
+              preview: visual(type: WHITEBOARD_PREVIEW) {
                 ...VisualModel
               }
             }
@@ -2582,7 +2591,7 @@ export const WhiteboardTemplateContentFragmentDoc = gql`
     profile {
       id
       displayName
-      preview: visual(type: BANNER) {
+      preview: visual(type: WHITEBOARD_PREVIEW) {
         name
         uri
       }
@@ -6821,7 +6830,7 @@ export const CalloutContentDocument = gql`
             profile {
               id
               displayName
-              preview: visual(type: BANNER) {
+              preview: visual(type: WHITEBOARD_PREVIEW) {
                 id
                 name
                 uri
@@ -7087,7 +7096,7 @@ export const CalloutContributionDocument = gql`
             id
             url
             displayName
-            preview: visual(type: BANNER) {
+            preview: visual(type: WHITEBOARD_PREVIEW) {
               ...VisualModel
             }
           }
@@ -8965,6 +8974,69 @@ export type UpdateMemoContentUpdatePolicyMutationResult =
 export type UpdateMemoContentUpdatePolicyMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateMemoContentUpdatePolicyMutation,
   SchemaTypes.UpdateMemoContentUpdatePolicyMutationVariables
+>;
+export const UpdateWhiteboardPreviewSettingsDocument = gql`
+  mutation UpdateWhiteboardPreviewSettings(
+    $whiteboardId: UUID!
+    $previewSettings: UpdateWhiteboardPreviewSettingsInput!
+  ) {
+    updateWhiteboard(whiteboardData: { ID: $whiteboardId, previewSettings: $previewSettings }) {
+      id
+      previewSettings {
+        mode
+        coordinates {
+          x
+          y
+          width
+          height
+        }
+      }
+    }
+  }
+`;
+export type UpdateWhiteboardPreviewSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
+  SchemaTypes.UpdateWhiteboardPreviewSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateWhiteboardPreviewSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateWhiteboardPreviewSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWhiteboardPreviewSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWhiteboardPreviewSettingsMutation, { data, loading, error }] = useUpdateWhiteboardPreviewSettingsMutation({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *      previewSettings: // value for 'previewSettings'
+ *   },
+ * });
+ */
+export function useUpdateWhiteboardPreviewSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
+    SchemaTypes.UpdateWhiteboardPreviewSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
+    SchemaTypes.UpdateWhiteboardPreviewSettingsMutationVariables
+  >(UpdateWhiteboardPreviewSettingsDocument, options);
+}
+export type UpdateWhiteboardPreviewSettingsMutationHookResult = ReturnType<
+  typeof useUpdateWhiteboardPreviewSettingsMutation
+>;
+export type UpdateWhiteboardPreviewSettingsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateWhiteboardPreviewSettingsMutation>;
+export type UpdateWhiteboardPreviewSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
+  SchemaTypes.UpdateWhiteboardPreviewSettingsMutationVariables
 >;
 export const WhiteboardFromCalloutDocument = gql`
   query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
@@ -21934,7 +22006,7 @@ export const CreateTemplateDocument = gql`
             nameID
             profile {
               id
-              previewVisual: visual(type: BANNER) {
+              previewVisual: visual(type: WHITEBOARD_PREVIEW) {
                 id
               }
             }
@@ -22227,7 +22299,7 @@ export const UpdateCalloutTemplateDocument = gql`
           nameID
           profile {
             id
-            previewVisual: visual(type: BANNER) {
+            previewVisual: visual(type: WHITEBOARD_PREVIEW) {
               id
             }
           }

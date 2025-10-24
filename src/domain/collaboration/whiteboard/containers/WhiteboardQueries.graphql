@@ -6,7 +6,7 @@ fragment WhiteboardProfile on Profile {
   visual(type: CARD) {
     ...VisualModelFull
   }
-  preview: visual(type: BANNER) {
+  preview: visual(type: WHITEBOARD_PREVIEW) {
     ...VisualModelFull
   }
   tagset {
@@ -43,6 +43,15 @@ fragment WhiteboardDetails on Whiteboard {
       avatar: visual(type: AVATAR) {
         ...VisualModel
       }
+    }
+  }
+  previewSettings {
+    mode
+    coordinates {
+      x
+      y
+      width
+      height
     }
   }
 }

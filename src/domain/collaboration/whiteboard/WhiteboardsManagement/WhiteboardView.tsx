@@ -8,6 +8,7 @@ import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer
 import CollaborationSettings from '../../realTimeCollaboration/CollaborationSettings/CollaborationSettings';
 import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
 import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
+import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardId?: string;
@@ -42,6 +43,7 @@ const WhiteboardView = ({
 }: WhiteboardViewProps) => {
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState<number>(0);
   const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
+  const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState<boolean>(false);
 
   const { fullscreen, setFullscreen } = useFullscreen();
 
@@ -90,6 +92,7 @@ const WhiteboardView = ({
             },
             setLastSuccessfulSavedDate,
             onChangeDisplayName: actions.onChangeDisplayName,
+            onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
           }}
           options={{
             canEdit: hasUpdateContentPrivileges,
@@ -98,6 +101,7 @@ const WhiteboardView = ({
             dialogTitle: displayName,
             readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
             fullscreen,
+            previewSettingsDialogOpen: previewSettingsDialogOpen,
             headerActions: (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
@@ -107,6 +111,8 @@ const WhiteboardView = ({
                 <FullscreenButton />
 
                 <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
+
+                <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
               </>
             ),
           }}

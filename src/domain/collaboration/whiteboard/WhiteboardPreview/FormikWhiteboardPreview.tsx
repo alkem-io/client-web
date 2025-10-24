@@ -4,7 +4,7 @@ import { MouseEventHandler, useMemo, useState, useImperativeHandle, ReactNode } 
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import SingleUserWhiteboardDialog from '../WhiteboardDialog/SingleUserWhiteboardDialog';
 import { BlockTitle } from '@/core/ui/typography';
-import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
@@ -12,6 +12,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditButton from '@/core/ui/actions/EditButton';
 import { gutters } from '@/core/ui/grid/utils';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 
 export interface FormikWhiteboardPreviewRef {
   openEditDialog: () => void;
@@ -91,6 +92,9 @@ const FormikWhiteboardPreview = ({
       // Needed to pass yup validation of WhiteboardDialog
       profile: { id: '__templateProfile', displayName: '__template', url: '', storageBucket: { id: '' } },
       content: field.value,
+      previewSettings: {
+        mode: WhiteboardPreviewMode.Auto,
+      },
     };
   }, [field.value]);
 

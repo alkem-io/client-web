@@ -22,10 +22,8 @@ import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  WhiteboardPreviewImage,
-  generateWhiteboardPreviewImages,
-} from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import whiteboardSchema from '../validation/whiteboardSchema';
@@ -71,6 +69,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   const notify = useNotification();
   const { whiteboard } = entities;
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
+  const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
 
   const getExcalidrawStateFromApi = () => {
     if (!excalidrawAPI) {
@@ -98,7 +97,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
 
     const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
-    const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
+    const previewImages = await generateWhiteboardVisuals(whiteboard);
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
     if (!formikRef.current?.isValid) {
