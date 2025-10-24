@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
-import { useUploadWhiteboardVisuals } from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
+import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import {
   CalloutCreationParams,
   CalloutCreationType,

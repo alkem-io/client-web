@@ -21,9 +21,10 @@ import { useTheme } from '@mui/material';
 import WhiteboardPreviewCustomSelectionDialog from './WhiteboardPreviewCustomSelectionDialog';
 import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
 import { CropConfig } from '@/core/utils/images/cropImage';
-import { generateWhiteboardVisuals } from '../WhiteboardVisuals/generateWhiteboardVisuals';
-import { useUploadWhiteboardVisuals } from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
+import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
+import useUploadWhiteboardVisuals from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
 
 interface WhiteboardPreviewSettingsDialogProps {
   open?: boolean;
@@ -63,19 +64,17 @@ const WhiteboardPreviewSettingsDialog = ({
   const { t } = useTranslation();
   const [selectedMode, setSelectedMode] = useState<WhiteboardPreviewMode>(whiteboard.previewSettings.mode);
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
+  const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
 
-  const [whiteboardPreviewImageDataUrl, setWhiteboardPreviewImageDataUrl] = useState<string>();
+  const [whiteboardPreviewImage, setWhiteboardPreviewImage] = useState<Blob>();
   useEffect(() => {
     if (!open || !cropDialogOpen || !excalidrawAPI) {
       return;
     }
-
     (async () => {
       const { image } = await getWhiteboardPreviewImage(excalidrawAPI);
-      const reader = new FileReader();
-      const loadFile = () => setWhiteboardPreviewImageDataUrl(reader.result as string);
-      reader.addEventListener('load', loadFile);
-      reader.readAsDataURL(image);
+      const blob = await toBlobPromise(image);
+      setWhiteboardPreviewImage(blob);
     })();
   }, [open, cropDialogOpen, whiteboard, excalidrawAPI]);
 
@@ -130,7 +129,6 @@ const WhiteboardPreviewSettingsDialog = ({
             coordinates: newCrop,
           },
         },
-        excalidrawAPI,
         true
       );
       await uploadVisuals(
@@ -223,8 +221,8 @@ const WhiteboardPreviewSettingsDialog = ({
       <WhiteboardPreviewCustomSelectionDialog
         open={cropDialogOpen}
         onClose={handleCropDialogClose}
-        onChangeCrop={handleCropChanged}
-        whiteboardPreviewImage={whiteboardPreviewImageDataUrl}
+        onCropSave={handleCropChanged}
+        whiteboardPreviewImage={whiteboardPreviewImage}
         cropConfig={whiteboard.previewSettings.coordinates}
         constraints={WhiteboardPreviewVisualDimensions}
       />

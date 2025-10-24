@@ -10,7 +10,7 @@ import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { useCallback, useMemo } from 'react';
 import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import { useUploadWhiteboardVisuals } from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
+import useUploadWhiteboardVisuals from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
 
 interface WhiteboardWithPreviewVisuals {
   nameID: string; // Whiteboard nameID is used to name the files uploaded as visuals

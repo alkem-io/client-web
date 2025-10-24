@@ -6,21 +6,24 @@ import { useTranslation } from 'react-i18next';
 import { Check, Close, Replay } from '@mui/icons-material';
 import Loading from '@/core/ui/loading/Loading';
 import ReactCrop, { Crop } from 'react-image-crop';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
 import { PreviewImageDimensions } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { CropConfig } from '@/core/utils/images/cropImage';
 import { getDefaultCropConfigForWhiteboardPreview } from '../WhiteboardVisuals/utils/getDefaultCropConfigForWhiteboardPreview';
+import validateCropConfig from '../WhiteboardVisuals/utils/validateCropConfig';
 
 interface WhiteboardPreviewCustomSelectionDialogProps {
   open: boolean;
   onClose: () => void;
-  whiteboardPreviewImage: string | undefined;
+  whiteboardPreviewImage: Blob | undefined;
   cropConfig?: CropConfig;
   constraints?: PreviewImageDimensions;
-  onChangeCrop: (newCrop: CropConfig) => void;
+  onCropSave: (newCrop: CropConfig) => void;
 }
+
+const MINIMUM_SELECTION_SIZE = 0.05; // 5% of the image width
 
 const translateCropConfig = ({
   cropConfig,
@@ -28,10 +31,10 @@ const translateCropConfig = ({
   inverse,
 }: {
   cropConfig: CropConfig | undefined;
-  img: { width: number; height: number; naturalWidth: number; naturalHeight: number };
+  img: { width: number; height: number; naturalWidth: number; naturalHeight: number } | null;
   inverse?: boolean;
 }): CropConfig | undefined => {
-  if (!cropConfig) {
+  if (!cropConfig || !img) {
     return undefined;
   }
   const translationX = inverse ? img.width / img.naturalWidth : img.naturalWidth / img.width;
@@ -44,33 +47,10 @@ const translateCropConfig = ({
   };
 };
 
-const translateImageDimensions = ({
-  constraints,
-  img,
-  inverse,
-}: {
-  constraints: PreviewImageDimensions;
-  img: { width: number; height: number; naturalWidth: number; naturalHeight: number } | null;
-  inverse?: boolean;
-}): PreviewImageDimensions => {
-  if (!img) {
-    return constraints;
-  }
-  const translationX = inverse ? img.width / img.naturalWidth : img.naturalWidth / img.width;
-  const translationY = inverse ? img.height / img.naturalHeight : img.naturalHeight / img.height;
-  return {
-    maxHeight: constraints.maxHeight * translationY,
-    minHeight: constraints.minHeight * translationY,
-    maxWidth: constraints.maxWidth * translationX,
-    minWidth: constraints.minWidth * translationX,
-    aspectRatio: constraints.aspectRatio,
-  };
-};
-
 const WhiteboardPreviewCustomSelectionDialog = ({
   open,
   onClose,
-  onChangeCrop,
+  onCropSave,
   whiteboardPreviewImage,
   cropConfig,
   constraints = WhiteboardPreviewVisualDimensions,
@@ -81,37 +61,24 @@ const WhiteboardPreviewCustomSelectionDialog = ({
   const [ready, setReady] = useState(false);
 
   const { aspectRatio } = constraints;
-
   const [crop, setCrop] = useState<Crop | undefined>(undefined);
   const onCropChange = (crop: CropConfig) => {
-    const { maxHeight, minHeight, maxWidth, minWidth } = translateImageDimensions({
-      constraints,
-      img: imgRef.current,
-      inverse: true,
+    /**
+     * Note: Our CropConfigs have only the coordinates width and height,
+     * ReactCrop type allows percentage units or pixels, we force px units here.
+     */
+    setCrop({
+      x: crop.x,
+      y: crop.y,
+      width: crop.width,
+      height: crop.height,
+      unit: 'px',
     });
-
-    const newCrop = { ...crop };
-    if (!newCrop.width || !newCrop.height || newCrop.width <= minWidth || newCrop.height <= minHeight) {
-      return;
-    }
-    newCrop.x = Math.max(0, newCrop.x);
-    newCrop.y = Math.max(0, newCrop.y);
-    newCrop.height = Math.min(Math.max(minHeight, newCrop.height), maxHeight);
-    newCrop.width = Math.min(Math.max(minWidth, newCrop.width), maxWidth);
-    setCrop({ x: newCrop.x, y: newCrop.y, width: newCrop.width, height: newCrop.height, unit: 'px' });
   };
 
   const resetCrop = () => {
     const img = ensurePresence(imgRef.current);
-    const { maxHeight, maxWidth } = translateImageDimensions({
-      constraints,
-      img,
-      inverse: true,
-    });
-    if (!img.width || !img.height) {
-      throw new Error('Image not loaded yet');
-    }
-    const crop = getDefaultCropConfigForWhiteboardPreview(img.width, img.height, aspectRatio, maxWidth, maxHeight);
+    const crop = getDefaultCropConfigForWhiteboardPreview(img.width, img.height, aspectRatio);
     onCropChange(crop);
   };
 
@@ -119,36 +86,39 @@ const WhiteboardPreviewCustomSelectionDialog = ({
     (img: HTMLImageElement) => {
       imgRef.current = img;
       setReady(true);
-      const aspectRatioTolerance = 0.01; // Allow 1% difference
-
-      const currentCropConfig = translateCropConfig({ cropConfig, img, inverse: true });
-      if (
-        // Validate the current crop config:
-        currentCropConfig &&
-        currentCropConfig.width > 0 &&
-        currentCropConfig.height > 0 &&
-        // Allow some tolerance in aspect ratio comparison
-        Math.abs(currentCropConfig.width / currentCropConfig.height - aspectRatio) <= aspectRatioTolerance &&
-        // Make sure crop fits within image bounds
-        currentCropConfig.x + currentCropConfig.width <= img.width &&
-        currentCropConfig.y + currentCropConfig.height <= img.height
-      ) {
-        onCropChange(currentCropConfig);
-        return;
+      const currentCropConfig = translateCropConfig({
+        cropConfig,
+        img,
+        inverse: true,
+      });
+      if (validateCropConfig(currentCropConfig, aspectRatio, img)) {
+        onCropChange(currentCropConfig!);
       } else {
-        // If no valid crop config, reset to default:
-        resetCrop();
+        resetCrop(); // If no valid crop config, reset to default:
       }
     },
-    [aspectRatio, setCrop]
+    [aspectRatio, setCrop, cropConfig]
   );
 
   const handleConfirmCrop = () => {
     const cropConfig = ensurePresence(crop);
     const img = ensurePresence(imgRef.current);
+    // Translate crop to the real generated image dimensions:
     const translatedCrop = translateCropConfig({ cropConfig, img, inverse: false });
-    onChangeCrop(translatedCrop!); // translatedCrop is guaranteed by the ensurePresence cropConfig
+    onCropSave(translatedCrop!); // translatedCrop is guaranteed by the ensurePresence cropConfig and img
   };
+
+  const [imageObjectUrl, setImageObjectUrl] = useState<string>();
+  useEffect(() => {
+    if (open && whiteboardPreviewImage) {
+      const objectUrl = URL.createObjectURL(whiteboardPreviewImage);
+      setImageObjectUrl(objectUrl);
+
+      return () => {
+        URL.revokeObjectURL(objectUrl);
+      };
+    }
+  }, [open, whiteboardPreviewImage]);
 
   return (
     <DialogWithGrid open={open} onClose={onClose} fullWidth>
@@ -161,20 +131,46 @@ const WhiteboardPreviewCustomSelectionDialog = ({
         {!whiteboardPreviewImage && <Loading />}
         {whiteboardPreviewImage && (
           <Box>
-            {whiteboardPreviewImage && (
-              <ReactCrop aspect={aspectRatio} crop={crop} onChange={onCropChange} keepSelection>
-                <img
-                  src={whiteboardPreviewImage}
-                  crossOrigin="anonymous"
-                  alt="Crop preview"
-                  onLoad={event => onLoad(event.target as HTMLImageElement)}
-                />
-              </ReactCrop>
-            )}
+            <ReactCrop
+              aspect={aspectRatio}
+              minWidth={imgRef.current?.width ? imgRef.current.width * MINIMUM_SELECTION_SIZE : undefined}
+              crop={crop}
+              onChange={onCropChange}
+              keepSelection
+            >
+              <img
+                src={imageObjectUrl}
+                crossOrigin="anonymous"
+                alt={t('pages.whiteboard.previewSettings.cropDialog.previewArea')}
+                onLoad={event => onLoad(event.target as HTMLImageElement)}
+              />
+            </ReactCrop>
           </Box>
         )}
       </DialogContent>
       <DialogFooter>
+        <Box>
+          <pre>
+            //!! Img:
+            {JSON.stringify({
+              width: imgRef.current?.width,
+              naturalWidth: imgRef.current?.naturalWidth,
+              height: imgRef.current?.height,
+              naturalHeight: imgRef.current?.naturalHeight,
+            })}
+            <br />
+            Crop:{JSON.stringify(crop)}
+            <br />
+            TCrop:
+            {JSON.stringify(
+              translateCropConfig({
+                cropConfig: crop,
+                img: imgRef.current,
+                inverse: false,
+              })
+            )}
+          </pre>
+        </Box>
         <DialogActions>
           <Button variant="outlined" startIcon={<Replay />} onClick={resetCrop} disabled={!ready}>
             {t('pages.whiteboard.previewSettings.cropDialog.reset')}

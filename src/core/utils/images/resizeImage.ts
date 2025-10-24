@@ -1,102 +1,81 @@
-export type ResizeConfigFunction = (
-  imageWidth: number,
-  imageHeight: number
-) => { height: number; width: number; keepRatio?: boolean };
+interface DesiredDimensions {
+  maxWidth: number;
+  maxHeight: number;
+  minWidth: number;
+  minHeight: number;
+  aspectRatio: number;
+}
 
 /**
- *  Resizes an image blob.
- * @param blob image
- * @param getResizeDimensions
- *  function that receives the original image dimensions and returns the desired dimensions,
- *    If keepRatio flag is true, the image will be resized keeping its original aspect ratio.
- *    The dimensions returned by the resizeConfig function will be adjusted so that the image keeps the aspect ratio but is always
- *     smaller than or equal to the requested dimensions.
- * @returns blob
+ *  Resizes an image canvas.
+ * @param canvas: HTMLCanvasElement to resize
+ * @param desiredDimensions DesiredDimensions
+ * @returns Canvas
+ *  Will return a canvas with the desired aspect ratio.
+ *  if the original image has different aspect ratio, it will be cropped in the center.
+ *  Image will never have a dimension larger than maxWidth or maxHeight, nor smaller than minWidth or minHeight.
+ *  If the image is smaller than minWidth or minHeight, it will be scaled up to meet the minimum dimensions.
+ *  If the image is bigger than maxWidth or maxHeight, it will be scaled down to meet the maximum dimensions.
  */
-const resizeImage = async (blob: Blob, getResizeDimensions: ResizeConfigFunction): Promise<Blob> => {
-  // Create an image from the blob
-  const img = new Image();
-  const imageUrl = URL.createObjectURL(blob);
-  const cleanup = () => URL.revokeObjectURL(imageUrl);
+const resizeImage = (canvas: HTMLCanvasElement, desiredDimensions: DesiredDimensions): HTMLCanvasElement => {
+  const { maxWidth, maxHeight, minWidth, minHeight, aspectRatio } = desiredDimensions;
 
-  return new Promise<Blob>((resolve, reject) => {
-    img.onload = () => {
-      try {
-        const { width, height, keepRatio } = getResizeDimensions(img.width, img.height);
+  const sourceWidth = canvas.width;
+  const sourceHeight = canvas.height;
+  const sourceAspectRatio = sourceWidth / sourceHeight;
 
-        if (width === img.width && height === img.height) {
-          // No resizing needed, returning original blob
-          cleanup();
-          resolve(blob);
-          return;
-        }
-        if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
-          cleanup();
-          resolve(blob);
-          return;
-        }
+  // Calculate the dimensions after cropping to match desired aspect ratio
+  let cropWidth = sourceWidth;
+  let cropHeight = sourceHeight;
+  let cropX = 0;
+  let cropY = 0;
 
-        const canvas = document.createElement('canvas');
+  if (sourceAspectRatio > aspectRatio) {
+    // Source is wider than desired aspect ratio, crop the width
+    cropWidth = sourceHeight * aspectRatio;
+    cropX = (sourceWidth - cropWidth) / 2;
+  } else if (sourceAspectRatio < aspectRatio) {
+    // Source is taller than desired aspect ratio, crop the height
+    cropHeight = sourceWidth / aspectRatio;
+    cropY = (sourceHeight - cropHeight) / 2;
+  }
 
-        let targetWidth = Math.max(1, Math.round(width));
-        let targetHeight = Math.max(1, Math.round(height));
+  // Calculate the final dimensions respecting min and max constraints
+  let finalWidth = cropWidth;
+  let finalHeight = cropHeight;
 
-        if (keepRatio) {
-          const widthScale = width / img.width;
-          const heightScale = height / img.height;
-          const scale = Math.min(widthScale, heightScale);
+  // Scale down if larger than max dimensions
+  if (finalWidth > maxWidth || finalHeight > maxHeight) {
+    const scaleX = maxWidth / finalWidth;
+    const scaleY = maxHeight / finalHeight;
+    const scale = Math.min(scaleX, scaleY);
+    finalWidth = finalWidth * scale;
+    finalHeight = finalHeight * scale;
+  }
 
-          if (!Number.isFinite(scale) || scale <= 0) {
-            cleanup();
-            resolve(blob);
-            return;
-          }
+  // Scale up if smaller than min dimensions
+  if (finalWidth < minWidth || finalHeight < minHeight) {
+    const scaleX = minWidth / finalWidth;
+    const scaleY = minHeight / finalHeight;
+    const scale = Math.max(scaleX, scaleY);
+    finalWidth = finalWidth * scale;
+    finalHeight = finalHeight * scale;
+  }
 
-          targetWidth = Math.min(targetWidth, Math.max(1, Math.round(img.width * scale)));
-          targetHeight = Math.min(targetHeight, Math.max(1, Math.round(img.height * scale)));
-        }
+  // Create a new canvas with the final dimensions
+  const outputCanvas = document.createElement('canvas');
+  outputCanvas.width = Math.round(finalWidth);
+  outputCanvas.height = Math.round(finalHeight);
 
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
+  const ctx = outputCanvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('Failed to get 2D context from canvas');
+  }
 
-        const ctx = canvas.getContext('2d');
+  // Draw the cropped and resized image
+  ctx.drawImage(canvas, cropX, cropY, cropWidth, cropHeight, 0, 0, finalWidth, finalHeight);
 
-        if (!ctx) {
-          cleanup();
-          reject(new Error('Failed to get canvas context'));
-          return;
-        }
-
-        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, targetWidth, targetHeight);
-
-        if (!canvas.toBlob) {
-          cleanup();
-          reject(new Error('Canvas toBlob is not supported'));
-          return;
-        }
-
-        canvas.toBlob(resizedBlob => {
-          cleanup();
-
-          if (resizedBlob) {
-            resolve(resizedBlob);
-          } else {
-            reject(new Error('Failed to create resized blob'));
-          }
-        }, blob.type || 'image/png');
-      } catch (error) {
-        cleanup();
-        reject(error instanceof Error ? error : new Error('Failed to resize image'));
-      }
-    };
-
-    img.onerror = () => {
-      cleanup();
-      reject(new Error('Failed to load image'));
-    };
-
-    img.src = imageUrl;
-  });
+  return outputCanvas;
 };
 
 export default resizeImage;

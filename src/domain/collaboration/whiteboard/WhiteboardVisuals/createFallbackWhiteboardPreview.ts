@@ -1,14 +1,16 @@
+import { WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions';
+
 /**
  * Fallback image generation in case of error
  * Excalidraw sometimes fails to export images for very big whiteboards
  */
-const createFallbackWhiteboardPreview = async (width: number, height: number): Promise<Blob> => {
+const createFallbackWhiteboardPreview = async (): Promise<HTMLCanvasElement> => {
   const t = await import('react-i18next').then(i18n => i18n.getI18n().t);
 
   return new Promise(resolve => {
     const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = WhiteboardPreviewVisualDimensions.maxWidth;
+    canvas.height = WhiteboardPreviewVisualDimensions.maxHeight;
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
@@ -56,10 +58,7 @@ const createFallbackWhiteboardPreview = async (width: number, height: number): P
         ctx.fillText(line, centerX, startY + index * lineHeight);
       });
     }
-
-    canvas.toBlob(blob => {
-      resolve(blob || new Blob());
-    }, 'image/png');
+    resolve(canvas);
   });
 };
 

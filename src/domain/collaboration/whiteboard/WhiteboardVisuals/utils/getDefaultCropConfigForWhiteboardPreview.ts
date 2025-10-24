@@ -1,3 +1,5 @@
+import { CropConfig } from '@/core/utils/images/cropImage';
+
 /**
  * Gets the default crop config for a whiteboard, which is the maximum centered crop keeping aspect ratio
  * @param imageWidth
@@ -10,64 +12,41 @@
 export const getDefaultCropConfigForWhiteboardPreview = (
   imageWidth: number,
   imageHeight: number,
-  aspectRatio: number,
-  maxWidth: number,
-  maxHeight: number
-) => {
-  if (imageWidth === 0 || imageHeight === 0) {
-    throw new Error('Image dimensions must be greater than zero');
+  aspectRatio: number
+): CropConfig => {
+  if (imageWidth <= 0 || imageHeight <= 0) {
+    return {
+      x: 0,
+      y: 0,
+      width: imageWidth,
+      height: imageHeight,
+    };
   }
-  if (aspectRatio <= 0) {
-    throw new Error('Aspect ratio must be greater than zero');
+  // Calculate the aspect ratio of the source image
+  const sourceAspectRatio = imageWidth / imageHeight;
+
+  let cropWidth: number;
+  let cropHeight: number;
+
+  // Determine which dimension should be maxed out
+  if (sourceAspectRatio > aspectRatio) {
+    // Image is wider than target aspect ratio - constrain by height
+    cropHeight = imageHeight;
+    cropWidth = cropHeight * aspectRatio;
+  } else {
+    // Image is taller than target aspect ratio - constrain by width
+    cropWidth = imageWidth;
+    cropHeight = cropWidth / aspectRatio;
   }
 
-  const imageAspectRatio = imageWidth / imageHeight;
-  let x = 0,
-    y = 0;
-  if (imageAspectRatio > aspectRatio) {
-    // Image is wider than desired aspect ratio
-    // Try to take full height:
-    let cropHeight = Math.min(imageHeight, maxHeight);
-    let cropWidth = cropHeight * aspectRatio;
-    // Clamp width to image width
-    if (cropWidth > imageWidth) {
-      cropWidth = imageWidth;
-      cropHeight = cropWidth / aspectRatio;
-    }
-    x = Math.max(
-      0,
-      Math.min(
-        imageWidth / 2 - cropWidth / 2, // desired x, centered horizontally
-        imageWidth - cropWidth // max x to not overflow
-      )
-    );
-    return {
-      width: cropWidth,
-      height: cropHeight,
-      x,
-      y,
-    };
-  } else {
-    // Try to take full width:
-    let cropWidth = Math.min(imageWidth, maxWidth);
-    let cropHeight = cropWidth / aspectRatio;
-    // Clamp height to image height
-    if (cropHeight > imageHeight) {
-      cropHeight = imageHeight;
-      cropWidth = cropHeight * aspectRatio;
-    }
-    y = Math.max(
-      0,
-      Math.min(
-        imageHeight / 2 - cropHeight / 2, // desired y, centered vertically
-        imageHeight - cropHeight // max y to not overflow
-      )
-    );
-    return {
-      width: cropWidth,
-      height: cropHeight,
-      x,
-      y,
-    };
-  }
+  // Center the crop area
+  const x = (imageWidth - cropWidth) / 2;
+  const y = (imageHeight - cropHeight) / 2;
+
+  return {
+    x,
+    y,
+    width: cropWidth,
+    height: cropHeight,
+  };
 };
