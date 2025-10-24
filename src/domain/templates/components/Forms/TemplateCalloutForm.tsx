@@ -3,7 +3,7 @@ import CalloutForm, { calloutValidationSchema } from '@/domain/collaboration/cal
 import { CalloutFormSubmittedValues } from '@/domain/collaboration/callout/CalloutForm/CalloutFormModel';
 import { DefaultCalloutSettings } from '@/domain/collaboration/callout/models/CalloutSettingsModel';
 import { mapCalloutSettingsModelToCalloutSettingsFormValues } from '@/domain/collaboration/callout/models/mappings';
-import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/model/WhiteboardPreviewImagesModels';
+import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';

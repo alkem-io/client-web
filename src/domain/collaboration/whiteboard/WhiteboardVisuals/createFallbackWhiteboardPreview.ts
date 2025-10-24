@@ -1,6 +1,6 @@
 /**
  * Fallback image generation in case of error
- * Excalidraw sometimes fails to export images for very big whiteboards, and that breaks the whole saving
+ * Excalidraw sometimes fails to export images for very big whiteboards
  */
 const createFallbackWhiteboardPreview = async (width: number, height: number): Promise<Blob> => {
   const t = await import('react-i18next').then(i18n => i18n.getI18n().t);

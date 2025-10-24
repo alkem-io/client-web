@@ -1,12 +1,12 @@
 import { VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
-import { WhiteboardPreviewSettings } from '../model/WhiteboardPreviewSettings';
+import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { getDefaultCropConfigForWhiteboardPreview } from './getDefaultCropConfigForWhiteboardPreview';
-import { CardVisualDimensions, WhiteboardPreviewVisualDimensions } from '../WhiteboardDimensions';
+import { getDefaultCropConfigForWhiteboardPreview } from './utils/getDefaultCropConfigForWhiteboardPreview';
+import { CardVisualDimensions, WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions';
 import cropImage from '@/core/utils/images/cropImage';
 import getWhiteboardPreviewImage from './getWhiteboardPreviewImage';
-import { PreviewImageDimensions, WhiteboardPreviewImage } from '../model/WhiteboardPreviewImagesModels';
-import cropImageWithConstraints from './cropImageWithConstraints';
+import { PreviewImageDimensions, WhiteboardPreviewImage } from './WhiteboardPreviewImagesModels';
+import cropImageWithConstraints from '../../../../core/utils/images/cropImageWithConstraints';
 
 interface WhiteboardWithPreviewImageDimensions {
   profile?: {
@@ -16,7 +16,7 @@ interface WhiteboardWithPreviewImageDimensions {
   previewSettings: WhiteboardPreviewSettings;
 }
 
-export const generateWhiteboardPreviewImages = async <Whiteboard extends WhiteboardWithPreviewImageDimensions>(
+export const generateWhiteboardVisuals = async <Whiteboard extends WhiteboardWithPreviewImageDimensions>(
   whiteboard: Whiteboard,
   excalidrawAPI?: ExcalidrawImperativeAPI | null,
   force: boolean = false

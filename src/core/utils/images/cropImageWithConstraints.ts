@@ -1,5 +1,5 @@
 import { CropConfig } from '@/core/utils/images/cropImage';
-import { PreviewImageDimensions } from '../model/WhiteboardPreviewImagesModels';
+import { PreviewImageDimensions } from '../../../domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 /**
  * Creates a crop configuration function that calculates the largest possible crop centered in the original image,

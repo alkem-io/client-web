@@ -22,8 +22,8 @@ import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/model/WhiteboardPreviewImagesModels';
-import { generateWhiteboardPreviewImages } from '../WhiteboardPreviewImages/utils/generateWhiteboardPreviewImages';
+import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { generateWhiteboardVisuals } from '../WhiteboardVisuals/generateWhiteboardVisuals';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import whiteboardSchema from '../validation/whiteboardSchema';
@@ -96,7 +96,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
 
     const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
-    const previewImages = await generateWhiteboardPreviewImages(whiteboard, excalidrawAPI);
+    const previewImages = await generateWhiteboardVisuals(whiteboard, excalidrawAPI);
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
     if (!formikRef.current?.isValid) {

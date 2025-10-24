@@ -20,17 +20,14 @@ import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { useTranslation } from 'react-i18next';
-import {
-  PreviewImageDimensions,
-  WhiteboardPreviewImage,
-} from '../WhiteboardPreviewImages/model/WhiteboardPreviewImagesModels';
-import { generateWhiteboardPreviewImages } from '../WhiteboardPreviewImages/utils/generateWhiteboardPreviewImages';
+import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { generateWhiteboardVisuals } from '../WhiteboardVisuals/generateWhiteboardVisuals';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
-import { WhiteboardPreviewSettings } from '../WhiteboardPreviewImages/model/WhiteboardPreviewSettings';
+import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 
 export interface WhiteboardDetails {
@@ -154,7 +151,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
 
     const previewImages =
       shouldUploadPreviewImages && !filesManager.loading.downloadingFiles
-        ? await generateWhiteboardPreviewImages(whiteboard, excalidrawAPI)
+        ? await generateWhiteboardVisuals(whiteboard, excalidrawAPI)
         : undefined;
 
     const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;

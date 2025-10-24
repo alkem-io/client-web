@@ -1,4 +1,4 @@
-import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/model/WhiteboardPreviewImagesModels';
+import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 export interface WhiteboardFieldSubmittedValues {
   content: string;

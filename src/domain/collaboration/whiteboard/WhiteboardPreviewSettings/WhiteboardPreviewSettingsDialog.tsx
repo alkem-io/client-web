@@ -2,7 +2,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
 import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { useEffect, useState } from 'react';
-import getWhiteboardPreviewImage from '../WhiteboardPreviewImages/utils/getWhiteboardPreviewImage';
+import getWhiteboardPreviewImage from '../WhiteboardVisuals/getWhiteboardPreviewImage';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import { Button, CircularProgress, DialogActions, DialogContent, styled } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
@@ -19,10 +19,10 @@ import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { useUpdateWhiteboardPreviewSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useTheme } from '@mui/material';
 import WhiteboardPreviewCustomSelectionDialog from './WhiteboardPreviewCustomSelectionDialog';
-import { WhiteboardPreviewVisualDimensions } from '../WhiteboardPreviewImages/WhiteboardDimensions';
+import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
 import { CropConfig } from '@/core/utils/images/cropImage';
-import { generateWhiteboardPreviewImages } from '../WhiteboardPreviewImages/utils/generateWhiteboardPreviewImages';
-import { useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/utils/useUploadWhiteboardVisuals';
+import { generateWhiteboardVisuals } from '../WhiteboardVisuals/generateWhiteboardVisuals';
+import { useUploadWhiteboardVisuals } from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 interface WhiteboardPreviewSettingsDialogProps {
@@ -119,7 +119,7 @@ const WhiteboardPreviewSettingsDialog = ({
       },
     });
     if (selectedMode === WhiteboardPreviewMode.Fixed) {
-      const previewImages = await generateWhiteboardPreviewImages(
+      const previewImages = await generateWhiteboardVisuals(
         {
           profile: {
             preview: whiteboard.profile.preview,

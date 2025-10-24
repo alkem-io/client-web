@@ -1,8 +1,8 @@
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import type { exportToBlob as ExcalidrawExportToBlob } from '@excalidraw/utils';
-import { PreviewImageDimensions } from '../model/WhiteboardPreviewImagesModels';
-import { WhiteboardPreviewVisualDimensions } from '../WhiteboardDimensions';
+import { PreviewImageDimensions } from './WhiteboardPreviewImagesModels';
+import { WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions';
 import cropImage, { CropConfigFunction } from '@/core/utils/images/cropImage';
 import resizeImage from '@/core/utils/images/resizeImage';
 import { error as logError } from '@/core/logging/sentry/log';

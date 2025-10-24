@@ -5,7 +5,7 @@ import { Box, Button, ButtonBase, ButtonProps, styled, Theme } from '@mui/materi
 import { gutters } from '@/core/ui/grid/utils';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import Centered from '@/core/ui/utils/Centered';
-import { WhiteboardPreviewVisualDimensions } from '../WhiteboardPreviewImages/WhiteboardDimensions';
+import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
 
 type WhiteboardPreviewProps = {
   displayName?: string;

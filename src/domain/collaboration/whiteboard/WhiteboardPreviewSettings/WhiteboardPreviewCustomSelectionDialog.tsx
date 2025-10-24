@@ -7,11 +7,11 @@ import { Check, Close, Replay } from '@mui/icons-material';
 import Loading from '@/core/ui/loading/Loading';
 import ReactCrop, { Crop } from 'react-image-crop';
 import { useCallback, useRef, useState } from 'react';
-import { WhiteboardPreviewVisualDimensions } from '../WhiteboardPreviewImages/WhiteboardDimensions';
-import { PreviewImageDimensions } from '../WhiteboardPreviewImages/model/WhiteboardPreviewImagesModels';
+import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
+import { PreviewImageDimensions } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { CropConfig } from '@/core/utils/images/cropImage';
-import { getDefaultCropConfigForWhiteboardPreview } from '../WhiteboardPreviewImages/utils/getDefaultCropConfigForWhiteboardPreview';
+import { getDefaultCropConfigForWhiteboardPreview } from '../WhiteboardVisuals/utils/getDefaultCropConfigForWhiteboardPreview';
 
 interface WhiteboardPreviewCustomSelectionDialogProps {
   open: boolean;

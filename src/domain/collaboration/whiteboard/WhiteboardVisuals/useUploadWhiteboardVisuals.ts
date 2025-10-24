@@ -1,5 +1,5 @@
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
-import { WhiteboardPreviewImage } from '../model/WhiteboardPreviewImagesModels';
+import { WhiteboardPreviewImage } from './WhiteboardPreviewImagesModels';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 interface VisualsIds {

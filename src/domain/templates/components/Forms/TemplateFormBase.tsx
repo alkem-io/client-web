@@ -20,7 +20,7 @@ import BlockSectionTitleWithIcon from '@/core/ui/content/BlockSectionTitleWithIc
 import { gutters } from '@/core/ui/grid/utils';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
-import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/model/WhiteboardPreviewImagesModels';
+import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 /**
  * Whiteboards have preview imagesTemplates, they are handled separately and uploaded as the Visual of the Template
