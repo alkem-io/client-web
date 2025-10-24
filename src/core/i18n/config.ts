@@ -7,7 +7,7 @@ import { env } from '@/main/env';
 export const defaultNS = 'translation';
 
 const defaultLang = 'en';
-export const supportedLngs = [defaultLang, 'nl', 'es', 'bg', 'de', 'fr'];
+export const supportedLngs = [defaultLang, 'nl', 'es', 'bg', 'de', 'fr', 'pt', 'no'];
 
 if (env?.VITE_APP_IN_CONTEXT_TRANSLATION === 'true') {
   supportedLngs.push('inContextTool');
@@ -29,8 +29,8 @@ const loadTranslation = async (lng: string) => {
         return (await import('./fr/translation.fr.json')).default;
       case 'pt':
         return (await import('./pt/translation.pt.json')).default;
-      case 'inContextTool':
-        return (await import('./ach/translation.ach.json')).default;
+      case 'no':
+        return (await import('./no/translation.no.json')).default;
       default:
         return (await import('./en/translation.en.json')).default;
     }

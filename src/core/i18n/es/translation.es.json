@@ -2049,6 +2049,10 @@
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "subject": "{{triggeredByName}} ha creado un nuevo $t(common.space)",
           "description": "{{spaceName}}"
+        },
+        "USER_SIGN_UP_WELCOME": {
+          "subject": "¡Bienvenido a Alkemio! 🎉",
+          "description": "Ahora eres parte de una comunidad que crece a través de la colaboración 🤝 Haz clic para explorar la Guía de Inicio y comienza a participar en Spaces donde cada idea nos ayuda a todos a avanzar.\n¿Preguntas? Envía un correo a support@alkem.io"
         }
       },
       "emptyInbox": "No hay $t(common.notifications) pendientes",
@@ -3439,27 +3443,42 @@
       {
         "key": "energy-transition",
         "name": "Transición energética",
-        "tags": ["Transición energética", "Energietransitie"]
+        "tags": [
+          "Transición energética",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusive-society",
         "name": "Sociedad inclusiva",
-        "tags": ["Sociedad inclusiva", "Inclusieve Samenleving"]
+        "tags": [
+          "Sociedad inclusiva",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "public-services",
         "name": "Servicios públicos",
-        "tags": ["Servicios públicos", "Publieke Diensten"]
+        "tags": [
+          "Servicios públicos",
+          "Publieke Diensten"
+        ]
       },
       {
         "key": "innovation",
         "name": "Innovación",
-        "tags": ["Innovación", "Innovatie"]
+        "tags": [
+          "Innovación",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalization-of-society",
         "name": "Digitalización de la sociedad",
-        "tags": ["Digitalización de la sociedad", "Digitalisering"]
+        "tags": [
+          "Digitalización de la sociedad",
+          "Digitalisering"
+        ]
       }
     ]
   },

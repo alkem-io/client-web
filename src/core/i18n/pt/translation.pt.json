@@ -1210,7 +1210,7 @@
       "typeReadonly": "Once a $t(common.template) is created, its type cannot be changed. If you need a different type, please create a new $t(common.template)."
     },
     "shareSettings": {
-      "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users \u2028at once. If you do not want others to edit, change the $t(common.settings) below.",
+      "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users  at once. If you do not want others to edit, change the $t(common.settings) below.",
       "disabled": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
       "ownedBy": {
         "title": "This {{elementName}} is owned by:"
@@ -2049,6 +2049,10 @@
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "subject": "{{triggeredByName}} has created a new $t(common.space)",
           "description": "{{spaceName}}"
+        },
+        "USER_SIGN_UP_WELCOME": {
+          "subject": "Bem-vindo ao Alkemio! 🎉",
+          "description": "Agora faz parte de uma comunidade que cresce através da colaboração 🤝 Clique para explorar o Guia de Introdução e comece a participar em Spaces onde cada ideia nos ajuda a todos a avançar.\nQuestões? Envie um e-mail para support@alkem.io"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
@@ -2677,7 +2681,16 @@
             "title": "...or look for your $t(common.community) below",
             "searchSuggestions": "Search suggestions:"
           },
-          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovation",
+            "Energy",
+            "Inclusive",
+            "3D",
+            "Community",
+            "Transition",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "New Memberships",
@@ -3430,27 +3443,42 @@
       {
         "key": "transição-energética",
         "name": "Transição Energética",
-        "tags": ["Transição Energética", "Transição Energética"]
+        "tags": [
+          "Transição Energética",
+          "Transição Energética"
+        ]
       },
       {
         "key": "sociedade-inclusiva",
         "name": "Sociedade Inclusiva",
-        "tags": ["Sociedade Inclusiva", "Sociedade Inclusiva"]
+        "tags": [
+          "Sociedade Inclusiva",
+          "Sociedade Inclusiva"
+        ]
       },
       {
         "key": "serviços-públicos",
         "name": "Serviços Públicos",
-        "tags": ["Serviços Públicos", "Serviços Públicos"]
+        "tags": [
+          "Serviços Públicos",
+          "Serviços Públicos"
+        ]
       },
       {
         "key": "inovação",
         "name": "Inovação",
-        "tags": ["Inovação", "Inovação"]
+        "tags": [
+          "Inovação",
+          "Inovação"
+        ]
       },
       {
         "key": "digitalização-da-sociedade",
         "name": "Digitalização da sociedade",
-        "tags": ["Digitalização da sociedade", "Digitalização"]
+        "tags": [
+          "Digitalização da sociedade",
+          "Digitalização"
+        ]
       }
     ]
   },
@@ -3531,7 +3559,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": ["Up to 10 $t(common.members)", "Various tools, including standard $t(common.whiteboards)"],
+        "features": [
+          "Up to 10 $t(common.members)",
+          "Various tools, including standard $t(common.whiteboards)"
+        ],
         "disclaimer": "Free $t(common.spaces) are limited to 1 $t(common.space) per user",
         "disabledDisclaimer": "Each user can have 1 free $t(common.space). It seems like you’ve already used yours!"
       },

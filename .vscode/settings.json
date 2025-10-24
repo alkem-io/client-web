@@ -52,5 +52,8 @@
     "xsmall",
     "Български",
     "Українська"
-  ]
+  ],
+  "chat.tools.terminal.autoApprove": {
+    ".scripts/add_missing_translation_keys.sh": true
+  }
 }
