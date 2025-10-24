@@ -10,6 +10,7 @@ import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import validateCropConfig from './utils/validateCropConfig';
 import resizeImage from '@/core/utils/images/resizeImage';
+import { error as logError } from '@/core/logging/sentry/log';
 
 interface WhiteboardWithPreviewImageDimensions {
   profile?: {
@@ -57,16 +58,32 @@ const useGenerateWhiteboardVisuals = (excalidrawAPI?: ExcalidrawImperativeAPI | 
     }
 
     const whiteboardPreview = resizeImage(cropImage(image, cropConfig), WhiteboardPreviewVisualDimensions);
-    const cardPreview = resizeImage(whiteboardPreview, CardVisualDimensions);
 
-    previewImages.push({
-      visualType: VisualType.WhiteboardPreview,
-      imageData: await toBlobPromise(whiteboardPreview, { type: 'image/png' }),
+    const whiteboardPreviewBlob = await toBlobPromise(whiteboardPreview, { type: 'image/png' }).catch(() => {
+      logError(new Error('Error generating whiteboard preview image blob.'));
+      notify('Error generating whiteboard preview image blob.', 'error');
+      return null;
     });
-    previewImages.push({
-      visualType: VisualType.Card,
-      imageData: await toBlobPromise(cardPreview, { type: 'image/png' }),
+
+    const cardPreview = resizeImage(whiteboardPreview, CardVisualDimensions);
+    const cardPreviewBlob = await toBlobPromise(cardPreview, { type: 'image/png' }).catch(() => {
+      logError(new Error('Error generating card preview image blob.'));
+      notify('Error generating whiteboard preview image blob.', 'error');
+      return null;
     });
+
+    if (whiteboardPreviewBlob) {
+      previewImages.push({
+        visualType: VisualType.WhiteboardPreview,
+        imageData: whiteboardPreviewBlob,
+      });
+    }
+    if (cardPreviewBlob) {
+      previewImages.push({
+        visualType: VisualType.Card,
+        imageData: cardPreviewBlob,
+      });
+    }
 
     return previewImages;
   };
