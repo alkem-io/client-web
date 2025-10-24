@@ -1,9 +1,8 @@
 import { InAppNotificationModel } from '../../model/InAppNotificationModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
-import { getInvitationsDialogUrl } from '@/main/routing/urlBuilders';
 
 // Notification for when a Virtual Contributor invitation to a Space community is declined by the contributor admin
-export const InAppVirtualContributorAdminSpaceCommunityInvitationDeclinedView = (
+export const InAppSpaceAdminVirtualContributorCommunityInvitationDeclinedView = (
   notification: InAppNotificationModel
 ) => {
   const { payload, triggeredBy } = notification;
@@ -23,7 +22,7 @@ export const InAppVirtualContributorAdminSpaceCommunityInvitationDeclinedView = 
     <InAppNotificationBaseView
       notification={notification}
       values={notificationTextValues}
-      url={getInvitationsDialogUrl()}
+      url={payload.space?.about?.profile?.url}
     />
   );
 };
