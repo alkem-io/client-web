@@ -19,7 +19,7 @@ type FormValueType = {
 };
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-const PromptConfig = ({ vc }) => {
+export const PromptConfig = ({ vc }) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const [prompt, setPrompt] = useState('');
@@ -74,7 +74,7 @@ const PromptConfig = ({ vc }) => {
             validationSchema={validationSchema}
             enableReinitialize
             validateOnMount
-            onSubmit={() => {}}
+            onSubmit={() => { }}
           >
             <>
               <FormikEffect onStatusChange={(isValid: boolean) => setIsValid(isValid)} />
@@ -104,5 +104,3 @@ const PromptConfig = ({ vc }) => {
     </PageContent>
   );
 };
-
-export default PromptConfig;
