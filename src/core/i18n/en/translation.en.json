@@ -2977,8 +2977,8 @@
             "description": "Choose exactly which part of your whiteboard to show as a preview."
           },
           "fixed": {
-            "title": "Fixed Preview",
-            "description": "Set a specific image that will always be shown as the preview."
+            "title": "Fixed Selection",
+            "description": "Take a screenshot of your whiteboard to use as preview. this screenshot will not update as you update your board."
           }
         },
         "cropDialog": {
