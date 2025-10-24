@@ -5,22 +5,16 @@ export const InAppUserSpaceCommunityInvitationView = (notification: InAppNotific
   const { payload, triggeredBy } = notification;
 
   // do not display notification if these are missing
-  if (!triggeredBy?.profile?.displayName || !payload.space) {
+  if (!triggeredBy?.profile?.displayName || !payload.space?.about?.profile) {
     return null;
   }
-  const space = payload.space;
+  const { profile } = payload.space?.about;
 
   const notificationTextValues = {
     triggeredByName: triggeredBy.profile.displayName,
-    spaceName: space.about?.profile?.displayName,
-    spaceDescription: space.about?.profile?.description || '',
+    spaceName: profile.displayName,
+    comment: `${profile.displayName} - ${profile.description}`,
   };
 
-  return (
-    <InAppNotificationBaseView
-      notification={notification}
-      values={notificationTextValues}
-      url={payload.space.about?.profile?.url}
-    />
-  );
+  return <InAppNotificationBaseView notification={notification} values={notificationTextValues} url={profile.url} />;
 };
