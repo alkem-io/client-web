@@ -20,7 +20,7 @@ export const generateWhiteboardPreviewImages = async <Whiteboard extends Whitebo
   whiteboard: Whiteboard,
   excalidrawAPI?: ExcalidrawImperativeAPI | null,
   force: boolean = false
-) => {
+): Promise<WhiteboardPreviewImage[] | undefined> => {
   if (!excalidrawAPI || !whiteboard) {
     return;
   }

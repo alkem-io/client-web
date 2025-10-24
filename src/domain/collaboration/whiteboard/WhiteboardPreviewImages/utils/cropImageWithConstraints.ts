@@ -1,3 +1,4 @@
+import { CropConfig } from '@/core/utils/images/cropImage';
 import { PreviewImageDimensions } from '../model/WhiteboardPreviewImagesModels';
 
 /**
@@ -14,7 +15,7 @@ import { PreviewImageDimensions } from '../model/WhiteboardPreviewImagesModels';
  * @returns A function that takes image dimensions and returns crop coordinates or undefined
  */
 const cropImageWithConstraints = (constraints: PreviewImageDimensions) => {
-  return (imageWidth, imageHeight) => {
+  return (imageWidth, imageHeight): CropConfig | undefined => {
     // Check if image meets minimum dimensions
     if (imageWidth < constraints.minWidth || imageHeight < constraints.minHeight) {
       return undefined; // Return image as is
