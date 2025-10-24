@@ -3178,18 +3178,11 @@
         "externalConfig": {
           "title": "External Configuration",
           "infoText": "The $t(common.virtualContributor) is powered by an external AI service. Please provide the following information to connect to the service.",
-          "apiKey": {
-            "label": "API Key",
-            "placeholder": "E.g. sk-proj-Uq3zU..."
-          },
-          "assistantId": {
-            "label": "Assistant ID",
-            "placeholder": "E.g. asst_wTLKgGkKryqR5FlEFleLy5Uq"
-          },
-          "provider": {
-            "title": "Provider",
-            "placeholder": "Select a provider from this list"
-          }
+          "apiKey": "API Key",
+          "apiKeyPlaceholder": "Current key signature is '{{value}}'. By changing this value current key will be overriden and can not be recovered.",
+          "assistantId": "Assistant ID",
+          "model": "Model",
+          "saveBtn": "Save Configuration"
         },
         "privacy": {
           "title": "Privacy",
