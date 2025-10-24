@@ -59,10 +59,6 @@ const useGenerateWhiteboardVisuals = (excalidrawAPI?: ExcalidrawImperativeAPI | 
     const whiteboardPreview = resizeImage(cropImage(image, cropConfig), WhiteboardPreviewVisualDimensions);
     const cardPreview = resizeImage(whiteboardPreview, CardVisualDimensions);
 
-    // const whiteboardPreview = ;
-
-    //
-
     previewImages.push({
       visualType: VisualType.WhiteboardPreview,
       imageData: await toBlobPromise(whiteboardPreview, { type: 'image/png' }),

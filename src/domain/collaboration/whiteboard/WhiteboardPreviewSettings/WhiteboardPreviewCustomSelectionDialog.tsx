@@ -149,28 +149,6 @@ const WhiteboardPreviewCustomSelectionDialog = ({
         )}
       </DialogContent>
       <DialogFooter>
-        <Box>
-          <pre>
-            //!! Img:
-            {JSON.stringify({
-              width: imgRef.current?.width,
-              naturalWidth: imgRef.current?.naturalWidth,
-              height: imgRef.current?.height,
-              naturalHeight: imgRef.current?.naturalHeight,
-            })}
-            <br />
-            Crop:{JSON.stringify(crop)}
-            <br />
-            TCrop:
-            {JSON.stringify(
-              translateCropConfig({
-                cropConfig: crop,
-                img: imgRef.current,
-                inverse: false,
-              })
-            )}
-          </pre>
-        </Box>
         <DialogActions>
           <Button variant="outlined" startIcon={<Replay />} onClick={resetCrop} disabled={!ready}>
             {t('pages.whiteboard.previewSettings.cropDialog.reset')}
