@@ -1,6 +1,6 @@
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
-import { Box, Button, DialogActions, DialogContent, Divider } from '@mui/material';
+import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
+import { Box, Button, Dialog, DialogActions, DialogContent, Divider } from '@mui/material';
 import { WhiteboardPreviewSettingsIcon } from './icons/WhiteboardPreviewIcons';
 import { useTranslation } from 'react-i18next';
 import { Check, Close, Replay } from '@mui/icons-material';
@@ -121,7 +121,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
   }, [open, whiteboardPreviewImage]);
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth={false}>
       <DialogHeader
         title={t('pages.whiteboard.previewSettings.modes.custom.title')}
         onClose={onClose}
@@ -162,7 +162,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
           </Button>
         </DialogActions>
       </DialogFooter>
-    </DialogWithGrid>
+    </Dialog>
   );
 };
 

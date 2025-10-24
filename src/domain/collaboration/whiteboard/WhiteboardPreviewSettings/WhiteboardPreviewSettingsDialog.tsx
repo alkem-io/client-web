@@ -25,6 +25,7 @@ import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteb
 import useUploadWhiteboardVisuals from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
+import createFallbackWhiteboardPreview from '../WhiteboardVisuals/createFallbackWhiteboardPreview';
 
 interface WhiteboardPreviewSettingsDialogProps {
   open?: boolean;
@@ -73,7 +74,7 @@ const WhiteboardPreviewSettingsDialog = ({
     }
     (async () => {
       const { image } = await getWhiteboardPreviewImage(excalidrawAPI);
-      const blob = await toBlobPromise(image);
+      const blob = await toBlobPromise(image).catch(async () => toBlobPromise(await createFallbackWhiteboardPreview()));
       setWhiteboardPreviewImage(blob);
     })();
   }, [open, cropDialogOpen, whiteboard, excalidrawAPI]);
