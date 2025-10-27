@@ -167,7 +167,7 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
         </InputLabel>
       )}
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <Table sx={{ minWidth: 700, tableLayout: 'auto' }} aria-label="customized table">
           <TableHead>
             <TableRow
               sx={{
@@ -188,14 +188,14 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
                   key={index}
                   component="th"
                   scope="col"
-                  sx={{ flex: column.flex || 1, minWidth: column.minWidth || '100px' }}
+                  sx={{ flex: column.flex || 0.5, minWidth: column.minWidth || '100px' }}
                 >
                   <CardTitle color="primary.contrastText">{column.header}</CardTitle>
                 </TableCell>
               ))}
 
               {/* Actions column header */}
-              <TableCell component="th" scope="col" sx={{ minWidth: '100px' }}>
+              <TableCell component="th" scope="col" sx={{ width: '100px' }}>
                 <CardTitle color="primary.contrastText">Actions</CardTitle>
               </TableCell>
             </TableRow>
@@ -214,8 +214,23 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
                     }}
                   >
                     {/* Name column */}
-                    <TableCell component="th" scope="row" sx={{ paddingY: 1, flex: 2 }}>
-                      <BlockTitle component={RouterLink} to={item.url}>
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      sx={{
+                        paddingY: 1,
+                        flex: 2,
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      <BlockTitle
+                        component={RouterLink}
+                        to={item.url}
+                        sx={{
+                          wordBreak: 'break-word',
+                          display: 'block',
+                        }}
+                      >
                         {item.value}
                       </BlockTitle>
                     </TableCell>
@@ -227,8 +242,10 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
                         component="td"
                         sx={{
                           paddingY: 1,
-                          flex: column.flex || 1,
+                          flex: column.flex || 0.5,
                           minWidth: column.minWidth || '100px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
                         }}
                       >
                         {column.render(item)}
@@ -236,7 +253,7 @@ const AdminSearchableTable = <Item extends AdminSearchableTableItem>({
                     ))}
 
                     {/* Actions column */}
-                    <TableCell component="td" sx={{ paddingY: 1, minWidth: '100px' }}>
+                    <TableCell component="td" sx={{ paddingY: 1, width: '100px' }}>
                       <Actions>
                         {renderItemActions(item)}
                         {onDelete && (
