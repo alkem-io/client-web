@@ -1961,7 +1961,7 @@
         },
         "USER_SPACE_COMMUNITY_INVITATION": {
           "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
-          "description": "{{spaceName}} - {{spaceDescription}}"
+          "description": ""
         },
         "USER_MESSAGE_SENDER": {
           "subject": "You sent a DM to {{receiverName}}",
