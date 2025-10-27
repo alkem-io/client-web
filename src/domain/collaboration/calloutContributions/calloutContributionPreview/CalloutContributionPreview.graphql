@@ -16,7 +16,7 @@ query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false
           id
           url
           displayName
-          preview: visual(type: BANNER) {
+          preview: visual(type: WHITEBOARD_PREVIEW) {
             ...VisualModel
           }
         }
