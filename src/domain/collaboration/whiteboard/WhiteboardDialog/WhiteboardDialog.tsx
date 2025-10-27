@@ -20,16 +20,15 @@ import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { useTranslation } from 'react-i18next';
-import {
-  PreviewImageDimensions,
-  WhiteboardPreviewImage,
-  generateWhiteboardPreviewImages,
-} from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
+import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 
 export interface WhiteboardDetails {
   id: string;
@@ -54,6 +53,7 @@ export interface WhiteboardDetails {
       avatar?: { id: string; uri: string };
     };
   };
+  previewSettings: WhiteboardPreviewSettings;
 }
 
 interface WhiteboardDialogProps {
@@ -71,6 +71,7 @@ interface WhiteboardDialogProps {
     onDelete: (whiteboard: Identifiable) => Promise<void>;
     setLastSuccessfulSavedDate: (date: Date) => void;
     setConsecutiveSaveErrors: React.Dispatch<React.SetStateAction<number>>;
+    onClosePreviewSettingsDialog?: () => void;
   };
   options: {
     show: boolean;
@@ -82,6 +83,7 @@ interface WhiteboardDialogProps {
     allowFilesAttached?: boolean;
     readOnlyDisplayName?: boolean;
     editDisplayName?: boolean;
+    previewSettingsDialogOpen?: boolean;
   };
   state?: {
     loadingWhiteboardValue?: boolean;
@@ -111,6 +113,8 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
     allowFallbackToAttached: options.allowFilesAttached,
   });
+
+  const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
 
   type PrepareWhiteboardResult =
     | {
@@ -149,7 +153,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
 
     const previewImages =
       shouldUploadPreviewImages && !filesManager.loading.downloadingFiles
-        ? await generateWhiteboardPreviewImages(whiteboard, state)
+        ? await generateWhiteboardVisuals(whiteboard)
         : undefined;
 
     const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
@@ -348,6 +352,12 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
         state={{
           isLoading: isDeleting,
         }}
+      />
+      <WhiteboardPreviewSettingsDialog
+        open={options.previewSettingsDialogOpen}
+        onClose={() => actions.onClosePreviewSettingsDialog?.()}
+        whiteboard={whiteboard}
+        excalidrawAPI={excalidrawAPI}
       />
     </>
   );
