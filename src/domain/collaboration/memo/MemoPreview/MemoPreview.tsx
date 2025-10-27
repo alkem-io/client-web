@@ -1,13 +1,13 @@
-import ImageWithCaption from '@/core/ui/image/ImageWithCaption';
 import { MemoIcon } from '../icon/MemoIcon';
 import { useTranslation } from 'react-i18next';
 import { MouseEventHandler } from 'react';
 import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
 import { gutters } from '@/core/ui/grid/utils';
-import { Box } from '@mui/material';
+import { Box, ButtonBase } from '@mui/material';
 import { alpha, styled } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
+import Centered from '@/core/ui/utils/Centered';
 
 type MemoPreviewProps = {
   displayName?: string;
@@ -20,16 +20,29 @@ type MemoPreviewProps = {
   onClose?: () => void;
 };
 
-const MemoPreview = ({ displayName, memo, onClick }: MemoPreviewProps) => {
+const Container = styled(ButtonBase)(({ theme }) => ({
+  position: 'relative',
+  height: gutters(13)(theme),
+  overflow: 'hidden',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: theme.shape.borderRadius,
+  width: '100%',
+}));
+
+const MemoPreview = ({ memo, onClick }: MemoPreviewProps) => {
   const { t } = useTranslation();
   if (!memo?.markdown) {
     return (
-      <ImageWithCaption
-        caption={onClick ? t('callout.memo.clickToSee') : ''}
-        alt={displayName}
-        defaultImage={<MemoIcon />}
-        onClick={onClick}
-      />
+      <Container onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default' }}>
+        <Centered>
+          <MemoIcon />
+        </Centered>
+        <CaptionContainer>
+          <Caption sx={{ color: theme => theme.palette.primary.main }}>{t('callout.memo.clickToSee')}</Caption>
+        </CaptionContainer>
+      </Container>
     );
   } else {
     // add quote styling at the start - avoid having double quote blocks

@@ -178,7 +178,7 @@ fragment SpaceTemplateContent_Collaboration on Collaboration {
         whiteboard {
           id
           profile {
-            preview: visual(type: BANNER) {
+            preview: visual(type: WHITEBOARD_PREVIEW) {
               ...VisualModel
             }
           }
@@ -234,7 +234,7 @@ fragment WhiteboardTemplateContent on Whiteboard {
   profile {
     id
     displayName
-    preview: visual(type: BANNER) {
+    preview: visual(type: WHITEBOARD_PREVIEW) {
       name
       uri
     }

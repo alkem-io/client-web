@@ -25,7 +25,7 @@ export interface CalloutTemplate extends TemplateBase {
           displayName: string;
           description?: string;
           preview?: {
-            name: VisualType.Banner;
+            name: VisualType.WhiteboardPreview;
             uri: string;
           };
         };

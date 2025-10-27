@@ -15,7 +15,7 @@ const defaultTheme = createTheme();
 export const themeOptions: ThemeOptions = {
   palette: paletteOptions,
   typography: themeTypographyOptions,
-  shape: { borderRadius: 12 },
+  shape: { borderRadius: 12, borderRadiusSquare: 6 },
   spacing: SPACING,
   cards: {
     search: {
@@ -62,6 +62,12 @@ export const themeOptions: ThemeOptions = {
 } as ThemeOptions;
 
 export const theme = createTheme(themeOptions);
+
+declare module '@mui/system/createTheme/shape' {
+  interface Shape {
+    borderRadiusSquare: number;
+  }
+}
 
 declare module '@mui/material/styles' {
   interface Theme {
