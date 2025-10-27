@@ -31,6 +31,7 @@ const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.SpaceAdminCollaborationCalloutContribution,
   NotificationEvent.SpaceAdminCommunityApplication,
   NotificationEvent.SpaceAdminCommunityNewMember,
+  NotificationEvent.SpaceAdminVirtualContributorCommunityInvitationDeclined,
   NotificationEvent.SpaceCollaborationCalloutComment,
   NotificationEvent.SpaceCollaborationCalloutContribution,
   NotificationEvent.SpaceCollaborationCalloutPostContributionComment,
