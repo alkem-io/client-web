@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { HubOutlined } from '@mui/icons-material';
 import SpaceCardBase, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCardBase';
-import { BlockTitle, Caption } from '@/core/ui/typography';
+import { BlockTitle } from '@/core/ui/typography';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import SpaceCardDescription from '@/domain/space/components/cards/components/SpaceCardDescription';
 import SpaceCardSpacing from '@/domain/space/components/cards/components/SpaceCardSpacing';
@@ -17,18 +17,9 @@ export interface SpaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconCo
   spaceUri: string;
   displayName: string;
   why: string;
-  membersCount: number;
 }
 
-const SpaceCard = ({
-  spaceId,
-  displayName,
-  why: vision,
-  membersCount,
-  tagline,
-  spaceVisibility,
-  ...props
-}: SpaceCardProps) => {
+const SpaceCard = ({ spaceId, displayName, why: vision, tagline, spaceVisibility, ...props }: SpaceCardProps) => {
   const { t } = useTranslation();
 
   const ribbon =
@@ -44,9 +35,6 @@ const SpaceCard = ({
           <BlockTitle noWrap component="dt">
             {displayName}
           </BlockTitle>
-          <Caption noWrap component="dd">
-            {t('community.members-count', { count: membersCount })}
-          </Caption>
         </>
       }
       expansion={

@@ -103,7 +103,6 @@ const SpaceCardsDemo = () => {
                 why={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card']}
-                membersCount={20}
                 spaceUri=""
               />
               <SpaceCard
@@ -112,7 +111,6 @@ const SpaceCardsDemo = () => {
                 why={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card']}
-                membersCount={20}
                 spaceUri=""
               />
               <SpaceCard
@@ -121,7 +119,6 @@ const SpaceCardsDemo = () => {
                 why={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
-                membersCount={20}
                 spaceUri=""
               />
             </PageContentBlockGrid>
