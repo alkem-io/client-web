@@ -11,9 +11,11 @@ import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
 import AdminSearchableTable, { AdminTableColumn } from '@/domain/platformAdmin/components/AdminSearchableTable';
-import { Chip } from '@mui/material';
+import { Chip, IconButton } from '@mui/material';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { AccountOwnerColumn } from '@/domain/platformAdmin/components/AdminListItemLayout';
 import { SpaceTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
+import SpaceSettingsDialog from '@/domain/platformAdmin/domain/space/AdminSpaceListPage/SpaceSettingsDialog';
 
 const INITIAL_PAGE_SIZE = 10;
 const PAGE_SIZE = 10;
@@ -29,6 +31,8 @@ export const SpaceList: FC = () => {
   const { data: spacesData, loading: loadingSpaces } = usePlatformAdminSpacesListQuery();
   const [searchTerm, setSearchTerm] = useState('');
   const [displayedItemsCount, setDisplayedItemsCount] = useState(INITIAL_PAGE_SIZE);
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
+  const [selectedSpace, setSelectedSpace] = useState<SpaceTableItem | null>(null);
 
   // Reset pagination when search term changes
   useEffect(() => {
@@ -131,7 +135,23 @@ export const SpaceList: FC = () => {
     });
   };
 
+  const handleSettingsClick = (item: SpaceTableItem) => {
+    setSelectedSpace(item);
+    setSettingsDialogOpen(true);
+  };
+
   if (loadingSpaces) return <Loading text={'Loading spaces'} />;
+
+  const itemActions = (item: SpaceTableItem) => (
+    <IconButton
+      onClick={() => handleSettingsClick(item)}
+      size="large"
+      aria-label={t('pages.admin.spaces.spaceSettings')}
+      disabled={!item.canUpdate}
+    >
+      <SettingsOutlinedIcon />
+    </IconButton>
+  );
 
   return (
     <SearchableListLayout>
@@ -147,6 +167,12 @@ export const SpaceList: FC = () => {
         onSearchTermChange={setSearchTerm}
         totalCount={allSpaces.length}
         hasMore={hasMore}
+        itemActions={itemActions}
+      />
+      <SpaceSettingsDialog
+        open={settingsDialogOpen}
+        onClose={() => setSettingsDialogOpen(false)}
+        space={selectedSpace}
       />
     </SearchableListLayout>
   );
