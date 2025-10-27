@@ -5,19 +5,20 @@
 Whiteboards are exported by Excalidraw's API function [exportToCanvas](https://docs.excalidraw.com/docs/@excalidraw/excalidraw/api/utils/export).
 
 exportToCanvas receives:
-|Name | Type | Default | Description |
-|-----------------|-------------|-------------|-------------------------------------------------------|
-|elements | Excalidraw Element | [] | The elements to be exported to canvas. |
-|appState | AppState |Default App State | The app state of the scene. |
-|files | BinaryFiles | _ | The files added to the scene. |
-|exportPadding | number | 10 | The padding to be added on canvas. |
-|getDimensions | function | _ | Described bellow. |
-|maxWidthOrHeight | number | \_ | The maximum width or height of the exported image. If provided, `getDimensions` is ignored. |
+
+| Name             | Type               | Default           | Description                                                                                 |
+| ---------------- | ------------------ | ----------------- | ------------------------------------------------------------------------------------------- |
+| elements         | Excalidraw Element | []                | The elements to be exported to canvas.                                                      |
+| appState         | AppState           | Default App State | The app state of the scene.                                                                 |
+| files            | BinaryFiles        | \_                | The files added to the scene.                                                               |
+| exportPadding    | number             | 10                | The padding to be added on canvas.                                                          |
+| getDimensions    | function           | \_                | Described below.                                                                            |
+| maxWidthOrHeight | number             | \_                | The maximum width or height of the exported image. If provided, `getDimensions` is ignored. |
 
 `getDimensions`
 A function which returns the width, height, and optionally scale (defaults to 1), with which canvas is to be exported.
 
-```
+```ts
 (width: number, height: number) => {
   width: number,
   height: number,
@@ -49,7 +50,7 @@ If the Whiteboard's real dimensions are smaller than the minimum Whiteboard's vi
 
 The React-Crop component occupies as much screen as it can, but sometimes (most of the times) it resizes the whiteboard screenshot. In these cases the coordinates (3) it gives are relative to the image printed in screen, not the real image coordinates. There's a translation function in the cropping dialog `WhiteboardPreviewCustomSelectionDialog`, that performs the translation between real coordinates (2) of the whiteboard screenshot and screen-visible coordinates for the React-Crop component (3).
 
-If for whatever reason, (for example many elements of the whiteboard are removed), the cropping coordinates are not valid any more (`validateCropConfig` is used for validation)for an existing whiteboard, the default cropping (`getDefaultCropConfigForWhiteboardPreview`) is applied.
+If for whatever reason, (for example many elements of the whiteboard are removed), the cropping coordinates are not valid anymore (`validateCropConfig` is used for validation)for an existing whiteboard, the default cropping (`getDefaultCropConfigForWhiteboardPreview`) is applied.
 
 If when editing the whiteboard preview settings the user selects "Fixed" mode, the coordinates are saved and also the new previews are generated in that moment and uploaded.
 

@@ -115,6 +115,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
       setImageObjectUrl(objectUrl);
 
       return () => {
+        setImageObjectUrl(undefined);
         URL.revokeObjectURL(objectUrl);
       };
     }
@@ -128,7 +129,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
         icon={<WhiteboardPreviewSettingsIcon />}
       />
       <DialogContent sx={{ userSelect: 'none' }}>
-        {!whiteboardPreviewImage && <Loading />}
+        {(!whiteboardPreviewImage || !imageObjectUrl) && <Loading />}
         {whiteboardPreviewImage && (
           <Box>
             <ReactCrop

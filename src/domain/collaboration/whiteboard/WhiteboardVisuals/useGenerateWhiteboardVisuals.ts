@@ -11,6 +11,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import validateCropConfig from './utils/validateCropConfig';
 import resizeImage from '@/core/utils/images/resizeImage';
 import { error as logError } from '@/core/logging/sentry/log';
+import { useTranslation } from 'react-i18next';
 
 interface WhiteboardWithPreviewImageDimensions {
   profile?: {
@@ -20,6 +21,7 @@ interface WhiteboardWithPreviewImageDimensions {
   previewSettings: WhiteboardPreviewSettings;
 }
 const useGenerateWhiteboardVisuals = (excalidrawAPI?: ExcalidrawImperativeAPI | null) => {
+  const { t } = useTranslation();
   const notify = useNotification();
 
   const generateWhiteboardVisuals = async <Whiteboard extends WhiteboardWithPreviewImageDimensions>(
@@ -37,9 +39,10 @@ const useGenerateWhiteboardVisuals = (excalidrawAPI?: ExcalidrawImperativeAPI | 
     const previewImages: WhiteboardPreviewImage[] = [];
 
     const { image, error } = await getWhiteboardPreviewImage(excalidrawAPI);
-    if (error) {
+    if (error || !image) {
       // If there was an error generating the preview, just return to avoid overwriting existing previews
-      notify('Error generating whiteboard preview image. Using existing previews if available.', 'error');
+      logError(new Error('Error generating whiteboard preview image.'));
+      notify(t('pages.whiteboard.preview.errorGeneratingPreview'), 'error');
       return;
     }
 
@@ -59,16 +62,16 @@ const useGenerateWhiteboardVisuals = (excalidrawAPI?: ExcalidrawImperativeAPI | 
 
     const whiteboardPreview = resizeImage(cropImage(image, cropConfig), WhiteboardPreviewVisualDimensions);
 
-    const whiteboardPreviewBlob = await toBlobPromise(whiteboardPreview, { type: 'image/png' }).catch(() => {
-      logError(new Error('Error generating whiteboard preview image blob.'));
-      notify('Error generating whiteboard preview image blob.', 'error');
+    const whiteboardPreviewBlob = await toBlobPromise(whiteboardPreview, { type: 'image/png' }).catch(ex => {
+      logError(new Error('Error generating whiteboard preview image blob.', ex));
+      notify(t('pages.whiteboard.preview.errorGeneratingPreview'), 'error');
       return null;
     });
 
     const cardPreview = resizeImage(whiteboardPreview, CardVisualDimensions);
-    const cardPreviewBlob = await toBlobPromise(cardPreview, { type: 'image/png' }).catch(() => {
-      logError(new Error('Error generating card preview image blob.'));
-      notify('Error generating whiteboard preview image blob.', 'error');
+    const cardPreviewBlob = await toBlobPromise(cardPreview, { type: 'image/png' }).catch(ex => {
+      logError(new Error('Error generating card preview image blob.', ex));
+      notify(t('pages.whiteboard.preview.errorGeneratingPreview'), 'error');
       return null;
     });
 

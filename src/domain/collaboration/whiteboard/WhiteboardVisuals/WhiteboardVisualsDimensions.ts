@@ -1,6 +1,6 @@
 import { PreviewImageDimensions } from './WhiteboardPreviewImagesModels';
 
-// TODO: This should be coming from the server:
+// Keep these dimensions in sync with the backend limits defined in server/src/domain/common/visual/visual.constraints.ts
 export const WhiteboardPreviewVisualDimensions: PreviewImageDimensions = {
   minWidth: 500,
   maxWidth: 1800,

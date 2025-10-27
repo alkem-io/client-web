@@ -38,9 +38,6 @@ importers:
       '@emotion/styled':
         specifier: ^11.13.5
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(@types/react@19.1.8)(react@19.1.0)
-      '@excalidraw/utils':
-        specifier: ^0.1.3-test32
-        version: 0.1.3-test32
       '@hello-pangea/dnd':
         specifier: ^18.0.1
         version: 18.0.1(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1046,9 +1043,6 @@ packages:
   '@excalidraw/random-username@1.1.0':
     resolution: {integrity: sha512-nULYsQxkWHnbmHvcs+efMkJ4/9TtvNyFeLyHdeGxW0zHs6P+jYVqcRff9A6Vq9w9JXeDRnRh2VKvTtS19GW2qA==}
     engines: {node: '>=10'}
-
-  '@excalidraw/utils@0.1.3-test32':
-    resolution: {integrity: sha512-xOXYkkR6bRneoW4in5Ha5Iz2PyS9R9vPpzW7jcTOEE1ae9D5cz5hwBT8BxXfGKWp+YTCyHRHIJaa0ZhlW4H5nQ==}
 
   '@fastify/busboy@3.2.0':
     resolution: {integrity: sha512-m9FVDXU3GT2ITSe0UaMA5rU3QkfC/UXtCU8y0gSN/GugTqtVldOBWIB5V6V3sbmenVZUIpU6f+mPEO2+m5iTaA==}
@@ -7721,19 +7715,6 @@ snapshots:
       - supports-color
 
   '@excalidraw/random-username@1.1.0': {}
-
-  '@excalidraw/utils@0.1.3-test32':
-    dependencies:
-      '@braintree/sanitize-url': 6.0.2
-      '@excalidraw/laser-pointer': 1.3.1
-      browser-fs-access: 0.29.1
-      open-color: 1.9.1
-      pako: 2.0.3
-      perfect-freehand: 1.2.0
-      png-chunk-text: 1.0.0
-      png-chunks-encode: 1.0.0
-      png-chunks-extract: 1.0.0
-      roughjs: 4.6.4
 
   '@fastify/busboy@3.2.0': {}
 

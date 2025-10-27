@@ -2978,7 +2978,7 @@
           },
           "fixed": {
             "title": "Fixed Selection",
-            "description": "Take a screenshot of your whiteboard to use as preview. this screenshot will not update as you update your board."
+            "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
           }
         },
         "cropDialog": {
@@ -2987,6 +2987,11 @@
           "cancel": "$t(buttons.cancel)",
           "confirm": "Confirm Selection"
         }
+      },
+      "preview": {
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
+        "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
       }
     },
     "memo": {

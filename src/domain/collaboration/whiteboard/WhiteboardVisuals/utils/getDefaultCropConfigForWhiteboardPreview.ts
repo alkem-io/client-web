@@ -1,13 +1,11 @@
 import { CropConfig } from '@/core/utils/images/cropImage';
 
 /**
- * Gets the default crop config for a whiteboard, which is the maximum centered crop keeping aspect ratio
+ * Gets the default crop config for an image, which is the maximum centered crop keeping aspect ratio
  * @param imageWidth
  * @param imageHeight
  * @param aspectRatio
- * @param maxWidth
- * @param maxHeight
- * @returns
+ * @returns CropConfig { x, y, width, height }
  */
 export const getDefaultCropConfigForWhiteboardPreview = (
   imageWidth: number,

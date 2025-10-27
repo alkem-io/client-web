@@ -1,7 +1,7 @@
 import { WhiteboardIcon } from '../icon/WhiteboardIcon';
 import { useTranslation } from 'react-i18next';
 import { MouseEventHandler } from 'react';
-import { Box, Button, ButtonBase, ButtonProps, styled, Theme } from '@mui/material';
+import { Box, Button, ButtonProps, styled, Theme } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import Centered from '@/core/ui/utils/Centered';
@@ -19,7 +19,7 @@ type WhiteboardPreviewProps = {
   onClick?: MouseEventHandler;
 };
 
-const Container = styled(Box)(({ theme }) => ({
+const Container = styled(Box)(({ theme, onClick }) => ({
   position: 'relative',
   display: 'flex',
   justifyContent: 'center',
@@ -28,7 +28,7 @@ const Container = styled(Box)(({ theme }) => ({
   borderColor: theme.palette.divider,
   margin: gutters(1)(theme),
   overflow: 'hidden',
-  cursor: 'pointer',
+  cursor: onClick ? 'pointer' : 'default',
   borderRadius: theme.shape.borderRadius,
   // Button appearing only on hover:
   '& .only-on-hover': {
@@ -44,22 +44,25 @@ const Container = styled(Box)(({ theme }) => ({
     },
   },
   // Background blur on hover
-  '&:hover::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    borderRadius: theme.shape.borderRadius,
-    backdropFilter: 'blur(3px)',
-    zIndex: 1,
-  },
+  '&:hover::before': onClick
+    ? {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        borderRadius: theme.shape.borderRadius,
+        backdropFilter: 'blur(3px)',
+        zIndex: 1,
+      }
+    : undefined,
 }));
 
-const ImageContainer = styled(ButtonBase)(() => ({
+const ImageContainer = styled(Box)(() => ({
   position: 'relative',
   width: '100%',
+  display: 'flex',
   aspectRatio: WhiteboardPreviewVisualDimensions.aspectRatio,
 }));
 
@@ -85,7 +88,7 @@ const OpenWhiteboardButton = (props: ButtonProps) => {
   );
 };
 
-const WhiteboardChipButton = (props: ButtonProps) => {
+const WhiteboardChipButton = ({ disableClick, ...props }: ButtonProps & { disableClick?: boolean }) => {
   const { t } = useTranslation();
 
   return (
@@ -98,7 +101,11 @@ const WhiteboardChipButton = (props: ButtonProps) => {
         top: gutters(1)(theme),
         left: gutters(1)(theme),
         textTransform: 'none',
+        pointerEvents: disableClick ? 'none' : 'auto',
       })}
+      aria-label={
+        disableClick ? t('pages.whiteboard.preview.ariaLabelDisabled') : t('pages.whiteboard.preview.ariaLabel')
+      }
       {...props}
     >
       {t('common.Whiteboard')}
@@ -116,8 +123,8 @@ const WhiteboardPreview = ({ displayName, whiteboard, onClick }: WhiteboardPrevi
         {!imageSrc && defaultImage && <Centered>{defaultImage}</Centered>}
         {imageSrc && <ImageFadeIn src={imageSrc} alt={displayName} onClick={onClick} width="100%" height="100%" />}
       </ImageContainer>
-      <WhiteboardChipButton />
-      <OpenWhiteboardButton />
+      <WhiteboardChipButton disableClick={!onClick} />
+      {onClick && <OpenWhiteboardButton />}
     </Container>
   );
 };

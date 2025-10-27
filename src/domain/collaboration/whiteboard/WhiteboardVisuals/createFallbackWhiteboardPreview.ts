@@ -1,3 +1,4 @@
+import { theme } from '@/core/ui/themes/default/Theme';
 import { WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions';
 
 /**
@@ -14,17 +15,17 @@ const createFallbackWhiteboardPreview = async (): Promise<HTMLCanvasElement> => 
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-      // Fill background with light gray
-      ctx.fillStyle = '#f5f5f5';
+      // Fill background with theme background color
+      ctx.fillStyle = theme.palette.background.default;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw border
-      ctx.strokeStyle = '#cccccc';
+      // Draw border with theme divider color
+      ctx.strokeStyle = theme.palette.divider;
       ctx.lineWidth = 2;
       ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
 
-      // Draw text
-      ctx.fillStyle = '#666666';
+      // Draw text with theme neutral color
+      ctx.fillStyle = theme.palette.neutral.light;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.font = '16px Arial, sans-serif';

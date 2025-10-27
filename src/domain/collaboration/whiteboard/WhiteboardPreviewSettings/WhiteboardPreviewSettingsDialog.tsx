@@ -1,7 +1,7 @@
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
 import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import getWhiteboardPreviewImage from '../WhiteboardVisuals/getWhiteboardPreviewImage';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import { Button, CircularProgress, DialogActions, DialogContent, styled } from '@mui/material';
@@ -26,6 +26,7 @@ import useUploadWhiteboardVisuals from '../WhiteboardVisuals/useUploadWhiteboard
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
 import createFallbackWhiteboardPreview from '../WhiteboardVisuals/createFallbackWhiteboardPreview';
+import useEnsurePresence from '@/core/utils/ensurePresence';
 
 interface WhiteboardPreviewSettingsDialogProps {
   open?: boolean;
@@ -63,21 +64,25 @@ const WhiteboardPreviewSettingsDialog = ({
 }: WhiteboardPreviewSettingsDialogProps) => {
   const theme = useTheme();
   const { t } = useTranslation();
+  const ensurePresence = useEnsurePresence();
   const [selectedMode, setSelectedMode] = useState<WhiteboardPreviewMode>(whiteboard.previewSettings.mode);
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
 
   const [whiteboardPreviewImage, setWhiteboardPreviewImage] = useState<Blob>();
-  useEffect(() => {
-    if (!open || !cropDialogOpen || !excalidrawAPI) {
-      return;
-    }
-    (async () => {
-      const { image } = await getWhiteboardPreviewImage(excalidrawAPI);
-      const blob = await toBlobPromise(image).catch(async () => toBlobPromise(await createFallbackWhiteboardPreview()));
-      setWhiteboardPreviewImage(blob);
-    })();
-  }, [open, cropDialogOpen, whiteboard, excalidrawAPI]);
+  const openCropDialog = async () => {
+    const excalidrawAPIrequired = ensurePresence(excalidrawAPI);
+    setCropDialogOpen(true);
+
+    const { image } = await getWhiteboardPreviewImage(excalidrawAPIrequired);
+    const blob = await toBlobPromise(image).catch(async () => toBlobPromise(await createFallbackWhiteboardPreview()));
+    setWhiteboardPreviewImage(blob);
+  };
+
+  const closeCropDialog = () => {
+    setCropDialogOpen(false);
+    setWhiteboardPreviewImage(undefined);
+  };
 
   const [updateWhiteboardPreviewSettings] = useUpdateWhiteboardPreviewSettingsMutation();
 
@@ -98,17 +103,17 @@ const WhiteboardPreviewSettingsDialog = ({
 
   const handleClickOnCustom = async () => {
     setSelectedMode(WhiteboardPreviewMode.Custom);
-    setCropDialogOpen(true);
+    openCropDialog();
   };
 
   const handleClickOnFixed = async () => {
     setSelectedMode(WhiteboardPreviewMode.Fixed);
-    setCropDialogOpen(true);
+    openCropDialog();
   };
 
   const { uploadVisuals } = useUploadWhiteboardVisuals();
   const [handleCropChanged, loadingCustom] = useLoadingState(async (newCrop: CropConfig) => {
-    setCropDialogOpen(false);
+    closeCropDialog();
     await updateWhiteboardPreviewSettings({
       variables: {
         whiteboardId: whiteboard.id,
@@ -145,7 +150,7 @@ const WhiteboardPreviewSettingsDialog = ({
   });
 
   const handleCropDialogClose = () => {
-    setCropDialogOpen(false);
+    closeCropDialog();
     setSelectedMode(whiteboard.previewSettings.mode); // Set whatever mode was selected before
   };
 
