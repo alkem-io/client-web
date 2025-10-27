@@ -1,0 +1,66 @@
+import { theme } from '@/core/ui/themes/default/Theme';
+import { WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions';
+
+/**
+ * Fallback image generation in case of error
+ * Excalidraw sometimes fails to export images for very big whiteboards
+ */
+const createFallbackWhiteboardPreview = async (): Promise<HTMLCanvasElement> => {
+  const t = await import('react-i18next').then(i18n => i18n.getI18n().t);
+
+  return new Promise(resolve => {
+    const canvas = document.createElement('canvas');
+    canvas.width = WhiteboardPreviewVisualDimensions.maxWidth;
+    canvas.height = WhiteboardPreviewVisualDimensions.maxHeight;
+    const ctx = canvas.getContext('2d');
+
+    if (ctx) {
+      // Fill background with theme background color
+      ctx.fillStyle = theme.palette.background.default;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw border with theme divider color
+      ctx.strokeStyle = theme.palette.divider;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+
+      // Draw text with theme neutral color
+      ctx.fillStyle = theme.palette.neutral.light;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '16px Arial, sans-serif';
+
+      const text = t('pages.whiteboard.previewSettings.errorGeneratingPreview') || 'Error generating preview image';
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
+      // Word wrap the text if needed
+      const maxWidth = canvas.width * 0.8;
+      const words = text.split(' ');
+      const lines: string[] = [];
+      let currentLine = words[0];
+
+      for (let i = 1; i < words.length; i++) {
+        const testLine = currentLine + ' ' + words[i];
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth) {
+          lines.push(currentLine);
+          currentLine = words[i];
+        } else {
+          currentLine = testLine;
+        }
+      }
+      lines.push(currentLine);
+
+      // Draw each line
+      const lineHeight = 24;
+      const startY = centerY - ((lines.length - 1) * lineHeight) / 2;
+      lines.forEach((line, index) => {
+        ctx.fillText(line, centerX, startY + index * lineHeight);
+      });
+    }
+    resolve(canvas);
+  });
+};
+
+export default createFallbackWhiteboardPreview;

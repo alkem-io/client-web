@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type {
   CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
   hashElementsVersion as ExcalidrawHashElementsVersion,
-} from '@alkemio/excalidraw';
+} from '@alkemio/excalidraw/dist/types/element/src';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 const ANIMATION_SPEED = 2000;
