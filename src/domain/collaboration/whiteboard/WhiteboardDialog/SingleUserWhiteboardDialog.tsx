@@ -12,7 +12,7 @@ import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawW
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
-import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw';
+import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw'; // @alkemio/excalidraw/dist/types/excalidraw/data/json
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { Delete, Save } from '@mui/icons-material';
