@@ -8,7 +8,7 @@ export const InAppUserSpaceCommunityInvitationView = (notification: InAppNotific
   if (!triggeredBy?.profile?.displayName || !payload.space?.about?.profile) {
     return null;
   }
-  const { profile } = payload.space?.about;
+  const { profile } = payload.space.about;
 
   const notificationTextValues = {
     triggeredByName: triggeredBy.profile.displayName,
