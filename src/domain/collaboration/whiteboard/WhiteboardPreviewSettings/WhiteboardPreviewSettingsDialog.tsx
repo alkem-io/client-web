@@ -40,7 +40,7 @@ const ModeButton = styled(Button)<{ selected?: boolean }>(({ theme, selected }) 
   padding: gutters(1)(theme),
   marginBottom: gutters(1)(theme),
   justifyContent: 'flex-start',
-  alignItems: 'start',
+  alignItems: 'flex-start',
   borderColor: selected ? theme.palette.primary.main : theme.palette.divider,
   '& > .MuiButton-startIcon': {
     padding: gutters(0.5)(theme),

@@ -63,14 +63,14 @@ const useGenerateWhiteboardVisuals = (excalidrawAPI?: ExcalidrawImperativeAPI | 
     const whiteboardPreview = resizeImage(cropImage(image, cropConfig), WhiteboardPreviewVisualDimensions);
 
     const whiteboardPreviewBlob = await toBlobPromise(whiteboardPreview, { type: 'image/png' }).catch(ex => {
-      logError(new Error('Error generating whiteboard preview image blob.', ex));
+      logError(new Error('Error generating whiteboard preview image blob.', { cause: ex }));
       notify(t('pages.whiteboard.preview.errorGeneratingPreview'), 'error');
       return null;
     });
 
     const cardPreview = resizeImage(whiteboardPreview, CardVisualDimensions);
     const cardPreviewBlob = await toBlobPromise(cardPreview, { type: 'image/png' }).catch(ex => {
-      logError(new Error('Error generating card preview image blob.', ex));
+      logError(new Error('Error generating card preview image blob.', { cause: ex }));
       notify(t('pages.whiteboard.preview.errorGeneratingPreview'), 'error');
       return null;
     });
