@@ -3406,7 +3406,8 @@
       "FORMAT_NOT_SUPPORTED": "Format not supported",
       "BAD_USER_INPUT": "Bad user input: {{message}}",
       "NOT_SUPPORTED": "Not supported: {{message}}",
-      "OPERATION_NOT_ALLOWED": "{{message}}"
+      "OPERATION_NOT_ALLOWED": "{{message}}",
+      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time."
     }
   },
   "dashboard-updates-section": {
