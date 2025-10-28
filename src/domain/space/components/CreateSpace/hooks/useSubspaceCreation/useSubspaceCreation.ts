@@ -52,6 +52,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
     ...restMutationOptions
   } = mutationOptions;
 
+  console.log('in useSubspaceCreation, mutationOptions:', mutationOptions);
   const [createSubspaceLazy, { loading }] = useCreateSubspaceMutation({
     update: (cache, { data }) => {
       if (subscriptionsEnabled || !data) {
