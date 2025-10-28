@@ -13,6 +13,8 @@ import EditButton from '@/core/ui/actions/EditButton';
 import { gutters } from '@/core/ui/grid/utils';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
+import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 
 export interface FormikWhiteboardPreviewRef {
   openEditDialog: () => void;
@@ -23,6 +25,7 @@ export interface FormikWhiteboardPreviewRef {
 interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Whiteboard content
   previewImagesName?: string; // Formik fieldName of the preview images. Will only be set if this argument is passed
+  previewSettingsName?: string; // Formik fieldName of the preview settings. Will only be set if this argument is passed
   canEdit: boolean;
   editButton?: ReactNode; // Optional custom edit button.
   onChangeContent?: (content: string, previewImages?: WhiteboardPreviewImage[]) => void;
@@ -42,6 +45,7 @@ const FormikWhiteboardPreview = ({
   ref,
   name = 'content',
   previewImagesName,
+  previewSettingsName,
   canEdit,
   editButton,
   onChangeContent,
@@ -57,8 +61,12 @@ const FormikWhiteboardPreview = ({
 
   const [field, , helpers] = useField<string>(name); // Whiteboard content JSON string
   const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(previewImagesName ?? 'previewImages');
+  const [, , previewSettingsField] = useField<WhiteboardPreviewSettings | undefined>(
+    previewSettingsName ?? 'previewSettings'
+  );
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState<boolean>(false);
   const { fullscreen, setFullscreen } = useFullscreen();
 
   useImperativeHandle(
@@ -150,6 +158,9 @@ const FormikWhiteboardPreview = ({
                     if (previewImagesName) {
                       previewImagesField.setValue(previewImages);
                     }
+                    if (previewSettingsField) {
+                      previewSettingsField.setValue(whiteboard.previewSettings);
+                    }
                     onChangeContent?.(whiteboard.content, previewImages);
                     setEditDialogOpen(false);
                   },
@@ -159,7 +170,12 @@ const FormikWhiteboardPreview = ({
                   show: editDialogOpen,
                   canEdit: true,
                   canDelete: false,
-                  headerActions: undefined,
+                  headerActions: (
+                    <>
+                      <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
+                    </>
+                  ),
+                  previewSettingsDialogOpen: previewSettingsDialogOpen,
                   allowFilesAttached: true,
                   fixedDialogTitle: (
                     <BlockTitle display="flex" alignItems="center">
@@ -185,6 +201,9 @@ const FormikWhiteboardPreview = ({
                 helpers.setValue('');
                 if (previewImagesName) {
                   previewImagesField.setValue([]);
+                }
+                if (previewSettingsName) {
+                  previewSettingsField.setValue(undefined);
                 }
                 onDeleteContent?.();
                 setDeleteContentConfirmDialogOpen(false);

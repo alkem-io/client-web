@@ -28,6 +28,7 @@ import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import { WhiteboardDetails } from './WhiteboardDialog';
+import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 
 type ExcalidrawUtils = {
   serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
@@ -39,12 +40,13 @@ export interface WhiteboardWithContent extends WhiteboardDetails {
 
 type SingleUserWhiteboardDialogProps = {
   entities: {
-    whiteboard?: WhiteboardWithContent;
+    whiteboard: WhiteboardWithContent;
   };
   actions: {
     onCancel: () => void;
     onUpdate: (whiteboard: WhiteboardWithContent, previewImages?: WhiteboardPreviewImage[]) => Promise<void>;
     onDelete?: (whiteboard: Identifiable) => Promise<void>;
+    onClosePreviewSettingsDialog?: () => void;
   };
   options: {
     show: boolean;
@@ -54,6 +56,7 @@ type SingleUserWhiteboardDialogProps = {
     fixedDialogTitle?: ReactNode;
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
+    previewSettingsDialogOpen?: boolean;
   };
   state?: {
     updatingWhiteboard?: boolean;
@@ -180,92 +183,100 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   }, [initialValues]);
 
   return (
-    <Dialog
-      open={options.show}
-      aria-labelledby="whiteboard-dialog"
-      maxWidth={false}
-      fullWidth
-      sx={{ '& .MuiPaper-root': options.fullscreen ? { height: 1, maxHeight: 1 } : { height: '85vh' } }}
-      onClose={onClose}
-      fullScreen={options.fullscreen}
-    >
-      <Formik
-        innerRef={formikRef}
-        initialValues={initialValues}
-        onSubmit={() => {}}
-        validationSchema={whiteboardSchema}
+    <>
+      <Dialog
+        open={options.show}
+        aria-labelledby="whiteboard-dialog"
+        maxWidth={false}
+        fullWidth
+        sx={{ '& .MuiPaper-root': options.fullscreen ? { height: 1, maxHeight: 1 } : { height: '85vh' } }}
+        onClose={onClose}
+        fullScreen={options.fullscreen}
       >
-        {({ isValid }) => (
-          <>
-            <DialogHeader
-              actions={options.headerActions}
-              onClose={onClose}
-              titleContainerProps={{ flexDirection: 'row' }}
-            >
-              {options.fixedDialogTitle ? (
-                options.fixedDialogTitle
-              ) : (
-                <Box
-                  component={FormikInputField}
-                  title={t('fields.displayName')}
-                  name="displayName"
-                  size="small"
-                  maxWidth={gutters(30)}
-                />
-              )}
-              <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
-            </DialogHeader>
-            <DialogContent sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              {!state?.loadingWhiteboardContent && whiteboard && (
-                <ExcalidrawWrapper
-                  entities={{
-                    whiteboard,
-                    filesManager,
-                  }}
-                  options={{
-                    viewModeEnabled: !options.canEdit,
-                    UIOptions: {
-                      canvasActions: {
-                        export: options.canEdit
-                          ? {
-                              saveFileToDisk: true,
-                            }
-                          : false,
-                      },
-                    },
-                  }}
-                  actions={{
-                    onUpdate: state => {
-                      handleUpdate(whiteboard, state);
-                    },
-                    onInitApi: setExcalidrawAPI,
-                  }}
-                />
-              )}
-              {state?.loadingWhiteboardContent && <Loading text="Loading whiteboard..." />}
-            </DialogContent>
-            <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
-              {actions.onDelete && (
-                <Button startIcon={<Delete />} onClick={() => actions.onDelete!(whiteboard!)} color="error">
-                  {t('pages.whiteboard.state-actions.delete')}
-                </Button>
-              )}
-              <FlexSpacer />
-              <Button
-                startIcon={<Save />}
-                onClick={() => handleSave(whiteboard!)}
-                loadingPosition="start"
-                variant="contained"
-                loading={state?.changingWhiteboardLockState || state?.updatingWhiteboard}
-                disabled={!isValid}
+        <Formik
+          innerRef={formikRef}
+          initialValues={initialValues}
+          onSubmit={() => {}}
+          validationSchema={whiteboardSchema}
+        >
+          {({ isValid }) => (
+            <>
+              <DialogHeader
+                actions={options.headerActions}
+                onClose={onClose}
+                titleContainerProps={{ flexDirection: 'row' }}
               >
-                {t('pages.whiteboard.state-actions.save')}
-              </Button>
-            </Actions>
-          </>
-        )}
-      </Formik>
-    </Dialog>
+                {options.fixedDialogTitle ? (
+                  options.fixedDialogTitle
+                ) : (
+                  <Box
+                    component={FormikInputField}
+                    title={t('fields.displayName')}
+                    name="displayName"
+                    size="small"
+                    maxWidth={gutters(30)}
+                  />
+                )}
+                <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
+              </DialogHeader>
+              <DialogContent sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                {!state?.loadingWhiteboardContent && whiteboard && (
+                  <ExcalidrawWrapper
+                    entities={{
+                      whiteboard,
+                      filesManager,
+                    }}
+                    options={{
+                      viewModeEnabled: !options.canEdit,
+                      UIOptions: {
+                        canvasActions: {
+                          export: options.canEdit
+                            ? {
+                                saveFileToDisk: true,
+                              }
+                            : false,
+                        },
+                      },
+                    }}
+                    actions={{
+                      onUpdate: state => {
+                        handleUpdate(whiteboard, state);
+                      },
+                      onInitApi: setExcalidrawAPI,
+                    }}
+                  />
+                )}
+                {state?.loadingWhiteboardContent && <Loading text="Loading whiteboard..." />}
+              </DialogContent>
+              <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
+                {actions.onDelete && (
+                  <Button startIcon={<Delete />} onClick={() => actions.onDelete!(whiteboard!)} color="error">
+                    {t('pages.whiteboard.state-actions.delete')}
+                  </Button>
+                )}
+                <FlexSpacer />
+                <Button
+                  startIcon={<Save />}
+                  onClick={() => handleSave(whiteboard!)}
+                  loadingPosition="start"
+                  variant="contained"
+                  loading={state?.changingWhiteboardLockState || state?.updatingWhiteboard}
+                  disabled={!isValid}
+                >
+                  {t('pages.whiteboard.state-actions.save')}
+                </Button>
+              </Actions>
+            </>
+          )}
+        </Formik>
+      </Dialog>
+      <WhiteboardPreviewSettingsDialog
+        open={options.previewSettingsDialogOpen}
+        onClose={() => actions.onClosePreviewSettingsDialog?.()}
+        whiteboard={whiteboard}
+        excalidrawAPI={excalidrawAPI}
+      />
+    </>
   );
 };
 

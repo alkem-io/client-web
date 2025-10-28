@@ -11,6 +11,7 @@ import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface TemplateContentWhiteboard {
   content: string;
@@ -60,6 +61,8 @@ const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhitebo
       <FormikWhiteboardPreview
         name="whiteboard.content"
         previewImagesName="whiteboardPreviewImages"
+        previewSettingsName="whiteboard.previewSettings"
+        maxHeight={gutters(20)}
         canEdit
         dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}
       />
