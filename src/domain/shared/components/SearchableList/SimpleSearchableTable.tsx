@@ -51,6 +51,9 @@ export interface SearchableListItem {
   };
 }
 
+/**
+ * @deprecated - use AdminSearchableTable instead
+ */
 const SimpleSearchableList = <Item extends SearchableListItem>({
   data = [],
   onDelete,

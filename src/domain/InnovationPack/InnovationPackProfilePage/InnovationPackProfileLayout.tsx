@@ -38,7 +38,6 @@ const InnovationPackProfileLayout = ({
     return {
       ...innovationPack?.profile,
       tagline: innovationPack?.provider?.profile.displayName,
-      avatar: innovationPack?.provider?.profile.avatar,
     } as ProfilePageBannerProps['profile'];
   }, [innovationPack]);
 

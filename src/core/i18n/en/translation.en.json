@@ -163,6 +163,7 @@
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
     "reply": "Reply",
+    "reset": "Reset",
     "select": "Select",
     "change-field": "Change {{field}}",
     "send": "Send",
@@ -912,8 +913,8 @@
       "more-links": "{{count}} links, click here to show all",
       "new-temporary-reference": "Temporary Link Id: {{temp}}"
     },
-    "singleWhiteboard": {
-      "clickToSee": "Click to see the full $t(common.whiteboard)"
+    "whiteboard": {
+      "clickToSee": "Click to open $t(common.whiteboard)"
     },
     "memo": {
       "clickToSee": "Click to see the full $t(common.memo)"
@@ -1960,7 +1961,7 @@
         },
         "USER_SPACE_COMMUNITY_INVITATION": {
           "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
-          "description": "{{spaceName}} - {{spaceDescription}}"
+          "description": ""
         },
         "USER_MESSAGE_SENDER": {
           "subject": "You sent a DM to {{receiverName}}",
@@ -1993,6 +1994,10 @@
         "SPACE_ADMIN_COMMUNITY_APPLICATION": {
           "subject": "{{triggeredByName}} applied to join {{spaceName}}",
           "description": "Review the application in the $t(common.space) $t(common.settings)"
+        },
+        "SPACE_ADMIN_VIRTUAL_CONTRIBUTOR_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your invitation for {{contributorName}} to join {{spaceName}}",
+          "description": ""
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
           "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
@@ -2053,6 +2058,10 @@
         "USER_SIGN_UP_WELCOME": {
           "subject": "Welcome to Alkemio! \uD83C\uDF89",
           "description": "You’re now part of a community that grows through collaboration \uD83E\uDD1D Click to explore the Getting Started Guide and start participating in $t(common.spaces) where every insight helps us all move forward.\nQuestions? Email support@alkem.io"
+        },
+        "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
+          "description": ""
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
@@ -2957,7 +2966,37 @@
           "generic": "You can’t edit this $t(common.whiteboard) for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a $t(common.member) of the $t(common.space)\n- This $t(common.space) only allows one $t(common.whiteboard) editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached"
         }
       },
-      "restartCollaboration": "Continue Editing"
+      "restartCollaboration": "Continue Editing",
+      "previewSettings": {
+        "title": "Preview Settings",
+        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "modes": {
+          "auto": {
+            "title": "Auto Preview",
+            "description": "We'll automatically generate the best preview from your whiteboard content."
+          },
+          "custom": {
+            "title": "Manual Selection",
+            "description": "Choose exactly which part of your whiteboard to show as a preview."
+          },
+          "fixed": {
+            "title": "Fixed Selection",
+            "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
+          }
+        },
+        "cropDialog": {
+          "previewArea": "Crop preview area",
+          "reset": "$t(buttons.reset)",
+          "cancel": "$t(buttons.cancel)",
+          "confirm": "Confirm Selection"
+        }
+      },
+      "preview": {
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
+        "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
+      }
     },
     "memo": {
       "readonlyReason": {
@@ -3400,7 +3439,8 @@
       "FORMAT_NOT_SUPPORTED": "Format not supported",
       "BAD_USER_INPUT": "Bad user input: {{message}}",
       "NOT_SUPPORTED": "Not supported: {{message}}",
-      "OPERATION_NOT_ALLOWED": "{{message}}"
+      "OPERATION_NOT_ALLOWED": "{{message}}",
+      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time."
     }
   },
   "dashboard-updates-section": {
@@ -3537,6 +3577,9 @@
     "dialog": {
       "title": "Start Video Call",
       "content": "You are about to start a video call using Jitsi, a secure third-party video conferencing service. The call will open in a new browser tab, outside the Alkemio environment. Others can join through the same button or by using the shared URL.<br/><br/>Learn more about Jitsi <jitsiLink>here</jitsiLink>, including how to manage access and privacy settings."
+    },
+    "error": {
+      "emptyUrl": "Unable to generate video call URL. Please refresh the page and try again."
     }
   },
   "createSpace": {

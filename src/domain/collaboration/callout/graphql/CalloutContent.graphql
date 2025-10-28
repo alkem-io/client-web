@@ -21,7 +21,7 @@ query CalloutContent($calloutId: UUID!) {
           profile {
             id
             displayName
-            preview: visual(type: BANNER) {
+            preview: visual(type: WHITEBOARD_PREVIEW) {
               id
               name
               uri

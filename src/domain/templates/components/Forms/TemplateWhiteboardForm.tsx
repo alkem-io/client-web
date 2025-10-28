@@ -16,7 +16,7 @@ import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidat
 interface TemplateContentWhiteboard {
   content: string;
   preview?: {
-    name: VisualType.Banner;
+    name: VisualType.WhiteboardPreview;
     uri: string;
   };
 }
