@@ -20610,6 +20610,7 @@ export type DashboardSpacesQuery = {
     __typename?: 'Space';
     id: string;
     level: SpaceLevel;
+    visibility: SpaceVisibility;
     about: {
       __typename?: 'SpaceAbout';
       isContentPublic: boolean;
@@ -22557,6 +22558,7 @@ export type CreateSubspaceMutation = {
     __typename?: 'Space';
     id: string;
     level: SpaceLevel;
+    visibility: SpaceVisibility;
     about: {
       __typename?: 'SpaceAbout';
       id: string;
@@ -22925,6 +22927,7 @@ export type SpaceSubspaceCardsQuery = {
             __typename?: 'Space';
             id: string;
             level: SpaceLevel;
+            visibility: SpaceVisibility;
             about: {
               __typename?: 'SpaceAbout';
               isContentPublic: boolean;
@@ -22973,6 +22976,7 @@ export type SubspaceCardFragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;
+  visibility: SpaceVisibility;
   about: {
     __typename?: 'SpaceAbout';
     isContentPublic: boolean;
@@ -23014,6 +23018,7 @@ export type SubspacesOnSpaceFragment = {
     __typename?: 'Space';
     id: string;
     level: SpaceLevel;
+    visibility: SpaceVisibility;
     about: {
       __typename?: 'SpaceAbout';
       isContentPublic: boolean;
@@ -23476,6 +23481,7 @@ export type SubspaceCreatedSubscription = {
       __typename?: 'Space';
       id: string;
       level: SpaceLevel;
+      visibility: SpaceVisibility;
       about: {
         __typename?: 'SpaceAbout';
         isContentPublic: boolean;

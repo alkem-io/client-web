@@ -1834,6 +1834,7 @@ export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
     id
     level
+    visibility
     about {
       ...SpaceAboutCardBanner
       metrics {
