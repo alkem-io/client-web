@@ -1,7 +1,7 @@
-import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { FormikHelpers, FormikProps } from 'formik';
+import { FormikHelpers } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
@@ -15,6 +15,7 @@ import { nameOf } from '@/core/utils/nameOf';
 import { Box, FormControlLabel, Switch } from '@mui/material';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   spaceId?: string;
@@ -25,7 +26,7 @@ export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSub
 interface TemplateSpaceFormProps {
   template?: SpaceTemplate;
   onSubmit: (values: TemplateSpaceFormSubmittedValues) => Promise<unknown>;
-  actions: ReactNode | ((formState: FormikProps<TemplateSpaceFormSubmittedValues>) => ReactNode);
+  actions: TemplateFormActions<TemplateSpaceFormSubmittedValues>;
 }
 
 const validator = {

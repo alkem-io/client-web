@@ -7,8 +7,8 @@ import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/Whiteb
 import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
-import { FormikProps } from 'formik';
-import { ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
+import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 
@@ -23,7 +23,7 @@ export interface TemplateCalloutFormSubmittedValues extends TemplateFormProfileS
 interface TemplateCalloutFormProps {
   template?: CalloutTemplate;
   onSubmit: (values: TemplateCalloutFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<TemplateCalloutFormSubmittedValues>) => ReactNode);
+  actions: TemplateFormActions<TemplateCalloutFormSubmittedValues>;
 }
 
 const validator = {

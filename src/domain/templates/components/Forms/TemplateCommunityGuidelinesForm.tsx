@@ -1,7 +1,6 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -17,6 +16,7 @@ import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { gutters } from '@/core/ui/grid/utils';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
+import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 interface TemplateContentGuidelines {
   profile: {
@@ -38,7 +38,7 @@ export interface TemplateCommunityGuidelinesFormSubmittedValues extends Template
 interface TemplateCommunityGuidelinesFormProps {
   template?: CommunityGuidelinesTemplate;
   onSubmit: (values: TemplateCommunityGuidelinesFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<TemplateCommunityGuidelinesFormSubmittedValues>) => ReactNode);
+  actions: TemplateFormActions<TemplateCommunityGuidelinesFormSubmittedValues>;
   temporaryLocation?: boolean;
 }
 

@@ -1,6 +1,4 @@
-import React, { ReactNode } from 'react';
 import * as yup from 'yup';
-import { FormikProps } from 'formik';
 import TemplateFormBase, {
   TemplateFormProfileSubmittedValues,
   TemplateFormWithPreviewImages,
@@ -12,6 +10,7 @@ import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 interface TemplateContentWhiteboard {
   content: string;
@@ -30,7 +29,7 @@ export interface TemplateWhiteboardFormSubmittedValues
 interface TemplateWhiteboardFormProps {
   template?: WhiteboardTemplate;
   onSubmit: (values: TemplateWhiteboardFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<TemplateWhiteboardFormSubmittedValues>) => ReactNode);
+  actions: TemplateFormActions<TemplateWhiteboardFormSubmittedValues>;
 }
 
 const validator = {

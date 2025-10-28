@@ -1,7 +1,6 @@
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
-import { FormikProps } from 'formik';
-import { ReactNode } from 'react';
+import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 import TemplateCalloutForm, { TemplateCalloutFormSubmittedValues } from './TemplateCalloutForm';
 import TemplateSpaceForm, { TemplateSpaceFormSubmittedValues } from './TemplateSpaceForm';
 import TemplateCommunityGuidelinesForm, {
@@ -13,7 +12,7 @@ import TemplateWhiteboardForm, { TemplateWhiteboardFormSubmittedValues } from '.
 interface TemplateFormProps {
   template: AnyTemplate;
   onSubmit: (values: AnyTemplateFormSubmittedValues) => Promise<unknown>;
-  actions: ReactNode | ((formState: FormikProps<AnyTemplateFormSubmittedValues>) => ReactNode);
+  actions: TemplateFormActions;
   temporaryLocation?: boolean;
 }
 
