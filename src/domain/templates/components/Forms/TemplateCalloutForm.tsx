@@ -8,9 +8,9 @@ import { EmptyTagset } from '@/domain/common/tagset/TagsetModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { useMemo } from 'react';
-import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
+import { TemplateFormProps } from './TemplateForm';
 
 interface TemplateContentCallout extends CalloutFormSubmittedValues {}
 
@@ -20,11 +20,7 @@ export interface TemplateCalloutFormSubmittedValues extends TemplateFormProfileS
   whiteboardPreviewImages?: WhiteboardPreviewImage[];
 }
 
-interface TemplateCalloutFormProps {
-  template?: CalloutTemplate;
-  onSubmit: (values: TemplateCalloutFormSubmittedValues) => void;
-  actions: TemplateFormActions<TemplateCalloutFormSubmittedValues>;
-}
+interface TemplateCalloutFormProps extends TemplateFormProps<CalloutTemplate, TemplateCalloutFormSubmittedValues> {}
 
 const validator = {
   callout: calloutValidationSchema,
@@ -53,6 +49,7 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
                 },
                 previewImages: [], // This is not going to work for now :(
                 content: template.callout.framing.whiteboard.content ?? EmptyWhiteboardString,
+                previewSettings: template.callout.framing.whiteboard.previewSettings,
               }
             : undefined,
           memo: template?.callout?.framing?.memo

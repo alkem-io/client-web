@@ -15,7 +15,7 @@ import { nameOf } from '@/core/utils/nameOf';
 import { Box, FormControlLabel, Switch } from '@mui/material';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
-import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
+import { TemplateFormProps } from './TemplateForm';
 
 export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   spaceId?: string;
@@ -23,11 +23,7 @@ export interface TemplateSpaceFormSubmittedValues extends TemplateFormProfileSub
   recursive?: boolean;
 }
 
-interface TemplateSpaceFormProps {
-  template?: SpaceTemplate;
-  onSubmit: (values: TemplateSpaceFormSubmittedValues) => Promise<unknown>;
-  actions: TemplateFormActions<TemplateSpaceFormSubmittedValues>;
-}
+interface TemplateSpaceFormProps extends TemplateFormProps<SpaceTemplate, TemplateSpaceFormSubmittedValues> {}
 
 const validator = {
   spaceId: textLengthValidator(),

@@ -5,7 +5,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
 import { nameOf } from '@/core/utils/nameOf';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
-import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
@@ -49,6 +49,9 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
             content: EmptyWhiteboardString,
             profile: { displayName: t('common.whiteboard') },
             previewImages: [],
+            previewSettings: {
+              mode: WhiteboardPreviewMode.Auto,
+            },
           },
           memo: undefined,
           link: undefined,

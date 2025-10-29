@@ -9,6 +9,7 @@ import { mapReferenceModelToReferenceFormValues } from '@/domain/common/referenc
 import { mapContributionDefaultsModelToCalloutFormValues } from './ContributionDefaultsModel';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
 import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
+import { WhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 
 export const mapCalloutTemplateToCalloutForm = (
   calloutTemplate?: {
@@ -22,6 +23,7 @@ export const mapCalloutTemplateToCalloutForm = (
         profile: ProfileModel & {
           preview?: VisualModel;
         };
+        previewSettings: WhiteboardPreviewSettings;
       };
       memo?: {
         profile: ProfileModel & {
@@ -68,6 +70,7 @@ export const mapCalloutTemplateToCalloutForm = (
             },
             content: calloutTemplate.framing.whiteboard.content,
             previewImages: [], // TODO: Download the preview images if available
+            previewSettings: calloutTemplate.framing.whiteboard.previewSettings,
           }
         : undefined,
       memo: calloutTemplate.framing.memo

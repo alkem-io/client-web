@@ -413,6 +413,7 @@ export const toUpdateTemplateMutationVariables = (
             profile: mapTemplateProfileToUpdateProfileInput(calloutTemplateData.callout?.framing.profile),
             type: calloutTemplateData.callout?.framing.type,
             whiteboardContent: calloutTemplateData.callout?.framing.whiteboard?.content,
+            whiteboardPreviewSettings: calloutTemplateData.callout?.framing.whiteboard?.previewSettings,
             link: mapLinkDataToUpdateLinkInput(calloutTemplateData.callout?.framing.link),
             memoContent: calloutTemplateData.callout?.framing.memo?.markdown,
           },

@@ -1,3 +1,4 @@
+import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 export interface WhiteboardFieldSubmittedValues {
@@ -5,6 +6,7 @@ export interface WhiteboardFieldSubmittedValues {
   profile: {
     displayName: string;
   };
+  previewSettings: WhiteboardPreviewSettings | undefined;
 }
 
 export interface WhiteboardFieldSubmittedValuesWithPreviewImages extends WhiteboardFieldSubmittedValues {

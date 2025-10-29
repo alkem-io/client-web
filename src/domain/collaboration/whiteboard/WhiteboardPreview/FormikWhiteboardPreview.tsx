@@ -164,6 +164,7 @@ const FormikWhiteboardPreview = ({
                     onChangeContent?.(whiteboard.content, previewImages);
                     setEditDialogOpen(false);
                   },
+                  onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
                   onDelete: undefined,
                 }}
                 options={{

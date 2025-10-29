@@ -16,7 +16,7 @@ import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { gutters } from '@/core/ui/grid/utils';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
-import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
+import { TemplateFormProps } from './TemplateForm';
 
 interface TemplateContentGuidelines {
   profile: {
@@ -35,12 +35,8 @@ export interface TemplateCommunityGuidelinesFormSubmittedValues extends Template
   communityGuidelines?: TemplateContentGuidelines;
 }
 
-interface TemplateCommunityGuidelinesFormProps {
-  template?: CommunityGuidelinesTemplate;
-  onSubmit: (values: TemplateCommunityGuidelinesFormSubmittedValues) => void;
-  actions: TemplateFormActions<TemplateCommunityGuidelinesFormSubmittedValues>;
-  temporaryLocation?: boolean;
-}
+interface TemplateCommunityGuidelinesFormProps
+  extends TemplateFormProps<CommunityGuidelinesTemplate, TemplateCommunityGuidelinesFormSubmittedValues> {}
 
 const validator = {
   communityGuidelines: yup.object().shape({

@@ -7,18 +7,13 @@ import { PostTemplate } from '@/domain/templates/models/PostTemplate';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
-import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
+import { TemplateFormProps } from './TemplateForm';
 
 export interface TemplatePostFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   postDefaultDescription?: string;
 }
 
-interface TemplatePostFormProps {
-  template?: PostTemplate;
-  onSubmit: (values: TemplatePostFormSubmittedValues) => void;
-  actions: TemplateFormActions<TemplatePostFormSubmittedValues>;
-  temporaryLocation?: boolean;
-}
+interface TemplatePostFormProps extends TemplateFormProps<PostTemplate, TemplatePostFormSubmittedValues> {}
 
 const validator = {
   postDefaultDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),

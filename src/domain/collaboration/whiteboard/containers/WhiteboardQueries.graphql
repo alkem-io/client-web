@@ -46,13 +46,7 @@ fragment WhiteboardDetails on Whiteboard {
     }
   }
   previewSettings {
-    mode
-    coordinates {
-      x
-      y
-      width
-      height
-    }
+    ...whiteboardPreviewSettings
   }
 }
 

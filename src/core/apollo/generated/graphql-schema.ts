@@ -2231,6 +2231,8 @@ export type CreateWhiteboardData = {
   content?: Maybe<Scalars['WhiteboardContent']['output']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: Maybe<Scalars['NameID']['output']>;
+  /** The preview settings for the whiteboard. */
+  previewSettings?: Maybe<CreateWhiteboardPreviewSettingsData>;
   profile?: Maybe<CreateProfileData>;
 };
 
@@ -2238,7 +2240,36 @@ export type CreateWhiteboardInput = {
   content?: InputMaybe<Scalars['WhiteboardContent']['input']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
+  /** The preview settings for the whiteboard. */
+  previewSettings?: InputMaybe<CreateWhiteboardPreviewSettingsInput>;
   profile?: InputMaybe<CreateProfileInput>;
+};
+
+export type CreateWhiteboardPreviewSettingsData = {
+  __typename?: 'CreateWhiteboardPreviewSettingsData';
+  /** The coordinates for the preview. */
+  coordinates?: Maybe<WhiteboardPreviewCoordinatesData>;
+  /**
+   * The preview mode.
+   *       AUTO: Generate Whiteboard preview automatically when closing the dialog
+   *       CUSTOM: Generate Whiteboard preview based on user-defined coordinates when closing the dialog
+   *       FIXED: Use a fixed Whiteboard preview that does not change when closing the dialog
+   *
+   */
+  mode?: Maybe<WhiteboardPreviewMode>;
+};
+
+export type CreateWhiteboardPreviewSettingsInput = {
+  /** The coordinates for the preview. */
+  coordinates?: InputMaybe<WhiteboardPreviewCoordinatesInput>;
+  /**
+   * The preview mode.
+   *       AUTO: Generate Whiteboard preview automatically when closing the dialog
+   *       CUSTOM: Generate Whiteboard preview based on user-defined coordinates when closing the dialog
+   *       FIXED: Use a fixed Whiteboard preview that does not change when closing the dialog
+   *
+   */
+  mode?: InputMaybe<WhiteboardPreviewMode>;
 };
 
 export type Credential = {
@@ -7516,6 +7547,8 @@ export type UpdateCalloutFramingInput = {
   type?: InputMaybe<CalloutFramingType>;
   /** The new content to be used. */
   whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
+  /** The new preview settings for the Whiteboard. */
+  whiteboardPreviewSettings?: InputMaybe<UpdateWhiteboardPreviewSettingsInput>;
 };
 
 export type UpdateCalloutPublishInfoInput = {
@@ -8144,20 +8177,9 @@ export type UpdateWhiteboardEntityInput = {
   profile?: InputMaybe<UpdateProfileInput>;
 };
 
-export type UpdateWhiteboardPreviewCoordinatesInput = {
-  /** The height. */
-  height: Scalars['Float']['input'];
-  /** The width. */
-  width: Scalars['Float']['input'];
-  /** The x coordinate. */
-  x: Scalars['Float']['input'];
-  /** The y coordinate. */
-  y: Scalars['Float']['input'];
-};
-
 export type UpdateWhiteboardPreviewSettingsInput = {
   /** The coordinates for the preview. */
-  coordinates?: InputMaybe<UpdateWhiteboardPreviewCoordinatesInput>;
+  coordinates?: InputMaybe<WhiteboardPreviewCoordinatesInput>;
   /**
    * The preview mode.
    *       AUTO: Generate Whiteboard preview automatically when closing the dialog
@@ -8765,6 +8787,29 @@ export type WhiteboardPreviewCoordinates = {
   x: Scalars['Float']['output'];
   /** The y coordinate. */
   y: Scalars['Float']['output'];
+};
+
+export type WhiteboardPreviewCoordinatesData = {
+  __typename?: 'WhiteboardPreviewCoordinatesData';
+  /** The height. */
+  height: Scalars['Float']['output'];
+  /** The width. */
+  width: Scalars['Float']['output'];
+  /** The x coordinate. */
+  x: Scalars['Float']['output'];
+  /** The y coordinate. */
+  y: Scalars['Float']['output'];
+};
+
+export type WhiteboardPreviewCoordinatesInput = {
+  /** The height. */
+  height: Scalars['Float']['input'];
+  /** The width. */
+  width: Scalars['Float']['input'];
+  /** The x coordinate. */
+  x: Scalars['Float']['input'];
+  /** The y coordinate. */
+  y: Scalars['Float']['input'];
 };
 
 export enum WhiteboardPreviewMode {
@@ -12177,6 +12222,19 @@ export type CalloutContentQuery = {
                     displayName: string;
                     preview?: { __typename?: 'Visual'; id: string; name: string; uri: string } | undefined;
                   };
+                  previewSettings: {
+                    __typename?: 'WhiteboardPreviewSettings';
+                    mode: WhiteboardPreviewMode;
+                    coordinates?:
+                      | {
+                          __typename?: 'WhiteboardPreviewCoordinates';
+                          x: number;
+                          y: number;
+                          width: number;
+                          height: number;
+                        }
+                      | undefined;
+                  };
                 }
               | undefined;
             memo?:
@@ -15473,6 +15531,14 @@ export type UpdateMemoContentUpdatePolicyMutationVariables = Exact<{
 export type UpdateMemoContentUpdatePolicyMutation = {
   __typename?: 'Mutation';
   updateMemo: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
+};
+
+export type WhiteboardPreviewSettingsFragment = {
+  __typename?: 'WhiteboardPreviewSettings';
+  mode: WhiteboardPreviewMode;
+  coordinates?:
+    | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+    | undefined;
 };
 
 export type UpdateWhiteboardPreviewSettingsMutationVariables = Exact<{

@@ -20,15 +20,18 @@ import { Box, Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
-import whiteboardSchema from '../validation/whiteboardSchema';
+import whiteboardValidationSchema from '../validation/whiteboardValidationSchema';
 import { WhiteboardDetails } from './WhiteboardDialog';
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
+import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import { merge } from 'lodash';
+import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
 
 type ExcalidrawUtils = {
   serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
@@ -73,6 +76,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   const { whiteboard } = entities;
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
+  const { updateWhiteboardPreviewSettings } = useUpdateWhiteboardPreviewSettings({ whiteboard, excalidrawAPI });
 
   const getExcalidrawStateFromApi = () => {
     if (!excalidrawAPI) {
@@ -101,21 +105,16 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
     const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
     const previewImages = await generateWhiteboardVisuals(whiteboard);
+
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
     if (!formikRef.current?.isValid) {
       return;
     }
 
-    const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
-
     return actions.onUpdate(
       {
-        ...whiteboard,
-        profile: {
-          ...whiteboard.profile,
-          displayName,
-        },
+        ...merge({}, whiteboard, formikRef.current?.values),
         content,
       },
       previewImages
@@ -125,7 +124,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   const handleSave = async whiteboard => {
     const state = getExcalidrawStateFromApi();
 
-    formikRef.current?.setTouched({ displayName: true }, true);
+    formikRef.current?.setTouched({ profile: { displayName: true } }, true);
 
     await handleUpdate(whiteboard, state);
   };
@@ -169,18 +168,24 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
     }
   };
 
-  const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
+  const formikRef = useRef<
+    FormikProps<{
+      profile: {
+        displayName: string;
+      };
+      previewSettings: WhiteboardPreviewSettings;
+    }>
+  >(null);
 
-  const initialValues = useMemo(
-    () => ({ displayName: whiteboard?.profile?.displayName ?? '' }),
-    [whiteboard?.profile?.displayName]
-  );
-
-  useEffect(() => {
-    formikRef.current?.resetForm({
-      values: initialValues,
-    });
-  }, [initialValues]);
+  const initialValues = useMemo(() => {
+    console.log('Whiteboard initialValues:', whiteboard);
+    return {
+      profile: {
+        displayName: whiteboard?.profile?.displayName ?? '',
+      },
+      previewSettings: whiteboard?.previewSettings ?? {},
+    };
+  }, [whiteboard?.profile?.displayName]);
 
   return (
     <>
@@ -197,7 +202,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
           innerRef={formikRef}
           initialValues={initialValues}
           onSubmit={() => {}}
-          validationSchema={whiteboardSchema}
+          validationSchema={whiteboardValidationSchema}
         >
           {({ isValid }) => (
             <>
@@ -273,6 +278,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
       <WhiteboardPreviewSettingsDialog
         open={options.previewSettingsDialogOpen}
         onClose={() => actions.onClosePreviewSettingsDialog?.()}
+        onUpdate={updateWhiteboardPreviewSettings}
         whiteboard={whiteboard}
         excalidrawAPI={excalidrawAPI}
       />
