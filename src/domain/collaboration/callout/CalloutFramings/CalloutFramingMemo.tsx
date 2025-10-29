@@ -16,7 +16,10 @@ const CalloutFramingMemo = ({ callout, onCollapse }: CalloutFramingMemoProps) =>
 
   const handleCloseMemoDialog = () => {
     if (memoId) {
-      // Wait 2.5 seconds for autosave to complete, then refresh
+      // Refresh immediately to catch already-saved content
+      void refreshMarkdown();
+
+      // Also refresh after 2.5 seconds to catch any pending autosave
       setTimeout(() => {
         void refreshMarkdown();
       }, 2500);
