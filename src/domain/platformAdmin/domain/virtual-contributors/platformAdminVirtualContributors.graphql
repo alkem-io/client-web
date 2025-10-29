@@ -2,6 +2,18 @@ query platformAdminVirtualContributorsList {
   platformAdmin {
     virtualContributors {
       id
+      listedInStore
+      searchVisibility
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
       authorization {
         id
         myPrivileges
@@ -18,4 +30,3 @@ query platformAdminVirtualContributorsList {
     }
   }
 }
-

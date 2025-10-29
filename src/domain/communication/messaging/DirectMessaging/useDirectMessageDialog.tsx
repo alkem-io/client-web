@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback, useState } from 'react';
 import {
   useSendMessageToOrganizationMutation,
-  useSendMessageToUserMutation,
+  useSendMessageToUsersMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { DirectMessageDialog, MessageReceiverChipData } from './DirectMessageDialog';
 
@@ -16,7 +16,7 @@ export interface SendMessage {
 export type ReceiverType = 'user' | 'organization';
 
 const useDirectMessageDialog = ({ dialogTitle }: UseDirectMessageDialogOptions) => {
-  const [sendMessageToUser] = useSendMessageToUserMutation();
+  const [sendMessageToUser] = useSendMessageToUsersMutation();
   const [sendMessageToOrganization] = useSendMessageToOrganizationMutation();
 
   const [receiverType, setReceiverType] = useState<ReceiverType>();

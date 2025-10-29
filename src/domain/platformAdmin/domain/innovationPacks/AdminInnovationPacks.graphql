@@ -2,6 +2,15 @@ query PlatformAdminInnovationPacks {
   platformAdmin {
     innovationPacks {
       id
+      listedInStore
+      searchVisibility
+      provider {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
       profile {
         id
         displayName
