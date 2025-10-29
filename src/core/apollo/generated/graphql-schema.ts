@@ -1536,12 +1536,13 @@ export type Conversation = {
   type: CommunicationConversationType;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
-  userIDs: Array<Scalars['String']['output']>;
-  /** The users participating in this Conversation. */
-  users: Array<User>;
+  /** The user participating in this Conversation. */
+  user?: Maybe<User>;
+  userID?: Maybe<Scalars['String']['output']>;
   /** The virtual contributor participating in this Conversation (only for USER_AGENT conversations). */
   virtualContributor?: Maybe<VirtualContributor>;
   virtualContributorID?: Maybe<Scalars['String']['output']>;
+  wellKnownVirtualContributor?: Maybe<VirtualContributorWellKnown>;
 };
 
 export type ConversationVcAnswerRelevanceInput = {
@@ -1565,20 +1566,6 @@ export type ConversationVcAskQuestionInput = {
 export type ConversationVcResetInput = {
   /** The ID of the conversation. */
   conversationID: Scalars['UUID']['input'];
-};
-
-export type ConversationsSet = {
-  __typename?: 'ConversationsSet';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The count of Conversations for this ConversationsSet object. */
-  conversationsCount: Scalars['Float']['output'];
-  /** The date at which the entity was created. */
-  createdDate: Scalars['DateTime']['output'];
-  /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  /** The date at which the entity was last updated. */
-  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type ConversionVcSpaceToVcKnowledgeBaseInput = {
@@ -1851,11 +1838,11 @@ export type CreateContributionOnCalloutInput = {
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
-export type CreateConversationOnConversationsSetInput = {
-  conversationsSetID: Scalars['UUID']['input'];
+export type CreateConversationInput = {
   type: CommunicationConversationType;
-  userIDs: Array<Scalars['UUID']['input']>;
+  userID: Scalars['UUID']['input'];
   virtualContributorID?: InputMaybe<Scalars['UUID']['input']>;
+  wellKnownVirtualContributor?: InputMaybe<VirtualContributorWellKnown>;
 };
 
 export type CreateInnovationFlowData = {
@@ -4236,8 +4223,6 @@ export type Mutation = {
   convertVirtualContributorToUseKnowledgeBase: VirtualContributor;
   /** Create a new Callout on the CalloutsSet. */
   createCalloutOnCalloutsSet: Callout;
-  /** Create a guidance chat room. */
-  createChatGuidanceConversation?: Maybe<Conversation>;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
   /** Create a new Conversation on the ConversationsSet. */
@@ -4400,6 +4385,8 @@ export type Mutation = {
   sendMessageToUserDirect: Scalars['String']['output'];
   /** Send message to multiple Users. */
   sendMessageToUsers: Scalars['Boolean']['output'];
+  /** Set the mapping of a well-known Virtual Contributor to a specific Virtual Contributor UUID. */
+  setPlatformWellKnownVirtualContributor: PlatformWellKnownVirtualContributors;
   /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
   transferCallout: Callout;
   /** Transfer the specified InnovationHub to another Account. */
@@ -4657,7 +4644,7 @@ export type MutationCreateContributionOnCalloutArgs = {
 };
 
 export type MutationCreateConversationOnConversationsSetArgs = {
-  conversationData: CreateConversationOnConversationsSetInput;
+  conversationData: CreateConversationInput;
 };
 
 export type MutationCreateDiscussionArgs = {
@@ -4962,6 +4949,10 @@ export type MutationSendMessageToUserDirectArgs = {
 
 export type MutationSendMessageToUsersArgs = {
   messageData: CommunicationSendMessageToUsersInput;
+};
+
+export type MutationSetPlatformWellKnownVirtualContributorArgs = {
+  mappingData: SetPlatformWellKnownVirtualContributorInput;
 };
 
 export type MutationTransferCalloutArgs = {
@@ -5525,8 +5516,6 @@ export type Platform = {
   authorization?: Maybe<Authorization>;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
-  /** The ConversationsSet for this Platform. */
-  conversationsSet: ConversationsSet;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The Forum for the platform */
@@ -5553,6 +5542,8 @@ export type Platform = {
   templatesManager?: Maybe<TemplatesManager>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+  /** The mappings of well-known Virtual Contributors to their UUIDs. */
+  wellKnownVirtualContributors: PlatformWellKnownVirtualContributors;
 };
 
 export type PlatformInnovationHubArgs = {
@@ -5760,6 +5751,20 @@ export type PlatformSettings = {
   __typename?: 'PlatformSettings';
   /** The integration settings for this Platform */
   integration: PlatformIntegrationSettings;
+};
+
+export type PlatformWellKnownVirtualContributorMapping = {
+  __typename?: 'PlatformWellKnownVirtualContributorMapping';
+  /** The UUID of the Virtual Contributor. */
+  virtualContributorID: Scalars['UUID']['output'];
+  /** The well-known identifier for the Virtual Contributor. */
+  wellKnown: VirtualContributorWellKnown;
+};
+
+export type PlatformWellKnownVirtualContributors = {
+  __typename?: 'PlatformWellKnownVirtualContributors';
+  /** The mappings of well-known Virtual Contributors to their UUIDs. */
+  mappings: Array<PlatformWellKnownVirtualContributorMapping>;
 };
 
 export type Post = {
@@ -6879,6 +6884,13 @@ export type ServiceMetadata = {
   name?: Maybe<Scalars['String']['output']>;
   /** Version in the format {major.minor.patch} - using SemVer. */
   version?: Maybe<Scalars['String']['output']>;
+};
+
+export type SetPlatformWellKnownVirtualContributorInput = {
+  /** The UUID of the Virtual Contributor. */
+  virtualContributorID: Scalars['UUID']['input'];
+  /** The well-known Virtual Contributor type. */
+  wellKnown: VirtualContributorWellKnown;
 };
 
 export type Space = {
@@ -8743,7 +8755,8 @@ export type VirtualContributorUpdatedSubscriptionResult = {
 };
 
 export enum VirtualContributorWellKnown {
-  Guidance = 'GUIDANCE',
+  ChatGuidance = 'CHAT_GUIDANCE',
+  StewardOwnershipExpert = 'STEWARD_OWNERSHIP_EXPERT',
 }
 
 export type VirtualContributorsInRolesResponse = {

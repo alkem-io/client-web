@@ -23181,7 +23181,7 @@ export const ConversationWithGuidanceVcDocument = gql`
   query ConversationWithGuidanceVc {
     me {
       conversations {
-        conversationGuidanceVc: virtualContributor(wellKnown: GUIDANCE) {
+        conversationGuidanceVc: virtualContributor(wellKnown: CHAT_GUIDANCE) {
           id
         }
       }

@@ -1095,10 +1095,11 @@ export type ConversationKeySpecifier = (
   | 'room'
   | 'type'
   | 'updatedDate'
-  | 'userIDs'
-  | 'users'
+  | 'user'
+  | 'userID'
   | 'virtualContributor'
   | 'virtualContributorID'
+  | 'wellKnownVirtualContributor'
   | ConversationKeySpecifier
 )[];
 export type ConversationFieldPolicy = {
@@ -1108,25 +1109,11 @@ export type ConversationFieldPolicy = {
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  userIDs?: FieldPolicy<any> | FieldReadFunction<any>;
-  users?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
+  userID?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ConversationsSetKeySpecifier = (
-  | 'authorization'
-  | 'conversationsCount'
-  | 'createdDate'
-  | 'id'
-  | 'updatedDate'
-  | ConversationsSetKeySpecifier
-)[];
-export type ConversationsSetFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  conversationsCount?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  wellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutContributionDataKeySpecifier = (
   | 'link'
@@ -2554,7 +2541,6 @@ export type MutationKeySpecifier = (
   | 'convertSpaceL2ToSpaceL1'
   | 'convertVirtualContributorToUseKnowledgeBase'
   | 'createCalloutOnCalloutsSet'
-  | 'createChatGuidanceConversation'
   | 'createContributionOnCallout'
   | 'createConversationOnConversationsSet'
   | 'createDiscussion'
@@ -2636,6 +2622,7 @@ export type MutationKeySpecifier = (
   | 'sendMessageToRoom'
   | 'sendMessageToUserDirect'
   | 'sendMessageToUsers'
+  | 'setPlatformWellKnownVirtualContributor'
   | 'transferCallout'
   | 'transferInnovationHubToAccount'
   | 'transferInnovationPackToAccount'
@@ -2739,7 +2726,6 @@ export type MutationFieldPolicy = {
   convertSpaceL2ToSpaceL1?: FieldPolicy<any> | FieldReadFunction<any>;
   convertVirtualContributorToUseKnowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCalloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  createChatGuidanceConversation?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createConversationOnConversationsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2821,6 +2807,7 @@ export type MutationFieldPolicy = {
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUserDirect?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  setPlatformWellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationPackToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3061,7 +3048,6 @@ export type PaginatedVirtualContributorFieldPolicy = {
 export type PlatformKeySpecifier = (
   | 'authorization'
   | 'configuration'
-  | 'conversationsSet'
   | 'createdDate'
   | 'forum'
   | 'id'
@@ -3075,12 +3061,12 @@ export type PlatformKeySpecifier = (
   | 'storageAggregator'
   | 'templatesManager'
   | 'updatedDate'
+  | 'wellKnownVirtualContributors'
   | PlatformKeySpecifier
 )[];
 export type PlatformFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
-  conversationsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   forum?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3094,6 +3080,7 @@ export type PlatformFieldPolicy = {
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  wellKnownVirtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformAccessRoleKeySpecifier = ('grantedPrivileges' | 'roleName' | PlatformAccessRoleKeySpecifier)[];
 export type PlatformAccessRoleFieldPolicy = {
@@ -3239,6 +3226,22 @@ export type PlatformRolesAccessFieldPolicy = {
 export type PlatformSettingsKeySpecifier = ('integration' | PlatformSettingsKeySpecifier)[];
 export type PlatformSettingsFieldPolicy = {
   integration?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformWellKnownVirtualContributorMappingKeySpecifier = (
+  | 'virtualContributorID'
+  | 'wellKnown'
+  | PlatformWellKnownVirtualContributorMappingKeySpecifier
+)[];
+export type PlatformWellKnownVirtualContributorMappingFieldPolicy = {
+  virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
+  wellKnown?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformWellKnownVirtualContributorsKeySpecifier = (
+  | 'mappings'
+  | PlatformWellKnownVirtualContributorsKeySpecifier
+)[];
+export type PlatformWellKnownVirtualContributorsFieldPolicy = {
+  mappings?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PostKeySpecifier = (
   | 'authorization'
@@ -5269,10 +5272,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ConversationKeySpecifier | (() => undefined | ConversationKeySpecifier);
     fields?: ConversationFieldPolicy;
   };
-  ConversationsSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ConversationsSetKeySpecifier | (() => undefined | ConversationsSetKeySpecifier);
-    fields?: ConversationsSetFieldPolicy;
-  };
   CreateCalloutContributionData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5918,6 +5917,20 @@ export type StrictTypedTypePolicies = {
   PlatformSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformSettingsKeySpecifier | (() => undefined | PlatformSettingsKeySpecifier);
     fields?: PlatformSettingsFieldPolicy;
+  };
+  PlatformWellKnownVirtualContributorMapping?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PlatformWellKnownVirtualContributorMappingKeySpecifier
+      | (() => undefined | PlatformWellKnownVirtualContributorMappingKeySpecifier);
+    fields?: PlatformWellKnownVirtualContributorMappingFieldPolicy;
+  };
+  PlatformWellKnownVirtualContributors?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PlatformWellKnownVirtualContributorsKeySpecifier
+      | (() => undefined | PlatformWellKnownVirtualContributorsKeySpecifier);
+    fields?: PlatformWellKnownVirtualContributorsFieldPolicy;
   };
   Post?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PostKeySpecifier | (() => undefined | PostKeySpecifier);
