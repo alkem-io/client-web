@@ -20625,14 +20625,19 @@ export type DashboardSpacesQuery = {
   spaces: Array<{
     __typename?: 'Space';
     id: string;
+    level: SpaceLevel;
     visibility: SpaceVisibility;
     about: {
       __typename?: 'SpaceAbout';
-      why?: string | undefined;
       isContentPublic: boolean;
+      why?: string | undefined;
       id: string;
-      metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-      membership: { __typename?: 'SpaceAboutMembership'; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      membership: {
+        __typename?: 'SpaceAboutMembership';
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      };
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -22569,6 +22574,7 @@ export type CreateSubspaceMutation = {
     __typename?: 'Space';
     id: string;
     level: SpaceLevel;
+    visibility: SpaceVisibility;
     about: {
       __typename?: 'SpaceAbout';
       id: string;
@@ -22670,40 +22676,6 @@ export type SubspacePageBannerQuery = {
           };
         }
       | undefined;
-  };
-};
-
-export type SpaceCardFragment = {
-  __typename?: 'Space';
-  id: string;
-  visibility: SpaceVisibility;
-  about: {
-    __typename?: 'SpaceAbout';
-    why?: string | undefined;
-    isContentPublic: boolean;
-    id: string;
-    metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-    membership: { __typename?: 'SpaceAboutMembership'; myMembershipStatus?: CommunityMembershipStatus | undefined };
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      url: string;
-      tagline?: string | undefined;
-      cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-        | undefined;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-    };
   };
 };
 
@@ -22971,6 +22943,7 @@ export type SpaceSubspaceCardsQuery = {
             __typename?: 'Space';
             id: string;
             level: SpaceLevel;
+            visibility: SpaceVisibility;
             about: {
               __typename?: 'SpaceAbout';
               isContentPublic: boolean;
@@ -23019,6 +22992,7 @@ export type SubspaceCardFragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;
+  visibility: SpaceVisibility;
   about: {
     __typename?: 'SpaceAbout';
     isContentPublic: boolean;
@@ -23060,6 +23034,7 @@ export type SubspacesOnSpaceFragment = {
     __typename?: 'Space';
     id: string;
     level: SpaceLevel;
+    visibility: SpaceVisibility;
     about: {
       __typename?: 'SpaceAbout';
       isContentPublic: boolean;
@@ -23521,14 +23496,19 @@ export type SubspaceCreatedSubscription = {
     subspace: {
       __typename?: 'Space';
       id: string;
+      level: SpaceLevel;
       visibility: SpaceVisibility;
       about: {
         __typename?: 'SpaceAbout';
-        why?: string | undefined;
         isContentPublic: boolean;
+        why?: string | undefined;
         id: string;
-        metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-        membership: { __typename?: 'SpaceAboutMembership'; myMembershipStatus?: CommunityMembershipStatus | undefined };
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        membership: {
+          __typename?: 'SpaceAboutMembership';
+          myMembershipStatus?: CommunityMembershipStatus | undefined;
+          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        };
         profile: {
           __typename?: 'Profile';
           id: string;

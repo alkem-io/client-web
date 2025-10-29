@@ -1775,44 +1775,6 @@ export const ProfileVisualsFragmentDoc = gql`
   }
   ${VisualModelFragmentDoc}
 `;
-export const SpaceAboutCardBannerFragmentDoc = gql`
-  fragment SpaceAboutCardBanner on SpaceAbout {
-    id
-    profile {
-      id
-      displayName
-      url
-      tagline
-      cardBanner: visual(type: CARD) {
-        ...VisualModel
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-  }
-  ${VisualModelFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const SpaceCardFragmentDoc = gql`
-  fragment SpaceCard on Space {
-    id
-    about {
-      ...SpaceAboutCardBanner
-      why
-      isContentPublic
-      metrics {
-        name
-        value
-      }
-      membership {
-        myMembershipStatus
-      }
-    }
-    visibility
-  }
-  ${SpaceAboutCardBannerFragmentDoc}
-`;
 export const BreadcrumbsSpaceL0FragmentDoc = gql`
   fragment BreadcrumbsSpaceL0 on Space {
     id
@@ -1849,10 +1811,30 @@ export const BreadcrumbsSubspaceFragmentDoc = gql`
   }
   ${VisualModelFragmentDoc}
 `;
+export const SpaceAboutCardBannerFragmentDoc = gql`
+  fragment SpaceAboutCardBanner on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      url
+      tagline
+      cardBanner: visual(type: CARD) {
+        ...VisualModel
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
     id
     level
+    visibility
     about {
       ...SpaceAboutCardBanner
       metrics {
@@ -15313,10 +15295,10 @@ export function refetchInnovationHubBannerWideQuery(variables?: SchemaTypes.Inno
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
-      ...SpaceCard
+      ...SubspaceCard
     }
   }
-  ${SpaceCardFragmentDoc}
+  ${SubspaceCardFragmentDoc}
 `;
 
 /**
@@ -18603,11 +18585,11 @@ export const SubspaceCreatedDocument = gql`
   subscription subspaceCreated($subspaceId: UUID!) {
     subspaceCreated(spaceID: $subspaceId) {
       subspace {
-        ...SpaceCard
+        ...SubspaceCard
       }
     }
   }
-  ${SpaceCardFragmentDoc}
+  ${SubspaceCardFragmentDoc}
 `;
 
 /**
