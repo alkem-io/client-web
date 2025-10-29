@@ -178,7 +178,6 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   >(null);
 
   const initialValues = useMemo(() => {
-    console.log('Whiteboard initialValues:', whiteboard);
     return {
       profile: {
         displayName: whiteboard?.profile?.displayName ?? '',
