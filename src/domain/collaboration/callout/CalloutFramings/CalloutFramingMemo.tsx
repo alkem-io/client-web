@@ -11,11 +11,15 @@ interface CalloutFramingMemoProps {
 
 const CalloutFramingMemo = ({ callout, onCollapse }: CalloutFramingMemoProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { refreshMarkdown } = useMemoManager({ id: callout.framing.memo?.id });
+  const memoId = callout.framing.memo?.id;
+  const { memo, refreshMarkdown } = useMemoManager({ id: memoId });
 
   const handleCloseMemoDialog = () => {
-    if (callout.framing.memo?.id) {
-      refreshMarkdown();
+    if (memoId) {
+      // Wait 2.5 seconds for autosave to complete, then refresh
+      setTimeout(() => {
+        void refreshMarkdown();
+      }, 2500);
     }
 
     onCollapse?.();
@@ -26,10 +30,13 @@ const CalloutFramingMemo = ({ callout, onCollapse }: CalloutFramingMemoProps) =>
     return null;
   }
 
+  // Use the memo from the query if it has markdown, otherwise use the callout's memo
+  const displayMemo = memo?.markdown ? { markdown: memo.markdown } : callout.framing.memo;
+
   return (
     <>
       <MemoPreview
-        memo={callout.framing.memo}
+        memo={displayMemo}
         displayName={callout.framing.profile.displayName}
         onClick={() => setDialogOpen(true)}
       />
