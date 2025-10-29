@@ -59,7 +59,7 @@ const FormikWhiteboardPreview = ({
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const filesManager = useWhiteboardFilesManager({ excalidrawAPI });
 
-  const [field, , helpers] = useField<string>(name); // Whiteboard content JSON string
+  const [field, , whiteboardContentField] = useField<string>(name); // Whiteboard content JSON string
   const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(previewImagesName ?? 'previewImages');
   const [, , previewSettingsField] = useField<WhiteboardPreviewSettings | undefined>(
     previewSettingsName ?? 'previewSettings'
@@ -81,7 +81,7 @@ const FormikWhiteboardPreview = ({
 
   const handleClickEditButton = () => {
     setEditDialogOpen(true);
-    helpers.setTouched(true);
+    whiteboardContentField.setTouched(true);
   };
 
   const handleClose = () => {
@@ -154,7 +154,7 @@ const FormikWhiteboardPreview = ({
                 actions={{
                   onCancel: handleClose,
                   onUpdate: async (whiteboard, previewImages) => {
-                    helpers.setValue(whiteboard.content);
+                    whiteboardContentField.setValue(whiteboard.content);
                     if (previewImagesName) {
                       previewImagesField.setValue(previewImages);
                     }
@@ -199,7 +199,7 @@ const FormikWhiteboardPreview = ({
             }}
             actions={{
               onConfirm: () => {
-                helpers.setValue('');
+                whiteboardContentField.setValue('');
                 if (previewImagesName) {
                   previewImagesField.setValue([]);
                 }

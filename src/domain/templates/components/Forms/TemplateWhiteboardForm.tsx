@@ -42,7 +42,7 @@ const validator = {
   }),
 };
 
-const TemplateWhiteboardForm = ({ template, onSubmit, actions, temporaryLocation }: TemplateWhiteboardFormProps) => {
+const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhiteboardFormProps) => {
   const { t } = useTranslation();
 
   const initialValues: TemplateWhiteboardFormSubmittedValues = {
@@ -68,7 +68,7 @@ const TemplateWhiteboardForm = ({ template, onSubmit, actions, temporaryLocation
       <FormikWhiteboardPreview
         name="whiteboard.content"
         previewImagesName="whiteboardPreviewImages"
-        previewSettingsName={temporaryLocation ? undefined : 'whiteboard.previewSettings'} // Do not support preview settings when creating template
+        previewSettingsName="whiteboard.previewSettings"
         maxHeight={gutters(20)}
         canEdit
         dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}

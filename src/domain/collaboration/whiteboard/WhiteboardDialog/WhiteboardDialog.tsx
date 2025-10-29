@@ -247,7 +247,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
       },
       previewSettings: whiteboard?.previewSettings ?? { mode: WhiteboardPreviewMode.Auto, coordinates: undefined },
     }),
-    [whiteboard?.profile?.displayName]
+    [whiteboard]
   );
 
   useEffect(() => {
