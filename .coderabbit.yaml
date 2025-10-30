@@ -13,7 +13,16 @@ reviews:
   path_filters:
     - "!**/.github/**"
     - "!**/node_modules/**"  # Exclude dependencies
+    - "!**/node_modules/**"  # Exclude dependencies
+    - "!**/dist/**"          # Exclude build files
+    - "!**/specify/**"       # Exclude Speckit files
   path_instructions:
+    - path: "specs/**/spec.md"
+      instructions: |
+        Speckit specs capture the constitution for behaviour. Confirm changes satisfy acceptance criteria, update impacted requirements, and flag any divergence or missing traceability.
+    - path: "specs/**/plan.md"
+      instructions: |
+        Use the delivery plan to validate sequencing, observability, and resiliency hooks promised for a spec. Highlight unimplemented tasks or newly introduced risks.
     - path: "src/**/*.{ts,tsx,js}"
       instructions: |
         Review the React.js/TypeScript/JavaScript code for best practices and potential bugs.
