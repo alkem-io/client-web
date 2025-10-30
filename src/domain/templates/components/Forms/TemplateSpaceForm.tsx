@@ -40,7 +40,7 @@ const validator = {
  * - the one in the formik values (values.spaceId) we want to change that when the user selects a space to serve as template (as the )
  *
  * a ContentSpace preview:
- * - the one coming with the template (template?.contentSpace?.id) that never changes (will be undefined if we are creating a new template)
+ * - the one coming with the template (template.contentSpace?.id) that never changes (will be undefined if we are creating a new template)
  *
  * We cannot unify them because:
  *  - We want to keep the original spaceId to reset the formik value when the user cancels the selection. also, never change a value coming from the server
@@ -51,13 +51,13 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const [spaceId, setSpaceId] = useState<string>(template?.spaceId ?? ''); // This is a copy of the formik value spaceId, used to query the API and show the preview.
+  const [spaceId, setSpaceId] = useState<string>(template.spaceId ?? ''); // This is a copy of the formik value spaceId, used to query the API and show the preview.
   const loadSpaceContentComponentRef = useRef<SpaceContentFromSpaceUrlFormRef | null>(null);
 
   const initialValues: TemplateSpaceFormSubmittedValues = useMemo(
     () => ({
-      profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
-      spaceId: template?.spaceId ?? '',
+      profile: mapTemplateProfileToUpdateProfileInput(template.profile),
+      spaceId: template.spaceId ?? '',
       recursive: true,
     }),
     [template]
@@ -78,10 +78,10 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
   // Or, load the template content if the template already exists and no spaceId is selected (users select another space to use its content)
   const { data: templateData, loading: templateLoading } = useTemplateContentQuery({
     variables: {
-      templateId: template?.id!,
+      templateId: template.id!,
       includeSpace: true,
     },
-    skip: !template?.id || Boolean(spaceId),
+    skip: !template.id || Boolean(spaceId),
   });
 
   const spacePreview = {
@@ -105,7 +105,7 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
       values: TemplateSpaceFormSubmittedValues,
       { setFieldValue }: FormikHelpers<TemplateSpaceFormSubmittedValues>
     ) => {
-      if ((!template?.spaceId && !values.spaceId && !template?.contentSpace?.id) || !canUseSpaceAsTemplate) {
+      if ((!template.spaceId && !values.spaceId && !template.contentSpace?.id) || !canUseSpaceAsTemplate) {
         notify(t('pages.admin.generic.sections.templates.validation.spaceRequired'), 'error');
         return Promise.reject();
       }
@@ -170,7 +170,7 @@ const TemplateSpaceForm = ({ template, onSubmit, actions }: TemplateSpaceFormPro
               ref={loadSpaceContentComponentRef}
               disabled={submitting}
               onUseSpace={handleSpaceIdChange}
-              collapsible={Boolean(template?.spaceId)}
+              collapsible={Boolean(template.spaceId)}
               onCollapse={handleCancel}
             />
             {shouldShowSpacePreview && (

@@ -23,8 +23,8 @@ const TemplatePostForm = ({ template, onSubmit, actions, temporaryLocation = fal
   const { t } = useTranslation();
 
   const initialValues: TemplatePostFormSubmittedValues = {
-    profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
-    postDefaultDescription: template?.postDefaultDescription ?? '',
+    profile: mapTemplateProfileToUpdateProfileInput(template.profile),
+    postDefaultDescription: template.postDefaultDescription ?? '',
   };
 
   return (

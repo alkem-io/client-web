@@ -59,15 +59,15 @@ const TemplateCommunityGuidelinesForm = ({
   temporaryLocation = false,
 }: TemplateCommunityGuidelinesFormProps) => {
   const { t } = useTranslation();
-  const profileId = template?.communityGuidelines?.profile.id;
+  const profileId = template.communityGuidelines?.profile.id;
 
   const initialValues: TemplateCommunityGuidelinesFormSubmittedValues = {
-    profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
+    profile: mapTemplateProfileToUpdateProfileInput(template.profile),
     communityGuidelines: {
       profile: {
-        displayName: template?.communityGuidelines?.profile.displayName ?? '',
-        description: template?.communityGuidelines?.profile.description ?? '',
-        references: mapReferenceModelsToUpdateReferenceInputs(template?.communityGuidelines?.profile.references) ?? [],
+        displayName: template.communityGuidelines?.profile.displayName ?? '',
+        description: template.communityGuidelines?.profile.description ?? '',
+        references: mapReferenceModelsToUpdateReferenceInputs(template.communityGuidelines?.profile.references) ?? [],
       },
     },
   };

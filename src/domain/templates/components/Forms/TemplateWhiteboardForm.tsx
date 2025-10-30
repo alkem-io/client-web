@@ -5,18 +5,17 @@ import TemplateFormBase, {
 } from './TemplateFormBase';
 import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useTranslation } from 'react-i18next';
-import {
-  TemplateType,
-  VisualType,
-  WhiteboardPreviewMode,
-  WhiteboardPreviewSettings,
-} from '@/core/apollo/generated/graphql-schema';
+import { TemplateType, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import { gutters } from '@/core/ui/grid/utils';
 import { TemplateFormProps } from './TemplateForm';
+import {
+  DefaultWhiteboardPreviewSettings,
+  WhiteboardPreviewSettings,
+} from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 
 interface TemplateContentWhiteboard {
   content: string;
@@ -46,13 +45,10 @@ const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhitebo
   const { t } = useTranslation();
 
   const initialValues: TemplateWhiteboardFormSubmittedValues = {
-    profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
+    profile: mapTemplateProfileToUpdateProfileInput(template.profile),
     whiteboard: {
-      content: template?.whiteboard?.content || JSON.stringify(EmptyWhiteboard),
-      previewSettings: template?.whiteboard?.previewSettings ?? {
-        mode: WhiteboardPreviewMode.Auto,
-        coordinates: undefined,
-      },
+      content: template.whiteboard?.content || JSON.stringify(EmptyWhiteboard),
+      previewSettings: template.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
     },
   };
 
