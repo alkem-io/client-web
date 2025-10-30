@@ -11,10 +11,11 @@ reviews:
     enabled: true
     auto_incremental_review: true
   path_filters:
-    - "!**/.github/**"
+    - "!**/.*/**"            # Exclude hidden/system files/scripts
+    - "!**/@types"           # Exclude types
+    - "!**/public/**"        # Exclude public assets
     - "!**/node_modules/**"  # Exclude dependencies
     - "!**/dist/**"          # Exclude build files
-    - "!**/.specify/**"      # Exclude governance memory artifacts
   path_instructions:
     - path: "**/*"
       instructions: |
