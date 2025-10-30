@@ -1,6 +1,6 @@
 import { PropsWithChildren, ReactNode } from 'react';
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
-import { Box, IconButton, styled, Typography, useTheme } from '@mui/material';
+import { Box, IconButton, styled, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -70,7 +70,6 @@ export const MessageView = ({
   const { author, id } = message;
 
   const { t } = useTranslation();
-  const theme = useTheme();
 
   const enabledReactions = addReaction && removeReaction;
   const handleAddReaction = (emoji: string) => addReaction?.({ emoji, messageId: message.id });
@@ -118,9 +117,7 @@ export const MessageView = ({
                 {t('messaging.messageDeleted')}
               </Text>
             ) : (
-              <WrapperMarkdown sx={{ '& p': { marginTop: gutters(0.2)(theme), marginBottom: gutters(0.2)(theme) } }}>
-                {message.message}
-              </WrapperMarkdown>
+              <WrapperMarkdown sx={{ '& p': { marginBottom: 0 } }}>{message.message}</WrapperMarkdown>
             )}
           </MessageContentWrapper>
         </Box>
