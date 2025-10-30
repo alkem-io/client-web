@@ -29,6 +29,9 @@
   - Prereqs: Backend Alkemio server reachable at `VITE_APP_ALKEMIO_DOMAIN` (default `http://localhost:3000`). Regenerates `public/env-config.js` each run.
 - **Production build**: `pnpm build`
   - Prereqs: .env values set. Takes ~20s, outputs to `build/`. Rewrites `.build/docker/.env.base` and `public/env-config.js`—avoid committing those artifacts.
+  - Optional: `pnpm analyze` (source-map-explorer) after `pnpm build` for bundle insights.
+- **Production build lint**: `pnpm lint:prod`
+  - Runs `tsc --noEmit` + `cross-env NODE_ENV=production` in order for lint command to run with production-specific settings.
 - **Lint**: `pnpm lint`
   - Runs `tsc --noEmit` then ESLint over `src/**/*.ts(x)`. Succeeds cleanly on current HEAD; expect failures if types break.
 - **Unit tests**: `pnpm vitest run --reporter=basic`
@@ -37,7 +40,6 @@
   - Requires the Alkemio GraphQL API at `http://localhost:3000/graphql` or update `codegen.yml`. Runs ESLint + Prettier on generated files via hooks.
 - **Formatting**: `pnpm format` (Prettier over `src/**/*.ts{,x}`) and `pnpm lint:fix` for autofixes.
 - **Serve built assets**: `pnpm serve:dev` (serves `build/` on port 3001).
-- Optional: `pnpm analyze` (source-map-explorer) after `pnpm build` for bundle insights.
 
 _Observed behavior (Oct 2025): all commands above complete without manual tweaks; production build warns about large chunks (known, non-blocking)._
 
