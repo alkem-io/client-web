@@ -1,6 +1,6 @@
 {
   "chatbot": {
-    "title": "Help",
+    "title": "Aide",
     "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
       "title": "Assistance d'Alkemio",
@@ -11,13 +11,13 @@
       "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
     },
     "menu": {
-      "clear": "New Chat",
-      "close": "Close window"
+      "clear": "Nouvelle discussion",
+      "close": "Fermer la fenêtre"
     },
     "confirmNewChat": {
-      "title": "Start a new chat?",
-      "description": "Starting a new chat will clear your current chat history. Are you sure you want to proceed?",
-      "confirm": "Yes, start new chat"
+      "title": "Commencez une nouvelle discussion ?",
+      "description": "Commencer une nouvelle discussion va réinitialiser votre historique de discussions. Êtes-vous sûr de vouloir continuer ?",
+      "confirm": "Oui, commencer une nouvelle discussion"
     },
     "references": [
       {
@@ -106,7 +106,7 @@
     "saveDraft": "Save as draft",
     "archive": "Archiver",
     "save": "Enregistrer",
-    "continue": "Continue",
+    "continue": "Continuer",
     "back": "Précédent",
     "next": "Suivant",
     "edit": "Éditer",
@@ -121,24 +121,24 @@
     "home": "Ma page d'accueil",
     "take-me-home": "Me ramener à l'accueil",
     "close": "Fermer",
-    "yes": "Yes",
-    "no": "No",
-    "yes-close": "Yes, close",
-    "yesContinue": "Yes, continue",
-    "yesReplace": "Yes, replace",
-    "yesDelete": "Yes, delete",
-    "yesStop": "Yes, stop",
-    "yesDiscard": "Yes, Discard",
+    "yes": "Oui",
+    "no": "Non",
+    "yes-close": "Oui, fermer",
+    "yesContinue": "Oui, continuer",
+    "yesReplace": "Oui, remplacer",
+    "yesDelete": "Oui, supprimer",
+    "yesStop": "Oui, arrêter",
+    "yesDiscard": "Oui, jeter",
     "delete": "Supprimer",
     "submit": "Envoyer",
     "remove": "Retirer",
     "cancel": "Annuler",
-    "upload": "Upload",
+    "upload": "Télécharger",
     "explore-and-connect": "Explorer et se connecter",
     "send-message": "Envoyez le message",
     "edit-members": "Edit $t(common.members)",
     "insert": "Insérer",
-    "open": "Open",
+    "open": "Ouvrir",
     "my-profile": "My $t(common.profile)",
     "new": "Nouveau",
     "sign-out": "Se déconnecter",
@@ -157,12 +157,13 @@
     "find-template": "Find $t(common.template)",
     "change": "Modifier",
     "share": "Partager",
-    "view": "View",
+    "view": "Voir",
     "preview": "Prévisualiser",
-    "import": "Import",
+    "import": "Importer",
     "importing": "Import...",
     "go-to-entity": "Aller à {{entity}}",
     "reply": "Réponse",
+    "reset": "Reset",
     "select": "Sélectionner",
     "change-field": "Changer {{field}}",
     "send": "Envoyer",
@@ -173,7 +174,7 @@
     "moveToBottom": "Placer à la fin",
     "use": "Utiliser",
     "fullscreen": "Basculer en mode plein écran",
-    "changeLanguage": "Change language",
+    "changeLanguage": "Changer la langue",
     "getHelp": "Get help",
     "saveAsTemplate": "Save as $t(common.template)",
     "skipLink": "Skip to next block",
@@ -185,7 +186,7 @@
     "toolPosition": "Position of tool",
     "createOwnSpace": "...or click here to create your own $t(common.space)",
     "notifications": "$t(common.Notifications) Button",
-    "invite": "Invite",
+    "invite": "Inviter",
     "visit": "Visit",
     "returnToDashboard": "Return to $t(common.dashboard) as guest",
     "approveApplication": "Approve application",
@@ -217,7 +218,7 @@
       "providers": {
         "linkedin": "LinkedIn",
         "microsoft": "Microsoft",
-        "github": "Github",
+        "github": "GitHub",
         "apple": "Apple",
         "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
       }
@@ -234,10 +235,10 @@
       "L2": "Subsubspace"
     },
     "actions": "Actions",
-    "Account": "Account",
-    "account": "account",
-    "anonymous": "Anonymous",
-    "all": "All",
+    "Account": "Compte",
+    "account": "compte",
+    "anonymous": "Anonyme",
+    "all": "Tous",
     "knowledge-base": "Base de connaissances",
     "or": "Ou",
     "permission": "Autorisation",
@@ -261,37 +262,37 @@
     "Callout": "$t(common.Post)",
     "Callouts": "$t(common.Posts)",
     "collaborationTools": "Outils collaboratifs",
-    "createdBy": "Created by",
-    "Memo": "Memo",
-    "Memos": "Memos",
-    "memo": "memo",
-    "memos": "memos",
-    "Whiteboard": "Whiteboard",
-    "Whiteboards": "Whiteboards",
-    "whiteboard": "whiteboard",
-    "whiteboards": "whiteboards",
+    "createdBy": "Crée par",
+    "Memo": "Mémo",
+    "Memos": "Mémos",
+    "memo": "mémo",
+    "memos": "mémos",
+    "Whiteboard": "Tableau blanc",
+    "Whiteboards": "Tableaux blancs",
+    "whiteboard": "tableau blanc",
+    "whiteboards": "tableaux blancs",
     "calendar": "Calendrier",
     "Collection": "Collection",
     "Collections": "Collections",
     "collection": "collection",
     "collections": "collections",
-    "Comment": "Comment",
-    "Comments": "Comments",
-    "comment": "comment",
-    "comments": "comments",
+    "Comment": "Commentaire",
+    "Comments": "Commentaires",
+    "comment": "commentaire",
+    "comments": "commentaires",
     "contributions": "Contributions",
     "customHomepage": "Custom Homepage",
     "customHomepages": "Custom Homepages",
-    "Response": "Response",
-    "Responses": "Responses",
-    "response": "response",
-    "responses": "responses",
+    "Response": "Réponse",
+    "Responses": "Réponses",
+    "response": "réponse",
+    "responses": "réponses",
     "card": "Carte",
     "cards": "Cartes",
     "create": "Créer",
     "create-new": "Créer nouveau",
     "create-new-entity": "Créer un nouveau {{entity}}",
-    "category": "Category",
+    "category": "Catégorie",
     "custom": "Custom",
     "date": "Date",
     "description": "Description",
@@ -365,21 +366,21 @@
     "field-required": "Ce champ est obligatoire",
     "field-min-length": "Cet champ doit contenir au moins {{min}} caractères",
     "field-max-length": "Cet champ doit contenir au moins {{max}} caractères",
-    "Link": "Link",
-    "link": "link",
+    "Link": "Lien",
+    "link": "lien",
     "Membership": "Membership",
     "Memberships": "Memberships",
     "membership": "membership",
     "memberships": "memberships",
     "owner": "Propriétaire",
-    "Admin": "Admin",
-    "Admins": "Admins",
-    "admin": "admin",
-    "admins": "admins",
-    "Member": "Member",
-    "Members": "Members",
-    "member": "member",
-    "members": "members",
+    "Admin": "Administrateur",
+    "Admins": "Administrateurs",
+    "admin": "administrateur",
+    "admins": "administrateurs",
+    "Member": "Membre",
+    "Members": "Membres",
+    "member": "membre",
+    "members": "membres",
     "empty-string": "",
     "discussion": "Discussions",
     "discussions": "Discussions",
@@ -387,18 +388,18 @@
     "dashboard": "Tableau de bord",
     "contribute": "Contribuer",
     "context": "Contexte",
-    "index": "Profile",
-    "Community": "Community",
-    "community": "community",
+    "index": "Profil",
+    "Community": "Communauté",
+    "community": "communauté",
     "library": "Library",
     "templateLibrary": "Template Library",
     "people": "Personnes",
-    "Settings": "Settings",
-    "settings": "settings",
+    "Settings": "Paramètres",
+    "settings": "paramètres",
     "space-settings": "$t(common.Settings)",
     "search": "Recherche...",
-    "Storage": "Storage",
-    "storage": "storage",
+    "Storage": "Stockage",
+    "storage": "stockage",
     "type": "Type",
     "reference": "Référence",
     "references": "Références",
@@ -409,19 +410,19 @@
     "credentials": "Identifiants",
     "my-profile": "My $t(common.profile)",
     "my-memberships": "My $t(common.memberships)",
-    "Profile": "Profile",
-    "profile": "profile",
+    "Profile": "Profil",
+    "profile": "profil",
     "social": "Géants",
     "lifecycle": "Cycle de vie",
-    "location": "Location",
+    "location": "Emplacement",
     "home": "Ma page d'accueil",
     "visuals": "Illustrations",
     "authorization": "Autorisation",
     "question": "Question",
     "questions": "Questions",
-    "show-more": "Show more",
+    "show-more": "Afficher plus",
     "show-all": "Tout afficher",
-    "show": "Show",
+    "show": "Afficher",
     "lock": "Locked",
     "title": "Titre",
     "visibility": "Visibilité",
@@ -440,12 +441,12 @@
     "more": "Plus d’infos",
     "url": "URL",
     "sources": "Sources",
-    "license": "License",
-    "virtualContributor": "Virtual Contributor",
-    "virtualContributors": "Virtual Contributors",
-    "collaborationTool": "Collaboration tool",
-    "optional": "optional",
-    "unknown": "Unknown",
+    "license": "Licence",
+    "virtualContributor": "Contributeur virtuel",
+    "virtualContributors": "Contributeurs virtuels",
+    "collaborationTool": "Outil de collaboration",
+    "optional": "optionnel",
+    "unknown": "Inconnu",
     "menu": "Menu",
     "genders": {
       "notSpecified": "non spécifié",
@@ -468,7 +469,7 @@
     },
     "enums": {
       "licenseEntitlementType": {
-        "SPACE_FREE": "Free",
+        "SPACE_FREE": "Gratuit",
         "SPACE_PLUS": "Plus",
         "SPACE_PREMIUM": "Premium"
       },
@@ -487,8 +488,8 @@
       },
       "searchVisibility": {
         "ACCOUNT": "$t(common.Account)",
-        "HIDDEN": "Hidden",
-        "PUBLIC": "Public"
+        "HIDDEN": "Caché",
+        "PUBLIC": "Publique"
       },
       "edit-mode": {
         "new": "Nouveau",
@@ -496,7 +497,7 @@
         "read-only": "Lecture seule"
       },
       "discussion-category": {
-        "RELEASES": "Releases",
+        "RELEASES": "Sortis",
         "GENERAL": "Général",
         "IDEAS": "Idées",
         "QUESTIONS": "Questions",
@@ -543,7 +544,7 @@
         "invited": "Invited to join Alkemio & this $t(common.space)"
       },
       "roleSetContributorType": {
-        "USER": "User",
+        "USER": "Utilisateur",
         "ORGANIZATION": "$t(common.Organization)",
         "VIRTUAL": "$t(common.virtualContributor)"
       }
@@ -555,10 +556,10 @@
     "roles": {
       "ADMIN": "$t(common.Admin)",
       "LEAD": "Lead",
-      "HOST": "Host",
+      "HOST": "Hôte",
       "MEMBER": "$t(common.Member)",
       "ASSOCIATE": "Associate",
-      "OWNER": "Owner",
+      "OWNER": "Propriétaire",
       "GLOBAL_ADMIN": "Global $t(common.Admin)",
       "GLOBAL_SUPPORT": "Support $t(common.Admin)",
       "GLOBAL_SUPPORT_MANAGER": "Support Manager",
@@ -603,7 +604,7 @@
     },
     "supportEmail": "support@alkem.io",
     "options": "Options",
-    "externalLinkDisclaimer": "This link takes you to an external site. Alkemio is not responsible for its content."
+    "externalLinkDisclaimer": "Ce lien vous emmène vers un site externe. Alkemio n'est pas responsable du contenu de ce site."
   },
   "community": {
     "memberUsers": "$t(common.Member) Users ({{count}})",
@@ -622,7 +623,7 @@
       "blockTitle": "$t(common.virtualContributors) ({{count}})",
       "removeDialog": {
         "title": "Remove $t(common.virtualContributor)",
-        "confirm": "Are you sure?"
+        "confirm": "Êtes-vous sûr ?"
       },
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external $t(common.virtualContributor) to your $t(common.space). Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
       "searchVC": "Find $t(common.virtualContributor)",
@@ -670,10 +671,10 @@
           "descriptionMembers": "Search $t(common.members) from the parent $t(common.spaceSubspace).",
           "note": "Keep in mind that your personal email address will be visible to anyone you message.",
           "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the $t(common.space) or click on the button below to directly accept or decline the invitation.",
-          "placeholder": "Username or email...",
-          "success": "Your invitation was successfully sent to the following recipients:",
+          "placeholder": "Nom d'utilisateur ou e-mail...",
+          "success": "Votre invitation a été envoyée avec succès aux personnes suivantes :",
           "failure": "We couldn’t send the invitation to the following recipients:",
-          "back": "Send another invitation",
+          "back": "Envoyer une autre invitation",
           "invitationsSent": "{{count}} invitations will be sent.",
           "invitationByEmailTooltip": "{{email}} will be invited to sign up to Alkemio and to this $t(common.space)",
           "results": {
@@ -726,12 +727,12 @@
       "approve": {
         "title": "Approve application from {{user}}",
         "content": "Are you sure that you want to Approve this application? The user will be added to the $t(common.space) and will be able to access it.",
-        "confirmButton": "Yes, approve"
+        "confirmButton": "Oui, accepter"
       },
       "reject": {
         "title": "Reject application from {{user}}",
         "content": "Are you sure that you want to Reject this application? The user will not be able to access the $t(common.space).",
-        "confirmButton": "Yes, reject"
+        "confirmButton": "Oui, rejeter"
       }
     },
     "pendingMembership": {
@@ -748,13 +749,13 @@
         "actions": {
           "hide": "Masquer ce bouton",
           "reject": "Refuser",
-          "join": "Join",
+          "join": "Rejoindre",
           "accept": "Joindre"
         }
       },
       "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
       "invitationCardTitle": "{{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
-      "you": "you",
+      "you": "vous",
       "vc": "your $t(common.virtualContributor)"
     },
     "memberSettings": {
@@ -786,8 +787,8 @@
       "framingSettings": {
         "title": "Additional Content",
         "none": {
-          "title": "None",
-          "tooltip": "No additional content"
+          "title": "Aucun",
+          "tooltip": "Aucun contenu additionnel"
         },
         "whiteboard": {
           "title": "$t(common.Whiteboard)",
@@ -836,7 +837,7 @@
             "settings": {
               "label": "Directly Start",
               "description": "Add your first links below, after publishing new links can be directly added to the $t(common.post).",
-              "addButton": "Add another link"
+              "addButton": "Ajouter un autre lien"
             }
           },
           "post": {
@@ -875,7 +876,7 @@
       "dialogTitle": "Edit $t(common.post)"
     },
     "accessForbidden": {
-      "title": "Content not available",
+      "title": "Contenu indisponible",
       "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
     },
     "contributions": {
@@ -885,7 +886,7 @@
       "contributionsItemsCount_other": "{{count}} items in this $t(common.collection)",
       "contributionsItemsCountExpand": "{{count}} items in this $t(common.collection), <click>click here</click> to see all",
       "contributionsCollapse": "{{count}} items in this $t(common.collection), <click>click here</click> to hide some",
-      "noContributions": "No contributions yet, be the first to contribute!"
+      "noContributions": "Aucune contribution pour le moment, soyez le premier à en faire une !"
     },
     "draftNotice": "DRAFT - Only visible for $t(common.admins)",
     "closed": "Ce rappel est fermé. Vous pouvez toujours commenter les cartes individuelles.",
@@ -912,8 +913,8 @@
       "more-links": "{{count}} liens, cliquez ici pour tout afficher",
       "new-temporary-reference": "ID du lien temporaire : {{temp}}"
     },
-    "singleWhiteboard": {
-      "clickToSee": "Click to see the full $t(common.whiteboard)"
+    "whiteboard": {
+      "clickToSee": "Click to open $t(common.whiteboard)"
     },
     "memo": {
       "clickToSee": "Click to see the full $t(common.memo)"
@@ -921,7 +922,7 @@
     "calloutsList": {
       "title": "Index",
       "filter": {
-        "placeholder": "Search..."
+        "placeholder": "Recherche..."
       }
     }
   },
@@ -933,8 +934,8 @@
     "message-optional": "Message (facultatif)",
     "successfully-sent": "Message envoyé avec succès",
     "messageDeleted": "Ce message a été supprimé.",
-    "insertEmoji": "Insert Emoji",
-    "addReaction": "Add reaction",
+    "insertEmoji": "Insérer un émoji",
+    "addReaction": "Ajouter une réaction",
     "addMention": "Mention someone",
     "formattingHelp": "Formatting help",
     "missingAuthor": "Alkemio (virtual) contributor"
@@ -994,7 +995,7 @@
         "placeholder": ""
       },
       "description": {
-        "title": "What",
+        "title": "Quoi",
         "description": "",
         "placeholder": ""
       },
@@ -1004,12 +1005,12 @@
         "placeholder": ""
       },
       "why": {
-        "title": "Why",
+        "title": "Pourquoi",
         "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who",
+        "title": "Qui",
         "description": "",
         "placeholder": ""
       },
@@ -1036,7 +1037,7 @@
         "placeholder": ""
       },
       "description": {
-        "title": "What",
+        "title": "Quoi",
         "description": "",
         "placeholder": ""
       },
@@ -1046,12 +1047,12 @@
         "placeholder": ""
       },
       "why": {
-        "title": "Why",
+        "title": "Pourquoi",
         "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who",
+        "title": "Qui",
         "description": "",
         "placeholder": ""
       },
@@ -1078,7 +1079,7 @@
         "placeholder": ""
       },
       "description": {
-        "title": "What",
+        "title": "Quoi",
         "description": "",
         "placeholder": ""
       },
@@ -1088,12 +1089,12 @@
         "placeholder": ""
       },
       "why": {
-        "title": "Why",
+        "title": "Pourquoi",
         "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who",
+        "title": "Qui",
         "description": "",
         "placeholder": ""
       },
@@ -1113,7 +1114,7 @@
   },
   "forms": {
     "validations": {
-      "field": "Field",
+      "field": "Champ",
       "fieldNotPresent": "{{fieldName}} is not present",
       "required": "Ce champ est obligatoire!",
       "requiredField": "{{field}} is required!",
@@ -1123,11 +1124,11 @@
       "nonBlank": "{{field}} must not consist of just spaces",
       "atLeastOne": "Au moins un {{item}} doit être sélectionné.",
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
-      "invalidUrl": "Invalid URL",
-      "invalidEmail": "Invalid Email address",
-      "duplicateEmail": "Duplicated email address",
+      "invalidUrl": "URL invalide",
+      "invalidEmail": "Adresse e-mail invalide",
+      "duplicateEmail": "Dupliquer l'adresse e-mail",
       "elementMustBeValidUrl": "{{name}} must be a valid URL",
-      "acceptedTerms": "You must accept the terms and conditions"
+      "acceptedTerms": "Vous devez accepter les conditions générales"
     }
   },
   "templateDialog": {
@@ -1201,7 +1202,7 @@
   },
   "innovation-templates": {
     "states": {
-      "title": "Definition",
+      "title": "Définition",
       "placeholder": "Here you can paste the description of the phases to use for this $t(common.innovation-flow)"
     }
   },
@@ -1225,7 +1226,7 @@
       }
     },
     "navigation": {
-      "exitMenu": "Exit menu",
+      "exitMenu": "Quitter le menu",
       "skipMenu": "Skip main menu"
     },
     "search": {
@@ -1241,16 +1242,16 @@
     "searchDialog": {
       "headerTitle": "Search results",
       "spacesAndSubspaces": "$t(common.spaces) & $t(common.subspaces)",
-      "collaborationTools": "Collaboration Tools"
+      "collaborationTools": "Outils de collaboration"
     },
     "searchScope": {
-      "currentScope": "Search results for:",
+      "currentScope": "Résultats de recherche pour :",
       "alternativeScope": "Didn’t find what you were looking for? Try searching in:",
-      "platform": "Everywhere on Alkemio"
+      "platform": "Partout dans Alkemio"
     },
     "poweredBy": {
-      "label": "Powered by",
-      "aria-label": "Powered by Alkemio"
+      "label": "Alimenté par",
+      "aria-label": "Alimenté par Alkemio"
     },
     "spaceUnauthorizedDialog": {
       "message": "This is a private $t(common.community) and most of it’s content is restricted to $t(common.members) only. If you want to join, <apply>click here to apply.</apply>"
@@ -1264,14 +1265,14 @@
     "dashboardNavigation": {
       "help": "Hierarchy of this $t(common.space).",
       "privateSubspace": "This is a private $t(common.subspace). Visit the $t(common.subspace) and apply to become a $t(common.member) to view it's content.",
-      "showAll": "Show all",
+      "showAll": "Montrer tous",
       "expand": "Show full hierarchy",
       "collapse": "Limit to this $t(common.subspace)"
     },
     "dashboardRecentContributions": {
       "title": "Contributions",
       "modes": {
-        "switchMode": "Switch View",
+        "switchMode": "Changer de vue",
         "recentActivity": "Plus récents",
         "topCallouts": "Plus actif"
       }
@@ -1302,7 +1303,7 @@
         },
         "deleteDialog": {
           "title": "Delete Phase?",
-          "text": "This action cannot be undone.",
+          "text": "Cette action ne peut pas être annulée.",
           "activeStateWarning": "This phase is currently the active one and cannot be deleted. You can always rename it or select another one as the active."
         },
         "selectDifferentFlow": {
@@ -1369,7 +1370,7 @@
         "list.outdent": "Diminuer le retrait",
         "remove.remove": "Supprimer",
         "embed.video": "Embed Video or other Media",
-        "horizontal.line": "Insert horizontal line"
+        "horizontal.line": "Insérer une ligne horizontale"
       },
       "image": {
         "dialogHeader": "Insérer image"
@@ -1383,7 +1384,7 @@
       "embed": {
         "iframeAria": "{{title}}",
         "dialogTitle": "Embed Video or other Media",
-        "embedCodeTextAreaAriaLabel": "Empty textarea",
+        "embedCodeTextAreaAriaLabel": "Zone de texte vide",
         "pasteEmbedCode": "Paste the embed/iframe code here",
         "invalidOrUnsupportedEmbed": "Unfortunately, this code is either not valid or not supported. Please check the code carefully or contact support@alkem.io"
       }
@@ -1409,9 +1410,9 @@
     },
     "urlResolver": {
       "errors": {
-        "invalidUrl": "Invalid URL",
-        "invalidUrlOrigin": "Invalid URL origin",
-        "invalidUrlFormat": "Invalid URL format"
+        "invalidUrl": "URL invalide",
+        "invalidUrlOrigin": "Origine de l'URL invalide",
+        "invalidUrlFormat": "Format de l'URL invalide"
       }
     },
     "search-cards": {
@@ -1481,7 +1482,7 @@
           "url": "URL"
         },
         "memo": {
-          "name": "Content",
+          "name": "Contenu",
           "placeholder": "(Optional) Add some content to the $t(common.memo)"
         }
       },
@@ -1543,7 +1544,7 @@
     "visual-upload": {
       "loading": "Chargement de l'image",
       "success": "Image ajoutée avec succès",
-      "error": "Error occurred while uploading the image",
+      "error": "Une erreur est survenue lors du téléchargement de cette image",
       "upload-hover": "Importer l'image",
       "no-data": "Pas encore défini",
       "entityCreatedErrorUploading": "The {{entity}} was created, but there was an error uploading some images. Please try again."
@@ -1584,7 +1585,7 @@
       "join": "Joindre",
       "acceptInvitation": {
         "full": "You are invited to become a $t(common.member) of this $t(common.space), please click here to accept",
-        "short": "Accept Invitation"
+        "short": "Accepter l'invitation"
       },
       "joinSpaceFirst": {
         "full": "To become a $t(common.member) of this $t(common.subspace), first become a $t(common.member) of the parent $t(common.space)",
@@ -1653,7 +1654,7 @@
       "newLink_plural": "New link ({{count}})"
     },
     "file-upload": {
-      "uploadFile": "Upload file",
+      "uploadFile": "Télécharger un fichier",
       "file-size-error": "La taille du fichier dépasse la limite de {{limit}}Mo",
       "file-upload-success": "Le fichier a été téléchargé avec succès"
     },
@@ -1663,12 +1664,12 @@
         "select": "Select a $t(common.host)"
       },
       "read-access": "Allow read access for non-space $t(common.members) to $t(common.subspaces)",
-      "about": "Details",
+      "about": "Détails",
       "visibility": "This $t(common.space) is currently in <strong>{{visibility}}</strong> mode",
       "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
     "deleteEntity": {
-      "title": "Danger Zone",
+      "title": "Zone de danger",
       "description": "Click here to delete this {{entity}}. Be careful, this action cannot be undone.",
       "confirmDialog": {
         "title": "Confirm {{entity}} Deletion",
@@ -1676,7 +1677,7 @@
         "descriptionShort": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible.",
         "descriptionShortWithName": "Are you certain you want to delete <strong>{{entity}}</strong>? Keep in mind that this action is irreversible.",
         "checkbox": "Please check this box if you are certain about deleting this {{entity}}",
-        "confirm": "Yes, delete"
+        "confirm": "Oui, supprimer"
       }
     },
     "nameSegment": {
@@ -1706,7 +1707,7 @@
         "placeholder": "Ajouter une description"
       },
       "location": {
-        "title": "Location",
+        "title": "Emplacement",
         "country": {
           "name": "Pays",
           "placeholder": "Sélectionnez un pays"
@@ -1731,7 +1732,7 @@
           "name": "Code postal",
           "placeholder": "Code postal"
         },
-        "noLocation": "No location specified"
+        "noLocation": "Aucun emplacement spécifié"
       },
       "socialLinks": {
         "github": "GitHub",
@@ -1825,7 +1826,7 @@
           "title": "Mobitelefon"
         },
         "keywords": {
-          "title": "Keywords"
+          "title": "Mots-clés"
         },
         "skills": {
           "title": "Possibilité"
@@ -1837,17 +1838,17 @@
           "title": "Lien"
         },
         "location": {
-          "title": "Location"
+          "title": "Emplacement"
         },
         "website": {
           "title": "Site Web"
         },
         "references": {
-          "title": "References"
+          "title": "Références"
         },
         "engines": {
           "external": "OpenAI Generic",
-          "externalAssistant": "OpenAI Assistant",
+          "externalAssistant": "Assistant OpenAI",
           "externalVCDescription": "This $t(common.virtualContributor) utilizes <strong>{{engineName}}</strong>, an external AI engine. As a result, the Body of Knowledge is not accessible."
         },
         "bodyOfKnowledge": {
@@ -1909,10 +1910,10 @@
     "discussionForm": {
       "title": {
         "title": "Title",
-        "placeholder": "Discussion title"
+        "placeholder": "Titre de la discussion"
       },
       "category": {
-        "title": "Category"
+        "title": "Catégorie"
       },
       "description": {
         "title": "Further information",
@@ -1926,7 +1927,7 @@
     },
     "newDiscussion": {
       "buttons": {
-        "post": "Create discussion"
+        "post": "Créer une discussion"
       }
     },
     "members-view": {
@@ -1941,8 +1942,8 @@
     },
     "inAppNotifications": {
       "action": {
-        "read": "Mark as read",
-        "unread": "Mark as unread",
+        "read": "Marquer comme lu",
+        "unread": "Marquer comme non lu",
         "delete": "Delete $t(common.Notification)"
       },
       "type": {
@@ -1960,7 +1961,7 @@
         },
         "USER_SPACE_COMMUNITY_INVITATION": {
           "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
-          "description": "{{spaceName}} - {{spaceDescription}}"
+          "description": ""
         },
         "USER_MESSAGE_SENDER": {
           "subject": "You sent a DM to {{receiverName}}",
@@ -1993,6 +1994,10 @@
         "SPACE_ADMIN_COMMUNITY_APPLICATION": {
           "subject": "{{triggeredByName}} applied to join {{spaceName}}",
           "description": "Review the application in the $t(common.space) $t(common.settings)"
+        },
+        "SPACE_ADMIN_VIRTUAL_CONTRIBUTOR_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your invitation for {{contributorName}} to join {{spaceName}}",
+          "description": ""
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
           "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
@@ -2049,15 +2054,29 @@
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "subject": "{{triggeredByName}} has created a new $t(common.space)",
           "description": "{{spaceName}}"
+        },
+        "USER_SIGN_UP_WELCOME": {
+          "subject": "Bienvenue sur Alkemio ! 🎉",
+          "description": "You’re now part of a community that grows through collaboration 🤝 Click to explore the Getting Started Guide and start participating in $t(common.spaces) where every insight helps us all move forward.\nQuestions? Email support@alkem.io"
+        },
+        "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
+          "description": ""
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
-      "markAllAsRead": "Mark all as read"
+      "markAllAsRead": "Mark all as read",
+      "filters": {
+        "all": "All",
+        "messagesAndReplies": "Messages & Replies",
+        "space": "Space notifications",
+        "platform": "Platform notifications"
+      }
     },
     "spaceWelcomeDialog": {
       "title": "🎉 Your $t(common.space) is Ready!",
       "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and $t(common.settings).<br>📝 <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>🤝 <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>📚 <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
-      "button": "Get Started"
+      "button": "Commencer"
     }
   },
   "navigation": {
@@ -2105,7 +2124,7 @@
         "community": {
           "leading-contributors": "Contributeurs principaux",
           "contributors": "Qui est impliqué",
-          "switchMode": "Switch View"
+          "switchMode": "Changer de vue"
         },
         "explore": {
           "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the $t(common.community)."
@@ -2123,7 +2142,7 @@
           "list": "List view",
           "empty": "No {{entities}} found.",
           "empty-list": "There are no {{entities}} yet.",
-          "searchPlaceholder": "Search..."
+          "searchPlaceholder": "Recherche..."
         },
         "recommendations": {
           "title": "Recommended by the $t(common.host)"
@@ -2547,7 +2566,7 @@
       "unauthorized": "Please sign in to see the contributors of this $t(common.space).",
       "search": {
         "title": "Trouvez le talent et l'expertise !",
-        "subtitle": "Search for other people and $t(common.organizations) that can help you with your $t(common.subspace), for example based on skills or interests.",
+        "subtitle": "Search for other people and $t(common.organizations) that can help you with your $t(common.space), for example based on skills or interests.",
         "placeholder": "Recherche..."
       },
       "organizations": {
@@ -2947,7 +2966,37 @@
           "generic": "You can’t edit this $t(common.whiteboard) for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a $t(common.member) of the $t(common.space)\n- This $t(common.space) only allows one $t(common.whiteboard) editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached"
         }
       },
-      "restartCollaboration": "Continue Editing"
+      "restartCollaboration": "Continue Editing",
+      "previewSettings": {
+        "title": "Preview Settings",
+        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "modes": {
+          "auto": {
+            "title": "Auto Preview",
+            "description": "We'll automatically generate the best preview from your whiteboard content."
+          },
+          "custom": {
+            "title": "Manual Selection",
+            "description": "Choose exactly which part of your whiteboard to show as a preview."
+          },
+          "fixed": {
+            "title": "Fixed Selection",
+            "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
+          }
+        },
+        "cropDialog": {
+          "previewArea": "Crop preview area",
+          "reset": "$t(buttons.reset)",
+          "cancel": "$t(buttons.cancel)",
+          "confirm": "Confirm Selection"
+        }
+      },
+      "preview": {
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
+        "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
+      }
     },
     "memo": {
       "readonlyReason": {
@@ -3327,7 +3376,6 @@
       "recovery-flow-expired": "Ce lien de réinitialisation de mot de passe a expiré. Veuillez en demander un nouveau en envoyant à nouveau votre e-mail.",
       "verification-flow-continue": "Continuer",
       "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
-      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "claim-missing": "You haven't verified your Vidua identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Pick a password for your $t(common.account)"
     },
@@ -3358,7 +3406,8 @@
       "FORMAT_NOT_SUPPORTED": "Format non supporté",
       "BAD_USER_INPUT": "Bad user input: {{message}}",
       "NOT_SUPPORTED": "Not supported: {{message}}",
-      "OPERATION_NOT_ALLOWED": "{{message}}"
+      "OPERATION_NOT_ALLOWED": "{{message}}",
+      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time."
     }
   },
   "dashboard-updates-section": {
@@ -3495,6 +3544,9 @@
     "dialog": {
       "title": "Start Video Call",
       "content": "You are about to start a video call using Jitsi, a secure third-party video conferencing service. The call will open in a new browser tab, outside the Alkemio environment. Others can join through the same button or by using the shared URL.<br/><br/>Learn more about Jitsi <jitsiLink>here</jitsiLink>, including how to manage access and privacy settings."
+    },
+    "error": {
+      "emptyUrl": "Unable to generate video call URL. Please refresh the page and try again."
     }
   },
   "createSpace": {
