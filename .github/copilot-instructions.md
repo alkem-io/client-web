@@ -6,6 +6,12 @@
 - Repository is large (≈18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`. GraphQL documents live alongside features and generate strongly-typed hooks in `src/core/apollo/generated`.
 - Requires Node ≥20.9.0 and pnpm ≥10.17.1 (workspace is pinned to Node 20.15.1 via Volta). Always use pnpm; the lockfile is authoritative.
 
+## Governance & Workflow
+
+- Specification-Driven Development is mandatory for feature work. Read `[.specify/memory/constitution.md](../.specify/memory/constitution.md)` first; it defines quality gates, module boundaries, and testing expectations.
+- Artifacts live under `specs/<NNN-slug>/` (plan, spec, checklist, tasks). Follow the canonical progression: `/spec` → `/clarify` → `/plan` → `/checklist` → `/tasks` → `/implement` → `/stabilize` → `/done`.
+- Classify work per [`agents.md`](../agents.md): default to the Agentic path for scoped changes (≤ ~400 LOC with known outcomes) and escalate to Full SDD when contracts, migrations, or high ambiguity enter the picture.
+
 ## Environment & Tooling
 
 - Bootstrap with `pnpm install` (clean run in ~5s); pnpm will warn about ignored build scripts—leave them unless you explicitly approve via `pnpm approve-builds`.
@@ -23,7 +29,7 @@
   - Prereqs: .env values set. Takes ~20s, outputs to `build/`. Rewrites `.build/docker/.env.base` and `public/env-config.js`—avoid committing those artifacts.
 - **Lint**: `pnpm lint`
   - Runs `tsc --noEmit` then ESLint over `src/**/*.ts(x)`. Succeeds cleanly on current HEAD; expect failures if types break.
-- **Unit tests**: `pnpm test -- --run --reporter=basic --watch=false`
+- **Unit tests**: `pnpm vitest run --reporter=basic`
   - Vitest default is interactive watch; append `--watch=false` to exit automatically. Execution (~1.2s) passes 19 files / 247 tests; one UI spec is explicitly skipped. Use `--coverage.enabled` flags only when needed (`pnpm test:coverage`).
 - **GraphQL codegen**: `pnpm codegen`
   - Requires the Alkemio GraphQL API at `http://localhost:3000/graphql` or update `codegen.yml`. Runs ESLint + Prettier on generated files via hooks.
@@ -54,10 +60,27 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
 - GitHub Actions workflows (`.github/workflows/`):
   - `build-deploy-k8s-*-hetzner.yml` build Docker images on push or dispatch and deploy to Hetzner clusters (dev automatically on `develop`, sandbox/test on manual trigger). They assume Docker registry credentials and kubectl setup.
   - `build-release-docker-hub.yml` publishes images to DockerHub on tagged releases.
-- CI effectively enforces: successful Docker build, passing TypeScript + ESLint, and working Vite build. Matching local steps (lint, vitest, build) before PR keeps pipelines green. Husky pre-commit mirrors lint-staged formatting, so run `pnpm lint` and `pnpm test -- --run --reporter=basic --watch=false` prior to staging changes.
+- CI effectively enforces: successful Docker build, passing TypeScript + ESLint, and working Vite build. Matching local steps (lint, vitest, build) before PR keeps pipelines green. Husky pre-commit mirrors lint-staged formatting, so run `pnpm lint` and `pnpm vitest run --reporter=basic` prior to staging changes.
 
 ## Practical Tips & Gotchas
 
+- Always prefer **MCP server tools** when possible.
+  - Fall back to direct terminal or console commands only if no MCP capability exists or is insufficient.
+  - Use the most specific MCP server before any generic one.
+    - Priority order:
+      1. Domain-specific MCP servers (`github`, `context7`, `fetch`)
+      2. Generic web search MCP servers (`tavily`, `brave`)
+    - Selection rules:
+      - Requests involving `https://github.com/alkem-io/` → use **GitHub MCP**.
+      - Use **Context7 MCP** for factually correct or verified information before falling back to search MCPs.
+      - Use **Tavily** or **Brave** only when developer documentation is unavailable elsewhere.
+    - Examples:
+      - “List open PRs in alkem-io/server” → **GitHub MCP**
+      - "How do I use the useSWR hook with TypeScript in a Next.js application, specifically for data fetching with client-side caching and revalidation, according to the latest SWR documentation?" → Context7 MCP, fallback to Tavily
+- Feedback Loops:
+  - Prefer MCP servers supporting **feedback and validation** (e.g., GitHub comments, Context7 evaluation).
+  - Use them to cross-check and refine responses before completion.
+- For Git operations, **all commits must be signed**.
 - Always regenerate types after editing `.graphql` files with `pnpm codegen`; commit generated outputs. Codegen fetches schema from a running server—if offline, set `GRAPHQL_SCHEMA_URL` via env or adjust `codegen.yml` temporarily.
 - New env vars must be prefixed with `VITE_APP_` to be exposed. For runtime injection, ensure they flow through `.env` and `buildConfiguration.js` so they end up in `public/env-config.js` and `window._env_`.
 - React components should remain function-based; hooks live close to their domain. Follow `docs/code-guidelines.md` for naming (PascalCase components, `camelCase` hooks) and folder placement (`src/domain/<entity>`).
