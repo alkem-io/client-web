@@ -16,9 +16,9 @@
     "Diensten",
     "Digitalisering",
     "Energietransitie",
-    "Español",
+    "Espa\u00f1ol",
     "excalidraw",
-    "Français",
+    "Fran\u00e7ais",
     "genai",
     "homeserver",
     "Inclusieve",
@@ -34,7 +34,7 @@
     "ownerlink",
     "parenticon",
     "parentlink",
-    "Português",
+    "Portugu\u00eas",
     "Publieke",
     "roleset",
     "Samenleving",
@@ -50,7 +50,18 @@
     "unverify",
     "webp",
     "xsmall",
-    "Български",
-    "Українська"
-  ]
+    "\u0411\u044a\u043b\u0433\u0430\u0440\u0441\u043a\u0438",
+    "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430"
+  ],
+  "chat.promptFilesRecommendations": {
+    "speckit.constitution": true,
+    "speckit.specify": true,
+    "speckit.plan": true,
+    "speckit.tasks": true,
+    "speckit.implement": true
+  },
+  "chat.tools.terminal.autoApprove": {
+    ".specify/scripts/bash/": true,
+    ".specify/scripts/powershell/": true
+  }
 }
