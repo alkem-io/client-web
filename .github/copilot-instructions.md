@@ -80,7 +80,7 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
       - Use **Tavily** or **Brave** only when developer documentation is unavailable elsewhere.
     - Examples:
       - “List open PRs in alkem-io/server” → **GitHub MCP**
-      - "How do I use the useSWR hook with TypeScript in a Next.js application, specifically for data fetching with client-side caching and revalidation, according to the latest SWR documentation?" → Context7 MCP, fallback to Tavily
+      - "How do I use the useTransition hook with TypeScript in a React 19 application, specifically for data fetching with client-side pending states and revalidation, according to the latest v19 documentation?" → Context7 MCP, fallback to Tavily
 - Feedback Loops:
   - Prefer MCP servers supporting **feedback and validation** (e.g., GitHub comments, Context7 evaluation).
   - Use them to cross-check and refine responses before completion.
