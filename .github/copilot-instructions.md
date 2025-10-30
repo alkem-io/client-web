@@ -86,7 +86,6 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
 - Always regenerate types after editing `.graphql` files with `pnpm codegen`; commit generated outputs. Codegen fetches schema from a running server—if offline, set `GRAPHQL_SCHEMA_URL` via env or adjust `codegen.yml` temporarily.
 - New env vars must be prefixed with `VITE_APP_` to be exposed. For runtime injection, ensure they flow through `.env` and `buildConfiguration.js` so they end up in `public/env-config.js` and `window._env_`.
 - React components should remain function-based; hooks live close to their domain. Follow `docs/code-guidelines.md` for naming (PascalCase components, `camelCase` hooks) and folder placement (`src/domain/<entity>`).
-- Vitest watch mode keeps the process alive; exit with `q` or `Ctrl+C`, or disable watch via `--watch=false` as shown above.
 - Large build output can consume memory; Vite already raises `max-old-space-size`. If builds fail on low-memory runners, reuse the same command but consider pruning node_modules (`pnpm prune` shortcut).
 - If Vite dev server stops responding due to file watch limits on Linux, run `.scripts/fix-dev-vite.sh` (requires sudo) to raise inotify limits; restart the terminal afterward.
 - Do not edit generated artifacts in `build/` or `public/env-config.js` manually—run the appropriate scripts instead.
