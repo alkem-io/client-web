@@ -1,8 +1,8 @@
 # Feature Specification: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`  
-**Created**: [DATE]  
-**Status**: Draft  
+**Feature Branch**: `[###-feature-name]`
+**Created**: [DATE]
+**Status**: Draft
 **Input**: User description: "$ARGUMENTS"
 
 ## User Scenarios & Testing _(mandatory)_
@@ -81,6 +81,18 @@
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right functional requirements.
 -->
+
+Document how this feature satisfies the Constitution:
+
+- Map each requirement to the impacted domain context(s), the façade updates needed in
+  `src/domain/<context>`, and the `src/main` shells that will consume them.
+- List GraphQL operations and fragments to touch, confirm `pnpm run codegen` coverage, summarize the
+  schema diff (if any), and state how UI props remain explicit rather than exporting generated types.
+- Capture React 19 concurrency considerations for new components (Suspense, transitions, Actions)
+  and note any legacy surfaces plus mitigation plans.
+- Describe state sources (Apollo cache, React context modules) and side-effect adapters required to
+  keep components pure.
+- Specify accessibility, performance, testing, and observability evidence that will prove success.
 
 ### Functional Requirements
 
