@@ -84,15 +84,17 @@
 
 Document how this feature satisfies the Constitution:
 
-- Map each requirement to the impacted domain context(s), the façade updates needed in
-  `src/domain/<context>`, and the `src/main` shells that will consume them.
-- List GraphQL operations and fragments to touch, confirm `pnpm run codegen` coverage, summarize the
-  schema diff (if any), and state how UI props remain explicit rather than exporting generated types.
+- Map each requirement to the affected domain context(s), the façade updates in
+  `src/domain/<context>`, and the `src/main` shells that will consume them while keeping React
+  components orchestration-only.
+- List GraphQL operations and fragments to modify, confirm `pnpm run codegen` and schema diff review
+  steps, and explain how UI props stay explicitly typed instead of exporting generated types.
 - Capture React 19 concurrency considerations for new components (Suspense, transitions, Actions)
-  and note any legacy surfaces plus mitigation plans.
-- Describe state sources (Apollo cache, React context modules) and side-effect adapters required to
-  keep components pure.
-- Specify accessibility, performance, testing, and observability evidence that will prove success.
+  and document risks or mitigation plans when touching legacy surfaces.
+- Describe state sources (Apollo caches or React context modules within `src/core`/`src/domain`) and
+  any adapters needed to preserve side-effect isolation.
+- Specify accessibility checks, performance regression guardrails, required tests for non-trivial
+  logic, and observability evidence that must accompany the implementation.
 
 ### Functional Requirements
 

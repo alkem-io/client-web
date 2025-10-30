@@ -17,10 +17,12 @@ description: 'Task list template for feature implementation'
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
 - Include exact file paths in descriptions
 - Tag Constitution coverage where relevant:
-  - `Domain` for updates in `src/domain`/`src/core` façades.
-  - `GraphQL` when queries, fragments, or `pnpm run codegen` are involved.
-  - `React19` for concurrency controls (Suspense, transitions, Actions).
-  - `Quality` for accessibility, performance, and testing evidence tasks.
+  - `Domain` for updates in `src/domain`/`src/core` façades or `src/main` shells wiring them.
+  - `GraphQL` when queries, fragments, generated hooks, or `pnpm run codegen` are involved.
+  - `React19` for new components adopting Suspense/transitions/Actions or documenting legacy
+    concurrency risks.
+  - `Quality` for accessibility checks, performance safeguards, required tests, or observability
+    instrumentation.
 
 ## Path Conventions
 
