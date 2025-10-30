@@ -15,6 +15,8 @@ import {
   CalloutContributionType,
   CreateLinkInput,
   CreateMemoInput,
+  UpdateWhiteboardMutationVariables,
+  WhiteboardPreviewSettings,
 } from '@/core/apollo/generated/graphql-schema';
 import {
   CreateTemplateMutationVariables,
@@ -39,6 +41,7 @@ import {
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
+import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
 
 interface EntityWithProfile {
   profile: {
@@ -123,6 +126,7 @@ const handleCreateWhiteboard = (data?: {
       uri: string;
     };
   };
+  previewSettings?: WhiteboardPreviewSettings;
 }): CreateWhiteboardInput | undefined => {
   if (!data) {
     return undefined;
@@ -140,6 +144,7 @@ const handleCreateWhiteboard = (data?: {
           ]
         : undefined,
     },
+    previewSettings: data.previewSettings,
   };
 };
 
@@ -392,6 +397,7 @@ export const toUpdateTemplateMutationVariables = (
   newValues: AnyTemplateFormSubmittedValues
 ): {
   updateTemplateVariables: UpdateTemplateMutationVariables;
+  updateWhiteboardVariables?: UpdateWhiteboardMutationVariables;
   updateCalloutVariables?: UpdateCalloutTemplateMutationVariables;
   updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
   updateSpaceContentTemplateVariables?: UpdateTemplateFromSpaceMutationVariables;
@@ -424,6 +430,7 @@ export const toUpdateTemplateMutationVariables = (
       // Delete useless fields and leave only the fields relevant to the callout types
       if (!(calloutTemplateData.callout?.framing.type === CalloutFramingType.Whiteboard)) {
         delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
+        delete updateCalloutVariables.calloutData?.framing?.whiteboardPreviewSettings;
       }
       if (!calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post)) {
         delete updateCalloutVariables.calloutData?.contributionDefaults?.postDescription;
@@ -485,11 +492,17 @@ export const toUpdateTemplateMutationVariables = (
       };
     }
     case TemplateType.Whiteboard: {
-      updateTemplateVariables.whiteboardContent = (
-        newValues as TemplateWhiteboardFormSubmittedValues
-      ).whiteboard?.content;
+      const whiteboardTemplate = newValues as TemplateWhiteboardFormSubmittedValues;
+      updateTemplateVariables.whiteboardContent = whiteboardTemplate.whiteboard?.content;
+      const updateWhiteboardVariables: UpdateWhiteboardMutationVariables = {
+        input: {
+          ID: (template as WhiteboardTemplate).whiteboard?.id!,
+          previewSettings: whiteboardTemplate.whiteboard?.previewSettings,
+        },
+      };
       return {
         updateTemplateVariables,
+        updateWhiteboardVariables,
       };
     }
   }

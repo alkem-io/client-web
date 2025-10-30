@@ -30,8 +30,6 @@ import whiteboardValidationSchema from '../validation/whiteboardValidationSchema
 import { WhiteboardDetails } from './WhiteboardDialog';
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { merge } from 'lodash';
-import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
 
 type ExcalidrawUtils = {
   serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
@@ -48,6 +46,7 @@ type SingleUserWhiteboardDialogProps = {
   actions: {
     onCancel: () => void;
     onUpdate: (whiteboard: WhiteboardWithContent, previewImages?: WhiteboardPreviewImage[]) => Promise<void>;
+    onUpdatePreviewSettings?: (previewSettings: WhiteboardPreviewSettings) => Promise<unknown>;
     onDelete?: (whiteboard: Identifiable) => Promise<void>;
     onClosePreviewSettingsDialog?: () => void;
   };
@@ -76,7 +75,6 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   const { whiteboard } = entities;
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
-  const { updateWhiteboardPreviewSettings } = useUpdateWhiteboardPreviewSettings({ whiteboard, excalidrawAPI });
 
   const getExcalidrawStateFromApi = () => {
     if (!excalidrawAPI) {
@@ -104,17 +102,13 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
 
     const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
-    const previewImages = await generateWhiteboardVisuals(whiteboard);
+    const previewImages = await generateWhiteboardVisuals(whiteboard, true);
 
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
-    if (!formikRef.current?.isValid) {
-      return;
-    }
-
     return actions.onUpdate(
       {
-        ...merge({}, whiteboard, formikRef.current?.values),
+        ...whiteboard,
         content,
       },
       previewImages
@@ -274,13 +268,15 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
           )}
         </Formik>
       </Dialog>
-      <WhiteboardPreviewSettingsDialog
-        open={options.previewSettingsDialogOpen}
-        onClose={() => actions.onClosePreviewSettingsDialog?.()}
-        onUpdate={updateWhiteboardPreviewSettings}
-        whiteboard={whiteboard}
-        excalidrawAPI={excalidrawAPI}
-      />
+      {actions.onUpdatePreviewSettings && (
+        <WhiteboardPreviewSettingsDialog
+          open={options.previewSettingsDialogOpen}
+          onClose={() => actions.onClosePreviewSettingsDialog?.()}
+          onUpdate={actions.onUpdatePreviewSettings}
+          whiteboard={whiteboard}
+          excalidrawAPI={excalidrawAPI}
+        />
+      )}
     </>
   );
 };

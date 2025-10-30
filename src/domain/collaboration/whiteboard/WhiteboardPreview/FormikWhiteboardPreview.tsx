@@ -61,7 +61,7 @@ const FormikWhiteboardPreview = ({
 
   const [field, , whiteboardContentField] = useField<string>(name); // Whiteboard content JSON string
   const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(previewImagesName ?? 'previewImages');
-  const [, , previewSettingsField] = useField<WhiteboardPreviewSettings | undefined>(
+  const [previewSettingsField, , previewSettingsFieldHelpers] = useField<WhiteboardPreviewSettings | undefined>(
     previewSettingsName ?? 'previewSettings'
   );
 
@@ -100,9 +100,9 @@ const FormikWhiteboardPreview = ({
       // Needed to pass yup validation of WhiteboardDialog
       profile: { id: '__templateProfile', displayName: '__template', url: '', storageBucket: { id: '' } },
       content: field.value,
-      previewSettings: DefaultWhiteboardPreviewSettings,
+      previewSettings: previewSettingsField.value ?? DefaultWhiteboardPreviewSettings,
     };
-  }, [field.value]);
+  }, [field.value, previewSettingsField.value]);
 
   const preventSubmittingFormOnWhiteboardControlClick: MouseEventHandler = e => e.preventDefault();
 
@@ -156,11 +156,16 @@ const FormikWhiteboardPreview = ({
                     if (previewImagesName) {
                       previewImagesField.setValue(previewImages);
                     }
-                    if (previewSettingsField) {
-                      previewSettingsField.setValue(whiteboard.previewSettings);
+                    if (previewSettingsName) {
+                      previewSettingsFieldHelpers.setValue(whiteboard.previewSettings);
                     }
                     onChangeContent?.(whiteboard.content, previewImages);
                     setEditDialogOpen(false);
+                  },
+                  onUpdatePreviewSettings: async previewSettings => {
+                    if (previewSettingsName) {
+                      previewSettingsFieldHelpers.setValue(previewSettings);
+                    }
                   },
                   onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
                   onDelete: undefined,
@@ -171,10 +176,12 @@ const FormikWhiteboardPreview = ({
                   canDelete: false,
                   headerActions: (
                     <>
-                      <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
+                      {previewSettingsName && (
+                        <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
+                      )}
                     </>
                   ),
-                  previewSettingsDialogOpen: previewSettingsDialogOpen,
+                  previewSettingsDialogOpen,
                   allowFilesAttached: true,
                   fixedDialogTitle: (
                     <BlockTitle display="flex" alignItems="center">
@@ -202,7 +209,7 @@ const FormikWhiteboardPreview = ({
                   previewImagesField.setValue([]);
                 }
                 if (previewSettingsName) {
-                  previewSettingsField.setValue(undefined);
+                  previewSettingsFieldHelpers.setValue(undefined);
                 }
                 onDeleteContent?.();
                 setDeleteContentConfirmDialogOpen(false);

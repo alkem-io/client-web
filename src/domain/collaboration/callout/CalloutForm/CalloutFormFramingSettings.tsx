@@ -5,7 +5,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
 import { nameOf } from '@/core/utils/nameOf';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
-import { CalloutFramingType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import FormikWhiteboardPreview from '../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
@@ -22,6 +22,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { DefaultWhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -49,9 +50,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
             content: EmptyWhiteboardString,
             profile: { displayName: t('common.whiteboard') },
             previewImages: [],
-            previewSettings: {
-              mode: WhiteboardPreviewMode.Auto,
-            },
+            previewSettings: DefaultWhiteboardPreviewSettings,
           },
           memo: undefined,
           link: undefined,
@@ -175,6 +174,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           <FormikWhiteboardPreview
             name="framing.whiteboard.content"
             previewImagesName="framing.whiteboard.previewImages"
+            previewSettingsName="framing.whiteboard.previewSettings"
             canEdit
             editButton={editButton}
             onDeleteContent={() => handleFramingTypeChange(CalloutFramingType.None)}

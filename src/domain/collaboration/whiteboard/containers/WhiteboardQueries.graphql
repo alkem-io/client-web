@@ -121,5 +121,8 @@ mutation updateWhiteboard($input: UpdateWhiteboardEntityInput!) {
       id
       displayName
     }
+    previewSettings {
+      ...whiteboardPreviewSettings
+    }
   }
 }

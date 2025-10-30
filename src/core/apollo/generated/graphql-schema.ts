@@ -16074,6 +16074,13 @@ export type UpdateWhiteboardMutation = {
     __typename?: 'Whiteboard';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
+    previewSettings: {
+      __typename?: 'WhiteboardPreviewSettings';
+      mode: WhiteboardPreviewMode;
+      coordinates?:
+        | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+        | undefined;
+    };
   };
 };
 
@@ -26951,6 +26958,19 @@ export type TemplateContentQuery = {
                   displayName: string;
                   preview?: { __typename?: 'Visual'; name: string; uri: string } | undefined;
                 };
+                previewSettings: {
+                  __typename?: 'WhiteboardPreviewSettings';
+                  mode: WhiteboardPreviewMode;
+                  coordinates?:
+                    | {
+                        __typename?: 'WhiteboardPreviewCoordinates';
+                        x: number;
+                        y: number;
+                        width: number;
+                        height: number;
+                      }
+                    | undefined;
+                };
               }
             | undefined;
           contentSpace?:
@@ -27773,6 +27793,13 @@ export type WhiteboardTemplateContentFragment = {
     id: string;
     displayName: string;
     preview?: { __typename?: 'Visual'; name: string; uri: string } | undefined;
+  };
+  previewSettings: {
+    __typename?: 'WhiteboardPreviewSettings';
+    mode: WhiteboardPreviewMode;
+    coordinates?:
+      | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+      | undefined;
   };
 };
 

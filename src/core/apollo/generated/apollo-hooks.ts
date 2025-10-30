@@ -2585,7 +2585,11 @@ export const WhiteboardTemplateContentFragmentDoc = gql`
       }
     }
     content
+    previewSettings {
+      ...whiteboardPreviewSettings
+    }
   }
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export const TemplateProfileInfoFragmentDoc = gql`
   fragment TemplateProfileInfo on Template {
@@ -9245,8 +9249,12 @@ export const UpdateWhiteboardDocument = gql`
         id
         displayName
       }
+      previewSettings {
+        ...whiteboardPreviewSettings
+      }
     }
   }
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export type UpdateWhiteboardMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateWhiteboardMutation,

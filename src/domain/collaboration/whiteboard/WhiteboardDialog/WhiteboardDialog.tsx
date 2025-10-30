@@ -1,9 +1,5 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  AuthorizationPrivilege,
-  ContentUpdatePolicy,
-  WhiteboardPreviewMode,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
@@ -31,7 +27,10 @@ import whiteboardValidationSchema, { WhiteboardFormSchema } from '../validation/
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
-import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import {
+  DefaultWhiteboardPreviewSettings,
+  WhiteboardPreviewSettings,
+} from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
 
@@ -245,7 +244,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
       profile: {
         displayName: whiteboard?.profile?.displayName ?? '',
       },
-      previewSettings: whiteboard?.previewSettings ?? { mode: WhiteboardPreviewMode.Auto, coordinates: undefined },
+      previewSettings: whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
     }),
     [whiteboard]
   );
