@@ -1,3 +1,5 @@
+<!-- Implements constitution & agents.md. Does not introduce new governance. -->
+
 # Alkemio Client Web – Agent Guide
 
 ## Overview
@@ -14,7 +16,7 @@
 
 ## Environment & Tooling
 
-- Bootstrap with `pnpm install` (clean run in ~5s); pnpm will warn about ignored build scripts—leave them unless you explicitly approve via `pnpm approve-builds`.
+- Bootstrap with `pnpm install` (clean run in ~5s);
 - Project expects `.env` (checked in) to exist; override locally in `.env.local`. `buildConfiguration.js` reads `VITE_APP_*` variables, writes `.build/docker/.env.base`, and regenerates `public/env-config.js` before dev/build commands.
 - Dev server: `pnpm start` (Vite on `localhost:3001`) assumes a Traefik reverse proxy exposing backend services on `http://localhost:3000`. Without the backend, UI shells load but GraphQL calls fail.
 - Path alias `@` resolves to `src`. ESLint + TypeScript enforce single quotes, semicolons, and React function components.
