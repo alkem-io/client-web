@@ -107,6 +107,18 @@ As a **space admin or member**, I want to see the status of guest contributions 
 - **What happens if the GraphQL schema doesn't support the new field yet?**
   - Frontend should gracefully handle missing field by defaulting to `false` (disabled) and logging a warning.
 
+- **What happens if multiple spaces with different settings contain similar whiteboard names?**
+  - Each space's setting applies only to whiteboards directly within that space; no cross-contamination or naming conflicts.
+
+## Clarifications
+
+### Session 2025-10-31
+
+- Q: When a whiteboard is shared publicly (checkbox enabled), where should the `publicSharingEnabled` state be persisted? → A: Whiteboard entity persistence (deferred to future work)
+- Q: When the admin toggles `allowGuestContributions`, what immediate user feedback should be shown? → A: Display toast notification only
+- Q: When the `UpdateSpaceSettings` mutation fails due to network error, what should happen? → A: Revert optimistic update, error message
+- Q: What is the maximum expected scale for testing the toggle functionality? → A: Space with 50-100 whiteboards (typical use case)
+
 ## Requirements _(mandatory)_
 
 ### Constitution Alignment
@@ -143,24 +155,24 @@ This feature satisfies the Constitution as follows:
 
 - **Accessibility**: Toggle follows WCAG 2.1 AA (keyboard navigation, ARIA labels, semantic HTML).
 - **Performance**: No regression expected; mutation is lightweight. Measure with Lighthouse pre/post.
-- **Testing**: Unit tests for toggle logic, integration tests for mutation, manual accessibility audit.
-- **Observability**: Log toggle state changes (admin action, space ID, new value) via analytics adapter in `src/core/analytics`.
+- **Testing**: Unit tests for toggle logic, integration tests for mutation, manual accessibility audit. Test with 10-20 whiteboards per space for typical scale validation.
+- **Observability**: Toast notifications for user feedback on toggle state changes. No analytics logging required.
 
 ### Functional Requirements
 
 - **FR-001**: System MUST add a boolean field `allowGuestContributions` to the `SpaceSettingsCollaboration` GraphQL type, defaulting to `false`.
 - **FR-002**: System MUST display a toggle control in the Space Settings → Allowed Actions section for admins only (requires `UPDATE` privilege on space settings).
 - **FR-003**: Toggle MUST be labeled "Allow admins and whiteboard creators to share whiteboards publicly" with explanatory subtext when enabled.
-- **FR-004**: System MUST persist toggle state changes via the `UpdateSpaceSettings` mutation and reflect updates in the Apollo cache immediately.
+- **FR-004**: System MUST persist toggle state changes via the `UpdateSpaceSettings` mutation and reflect updates in the Apollo cache immediately. On mutation failure, system MUST revert optimistic update and display error message.
 - **FR-005**: System MUST NOT inherit the `allowGuestContributions` setting from parent spaces to subspaces; each space manages its own setting independently.
 - **FR-006**: System MUST hide the "Allow public contributions" checkbox in whiteboard Share dialogs when `allowGuestContributions` is `false` at the space level.
 - **FR-007**: System MUST display the "Allow public contributions" checkbox in whiteboard Share dialogs when `allowGuestContributions` is `true` AND the user is the whiteboard creator or a space admin.
-- **FR-008**: System MUST generate and display a shareable public URL when the "Allow public contributions" checkbox is enabled (implementation of URL generation and public page deferred to future work).
+- **FR-008**: System MUST generate and display a shareable public URL when the "Allow public contributions" checkbox is enabled (implementation of URL generation and public page deferred to future work). Whiteboard sharing state will be persisted at the whiteboard entity level.
 - **FR-009**: System MUST allow space members to view and copy the shareable public URL once enabled by the whiteboard creator/admin.
 - **FR-010**: System MUST return a 404 or "Contributions closed" message when a guest accesses a public whiteboard URL and `allowGuestContributions` is `false` (implementation deferred to future work).
 - **FR-011**: System MUST display a status indicator on whiteboard callout pages showing whether guest contributions are enabled or disabled at the space level.
 - **FR-012**: System MUST restrict toggle control to users with `UPDATE` authorization on the space's settings (admin-only).
-- **FR-013**: System MUST log toggle state changes for audit and analytics purposes (admin user ID, space ID, timestamp, new value).
+- **FR-013**: System MUST display toast notification when toggle state changes (e.g., "Guest contributions enabled/disabled").
 
 ### Key Entities
 
@@ -179,7 +191,7 @@ This feature satisfies the Constitution as follows:
 - **SC-005**: 100% of whiteboards in a space respect the space-level setting: Share dialog checkbox visibility matches `allowGuestContributions` state.
 - **SC-006**: Documentation and code comments clearly indicate extensibility points for future Share dialog and public URL implementation.
 - **SC-007**: Zero inheritance errors: changing a parent space's setting does not affect subspace settings (verified by integration test).
-- **SC-008**: Analytics events are logged for all toggle state changes, capturing admin user, space ID, and new value.
+- **SC-008**: Toggle functionality tested with spaces containing 10-20 whiteboards (typical use case) without performance degradation.
 
 ---
 
