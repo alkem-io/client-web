@@ -1,0 +1,25 @@
+{
+  "calendar": {
+    "add-event": "Add event",
+    "edit-event": "Edit event",
+    "delete-event": "Delete event",
+    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the {{entity}}?",
+    "event": {
+      "type": "Type of Event",
+      "multiple-days": "{{days}} days",
+      "whole-day": "All Day",
+      "visibleOnParentCalendar": "Also visible on the parent $t(common.space) calendar"
+    },
+    "validation": {
+      "durationMinutes": {
+        "positive": "Event End Time can't be before event Start Time"
+      }
+    },
+    "no-data": "No events found",
+    "no-upcoming-events": "Currently, there are no upcoming events to be displayed",
+    "past-events": "Past Events",
+    "show-calendar": "Show calendar",
+    "defaultEventDescription": "",
+    "adminsOnly": "Since there are no events, this block is only visible for $t(common.admins) and $t(common.leads)"
+  }
+}

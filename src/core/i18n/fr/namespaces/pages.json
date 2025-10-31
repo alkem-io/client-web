@@ -1,0 +1,1216 @@
+{
+  "pages": {
+    "generic": {
+      "sections": {
+        "dashboard": {
+          "description": "Ici vous pouvez voir le résumé pour ce {{entity}}. Naviguez dans les autres onglets pour voir des informations plus détaillées !",
+          "about": "À propos de cet {{entity}}",
+          "memberOf": "You’re a $t(common.member) of this {{entity}}"
+        },
+        "about": {
+          "description": "Here you can explore the context of this {{entity}}, as well as the $t(common.community)."
+        },
+        "community": {
+          "leading-contributors": "Contributeurs principaux",
+          "contributors": "Qui est impliqué",
+          "switchMode": "Switch View"
+        },
+        "explore": {
+          "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the $t(common.community)."
+        },
+        "discussions": {
+          "description": "Ici vous pouvez lire et participer aux discussions autour de ce {{entity}}."
+        },
+        "whiteboards": {
+          "description": "$t(common.Whiteboards) can be seen as digital $t(common.whiteboards). Here you can create a $t(common.whiteboard) for this {{entity}} as well as find ones created by the others."
+        },
+        "profile": {
+          "description": ""
+        },
+        "subEntities": {
+          "list": "List view",
+          "empty": "No {{entities}} found.",
+          "empty-list": "There are no {{entities}} yet.",
+          "searchPlaceholder": "Search..."
+        },
+        "recommendations": {
+          "title": "Recommended by the $t(common.host)"
+        }
+      },
+      "archivedNotice": {
+        "archivedSpace": "Archived {{space}}. <contact>Learn more</contact>",
+        "archivedLink": "/docs"
+      },
+      "demoNotice": {
+        "demoSpace": "Demo $t(common.space)",
+        "demoSubspace": "This {{space}} is within a Demo $t(common.space)."
+      }
+    },
+    "contribute": {
+      "innovationFlow": {
+        "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This $t(common.innovation-flow) structures the process and invites you to take specified actions per stage.",
+        "readMore": "Read more about the <b>{{innovationFlowDisplayName}}</b>"
+      },
+      "no-posts": "No $t(common.posts) found"
+    },
+    "innovationLibrary": {
+      "shortName": "Bibliothèque",
+      "fullName": "$t(common.templateLibrary)",
+      "title": "Alkemio's $t(common.templateLibrary)",
+      "subtitle": "Get your $t(common.spaceSubspace) running with these ready-to-use tools. <click>Learn more</click>.",
+      "useTemplateButton": "Access this $t(common.template) from your $t(common.space) to use it.",
+      "innovationPacks": {
+        "headerTitle": "$t(common.innovation-packs)",
+        "dialogTitle": "$t(common.innovation-packs)"
+      },
+      "libraryTemplates": {
+        "headerTitle": "Parcourir les plugins disponibles",
+        "dialogTitle": "Tous les matériaux"
+      }
+    },
+    "admin": {
+      "generic": {
+        "sections": {
+          "profile": {
+            "description": "Here you can edit the public $t(common.profile) for this {{entity}}. This information is also visible to non-members."
+          },
+          "about": {
+            "description": "Here you can edit the public $t(common.profile) for this {{entity}}. This information is also visible to non-members."
+          },
+          "layout": {
+            "description": "Here you can edit the layout for this {{entity}}.",
+            "innovationFlowEditor": "$t(common.space) tabs"
+          },
+          "context": {
+            "description": "Ici, vous pouvez modifier le profil pour cette {{entity}}."
+          },
+          "community": {
+            "description": "Here you can edit the $t(common.community) $t(common.settings) for this {{entity}}."
+          },
+          "communications": {
+            "description": "Here you can post updates that will be visible to all $t(common.members) of this {{entity}}."
+          },
+          "subspaces": {
+            "description": "Here you can edit $t(common.subspaces) for this $t(common.space)."
+          },
+          "subsubspaces": {
+            "description": "Here you can edit $t(common.subspaces) for this $t(common.subspace)."
+          },
+          "calendar": {
+            "description": ""
+          },
+          "authorization": {
+            "description": "Here you can tweak authorization $t(common.settings) for this {{entity}}."
+          },
+          "templates": {
+            "description": "Here you can create and edit $t(common.templates) for this {{entity}}.",
+            "delete-confirmation": "Are you sure you want to delete the $t(common.template) '{{template}}'?",
+            "import": {
+              "defaultTitle": "$t(common.templateLibrary)",
+              "title": "$t(common.templateLibrary): {{templateType}}",
+              "subtitle": "Find $t(common.templates) to use in your $t(common.space) or $t(common.subspace). Select the $t(common.template) and click `Import` to add it to your $t(common.template) set.",
+              "callout-template-import-subtitle": "Find a $t(common.template) for people to use when contributing to your $t(common.callout)",
+              "noTemplates": "No $t(common.templates) in the $t(common.space) library.",
+              "imported-successfully-notification": "$t(common.template) imported successfully"
+            },
+            "validation": {
+              "spaceRequired": "Select an existing $t(common.spaceSubspace) to proceed."
+            }
+          },
+          "my-profile": {
+            "description": "Here you can edit your $t(common.profile) details."
+          },
+          "space-settings": {
+            "description": ""
+          },
+          "membership": {
+            "description": "Here you can see the $t(common.membership) information."
+          },
+          "organizations": {
+            "description": "Here you can see the $t(common.organizations) that your user is associated with."
+          },
+          "notifications": {
+            "description": "Here you can edit your $t(common.notifications) preferences."
+          },
+          "credentials": {
+            "description": "Ici vous pouvez voir les informations d'identification."
+          },
+          "storage": {
+            "description": "Here you can see the document $t(common.storage) for this {{entity}}.",
+            "title": "Documents",
+            "directlyStored": "Directly stored documents (Uploaded before Oct 2023)",
+            "emptyStorage": "(Empty)",
+            "grid": {
+              "displayName": "Title",
+              "mimeType": "Type",
+              "size": "Taille",
+              "uploadedBy": "Mis en ligne par",
+              "uploadedAt": "Téléchargé à"
+            },
+            "delete": {
+              "title": "Supprimer le document ?",
+              "content": "Êtes-vous sûr de vouloir supprimer {bandName}?"
+            }
+          },
+          "account": {
+            "description": "Here you find all your $t(common.spaces), $t(common.virtualContributors), and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team.",
+            "hostedSpaces": "Hosted $t(common.spaces)",
+            "virtualContributors": "$t(common.virtualContributors)",
+            "innovationPacks": "$t(common.innovation-packs)",
+            "genericUsageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your $t(common.account).",
+            "spaceUsageNotice": "From the available $t(common.spaces) in your $t(common.account), you have created:\n{{freeUsage}} out of {{freeLimit}} Free $t(common.spaces)\n{{plusUsage}} out of {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} out of {{premiumLimit}} Premium $t(common.spaces)",
+            "limitNotice": "Contact the Alkemio team to increase the limits on your $t(common.account)",
+            "notAvailable": "Not available",
+            "notAvailableNotice": "Contact the Alkemio team to enable this feature on your $t(common.account)",
+            "noTemplates": "This $t(common.innovationPack) doesn't have any $t(common.template) yet",
+            "customHomepages": "$t(common.customHomepages)",
+            "hostTitle": "Host",
+            "contactsLink": "If you want to change any of these $t(common.settings), please contact the Alkemio team here.",
+            "freeTrialNotice": {
+              "title": "Free Trial",
+              "titleWithDaysLeft": "Free Trial - {{daysLeft}} days left",
+              "description": "Click here to set up your full {{planName}} subscription"
+            },
+            "externalSubExists": "This $t(common.account) already has an existing Wingback $t(common.account)",
+            "addExternalSub": "Create a Wingback $t(common.account)",
+            "externalSubAdded": "Successfully created a Wingback $t(common.account)",
+            "externalSubErrored": "An error occurred while creating the Wingback $t(common.account)",
+            "yourLicense": "Your current license:",
+            "changeLicense": "Change the $t(common.space) license",
+            "changeLicense_description": "Contact the Alkemio team to change the license.",
+            "changeLicense_disallowed": "The $t(common.space) license can only be changed by the $t(common.host) of this $t(common.space).",
+            "deleteSpace": "Delete this $t(common.space)",
+            "deleteSpace_description": "Click here to delete this $t(common.space). Be careful, this action cannot be undone.",
+            "deleteSpace_disallowed": "The $t(common.space) can only be deleted by the $t(common.host) of this $t(common.space).",
+            "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
+            "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
+            "licenseUpdated": "License updated successfully",
+            "deletedSuccessfully": "{{entity}} deleted successfully"
+          },
+          "settings": {
+            "description": "Here you can edit the visibility $t(common.settings) of your {{entity}}."
+          }
+        }
+      },
+      "user": {
+        "settings": {
+          "title": "Settings",
+          "subtitle": "This section allows you to modify the User settings",
+          "communication": {
+            "allowOtherUsersToSendMessages": "Allow other users to message me."
+          },
+          "privacy": {
+            "contributorRolesVisible": "Show contributor roles to all registered users"
+          }
+        }
+      },
+      "organization": {
+        "create-organization": "Create $t(common.organization)",
+        "authorization": {
+          "title": "Authorization",
+          "subtitle": "This section allows you to modify the $t(common.organizations) authorization"
+        },
+        "settings": {
+          "title": "$t(common.Settings)",
+          "subtitle": "This section allows you to modify the $t(common.organization) $t(common.settings)",
+          "membership": {
+            "usersMatchingEmail": "Allow users with emails matching the domain of the $t(common.organization) to associate themselves."
+          },
+          "privacy": {
+            "title": "Privacy",
+            "subtitle": "This section allows you to modify the $t(common.organization) privacy $t(common.settings)",
+            "contributorRolesVisible": "Show contributor roles to all registered users"
+          }
+        },
+        "notifications": {
+          "organization-created": "$t(common.Organization) created successfully.",
+          "organization-removed": "$t(common.Organization) removed successfully."
+        },
+        "verification": {
+          "confirm": {
+            "title": "{{action}} {{name}}",
+            "description": "This $t(common.organization) is currently {{status}}. Do you want to {{action}} it?",
+            "status": {
+              "verified": "verified",
+              "notVerified": "not verified"
+            },
+            "action": {
+              "verify": "Verify",
+              "unverify": "Unverify"
+            }
+          }
+        }
+      },
+      "subsubspace": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "This section allows you to modify the $t(common.subspace) authorization preferences"
+          }
+        },
+        "community": {
+          "preferences": {
+            "title": "$t(common.Membership)",
+            "subtitle": "This section allows you to modify the $t(common.subspace) $t(common.membership) preferences. If both switches are turned off, new $t(common.members) can only be added manually. If both switches are turned on, $t(common.members) of the $t(common.space) don't have to apply but can directly join."
+          }
+        },
+        "notifications": {
+          "subsubspace-created": "$t(common.subspace) created successfully.",
+          "subsubspace-removed": "$t(common.subspace) removed successfully.",
+          "subsubspace-updated": "$t(common.subspace) updated successfully."
+        }
+      },
+      "subspace": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "This section allows you to modify the $t(common.subspace) authorization preferences"
+          }
+        },
+        "community": {
+          "preferences": {
+            "title": "$t(common.Membership)",
+            "subtitle": "This section allows you to modify the $t(common.subspace) $t(common.membership) preferences. If both switches are turned off, new $t(common.members) can only be added manually. If both switches are turned on, $t(common.members) of the $t(common.space) don't have to apply but can directly join."
+          }
+        },
+        "notifications": {
+          "subspace-created": "$t(common.subspace) created successfully.",
+          "subspace-removed": "$t(common.subspace) removed successfully.",
+          "subspace-updated": "$t(common.subspace) updated successfully.",
+          "templateSaved": "$t(common.template) saved successfully"
+        }
+      },
+      "space": {
+        "sections": {
+          "subspaces": {
+            "description": "Here you can edit $t(common.subspaces) for this $t(common.space).",
+            "defaultSettings": {
+              "title": "Default $t(common.subspace) $t(common.template)",
+              "description": "Choose the default $t(common.settings) that will apply when creating a new $t(common.subspace) within this $t(common.space). These $t(common.settings) can be modified during the creation process or at a later time.",
+              "defaultSpaceTemplate": {
+                "selectDifferentTemplate": "Change Default $t(common.template)",
+                "title": "Change Default $t(common.subspace) $t(common.template)",
+                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you’re looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
+              }
+            }
+          }
+        },
+        "authorization": {
+          "preferences": {
+            "subtitle": "Cette section vous permet de modifier les préférences d'autorisation $t(common.space)"
+          }
+        },
+        "aria": {
+          "tabs": "$t(common.space) tabs"
+        },
+        "community": {
+          "preferences": {
+            "title": "$t(common.Membership)",
+            "subtitle": "This section allows you to modify the $t(common.space) $t(common.membership) preferences"
+          }
+        },
+        "notifications": {
+          "space-created": "$t(common.space) created successfully.",
+          "errorCreatingSpace": "An error occurred while creating the $t(common.space).",
+          "space-removed": "$t(common.space) removed successfully."
+        },
+        "settings": {
+          "savedSuccessfully": "$t(common.Settings) saved successfully",
+          "visibility": {
+            "title": "Visibilité",
+            "public": "<b>Public:</b> This $t(common.space) and its contents are visible for everyone on the platform. Users can only contribute if they are a $t(common.member).",
+            "private": "<b>Private:</b> This $t(common.space) is visible to everyone on the platform, but the content is only visible to $t(common.members). Please note that both the information in the $t(common.profile) and the context are publicly visible.",
+            "publicSubspace": "<b>Public:</b> This $t(common.subspace) and all its contents are visible to everyone who has access to the $t(common.space) it belongs to. If the $t(common.space) itself is public, this $t(common.subspace) and its contents will be visible to all users, including those outside the $t(common.space).",
+            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace). No application required: All $t(common.space) $t(common.members) can directly join, without you having to review their application."
+          },
+          "license-features": {
+            "title": "$t(common.space) Features",
+            "features": {
+              "WHITEBOARD_MULTI_USER": "Multi-user $t(common.Whiteboards)",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create $t(common.template) from callout",
+              "VIRTUAL_CONTRIBUTORS": "Interact with $t(common.virtualContributors)"
+            }
+          },
+          "membership": {
+            "title": "$t(common.Membership)",
+            "open": "<b>No Application required:</b> All $t(common.space) $t(common.members) can directly join, without you having to review their application.",
+            "applications": "<b>Application required:</b> If people want to become a $t(common.member), they have to fill in the application form. You receive their applications (<community>see $t(common.community) tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
+            "invitations": "<b>Invitation only:</b> Users can only become a $t(common.member) after you’ve invited them (<community>which you can do from the $t(common.community) tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
+            "trustedApplicants": "Demandes de confiance",
+            "hostOrganizationJoin": "<b>Host $t(common.organization):</b> Allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited.",
+            "allowSubspaceAdminsToInviteMembers": "<b>$t(common.space) invitations</b>: Allow $t(common.admins) of $t(common.subspaces) to invite users to their $t(common.subspace). Users who were not yet a $t(common.member) of this $t(common.space), will become so when they accept the $t(common.subspace) invitation.",
+            "allowSubspaceAdminsToInviteMembersSubspace": "<b>$t(common.space) invitations</b>: Allow $t(common.admins) of $t(common.subspaces) within this $t(common.subspace) to invite users directly to their own $t(common.subspace). If a user is not yet a $t(common.member) of this $t(common.subspace), they will automatically become one upon accepting the invitation. <b>Note: </b>Only users who are already $t(common.members) of the $t(common.space) can be invited this way."
+          },
+          "memberActions": {
+            "title": "Actions de membre",
+            "createBlocks": "<b>Create $t(common.posts)</b>: Allow $t(common.members) to create $t(common.posts) for collaboration tools & $t(common.posts). If you deactivate this, $t(common.members) will still be able to contribute to existing $t(common.posts) and calls, but will not be able to create new $t(common.posts).",
+            "createSubspaces": "<b>Create $t(common.subspaces)</b>: Allow $t(common.members) to create $t(common.subspaces) in this $t(common.space). If you deactivate this, you can still create $t(common.subspaces) yourself and add other people as an $t(common.admin) inside the $t(common.subspace).",
+            "eventsFromSubspaces": "<b>$t(common.subspace) events</b>: Allow events from $t(common.subspaces) to be visible on this $t(common.space) calendar as well.",
+            "inheritRights": "Allow $t(common.members) of the parent $t(common.community) to contribute without needing to join first.",
+            "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an $t(common.admin) in this $t(common.space)."
+          },
+          "copySpace": {
+            "title": "Copy $t(common.subspace)",
+            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all collaboration tools will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the template or duplicated $t(common.subspace).",
+            "createTemplate": "Create $t(common.template)",
+            "createTemplateTooltip": "To create a $t(common.template) from this $t(common.subspace), you need $t(common.space) $t(common.admin) permissions.",
+            "duplicate": "Duplicate"
+          },
+          "account": {
+            "vc-section-title": "$t(common.virtualContributors) created from this $t(common.space)",
+            "vc-create-button": "Create $t(common.virtualContributor)"
+          }
+        }
+      },
+      "users": {
+        "notifications": {
+          "user-removed": "Utilisateur retiré avec succès."
+        }
+      },
+      "innovation-packs": {
+        "create": "Create $t(common.innovationPack)",
+        "fields": {
+          "provider": "Provider $t(common.organization)",
+          "listedInStore": "Listed in Store",
+          "searchVisibility": "Search Visibility"
+        },
+        "back-button": "$t(common.innovation-packs)",
+        "save-new-for-details": "Save the new $t(common.innovationPack) to edit the rest of the details",
+        "saved-successfully": "Enregistrement réussi ",
+        "notifications": {
+          "pack-created": "$t(common.innovationPack) created successfully.",
+          "pack-error": "An error occurred while creating the $t(common.innovationPack).",
+          "pack-removed": "$t(common.innovationPack) '{{name}}' removed successfully."
+        }
+      },
+      "innovationHubs": {
+        "create": "Create Innovation Hub",
+        "success": "The Innovation Hub was created successfully!",
+        "fields": {
+          "host": "Host $t(common.Account)",
+          "subdomain": "Sous-domaine"
+        },
+        "saveForMoreDetails": "Sauvegardez le nouveau Pack Innovation pour modifier les autres détails",
+        "back": "$t(common.innovation-hubs)",
+        "saved": "Sauvegarde réussie"
+      },
+      "spaces": {
+        "updateVisibility": "Définir la visibilité",
+        "spaceSettings": "$t(common.space) $t(common.settings)",
+        "changeNameId": "Change $t(common.space) NameID",
+        "manageLicensePlans": "Manage License Plans"
+      },
+      "innovationHub": {
+        "spaceListFilter": {
+          "header": {
+            "title": "Current Selection",
+            "subtitle": "The order below is the order in which the $t(common.spaces) will be visible on the $t(common.customHomepage)"
+          }
+        }
+      }
+    },
+    "feedback": {
+      "title": "Give feedback on this $t(common.community) context",
+      "success": "Rapport envoyé"
+    },
+    "post": {
+      "dashboard": {
+        "comment": {
+          "placeholder": "Type your $t(common.comment) here"
+        }
+      }
+    },
+    "visualEdit": {
+      "AVATAR": {
+        "title": "<b>Avatar</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "Usage: $t(common.space) card on page banner",
+        "description": "Description: {{alternativeText}}"
+      },
+      "BANNER": {
+        "title": "<b>Page banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown on top of the $t(common.space) (also in the $t(common.subspaces)) and top left navigation menu.",
+        "description2": "Usage: Banner on $t(common.dashboard) tab",
+        "description": "Description: {{alternativeText}}"
+      },
+      "CARD": {
+        "title": "<b>Card banner</b>",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)<br />Shown in search results and $t(common.space) overviews.",
+        "description2": "Usage: Banner on cards",
+        "description": "Description: {{alternativeText}}"
+      },
+      "BANNER_WIDE": {
+        "title": "Wide Banner",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
+      "form": {
+        "altText": {
+          "placeholder": "Example: Multiple snow covered mountains",
+          "helpText": "Veuillez décrire cette image pour les personnes qui ne peuvent pas la voir."
+        }
+      }
+    },
+    "contributors": {
+      "fullName": "Find contributors",
+      "shortName": "$t(common.contributors)",
+      "unauthorized": "Please sign in to see the contributors of this $t(common.space).",
+      "search": {
+        "title": "Trouvez le talent et l'expertise !",
+        "subtitle": "Search for other people and $t(common.organizations) that can help you with your $t(common.subspace), for example based on skills or interests.",
+        "placeholder": "Recherche..."
+      },
+      "organizations": {
+        "title": "$t(common.Organizations)"
+      },
+      "users": {
+        "title": "Utilisateur"
+      },
+      "virtualContributors": {
+        "title": "$t(common.virtualContributors)"
+      },
+      "availableContributors": "Available {{entity}}"
+    },
+    "search": {
+      "title": "Search",
+      "subtitle": "Find the $t(common.spaces), Contributors and $t(common.subspaces), and content from publicly available $t(common.spaces) below",
+      "placeholder": "Recherche...",
+      "results-disclaimer": "En affichant les 8 premiers résultats. Bientôt, vous pourrez tout voir, mais pour l'instant, veuillez spécifier vos termes de recherche.",
+      "max-tags-reached": "Vous avez atteint la limite de {{max}} termes à rechercher",
+      "user-not-logged": "Connectez-vous ou inscrivez-vous pour inclure des utilisateurs dans vos résultats de recherche",
+      "filter": {
+        "type": {
+          "space": "$t(common.space) type",
+          "contribution": "Type de contribution",
+          "contributor": "Type de contributeur"
+        },
+        "key": {
+          "all": "Tout",
+          "space": "$t(common.spaces)",
+          "subspace": "$t(common.subspaces)",
+          "user": "Utilisateurs",
+          "organization": "$t(common.Organizations)",
+          "post": "$t(common.posts)",
+          "whiteboard": "$t(common.Whiteboards) (available soon)",
+          "callout": "Callouts (bientôt disponible)",
+          "memo": "$t(common.Memos) (available soon)"
+        }
+      },
+      "spaceFilterTitle": "$t(common.spaces)"
+    },
+    "exploreSpaces": {
+      "fullName": "Explore $t(common.spaces)",
+      "title": "Explore $t(common.spaces) of Your Interest",
+      "shortName": "$t(common.spaces)",
+      "subtitle": "All activity on Alkemio happens inside $t(common.spaces) and their corresponding $t(common.subspaces). Explore both to find topics where you can contribute!",
+      "caption": "Discover a diverse range of $t(common.spaces) awaiting your exploration. Whether you're an experienced $t(common.member) or a curious newcomer, there's something here for everyone. Let's delve into the details:<ol><li><strong>$t(common.member) $t(common.spaces):</strong> These are $t(common.spaces) where you already hold $t(common.membership).</li><li><strong>Public $t(common.spaces):</strong> These $t(common.spaces) have visible content, and you can request to join them.</li><li><strong>All $t(common.spaces):</strong> This category includes both public and private $t(common.spaces). In private $t(common.spaces), only limited content is visible, but you can still apply for $t(common.membership).</li></ol>",
+      "membershipFilter": {
+        "all": "All $t(common.spaces)",
+        "member": "$t(common.Member) $t(common.spaces)",
+        "public": "Public $t(common.spaces)"
+      },
+      "noSpaceMemberships": "You’re not currently a $t(common.member) of any $t(common.space). Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your $t(common.space) on Alkemio!",
+      "search": {
+        "placeholder": "Search…",
+        "noResults": "No results matched your search terms.",
+        "searching": "Searching…"
+      },
+      "seeAll": "Show more",
+      "activeSpacesFilter": "Most Active $t(common.spaces)"
+    },
+    "lead-organization": {
+      "search": {
+        "leading-placeholder": "Rechercher dans le nom ou les tags",
+        "available-placeholder": "Recherche par nom"
+      }
+    },
+    "home": {
+      "title": "My $t(common.dashboard)",
+      "subtitle": "Ready to make some impact?",
+      "mainNavigation": {
+        "invitations": "Invitations",
+        "myLatestActivity": "My Latest Activity",
+        "myLatestSpacesActivity": "Latest Activity In My $t(common.spaces)",
+        "tipsAndTricks": "Tips & Tricks",
+        "myAccount": "My $t(common.Account)",
+        "createSpace": "Create my own $t(common.space)",
+        "activityView": "Activity View"
+      },
+      "sections": {
+        "latestContributions": {
+          "title": "Latest Activity in my $t(common.spaces)",
+          "filter": {
+            "space": {
+              "label": "$t(common.space):",
+              "all": "All $t(common.spaces)"
+            },
+            "role": {
+              "label": "My role:",
+              "all": "All roles"
+            }
+          }
+        },
+        "myLatestContributions": {
+          "title": "My Latest Activity",
+          "card": {
+            "space": "in: <spaceicon /> {{space}}"
+          },
+          "noContributions": "Your contributions will appear here once you participate in a $t(common.space). You can contribute by posting, commenting, or doing other activities."
+        },
+        "createAccountBanner": {
+          "message": "<big>🚀 Click here to create your $t(common.account) and get started!</big> <small>Already a $t(common.member)? <signin>Sign in here</signin></small>"
+        },
+        "recentSpaces": {
+          "seeMore": "Explore all your $t(common.spaces)",
+          "seeMoreSubspaces": "See all $t(common.subspaces) I'm a $t(common.member) of"
+        },
+        "campaignBlock": {
+          "createYourVCButton": "Create your $t(common.virtualContributor)!",
+          "vcCampaign": {
+            "welcome": "🎉  Welcome to the  $t(common.virtualContributors) - Early Access Program!",
+            "clickHere": "Click below to create your $t(common.virtualContributors)—up to three available. The ones you created can be found under My $t(common.Account), along with the $t(common.space) where you can interact with them. Enjoy!"
+          }
+        },
+        "myMemberships": {
+          "title": "My $t(common.Memberships)",
+          "noChildMemberships": "You are not a $t(common.member) of a $t(common.subspace) in this $t(common.space). Some $t(common.subspaces) do not require you to be a $t(common.member) to contribute, but if you want to receive updates or show the $t(common.subspace) here, become a member anyway!",
+          "seeMore": "That's all! Looking for other $t(common.spaces) to collaborate in? <spaces>Click here</spaces> to explore all $t(common.spaces) on the platform, or <landing>click here</landing> to create your own!"
+        },
+        "membershipSuggestions": {
+          "title": "Become a $t(common.member)",
+          "suggestedSpace": {
+            "join": "Join our @ Alkemio $t(common.space)!",
+            "nameId": "welcome-space"
+          },
+          "searchCommunity": {
+            "title": "...or look for your $t(common.community) below",
+            "searchSuggestions": "Search suggestions:"
+          },
+          "suggestionsArray": [
+            "Innovation",
+            "Energy",
+            "Inclusive",
+            "3D",
+            "Community",
+            "Transition",
+            "SSI",
+            "Privacy"
+          ]
+        },
+        "newMemberships": {
+          "title": "New Memberships",
+          "openInvitations": "Open invitations",
+          "noOpenInvitations": "No open invitations",
+          "openApplications": "Open applications",
+          "mySpaces": "My $t(common.spaces)",
+          "recentlyJoined": "Recently joined",
+          "seeMore": "All pending $t(common.memberships)",
+          "seeAll": "See all my $t(common.memberships)",
+          "invitation": {
+            "message": "{{space}}",
+            "caption": "Click here to see the invitation"
+          },
+          "application": {
+            "message": "{{space}}",
+            "caption": "Your application still has to be approved"
+          },
+          "membership": {
+            "message": "{{space}}",
+            "caption": "{{tagline}}"
+          }
+        },
+        "welcome": {
+          "welcomeUnauthenticated": "Welcome to Alkemio!",
+          "welcomeUnauthenticatedSubtitle": "Safe $t(common.spaces) for Collaboration",
+          "welcome-back": "Welcome, {{username}}!",
+          "join": "Want to join the $t(common.community) and see more?",
+          "existing-user": {
+            "header": "Utilisateur existant? Sautez dedans !",
+            "subheader": "Welcome back! Continue where you left off and start exploring new $t(common.subspaces).",
+            "more-info": "Plus d'infos sur Alkemio",
+            "more-info-url": "https://alkemio.foundation/manifeste"
+          },
+          "new-to-alkemio": {
+            "header": "Nouveau dans Alkemio?",
+            "subheader": "Easy for you to engage in effective and meaningful ways. Find $t(common.subspaces) to contribute.",
+            "more-info": "Contactez-nous!",
+            "more-info-url": "https://alkemio.foundation/feedback/"
+          }
+        },
+        "exploreOtherSubspaces": {
+          "header": "Explore the other $t(common.spaces)!"
+        },
+        "space": {
+          "header": "Explore the $t(common.subspace) $t(common.spaces)!",
+          "subheader": "",
+          "body": "Each $t(common.space) is a community with a dedicated $t(common.space) for shared $t(common.subspaces). To connect, collaborate and innovate together.",
+          "body1": "For Users, $t(common.spaces) are free to join. Explore the $t(common.membership) options, including for public and private $t(common.spaces)."
+        },
+        "startingSpace": {
+          "title": "<big>🎉 Starting a $t(common.space)</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
+          "url": "https://welcome.alkem.io/want-to-own-space/"
+        },
+        "my-spaces": {
+          "header": "My $t(common.spaces) ({{mySpacesCount}})"
+        },
+        "organizations": {
+          "header": "$t(common.Organizations)",
+          "subheader": "Les entités qui veulent apporter l'innnovation."
+        },
+        "contributors-section": {
+          "title": "See who is driving $t(common.subspaces) on Alkemio"
+        },
+        "forumMessages": {
+          "title": "Latest Contributions in the $t(common.forum)",
+          "seeMore": "Browse through the rest of the $t(common.forum)"
+        },
+        "tipsAndTricks": {
+          "title": "Tips & Tricks",
+          "findMore": "Find more tips & tricks",
+          "findMoreUrl": "https://welcome.alkem.io/blog/",
+          "items": [
+            {
+              "title": "👋 Join the Welcome@Alkemio $t(common.space)",
+              "description": "To find examples, best practices, tips and tricks",
+              "imageUrl": "/my-dashboard/tipsntricks-welcome.webp",
+              "url": "https://alkem.io/welcome-space/dashboard"
+            },
+            {
+              "title": "💭 Have a look at the documentation",
+              "description": "To find answers to your most urgent questions",
+              "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
+              "url": "https://alkem.io/docs"
+            },
+            {
+              "title": "📑 Read more about Alkemio's $t(common.space) structure",
+              "description": "To help you get started smoothly on the platform",
+              "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+              "url": "https://alkem.io/docs/structure/space"
+            },
+            {
+              "title": "⚒️ Start a new $t(common.space)",
+              "description": "To gather contributors for your envisioned change",
+              "imageUrl": "/my-dashboard/tipsntricks-space.webp",
+              "url": "https://welcome.alkem.io/want-to-own-space/"
+            },
+            {
+              "title": "💬 Powered by Generative AI",
+              "description": "Introducing Alkemio's Automated Guidance Chat",
+              "imageUrl": "/my-dashboard/tipsntricks-genai.webp",
+              "url": "https://welcome.alkem.io/blog/2024-01-19-chatbot/"
+            }
+          ]
+        },
+        "moreAboutAlkemio": {
+          "title": "More about Alkemio",
+          "links": {
+            "foundation": "Alkemio Foundation",
+            "news": "News & Blog",
+            "github": "Github",
+            "contact": "Contact"
+          }
+        }
+      }
+    },
+    "organization": {
+      "profile": {
+        "accountResources": {
+          "sectionTitle": "Resources we host"
+        }
+      },
+      "settings": {
+        "tooltip": "$t(common.Organization) $t(common.settings)"
+      },
+      "verified-status": {
+        "help": "Verification status: has the identity and information about this $t(common.organization) been formally verified"
+      }
+    },
+    "space": {
+      "title": "$t(common.space)",
+      "application": {
+        "applyTitle": "Apply to {{name}}",
+        "joinTitle": "Join {{name}}",
+        "subheader": "Veuillez remplir les questions ci-dessous, lesquelles seront envoyées à la partie concernée avec votre profil.",
+        "subheaderJoin": "Click Join button to start collaborating!",
+        "finish": "Merci d'avoir rempli votre candidature pour ",
+        "backButton": "Précédent",
+        "loading": "Chargement des questions",
+        "errorBlockName": "les questions"
+      },
+      "sections": {
+        "tabs": {
+          "dashboard": "$t(common.dashboard)",
+          "community": "$t(common.community)",
+          "contribute": "$t(common.contribute)",
+          "knowledgeBase": "$t(common.knowledge-base)",
+          "subspaces": "$t(common.subspaces)"
+        },
+        "dashboard": {
+          "organization": "Facilitating organization",
+          "hostTooltip": "The $t(common.host) is the $t(common.organization) responsible for the creation of the $t(common.space).",
+          "hostContact": "The $t(common.hosts) are responsible for the content of the $t(common.space). Any questions or comments, please reach out.",
+          "leadingOrganizations": "Leading $t(common.organizations)",
+          "community": "$t(common.Community)"
+        },
+        "subspaces": {
+          "header": "$t(common.subspaces)",
+          "subheader": "There is no final frontier",
+          "body": "",
+          "no-data": "No $t(common.subspaces) available for this $t(common.space)",
+          "description": "Here you can explore the $t(common.subspaces) hosted in this $t(common.space). Filter by key words to show just the topics you care about. "
+        },
+        "contribute": {
+          "header": "Contribuer"
+        },
+        "knowledge-base": {
+          "header": "Base de connaissances"
+        }
+      }
+    },
+    "subspace": {
+      "title": "$t(common.subspace)",
+      "organizationBanner": {
+        "load-more": "And more ..."
+      },
+      "sections": {
+        "dashboard": {
+          "projects": {
+            "title": "Projects",
+            "help-text": "Projects related to this $t(common.subspace)"
+          }
+        },
+        "opportunities": {
+          "description": "Here you can explore the $t(common.subspaces) that have been identified for making progress. Filter by key words to show just the topics you care about."
+        }
+      }
+    },
+    "community": {
+      "title": "{{name}} $t(common.community) page",
+      "leading-organizations": {
+        "title": "Leading $t(common.organizations) ({{count}})",
+        "help-text": "Shows different $t(common.organizations), including the role you have",
+        "no-data": "No $t(common.organization) is leading at this time"
+      },
+      "member-organizations": {
+        "no-data": "No $t(common.organization) is contributing at this time"
+      },
+      "space-host": {
+        "title": "Facilitating $t(common.organization)",
+        "help-text": "The $t(common.organization) that is facilitating this $t(common.space)."
+      },
+      "members": {
+        "help-text": "Shows $t(common.members) is this $t(common.community), including the role they have",
+        "no-data": "No $t(common.members) available"
+      },
+      "updates": {
+        "title": "Updates from the $t(common.leads) ({{count}})",
+        "no-data": "Aucune mise à jour disponible"
+      }
+    },
+    "whiteboard": {
+      "header": "$t(common.Whiteboards) in this {{blockName}}",
+      "subheader": "Créez votre visualisation personnalisée et partagez-la avec d'autres.",
+      "createWhiteboard": "Create $t(common.whiteboard)",
+      "defaultWhiteboardDisplayName": "$t(common.Whiteboard)",
+      "editDisplayName": "Edit title",
+      "no-whiteboards": "No $t(common.whiteboards) have been created yet. Be the first to add one.",
+      "locked-by": "{{user}} is currently editing this $t(common.whiteboard)",
+      "loadingScene": "Loading scene",
+      "last-saved": "Auto-saved last changes: {{datetime}}",
+      "unsuccessful-save": "<p><strong>{{warningMessage}} Unable to save changes. Last saved: {{datetime}}.</strong></p> <p>If this issue persists, please contact the team. To avoid losing progress, click the menu in the top-left corner to save your $t(common.whiteboard) to your local disk.</p>",
+      "state-actions": {
+        "save-as-template": "Save as $t(common.template)",
+        "save-and-check-in": "Enregistrer & arrêter l'édition",
+        "save": "Enregistrer",
+        "delete": "Supprimer"
+      },
+      "delete": {
+        "confirmationTitle": "Deleting $t(common.whiteboard)",
+        "confirmationText": "Are you sure you want to delete this $t(common.whiteboard)? The action is irreversible."
+      },
+      "deleteContent": {
+        "confirmationTitle": "Deleting $t(common.Whiteboards) Content",
+        "confirmationText": "Are you sure you want to delete the content of this $t(common.whiteboard)?"
+      },
+      "template": {
+        "header": "$t(common.templates) defined in Alkemio",
+        "how-to": "To create a $t(common.template) create a new $t(common.whiteboard) or use an existing one and save it as a $t(common.template)."
+      },
+      "space": {
+        "templatesHeader": "$t(common.templates) defined in this $t(common.space)",
+        "templatesSubheader": "The $t(common.templates) defined in this $t(common.space) can be used in every $t(common.subspace) that this $t(common.space) hosts."
+      },
+      "subspace": {
+        "templatesHeader": "$t(common.templates) defined in this $t(common.subspace)",
+        "templatesSubheader": "The $t(common.templates) defined in this $t(common.subspace) within its scope."
+      },
+      "whiteboardDisconnected": {
+        "title": "$t(common.Whiteboards) connection lost",
+        "message": "Apologies for the inconvenience! The $t(common.whiteboard) isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the $t(common.whiteboard) or refreshing the page. If the issue persists, reach out to your $t(common.space) $t(common.admin) for assistance.",
+        "lastSaved": "The content of this $t(common.whiteboard) was last saved {{lastSaved}}.",
+        "offline": "You are currently offline. The $t(common.whiteboard) will try to reconnect when you are back online."
+      },
+      "readonlyReason": {
+        "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
+        "contentUpdatePolicy": "You don't have the rights to edit this $t(common.whiteboard). Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share $t(common.settings) if you want to contribute.",
+        "noMembership": "You have to be a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+        "unauthenticated": "You have to be signed in and a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+      },
+      "readonlyDialog": {
+        "title": "View only mode",
+        "reason": {
+          "inactivity": "You can’t edit this $t(common.whiteboard) because you were inactive for too long. Please try reopening the $t(common.whiteboard) to continue editing.",
+          "multiUserNotAllowed": "You can’t edit this $t(common.whiteboard) because this $t(common.space) only allows one $t(common.whiteboard) editor at a time",
+          "roomCapacityReached": "You can’t edit this $t(common.whiteboard) because this $t(common.space) allows for multiple editors simultaneously, but the maximum is reached",
+          "generic": "You can’t edit this $t(common.whiteboard) for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a $t(common.member) of the $t(common.space)\n- This $t(common.space) only allows one $t(common.whiteboard) editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached"
+        }
+      },
+      "restartCollaboration": "Continue Editing"
+    },
+    "memo": {
+      "readonlyReason": {
+        "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
+        "contentUpdatePolicy": "You don't have the rights to edit this $t(common.memo). Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share $t(common.settings) if you want to contribute.",
+        "noMembership": "You have to be a $t(common.member) of the {{spaceLevel}} this $t(common.memo) is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+        "unauthenticated": "You have to be signed in and a $t(common.member) of the {{spaceLevel}} this $t(common.memo) is in, to be able to edit. Click here to <signinlink>sign in</signinlink>",
+        "connecting": "",
+        "notSynced": " Synchronizing... Reopen the $t(common.memo) to quickly enable it back. Backup your changes before closing."
+      },
+      "readonlyDialog": {
+        "title": "View only mode",
+        "reason": {
+          "noUpdateAccess": "You can’t edit this $t(common.memo) because you don’t have the rights to do so. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share $t(common.settings) if you want to contribute.",
+          "multiUserNotAllowed": "You can’t edit this $t(common.memo) because this $t(common.space) only allows one $t(common.memo) editor at a time",
+          "roomCapacityReached": "You can’t edit this $t(common.memo) because this $t(common.space) allows for multiple editors simultaneously, but the maximum is reached",
+          "generic": "You can’t edit this $t(common.memo) for one of the following reasons:\n\nYou are not a $t(common.member) of the $t(common.space)\n- This $t(common.space) only allows one $t(common.memo) editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached"
+        }
+      }
+    },
+    "login": {
+      "title": "Se connecter à Alkemio",
+      "register": "Don’t have an Alkemio $t(common.account) yet? <signup>Click here to sign up.</signup>"
+    },
+    "about": {
+      "title": "Réinventer la collaboration",
+      "description": "Alkemio puts the $t(common.subspaces) central, each $t(common.subspace) providing a central, neutral place for collaboration.",
+      "powered-by": "Propulsé par {{name}} v{{version}}"
+    },
+    "error": {
+      "title": "Ouuups!",
+      "line1": "On dirait que quelque chose s'est mal passé : <italic>{{message}}</italic>",
+      "line2": "Veuillez vérifier que votre serveur ({{graphQLEndpoint}}) est disponible et recharger la page.",
+      "line3": "If the error persists please <contact>contact support</contact>.",
+      "buttons": {
+        "reload": "Redémarrer"
+      },
+      "errors": {
+        "LazyLoadError": "Network error occurred. Please try reloading the page.",
+        "unknown": "An unknown error occurred. Please try reloading the page."
+      }
+    },
+    "four-ou-four": {
+      "title": "Something went wrong...",
+      "message": "Sorry, the page you are looking for either doesn't exist or has been moved, or you don't have the rights to access it. This may happen because you aren't a $t(common.member) of the $t(common.community) yet or are not signed in. Don't worry, our team is there to help!",
+      "links": {
+        "home": "",
+        "faq": "Have a look in our FAQ and documentation to find what you are looking for, or contact the team."
+      }
+    },
+    "logout": {
+      "loading": "Déconnexion en cours..."
+    },
+    "registration": {
+      "header": "Create an $t(common.account) to start using Alkemio",
+      "introduction": "<p>Welcome to Alkemio! Safe $t(common.spaces) for collaboration, education and professionals.</p><p>Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.</p>",
+      "introduction-short": "<p>Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.</p>",
+      "terms": "J'accepte les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy>.",
+      "login": "Have an $t(common.account)?",
+      "reset-password": "Forgot password?",
+      "logo-subtitle": "Safe $t(common.spaces) for Collaboration"
+    },
+    "accept-terms": {
+      "introduction": "<p>Alkemio makes it easy to manage $t(common.subspaces) and have contributors, from anywhere, working together on solutions. $t(common.subspaces) take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "greeting": "Hi {{user}}, welcome to Alkemio!",
+      "continue": "Contribuez à la plateforme",
+      "next": "Next",
+      "tooltip": "Veuillez lire et accepter les conditions d'utilisation et la politique de confidentialité avant de continuer"
+    },
+    "registrationSuccess": {
+      "header": "Nearly there…",
+      "message": "<p>The last step is to verify your email address. Please check your inbox for an email with instructions.</p><p>If you have not received an email, <resend>click here to send it again.</resend></p>",
+      "continue": "…or continue to the platform without signing in"
+    },
+    "verification-success": {
+      "header": "Merci d'avoir vérifié votre adresse e-mail !",
+      "subheader": "Your $t(common.profile) is now fully activated on the platform. Enjoy!",
+      "message": "Please do consider filling out all $t(common.posts) of your $t(common.profile). It helps with both applying to join communities and with others being able to connect with you."
+    },
+    "recovery": {
+      "header": "Récupération du mot de passe",
+      "message": {
+        "initial": "Please enter your email address below to receive a recovery link that will allow you to reset your password."
+      }
+    },
+    "verification": {
+      "header": "Email de vérification",
+      "message": "Pour recevoir un nouvel e-mail de vérification, veuillez entrer votre adresse e-mail ci-dessous."
+    },
+    "verification-required": {
+      "header": "La vérification de l'e-mail est en cours.",
+      "message": "Vous êtes presque là... Une dernière étape est de vérifier votre e-mail. <br />Veuillez consulter votre boîte de réception pour obtenir des instructions.<br /><br /><again>Si vous n'avez pas reçu d'e-mail, cliquez sur ce lien pour envoyer à nouveau</again>."
+    },
+    "settings": {
+      "header": "User $t(common.settings)"
+    },
+    "user-profile": {
+      "title": "My $t(common.profile)",
+      "tooltips": {
+        "settings": "User $t(common.profile) $t(common.settings)"
+      },
+      "member-of": "$t(common.Member) of",
+      "applications": {
+        "title": "Demandes en attente"
+      },
+      "accountResources": {
+        "sectionTitle": "Resources I host"
+      },
+      "membership": {
+        "space": {
+          "confirmation-dialog": {
+            "title": "Leaving Space {{space}}",
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this $t(common.space) or its $t(common.subspaces). If this $t(common.space) is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a $t(common.member) of a $t(common.subspace) inside this $t(common.space), you will also be automatically removed from there."
+          }
+        },
+        "subspace": {
+          "confirmation-dialog": {
+            "title": "Leaving $t(common.subspace) {{space}}",
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br />You will no longer receive updates or have access to shared resources from this $t(common.subspace) or its $t(common.subspaces). If this $t(common.subspace) is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a $t(common.member) of a $t(common.subspace) inside this $t(common.subspace), you will also be automatically removed from there."
+          }
+        }
+      },
+      "communities": {
+        "title": "Groupes",
+        "help": "Communautés dont l'utilisateur fait partie",
+        "leadSpacesTitle": "$t(common.spaceSubspaces) I lead",
+        "allMembershipsTitle": "$t(common.spaceSubspaces) I'm in",
+        "noMembership": "Not a $t(common.member) of any $t(common.space) or $t(common.subspace) yet."
+      },
+      "pending-applications": {
+        "title": "Demandes en attente",
+        "help": "Applications en attente pour cet utilisateur"
+      },
+      "associated-organizations": {
+        "title": "Associated $t(common.organizations)",
+        "help": "$t(common.Organizations) who the user is related to"
+      },
+      "verifiable-credentials": {
+        "title": "Identifiants vérifiables",
+        "help": "Identifiants que l'utilisateur détient délivrés par des groupes de confiance"
+      }
+    },
+    "virtualContributorProfile": {
+      "title": "$t(common.virtualContributor) $t(common.Profile)",
+      "defaultName": "Alkemio Help",
+      "description": "Description",
+      "references": "References",
+      "host": "Host",
+      "success": "{{entity}} updated successfully.",
+      "bokIngestStarted": "Body of Knowledge ingestion started. It may take a few minutes to complete.",
+      "error": "An error occurred.",
+      "sections": {
+        "knowledge": {
+          "title": "Knowledge",
+          "description": "Answers {{name}} gives are based on the body of knowledge coming from:"
+        },
+        "personality": {
+          "title": "Basic Prompts & Engine",
+          "description": "To allow people to interact with the body of knowledge described above, Alkemio uses an engine and a basic set of instructions. These instructions make sure that the $t(common.virtualContributor) for example only answers questions using the specified body of knowledge so you can trust the answers it is giving."
+        },
+        "context": {
+          "title": "Context",
+          "description": "{{name}} uses the following information from the $t(common.space) it is invited to so it can provide you with meaningful answers:",
+          "bullets": "<ul><li>$t(common.space) about page: <ul><li>Name, Tagline, location, etc.</li><li>Context information</li><li>Statistics</li></ul></li></ul>"
+        },
+        "privacy": {
+          "title": "Privacy",
+          "description": "For Alkemio, safeguarding your data is of utmost importance. We are committed to maintaining the security and privacy of your information.",
+          "bullets": "<ul><li>When interacting with a $t(common.virtualContributor), only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your ($t(common.space)) data is not utilized for training the $t(common.virtualContributor).</li><li>Additionally, please note that questions and answers exchanged with the $t(common.virtualContributor) may be visible to the Alkemio team.</li></ul>"
+        },
+        "external": {
+          "personality": {
+            "description": "This $t(common.virtualContributor) operates using the following external AI service: <strong>Mistral</strong>. All questions submitted to this $t(common.virtualContributor), along with any related $t(common.comments) in a threaded conversation, will be sent to <strong>Mistral</strong>. Please be aware that this data may be used to train and improve their model."
+          },
+          "privacy": {
+            "description": "At Alkemio, protecting your data is our top priority. We are fully committed to ensuring the security and privacy of your information. Here’s how we handle your data when interacting with a $t(common.virtualContributor) (VC):",
+            "bullets": "<ul><li>Only the content of your question and any related $t(common.comments) in a threaded conversation are shared with the AI service that powers the $t(common.virtualContributor).</li><li>Please be aware that if the $t(common.virtualContributor) is based on an external AI service, such as Mistral, the data shared may be used to further train and improve that service.</li><li>Additionally, note that questions and answers exchanged with the $t(common.virtualContributor) may be accessible to the Alkemio team for monitoring or support purposes.</li></ul>"
+          }
+        }
+      },
+      "membership": {
+        "title": "$t(common.virtualContributor) $t(common.Memberships)",
+        "noMemberships": "This $t(common.virtualContributor) is not a $t(common.member) of any $t(common.space)",
+        "pendingInvitations": "Pending Invitations",
+        "noPendingInvitations": "No pending invitations"
+      },
+      "settings": {
+        "title": "$t(common.virtualContributor) $t(common.settings)",
+        "access": {
+          "title": "Visibility",
+          "listedInStore": "Include in public selection lists.",
+          "visibility": {
+            "public": "<b>Public:</b> This $t(common.virtualContributor) can be invited to all $t(common.spaces) on Alkemio",
+            "private": "<b>Private:</b> This $t(common.virtualContributor) can be invited to $t(common.spaces) within my $t(common.account).",
+            "hidden": "<b>Hidden:</b> This $t(common.virtualContributor) cannot be invited."
+          }
+        },
+        "ingestion": {
+          "title": "Update Knowledge",
+          "infoText": "Changes in the body of knowledge are not autmatically reflected in the $t(common.virtualContributor). You need to manually apply them by clicking the button <bold>'UPDATE KNOWLEDGE'</bold>. It will take a few minutes for the update to complete. You can check back later to see if the update was successful.",
+          "refreshBtn": "Update Knowledge",
+          "lastUpdatedLabel": "Last updated: ",
+          "never": "Never"
+        },
+        "prompt": {
+          "title": "Prompt",
+          "infoText": "Available variables: [{{availableVariables}}] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this $t(common.virtualContributor).",
+          "saveBtn": "Save prompt"
+        },
+        "externalConfig": {
+          "title": "External Configuration",
+          "infoText": "The $t(common.virtualContributor) is powered by an external AI service. Please provide the following information to connect to the service.",
+          "apiKey": "API Key",
+          "apiKeyPlaceholder": "Current key signature is '{{value}}'. By changing this value current key will be overriden and can not be recovered.",
+          "assistantId": "Assistant ID",
+          "model": "Model",
+          "saveBtn": "Save Configuration"
+        },
+        "privacy": {
+          "title": "Privacy",
+          "description": "Private $t(common.virtualContributor) Knowledge",
+          "tooltip1": "Public: When users visit {{vcName}}'s $t(common.profile), they can see the content of its body of knowledge.",
+          "tooltip2": "Private: Only the $t(common.account) $t(common.admins) can see the content of the body of knowledge."
+        }
+      },
+      "knowledgeBase": {
+        "noAccess": {
+          "title": "Private $t(common.virtualContributor) Knowledge",
+          "description": "You don't have access to the knowledge base of this $t(common.virtualContributor). Please contact the owner of the $t(common.virtualContributor) for more information."
+        }
+      }
+    },
+    "user-credentials": {
+      "your-credentials": {
+        "title": "Identifiants vérifiables",
+        "description": "Alkemio met en cache vos identifiants vérifiables dans votre portefeuille hébergé dans le cloud. Les identifiants que vous partagez vous accorderont des privilèges dans les communautés de la plateforme.",
+        "add-credential": "Ajouter un mot de passe"
+      },
+      "issue": "Problème",
+      "added-successfully": "Identification ajoutée avec succès"
+    },
+    "authentication-required": {
+      "header": "Access Restricted",
+      "subheader": "The page you're trying to access is only available to registered users.",
+      "subheader2": "Please sign in to continue. Don’t have an $t(common.account)? Sign up for free."
+    },
+    "userNotificationsSettings": {
+      "general": {
+        "title": "General",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages"
+      },
+      "space": {
+        "title": "$t(common.space) $t(common.settings)",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages from $t(common.spaces) you are a $t(common.member) of",
+        "settings": {
+          "communicationUpdateSent": "Receive a $t(common.notification) when a new update is shared with a $t(common.community) I am a $t(common.member) of",
+          "collaborationCalloutPublished": "Receive a $t(common.notification) when a Callout is published in a $t(common.community) I am a $t(common.member) of",
+          "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new contribution ($t(common.whiteboard), $t(common.post), link, $t(common.memo) etc.) is created in a $t(common.community) I am a $t(common.member) of",
+          "collaborationCalloutComment": "Receive a $t(common.notification) when a a $t(common.comment) is made on a Callout in a $t(common.community) I am a $t(common.member) of",
+          "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.post) contribution in a $t(common.community) I am a $t(common.member) of"
+        }
+      },
+      "spaceAdmin": {
+        "title": "$t(common.space) $t(common.admin) $t(common.settings)",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages from $t(common.spaces) you are an $t(common.admin) of",
+        "settings": {
+          "communityApplicationReceived": "Receive a $t(common.notification) when a new application is received",
+          "communityNewMember": "Receive a $t(common.notification) when a new $t(common.member) joins the $t(common.community)",
+          "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new callout is created",
+          "communicationMessageReceived": "Receive a $t(common.notification) when a new message is received"
+        }
+      },
+      "organization": {
+        "title": "$t(common.Organization) mentions and messaging",
+        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to $t(common.organizations) you manage",
+        "settings": {
+          "mentioned": "Receive a $t(common.notification) when my $t(common.organization) is mentioned",
+          "messageReceived": "Receive direct messages to my $t(common.organization)"
+        }
+      },
+      "user": {
+        "title": "User mentions and messaging",
+        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to yourself.",
+        "settings": {
+          "mentioned": "Receive a $t(common.notification) when I am mentioned",
+          "commentReply": "Receive a $t(common.notification) when someone replies to my $t(common.comment)",
+          "messageReceived": "Receive a $t(common.notification) when someone sends me a direct message",
+          "copyOfMessageSent": "Receive a $t(common.notification) when I send a direct message"
+        }
+      },
+      "userMembership": {
+        "title": "User $t(common.membership) $t(common.notifications)",
+        "subtitle": "This section allows you to select your preferences regarding $t(common.notifications) related to your $t(common.membership) in communities.",
+        "settings": {
+          "spaceCommunityApplication": "Receive a $t(common.notification) when I apply to join a $t(common.community)",
+          "spaceCommunityInvitation": "Receive a $t(common.notification) when someone invites you to join a $t(common.community)",
+          "spaceCommunityJoined": "Receive a $t(common.notification) when I join a new $t(common.space) $t(common.community)"
+        }
+      },
+      "platformAdmin": {
+        "title": "Platform $t(common.admin) $t(common.settings)",
+        "subtitle": "This section is only visible to users that are a global $t(common.admin) on the platform",
+        "settings": {
+          "adminUserProfileCreated": "Receive a $t(common.notification) when a new user signs up",
+          "adminUserProfileRemoved": "Receive a $t(common.notification) when a user $t(common.profile) is removed",
+          "adminSpaceCreated": "Receive a $t(common.notification) when a new $t(common.space) is created",
+          "adminUserGlobalRoleChanged": "Receive a $t(common.notification) when a user's global role is changed"
+        }
+      },
+      "forum": {
+        "title": "$t(common.forum)",
+        "subtitle": "This section allows you to select your preferences regarding activities in the $t(common.forum)",
+        "settings": {
+          "forumDiscussionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a discussion I follow",
+          "forumDiscussionCreated": "Receive a $t(common.notification) when a new discussion is created"
+        }
+      },
+      "virtualContributor": {
+        "title": "$t(common.virtualContributor)",
+        "subtitle": "This section allows you to select your preferences regarding activities as a $t(common.virtualContributor)",
+        "settings": {
+          "spaceCommunityInvitation": "Receive a $t(common.notification) when a VC I manage is invited to join a $t(common.community)"
+        }
+      }
+    },
+    "help-dialog": {
+      "title": "Vous cherchez de l'aide?",
+      "text": "Nous voulons vous aider à utiliser la plate-forme Alkemio, et pour ce faire, nous voulons rendre le processus d'utilisation et d'interaction plus facile. Voici comment vous pouvez avoir un impact sur les sujets qui vous intéressent.<br /><br />Cliquez sur les icônes ci-dessous pour trouver des réponses à vos questions, contactez l'équipe d'Alkemio pour obtenir de l'aide ou commencez !",
+      "icons": {
+        "exploreDocumentation": "Explore Documentation",
+        "contactTheTeam": "Contact the Team",
+        "joinTheWelcomeSpace": "Join the Welcome $t(common.space)"
+      },
+      "tips-and-tricks": "Vous recherchez des trucs et astuces ? Retrouvez les dans les articles de blog ici!",
+      "versionNumber": "Version Number: <b>v{{version}}</b>",
+      "serverVersionNumber": "Server Version Number: <b>v{{version}}</b>"
+    },
+    "forum": {
+      "title": "Welcome to the Alkemio $t(common.forum)",
+      "subtitle": "Get in touch with the Alkemio team or other users of the platform!",
+      "fullName": "Alkemio $t(common.forum)",
+      "shortName": "$t(common.forum)",
+      "new-title": "Alkemio $t(common.forum) - Initiate Discussion",
+      "back": "Voir toutes les discussions"
+    },
+    "documentation": {
+      "title": "Documentation",
+      "subtitle": "Platform Manual & Support"
+    }
+  }
+}
