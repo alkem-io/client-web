@@ -2062,6 +2062,10 @@
         "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
           "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
           "description": ""
+        },
+        "SPACE_COMMUNITY_CALENDAR_EVENT_CREATED": {
+          "subject": "New {{type}} scheduled in {{spaceName}}",
+          "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
