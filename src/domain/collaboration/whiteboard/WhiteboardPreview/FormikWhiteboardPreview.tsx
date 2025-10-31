@@ -4,7 +4,7 @@ import { MouseEventHandler, useMemo, useState, useImperativeHandle, ReactNode } 
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import SingleUserWhiteboardDialog from '../WhiteboardDialog/SingleUserWhiteboardDialog';
 import { BlockTitle } from '@/core/ui/typography';
-import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
@@ -26,6 +26,7 @@ interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Whiteboard content
   previewImagesName?: string; // Formik fieldName of the preview images. Will only be set if this argument is passed
   previewSettingsName?: string; // Formik fieldName of the preview settings. Will only be set if this argument is passed
+  previewSettingsDimensions?: PreviewImageDimensions;
   canEdit: boolean;
   editButton?: ReactNode; // Optional custom edit button.
   onChangeContent?: (content: string, previewImages?: WhiteboardPreviewImage[]) => void;
@@ -46,6 +47,7 @@ const FormikWhiteboardPreview = ({
   name = 'content',
   previewImagesName,
   previewSettingsName,
+  previewSettingsDimensions,
   canEdit,
   editButton,
   onChangeContent,
@@ -182,6 +184,7 @@ const FormikWhiteboardPreview = ({
                     </>
                   ),
                   previewSettingsDialogOpen,
+                  previewSettingsDimensions,
                   allowFilesAttached: true,
                   fixedDialogTitle: (
                     <BlockTitle display="flex" alignItems="center">

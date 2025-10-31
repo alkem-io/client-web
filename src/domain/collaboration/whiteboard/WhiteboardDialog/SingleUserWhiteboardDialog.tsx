@@ -22,14 +22,17 @@ import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import whiteboardValidationSchema from '../validation/whiteboardFormSchema';
 import { WhiteboardDetails } from './WhiteboardDialog';
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
-import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import {
+  DefaultWhiteboardPreviewSettings,
+  WhiteboardPreviewSettings,
+} from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 
 type ExcalidrawUtils = {
   serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
@@ -59,6 +62,7 @@ type SingleUserWhiteboardDialogProps = {
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
     previewSettingsDialogOpen?: boolean;
+    previewSettingsDimensions?: PreviewImageDimensions;
   };
   state?: {
     updatingWhiteboard?: boolean;
@@ -90,7 +94,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
-    storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
+    storageBucketId: whiteboard.profile?.storageBucket.id ?? '',
     allowFallbackToAttached: options.allowFilesAttached,
   });
 
@@ -134,7 +138,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
       const files = excalidrawAPI.getFiles();
       const content = serializeAsJSON(elements, appState, files, 'local');
 
-      if (!isWhiteboardContentEqual(whiteboard?.content, content) || formikRef.current?.dirty) {
+      if (!isWhiteboardContentEqual(whiteboard.content, content) || formikRef.current?.dirty) {
         if (
           !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
         ) {
@@ -174,11 +178,11 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   const initialValues = useMemo(() => {
     return {
       profile: {
-        displayName: whiteboard?.profile?.displayName ?? '',
+        displayName: whiteboard.profile?.displayName ?? '',
       },
-      previewSettings: whiteboard?.previewSettings ?? {},
+      previewSettings: whiteboard.previewSettings ?? DefaultWhiteboardPreviewSettings,
     };
-  }, [whiteboard?.profile?.displayName]);
+  }, [whiteboard.profile?.displayName]);
 
   return (
     <>
@@ -273,6 +277,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
           open={options.previewSettingsDialogOpen}
           onClose={() => actions.onClosePreviewSettingsDialog?.()}
           onUpdate={actions.onUpdatePreviewSettings}
+          previewImageConstraints={options.previewSettingsDimensions}
           whiteboard={whiteboard}
           excalidrawAPI={excalidrawAPI}
         />

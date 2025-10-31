@@ -2972,15 +2972,15 @@
         "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
         "modes": {
-          "auto": {
+          "AUTO": {
             "title": "Auto Preview",
             "description": "We'll automatically generate the best preview from your whiteboard content."
           },
-          "custom": {
+          "CUSTOM": {
             "title": "Manual Selection",
             "description": "Choose exactly which part of your whiteboard to show as a preview."
           },
-          "fixed": {
+          "FIXED": {
             "title": "Fixed Selection",
             "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
           }

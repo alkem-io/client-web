@@ -16,6 +16,7 @@ import {
   DefaultWhiteboardPreviewSettings,
   WhiteboardPreviewSettings,
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import { CardVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
 
 interface TemplateContentWhiteboard {
   content: string;
@@ -65,6 +66,7 @@ const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhitebo
         name="whiteboard.content"
         previewImagesName="whiteboardPreviewImages"
         previewSettingsName="whiteboard.previewSettings"
+        previewSettingsDimensions={CardVisualDimensions}
         maxHeight={gutters(20)}
         canEdit
         dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}
