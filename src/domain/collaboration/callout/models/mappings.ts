@@ -1,4 +1,9 @@
-import { CalloutContributionType, CalloutFramingType, UpdateLinkInput } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutContributionType,
+  CalloutFramingType,
+  UpdateLinkInput,
+  VisualType,
+} from '@/core/apollo/generated/graphql-schema';
 import { CalloutFormSubmittedValues, DefaultCalloutFormValues } from '../../callout/CalloutForm/CalloutFormModel';
 import { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
@@ -10,6 +15,7 @@ import { mapContributionDefaultsModelToCalloutFormValues } from './ContributionD
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
 import { LinkDetails } from '../../calloutContributions/link/models/LinkDetails';
 import { WhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import { uniqBy } from 'lodash';
 
 export const mapCalloutTemplateToCalloutForm = (
   calloutTemplate?: {
@@ -67,9 +73,10 @@ export const mapCalloutTemplateToCalloutForm = (
         ? {
             profile: {
               displayName: calloutTemplate.framing.whiteboard.profile.displayName,
+              visuals: mapWhiteboardVisuals(calloutTemplate.framing.whiteboard.profile),
             },
             content: calloutTemplate.framing.whiteboard.content,
-            previewImages: [], // TODO: Download the preview images if available
+            previewImages: [],
             previewSettings: calloutTemplate.framing.whiteboard.previewSettings,
           }
         : undefined,
@@ -194,4 +201,30 @@ export const mapLinkDataToUpdateLinkInput = (linkData: LinkDetails | undefined):
       description: linkData.profile.description,
     },
   };
+};
+
+const mapWhiteboardVisuals = (profile: {
+  visuals?: VisualModel[];
+  visual?: VisualModel;
+  preview?: VisualModel;
+}): { name: VisualType; uri: string }[] => {
+  const result: { name: VisualType; uri: string }[] = [];
+  if (profile.visuals) {
+    profile.visuals.forEach(v => {
+      if (v.uri) {
+        result.push({ name: v.name as VisualType, uri: v.uri });
+      }
+    });
+  }
+  if (profile.visual) {
+    result.push({ name: profile.visual.name as VisualType, uri: profile.visual.uri });
+  }
+  if (profile.preview) {
+    result.push({ name: profile.preview.name as VisualType, uri: profile.preview.uri });
+  }
+  // Only visuals with uri and unique uris
+  return uniqBy(
+    result.filter(item => item.uri),
+    item => item.uri
+  );
 };

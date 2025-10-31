@@ -181,7 +181,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
       },
       previewSettings: whiteboard.previewSettings ?? DefaultWhiteboardPreviewSettings,
     };
-  }, [whiteboard.profile?.displayName]);
+  }, [whiteboard]);
 
   return (
     <>

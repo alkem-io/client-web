@@ -12,6 +12,7 @@ export interface ProfileModel {
   tagline?: string;
   tagsets?: TagsetModel[];
   tagset?: TagsetModel;
+  visual?: VisualModel;
   visuals?: VisualModel[];
   url?: string;
 }
