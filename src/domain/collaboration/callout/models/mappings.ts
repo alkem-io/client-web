@@ -73,10 +73,10 @@ export const mapCalloutTemplateToCalloutForm = (
         ? {
             profile: {
               displayName: calloutTemplate.framing.whiteboard.profile.displayName,
-              visuals: mapWhiteboardVisuals(calloutTemplate.framing.whiteboard.profile),
+              visuals: mapWhiteboardVisuals(calloutTemplate.framing.whiteboard.profile), // Visuals coming from the template
             },
             content: calloutTemplate.framing.whiteboard.content,
-            previewImages: [],
+            previewImages: [], // Used to store the visuals generated if the whiteboard is edited
             previewSettings: calloutTemplate.framing.whiteboard.previewSettings,
           }
         : undefined,
