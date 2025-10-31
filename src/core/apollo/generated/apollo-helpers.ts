@@ -3274,6 +3274,7 @@ export type PromptGraphFieldPolicy = {
 };
 export type PromptGraphDataPointKeySpecifier = (
   | 'description'
+  | 'items'
   | 'name'
   | 'optional'
   | 'type'
@@ -3281,6 +3282,7 @@ export type PromptGraphDataPointKeySpecifier = (
 )[];
 export type PromptGraphDataPointFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
+  items?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   optional?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;

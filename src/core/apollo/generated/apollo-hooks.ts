@@ -13821,6 +13821,48 @@ export const AiPersonaDocument = gql`
           assistantId
           model
         }
+        promptGraph {
+          start
+          end
+          edges {
+            from
+            to
+          }
+          state {
+            title
+            type
+            properties {
+              description
+              name
+              type
+              optional
+              items {
+                title
+                type
+                properties {
+                  name
+                  type
+                }
+              }
+            }
+          }
+          nodes {
+            input_variables
+            name
+            prompt
+            system
+            output {
+              title
+              type
+              properties {
+                description
+                name
+                type
+                optional
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -13899,6 +13941,7 @@ export const VirtualContributorDocument = gql`
         aiPersona {
           id
           engine
+          prompt
         }
         profile {
           id
@@ -14490,6 +14533,40 @@ export const UpdateAiPersonaDocument = gql`
     aiServerUpdateAiPersona(aiPersonaData: $aiPersonaData) {
       id
       prompt
+      promptGraph {
+        start
+        end
+        edges {
+          from
+          to
+        }
+        state {
+          title
+          type
+          properties {
+            description
+            name
+            type
+            optional
+          }
+        }
+        nodes {
+          input_variables
+          name
+          prompt
+          system
+          output {
+            title
+            type
+            properties {
+              description
+              name
+              type
+              optional
+            }
+          }
+        }
+      }
       externalConfig {
         apiKey
       }

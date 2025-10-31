@@ -10,6 +10,48 @@ query AiPersona($id: UUID!) {
         assistantId
         model
       }
+      promptGraph {
+        start
+        end
+        edges {
+          from
+          to
+        }
+        state {
+          title
+          type
+          properties {
+            description
+            name
+            type
+            optional
+            items {
+              title
+              type
+              properties {
+                name
+                type
+              }
+            }
+          }
+        }
+        nodes {
+          input_variables
+          name
+          prompt
+          system
+          output {
+            title
+            type
+            properties {
+              description
+              name
+              type
+              optional
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -35,6 +77,7 @@ query VirtualContributor($id: UUID!) {
       aiPersona {
         id
         engine
+        prompt
       }
       profile {
         id

@@ -19,11 +19,16 @@ type FormValueType = {
 };
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-const PromptConfig = ({ vc }) => {
+export interface PromptConfigProps {
+  vc: { id: string; aiPersona?: { id: string; prompt: string[] } };
+}
+
+export const PromptConfig = ({ vc }: PromptConfigProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const [prompt, setPrompt] = useState('');
   const [isValid, setIsValid] = useState(false);
+
   const vcId = vc?.id;
 
   const { data, loading } = useAiPersonaQuery({
@@ -104,5 +109,3 @@ const PromptConfig = ({ vc }) => {
     </PageContent>
   );
 };
-
-export default PromptConfig;

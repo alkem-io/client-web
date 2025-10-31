@@ -5802,6 +5802,7 @@ export type PromptGraph = {
 export type PromptGraphDataPoint = {
   __typename?: 'PromptGraphDataPoint';
   description?: Maybe<Scalars['String']['output']>;
+  items?: Maybe<PromptGraphDataStruct>;
   name: Scalars['String']['output'];
   optional?: Maybe<Scalars['Boolean']['output']>;
   type?: Maybe<Scalars['String']['output']>;
@@ -5809,6 +5810,7 @@ export type PromptGraphDataPoint = {
 
 export type PromptGraphDataPointInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  items?: InputMaybe<PromptGraphDataStructInput>;
   name: Scalars['String']['input'];
   optional?: InputMaybe<Scalars['Boolean']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
@@ -7450,6 +7452,7 @@ export type UpdateAiPersonaInput = {
   engine?: InputMaybe<AiPersonaEngine>;
   externalConfig?: InputMaybe<ExternalConfigInput>;
   prompt?: InputMaybe<Array<Scalars['String']['input']>>;
+  promptGraph?: InputMaybe<PromptGraphInput>;
 };
 
 export type UpdateApplicationFormOnRoleSetInput = {
@@ -19823,6 +19826,71 @@ export type AiPersonaQuery = {
                 model: OpenAiModel;
               }
             | undefined;
+          promptGraph?:
+            | {
+                __typename?: 'PromptGraph';
+                start?: string | undefined;
+                end?: string | undefined;
+                edges?:
+                  | Array<{ __typename?: 'PromptGraphEdge'; from?: string | undefined; to?: string | undefined }>
+                  | undefined;
+                state?:
+                  | {
+                      __typename?: 'PromptGraphDataStruct';
+                      title?: string | undefined;
+                      type?: string | undefined;
+                      properties?:
+                        | Array<{
+                            __typename?: 'PromptGraphDataPoint';
+                            description?: string | undefined;
+                            name: string;
+                            type?: string | undefined;
+                            optional?: boolean | undefined;
+                            items?:
+                              | {
+                                  __typename?: 'PromptGraphDataStruct';
+                                  title?: string | undefined;
+                                  type?: string | undefined;
+                                  properties?:
+                                    | Array<{
+                                        __typename?: 'PromptGraphDataPoint';
+                                        name: string;
+                                        type?: string | undefined;
+                                      }>
+                                    | undefined;
+                                }
+                              | undefined;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
+                nodes?:
+                  | Array<{
+                      __typename?: 'PromptGraphNode';
+                      input_variables?: Array<string> | undefined;
+                      name: string;
+                      prompt?: string | undefined;
+                      system: boolean;
+                      output?:
+                        | {
+                            __typename?: 'PromptGraphDataStruct';
+                            title?: string | undefined;
+                            type?: string | undefined;
+                            properties?:
+                              | Array<{
+                                  __typename?: 'PromptGraphDataPoint';
+                                  description?: string | undefined;
+                                  name: string;
+                                  type?: string | undefined;
+                                  optional?: boolean | undefined;
+                                }>
+                              | undefined;
+                          }
+                        | undefined;
+                    }>
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -19853,7 +19921,9 @@ export type VirtualContributorQuery = {
             __typename?: 'VirtualContributorSettings';
             privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
           };
-          aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
+          aiPersona?:
+            | { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine; prompt: Array<string> }
+            | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -20352,6 +20422,57 @@ export type UpdateAiPersonaMutation = {
     __typename?: 'AiPersona';
     id: string;
     prompt: Array<string>;
+    promptGraph?:
+      | {
+          __typename?: 'PromptGraph';
+          start?: string | undefined;
+          end?: string | undefined;
+          edges?:
+            | Array<{ __typename?: 'PromptGraphEdge'; from?: string | undefined; to?: string | undefined }>
+            | undefined;
+          state?:
+            | {
+                __typename?: 'PromptGraphDataStruct';
+                title?: string | undefined;
+                type?: string | undefined;
+                properties?:
+                  | Array<{
+                      __typename?: 'PromptGraphDataPoint';
+                      description?: string | undefined;
+                      name: string;
+                      type?: string | undefined;
+                      optional?: boolean | undefined;
+                    }>
+                  | undefined;
+              }
+            | undefined;
+          nodes?:
+            | Array<{
+                __typename?: 'PromptGraphNode';
+                input_variables?: Array<string> | undefined;
+                name: string;
+                prompt?: string | undefined;
+                system: boolean;
+                output?:
+                  | {
+                      __typename?: 'PromptGraphDataStruct';
+                      title?: string | undefined;
+                      type?: string | undefined;
+                      properties?:
+                        | Array<{
+                            __typename?: 'PromptGraphDataPoint';
+                            description?: string | undefined;
+                            name: string;
+                            type?: string | undefined;
+                            optional?: boolean | undefined;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
     externalConfig?: { __typename?: 'ExternalConfig'; apiKey?: string | undefined } | undefined;
   };
 };
