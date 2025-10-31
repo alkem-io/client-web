@@ -1292,16 +1292,6 @@ export type CommunicationAdminUpdateRoomStateInput = {
   roomID: Scalars['String']['input'];
 };
 
-export type CommunicationRoom = {
-  __typename?: 'CommunicationRoom';
-  /** The display name of the room */
-  displayName: Scalars['String']['output'];
-  /** The identifier of the room */
-  id: Scalars['String']['output'];
-  /** The messages that have been sent to the Room. */
-  messages: Array<Message>;
-};
-
 export type CommunicationSendMessageToCommunityLeadsInput = {
   /** The Community the message is being sent to */
   communityId: Scalars['UUID']['input'];
@@ -1316,7 +1306,7 @@ export type CommunicationSendMessageToOrganizationInput = {
   organizationId: Scalars['UUID']['input'];
 };
 
-export type CommunicationSendMessageToUserInput = {
+export type CommunicationSendMessageToUsersInput = {
   /** The message being sent */
   message: Scalars['String']['input'];
   /** All Users the message is being sent to */
@@ -3892,7 +3882,7 @@ export type MeQueryResults = {
   mySpaces: Array<MySpaceResults>;
   /** Get all notifications for the logged in user. */
   notifications: PaginatedInAppNotifications;
-  /** The number of unread notifications for the current authenticated user. */
+  /** The total number of unread notifications for the current authenticated user across all notification types. */
   notificationsUnreadCount: Scalars['Float']['output'];
   /** The Spaces the current user is a member of as a flat list. */
   spaceMembershipsFlat: Array<CommunityMembershipResult>;
@@ -3924,10 +3914,6 @@ export type MeQueryResultsNotificationsArgs = {
   filter?: InputMaybe<NotificationEventsFilterInput>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type MeQueryResultsNotificationsUnreadCountArgs = {
-  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
@@ -4290,12 +4276,10 @@ export type Mutation = {
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
-  /** Mark multiple notifications as read. If no IDs are provided, marks all user notifications as read. */
+  /** Mark notifications as read. If no filter is provided, marks all user notifications as read. If filter with types is provided, marks only those notification types as read. */
   markNotificationsAsRead: Scalars['Boolean']['output'];
-  /** Mark multiple notifications as unread. If no IDs are provided, marks all user notifications as unread. */
+  /** Mark notifications as unread. If no filter is provided, marks all user notifications as unread. If filter with types is provided, marks only those notification types as unread. */
   markNotificationsAsUnread: Scalars['Boolean']['output'];
-  /** Sends a message on the specified User`s behalf and returns the room id */
-  messageUser: Scalars['String']['output'];
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
   /** Refresh the Bodies of Knowledge on All VCs */
@@ -4340,8 +4324,10 @@ export type Mutation = {
   sendMessageToOrganization: Scalars['Boolean']['output'];
   /** Sends an comment message. Returns the id of the new Update message. */
   sendMessageToRoom: Message;
-  /** Send message to a User. */
-  sendMessageToUser: Scalars['Boolean']['output'];
+  /** Sends a message on the specified User`s behalf and returns the room id */
+  sendMessageToUserDirect: Scalars['String']['output'];
+  /** Send message to multiple Users. */
+  sendMessageToUsers: Scalars['Boolean']['output'];
   /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
   transferCallout: Callout;
   /** Transfer the specified InnovationHub to another Account. */
@@ -4805,15 +4791,11 @@ export type MutationLicenseResetOnAccountArgs = {
 };
 
 export type MutationMarkNotificationsAsReadArgs = {
-  notificationIds: Array<Scalars['String']['input']>;
+  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MutationMarkNotificationsAsUnreadArgs = {
-  notificationIds: Array<Scalars['String']['input']>;
-};
-
-export type MutationMessageUserArgs = {
-  messageData: UserSendMessageInput;
+  filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
 export type MutationMoveContributionToCalloutArgs = {
@@ -4892,8 +4874,12 @@ export type MutationSendMessageToRoomArgs = {
   messageData: RoomSendMessageInput;
 };
 
-export type MutationSendMessageToUserArgs = {
-  messageData: CommunicationSendMessageToUserInput;
+export type MutationSendMessageToUserDirectArgs = {
+  messageData: UserSendMessageInput;
+};
+
+export type MutationSendMessageToUsersArgs = {
+  messageData: CommunicationSendMessageToUsersInput;
 };
 
 export type MutationTransferCalloutArgs = {
@@ -5161,6 +5147,7 @@ export enum NotificationEvent {
   SpaceAdminCollaborationCalloutContribution = 'SPACE_ADMIN_COLLABORATION_CALLOUT_CONTRIBUTION',
   SpaceAdminCommunityApplication = 'SPACE_ADMIN_COMMUNITY_APPLICATION',
   SpaceAdminCommunityNewMember = 'SPACE_ADMIN_COMMUNITY_NEW_MEMBER',
+  SpaceAdminVirtualContributorCommunityInvitationDeclined = 'SPACE_ADMIN_VIRTUAL_CONTRIBUTOR_COMMUNITY_INVITATION_DECLINED',
   SpaceCollaborationCalloutComment = 'SPACE_COLLABORATION_CALLOUT_COMMENT',
   SpaceCollaborationCalloutContribution = 'SPACE_COLLABORATION_CALLOUT_CONTRIBUTION',
   SpaceCollaborationCalloutPostContributionComment = 'SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT',
@@ -5173,6 +5160,7 @@ export enum NotificationEvent {
   UserMessage = 'USER_MESSAGE',
   UserMessageSender = 'USER_MESSAGE_SENDER',
   UserSignUpWelcome = 'USER_SIGN_UP_WELCOME',
+  UserSpaceCommunityApplicationDeclined = 'USER_SPACE_COMMUNITY_APPLICATION_DECLINED',
   UserSpaceCommunityInvitation = 'USER_SPACE_COMMUNITY_INVITATION',
   UserSpaceCommunityJoined = 'USER_SPACE_COMMUNITY_JOINED',
   VirtualContributorAdminSpaceCommunityInvitation = 'VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION',
@@ -8091,7 +8079,7 @@ export type UpdateUserSettingsNotificationUserInput = {
 export type UpdateUserSettingsNotificationUserMembershipInput = {
   /** Receive a notification for community invitation */
   spaceCommunityInvitationReceived?: InputMaybe<NotificationSettingInput>;
-  /** Receive a notification when I join a new community */
+  /** Receive a notification when I join a new community or when my application is declined */
   spaceCommunityJoined?: InputMaybe<NotificationSettingInput>;
 };
 
@@ -8150,8 +8138,34 @@ export type UpdateWhiteboardEntityInput = {
   contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
+  /** The preview settings for the Whiteboard. */
+  previewSettings?: InputMaybe<UpdateWhiteboardPreviewSettingsInput>;
   /** The Profile of this entity. */
   profile?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateWhiteboardPreviewCoordinatesInput = {
+  /** The height. */
+  height: Scalars['Float']['input'];
+  /** The width. */
+  width: Scalars['Float']['input'];
+  /** The x coordinate. */
+  x: Scalars['Float']['input'];
+  /** The y coordinate. */
+  y: Scalars['Float']['input'];
+};
+
+export type UpdateWhiteboardPreviewSettingsInput = {
+  /** The coordinates for the preview. */
+  coordinates?: InputMaybe<UpdateWhiteboardPreviewCoordinatesInput>;
+  /**
+   * The preview mode.
+   *       AUTO: Generate Whiteboard preview automatically when closing the dialog
+   *       CUSTOM: Generate Whiteboard preview based on user-defined coordinates when closing the dialog
+   *       FIXED: Use a fixed Whiteboard preview that does not change when closing the dialog
+   *
+   */
+  mode?: InputMaybe<WhiteboardPreviewMode>;
 };
 
 export type UrlResolverQueryResultCalendar = {
@@ -8262,8 +8276,6 @@ export type User = Contributor & {
   authentication?: Maybe<UserAuthenticationResult>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
-  /** The Community rooms this user is a member of */
-  communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The direct rooms this user is a member of */
@@ -8459,7 +8471,7 @@ export type UserSettingsNotificationUserMembership = {
   __typename?: 'UserSettingsNotificationUserMembership';
   /** Receive a notification when I am invited to join a Space community */
   spaceCommunityInvitationReceived: UserSettingsNotificationChannels;
-  /** Receive a notification when I join a Space */
+  /** Receive a notification when I join a Space or when my application is declined */
   spaceCommunityJoined: UserSettingsNotificationChannels;
 };
 
@@ -8709,6 +8721,7 @@ export enum VisualType {
   Banner = 'BANNER',
   BannerWide = 'BANNER_WIDE',
   Card = 'CARD',
+  WhiteboardPreview = 'WHITEBOARD_PREVIEW',
 }
 
 export type VisualUploadImageInput = {
@@ -8734,10 +8747,44 @@ export type Whiteboard = {
   isMultiUser: Scalars['Boolean']['output'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
+  /** The preview settings for the Whiteboard. */
+  previewSettings: WhiteboardPreviewSettings;
   /** The Profile for this Whiteboard. */
   profile: Profile;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+};
+
+export type WhiteboardPreviewCoordinates = {
+  __typename?: 'WhiteboardPreviewCoordinates';
+  /** The height. */
+  height: Scalars['Float']['output'];
+  /** The width. */
+  width: Scalars['Float']['output'];
+  /** The x coordinate. */
+  x: Scalars['Float']['output'];
+  /** The y coordinate. */
+  y: Scalars['Float']['output'];
+};
+
+export enum WhiteboardPreviewMode {
+  Auto = 'AUTO',
+  Custom = 'CUSTOM',
+  Fixed = 'FIXED',
+}
+
+export type WhiteboardPreviewSettings = {
+  __typename?: 'WhiteboardPreviewSettings';
+  /** The coordinates for the preview. */
+  coordinates?: Maybe<WhiteboardPreviewCoordinates>;
+  /**
+   * The preview mode.
+   *       AUTO: Generate Whiteboard preview automatically when closing the dialog
+   *       CUSTOM: Generate Whiteboard preview based on user-defined coordinates when closing the dialog
+   *       FIXED: Use a fixed Whiteboard preview that does not change when closing the dialog
+   *
+   */
+  mode: WhiteboardPreviewMode;
 };
 
 export type UploadFileOnReferenceMutationVariables = Exact<{
@@ -8890,6 +8937,21 @@ export type InnovationPackProfilePageQuery = {
                   uri: string;
                 }>
               | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
           };
           templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
         }
@@ -8925,6 +8987,21 @@ export type InnovationPackProfileFragment = {
     | undefined;
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+    | undefined;
+  avatar?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        alternativeText?: string | undefined;
+      }
     | undefined;
 };
 
@@ -9025,6 +9102,21 @@ export type AdminInnovationPackQuery = {
                   description?: string | undefined;
                   uri: string;
                 }>
+              | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
               | undefined;
           };
           templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
@@ -12256,6 +12348,13 @@ export type UpdateCalloutContentMutation = {
                   };
                 }
               | undefined;
+            previewSettings: {
+              __typename?: 'WhiteboardPreviewSettings';
+              mode: WhiteboardPreviewMode;
+              coordinates?:
+                | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+                | undefined;
+            };
           }
         | undefined;
       memo?:
@@ -12620,6 +12719,13 @@ export type UpdateCalloutVisibilityMutation = {
                   };
                 }
               | undefined;
+            previewSettings: {
+              __typename?: 'WhiteboardPreviewSettings';
+              mode: WhiteboardPreviewMode;
+              coordinates?:
+                | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+                | undefined;
+            };
           }
         | undefined;
       memo?:
@@ -13598,6 +13704,13 @@ export type CreateWhiteboardOnCalloutMutation = {
                 };
               }
             | undefined;
+          previewSettings: {
+            __typename?: 'WhiteboardPreviewSettings';
+            mode: WhiteboardPreviewMode;
+            coordinates?:
+              | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+              | undefined;
+          };
         }
       | undefined;
   };
@@ -13789,6 +13902,13 @@ export type CreateCalloutMutation = {
                   };
                 }
               | undefined;
+            previewSettings: {
+              __typename?: 'WhiteboardPreviewSettings';
+              mode: WhiteboardPreviewMode;
+              coordinates?:
+                | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+                | undefined;
+            };
           }
         | undefined;
       memo?:
@@ -14243,6 +14363,19 @@ export type CalloutDetailsQuery = {
                         };
                       }
                     | undefined;
+                  previewSettings: {
+                    __typename?: 'WhiteboardPreviewSettings';
+                    mode: WhiteboardPreviewMode;
+                    coordinates?:
+                      | {
+                          __typename?: 'WhiteboardPreviewCoordinates';
+                          x: number;
+                          y: number;
+                          width: number;
+                          height: number;
+                        }
+                      | undefined;
+                  };
                 }
               | undefined;
             memo?:
@@ -14681,6 +14814,13 @@ export type CalloutDetailsFragment = {
                 };
               }
             | undefined;
+          previewSettings: {
+            __typename?: 'WhiteboardPreviewSettings';
+            mode: WhiteboardPreviewMode;
+            coordinates?:
+              | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+              | undefined;
+          };
         }
       | undefined;
     memo?:
@@ -15335,6 +15475,26 @@ export type UpdateMemoContentUpdatePolicyMutation = {
   updateMemo: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
+export type UpdateWhiteboardPreviewSettingsMutationVariables = Exact<{
+  whiteboardId: Scalars['UUID']['input'];
+  previewSettings: UpdateWhiteboardPreviewSettingsInput;
+}>;
+
+export type UpdateWhiteboardPreviewSettingsMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboard: {
+    __typename?: 'Whiteboard';
+    id: string;
+    previewSettings: {
+      __typename?: 'WhiteboardPreviewSettings';
+      mode: WhiteboardPreviewMode;
+      coordinates?:
+        | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+        | undefined;
+    };
+  };
+};
+
 export type WhiteboardProfileFragment = {
   __typename?: 'Profile';
   id: string;
@@ -15459,6 +15619,13 @@ export type WhiteboardDetailsFragment = {
         };
       }
     | undefined;
+  previewSettings: {
+    __typename?: 'WhiteboardPreviewSettings';
+    mode: WhiteboardPreviewMode;
+    coordinates?:
+      | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+      | undefined;
+  };
 };
 
 export type WhiteboardContentFragment = { __typename?: 'Whiteboard'; id: string; content: string };
@@ -15564,6 +15731,13 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                     };
                   }
                 | undefined;
+              previewSettings: {
+                __typename?: 'WhiteboardPreviewSettings';
+                mode: WhiteboardPreviewMode;
+                coordinates?:
+                  | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+                  | undefined;
+              };
             }
           | undefined;
       }>;
@@ -15658,6 +15832,13 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                     };
                   }
                 | undefined;
+              previewSettings: {
+                __typename?: 'WhiteboardPreviewSettings';
+                mode: WhiteboardPreviewMode;
+                coordinates?:
+                  | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+                  | undefined;
+              };
             }
           | undefined;
       };
@@ -15775,6 +15956,19 @@ export type WhiteboardFromCalloutQuery = {
                         };
                       }
                     | undefined;
+                  previewSettings: {
+                    __typename?: 'WhiteboardPreviewSettings';
+                    mode: WhiteboardPreviewMode;
+                    coordinates?:
+                      | {
+                          __typename?: 'WhiteboardPreviewCoordinates';
+                          x: number;
+                          y: number;
+                          width: number;
+                          height: number;
+                        }
+                      | undefined;
+                  };
                 }
               | undefined;
           }>;
@@ -16648,11 +16842,11 @@ export type ForumDiscussionUpdatedSubscription = {
   };
 };
 
-export type SendMessageToUserMutationVariables = Exact<{
-  messageData: CommunicationSendMessageToUserInput;
+export type SendMessageToUsersMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToUsersInput;
 }>;
 
-export type SendMessageToUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+export type SendMessageToUsersMutation = { __typename?: 'Mutation'; sendMessageToUsers: boolean };
 
 export type SendMessageToOrganizationMutationVariables = Exact<{
   messageData: CommunicationSendMessageToOrganizationInput;
@@ -20415,14 +20609,19 @@ export type DashboardSpacesQuery = {
   spaces: Array<{
     __typename?: 'Space';
     id: string;
+    level: SpaceLevel;
     visibility: SpaceVisibility;
     about: {
       __typename?: 'SpaceAbout';
-      why?: string | undefined;
       isContentPublic: boolean;
+      why?: string | undefined;
       id: string;
-      metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-      membership: { __typename?: 'SpaceAboutMembership'; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      membership: {
+        __typename?: 'SpaceAboutMembership';
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      };
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -21059,6 +21258,25 @@ export type PlatformAdminInnovationHubsQuery = {
       __typename?: 'InnovationHub';
       id: string;
       subdomain: string;
+      listedInStore: boolean;
+      searchVisibility: SearchVisibility;
+      account: {
+        __typename?: 'Account';
+        id: string;
+        host?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | undefined;
+      };
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
   };
@@ -21073,6 +21291,20 @@ export type PlatformAdminInnovationPacksQuery = {
     innovationPacks: Array<{
       __typename?: 'InnovationPack';
       id: string;
+      listedInStore: boolean;
+      searchVisibility: SearchVisibility;
+      provider:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
   };
@@ -21208,6 +21440,27 @@ export type PlatformAdminSpacesListQuery = {
       id: string;
       nameID: string;
       visibility: SpaceVisibility;
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      };
+      account: {
+        __typename?: 'Account';
+        id: string;
+        host?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | undefined;
+      };
       about: {
         __typename?: 'SpaceAbout';
         id: string;
@@ -21338,6 +21591,31 @@ export type PlatformAdminVirtualContributorsListQuery = {
     virtualContributors: Array<{
       __typename?: 'VirtualContributor';
       id: string;
+      listedInStore: boolean;
+      searchVisibility: SearchVisibility;
+      account?:
+        | {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
+          }
+        | undefined;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
@@ -21356,10 +21634,10 @@ export type PlatformAdminVirtualContributorsListQuery = {
 };
 
 export type ShareLinkWithUserMutationVariables = Exact<{
-  messageData: CommunicationSendMessageToUserInput;
+  messageData: CommunicationSendMessageToUsersInput;
 }>;
 
-export type ShareLinkWithUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+export type ShareLinkWithUserMutation = { __typename?: 'Mutation'; sendMessageToUsers: boolean };
 
 export type PageInfoFragment = {
   __typename?: 'PageInfo';
@@ -22280,6 +22558,7 @@ export type CreateSubspaceMutation = {
     __typename?: 'Space';
     id: string;
     level: SpaceLevel;
+    visibility: SpaceVisibility;
     about: {
       __typename?: 'SpaceAbout';
       id: string;
@@ -22381,40 +22660,6 @@ export type SubspacePageBannerQuery = {
           };
         }
       | undefined;
-  };
-};
-
-export type SpaceCardFragment = {
-  __typename?: 'Space';
-  id: string;
-  visibility: SpaceVisibility;
-  about: {
-    __typename?: 'SpaceAbout';
-    why?: string | undefined;
-    isContentPublic: boolean;
-    id: string;
-    metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-    membership: { __typename?: 'SpaceAboutMembership'; myMembershipStatus?: CommunityMembershipStatus | undefined };
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      url: string;
-      tagline?: string | undefined;
-      cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
-        | undefined;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-    };
   };
 };
 
@@ -22682,6 +22927,7 @@ export type SpaceSubspaceCardsQuery = {
             __typename?: 'Space';
             id: string;
             level: SpaceLevel;
+            visibility: SpaceVisibility;
             about: {
               __typename?: 'SpaceAbout';
               isContentPublic: boolean;
@@ -22730,6 +22976,7 @@ export type SubspaceCardFragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;
+  visibility: SpaceVisibility;
   about: {
     __typename?: 'SpaceAbout';
     isContentPublic: boolean;
@@ -22771,6 +23018,7 @@ export type SubspacesOnSpaceFragment = {
     __typename?: 'Space';
     id: string;
     level: SpaceLevel;
+    visibility: SpaceVisibility;
     about: {
       __typename?: 'SpaceAbout';
       isContentPublic: boolean;
@@ -23232,14 +23480,19 @@ export type SubspaceCreatedSubscription = {
     subspace: {
       __typename?: 'Space';
       id: string;
+      level: SpaceLevel;
       visibility: SpaceVisibility;
       about: {
         __typename?: 'SpaceAbout';
-        why?: string | undefined;
         isContentPublic: boolean;
+        why?: string | undefined;
         id: string;
-        metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-        membership: { __typename?: 'SpaceAboutMembership'; myMembershipStatus?: CommunityMembershipStatus | undefined };
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        membership: {
+          __typename?: 'SpaceAboutMembership';
+          myMembershipStatus?: CommunityMembershipStatus | undefined;
+          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        };
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -23308,6 +23561,20 @@ export type SpacePermissionsAndEntitlementsQuery = {
               }
             | undefined;
         }
+      | undefined;
+  };
+};
+
+export type SpaceStorageAggregatorIdQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceStorageAggregatorIdQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | { __typename?: 'Space'; id: string; storageAggregator: { __typename?: 'StorageAggregator'; id: string } }
       | undefined;
   };
 };
@@ -26521,6 +26788,19 @@ export type TemplateContentQuery = {
                               };
                             }
                           | undefined;
+                        previewSettings: {
+                          __typename?: 'WhiteboardPreviewSettings';
+                          mode: WhiteboardPreviewMode;
+                          coordinates?:
+                            | {
+                                __typename?: 'WhiteboardPreviewCoordinates';
+                                x: number;
+                                y: number;
+                                width: number;
+                                height: number;
+                              }
+                            | undefined;
+                        };
                       }
                     | undefined;
                   link?:
@@ -27068,6 +27348,13 @@ export type CalloutTemplateContentFragment = {
                 };
               }
             | undefined;
+          previewSettings: {
+            __typename?: 'WhiteboardPreviewSettings';
+            mode: WhiteboardPreviewMode;
+            coordinates?:
+              | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+              | undefined;
+          };
         }
       | undefined;
     link?:
@@ -31541,7 +31828,7 @@ export type UpdateNotificationStateMutation = {
 };
 
 export type MarkNotificationsAsReadMutationVariables = Exact<{
-  notificationIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+  types: Array<NotificationEvent> | NotificationEvent;
 }>;
 
 export type MarkNotificationsAsReadMutation = { __typename?: 'Mutation'; markNotificationsAsRead: boolean };
@@ -33306,9 +33593,7 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment
     | undefined;
 };
 
-export type InAppNotificationsUnreadCountQueryVariables = Exact<{
-  types?: InputMaybe<Array<NotificationEvent> | NotificationEvent>;
-}>;
+export type InAppNotificationsUnreadCountQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InAppNotificationsUnreadCountQuery = {
   __typename?: 'Query';

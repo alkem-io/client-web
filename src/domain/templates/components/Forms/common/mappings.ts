@@ -119,7 +119,7 @@ const handleCreateWhiteboard = (data?: {
   profile?: {
     displayName?: string;
     preview?: {
-      name: VisualType.Banner;
+      name: VisualType.WhiteboardPreview;
       uri: string;
     };
   };
@@ -134,7 +134,7 @@ const handleCreateWhiteboard = (data?: {
       visuals: data.profile?.preview
         ? [
             {
-              name: VisualType.Banner,
+              name: VisualType.WhiteboardPreview,
               uri: data.profile.preview.uri,
             },
           ]

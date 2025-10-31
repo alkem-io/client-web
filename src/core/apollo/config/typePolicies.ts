@@ -55,6 +55,12 @@ export const typePolicies: TypedTypePolicies = {
       },
     },
   },
+  CalloutSettings: {
+    merge: true,
+  },
+  WhiteboardPreviewSettings: {
+    merge: true,
+  },
   // Disable all keyFields for UrlResolver queries *See UrlResolverProvider.tsx to understand why
   UrlResolverQueryResults: {
     keyFields: false,

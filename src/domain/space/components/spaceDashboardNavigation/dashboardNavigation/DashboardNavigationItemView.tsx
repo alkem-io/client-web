@@ -113,12 +113,14 @@ const DashboardNavigationItemView = ({
           keepScroll
           visual={
             <Tooltip
-              open={compact ? undefined : false}
+              disableHoverListener={!compact}
               title={<Caption>{displayName}</Caption>}
               placement={tooltipPlacement}
               arrow
             >
-              <SpaceAvatar src={avatar?.uri} size="medium" spaceId={id} alt={avatar?.alternativeText} />
+              <Box>
+                <SpaceAvatar src={avatar?.uri} size="medium" spaceId={id} alt={avatar?.alternativeText} />
+              </Box>
             </Tooltip>
           }
           visualRight={
@@ -128,9 +130,11 @@ const DashboardNavigationItemView = ({
                 placement={tooltipPlacement}
                 arrow
               >
-                <IconButton disableRipple onClick={preventDefault} aria-label={t('common.lock')}>
-                  <LockOutlined />
-                </IconButton>
+                <Box>
+                  <IconButton disableRipple onClick={preventDefault} aria-label={t('common.lock')}>
+                    <LockOutlined />
+                  </IconButton>
+                </Box>
               </Tooltip>
             ) : hasChildren ? (
               <IconButton onClick={toggleExpand} aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}>

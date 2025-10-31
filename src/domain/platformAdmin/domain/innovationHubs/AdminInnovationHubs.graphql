@@ -3,6 +3,18 @@ query PlatformAdminInnovationHubs {
     innovationHubs {
       id
       subdomain
+      listedInStore
+      searchVisibility
+      account {
+        id
+        host {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
       profile {
         id
         displayName

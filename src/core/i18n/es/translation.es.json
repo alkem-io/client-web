@@ -163,6 +163,7 @@
     "importing": "Importando...",
     "go-to-entity": "Ir a {{entity}}",
     "reply": "Responder",
+    "reset": "Reset",
     "select": "Seleccionar",
     "change-field": "Cambiar {{field}}",
     "send": "Enviar",
@@ -912,8 +913,8 @@
       "more-links": "{{count}} enlaces, haz clic aquí para mostrar todos",
       "new-temporary-reference": "ID de enlace temporal: {{temp}}"
     },
-    "singleWhiteboard": {
-      "clickToSee": "Haz clic para ver el $t(common.whiteboard) completo"
+    "whiteboard": {
+      "clickToSee": "Click to open $t(common.whiteboard)"
     },
     "memo": {
       "clickToSee": "Haz clic para ver la $t(common.memo) completa"
@@ -1960,7 +1961,7 @@
         },
         "USER_SPACE_COMMUNITY_INVITATION": {
           "subject": "{{triggeredByName}} te invitó a unirte a {{spaceName}}",
-          "description": "{{spaceName}} - {{spaceDescription}}"
+          "description": ""
         },
         "USER_MESSAGE_SENDER": {
           "subject": "Enviaste un mensaje directo a {{receiverName}}",
@@ -1993,6 +1994,10 @@
         "SPACE_ADMIN_COMMUNITY_APPLICATION": {
           "subject": "{{triggeredByName}} solicitó unirse a {{spaceName}}",
           "description": "Revisa la solicitud en la $t(common.space) $t(common.settings)"
+        },
+        "SPACE_ADMIN_VIRTUAL_CONTRIBUTOR_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your invitation for {{contributorName}} to join {{spaceName}}",
+          "description": ""
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
           "subject": "Como responsable de {{spaceName}}, has recibido un mensaje de {{triggeredByName}}",
@@ -2049,10 +2054,24 @@
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "subject": "{{triggeredByName}} ha creado un nuevo $t(common.space)",
           "description": "{{spaceName}}"
+        },
+        "USER_SIGN_UP_WELCOME": {
+          "subject": "¡Bienvenido a Alkemio! 🎉",
+          "description": "¡Ahora eres parte de una comunidad que crece a través de la colaboración! 🤝 Haz clic para explorar la Guía de Inicio y comienza a participar en $t(common.spaces), donde cada idea nos ayuda a avanzar. ¿Preguntas? Envía un correo a support@alkem.io"
+        },
+        "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
+          "description": ""
         }
       },
       "emptyInbox": "No hay $t(common.notifications) pendientes",
-      "markAllAsRead": "Marcar todo como leído"
+      "markAllAsRead": "Marcar todo como leído",
+      "filters": {
+        "all": "All",
+        "messagesAndReplies": "Messages & Replies",
+        "space": "Space notifications",
+        "platform": "Platform notifications"
+      }
     },
     "spaceWelcomeDialog": {
       "title": "🎉 ¡Tu $t(common.space) está listo!",
@@ -2547,7 +2566,7 @@
       "unauthorized": "Inicia sesión para ver los contribuyentes de este $t(common.space).",
       "search": {
         "title": "¡Encuentra talento y experiencia!",
-        "subtitle": "Busca otras personas y $t(common.organizations) que puedan ayudarte con tu $t(common.subspace), por ejemplo, según habilidades o intereses.",
+        "subtitle": "Busca otras personas y $t(common.organizations) que puedan ayudarte con tu $t(common.space), por ejemplo, según habilidades o intereses.",
         "placeholder": "Buscar…"
       },
       "organizations": {
@@ -2956,7 +2975,37 @@
           "generic": "No puedes editar este $t(common.whiteboard) por alguna de las siguientes razones:\n\n- Has estado inactivo durante 2 horas o más\n- No eres $t(common.member) del $t(common.space)\n- Este $t(common.space) solo permite un editor de $t(common.whiteboard) a la vez\n- Este $t(common.space) permite más editores, pero se ha alcanzado el máximo."
         }
       },
-      "restartCollaboration": "Continuar editando"
+      "restartCollaboration": "Continuar editando",
+      "previewSettings": {
+        "title": "Preview Settings",
+        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "modes": {
+          "auto": {
+            "title": "Auto Preview",
+            "description": "We'll automatically generate the best preview from your whiteboard content."
+          },
+          "custom": {
+            "title": "Manual Selection",
+            "description": "Choose exactly which part of your whiteboard to show as a preview."
+          },
+          "fixed": {
+            "title": "Fixed Selection",
+            "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
+          }
+        },
+        "cropDialog": {
+          "previewArea": "Crop preview area",
+          "reset": "$t(buttons.reset)",
+          "cancel": "$t(buttons.cancel)",
+          "confirm": "Confirm Selection"
+        }
+      },
+      "preview": {
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
+        "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
+      }
     },
     "memo": {
       "readonlyReason": {
@@ -3336,7 +3385,7 @@
       "recovery-flow-expired": "Este enlace de restablecimiento de contraseña ha expirado. Solicita uno nuevo enviando tu correo electrónico nuevamente",
       "verification-flow-continue": "Continuar",
       "login-flow-account-exists": "Este correo ya está asociado a una $t(common.account). Si te registraste previamente a través de LinkedIn, GitHub o Microsoft, usa ese método de inicio de sesión. De lo contrario, restablece tu contraseña",
-      "invalid-credentials": "La dirección de correo electrónico o contraseña que ingresaste no es válida. Verifica tus credenciales e inténtalo de nuevo. ¿Estás intentando registrarte? Puedes hacerlo haciendo clic en el enlace de arriba",
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "claim-missing": "No has verificado tu identidad de Vidua. Verifica tu identidad e inténtalo de nuevo o prueba otro método de registro",
       "pick-password": "Elige una contraseña para tu $t(common.account)"
     },
@@ -3367,7 +3416,8 @@
       "FORMAT_NOT_SUPPORTED": "Formato no soportado",
       "BAD_USER_INPUT": "Entrada de usuario incorrecta: {{message}}",
       "NOT_SUPPORTED": "No soportado: {{message}}",
-      "OPERATION_NOT_ALLOWED": "{{message}}"
+      "OPERATION_NOT_ALLOWED": "{{message}}",
+      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time."
     }
   },
   "dashboard-updates-section": {
@@ -3504,6 +3554,9 @@
     "dialog": {
       "title": "Iniciar videollamada",
       "content": "Estás a punto de iniciar una videollamada usando Jitsi, un servicio seguro de videoconferencia de terceros. La llamada se abrirá en una nueva pestaña del navegador, fuera del entorno de Alkemio. Otros pueden unirse a través del mismo botón o usando la URL compartida.<br/><br/>Más información sobre Jitsi <jitsiLink>aquí</jitsiLink>, incluyendo cómo gestionar la configuración de acceso y privacidad."
+    },
+    "error": {
+      "emptyUrl": "Unable to generate video call URL. Please refresh the page and try again."
     }
   },
   "createSpace": {

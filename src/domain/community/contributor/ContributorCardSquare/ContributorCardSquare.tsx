@@ -1,6 +1,6 @@
 import {
   useSendMessageToOrganizationMutation,
-  useSendMessageToUserMutation,
+  useSendMessageToUsersMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import Avatar from '@/core/ui/avatar/Avatar';
@@ -38,7 +38,7 @@ const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
   const { id, displayName, avatar, avatarAltText, url, tooltip, isContactable, roleName, contributorType } = props;
   const { t } = useTranslation();
-  const [sendMessageToUser] = useSendMessageToUserMutation();
+  const [sendMessageToUser] = useSendMessageToUsersMutation();
   const [sendMessageToOrganization] = useSendMessageToOrganizationMutation();
   const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
 

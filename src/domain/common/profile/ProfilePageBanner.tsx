@@ -17,6 +17,8 @@ import { defaultPageBanner } from '@/main/ui/layout/topLevelPageLayout/TopLevelP
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { TagsetModel } from '../tagset/TagsetModel';
 import { LocationModel } from '../location/LocationModel';
+import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 export interface ProfilePageBannerProps {
   entityId: string | undefined;
@@ -86,7 +88,7 @@ const ProfilePageBanner = ({
         cardComponent={PageBannerCardWithVisual}
         visual={
           <Avatar
-            src={profile?.avatar?.uri}
+            src={profile?.avatar?.uri || getDefaultSpaceVisualUrl(VisualType.Avatar)}
             size="large"
             ariaLabel={
               profile?.displayName ? t('common.avatar-of', { user: profile?.displayName }) : t('common.avatar')

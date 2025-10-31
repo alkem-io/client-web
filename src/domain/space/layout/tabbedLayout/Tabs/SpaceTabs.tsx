@@ -207,8 +207,8 @@ const SpaceTabs = ({ currentTab, mobile, actions, onMenuOpen }: SpacePageTabsPro
         <VideoCallDialog
           open={isVideoCallDialogVisible}
           onClose={() => setIsVideoCallDialogVisible(false)}
-          spaceId={spaceId}
           spaceNameId={space.nameID}
+          spaceId={spaceId}
         />
       )}
 

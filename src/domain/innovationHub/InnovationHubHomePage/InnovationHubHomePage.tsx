@@ -11,9 +11,7 @@ import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { useDashboardSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
-import SpaceCard from '@/domain/space/components/cards/SpaceCard';
-import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
-import { MetricType } from '@/domain/platform/metrics/MetricType';
+import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 import RouterLink from '@/core/ui/link/RouterLink';
 import Gutters from '@/core/ui/grid/Gutters';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
@@ -54,17 +52,17 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
           <PageContentBlockHeader title={t('innovationHub.selectedSpaces', { space: innovationHub.displayName })} />
           <ScrollableCardsLayoutContainer orientation="horizontal" cards>
             {allSpaces?.map(space => (
-              <SpaceCard
+              <SubspaceCard
                 key={space.id}
                 banner={space.about.profile.cardBanner}
                 displayName={space.about.profile.displayName!}
-                why={space.about.why!}
-                membersCount={getMetricCount(space.about.metrics, MetricType.Member)}
+                vision={space.about.why ?? ''}
                 tagline={space.about.profile.tagline ?? ''}
                 tags={space.about.profile.tagset?.tags ?? []}
                 spaceUri={space.about.profile.url}
                 member={isMember(space.about)}
                 spaceVisibility={space.visibility}
+                spaceId={space.id}
               />
             ))}
           </ScrollableCardsLayoutContainer>

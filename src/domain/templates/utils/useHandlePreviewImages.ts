@@ -1,7 +1,5 @@
-import {
-  useUploadWhiteboardVisuals,
-  WhiteboardPreviewImage,
-} from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
+import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 const useHandlePreviewImages = () => {
   const { uploadVisuals } = useUploadWhiteboardVisuals();

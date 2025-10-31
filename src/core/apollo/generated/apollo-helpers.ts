@@ -909,12 +909,6 @@ export type CommunicationAdminRoomResultFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   members?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunicationRoomKeySpecifier = ('displayName' | 'id' | 'messages' | CommunicationRoomKeySpecifier)[];
-export type CommunicationRoomFieldPolicy = {
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  messages?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type CommunityKeySpecifier = (
   | 'authorization'
   | 'communication'
@@ -2568,7 +2562,6 @@ export type MutationKeySpecifier = (
   | 'licenseResetOnAccount'
   | 'markNotificationsAsRead'
   | 'markNotificationsAsUnread'
-  | 'messageUser'
   | 'moveContributionToCallout'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
@@ -2591,7 +2584,8 @@ export type MutationKeySpecifier = (
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
-  | 'sendMessageToUser'
+  | 'sendMessageToUserDirect'
+  | 'sendMessageToUsers'
   | 'transferCallout'
   | 'transferInnovationHubToAccount'
   | 'transferInnovationPackToAccount'
@@ -2752,7 +2746,6 @@ export type MutationFieldPolicy = {
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
-  messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2775,7 +2768,8 @@ export type MutationFieldPolicy = {
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  sendMessageToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageToUserDirect?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationPackToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4442,7 +4436,6 @@ export type UserKeySpecifier = (
   | 'agent'
   | 'authentication'
   | 'authorization'
-  | 'communityRooms'
   | 'createdDate'
   | 'directRooms'
   | 'email'
@@ -4465,7 +4458,6 @@ export type UserFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authentication?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4860,6 +4852,7 @@ export type WhiteboardKeySpecifier = (
   | 'id'
   | 'isMultiUser'
   | 'nameID'
+  | 'previewSettings'
   | 'profile'
   | 'updatedDate'
   | WhiteboardKeySpecifier
@@ -4873,8 +4866,27 @@ export type WhiteboardFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  previewSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WhiteboardPreviewCoordinatesKeySpecifier = (
+  | 'height'
+  | 'width'
+  | 'x'
+  | 'y'
+  | WhiteboardPreviewCoordinatesKeySpecifier
+)[];
+export type WhiteboardPreviewCoordinatesFieldPolicy = {
+  height?: FieldPolicy<any> | FieldReadFunction<any>;
+  width?: FieldPolicy<any> | FieldReadFunction<any>;
+  x?: FieldPolicy<any> | FieldReadFunction<any>;
+  y?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WhiteboardPreviewSettingsKeySpecifier = ('coordinates' | 'mode' | WhiteboardPreviewSettingsKeySpecifier)[];
+export type WhiteboardPreviewSettingsFieldPolicy = {
+  coordinates?: FieldPolicy<any> | FieldReadFunction<any>;
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StrictTypedTypePolicies = {
   APM?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
@@ -5147,10 +5159,6 @@ export type StrictTypedTypePolicies = {
       | CommunicationAdminRoomResultKeySpecifier
       | (() => undefined | CommunicationAdminRoomResultKeySpecifier);
     fields?: CommunicationAdminRoomResultFieldPolicy;
-  };
-  CommunicationRoom?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CommunicationRoomKeySpecifier | (() => undefined | CommunicationRoomKeySpecifier);
-    fields?: CommunicationRoomFieldPolicy;
   };
   Community?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityKeySpecifier | (() => undefined | CommunityKeySpecifier);
@@ -6377,6 +6385,20 @@ export type StrictTypedTypePolicies = {
   Whiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardKeySpecifier | (() => undefined | WhiteboardKeySpecifier);
     fields?: WhiteboardFieldPolicy;
+  };
+  WhiteboardPreviewCoordinates?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | WhiteboardPreviewCoordinatesKeySpecifier
+      | (() => undefined | WhiteboardPreviewCoordinatesKeySpecifier);
+    fields?: WhiteboardPreviewCoordinatesFieldPolicy;
+  };
+  WhiteboardPreviewSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | WhiteboardPreviewSettingsKeySpecifier
+      | (() => undefined | WhiteboardPreviewSettingsKeySpecifier);
+    fields?: WhiteboardPreviewSettingsFieldPolicy;
   };
 };
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

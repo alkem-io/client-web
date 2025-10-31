@@ -17,6 +17,6 @@ mutation UpdateNotificationState($ID: UUID!, $state: NotificationEventInAppState
   updateNotificationState(notificationData: { ID: $ID, state: $state })
 }
 
-mutation MarkNotificationsAsRead($notificationIds: [String!]!) {
-  markNotificationsAsRead(notificationIds: $notificationIds)
+mutation MarkNotificationsAsRead($types: [NotificationEvent!]!) {
+  markNotificationsAsRead(filter: { types: $types })
 }

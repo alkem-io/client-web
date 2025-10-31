@@ -12,6 +12,20 @@ export const TagsetDetailsFragmentDoc = gql`
     type
   }
 `;
+export const VisualModelFullFragmentDoc = gql`
+  fragment VisualModelFull on Visual {
+    id
+    uri
+    name
+    allowedTypes
+    aspectRatio
+    maxHeight
+    maxWidth
+    minHeight
+    minWidth
+    alternativeText
+  }
+`;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
     id
@@ -28,8 +42,12 @@ export const InnovationPackProfileFragmentDoc = gql`
       uri
     }
     url
+    avatar: visual(type: AVATAR) {
+      ...VisualModelFull
+    }
   }
   ${TagsetDetailsFragmentDoc}
+  ${VisualModelFullFragmentDoc}
 `;
 export const VisualModelFragmentDoc = gql`
   fragment VisualModel on Visual {
@@ -654,20 +672,6 @@ export const ReferenceDetailsFragmentDoc = gql`
     description
   }
 `;
-export const VisualModelFullFragmentDoc = gql`
-  fragment VisualModelFull on Visual {
-    id
-    uri
-    name
-    allowedTypes
-    aspectRatio
-    maxHeight
-    maxWidth
-    minHeight
-    minWidth
-    alternativeText
-  }
-`;
 export const WhiteboardProfileFragmentDoc = gql`
   fragment WhiteboardProfile on Profile {
     id
@@ -677,7 +681,7 @@ export const WhiteboardProfileFragmentDoc = gql`
     visual(type: CARD) {
       ...VisualModelFull
     }
-    preview: visual(type: BANNER) {
+    preview: visual(type: WHITEBOARD_PREVIEW) {
       ...VisualModelFull
     }
     tagset {
@@ -717,6 +721,15 @@ export const WhiteboardDetailsFragmentDoc = gql`
         avatar: visual(type: AVATAR) {
           ...VisualModel
         }
+      }
+    }
+    previewSettings {
+      mode
+      coordinates {
+        x
+        y
+        width
+        height
       }
     }
   }
@@ -1762,44 +1775,6 @@ export const ProfileVisualsFragmentDoc = gql`
   }
   ${VisualModelFragmentDoc}
 `;
-export const SpaceAboutCardBannerFragmentDoc = gql`
-  fragment SpaceAboutCardBanner on SpaceAbout {
-    id
-    profile {
-      id
-      displayName
-      url
-      tagline
-      cardBanner: visual(type: CARD) {
-        ...VisualModel
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-  }
-  ${VisualModelFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const SpaceCardFragmentDoc = gql`
-  fragment SpaceCard on Space {
-    id
-    about {
-      ...SpaceAboutCardBanner
-      why
-      isContentPublic
-      metrics {
-        name
-        value
-      }
-      membership {
-        myMembershipStatus
-      }
-    }
-    visibility
-  }
-  ${SpaceAboutCardBannerFragmentDoc}
-`;
 export const BreadcrumbsSpaceL0FragmentDoc = gql`
   fragment BreadcrumbsSpaceL0 on Space {
     id
@@ -1836,10 +1811,30 @@ export const BreadcrumbsSubspaceFragmentDoc = gql`
   }
   ${VisualModelFragmentDoc}
 `;
+export const SpaceAboutCardBannerFragmentDoc = gql`
+  fragment SpaceAboutCardBanner on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      url
+      tagline
+      cardBanner: visual(type: CARD) {
+        ...VisualModel
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
     id
     level
+    visibility
     about {
       ...SpaceAboutCardBanner
       metrics {
@@ -2474,7 +2469,7 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
           whiteboard {
             id
             profile {
-              preview: visual(type: BANNER) {
+              preview: visual(type: WHITEBOARD_PREVIEW) {
                 ...VisualModel
               }
             }
@@ -2578,7 +2573,7 @@ export const WhiteboardTemplateContentFragmentDoc = gql`
     profile {
       id
       displayName
-      preview: visual(type: BANNER) {
+      preview: visual(type: WHITEBOARD_PREVIEW) {
         name
         uri
       }
@@ -6817,7 +6812,7 @@ export const CalloutContentDocument = gql`
             profile {
               id
               displayName
-              preview: visual(type: BANNER) {
+              preview: visual(type: WHITEBOARD_PREVIEW) {
                 id
                 name
                 uri
@@ -7083,7 +7078,7 @@ export const CalloutContributionDocument = gql`
             id
             url
             displayName
-            preview: visual(type: BANNER) {
+            preview: visual(type: WHITEBOARD_PREVIEW) {
               ...VisualModel
             }
           }
@@ -8962,6 +8957,69 @@ export type UpdateMemoContentUpdatePolicyMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.UpdateMemoContentUpdatePolicyMutation,
   SchemaTypes.UpdateMemoContentUpdatePolicyMutationVariables
 >;
+export const UpdateWhiteboardPreviewSettingsDocument = gql`
+  mutation UpdateWhiteboardPreviewSettings(
+    $whiteboardId: UUID!
+    $previewSettings: UpdateWhiteboardPreviewSettingsInput!
+  ) {
+    updateWhiteboard(whiteboardData: { ID: $whiteboardId, previewSettings: $previewSettings }) {
+      id
+      previewSettings {
+        mode
+        coordinates {
+          x
+          y
+          width
+          height
+        }
+      }
+    }
+  }
+`;
+export type UpdateWhiteboardPreviewSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
+  SchemaTypes.UpdateWhiteboardPreviewSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateWhiteboardPreviewSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateWhiteboardPreviewSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWhiteboardPreviewSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWhiteboardPreviewSettingsMutation, { data, loading, error }] = useUpdateWhiteboardPreviewSettingsMutation({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *      previewSettings: // value for 'previewSettings'
+ *   },
+ * });
+ */
+export function useUpdateWhiteboardPreviewSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
+    SchemaTypes.UpdateWhiteboardPreviewSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
+    SchemaTypes.UpdateWhiteboardPreviewSettingsMutationVariables
+  >(UpdateWhiteboardPreviewSettingsDocument, options);
+}
+export type UpdateWhiteboardPreviewSettingsMutationHookResult = ReturnType<
+  typeof useUpdateWhiteboardPreviewSettingsMutation
+>;
+export type UpdateWhiteboardPreviewSettingsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateWhiteboardPreviewSettingsMutation>;
+export type UpdateWhiteboardPreviewSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
+  SchemaTypes.UpdateWhiteboardPreviewSettingsMutationVariables
+>;
 export const WhiteboardFromCalloutDocument = gql`
   query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
     lookup {
@@ -9854,50 +9912,50 @@ export function useForumDiscussionUpdatedSubscription(
 export type ForumDiscussionUpdatedSubscriptionHookResult = ReturnType<typeof useForumDiscussionUpdatedSubscription>;
 export type ForumDiscussionUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ForumDiscussionUpdatedSubscription>;
-export const SendMessageToUserDocument = gql`
-  mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
-    sendMessageToUser(messageData: $messageData)
+export const SendMessageToUsersDocument = gql`
+  mutation sendMessageToUsers($messageData: CommunicationSendMessageToUsersInput!) {
+    sendMessageToUsers(messageData: $messageData)
   }
 `;
-export type SendMessageToUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.SendMessageToUserMutation,
-  SchemaTypes.SendMessageToUserMutationVariables
+export type SendMessageToUsersMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendMessageToUsersMutation,
+  SchemaTypes.SendMessageToUsersMutationVariables
 >;
 
 /**
- * __useSendMessageToUserMutation__
+ * __useSendMessageToUsersMutation__
  *
- * To run a mutation, you first call `useSendMessageToUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSendMessageToUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSendMessageToUsersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageToUsersMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [sendMessageToUserMutation, { data, loading, error }] = useSendMessageToUserMutation({
+ * const [sendMessageToUsersMutation, { data, loading, error }] = useSendMessageToUsersMutation({
  *   variables: {
  *      messageData: // value for 'messageData'
  *   },
  * });
  */
-export function useSendMessageToUserMutation(
+export function useSendMessageToUsersMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.SendMessageToUserMutation,
-    SchemaTypes.SendMessageToUserMutationVariables
+    SchemaTypes.SendMessageToUsersMutation,
+    SchemaTypes.SendMessageToUsersMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.SendMessageToUserMutation, SchemaTypes.SendMessageToUserMutationVariables>(
-    SendMessageToUserDocument,
+  return Apollo.useMutation<SchemaTypes.SendMessageToUsersMutation, SchemaTypes.SendMessageToUsersMutationVariables>(
+    SendMessageToUsersDocument,
     options
   );
 }
-export type SendMessageToUserMutationHookResult = ReturnType<typeof useSendMessageToUserMutation>;
-export type SendMessageToUserMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUserMutation>;
-export type SendMessageToUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.SendMessageToUserMutation,
-  SchemaTypes.SendMessageToUserMutationVariables
+export type SendMessageToUsersMutationHookResult = ReturnType<typeof useSendMessageToUsersMutation>;
+export type SendMessageToUsersMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUsersMutation>;
+export type SendMessageToUsersMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendMessageToUsersMutation,
+  SchemaTypes.SendMessageToUsersMutationVariables
 >;
 export const SendMessageToOrganizationDocument = gql`
   mutation sendMessageToOrganization($messageData: CommunicationSendMessageToOrganizationInput!) {
@@ -15216,10 +15274,10 @@ export function refetchInnovationHubBannerWideQuery(variables?: SchemaTypes.Inno
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
-      ...SpaceCard
+      ...SubspaceCard
     }
   }
-  ${SpaceCardFragmentDoc}
+  ${SubspaceCardFragmentDoc}
 `;
 
 /**
@@ -15950,6 +16008,18 @@ export const PlatformAdminInnovationHubsDocument = gql`
       innovationHubs {
         id
         subdomain
+        listedInStore
+        searchVisibility
+        account {
+          id
+          host {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
         profile {
           id
           displayName
@@ -16032,6 +16102,15 @@ export const PlatformAdminInnovationPacksDocument = gql`
     platformAdmin {
       innovationPacks {
         id
+        listedInStore
+        searchVisibility
+        provider {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
         profile {
           id
           displayName
@@ -16535,6 +16614,21 @@ export const PlatformAdminSpacesListDocument = gql`
         id
         nameID
         visibility
+        settings {
+          privacy {
+            mode
+          }
+        }
+        account {
+          id
+          host {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
         about {
           id
           profile {
@@ -16959,6 +17053,18 @@ export const PlatformAdminVirtualContributorsListDocument = gql`
     platformAdmin {
       virtualContributors {
         id
+        listedInStore
+        searchVisibility
+        account {
+          id
+          host {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
         authorization {
           id
           myPrivileges
@@ -17050,8 +17156,8 @@ export function refetchPlatformAdminVirtualContributorsListQuery(
   return { query: PlatformAdminVirtualContributorsListDocument, variables: variables };
 }
 export const ShareLinkWithUserDocument = gql`
-  mutation shareLinkWithUser($messageData: CommunicationSendMessageToUserInput!) {
-    sendMessageToUser(messageData: $messageData)
+  mutation shareLinkWithUser($messageData: CommunicationSendMessageToUsersInput!) {
+    sendMessageToUsers(messageData: $messageData)
   }
 `;
 export type ShareLinkWithUserMutationFn = Apollo.MutationFunction<
@@ -18458,11 +18564,11 @@ export const SubspaceCreatedDocument = gql`
   subscription subspaceCreated($subspaceId: UUID!) {
     subspaceCreated(spaceID: $subspaceId) {
       subspace {
-        ...SpaceCard
+        ...SubspaceCard
       }
     }
   }
-  ${SpaceCardFragmentDoc}
+  ${SubspaceCardFragmentDoc}
 `;
 
 /**
@@ -18598,6 +18704,86 @@ export function refetchSpacePermissionsAndEntitlementsQuery(
   variables: SchemaTypes.SpacePermissionsAndEntitlementsQueryVariables
 ) {
   return { query: SpacePermissionsAndEntitlementsDocument, variables: variables };
+}
+export const SpaceStorageAggregatorIdDocument = gql`
+  query SpaceStorageAggregatorId($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        storageAggregator {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceStorageAggregatorIdQuery__
+ *
+ * To run a query within a React component, call `useSpaceStorageAggregatorIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceStorageAggregatorIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceStorageAggregatorIdQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceStorageAggregatorIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  > &
+    ({ variables: SchemaTypes.SpaceStorageAggregatorIdQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceStorageAggregatorIdQuery, SchemaTypes.SpaceStorageAggregatorIdQueryVariables>(
+    SpaceStorageAggregatorIdDocument,
+    options
+  );
+}
+export function useSpaceStorageAggregatorIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  >(SpaceStorageAggregatorIdDocument, options);
+}
+export function useSpaceStorageAggregatorIdSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.SpaceStorageAggregatorIdQuery,
+        SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.SpaceStorageAggregatorIdQuery,
+    SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+  >(SpaceStorageAggregatorIdDocument, options);
+}
+export type SpaceStorageAggregatorIdQueryHookResult = ReturnType<typeof useSpaceStorageAggregatorIdQuery>;
+export type SpaceStorageAggregatorIdLazyQueryHookResult = ReturnType<typeof useSpaceStorageAggregatorIdLazyQuery>;
+export type SpaceStorageAggregatorIdSuspenseQueryHookResult = ReturnType<
+  typeof useSpaceStorageAggregatorIdSuspenseQuery
+>;
+export type SpaceStorageAggregatorIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceStorageAggregatorIdQuery,
+  SchemaTypes.SpaceStorageAggregatorIdQueryVariables
+>;
+export function refetchSpaceStorageAggregatorIdQuery(variables: SchemaTypes.SpaceStorageAggregatorIdQueryVariables) {
+  return { query: SpaceStorageAggregatorIdDocument, variables: variables };
 }
 export const SubspacePageDocument = gql`
   query SubspacePage($spaceId: UUID!) {
@@ -21802,7 +21988,7 @@ export const CreateTemplateDocument = gql`
             nameID
             profile {
               id
-              previewVisual: visual(type: BANNER) {
+              previewVisual: visual(type: WHITEBOARD_PREVIEW) {
                 id
               }
             }
@@ -22095,7 +22281,7 @@ export const UpdateCalloutTemplateDocument = gql`
           nameID
           profile {
             id
-            previewVisual: visual(type: BANNER) {
+            previewVisual: visual(type: WHITEBOARD_PREVIEW) {
               id
             }
           }
@@ -23380,8 +23566,8 @@ export type UpdateNotificationStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateNotificationStateMutationVariables
 >;
 export const MarkNotificationsAsReadDocument = gql`
-  mutation MarkNotificationsAsRead($notificationIds: [String!]!) {
-    markNotificationsAsRead(notificationIds: $notificationIds)
+  mutation MarkNotificationsAsRead($types: [NotificationEvent!]!) {
+    markNotificationsAsRead(filter: { types: $types })
   }
 `;
 export type MarkNotificationsAsReadMutationFn = Apollo.MutationFunction<
@@ -23402,7 +23588,7 @@ export type MarkNotificationsAsReadMutationFn = Apollo.MutationFunction<
  * @example
  * const [markNotificationsAsReadMutation, { data, loading, error }] = useMarkNotificationsAsReadMutation({
  *   variables: {
- *      notificationIds: // value for 'notificationIds'
+ *      types: // value for 'types'
  *   },
  * });
  */
@@ -23425,9 +23611,9 @@ export type MarkNotificationsAsReadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MarkNotificationsAsReadMutationVariables
 >;
 export const InAppNotificationsUnreadCountDocument = gql`
-  query InAppNotificationsUnreadCount($types: [NotificationEvent!]) {
+  query InAppNotificationsUnreadCount {
     me {
-      notificationsUnreadCount(filter: { types: $types })
+      notificationsUnreadCount
     }
   }
 `;
@@ -23444,7 +23630,6 @@ export const InAppNotificationsUnreadCountDocument = gql`
  * @example
  * const { data, loading, error } = useInAppNotificationsUnreadCountQuery({
  *   variables: {
- *      types: // value for 'types'
  *   },
  * });
  */

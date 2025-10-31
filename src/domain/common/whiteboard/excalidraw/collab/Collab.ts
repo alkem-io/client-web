@@ -7,12 +7,14 @@ import type {
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
 import type {
-  hashElementsVersion as ExcalidrawHashElementsVersion,
   reconcileElements as ExcalidrawReconcileElements,
   restoreElements as ExcalidrawRestoreElements,
+} from '@alkemio/excalidraw';
+import type {
+  hashElementsVersion as ExcalidrawHashElementsVersion,
   CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
   newElementWith as ExcalidrawNewElementWith,
-} from '@alkemio/excalidraw';
+} from '@alkemio/excalidraw/dist/types/element/src';
 import {
   ACTIVE_THRESHOLD,
   CollaboratorMode,

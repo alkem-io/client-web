@@ -9,7 +9,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Actions } from '@/core/ui/actions/Actions';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { useSendMessageToUserMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSendMessageToUsersMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -39,7 +39,7 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
 
   const { userModel } = useCurrentUserContext();
 
-  const [sendMessageToUser] = useSendMessageToUserMutation();
+  const [sendMessageToUser] = useSendMessageToUsersMutation();
 
   const initialValues: FormValues = {
     aiService: '',

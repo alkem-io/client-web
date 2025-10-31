@@ -6,7 +6,7 @@ import type { DataURL, SocketId } from '@alkemio/excalidraw/dist/types/excalidra
 import { CollaboratorModeEvent, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
 import { Socket } from 'socket.io-client';
 import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFilesManager';
-import type { isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw';
+import type { isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw/dist/types/element/src';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 interface PortalProps {

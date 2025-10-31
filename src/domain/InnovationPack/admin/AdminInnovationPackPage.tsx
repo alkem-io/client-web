@@ -96,6 +96,7 @@ const AdminInnovationPackPage = () => {
                 <PageContentBlock>
                   <InnovationPackForm
                     profile={innovationPack.profile}
+                    avatar={innovationPack.profile.avatar}
                     provider={innovationPack.provider}
                     onSubmit={handleSubmit}
                     loading={updatingProfile}

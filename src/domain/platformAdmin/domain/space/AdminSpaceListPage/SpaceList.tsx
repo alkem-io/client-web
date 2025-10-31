@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, useState, useEffect, useCallback } from 'react';
 import {
   refetchPlatformAdminSpacesListQuery,
   usePlatformAdminSpacesListQuery,
@@ -6,45 +6,120 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import Loading from '@/core/ui/loading/Loading';
-import ListPage from '@/domain/platformAdmin/components/ListPage';
-import { SearchableTableItem } from '@/domain/platformAdmin/components/SearchableTable';
-import { AuthorizationPrivilege, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceVisibility, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import SpaceListItem from './SpaceListItem';
+import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
+import AdminSearchableTable, { AdminTableColumn } from '@/domain/platformAdmin/components/AdminSearchableTable';
+import { Chip, IconButton } from '@mui/material';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { AccountOwnerColumn } from '@/domain/platformAdmin/components/AdminListItemLayout';
+import { SpaceTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
+import SpaceSettingsDialog from '@/domain/platformAdmin/domain/space/AdminSpaceListPage/SpaceSettingsDialog';
+
+const INITIAL_PAGE_SIZE = 10;
+const PAGE_SIZE = 10;
 
 /**
- * SpaceListV2 - Optimized version that loads minimal data upfront
- * License plan data is fetched on-demand when the manage license dialog is opened
+ * SpaceList - Optimized version that loads minimal data upfront
+ * Supports client-side pagination with "show more" functionality
  */
 export const SpaceList: FC = () => {
   const notify = useNotification();
   const { t } = useTranslation();
 
   const { data: spacesData, loading: loadingSpaces } = usePlatformAdminSpacesListQuery();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [displayedItemsCount, setDisplayedItemsCount] = useState(INITIAL_PAGE_SIZE);
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
+  const [selectedSpace, setSelectedSpace] = useState<SpaceTableItem | null>(null);
 
-  const spaceList = useMemo(() => {
+  // Reset pagination when search term changes
+  useEffect(() => {
+    setDisplayedItemsCount(INITIAL_PAGE_SIZE);
+  }, [searchTerm]);
+
+  const columns: AdminTableColumn<SpaceTableItem>[] = useMemo(
+    () => [
+      {
+        header: 'Visibility',
+        flex: 1,
+        minWidth: '120px',
+        render: (item: SpaceTableItem) => (
+          <Chip
+            label={item.visibility}
+            size="small"
+            color={item.visibility === SpaceVisibility.Active ? 'success' : 'default'}
+            variant="outlined"
+          />
+        ),
+      },
+      {
+        header: 'Privacy Mode',
+        flex: 1,
+        minWidth: '120px',
+        render: (item: SpaceTableItem) => (
+          <Chip
+            label={item.privacyMode}
+            size="small"
+            color={item.privacyMode === SpacePrivacyMode.Public ? 'info' : 'default'}
+            variant="outlined"
+          />
+        ),
+      },
+      {
+        header: 'Account Owner',
+        flex: 1,
+        minWidth: '150px',
+        render: (item: SpaceTableItem) => <AccountOwnerColumn accountOwner={item.accountOwner} />,
+      },
+    ],
+    []
+  );
+
+  const allSpaces = useMemo(() => {
     const spaces = spacesData?.platformAdmin.spaces ?? [];
 
-    return spaces.map(space => {
-      const displayName =
-        space.visibility !== SpaceVisibility.Active
-          ? `${space.about.profile.displayName} [${space.visibility.toUpperCase()}]`
-          : space.about.profile.displayName;
+    return spaces
+      .map(space => {
+        const displayName =
+          space.visibility !== SpaceVisibility.Active
+            ? `${space.about.profile.displayName} [${space.visibility.toUpperCase()}]`
+            : space.about.profile.displayName;
 
-      const canUpdate = (space.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Update);
+        const canUpdate = (space.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Update);
+        const accountOwner = space.account?.host?.profile?.displayName || 'N/A';
+        const privacyMode = space.settings.privacy.mode;
 
-      return {
-        id: space.id,
-        spaceId: space.id,
-        nameId: space.nameID,
-        visibility: space.visibility,
-        url: buildSettingsUrl(space.about.profile.url),
-        value: displayName,
-        canUpdate,
-      };
+        return {
+          id: space.id,
+          spaceId: space.id,
+          nameId: space.nameID,
+          visibility: space.visibility,
+          privacyMode,
+          accountOwner,
+          url: buildSettingsUrl(space.about.profile.url),
+          value: displayName,
+          canUpdate,
+        } as SpaceTableItem;
+      })
+      .filter(space => !searchTerm || space.value.toLowerCase().includes(searchTerm.toLowerCase()));
+  }, [spacesData, searchTerm]);
+
+  // Paginated spaces for display
+  const spaceList = useMemo(() => {
+    return allSpaces.slice(0, displayedItemsCount);
+  }, [allSpaces, displayedItemsCount]);
+
+  const hasMore = displayedItemsCount < allSpaces.length;
+
+  // Use useCallback WITHOUT isFetchingMore in dependencies to prevent recreation
+  const fetchMore = useCallback(async () => {
+    setDisplayedItemsCount(prev => {
+      const next = prev + PAGE_SIZE;
+      return Math.min(next, allSpaces.length);
     });
-  }, [spacesData]);
+  }, [allSpaces.length]);
 
   const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [refetchPlatformAdminSpacesListQuery()],
@@ -52,7 +127,7 @@ export const SpaceList: FC = () => {
     onCompleted: () => notify(t('pages.admin.space.notifications.space-removed'), 'success'),
   });
 
-  const handleDelete = (item: SearchableTableItem) => {
+  const handleDelete = (item: SpaceTableItem) => {
     deleteSpace({
       variables: {
         spaceId: item.id,
@@ -60,14 +135,46 @@ export const SpaceList: FC = () => {
     });
   };
 
+  const handleSettingsClick = (item: SpaceTableItem) => {
+    setSelectedSpace(item);
+    setSettingsDialogOpen(true);
+  };
+
   if (loadingSpaces) return <Loading text={'Loading spaces'} />;
 
+  const itemActions = (item: SpaceTableItem) => (
+    <IconButton
+      onClick={() => handleSettingsClick(item)}
+      size="large"
+      aria-label={t('pages.admin.spaces.spaceSettings')}
+      disabled={!item.canUpdate}
+    >
+      <SettingsOutlinedIcon />
+    </IconButton>
+  );
+
   return (
-    <ListPage
-      data={spaceList}
-      onDelete={spaceList.length > 1 ? handleDelete : undefined}
-      itemViewComponent={SpaceListItem}
-    />
+    <SearchableListLayout>
+      <AdminSearchableTable
+        data={spaceList}
+        columns={columns}
+        onDelete={handleDelete}
+        loading={false}
+        fetchMore={fetchMore}
+        pageSize={PAGE_SIZE}
+        firstPageSize={INITIAL_PAGE_SIZE}
+        searchTerm={searchTerm}
+        onSearchTermChange={setSearchTerm}
+        totalCount={allSpaces.length}
+        hasMore={hasMore}
+        itemActions={itemActions}
+      />
+      <SpaceSettingsDialog
+        open={settingsDialogOpen}
+        onClose={() => setSettingsDialogOpen(false)}
+        space={selectedSpace}
+      />
+    </SearchableListLayout>
   );
 };
 
