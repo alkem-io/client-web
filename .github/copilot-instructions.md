@@ -29,6 +29,9 @@
   - Prereqs: Backend Alkemio server reachable at `VITE_APP_ALKEMIO_DOMAIN` (default `http://localhost:3000`). Regenerates `public/env-config.js` each run.
 - **Production build**: `pnpm build`
   - Prereqs: .env values set. Takes ~20s, outputs to `build/`. Rewrites `.build/docker/.env.base` and `public/env-config.js`—avoid committing those artifacts.
+  - Optional: `pnpm analyze` (source-map-explorer) after `pnpm build` for bundle insights.
+- **Production build lint**: `pnpm lint:prod`
+  - Runs `tsc --noEmit` + `cross-env NODE_ENV=production` in order for lint command to run with production-specific settings.
 - **Lint**: `pnpm lint`
   - Runs `tsc --noEmit` then ESLint over `src/**/*.ts(x)`. Succeeds cleanly on current HEAD; expect failures if types break.
 - **Unit tests**: `pnpm vitest run --reporter=basic`
@@ -37,7 +40,6 @@
   - Requires the Alkemio GraphQL API at `http://localhost:3000/graphql` or update `codegen.yml`. Runs ESLint + Prettier on generated files via hooks.
 - **Formatting**: `pnpm format` (Prettier over `src/**/*.ts{,x}`) and `pnpm lint:fix` for autofixes.
 - **Serve built assets**: `pnpm serve:dev` (serves `build/` on port 3001).
-- Optional: `pnpm analyze` (source-map-explorer) after `pnpm build` for bundle insights.
 
 _Observed behavior (Oct 2025): all commands above complete without manual tweaks; production build warns about large chunks (known, non-blocking)._
 
@@ -78,13 +80,13 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
       - Use **Tavily** or **Brave** only when developer documentation is unavailable elsewhere.
     - Examples:
       - “List open PRs in alkem-io/server” → **GitHub MCP**
-      - "How do I use the useSWR hook with TypeScript in a Next.js application, specifically for data fetching with client-side caching and revalidation, according to the latest SWR documentation?" → Context7 MCP, fallback to Tavily
+      - "How do I use the useTransition hook with TypeScript in a React 19 application, specifically for data fetching with client-side pending states and revalidation, according to the latest v19 documentation?" → Context7 MCP, fallback to Tavily
 - Feedback Loops:
   - Prefer MCP servers supporting **feedback and validation** (e.g., GitHub comments, Context7 evaluation).
   - Use them to cross-check and refine responses before completion.
 - For Git operations, **all commits must be signed**.
-- Always regenerate types after editing `.graphql` files with `pnpm codegen`; commit generated outputs. Codegen fetches schema from a running server—if offline, set `GRAPHQL_SCHEMA_URL` via env or adjust `codegen.yml` temporarily.
-- New env vars must be prefixed with `VITE_APP_` to be exposed. For runtime injection, ensure they flow through `.env` and `buildConfiguration.js` so they end up in `public/env-config.js` and `window._env_`.
+- Always regenerate types after editing `.graphql` files with `pnpm codegen`; commit generated outputs. Codegen fetches schema from a running server.
+- New env vars must be prefixed with `VITE_` to be exposed. For runtime injection, ensure they flow through `.env` and `buildConfiguration.js` so they end up in `public/env-config.js` and `window._env_`.
 - React components should remain function-based; hooks live close to their domain. Follow `docs/code-guidelines.md` for naming (PascalCase components, `camelCase` hooks) and folder placement (`src/domain/<entity>`).
 - Large build output can consume memory; Vite already raises `max-old-space-size`. If builds fail on low-memory runners, reuse the same command but consider pruning node_modules (`pnpm prune` shortcut).
 - If Vite dev server stops responding due to file watch limits on Linux, run `.scripts/fix-dev-vite.sh` (requires sudo) to raise inotify limits; restart the terminal afterward.
