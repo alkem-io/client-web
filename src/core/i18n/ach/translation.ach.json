@@ -3385,6 +3385,7 @@
       "recovery-flow-expired": "crwdns20676:0crwdne20676:0",
       "verification-flow-continue": "crwdns20678:0crwdne20678:0",
       "login-flow-account-exists": "crwdns41802:0$t(common.account)crwdne41802:0",
+      "invalid-credentials": "crwdns43112:0crwdne43112:0",
       "claim-missing": "crwdns37156:0crwdne37156:0",
       "pick-password": "crwdns41804:0$t(common.account)crwdne41804:0"
     },

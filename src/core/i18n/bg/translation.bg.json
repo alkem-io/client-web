@@ -3376,6 +3376,7 @@
       "recovery-flow-expired": "Този линк за нулиране на парола е изтекъл. Моля, поискайте нов, като въведете отново вашия имейл адрес.",
       "verification-flow-continue": "Продължете",
       "login-flow-account-exists": "Този имейл вече е свързан с $t(common.account). Ако преди това сте се регистрирали през LinkedIn, GitHub или Microsoft, моля използвайте този метод за вход. В противен случай, нулирайте паролата си.",
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "claim-missing": "Не сте потвърдили вашата Vidua самоличност. Моля, потвърдете самоличността си и опитайте отново или опитайте друг метод за регистрация.",
       "pick-password": "Изберете парола за вашия $t(common.account)"
     },

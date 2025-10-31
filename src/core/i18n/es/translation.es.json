@@ -3385,6 +3385,7 @@
       "recovery-flow-expired": "Este enlace de restablecimiento de contraseña ha expirado. Solicita uno nuevo enviando tu correo electrónico nuevamente",
       "verification-flow-continue": "Continuar",
       "login-flow-account-exists": "Este correo ya está asociado a una $t(common.account). Si te registraste previamente a través de LinkedIn, GitHub o Microsoft, usa ese método de inicio de sesión. De lo contrario, restablece tu contraseña",
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "claim-missing": "No has verificado tu identidad de Vidua. Verifica tu identidad e inténtalo de nuevo o prueba otro método de registro",
       "pick-password": "Elige una contraseña para tu $t(common.account)"
     },
