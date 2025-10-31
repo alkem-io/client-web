@@ -1,4 +1,9 @@
-import { NotificationEventPayload, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalendarEventType,
+  NotificationEventPayload,
+  RoleSetContributorType,
+  SpaceLevel,
+} from '@/core/apollo/generated/graphql-schema';
 
 export interface InAppNotificationPayloadModel {
   type: NotificationEventPayload;
@@ -94,4 +99,12 @@ export interface InAppNotificationPayloadModel {
   userEmail?: string;
   userDisplayName?: string;
   organizationMessage?: string;
+  calendarEvent?: {
+    id: string;
+    type: CalendarEventType;
+    profile: {
+      displayName: string;
+      url: string;
+    };
+  };
 }
