@@ -35,11 +35,18 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
     description: discussion?.description ?? '',
   };
 
-  const validationSchema = yup.object().shape({
-    title: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH, required: true }),
-    category: textLengthValidator({ required: true }).nullable(),
-    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH, { required: true }).trim(),
-  });
+  const validationSchema = useMemo(
+    () =>
+      yup.object().shape({
+        title: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH, required: true }),
+        category: yup
+          .mixed<ForumDiscussionCategory>()
+          .oneOf(Object.values(ForumDiscussionCategory).filter(value => typeof value === 'string'))
+          .required('forms.validations.required'),
+        description: MarkdownValidator(MARKDOWN_TEXT_LENGTH, { required: true }).trim(),
+      }),
+    [categories]
+  );
 
   const discussionCategories = useMemo(
     () =>
@@ -67,6 +74,7 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
             </GridLegacy>
             <GridLegacy item xs={12} md={3}>
               <FormikSelect
+                required
                 disabled={editMode}
                 title={t('components.discussionForm.category.title')}
                 name="category"
