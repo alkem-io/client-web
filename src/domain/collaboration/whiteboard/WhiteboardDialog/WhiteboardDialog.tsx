@@ -23,12 +23,16 @@ import { useTranslation } from 'react-i18next';
 import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
-import whiteboardSchema from '../validation/whiteboardSchema';
+import whiteboardValidationSchema, { WhiteboardFormSchema } from '../validation/whiteboardFormSchema';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
-import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import {
+  DefaultWhiteboardPreviewSettings,
+  WhiteboardPreviewSettings,
+} from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
+import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
 
 export interface WhiteboardDetails {
   id: string;
@@ -116,6 +120,8 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
 
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
 
+  const { updateWhiteboardPreviewSettings } = useUpdateWhiteboardPreviewSettings({ whiteboard, excalidrawAPI });
+
   type PrepareWhiteboardResult =
     | {
         success: true;
@@ -129,8 +135,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
 
   const prepareWhiteboardForUpdate = async (
     whiteboard: WhiteboardDetails,
-    state: RelevantExcalidrawState | undefined,
-    shouldUploadPreviewImages = true
+    state: RelevantExcalidrawState | undefined
   ): Promise<PrepareWhiteboardResult> => {
     if (!state) {
       return {
@@ -151,12 +156,11 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
       };
     }
 
-    const previewImages =
-      shouldUploadPreviewImages && !filesManager.loading.downloadingFiles
-        ? await generateWhiteboardVisuals(whiteboard)
-        : undefined;
+    const previewImages = !filesManager.loading.downloadingFiles
+      ? await generateWhiteboardVisuals(whiteboard)
+      : undefined;
 
-    const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
+    const displayName = formikRef.current?.values.profile.displayName ?? whiteboard?.profile?.displayName;
 
     return {
       success: true,
@@ -233,11 +237,16 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
     }
   });
 
-  const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
+  const formikRef = useRef<FormikProps<WhiteboardFormSchema>>(null);
 
   const initialValues = useMemo(
-    () => ({ displayName: whiteboard?.profile?.displayName ?? '' }),
-    [whiteboard?.profile?.displayName]
+    () => ({
+      profile: {
+        displayName: whiteboard?.profile?.displayName ?? '',
+      },
+      previewSettings: whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
+    }),
+    [whiteboard]
   );
 
   useEffect(() => {
@@ -289,7 +298,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
               innerRef={formikRef}
               initialValues={initialValues}
               onSubmit={() => {}}
-              validationSchema={whiteboardSchema}
+              validationSchema={whiteboardValidationSchema}
             >
               <Dialog
                 open={options.show}
@@ -356,6 +365,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
       <WhiteboardPreviewSettingsDialog
         open={options.previewSettingsDialogOpen}
         onClose={() => actions.onClosePreviewSettingsDialog?.()}
+        onUpdate={updateWhiteboardPreviewSettings}
         whiteboard={whiteboard}
         excalidrawAPI={excalidrawAPI}
       />

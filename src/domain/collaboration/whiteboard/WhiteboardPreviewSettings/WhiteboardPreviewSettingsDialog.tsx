@@ -16,23 +16,23 @@ import {
 } from './icons/WhiteboardPreviewIcons';
 import { Box } from '@mui/system';
 import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
-import { useUpdateWhiteboardPreviewSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useTheme } from '@mui/material';
 import WhiteboardPreviewCustomSelectionDialog from './WhiteboardPreviewCustomSelectionDialog';
-import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
+import { PreviewImageDimensions } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { CropConfig } from '@/core/utils/images/cropImage';
-import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
-import useUploadWhiteboardVisuals from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { toBlobPromise } from '@/core/utils/images/toBlobPromise';
 import createFallbackWhiteboardPreview from '../WhiteboardVisuals/createFallbackWhiteboardPreview';
 import useEnsurePresence from '@/core/utils/ensurePresence';
+import { WhiteboardPreviewSettings } from './WhiteboardPreviewSettingsModel';
 
 interface WhiteboardPreviewSettingsDialogProps {
   open?: boolean;
   onClose: () => void;
+  onUpdate: (whiteboardPreviewSettings: WhiteboardPreviewSettings) => Promise<unknown>;
   whiteboard: WhiteboardDetails;
   excalidrawAPI: ExcalidrawImperativeAPI | null;
+  previewImageConstraints?: PreviewImageDimensions;
 }
 
 const ModeButton = styled(Button)<{ selected?: boolean }>(({ theme, selected }) => ({
@@ -59,15 +59,16 @@ const ModeButton = styled(Button)<{ selected?: boolean }>(({ theme, selected }) 
 const WhiteboardPreviewSettingsDialog = ({
   open = false,
   onClose,
+  onUpdate,
   whiteboard,
   excalidrawAPI,
+  previewImageConstraints,
 }: WhiteboardPreviewSettingsDialogProps) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
   const [selectedMode, setSelectedMode] = useState<WhiteboardPreviewMode>(whiteboard.previewSettings.mode);
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
-  const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
 
   const [whiteboardPreviewImage, setWhiteboardPreviewImage] = useState<Blob>();
   const openCropDialog = async () => {
@@ -84,18 +85,11 @@ const WhiteboardPreviewSettingsDialog = ({
     setWhiteboardPreviewImage(undefined);
   };
 
-  const [updateWhiteboardPreviewSettings] = useUpdateWhiteboardPreviewSettingsMutation();
-
   const [handleClickOnAuto, loadingAuto] = useLoadingState(async () => {
     setSelectedMode(WhiteboardPreviewMode.Auto);
     if (whiteboard.previewSettings.mode !== WhiteboardPreviewMode.Auto) {
-      await updateWhiteboardPreviewSettings({
-        variables: {
-          whiteboardId: whiteboard.id,
-          previewSettings: {
-            mode: WhiteboardPreviewMode.Auto,
-          },
-        },
+      await onUpdate({
+        mode: WhiteboardPreviewMode.Auto,
       });
     }
     onClose();
@@ -111,41 +105,12 @@ const WhiteboardPreviewSettingsDialog = ({
     openCropDialog();
   };
 
-  const { uploadVisuals } = useUploadWhiteboardVisuals();
   const [handleCropChanged, loadingCustom] = useLoadingState(async (newCrop: CropConfig) => {
     closeCropDialog();
-    await updateWhiteboardPreviewSettings({
-      variables: {
-        whiteboardId: whiteboard.id,
-        previewSettings: {
-          mode: selectedMode,
-          coordinates: newCrop,
-        },
-      },
+    await onUpdate({
+      mode: selectedMode,
+      coordinates: newCrop,
     });
-    if (selectedMode === WhiteboardPreviewMode.Fixed) {
-      const previewImages = await generateWhiteboardVisuals(
-        {
-          profile: {
-            preview: whiteboard.profile.preview,
-            visual: whiteboard.profile.visual,
-          },
-          previewSettings: {
-            mode: WhiteboardPreviewMode.Fixed,
-            coordinates: newCrop,
-          },
-        },
-        true
-      );
-      await uploadVisuals(
-        previewImages,
-        {
-          cardVisualId: whiteboard.profile.visual?.id,
-          previewVisualId: whiteboard.profile.preview?.id,
-        },
-        whiteboard.nameID
-      );
-    }
     onClose();
   });
 
@@ -177,8 +142,8 @@ const WhiteboardPreviewSettingsDialog = ({
             onClick={handleClickOnAuto}
           >
             <Box>
-              {t('pages.whiteboard.previewSettings.modes.auto.title')}
-              <Caption>{t('pages.whiteboard.previewSettings.modes.auto.description')}</Caption>
+              {t('pages.whiteboard.previewSettings.modes.AUTO.title')}
+              <Caption>{t('pages.whiteboard.previewSettings.modes.AUTO.description')}</Caption>
             </Box>
           </ModeButton>
           <ModeButton
@@ -194,8 +159,8 @@ const WhiteboardPreviewSettingsDialog = ({
             onClick={handleClickOnCustom}
           >
             <Box>
-              {t('pages.whiteboard.previewSettings.modes.custom.title')}
-              <Caption>{t('pages.whiteboard.previewSettings.modes.custom.description')}</Caption>
+              {t('pages.whiteboard.previewSettings.modes.CUSTOM.title')}
+              <Caption>{t('pages.whiteboard.previewSettings.modes.CUSTOM.description')}</Caption>
             </Box>
           </ModeButton>
           <ModeButton
@@ -211,8 +176,8 @@ const WhiteboardPreviewSettingsDialog = ({
             onClick={handleClickOnFixed}
           >
             <Box>
-              {t('pages.whiteboard.previewSettings.modes.fixed.title')}
-              <Caption>{t('pages.whiteboard.previewSettings.modes.fixed.description')}</Caption>
+              {t('pages.whiteboard.previewSettings.modes.FIXED.title')}
+              <Caption>{t('pages.whiteboard.previewSettings.modes.FIXED.description')}</Caption>
             </Box>
           </ModeButton>
         </DialogContent>
@@ -227,10 +192,11 @@ const WhiteboardPreviewSettingsDialog = ({
       <WhiteboardPreviewCustomSelectionDialog
         open={cropDialogOpen}
         onClose={handleCropDialogClose}
+        dialogTitle={t(`pages.whiteboard.previewSettings.modes.${selectedMode}.title`)}
         onCropSave={handleCropChanged}
         whiteboardPreviewImage={whiteboardPreviewImage}
         cropConfig={whiteboard.previewSettings.coordinates}
-        constraints={WhiteboardPreviewVisualDimensions}
+        previewImageConstraints={previewImageConstraints}
       />
     </>
   );

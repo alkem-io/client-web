@@ -68,6 +68,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           profile: calloutData.framing.whiteboard?.profile ?? { displayName: '' },
           content: calloutData.framing.whiteboard?.content ?? '',
           previewImages: [],
+          previewSettings: calloutData.framing.whiteboard?.previewSettings,
         },
         memo: {
           ...calloutData.framing.memo,

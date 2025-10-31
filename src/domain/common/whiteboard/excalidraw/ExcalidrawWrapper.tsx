@@ -70,37 +70,41 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
     pushFilesToExcalidraw();
   }, [filesManager]);
 
-  const refreshOnDataChange = debounce(async (state: RefreshWhiteboardStateParam) => {
-    excalidrawApi?.updateScene(state);
+  const refreshOnDataChange = useMemo(
+    () =>
+      debounce(async (state: RefreshWhiteboardStateParam) => {
+        excalidrawApi?.updateScene(state);
 
-    if (Array.isArray(state.elements) && state.elements.length > 0) {
-      excalidrawApi?.scrollToContent(state.elements, {
-        animate: false,
-        fitToViewport: true,
-        // both values help with scaling issue when the content is displayed
-        viewportZoomFactor: 0.75, // 75% of the viewport, on preview
-        maxZoom: 1, // 100% zoom, in the whiteboard
-      });
-    }
+        if (Array.isArray(state.elements) && state.elements.length > 0) {
+          excalidrawApi?.scrollToContent(state.elements, {
+            animate: false,
+            fitToViewport: true,
+            // both values help with scaling issue when the content is displayed
+            viewportZoomFactor: 0.75, // 75% of the viewport, on preview
+            maxZoom: 1, // 100% zoom, in the whiteboard
+          });
+        }
 
-    // Find the properties present in `state.files` and missing in currentFiles
-    // and put them into missingFiles: BinaryFileData[]
-    const currentFiles = excalidrawApi?.getFiles() ?? {};
-    const newFiles = state.files ?? {};
-    const missingFiles: BinaryFileData[] = compact(
-      Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
-    );
-    if (excalidrawApi && missingFiles.length > 0) {
-      excalidrawApi.addFiles(missingFiles);
-    }
-  }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL);
+        // Find the properties present in `state.files` and missing in currentFiles
+        // and put them into missingFiles: BinaryFileData[]
+        const currentFiles = excalidrawApi?.getFiles() ?? {};
+        const newFiles = state.files ?? {};
+        const missingFiles: BinaryFileData[] = compact(
+          Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
+        );
+        if (excalidrawApi && missingFiles.length > 0) {
+          excalidrawApi.addFiles(missingFiles);
+        }
+      }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL),
+    [excalidrawApi]
+  );
 
   useEffect(() => {
     // apparently when a whiteboard state is changed too fast
     // it is not reflected by excalidraw (they don't have internal debounce for state change)
     refreshOnDataChange(data);
     return refreshOnDataChange.cancel;
-  }, [refreshOnDataChange, data, excalidrawApi]);
+  }, [refreshOnDataChange, data]);
 
   const handleScroll = useRef(
     debounce(() => {

@@ -17,9 +17,10 @@ import validateCropConfig from '../WhiteboardVisuals/utils/validateCropConfig';
 interface WhiteboardPreviewCustomSelectionDialogProps {
   open: boolean;
   onClose: () => void;
+  dialogTitle?: string;
   whiteboardPreviewImage: Blob | undefined;
   cropConfig?: CropConfig;
-  constraints?: PreviewImageDimensions;
+  previewImageConstraints?: PreviewImageDimensions;
   onCropSave: (newCrop: CropConfig) => void;
 }
 
@@ -50,17 +51,18 @@ const translateCropConfig = ({
 const WhiteboardPreviewCustomSelectionDialog = ({
   open,
   onClose,
+  dialogTitle,
   onCropSave,
   whiteboardPreviewImage,
   cropConfig,
-  constraints = WhiteboardPreviewVisualDimensions,
+  previewImageConstraints = WhiteboardPreviewVisualDimensions,
 }: WhiteboardPreviewCustomSelectionDialogProps) => {
   const { t } = useTranslation();
   const ensurePresence = useEnsurePresence();
   const imgRef = useRef<HTMLImageElement>(null);
   const [ready, setReady] = useState(false);
 
-  const { aspectRatio } = constraints;
+  const { aspectRatio } = previewImageConstraints;
   const [crop, setCrop] = useState<Crop | undefined>(undefined);
   const onCropChange = (crop: CropConfig) => {
     /**
@@ -124,7 +126,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth={false}>
       <DialogHeader
-        title={t('pages.whiteboard.previewSettings.modes.custom.title')}
+        title={dialogTitle ?? t('pages.whiteboard.previewSettings.modes.CUSTOM.title')}
         onClose={onClose}
         icon={<WhiteboardPreviewSettingsIcon />}
       />

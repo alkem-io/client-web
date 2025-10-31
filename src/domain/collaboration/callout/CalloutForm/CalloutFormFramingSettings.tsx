@@ -22,6 +22,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { DefaultWhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -49,6 +50,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
             content: EmptyWhiteboardString,
             profile: { displayName: t('common.whiteboard') },
             previewImages: [],
+            previewSettings: DefaultWhiteboardPreviewSettings,
           },
           memo: undefined,
           link: undefined,
@@ -172,6 +174,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           <FormikWhiteboardPreview
             name="framing.whiteboard.content"
             previewImagesName="framing.whiteboard.previewImages"
+            previewSettingsName="framing.whiteboard.previewSettings"
             canEdit
             editButton={editButton}
             onDeleteContent={() => handleFramingTypeChange(CalloutFramingType.None)}

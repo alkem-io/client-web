@@ -1,0 +1,9 @@
+fragment whiteboardPreviewSettings on WhiteboardPreviewSettings {
+  mode
+  coordinates {
+    x
+    y
+    width
+    height
+  }
+}

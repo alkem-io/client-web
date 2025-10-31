@@ -1,7 +1,6 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -17,6 +16,7 @@ import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { gutters } from '@/core/ui/grid/utils';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
+import { TemplateFormProps } from './TemplateForm';
 
 interface TemplateContentGuidelines {
   profile: {
@@ -35,12 +35,8 @@ export interface TemplateCommunityGuidelinesFormSubmittedValues extends Template
   communityGuidelines?: TemplateContentGuidelines;
 }
 
-interface TemplateCommunityGuidelinesFormProps {
-  template?: CommunityGuidelinesTemplate;
-  onSubmit: (values: TemplateCommunityGuidelinesFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<TemplateCommunityGuidelinesFormSubmittedValues>) => ReactNode);
-  temporaryLocation?: boolean;
-}
+interface TemplateCommunityGuidelinesFormProps
+  extends TemplateFormProps<CommunityGuidelinesTemplate, TemplateCommunityGuidelinesFormSubmittedValues> {}
 
 const validator = {
   communityGuidelines: yup.object().shape({
@@ -63,15 +59,15 @@ const TemplateCommunityGuidelinesForm = ({
   temporaryLocation = false,
 }: TemplateCommunityGuidelinesFormProps) => {
   const { t } = useTranslation();
-  const profileId = template?.communityGuidelines?.profile.id;
+  const profileId = template.communityGuidelines?.profile.id;
 
   const initialValues: TemplateCommunityGuidelinesFormSubmittedValues = {
-    profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
+    profile: mapTemplateProfileToUpdateProfileInput(template.profile),
     communityGuidelines: {
       profile: {
-        displayName: template?.communityGuidelines?.profile.displayName ?? '',
-        description: template?.communityGuidelines?.profile.description ?? '',
-        references: mapReferenceModelsToUpdateReferenceInputs(template?.communityGuidelines?.profile.references) ?? [],
+        displayName: template.communityGuidelines?.profile.displayName ?? '',
+        description: template.communityGuidelines?.profile.description ?? '',
+        references: mapReferenceModelsToUpdateReferenceInputs(template.communityGuidelines?.profile.references) ?? [],
       },
     },
   };
