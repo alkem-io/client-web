@@ -16,9 +16,9 @@
     "Diensten",
     "Digitalisering",
     "Energietransitie",
-    "Espa\u00f1ol",
+    "Español",
     "excalidraw",
-    "Fran\u00e7ais",
+    "Français",
     "genai",
     "homeserver",
     "Inclusieve",
@@ -34,7 +34,7 @@
     "ownerlink",
     "parenticon",
     "parentlink",
-    "Portugu\u00eas",
+    "Português",
     "Publieke",
     "roleset",
     "Samenleving",
@@ -50,8 +50,8 @@
     "unverify",
     "webp",
     "xsmall",
-    "\u0411\u044a\u043b\u0433\u0430\u0440\u0441\u043a\u0438",
-    "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430"
+    "Български",
+    "Українська"
   ],
   "chat.promptFilesRecommendations": {
     "speckit.constitution": true,
