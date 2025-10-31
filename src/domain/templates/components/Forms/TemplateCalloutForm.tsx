@@ -11,6 +11,7 @@ import { useMemo } from 'react';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { TemplateFormProps } from './TemplateForm';
+import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 
 interface TemplateContentCallout extends CalloutFormSubmittedValues {}
 
@@ -49,7 +50,8 @@ const TemplateCalloutForm = ({ template, onSubmit, actions }: TemplateCalloutFor
                 },
                 previewImages: [], // This is not going to work for now :(
                 content: template.callout.framing.whiteboard.content ?? EmptyWhiteboardString,
-                previewSettings: template.callout.framing.whiteboard.previewSettings,
+                previewSettings:
+                  template.callout.framing.whiteboard.previewSettings ?? DefaultWhiteboardPreviewSettings,
               }
             : undefined,
           memo: template.callout?.framing?.memo

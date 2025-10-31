@@ -9,9 +9,6 @@ export interface CalloutTemplate extends TemplateBase {
   type: TemplateType; // TemplateType.Callout
   callout?: {
     id: string;
-    /**
-     * @deprecated
-     */
     framing: {
       profile: {
         id?: string;

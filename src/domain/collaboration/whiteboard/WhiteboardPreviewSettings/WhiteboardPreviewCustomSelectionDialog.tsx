@@ -126,7 +126,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth={false}>
       <DialogHeader
-        title={dialogTitle ?? t('pages.whiteboard.previewSettings.modes.custom.title')}
+        title={dialogTitle ?? t('pages.whiteboard.previewSettings.modes.CUSTOM.title')}
         onClose={onClose}
         icon={<WhiteboardPreviewSettingsIcon />}
       />
