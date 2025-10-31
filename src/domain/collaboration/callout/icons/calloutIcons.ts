@@ -74,6 +74,7 @@ export const CalloutIcon: React.FC<CalloutIconProps> = ({
   const { t } = useTranslation();
   const labelKey = getCalloutIconLabelKey(framingType, contributionType);
   const label = t(labelKey);
-  const element = React.createElement(Icon, { ...(iconProps || {}), titleAccess: label });
+  const element = React.createElement(Icon, { ...(iconProps || {}), ...(tooltip ? {} : { titleAccess: label }) });
+
   return tooltip ? React.createElement(Tooltip, { title: label, placement: 'left', children: element }) : element;
 };
