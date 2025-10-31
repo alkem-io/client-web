@@ -128,7 +128,7 @@ This feature satisfies the Constitution as follows:
 **I. Domain-Driven Frontend Boundaries**
 
 - New domain logic resides in `src/domain/spaceAdmin` (space settings management) and `src/domain/collaboration` (whiteboard sharing).
-- A façade in `src/domain/space/settings` will expose a typed hook (e.g., `useSpaceGuestContributionsEnabled(spaceId)`) consumed by UI components in `src/main` and `src/domain/spaceAdmin/SpaceAdminSettings`.
+- A façade in `src/domain/space/settings` will expose a typed hook (e.g., `useSpaceGuestContributions(spaceId)`) consumed by UI components in `src/main` and `src/domain/spaceAdmin/SpaceAdminSettings`.
 - UI components remain orchestration-only; no business logic in React components.
 
 **II. React 19 Concurrent UX Discipline**

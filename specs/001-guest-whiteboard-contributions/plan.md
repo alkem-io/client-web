@@ -25,7 +25,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - **Domain Alignment**:
   - **Affected contexts**: `src/domain/spaceAdmin` (settings management), `src/domain/space/settings` (state façade)
-  - **Façade updates**: New hook `useSpaceGuestContributionsEnabled(spaceId)` in `src/domain/space/settings`
+  - **Façade updates**: New hook `useSpaceGuestContributions(spaceId)` in `src/domain/space/settings`
   - **UI orchestration**: `SpaceAdminSettingsPage.tsx` remains orchestration-only, consuming domain hooks
   - ✅ **Compliant**: No business logic in React components
 
