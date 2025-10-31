@@ -604,7 +604,14 @@
     },
     "supportEmail": "support@alkem.io",
     "options": "Options",
-    "externalLinkDisclaimer": "This link takes you to an external site. Alkemio is not responsible for its content."
+    "externalLinkDisclaimer": "This link takes you to an external site. Alkemio is not responsible for its content.",
+    "calloutType": {
+      "LINK": "$t(common.Link)",
+      "POST": "$t(common.Post)",
+      "WHITEBOARD": "$t(common.Whiteboard)",
+      "MEMO": "$t(common.Memo)",
+      "NONE": "$t(common.Post)"
+    }
   },
   "community": {
     "memberUsers": "$t(common.Member) Users ({{count}})",
