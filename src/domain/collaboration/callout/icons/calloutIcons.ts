@@ -50,7 +50,7 @@ const getCalloutIconLabelKey = (
   }
 
   if (contributionType) {
-    return `common.calloutType.${framingType}`;
+    return `common.calloutType.${contributionType}`;
   }
 
   return 'common.calloutType.POST';
