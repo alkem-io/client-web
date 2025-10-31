@@ -26,7 +26,7 @@ import { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewIm
 import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
-import whiteboardValidationSchema from '../validation/whiteboardValidationSchema';
+import whiteboardValidationSchema from '../validation/whiteboardFormSchema';
 import { WhiteboardDetails } from './WhiteboardDialog';
 import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
 import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';

@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
-import whiteboardValidationSchema, { WhiteboardFormSchema } from '../validation/whiteboardValidationSchema';
+import whiteboardValidationSchema, { WhiteboardFormSchema } from '../validation/whiteboardFormSchema';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
