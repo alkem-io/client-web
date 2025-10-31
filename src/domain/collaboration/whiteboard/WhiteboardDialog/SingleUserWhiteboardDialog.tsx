@@ -2,7 +2,6 @@ import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -16,7 +15,7 @@ import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/exca
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { Delete, Save } from '@mui/icons-material';
-import { Box, Button, DialogContent } from '@mui/material';
+import { Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
@@ -58,7 +57,7 @@ type SingleUserWhiteboardDialogProps = {
     canEdit?: boolean;
     canDelete?: boolean;
     headerActions?: ReactNode;
-    fixedDialogTitle?: ReactNode;
+    dialogTitle?: ReactNode;
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
     previewSettingsDialogOpen?: boolean;
@@ -208,17 +207,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                 onClose={onClose}
                 titleContainerProps={{ flexDirection: 'row' }}
               >
-                {options.fixedDialogTitle ? (
-                  options.fixedDialogTitle
-                ) : (
-                  <Box
-                    component={FormikInputField}
-                    title={t('fields.displayName')}
-                    name="displayName"
-                    size="small"
-                    maxWidth={gutters(30)}
-                  />
-                )}
+                {options.dialogTitle ?? t('common.Whiteboard')}
                 <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
               </DialogHeader>
               <DialogContent sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

@@ -186,7 +186,7 @@ const FormikWhiteboardPreview = ({
                   previewSettingsDialogOpen,
                   previewSettingsDimensions,
                   allowFilesAttached: true,
-                  fixedDialogTitle: (
+                  dialogTitle: (
                     <BlockTitle display="flex" alignItems="center">
                       {dialogProps?.title}
                     </BlockTitle>
