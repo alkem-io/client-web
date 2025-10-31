@@ -1,5 +1,6 @@
 import {
   CalendarEventType,
+  ForumDiscussionCategory,
   NotificationEventPayload,
   RoleSetContributorType,
   SpaceLevel,
@@ -92,7 +93,7 @@ export interface InAppNotificationPayloadModel {
     id: string;
     displayName: string;
     description?: string;
-    category?: string;
+    category?: ForumDiscussionCategory | string; // TODO: Payload from the notifications come with type string
     url: string;
   };
   comment?: string;

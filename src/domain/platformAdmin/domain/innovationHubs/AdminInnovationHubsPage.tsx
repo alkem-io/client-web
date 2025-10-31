@@ -29,7 +29,7 @@ const AdminInnovationHubsPage = () => {
   const [deleteInnovationHub] = useDeleteInnovationHubMutation({
     refetchQueries: [refetchPlatformAdminInnovationHubsQuery()],
     awaitRefetchQueries: true,
-    onCompleted: () => notify(t('pages.admin.innovation-hub.notifications.hub-removed'), 'success'),
+    onCompleted: () => notify(t('pages.admin.innovationHub.notifications.hubRemoved'), 'success'),
   });
 
   const [searchTerm, setSearchTerm] = useState('');

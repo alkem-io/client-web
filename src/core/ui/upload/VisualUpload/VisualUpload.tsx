@@ -85,7 +85,7 @@ const VisualUpload = ({ visual, height = DEFAULT_SIZE }: VisualUploadProps) => {
         <Box marginBottom={2}>
           {loading ? (
             <Skeleton variant="rectangular">
-              <Avatar sx={{ width, height }} alt={t('visualSegment.avatar')} />
+              <Avatar sx={{ width, height }} alt={t('components.visualSegment.avatar')} />
             </Skeleton>
           ) : (
             <ImagePlaceholder
