@@ -37,6 +37,7 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
     if (!editingProperty) return;
     const currentProperties = values.nodes[nodeName]?.output?.properties || [];
     const updatedProperties = [...currentProperties];
+
     updatedProperties[index] = editingProperty.data;
     setFieldValue(`nodes.${nodeName}.output.properties`, updatedProperties);
 
@@ -46,9 +47,8 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
       const updatedStateProperties = [...currentSateProperties];
       updatedStateProperties.push(editingProperty.data);
       setFieldValue('state.properties', updatedStateProperties);
-
-      setEditingProperty(null);
     }
+    setEditingProperty(null);
   };
 
   const handleCancelEdit = () => {
@@ -86,7 +86,7 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
     const currentProperties = values.nodes[nodeName]?.output?.properties || [];
     const newProperty = {
       name: '',
-      type: '',
+      type: 'string',
       optional: false,
       description: '',
     };
@@ -164,8 +164,10 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left', marginY: 2 }}>
                 {graphPath.map((node, index) => {
                   const hasNextNode = index < graphPath.length - 1;
+                  const nodeName = typeof node === 'string' ? node : node.name;
                   return (
                     <Box key={`${typeof node === 'string' ? node : node.name}-${index}`} sx={{ width: '100%' }}>
+                      <input type="hidden" name={`nodes.${nodeName}.system`} value={String(node.system || false)} />
                       <>
                         {node && typeof node === 'object' ? (
                           <Accordion sx={{ marginBottom: 1 }}>

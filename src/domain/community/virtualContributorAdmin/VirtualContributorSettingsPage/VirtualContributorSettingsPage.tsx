@@ -32,7 +32,7 @@ const VirtualContributorSettingsPage = () => {
     vc?.aiPersona?.engine!
   );
 
-  const isPromptGrapConfighAvailable =
+  const isPromptGraphConfighAvailable =
     userWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin) &&
     vc?.aiPersona?.engine === AiPersonaEngine.Expert;
 
@@ -45,7 +45,7 @@ const VirtualContributorSettingsPage = () => {
       <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
         <VisibilityForm vc={vc} />
         <BodyOfKnowledgeManagement vc={vc} />
-        {isPromptGrapConfighAvailable && <PromptGraphConfig vc={vc} />}
+        {isPromptGraphConfighAvailable && <PromptGraphConfig vc={vc} />}
         {isPromptConfigAvailable && <PromptConfig vc={vc} />}
         {isExternalConfigAvailable && <ExternalConfig vc={vc} />}
       </VCSettingsPageLayout>

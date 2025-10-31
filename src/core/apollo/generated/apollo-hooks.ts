@@ -13833,6 +13833,14 @@ export const AiPersonaDocument = gql`
               name
               type
               optional
+              items {
+                title
+                type
+                properties {
+                  name
+                  type
+                }
+              }
             }
           }
           nodes {
@@ -13930,6 +13938,7 @@ export const VirtualContributorDocument = gql`
         aiPersona {
           id
           engine
+          prompt
         }
         profile {
           id

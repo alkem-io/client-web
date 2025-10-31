@@ -153,7 +153,7 @@ export const PropertyTable = ({
                                   editingProperty &&
                                   editingProperty.data &&
                                   (editingProperty.data.name || '').trim() &&
-                                  // (editingProperty.data.type || '').trim() &&
+                                  (editingProperty.data.type || '').trim() &&
                                   (editingProperty.data.description || '').trim()
                                 )
                               }

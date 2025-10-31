@@ -25,6 +25,14 @@ query AiPersona($id: UUID!) {
             name
             type
             optional
+            items {
+              title
+              type
+              properties {
+                name
+                type
+              }
+            }
           }
         }
         nodes {
@@ -69,6 +77,7 @@ query VirtualContributor($id: UUID!) {
       aiPersona {
         id
         engine
+        prompt
       }
       profile {
         id

@@ -11,11 +11,15 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Formik } from 'formik';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { DataPoint, FormValueType, PromptGraphNode } from './types';
+import { FormNodeValue, FormValueType, PromptGraphNode } from './types';
 import PromptGraphConfigForm from './PromptGraphConfigForm';
 import { transformNodesMapToArray } from './utils';
 
-const PromptGraphConfig = ({ vc }) => {
+type PromptGraphConfigProps = {
+  vc: { id: string };
+};
+
+const PromptGraphConfig = ({ vc }: PromptGraphConfigProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const [prompt, setPrompt] = useState('');
@@ -39,16 +43,14 @@ const PromptGraphConfig = ({ vc }) => {
     const promptGraphCopy = JSON.parse(JSON.stringify(promptGraph));
 
     // Build nodes object from the copied promptGraph nodes keyed by node.name
-    const nodesData: Record<
-      string,
-      { input_variables: string[]; prompt: string; output?: { properties: DataPoint[] } }
-    > = {};
+    const nodesData: Record<string, FormNodeValue> = {};
     promptGraphCopy.nodes?.forEach((node: PromptGraphNode) => {
       if (node?.name) {
         nodesData[node.name] = {
           input_variables: node.input_variables || [],
           prompt: node.prompt || '',
           output: node.output?.properties ? { properties: node.output.properties } : undefined,
+          system: node.system || false,
         };
       }
     });

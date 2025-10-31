@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
-import startCase from 'lodash/startCase';
 
 export const NodeVariables = ({ variables, available }: { variables?: string[]; available?: string[] }) => {
   const inputVars = variables || [];

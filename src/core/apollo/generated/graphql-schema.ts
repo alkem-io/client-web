@@ -5790,6 +5790,7 @@ export type PromptGraph = {
 export type PromptGraphDataPoint = {
   __typename?: 'PromptGraphDataPoint';
   description?: Maybe<Scalars['String']['output']>;
+  items?: Maybe<PromptGraphDataStruct>;
   name: Scalars['String']['output'];
   optional?: Maybe<Scalars['Boolean']['output']>;
   type?: Maybe<Scalars['String']['output']>;
@@ -5797,6 +5798,7 @@ export type PromptGraphDataPoint = {
 
 export type PromptGraphDataPointInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  items?: InputMaybe<PromptGraphDataStructInput>;
   name: Scalars['String']['input'];
   optional?: InputMaybe<Scalars['Boolean']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
@@ -19828,6 +19830,20 @@ export type AiPersonaQuery = {
                             name: string;
                             type?: string | undefined;
                             optional?: boolean | undefined;
+                            items?:
+                              | {
+                                  __typename?: 'PromptGraphDataStruct';
+                                  title?: string | undefined;
+                                  type?: string | undefined;
+                                  properties?:
+                                    | Array<{
+                                        __typename?: 'PromptGraphDataPoint';
+                                        name: string;
+                                        type?: string | undefined;
+                                      }>
+                                    | undefined;
+                                }
+                              | undefined;
                           }>
                         | undefined;
                     }
@@ -19889,7 +19905,9 @@ export type VirtualContributorQuery = {
             __typename?: 'VirtualContributorSettings';
             privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
           };
-          aiPersona?: { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine } | undefined;
+          aiPersona?:
+            | { __typename?: 'AiPersona'; id: string; engine: AiPersonaEngine; prompt: Array<string> }
+            | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;

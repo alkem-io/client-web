@@ -4,7 +4,16 @@ import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { DataPoint } from './types';
 
-const StateProps = ({ promptGraph }) => {
+type StatePropsProps = {
+  promptGraph: {
+    state?: {
+      properties?: DataPoint[];
+      output?: { properties?: DataPoint[] };
+    };
+  };
+};
+
+const StateProps = ({ promptGraph }: StatePropsProps) => {
   const { t } = useTranslation();
   const stateProps = (promptGraph?.state?.properties || promptGraph?.state?.output?.properties || []) as DataPoint[];
 
