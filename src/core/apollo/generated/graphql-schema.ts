@@ -2380,6 +2380,10 @@ export type DeleteContributionInput = {
   ID: Scalars['UUID']['input'];
 };
 
+export type DeleteConversationInput = {
+  ID: Scalars['UUID']['input'];
+};
+
 export type DeleteDiscussionInput = {
   ID: Scalars['UUID']['input'];
 };
@@ -2907,6 +2911,14 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEvent = InAppNotificat
   __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEvent';
   /** The CalendarEvent that was created. */
   calendarEvent?: Maybe<CalendarEvent>;
+  /** ID of the calendar event. */
+  calendarEventID: Scalars['UUID']['output'];
+  /** Display title of the calendar event. */
+  calendarEventTitle: Scalars['String']['output'];
+  /** Type of the calendar event. */
+  calendarEventType: CalendarEventType;
+  /** ID of the user who created the event. */
+  createdBy: Scalars['UUID']['output'];
   /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
@@ -4283,6 +4295,8 @@ export type Mutation = {
   deleteCallout: Callout;
   /** Deletes a contribution. */
   deleteContribution: CalloutContribution;
+  /** Deletes a Conversation. The Matrix room is only deleted if no reciprocal conversation exists. */
+  deleteConversation: Conversation;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
   /** Deletes the specified Document. */
@@ -4391,8 +4405,6 @@ export type Mutation = {
   sendMessageToOrganization: Scalars['Boolean']['output'];
   /** Sends an comment message. Returns the id of the new Update message. */
   sendMessageToRoom: Message;
-  /** Sends a message on the specified User`s behalf and returns the room id */
-  sendMessageToUserDirect: Scalars['String']['output'];
   /** Send message to multiple Users. */
   sendMessageToUsers: Scalars['Boolean']['output'];
   /** Set the mapping of a well-known Virtual Contributor to a specific Virtual Contributor UUID. */
@@ -4745,6 +4757,10 @@ export type MutationDeleteContributionArgs = {
   deleteData: DeleteContributionInput;
 };
 
+export type MutationDeleteConversationArgs = {
+  deleteData: DeleteConversationInput;
+};
+
 export type MutationDeleteDiscussionArgs = {
   deleteData: DeleteDiscussionInput;
 };
@@ -4951,10 +4967,6 @@ export type MutationSendMessageToOrganizationArgs = {
 
 export type MutationSendMessageToRoomArgs = {
   messageData: RoomSendMessageInput;
-};
-
-export type MutationSendMessageToUserDirectArgs = {
-  messageData: UserSendMessageInput;
 };
 
 export type MutationSendMessageToUsersArgs = {
@@ -8442,13 +8454,6 @@ export type UserGroup = {
   profile?: Maybe<Profile>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
-};
-
-export type UserSendMessageInput = {
-  /** The message being sent */
-  message: Scalars['String']['input'];
-  /** The user a message is being sent to */
-  receivingUserID: Scalars['String']['input'];
 };
 
 export type UserSettings = {

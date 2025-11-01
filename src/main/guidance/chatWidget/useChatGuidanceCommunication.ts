@@ -45,12 +45,12 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
       message: t('chatbot.intro'),
       author: undefined,
     };
-    const room = messagesData?.lookup.conversation?.room!;
+    const room = messagesData?.lookup.conversation?.room;
 
-    if (room.messages.length) {
+    if (room?.messages?.length) {
       return [
         introMessage,
-        ...room.messages?.map(message => ({
+        ...room.messages.map(message => ({
           id: message.id,
           threadID: message.threadID,
           message: message.message,

@@ -1733,12 +1733,20 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFieldPolicy = {
 };
 export type InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier = (
   | 'calendarEvent'
+  | 'calendarEventID'
+  | 'calendarEventTitle'
+  | 'calendarEventType'
+  | 'createdBy'
   | 'space'
   | 'type'
   | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
 )[];
 export type InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy = {
   calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventID?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventTitle?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventType?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2577,6 +2585,7 @@ export type MutationKeySpecifier = (
   | 'deleteCalendarEvent'
   | 'deleteCallout'
   | 'deleteContribution'
+  | 'deleteConversation'
   | 'deleteDiscussion'
   | 'deleteDocument'
   | 'deleteInnovationHub'
@@ -2631,7 +2640,6 @@ export type MutationKeySpecifier = (
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
-  | 'sendMessageToUserDirect'
   | 'sendMessageToUsers'
   | 'setPlatformWellKnownVirtualContributor'
   | 'transferCallout'
@@ -2762,6 +2770,7 @@ export type MutationFieldPolicy = {
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteContribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteConversation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2816,7 +2825,6 @@ export type MutationFieldPolicy = {
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  sendMessageToUserDirect?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   setPlatformWellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
