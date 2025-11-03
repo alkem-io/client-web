@@ -240,4 +240,7 @@ fragment WhiteboardTemplateContent on Whiteboard {
     }
   }
   content
+  previewSettings {
+    ...whiteboardPreviewSettings
+  }
 }

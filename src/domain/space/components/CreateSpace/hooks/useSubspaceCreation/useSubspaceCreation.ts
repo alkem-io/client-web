@@ -11,8 +11,10 @@ import {
   CommunityMembershipStatus,
   PlatformFeatureFlagName,
   SpaceLevel,
+  SpaceVisibility,
   TagsetReservedName,
   TagsetType,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
 import useUploadVisualsOnCreate from '../useUploadVisualsOnCreate/useUploadVisualsOnCreate';
@@ -117,6 +119,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
           createSubspace: {
             id: '',
             level: SpaceLevel.L1,
+            visibility: SpaceVisibility.Active,
             about: {
               id: '',
               why: value.about.why,
@@ -128,12 +131,12 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
                 cardBanner: {
                   id: '',
                   uri: '',
-                  name: '',
+                  name: VisualType.Card,
                 },
                 avatar: {
                   id: '',
                   uri: '',
-                  name: '',
+                  name: VisualType.Avatar,
                 },
                 tagset: {
                   id: '-1',
