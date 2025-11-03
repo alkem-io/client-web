@@ -1729,12 +1729,20 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFieldPolicy = {
 };
 export type InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier = (
   | 'calendarEvent'
+  | 'calendarEventID'
+  | 'calendarEventTitle'
+  | 'calendarEventType'
+  | 'createdBy'
   | 'space'
   | 'type'
   | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
 )[];
 export type InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy = {
   calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventID?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventTitle?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventType?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
