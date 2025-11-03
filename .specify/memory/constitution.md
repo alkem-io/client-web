@@ -90,6 +90,9 @@ safeguards ensure sustainable delivery.
    localization pipeline; hard-coded copy is forbidden.
 4. Build artifacts remain deterministic: Vite config changes require documenting their impact on
    chunking, env exposure, and React Server Component compatibility.
+5. Import transparency requires explicit module paths. Barrel exports via `index.ts` files are
+   forbidden to maintain import traceability and prevent circular dependency issues. All imports
+   MUST specify the direct file path to the exported module.
 
 ## Engineering Workflow
 
@@ -122,4 +125,4 @@ Compliance expectations:
   violations remain unmitigated.
 - CI workflows SHOULD enforce linting, testing, and type generation steps aligned with these rules.
 
-**Version**: 1.0.2 | **Ratified**: 2025-10-30 | **Last Amended**: 2025-10-30
+**Version**: 1.0.3 | **Ratified**: 2025-10-30 | **Last Amended**: 2025-11-03
