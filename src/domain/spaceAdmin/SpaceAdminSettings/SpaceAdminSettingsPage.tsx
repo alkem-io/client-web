@@ -3,40 +3,33 @@ import {
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
   useSpaceTemplatesManagerQuery,
-  useUpdateSpaceSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CommunityMembershipPolicy,
-  SpaceLevel,
-  SpacePrivacyMode,
-  SpaceSettingsCollaboration,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import RadioSettingsGroup from '@/core/ui/forms/SettingsGroups/RadioSettingsGroup';
-import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import RouterLink from '@/core/ui/link/RouterLink';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { BlockSectionTitle, BlockTitle, Caption, Text } from '@/core/ui/typography';
-import scrollToTop from '@/core/ui/utils/scrollToTop';
+import { BlockTitle, Caption, Text } from '@/core/ui/typography';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
-import { Box, Button, CircularProgress, Link, useTheme } from '@mui/material';
+import { Box, Button, CircularProgress, useTheme } from '@mui/material';
 import { noop } from 'lodash';
-import { FC, useMemo, useState, useOptimistic, useTransition } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import EntityConfirmDeleteDialog from '../../shared/components/EntityConfirmDeleteDialog';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
-import { defaultSpaceSettings } from './SpaceDefaultSettings';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CreateSpaceTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateSpaceTemplateDialog';
+import { useSpaceSettingsUpdate } from './useSpaceSettingsUpdate';
+import { VisibilitySettings } from './components/VisibilitySettings';
+import { MembershipSettings } from './components/MembershipSettings';
+import { MemberActionsSettings } from './components/MemberActionsSettings';
+import { isSubspace } from '@/domain/space/utils/spaceLevel';
 
 export interface SpaceAdminSettingsPageProps extends SettingsPageProps {
   useL0Layout: boolean;
@@ -66,8 +59,6 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const openDialog = () => setOpenDeleteDialog(true);
   const closeDialog = () => setOpenDeleteDialog(false);
-  const isSubspace = level !== SpaceLevel.L0;
-  const notLastLevel = level !== SpaceLevel.L2;
 
   const [deleteSpace] = useDeleteSpaceMutation({
     onCompleted: () => {
@@ -122,116 +113,11 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     };
   }, [settingsData, hostId]);
 
-  const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
-
-  // Optimistic state for immediate UI feedback
-  const [optimisticSettings, setOptimisticSettings] = useOptimistic(
+  const { optimisticSettings, updateSettings } = useSpaceSettingsUpdate({
+    spaceId,
     currentSettings,
-    (state, newSettings: Partial<typeof currentSettings>) => ({
-      ...state,
-      ...newSettings,
-    })
-  );
-
-  const [, startTransition] = useTransition();
-
-  const handleUpdateSettings = async ({
-    privacyMode = currentSettings?.privacy?.mode ?? defaultSpaceSettings.privacy.mode,
-    membershipPolicy = currentSettings?.membership?.policy ?? defaultSpaceSettings.membership.policy,
-    allowSubspaceAdminsToInviteMembers = currentSettings?.membership?.allowSubspaceAdminsToInviteMembers ??
-      defaultSpaceSettings.membership.allowSubspaceAdminsToInviteMembers,
-    allowEventsFromSubspaces = currentSettings?.collaboration?.allowEventsFromSubspaces ??
-      defaultSpaceSettings.collaboration.allowEventsFromSubspaces,
-    allowMembersToCreateSubspaces = currentSettings?.collaboration?.allowMembersToCreateSubspaces ??
-      defaultSpaceSettings.collaboration.allowMembersToCreateSubspaces,
-    allowMembersToCreateCallouts = currentSettings?.collaboration?.allowMembersToCreateCallouts ??
-      defaultSpaceSettings.collaboration.allowMembersToCreateCallouts,
-    allowMembersToVideoCall = currentSettings?.collaboration?.allowMembersToVideoCall ??
-      defaultSpaceSettings.collaboration.allowMembersToVideoCall,
-    inheritMembershipRights = currentSettings?.collaboration?.inheritMembershipRights ??
-      defaultSpaceSettings.collaboration.inheritMembershipRights,
-    allowGuestContributions = currentSettings?.collaboration?.allowGuestContributions ??
-      defaultSpaceSettings.collaboration.allowGuestContributions,
-    hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
-      defaultSpaceSettings.membership.hostOrganizationTrusted,
-    collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
-    showNotification = true,
-    allowPlatformSupportAsAdmin = currentSettings.privacy?.allowPlatformSupportAsAdmin ??
-      defaultSpaceSettings.privacy.allowPlatformSupportAsAdmin,
-  }: {
-    privacyMode?: SpacePrivacyMode;
-    membershipPolicy?: CommunityMembershipPolicy;
-    allowSubspaceAdminsToInviteMembers?: boolean;
-    allowEventsFromSubspaces?: boolean;
-    allowMembersToCreateSubspaces?: boolean;
-    allowMembersToCreateCallouts?: boolean;
-    allowMembersToVideoCall?: boolean;
-    inheritMembershipRights?: boolean;
-    allowGuestContributions?: boolean;
-    hostOrganizationTrusted?: boolean;
-    collaborationSettings?: Partial<SpaceSettingsCollaboration>;
-    showNotification?: boolean;
-    allowPlatformSupportAsAdmin?: boolean;
-  }) => {
-    const trustedOrganizations = [...(currentSettings?.membership?.trustedOrganizations ?? [])];
-    if (hostOrganizationTrusted && hostId) {
-      if (!trustedOrganizations.includes(hostId)) {
-        trustedOrganizations.push(hostId);
-      }
-    } else {
-      trustedOrganizations.splice(0, trustedOrganizations.length); // Clear the array
-    }
-
-    const settingsVariable = {
-      privacy: {
-        mode: privacyMode,
-        allowPlatformSupportAsAdmin,
-      },
-      membership: {
-        policy: membershipPolicy,
-        trustedOrganizations,
-        allowSubspaceAdminsToInviteMembers,
-      },
-      collaboration: {
-        ...currentSettings.collaboration,
-        ...collaborationSettings, // Overwrite with the passed values if any
-        allowEventsFromSubspaces,
-        allowMembersToCreateSubspaces,
-        allowMembersToCreateCallouts,
-        allowMembersToVideoCall,
-        inheritMembershipRights,
-        allowGuestContributions,
-      } as SpaceSettingsCollaboration,
-    };
-
-    // Optimistically update UI immediately for better UX
-    setOptimisticSettings({
-      collaboration: {
-        ...currentSettings.collaboration,
-        allowEventsFromSubspaces,
-        allowMembersToCreateSubspaces,
-        allowMembersToCreateCallouts,
-        allowMembersToVideoCall,
-        inheritMembershipRights,
-        allowGuestContributions,
-      },
-    });
-
-    startTransition(async () => {
-      await updateSpaceSettings({
-        variables: {
-          settingsData: {
-            spaceID: spaceId,
-            settings: settingsVariable,
-          },
-        },
-      });
-
-      if (showNotification) {
-        notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
-      }
-    });
-  };
+    hostId,
+  });
 
   return (
     <LayoutSwitcher currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
@@ -239,99 +125,21 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
         {!loading && (
           <>
             {privateSettingsEnabled && (
-              <PageContentBlock>
-                <BlockTitle>{t('pages.admin.space.settings.visibility.title')}</BlockTitle>
-                <RadioSettingsGroup
-                  value={currentSettings?.privacy?.mode}
-                  options={{
-                    [SpacePrivacyMode.Public]: {
-                      label: (
-                        <Trans
-                          i18nKey={`pages.admin.space.settings.visibility.${isSubspace ? 'publicSubspace' : 'public'}`}
-                          components={{ b: <strong /> }}
-                        />
-                      ),
-                    },
-                    [SpacePrivacyMode.Private]: {
-                      label: (
-                        <Trans
-                          i18nKey={`pages.admin.space.settings.visibility.${
-                            isSubspace ? 'privateSubspace' : 'private'
-                          }`}
-                          components={{ b: <strong /> }}
-                        />
-                      ),
-                    },
-                  }}
-                  onChange={value => handleUpdateSettings({ privacyMode: value })}
-                />
-              </PageContentBlock>
+              <VisibilitySettings
+                currentMode={currentSettings?.privacy?.mode}
+                level={level}
+                onUpdate={privacyMode => updateSettings({ privacyMode })}
+              />
             )}
 
             {membershipsEnabled && (
-              <PageContentBlock>
-                <BlockTitle>{t('pages.admin.space.settings.membership.title')}</BlockTitle>
-                <RadioSettingsGroup
-                  value={currentSettings?.membership?.policy}
-                  options={{
-                    [CommunityMembershipPolicy.Open]: {
-                      label: (
-                        <Trans i18nKey="pages.admin.space.settings.membership.open" components={{ b: <strong /> }} />
-                      ),
-                    },
-                    [CommunityMembershipPolicy.Applications]: {
-                      label: (
-                        <Trans
-                          i18nKey="pages.admin.space.settings.membership.applications"
-                          components={{
-                            b: <strong />,
-                            community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
-                          }}
-                        />
-                      ),
-                    },
-                    ...(notLastLevel && {
-                      [CommunityMembershipPolicy.Invitations]: {
-                        label: (
-                          <Trans
-                            i18nKey="pages.admin.space.settings.membership.invitations"
-                            components={{
-                              b: <strong />,
-                              community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
-                            }}
-                          />
-                        ),
-                      },
-                    }),
-                  }}
-                  onChange={value => handleUpdateSettings({ membershipPolicy: value })}
-                />
-                {!isSubspace && (
-                  <>
-                    <BlockSectionTitle>
-                      {t('pages.admin.space.settings.membership.trustedApplicants')}
-                    </BlockSectionTitle>
-                    <SwitchSettingsGroup
-                      options={{
-                        hostOrganizationTrusted: {
-                          checked: currentSettings.hostOrganizationTrusted,
-                          label: (
-                            <Trans
-                              t={t}
-                              i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
-                              values={{
-                                host: provider?.profile.displayName,
-                              }}
-                              components={{ b: <strong />, i: <em /> }}
-                            />
-                          ),
-                        },
-                      }}
-                      onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                    />
-                  </>
-                )}
-              </PageContentBlock>
+              <MembershipSettings
+                currentPolicy={currentSettings?.membership?.policy}
+                hostOrganizationTrusted={currentSettings.hostOrganizationTrusted}
+                providerDisplayName={provider?.profile.displayName}
+                level={level}
+                onUpdate={updateSettings}
+              />
             )}
 
             {membershipsEnabled && (
@@ -343,142 +151,15 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
               </PageContentBlockCollapsible>
             )}
 
-            <PageContentBlock disableGap>
-              <BlockTitle marginBottom={gutters(2)}>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
-              {notLastLevel && membershipsEnabled && (
-                <SwitchSettingsGroup
-                  options={{
-                    allowSubspaceAdminsToInviteMembers: {
-                      checked: currentSettings?.membership?.allowSubspaceAdminsToInviteMembers || false,
-                      label: (
-                        <Trans
-                          i18nKey={
-                            isSubspace
-                              ? 'pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembersSubspace'
-                              : 'pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembers'
-                          }
-                          components={{ b: <strong /> }}
-                        />
-                      ),
-                    },
-                  }}
-                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                />
-              )}
-
-              <SwitchSettingsGroup
-                options={{
-                  allowMembersToCreateCallouts: {
-                    checked: optimisticSettings?.collaboration?.allowMembersToCreateCallouts || false,
-                    label: (
-                      <Trans
-                        i18nKey="pages.admin.space.settings.memberActions.createBlocks"
-                        components={{ b: <strong /> }}
-                      />
-                    ),
-                  },
-                }}
-                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-              />
-              <SwitchSettingsGroup
-                options={{
-                  allowMembersToVideoCall: {
-                    checked: optimisticSettings?.collaboration?.allowMembersToVideoCall || false,
-                    label: (
-                      <Trans
-                        i18nKey="pages.admin.space.settings.memberActions.videoCall"
-                        components={{
-                          b: <strong />,
-                          jitsiInfoLink: <Link href="https://jitsi.org/" target="_blank" rel="noopener noreferrer" />,
-                        }}
-                      />
-                    ),
-                  },
-                }}
-                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-              />
-              <SwitchSettingsGroup
-                options={{
-                  allowGuestContributions: {
-                    checked: optimisticSettings?.collaboration?.allowGuestContributions || false,
-                    label: (
-                      <Trans
-                        i18nKey="pages.admin.space.settings.memberActions.guestContributions"
-                        components={{ b: <strong /> }}
-                      />
-                    ),
-                  },
-                }}
-                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-              />
-              {subspacesEnabled && (
-                <SwitchSettingsGroup
-                  options={{
-                    allowMembersToCreateSubspaces: {
-                      checked: optimisticSettings?.collaboration?.allowMembersToCreateSubspaces || false,
-                      label: (
-                        <Trans
-                          i18nKey="pages.admin.space.settings.memberActions.createSubspaces"
-                          components={{ b: <strong /> }}
-                        />
-                      ),
-                    },
-                  }}
-                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                />
-              )}
-              {level !== SpaceLevel.L0 && (
-                <SwitchSettingsGroup
-                  options={{
-                    inheritMembershipRights: {
-                      checked: optimisticSettings?.collaboration?.inheritMembershipRights || false,
-                      label: (
-                        <Trans
-                          i18nKey="pages.admin.space.settings.memberActions.inheritRights"
-                          components={{ b: <strong /> }}
-                        />
-                      ),
-                    },
-                  }}
-                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                />
-              )}
-              {!isSubspace && subspacesEnabled && (
-                <SwitchSettingsGroup
-                  options={{
-                    allowEventsFromSubspaces: {
-                      checked:
-                        currentSettings.collaboration?.allowEventsFromSubspaces ??
-                        defaultSpaceSettings.collaboration.allowEventsFromSubspaces,
-                      label: (
-                        <Trans
-                          i18nKey="pages.admin.space.settings.memberActions.eventsFromSubspaces"
-                          components={{ b: <strong /> }}
-                        />
-                      ),
-                    },
-                  }}
-                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                />
-              )}
-              {!isSubspace && subspacesEnabled && (
-                <SwitchSettingsGroup
-                  options={{
-                    allowPlatformSupportAsAdmin: {
-                      checked: currentSettings?.privacy?.allowPlatformSupportAsAdmin || false,
-                      label: (
-                        <Trans
-                          i18nKey="pages.admin.space.settings.memberActions.supportAsAdmin"
-                          components={{ b: <strong /> }}
-                        />
-                      ),
-                    },
-                  }}
-                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
-                />
-              )}
-            </PageContentBlock>
-            {isSubspace && (
+            <MemberActionsSettings
+              optimisticSettings={optimisticSettings}
+              currentSettings={currentSettings}
+              level={level}
+              membershipsEnabled={membershipsEnabled}
+              subspacesEnabled={subspacesEnabled}
+              onUpdate={updateSettings}
+            />
+            {isSubspace(level) && (
               <PageContentBlock>
                 <PageContentBlockHeader title={t('pages.admin.space.settings.copySpace.title')} />
                 <Text>{t('pages.admin.space.settings.copySpace.description')}</Text>
@@ -511,7 +192,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                 )}
               </PageContentBlock>
             )}
-            {isSubspace && canDelete && (
+            {isSubspace(level) && canDelete && (
               <PageContentBlock sx={{ borderColor: theme.palette.error.main }}>
                 <PageContentBlockHeader
                   sx={{ color: theme.palette.error.main }}

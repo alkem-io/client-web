@@ -1,14 +1,11 @@
 <!--
 Sync Impact Report
-Version change: 1.0.1 → 1.0.2 (aligned templates + clarified principles)
-Modified principles: I, II, III, IV, V
-Modified sections: Architecture Standards #1, Engineering Workflow #2
-Added sections: (none)
+Version change: 1.0.3 → 1.0.4 (added DRY principle)
+Modified principles: (none)
+Modified sections: Architecture Standards #6
+Added sections: Architecture Standards #6 (DRY & Code Reuse)
 Removed sections: (none)
-Templates requiring updates:
- - .specify/templates/plan-template.md (Constitution Check gates) ✅
- - .specify/templates/spec-template.md (story guidance alignment) ✅
- - .specify/templates/tasks-template.md (task structuring guidance) ✅
+Templates requiring updates: (none)
 Deferred TODOs: None
 -->
 
@@ -93,6 +90,12 @@ safeguards ensure sustainable delivery.
 5. Import transparency requires explicit module paths. Barrel exports via `index.ts` files are
    forbidden to maintain import traceability and prevent circular dependency issues. All imports
    MUST specify the direct file path to the exported module.
+6. Code reuse and DRY (Don't Repeat Yourself): Repetitive logic, constants, or derived values MUST
+   be extracted into shared utilities, hooks, or constants. Examples include boolean derivations
+   (e.g., `isSubspace = level !== SpaceLevel.L0`), repeated calculations, or duplicated
+   conditionals across components. When the same logic appears in multiple components within a
+   feature domain, create a shared hook or helper in `src/domain/<context>/utils` or
+   `src/core/utils`. For UI patterns, extract into reusable components in `src/core/ui`.
 
 ## Engineering Workflow
 
@@ -125,4 +128,4 @@ Compliance expectations:
   violations remain unmitigated.
 - CI workflows SHOULD enforce linting, testing, and type generation steps aligned with these rules.
 
-**Version**: 1.0.3 | **Ratified**: 2025-10-30 | **Last Amended**: 2025-11-03
+**Version**: 1.0.4 | **Ratified**: 2025-10-30 | **Last Amended**: 2025-11-03
