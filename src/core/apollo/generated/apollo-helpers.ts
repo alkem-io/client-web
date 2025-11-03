@@ -1727,6 +1727,17 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFieldPolicy = {
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier = (
+  | 'calendarEvent'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy = {
+  calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InAppNotificationPayloadSpaceCommunityContributorKeySpecifier = (
   | 'contributor'
   | 'space'
@@ -4609,6 +4620,7 @@ export type UserSettingsNotificationSpaceKeySpecifier = (
   | 'collaborationCalloutPostContributionComment'
   | 'collaborationCalloutPublished'
   | 'communicationUpdates'
+  | 'communityCalendarEvents'
   | UserSettingsNotificationSpaceKeySpecifier
 )[];
 export type UserSettingsNotificationSpaceFieldPolicy = {
@@ -4618,6 +4630,7 @@ export type UserSettingsNotificationSpaceFieldPolicy = {
   collaborationCalloutPostContributionComment?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationCalloutPublished?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdates?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityCalendarEvents?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationSpaceAdminKeySpecifier = (
   | 'collaborationCalloutContributionCreated'
@@ -5561,6 +5574,13 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadSpaceCommunityApplicationKeySpecifier
       | (() => undefined | InAppNotificationPayloadSpaceCommunityApplicationKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCommunityApplicationFieldPolicy;
+  };
+  InAppNotificationPayloadSpaceCommunityCalendarEvent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy;
   };
   InAppNotificationPayloadSpaceCommunityContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
