@@ -5,13 +5,7 @@ mutation UpdateWhiteboardPreviewSettings ($whiteboardId: UUID!, $previewSettings
   }) {
     id
     previewSettings {
-      mode
-      coordinates {
-        x
-        y
-        width
-        height
-      }
+      ...whiteboardPreviewSettings
     }
   }
 }

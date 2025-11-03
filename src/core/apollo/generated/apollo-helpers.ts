@@ -1096,9 +1096,7 @@ export type ConversationKeySpecifier = (
   | 'type'
   | 'updatedDate'
   | 'user'
-  | 'userID'
   | 'virtualContributor'
-  | 'virtualContributorID'
   | 'wellKnownVirtualContributor'
   | ConversationKeySpecifier
 )[];
@@ -1110,9 +1108,7 @@ export type ConversationFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
-  userID?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
-  virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
   wellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutContributionDataKeySpecifier = (
@@ -1327,11 +1323,27 @@ export type CreateVisualOnProfileDataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CreateWhiteboardDataKeySpecifier = ('content' | 'nameID' | 'profile' | CreateWhiteboardDataKeySpecifier)[];
+export type CreateWhiteboardDataKeySpecifier = (
+  | 'content'
+  | 'nameID'
+  | 'previewSettings'
+  | 'profile'
+  | CreateWhiteboardDataKeySpecifier
+)[];
 export type CreateWhiteboardDataFieldPolicy = {
   content?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  previewSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateWhiteboardPreviewSettingsDataKeySpecifier = (
+  | 'coordinates'
+  | 'mode'
+  | CreateWhiteboardPreviewSettingsDataKeySpecifier
+)[];
+export type CreateWhiteboardPreviewSettingsDataFieldPolicy = {
+  coordinates?: FieldPolicy<any> | FieldReadFunction<any>;
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CredentialKeySpecifier = (
   | 'createdDate'
@@ -4953,6 +4965,19 @@ export type WhiteboardPreviewCoordinatesFieldPolicy = {
   x?: FieldPolicy<any> | FieldReadFunction<any>;
   y?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type WhiteboardPreviewCoordinatesDataKeySpecifier = (
+  | 'height'
+  | 'width'
+  | 'x'
+  | 'y'
+  | WhiteboardPreviewCoordinatesDataKeySpecifier
+)[];
+export type WhiteboardPreviewCoordinatesDataFieldPolicy = {
+  height?: FieldPolicy<any> | FieldReadFunction<any>;
+  width?: FieldPolicy<any> | FieldReadFunction<any>;
+  x?: FieldPolicy<any> | FieldReadFunction<any>;
+  y?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type WhiteboardPreviewSettingsKeySpecifier = ('coordinates' | 'mode' | WhiteboardPreviewSettingsKeySpecifier)[];
 export type WhiteboardPreviewSettingsFieldPolicy = {
   coordinates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5411,6 +5436,13 @@ export type StrictTypedTypePolicies = {
   CreateWhiteboardData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateWhiteboardDataKeySpecifier | (() => undefined | CreateWhiteboardDataKeySpecifier);
     fields?: CreateWhiteboardDataFieldPolicy;
+  };
+  CreateWhiteboardPreviewSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateWhiteboardPreviewSettingsDataKeySpecifier
+      | (() => undefined | CreateWhiteboardPreviewSettingsDataKeySpecifier);
+    fields?: CreateWhiteboardPreviewSettingsDataFieldPolicy;
   };
   Credential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialKeySpecifier | (() => undefined | CredentialKeySpecifier);
@@ -6487,6 +6519,13 @@ export type StrictTypedTypePolicies = {
       | WhiteboardPreviewCoordinatesKeySpecifier
       | (() => undefined | WhiteboardPreviewCoordinatesKeySpecifier);
     fields?: WhiteboardPreviewCoordinatesFieldPolicy;
+  };
+  WhiteboardPreviewCoordinatesData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | WhiteboardPreviewCoordinatesDataKeySpecifier
+      | (() => undefined | WhiteboardPreviewCoordinatesDataKeySpecifier);
+    fields?: WhiteboardPreviewCoordinatesDataFieldPolicy;
   };
   WhiteboardPreviewSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
