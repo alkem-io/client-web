@@ -694,6 +694,17 @@ export const WhiteboardProfileFragmentDoc = gql`
   ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
+export const WhiteboardPreviewSettingsFragmentDoc = gql`
+  fragment whiteboardPreviewSettings on WhiteboardPreviewSettings {
+    mode
+    coordinates {
+      x
+      y
+      width
+      height
+    }
+  }
+`;
 export const WhiteboardDetailsFragmentDoc = gql`
   fragment WhiteboardDetails on Whiteboard {
     id
@@ -724,17 +735,12 @@ export const WhiteboardDetailsFragmentDoc = gql`
       }
     }
     previewSettings {
-      mode
-      coordinates {
-        x
-        y
-        width
-        height
-      }
+      ...whiteboardPreviewSettings
     }
   }
   ${WhiteboardProfileFragmentDoc}
   ${VisualModelFragmentDoc}
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export const MemoProfileFragmentDoc = gql`
   fragment MemoProfile on Profile {
@@ -2579,7 +2585,11 @@ export const WhiteboardTemplateContentFragmentDoc = gql`
       }
     }
     content
+    previewSettings {
+      ...whiteboardPreviewSettings
+    }
   }
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export const TemplateProfileInfoFragmentDoc = gql`
   fragment TemplateProfileInfo on Template {
@@ -6840,6 +6850,9 @@ export const CalloutContentDocument = gql`
               }
             }
             content
+            previewSettings {
+              ...whiteboardPreviewSettings
+            }
           }
           memo {
             id
@@ -6872,6 +6885,7 @@ export const CalloutContentDocument = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
+  ${WhiteboardPreviewSettingsFragmentDoc}
   ${LinkDetailsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
@@ -8986,16 +9000,11 @@ export const UpdateWhiteboardPreviewSettingsDocument = gql`
     updateWhiteboard(whiteboardData: { ID: $whiteboardId, previewSettings: $previewSettings }) {
       id
       previewSettings {
-        mode
-        coordinates {
-          x
-          y
-          width
-          height
-        }
+        ...whiteboardPreviewSettings
       }
     }
   }
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export type UpdateWhiteboardPreviewSettingsMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
@@ -9261,8 +9270,12 @@ export const UpdateWhiteboardDocument = gql`
         id
         displayName
       }
+      previewSettings {
+        ...whiteboardPreviewSettings
+      }
     }
   }
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export type UpdateWhiteboardMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateWhiteboardMutation,
