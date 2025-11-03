@@ -70,7 +70,7 @@ export const prepareGraph = (promptGraph: PromptGraph, startNodeName: string = '
   });
 
   // Follow the single path from start to leaf (O(n))
-  const path: (PromptGraphNode | string)[] = [];
+  const path: PromptGraphNode[] = [];
   let currentNodeName = startNodeName;
 
   while (currentNodeName) {
@@ -80,7 +80,7 @@ export const prepareGraph = (promptGraph: PromptGraph, startNodeName: string = '
       path.push(currentNode);
     }
     if (currentNodeName === 'END' || currentNodeName === 'START') {
-      path.push(currentNodeName);
+      path.push({ name: currentNodeName, system: true });
     }
 
     const next = nextNode.get(currentNodeName);

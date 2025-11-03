@@ -66,6 +66,7 @@ const PromptGraphConfig = ({ vc }: PromptGraphConfigProps) => {
   });
 
   const handleSubmit = (values: FormValueType) => {
+    if (!aiPersona) return;
     // Transform the nodes map from the form into an array of promptGraph nodes
     const transformedNodes = transformNodesMapToArray(values?.nodes);
 
@@ -81,7 +82,7 @@ const PromptGraphConfig = ({ vc }: PromptGraphConfigProps) => {
     updateAiPersona({
       variables: {
         aiPersonaData: {
-          ID: aiPersona?.id!,
+          ID: aiPersona.id,
           prompt: [prompt],
           promptGraph: updatedPromptGraph,
         },

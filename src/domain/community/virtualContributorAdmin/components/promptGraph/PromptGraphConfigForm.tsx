@@ -132,15 +132,13 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
 
   useEffect(() => {
     graphPath.forEach((node, index: number) => {
-      const nodeName = node.name || node;
-      if (!nodeName || typeof nodeName !== 'string') return;
+      const nodeName = node.name;
 
       if (index === 0) {
         availableInputVariables.current[nodeName] = ['conversation', 'display_name', 'description'];
       } else {
         const prevNode = graphPath[index - 1];
-        const prevNodeName = prevNode.name || prevNode;
-        if (!prevNodeName || typeof prevNodeName !== 'string') return;
+        const prevNodeName = prevNode.name;
 
         const prevOutputProps = values.nodes?.[prevNodeName]?.output?.properties?.map(prop => prop.name) || [];
         availableInputVariables.current[nodeName] = (availableInputVariables.current[prevNodeName] || []).concat(
@@ -169,7 +167,7 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
                     <Box key={`${typeof node === 'string' ? node : node.name}-${index}`} sx={{ width: '100%' }}>
                       <input type="hidden" name={`nodes.${nodeName}.system`} value={String(node.system || false)} />
                       <>
-                        {node && typeof node === 'object' ? (
+                        {node.output ? (
                           <Accordion sx={{ marginBottom: 1 }}>
                             <AccordionSummary expandIcon={<ExpandMore />}>
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -243,7 +241,7 @@ export const PromptGraphConfigForm = ({ promptGraph, setIsValid, isValid, handle
                               borderRadius: 1,
                             }}
                           >
-                            {node}
+                            {node.name}
                           </Box>
                         )}
                       </>
