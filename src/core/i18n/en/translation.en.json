@@ -2537,7 +2537,7 @@
           }
         },
         "notifications": {
-          "hubRemoved": "$t(common.InnovationHub) removed successfully."
+          "hubRemoved": "$t(common.innovation-hub) removed successfully."
         }
       }
     },

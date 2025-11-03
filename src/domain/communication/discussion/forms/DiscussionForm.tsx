@@ -35,18 +35,14 @@ const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: Discussi
     description: discussion?.description ?? '',
   };
 
-  const validationSchema = useMemo(
-    () =>
-      yup.object().shape({
-        title: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH, required: true }),
-        category: yup
-          .mixed<ForumDiscussionCategory>()
-          .oneOf(Object.values(ForumDiscussionCategory).filter(value => typeof value === 'string'))
-          .required('forms.validations.required'),
-        description: MarkdownValidator(MARKDOWN_TEXT_LENGTH, { required: true }).trim(),
-      }),
-    [categories]
-  );
+  const validationSchema = yup.object().shape({
+    title: textLengthValidator({ maxLength: SMALL_TEXT_LENGTH, required: true }),
+    category: yup
+      .mixed<ForumDiscussionCategory>()
+      .oneOf(Object.values(ForumDiscussionCategory).filter(value => typeof value === 'string'))
+      .required('forms.validations.required'),
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH, { required: true }).trim(),
+  });
 
   const discussionCategories = useMemo(
     () =>
