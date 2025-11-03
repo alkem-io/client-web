@@ -18,17 +18,20 @@ interface Provided {
   clearChat: () => Promise<void>;
   sendMessage: (message: string) => Promise<unknown>;
   isSubscribedToMessages: boolean;
+  conversationId: string;
 }
 
 const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   const { t, i18n } = useTranslation();
 
-  const [resetCConversationVc] = useResetConversationVcMutation();
+  const [resetConversationVc] = useResetConversationVcMutation();
 
   const { data: conversationGuidanceData, loading: conversationIdLoading } = useConversationWithGuidanceVcQuery({
     skip,
   });
-  const conversationId = conversationGuidanceData?.me.conversations.conversationGuidanceVc?.id;
+  const conversation= conversationGuidanceData?.me.conversations.conversationGuidanceVc;
+  const conversationId = conversation?.id
+  const roomId = conversation?.room?.id;
 
   const { data: messagesData, loading: messagesLoading } = useConversationVcMessagesQuery({
     variables: {
@@ -65,7 +68,7 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
     }
   }, [messagesData?.lookup.conversation?.room?.messages, conversationId, conversationIdLoading, messagesLoading]);
 
-  const isSubscribedToMessages = useSubscribeOnRoomEvents(conversationId, !conversationId);
+  const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, !roomId);
 
   const [askVcQuestion] = useAskVirtualContributorQuestionMutation();
   const askQuestion = async (
@@ -85,11 +88,11 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
     });
 
   const handleSendMessage = async (message: string): Promise<void> => {
-    await askQuestion(message, ['GuidanceRoomMessages']);
+    await askQuestion(message, ['ConversationVcMessages']);
   };
 
   const [clearChat, loadingClearChat] = useLoadingState(async () => {
-    await resetCConversationVc();
+    await resetConversationVc();
   });
 
   return {
@@ -98,6 +101,7 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
     isSubscribedToMessages,
     clearChat,
     sendMessage: handleSendMessage,
+    conversationId: conversationId!,
   };
 };
 

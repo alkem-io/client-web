@@ -30299,7 +30299,9 @@ export type ConversationWithGuidanceVcQuery = {
     __typename?: 'MeQueryResults';
     conversations: {
       __typename?: 'MeConversationsResult';
-      conversationGuidanceVc?: { __typename?: 'Conversation'; id: string } | undefined;
+      conversationGuidanceVc?:
+        | { __typename?: 'Conversation'; id: string; room?: { __typename?: 'Room'; id: string } | undefined }
+        | undefined;
     };
   };
 };

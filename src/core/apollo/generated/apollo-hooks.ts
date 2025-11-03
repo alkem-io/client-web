@@ -23216,6 +23216,9 @@ export const ConversationWithGuidanceVcDocument = gql`
     me {
       conversations {
         conversationGuidanceVc: virtualContributor(wellKnown: CHAT_GUIDANCE) {
+          room {
+            id
+          }
           id
         }
       }

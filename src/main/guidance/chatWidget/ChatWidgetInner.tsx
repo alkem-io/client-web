@@ -169,7 +169,7 @@ const ChatWidgetInner = () => {
   const [openClearConfirm, setOpenClearConfirm] = useState(false);
   const [chatToggleTime, setChatToggleTime] = useState(Date.now());
 
-  const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
+  const { messages, sendMessage, clearChat, conversationId, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
   const { userModel } = useCurrentUserContext();
   const userId = userModel?.id;
 
@@ -213,7 +213,7 @@ const ChatWidgetInner = () => {
       });
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.author?.id && lastMessage.author.id !== userId) {
-        addComponentMessage(Feedback, { answerId: lastMessage.id, conversationId: 'fixme' }, false);
+        addComponentMessage(Feedback, { answerId: lastMessage.id, conversationId: conversationId }, false);
         if (lastMessage.createdAt > new Date(chatToggleTime)) {
           setBadgeCount(1);
         } else {
