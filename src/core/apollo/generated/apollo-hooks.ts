@@ -694,6 +694,17 @@ export const WhiteboardProfileFragmentDoc = gql`
   ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
+export const WhiteboardPreviewSettingsFragmentDoc = gql`
+  fragment whiteboardPreviewSettings on WhiteboardPreviewSettings {
+    mode
+    coordinates {
+      x
+      y
+      width
+      height
+    }
+  }
+`;
 export const WhiteboardDetailsFragmentDoc = gql`
   fragment WhiteboardDetails on Whiteboard {
     id
@@ -724,17 +735,12 @@ export const WhiteboardDetailsFragmentDoc = gql`
       }
     }
     previewSettings {
-      mode
-      coordinates {
-        x
-        y
-        width
-        height
-      }
+      ...whiteboardPreviewSettings
     }
   }
   ${WhiteboardProfileFragmentDoc}
   ${VisualModelFragmentDoc}
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export const MemoProfileFragmentDoc = gql`
   fragment MemoProfile on Profile {
@@ -1775,44 +1781,6 @@ export const ProfileVisualsFragmentDoc = gql`
   }
   ${VisualModelFragmentDoc}
 `;
-export const SpaceAboutCardBannerFragmentDoc = gql`
-  fragment SpaceAboutCardBanner on SpaceAbout {
-    id
-    profile {
-      id
-      displayName
-      url
-      tagline
-      cardBanner: visual(type: CARD) {
-        ...VisualModel
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-  }
-  ${VisualModelFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const SpaceCardFragmentDoc = gql`
-  fragment SpaceCard on Space {
-    id
-    about {
-      ...SpaceAboutCardBanner
-      why
-      isContentPublic
-      metrics {
-        name
-        value
-      }
-      membership {
-        myMembershipStatus
-      }
-    }
-    visibility
-  }
-  ${SpaceAboutCardBannerFragmentDoc}
-`;
 export const BreadcrumbsSpaceL0FragmentDoc = gql`
   fragment BreadcrumbsSpaceL0 on Space {
     id
@@ -1849,10 +1817,30 @@ export const BreadcrumbsSubspaceFragmentDoc = gql`
   }
   ${VisualModelFragmentDoc}
 `;
+export const SpaceAboutCardBannerFragmentDoc = gql`
+  fragment SpaceAboutCardBanner on SpaceAbout {
+    id
+    profile {
+      id
+      displayName
+      url
+      tagline
+      cardBanner: visual(type: CARD) {
+        ...VisualModel
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
     id
     level
+    visibility
     about {
       ...SpaceAboutCardBanner
       metrics {
@@ -2597,7 +2585,11 @@ export const WhiteboardTemplateContentFragmentDoc = gql`
       }
     }
     content
+    previewSettings {
+      ...whiteboardPreviewSettings
+    }
   }
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export const TemplateProfileInfoFragmentDoc = gql`
   fragment TemplateProfileInfo on Template {
@@ -3123,6 +3115,23 @@ export const InAppNotificationPayloadVirtualContributorFragmentDoc = gql`
   ${SpaceNotificationFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
+export const InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunityCalendarEvent on InAppNotificationPayloadSpaceCommunityCalendarEvent {
+    space {
+      ...spaceNotification
+    }
+    calendarEvent {
+      id
+      type
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
 export const InAppNotificationAllTypesFragmentDoc = gql`
   fragment InAppNotificationAllTypes on InAppNotification {
     id
@@ -3200,6 +3209,9 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
       ... on InAppNotificationPayloadVirtualContributor {
         ...InAppNotificationPayloadVirtualContributor
       }
+      ... on InAppNotificationPayloadSpaceCommunityCalendarEvent {
+        ...InAppNotificationPayloadSpaceCommunityCalendarEvent
+      }
     }
   }
   ${VisualModelFragmentDoc}
@@ -3222,6 +3234,7 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
   ${InAppNotificationPayloadSpaceCollaborationCalloutCommentFragmentDoc}
   ${InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc}
   ${InAppNotificationPayloadVirtualContributorFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc}
 `;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
@@ -6837,6 +6850,9 @@ export const CalloutContentDocument = gql`
               }
             }
             content
+            previewSettings {
+              ...whiteboardPreviewSettings
+            }
           }
           memo {
             id
@@ -6869,6 +6885,7 @@ export const CalloutContentDocument = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
+  ${WhiteboardPreviewSettingsFragmentDoc}
   ${LinkDetailsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
@@ -8983,16 +9000,11 @@ export const UpdateWhiteboardPreviewSettingsDocument = gql`
     updateWhiteboard(whiteboardData: { ID: $whiteboardId, previewSettings: $previewSettings }) {
       id
       previewSettings {
-        mode
-        coordinates {
-          x
-          y
-          width
-          height
-        }
+        ...whiteboardPreviewSettings
       }
     }
   }
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export type UpdateWhiteboardPreviewSettingsMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
@@ -9258,8 +9270,12 @@ export const UpdateWhiteboardDocument = gql`
         id
         displayName
       }
+      previewSettings {
+        ...whiteboardPreviewSettings
+      }
     }
   }
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export type UpdateWhiteboardMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateWhiteboardMutation,
@@ -15369,10 +15385,10 @@ export function refetchInnovationHubBannerWideQuery(variables?: SchemaTypes.Inno
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
-      ...SpaceCard
+      ...SubspaceCard
     }
   }
-  ${SpaceCardFragmentDoc}
+  ${SubspaceCardFragmentDoc}
 `;
 
 /**
@@ -18659,11 +18675,11 @@ export const SubspaceCreatedDocument = gql`
   subscription subspaceCreated($subspaceId: UUID!) {
     subspaceCreated(spaceID: $subspaceId) {
       subspace {
-        ...SpaceCard
+        ...SubspaceCard
       }
     }
   }
-  ${SpaceCardFragmentDoc}
+  ${SubspaceCardFragmentDoc}
 `;
 
 /**

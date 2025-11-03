@@ -5,11 +5,16 @@ import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import { FormikSubmitButtonPure } from '@/domain/shared/components/forms/FormikSubmitButton';
 import { SaveOutlined } from '@mui/icons-material';
-import { DialogActions, DialogContent } from '@mui/material';
+import { DialogActions, DialogContent, Box } from '@mui/material';
 import { FormikProps } from 'formik/dist/types';
-import { ReactNode } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
+
+export interface TemplateFormActions<T = AnyTemplateFormSubmittedValues> {
+  renderActions: (formik: FormikProps<T>) => ReactNode;
+  portal: HTMLElement | null;
+}
 
 interface TemplateDialogBaseProps {
   open: boolean;
@@ -18,7 +23,7 @@ interface TemplateDialogBaseProps {
   editMode?: boolean;
   templateType: TemplateType;
   onDelete?: () => void;
-  children?: (props: { actions: (formik: FormikProps<AnyTemplateFormSubmittedValues>) => ReactNode }) => ReactNode;
+  children?: (props: { actions: TemplateFormActions }) => ReactNode;
 }
 
 const CreateEditTemplateDialogBase = ({
@@ -31,6 +36,11 @@ const CreateEditTemplateDialogBase = ({
   onDelete,
 }: TemplateDialogBaseProps) => {
   const { t } = useTranslation();
+  const [actionsPortalContainer, setActionsPortalContainer] = useState<HTMLElement | null>(null);
+
+  const handleActionsPortalRef = useCallback((node: HTMLDivElement | null) => {
+    setActionsPortalContainer(node);
+  }, []);
 
   const titleLabel = editMode ? 'common.edit-entity' : 'common.create-new-entity';
 
@@ -43,8 +53,10 @@ const CreateEditTemplateDialogBase = ({
       />
       <DialogContent sx={{ paddingTop: 0 }}>
         {children?.({
-          actions: formik => (
-            <DialogFooter>
+          /* Actions will be rendered down in the dialog footer, but it needs the formik context */
+          actions: {
+            portal: actionsPortalContainer,
+            renderActions: formik => (
               <DialogActions sx={{ marginLeft: 'auto' }}>
                 {editMode && onDelete && <DeleteButton onClick={onDelete} disabled={formik.isSubmitting} />}
                 {editMode && onCancel && (
@@ -61,10 +73,13 @@ const CreateEditTemplateDialogBase = ({
                   {t(editMode ? 'common.update' : 'common.create')}
                 </FormikSubmitButtonPure>
               </DialogActions>
-            </DialogFooter>
-          ),
+            ),
+          },
         })}
       </DialogContent>
+      <DialogFooter>
+        <Box ref={handleActionsPortalRef} sx={{ display: 'contents' }} />
+      </DialogFooter>
     </DialogWithGrid>
   );
 };

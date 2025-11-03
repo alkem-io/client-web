@@ -11,6 +11,7 @@ import {
   useUpdateTemplateFromSpaceMutation,
   useUpdateTemplateMutation,
   useCreateTemplateFromContentSpaceMutation,
+  useUpdateWhiteboardMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { useTranslation } from 'react-i18next';
@@ -119,6 +120,7 @@ const TemplatesAdmin = ({
   const [updateCallout] = useUpdateCalloutTemplateMutation({ refetchQueries });
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({ refetchQueries });
   const [updateSpaceTemplateFromExistingSpace] = useUpdateTemplateFromSpaceMutation({ refetchQueries });
+  const [updateWhiteboard] = useUpdateWhiteboardMutation({ refetchQueries });
 
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
     if (!selectedTemplate) {
@@ -129,6 +131,7 @@ const TemplatesAdmin = ({
       updateCalloutVariables,
       updateCommunityGuidelinesVariables,
       updateSpaceContentTemplateVariables,
+      updateWhiteboardVariables,
     } = toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
 
     const result = await updateTemplate({
@@ -152,6 +155,11 @@ const TemplatesAdmin = ({
     if (updateSpaceContentTemplateVariables) {
       await updateSpaceTemplateFromExistingSpace({
         variables: updateSpaceContentTemplateVariables,
+      });
+    }
+    if (updateWhiteboardVariables) {
+      await updateWhiteboard({
+        variables: updateWhiteboardVariables,
       });
     }
     // include preview for other template type other than callout

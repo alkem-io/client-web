@@ -9,3 +9,8 @@ export interface WhiteboardPreviewSettings {
     height: WhiteboardPreviewCoordinates['height'];
   };
 }
+
+export const DefaultWhiteboardPreviewSettings: WhiteboardPreviewSettings = {
+  mode: WhiteboardPreviewMode.Auto,
+  coordinates: undefined,
+} as const;
