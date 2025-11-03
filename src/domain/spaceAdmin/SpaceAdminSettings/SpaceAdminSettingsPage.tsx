@@ -30,7 +30,7 @@ import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLay
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import { Box, Button, CircularProgress, Link, useTheme } from '@mui/material';
 import { noop } from 'lodash';
-import { FC, useMemo, useState } from 'react';
+import { FC, useMemo, useState, useOptimistic, useTransition } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import EntityConfirmDeleteDialog from '../../shared/components/EntityConfirmDeleteDialog';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
@@ -124,6 +124,17 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
 
   const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
 
+  // Optimistic state for immediate UI feedback
+  const [optimisticSettings, setOptimisticSettings] = useOptimistic(
+    currentSettings,
+    (state, newSettings: Partial<typeof currentSettings>) => ({
+      ...state,
+      ...newSettings,
+    })
+  );
+
+  const [, startTransition] = useTransition();
+
   const handleUpdateSettings = async ({
     privacyMode = currentSettings?.privacy?.mode ?? defaultSpaceSettings.privacy.mode,
     membershipPolicy = currentSettings?.membership?.policy ?? defaultSpaceSettings.membership.policy,
@@ -139,6 +150,8 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
       defaultSpaceSettings.collaboration.allowMembersToVideoCall,
     inheritMembershipRights = currentSettings?.collaboration?.inheritMembershipRights ??
       defaultSpaceSettings.collaboration.inheritMembershipRights,
+    allowGuestContributions = currentSettings?.collaboration?.allowGuestContributions ??
+      defaultSpaceSettings.collaboration.allowGuestContributions,
     hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
       defaultSpaceSettings.membership.hostOrganizationTrusted,
     collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
@@ -154,6 +167,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
     allowMembersToCreateCallouts?: boolean;
     allowMembersToVideoCall?: boolean;
     inheritMembershipRights?: boolean;
+    allowGuestContributions?: boolean;
     hostOrganizationTrusted?: boolean;
     collaborationSettings?: Partial<SpaceSettingsCollaboration>;
     showNotification?: boolean;
@@ -186,21 +200,37 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
         allowMembersToCreateCallouts,
         allowMembersToVideoCall,
         inheritMembershipRights,
+        allowGuestContributions,
       } as SpaceSettingsCollaboration,
     };
 
-    await updateSpaceSettings({
-      variables: {
-        settingsData: {
-          spaceID: spaceId,
-          settings: settingsVariable,
-        },
+    // Optimistically update UI immediately for better UX
+    setOptimisticSettings({
+      collaboration: {
+        ...currentSettings.collaboration,
+        allowEventsFromSubspaces,
+        allowMembersToCreateSubspaces,
+        allowMembersToCreateCallouts,
+        allowMembersToVideoCall,
+        inheritMembershipRights,
+        allowGuestContributions,
       },
     });
 
-    if (showNotification) {
-      notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
-    }
+    startTransition(async () => {
+      await updateSpaceSettings({
+        variables: {
+          settingsData: {
+            spaceID: spaceId,
+            settings: settingsVariable,
+          },
+        },
+      });
+
+      if (showNotification) {
+        notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
+      }
+    });
   };
 
   return (
@@ -339,7 +369,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
               <SwitchSettingsGroup
                 options={{
                   allowMembersToCreateCallouts: {
-                    checked: currentSettings?.collaboration?.allowMembersToCreateCallouts || false,
+                    checked: optimisticSettings?.collaboration?.allowMembersToCreateCallouts || false,
                     label: (
                       <Trans
                         i18nKey="pages.admin.space.settings.memberActions.createBlocks"
@@ -353,7 +383,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
               <SwitchSettingsGroup
                 options={{
                   allowMembersToVideoCall: {
-                    checked: currentSettings?.collaboration?.allowMembersToVideoCall || false,
+                    checked: optimisticSettings?.collaboration?.allowMembersToVideoCall || false,
                     label: (
                       <Trans
                         i18nKey="pages.admin.space.settings.memberActions.videoCall"
@@ -367,11 +397,25 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                 }}
                 onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
               />
+              <SwitchSettingsGroup
+                options={{
+                  allowGuestContributions: {
+                    checked: optimisticSettings?.collaboration?.allowGuestContributions || false,
+                    label: (
+                      <Trans
+                        i18nKey="pages.admin.space.settings.memberActions.guestContributions"
+                        components={{ b: <strong /> }}
+                      />
+                    ),
+                  },
+                }}
+                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+              />
               {subspacesEnabled && (
                 <SwitchSettingsGroup
                   options={{
                     allowMembersToCreateSubspaces: {
-                      checked: currentSettings?.collaboration?.allowMembersToCreateSubspaces || false,
+                      checked: optimisticSettings?.collaboration?.allowMembersToCreateSubspaces || false,
                       label: (
                         <Trans
                           i18nKey="pages.admin.space.settings.memberActions.createSubspaces"
@@ -387,7 +431,7 @@ const SpaceAdminSettingsPage: FC<SpaceAdminSettingsPageProps> = ({
                 <SwitchSettingsGroup
                   options={{
                     inheritMembershipRights: {
-                      checked: currentSettings?.collaboration?.inheritMembershipRights || false,
+                      checked: optimisticSettings?.collaboration?.inheritMembershipRights || false,
                       label: (
                         <Trans
                           i18nKey="pages.admin.space.settings.memberActions.inheritRights"

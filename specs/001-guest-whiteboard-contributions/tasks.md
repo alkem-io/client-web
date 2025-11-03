@@ -31,8 +31,8 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Verify backend GraphQL schema includes allowGuestContributions field in SpaceSettingsCollaboration type
-- [ ] T002 [P] Run pnpm install to ensure dependencies are current
+- [x] T001 Verify backend GraphQL schema includes allowGuestContributions field in SpaceSettingsCollaboration type
+- [x] T002 [P] Run pnpm install to ensure dependencies are current
 
 ---
 
@@ -42,11 +42,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 [GraphQL] Update SpaceSettings.graphql fragment to include allowGuestContributions field in src/domain/spaceAdmin/SpaceAdminSettings/graphql/SpaceSettings.graphql
-- [ ] T005 [GraphQL] Update UpdateSpaceSettings.graphql mutation to include allowGuestContributions input in src/domain/spaceAdmin/SpaceAdminSettings/graphql/UpdateSpaceSettings.graphql
-- [ ] T006 [GraphQL] Run pnpm run codegen to regenerate GraphQL types and hooks
-- [ ] T007 [Domain] Update SpaceSettingsModel.ts interface to include allowGuestContributions field in src/domain/space/settings/SpaceSettingsModel.ts
-- [ ] T008 [P] [Domain] Update SpaceDefaultSettings.tsx to include allowGuestContributions: false in collaboration defaults in src/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings.tsx
+- [x] T004 [GraphQL] Update SpaceSettings.graphql fragment to include allowGuestContributions field in src/domain/spaceAdmin/SpaceAdminSettings/graphql/SpaceSettings.graphql
+- [x] T005 [GraphQL] Update UpdateSpaceSettings.graphql mutation to include allowGuestContributions input in src/domain/spaceAdmin/SpaceAdminSettings/graphql/UpdateSpaceSettings.graphql
+- [x] T006 [GraphQL] Run pnpm run codegen to regenerate GraphQL types and hooks
+- [x] T007 [Domain] Update SpaceSettingsModel.ts interface to include allowGuestContributions field in src/domain/space/settings/SpaceSettingsModel.ts
+- [x] T008 [P] [Domain] Update SpaceDefaultSettings.tsx to include allowGuestContributions: false in collaboration defaults in src/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings.tsx
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -60,7 +60,7 @@
 
 ### Implementation for User Story 1
 
-- [ ] T009 [P] [US1] [Domain] Create useSpaceGuestContributions hook in src/domain/space/settings/useSpaceGuestContributions.ts
+- [x] T009 [P] [US1] [Domain] Create useSpaceGuestContributions hook in src/domain/space/settings/useSpaceGuestContributions.ts
 - [ ] T010 [US1] [React19] Add optimistic state management to SpaceAdminSettingsPage.tsx using useOptimistic and useTransition
 - [ ] T011 [US1] [Domain] Add allowGuestContributions parameter to handleUpdateSettings function in src/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage.tsx
 - [ ] T012 [US1] Add guest contributions toggle UI component to Member Actions section in src/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage.tsx
