@@ -555,6 +555,8 @@
     },
     "roles": {
       "ADMIN": "$t(common.Admin)",
+      "ANONYMOUS": "Anonymous",
+      "REGISTERED": "Registered",
       "LEAD": "Lead",
       "HOST": "Host",
       "MEMBER": "$t(common.Member)",
@@ -1663,7 +1665,8 @@
     "file-upload": {
       "uploadFile": "Upload file",
       "file-size-error": "File size exceeds the {{limit}}MB limit",
-      "file-upload-success": "File uploaded successfully"
+      "file-upload-success": "File uploaded successfully",
+      "file-upload-error": "Error occurred while uploading the file"
     },
     "editSpaceForm": {
       "host": {
@@ -2521,12 +2524,20 @@
         "changeNameId": "Change $t(common.space) NameID",
         "manageLicensePlans": "Manage License Plans"
       },
+      "innovationPack": {
+        "notifications": {
+          "packRemoved": "$t(common.innovationPack) removed successfully."
+        }
+      },
       "innovationHub": {
         "spaceListFilter": {
           "header": {
             "title": "Current Selection",
             "subtitle": "The order below is the order in which the $t(common.spaces) will be visible on the $t(common.customHomepage)"
           }
+        },
+        "notifications": {
+          "hubRemoved": "$t(common.innovation-hub) removed successfully."
         }
       }
     },
@@ -2562,6 +2573,10 @@
       },
       "BANNER_WIDE": {
         "title": "Wide Banner",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
+      "WHITEBOARD_PREVIEW": {
+        "title": "Whiteboard Preview",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
       },
       "form": {
@@ -3024,7 +3039,8 @@
           "noUpdateAccess": "You can’t edit this $t(common.memo) because you don’t have the rights to do so. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share $t(common.settings) if you want to contribute.",
           "multiUserNotAllowed": "You can’t edit this $t(common.memo) because this $t(common.space) only allows one $t(common.memo) editor at a time",
           "roomCapacityReached": "You can’t edit this $t(common.memo) because this $t(common.space) allows for multiple editors simultaneously, but the maximum is reached",
-          "generic": "You can’t edit this $t(common.memo) for one of the following reasons:\n\nYou are not a $t(common.member) of the $t(common.space)\n- This $t(common.space) only allows one $t(common.memo) editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached"
+          "generic": "You can’t edit this $t(common.memo) for one of the following reasons:\n\nYou are not a $t(common.member) of the $t(common.space)\n- This $t(common.space) only allows one $t(common.memo) editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached",
+          "notAuthenticated": "You have to be signed in to edit this $t(common.memo). Click here to <signinlink>sign in</signinlink>"
         }
       }
     },
@@ -3567,6 +3583,9 @@
     "avatar": {
       "contributor": {
         "text": "{{displayName}}'s avatar: {{altText}}"
+      },
+      "innovationPack": {
+        "text": "{{displayName}}'s innovation pack avatar: {{altText}}"
       }
     }
   },

@@ -8,6 +8,7 @@ import { MemoIcon } from '@/domain/collaboration/memo/icon/MemoIcon';
 import { CtaIcon } from '@/domain/collaboration/callout/icons/CtaIcon';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 export const GenericCalloutIcon = LibraryBooksOutlined;
 
@@ -44,7 +45,7 @@ const getCalloutIconBasedOnType = (
 const getCalloutIconLabelKey = (
   framingType: CalloutFramingType,
   contributionType?: CalloutContributionType
-): string => {
+): TranslationKey => {
   if (framingType !== CalloutFramingType.None) {
     return `common.calloutType.${framingType}`;
   }
@@ -64,12 +65,7 @@ interface CalloutIconProps {
 }
 
 // React component that encapsulates icon selection + optional, accessible title/tooltip.
-export const CalloutIcon: React.FC<CalloutIconProps> = ({
-  framingType,
-  contributionType,
-  tooltip = false,
-  iconProps,
-}) => {
+export const CalloutIcon = ({ framingType, contributionType, tooltip = false, iconProps }: CalloutIconProps) => {
   const Icon = getCalloutIconBasedOnType(framingType, contributionType);
   const { t } = useTranslation();
   const labelKey = getCalloutIconLabelKey(framingType, contributionType);

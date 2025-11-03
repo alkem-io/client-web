@@ -30,7 +30,7 @@ const AdminInnovationPacksPage = () => {
   const [deleteInnovationPack] = useDeleteInnovationPackMutation({
     refetchQueries: [refetchPlatformAdminInnovationPacksQuery()],
     awaitRefetchQueries: true,
-    onCompleted: () => notify(t('pages.admin.innovation-pack.notifications.pack-removed'), 'success'),
+    onCompleted: () => notify(t('pages.admin.innovationPack.notifications.packRemoved'), 'success'),
   });
 
   const [searchTerm, setSearchTerm] = useState('');
