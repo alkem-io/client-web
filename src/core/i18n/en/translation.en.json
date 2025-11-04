@@ -2438,6 +2438,7 @@
           "space-removed": "$t(common.space) removed successfully."
         },
         "settings": {
+          "updateFailed": "Failed to update $t(common.settings). Please try again.",
           "savedSuccessfully": "$t(common.Settings) saved successfully",
           "visibility": {
             "title": "Visibility",
