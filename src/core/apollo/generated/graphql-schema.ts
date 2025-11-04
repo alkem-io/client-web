@@ -2052,6 +2052,8 @@ export type CreateSpaceOnAccountInput = {
 export type CreateSpaceSettingsCollaborationInput = {
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
   allowEventsFromSubspaces: Scalars['Boolean']['input'];
+  /** Flag to control if guest users can contribute to this Space. */
+  allowGuestContributions: Scalars['Boolean']['input'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
@@ -7002,6 +7004,8 @@ export type SpaceSettingsCollaboration = {
   __typename?: 'SpaceSettingsCollaboration';
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
   allowEventsFromSubspaces: Scalars['Boolean']['output'];
+  /** Flag to control if guest users can contribute to this Space. */
+  allowGuestContributions: Scalars['Boolean']['output'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean']['output'];
   /** Flag to control if members can create subspaces. */
@@ -7928,6 +7932,8 @@ export type UpdateSpacePlatformSettingsInput = {
 export type UpdateSpaceSettingsCollaborationInput = {
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
   allowEventsFromSubspaces: Scalars['Boolean']['input'];
+  /** Flag to control if guest users can contribute to this Space. */
+  allowGuestContributions: Scalars['Boolean']['input'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
@@ -25660,6 +25666,7 @@ export type SpaceSettingsQuery = {
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
               allowMembersToVideoCall: boolean;
+              allowGuestContributions: boolean;
             };
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
@@ -25684,6 +25691,7 @@ export type SpaceSettingsFragment = {
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
     allowMembersToVideoCall: boolean;
+    allowGuestContributions: boolean;
   };
 };
 
@@ -25712,6 +25720,7 @@ export type UpdateSpaceSettingsMutation = {
         inheritMembershipRights: boolean;
         allowEventsFromSubspaces: boolean;
         allowMembersToVideoCall: boolean;
+        allowGuestContributions: boolean;
       };
     };
   };
@@ -27601,6 +27610,7 @@ export type TemplateContentQuery = {
                     inheritMembershipRights: boolean;
                     allowEventsFromSubspaces: boolean;
                     allowMembersToVideoCall: boolean;
+                    allowGuestContributions: boolean;
                   };
                 };
                 subspaces: Array<{
@@ -27778,6 +27788,7 @@ export type SpaceTemplateContentQuery = {
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
               allowMembersToVideoCall: boolean;
+              allowGuestContributions: boolean;
             };
           };
           subspaces: Array<{
@@ -28129,6 +28140,7 @@ export type SpaceTemplateContentFragment = {
       inheritMembershipRights: boolean;
       allowEventsFromSubspaces: boolean;
       allowMembersToVideoCall: boolean;
+      allowGuestContributions: boolean;
     };
   };
   subspaces: Array<{
@@ -28267,6 +28279,7 @@ export type SpaceTemplateContent_SettingsFragment = {
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
     allowMembersToVideoCall: boolean;
+    allowGuestContributions: boolean;
   };
 };
 
