@@ -11,6 +11,7 @@ import {
   CommunityMembershipStatus,
   PlatformFeatureFlagName,
   SpaceLevel,
+  SpaceVisibility,
   TagsetReservedName,
   TagsetType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -117,6 +118,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
           createSubspace: {
             id: '',
             level: SpaceLevel.L1,
+            visibility: SpaceVisibility.Active,
             about: {
               id: '',
               why: value.about.why,

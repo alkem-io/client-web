@@ -19,6 +19,9 @@ fragment InnovationPackProfile on Profile {
     uri
   }
   url
+  avatar: visual(type: AVATAR) {
+    ...VisualModelFull
+  }
 }
 
 query AdminInnovationPack($innovationPackId: UUID!) {

@@ -1,15 +1,13 @@
-import React, { MouseEventHandler, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { Button, CircularProgress, ListItemIcon } from '@mui/material';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { Button, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import {
   refetchPlatformAdminSpacesListQuery,
   useUpdateSpacePlatformSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import ListItemLink, { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -24,48 +22,35 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { FormikSelectValue } from '@/core/ui/forms/FormikSelect';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import ManageLicensePlansDialog from './ManageLicensePlansDialog';
+import { SpaceTableItem } from '@/domain/platformAdmin/types/AdminTableItems';
 
-export interface SpacePlatformSettings {
-  nameId: string;
-  visibility: SpaceVisibility;
+interface SpaceSettingsDialogProps {
+  open: boolean;
+  onClose: () => void;
+  space: SpaceTableItem | null;
 }
 
-interface SpaceListItemV2Props extends ListItemLinkProps, SpacePlatformSettings {
-  spaceId: string;
-  canUpdate: boolean;
-}
-
-const SpaceListItem = ({ spaceId, nameId, visibility, canUpdate, ...props }: SpaceListItemV2Props) => {
-  const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
+const SpaceSettingsDialog = ({ open, onClose, space }: SpaceSettingsDialogProps) => {
+  const { t } = useTranslation();
   const [isManageLicensePlansDialogOpen, setIsManageLicensePlansDialogOpen] = useState(false);
-
-  const handlePlatformSettingsClick: MouseEventHandler = event => {
-    event.preventDefault();
-    event.stopPropagation();
-    setSettingsModalOpen(true);
-  };
-
-  const initialValues = {
-    nameId,
-    visibility,
-  };
 
   const [updateSpacePlatformSettings] = useUpdateSpacePlatformSettingsMutation();
 
-  const [handleSubmit, saving] = useLoadingState(async ({ nameId, visibility }: Partial<SpacePlatformSettings>) => {
-    await updateSpacePlatformSettings({
-      variables: {
-        spaceId,
-        nameId: nameId!,
-        visibility: visibility!,
-      },
-      refetchQueries: [refetchPlatformAdminSpacesListQuery()],
-      awaitRefetchQueries: true,
-    });
-    setSettingsModalOpen(false);
-  });
-
-  const { t } = useTranslation();
+  const [handleSubmit, saving] = useLoadingState(
+    async ({ nameId, visibility }: Partial<{ nameId: string; visibility: SpaceVisibility }>) => {
+      if (!space) return;
+      await updateSpacePlatformSettings({
+        variables: {
+          spaceId: space.spaceId,
+          nameId: nameId!,
+          visibility: visibility!,
+        },
+        refetchQueries: [refetchPlatformAdminSpacesListQuery()],
+        awaitRefetchQueries: true,
+      });
+      onClose();
+    }
+  );
 
   const visibilitySelectOptions = useMemo<readonly FormikSelectValue[]>(
     () =>
@@ -91,25 +76,23 @@ const SpaceListItem = ({ spaceId, nameId, visibility, canUpdate, ...props }: Spa
     visibility: textLengthValidator({ required: true }),
   });
 
+  const initialValues = {
+    nameId: space?.nameId ?? '',
+    visibility: space?.visibility ?? SpaceVisibility.Active,
+  };
+
   return (
     <>
-      <ListItemLink
-        {...props}
-        actions={
-          <ListItemIcon onClick={saving ? undefined : handlePlatformSettingsClick}>
-            {saving ? <CircularProgress size={24} /> : <SettingsOutlinedIcon />}
-          </ListItemIcon>
-        }
-      />
-      <DialogWithGrid
-        open={isSettingsModalOpen}
-        onClose={() => setSettingsModalOpen(false)}
-        aria-labelledby="space-settings-dialog"
-      >
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+      <DialogWithGrid open={open} onClose={onClose} aria-labelledby="space-settings-dialog">
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          enableReinitialize
+          onSubmit={handleSubmit}
+        >
           {({ handleSubmit, isValid }) => (
             <>
-              <DialogHeader id="space-settings-dialog" onClose={() => setSettingsModalOpen(false)}>
+              <DialogHeader id="space-settings-dialog" onClose={onClose}>
                 <BlockTitle>{t('pages.admin.spaces.spaceSettings')}</BlockTitle>
               </DialogHeader>
               <PageContentBlockSeamless>
@@ -118,13 +101,13 @@ const SpaceListItem = ({ spaceId, nameId, visibility, canUpdate, ...props }: Spa
                   title={t('components.nameSegment.nameID.title')}
                   placeholder={t('components.nameSegment.nameID.placeholder')}
                   required
-                  disabled={saving || !canUpdate}
+                  disabled={saving || !space?.canUpdate}
                 />
                 <FormikAutocomplete
                   name="visibility"
                   values={visibilitySelectOptions}
                   disablePortal={false}
-                  disabled={saving || !canUpdate}
+                  disabled={saving || !space?.canUpdate}
                 />
               </PageContentBlockSeamless>
               <Actions padding={gutters()}>
@@ -132,28 +115,29 @@ const SpaceListItem = ({ spaceId, nameId, visibility, canUpdate, ...props }: Spa
                   {t('pages.admin.spaces.manageLicensePlans')}
                 </Button>
                 <FlexSpacer />
-                <Button onClick={() => setSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
+                <Button onClick={onClose}>{t('buttons.cancel')}</Button>
                 <Button
                   variant="contained"
                   loading={saving}
                   onClick={() => handleSubmit()}
-                  disabled={!isValid || !canUpdate}
+                  disabled={!isValid || !space?.canUpdate}
                 >
-                  {t('buttons.save')}
+                  {saving ? <CircularProgress size={20} /> : t('buttons.save')}
                 </Button>
               </Actions>
             </>
           )}
         </Formik>
       </DialogWithGrid>
-      {/* License plans dialog - only loads data when opened */}
-      <ManageLicensePlansDialog
-        open={isManageLicensePlansDialogOpen}
-        onClose={() => setIsManageLicensePlansDialogOpen(false)}
-        spaceId={spaceId}
-      />
+      {space && (
+        <ManageLicensePlansDialog
+          open={isManageLicensePlansDialogOpen}
+          onClose={() => setIsManageLicensePlansDialogOpen(false)}
+          spaceId={space.spaceId}
+        />
+      )}
     </>
   );
 };
 
-export default SpaceListItem;
+export default SpaceSettingsDialog;

@@ -11,6 +11,7 @@ import { InAppNotificationModel } from './model/InAppNotificationModel';
 import { mapInAppNotificationToModel } from './util/mapInAppNotificationToModel';
 import { useMemo, useCallback, useEffect, useRef } from 'react';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
+import { getNotificationTypesForFilter } from './notificationFilters';
 
 export const IN_APP_NOTIFICATIONS_PAGE_SIZE = 10;
 
@@ -35,32 +36,38 @@ const updateNotificationsCache = (
 export const NOTIFICATION_EVENT_TYPES: NotificationEvent[] = [];
 
 export const useInAppNotifications = () => {
-  const { isEnabled, isOpen } = useInAppNotificationsContext();
+  const { isEnabled, isOpen, selectedFilter } = useInAppNotificationsContext();
   const prevIsOpenRef = useRef(isOpen);
+  const prevFilterRef = useRef(selectedFilter);
 
   const [updateState] = useUpdateNotificationStateMutation();
   const [markAsRead] = useMarkNotificationsAsReadMutation();
 
+  // Get the notification types based on the selected filter
+  const notificationTypes = useMemo(() => getNotificationTypesForFilter(selectedFilter), [selectedFilter]);
+
   const { data, loading, error, fetchMore, refetch } = useInAppNotificationsQuery({
     variables: {
-      types: NOTIFICATION_EVENT_TYPES,
+      types: notificationTypes,
       first: IN_APP_NOTIFICATIONS_PAGE_SIZE,
     },
     skip: !isEnabled || !isOpen,
   });
 
-  // Refetch notifications only when the dialog is opened (false -> true transition)
+  // Refetch notifications when the dialog is opened OR when the filter changes
   useEffect(() => {
-    if (isEnabled && isOpen && !prevIsOpenRef.current && refetch) {
+    const filterChanged = prevFilterRef.current !== selectedFilter;
+    const dialogOpened = isEnabled && isOpen && !prevIsOpenRef.current;
+
+    if ((dialogOpened || filterChanged) && refetch) {
       refetch();
     }
+
     prevIsOpenRef.current = isOpen;
-  }, [isOpen, isEnabled, refetch]);
+    prevFilterRef.current = selectedFilter;
+  }, [isOpen, isEnabled, selectedFilter, refetch]);
 
   const { data: unreadCountData } = useInAppNotificationsUnreadCountQuery({
-    variables: {
-      types: NOTIFICATION_EVENT_TYPES,
-    },
     skip: !isEnabled,
   });
 
@@ -106,7 +113,7 @@ export const useInAppNotifications = () => {
     try {
       await fetchMore({
         variables: {
-          types: NOTIFICATION_EVENT_TYPES,
+          types: notificationTypes,
           first: IN_APP_NOTIFICATIONS_PAGE_SIZE,
           after: data?.me?.notifications?.pageInfo?.endCursor,
         },
@@ -131,7 +138,7 @@ export const useInAppNotifications = () => {
     } catch (error) {
       console.error('Failed to fetch more notifications:', error);
     }
-  }, [fetchMore, hasMore, loading, data?.me?.notifications?.pageInfo?.endCursor]);
+  }, [fetchMore, hasMore, loading, data?.me?.notifications?.pageInfo?.endCursor, notificationTypes]);
 
   const updateNotificationState = useCallback(
     async (id: string, status: NotificationEventInAppState) => {
@@ -158,7 +165,7 @@ export const useInAppNotifications = () => {
     try {
       await markAsRead({
         variables: {
-          notificationIds: [], // empty array means all unread
+          types: notificationTypes as NotificationEvent[],
         },
         update: (_, result) => {
           if (result?.data?.markNotificationsAsRead) {
@@ -170,7 +177,7 @@ export const useInAppNotifications = () => {
     } catch (error) {
       console.error('Failed to mark notifications as read:', error);
     }
-  }, [markAsRead]);
+  }, [markAsRead, notificationTypes, refetch]);
 
   return {
     notificationsInApp,

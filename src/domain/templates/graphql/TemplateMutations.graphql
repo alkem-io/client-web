@@ -43,7 +43,7 @@ mutation CreateTemplate(
           nameID # Used to set an altImage to the visual
           profile {
             id
-            previewVisual: visual(type: BANNER) {
+            previewVisual: visual(type: WHITEBOARD_PREVIEW) {
               id
             }
           }
@@ -150,7 +150,7 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
         nameID # Used to set an altImage to the visual
         profile {
           id
-          previewVisual: visual(type: BANNER) {
+          previewVisual: visual(type: WHITEBOARD_PREVIEW) {
             id
           }
         }
