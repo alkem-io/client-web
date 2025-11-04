@@ -48,6 +48,7 @@ export const MemberActionsSettings: FC<MemberActionsSettingsProps> = ({
       {/* Subspace Admin Invitations */}
       {isNotLastLevel(level) && membershipsEnabled && (
         <SwitchSettingsGroup
+          ariaLabel={t('pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembers')}
           options={{
             allowSubspaceAdminsToInviteMembers: {
               checked:
@@ -71,6 +72,7 @@ export const MemberActionsSettings: FC<MemberActionsSettingsProps> = ({
 
       {/* Create Posts/Callouts */}
       <SwitchSettingsGroup
+        ariaLabel={t('pages.admin.space.settings.memberActions.createBlocks')}
         options={{
           allowMembersToCreateCallouts: {
             checked:
@@ -86,6 +88,7 @@ export const MemberActionsSettings: FC<MemberActionsSettingsProps> = ({
 
       {/* Video Call */}
       <SwitchSettingsGroup
+        ariaLabel={t('pages.admin.space.settings.memberActions.videoCall')}
         options={{
           allowMembersToVideoCall: {
             checked:
@@ -107,6 +110,7 @@ export const MemberActionsSettings: FC<MemberActionsSettingsProps> = ({
 
       {/* Guest Contributions */}
       <SwitchSettingsGroup
+        ariaLabel={t('pages.admin.space.settings.memberActions.guestContributions')}
         options={{
           allowGuestContributions: {
             checked:
@@ -126,6 +130,7 @@ export const MemberActionsSettings: FC<MemberActionsSettingsProps> = ({
       {/* Create Subspaces */}
       {subspacesEnabled && (
         <SwitchSettingsGroup
+          ariaLabel={t('pages.admin.space.settings.memberActions.createSubspaces')}
           options={{
             allowMembersToCreateSubspaces: {
               checked:
@@ -146,6 +151,7 @@ export const MemberActionsSettings: FC<MemberActionsSettingsProps> = ({
       {/* Inherit Membership Rights */}
       {isSubspace(level) && (
         <SwitchSettingsGroup
+          ariaLabel={t('pages.admin.space.settings.memberActions.inheritRights')}
           options={{
             inheritMembershipRights: {
               checked:
@@ -166,6 +172,7 @@ export const MemberActionsSettings: FC<MemberActionsSettingsProps> = ({
       {/* Events from Subspaces */}
       {!isSubspace(level) && subspacesEnabled && (
         <SwitchSettingsGroup
+          ariaLabel={t('pages.admin.space.settings.memberActions.eventsFromSubspaces')}
           options={{
             allowEventsFromSubspaces: {
               checked:
@@ -186,6 +193,7 @@ export const MemberActionsSettings: FC<MemberActionsSettingsProps> = ({
       {/* Platform Support as Admin */}
       {!isSubspace(level) && subspacesEnabled && (
         <SwitchSettingsGroup
+          ariaLabel={t('pages.admin.space.settings.memberActions.supportAsAdmin')}
           options={{
             allowPlatformSupportAsAdmin: {
               checked:
