@@ -1,15 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useAiPersonaQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
-import * as yup from 'yup';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContent from '@/core/ui/content/PageContent';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Switch, Alert } from '@mui/material';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Formik } from 'formik';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { FormNodeValue, FormValueType, PromptGraphNode } from './types';
 import PromptGraphConfigForm from './PromptGraphConfigForm';
@@ -22,7 +19,6 @@ type PromptGraphConfigProps = {
 const PromptGraphConfig = ({ vc }: PromptGraphConfigProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const [prompt, setPrompt] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const vcId = vc?.id;
@@ -36,8 +32,6 @@ const PromptGraphConfig = ({ vc }: PromptGraphConfigProps) => {
   const [updateAiPersona] = useUpdateAiPersonaMutation();
 
   const initialValues: FormValueType = useMemo(() => {
-    setPrompt(aiPersona?.prompt[0] || '');
-
     // Use a deep copy of the promptGraph from aiPersona so we don't mutate the original
     const promptGraph = aiPersona?.promptGraph || { nodes: [], edges: [] };
     const promptGraphCopy = JSON.parse(JSON.stringify(promptGraph));
@@ -61,10 +55,6 @@ const PromptGraphConfig = ({ vc }: PromptGraphConfigProps) => {
     };
   }, [aiPersona?.id]);
 
-  const validationSchema = yup.object().shape({
-    prompt: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-  });
-
   const handleSubmit = (values: FormValueType) => {
     if (!aiPersona) return;
     // Transform the nodes map from the form into an array of promptGraph nodes
@@ -83,7 +73,6 @@ const PromptGraphConfig = ({ vc }: PromptGraphConfigProps) => {
       variables: {
         aiPersonaData: {
           ID: aiPersona.id,
-          prompt: [prompt],
           promptGraph: updatedPromptGraph,
         },
       },
@@ -113,13 +102,7 @@ const PromptGraphConfig = ({ vc }: PromptGraphConfigProps) => {
             {t('pages.virtualContributorProfile.settings.promptGraph.infoText', { availableVariables })}
           </Caption>
           {showAdvanced && (
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              enableReinitialize
-              validateOnMount
-              onSubmit={() => {}}
-            >
+            <Formik initialValues={initialValues} enableReinitialize validateOnMount onSubmit={() => {}}>
               <PromptGraphConfigForm
                 promptGraph={promptGraph}
                 setIsValid={setIsValid}
