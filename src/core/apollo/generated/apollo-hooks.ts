@@ -2238,6 +2238,7 @@ export const SpaceSettingsFragmentDoc = gql`
       inheritMembershipRights
       allowEventsFromSubspaces
       allowMembersToVideoCall
+      allowGuestContributions
     }
   }
 `;
@@ -2526,6 +2527,7 @@ export const SpaceTemplateContent_SettingsFragmentDoc = gql`
       inheritMembershipRights
       allowEventsFromSubspaces
       allowMembersToVideoCall
+      allowGuestContributions
     }
   }
 `;
@@ -19973,6 +19975,7 @@ export const UpdateSpaceSettingsDocument = gql`
           inheritMembershipRights
           allowEventsFromSubspaces
           allowMembersToVideoCall
+          allowGuestContributions
         }
       }
     }
