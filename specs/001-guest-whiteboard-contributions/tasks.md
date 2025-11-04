@@ -66,7 +66,7 @@
 - [x] T012 [US1] Add guest contributions toggle UI component to Member Actions section in src/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage.tsx
 - [x] T013 [P] [US1] Add translation keys for guest contributions toggle labels and messages in public/locales/en/translation.json
 - [x] T014 [US1] [Quality] Implement error handling with automatic optimistic reversion and toast notifications in SpaceAdminSettingsPage.tsx
-- [ ] T015 [US1] [Quality] Add ARIA labels and keyboard navigation support to toggle component for WCAG 2.1 AA compliance
+- [x] T015 [US1] [Quality] Add ARIA labels and keyboard navigation support to toggle component for WCAG 2.1 AA compliance
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
