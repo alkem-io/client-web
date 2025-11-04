@@ -4030,6 +4030,7 @@ export type SpaceSettingsFieldPolicy = {
 };
 export type SpaceSettingsCollaborationKeySpecifier = (
   | 'allowEventsFromSubspaces'
+  | 'allowGuestContributions'
   | 'allowMembersToCreateCallouts'
   | 'allowMembersToCreateSubspaces'
   | 'allowMembersToVideoCall'
@@ -4038,6 +4039,7 @@ export type SpaceSettingsCollaborationKeySpecifier = (
 )[];
 export type SpaceSettingsCollaborationFieldPolicy = {
   allowEventsFromSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  allowGuestContributions?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToVideoCall?: FieldPolicy<any> | FieldReadFunction<any>;

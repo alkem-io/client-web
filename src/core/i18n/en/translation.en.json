@@ -2463,6 +2463,7 @@
           "space-removed": "$t(common.space) removed successfully."
         },
         "settings": {
+          "updateFailed": "Failed to update $t(common.settings). Please try again.",
           "savedSuccessfully": "$t(common.Settings) saved successfully",
           "visibility": {
             "title": "Visibility",
@@ -2494,6 +2495,7 @@
             "createBlocks": "<b>Create $t(common.posts)</b>: Allow $t(common.members) to create $t(common.posts). If you deactivate this, $t(common.members) will still be able to contribute to existing $t(common.posts), but will not be able to create new $t(common.posts).",
             "createSubspaces": "<b>Create $t(common.subspaces)</b>: Allow $t(common.members) to create $t(common.subspaces) in this $t(common.space). If you deactivate this, you can still create $t(common.subspaces) yourself and add other people as an $t(common.admin) inside the $t(common.subspace).",
             "videoCall": "<b>Video Call</b>: Show video call button in the tab menu. All members of this Space can use this button to start a Jitsi video conference. Read more about Jitsi <jitsiInfoLink>here</jitsiInfoLink>.",
+            "guestContributions": "<b>Guest Contributions</b>: Allow $t(common.whiteboards) in this $t(common.space) to be shared with guest users (non-members) for collaborative contributions.",
             "eventsFromSubspaces": "<b>$t(common.subspace) events</b>: Allow events from $t(common.subspaces) to be visible on this $t(common.space) calendar as well.",
             "inheritRights": "Allow $t(common.members) of the parent $t(common.community) to contribute without needing to join first.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an $t(common.admin) in this $t(common.space)."
