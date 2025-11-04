@@ -102,6 +102,9 @@ const WhiteboardChipButton = ({ disableClick, ...props }: ButtonProps & { disabl
         left: gutters(1)(theme),
         textTransform: 'none',
         pointerEvents: disableClick ? 'none' : 'auto',
+        [theme.breakpoints.down('sm')]: {
+          display: 'none',
+        },
       })}
       aria-label={
         disableClick ? t('pages.whiteboard.preview.ariaLabelDisabled') : t('pages.whiteboard.preview.ariaLabel')
