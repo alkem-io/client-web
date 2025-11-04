@@ -2905,6 +2905,14 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEvent = InAppNotificat
   __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEvent';
   /** The CalendarEvent that was created. */
   calendarEvent?: Maybe<CalendarEvent>;
+  /** ID of the calendar event. */
+  calendarEventID: Scalars['UUID']['output'];
+  /** Display title of the calendar event. */
+  calendarEventTitle: Scalars['String']['output'];
+  /** Type of the calendar event. */
+  calendarEventType: CalendarEventType;
+  /** ID of the user who created the event. */
+  createdBy: Scalars['UUID']['output'];
   /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
@@ -31210,7 +31218,7 @@ export type InAppNotificationReceivedSubscription = {
                           __typename?: 'Visual';
                           id: string;
                           uri: string;
-                          name: string;
+                          name: VisualType;
                           alternativeText?: string | undefined;
                         }
                       | undefined;
@@ -31219,7 +31227,7 @@ export type InAppNotificationReceivedSubscription = {
                           __typename?: 'Visual';
                           id: string;
                           uri: string;
-                          name: string;
+                          name: VisualType;
                           alternativeText?: string | undefined;
                         }
                       | undefined;
@@ -32285,7 +32293,7 @@ export type InAppNotificationsQuery = {
                               __typename?: 'Visual';
                               id: string;
                               uri: string;
-                              name: string;
+                              name: VisualType;
                               alternativeText?: string | undefined;
                             }
                           | undefined;
@@ -32294,7 +32302,7 @@ export type InAppNotificationsQuery = {
                               __typename?: 'Visual';
                               id: string;
                               uri: string;
-                              name: string;
+                              name: VisualType;
                               alternativeText?: string | undefined;
                             }
                           | undefined;
@@ -33348,7 +33356,7 @@ export type InAppNotificationAllTypesFragment = {
                         __typename?: 'Visual';
                         id: string;
                         uri: string;
-                        name: string;
+                        name: VisualType;
                         alternativeText?: string | undefined;
                       }
                     | undefined;
@@ -33357,7 +33365,7 @@ export type InAppNotificationAllTypesFragment = {
                         __typename?: 'Visual';
                         id: string;
                         uri: string;
-                        name: string;
+                        name: VisualType;
                         alternativeText?: string | undefined;
                       }
                     | undefined;
@@ -34628,10 +34636,22 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventFragment = {
                 }
               | undefined;
             avatar?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
               | undefined;
             cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; name: string; alternativeText?: string | undefined }
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
               | undefined;
           };
         };
