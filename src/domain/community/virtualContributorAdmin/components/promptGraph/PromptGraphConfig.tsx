@@ -53,7 +53,7 @@ const PromptGraphConfig = ({ vc }: PromptGraphConfigProps) => {
       nodes: nodesData,
       state: promptGraphCopy.state || { properties: [] },
     };
-  }, [aiPersona?.id]);
+  }, [aiPersona]);
 
   const handleSubmit = (values: FormValueType) => {
     if (!aiPersona) return;
