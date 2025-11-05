@@ -21440,14 +21440,11 @@ export type PlatformAdminSpacesListQuery = {
       id: string;
       nameID: string;
       visibility: SpaceVisibility;
-      settings: {
-        __typename?: 'SpaceSettings';
-        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
-      };
-      account: {
-        __typename?: 'Account';
+      about: {
+        __typename?: 'SpaceAbout';
         id: string;
-        host?:
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        provider:
           | {
               __typename?: 'Organization';
               id: string;
@@ -21458,13 +21455,7 @@ export type PlatformAdminSpacesListQuery = {
               __typename?: 'VirtualContributor';
               id: string;
               profile: { __typename?: 'Profile'; id: string; displayName: string };
-            }
-          | undefined;
-      };
-      about: {
-        __typename?: 'SpaceAbout';
-        id: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            };
       };
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
