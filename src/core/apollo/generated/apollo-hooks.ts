@@ -16725,27 +16725,19 @@ export const PlatformAdminSpacesListDocument = gql`
         id
         nameID
         visibility
-        settings {
-          privacy {
-            mode
-          }
-        }
-        account {
-          id
-          host {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-        }
         about {
           id
           profile {
             id
             displayName
             url
+          }
+          provider {
+            id
+            profile {
+              id
+              displayName
+            }
           }
         }
         authorization {

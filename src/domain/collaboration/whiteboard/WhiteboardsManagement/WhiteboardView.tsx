@@ -113,7 +113,7 @@ const WhiteboardView = ({
 
                 <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
 
-                {hasUpdateContentPrivileges && collabState.mode === 'write' && (
+                {hasUpdatePrivileges && collabState.mode === 'write' && (
                   <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
                 )}
               </>
