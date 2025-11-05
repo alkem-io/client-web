@@ -77,7 +77,7 @@ fragment InAppNotificationAllTypes on InAppNotification {
     ... on InAppNotificationPayloadSpaceCommunityCalendarEvent {
       ...InAppNotificationPayloadSpaceCommunityCalendarEvent
     }
-    ...on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
+    ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
       ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
     }
   }
