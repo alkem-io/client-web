@@ -125,7 +125,7 @@ const WhiteboardPreview = ({ displayName, whiteboard, onClick }: WhiteboardPrevi
       <ImageContainer>
         {!imageSrc && defaultImage && <Centered>{defaultImage}</Centered>}
         {imageSrc && (
-          <ImageFadeIn src={imageSrc} alt={displayName} width="100%" height="100%" sx={{ objectFit: 'contained' }} />
+          <ImageFadeIn src={imageSrc} alt={displayName} width="100%" height="100%" sx={{ objectFit: 'contain' }} />
         )}
       </ImageContainer>
       <WhiteboardChipButton disableClick={!onClick} />
