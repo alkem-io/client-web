@@ -176,6 +176,13 @@ const UserAdminNotificationsPage = () => {
       value,
       currentSettings.space?.collaborationCalloutComment
     ),
+    communityCalendarEvents: createNotificationChannel(
+      type,
+      property,
+      'communityCalendarEvents',
+      value,
+      currentSettings.space?.communityCalendarEvents
+    ),
   });
 
   const buildSpaceAdminSettings = (property: string, type: 'inApp' | 'email', value: boolean) => ({
@@ -333,6 +340,7 @@ const UserAdminNotificationsPage = () => {
             currentSettings.space?.collaborationCalloutContributionCreated
           ),
           collaborationCalloutComment: preserveChannel(currentSettings.space?.collaborationCalloutComment),
+          communityCalendarEvents: preserveChannel(currentSettings.space?.communityCalendarEvents),
           admin: buildSpaceAdminSettings(property, type, value),
         };
         break;

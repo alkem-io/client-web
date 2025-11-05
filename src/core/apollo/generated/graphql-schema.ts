@@ -19615,6 +19615,7 @@ export type UpdateUserSettingsMutation = {
             email: boolean;
             inApp: boolean;
           };
+          communityCalendarEvents: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           admin: {
             __typename?: 'UserSettingsNotificationSpaceAdmin';
             communityApplicationReceived: {
@@ -19727,6 +19728,7 @@ export type UserSettingsFragmentFragment = {
         email: boolean;
         inApp: boolean;
       };
+      communityCalendarEvents: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
     };
     user: {
       __typename?: 'UserSettingsNotificationUser';
@@ -19860,6 +19862,11 @@ export type UserSettingsQuery = {
                   inApp: boolean;
                 };
                 collaborationCalloutPostContributionComment: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                communityCalendarEvents: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;

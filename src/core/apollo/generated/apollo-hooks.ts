@@ -1533,6 +1533,10 @@ export const UserSettingsFragmentFragmentDoc = gql`
           email
           inApp
         }
+        communityCalendarEvents {
+          email
+          inApp
+        }
       }
       user {
         membership {
@@ -13498,6 +13502,10 @@ export const UpdateUserSettingsDocument = gql`
               inApp
             }
             collaborationCalloutPostContributionComment {
+              email
+              inApp
+            }
+            communityCalendarEvents {
               email
               inApp
             }
