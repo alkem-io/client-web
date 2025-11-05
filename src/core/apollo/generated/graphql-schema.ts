@@ -2907,12 +2907,6 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEvent = InAppNotificat
   calendarEvent?: Maybe<CalendarEvent>;
   /** ID of the calendar event. */
   calendarEventID: Scalars['UUID']['output'];
-  /** Display title of the calendar event. */
-  calendarEventTitle: Scalars['String']['output'];
-  /** Type of the calendar event. */
-  calendarEventType: CalendarEventType;
-  /** ID of the user who created the event. */
-  createdBy: Scalars['UUID']['output'];
   /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
@@ -2925,14 +2919,8 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventComment = InAppNo
   calendarEvent?: Maybe<CalendarEvent>;
   /** ID of the calendar event that was commented on. */
   calendarEventID: Scalars['UUID']['output'];
-  /** Display title of the calendar event. */
-  calendarEventTitle: Scalars['String']['output'];
-  /** ID of the comment message. */
-  commentID: Scalars['UUID']['output'];
-  /** Preview text of the comment (first 200 characters). */
+  /** Preview text of the comment */
   commentText: Scalars['String']['output'];
-  /** ID of the user who posted the comment. */
-  commenterID: Scalars['UUID']['output'];
   /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
