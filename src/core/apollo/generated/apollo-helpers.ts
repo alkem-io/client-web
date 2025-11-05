@@ -1746,6 +1746,27 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy = {
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier = (
+  | 'calendarEvent'
+  | 'calendarEventID'
+  | 'calendarEventTitle'
+  | 'commentID'
+  | 'commentText'
+  | 'commenterID'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFieldPolicy = {
+  calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventID?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventTitle?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentID?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentText?: FieldPolicy<any> | FieldReadFunction<any>;
+  commenterID?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InAppNotificationPayloadSpaceCommunityContributorKeySpecifier = (
   | 'contributor'
   | 'space'
@@ -5591,6 +5612,13 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
       | (() => undefined | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy;
+  };
+  InAppNotificationPayloadSpaceCommunityCalendarEventComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCommunityCalendarEventCommentFieldPolicy;
   };
   InAppNotificationPayloadSpaceCommunityContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

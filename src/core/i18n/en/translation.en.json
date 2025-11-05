@@ -2076,6 +2076,10 @@
         "SPACE_COMMUNITY_CALENDAR_EVENT_CREATED": {
           "subject": "New {{type}} scheduled in {{spaceName}}",
           "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
+        },
+        "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
+          "subject": "New comment on {{type}}: {{eventTitle}}",
+          "description": "{{triggeredByName}} left a comment on the {{eventTitle}} in the {{spaceName}} calendar"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
