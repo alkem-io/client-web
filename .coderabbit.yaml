@@ -11,56 +11,75 @@ reviews:
     enabled: true
     auto_incremental_review: true
   path_filters:
-    - "!**/.github/**"
+    - "!**/.*/**"            # Exclude hidden/system files/scripts
+    - "!**/@types"           # Exclude types
+    - "!**/public/**"        # Exclude public assets
     - "!**/node_modules/**"  # Exclude dependencies
+    - "!**/dist/**"          # Exclude build files
   path_instructions:
+    - path: "**/*"
+      instructions: |
+        Repository overview:
+        - React 19 + TypeScript single-page app for the Alkemio platform. Uses Vite 5, Apollo Client 3, MUI 7, Emotion, Vitest.
+        - Large surface (production build transforms ~18k modules). Core implementation lives in src/core, src/domain, and src/main; generated GraphQL hooks reside in src/core/apollo/generated.
+        - Authoritative docs: README.md, docs/development-setup.md, .specify/memory/constitution.md, agents.md, .github/copilot-instructions.md.
+
+        Environment & bootstrap:
+        1. Ensure Node >=20.9.0 (Volta pins 20.15.1) and pnpm >=10.17.1.
+        2. Keep .env (checked in) present; override locally via .env.local.
+        3. `pnpm install` (validated 2025-10-30, ~1s with cached deps). pnpm warns about ignored build scripts (@sentry/cli, esbuild, husky, msw); ignore or run `pnpm approve-builds` if required.
+
+        Validation flow (validated 2025-10-30):
+        - `pnpm lint` → runs `tsc --noEmit` then ESLint on `src/**/*.ts(x)`; completed cleanly.
+        - `pnpm vitest run --reporter=basic`.
+        - `pnpm build` →Rewrites `.build/docker/.env.base` and `public/env-config.js`; revert before commit. Emits expected large-chunk warnings.
+        - `pnpm serve:dev` → serves `./build` on port 3001 (after `pnpm build`).
+        - `pnpm format` → Prettier for `src/**/*.ts(x)`.
+        - `pnpm codegen` → requires backend GraphQL endpoint at `http://localhost:3000/graphql`; regenerates `src/core/apollo/generated` artifacts.
+        - `pnpm start` → Vite dev server (app reachable via Traefik on `http://localhost:3000`, Vite listens on 3001). Regenerates `public/env-config.js` each run.
+
+        Layout & architecture:
+        - `src/index.tsx` bootstraps the SPA; `src/root.tsx` wires Sentry, Apollo, routing, auth, and global state.
+        - `src/core/` houses shared infrastructure (auth, analytics, routing helpers, UI kit, utilities).
+        - `src/domain/` contains domain façades/hooks grouped by business context (space, innovationHub, communication, etc.).
+        - `src/main/` provides routed shells, layouts, notifications, admin flows; keep business rules in `src/domain` or `src/core`.
+        - `buildConfiguration.js` injects `VITE_APP_*` env vars into `.build/docker/.env.base` and `public/env-config.js`; never commit those generated files.
+
+        Review focus:
+        - Follow the hierarchy: constitution → agents.md → .github/copilot-instructions.md.
+        - Require `pnpm codegen` and schema diff summaries when `*.graphql` changes; prohibit ad-hoc `useQuery` usage.
+        - Enforce React 19 concurrency hygiene, WCAG 2.1 AA accessibility, and localization via `react-i18next` (no hard-coded copy).
+        - Reject commits containing build artifacts (`.build/`, `public/env-config.js`, `build/`) or missing validation evidence.
+        - Ensure new env vars use the `VITE_APP_*` prefix and flow through `buildConfiguration.js` into `window._env_`.
+
+        Trust this onboarding note first;
+    - path: "specs/**/spec.md"
+      instructions: |
+        Speckit specs capture the constitution for behaviour. Confirm changes satisfy acceptance criteria, update impacted requirements, and flag any divergence or missing traceability.
+    - path: "specs/**/plan.md"
+      instructions: |
+        Use the delivery plan to validate sequencing, observability, and resiliency hooks promised for a spec. Highlight unimplemented tasks or newly introduced risks.
     - path: "src/**/*.{ts,tsx,js}"
       instructions: |
-        Review the React.js/TypeScript/JavaScript code for best practices and potential bugs.
-        Ensure that the code adheres to TypeScript's typing system and modern standards.
-        Use the following code guide documentation in the codebase: 'docs/code-guidelines.md'.
-        Ensure sufficient error handling and logging is present, **but note:**
-        - We have a global error handler in place. So local `try/catch` blocks are not required unless they provide value beyond what the global error handler already covers.
-        - Avoid flagging the absence of local error handling in cases where the global error handler suffices.
-        - Avoid flagging the absence of logging in cases where the global logger is already in place (graphql usage).
-
-        Inform about the recommendation of not using non-null assertion,
-        except on GraphQL queries where the variable is asserted non-null and followed by a
-        `skip:` with the same variable.
-        Examples:
-        - Not Required: there's a skip
-         {
-          variables: { templateId: templateId! },
-          skip: !templateId,
-         }
-
-        Check for common security vulnerabilities such as:
-        - SQL Injection
-        - XSS (Cross-Site Scripting)
-        - CSRF (Cross-Site Request Forgery)
-        - Insecure dependencies
-        - Sensitive data exposure
+        Review the React/TypeScript code for correctness and alignment with docs/code-guidelines.md.
+        Rely on global error handling and logging; only flag missing local try/catch or logging when additional mitigation is required.
+        Non-null assertions are discouraged except when paired with skip guards on GraphQL queries (see existing patterns).
+        Watch for security issues (XSS, CSRF, sensitive data exposure) and TypeScript typing violations.
     - path: "src/**/*.{graphql,gql}"
       instructions: |
-        Review the GraphQL schema and queries for best practices, potential bugs, and adherence to the project's GraphQL standards.
-        Ensure that the schema is well-defined and queries are optimized.
-        Check for security vulnerabilities.
+        Ensure documents follow generated fragment conventions, stay in sync with server schema, and include matching codegen artifacts. Flag missing schema diffs or cache update plans.
     - path: "src/**/*.json"
       instructions: |
-        Review the JSON files for correct syntax and structure.
-        Ensure that the configuration and data are accurate and follow the project's standards.
-        Check for sensitive data exposure and ensure that the data is properly validated.
+        Validate structure, schema compliance, and absence of secrets. Keep localization payloads consistent.
     - path: "public/**/*.html"
       instructions: |
-        Review the HTML files for correct syntax and structure.
-        Ensure that the content is accessible, semantic, and follows the project's standards.
+        Enforce semantic HTML and accessibility requirements. Confirm injected env placeholders remain intact.
     - path: "src/**/*.yaml"
       instructions: |
-        Review the YAML files for correct syntax and structure.
-        Ensure that the configuration is accurate and follows the project's standards.
-        Check for potential security issues and ensure that the data is properly validated.
+        Confirm configuration accuracy and security expectations.
     - path: "**/*.md"
-      instructions: "Ensure the documentation is clear, concise, and up-to-date, with accurate instructions."
+      instructions: |
+        Ensure documentation stays current, references the constitution hierarchy, and captures new risks or mitigations.
 chat:
   auto_reply: true
 

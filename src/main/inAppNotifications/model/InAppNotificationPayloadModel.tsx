@@ -1,4 +1,10 @@
-import { NotificationEventPayload, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalendarEventType,
+  ForumDiscussionCategory,
+  NotificationEventPayload,
+  RoleSetContributorType,
+  SpaceLevel,
+} from '@/core/apollo/generated/graphql-schema';
 
 export interface InAppNotificationPayloadModel {
   type: NotificationEventPayload;
@@ -87,11 +93,19 @@ export interface InAppNotificationPayloadModel {
     id: string;
     displayName: string;
     description?: string;
-    category?: string;
+    category?: ForumDiscussionCategory | string; // TODO: Payload from the notifications come with type string
     url: string;
   };
   comment?: string;
   userEmail?: string;
   userDisplayName?: string;
   organizationMessage?: string;
+  calendarEvent?: {
+    id: string;
+    type: CalendarEventType;
+    profile: {
+      displayName: string;
+      url: string;
+    };
+  };
 }

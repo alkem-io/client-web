@@ -1300,11 +1300,27 @@ export type CreateVisualOnProfileDataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CreateWhiteboardDataKeySpecifier = ('content' | 'nameID' | 'profile' | CreateWhiteboardDataKeySpecifier)[];
+export type CreateWhiteboardDataKeySpecifier = (
+  | 'content'
+  | 'nameID'
+  | 'previewSettings'
+  | 'profile'
+  | CreateWhiteboardDataKeySpecifier
+)[];
 export type CreateWhiteboardDataFieldPolicy = {
   content?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  previewSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateWhiteboardPreviewSettingsDataKeySpecifier = (
+  | 'coordinates'
+  | 'mode'
+  | CreateWhiteboardPreviewSettingsDataKeySpecifier
+)[];
+export type CreateWhiteboardPreviewSettingsDataFieldPolicy = {
+  coordinates?: FieldPolicy<any> | FieldReadFunction<any>;
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CredentialKeySpecifier = (
   | 'createdDate'
@@ -1708,6 +1724,25 @@ export type InAppNotificationPayloadSpaceCommunityApplicationKeySpecifier = (
 )[];
 export type InAppNotificationPayloadSpaceCommunityApplicationFieldPolicy = {
   application?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier = (
+  | 'calendarEvent'
+  | 'calendarEventID'
+  | 'calendarEventTitle'
+  | 'calendarEventType'
+  | 'createdBy'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy = {
+  calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventID?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventTitle?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventType?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3263,6 +3298,7 @@ export type PromptGraphFieldPolicy = {
 };
 export type PromptGraphDataPointKeySpecifier = (
   | 'description'
+  | 'items'
   | 'name'
   | 'optional'
   | 'type'
@@ -3270,6 +3306,7 @@ export type PromptGraphDataPointKeySpecifier = (
 )[];
 export type PromptGraphDataPointFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
+  items?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   optional?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4593,6 +4630,7 @@ export type UserSettingsNotificationSpaceKeySpecifier = (
   | 'collaborationCalloutPostContributionComment'
   | 'collaborationCalloutPublished'
   | 'communicationUpdates'
+  | 'communityCalendarEvents'
   | UserSettingsNotificationSpaceKeySpecifier
 )[];
 export type UserSettingsNotificationSpaceFieldPolicy = {
@@ -4602,6 +4640,7 @@ export type UserSettingsNotificationSpaceFieldPolicy = {
   collaborationCalloutPostContributionComment?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationCalloutPublished?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdates?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityCalendarEvents?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationSpaceAdminKeySpecifier = (
   | 'collaborationCalloutContributionCreated'
@@ -4878,6 +4917,19 @@ export type WhiteboardPreviewCoordinatesKeySpecifier = (
   | WhiteboardPreviewCoordinatesKeySpecifier
 )[];
 export type WhiteboardPreviewCoordinatesFieldPolicy = {
+  height?: FieldPolicy<any> | FieldReadFunction<any>;
+  width?: FieldPolicy<any> | FieldReadFunction<any>;
+  x?: FieldPolicy<any> | FieldReadFunction<any>;
+  y?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WhiteboardPreviewCoordinatesDataKeySpecifier = (
+  | 'height'
+  | 'width'
+  | 'x'
+  | 'y'
+  | WhiteboardPreviewCoordinatesDataKeySpecifier
+)[];
+export type WhiteboardPreviewCoordinatesDataFieldPolicy = {
   height?: FieldPolicy<any> | FieldReadFunction<any>;
   width?: FieldPolicy<any> | FieldReadFunction<any>;
   x?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5338,6 +5390,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CreateWhiteboardDataKeySpecifier | (() => undefined | CreateWhiteboardDataKeySpecifier);
     fields?: CreateWhiteboardDataFieldPolicy;
   };
+  CreateWhiteboardPreviewSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateWhiteboardPreviewSettingsDataKeySpecifier
+      | (() => undefined | CreateWhiteboardPreviewSettingsDataKeySpecifier);
+    fields?: CreateWhiteboardPreviewSettingsDataFieldPolicy;
+  };
   Credential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialKeySpecifier | (() => undefined | CredentialKeySpecifier);
     fields?: CredentialFieldPolicy;
@@ -5525,6 +5584,13 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadSpaceCommunityApplicationKeySpecifier
       | (() => undefined | InAppNotificationPayloadSpaceCommunityApplicationKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCommunityApplicationFieldPolicy;
+  };
+  InAppNotificationPayloadSpaceCommunityCalendarEvent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy;
   };
   InAppNotificationPayloadSpaceCommunityContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -6392,6 +6458,13 @@ export type StrictTypedTypePolicies = {
       | WhiteboardPreviewCoordinatesKeySpecifier
       | (() => undefined | WhiteboardPreviewCoordinatesKeySpecifier);
     fields?: WhiteboardPreviewCoordinatesFieldPolicy;
+  };
+  WhiteboardPreviewCoordinatesData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | WhiteboardPreviewCoordinatesDataKeySpecifier
+      | (() => undefined | WhiteboardPreviewCoordinatesDataKeySpecifier);
+    fields?: WhiteboardPreviewCoordinatesDataFieldPolicy;
   };
   WhiteboardPreviewSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
