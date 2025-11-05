@@ -58,14 +58,17 @@ export const SpaceList: FC = () => {
         header: 'Privacy Mode',
         flex: 1,
         minWidth: '120px',
-        render: (item: SpaceTableItem) => (
-          <Chip
-            label={item.privacyMode}
-            size="small"
-            color={item.privacyMode === SpacePrivacyMode.Public ? 'info' : 'default'}
-            variant="outlined"
-          />
-        ),
+        render: (item: SpaceTableItem) =>
+          item.privacyMode ? (
+            <Chip
+              label={item.privacyMode}
+              size="small"
+              color={item.privacyMode === SpacePrivacyMode.Public ? 'info' : 'default'}
+              variant="outlined"
+            />
+          ) : (
+            ''
+          ),
       },
       {
         header: 'Account Owner',
@@ -88,8 +91,8 @@ export const SpaceList: FC = () => {
             : space.about.profile.displayName;
 
         const canUpdate = (space.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Update);
-        const accountOwner = space.account?.host?.profile?.displayName || 'N/A';
-        const privacyMode = space.settings.privacy.mode;
+        const accountOwner = space.about.provider?.profile?.displayName || 'N/A';
+        const privacyMode: SpacePrivacyMode | undefined = undefined; // TODO: server#5565 GlobalSupport doesn't have access to settings yet
 
         return {
           id: space.id,
