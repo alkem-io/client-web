@@ -1,0 +1,62 @@
+# Contract: Extended callouts query with tagset data
+
+query CalloutsOnCalloutsSetUsingClassification(
+  $calloutsSetId: UUID!
+  $classificationTagsets: [TagsetArgs!] = []
+  $withClassification: Boolean = true
+) {
+  lookup {
+    calloutsSet(ID: $calloutsSetId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      callouts(classificationTagsets: $classificationTagsets) {
+        id
+        sortOrder
+        activity
+        authorization {
+          id
+          myPrivileges
+        }
+        framing {
+          id
+          profile {
+            id
+            url
+            displayName
+            tagset {
+              id
+              tags {
+                id
+                name
+                displayName
+              }
+            }
+          }
+          type
+        }
+        settings {
+          visibility
+        }
+        ...ClassificationDetails @include(if: $withClassification)
+      }
+    }
+  }
+}
+
+fragment ClassificationDetails on Callout {
+  classification {
+    id
+    flowState: tagset(tagsetName: FLOW_STATE) {
+      id
+      name
+      tags {
+        id
+        name
+        displayName
+      }
+    }
+  }
+}
