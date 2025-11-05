@@ -5,7 +5,7 @@ import { WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions
 import { error as logError } from '@/core/logging/sentry/log';
 import createFallbackWhiteboardPreview from './createFallbackWhiteboardPreview';
 
-const EXPORT_PADDING = 0.1; // 10% padding of the biggest dimension as padding
+const EXPORT_PADDING = 0.3; // 30% padding of the biggest dimension as padding
 
 type ExcalidrawUtils = {
   exportToCanvas: typeof ExcalidrawExportToCanvas;
