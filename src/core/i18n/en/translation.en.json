@@ -2484,7 +2484,8 @@
           "account": {
             "vc-section-title": "$t(common.virtualContributors) created from this $t(common.space)",
             "vc-create-button": "Create $t(common.virtualContributor)"
-          }
+          },
+          "updateFailed": "An error occurred while updating the $t(common.settings). Please try again later."
         }
       },
       "users": {

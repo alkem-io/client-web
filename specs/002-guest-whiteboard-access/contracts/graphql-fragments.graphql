@@ -1,0 +1,33 @@
+# GraphQL Schema Fragments
+
+## GetPublicWhiteboard Query
+
+```graphql
+query GetPublicWhiteboard($whiteboardId: UUID!) {
+  whiteboard(ID: $whiteboardId) {
+    ...PublicWhiteboardFragment
+  }
+}
+```
+
+## PublicWhiteboardFragment
+
+```graphql
+fragment PublicWhiteboardFragment on Whiteboard {
+  id
+  content
+  profile {
+    id
+    displayName
+    description
+  }
+  createdBy {
+    id
+    profile {
+      displayName
+    }
+  }
+  createdDate
+  updatedDate
+}
+```

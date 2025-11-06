@@ -95,3 +95,12 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
 ## Search Guidance
 
 - Treat this document as the source of truth for setup, build, and layout. Only fall back to searching the repo when information here is insufficient or demonstrably outdated.
+
+## Active Technologies
+
+- TypeScript 5.x (strict mode), React 19 (002-guest-whiteboard-access)
+- Session Storage (`alkemio_guest_name` key for nickname persistence) (002-guest-whiteboard-access)
+
+## Recent Changes
+
+- 002-guest-whiteboard-access: Added TypeScript 5.x (strict mode), React 19

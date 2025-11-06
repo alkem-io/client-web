@@ -1,29 +1,24 @@
 query CalloutContributions(
-  $calloutId: UUID!,
-  $includeLink: Boolean! = false,
-  $includeWhiteboard: Boolean! = false,
-  $includePost: Boolean! = false,
-  $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, POST],
-  $limit: Int,
+  $calloutId: UUID!
+  $includeLink: Boolean! = false
+  $includeWhiteboard: Boolean! = false
+  $includePost: Boolean! = false
+  $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, POST]
+  $limit: Int
 ) {
   lookup {
     callout(ID: $calloutId) {
       id
-      contributions(
-        filter: {
-          types: $filter
-        },
-        limit: $limit
-      ) {
+      contributions(filter: { types: $filter }, limit: $limit) {
         id
         sortOrder
         link @include(if: $includeLink) {
           ...LinkDetailsWithAuthorization
         }
-        whiteboard @include(if: $includeWhiteboard)  {
+        whiteboard @include(if: $includeWhiteboard) {
           ...CalloutContributionsWhiteboardCard
         }
-        post @include(if: $includePost)  {
+        post @include(if: $includePost) {
           ...CalloutContributionsPostCard
         }
       }
@@ -45,6 +40,10 @@ fragment CalloutContributionsWhiteboardCard on Whiteboard {
     visual(type: CARD) {
       ...VisualModel
     }
+  }
+  authorization {
+    id
+    myPrivileges
   }
   createdDate
   createdBy {
@@ -84,4 +83,3 @@ fragment CalloutContributionsPostCard on Post {
     messagesCount
   }
 }
-
