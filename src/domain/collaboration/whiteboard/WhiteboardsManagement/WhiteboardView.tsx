@@ -106,6 +106,9 @@ const WhiteboardView = ({
             headerActions: (collabState: CollabState) => (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
+                  <WhiteboardGuestAccessControls whiteboard={whiteboard}>
+                    <WhiteboardGuestAccessSection whiteboard={whiteboard} />
+                  </WhiteboardGuestAccessControls>
                   {hasUpdatePrivileges && <CollaborationSettings element={whiteboard} elementType="whiteboard" />}
                 </ShareButton>
 

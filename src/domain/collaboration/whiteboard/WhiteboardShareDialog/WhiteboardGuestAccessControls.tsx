@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 export interface WhiteboardGuestAccessControlsProps {
-  whiteboard: {
+  whiteboard?: {
     authorization?: {
       myPrivileges?: AuthorizationPrivilege[];
     };
@@ -22,7 +22,7 @@ export interface WhiteboardGuestAccessControlsProps {
 export const WhiteboardGuestAccessControls: FC<WhiteboardGuestAccessControlsProps> = ({ whiteboard, children }) => {
   // Check for PUBLIC_SHARE privilege (Decision 1 from research.md)
   const hasPublicSharePrivilege =
-    whiteboard.authorization?.myPrivileges?.includes(AuthorizationPrivilege.PublicShare) ?? false;
+    whiteboard?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.PublicShare) ?? false;
 
   // Hide controls if user doesn't have PUBLIC_SHARE privilege (Decision 2: Silent failure)
   if (!hasPublicSharePrivilege) {
