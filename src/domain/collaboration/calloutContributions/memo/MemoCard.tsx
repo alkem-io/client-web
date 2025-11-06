@@ -5,27 +5,10 @@ import CardFooter from '@/core/ui/card/CardFooter';
 import CardFooterDate from '@/core/ui/card/CardFooterDate';
 import { MemoIcon } from '@/domain/collaboration/memo/icon/MemoIcon';
 import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
-import { Identifiable } from '@/core/utils/Identifiable';
 import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
 import MemoPreview from '@/domain/collaboration/memo/MemoPreview/MemoPreview';
 import { gutters } from '@/core/ui/grid/utils';
-
-export interface MemoContribution extends Identifiable {
-  memo?: {
-    id: string;
-    profile: {
-      displayName: string;
-      url: string;
-    };
-    markdown?: string;
-    createdDate?: Date | string;
-    createdBy?: {
-      id: string;
-      profile: { displayName: string };
-    };
-  };
-}
 
 interface MemoCardProps extends CalloutContributionCardComponentProps {}
 

@@ -1,14 +1,23 @@
 import { gutters } from '@/core/ui/grid/utils';
 import { Box } from '@mui/material';
-import MemoPreview from '@/domain/collaboration/memo/MemoPreview/MemoPreview';
 import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
+import Loading from '@/core/ui/loading/Loading';
+import MemoPreview from '@/domain/collaboration/memo/MemoPreview/MemoPreview';
 
 interface CalloutContributionPreviewMemoProps extends CalloutContributionPreviewComponentProps {}
 
-const CalloutContributionPreviewMemo = ({ contribution, onOpenContribution }: CalloutContributionPreviewMemoProps) => {
+const CalloutContributionPreviewMemo = ({
+  contribution,
+  loading,
+  onOpenContribution,
+}: CalloutContributionPreviewMemoProps) => {
   return (
     <Box padding={gutters()} margin={gutters(-1)}>
-      <MemoPreview memo={contribution?.memo} onClick={onOpenContribution} />
+      {loading ? (
+        <Loading />
+      ) : (
+        <MemoPreview memo={contribution?.memo} onClick={onOpenContribution} sx={{ height: gutters(13) }} />
+      )}
     </Box>
   );
 };

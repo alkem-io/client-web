@@ -33,11 +33,23 @@ const Container = styled(ButtonBase)(({ theme }) => ({
   width: '100%',
 }));
 
+const CaptionContainer = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: gutters(2)(theme),
+  backgroundColor: alpha(theme.palette.common.white, 0.8),
+}));
+
 const MemoPreview = ({ memo, onClick, sx }: MemoPreviewProps) => {
   const { t } = useTranslation();
   if (!memo?.markdown) {
     return (
-      <Container onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default', ...sx }}>
+      <Container onClick={onClick} sx={{ cursor: 'pointer', ...sx }}>
         <Centered>
           <MemoIcon />
         </Centered>
@@ -50,7 +62,7 @@ const MemoPreview = ({ memo, onClick, sx }: MemoPreviewProps) => {
     // add quote styling at the start - avoid having double quote blocks
     const quotedMarkdown = memo.markdown.replace(/^(?!>)|^>>/gm, '> ');
     return (
-      <Gutters disablePadding onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default', position: 'relative' }}>
+      <Gutters disablePadding onClick={onClick} sx={{ cursor: 'pointer', position: 'relative', ...sx }}>
         <CroppedMarkdown
           backgroundColor="paper"
           minHeightGutters={3}
@@ -74,15 +86,3 @@ const MemoPreview = ({ memo, onClick, sx }: MemoPreviewProps) => {
 };
 
 export default MemoPreview;
-
-const CaptionContainer = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  right: 0,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: gutters(2)(theme),
-  backgroundColor: alpha(theme.palette.common.white, 0.8),
-}));

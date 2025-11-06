@@ -56,6 +56,7 @@ const CalloutContributionPreview = ({
       includeWhiteboard: allowedTypes.includes(CalloutContributionType.Whiteboard),
       includeMemo: allowedTypes.includes(CalloutContributionType.Memo),
     },
+    skip: !contributionId,
   });
   const contribution = data?.lookup.contribution;
 
@@ -69,13 +70,10 @@ const CalloutContributionPreview = ({
           ? CalloutContributionType.Memo
           : undefined;
 
-  // Auto-open dialog for Memo and Whiteboard contributions
+  // Auto-open dialog for Whiteboard contributions (they show full canvas in dialog)
   useEffect(() => {
     if (!loading && contribution && contributionType) {
-      if (
-        contributionType === CalloutContributionType.Memo ||
-        contributionType === CalloutContributionType.Whiteboard
-      ) {
+      if (contributionType === CalloutContributionType.Whiteboard) {
         setContributionDialogOpen(true);
       }
     }

@@ -8234,6 +8234,7 @@ export type UrlResolverQueryResultCalloutsSet = {
   calloutId?: Maybe<Scalars['UUID']['output']>;
   contributionId?: Maybe<Scalars['UUID']['output']>;
   id: Scalars['UUID']['output'];
+  memoId?: Maybe<Scalars['UUID']['output']>;
   postId?: Maybe<Scalars['UUID']['output']>;
   type: UrlType;
   whiteboardId?: Maybe<Scalars['UUID']['output']>;
@@ -8290,6 +8291,7 @@ export enum UrlType {
   Admin = 'ADMIN',
   Callout = 'CALLOUT',
   CalloutsSet = 'CALLOUTS_SET',
+  ContributionMemo = 'CONTRIBUTION_MEMO',
   ContributionPost = 'CONTRIBUTION_POST',
   ContributionWhiteboard = 'CONTRIBUTION_WHITEBOARD',
   ContributorsExplorer = 'CONTRIBUTORS_EXPLORER',
