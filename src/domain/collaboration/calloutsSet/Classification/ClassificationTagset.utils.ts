@@ -14,3 +14,15 @@ export const buildFlowStateClassificationTagsets = (
     },
   ];
 };
+
+const validTagsetNames = Object.values(TagsetReservedName);
+export const classificationTagsetModelToTagsetArgs = (tagsets: ClassificationTagsetModel[] | undefined) =>
+  tagsets?.map(tagset => {
+    if (!validTagsetNames.includes(tagset.name as TagsetReservedName)) {
+      throw new Error(`Invalid TagsetReservedName: ${tagset.name}`);
+    }
+    return {
+      name: tagset.name as TagsetReservedName,
+      tags: tagset.tags,
+    };
+  });

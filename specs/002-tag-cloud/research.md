@@ -1,9 +1,9 @@
 # Research Findings – Tag Cloud Filter for Knowledge Base
 
-## Decision 1: Extend callout list query with profile tagset data
+## Decision 1: Use separate CalloutsSetTags query for tag aggregation
 
-- **Rationale**: `useCalloutsSet` currently returns `CalloutModelLightExtended` without tag information. The GraphQL fragment `CalloutsOnCalloutsSetUsingClassification` uses the `Callout` fragment, which omits `framing.profile.tagset`. Extending this fragment gives us tag names directly alongside existing callout metadata, keeping Apollo cache as the single source of truth.
-- **Alternatives considered**: (a) Trigger a parallel query per callout via `CalloutDetails` (would introduce N+1 fetching and slower load) (b) Introduce a bespoke GraphQL endpoint just for tags (would require backend work). Both were rejected in favor of augmenting the existing fragment.
+- **Rationale**: The backend provides a dedicated `tags` field on `CalloutsSet` that returns pre-aggregated unique tag strings across all callouts. Using a separate `CalloutsSetTags` query keeps tag cloud data isolated from callout rendering logic, avoids extending the already-large callout fragments, and leverages backend aggregation for better performance.
+- **Alternatives considered**: (a) Extend `CalloutsOnCalloutsSetUsingClassification` to include `framing.profile.tagset` on each callout (would bloat the query and require client-side aggregation) (b) Query each callout individually for tags (N+1 problem). Both were rejected in favor of the dedicated backend aggregation endpoint.
 
 ## Decision 2: Locate UI integration within `FlowStateTabPage`
 
@@ -12,7 +12,7 @@
 
 ## Decision 3: Manage tag selection and filtering in a new domain hook
 
-- **Rationale**: Creating a dedicated hook under `src/domain/collaboration/calloutsSet` (e.g., `useCalloutTagCloud`) lets us compute tag frequencies, maintain selected state, and provide filtered callouts while keeping React components declarative. Hook can expose memoized derived data and a `useTransition`-backed setter to satisfy React 19 concurrency guidance.
+- **Rationale**: Creating a dedicated hook under `src/domain/collaboration/calloutsSet/tagCloud` (e.g., `useCalloutTagCloud`) lets us fetch tags via the separate `CalloutsSetTags` query, maintain selected state, and provide filtered callout logic while keeping React components declarative. Hook can expose memoized derived data and a `useTransition`-backed setter to satisfy React 19 concurrency guidance. Client-side filtering logic will match callout tags against selected filters.
 - **Alternatives considered**: (a) Store tag state in component-level `useState` inside `FlowStateTabPage` (would duplicate logic if reused elsewhere) (b) Mutate Apollo cache to hide filtered callouts (would conflate data source with view state). Both were rejected for maintainability.
 
 ## Decision 4: Render results summary row within knowledge base content column

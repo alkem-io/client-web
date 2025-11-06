@@ -792,6 +792,7 @@ export type CalloutsSetKeySpecifier = (
   | 'callouts'
   | 'createdDate'
   | 'id'
+  | 'tags'
   | 'tagsetTemplates'
   | 'type'
   | 'updatedDate'
@@ -802,6 +803,7 @@ export type CalloutsSetFieldPolicy = {
   callouts?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  tags?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1729,20 +1731,25 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFieldPolicy = {
 };
 export type InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier = (
   | 'calendarEvent'
-  | 'calendarEventID'
-  | 'calendarEventTitle'
-  | 'calendarEventType'
-  | 'createdBy'
   | 'space'
   | 'type'
   | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
 )[];
 export type InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy = {
   calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
-  calendarEventID?: FieldPolicy<any> | FieldReadFunction<any>;
-  calendarEventTitle?: FieldPolicy<any> | FieldReadFunction<any>;
-  calendarEventType?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier = (
+  | 'calendarEvent'
+  | 'commentText'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFieldPolicy = {
+  calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentText?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -5591,6 +5598,13 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
       | (() => undefined | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy;
+  };
+  InAppNotificationPayloadSpaceCommunityCalendarEventComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCommunityCalendarEventCommentFieldPolicy;
   };
   InAppNotificationPayloadSpaceCommunityContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

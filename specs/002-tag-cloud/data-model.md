@@ -1,36 +1,41 @@
 # Data Model – Tag Cloud Filter for Knowledge Base
 
-## Callout (existing, extended usage)
+## CalloutsSet (existing, extended usage)
+
+- **Fields used**:
+  - `id: string`
+  - `tags: string[]` (aggregated list from separate query)
+- **Relationships**: owns multiple callouts; tags are pre-aggregated by backend query.
+- **Validation rules**: tags array treated as `[]` when missing; duplicates already removed by backend.
+
+## Callout (existing, unchanged for tag cloud)
 
 - **Fields used**:
   - `id: string`
   - `framing.profile.displayName: string`
   - `framing.profile.url?: string`
-  - `framing.profile.tagset.tags: TagReference[]`
   - `sortOrder: number`
   - `classification.flowState` (unchanged)
-- **Relationships**: each callout belongs to one `CalloutsSet`; tags are aggregated across all callouts in the active set.
-- **Validation rules**: tagset collection must exist even when empty; `tagset.tags` is treated as `[]` when missing to avoid null access.
+- **Relationships**: each callout belongs to one `CalloutsSet`.
+- **Note**: Tag data for filtering comes from separate `CalloutsSetTags` query, not from individual callout profiles.
 
-## TagReference (from GraphQL profile tagset)
+## Tag (from CalloutsSetTags query)
 
 - **Fields**:
-  - `id: string`
-  - `name: string` (unique within a callout's tagset)
-  - `displayName: string`
-- **Relationships**: many-to-many with callouts; a tag may appear on multiple callouts.
-- **Validation rules**: normalize comparisons by `name` (case-sensitive) to avoid duplicates; `displayName` drives chip label.
+  - Raw string value from backend aggregation
+- **Relationships**: represents tags across all callouts in the set; no explicit callout linkage in this query.
+- **Validation rules**: normalize comparisons by exact string match (case-sensitive); backend handles deduplication.
 
 ## TagChipModel (derived)
 
 - **Fields**:
-  - `tagName: string`
-  - `label: string`
-  - `frequency: number`
+  - `tagName: string` (normalized from backend string)
+  - `label: string` (display value, same as tagName from backend)
   - `selected: boolean`
   - `visibleIndex: number` (position after ordering rules)
-- **Relationships**: computed from aggregated `TagReference` list; selected chips render ahead of unselected chips.
-- **Validation rules**: frequency ≥1; when `selected = true`, chip must move to prefix segment; ensure `visibleIndex` respects two-row capacity when collapsed.
+- **Relationships**: computed from CalloutsSetTags string array; selected chips render ahead of unselected chips.
+- **Validation rules**: when `selected = true`, chip must move to prefix segment; ensure `visibleIndex` respects two-row capacity when collapsed.
+- **Note**: Frequency counting removed; backend provides pre-aggregated unique tags, ordering is alphabetical by default.
 
 ## TagCloudDisplayState
 

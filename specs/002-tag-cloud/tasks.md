@@ -26,7 +26,7 @@ description: 'Task list for implementing the Tag Cloud Filter for Knowledge Base
 
 **Purpose**: Confirm workspace prerequisites before modifying feature code.
 
-- [ ] T001 Run `pnpm install` to align workspace dependencies in . (Quality)
+- [x] T001 Run `pnpm install` to align workspace dependencies in . (Quality)
 
 ---
 
@@ -34,12 +34,12 @@ description: 'Task list for implementing the Tag Cloud Filter for Knowledge Base
 
 **Purpose**: Data-layer groundwork required before any user story development.
 
-- [ ] T002 Update callouts query to include profile tagset fields in src/domain/collaboration/calloutsSet/useCalloutsSet/CalloutsSetQueries.graphql (Domain, GraphQL)
-- [ ] T003 Map fetched tagset data onto callout models in src/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet.ts (Domain)
-- [ ] T004 Extend CalloutModelLight typings with tag references in src/domain/collaboration/callout/models/CalloutModelLight.ts (Domain)
-- [ ] T005 Run `pnpm run codegen` after GraphQL updates in . (GraphQL)
+- [x] T002 Create CalloutsSetTags query in src/domain/collaboration/calloutsSet/tagCloud/CalloutsSetTags.graphql (Domain, GraphQL)
+- [x] T003 Run `pnpm run codegen` after GraphQL updates in . (GraphQL)
+- [x] T004 Create useCalloutsSetTags hook to fetch and normalize tag data in src/domain/collaboration/calloutsSet/tagCloud/useCalloutsSetTags.ts (Domain, GraphQL)
+- [x] T005 Update tagCloudSelectors to work with string array from backend in src/domain/collaboration/calloutsSet/tagCloud/tagCloudSelectors.ts (Domain)
 
-**Checkpoint**: Callout data now exposes tag information for higher-level logic.
+**Checkpoint**: ✅ CalloutsSetTags query available; tag data ready for aggregation logic.
 
 ---
 
@@ -51,9 +51,9 @@ description: 'Task list for implementing the Tag Cloud Filter for Knowledge Base
 
 ### Implementation for User Story 1
 
-- [ ] T006 [P] [US1] Add unit test covering tag aggregation results in src/domain/collaboration/calloutsSet/tagCloud/**tests**/tagCloudSelectors.test.ts (Quality)
-- [ ] T007 [US1] Implement tag aggregation selectors producing TagChipModel data in src/domain/collaboration/calloutsSet/tagCloud/tagCloudSelectors.ts (Domain)
-- [ ] T008 [US1] Create useCalloutTagCloud hook exposing aggregated chips and collapsed view defaults in src/domain/collaboration/calloutsSet/tagCloud/useCalloutTagCloud.ts (Domain, React19)
+- [ ] T006 [P] [US1] Add unit test covering tag normalization from string array in src/domain/collaboration/calloutsSet/tagCloud/**tests**/tagCloudSelectors.test.ts (Quality)
+- [ ] T007 [US1] Update tag aggregation selectors to work with backend string array in src/domain/collaboration/calloutsSet/tagCloud/tagCloudSelectors.ts (Domain)
+- [ ] T008 [US1] Create useCalloutTagCloud hook integrating useCalloutsSetTags and exposing chips in src/domain/collaboration/calloutsSet/tagCloud/useCalloutTagCloud.ts (Domain, React19)
 - [ ] T009 [P] [US1] Build TagCloud presentational component rendering chips and empty state in src/domain/collaboration/calloutsSet/tagCloud/CalloutTagCloud.tsx (Domain)
 - [ ] T010 [P] [US1] Add tag cloud labels and empty state strings in src/core/i18n/en/translation.en.json (Quality)
 - [ ] T011 [US1] Integrate tag cloud component into the knowledge base column in src/domain/space/layout/tabbedLayout/Tabs/FlowStateTabPage/FlowStateTabPage.tsx (Domain, React19)
@@ -71,7 +71,7 @@ description: 'Task list for implementing the Tag Cloud Filter for Knowledge Base
 ### Implementation for User Story 2
 
 - [ ] T012 [P] [US2] Add unit test validating single-tag filtering and summary counts in src/domain/collaboration/calloutsSet/tagCloud/**tests**/useCalloutTagCloud.test.ts (Quality)
-- [ ] T013 [US2] Extend useCalloutTagCloud with selection state, useTransition, and filtered callouts output in src/domain/collaboration/calloutsSet/tagCloud/useCalloutTagCloud.ts (Domain, React19)
+- [ ] T013 [US2] Extend useCalloutTagCloud with selection state, useTransition, and client-side callout filtering logic in src/domain/collaboration/calloutsSet/tagCloud/useCalloutTagCloud.ts (Domain, React19)
 - [ ] T014 [US2] Enable chip interactions and pressed styling in src/domain/collaboration/calloutsSet/tagCloud/CalloutTagCloud.tsx (Domain, Quality)
 - [ ] T015 [US2] Render results summary row between tag cloud and callouts list in src/domain/space/layout/tabbedLayout/Tabs/FlowStateTabPage/FlowStateTabPage.tsx (Domain)
 - [ ] T016 [P] [US2] Implement ResultsSummary component with accessible clear filter action in src/domain/space/layout/tabbedLayout/Tabs/FlowStateTabPage/ResultsSummary.tsx (Quality)
@@ -149,17 +149,17 @@ description: 'Task list for implementing the Tag Cloud Filter for Knowledge Base
 ### Phase Dependencies
 
 - **Phase 1 (Setup)** → prerequisite for all subsequent work.
-- **Phase 2 (Foundational)** → must complete before any user story phases begin.
+- **Phase 2 (Foundational)** → T002-T003 create and codegen the CalloutsSetTags query; T004 creates hook to fetch tags; T005 updates selectors. Must complete before any user story phases begin.
 - **Phases 3 & 4 (P1 stories)** → can proceed after foundational work; deliver MVP when Phase 3 completes.
 - **Phases 5–7 (P2 stories)** → depend on foundational work and build on the tag cloud infrastructure but remain independently testable per story.
 - **Phase 8 (Polish)** → after all targeted user stories are feature-complete.
 
 ### User Story Dependencies
 
-- **US1**: depends only on foundational tasks.
-- **US2**: depends on US1 assets (tag cloud component/hook) and foundational tasks.
-- **US3**: depends on US2’s filtering scaffolding.
-- **US4**: depends on US1’s chip rendering to add collapse controls (can start after US1 if expand logic isolated).
+- **US1**: depends on foundational tasks T002-T005 (CalloutsSetTags query, hook, and selectors).
+- **US2**: depends on US1 assets (tag cloud component/hook) and requires client-side filtering logic against callout data.
+- **US3**: depends on US2's filtering scaffolding.
+- **US4**: depends on US1's chip rendering to add collapse controls (can start after US1 if expand logic isolated).
 - **US5**: depends on US1 and US2 structures to adjust ordering and styling.
 
 ### Within-Story Flow
@@ -172,10 +172,10 @@ description: 'Task list for implementing the Tag Cloud Filter for Knowledge Base
 
 ---
 
-## Parallel Opportunities
+### Parallel Opportunities
 
-- Foundational tasks T002–T004 require sequential data updates; T005 can run once preceding tasks finish.
-- For **US1**, tasks T006, T009, T010 can run in parallel after selectors (T007) exist.
+- Foundational tasks T002–T003 (query + codegen) run sequentially; T004 (hook) can follow; T005 (selectors update) depends on T004.
+- For **US1**, tasks T006 (tests), T009 (component), T010 (translations) can run in parallel after T007 (selectors) completes.
 - For **US2**, tasks T016 and T017 operate on separate files and may run in parallel once hook updates (T013) are ready.
 - For **US3**, tasks T019 and T021 can proceed concurrently after T020 completes.
 - For **US4**, tasks T023 and T025 may run in parallel after T024 sets layout logic.

@@ -7,7 +7,6 @@ import {
   AuthorizationPrivilege,
   CalloutVisibility,
   CalloutsOnCalloutsSetUsingClassificationQueryVariables,
-  TagsetReservedName,
 } from '@/core/apollo/generated/graphql-schema';
 import { useCallback, useMemo } from 'react';
 import { cloneDeep } from 'lodash';
@@ -15,19 +14,15 @@ import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuth
 import { ClassificationTagsetModel } from '../Classification/ClassificationTagset.model';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
 import { CalloutModelLightExtended } from '../../callout/models/CalloutModelLight';
+import { classificationTagsetModelToTagsetArgs } from '../Classification/ClassificationTagset.utils';
 
 interface UseCalloutsSetParams {
   calloutsSetId: string | undefined;
   classificationTagsets: ClassificationTagsetModel[];
   includeClassification?: boolean | undefined;
+  tagsFilter?: string[] | undefined;
   skip?: boolean;
 }
-
-const classificationTagsetModelToTagsetArgs = (tagsets: ClassificationTagsetModel[]) =>
-  tagsets.map(tagset => ({
-    name: tagset.name as TagsetReservedName,
-    tags: tagset.tags,
-  }));
 
 export interface OrderUpdate {
   (relatedCalloutIds: string[]): string[];
@@ -48,6 +43,7 @@ const useCalloutsSet = ({
   calloutsSetId,
   classificationTagsets,
   includeClassification,
+  tagsFilter,
   skip,
 }: UseCalloutsSetParams): UseCalloutsSetProvided => {
   const { canCreateCallout, loading: authorizationLoading } = useCalloutsSetAuthorization({ calloutsSetId });
@@ -59,6 +55,7 @@ const useCalloutsSet = ({
     calloutsSetId: calloutsSetId!,
     classificationTagsets: classificationTagsetModelToTagsetArgs(classificationTagsets),
     withClassification: withClassificationDetails,
+    tagsFilter,
   } as const;
 
   const {

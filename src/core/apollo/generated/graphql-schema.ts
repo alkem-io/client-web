@@ -1138,6 +1138,8 @@ export type CalloutsSet = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** All the tags of the Callouts and its contributions in this CalloutsSet. Sorted by frequency, then alphabetically. */
+  tags: Array<Scalars['String']['output']>;
   /** The tagset templates on this CalloutsSet. */
   tagsetTemplates?: Maybe<Array<TagsetTemplate>>;
   /** The set of CalloutGroups in use in this CalloutsSet. */
@@ -1153,6 +1155,11 @@ export type CalloutsSetCalloutsArgs = {
   shuffle?: InputMaybe<Scalars['Boolean']['input']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']['input']>;
   withContributionTypes?: InputMaybe<Array<CalloutContributionType>>;
+  withTags?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type CalloutsSetTagsArgs = {
+  classificationTagsets?: InputMaybe<Array<TagsetArgs>>;
 };
 
 export enum CalloutsSetType {
@@ -2905,14 +2912,18 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEvent = InAppNotificat
   __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEvent';
   /** The CalendarEvent that was created. */
   calendarEvent?: Maybe<CalendarEvent>;
-  /** ID of the calendar event. */
-  calendarEventID: Scalars['UUID']['output'];
-  /** Display title of the calendar event. */
-  calendarEventTitle: Scalars['String']['output'];
-  /** Type of the calendar event. */
-  calendarEventType: CalendarEventType;
-  /** ID of the user who created the event. */
-  createdBy: Scalars['UUID']['output'];
+  /** The space details. */
+  space?: Maybe<Space>;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadSpaceCommunityCalendarEventComment = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
+  /** The calendar event that was commented on. */
+  calendarEvent?: Maybe<CalendarEvent>;
+  /** Preview text of the comment */
+  commentText: Scalars['String']['output'];
   /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
@@ -5202,6 +5213,7 @@ export enum NotificationEvent {
   SpaceCollaborationCalloutPostContributionComment = 'SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT',
   SpaceCollaborationCalloutPublished = 'SPACE_COLLABORATION_CALLOUT_PUBLISHED',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
+  SpaceCommunityCalendarEventComment = 'SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT',
   SpaceCommunityCalendarEventCreated = 'SPACE_COMMUNITY_CALENDAR_EVENT_CREATED',
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
   SpaceLeadCommunicationMessage = 'SPACE_LEAD_COMMUNICATION_MESSAGE',
@@ -5247,6 +5259,7 @@ export enum NotificationEventPayload {
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
   SpaceCommunityApplication = 'SPACE_COMMUNITY_APPLICATION',
   SpaceCommunityCalendarEvent = 'SPACE_COMMUNITY_CALENDAR_EVENT',
+  SpaceCommunityCalendarEventComment = 'SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT',
   SpaceCommunityContributor = 'SPACE_COMMUNITY_CONTRIBUTOR',
   SpaceCommunityInvitation = 'SPACE_COMMUNITY_INVITATION',
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
@@ -13904,6 +13917,19 @@ export type CalloutsSetAuthorizationQuery = {
   };
 };
 
+export type CalloutsSetTagsQueryVariables = Exact<{
+  calloutsSetId: Scalars['UUID']['input'];
+  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+}>;
+
+export type CalloutsSetTagsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutsSet?: { __typename?: 'CalloutsSet'; id: string; tags: Array<string> } | undefined;
+  };
+};
+
 export type CreateCalloutMutationVariables = Exact<{
   calloutData: CreateCalloutOnCalloutsSetInput;
 }>;
@@ -14280,6 +14306,7 @@ export type CalloutsOnCalloutsSetUsingClassificationQueryVariables = Exact<{
   calloutsSetId: Scalars['UUID']['input'];
   classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
   withClassification?: InputMaybe<Scalars['Boolean']['input']>;
+  tagsFilter?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
 
 export type CalloutsOnCalloutsSetUsingClassificationQuery = {
@@ -31244,6 +31271,7 @@ export type InAppNotificationReceivedSubscription = {
               }
             | undefined;
         }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
           type: NotificationEventPayload;
@@ -32320,6 +32348,10 @@ export type InAppNotificationsQuery = {
                 | undefined;
             }
           | {
+              __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
+              type: NotificationEventPayload;
+            }
+          | {
               __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
               type: NotificationEventPayload;
               space?:
@@ -33382,6 +33414,7 @@ export type InAppNotificationAllTypesFragment = {
             }
           | undefined;
       }
+    | { __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment'; type: NotificationEventPayload }
     | {
         __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
         type: NotificationEventPayload;
