@@ -2907,14 +2907,18 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEvent = InAppNotificat
   __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEvent';
   /** The CalendarEvent that was created. */
   calendarEvent?: Maybe<CalendarEvent>;
-  /** ID of the calendar event. */
-  calendarEventID: Scalars['UUID']['output'];
-  /** Display title of the calendar event. */
-  calendarEventTitle: Scalars['String']['output'];
-  /** Type of the calendar event. */
-  calendarEventType: CalendarEventType;
-  /** ID of the user who created the event. */
-  createdBy: Scalars['UUID']['output'];
+  /** The space details. */
+  space?: Maybe<Space>;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
+export type InAppNotificationPayloadSpaceCommunityCalendarEventComment = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
+  /** The calendar event that was commented on. */
+  calendarEvent?: Maybe<CalendarEvent>;
+  /** Preview text of the comment */
+  commentText: Scalars['String']['output'];
   /** The space details. */
   space?: Maybe<Space>;
   /** The payload type. */
@@ -5204,6 +5208,7 @@ export enum NotificationEvent {
   SpaceCollaborationCalloutPostContributionComment = 'SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT',
   SpaceCollaborationCalloutPublished = 'SPACE_COLLABORATION_CALLOUT_PUBLISHED',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
+  SpaceCommunityCalendarEventComment = 'SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT',
   SpaceCommunityCalendarEventCreated = 'SPACE_COMMUNITY_CALENDAR_EVENT_CREATED',
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
   SpaceLeadCommunicationMessage = 'SPACE_LEAD_COMMUNICATION_MESSAGE',
@@ -5249,6 +5254,7 @@ export enum NotificationEventPayload {
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
   SpaceCommunityApplication = 'SPACE_COMMUNITY_APPLICATION',
   SpaceCommunityCalendarEvent = 'SPACE_COMMUNITY_CALENDAR_EVENT',
+  SpaceCommunityCalendarEventComment = 'SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT',
   SpaceCommunityContributor = 'SPACE_COMMUNITY_CONTRIBUTOR',
   SpaceCommunityInvitation = 'SPACE_COMMUNITY_INVITATION',
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
@@ -19599,6 +19605,7 @@ export type UpdateUserSettingsMutation = {
             email: boolean;
             inApp: boolean;
           };
+          communityCalendarEvents: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           admin: {
             __typename?: 'UserSettingsNotificationSpaceAdmin';
             communityApplicationReceived: {
@@ -19711,6 +19718,7 @@ export type UserSettingsFragmentFragment = {
         email: boolean;
         inApp: boolean;
       };
+      communityCalendarEvents: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
     };
     user: {
       __typename?: 'UserSettingsNotificationUser';
@@ -19844,6 +19852,11 @@ export type UserSettingsQuery = {
                   inApp: boolean;
                 };
                 collaborationCalloutPostContributionComment: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                communityCalendarEvents: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
@@ -21844,14 +21857,11 @@ export type PlatformAdminSpacesListQuery = {
       id: string;
       nameID: string;
       visibility: SpaceVisibility;
-      settings: {
-        __typename?: 'SpaceSettings';
-        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
-      };
-      account: {
-        __typename?: 'Account';
+      about: {
+        __typename?: 'SpaceAbout';
         id: string;
-        host?:
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        provider:
           | {
               __typename?: 'Organization';
               id: string;
@@ -21862,13 +21872,7 @@ export type PlatformAdminSpacesListQuery = {
               __typename?: 'VirtualContributor';
               id: string;
               profile: { __typename?: 'Profile'; id: string; displayName: string };
-            }
-          | undefined;
-      };
-      about: {
-        __typename?: 'SpaceAbout';
-        id: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            };
       };
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -31258,6 +31262,65 @@ export type InAppNotificationReceivedSubscription = {
             | undefined;
         }
       | {
+          __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
+          type: NotificationEventPayload;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    url: string;
+                    tagline?: string | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          calendarEvent?:
+            | {
+                __typename?: 'CalendarEvent';
+                id: string;
+                type: CalendarEventType;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+              }
+            | undefined;
+        }
+      | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
           type: NotificationEventPayload;
           space?:
@@ -32333,6 +32396,65 @@ export type InAppNotificationsQuery = {
                 | undefined;
             }
           | {
+              __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
+              type: NotificationEventPayload;
+              space?:
+                | {
+                    __typename?: 'Space';
+                    id: string;
+                    level: SpaceLevel;
+                    about: {
+                      __typename?: 'SpaceAbout';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        url: string;
+                        tagline?: string | undefined;
+                        tagset?:
+                          | {
+                              __typename?: 'Tagset';
+                              id: string;
+                              name: string;
+                              tags: Array<string>;
+                              allowedValues: Array<string>;
+                              type: TagsetType;
+                            }
+                          | undefined;
+                        avatar?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                        cardBanner?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
+                    };
+                  }
+                | undefined;
+              calendarEvent?:
+                | {
+                    __typename?: 'CalendarEvent';
+                    id: string;
+                    type: CalendarEventType;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                  }
+                | undefined;
+            }
+          | {
               __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
               type: NotificationEventPayload;
               space?:
@@ -33338,6 +33460,65 @@ export type InAppNotificationAllTypesFragment = {
       }
     | {
         __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEvent';
+        type: NotificationEventPayload;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  url: string;
+                  tagline?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        calendarEvent?:
+          | {
+              __typename?: 'CalendarEvent';
+              id: string;
+              type: CalendarEventType;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
         type: NotificationEventPayload;
         space?:
           | {
@@ -34623,6 +34804,65 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment
 
 export type InAppNotificationPayloadSpaceCommunityCalendarEventFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEvent';
+  space?:
+    | {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            tagline?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            cardBanner?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
+  calendarEvent?:
+    | {
+        __typename?: 'CalendarEvent';
+        id: string;
+        type: CalendarEventType;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+      }
+    | undefined;
+};
+
+export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragment = {
+  __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
   space?:
     | {
         __typename?: 'Space';
