@@ -1729,20 +1729,17 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFieldPolicy = {
 };
 export type InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier = (
   | 'calendarEvent'
-  | 'calendarEventID'
   | 'space'
   | 'type'
   | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
 )[];
 export type InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy = {
   calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
-  calendarEventID?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier = (
   | 'calendarEvent'
-  | 'calendarEventID'
   | 'commentText'
   | 'space'
   | 'type'
@@ -1750,7 +1747,6 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifi
 )[];
 export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFieldPolicy = {
   calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
-  calendarEventID?: FieldPolicy<any> | FieldReadFunction<any>;
   commentText?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
