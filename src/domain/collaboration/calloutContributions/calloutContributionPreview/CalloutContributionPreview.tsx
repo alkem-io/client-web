@@ -12,7 +12,7 @@ import { Box, IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
 import { contributionIcons } from '../../callout/icons/calloutIcons';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import useNavigate from '@/core/routing/useNavigate';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { useTranslation } from 'react-i18next';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -54,6 +54,7 @@ const CalloutContributionPreview = ({
       includeLink: allowedTypes.includes(CalloutContributionType.Link),
       includePost: allowedTypes.includes(CalloutContributionType.Post),
       includeWhiteboard: allowedTypes.includes(CalloutContributionType.Whiteboard),
+      includeMemo: allowedTypes.includes(CalloutContributionType.Memo),
     },
   });
   const contribution = data?.lookup.contribution;
@@ -64,30 +65,49 @@ const CalloutContributionPreview = ({
       ? CalloutContributionType.Link
       : contribution?.whiteboard
         ? CalloutContributionType.Whiteboard
-        : undefined;
+        : contribution?.memo
+          ? CalloutContributionType.Memo
+          : undefined;
+
+  // Auto-open dialog for Memo and Whiteboard contributions
+  useEffect(() => {
+    if (!loading && contribution && contributionType) {
+      if (
+        contributionType === CalloutContributionType.Memo ||
+        contributionType === CalloutContributionType.Whiteboard
+      ) {
+        setContributionDialogOpen(true);
+      }
+    }
+  }, [contribution, contributionType, loading]);
+
   const Icon = contributionType ? contributionIcons[contributionType] : undefined;
 
   const displayName = loading ? (
     <Skeleton variant="text" width={gutters(12)(theme)} />
   ) : (
     (contributionType === CalloutContributionType.Post && contribution?.post?.profile.displayName) ||
-    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.displayName)
+    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.displayName) ||
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.profile.displayName)
   );
 
   const author =
     (contributionType === CalloutContributionType.Post && contribution?.post?.createdBy?.profile.displayName) ||
     (contributionType === CalloutContributionType.Whiteboard &&
-      contribution?.whiteboard?.createdBy?.profile.displayName);
+      contribution?.whiteboard?.createdBy?.profile.displayName) ||
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.createdBy?.profile.displayName);
 
   const createdDate =
     (contributionType === CalloutContributionType.Post && contribution?.post?.createdDate) ||
-    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.createdDate);
+    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.createdDate) ||
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.createdDate);
   const formattedCreatedDate = createdDate && formatDateTime(createdDate);
   const formattedElapsedTime = createdDate && formatTimeElapsed(createdDate, t, columns > 6 ? 'long' : 'short');
 
   const contributionUrl =
     (contributionType === CalloutContributionType.Post && contribution?.post?.profile.url) ||
-    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.url);
+    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.url) ||
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.profile.url);
 
   const handleContributionDeleted = (deletedContributionId: string) => {
     if (contributionId === deletedContributionId) {

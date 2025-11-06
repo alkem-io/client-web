@@ -109,6 +109,7 @@ const MemoDialog = ({ open = false, onClose, memoId, calloutId }: MemoDialogProp
                     fullScreen: fullscreen,
                     onChangeCollaborationState: setCollaborationState,
                     storageBucketId: memo?.profile.storageBucket.id,
+                    autoFocus: true,
                   }}
                   sx={{
                     '&.MuiOutlinedInput-root': {

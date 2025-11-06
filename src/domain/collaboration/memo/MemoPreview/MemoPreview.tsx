@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { MouseEventHandler } from 'react';
 import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
 import { gutters } from '@/core/ui/grid/utils';
-import { Box, ButtonBase } from '@mui/material';
+import { Box, ButtonBase, SxProps } from '@mui/material';
 import { alpha, styled } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 import Centered from '@/core/ui/utils/Centered';
+import { Theme } from '@mui/material/styles';
 
 type MemoPreviewProps = {
   displayName?: string;
@@ -18,6 +19,7 @@ type MemoPreviewProps = {
     | undefined;
   onClick?: MouseEventHandler;
   onClose?: () => void;
+  sx?: SxProps<Theme>;
 };
 
 const Container = styled(ButtonBase)(({ theme }) => ({
@@ -31,11 +33,11 @@ const Container = styled(ButtonBase)(({ theme }) => ({
   width: '100%',
 }));
 
-const MemoPreview = ({ memo, onClick }: MemoPreviewProps) => {
+const MemoPreview = ({ memo, onClick, sx }: MemoPreviewProps) => {
   const { t } = useTranslation();
   if (!memo?.markdown) {
     return (
-      <Container onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default' }}>
+      <Container onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default', ...sx }}>
         <Centered>
           <MemoIcon />
         </Centered>

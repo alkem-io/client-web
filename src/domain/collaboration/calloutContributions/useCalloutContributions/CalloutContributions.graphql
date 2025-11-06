@@ -2,8 +2,9 @@ query CalloutContributions(
   $calloutId: UUID!,
   $includeLink: Boolean! = false,
   $includeWhiteboard: Boolean! = false,
+  $includeMemo: Boolean! = false,
   $includePost: Boolean! = false,
-  $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, POST],
+  $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, MEMO, POST],
   $limit: Int,
 ) {
   lookup {
@@ -23,6 +24,9 @@ query CalloutContributions(
         whiteboard @include(if: $includeWhiteboard)  {
           ...CalloutContributionsWhiteboardCard
         }
+        memo @include(if: $includeMemo)  {
+          ...CalloutContributionsMemoCard
+        }
         post @include(if: $includePost)  {
           ...CalloutContributionsPostCard
         }
@@ -30,6 +34,7 @@ query CalloutContributions(
       contributionsCount {
         link @include(if: $includeLink)
         whiteboard @include(if: $includeWhiteboard)
+        memo @include(if: $includeMemo)
         post @include(if: $includePost)
       }
     }
@@ -46,6 +51,24 @@ fragment CalloutContributionsWhiteboardCard on Whiteboard {
       ...VisualModel
     }
   }
+  createdDate
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+fragment CalloutContributionsMemoCard on Memo {
+  id
+  profile {
+    id
+    url
+    displayName
+  }
+  markdown
   createdDate
   createdBy {
     id

@@ -681,6 +681,7 @@ export type CalloutContributionKeySpecifier = (
   | 'createdDate'
   | 'id'
   | 'link'
+  | 'memo'
   | 'post'
   | 'sortOrder'
   | 'updatedDate'
@@ -693,6 +694,7 @@ export type CalloutContributionFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
