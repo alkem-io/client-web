@@ -12,7 +12,7 @@ import { Box, IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
 import { contributionIcons } from '../../callout/icons/calloutIcons';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import useNavigate from '@/core/routing/useNavigate';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { useTranslation } from 'react-i18next';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -69,15 +69,6 @@ const CalloutContributionPreview = ({
         : contribution?.memo
           ? CalloutContributionType.Memo
           : undefined;
-
-  // Auto-open dialog for Whiteboard contributions (they show full canvas in dialog)
-  useEffect(() => {
-    if (!loading && contribution && contributionType) {
-      if (contributionType === CalloutContributionType.Whiteboard) {
-        setContributionDialogOpen(true);
-      }
-    }
-  }, [contribution, contributionType, loading]);
 
   const Icon = contributionType ? contributionIcons[contributionType] : undefined;
 
