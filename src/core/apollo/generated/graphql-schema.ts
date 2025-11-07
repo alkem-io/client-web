@@ -13293,6 +13293,13 @@ export type CalloutContributionsSortOrderQuery = {
                   comments: { __typename?: 'Room'; id: string; messagesCount: number };
                 }
               | undefined;
+            memo?:
+              | {
+                  __typename?: 'Memo';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
           }>;
         }
       | undefined;

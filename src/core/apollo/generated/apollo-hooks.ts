@@ -7331,6 +7331,13 @@ export const CalloutContributionsSortOrderDocument = gql`
               messagesCount
             }
           }
+          memo {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
         }
       }
     }
