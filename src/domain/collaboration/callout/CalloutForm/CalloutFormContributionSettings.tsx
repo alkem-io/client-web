@@ -133,6 +133,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 tooltip: calloutRestrictions?.readOnlyAllowedTypes
                   ? disabledTooltip
                   : t('callout.create.contributionSettings.contributionTypes.memo.tooltip'),
+                disabled: calloutRestrictions?.disableMemos,
               },
               {
                 icon: contributionIcons[CalloutContributionType.Whiteboard],
