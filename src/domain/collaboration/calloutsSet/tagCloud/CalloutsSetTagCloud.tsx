@@ -1,12 +1,13 @@
-import { Box, Chip, Divider, Link } from '@mui/material';
-import { gutters } from '@/core/ui/grid/utils';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { gutters } from '@/core/ui/grid/utils';
+import Loading from '@/core/ui/loading/Loading';
 import { Caption } from '@/core/ui/typography';
+import { Box, Chip, Divider, Link } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { ClassificationTagsetModel } from '../Classification/ClassificationTagset.model';
 import { classificationTagsetModelToTagsetArgs } from '../Classification/ClassificationTagset.utils';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import Loading from '@/core/ui/loading/Loading';
-import { useTranslation } from 'react-i18next';
+import TwoLinesTagsContainer from './TwoLinesTagsContainer';
 
 export interface CalloutsSetTagCloudProps {
   calloutsSetId: string | undefined;
@@ -60,8 +61,15 @@ const CalloutsSetTagCloud = ({
       <PageContentBlock>
         {loading && <Loading />}
         {!loading && (
-          <Box display="flex" flexDirection="row" flexWrap="wrap" gap={gutters(0.5)} data-testid="callout-tag-cloud">
-            <Box maxWidth="50%">
+          <Box display="flex" flexDirection="row" flexWrap="nowrap" gap={gutters(0.5)} data-testid="callout-tag-cloud">
+            <Box
+              maxWidth="50%"
+              display="flex"
+              flexDirection="row"
+              flexWrap="wrap"
+              gap={gutters(0.5)}
+              whiteSpace="nowrap"
+            >
               {selectedTags.map(chip => (
                 <Chip
                   key={chip}
@@ -75,24 +83,7 @@ const CalloutsSetTagCloud = ({
               ))}
             </Box>
             {selectedTags.length > 0 && <Divider orientation="vertical" />}
-            <Box
-              flex="1"
-              display="-webkit-box"
-              //flexDirection="row"
-              gap={gutters(0.5)}
-              sx={{
-                '-webkit-line-clamp': '2',
-                '-webkit-box-orient': 'vertical',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {tags
-                .filter(tag => !selectedTags.includes(tag))
-                .map(chip => (
-                  <Chip key={chip} label={chip} variant="outlined" size="small" onClick={() => onSelectTag(chip)} />
-                ))}
-            </Box>
+            <TwoLinesTagsContainer tags={tags.filter(tag => !selectedTags.includes(tag))} onClickTag={onSelectTag} />
           </Box>
         )}
       </PageContentBlock>
