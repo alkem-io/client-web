@@ -1,12 +1,55 @@
 import { gutters } from '@/core/ui/grid/utils';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Box, Chip, Link, Tooltip } from '@mui/material';
+import { Box, Chip, ChipProps, Link, Tooltip } from '@mui/material';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResizeDetector } from 'react-resize-detector';
 
-const TwoLinesTagsContainer = ({ tags, onClickTag }: { tags: string[]; onClickTag: (tag: string) => void }) => {
+const Tag = ({ tag, onClick }: { tag: string; onClick: ChipProps['onClick'] }) => {
   const { t } = useTranslation();
+
+  return (
+    <Tooltip title={t('components.tagCloud.filterByTag', { tag })} arrow>
+      <Chip
+        label={tag}
+        variant="outlined"
+        size="small"
+        onClick={onClick}
+        sx={{ cursor: 'pointer' }}
+        aria-label={t('components.tagCloud.filterByTag', { tag })}
+      />
+    </Tooltip>
+  );
+};
+
+const ShowMoreChip = ({ count, onClick }: { count: number; onClick: () => void }) => {
+  const { t } = useTranslation();
+  return (
+    <Tooltip title={t('components.tagCloud.showMoreTags', { count })} arrow>
+      <Chip
+        label={`+${count}`}
+        variant="filled"
+        size="small"
+        onClick={onClick}
+        sx={{ cursor: 'pointer' }}
+        aria-label={t('components.tagCloud.showMoreTags', { count })}
+      />
+    </Tooltip>
+  );
+};
+
+const ShowLessChip = ({ onClick }: { onClick: () => void }) => {
+  const { t } = useTranslation();
+  return (
+    <Tooltip title={t('components.tagCloud.showFewerTags')} arrow>
+      <Link onClick={onClick} sx={{ cursor: 'pointer' }} aria-label={t('components.tagCloud.showFewerTags')}>
+        <KeyboardArrowUpIcon fontSize="small" />
+      </Link>
+    </Tooltip>
+  );
+};
+
+const TwoLinesTagsContainer = ({ tags, onClickTag }: { tags: string[]; onClickTag: (tag: string) => void }) => {
   const [expanded, setExpanded] = useState(false);
   const [collapsedCount, setCollapsedCount] = useState(tags.length);
   const measurementRef = useRef<HTMLDivElement | null>(null);
@@ -76,7 +119,12 @@ const TwoLinesTagsContainer = ({ tags, onClickTag }: { tags: string[]; onClickTa
     }
   }, [tagsKey, width, expanded, collapsedCount, tags.length]);
 
-  const displayedTags = expanded ? tags : tags.slice(0, collapsedCount);
+  const visibleTags = expanded ? tags : tags.slice(0, collapsedCount);
+  const displayedTags = {
+    // Last tag is always grouped with the Show More / Show Less button, for better alignment.
+    allButLast: visibleTags.slice(0, visibleTags.length - 1),
+    last: visibleTags[visibleTags.length - 1],
+  };
   const hiddenCount = expanded ? 0 : Math.max(tags.length - collapsedCount, 0);
 
   return (
@@ -101,39 +149,30 @@ const TwoLinesTagsContainer = ({ tags, onClickTag }: { tags: string[]; onClickTa
       </Box>
 
       <Box display="flex" flexWrap="wrap" gap={gutters(0.5)}>
-        {displayedTags.map((tag, index) => (
-          <Tooltip key={`$${tag}-${index}`} title={t('components.tagCloud.filterByTag', { tag })}>
-            <Chip
-              label={tag}
-              variant="outlined"
-              size="small"
-              onClick={() => onClickTag(tag)}
-              sx={{ cursor: 'pointer' }}
-            />
-          </Tooltip>
+        {/* Render all displayed tags except the last one */}
+        {displayedTags.allButLast.map((tag, index) => (
+          <Tag key={`$${tag}-${index}`} tag={tag} onClick={() => onClickTag(tag)} />
         ))}
+        {/* Render the last tag together with Show More / Show Less button because in some cases the button collapses down and looks weird */}
         {!expanded && hiddenCount > 0 && (
-          <Tooltip title={t('components.tagCloud.showMoreTags', { count: hiddenCount })}>
-            <Chip
-              label={`+${hiddenCount}`}
-              variant="filled"
-              size="small"
-              onClick={() => setExpanded(true)}
-              sx={{ cursor: 'pointer' }}
-              aria-label={t('components.tagCloud.showMoreTags', { count: hiddenCount })}
+          <Box display="flex" gap={gutters(0.5)}>
+            <Tag
+              key={`$${displayedTags.last}`}
+              tag={displayedTags.last}
+              onClick={() => onClickTag(displayedTags.last)}
             />
-          </Tooltip>
+            <ShowMoreChip count={hiddenCount} onClick={() => setExpanded(true)} />
+          </Box>
         )}
         {expanded && (
-          <Tooltip title={t('components.tagCloud.showFewerTags')}>
-            <Link
-              onClick={() => setExpanded(false)}
-              sx={{ cursor: 'pointer' }}
-              aria-label={t('components.tagCloud.showFewerTags')}
-            >
-              <KeyboardArrowUpIcon fontSize="small" />
-            </Link>
-          </Tooltip>
+          <Box display="flex" gap={gutters(0.5)}>
+            <Tag
+              key={`$${displayedTags.last}`}
+              tag={displayedTags.last}
+              onClick={() => onClickTag(displayedTags.last)}
+            />
+            <ShowLessChip onClick={() => setExpanded(false)} />
+          </Box>
         )}
       </Box>
     </Box>

@@ -61,13 +61,14 @@ const CalloutsSetTagCloud = ({
       <PageContentBlock>
         {loading && <Loading />}
         {!loading && (
-          <Box display="flex" flexDirection="row" flexWrap="nowrap" gap={gutters(0.5)} data-testid="callout-tag-cloud">
+          <Box display="flex" flexDirection="row" flexWrap="nowrap" gap={gutters(0.5)}>
             <Box
               maxWidth="50%"
               display="flex"
               flexDirection="row"
               flexWrap="wrap"
               gap={gutters(0.5)}
+              alignContent="start"
               whiteSpace="nowrap"
             >
               {selectedTags.map(chip => (
