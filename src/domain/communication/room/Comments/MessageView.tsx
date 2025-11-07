@@ -91,6 +91,13 @@ export const MessageView = ({
               <Caption>{author?.displayName || t('messaging.missingAuthor')}</Caption>
               {author?.type === ProfileType.VirtualContributor && <VirtualContributorLabel />}
               <Box display="flex" height={gutters()} justifyContent="end" alignItems="center">
+                {!message.deleted && (
+                  <Box display="flex" justifyContent="end">
+                    <Typography variant="body2" color="neutralMedium.dark">
+                      {formatTimeElapsed(message.createdAt, t)}
+                    </Typography>
+                  </Box>
+                )}
                 {root && canUpdate && onUpdate && (
                   <IconButton onClick={() => onUpdate(id)} size="small" aria-label={t('common.update')}>
                     <EditOutlined fontSize="inherit" />
@@ -110,16 +117,9 @@ export const MessageView = ({
                 {t('messaging.messageDeleted')}
               </Text>
             ) : (
-              <WrapperMarkdown>{message.message}</WrapperMarkdown>
+              <WrapperMarkdown sx={{ '& p': { marginBottom: 0 } }}>{message.message}</WrapperMarkdown>
             )}
           </MessageContentWrapper>
-          {!message.deleted && (
-            <Box display="flex" justifyContent="end">
-              <Typography variant="body2" color="neutralMedium.dark">
-                {formatTimeElapsed(message.createdAt, t)}
-              </Typography>
-            </Box>
-          )}
         </Box>
         <MessageActionsContainer>
           {enabledReactions && (

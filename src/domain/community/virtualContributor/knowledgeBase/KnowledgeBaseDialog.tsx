@@ -7,11 +7,11 @@ import Gutters from '@/core/ui/grid/Gutters';
 import useKnowledgeBase from './useKnowledgeBase';
 import { DescriptionComponent } from '@/domain/common/description/DescriptionComponent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { Caption } from '@/core/ui/typography';
 import Loading from '@/core/ui/loading/Loading';
 import { useVirtualContributorKnowledgeBaseLastUpdatedQuery } from '@/core/apollo/generated/apollo-hooks';
 import { formatDateTime } from '@/core/utils/time/utils';
+import { virtualContributorsCalloutRestrictions } from './virtualContributorsCalloutRestrictions';
 
 type KnowledgeBaseDialogProps = {
   onClose: () => void;
@@ -66,33 +66,26 @@ const KnowledgeBaseDialog = ({ onClose, title, id, placeholder }: KnowledgeBaseD
         {loadingPrivileges || loading ? (
           <Loading />
         ) : (
-          <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
-            <Gutters disablePadding>
-              {(placeholder || knowledgeBaseDescription || canCreateCallout) && (
-                <DescriptionComponent
-                  description={knowledgeBaseDescription || placeholder}
-                  canEdit={canCreateCallout}
-                  onUpdate={updateDescription}
-                />
-              )}
-              <CalloutsGroupView
-                calloutsSetId={calloutsSetId}
-                callouts={callouts}
-                canCreateCallout={canCreateCallout}
-                loading={calloutsSetLoading}
-                onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                onCalloutUpdate={refetchCallout}
-                createButtonPlace="bottom"
-                disableClassification
-                calloutRestrictions={{
-                  disableRichMedia: true,
-                  disableWhiteboards: true,
-                  disableMemos: true,
-                  disableComments: true,
-                }}
+          <Gutters disablePadding>
+            {(placeholder || knowledgeBaseDescription || canCreateCallout) && (
+              <DescriptionComponent
+                description={knowledgeBaseDescription || placeholder}
+                canEdit={canCreateCallout}
+                onUpdate={updateDescription}
               />
-            </Gutters>
-          </StorageConfigContextProvider>
+            )}
+            <CalloutsGroupView
+              calloutsSetId={calloutsSetId}
+              callouts={callouts}
+              canCreateCallout={canCreateCallout}
+              loading={calloutsSetLoading}
+              onSortOrderUpdate={onCalloutsSortOrderUpdate}
+              onCalloutUpdate={refetchCallout}
+              createButtonPlace="bottom"
+              disableClassification
+              calloutRestrictions={virtualContributorsCalloutRestrictions}
+            />
+          </Gutters>
         )}
       </DialogContent>
       {canCreateCallout && (

@@ -66,8 +66,8 @@ export const DialogActions = () => {
         <VideoCallDialog
           open={currentDialog === SubspaceDialog.VideoCall}
           onClose={handleClose}
-          spaceId={spaceId}
           spaceNameId={nameId}
+          spaceId={spaceId}
         />
       )}
       <ActivityDialog open={currentDialog === SubspaceDialog.Activity} onClose={handleClose} />

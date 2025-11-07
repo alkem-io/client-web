@@ -12,11 +12,13 @@ import { CalloutContributionCardComponentProps } from '../interfaces/CalloutCont
 import { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
 import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
 import PaginationExpander from './PaginationExpander';
+import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 
 interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
   contributionType: CalloutContributionType;
   contributionCardComponent: ComponentType<CalloutContributionCardComponentProps>;
   createContributionButtonComponent: ComponentType<CalloutContributionCreateButtonProps>;
+  calloutRestrictions?: CalloutRestrictions;
   onClickOnContribution: (contribution: AnyContribution) => void;
 }
 
@@ -29,6 +31,7 @@ const ContributionsCardsExpandable = ({
   contributionCardComponent: Card,
   createContributionButtonComponent: CreateContributionButton,
   onClickOnContribution,
+  calloutRestrictions,
   loading: loadingCallout,
   expanded: calloutExpanded,
   onCalloutUpdate,
@@ -101,6 +104,7 @@ const ContributionsCardsExpandable = ({
             callout={callout}
             canCreateContribution={canCreateContribution}
             onContributionCreated={onCalloutContributionsUpdate}
+            calloutRestrictions={calloutRestrictions}
           />
         )}
       </Gutters>

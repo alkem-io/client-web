@@ -11,6 +11,13 @@ query platformAdminSpacesList {
           displayName
           url
         }
+        provider {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
       }
       authorization {
         id

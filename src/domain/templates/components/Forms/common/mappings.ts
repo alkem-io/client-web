@@ -15,6 +15,8 @@ import {
   CalloutContributionType,
   CreateLinkInput,
   CreateMemoInput,
+  UpdateWhiteboardMutationVariables,
+  WhiteboardPreviewSettings,
 } from '@/core/apollo/generated/graphql-schema';
 import {
   CreateTemplateMutationVariables,
@@ -39,6 +41,7 @@ import {
 import { mapReferenceModelsToUpdateReferenceInputs } from '@/domain/common/reference/ReferenceUtils';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { LinkDetails } from '@/domain/collaboration/calloutContributions/link/models/LinkDetails';
+import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
 
 interface EntityWithProfile {
   profile: {
@@ -119,10 +122,11 @@ const handleCreateWhiteboard = (data?: {
   profile?: {
     displayName?: string;
     preview?: {
-      name: VisualType.Banner;
+      name: VisualType.WhiteboardPreview;
       uri: string;
     };
   };
+  previewSettings?: WhiteboardPreviewSettings;
 }): CreateWhiteboardInput | undefined => {
   if (!data) {
     return undefined;
@@ -134,12 +138,13 @@ const handleCreateWhiteboard = (data?: {
       visuals: data.profile?.preview
         ? [
             {
-              name: VisualType.Banner,
+              name: VisualType.WhiteboardPreview,
               uri: data.profile.preview.uri,
             },
           ]
         : undefined,
     },
+    previewSettings: data.previewSettings,
   };
 };
 
@@ -392,6 +397,7 @@ export const toUpdateTemplateMutationVariables = (
   newValues: AnyTemplateFormSubmittedValues
 ): {
   updateTemplateVariables: UpdateTemplateMutationVariables;
+  updateWhiteboardVariables?: UpdateWhiteboardMutationVariables;
   updateCalloutVariables?: UpdateCalloutTemplateMutationVariables;
   updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
   updateSpaceContentTemplateVariables?: UpdateTemplateFromSpaceMutationVariables;
@@ -413,6 +419,7 @@ export const toUpdateTemplateMutationVariables = (
             profile: mapTemplateProfileToUpdateProfileInput(calloutTemplateData.callout?.framing.profile),
             type: calloutTemplateData.callout?.framing.type,
             whiteboardContent: calloutTemplateData.callout?.framing.whiteboard?.content,
+            whiteboardPreviewSettings: calloutTemplateData.callout?.framing.whiteboard?.previewSettings,
             link: mapLinkDataToUpdateLinkInput(calloutTemplateData.callout?.framing.link),
             memoContent: calloutTemplateData.callout?.framing.memo?.markdown,
           },
@@ -423,6 +430,7 @@ export const toUpdateTemplateMutationVariables = (
       // Delete useless fields and leave only the fields relevant to the callout types
       if (!(calloutTemplateData.callout?.framing.type === CalloutFramingType.Whiteboard)) {
         delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
+        delete updateCalloutVariables.calloutData?.framing?.whiteboardPreviewSettings;
       }
       if (!calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post)) {
         delete updateCalloutVariables.calloutData?.contributionDefaults?.postDescription;
@@ -484,11 +492,17 @@ export const toUpdateTemplateMutationVariables = (
       };
     }
     case TemplateType.Whiteboard: {
-      updateTemplateVariables.whiteboardContent = (
-        newValues as TemplateWhiteboardFormSubmittedValues
-      ).whiteboard?.content;
+      const whiteboardTemplate = newValues as TemplateWhiteboardFormSubmittedValues;
+      updateTemplateVariables.whiteboardContent = whiteboardTemplate.whiteboard?.content;
+      const updateWhiteboardVariables: UpdateWhiteboardMutationVariables = {
+        input: {
+          ID: (template as WhiteboardTemplate).whiteboard?.id!,
+          previewSettings: whiteboardTemplate.whiteboard?.previewSettings,
+        },
+      };
       return {
         updateTemplateVariables,
+        updateWhiteboardVariables,
       };
     }
   }

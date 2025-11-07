@@ -6,7 +6,7 @@ fragment WhiteboardProfile on Profile {
   visual(type: CARD) {
     ...VisualModelFull
   }
-  preview: visual(type: BANNER) {
+  preview: visual(type: WHITEBOARD_PREVIEW) {
     ...VisualModelFull
   }
   tagset {
@@ -44,6 +44,9 @@ fragment WhiteboardDetails on Whiteboard {
         ...VisualModel
       }
     }
+  }
+  previewSettings {
+    ...whiteboardPreviewSettings
   }
 }
 
@@ -117,6 +120,9 @@ mutation updateWhiteboard($input: UpdateWhiteboardEntityInput!) {
     profile {
       id
       displayName
+    }
+    previewSettings {
+      ...whiteboardPreviewSettings
     }
   }
 }

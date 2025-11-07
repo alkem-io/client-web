@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
@@ -20,7 +21,9 @@ import BlockSectionTitleWithIcon from '@/core/ui/content/BlockSectionTitleWithIc
 import { gutters } from '@/core/ui/grid/utils';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
-import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
+import { TemplateFormActions } from '../Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 /**
  * Whiteboards have preview imagesTemplates, they are handled separately and uploaded as the Visual of the Template
@@ -56,7 +59,7 @@ interface TemplateFormBaseProps<T extends TemplateFormProfileSubmittedValues> {
   template?: AnyTemplate;
   initialValues: T;
   onSubmit: (values: T, formikHelpers: FormikHelpers<T>) => void;
-  actions: ReactNode | ((formState: FormikProps<T>) => ReactNode);
+  actions: TemplateFormActions<T>;
   children?: ReactNode | ((formState: FormikProps<T>) => ReactNode);
   validator?: yup.ObjectShape;
 }
@@ -88,48 +91,58 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
   // todo: review this as some Visuals come without aspectRatio and other expected props
   const visual = template?.profile.visual as Visual | undefined;
 
-  const renderActions = typeof actions === 'function' ? actions : () => actions;
   const renderChildren = typeof children === 'function' ? children : () => children;
 
   return (
     <Formik enableReinitialize initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {formState => (
-        <GridContainer disablePadding>
-          <PageContentColumn columns={3}>
-            <PageContentBlockSeamless disablePadding>
-              <BlockSectionTitleWithIcon
-                icon={<InfoOutlined />}
-                tooltip={t('templateDialog.profile.help', {
-                  entityTypeName: t(`common.enums.templateType.${templateType}`),
-                })}
-              >
-                {t('templateDialog.profile.title')}
-              </BlockSectionTitleWithIcon>
-              <FormikInputField name="profile.displayName" title={t('templateDialog.profile.fields.displayName')} />
-              <Box marginBottom={gutters(-1)}>
-                <FormikMarkdownField
-                  name="profile.description"
-                  title={t('templateDialog.profile.fields.description')}
-                  maxLength={MARKDOWN_TEXT_LENGTH}
+      {formState => {
+        const actionsContent = actions.renderActions(formState);
+        const renderedActions = actionsContent ? (
+          actions.portal ? (
+            createPortal(actionsContent, actions.portal)
+          ) : (
+            <DialogFooter>{actionsContent}</DialogFooter>
+          )
+        ) : null;
+
+        return (
+          <GridContainer disablePadding>
+            <PageContentColumn columns={3}>
+              <PageContentBlockSeamless disablePadding>
+                <BlockSectionTitleWithIcon
+                  icon={<InfoOutlined />}
+                  tooltip={t('templateDialog.profile.help', {
+                    entityTypeName: t(`common.enums.templateType.${templateType}`),
+                  })}
+                >
+                  {t('templateDialog.profile.title')}
+                </BlockSectionTitleWithIcon>
+                <FormikInputField name="profile.displayName" title={t('templateDialog.profile.fields.displayName')} />
+                <Box marginBottom={gutters(-1)}>
+                  <FormikMarkdownField
+                    name="profile.description"
+                    title={t('templateDialog.profile.fields.description')}
+                    maxLength={MARKDOWN_TEXT_LENGTH}
+                  />
+                </Box>
+                <TagsetField
+                  name="profile.tagsets[0].tags"
+                  title={t('templateDialog.profile.fields.tags')}
+                  helpTextIcon={t('components.post-creation.info-step.tags-help-text')}
                 />
-              </Box>
-              <TagsetField
-                name="profile.tagsets[0].tags"
-                title={t('templateDialog.profile.fields.tags')}
-                helpTextIcon={t('components.post-creation.info-step.tags-help-text')}
-              />
-              {visual && <VisualUpload visual={visual} />}
-            </PageContentBlockSeamless>
-          </PageContentColumn>
-          <PageContentColumn columns={9}>
-            <PageContentBlockSeamless disablePadding>
-              <BlockSectionTitle>{t(`common.enums.templateType.${templateType}`)}</BlockSectionTitle>
-              {renderChildren(formState)}
-            </PageContentBlockSeamless>
-          </PageContentColumn>
-          {renderActions(formState)}
-        </GridContainer>
-      )}
+                {visual && <VisualUpload visual={visual} />}
+              </PageContentBlockSeamless>
+            </PageContentColumn>
+            <PageContentColumn columns={9}>
+              <PageContentBlockSeamless disablePadding>
+                <BlockSectionTitle>{t(`common.enums.templateType.${templateType}`)}</BlockSectionTitle>
+                {renderChildren(formState)}
+              </PageContentBlockSeamless>
+            </PageContentColumn>
+            {renderedActions}
+          </GridContainer>
+        );
+      }}
     </Formik>
   );
 };

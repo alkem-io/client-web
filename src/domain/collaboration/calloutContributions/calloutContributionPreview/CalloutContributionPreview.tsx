@@ -19,6 +19,7 @@ import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
 import { CalloutContributionPreviewDialogProps } from '../interfaces/CalloutContributionPreviewDialogProps';
 import { useColumns } from '@/core/ui/grid/GridContext';
+import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 
 interface CalloutContributionPreviewProps {
   ref: React.Ref<HTMLElement>;
@@ -26,6 +27,7 @@ interface CalloutContributionPreviewProps {
   contributionId: string;
   previewComponent: React.ComponentType<CalloutContributionPreviewComponentProps>;
   dialogComponent: React.ComponentType<CalloutContributionPreviewDialogProps>;
+  calloutRestrictions?: CalloutRestrictions;
   onCalloutUpdate?: () => Promise<unknown>;
 }
 
@@ -34,6 +36,7 @@ const CalloutContributionPreview = ({
   contributionId,
   previewComponent: PreviewComponent,
   dialogComponent: DialogComponent,
+  calloutRestrictions,
   onCalloutUpdate,
   ref,
 }: CalloutContributionPreviewProps) => {
@@ -169,6 +172,7 @@ const CalloutContributionPreview = ({
           onClose={() => setContributionDialogOpen(false)}
           onCalloutUpdate={onCalloutUpdate}
           onContributionDeleted={handleContributionDeleted}
+          calloutRestrictions={calloutRestrictions}
         />
       </PageContentBlock>
     </Gutters>

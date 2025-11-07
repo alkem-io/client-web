@@ -26,7 +26,7 @@ import {
   mapLinkDataToUpdateLinkInput,
 } from '../models/mappings';
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
-import { useUploadWhiteboardVisuals } from '../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 
 export interface EditCalloutDialogProps {
   open?: boolean;
@@ -68,6 +68,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           profile: calloutData.framing.whiteboard?.profile ?? { displayName: '' },
           content: calloutData.framing.whiteboard?.content ?? '',
           previewImages: [],
+          previewSettings: calloutData.framing.whiteboard?.previewSettings,
         },
         memo: {
           ...calloutData.framing.memo,

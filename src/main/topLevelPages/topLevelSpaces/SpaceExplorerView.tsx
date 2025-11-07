@@ -179,7 +179,7 @@ export const SpaceExplorerView = ({
           banner={profile?.cardBanner}
           avatarUris={collectParentAvatars(space) ?? []}
           tags={(space.matchedTerms ?? profile?.tagset?.tags.length) ? profile?.tagset?.tags : undefined}
-          spaceDisplayName={profile?.displayName}
+          spaceDisplayName={space.parent?.about?.profile?.displayName}
           matchedTerms={!!space.matchedTerms}
           label={
             shouldDisplayPrivacyInfo && (

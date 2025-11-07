@@ -8,7 +8,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Identifiable } from '@/core/utils/Identifiable';
 import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
-import { CollabAPI } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
@@ -20,16 +20,19 @@ import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { useTranslation } from 'react-i18next';
-import {
-  PreviewImageDimensions,
-  WhiteboardPreviewImage,
-  generateWhiteboardPreviewImages,
-} from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
-import whiteboardSchema from '../validation/whiteboardSchema';
+import whiteboardValidationSchema, { WhiteboardFormSchema } from '../validation/whiteboardFormSchema';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
+import {
+  DefaultWhiteboardPreviewSettings,
+  WhiteboardPreviewSettings,
+} from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
+import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/useUpdateWhiteboardPreviewSettings';
 
 export interface WhiteboardDetails {
   id: string;
@@ -54,6 +57,7 @@ export interface WhiteboardDetails {
       avatar?: { id: string; uri: string };
     };
   };
+  previewSettings: WhiteboardPreviewSettings;
 }
 
 interface WhiteboardDialogProps {
@@ -71,17 +75,19 @@ interface WhiteboardDialogProps {
     onDelete: (whiteboard: Identifiable) => Promise<void>;
     setLastSuccessfulSavedDate: (date: Date) => void;
     setConsecutiveSaveErrors: React.Dispatch<React.SetStateAction<number>>;
+    onClosePreviewSettingsDialog?: () => void;
   };
   options: {
     show: boolean;
     canEdit?: boolean;
     canDelete?: boolean;
-    headerActions?: ReactNode;
+    headerActions?: (state: CollabState) => ReactNode;
     dialogTitle: ReactNode;
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
     readOnlyDisplayName?: boolean;
     editDisplayName?: boolean;
+    previewSettingsDialogOpen?: boolean;
   };
   state?: {
     loadingWhiteboardValue?: boolean;
@@ -112,6 +118,10 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
     allowFallbackToAttached: options.allowFilesAttached,
   });
 
+  const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
+
+  const { updateWhiteboardPreviewSettings } = useUpdateWhiteboardPreviewSettings({ whiteboard, excalidrawAPI });
+
   type PrepareWhiteboardResult =
     | {
         success: true;
@@ -125,8 +135,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
 
   const prepareWhiteboardForUpdate = async (
     whiteboard: WhiteboardDetails,
-    state: RelevantExcalidrawState | undefined,
-    shouldUploadPreviewImages = true
+    state: RelevantExcalidrawState | undefined
   ): Promise<PrepareWhiteboardResult> => {
     if (!state) {
       return {
@@ -147,12 +156,11 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
       };
     }
 
-    const previewImages =
-      shouldUploadPreviewImages && !filesManager.loading.downloadingFiles
-        ? await generateWhiteboardPreviewImages(whiteboard, state)
-        : undefined;
+    const previewImages = !filesManager.loading.downloadingFiles
+      ? await generateWhiteboardVisuals(whiteboard)
+      : undefined;
 
-    const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
+    const displayName = formikRef.current?.values.profile.displayName ?? whiteboard?.profile?.displayName;
 
     return {
       success: true,
@@ -229,11 +237,16 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
     }
   });
 
-  const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
+  const formikRef = useRef<FormikProps<WhiteboardFormSchema>>(null);
 
   const initialValues = useMemo(
-    () => ({ displayName: whiteboard?.profile?.displayName ?? '' }),
-    [whiteboard?.profile?.displayName]
+    () => ({
+      profile: {
+        displayName: whiteboard?.profile?.displayName ?? '',
+      },
+      previewSettings: whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
+    }),
+    [whiteboard]
   );
 
   useEffect(() => {
@@ -279,13 +292,13 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
           onSceneInitChange: setSceneInitialized,
         }}
       >
-        {({ children, mode, modeReason, restartCollaboration }) => {
+        {({ children, mode, modeReason, collaborating, connecting, restartCollaboration }) => {
           return (
             <Formik
               innerRef={formikRef}
               initialValues={initialValues}
               onSubmit={() => {}}
-              validationSchema={whiteboardSchema}
+              validationSchema={whiteboardValidationSchema}
             >
               <Dialog
                 open={options.show}
@@ -297,7 +310,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                 fullScreen={options.fullscreen || columns <= 4}
               >
                 <DialogHeader
-                  actions={options.headerActions}
+                  actions={options.headerActions?.({ mode, modeReason, collaborating, connecting })}
                   onClose={onClose}
                   titleContainerProps={{ flexDirection: 'row', gap: 0, marginRight: -1 }}
                 >
@@ -308,7 +321,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                     onChangeDisplayName={newDisplayName => actions.onChangeDisplayName(whiteboard?.id, newDisplayName)}
                   />
                   <WhiteboardDialogTemplatesLibrary
-                    editModeEnabled={editModeEnabled}
+                    editModeEnabled={editModeEnabled && mode === 'write'}
                     disabled={!isSceneInitialized}
                     onImportTemplate={handleImportTemplate}
                   />
@@ -348,6 +361,13 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
         state={{
           isLoading: isDeleting,
         }}
+      />
+      <WhiteboardPreviewSettingsDialog
+        open={options.previewSettingsDialogOpen}
+        onClose={() => actions.onClosePreviewSettingsDialog?.()}
+        onUpdate={updateWhiteboardPreviewSettings}
+        whiteboard={whiteboard}
+        excalidrawAPI={excalidrawAPI}
       />
     </>
   );

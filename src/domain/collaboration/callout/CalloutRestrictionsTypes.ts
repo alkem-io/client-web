@@ -7,7 +7,14 @@ export interface CalloutRestrictions {
    * Disables upload of images, videos and other rich media in the Markdown editors.
    */
   disableRichMedia?: boolean;
+  /**
+   * Disables comments on Callout framing
+   */
   disableComments?: boolean;
+  /**
+   * Disables comments on Callout contributions/responses
+   */
+  disableCommentsToContributions?: boolean;
   /**
    * Disables whiteboard callouts, both in the framing and in the responses. This is here because VCs still don't support whiteboards.
    */

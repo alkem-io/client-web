@@ -1,9 +1,10 @@
 import { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { PreviewImageDimensions } from '../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { PreviewImageDimensions } from '../../whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface MemoModelFull {
   id: string;
+  markdown?: string;
   contentUpdatePolicy?: ContentUpdatePolicy;
   authorization?: {
     myPrivileges?: AuthorizationPrivilege[];

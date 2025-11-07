@@ -163,6 +163,7 @@
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
     "reply": "Reply",
+    "reset": "Reset",
     "select": "Select",
     "change-field": "Change {{field}}",
     "send": "Send",
@@ -554,6 +555,8 @@
     },
     "roles": {
       "ADMIN": "$t(common.Admin)",
+      "ANONYMOUS": "Anonymous",
+      "REGISTERED": "Registered",
       "LEAD": "Lead",
       "HOST": "Host",
       "MEMBER": "$t(common.Member)",
@@ -603,7 +606,14 @@
     },
     "supportEmail": "support@alkem.io",
     "options": "Options",
-    "externalLinkDisclaimer": "This link takes you to an external site. Alkemio is not responsible for its content."
+    "externalLinkDisclaimer": "This link takes you to an external site. Alkemio is not responsible for its content.",
+    "calloutType": {
+      "LINK": "$t(common.Link)",
+      "POST": "$t(common.Post)",
+      "WHITEBOARD": "$t(common.Whiteboard)",
+      "MEMO": "$t(common.Memo)",
+      "NONE": "$t(common.Post)"
+    }
   },
   "community": {
     "memberUsers": "$t(common.Member) Users ({{count}})",
@@ -912,8 +922,8 @@
       "more-links": "{{count}} links, click here to show all",
       "new-temporary-reference": "Temporary Link Id: {{temp}}"
     },
-    "singleWhiteboard": {
-      "clickToSee": "Click to see the full $t(common.whiteboard)"
+    "whiteboard": {
+      "clickToSee": "Click to open $t(common.whiteboard)"
     },
     "memo": {
       "clickToSee": "Click to see the full $t(common.memo)"
@@ -1655,7 +1665,8 @@
     "file-upload": {
       "uploadFile": "Upload file",
       "file-size-error": "File size exceeds the {{limit}}MB limit",
-      "file-upload-success": "File uploaded successfully"
+      "file-upload-success": "File uploaded successfully",
+      "file-upload-error": "Error occurred while uploading the file"
     },
     "editSpaceForm": {
       "host": {
@@ -1960,7 +1971,7 @@
         },
         "USER_SPACE_COMMUNITY_INVITATION": {
           "subject": "{{triggeredByName}} invited you to join {{spaceName}}",
-          "description": "{{spaceName}} - {{spaceDescription}}"
+          "description": ""
         },
         "USER_MESSAGE_SENDER": {
           "subject": "You sent a DM to {{receiverName}}",
@@ -1993,6 +2004,10 @@
         "SPACE_ADMIN_COMMUNITY_APPLICATION": {
           "subject": "{{triggeredByName}} applied to join {{spaceName}}",
           "description": "Review the application in the $t(common.space) $t(common.settings)"
+        },
+        "SPACE_ADMIN_VIRTUAL_CONTRIBUTOR_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your invitation for {{contributorName}} to join {{spaceName}}",
+          "description": ""
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
           "subject": "As a lead of {{spaceName}}, you've received a message from {{triggeredByName}}",
@@ -2053,12 +2068,28 @@
         "USER_SIGN_UP_WELCOME": {
           "subject": "Welcome to Alkemio! \uD83C\uDF89",
           "description": "You’re now part of a community that grows through collaboration \uD83E\uDD1D Click to explore the Getting Started Guide and start participating in $t(common.spaces) where every insight helps us all move forward.\nQuestions? Email support@alkem.io"
+        },
+        "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
+          "description": ""
+        },
+        "SPACE_COMMUNITY_CALENDAR_EVENT_CREATED": {
+          "subject": "New {{type}} scheduled in {{spaceName}}",
+          "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
+        },
+        "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
+          "subject": "New comment on {{type}}: {{eventTitle}}",
+          "description": "{{triggeredByName}} left a comment on the {{eventTitle}} in the {{spaceName}} calendar"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
       "markAllAsRead": "Mark all as read",
-      "unknownUser": "Unknown $t(common.user)",
-      "unknownOrganization": "Unknown $t(common.organization)"
+      "filters": {
+        "all": "All",
+        "messagesAndReplies": "Messages & Replies",
+        "space": "Space notifications",
+        "platform": "Platform notifications"
+      }
     },
     "spaceWelcomeDialog": {
       "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",
@@ -2417,7 +2448,7 @@
             "public": "<b>Public:</b> This $t(common.space) and its contents are visible for everyone on the platform. Users can only contribute if they are a $t(common.member).",
             "private": "<b>Private:</b> This $t(common.space) is visible to everyone on the platform, but the content is only visible to $t(common.members). Please note that both the information in the $t(common.profile) and the context are publicly visible.",
             "publicSubspace": "<b>Public:</b> This $t(common.subspace) and all its contents are visible to everyone who has access to the $t(common.space) it belongs to. If the $t(common.space) itself is public, this $t(common.subspace) and its contents will be visible to all users, including those outside the $t(common.space).",
-            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace). No application required: All $t(common.space) $t(common.members) can directly join, without you having to review their application."
+            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace)."
           },
           "license-features": {
             "title": "$t(common.space) Features",
@@ -2497,12 +2528,20 @@
         "changeNameId": "Change $t(common.space) NameID",
         "manageLicensePlans": "Manage License Plans"
       },
+      "innovationPack": {
+        "notifications": {
+          "packRemoved": "$t(common.innovationPack) removed successfully."
+        }
+      },
       "innovationHub": {
         "spaceListFilter": {
           "header": {
             "title": "Current Selection",
             "subtitle": "The order below is the order in which the $t(common.spaces) will be visible on the $t(common.customHomepage)"
           }
+        },
+        "notifications": {
+          "hubRemoved": "$t(common.innovation-hub) removed successfully."
         }
       }
     },
@@ -2540,6 +2579,10 @@
         "title": "Wide Banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
       },
+      "WHITEBOARD_PREVIEW": {
+        "title": "Whiteboard Preview",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+      },
       "form": {
         "altText": {
           "placeholder": "Example: Multiple snow covered mountains",
@@ -2553,7 +2596,7 @@
       "unauthorized": "Please sign in to see the contributors of this $t(common.space).",
       "search": {
         "title": "Find talent and expertise!",
-        "subtitle": "Search for other people and $t(common.organizations) that can help you with your $t(common.subspace), for example based on skills or interests.",
+        "subtitle": "Search for other people and $t(common.organizations) that can help you with your $t(common.space), for example based on skills or interests.",
         "placeholder": "Search…"
       },
       "organizations": {
@@ -2953,7 +2996,37 @@
           "generic": "You can’t edit this $t(common.whiteboard) for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a $t(common.member) of the $t(common.space)\n- This $t(common.space) only allows one $t(common.whiteboard) editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached"
         }
       },
-      "restartCollaboration": "Continue Editing"
+      "restartCollaboration": "Continue Editing",
+      "previewSettings": {
+        "title": "Preview Settings",
+        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "modes": {
+          "AUTO": {
+            "title": "Auto Preview",
+            "description": "We'll automatically generate the best preview from your whiteboard content."
+          },
+          "CUSTOM": {
+            "title": "Manual Selection",
+            "description": "Choose exactly which part of your whiteboard to show as a preview."
+          },
+          "FIXED": {
+            "title": "Fixed Selection",
+            "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
+          }
+        },
+        "cropDialog": {
+          "previewArea": "Crop preview area",
+          "reset": "$t(buttons.reset)",
+          "cancel": "$t(buttons.cancel)",
+          "confirm": "Confirm Selection"
+        }
+      },
+      "preview": {
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
+        "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
+      }
     },
     "memo": {
       "readonlyReason": {
@@ -2970,7 +3043,8 @@
           "noUpdateAccess": "You can’t edit this $t(common.memo) because you don’t have the rights to do so. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share $t(common.settings) if you want to contribute.",
           "multiUserNotAllowed": "You can’t edit this $t(common.memo) because this $t(common.space) only allows one $t(common.memo) editor at a time",
           "roomCapacityReached": "You can’t edit this $t(common.memo) because this $t(common.space) allows for multiple editors simultaneously, but the maximum is reached",
-          "generic": "You can’t edit this $t(common.memo) for one of the following reasons:\n\nYou are not a $t(common.member) of the $t(common.space)\n- This $t(common.space) only allows one $t(common.memo) editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached"
+          "generic": "You can’t edit this $t(common.memo) for one of the following reasons:\n\nYou are not a $t(common.member) of the $t(common.space)\n- This $t(common.space) only allows one $t(common.memo) editor at a time\n- This $t(common.space) allows for more editors, but the maximum is reached",
+          "notAuthenticated": "You have to be signed in to edit this $t(common.memo). Click here to <signinlink>sign in</signinlink>"
         }
       }
     },
@@ -3163,6 +3237,39 @@
           "infoText": "Available variables: [{{availableVariables}}] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this $t(common.virtualContributor).",
           "saveBtn": "Save prompt"
         },
+        "promptGraph": {
+          "saveBtn": "Save Prompt Graph",
+          "title": "Prompt Graph",
+          "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
+          "warning": "Warning: Advanced mode is intended for experienced users only. Incorrect or complex configurations may negatively affect system performance and can break the Virtual Contributor's functionality.",
+          "stepsTitle": "Steps",
+          "systemNodeTooltip": "System Node - not editable",
+          "promptFieldTitle": "Prompt",
+          "statePropertiesTitle": "State Properties",
+          "noStateProperties": "No state properties",
+          "addButton": "Add",
+          "editBtn": "Edit Prompt Graph",
+          "advancedSettingsButton": "Prompt graph advanced mode",
+          "propertyTable": {
+            "title": "Output Properties",
+            "columns": {
+              "name": "Name",
+              "type": "Type",
+              "optional": "Optional",
+              "description": "Description",
+              "actions": "Actions"
+            },
+            "yes": "Yes",
+            "no": "No",
+            "notAvailable": "N/A",
+            "addProperty": "Add Property",
+            "typeOptions": {
+              "string": "string",
+              "number": "number",
+              "boolean": "boolean"
+            }
+          }
+        },
         "externalConfig": {
           "title": "External Configuration",
           "infoText": "The $t(common.virtualContributor) is powered by an external AI service. Please provide the following information to connect to the service.",
@@ -3213,7 +3320,8 @@
           "collaborationCalloutPublished": "Receive a $t(common.notification) when a $t(common.callout) is published in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new contribution ($t(common.whiteboard), $t(common.post), link, $t(common.memo) etc.) is created in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutComment": "Receive a $t(common.notification) when a a $t(common.comment) is made on a $t(common.callout) in a $t(common.community) I am a $t(common.member) of",
-          "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.callout) contribution in a $t(common.community) I am a $t(common.member) of"
+          "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.callout) contribution in a $t(common.community) I am a $t(common.member) of",
+          "communityCalendarEvents": "Receive calendar $t(common.notifications) for a $t(common.community) I am a $t(common.member) of"
         }
       },
       "spaceAdmin": {
@@ -3364,7 +3472,8 @@
       "FORMAT_NOT_SUPPORTED": "Format not supported",
       "BAD_USER_INPUT": "Bad user input: {{message}}",
       "NOT_SUPPORTED": "Not supported: {{message}}",
-      "OPERATION_NOT_ALLOWED": "{{message}}"
+      "OPERATION_NOT_ALLOWED": "{{message}}",
+      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time."
     }
   },
   "dashboard-updates-section": {
@@ -3479,6 +3588,9 @@
     "avatar": {
       "contributor": {
         "text": "{{displayName}}'s avatar: {{altText}}"
+      },
+      "innovationPack": {
+        "text": "{{displayName}}'s innovation pack avatar: {{altText}}"
       }
     }
   },
@@ -3501,6 +3613,9 @@
     "dialog": {
       "title": "Start Video Call",
       "content": "You are about to start a video call using Jitsi, a secure third-party video conferencing service. The call will open in a new browser tab, outside the Alkemio environment. Others can join through the same button or by using the shared URL.<br/><br/>Learn more about Jitsi <jitsiLink>here</jitsiLink>, including how to manage access and privacy settings."
+    },
+    "error": {
+      "emptyUrl": "Unable to generate video call URL. Please refresh the page and try again."
     }
   },
   "createSpace": {

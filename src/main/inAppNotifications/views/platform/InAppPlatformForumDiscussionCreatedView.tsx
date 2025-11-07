@@ -1,6 +1,8 @@
+import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
 import { InAppNotificationModel } from '../../model/InAppNotificationModel';
 import { InAppNotificationBaseView } from '../InAppNotificationBaseView';
 import { useTranslation } from 'react-i18next';
+import { kebabToConstantCase } from '@/core/utils/string';
 
 export const InAppPlatformForumDiscussionCreatedView = (notification: InAppNotificationModel) => {
   const { payload, triggeredBy } = notification;
@@ -16,7 +18,7 @@ export const InAppPlatformForumDiscussionCreatedView = (notification: InAppNotif
     triggeredByName: triggeredBy.profile.displayName,
     discussionName: discussion.displayName,
     category: discussion.category
-      ? t(`common.enums.discussion-category.${discussion.category.toUpperCase().replace(/-/g, '_')}`)
+      ? t(`common.enums.discussion-category.${kebabToConstantCase(discussion.category) as ForumDiscussionCategory}`)
       : '',
     comment: discussion.description || '',
   };

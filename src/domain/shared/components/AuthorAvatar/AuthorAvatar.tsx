@@ -4,7 +4,7 @@ import Avatar, { CustomAvatarProps } from '@/core/ui/avatar/Avatar';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 import { AuthorModel } from '../../../community/user/models/AuthorModel';
 import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
-import { useSendMessageToUserMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useSendMessageToUsersMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
@@ -22,7 +22,7 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const anchorElement = useRef<HTMLDivElement>(null);
-  const [sendMessageToUser] = useSendMessageToUserMutation();
+  const [sendMessageToUser] = useSendMessageToUsersMutation();
   const [isContactDialogVisible, setContactDialogVisible] = useState(false);
   const handleSendMessage = useCallback(
     async (messageText: string) => {
@@ -71,7 +71,6 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
                   country={author.country}
                   url={author.url}
                   onContact={() => setContactDialogVisible(true)}
-                  isContactable={author.isContactable}
                 />
               </GridProvider>
             }

@@ -21,13 +21,16 @@ query CalloutContent($calloutId: UUID!) {
           profile {
             id
             displayName
-            preview: visual(type: BANNER) {
+            preview: visual(type: WHITEBOARD_PREVIEW) {
               id
               name
               uri
             }
           }
           content  # Get the whiteboard content to be able to edit it in single user mode
+          previewSettings {
+            ...whiteboardPreviewSettings
+          }
         }
         memo {
           id

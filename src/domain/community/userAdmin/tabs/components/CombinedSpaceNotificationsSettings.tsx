@@ -55,6 +55,11 @@ export const CombinedSpaceNotificationsSettings = ({
         emailChecked: currentSpaceSettings?.communicationUpdates?.email || false,
         label: t('pages.userNotificationsSettings.space.settings.communicationUpdateSent'),
       },
+      communityCalendarEvents: {
+        inAppChecked: currentSpaceSettings?.communityCalendarEvents?.inApp || false,
+        emailChecked: currentSpaceSettings?.communityCalendarEvents?.email || false,
+        label: t('pages.userNotificationsSettings.space.settings.communityCalendarEvents'),
+      },
     };
 
     // Add space admin notifications if user has admin privileges

@@ -2,7 +2,6 @@ import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -12,24 +11,27 @@ import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawW
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
-import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw';
+import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw'; // @alkemio/excalidraw/dist/types/excalidraw/data/json
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { Delete, Save } from '@mui/icons-material';
-import { Box, Button, DialogContent } from '@mui/material';
+import { Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  WhiteboardPreviewImage,
-  generateWhiteboardPreviewImages,
-} from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
-import whiteboardSchema from '../validation/whiteboardSchema';
+import whiteboardValidationSchema from '../validation/whiteboardFormSchema';
 import { WhiteboardDetails } from './WhiteboardDialog';
+import WhiteboardPreviewSettingsDialog from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsDialog';
+import {
+  DefaultWhiteboardPreviewSettings,
+  WhiteboardPreviewSettings,
+} from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 
 type ExcalidrawUtils = {
   serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
@@ -41,21 +43,25 @@ export interface WhiteboardWithContent extends WhiteboardDetails {
 
 type SingleUserWhiteboardDialogProps = {
   entities: {
-    whiteboard?: WhiteboardWithContent;
+    whiteboard: WhiteboardWithContent;
   };
   actions: {
     onCancel: () => void;
     onUpdate: (whiteboard: WhiteboardWithContent, previewImages?: WhiteboardPreviewImage[]) => Promise<void>;
+    onUpdatePreviewSettings?: (previewSettings: WhiteboardPreviewSettings) => Promise<unknown>;
     onDelete?: (whiteboard: Identifiable) => Promise<void>;
+    onClosePreviewSettingsDialog?: () => void;
   };
   options: {
     show: boolean;
     canEdit?: boolean;
     canDelete?: boolean;
     headerActions?: ReactNode;
-    fixedDialogTitle?: ReactNode;
+    dialogTitle?: ReactNode;
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
+    previewSettingsDialogOpen?: boolean;
+    previewSettingsDimensions?: PreviewImageDimensions;
   };
   state?: {
     updatingWhiteboard?: boolean;
@@ -71,6 +77,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   const notify = useNotification();
   const { whiteboard } = entities;
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
+  const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
 
   const getExcalidrawStateFromApi = () => {
     if (!excalidrawAPI) {
@@ -86,7 +93,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
-    storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
+    storageBucketId: whiteboard.profile?.storageBucket.id ?? '',
     allowFallbackToAttached: options.allowFilesAttached,
   });
 
@@ -98,22 +105,13 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
 
     const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
-    const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
+    const previewImages = await generateWhiteboardVisuals(whiteboard, true);
+
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
-
-    if (!formikRef.current?.isValid) {
-      return;
-    }
-
-    const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
 
     return actions.onUpdate(
       {
         ...whiteboard,
-        profile: {
-          ...whiteboard.profile,
-          displayName,
-        },
         content,
       },
       previewImages
@@ -123,7 +121,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
   const handleSave = async whiteboard => {
     const state = getExcalidrawStateFromApi();
 
-    formikRef.current?.setTouched({ displayName: true }, true);
+    formikRef.current?.setTouched({ profile: { displayName: true } }, true);
 
     await handleUpdate(whiteboard, state);
   };
@@ -139,7 +137,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
       const files = excalidrawAPI.getFiles();
       const content = serializeAsJSON(elements, appState, files, 'local');
 
-      if (!isWhiteboardContentEqual(whiteboard?.content, content) || formikRef.current?.dirty) {
+      if (!isWhiteboardContentEqual(whiteboard.content, content) || formikRef.current?.dirty) {
         if (
           !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
         ) {
@@ -167,106 +165,113 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
     }
   };
 
-  const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
+  const formikRef = useRef<
+    FormikProps<{
+      profile: {
+        displayName: string;
+      };
+      previewSettings: WhiteboardPreviewSettings;
+    }>
+  >(null);
 
-  const initialValues = useMemo(
-    () => ({ displayName: whiteboard?.profile?.displayName ?? '' }),
-    [whiteboard?.profile?.displayName]
-  );
-
-  useEffect(() => {
-    formikRef.current?.resetForm({
-      values: initialValues,
-    });
-  }, [initialValues]);
+  const initialValues = useMemo(() => {
+    return {
+      profile: {
+        displayName: whiteboard.profile?.displayName ?? '',
+      },
+      previewSettings: whiteboard.previewSettings ?? DefaultWhiteboardPreviewSettings,
+    };
+  }, [whiteboard]);
 
   return (
-    <Dialog
-      open={options.show}
-      aria-labelledby="whiteboard-dialog"
-      maxWidth={false}
-      fullWidth
-      sx={{ '& .MuiPaper-root': options.fullscreen ? { height: 1, maxHeight: 1 } : { height: '85vh' } }}
-      onClose={onClose}
-      fullScreen={options.fullscreen}
-    >
-      <Formik
-        innerRef={formikRef}
-        initialValues={initialValues}
-        onSubmit={() => {}}
-        validationSchema={whiteboardSchema}
+    <>
+      <Dialog
+        open={options.show}
+        aria-labelledby="whiteboard-dialog"
+        maxWidth={false}
+        fullWidth
+        sx={{ '& .MuiPaper-root': options.fullscreen ? { height: 1, maxHeight: 1 } : { height: '85vh' } }}
+        onClose={onClose}
+        fullScreen={options.fullscreen}
       >
-        {({ isValid }) => (
-          <>
-            <DialogHeader
-              actions={options.headerActions}
-              onClose={onClose}
-              titleContainerProps={{ flexDirection: 'row' }}
-            >
-              {options.fixedDialogTitle ? (
-                options.fixedDialogTitle
-              ) : (
-                <Box
-                  component={FormikInputField}
-                  title={t('fields.displayName')}
-                  name="displayName"
-                  size="small"
-                  maxWidth={gutters(30)}
-                />
-              )}
-              <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
-            </DialogHeader>
-            <DialogContent sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              {!state?.loadingWhiteboardContent && whiteboard && (
-                <ExcalidrawWrapper
-                  entities={{
-                    whiteboard,
-                    filesManager,
-                  }}
-                  options={{
-                    viewModeEnabled: !options.canEdit,
-                    UIOptions: {
-                      canvasActions: {
-                        export: options.canEdit
-                          ? {
-                              saveFileToDisk: true,
-                            }
-                          : false,
-                      },
-                    },
-                  }}
-                  actions={{
-                    onUpdate: state => {
-                      handleUpdate(whiteboard, state);
-                    },
-                    onInitApi: setExcalidrawAPI,
-                  }}
-                />
-              )}
-              {state?.loadingWhiteboardContent && <Loading text="Loading whiteboard..." />}
-            </DialogContent>
-            <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
-              {actions.onDelete && (
-                <Button startIcon={<Delete />} onClick={() => actions.onDelete!(whiteboard!)} color="error">
-                  {t('pages.whiteboard.state-actions.delete')}
-                </Button>
-              )}
-              <FlexSpacer />
-              <Button
-                startIcon={<Save />}
-                onClick={() => handleSave(whiteboard!)}
-                loadingPosition="start"
-                variant="contained"
-                loading={state?.changingWhiteboardLockState || state?.updatingWhiteboard}
-                disabled={!isValid}
+        <Formik
+          innerRef={formikRef}
+          initialValues={initialValues}
+          onSubmit={() => {}}
+          validationSchema={whiteboardValidationSchema}
+        >
+          {({ isValid }) => (
+            <>
+              <DialogHeader
+                actions={options.headerActions}
+                onClose={onClose}
+                titleContainerProps={{ flexDirection: 'row' }}
               >
-                {t('pages.whiteboard.state-actions.save')}
-              </Button>
-            </Actions>
-          </>
-        )}
-      </Formik>
-    </Dialog>
+                {options.dialogTitle ?? t('common.Whiteboard')}
+                <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
+              </DialogHeader>
+              <DialogContent sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                {!state?.loadingWhiteboardContent && whiteboard && (
+                  <ExcalidrawWrapper
+                    entities={{
+                      whiteboard,
+                      filesManager,
+                    }}
+                    options={{
+                      viewModeEnabled: !options.canEdit,
+                      UIOptions: {
+                        canvasActions: {
+                          export: options.canEdit
+                            ? {
+                                saveFileToDisk: true,
+                              }
+                            : false,
+                        },
+                      },
+                    }}
+                    actions={{
+                      onUpdate: state => {
+                        handleUpdate(whiteboard, state);
+                      },
+                      onInitApi: setExcalidrawAPI,
+                    }}
+                  />
+                )}
+                {state?.loadingWhiteboardContent && <Loading text="Loading whiteboard..." />}
+              </DialogContent>
+              <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
+                {actions.onDelete && (
+                  <Button startIcon={<Delete />} onClick={() => actions.onDelete!(whiteboard!)} color="error">
+                    {t('pages.whiteboard.state-actions.delete')}
+                  </Button>
+                )}
+                <FlexSpacer />
+                <Button
+                  startIcon={<Save />}
+                  onClick={() => handleSave(whiteboard!)}
+                  loadingPosition="start"
+                  variant="contained"
+                  loading={state?.changingWhiteboardLockState || state?.updatingWhiteboard}
+                  disabled={!isValid}
+                >
+                  {t('pages.whiteboard.state-actions.save')}
+                </Button>
+              </Actions>
+            </>
+          )}
+        </Formik>
+      </Dialog>
+      {actions.onUpdatePreviewSettings && (
+        <WhiteboardPreviewSettingsDialog
+          open={options.previewSettingsDialogOpen}
+          onClose={() => actions.onClosePreviewSettingsDialog?.()}
+          onUpdate={actions.onUpdatePreviewSettings}
+          previewImageConstraints={options.previewSettingsDimensions}
+          whiteboard={whiteboard}
+          excalidrawAPI={excalidrawAPI}
+        />
+      )}
+    </>
   );
 };
 

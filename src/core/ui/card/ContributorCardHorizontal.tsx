@@ -24,7 +24,6 @@ export interface ContributorCardHorizontalProps {
         url?: string;
       }
     | undefined;
-  isContactable?: boolean;
   onContact?: () => void;
   seamless?: boolean;
   actions?: ReactNode;
@@ -36,7 +35,6 @@ export interface ContributorCardHorizontalProps {
 
 const ContributorCardHorizontal = ({
   profile,
-  isContactable,
   onContact,
   seamless = false,
   actions,
@@ -55,7 +53,7 @@ const ContributorCardHorizontal = ({
   if (!seamless) {
     return (
       <SwapColors>
-        <ContributorCardHorizontal profile={profile} onContact={onContact} isContactable={isContactable} seamless />
+        <ContributorCardHorizontal profile={profile} onContact={onContact} seamless />
       </SwapColors>
     );
   }
@@ -69,7 +67,7 @@ const ContributorCardHorizontal = ({
           tags={tags}
           city={profile?.location?.city}
           country={profile?.location?.country}
-          isContactable={isContactable}
+          isContactable={!!onContact}
           onContact={onContact}
         >
           <BadgeCardView

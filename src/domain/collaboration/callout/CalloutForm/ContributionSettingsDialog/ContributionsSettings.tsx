@@ -17,6 +17,7 @@ type FieldsState = {
 const ContributionsSettings = ({
   ref,
   enabledSettings,
+  calloutRestrictions,
 }: { calloutRestrictions?: CalloutRestrictions; enabledSettings: FramingSettings } & {
   ref?: React.Ref<ContributionTypeSettingsComponentRef>;
 }) => {
@@ -30,7 +31,9 @@ const ContributionsSettings = ({
     adminCanRespond:
       field.value.contribution.enabled &&
       field.value.contribution.canAddContributions !== CalloutAllowedContributors.None,
-    commentsOnEachResponse: field.value.contribution.commentsEnabled,
+    commentsOnEachResponse: calloutRestrictions?.disableCommentsToContributions
+      ? false
+      : field.value.contribution.commentsEnabled,
   });
 
   const handleChange = (fieldName: keyof FieldsState, checked: boolean) => {
@@ -56,7 +59,9 @@ const ContributionsSettings = ({
             : formState.adminCanRespond
               ? CalloutAllowedContributors.Admins
               : CalloutAllowedContributors.None,
-          commentsEnabled: formState.commentsOnEachResponse,
+          commentsEnabled: calloutRestrictions?.disableCommentsToContributions
+            ? false
+            : formState.commentsOnEachResponse,
         },
       };
       meta.setValue(newValue);
@@ -102,6 +107,7 @@ const ContributionsSettings = ({
             <Switch
               checked={formState.commentsOnEachResponse}
               onChange={(_, checked) => handleChange('commentsOnEachResponse', checked)}
+              disabled={calloutRestrictions?.disableCommentsToContributions}
             />
           }
           label={t('callout.create.contributionSettings.contributionTypes.settings.commentsOnEachResponse')}

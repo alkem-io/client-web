@@ -1,0 +1,11 @@
+mutation UpdateWhiteboardPreviewSettings ($whiteboardId: UUID!, $previewSettings: UpdateWhiteboardPreviewSettingsInput!) {
+  updateWhiteboard(whiteboardData:  {
+    ID: $whiteboardId,
+    previewSettings: $previewSettings
+  }) {
+    id
+    previewSettings {
+      ...whiteboardPreviewSettings
+    }
+  }
+}

@@ -4,7 +4,7 @@ import { MouseEventHandler, useMemo, useState, useImperativeHandle, ReactNode } 
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import SingleUserWhiteboardDialog from '../WhiteboardDialog/SingleUserWhiteboardDialog';
 import { BlockTitle } from '@/core/ui/typography';
-import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
@@ -12,6 +12,9 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditButton from '@/core/ui/actions/EditButton';
 import { gutters } from '@/core/ui/grid/utils';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
+import { DefaultWhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 
 export interface FormikWhiteboardPreviewRef {
   openEditDialog: () => void;
@@ -22,6 +25,8 @@ export interface FormikWhiteboardPreviewRef {
 interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Whiteboard content
   previewImagesName?: string; // Formik fieldName of the preview images. Will only be set if this argument is passed
+  previewSettingsName?: string; // Formik fieldName of the preview settings. Will only be set if this argument is passed
+  previewSettingsDimensions?: PreviewImageDimensions;
   canEdit: boolean;
   editButton?: ReactNode; // Optional custom edit button.
   onChangeContent?: (content: string, previewImages?: WhiteboardPreviewImage[]) => void;
@@ -41,6 +46,8 @@ const FormikWhiteboardPreview = ({
   ref,
   name = 'content',
   previewImagesName,
+  previewSettingsName,
+  previewSettingsDimensions,
   canEdit,
   editButton,
   onChangeContent,
@@ -54,10 +61,14 @@ const FormikWhiteboardPreview = ({
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const filesManager = useWhiteboardFilesManager({ excalidrawAPI });
 
-  const [field, , helpers] = useField<string>(name); // Whiteboard content JSON string
+  const [field, , whiteboardContentField] = useField<string>(name); // Whiteboard content JSON string
   const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(previewImagesName ?? 'previewImages');
+  const [previewSettingsField, , previewSettingsFieldHelpers] = useField<WhiteboardPreviewSettings | undefined>(
+    previewSettingsName ?? 'previewSettings'
+  );
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState<boolean>(false);
   const { fullscreen, setFullscreen } = useFullscreen();
 
   useImperativeHandle(
@@ -72,7 +83,7 @@ const FormikWhiteboardPreview = ({
 
   const handleClickEditButton = () => {
     setEditDialogOpen(true);
-    helpers.setTouched(true);
+    whiteboardContentField.setTouched(true);
   };
 
   const handleClose = () => {
@@ -91,8 +102,9 @@ const FormikWhiteboardPreview = ({
       // Needed to pass yup validation of WhiteboardDialog
       profile: { id: '__templateProfile', displayName: '__template', url: '', storageBucket: { id: '' } },
       content: field.value,
+      previewSettings: previewSettingsField.value ?? DefaultWhiteboardPreviewSettings,
     };
-  }, [field.value]);
+  }, [field.value, previewSettingsField.value]);
 
   const preventSubmittingFormOnWhiteboardControlClick: MouseEventHandler = e => e.preventDefault();
 
@@ -142,22 +154,39 @@ const FormikWhiteboardPreview = ({
                 actions={{
                   onCancel: handleClose,
                   onUpdate: async (whiteboard, previewImages) => {
-                    helpers.setValue(whiteboard.content);
+                    whiteboardContentField.setValue(whiteboard.content);
                     if (previewImagesName) {
                       previewImagesField.setValue(previewImages);
+                    }
+                    if (previewSettingsName) {
+                      previewSettingsFieldHelpers.setValue(whiteboard.previewSettings);
                     }
                     onChangeContent?.(whiteboard.content, previewImages);
                     setEditDialogOpen(false);
                   },
+                  onUpdatePreviewSettings: async previewSettings => {
+                    if (previewSettingsName) {
+                      previewSettingsFieldHelpers.setValue(previewSettings);
+                    }
+                  },
+                  onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
                   onDelete: undefined,
                 }}
                 options={{
                   show: editDialogOpen,
                   canEdit: true,
                   canDelete: false,
-                  headerActions: undefined,
+                  headerActions: (
+                    <>
+                      {previewSettingsName && (
+                        <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
+                      )}
+                    </>
+                  ),
+                  previewSettingsDialogOpen,
+                  previewSettingsDimensions,
                   allowFilesAttached: true,
-                  fixedDialogTitle: (
+                  dialogTitle: (
                     <BlockTitle display="flex" alignItems="center">
                       {dialogProps?.title}
                     </BlockTitle>
@@ -178,9 +207,12 @@ const FormikWhiteboardPreview = ({
             }}
             actions={{
               onConfirm: () => {
-                helpers.setValue('');
+                whiteboardContentField.setValue('');
                 if (previewImagesName) {
                   previewImagesField.setValue([]);
+                }
+                if (previewSettingsName) {
+                  previewSettingsFieldHelpers.setValue(undefined);
                 }
                 onDeleteContent?.();
                 setDeleteContentConfirmDialogOpen(false);
