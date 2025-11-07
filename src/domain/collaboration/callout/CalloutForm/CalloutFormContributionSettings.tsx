@@ -63,7 +63,8 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
 
     switch (allowedTypesField.value) {
       case CalloutContributionType.Link:
-      case CalloutContributionType.Whiteboard: {
+      case CalloutContributionType.Whiteboard:
+      case CalloutContributionType.Memo: {
         result.commentsEnabled = false;
       }
     }
