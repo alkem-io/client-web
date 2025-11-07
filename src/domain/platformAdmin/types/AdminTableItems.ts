@@ -23,7 +23,7 @@ export interface SpaceTableItem extends AdminSearchableTableItem {
   spaceId: string;
   nameId: string;
   visibility: SpaceVisibility;
-  privacyMode: SpacePrivacyMode;
+  privacyMode: SpacePrivacyMode | undefined;
   accountOwner: string;
   canUpdate: boolean;
 }

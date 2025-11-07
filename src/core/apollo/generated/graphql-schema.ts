@@ -19620,6 +19620,7 @@ export type UpdateUserSettingsMutation = {
             email: boolean;
             inApp: boolean;
           };
+          communityCalendarEvents: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
           admin: {
             __typename?: 'UserSettingsNotificationSpaceAdmin';
             communityApplicationReceived: {
@@ -19732,6 +19733,7 @@ export type UserSettingsFragmentFragment = {
         email: boolean;
         inApp: boolean;
       };
+      communityCalendarEvents: { __typename?: 'UserSettingsNotificationChannels'; email: boolean; inApp: boolean };
     };
     user: {
       __typename?: 'UserSettingsNotificationUser';
@@ -19865,6 +19867,11 @@ export type UserSettingsQuery = {
                   inApp: boolean;
                 };
                 collaborationCalloutPostContributionComment: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                };
+                communityCalendarEvents: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
@@ -21865,14 +21872,11 @@ export type PlatformAdminSpacesListQuery = {
       id: string;
       nameID: string;
       visibility: SpaceVisibility;
-      settings: {
-        __typename?: 'SpaceSettings';
-        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
-      };
-      account: {
-        __typename?: 'Account';
+      about: {
+        __typename?: 'SpaceAbout';
         id: string;
-        host?:
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        provider:
           | {
               __typename?: 'Organization';
               id: string;
@@ -21883,13 +21887,7 @@ export type PlatformAdminSpacesListQuery = {
               __typename?: 'VirtualContributor';
               id: string;
               profile: { __typename?: 'Profile'; id: string; displayName: string };
-            }
-          | undefined;
-      };
-      about: {
-        __typename?: 'SpaceAbout';
-        id: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            };
       };
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -31273,6 +31271,65 @@ export type InAppNotificationReceivedSubscription = {
         }
       | { __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment'; type: NotificationEventPayload }
       | {
+          __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
+          type: NotificationEventPayload;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    url: string;
+                    tagline?: string | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          calendarEvent?:
+            | {
+                __typename?: 'CalendarEvent';
+                id: string;
+                type: CalendarEventType;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+              }
+            | undefined;
+        }
+      | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
           type: NotificationEventPayload;
           space?:
@@ -32350,6 +32407,61 @@ export type InAppNotificationsQuery = {
           | {
               __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
               type: NotificationEventPayload;
+              space?:
+                | {
+                    __typename?: 'Space';
+                    id: string;
+                    level: SpaceLevel;
+                    about: {
+                      __typename?: 'SpaceAbout';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        url: string;
+                        tagline?: string | undefined;
+                        tagset?:
+                          | {
+                              __typename?: 'Tagset';
+                              id: string;
+                              name: string;
+                              tags: Array<string>;
+                              allowedValues: Array<string>;
+                              type: TagsetType;
+                            }
+                          | undefined;
+                        avatar?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                        cardBanner?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
+                    };
+                  }
+                | undefined;
+              calendarEvent?:
+                | {
+                    __typename?: 'CalendarEvent';
+                    id: string;
+                    type: CalendarEventType;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                  }
+                | undefined;
             }
           | {
               __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
@@ -33414,7 +33526,65 @@ export type InAppNotificationAllTypesFragment = {
             }
           | undefined;
       }
-    | { __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment'; type: NotificationEventPayload }
+    | {
+        __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
+        type: NotificationEventPayload;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  url: string;
+                  tagline?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        calendarEvent?:
+          | {
+              __typename?: 'CalendarEvent';
+              id: string;
+              type: CalendarEventType;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            }
+          | undefined;
+      }
     | {
         __typename?: 'InAppNotificationPayloadSpaceCommunityContributor';
         type: NotificationEventPayload;
@@ -34643,6 +34813,65 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment
 
 export type InAppNotificationPayloadSpaceCommunityCalendarEventFragment = {
   __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEvent';
+  space?:
+    | {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        about: {
+          __typename?: 'SpaceAbout';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            tagline?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            cardBanner?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+        };
+      }
+    | undefined;
+  calendarEvent?:
+    | {
+        __typename?: 'CalendarEvent';
+        id: string;
+        type: CalendarEventType;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+      }
+    | undefined;
+};
+
+export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragment = {
+  __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
   space?:
     | {
         __typename?: 'Space';

@@ -102,6 +102,9 @@ const WhiteboardChipButton = ({ disableClick, ...props }: ButtonProps & { disabl
         left: gutters(1)(theme),
         textTransform: 'none',
         pointerEvents: disableClick ? 'none' : 'auto',
+        [theme.breakpoints.down('sm')]: {
+          display: 'none',
+        },
       })}
       aria-label={
         disableClick ? t('pages.whiteboard.preview.ariaLabelDisabled') : t('pages.whiteboard.preview.ariaLabel')
@@ -121,7 +124,9 @@ const WhiteboardPreview = ({ displayName, whiteboard, onClick }: WhiteboardPrevi
     <Container onClick={onClick}>
       <ImageContainer>
         {!imageSrc && defaultImage && <Centered>{defaultImage}</Centered>}
-        {imageSrc && <ImageFadeIn src={imageSrc} alt={displayName} width="100%" height="100%" />}
+        {imageSrc && (
+          <ImageFadeIn src={imageSrc} alt={displayName} width="100%" height="100%" sx={{ objectFit: 'contain' }} />
+        )}
       </ImageContainer>
       <WhiteboardChipButton disableClick={!onClick} />
       {onClick && <OpenWhiteboardButton />}

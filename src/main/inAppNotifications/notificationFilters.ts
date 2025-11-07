@@ -40,6 +40,7 @@ const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.SpaceCommunityInvitationUserPlatform,
   NotificationEvent.SpaceLeadCommunicationMessage,
   NotificationEvent.SpaceCommunityCalendarEventCreated,
+  NotificationEvent.SpaceCommunityCalendarEventComment,
 ];
 
 // Platform notifications - platform admin and forum notifications

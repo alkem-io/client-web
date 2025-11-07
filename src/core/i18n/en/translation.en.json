@@ -2085,6 +2085,10 @@
         "SPACE_COMMUNITY_CALENDAR_EVENT_CREATED": {
           "subject": "New {{type}} scheduled in {{spaceName}}",
           "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
+        },
+        "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
+          "subject": "New comment on {{type}}: {{eventTitle}}",
+          "description": "{{triggeredByName}} left a comment on the {{eventTitle}} in the {{spaceName}} calendar"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
@@ -3325,7 +3329,8 @@
           "collaborationCalloutPublished": "Receive a $t(common.notification) when a $t(common.callout) is published in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new contribution ($t(common.whiteboard), $t(common.post), link, $t(common.memo) etc.) is created in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutComment": "Receive a $t(common.notification) when a a $t(common.comment) is made on a $t(common.callout) in a $t(common.community) I am a $t(common.member) of",
-          "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.callout) contribution in a $t(common.community) I am a $t(common.member) of"
+          "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.callout) contribution in a $t(common.community) I am a $t(common.member) of",
+          "communityCalendarEvents": "Receive calendar $t(common.notifications) for a $t(common.community) I am a $t(common.member) of"
         }
       },
       "spaceAdmin": {
