@@ -154,11 +154,13 @@ const TwoLinesTagsContainer = ({ tags, onClickTag }: { tags: string[]; onClickTa
           <Tag key={tag} tag={tag} onClick={() => onClickTag(tag)} />
         ))}
         {/* Render the last tag together with Show More / Show Less button because in some cases the button collapses down and looks weird */}
-        <Box display="flex" gap={gutters(0.5)}>
-          <Tag key={displayedTags.last} tag={displayedTags.last} onClick={() => onClickTag(displayedTags.last)} />
-          {!expanded && hiddenCount > 0 && <ShowMoreChip count={hiddenCount} onClick={() => setExpanded(true)} />}
-          {expanded && <ShowLessChip onClick={() => setExpanded(false)} />}
-        </Box>
+        {displayedTags.last && (
+          <Box display="flex" gap={gutters(0.5)}>
+            <Tag key={displayedTags.last} tag={displayedTags.last} onClick={() => onClickTag(displayedTags.last)} />
+            {!expanded && hiddenCount > 0 && <ShowMoreChip count={hiddenCount} onClick={() => setExpanded(true)} />}
+            {expanded && <ShowLessChip onClick={() => setExpanded(false)} />}
+          </Box>
+        )}
       </Box>
     </Box>
   );
