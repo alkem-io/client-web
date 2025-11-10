@@ -127,6 +127,7 @@ export type ActivityCreatedSubscriptionResult = {
 export enum ActivityEventType {
   CalendarEventCreated = 'CALENDAR_EVENT_CREATED',
   CalloutLinkCreated = 'CALLOUT_LINK_CREATED',
+  CalloutMemoCreated = 'CALLOUT_MEMO_CREATED',
   CalloutPostComment = 'CALLOUT_POST_COMMENT',
   CalloutPostCreated = 'CALLOUT_POST_CREATED',
   CalloutPublished = 'CALLOUT_PUBLISHED',
@@ -262,6 +263,31 @@ export type ActivityLogEntryCalloutLinkCreated = ActivityLogEntry & {
   id: Scalars['UUID']['output'];
   /** The Link that was created. */
   link: Link;
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String']['output'];
+  /** The Space where the activity happened */
+  space?: Maybe<Space>;
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export type ActivityLogEntryCalloutMemoCreated = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryCalloutMemoCreated';
+  /** The Callout in which the Memo was created. */
+  callout: Callout;
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean']['output'];
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID']['output'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The text details for this Activity. */
+  description: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+  /** The Memo that was created. */
+  memo: Memo;
   /** The display name of the parent */
   parentDisplayName: Scalars['String']['output'];
   /** The Space where the activity happened */
@@ -10997,6 +11023,24 @@ export type ActivityLogCalloutWhiteboardContentModifiedFragment = {
   };
 };
 
+export type ActivityLogCalloutMemoCreatedFragment = {
+  __typename?: 'ActivityLogEntryCalloutMemoCreated';
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    };
+  };
+  memo: {
+    __typename?: 'Memo';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+  };
+};
+
 export type ActivityLogSubspaceCreatedFragment = {
   __typename?: 'ActivityLogEntrySubspaceCreated';
   subspace: {
@@ -11101,6 +11145,26 @@ export type ActivityCreatedSubscription = {
             __typename?: 'Link';
             id: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+        }
+      | {
+          __typename?: 'ActivityLogEntryCalloutMemoCreated';
+          id: string;
+          createdDate: Date;
+          type: ActivityEventType;
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            };
+          };
+          memo: {
+            __typename?: 'Memo';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -11303,6 +11367,27 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutLinkCreated_Fragment = {
   link: { __typename?: 'Link'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
 };
 
+type ActivityLogOnCollaboration_ActivityLogEntryCalloutMemoCreated_Fragment = {
+  __typename?: 'ActivityLogEntryCalloutMemoCreated';
+  id: string;
+  createdDate: Date;
+  type: ActivityEventType;
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    };
+  };
+  memo: {
+    __typename?: 'Memo';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+  };
+};
+
 type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostComment_Fragment = {
   __typename?: 'ActivityLogEntryCalloutPostComment';
   id: string;
@@ -11466,6 +11551,7 @@ export type ActivityLogOnCollaborationFragment =
   | ActivityLogOnCollaboration_ActivityLogEntryCalendarEventCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutDiscussionComment_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutLinkCreated_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntryCalloutMemoCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutPostComment_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutPostCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment
@@ -11675,6 +11761,76 @@ export type ActivityLogOnCollaborationQuery = {
           };
         };
         link: { __typename?: 'Link'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+      }
+    | {
+        __typename?: 'ActivityLogEntryCalloutMemoCreated';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        child: boolean;
+        spaceDisplayName: string;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          };
+        };
+        memo: {
+          __typename?: 'Memo';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        };
       }
     | {
         __typename?: 'ActivityLogEntryCalloutPostComment';
@@ -36432,6 +36588,77 @@ export type LatestContributionsQuery = {
           };
         }
       | {
+          __typename?: 'ActivityLogEntryCalloutMemoCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          spaceDisplayName: string;
+          space?:
+            | {
+                __typename?: 'Space';
+                id: string;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    tagline?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                  };
+                };
+              }
+            | undefined;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            };
+          };
+          memo: {
+            __typename?: 'Memo';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          };
+        }
+      | {
           __typename?: 'ActivityLogEntryCalloutPostComment';
           id: string;
           collaborationID: string;
@@ -37153,6 +37380,63 @@ export type LatestContributionsGroupedQuery = {
           };
         };
         link: { __typename?: 'Link'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+      }
+    | {
+        __typename?: 'ActivityLogEntryCalloutMemoCreated';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        child: boolean;
+        spaceDisplayName: string;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              };
+            }
+          | undefined;
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          };
+        };
+        memo: {
+          __typename?: 'Memo';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        };
       }
     | {
         __typename?: 'ActivityLogEntryCalloutPostComment';

@@ -487,6 +487,21 @@ export const ActivityLogCalloutWhiteboardContentModifiedFragmentDoc = gql`
   ${ActivityCalloutContextFragmentDoc}
   ${ActivitySubjectProfileFragmentDoc}
 `;
+export const ActivityLogCalloutMemoCreatedFragmentDoc = gql`
+  fragment ActivityLogCalloutMemoCreated on ActivityLogEntryCalloutMemoCreated {
+    callout {
+      ...ActivityCalloutContext
+    }
+    memo {
+      id
+      profile {
+        ...ActivitySubjectProfile
+      }
+    }
+  }
+  ${ActivityCalloutContextFragmentDoc}
+  ${ActivitySubjectProfileFragmentDoc}
+`;
 export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
   fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
     description
@@ -552,6 +567,9 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     ... on ActivityLogEntryCalloutWhiteboardContentModified {
       ...ActivityLogCalloutWhiteboardContentModified
     }
+    ... on ActivityLogEntryCalloutMemoCreated {
+      ...ActivityLogCalloutMemoCreated
+    }
     ... on ActivityLogEntryCalloutDiscussionComment {
       ...ActivityLogCalloutDiscussionComment
     }
@@ -572,6 +590,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
+  ${ActivityLogCalloutMemoCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
@@ -6764,6 +6783,9 @@ export const ActivityLogOnCollaborationDocument = gql`
       ... on ActivityLogEntryCalloutWhiteboardContentModified {
         ...ActivityLogCalloutWhiteboardContentModified
       }
+      ... on ActivityLogEntryCalloutMemoCreated {
+        ...ActivityLogCalloutMemoCreated
+      }
       ... on ActivityLogEntryCalloutDiscussionComment {
         ...ActivityLogCalloutDiscussionComment
       }
@@ -6786,6 +6808,7 @@ export const ActivityLogOnCollaborationDocument = gql`
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
+  ${ActivityLogCalloutMemoCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
@@ -25051,6 +25074,9 @@ export const LatestContributionsDocument = gql`
         ... on ActivityLogEntryCalloutWhiteboardContentModified {
           ...ActivityLogCalloutWhiteboardContentModified
         }
+        ... on ActivityLogEntryCalloutMemoCreated {
+          ...ActivityLogCalloutMemoCreated
+        }
         ... on ActivityLogEntryCalloutDiscussionComment {
           ...ActivityLogCalloutDiscussionComment
         }
@@ -25078,6 +25104,7 @@ export const LatestContributionsDocument = gql`
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
+  ${ActivityLogCalloutMemoCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
@@ -25185,6 +25212,9 @@ export const LatestContributionsGroupedDocument = gql`
       ... on ActivityLogEntryCalloutWhiteboardContentModified {
         ...ActivityLogCalloutWhiteboardContentModified
       }
+      ... on ActivityLogEntryCalloutMemoCreated {
+        ...ActivityLogCalloutMemoCreated
+      }
       ... on ActivityLogEntryCalloutDiscussionComment {
         ...ActivityLogCalloutDiscussionComment
       }
@@ -25207,6 +25237,7 @@ export const LatestContributionsGroupedDocument = gql`
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
+  ${ActivityLogCalloutMemoCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}

@@ -12,6 +12,7 @@ import {
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 import { GenericCalloutIcon } from '@/domain/collaboration/callout/icons/calloutIcons';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
+import { MemoIcon } from '@/domain/collaboration/memo/icon/MemoIcon';
 
 const ActivityIcon: Record<
   Exclude<ActivityEventType, ActivityEventType.CalloutPublished>,
@@ -20,6 +21,7 @@ const ActivityIcon: Record<
   [ActivityEventType.MemberJoined]: PersonOutlined,
   [ActivityEventType.CalloutWhiteboardCreated]: WhiteboardIcon,
   [ActivityEventType.CalloutWhiteboardContentModified]: WhiteboardIcon,
+  [ActivityEventType.CalloutMemoCreated]: MemoIcon,
   [ActivityEventType.CalloutPostCreated]: NotesOutlined,
   [ActivityEventType.CalloutPostComment]: ChatBubbleOutlineOutlined,
   [ActivityEventType.CalloutLinkCreated]: LinkOutlined,
