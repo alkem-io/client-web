@@ -58,8 +58,10 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
     if (state === NotificationEventInAppState.Unread) {
       updateNotificationState(id, NotificationEventInAppState.Read);
     }
-    setIsOpen(false);
-  }, [id, state]);
+    if (url) {
+      setIsOpen(false);
+    }
+  }, [id, url, state]);
 
   const getReadAction = useCallback(() => {
     switch (state) {

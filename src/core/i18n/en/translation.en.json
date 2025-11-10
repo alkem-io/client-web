@@ -2084,6 +2084,8 @@
       },
       "emptyInbox": "No pending $t(common.notifications)",
       "markAllAsRead": "Mark all as read",
+      "unknownUser": "Unknown $t(common.user)",
+      "unknownOrganization": "Unknown $t(common.organization)",
       "filters": {
         "all": "All",
         "messagesAndReplies": "Messages & Replies",
