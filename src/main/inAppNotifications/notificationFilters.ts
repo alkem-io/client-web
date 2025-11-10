@@ -12,7 +12,6 @@ const USER_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.UserCommentReply,
   NotificationEvent.UserMentioned,
   NotificationEvent.UserMessage,
-  NotificationEvent.UserMessageSender,
   NotificationEvent.UserSignUpWelcome,
   NotificationEvent.UserSpaceCommunityInvitation,
   NotificationEvent.UserSpaceCommunityApplicationDeclined,
@@ -40,6 +39,7 @@ const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.SpaceCommunityInvitationUserPlatform,
   NotificationEvent.SpaceLeadCommunicationMessage,
   NotificationEvent.SpaceCommunityCalendarEventCreated,
+  NotificationEvent.SpaceCommunityCalendarEventComment,
 ];
 
 // Platform notifications - platform admin and forum notifications

@@ -11,6 +11,7 @@ export interface SpaceNotificationSettings {
   collaborationCalloutPostContributionComment?: NotificationChannels;
   collaborationCalloutContributionCreated?: NotificationChannels;
   collaborationCalloutComment?: NotificationChannels;
+  communityCalendarEvents?: NotificationChannels;
 }
 
 // Space admin notification settings

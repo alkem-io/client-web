@@ -1533,6 +1533,10 @@ export const UserSettingsFragmentFragmentDoc = gql`
           email
           inApp
         }
+        communityCalendarEvents {
+          email
+          inApp
+        }
       }
       user {
         membership {
@@ -2803,7 +2807,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
 export const InAppNotificationPayloadOrganizationMessageDirectFragmentDoc = gql`
   fragment InAppNotificationPayloadOrganizationMessageDirect on InAppNotificationPayloadOrganizationMessageDirect {
     organizationMessage: message
-    organization {
+    nullableOrganization: organization {
       id
       profile {
         id
@@ -3134,6 +3138,23 @@ export const InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc = gq
   }
   ${SpaceNotificationFragmentDoc}
 `;
+export const InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunityCalendarEventComment on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
+    space {
+      ...spaceNotification
+    }
+    calendarEvent {
+      id
+      type
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
 export const InAppNotificationAllTypesFragmentDoc = gql`
   fragment InAppNotificationAllTypes on InAppNotification {
     id
@@ -3214,6 +3235,9 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
       ... on InAppNotificationPayloadSpaceCommunityCalendarEvent {
         ...InAppNotificationPayloadSpaceCommunityCalendarEvent
       }
+      ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
+        ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
+      }
     }
   }
   ${VisualModelFragmentDoc}
@@ -3237,6 +3261,7 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
   ${InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc}
   ${InAppNotificationPayloadVirtualContributorFragmentDoc}
   ${InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc}
 `;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
@@ -13482,6 +13507,10 @@ export const UpdateUserSettingsDocument = gql`
               email
               inApp
             }
+            communityCalendarEvents {
+              email
+              inApp
+            }
             admin {
               communityApplicationReceived {
                 email
@@ -16727,27 +16756,19 @@ export const PlatformAdminSpacesListDocument = gql`
         id
         nameID
         visibility
-        settings {
-          privacy {
-            mode
-          }
-        }
-        account {
-          id
-          host {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-        }
         about {
           id
           profile {
             id
             displayName
             url
+          }
+          provider {
+            id
+            profile {
+              id
+              displayName
+            }
           }
         }
         authorization {
