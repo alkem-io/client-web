@@ -66,7 +66,7 @@ const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhitebo
         name="whiteboard.content"
         previewImagesName="whiteboardPreviewImages"
         previewSettingsName="whiteboard.previewSettings"
-        previewSettingsDimensions={CardVisualDimensions}
+        previewImagesSettings={[{ visualType: VisualType.Card, dimensions: CardVisualDimensions }]}
         maxHeight={gutters(20)}
         canEdit
         dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}
