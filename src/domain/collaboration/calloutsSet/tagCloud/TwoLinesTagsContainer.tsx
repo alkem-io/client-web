@@ -143,37 +143,22 @@ const TwoLinesTagsContainer = ({ tags, onClickTag }: { tags: string[]; onClickTa
           gap: gutters(0.5),
         }}
       >
-        {tags.map((tag, index) => (
-          <Chip key={`${tag}-${index}`} label={tag} size="small" variant="outlined" />
+        {tags.map(tag => (
+          <Chip key={tag} label={tag} size="small" variant="outlined" />
         ))}
       </Box>
 
       <Box display="flex" flexWrap="wrap" gap={gutters(0.5)}>
         {/* Render all displayed tags except the last one */}
-        {displayedTags.allButLast.map((tag, index) => (
-          <Tag key={`$${tag}-${index}`} tag={tag} onClick={() => onClickTag(tag)} />
+        {displayedTags.allButLast.map(tag => (
+          <Tag key={tag} tag={tag} onClick={() => onClickTag(tag)} />
         ))}
         {/* Render the last tag together with Show More / Show Less button because in some cases the button collapses down and looks weird */}
-        {!expanded && hiddenCount > 0 && (
-          <Box display="flex" gap={gutters(0.5)}>
-            <Tag
-              key={`$${displayedTags.last}`}
-              tag={displayedTags.last}
-              onClick={() => onClickTag(displayedTags.last)}
-            />
-            <ShowMoreChip count={hiddenCount} onClick={() => setExpanded(true)} />
-          </Box>
-        )}
-        {expanded && (
-          <Box display="flex" gap={gutters(0.5)}>
-            <Tag
-              key={`$${displayedTags.last}`}
-              tag={displayedTags.last}
-              onClick={() => onClickTag(displayedTags.last)}
-            />
-            <ShowLessChip onClick={() => setExpanded(false)} />
-          </Box>
-        )}
+        <Box display="flex" gap={gutters(0.5)}>
+          <Tag key={displayedTags.last} tag={displayedTags.last} onClick={() => onClickTag(displayedTags.last)} />
+          {!expanded && hiddenCount > 0 && <ShowMoreChip count={hiddenCount} onClick={() => setExpanded(true)} />}
+          {expanded && <ShowLessChip onClick={() => setExpanded(false)} />}
+        </Box>
       </Box>
     </Box>
   );

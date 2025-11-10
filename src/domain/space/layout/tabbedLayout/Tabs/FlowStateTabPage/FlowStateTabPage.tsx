@@ -66,7 +66,7 @@ const FlowStateTabPage = ({ sectionIndex }: FlowStateTabPageProps) => {
             classificationTagsets={classificationTagsets}
             selectedTags={tagsFilter}
             resultsCount={callouts?.length}
-            onSelectTag={tag => setTagsFilter(tagsFilter => sortedUniq([...tagsFilter, tag]))}
+            onSelectTag={tag => setTagsFilter(tagsFilter => sortedUniq([...tagsFilter, tag].sort()))}
             onDeselectTag={tag => setTagsFilter(tagsFilter => tagsFilter.filter(t => t !== tag))}
             onClear={() => setTagsFilter([])}
           />
