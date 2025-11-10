@@ -1009,6 +1009,8 @@ export type CalloutContribution = {
   id: Scalars['UUID']['output'];
   /** The Link that was contributed. */
   link?: Maybe<Link>;
+  /** The Memo that was contributed. */
+  memo?: Maybe<Memo>;
   /** The Post that was contributed. */
   post?: Maybe<Post>;
   /** The sorting order for this Contribution. */
@@ -8218,6 +8220,7 @@ export type UrlResolverQueryResultCalloutsSet = {
   calloutId?: Maybe<Scalars['UUID']['output']>;
   contributionId?: Maybe<Scalars['UUID']['output']>;
   id: Scalars['UUID']['output'];
+  memoId?: Maybe<Scalars['UUID']['output']>;
   postId?: Maybe<Scalars['UUID']['output']>;
   type: UrlType;
   whiteboardId?: Maybe<Scalars['UUID']['output']>;
@@ -8274,6 +8277,7 @@ export enum UrlType {
   Admin = 'ADMIN',
   Callout = 'CALLOUT',
   CalloutsSet = 'CALLOUTS_SET',
+  ContributionMemo = 'CONTRIBUTION_MEMO',
   ContributionPost = 'CONTRIBUTION_POST',
   ContributionWhiteboard = 'CONTRIBUTION_WHITEBOARD',
   ContributorsExplorer = 'CONTRIBUTORS_EXPLORER',
@@ -13108,6 +13112,7 @@ export type CalloutContributionQueryVariables = Exact<{
   contributionId: Scalars['UUID']['input'];
   includeLink?: Scalars['Boolean']['input'];
   includeWhiteboard?: Scalars['Boolean']['input'];
+  includeMemo?: Scalars['Boolean']['input'];
   includePost?: Scalars['Boolean']['input'];
 }>;
 
@@ -13158,6 +13163,22 @@ export type CalloutContributionQuery = {
                       }
                     | undefined;
                 };
+                createdBy?:
+                  | {
+                      __typename?: 'User';
+                      id: string;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    }
+                  | undefined;
+              }
+            | undefined;
+          memo?:
+            | {
+                __typename?: 'Memo';
+                id: string;
+                markdown?: string | undefined;
+                createdDate: Date;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                 createdBy?:
                   | {
                       __typename?: 'User';
@@ -13256,6 +13277,13 @@ export type CalloutContributionsSortOrderQuery = {
                   id: string;
                   profile: { __typename?: 'Profile'; id: string; displayName: string };
                   comments: { __typename?: 'Room'; id: string; messagesCount: number };
+                }
+              | undefined;
+            memo?:
+              | {
+                  __typename?: 'Memo';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
                 }
               | undefined;
           }>;
@@ -13500,6 +13528,76 @@ export type UpdateLinkMutation = {
   };
 };
 
+export type CreateMemoOnCalloutMutationVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+  memo: CreateMemoInput;
+}>;
+
+export type CreateMemoOnCalloutMutation = {
+  __typename?: 'Mutation';
+  createContributionOnCallout: {
+    __typename?: 'CalloutContribution';
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          createdDate: Date;
+          markdown?: string | undefined;
+          contentUpdatePolicy: ContentUpdatePolicy;
+          profile: {
+            __typename?: 'Profile';
+            url: string;
+            id: string;
+            displayName: string;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type CalloutPostCreatedSubscriptionVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
 }>;
@@ -13561,6 +13659,7 @@ export type CalloutContributionsQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
   includeLink?: Scalars['Boolean']['input'];
   includeWhiteboard?: Scalars['Boolean']['input'];
+  includeMemo?: Scalars['Boolean']['input'];
   includePost?: Scalars['Boolean']['input'];
   filter?: InputMaybe<Array<CalloutContributionType> | CalloutContributionType>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -13627,6 +13726,22 @@ export type CalloutContributionsQuery = {
                     | undefined;
                 }
               | undefined;
+            memo?:
+              | {
+                  __typename?: 'Memo';
+                  id: string;
+                  markdown?: string | undefined;
+                  createdDate: Date;
+                  profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                }
+              | undefined;
             post?:
               | {
                   __typename?: 'Post';
@@ -13671,6 +13786,7 @@ export type CalloutContributionsQuery = {
             __typename?: 'CalloutContributionsCountOutput';
             link?: number;
             whiteboard?: number;
+            memo?: number;
             post?: number;
           };
         }
@@ -13691,6 +13807,17 @@ export type CalloutContributionsWhiteboardCardFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  createdBy?:
+    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | undefined;
+};
+
+export type CalloutContributionsMemoCardFragment = {
+  __typename?: 'Memo';
+  id: string;
+  markdown?: string | undefined;
+  createdDate: Date;
+  profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;

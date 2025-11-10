@@ -140,7 +140,9 @@ const CommentsComponent = ({
   const commentReactionsMutations = useCommentReactionsMutations(commentsId);
 
   const handleScroll = () => {
-    prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
+    if (commentsContainerRef.current) {
+      prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
+    }
   };
 
   const lastMessage = last(messages);

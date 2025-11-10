@@ -1,0 +1,15 @@
+mutation CreateMemoOnCallout($calloutId: UUID!, $memo: CreateMemoInput!) {
+  createContributionOnCallout(contributionData: {
+    calloutID: $calloutId,
+    type: MEMO,
+    memo: $memo
+  }) {
+    memo {
+      ...MemoDetails
+      profile {
+        url
+      }
+    }
+  }
+}
+

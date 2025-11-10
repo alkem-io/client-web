@@ -143,7 +143,8 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           ? formData.contributionDefaults.whiteboardContent
           : undefined,
       postDescription:
-        formData.settings.contribution.allowedTypes === CalloutContributionType.Post
+        formData.settings.contribution.allowedTypes === CalloutContributionType.Post ||
+        formData.settings.contribution.allowedTypes === CalloutContributionType.Memo
           ? formData.contributionDefaults.postDescription
           : undefined,
     };

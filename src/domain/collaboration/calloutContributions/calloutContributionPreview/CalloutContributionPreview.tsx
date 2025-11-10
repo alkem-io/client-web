@@ -54,7 +54,9 @@ const CalloutContributionPreview = ({
       includeLink: allowedTypes.includes(CalloutContributionType.Link),
       includePost: allowedTypes.includes(CalloutContributionType.Post),
       includeWhiteboard: allowedTypes.includes(CalloutContributionType.Whiteboard),
+      includeMemo: allowedTypes.includes(CalloutContributionType.Memo),
     },
+    skip: !contributionId,
   });
   const contribution = data?.lookup.contribution;
 
@@ -64,30 +66,37 @@ const CalloutContributionPreview = ({
       ? CalloutContributionType.Link
       : contribution?.whiteboard
         ? CalloutContributionType.Whiteboard
-        : undefined;
+        : contribution?.memo
+          ? CalloutContributionType.Memo
+          : undefined;
+
   const Icon = contributionType ? contributionIcons[contributionType] : undefined;
 
   const displayName = loading ? (
     <Skeleton variant="text" width={gutters(12)(theme)} />
   ) : (
     (contributionType === CalloutContributionType.Post && contribution?.post?.profile.displayName) ||
-    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.displayName)
+    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.displayName) ||
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.profile.displayName)
   );
 
   const author =
     (contributionType === CalloutContributionType.Post && contribution?.post?.createdBy?.profile.displayName) ||
     (contributionType === CalloutContributionType.Whiteboard &&
-      contribution?.whiteboard?.createdBy?.profile.displayName);
+      contribution?.whiteboard?.createdBy?.profile.displayName) ||
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.createdBy?.profile.displayName);
 
   const createdDate =
     (contributionType === CalloutContributionType.Post && contribution?.post?.createdDate) ||
-    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.createdDate);
+    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.createdDate) ||
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.createdDate);
   const formattedCreatedDate = createdDate && formatDateTime(createdDate);
   const formattedElapsedTime = createdDate && formatTimeElapsed(createdDate, t, columns > 6 ? 'long' : 'short');
 
   const contributionUrl =
     (contributionType === CalloutContributionType.Post && contribution?.post?.profile.url) ||
-    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.url);
+    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.url) ||
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.profile.url);
 
   const handleContributionDeleted = (deletedContributionId: string) => {
     if (contributionId === deletedContributionId) {
