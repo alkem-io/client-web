@@ -1,8 +1,9 @@
-import { FC, useState } from 'react';
-import { Box, Switch, TextField, InputAdornment, IconButton, FormControlLabel } from '@mui/material';
+import { FC, useId, useState } from 'react';
+import { Box, Switch, TextField, IconButton, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { gutters } from '@/core/ui/grid/utils';
+import { theme } from '@/core/ui/themes/default/Theme';
 
 export interface WhiteboardGuestAccessSectionProps {
   whiteboard?: {
@@ -21,8 +22,8 @@ export interface WhiteboardGuestAccessSectionProps {
 const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ whiteboard }) => {
   const { t } = useTranslation();
   const [guestAccessEnabled, setGuestAccessEnabled] = useState(false);
+  const guestAccessLabelId = useId();
 
-  // TODO: Generate actual guest URL from backend
   // For now, using placeholder URL structure
   const guestUrl = whiteboard?.nameID ? `${window.location.origin}/guest/whiteboard/${whiteboard.nameID}` : '';
 
@@ -34,47 +35,75 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ w
   const handleCopyUrl = () => {
     if (guestUrl) {
       navigator.clipboard.writeText(guestUrl);
-      // TODO: Show success toast notification
+      // TODO: Close with success dialog (as other copy URL actions)
     }
   };
 
+  const handleClick = e => {
+    e.target.select();
+  };
+
   return (
-    <Box display="flex" flexDirection="column" gap={gutters(1)} marginTop={gutters(2)}>
-      {/* Guest access toggle */}
-      <FormControlLabel
-        control={
-          <Switch
-            checked={guestAccessEnabled}
-            onChange={handleToggleChange}
-            color="primary"
-            inputProps={{ 'aria-label': t('share-dialog.guest-access.toggle-label', 'Enable guest access') }}
-          />
-        }
-        label={t('share-dialog.guest-access.label', 'Guest access')}
-      />
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="flex-start"
+      marginTop={gutters(-0.5)}
+      gap={gutters(0.5)}
+      width="100%"
+    >
+      <Box display="flex" width="100%" alignItems="center" justifyContent="space-between">
+        <Typography
+          id={guestAccessLabelId}
+          color="text.primary"
+          sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 400, fontSize: '15px', lineHeight: '20px' }}
+        >
+          {t('share-dialog.guest-access.label', 'Guest access')}
+        </Typography>
+        <Switch
+          checked={guestAccessEnabled}
+          onChange={handleToggleChange}
+          color="primary"
+          inputProps={{
+            'aria-label': t('share-dialog.guest-access.toggle-label', 'Enable guest access'),
+            'aria-labelledby': guestAccessLabelId,
+          }}
+        />
+      </Box>
 
       {/* Guest URL field - only show when guest access is enabled */}
       {guestAccessEnabled && (
-        <TextField
-          value={guestUrl}
-          label={t('share-dialog.guest-access.url-label', 'Guest URL')}
-          InputProps={{
-            readOnly: true,
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={handleCopyUrl}
-                  edge="end"
-                  aria-label={t('share-dialog.guest-access.copy-url', 'Copy guest URL')}
-                >
-                  <ContentCopyIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          fullWidth
-          sx={{ marginTop: gutters(0.5) }}
-        />
+        <Box display="flex" alignItems="center" width="100%" gap={gutters(0.5)}>
+          <TextField
+            variant="outlined"
+            value={guestUrl}
+            label={t('share-dialog.guest-access.url-label')}
+            InputProps={{
+              readOnly: true,
+              onClick: handleClick,
+              sx: { color: theme => theme.palette.neutralMedium.dark },
+            }}
+            fullWidth
+            sx={{ flexGrow: 1 }}
+          />
+          <IconButton
+            onClick={handleCopyUrl}
+            edge="end"
+            size="large"
+            aria-label={t('share-dialog.guest-access.copy-url')}
+            color="primary"
+            sx={{
+              borderRadius: '12px',
+              padding: gutters(0.5),
+              '&:hover': {
+                backgroundColor: theme.palette.action.hover,
+              },
+              marginRight: gutters(0.3),
+            }}
+          >
+            <ContentCopyIcon fontSize="small" />
+          </IconButton>
+        </Box>
       )}
     </Box>
   );

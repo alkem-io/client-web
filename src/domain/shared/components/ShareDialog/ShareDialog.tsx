@@ -2,7 +2,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { gutters } from '@/core/ui/grid/utils';
 import { isAbsoluteUrl } from '@/core/utils/links';
-import { Box, Button, ButtonProps, DialogContent, Skeleton, TextField } from '@mui/material';
+import { Box, Button, ButtonProps, DialogContent, Divider, Skeleton, TextField } from '@mui/material';
 import { FC, PropsWithChildren, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ShareOnAlkemioButton } from './platforms/ShareOnAlkemio';
@@ -110,7 +110,12 @@ export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, l
         {t('share-dialog.or')}
       </Box>
       <ShareOnAlkemioButton setShareHandler={setActiveHandler} />
-      {children}
+      {children && (
+        <>
+          <Divider orientation="horizontal" sx={{ marginY: gutters(1) }} />
+          <Box>{children}</Box>
+        </>
+      )}
     </Box>
   );
 };
