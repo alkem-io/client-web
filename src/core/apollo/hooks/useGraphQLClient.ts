@@ -5,6 +5,7 @@ import { env } from '@/main/env';
 import {
   omitTypenameLink,
   consoleLink,
+  guestHeaderLink,
   retryLink,
   redirectLink,
   httpLink,
@@ -45,6 +46,7 @@ export const useGraphQLClient = (
       link: from([
         omitTypenameLink,
         consoleLink(enableQueryDebug),
+        guestHeaderLink,
         errorLoggerLink,
         errorHandlerLink,
         retryLink,

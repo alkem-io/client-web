@@ -588,6 +588,10 @@ export const CalloutContributionsWhiteboardCardFragmentDoc = gql`
         ...VisualModel
       }
     }
+    authorization {
+      id
+      myPrivileges
+    }
     createdDate
     createdBy {
       id
@@ -717,6 +721,7 @@ export const WhiteboardDetailsFragmentDoc = gql`
       id
       myPrivileges
     }
+    guestContributionsAllowed
     contentUpdatePolicy
     createdBy {
       id
@@ -1045,6 +1050,30 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
     }
   }
   ${WhiteboardDetailsFragmentDoc}
+`;
+export const PublicWhiteboardFragmentFragmentDoc = gql`
+  fragment PublicWhiteboardFragment on Whiteboard {
+    id
+    content
+    guestContributionsAllowed
+    profile {
+      id
+      displayName
+      description
+      url
+      storageBucket {
+        id
+      }
+    }
+    createdBy {
+      id
+      profile {
+        displayName
+      }
+    }
+    createdDate
+    updatedDate
+  }
 `;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
@@ -9344,6 +9373,82 @@ export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardMutation,
   SchemaTypes.UpdateWhiteboardMutationVariables
 >;
+export const GetPublicWhiteboardDocument = gql`
+  query GetPublicWhiteboard($whiteboardId: UUID!) {
+    lookup {
+      whiteboard(ID: $whiteboardId) {
+        ...PublicWhiteboardFragment
+      }
+    }
+  }
+  ${PublicWhiteboardFragmentFragmentDoc}
+`;
+
+/**
+ * __useGetPublicWhiteboardQuery__
+ *
+ * To run a query within a React component, call `useGetPublicWhiteboardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicWhiteboardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicWhiteboardQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useGetPublicWhiteboardQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.GetPublicWhiteboardQuery,
+    SchemaTypes.GetPublicWhiteboardQueryVariables
+  > &
+    ({ variables: SchemaTypes.GetPublicWhiteboardQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.GetPublicWhiteboardQuery, SchemaTypes.GetPublicWhiteboardQueryVariables>(
+    GetPublicWhiteboardDocument,
+    options
+  );
+}
+export function useGetPublicWhiteboardLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.GetPublicWhiteboardQuery,
+    SchemaTypes.GetPublicWhiteboardQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.GetPublicWhiteboardQuery, SchemaTypes.GetPublicWhiteboardQueryVariables>(
+    GetPublicWhiteboardDocument,
+    options
+  );
+}
+export function useGetPublicWhiteboardSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.GetPublicWhiteboardQuery,
+        SchemaTypes.GetPublicWhiteboardQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.GetPublicWhiteboardQuery, SchemaTypes.GetPublicWhiteboardQueryVariables>(
+    GetPublicWhiteboardDocument,
+    options
+  );
+}
+export type GetPublicWhiteboardQueryHookResult = ReturnType<typeof useGetPublicWhiteboardQuery>;
+export type GetPublicWhiteboardLazyQueryHookResult = ReturnType<typeof useGetPublicWhiteboardLazyQuery>;
+export type GetPublicWhiteboardSuspenseQueryHookResult = ReturnType<typeof useGetPublicWhiteboardSuspenseQuery>;
+export type GetPublicWhiteboardQueryResult = Apollo.QueryResult<
+  SchemaTypes.GetPublicWhiteboardQuery,
+  SchemaTypes.GetPublicWhiteboardQueryVariables
+>;
+export function refetchGetPublicWhiteboardQuery(variables: SchemaTypes.GetPublicWhiteboardQueryVariables) {
+  return { query: GetPublicWhiteboardDocument, variables: variables };
+}
 export const CreateReferenceOnProfileDocument = gql`
   mutation createReferenceOnProfile($input: CreateReferenceOnProfileInput!) {
     createReferenceOnProfile(referenceInput: $input) {

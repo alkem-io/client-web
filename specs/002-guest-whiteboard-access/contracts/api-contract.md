@@ -210,21 +210,47 @@ async function getPublicWhiteboard(whiteboardId: UUID, guestName: string | null)
 
 ### Apollo Client Setup
 
-**Link Order**:
+**Link Registration** (`src/core/apollo/hooks/useGraphQLClient.ts`):
 
 ```typescript
-import { ApolloLink } from '@apollo/client';
-import { guestHeaderLink } from '@/core/apollo/graphqlLinks/guestHeaderLink';
-import { authLink } from '@/core/apollo/graphqlLinks/authLink'; // Existing
-import { errorLink } from '@/core/apollo/graphqlLinks/errorLink'; // Existing
-import { httpLink } from '@/core/apollo/graphqlLinks/httpLink'; // Existing
-
-const link = ApolloLink.from([
-  guestHeaderLink, // Inject x-guest-name header (always for public route requests)
-  authLink, // Inject auth token when authenticated (still stripped UI on public route)
-  errorLink,
+import {
+  omitTypenameLink,
+  consoleLink,
+  guestHeaderLink,  // ← Registered in link chain
+  retryLink,
+  redirectLink,
   httpLink,
-]);
+  useErrorHandlerLink,
+  useErrorLoggerLink,
+} from '../graphqlLinks';
+
+// Inside useGraphQLClient:
+return new ApolloClient({
+  link: from([
+    omitTypenameLink,
+    consoleLink(enableQueryDebug),
+    guestHeaderLink,        // ← Injects x-guest-name for /public/whiteboard/* routes
+    errorLoggerLink,
+    errorHandlerLink,
+    retryLink,
+    redirectLink,
+    httpLink(graphQLEndpoint, enableWebSockets),
+  ]),
+  cache,
+});
+```
+
+**Export Configuration** (`src/core/apollo/graphqlLinks/index.ts`):
+
+```typescript
+export * from './consoleLink';
+export * from './guestHeaderLink';  // ← Exported for use in useGraphQLClient
+export * from './useErrorLoggerLink';
+export * from './httpLink';
+export * from './omitTypenameLink';
+export * from './redirectLink';
+export * from './retryLink';
+export * from './useErrorHandlerLink';
 ```
 
 ### Query Hook Generation

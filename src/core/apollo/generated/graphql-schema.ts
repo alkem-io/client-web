@@ -721,6 +721,7 @@ export enum AuthorizationCredential {
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalGuest = 'GLOBAL_GUEST',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -853,6 +854,7 @@ export enum AuthorizationPrivilege {
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
+  PublicShare = 'PUBLIC_SHARE',
   Read = 'READ',
   ReadAbout = 'READ_ABOUT',
   ReadLicense = 'READ_LICENSE',
@@ -2321,6 +2323,7 @@ export enum CredentialType {
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalGuest = 'GLOBAL_GUEST',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -6362,6 +6365,7 @@ export enum RoleName {
   GlobalSpacesReader = 'GLOBAL_SPACES_READER',
   GlobalSupport = 'GLOBAL_SUPPORT',
   GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
+  Guest = 'GUEST',
   Lead = 'LEAD',
   Member = 'MEMBER',
   Owner = 'OWNER',
@@ -6997,7 +7001,7 @@ export type SpaceSettingsCollaboration = {
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
   allowEventsFromSubspaces: Scalars['Boolean']['output'];
   /** Flag to control if guest users can contribute to this Space. */
-  allowGuestContributions: Scalars['Boolean']['output'];
+  allowGuestContributions?: Maybe<Scalars['Boolean']['output']>;
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean']['output'];
   /** Flag to control if members can create subspaces. */
@@ -8788,6 +8792,8 @@ export type Whiteboard = {
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** Whether guest users are allowed to contribute to this Whiteboard. */
+  guestContributionsAllowed: Scalars['Boolean']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Whether the Whiteboard is multi-user enabled on Space level. */
@@ -12391,6 +12397,7 @@ export type UpdateCalloutContentMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -12762,6 +12769,7 @@ export type UpdateCalloutVisibilityMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13624,6 +13632,13 @@ export type CalloutContributionsQuery = {
                         }
                       | undefined;
                   };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   createdBy?:
                     | {
                         __typename?: 'User';
@@ -13697,6 +13712,9 @@ export type CalloutContributionsWhiteboardCardFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
@@ -13747,6 +13765,7 @@ export type CreateWhiteboardOnCalloutMutation = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -13945,6 +13964,7 @@ export type CreateCalloutMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -14397,6 +14417,7 @@ export type CalloutDetailsQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  guestContributionsAllowed: boolean;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -14857,6 +14878,7 @@ export type CalloutDetailsFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -15676,6 +15698,7 @@ export type WhiteboardDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
+  guestContributionsAllowed: boolean;
   contentUpdatePolicy: ContentUpdatePolicy;
   profile: {
     __typename?: 'Profile';
@@ -15777,6 +15800,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
+              guestContributionsAllowed: boolean;
               contentUpdatePolicy: ContentUpdatePolicy;
               profile: {
                 __typename?: 'Profile';
@@ -15878,6 +15902,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
+              guestContributionsAllowed: boolean;
               contentUpdatePolicy: ContentUpdatePolicy;
               profile: {
                 __typename?: 'Profile';
@@ -15998,6 +16023,7 @@ export type WhiteboardFromCalloutQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  guestContributionsAllowed: boolean;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -16143,6 +16169,56 @@ export type UpdateWhiteboardMutation = {
         | undefined;
     };
   };
+};
+
+export type GetPublicWhiteboardQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID']['input'];
+}>;
+
+export type GetPublicWhiteboardQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          content: string;
+          guestContributionsAllowed: boolean;
+          createdDate: Date;
+          updatedDate: Date;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+          createdBy?:
+            | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; displayName: string } }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type PublicWhiteboardFragmentFragment = {
+  __typename?: 'Whiteboard';
+  id: string;
+  content: string;
+  guestContributionsAllowed: boolean;
+  createdDate: Date;
+  updatedDate: Date;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    storageBucket: { __typename?: 'StorageBucket'; id: string };
+  };
+  createdBy?: { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; displayName: string } } | undefined;
 };
 
 export type LinkDetailsFragment = {
@@ -25656,7 +25732,7 @@ export type SpaceSettingsQuery = {
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
               allowMembersToVideoCall: boolean;
-              allowGuestContributions: boolean;
+              allowGuestContributions?: boolean | undefined;
             };
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
@@ -25681,7 +25757,7 @@ export type SpaceSettingsFragment = {
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
     allowMembersToVideoCall: boolean;
-    allowGuestContributions: boolean;
+    allowGuestContributions?: boolean | undefined;
   };
 };
 
@@ -25710,7 +25786,7 @@ export type UpdateSpaceSettingsMutation = {
         inheritMembershipRights: boolean;
         allowEventsFromSubspaces: boolean;
         allowMembersToVideoCall: boolean;
-        allowGuestContributions: boolean;
+        allowGuestContributions?: boolean | undefined;
       };
     };
   };
@@ -27280,6 +27356,7 @@ export type TemplateContentQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        guestContributionsAllowed: boolean;
                         contentUpdatePolicy: ContentUpdatePolicy;
                         profile: {
                           __typename?: 'Profile';
@@ -27600,7 +27677,7 @@ export type TemplateContentQuery = {
                     inheritMembershipRights: boolean;
                     allowEventsFromSubspaces: boolean;
                     allowMembersToVideoCall: boolean;
-                    allowGuestContributions: boolean;
+                    allowGuestContributions?: boolean | undefined;
                   };
                 };
                 subspaces: Array<{
@@ -27778,7 +27855,7 @@ export type SpaceTemplateContentQuery = {
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
               allowMembersToVideoCall: boolean;
-              allowGuestContributions: boolean;
+              allowGuestContributions?: boolean | undefined;
             };
           };
           subspaces: Array<{
@@ -27864,6 +27941,7 @@ export type CalloutTemplateContentFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -28130,7 +28208,7 @@ export type SpaceTemplateContentFragment = {
       inheritMembershipRights: boolean;
       allowEventsFromSubspaces: boolean;
       allowMembersToVideoCall: boolean;
-      allowGuestContributions: boolean;
+      allowGuestContributions?: boolean | undefined;
     };
   };
   subspaces: Array<{
@@ -28269,7 +28347,7 @@ export type SpaceTemplateContent_SettingsFragment = {
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
     allowMembersToVideoCall: boolean;
-    allowGuestContributions: boolean;
+    allowGuestContributions?: boolean | undefined;
   };
 };
 

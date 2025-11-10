@@ -1,8 +1,8 @@
 import { MouseEventHandler, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-import { Button, DialogContent } from '@mui/material';
+import { Box, Button, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
-import { DeleteOutline } from '@mui/icons-material';
+import { DeleteOutline, Public } from '@mui/icons-material';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
@@ -31,15 +31,16 @@ interface WhiteboardDialogFooterProps {
   canDelete?: boolean;
   onRestart?: () => void;
   updating?: boolean;
+  guestContributionsAllowed?: boolean;
   createdBy:
-    | (Identifiable & {
-        profile: {
-          displayName: string;
-          url: string;
-          avatar?: Visual;
-        };
-      })
-    | undefined;
+  | (Identifiable & {
+    profile: {
+      displayName: string;
+      url: string;
+      avatar?: Visual;
+    };
+  })
+  | undefined;
   contentUpdatePolicy: ContentUpdatePolicy | undefined;
   collaboratorMode: CollaboratorMode | null;
   collaboratorModeReason: CollaboratorModeReasons | null;
@@ -62,6 +63,7 @@ const WhiteboardDialogFooter = ({
   createdBy,
   collaboratorMode,
   collaboratorModeReason,
+  guestContributionsAllowed = false,
   updating = false,
 }: WhiteboardDialogFooterProps) => {
   const { t } = useTranslation();
@@ -144,52 +146,71 @@ const WhiteboardDialogFooter = ({
         paddingX={gutters()}
         paddingY={gutters(0.5)}
         gap={gutters(0.5)}
-        justifyContent="start"
+        justifyContent="space-between"
         alignItems="center"
       >
-        {canDelete && (
-          <Button
-            color="error"
-            startIcon={<DeleteOutline />}
-            onClick={onDelete}
-            disabled={!canUpdateContent || updating}
-            sx={{ textTransform: 'none' }}
-            aria-label={t('buttons.delete')}
+        <Box display="flex" gap={gutters(0.5)} alignItems="center">
+          {canDelete && (
+            <Button
+              color="error"
+              startIcon={<DeleteOutline />}
+              onClick={onDelete}
+              disabled={!canUpdateContent || updating}
+              sx={{ textTransform: 'none' }}
+              aria-label={t('buttons.delete')}
+            >
+              <Caption>{t('buttons.delete')}</Caption>
+            </Button>
+          )}
+          {readonlyReason && (
+            <Caption>
+              <Trans
+                i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
+                values={{
+                  spaceLevel: t(`common.space-level.${spaceLevel}`),
+                  ownerName: createdBy?.profile.displayName,
+                }}
+                components={{
+                  ownerlink: createdBy ? (
+                    <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
+                  ) : (
+                    <span />
+                  ),
+                  spacelink: spaceAboutProfile ? (
+                    <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument />
+                  ) : (
+                    <span />
+                  ),
+                  signinlink: <RouterLink to={buildLoginUrl(whiteboardUrl)} state={{}} underline="always" />,
+                  learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
+                }}
+              />
+            </Caption>
+          )}
+          {canRestart && (
+            <Button onClick={onRestart} variant="outlined" sx={{ textTransform: 'none' }} size="small">
+              {t('pages.whiteboard.restartCollaboration')}
+            </Button>
+          )}
+        </Box>
+        {guestContributionsAllowed && (
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={0.5}
+            sx={theme => ({
+              padding: theme.spacing(0.5, 1),
+              border: `1px solid ${theme.palette.error.main}`,
+              borderRadius: 1,
+              color: theme.palette.error.main,
+            })}
           >
-            <Caption>{t('buttons.delete')}</Caption>
-          </Button>
+            <Public fontSize="small" />
+            <Caption sx={theme => ({ color: theme.palette.error.main })}>
+              {t('pages.whiteboard.guestContributionsWarning')}
+            </Caption>
+          </Box>
         )}
-        {readonlyReason && (
-          <Caption>
-            <Trans
-              i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
-              values={{
-                spaceLevel: t(`common.space-level.${spaceLevel}`),
-                ownerName: createdBy?.profile.displayName,
-              }}
-              components={{
-                ownerlink: createdBy ? (
-                  <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
-                ) : (
-                  <span />
-                ),
-                spacelink: spaceAboutProfile ? (
-                  <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument />
-                ) : (
-                  <span />
-                ),
-                signinlink: <RouterLink to={buildLoginUrl(whiteboardUrl)} state={{}} underline="always" />,
-                learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
-              }}
-            />
-          </Caption>
-        )}
-        {canRestart && (
-          <Button onClick={onRestart} variant="outlined" sx={{ textTransform: 'none' }} size="small">
-            {t('pages.whiteboard.restartCollaboration')}
-          </Button>
-        )}
-
         {directMessageDialog}
       </Actions>
       <DialogWithGrid

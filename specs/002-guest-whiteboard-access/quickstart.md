@@ -182,12 +182,12 @@ grep -A 5 "useGetPublicWhiteboardQuery" src/core/apollo/generated/apollo-hooks.t
 http://localhost:3001/public/whiteboard/<whiteboardId>
 
 # Expected:
-# Expected:
 # - Join dialog appears (no derivation possible)
 # - Enter guest name "TestUser"
 # - Click "JOIN AS GUEST"
-# - Whiteboard loads; visibility warning rendered INSIDE whiteboard component
-# - Warning copy example: "Visible publicly — guest viewers active"
+# - Whiteboard loads with full editing capabilities enabled
+# - Warning displays: "This whiteboard is visible and editable by guest users"
+# - Can draw, add shapes, text, and export to disk
 # - Network requests include header: x-guest-name: TestUser
 ```
 
@@ -239,12 +239,39 @@ http://localhost:3001/public/whiteboard/00000000-0000-0000-0000-000000000000
 # 5. Visibility warning present (same stripped layout as anonymous)
 ```
 
+**Anonymization Algorithm** (implemented in `src/domain/collaboration/whiteboard/guestAccess/utils/anonymizeGuestName.ts`):
+
+```typescript
+// 4-tier priority system for privacy-safe name derivation
+function anonymizeGuestName(firstName?: string | null, lastName?: string | null): string | null {
+  // 1. Full name → "FirstName L." (preferred)
+  if (firstName && lastName) return `${firstName} ${lastName.charAt(0)}.`;
+
+  // 2. First name only → "FirstName"
+  if (firstName) return firstName;
+
+  // 3. Last name only → "L."
+  if (lastName) return `${lastName.charAt(0)}.`;
+
+  // 4. No usable fields → null (fallback to join dialog)
+  return null;
+}
+```
+
+**Derivation Trigger Logic**:
+- Checks `ory_kratos_session` cookie → if present, user is authenticated
+- Fetches `CurrentUserFull.profile` data (firstName, lastName)
+- Applies anonymization algorithm
+- Stores result in session storage under `alkemio_guest_name`
+- Only attempts derivation **once per session** (prevents infinite loops)
+
 #### 5. Authenticated Derivation – Partial Profile (First Only)
 
 ```bash
 # Profile: firstName="Alice" lastName empty
 # Derived: "Alice"
 # Header: x-guest-name: Alice
+# No dialog shown (derivation successful)
 ```
 
 #### 6. Authenticated Derivation – Last Name Only
@@ -253,14 +280,22 @@ http://localhost:3001/public/whiteboard/00000000-0000-0000-0000-000000000000
 # Profile: lastName="Smith" firstName empty
 # Derived: "S."
 # Header: x-guest-name: S.
+# No dialog shown (derivation successful)
 ```
 
 #### 7. Authenticated Derivation – No Usable Fields (Fallback Prompt)
 
 ```bash
-# Profile: firstName & lastName both missing
-# Join dialog appears (same as Anonymous flow) -> user enters guest name
+# Profile: firstName & lastName both missing/empty/whitespace
+# Derived: null (derivation failed)
+# Join dialog appears (same as Anonymous flow) → user manually enters guest name
 ```
+
+**Edge Cases Handled**:
+- Empty strings (`""`) → treated as missing
+- Whitespace-only (`"   "`) → treated as missing
+- Multi-word first names (`"Mary Jane"`) → preserved as "Mary Jane L."
+- Unicode characters (`"François"`) → preserved correctly
 
 #### 8. Sign-In After Anonymous Guest
 
