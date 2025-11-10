@@ -32,6 +32,7 @@ import {
   DefaultWhiteboardPreviewSettings,
   WhiteboardPreviewSettings,
 } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 type ExcalidrawUtils = {
   serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
@@ -61,7 +62,7 @@ type SingleUserWhiteboardDialogProps = {
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
     previewSettingsDialogOpen?: boolean;
-    previewSettingsDimensions?: PreviewImageDimensions;
+    previewImagesSettings?: { visualType: VisualType; dimensions: PreviewImageDimensions }[];
   };
   state?: {
     updatingWhiteboard?: boolean;
@@ -105,7 +106,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
 
     const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
-    const previewImages = await generateWhiteboardVisuals(whiteboard, true);
+    const previewImages = await generateWhiteboardVisuals(whiteboard, true, options.previewImagesSettings);
 
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
@@ -266,7 +267,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
           open={options.previewSettingsDialogOpen}
           onClose={() => actions.onClosePreviewSettingsDialog?.()}
           onUpdate={actions.onUpdatePreviewSettings}
-          previewImageConstraints={options.previewSettingsDimensions}
+          previewImageConstraints={options.previewImagesSettings?.[0]?.dimensions}
           whiteboard={whiteboard}
           excalidrawAPI={excalidrawAPI}
         />
