@@ -267,6 +267,8 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
           open={options.previewSettingsDialogOpen}
           onClose={() => actions.onClosePreviewSettingsDialog?.()}
           onUpdate={actions.onUpdatePreviewSettings}
+          // Pass the first visual's dimensions settings, as it is supposed to be the biggest one
+          // Normally will be undefined and just default to WhiteboardPreviewVisualDimensions
           previewImageConstraints={options.previewImagesSettings?.[0]?.dimensions}
           whiteboard={whiteboard}
           excalidrawAPI={excalidrawAPI}
