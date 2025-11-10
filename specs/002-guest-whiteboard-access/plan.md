@@ -7,7 +7,7 @@
 
 ## Summary
 
-Create a completely isolated public whiteboard viewing experience for any user at `/public/whiteboard/:whiteboardId`. The implementation must be fully separated from the main application—no shared React components except the Whiteboard display component (modified to accept a `showWarning` prop). On initial load the system checks for the `ory_kratos_session` cookie: if present it fetches the CurrentUser profile and derives an anonymized guest name (`First L.` / `First` / `L.`) used as the `x-guest-name` header; if absent (or derivation fails) it prompts for a guest name and stores it in session storage. The header `x-guest-name` is included in all GraphQL requests. The page displays only the whiteboard content with zero application layout (no navigation, sidebar, or header). The whiteboard component renders a persistent visibility warning (always shown on public whiteboards, guest or authenticated). The architecture follows React 19 best practices with lean, purpose-built components using Suspense, transitions, and modern patterns.
+Create a completely isolated public whiteboard **real-time collaborative editing** experience for any user at `/public/whiteboard/:whiteboardId`. The implementation must be fully separated from the main application—no shared React components except the CollaborativeExcalidrawWrapper (no modifications needed). On initial load the system checks for the `ory_kratos_session` cookie: if present it fetches the CurrentUser profile and derives an anonymized guest name (`First L.` / `First` / `L.`) used as the `x-guest-name` header; if absent (or derivation fails) it prompts for a guest name and stores it in session storage. The header `x-guest-name` is included in all GraphQL requests. Guests have **full editing capabilities** (draw, shapes, text, images, export) with **real-time WebSocket-based persistence** via the existing `CollaborativeExcalidrawWrapper` component. Changes are automatically synchronized to the backend through WebSocket connections (`useCollab` hook, room-based collaboration using `whiteboard.id`). The component handles connection state (connecting, connected, disconnected) with auto-reconnect logic and connection status indicators. The page displays only the whiteboard content with zero application layout (no navigation, sidebar, or header). A persistent visibility warning ("This whiteboard is visible and editable by guest users") is rendered via fixed-position MUI Alert component. The architecture follows React 19 best practices with lean, purpose-built components using Suspense, transitions, and modern patterns.
 
 ## Technical Context
 
@@ -40,7 +40,7 @@ Create a completely isolated public whiteboard viewing experience for any user a
 
 - Single public route (`/public/whiteboard/:whiteboardId`)
 - ~4-5 new components (lean, purpose-built)
-- 1 modified component (WhiteboardDisplay with showWarning prop)
+- Reuses existing `WhiteboardDialog` component (no modifications needed)
 - 3 custom hooks (guest session, whiteboard access with cookie detection, guest name validation)
 - 1 Apollo link middleware
 - GraphQL query (GetPublicWhiteboard)
@@ -56,7 +56,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
   - `useGuestSession()` - manages guest name (user-entered or derived) in session storage
   - `useGuestWhiteboardAccess(whiteboardId)` - loads whiteboard with guest context and handles cookie + CurrentUser derivation flow
 - **Orchestration boundary**: React components in `src/main/public/whiteboard/` remain pure orchestrators; all business logic (validation, storage, header injection) lives in domain hooks
-- **Isolation strategy**: Complete separation from main app; only imports Whiteboard display component from existing codebase
+- **Component reuse**: Public whiteboard page uses existing `WhiteboardDialog` component with guest-specific configuration (read-only display name, public warning in header, no delete capability)
 
 ✅ **React 19 Concurrency**:
 
@@ -134,7 +134,7 @@ src/
 ├── main/
 │   └── public/                              # NEW: Public-facing features
 │       └── whiteboard/                      # NEW: Guest whiteboard page
-│           ├── PublicWhiteboardPage.tsx     # NEW: Route-level page component
+│           ├── PublicWhiteboardPage.tsx     # NEW: Route-level page component (uses WhiteboardDialog)
 │           ├── PublicWhiteboardLayout.tsx   # NEW: Layout (no app chrome)
 │           ├── JoinWhiteboardDialog.tsx     # NEW: Nickname prompt modal
 │           ├── PublicWhiteboardError.tsx    # NEW: Error state component
@@ -144,8 +144,8 @@ src/
 ├── domain/
 │   └── collaboration/
 │       └── whiteboard/
-│           ├── WhiteboardDisplay/           # EXISTING: Whiteboard component
-│           │   └── WhiteboardDisplay.tsx    # MODIFIED: Add showWarning prop
+│           ├── WhiteboardDialog/            # EXISTING: Reused for public whiteboards
+│           │   └── WhiteboardDialog.tsx     # REUSED: No modifications needed
 │           └── guestAccess/                 # NEW: Guest-specific domain logic
 │               ├── context/
 │               │   └── GuestSessionContext.tsx       # NEW: React context for guest state
@@ -159,7 +159,10 @@ src/
 │
 ├── core/
 │   ├── apollo/
+│   │   ├── hooks/
+│   │   │   └── useGraphQLClient.ts          # UPDATED: Register guestHeaderLink in link chain
 │   │   ├── graphqlLinks/
+│   │   │   ├── index.ts                     # UPDATED: Export guestHeaderLink
 │   │   │   └── guestHeaderLink.ts           # NEW: Apollo link for x-guest-name injection
 │   │   └── generated/
 │   │       ├── graphql-schema.ts            # UPDATED: New types from codegen
@@ -185,12 +188,12 @@ This feature uses a **hybrid isolation pattern** within the existing React web a
 
 - **`src/main/public/whiteboard/`**: New top-level public UI directory for guest-facing pages (parallel to existing `src/main/landing`, `src/main/admin`)
 - **`src/domain/collaboration/whiteboard/guestAccess/`**: New guest-specific domain sub-context for session management and access logic
-- **`src/domain/collaboration/whiteboard/WhiteboardDisplay/`**: Existing component modified to accept `showWarning` boolean prop for rendering visibility warning
+- **`src/domain/collaboration/whiteboard/WhiteboardDialog/`**: Existing component reused with guest-specific configuration (no modifications needed)
 - **`src/core/apollo/graphqlLinks/`**: New Apollo middleware for header injection (cross-cutting concern)
-- **Complete component isolation**: No imports from `src/main` or `src/domain` except the modified WhiteboardDisplay component and core infrastructure (Apollo, routing, i18n, MUI theme)
+- **Complete component reuse**: Public whiteboards use the same `WhiteboardDialog` as authenticated users, configured with guest-appropriate options (read-only display name, public warning in header, no delete capability)
 - **Material-UI styling**: All new components use existing MUI theme and component library (TextField, Button, Typography, Dialog, Alert, etc.)
 - **Lean structure**: Minimal new components (4-5), purpose-built for guest experience, avoiding unnecessary abstraction
-- **Warning visibility**: Both guest and authenticated users see the warning when viewing publicly accessible whiteboards
+- **Warning visibility**: Public warning badge displayed in WhiteboardDialog header via `headerActions` prop
 
 ## Complexity Tracking
 
@@ -323,15 +326,27 @@ x-guest-name: <nickname from session storage>
 <PublicWhiteboardPage>                    # Route component, error boundary
   <GuestSessionProvider>                  # Context provider
     <Suspense fallback={<Loader />}>
-      <PublicWhiteboardLayout>            # Layout wrapper (no app chrome)
-        {!guestName ? (
+      {!guestName ? (
+        <PublicWhiteboardLayout>          # Layout wrapper (no app chrome)
           <JoinWhiteboardDialog />        # Modal for nickname input
-        ) : (
-          <WhiteboardDisplay
-            showWarning={true}            # REUSED from existing app
-          />                              # Warning rendered inside Whiteboard component
-        )}
-      </PublicWhiteboardLayout>
+        </PublicWhiteboardLayout>
+      ) : (
+        <WhiteboardDialog                 # REUSED from existing app
+          entities={{ whiteboard }}       # Adapted guest data structure
+          options={{
+            show: true,
+            canEdit: true,                # Guests can collaborate
+            canDelete: false,             # Guests cannot delete
+            readOnlyDisplayName: true,    # Guests cannot rename
+            fullscreen: true,
+            headerActions: () => (
+              <Alert severity="error">    # Public warning badge
+                This whiteboard is visible and editable by guest users
+              </Alert>
+            )
+          }}
+        />
+      )}
     </Suspense>
   </GuestSessionProvider>
 </PublicWhiteboardPage>
@@ -344,11 +359,15 @@ x-guest-name: <nickname from session storage>
    - Whiteboard ID extraction from URL params
    - Orchestrates `useGuestWhiteboardAccess` hook
    - Handles loading/error states
+   - Adapts public whiteboard data to `WhiteboardDetails` format
+   - Configures `WhiteboardDialog` with guest-specific options
+   - Implements close button handler to redirect guests to `/home` page
 
 2. **PublicWhiteboardLayout** (Presentational)
    - Zero application chrome (no nav, sidebar, header)
    - Simple container for whiteboard content
    - Responsive layout (full viewport)
+   - Only used for error/loading states (WhiteboardDialog provides its own container)
 
 3. **JoinWhiteboardDialog** (Smart component)
    - Native `<dialog>` element (React 19)
@@ -358,12 +377,12 @@ x-guest-name: <nickname from session storage>
    - Focus trap, Esc to close
    - Styled with Material-UI components (TextField, Button) and existing theme
 
-4. **WhiteboardDisplay** (MODIFIED existing component)
-   - New prop: `showWarning: boolean` (default: false)
-   - When `showWarning={true}`, renders visibility warning inside component
-   - Warning: Fixed position (bottom-right), "This whiteboard is visible to guest users"
-   - Warning styling: Accessible (role="status"), minimal, non-intrusive, using MUI Alert or custom styled component
-   - Both guest and authenticated users see warning when whiteboard is publicly accessible
+4. **WhiteboardDialog** (REUSED existing component - no modifications)
+   - Accepts guest-configured options via props
+   - Renders public warning via `headerActions` prop
+   - Provides full collaborative whiteboard experience
+   - Guests get same UI/UX as authenticated users
+   - Warning badge displayed in dialog header (top-right)
 
 5. **PublicWhiteboardError** (Presentational)
    - Error message display

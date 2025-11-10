@@ -20,9 +20,9 @@ As a **guest user**, I want to access a public whiteboard via a shared URL witho
 1. **Given** I am a guest user with a public whiteboard URL, **When** I navigate to `/public/whiteboard/:whiteboardId`, **Then** the application attempts to load the whiteboard from the server
 2. **Given** the whiteboard cannot be loaded without authentication, **When** the initial load fails, **Then** I see a modal dialog prompting me to "Join Whiteboard" with a nickname input field
 3. **Given** the join dialog is displayed, **When** I enter a nickname and click "JOIN AS GUEST", **Then** the nickname is stored in session storage and added as `x-guest-name` header to all subsequent requests
-4. **Given** I have provided a valid nickname, **When** the whiteboard loads successfully, **Then** I see only the whiteboard content without any application layout (navigation, sidebar, header, etc.)
-5. **Given** the whiteboard is displayed, **When** I look at the bottom right corner, **Then** I see a warning badge/banner reading "This whiteboard is visible to guest users" that is always displayed regardless of user actions.
-6. **Given** I am viewing a public whiteboard as a guest, **When** I refresh the page, **Then** my nickname persists from session storage and I am not prompted again
+3. **Given** I have provided a valid nickname, **When** the whiteboard loads successfully, **Then** I see only the whiteboard content without any application layout (navigation, sidebar, header, etc.)
+4. **Given** the whiteboard is displayed, **When** I look at the dialog header area, **Then** I see a persistent error-severity alert badge with a public icon reading "This whiteboard is visible and editable by guest users"
+5. **Given** I am viewing a public whiteboard as a guest, **When** I refresh the page, **Then** my nickname persists from session storage and I am not prompted again
 
 ---
 
@@ -75,19 +75,26 @@ As a **guest user**, I want to see clear error messages when a whiteboard cannot
 
 ---
 
-### User Story 5 - Guest Visibility Indicator (Priority: P3)
+### User Story 5 - Guest Contribution
 
-As a **whiteboard creator or admin**, I want guests viewing my whiteboard to see a clear indicator that the whiteboard is publicly accessible, so that everyone is aware of the visibility level.
+As a **guest user**, I want to edit the whiteboard (add shapes, draw, add text, export) with real-time persistence, so that I can collaborate without authenticating and see my changes saved.
 
-**Why this priority**: Ensures transparency about data visibility and privacy, helping users make informed decisions about what they share.
+**Why this priority**: Ensures transparency about data visibility, privacy, and editing capabilities, helping users make informed decisions about what they share and contribute.
 
-**Independent Test**: Can be tested by loading a public whiteboard as a guest and verifying the visibility warning is displayed consistently in the bottom right corner.
+**Independent Test**: Can be tested by loading a public whiteboard as a guest and verifying the visibility warning is displayed consistently in the WhiteboardDialog header as an Alert badge, plus confirming edits persist via real-time WebSocket sync.
 
 **Acceptance Scenarios**:
 
-1. **Given** I am viewing a public whiteboard as a guest, **When** the whiteboard loads, **Then** I see a persistent warning in the bottom right corner: "This whiteboard is visible to guest users"
-2. **Given** the visibility warning is displayed, **When** I scroll or interact with the whiteboard, **Then** the warning remains visible (fixed position)
-3. **Given** the visibility warning is displayed, **When** I am an authenticated user viewing the same public whiteboard, **Then** I do NOT see the guest visibility warning (only shown to guests)
+1. **Given** I am viewing a public whiteboard as a guest, **When** the whiteboard dialog loads, **Then** I see a persistent error-severity Alert badge in the dialog header (top-right) reading "This whiteboard is visible and editable by guest users" with a public icon
+2. **Given** the visibility warning is displayed, **When** I scroll the whiteboard canvas or interact with tools, **Then** the warning remains visible in the dialog header
+3. **Given** the visibility warning is displayed, **When** I am an authenticated user viewing the same public whiteboard, **Then** I see the same guest visibility warning (always shown for public whiteboards regardless of user authentication status)
+4. **Given** I am a guest user, **When** I make edits to the whiteboard, **Then** my changes are immediately visible to other collaborators via real-time synchronization
+5. **Given** I am a guest user, **When** I use the export feature, **Then** I can save the whiteboard to my local disk
+6. **Given** I am a guest user editing the whiteboard, **When** I make changes, **Then** those changes are automatically persisted to the backend via WebSocket connection without requiring manual save
+7. **Given** I am a guest user, **When** the WebSocket connection is established, **Then** I see a connection status indicator showing "Connected"
+8. **Given** I am a guest user and the connection drops, **When** the WebSocket disconnects, **Then** the system attempts auto-reconnect and shows "Reconnecting..." status
+9. **Given** I am a guest user with an active connection, **When** other users edit the same whiteboard, **Then** I see their changes appear in real-time
+10. **Given** I am viewing a public whiteboard as a guest, **When** I click the close/cancel button in the WhiteboardDialog, **Then** I am redirected to the `/home` page
 
 ---
 
@@ -138,6 +145,7 @@ This feature satisfies the Constitution as follows:
   - `useGuestSession()` - manages guest nickname storage and header injection
 - UI components remain orchestration-only; guest authentication logic is isolated in domain hooks
 - No business logic in React components; all state and validation logic lives in domain services
+- **Architectural Decision**: Public whiteboards reuse the existing `WhiteboardDialog` component with guest-specific configuration (adapter pattern) instead of creating a duplicate `PublicWhiteboardDisplay` component. This ensures consistency, reduces code duplication (~120 LOC saved), and provides guests the same battle-tested UI/UX as authenticated users.
 
 **II. React 19 Concurrent UX Discipline**
 
@@ -218,9 +226,9 @@ This feature satisfies the Constitution as follows:
     **FR-009**: System MUST clear the guest name from session storage when the browser session ends (not on tab close)
     **FR-010**: System MUST redirect to the sign-in page when the user clicks "SIGN IN TO ALKEMIO", preserving return URL
     **FR-011**: System MUST redirect authenticated users back to the public whiteboard URL after successful sign-in, retaining stripped public layout (no app chrome)
-    **FR-011a**: System MUST clear any prior guest name from session storage when sign-in completes; historical guest contributions remain attributed to previous guest name value
-    **FR-012**: System MUST display a persistent visibility warning in the bottom right corner: "This whiteboard is visible to guest users" to all viewers (guest or authenticated)
-    **FR-013**: System MUST handle whiteboard load errors gracefully:
+  **FR-011a**: System MUST clear any prior guest name from session storage when sign-in completes; historical guest contributions remain attributed to previous guest name value
+  **FR-012**: System MUST display a persistent visibility warning to all viewers (guest or authenticated): "This whiteboard is visible and editable by guest users". Implementation: MUI Alert badge in the WhiteboardDialog header (top-right), always visible, using severity="error" with PublicIcon.
+  **FR-013**: System MUST handle whiteboard load errors gracefully:
   - 404: "Whiteboard not found"
   - 403: "This whiteboard is not available for guest access"
   - 500/other: "Unable to load whiteboard. Please try again later"
@@ -232,12 +240,11 @@ This feature satisfies the Constitution as follows:
     **FR-019**: System MUST derive an anonymized guest name using algorithm: both names -> `First L.`; only first -> `First`; only last -> `L.`; neither -> prompt
     **FR-020**: System MUST store derived anonymized guest name in session storage and use it as `x-guest-name` header without prompting
     **FR-021**: System MUST fall back to prompting for a guest name if CurrentUser fetch fails or yields no usable name fields
-    **FR-022**: System MUST apply validation rules to user-entered guest names; derived names bypass user validation except safe character enforcement
-    **FR-023**: System MUST ensure all GraphQL requests on the public page include `x-guest-name` header once a guest name is set or derived
+  **FR-022**: System MUST apply validation rules to user-entered guest names; derived names bypass user validation except safe character enforcement
+  **FR-023**: System MUST ensure all GraphQL requests on the public page include `x-guest-name` header once a guest name is set or derived
+  **FR-024**: System MUST redirect guest users to `/home` when the WhiteboardDialog close/cancel button is clicked, providing a clear exit path from the public whiteboard view
 
-### Key Entities
-
-- **Guest Session**: Ephemeral user session representing a guest user identified by a guest name (user-entered or anonymized derived). Attributes: `guestName` (string, 1-50 chars). Note: guest name is display-only; server uses internal session ID for unique identification.
+### Key Entities- **Guest Session**: Ephemeral user session representing a guest user identified by a guest name (user-entered or anonymized derived). Attributes: `guestName` (string, 1-50 chars). Note: guest name is display-only; server uses internal session ID for unique identification.
 - **Public Whiteboard**: A whiteboard entity accessible via public URL. Core attributes from GraphQL schema: `id` (UUID), `content` (WhiteboardContent), `profile` (Profile), `createdBy` (User), `createdDate`, `updatedDate`. Note: Guest access control is determined server-side; if a guest can access a whiteboard, it is returned in the GraphQL response, otherwise an error is returned.
 - **Guest Authentication Context**: React context providing guest session state and methods. Exposes: `guestName` (string | null), `setGuestName(name: string)` (function), `clearGuestSession()` (function), `isGuest` (boolean).
 
@@ -246,7 +253,7 @@ This feature satisfies the Constitution as follows:
 ### Measurable Outcomes
 
 **SC-001**: Zero layout elements (navigation, sidebar, header) are visible on the public whiteboard page for any user (guest or authenticated)
-**SC-002**: 100% of public whiteboard loads include the visibility warning element
+**SC-002**: 100% of public whiteboard loads display the visibility warning Alert badge in the WhiteboardDialog header
 **SC-003**: ≥95% of authenticated visits derive and store an anonymized guest name without prompting
 **SC-004**: ≤5% of authenticated visits fall back to manual guest name prompt
 **SC-005**: 100% of GraphQL requests on public page include `x-guest-name` header once a guest name is set or derived

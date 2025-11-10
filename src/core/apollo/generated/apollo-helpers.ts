@@ -4915,6 +4915,7 @@ export type WhiteboardKeySpecifier = (
   | 'contentUpdatePolicy'
   | 'createdBy'
   | 'createdDate'
+  | 'guestContributionsAllowed'
   | 'id'
   | 'isMultiUser'
   | 'nameID'
@@ -4929,6 +4930,7 @@ export type WhiteboardFieldPolicy = {
   contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  guestContributionsAllowed?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;

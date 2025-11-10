@@ -38,6 +38,7 @@ export interface WhiteboardDetails {
   id: string;
   nameID: string; // NameID is used to name screenshots uploaded as visuals (banner, card...)
   contentUpdatePolicy?: ContentUpdatePolicy;
+  guestContributionsAllowed?: boolean;
   authorization?: {
     myPrivileges?: AuthorizationPrivilege[];
   };
@@ -338,6 +339,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                   canUpdateContent={options.canEdit!}
                   createdBy={whiteboard?.createdBy}
                   contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
+                  guestContributionsAllowed={whiteboard?.guestContributionsAllowed}
                 />
               </Dialog>
             </Formik>

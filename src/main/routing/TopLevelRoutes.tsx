@@ -19,6 +19,7 @@ import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
 
+const PublicWhiteboardPage = lazyWithGlobalErrorHandler(() => import('@/main/public/whiteboard/PublicWhiteboardPage'));
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
 const SpaceExplorerPage = lazyWithGlobalErrorHandler(
@@ -58,6 +59,17 @@ export const TopLevelRoutes = () => {
       >
         <Route index element={<RedirectToLanding />} />
         <Route path={TopLevelRoutePath._Landing} element={<RedirectToWelcomeSite />} />
+        {/* Public routes - accessible without authentication */}
+        <Route
+          path="/public/whiteboard/:whiteboardId"
+          element={
+            <WithApmTransaction path="/public/whiteboard/:whiteboardId">
+              <Suspense fallback={<Loading />}>
+                <PublicWhiteboardPage />
+              </Suspense>
+            </WithApmTransaction>
+          }
+        />
         {IdentityRoute()}
         {devRoute()}
         <Route

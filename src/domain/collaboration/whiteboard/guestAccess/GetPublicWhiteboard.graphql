@@ -1,0 +1,30 @@
+query GetPublicWhiteboard($whiteboardId: UUID!) {
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...PublicWhiteboardFragment
+    }
+  }
+}
+
+fragment PublicWhiteboardFragment on Whiteboard {
+  id
+  content
+  guestContributionsAllowed
+  profile {
+    id
+    displayName
+    description
+    url
+    storageBucket {
+      id
+    }
+  }
+  createdBy {
+    id
+    profile {
+      displayName
+    }
+  }
+  createdDate
+  updatedDate
+}
