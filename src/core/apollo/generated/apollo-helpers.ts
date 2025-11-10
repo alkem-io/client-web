@@ -681,6 +681,7 @@ export type CalloutContributionKeySpecifier = (
   | 'createdDate'
   | 'id'
   | 'link'
+  | 'memo'
   | 'post'
   | 'sortOrder'
   | 'updatedDate'
@@ -693,6 +694,7 @@ export type CalloutContributionFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1564,13 +1566,6 @@ export type InAppNotificationPayloadKeySpecifier = ('type' | InAppNotificationPa
 export type InAppNotificationPayloadFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type InAppNotificationPayloadOrganizationKeySpecifier = (
-  | 'type'
-  | InAppNotificationPayloadOrganizationKeySpecifier
-)[];
-export type InAppNotificationPayloadOrganizationFieldPolicy = {
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type InAppNotificationPayloadOrganizationMessageDirectKeySpecifier = (
   | 'message'
   | 'organization'
@@ -1593,10 +1588,6 @@ export type InAppNotificationPayloadOrganizationMessageRoomFieldPolicy = {
   comment?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   roomID?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type InAppNotificationPayloadPlatformKeySpecifier = ('type' | InAppNotificationPayloadPlatformKeySpecifier)[];
-export type InAppNotificationPayloadPlatformFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformForumDiscussionKeySpecifier = (
@@ -1797,14 +1788,12 @@ export type InAppNotificationPayloadVirtualContributorKeySpecifier = (
   | 'contributor'
   | 'space'
   | 'type'
-  | 'virtualContributorID'
   | InAppNotificationPayloadVirtualContributorKeySpecifier
 )[];
 export type InAppNotificationPayloadVirtualContributorFieldPolicy = {
   contributor?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-  virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationFlowKeySpecifier = (
   | 'authorization'
@@ -4385,6 +4374,7 @@ export type UrlResolverQueryResultCalloutsSetKeySpecifier = (
   | 'calloutId'
   | 'contributionId'
   | 'id'
+  | 'memoId'
   | 'postId'
   | 'type'
   | 'whiteboardId'
@@ -4394,6 +4384,7 @@ export type UrlResolverQueryResultCalloutsSetFieldPolicy = {
   calloutId?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionId?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  memoId?: FieldPolicy<any> | FieldReadFunction<any>;
   postId?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardId?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5480,13 +5471,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | InAppNotificationPayloadKeySpecifier | (() => undefined | InAppNotificationPayloadKeySpecifier);
     fields?: InAppNotificationPayloadFieldPolicy;
   };
-  InAppNotificationPayloadOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | InAppNotificationPayloadOrganizationKeySpecifier
-      | (() => undefined | InAppNotificationPayloadOrganizationKeySpecifier);
-    fields?: InAppNotificationPayloadOrganizationFieldPolicy;
-  };
   InAppNotificationPayloadOrganizationMessageDirect?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5500,13 +5484,6 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadOrganizationMessageRoomKeySpecifier
       | (() => undefined | InAppNotificationPayloadOrganizationMessageRoomKeySpecifier);
     fields?: InAppNotificationPayloadOrganizationMessageRoomFieldPolicy;
-  };
-  InAppNotificationPayloadPlatform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | InAppNotificationPayloadPlatformKeySpecifier
-      | (() => undefined | InAppNotificationPayloadPlatformKeySpecifier);
-    fields?: InAppNotificationPayloadPlatformFieldPolicy;
   };
   InAppNotificationPayloadPlatformForumDiscussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

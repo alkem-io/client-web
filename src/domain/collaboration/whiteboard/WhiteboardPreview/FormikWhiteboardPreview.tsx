@@ -15,6 +15,7 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import { DefaultWhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 export interface FormikWhiteboardPreviewRef {
   openEditDialog: () => void;
@@ -26,7 +27,7 @@ interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Whiteboard content
   previewImagesName?: string; // Formik fieldName of the preview images. Will only be set if this argument is passed
   previewSettingsName?: string; // Formik fieldName of the preview settings. Will only be set if this argument is passed
-  previewSettingsDimensions?: PreviewImageDimensions;
+  previewImagesSettings?: { visualType: VisualType; dimensions: PreviewImageDimensions }[];
   canEdit: boolean;
   editButton?: ReactNode; // Optional custom edit button.
   onChangeContent?: (content: string, previewImages?: WhiteboardPreviewImage[]) => void;
@@ -47,7 +48,7 @@ const FormikWhiteboardPreview = ({
   name = 'content',
   previewImagesName,
   previewSettingsName,
-  previewSettingsDimensions,
+  previewImagesSettings,
   canEdit,
   editButton,
   onChangeContent,
@@ -184,7 +185,7 @@ const FormikWhiteboardPreview = ({
                     </>
                   ),
                   previewSettingsDialogOpen,
-                  previewSettingsDimensions,
+                  previewImagesSettings,
                   allowFilesAttached: true,
                   dialogTitle: (
                     <BlockTitle display="flex" alignItems="center">

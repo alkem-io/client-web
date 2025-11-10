@@ -45,9 +45,9 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
         .filter(
           contribution =>
             // TODO: #8441
-            // Due to a bug we have deleted contributions in the database that don't have any of thes: post, link, or whiteboard
+            // Due to a bug we have deleted contributions in the database that don't have any of these: post, link, whiteboard, or memo
             // Filter them here for now
-            contribution.post || contribution.link || contribution.whiteboard
+            contribution.post || contribution.link || contribution.whiteboard || contribution.memo
         )
         .map<CalloutContributionsSortItem>(contribution => ({
           id: contribution.id,
@@ -55,6 +55,7 @@ const CalloutContributionsSortDialog = ({ open, onClose, callout }: CalloutContr
             contribution.post?.profile.displayName ??
             contribution.link?.profile.displayName ??
             contribution.whiteboard?.profile.displayName ??
+            contribution.memo?.profile.displayName ??
             '',
           commentsCount: contribution.post?.comments?.messagesCount,
           sortOrder: contribution.sortOrder,

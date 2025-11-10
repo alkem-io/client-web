@@ -48,6 +48,8 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
         return ContributionsSettingsPost;
       case CalloutContributionType.Whiteboard:
         return ContributionsSettingsWhiteboard;
+      case CalloutContributionType.Memo:
+        return ContributionsSettingsPost; // Memo uses same settings as Post
       default:
         return undefined;
     }
@@ -61,7 +63,8 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
 
     switch (allowedTypesField.value) {
       case CalloutContributionType.Link:
-      case CalloutContributionType.Whiteboard: {
+      case CalloutContributionType.Whiteboard:
+      case CalloutContributionType.Memo: {
         result.commentsEnabled = false;
       }
     }
@@ -122,6 +125,15 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
                 tooltip: calloutRestrictions?.readOnlyAllowedTypes
                   ? disabledTooltip
                   : t('callout.create.contributionSettings.contributionTypes.post.tooltip'),
+              },
+              {
+                icon: contributionIcons[CalloutContributionType.Memo],
+                value: CalloutContributionType.Memo,
+                label: t('callout.create.contributionSettings.contributionTypes.memo.title'),
+                tooltip: calloutRestrictions?.readOnlyAllowedTypes
+                  ? disabledTooltip
+                  : t('callout.create.contributionSettings.contributionTypes.memo.tooltip'),
+                disabled: calloutRestrictions?.disableMemos,
               },
               {
                 icon: contributionIcons[CalloutContributionType.Whiteboard],
