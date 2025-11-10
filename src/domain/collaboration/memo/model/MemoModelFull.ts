@@ -4,6 +4,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface MemoModelFull {
   id: string;
+  markdown?: string;
   contentUpdatePolicy?: ContentUpdatePolicy;
   authorization?: {
     myPrivileges?: AuthorizationPrivilege[];

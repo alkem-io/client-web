@@ -74,6 +74,12 @@ fragment InAppNotificationAllTypes on InAppNotification {
     ... on InAppNotificationPayloadVirtualContributor {
       ...InAppNotificationPayloadVirtualContributor
     }
+    ... on InAppNotificationPayloadSpaceCommunityCalendarEvent {
+      ...InAppNotificationPayloadSpaceCommunityCalendarEvent
+    }
+    ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
+      ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
+    }
   }
 }
 
@@ -146,7 +152,7 @@ fragment InAppNotificationUserMentioned on InAppNotificationPayloadPlatformUserM
 
 fragment InAppNotificationPayloadOrganizationMessageDirect on InAppNotificationPayloadOrganizationMessageDirect {
   organizationMessage: message
-  organization {
+  nullableOrganization: organization {
     id
     profile {
       id
@@ -349,6 +355,36 @@ fragment InAppNotificationPayloadSpaceCollaborationCalloutPostComment on InAppNo
         displayName
         url
       }
+    }
+  }
+}
+
+fragment InAppNotificationPayloadSpaceCommunityCalendarEvent on InAppNotificationPayloadSpaceCommunityCalendarEvent {
+  space {
+    ...spaceNotification
+  }
+  calendarEvent {
+    id
+    type
+    profile {
+      id
+      displayName
+      url
+    }
+  }
+}
+
+fragment InAppNotificationPayloadSpaceCommunityCalendarEventComment on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
+  space {
+    ...spaceNotification
+  }
+  calendarEvent {
+    id
+    type
+    profile {
+      id
+      displayName
+      url
     }
   }
 }

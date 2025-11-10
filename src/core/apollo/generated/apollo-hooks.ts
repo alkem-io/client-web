@@ -694,6 +694,17 @@ export const WhiteboardProfileFragmentDoc = gql`
   ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
+export const WhiteboardPreviewSettingsFragmentDoc = gql`
+  fragment whiteboardPreviewSettings on WhiteboardPreviewSettings {
+    mode
+    coordinates {
+      x
+      y
+      width
+      height
+    }
+  }
+`;
 export const WhiteboardDetailsFragmentDoc = gql`
   fragment WhiteboardDetails on Whiteboard {
     id
@@ -724,17 +735,12 @@ export const WhiteboardDetailsFragmentDoc = gql`
       }
     }
     previewSettings {
-      mode
-      coordinates {
-        x
-        y
-        width
-        height
-      }
+      ...whiteboardPreviewSettings
     }
   }
   ${WhiteboardProfileFragmentDoc}
   ${VisualModelFragmentDoc}
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export const MemoProfileFragmentDoc = gql`
   fragment MemoProfile on Profile {
@@ -1524,6 +1530,10 @@ export const UserSettingsFragmentFragmentDoc = gql`
           inApp
         }
         collaborationCalloutPostContributionComment {
+          email
+          inApp
+        }
+        communityCalendarEvents {
           email
           inApp
         }
@@ -2579,7 +2589,11 @@ export const WhiteboardTemplateContentFragmentDoc = gql`
       }
     }
     content
+    previewSettings {
+      ...whiteboardPreviewSettings
+    }
   }
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export const TemplateProfileInfoFragmentDoc = gql`
   fragment TemplateProfileInfo on Template {
@@ -2791,7 +2805,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
 export const InAppNotificationPayloadOrganizationMessageDirectFragmentDoc = gql`
   fragment InAppNotificationPayloadOrganizationMessageDirect on InAppNotificationPayloadOrganizationMessageDirect {
     organizationMessage: message
-    organization {
+    nullableOrganization: organization {
       id
       profile {
         id
@@ -3105,6 +3119,40 @@ export const InAppNotificationPayloadVirtualContributorFragmentDoc = gql`
   ${SpaceNotificationFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
+export const InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunityCalendarEvent on InAppNotificationPayloadSpaceCommunityCalendarEvent {
+    space {
+      ...spaceNotification
+    }
+    calendarEvent {
+      id
+      type
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
+export const InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc = gql`
+  fragment InAppNotificationPayloadSpaceCommunityCalendarEventComment on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
+    space {
+      ...spaceNotification
+    }
+    calendarEvent {
+      id
+      type
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
+  ${SpaceNotificationFragmentDoc}
+`;
 export const InAppNotificationAllTypesFragmentDoc = gql`
   fragment InAppNotificationAllTypes on InAppNotification {
     id
@@ -3182,6 +3230,12 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
       ... on InAppNotificationPayloadVirtualContributor {
         ...InAppNotificationPayloadVirtualContributor
       }
+      ... on InAppNotificationPayloadSpaceCommunityCalendarEvent {
+        ...InAppNotificationPayloadSpaceCommunityCalendarEvent
+      }
+      ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
+        ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
+      }
     }
   }
   ${VisualModelFragmentDoc}
@@ -3204,6 +3258,8 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
   ${InAppNotificationPayloadSpaceCollaborationCalloutCommentFragmentDoc}
   ${InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc}
   ${InAppNotificationPayloadVirtualContributorFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc}
+  ${InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc}
 `;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
@@ -6819,6 +6875,9 @@ export const CalloutContentDocument = gql`
               }
             }
             content
+            previewSettings {
+              ...whiteboardPreviewSettings
+            }
           }
           memo {
             id
@@ -6851,6 +6910,7 @@ export const CalloutContentDocument = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
+  ${WhiteboardPreviewSettingsFragmentDoc}
   ${LinkDetailsFragmentDoc}
   ${CalloutSettingsFullFragmentDoc}
 `;
@@ -8965,16 +9025,11 @@ export const UpdateWhiteboardPreviewSettingsDocument = gql`
     updateWhiteboard(whiteboardData: { ID: $whiteboardId, previewSettings: $previewSettings }) {
       id
       previewSettings {
-        mode
-        coordinates {
-          x
-          y
-          width
-          height
-        }
+        ...whiteboardPreviewSettings
       }
     }
   }
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export type UpdateWhiteboardPreviewSettingsMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
@@ -9240,8 +9295,12 @@ export const UpdateWhiteboardDocument = gql`
         id
         displayName
       }
+      previewSettings {
+        ...whiteboardPreviewSettings
+      }
     }
   }
+  ${WhiteboardPreviewSettingsFragmentDoc}
 `;
 export type UpdateWhiteboardMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateWhiteboardMutation,
@@ -13446,6 +13505,10 @@ export const UpdateUserSettingsDocument = gql`
               email
               inApp
             }
+            communityCalendarEvents {
+              email
+              inApp
+            }
             admin {
               communityApplicationReceived {
                 email
@@ -13800,6 +13863,48 @@ export const AiPersonaDocument = gql`
           assistantId
           model
         }
+        promptGraph {
+          start
+          end
+          edges {
+            from
+            to
+          }
+          state {
+            title
+            type
+            properties {
+              description
+              name
+              type
+              optional
+              items {
+                title
+                type
+                properties {
+                  name
+                  type
+                }
+              }
+            }
+          }
+          nodes {
+            input_variables
+            name
+            prompt
+            system
+            output {
+              title
+              type
+              properties {
+                description
+                name
+                type
+                optional
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -13878,6 +13983,7 @@ export const VirtualContributorDocument = gql`
         aiPersona {
           id
           engine
+          prompt
         }
         profile {
           id
@@ -14469,6 +14575,40 @@ export const UpdateAiPersonaDocument = gql`
     aiServerUpdateAiPersona(aiPersonaData: $aiPersonaData) {
       id
       prompt
+      promptGraph {
+        start
+        end
+        edges {
+          from
+          to
+        }
+        state {
+          title
+          type
+          properties {
+            description
+            name
+            type
+            optional
+          }
+        }
+        nodes {
+          input_variables
+          name
+          prompt
+          system
+          output {
+            title
+            type
+            properties {
+              description
+              name
+              type
+              optional
+            }
+          }
+        }
+      }
       externalConfig {
         apiKey
       }
