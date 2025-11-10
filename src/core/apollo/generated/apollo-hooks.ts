@@ -2824,7 +2824,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
 export const InAppNotificationPayloadOrganizationMessageDirectFragmentDoc = gql`
   fragment InAppNotificationPayloadOrganizationMessageDirect on InAppNotificationPayloadOrganizationMessageDirect {
     organizationMessage: message
-    organization {
+    nullableOrganization: organization {
       id
       profile {
         id
