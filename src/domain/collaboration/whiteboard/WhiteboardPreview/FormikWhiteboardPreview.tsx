@@ -15,7 +15,8 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import { DefaultWhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
+import { isEqual } from 'lodash';
 
 export interface FormikWhiteboardPreviewRef {
   openEditDialog: () => void;
@@ -28,6 +29,7 @@ interface FormikWhiteboardPreviewProps extends BoxProps {
   previewImagesName?: string; // Formik fieldName of the preview images. Will only be set if this argument is passed
   previewSettingsName?: string; // Formik fieldName of the preview settings. Will only be set if this argument is passed
   previewImagesSettings?: { visualType: VisualType; dimensions: PreviewImageDimensions }[];
+  initialPreviewSettings?: WhiteboardPreviewSettings;
   canEdit: boolean;
   editButton?: ReactNode; // Optional custom edit button.
   onChangeContent?: (content: string, previewImages?: WhiteboardPreviewImage[]) => void;
@@ -49,6 +51,7 @@ const FormikWhiteboardPreview = ({
   previewImagesName,
   previewSettingsName,
   previewImagesSettings,
+  initialPreviewSettings,
   canEdit,
   editButton,
   onChangeContent,
@@ -156,12 +159,36 @@ const FormikWhiteboardPreview = ({
                   onCancel: handleClose,
                   onUpdate: async (whiteboard, previewImages) => {
                     whiteboardContentField.setValue(whiteboard.content);
+                    console.log(
+                      'onUpdate',
+                      whiteboard,
+                      previewImages,
+                      whiteboard.previewSettings.mode,
+                      previewSettingsField.value?.mode,
+                      whiteboardFromTemplate.previewSettings.mode,
+                      initialPreviewSettings?.mode
+                    );
                     if (previewImagesName) {
-                      previewImagesField.setValue(previewImages);
+                      console.log('updating preview images...');
+                      if (
+                        !isEqual(whiteboard.previewSettings, initialPreviewSettings) ||
+                        whiteboard.previewSettings.mode !== WhiteboardPreviewMode.Fixed
+                      ) {
+                        // Set the preview images only if the preview settings have recently changed or if not in Fixed mode
+                        previewImagesField.setValue(previewImages);
+                        console.log('updated', previewImages);
+                      } else {
+                        console.log('not updating preview images, settings unchanged and in Fixed mode');
+                      }
                     }
                     if (previewSettingsName) {
+                      console.log('set preview settings', {
+                        new: whiteboard.previewSettings,
+                        old: previewSettingsField.value,
+                      });
                       previewSettingsFieldHelpers.setValue(whiteboard.previewSettings);
                     }
+
                     onChangeContent?.(whiteboard.content, previewImages);
                     setEditDialogOpen(false);
                   },

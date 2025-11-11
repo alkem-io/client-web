@@ -17,6 +17,8 @@ import {
   WhiteboardPreviewSettings,
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { CardVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
+import { useMemo } from 'react';
+import { cloneDeep } from 'lodash';
 
 interface TemplateContentWhiteboard {
   content: string;
@@ -52,6 +54,9 @@ const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhitebo
       previewSettings: template.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
     },
   };
+  const initialPreviewSettings = useMemo(() => {
+    return cloneDeep(initialValues.whiteboard?.previewSettings);
+  }, [template.whiteboard?.previewSettings]);
 
   return (
     <TemplateFormBase
@@ -66,6 +71,7 @@ const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhitebo
         name="whiteboard.content"
         previewImagesName="whiteboardPreviewImages"
         previewSettingsName="whiteboard.previewSettings"
+        initialPreviewSettings={initialPreviewSettings}
         previewImagesSettings={[{ visualType: VisualType.Card, dimensions: CardVisualDimensions }]}
         maxHeight={gutters(20)}
         canEdit
