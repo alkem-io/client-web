@@ -2087,8 +2087,8 @@
           "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
         },
         "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
-          "subject": "New comment on {{type}}: {{eventTitle}}",
-          "description": "{{triggeredByName}} left a comment on the {{eventTitle}} in the {{spaceName}} calendar"
+          "subject": "New $t(common.comment) on {{type}}: {{eventTitle}}",
+          "description": "{{triggeredByName}} left a $t(common.comment) on the {{eventTitle}} in the {{spaceName}} calendar"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
@@ -3010,7 +3010,7 @@
       "restartCollaboration": "Continue Editing",
       "previewSettings": {
         "title": "Preview Settings",
-        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
+        "subtitle": "Choose how your whiteboard preview appears in posts and $t(common.spaces).",
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
         "modes": {
           "AUTO": {
@@ -3601,7 +3601,7 @@
         "text": "{{displayName}}'s avatar: {{altText}}"
       },
       "innovationPack": {
-        "text": "{{displayName}}'s innovation pack avatar: {{altText}}"
+        "text": "{{displayName}}'s $t(common.innovationPack) avatar: {{altText}}"
       }
     }
   },
