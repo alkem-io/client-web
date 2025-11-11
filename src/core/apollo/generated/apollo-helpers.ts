@@ -681,6 +681,7 @@ export type CalloutContributionKeySpecifier = (
   | 'createdDate'
   | 'id'
   | 'link'
+  | 'memo'
   | 'post'
   | 'sortOrder'
   | 'updatedDate'
@@ -693,6 +694,7 @@ export type CalloutContributionFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4372,6 +4374,7 @@ export type UrlResolverQueryResultCalloutsSetKeySpecifier = (
   | 'calloutId'
   | 'contributionId'
   | 'id'
+  | 'memoId'
   | 'postId'
   | 'type'
   | 'whiteboardId'
@@ -4381,6 +4384,7 @@ export type UrlResolverQueryResultCalloutsSetFieldPolicy = {
   calloutId?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionId?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  memoId?: FieldPolicy<any> | FieldReadFunction<any>;
   postId?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardId?: FieldPolicy<any> | FieldReadFunction<any>;

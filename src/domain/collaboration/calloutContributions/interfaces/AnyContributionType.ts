@@ -34,6 +34,20 @@ export type AnyContribution = Identifiable & {
       };
     };
   };
+  memo?: {
+    id: string;
+    createdDate: Date;
+    createdBy?: {
+      id: string;
+      profile: { displayName: string };
+    };
+    profile: {
+      id: string;
+      url: string;
+      displayName: string;
+    };
+    markdown?: string;
+  };
   post?: {
     id: string;
     createdDate: Date;

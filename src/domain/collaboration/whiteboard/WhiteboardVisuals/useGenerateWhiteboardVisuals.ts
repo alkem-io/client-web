@@ -20,15 +20,40 @@ interface WhiteboardWithPreviewImageDimensions {
   };
   previewSettings: WhiteboardPreviewSettings;
 }
+
+interface VisualRequest {
+  visualType: VisualType;
+  dimensions: PreviewImageDimensions;
+}
+
+const DefaultVisualsRequested: VisualRequest[] = [
+  // By default, generate both a whiteboard preview and a card preview
+  {
+    visualType: VisualType.WhiteboardPreview,
+    dimensions: WhiteboardPreviewVisualDimensions,
+  },
+  {
+    visualType: VisualType.Card,
+    dimensions: CardVisualDimensions,
+  },
+] as const;
+
 const useGenerateWhiteboardVisuals = (excalidrawAPI?: ExcalidrawImperativeAPI | null) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
   const generateWhiteboardVisuals = async <Whiteboard extends WhiteboardWithPreviewImageDimensions>(
     whiteboard: Whiteboard,
-    force: boolean = false
+    force: boolean = false,
+    /**
+     * Always put the biggest visual first in the array, as the rest will be crops of it
+     */
+    visualsRequested: VisualRequest[] = DefaultVisualsRequested
   ): Promise<WhiteboardPreviewImage[] | undefined> => {
     if (!excalidrawAPI || !whiteboard) {
+      return;
+    }
+    if (visualsRequested.length === 0) {
       return;
     }
     // Skip generation if not forced and mode is Fixed
@@ -46,46 +71,49 @@ const useGenerateWhiteboardVisuals = (excalidrawAPI?: ExcalidrawImperativeAPI | 
       return;
     }
 
+    const [originalPreviewSettings, ...restPreviewsSettings] = visualsRequested;
+
     let cropConfig: CropConfig | undefined;
     if (
       whiteboard.previewSettings.mode !== WhiteboardPreviewMode.Auto &&
-      validateCropConfig(whiteboard.previewSettings.coordinates, WhiteboardPreviewVisualDimensions.aspectRatio, image)
+      validateCropConfig(whiteboard.previewSettings.coordinates, originalPreviewSettings.dimensions.aspectRatio, image)
     ) {
       cropConfig = whiteboard.previewSettings.coordinates;
     } else {
       cropConfig = getDefaultCropConfigForWhiteboardPreview(
         image.width,
         image.height,
-        WhiteboardPreviewVisualDimensions.aspectRatio
+        originalPreviewSettings.dimensions.aspectRatio
       );
     }
 
-    const whiteboardPreview = resizeImage(cropImage(image, cropConfig), WhiteboardPreviewVisualDimensions);
-
-    const whiteboardPreviewBlob = await toBlobPromise(whiteboardPreview, { type: 'image/png' }).catch(ex => {
+    const originalPreview = resizeImage(cropImage(image, cropConfig), originalPreviewSettings.dimensions);
+    const originalPreviewBlob = await toBlobPromise(originalPreview, { type: 'image/png' }).catch(ex => {
       logError(new Error('Error generating whiteboard preview image blob.', { cause: ex }));
       notify(t('pages.whiteboard.preview.errorGeneratingPreview'), 'error');
       return null;
     });
-
-    const cardPreview = resizeImage(whiteboardPreview, CardVisualDimensions);
-    const cardPreviewBlob = await toBlobPromise(cardPreview, { type: 'image/png' }).catch(ex => {
-      logError(new Error('Error generating card preview image blob.', { cause: ex }));
-      notify(t('pages.whiteboard.preview.errorGeneratingPreview'), 'error');
-      return null;
-    });
-
-    if (whiteboardPreviewBlob) {
+    if (originalPreviewBlob) {
       previewImages.push({
-        visualType: VisualType.WhiteboardPreview,
-        imageData: whiteboardPreviewBlob,
+        visualType: originalPreviewSettings.visualType,
+        imageData: originalPreviewBlob,
       });
     }
-    if (cardPreviewBlob) {
-      previewImages.push({
-        visualType: VisualType.Card,
-        imageData: cardPreviewBlob,
+
+    for (const previewSetting of restPreviewsSettings) {
+      // Generate cropped/resized versions for the rest of the requested visuals
+      const preview = resizeImage(originalPreview, previewSetting.dimensions);
+      const previewBlob = await toBlobPromise(preview, { type: 'image/png' }).catch(ex => {
+        logError(new Error(`Error generating ${previewSetting.visualType} image blob.`, { cause: ex }));
+        notify(t('pages.whiteboard.preview.errorGeneratingPreview'), 'error');
+        return null;
       });
+      if (previewBlob) {
+        previewImages.push({
+          visualType: previewSetting.visualType,
+          imageData: previewBlob,
+        });
+      }
     }
 
     return previewImages;
