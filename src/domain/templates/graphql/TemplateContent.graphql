@@ -184,6 +184,11 @@ fragment SpaceTemplateContent_Collaboration on Collaboration {
           }
         }
       }
+      settings {
+        contribution {
+          allowedTypes
+        }
+      }
       sortOrder
     }
   }

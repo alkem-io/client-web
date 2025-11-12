@@ -6,7 +6,57 @@
 
 ---
 
-## ✅ Completed Code Changes (8 tasks)
+## ✅ Completed Code Changes (10 tasks)
+
+### Phase 2: Foundational
+
+- **T004** ✅ Updated `Callout` fragment in `CalloutsSetQueries.graphql`
+  - Added `settings { contribution { allowedTypes } }` field
+  - File: `src/domain/collaboration/calloutsSet/useCalloutsSet/CalloutsSetQueries.graphql`
+
+### Phase 3: User Story 1 - Visual Callout Type Recognition
+
+- **T008** ✅ Updated `CalloutIconProps` interface
+  - Changed from `contributionType?: CalloutContributionType` to `allowedTypes?: CalloutContributionType[]`
+  - File: `src/domain/collaboration/callout/icons/calloutIcons.ts`
+
+- **T009** ✅ Updated `getCalloutIconBasedOnType` function
+  - Now accepts `allowedTypes` array
+  - Uses `allowedTypes[0]` when framing is None
+  - Maintains precedence: Framing > Contribution > Post
+  - File: `src/domain/collaboration/callout/icons/calloutIcons.ts`
+
+- **T010** ✅ Updated `getCalloutIconLabelKey` function
+  - Now accepts `allowedTypes` array
+  - Uses `allowedTypes[0]` for i18n key selection
+  - File: `src/domain/collaboration/callout/icons/calloutIcons.ts`
+
+- **T011** ✅ Updated `CalloutIcon` component
+  - Passes `allowedTypes` to both icon and label functions
+  - File: `src/domain/collaboration/callout/icons/calloutIcons.ts`
+
+- **T011b** ✅ Exported `getCalloutIcon()` function (additional work)
+  - Returns icon component without styling/tooltips for wrapper components
+  - File: `src/domain/collaboration/callout/icons/calloutIcons.ts`
+
+- **T012** ✅ Updated `CalloutsList.tsx` component
+  - Passes `allowedTypes={callout.settings?.contribution?.allowedTypes}` to CalloutIcon
+  - File: `src/domain/collaboration/callout/calloutsList/CalloutsList.tsx`
+
+- **T013** ✅ Added icon sizing
+  - Added `fontSize: 'small'` to iconProps for 20px icons
+  - File: `src/domain/collaboration/callout/calloutsList/CalloutsList.tsx`
+
+- **T014** ✅ Updated Innovation Flow components (with manual adjustments)
+  - InnovationFlowCollaborationToolsBlock: CalloutIcon with flexbox layout
+  - InnovationFlowCalloutsPreview: getCalloutIcon with RoundedIcon wrapper
+  - Files: `InnovationFlowCollaborationToolsBlock.tsx`, `InnovationFlowCalloutsPreview.tsx`
+
+### Phase 6: User Story 4 - Consistent Visual Alignment
+
+- **T023** ✅ Reduced spacing
+  - Added `sx={{ minWidth: theme.spacing(4) }}` to ListItemIcon (32px down from default 56px)
+  - File: `src/domain/collaboration/callout/calloutsList/CalloutsList.tsx`
 
 ### Phase 2: Foundational
 
@@ -141,14 +191,17 @@ Navigate to a page with callouts and verify:
 
 - `src/domain/collaboration/callout/icons/calloutIcons.ts`
   - Updated interface, functions, and component to use `allowedTypes[]`
+  - **NEW**: Exported `getCalloutIcon()` function
+    - Returns icon component without styling/tooltips: `ComponentType<SvgIconProps>`
+    - Used by components wrapping icons (e.g., RoundedIcon)
 
-### 3. UI Components (2 files)
+### 3. UI Components (3 files)
 
 - `src/domain/collaboration/callout/calloutsList/CalloutsList.tsx`
   - Updated to pass `allowedTypes`, `fontSize: 'small'`, and reduced spacing
 
 - `src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowCollaborationToolsBlock.tsx`
-  - **Manual changes applied by developer**:
+  - **Manual changes applied**:
     - Updated to use `CalloutIcon` with dynamic `framingType` and `allowedTypes`
     - Changed `Icon` prop type from `Component` to `ReactNode` for proper JSX typing
     - Updated ListItem to render Icon as ReactNode (`{Icon}`) instead of component (`<Icon />`)
@@ -158,7 +211,14 @@ Navigate to a page with callouts and verify:
     - Added `fontSize: 'small'` to CalloutIcon for 20px sizing
     - Added `tooltip` prop to CalloutIcon for accessibility
 
-**Total**: 4 files modified
+- `src/domain/collaboration/InnovationFlow/InnovationFlowCalloutsPreview.tsx`
+  - **Manual changes applied**:
+    - Import changed from `GenericCalloutIcon` to `getCalloutIcon`
+    - Updated RoundedIcon to use `getCalloutIcon(callout.framing.type, callout.settings?.contribution?.allowedTypes)`
+    - Now dynamically displays icons based on callout framing type and allowed contribution types
+    - Uses exported function (not CalloutIcon component) due to RoundedIcon wrapper requirements
+
+**Total**: 5 files modified
 
 ---
 

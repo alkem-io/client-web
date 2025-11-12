@@ -1,12 +1,18 @@
-# Manual Changes: InnovationFlowCollaborationToolsBlock
+# Manual Changes: Innovation Flow Components
 
-**File**: `src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowCollaborationToolsBlock.tsx`
+**Files**:
+
+- `src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowCollaborationToolsBlock.tsx`
+- `src/domain/collaboration/InnovationFlow/InnovationFlowCalloutsPreview.tsx`
+
 **Date**: November 12, 2025
-**Reason**: Fix icon display in Innovation Flow settings dialog
+**Reason**: Fix icon display in Innovation Flow dialogs and preview
 
 ---
 
-## Changes Applied
+## Part 1: InnovationFlowCollaborationToolsBlock
+
+### Changes Applied
 
 ### 1. Import Updates
 
@@ -268,3 +274,152 @@ If you want full dynamic icons in Innovation Flow settings, update the GraphQL q
 2. Ensure the GraphQL query fetches these fields (may require updating the query/fragment)
 
 Currently, the component is prepared to accept this data but defaults to `CalloutFramingType.None` when not available.
+
+---
+
+## Part 2: InnovationFlowCalloutsPreview
+
+**File**: `src/domain/collaboration/InnovationFlow/InnovationFlowCalloutsPreview.tsx`
+
+### Changes Applied
+
+#### 1. Import Update
+
+**Before**:
+
+```typescript
+import { GenericCalloutIcon } from '../callout/icons/calloutIcons';
+```
+
+**After**:
+
+```typescript
+import { getCalloutIcon } from '../callout/icons/calloutIcons';
+```
+
+**Reason**: Need to use the exported function that returns the icon component without styling/tooltips, as RoundedIcon wrapper handles its own styling.
+
+#### 2. Icon Component Integration
+
+**Before**:
+
+```typescript
+<AccordionSummary expandIcon={<ExpandMoreIcon />}>
+  <RoundedIcon size="small" component={GenericCalloutIcon} />
+  <Text marginLeft={gutters()}>{callout.framing.profile.displayName}</Text>
+</AccordionSummary>
+```
+
+**After**:
+
+```typescript
+<AccordionSummary expandIcon={<ExpandMoreIcon />}>
+  <RoundedIcon
+    size="small"
+    component={getCalloutIcon(callout.framing.type, callout.settings?.contribution?.allowedTypes)}
+  />
+  <Text marginLeft={gutters()}>{callout.framing.profile.displayName}</Text>
+</AccordionSummary>
+```
+
+**Key Changes**:
+
+- Replaced static `GenericCalloutIcon` with dynamic `getCalloutIcon()` function call
+- Passes `callout.framing.type` for icon selection based on framing
+- Passes `callout.settings?.contribution?.allowedTypes` for icon selection when no framing
+- Icon now dynamically reflects callout type (Memo, Whiteboard, Link, or Post)
+
+### Why getCalloutIcon() Instead of CalloutIcon Component?
+
+**Component Wrapper Requirement**: `RoundedIcon` expects a component type, not a JSX element:
+
+```typescript
+// RoundedIcon expects:
+component: ComponentType<SvgIconProps>
+
+// CalloutIcon returns:
+JSX.Element (cannot pass to component prop)
+
+// getCalloutIcon returns:
+ComponentType<SvgIconProps> (perfect for RoundedIcon)
+```
+
+**Solution**: The new `getCalloutIcon()` export provides exactly what RoundedIcon needs - a bare icon component without any wrapper styling or tooltips.
+
+### Result
+
+#### Visual Changes
+
+- ✅ Icons dynamically reflect callout type in Innovation Flow preview
+- ✅ Memo callouts show Memo icon
+- ✅ Whiteboard callouts show Whiteboard icon
+- ✅ Link callouts show Link/CTA icon
+- ✅ Generic callouts show Post icon
+- ✅ Icons properly sized via RoundedIcon wrapper
+
+#### Code Quality
+
+- ✅ Type-safe (uses exported function)
+- ✅ Follows icon precedence rule (Framing > Contribution > Post)
+- ✅ Consistent with other callout displays
+- ✅ No breaking changes to accordion behavior
+
+### Testing Checklist
+
+After these changes, verify:
+
+- [ ] Icons in Innovation Flow preview match callout types
+- [ ] Memo callouts show Memo icon (not generic)
+- [ ] Whiteboard callouts show Whiteboard icon with preview
+- [ ] Link callouts show appropriate icon
+- [ ] RoundedIcon wrapper styling preserved (small size, background circle)
+- [ ] Accordions expand/collapse correctly
+- [ ] WhiteboardPreview displays in expanded accordion
+- [ ] No TypeScript errors
+
+---
+
+## Summary: New Export Required
+
+### calloutIcons.ts Enhancement
+
+**New Export Added**:
+
+```typescript
+export const getCalloutIcon = (
+  framingType: CalloutFramingType,
+  allowedTypes?: CalloutContributionType[]
+): ComponentType<SvgIconProps> => {
+  return getCalloutIconBasedOnType(framingType, allowedTypes);
+};
+```
+
+**Purpose**: Provides icon component without styling/tooltips for components that wrap icons (like RoundedIcon).
+
+**Usage Pattern**:
+
+- Use `<CalloutIcon>` component when you want tooltips and standard styling
+- Use `getCalloutIcon()` function when passing to component wrappers
+
+**Consumers**:
+
+- ✅ InnovationFlowCalloutsPreview (RoundedIcon wrapper)
+- Future: Any component using icon wrappers that need component type
+
+---
+
+## Related Documentation
+
+- `IMPLEMENTATION.md` - Updated with both Innovation Flow file changes
+- `tasks.md` - Will be updated to reflect completion
+- `README.md` - References manual changes document
+
+---
+
+## Files Modified (Total: 5)
+
+1. ✅ `CalloutsSetQueries.graphql` - GraphQL fragment
+2. ✅ `calloutIcons.ts` - Icon logic + new getCalloutIcon export
+3. ✅ `CalloutsList.tsx` - Main callout list
+4. ✅ `InnovationFlowCollaborationToolsBlock.tsx` - Innovation Flow settings (manual)
+5. ✅ `InnovationFlowCalloutsPreview.tsx` - Innovation Flow preview (manual)

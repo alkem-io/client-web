@@ -27692,6 +27692,13 @@ export type TemplateContentQuery = {
                             }
                           | undefined;
                       };
+                      settings: {
+                        __typename?: 'CalloutSettings';
+                        contribution: {
+                          __typename?: 'CalloutSettingsContribution';
+                          allowedTypes: Array<CalloutContributionType>;
+                        };
+                      };
                     }>;
                   };
                 };
@@ -27868,6 +27875,13 @@ export type SpaceTemplateContentQuery = {
                         };
                       }
                     | undefined;
+                };
+                settings: {
+                  __typename?: 'CalloutSettings';
+                  contribution: {
+                    __typename?: 'CalloutSettingsContribution';
+                    allowedTypes: Array<CalloutContributionType>;
+                  };
                 };
               }>;
             };
@@ -28224,6 +28238,10 @@ export type SpaceTemplateContentFragment = {
               }
             | undefined;
         };
+        settings: {
+          __typename?: 'CalloutSettings';
+          contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+        };
       }>;
     };
   };
@@ -28359,6 +28377,10 @@ export type SpaceTemplateContent_CollaborationFragment = {
               };
             }
           | undefined;
+      };
+      settings: {
+        __typename?: 'CalloutSettings';
+        contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
       };
     }>;
   };

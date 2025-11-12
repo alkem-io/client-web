@@ -2514,6 +2514,11 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
             }
           }
         }
+        settings {
+          contribution {
+            allowedTypes
+          }
+        }
         sortOrder
       }
     }

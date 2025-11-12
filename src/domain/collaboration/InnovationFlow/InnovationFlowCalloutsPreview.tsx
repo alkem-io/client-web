@@ -8,7 +8,7 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Text, CaptionSmall } from '@/core/ui/typography';
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
 import { CalloutModelLight } from '../callout/models/CalloutModelLight';
-import { GenericCalloutIcon } from '../callout/icons/calloutIcons';
+import { getCalloutIconBasedOnType } from '../callout/icons/calloutIcons';
 
 export interface InnovationFlowCalloutsPreviewProps {
   selectedState: string | undefined;
@@ -67,7 +67,13 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
                 onChange={handleSelectedCalloutChange(callout.id)}
               >
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <RoundedIcon size="small" component={GenericCalloutIcon} />
+                  <RoundedIcon
+                    size="small"
+                    component={getCalloutIconBasedOnType(
+                      callout.framing.type,
+                      callout.settings?.contribution?.allowedTypes
+                    )}
+                  />
                   <Text marginLeft={gutters()}>{callout.framing.profile.displayName}</Text>
                 </AccordionSummary>
                 <AccordionDetails>

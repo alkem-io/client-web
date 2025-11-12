@@ -76,10 +76,13 @@ Based on plan.md structure: Single web application project with:
 - [x] T014 [US1] [React19] Check and update `CalloutCard.tsx` in `src/domain/collaboration/callout/calloutCard/CalloutCard.tsx` (if it displays icons) to pass `allowedTypes` prop and `fontSize: 'small'`
   - CalloutCard: No changes needed (uses static GenericCalloutIcon)
   - InnovationFlowCollaborationToolsBlock: Manual changes applied (see notes below)
+  - InnovationFlowCalloutsPreview: Manual changes applied (see notes below)
+  - calloutIcons.ts: Exported new `getCalloutIcon()` function for component wrappers
 - [ ] T015 [US1] Run `pnpm lint` to verify no TypeScript errors in updated files
 
-**Note on T014 - InnovationFlowCollaborationToolsBlock Manual Changes**:
-The following manual adjustments were required for proper icon display in Innovation Flow settings:
+**Note on T014 - Innovation Flow Components Manual Changes**:
+
+**InnovationFlowCollaborationToolsBlock**:
 
 - Changed `Icon` prop type from `Component` to `ReactNode` to accept JSX elements
 - Updated ListItem to render `{Icon}` instead of `<Icon />`
@@ -88,6 +91,18 @@ The following manual adjustments were required for proper icon display in Innova
 - Moved `Caption` to wrap only displayName and activity
 - Integrated `CalloutIcon` with dynamic `framingType={callout.framing?.type || CalloutFramingType.None}` and `allowedTypes={callout.settings?.contribution?.allowedTypes}`
 - Applied `fontSize: 'small'` and `tooltip` props for consistency
+
+**InnovationFlowCalloutsPreview**:
+
+- Import changed from `GenericCalloutIcon` to `getCalloutIcon`
+- Updated RoundedIcon to use `getCalloutIcon(callout.framing.type, callout.settings?.contribution?.allowedTypes)`
+- Now dynamically displays icons based on callout type (Memo, Whiteboard, Link, Post)
+- Uses `getCalloutIcon()` function instead of CalloutIcon component due to RoundedIcon wrapper requirements
+
+**calloutIcons.ts Enhancement**:
+
+- Exported new `getCalloutIcon()` function: `(framingType, allowedTypes?) => ComponentType<SvgIconProps>`
+- Provides bare icon component without styling/tooltips for wrapper components like RoundedIcon
 
 **Checkpoint**: Icon logic updated, icons display correctly based on type precedence, size is 20px
 

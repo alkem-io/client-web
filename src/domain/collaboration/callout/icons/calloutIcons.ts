@@ -26,7 +26,7 @@ export const contributionIcons: Record<CalloutContributionType, ComponentType<Sv
   [CalloutContributionType.Whiteboard]: WhiteboardIcon,
 };
 
-const getCalloutIconBasedOnType = (
+export const getCalloutIconBasedOnType = (
   framingType: CalloutFramingType,
   allowedTypes?: CalloutContributionType[]
 ): ComponentType<SvgIconProps> => {
