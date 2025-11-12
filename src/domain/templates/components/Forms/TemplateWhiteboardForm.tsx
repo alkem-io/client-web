@@ -52,6 +52,7 @@ const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhitebo
       previewSettings: template.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
     },
   };
+
   return (
     <TemplateFormBase
       templateType={TemplateType.Whiteboard}
