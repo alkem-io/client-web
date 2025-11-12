@@ -40,6 +40,11 @@ Implement dynamic icon selection based on this logic:
 
 - `spec.md` - Complete feature specification with user stories, requirements, and success criteria
 
+## Documentation
+
+- `IMPLEMENTATION.md` - Implementation summary and progress
+- `MANUAL-CHANGES.md` - Details of manual changes applied to InnovationFlowCollaborationToolsBlock
+
 ## Next Steps
 
 1. Review specification for completeness and accuracy

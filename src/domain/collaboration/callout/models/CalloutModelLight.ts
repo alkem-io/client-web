@@ -1,4 +1,8 @@
-import { AuthorizationPrivilege, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutContributionType,
+  CalloutFramingType,
+} from '@/core/apollo/generated/graphql-schema';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import { MemoModelLight } from '../../memo/model/MemoModelLight';
 
@@ -24,6 +28,11 @@ export interface CalloutModelLight {
   activity?: number;
   classification?: {
     flowState?: ClassificationTagsetModel;
+  };
+  settings?: {
+    contribution?: {
+      allowedTypes?: CalloutContributionType[];
+    };
   };
 }
 

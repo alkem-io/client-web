@@ -303,9 +303,16 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
         }
         framing {
           id
+          type
           profile {
             id
             displayName
+          }
+        }
+        settings {
+          visibility
+          contribution {
+            allowedTypes
           }
         }
       }
@@ -669,6 +676,9 @@ export const CalloutFragmentDoc = gql`
     }
     settings {
       visibility
+      contribution {
+        allowedTypes
+      }
     }
   }
 `;

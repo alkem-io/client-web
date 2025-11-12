@@ -53,11 +53,12 @@ const CalloutsList = <Callout extends CalloutModelLight>({
         {filteredCallouts?.map(callout => {
           return (
             <ListItem key={callout.id} disableGutters component={RouterLink} to={callout.framing.profile.url ?? ''}>
-              <ListItemIcon>
+              <ListItemIcon sx={{ minWidth: theme.spacing(3) }}>
                 <CalloutIcon
                   framingType={callout.framing.type}
+                  allowedTypes={callout.settings?.contribution?.allowedTypes}
                   tooltip
-                  iconProps={{ sx: { color: theme.palette.primary.dark } }}
+                  iconProps={{ fontSize: 'small', sx: { color: theme.palette.primary.dark } }}
                 />
               </ListItemIcon>
               <BlockSectionTitle minWidth={0} noWrap>

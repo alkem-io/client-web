@@ -11,13 +11,18 @@ import {
   useUpdateInnovationFlowStatesSortOrderMutation,
   useUpdateCollaborationFromSpaceTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutContributionType,
+  CalloutFramingType,
+  UpdateProfileInput,
+} from '@/core/apollo/generated/graphql-schema';
 import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import { sortBySortOrder } from '../../../../core/utils/sortBySortOrder';
+import { sortBySortOrder } from '@/core/utils/sortBySortOrder';
 
 type useInnovationFlowSettingsProps = {
   collaborationId: string | undefined;
@@ -38,6 +43,14 @@ export interface GroupedCallout {
         allowedValues: string[];
       }
     | undefined;
+  framing?: {
+    type: CalloutFramingType;
+  };
+  settings?: {
+    contribution?: {
+      allowedTypes?: CalloutContributionType[];
+    };
+  };
 }
 
 const mapFlowState = (tagset: TagsetModel | undefined): GroupedCallout['flowState'] => {
@@ -75,6 +88,14 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
           id: callout.id,
           profile: {
             displayName: callout.framing.profile.displayName,
+          },
+          framing: {
+            type: callout.framing.type,
+          },
+          settings: {
+            contribution: {
+              allowedTypes: callout.settings?.contribution?.allowedTypes,
+            },
           },
           activity: callout.activity,
           sortOrder: callout.sortOrder,

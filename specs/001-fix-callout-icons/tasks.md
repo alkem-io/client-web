@@ -45,10 +45,10 @@ Based on plan.md structure: Single web application project with:
 
 **⚠️ CRITICAL**: No user story implementation can begin until GraphQL types are regenerated with `allowedTypes` field
 
-- [ ] T004 [GraphQL] Update `Callout` fragment in `src/domain/collaboration/calloutsSet/useCalloutsSet/CalloutsSetQueries.graphql` to add `settings { contribution { allowedTypes } }` field
-- [ ] T005 [GraphQL] Run `pnpm codegen` to regenerate GraphQL types with `CalloutFragment` including `contribution.allowedTypes`
-- [ ] T006 [GraphQL] Verify generated types in `src/core/apollo/generated/graphql-schema.ts` include `CalloutContributionType[]` for `allowedTypes`
-- [ ] T007 [P] Verify no TypeScript errors after codegen via `pnpm lint`
+- [x] T004 [GraphQL] Update `Callout` fragment in `src/domain/collaboration/calloutsSet/useCalloutsSet/CalloutsSetQueries.graphql` to add `settings { contribution { allowedTypes } }` field
+- [x] T005 [GraphQL] Run `pnpm codegen` to regenerate GraphQL types with `CalloutFragment` including `contribution.allowedTypes`
+- [x] T006 [GraphQL] Verify generated types in `src/core/apollo/generated/graphql-schema.ts` include `CalloutContributionType[]` for `allowedTypes`
+- [x] T007 [P] Verify no TypeScript errors after codegen via `pnpm lint`
 
 **Checkpoint**: GraphQL types regenerated - user story implementation can now begin
 
@@ -67,14 +67,27 @@ Based on plan.md structure: Single web application project with:
 
 ### Implementation for User Story 1
 
-- [ ] T008 [P] [US1] [Domain] Update `CalloutIconProps` interface in `src/domain/collaboration/callout/icons/calloutIcons.ts` to replace `contributionType?: CalloutContributionType` with `allowedTypes?: CalloutContributionType[]`
-- [ ] T009 [P] [US1] [Domain] Update `getCalloutIconBasedOnType` function in `src/domain/collaboration/callout/icons/calloutIcons.ts` to accept `allowedTypes` array and use `allowedTypes[0]` when framing is None
-- [ ] T010 [P] [US1] [Domain] Update `getCalloutIconLabelKey` function in `src/domain/collaboration/callout/icons/calloutIcons.ts` to accept `allowedTypes` array and use `allowedTypes[0]` for i18n key selection
-- [ ] T011 [US1] [Domain] Update `CalloutIcon` component in `src/domain/collaboration/callout/icons/calloutIcons.ts` to pass `allowedTypes` parameter to both icon selection and label functions
-- [ ] T012 [US1] [React19] Update `CalloutsList.tsx` in `src/domain/collaboration/callout/calloutsList/CalloutsList.tsx` to pass `allowedTypes={callout.settings?.contribution?.allowedTypes}` prop to CalloutIcon component
-- [ ] T013 [US1] [Quality] Add `fontSize: 'small'` to iconProps in `src/domain/collaboration/callout/calloutsList/CalloutsList.tsx` for 20px icon sizing
-- [ ] T014 [US1] [React19] Check and update `CalloutCard.tsx` in `src/domain/collaboration/callout/calloutCard/CalloutCard.tsx` (if it displays icons) to pass `allowedTypes` prop and `fontSize: 'small'`
+- [x] T008 [P] [US1] [Domain] Update `CalloutIconProps` interface in `src/domain/collaboration/callout/icons/calloutIcons.ts` to replace `contributionType?: CalloutContributionType` with `allowedTypes?: CalloutContributionType[]`
+- [x] T009 [P] [US1] [Domain] Update `getCalloutIconBasedOnType` function in `src/domain/collaboration/callout/icons/calloutIcons.ts` to accept `allowedTypes` array and use `allowedTypes[0]` when framing is None
+- [x] T010 [P] [US1] [Domain] Update `getCalloutIconLabelKey` function in `src/domain/collaboration/callout/icons/calloutIcons.ts` to accept `allowedTypes` array and use `allowedTypes[0]` for i18n key selection
+- [x] T011 [US1] [Domain] Update `CalloutIcon` component in `src/domain/collaboration/callout/icons/calloutIcons.ts` to pass `allowedTypes` parameter to both icon selection and label functions
+- [x] T012 [US1] [React19] Update `CalloutsList.tsx` in `src/domain/collaboration/callout/calloutsList/CalloutsList.tsx` to pass `allowedTypes={callout.settings?.contribution?.allowedTypes}` prop to CalloutIcon component
+- [x] T013 [US1] [Quality] Add `fontSize: 'small'` to iconProps in `src/domain/collaboration/callout/calloutsList/CalloutsList.tsx` for 20px icon sizing
+- [x] T014 [US1] [React19] Check and update `CalloutCard.tsx` in `src/domain/collaboration/callout/calloutCard/CalloutCard.tsx` (if it displays icons) to pass `allowedTypes` prop and `fontSize: 'small'`
+  - CalloutCard: No changes needed (uses static GenericCalloutIcon)
+  - InnovationFlowCollaborationToolsBlock: Manual changes applied (see notes below)
 - [ ] T015 [US1] Run `pnpm lint` to verify no TypeScript errors in updated files
+
+**Note on T014 - InnovationFlowCollaborationToolsBlock Manual Changes**:
+The following manual adjustments were required for proper icon display in Innovation Flow settings:
+
+- Changed `Icon` prop type from `Component` to `ReactNode` to accept JSX elements
+- Updated ListItem to render `{Icon}` instead of `<Icon />`
+- Added flexbox layout: `display: 'flex'`, `flexDirection: 'row'`, `alignItems: 'center'`
+- Added `gap: gutters(0.5)` for spacing between icon and text
+- Moved `Caption` to wrap only displayName and activity
+- Integrated `CalloutIcon` with dynamic `framingType={callout.framing?.type || CalloutFramingType.None}` and `allowedTypes={callout.settings?.contribution?.allowedTypes}`
+- Applied `fontSize: 'small'` and `tooltip` props for consistency
 
 **Checkpoint**: Icon logic updated, icons display correctly based on type precedence, size is 20px
 
@@ -134,7 +147,7 @@ Based on plan.md structure: Single web application project with:
 
 ### Implementation for User Story 4
 
-- [ ] T023 [US4] [React19] Add `sx={{ minWidth: theme.spacing(4) }}` to `ListItemIcon` in `src/domain/collaboration/callout/calloutsList/CalloutsList.tsx` to reduce spacing
+- [x] T023 [US4] [React19] Add `sx={{ minWidth: theme.spacing(4) }}` to `ListItemIcon` in `src/domain/collaboration/callout/calloutsList/CalloutsList.tsx` to reduce spacing
 - [ ] T024 [US4] [React19] Verify `fontSize: 'small'` is applied in all callout list contexts (already done in T013, verify here)
 - [ ] T025 [US4] Check `CalloutCard.tsx` and any other components rendering callout icons to ensure consistent spacing
 - [ ] T026 [US4] Manually verify visual consistency by navigating to Preview page, Manage Flow page, and Template dialogs
