@@ -161,6 +161,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       variables: {
         calloutData: updateCalloutContentInput,
       },
+      refetchQueries: ['CalloutsSetTags'],
     });
     if (result.data?.updateCallout.framing.whiteboard?.profile.preview?.id) {
       await uploadVisuals(formData.framing.whiteboard?.previewImages, {

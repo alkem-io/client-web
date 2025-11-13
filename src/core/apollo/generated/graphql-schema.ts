@@ -1166,6 +1166,8 @@ export type CalloutsSet = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** All the tags of the Callouts and its contributions in this CalloutsSet. Sorted by frequency, then alphabetically. */
+  tags: Array<Scalars['String']['output']>;
   /** The tagset templates on this CalloutsSet. */
   tagsetTemplates?: Maybe<Array<TagsetTemplate>>;
   /** The set of CalloutGroups in use in this CalloutsSet. */
@@ -1181,6 +1183,11 @@ export type CalloutsSetCalloutsArgs = {
   shuffle?: InputMaybe<Scalars['Boolean']['input']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']['input']>;
   withContributionTypes?: InputMaybe<Array<CalloutContributionType>>;
+  withTags?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type CalloutsSetTagsArgs = {
+  classificationTagsets?: InputMaybe<Array<TagsetArgs>>;
 };
 
 export enum CalloutsSetType {
@@ -14179,6 +14186,19 @@ export type CalloutsSetAuthorizationQuery = {
   };
 };
 
+export type CalloutsSetTagsQueryVariables = Exact<{
+  calloutsSetId: Scalars['UUID']['input'];
+  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+}>;
+
+export type CalloutsSetTagsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutsSet?: { __typename?: 'CalloutsSet'; id: string; tags: Array<string> } | undefined;
+  };
+};
+
 export type CreateCalloutMutationVariables = Exact<{
   calloutData: CreateCalloutOnCalloutsSetInput;
 }>;
@@ -14555,6 +14575,7 @@ export type CalloutsOnCalloutsSetUsingClassificationQueryVariables = Exact<{
   calloutsSetId: Scalars['UUID']['input'];
   classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
   withClassification?: InputMaybe<Scalars['Boolean']['input']>;
+  tagsFilter?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
 
 export type CalloutsOnCalloutsSetUsingClassificationQuery = {
@@ -31444,6 +31465,7 @@ export type InAppNotificationReceivedSubscription = {
             profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
+      | { __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
           type: NotificationEventPayload;

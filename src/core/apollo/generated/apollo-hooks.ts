@@ -8217,6 +8217,74 @@ export type CalloutsSetAuthorizationQueryResult = Apollo.QueryResult<
 export function refetchCalloutsSetAuthorizationQuery(variables: SchemaTypes.CalloutsSetAuthorizationQueryVariables) {
   return { query: CalloutsSetAuthorizationDocument, variables: variables };
 }
+export const CalloutsSetTagsDocument = gql`
+  query CalloutsSetTags($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
+    lookup {
+      calloutsSet(ID: $calloutsSetId) {
+        id
+        tags(classificationTagsets: $classificationTagsets)
+      }
+    }
+  }
+`;
+
+/**
+ * __useCalloutsSetTagsQuery__
+ *
+ * To run a query within a React component, call `useCalloutsSetTagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutsSetTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutsSetTagsQuery({
+ *   variables: {
+ *      calloutsSetId: // value for 'calloutsSetId'
+ *      classificationTagsets: // value for 'classificationTagsets'
+ *   },
+ * });
+ */
+export function useCalloutsSetTagsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables> &
+    ({ variables: SchemaTypes.CalloutsSetTagsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables>(
+    CalloutsSetTagsDocument,
+    options
+  );
+}
+export function useCalloutsSetTagsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables>(
+    CalloutsSetTagsDocument,
+    options
+  );
+}
+export function useCalloutsSetTagsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables>(
+    CalloutsSetTagsDocument,
+    options
+  );
+}
+export type CalloutsSetTagsQueryHookResult = ReturnType<typeof useCalloutsSetTagsQuery>;
+export type CalloutsSetTagsLazyQueryHookResult = ReturnType<typeof useCalloutsSetTagsLazyQuery>;
+export type CalloutsSetTagsSuspenseQueryHookResult = ReturnType<typeof useCalloutsSetTagsSuspenseQuery>;
+export type CalloutsSetTagsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutsSetTagsQuery,
+  SchemaTypes.CalloutsSetTagsQueryVariables
+>;
+export function refetchCalloutsSetTagsQuery(variables: SchemaTypes.CalloutsSetTagsQueryVariables) {
+  return { query: CalloutsSetTagsDocument, variables: variables };
+}
 export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!) {
     createCalloutOnCalloutsSet(calloutData: $calloutData) {
@@ -8271,6 +8339,7 @@ export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
     $calloutsSetId: UUID!
     $classificationTagsets: [TagsetArgs!] = []
     $withClassification: Boolean = true
+    $tagsFilter: [String!]
   ) {
     lookup {
       calloutsSet(ID: $calloutsSetId) {
@@ -8279,7 +8348,7 @@ export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
           id
           myPrivileges
         }
-        callouts(classificationTagsets: $classificationTagsets) {
+        callouts(classificationTagsets: $classificationTagsets, withTags: $tagsFilter) {
           ...Callout
           ...ClassificationDetails @include(if: $withClassification)
         }
@@ -8305,6 +8374,7 @@ export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
  *      calloutsSetId: // value for 'calloutsSetId'
  *      classificationTagsets: // value for 'classificationTagsets'
  *      withClassification: // value for 'withClassification'
+ *      tagsFilter: // value for 'tagsFilter'
  *   },
  * });
  */
