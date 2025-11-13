@@ -84,6 +84,18 @@ fragment ActivityLogCalloutWhiteboardContentModified on ActivityLogEntryCalloutW
   }
 }
 
+fragment ActivityLogCalloutMemoCreated on ActivityLogEntryCalloutMemoCreated {
+  callout {
+    ...ActivityCalloutContext
+  }
+  memo {
+    id
+    profile {
+      ...ActivitySubjectProfile
+    }
+  }
+}
+
 fragment ActivityLogSubspaceCreated on ActivityLogEntrySubspaceCreated {
   subspace {
     id
