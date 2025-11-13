@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import SpaceCardBase, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCardBase';
+import SpaceCardBase, { SpaceCardProps } from '@/domain/space/components/cards/SpaceCardBase';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import CardActions from '@/core/ui/card/CardActions';
@@ -9,9 +9,8 @@ import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCa
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 
-interface ContributionDetailsCardProps extends Omit<SpaceCard2Props, 'iconComponent' | 'header'> {
+interface ContributionDetailsCardProps extends Omit<SpaceCardProps, 'iconComponent' | 'header'> {
   tagline: string;
   displayName: string;
   enableLeave?: boolean;
@@ -61,7 +60,6 @@ const ContributionDetailsCard = ({
     <>
       <SpaceCardBase
         {...props}
-        iconComponent={spaceLevelIcon[level || SpaceLevel.L0]}
         header={
           <BlockTitle component="div" sx={webkitLineClamp(2)}>
             {displayName}

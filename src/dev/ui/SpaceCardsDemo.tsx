@@ -33,45 +33,31 @@ const SpaceCardsDemo = () => {
               <SubspaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Space L1 Card"
                 tags={['subspace', 'card']}
                 spaceUri=""
-                spaceDisplayName="Parent Space"
+                parentInfo={{ displayName: 'Parent Space', url: '' }}
                 level={SpaceLevel.L1}
-                avatarUris={[
-                  { src: '', alt: 'Member avatar' },
-                  { src: '', alt: 'Member avatar' },
-                ]}
                 locked
               />
               <SubspaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name"
                 tags={['subspace', 'card']}
                 spaceUri=""
-                spaceDisplayName=""
                 level={SpaceLevel.L0}
                 isPrivate
-                avatarUris={[{ src: '', alt: 'Member avatar' }]}
               />
               <SubspaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name That Doesn't Even Fit On 2 Lines"
                 tags={['subspace', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
                 member
                 spaceUri=""
-                spaceDisplayName="Parent Space"
+                parentInfo={{ displayName: 'Parent Space', url: '' }}
                 level={SpaceLevel.L2}
-                avatarUris={[
-                  { src: '', alt: 'Member avatar' },
-                  { src: '', alt: 'Member avatar' },
-                  { src: '', alt: 'Member avatar' },
-                ]}
               />
             </PageContentBlockGrid>
           </PageContentBlock>
@@ -99,7 +85,6 @@ const SpaceCardsDemo = () => {
               <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card']}
                 spaceUri=""
@@ -108,7 +93,6 @@ const SpaceCardsDemo = () => {
               <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card']}
                 spaceUri=""
@@ -117,7 +101,6 @@ const SpaceCardsDemo = () => {
               <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
                 spaceUri=""
@@ -131,29 +114,26 @@ const SpaceCardsDemo = () => {
               <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Subspace Card"
                 tags={['subspace', 'card']}
                 spaceUri=""
-                spaceDisplayName="Parent Space"
+                parentInfo={{ displayName: 'Parent Space', url: '' }}
               />
               <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name"
                 tags={['subspace', 'card']}
                 spaceUri=""
-                spaceDisplayName="Parent Space"
+                parentInfo={{ displayName: 'Parent Space', url: '' }}
               />
               <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name That Doesn't Even Fit On 2 Lines"
                 tags={['subspace', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
                 spaceUri=""
-                spaceDisplayName="Parent Space"
+                parentInfo={{ displayName: 'Parent Space', url: '' }}
               />
             </PageContentBlockGrid>
           </PageContentBlock>

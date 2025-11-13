@@ -11,6 +11,7 @@ import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
 import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
 import SubspaceView from '@/domain/space/components/subspaces/SubspaceView';
 import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 const SpaceSubspacesPage = () => {
   const {
@@ -23,6 +24,7 @@ const SpaceSubspacesPage = () => {
   const { spaceId } = urlInfo;
 
   const { permissions, visibility } = useSpace();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -70,12 +72,15 @@ const SpaceSubspacesPage = () => {
           banner={item.about.profile.cardBanner}
           tags={item.about.profile.tagset?.tags!}
           tagline={item.about.profile.tagline ?? ''}
-          vision={item.about.why!}
           spaceUri={item.about.profile.url}
           locked={!item.about.isContentPublic}
+          isPrivate={!item.about.isContentPublic}
           spaceVisibility={visibility}
           level={childLevel}
           member={item.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
+          leadUsers={item.about.membership?.leadUsers}
+          leadOrganizations={item.about.membership?.leadOrganizations}
+          showLeads={isAuthenticated}
         />
       )}
       onClickCreate={() => setCreateDialogOpen(true)}

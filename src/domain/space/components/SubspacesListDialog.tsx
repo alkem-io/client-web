@@ -11,6 +11,7 @@ import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SubspaceCard from './cards/SubspaceCard';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 export interface SubspacesListDialogProps {
   open?: boolean;
@@ -20,6 +21,7 @@ export interface SubspacesListDialogProps {
 const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps) => {
   const { t } = useTranslation();
   const { spaceId } = useUrlResolver();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const { visibility } = useSpace();
 
@@ -58,12 +60,15 @@ const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps
                         banner={subspace.about.profile.cardBanner}
                         tags={subspace.about.profile.tagset?.tags!}
                         tagline={subspace.about.profile.tagline ?? ''}
-                        vision={subspace.about.why!}
                         spaceUri={subspace.about.profile.url}
                         locked={!subspace.about.isContentPublic}
+                        isPrivate={!subspace.about.isContentPublic}
                         spaceVisibility={visibility}
                         level={subspace.level}
                         member={subspace.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
+                        leadUsers={subspace.about.membership?.leadUsers}
+                        leadOrganizations={subspace.about.membership?.leadOrganizations}
+                        showLeads={isAuthenticated}
                       />
                     );
                   })}

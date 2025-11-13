@@ -9,12 +9,12 @@ import SearchTagsInput from '@/domain/shared/components/SearchTagsInput/SearchTa
 import Gutters from '@/core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
+import { Lead, LeadOrganization } from '@/domain/space/components/cards/components/SpaceLeads';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Visual } from '@/domain/common/visual/Visual';
 import { gutters, useGridItem } from '@/core/ui/grid/utils';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
-import SpaceSubspaceCardLabel from '@/domain/space/components/cards/components/SpaceSubspaceCardLabel';
 import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -167,35 +167,50 @@ export const SpaceExplorerView = ({
 
       const { profile, isContentPublic, membership } = about;
 
+      // TypeScript doesn't know that membership has leadUsers/leadOrganizations
+      // but the actual GraphQL fragment SpaceExplorerSpace includes them
+      const membershipWithLeads = membership as typeof membership & {
+        leadUsers?: Lead[];
+        leadOrganizations?: LeadOrganization[];
+      };
+
+      const parentInfo = space.parent
+        ? {
+            displayName: space.parent.about.profile.displayName,
+            url: `/${space.parent.id}`,
+            avatar: space.parent.about.profile.avatar
+              ? {
+                  id: '',
+                  uri: space.parent.about.profile.avatar.uri,
+                  alternativeText: space.parent.about.profile.avatar.alternativeText,
+                }
+              : undefined,
+          }
+        : undefined;
+
       vs.push(
         <SubspaceCard
           key={id}
           spaceId={id}
           tagline={profile?.tagline ?? ''}
           displayName={profile?.displayName}
-          vision={profile.description ?? ''}
           spaceUri={profile?.url}
           level={level}
           banner={profile?.cardBanner}
+          tags={profile?.tagset?.tags}
           avatarUris={collectParentAvatars(space) ?? []}
-          tags={(space.matchedTerms ?? profile?.tagset?.tags.length) ? profile?.tagset?.tags : undefined}
-          spaceDisplayName={space.parent?.about?.profile?.displayName}
+          parentInfo={parentInfo}
           matchedTerms={!!space.matchedTerms}
-          label={
-            shouldDisplayPrivacyInfo && (
-              <SpaceSubspaceCardLabel
-                level={level}
-                member={membership?.myMembershipStatus === CommunityMembershipStatus.Member}
-                isPrivate={!isContentPublic}
-              />
-            )
-          }
+          leadUsers={membershipWithLeads?.leadUsers}
+          leadOrganizations={membershipWithLeads?.leadOrganizations}
+          showLeads={authenticated}
+          isPrivate={!isContentPublic}
         />
       );
     });
 
     return vs;
-  }, [visibleSpaces, shouldDisplayPrivacyInfo]);
+  }, [visibleSpaces, shouldDisplayPrivacyInfo, authenticated]);
 
   const getGridItemStyle = useGridItem();
 

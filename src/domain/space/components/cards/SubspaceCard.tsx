@@ -1,31 +1,31 @@
-import { useTranslation } from 'react-i18next';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '@/core/ui/typography';
-import CardRibbon from '@/core/ui/card/CardRibbon';
-import CardActions from '@/core/ui/card/CardActions';
-import SpaceCardBase, { SpaceCard2Props } from '@/domain/space/components/cards/SpaceCardBase';
-import SpaceCardDescription from '@/domain/space/components/cards/components/SpaceCardDescription';
-import SpaceCardSpacing from '@/domain/space/components/cards/components/SpaceCardSpacing';
-import SpaceCardGoToButton from '@/domain/space/components/cards/components/SpaceCardGoToButton';
+import SpaceCardBase, { SpaceCardProps } from '@/domain/space/components/cards/SpaceCardBase';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
+import SpaceLeads, { Lead, LeadOrganization } from './components/SpaceLeads';
+import SpaceParentInfo, { ParentInfo } from './components/SpaceParentInfo';
 import StackedAvatar from './components/StackedAvatar';
-import { ReactNode } from 'react';
-import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
+import SpaceCardTagsOverlay from './components/SpaceCardTagsOverlay';
+import SpaceVisibilityBanner from './components/SpaceVisibilityBanner';
+import { Box } from '@mui/material';
+import { gutters } from '@/core/ui/grid/utils';
 
-interface SubspaceCardProps extends Omit<SpaceCard2Props, 'header' | 'iconComponent' | 'expansion'> {
+interface SubspaceCardProps extends Omit<SpaceCardProps, 'header'> {
   spaceId?: string;
   tagline?: string | null;
   displayName: string;
-  vision: string;
+  vision?: string;
   member?: boolean;
   spaceUri?: string;
   spaceVisibility?: SpaceVisibility;
-  spaceDisplayName?: string;
+  parentInfo?: ParentInfo;
   hideJoin?: boolean;
   isPrivate?: boolean;
   avatarUris?: { src: string; alt: string }[];
-  label?: ReactNode;
   level?: SpaceLevel;
+  leadUsers?: Lead[];
+  leadOrganizations?: LeadOrganization[];
+  showLeads?: boolean;
 }
 
 const SubspaceCard = ({
@@ -35,57 +35,63 @@ const SubspaceCard = ({
   spaceVisibility,
   level,
   member,
-  spaceDisplayName,
-  avatarUris,
+  parentInfo,
   isPrivate,
-  label,
+  avatarUris,
+  leadUsers,
+  leadOrganizations,
+  showLeads = false,
+  tags,
   ...props
 }: SubspaceCardProps) => {
-  const { t } = useTranslation();
-
-  const ribbon =
-    spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
-      <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
-    ) : undefined;
-
   const isSubspace = level !== SpaceLevel.L0;
+
+  // Show avatarUris as visual in BadgeCardView (next to displayName) if provided
+  const hasAvatarUris = Boolean(avatarUris && avatarUris.length > 0);
+  const visualContent = hasAvatarUris ? <StackedAvatar avatarUris={avatarUris!} /> : undefined;
+
+  // Show leads at the bottom of the card if authenticated
+  const hasLeads = Boolean(showLeads && (leadUsers?.length || leadOrganizations?.length));
+
+  // Show visibility banner for non-Active spaces
+  const showVisibilityBanner = Boolean(spaceVisibility && spaceVisibility !== SpaceVisibility.Active);
 
   return (
     <SpaceCardBase
-      iconComponent={spaceLevelIcon[level ?? SpaceLevel.L0]}
       header={
-        <>
-          <BlockTitle noWrap component="dt">
+        <Box display="flex" flexDirection="column" gap={0} width="100%">
+          <BlockTitle
+            noWrap
+            component="dt"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
             {displayName}
           </BlockTitle>
-          {isSubspace && spaceDisplayName && (
-            <Caption noWrap component="dd" sx={{ color: 'primary.main' }}>
-              {t('components.card.parentSpace', { space: spaceDisplayName })}
-            </Caption>
-          )}
-        </>
+          {isSubspace && parentInfo && <SpaceParentInfo parent={parentInfo} />}
+        </Box>
       }
-      visual={avatarUris && Boolean(avatarUris.length) && <StackedAvatar avatarUris={avatarUris} />}
-      expansion={
-        <>
-          <SpaceCardDescription>{vision}</SpaceCardDescription>
-          <SpaceCardSpacing />
-        </>
-      }
-      expansionActions={
-        <CardActions>
-          <SpaceCardGoToButton spaceUri={props.spaceUri!} />
-        </CardActions>
-      }
+      visual={visualContent}
+      locked={isPrivate}
       bannerOverlay={
         <>
-          {ribbon}
-          {label}
+          {showVisibilityBanner && <SpaceVisibilityBanner visibility={spaceVisibility} />}
+          {tags && tags.length > 0 && <SpaceCardTagsOverlay tags={tags} />}
         </>
       }
+      tags={undefined}
       {...props}
     >
       <SpaceCardTagline>{tagline ?? ''}</SpaceCardTagline>
+      {hasLeads && (
+        <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: gutters(0.5) }}>
+          <Caption>Led by:</Caption>
+          <SpaceLeads leadUsers={leadUsers} leadOrganizations={leadOrganizations} showLeads={showLeads} />
+        </Box>
+      )}
     </SpaceCardBase>
   );
 };

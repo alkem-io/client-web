@@ -56,7 +56,6 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
                 key={space.id}
                 banner={space.about.profile.cardBanner}
                 displayName={space.about.profile.displayName!}
-                vision={space.about.why ?? ''}
                 tagline={space.about.profile.tagline ?? ''}
                 tags={space.about.profile.tagset?.tags ?? []}
                 spaceUri={space.about.profile.url}

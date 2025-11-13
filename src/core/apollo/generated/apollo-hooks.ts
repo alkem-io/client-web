@@ -1893,12 +1893,35 @@ export const SubspaceCardFragmentDoc = gql`
       membership {
         myMembershipStatus
         myPrivileges
+        leadUsers {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+        leadOrganizations {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
       }
       isContentPublic
       why
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const SubspacesOnSpaceFragmentDoc = gql`
   fragment SubspacesOnSpace on Space {
@@ -3643,11 +3666,34 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
       ...SpaceAboutCardBanner
       membership {
         myMembershipStatus
+        leadUsers {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+        leadOrganizations {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
       }
       isContentPublic
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const SpaceExplorerSearchSpaceFragmentDoc = gql`
   fragment SpaceExplorerSearchSpace on SearchResultSpace {
@@ -3671,6 +3717,28 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
       }
       membership {
         myMembershipStatus
+        leadUsers {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+        leadOrganizations {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
       }
       isContentPublic
     }
