@@ -1706,6 +1706,15 @@
         "placeholder": "Unique textual identifier, used for URL paths. Note: cannot be modified after creation."
       }
     },
+    "tagCloud": {
+      "resultsCount_one": "{{count}} result",
+      "resultsCount_other": "{{count}} results",
+      "showMoreTags_one": "Show {{count}} more tag",
+      "showMoreTags_other": "Show {{count}} more tags",
+      "showFewerTags": "Show fewer tags",
+      "filterByTag": "Filter posts with tag: {{tag}}",
+      "clearFilter": "Clear filter"
+    },
     "visualSegment": {
       "title": "Visual",
       "avatar": "Avatar",

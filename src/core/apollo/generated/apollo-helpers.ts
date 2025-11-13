@@ -794,6 +794,7 @@ export type CalloutsSetKeySpecifier = (
   | 'callouts'
   | 'createdDate'
   | 'id'
+  | 'tags'
   | 'tagsetTemplates'
   | 'type'
   | 'updatedDate'
@@ -804,6 +805,7 @@ export type CalloutsSetFieldPolicy = {
   callouts?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  tags?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
