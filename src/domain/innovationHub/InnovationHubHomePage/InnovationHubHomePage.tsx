@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { useDashboardSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
-import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import RouterLink from '@/core/ui/link/RouterLink';
 import Gutters from '@/core/ui/grid/Gutters';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
@@ -52,7 +52,7 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
           <PageContentBlockHeader title={t('innovationHub.selectedSpaces', { space: innovationHub.displayName })} />
           <ScrollableCardsLayoutContainer orientation="horizontal" cards>
             {allSpaces?.map(space => (
-              <SubspaceCard
+              <SpaceCard
                 key={space.id}
                 banner={space.about.profile.cardBanner}
                 displayName={space.about.profile.displayName!}

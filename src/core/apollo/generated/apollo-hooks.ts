@@ -18722,12 +18722,26 @@ export const SpaceSubspaceCardsDocument = gql`
       space(ID: $spaceId) {
         id
         level
+        about {
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+            cardBanner: visual(type: CARD) {
+              ...VisualModel
+            }
+          }
+        }
         subspaces {
           ...SubspaceCard
         }
       }
     }
   }
+  ${VisualModelFragmentDoc}
   ${SubspaceCardFragmentDoc}
 `;
 

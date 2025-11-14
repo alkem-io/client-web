@@ -8,7 +8,7 @@ import { Box, Button, DialogContent, IconButton } from '@mui/material';
 import SearchTagsInput from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
 import Gutters from '@/core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { Lead, LeadOrganization } from '@/domain/space/components/cards/components/SpaceLeads';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -24,8 +24,7 @@ import { compact } from 'lodash';
 import Loading from '@/core/ui/loading/Loading';
 import { useSpaceExplorerWelcomeSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { collectParentAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
   setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
@@ -67,35 +66,6 @@ interface Space extends Identifiable {
   about: SpaceAboutLightModel;
   matchedTerms?: string[];
 }
-
-interface WithBanner {
-  id?: string;
-  about: { profile: { avatar?: Visual; cardBanner?: Visual } };
-}
-
-const collectParentAvatars = <SpaceWithVisuals extends WithBanner & WithParent<WithBanner>>(
-  { about, parent, id }: SpaceWithVisuals,
-  initial: { src: string; alt: string }[] = []
-) => {
-  if (!about?.profile) {
-    return initial;
-  }
-
-  const { cardBanner, avatar = cardBanner } = about.profile;
-  const { uri, alternativeText } = avatar || {};
-
-  // Use default avatar visual if no cardBanner or avatar is available
-  const avatarUri = uri || getDefaultSpaceVisualUrl(VisualType.Avatar, id);
-  const collected = [
-    {
-      src: avatarUri,
-      alt: alternativeText || '',
-    },
-    ...initial,
-  ];
-
-  return parent ? collectParentAvatars(parent, collected) : collected;
-};
 
 export const ITEMS_LIMIT = 10;
 
@@ -189,7 +159,7 @@ export const SpaceExplorerView = ({
         : undefined;
 
       vs.push(
-        <SubspaceCard
+        <SpaceCard
           key={id}
           spaceId={id}
           tagline={profile?.tagline ?? ''}

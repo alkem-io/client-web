@@ -28,7 +28,7 @@ interface SubspaceCardProps extends Omit<SpaceCardProps, 'header'> {
   showLeads?: boolean;
 }
 
-const SubspaceCard = ({
+const SpaceCard = ({
   displayName,
   vision,
   tagline,
@@ -96,4 +96,4 @@ const SubspaceCard = ({
   );
 };
 
-export default SubspaceCard;
+export default SpaceCard;

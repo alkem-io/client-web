@@ -9,31 +9,27 @@ import { spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValue
 import { useSpace } from '@/domain/space/context/useSpace';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import SubspaceCard from './cards/SubspaceCard';
+import SpaceCard from './cards/SpaceCard';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-
+import { useSubspaceCardData } from './cards/utils/useSubspaceCardData';
 export interface SubspacesListDialogProps {
   open?: boolean;
   onClose?: () => void;
 }
-
 const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps) => {
   const { t } = useTranslation();
   const { spaceId } = useUrlResolver();
   const { isAuthenticated } = useCurrentUserContext();
-
   const { visibility } = useSpace();
-
   const { data, loading } = useSpaceSubspaceCardsQuery({
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
-
   const space = data?.lookup.space;
-
   const subspaces = space?.subspaces ?? [];
-
+  // Use shared hook for parent info and avatar stacking
+  const { parentInfo, collectAvatars } = useSubspaceCardData(space);
   return (
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="subspaces-list-dialog" onClose={onClose}>
       <>
@@ -54,7 +50,7 @@ const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps
                   {filteredEntities.map((subspace, index) => {
                     const key = subspace ? subspace.id : `__loading_${index}`;
                     return (
-                      <SubspaceCard
+                      <SpaceCard
                         key={key}
                         displayName={subspace.about.profile.displayName}
                         banner={subspace.about.profile.cardBanner}
@@ -69,6 +65,8 @@ const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps
                         leadUsers={subspace.about.membership?.leadUsers}
                         leadOrganizations={subspace.about.membership?.leadOrganizations}
                         showLeads={isAuthenticated}
+                        parentInfo={parentInfo}
+                        avatarUris={collectAvatars(subspace)}
                       />
                     );
                   })}

@@ -5,7 +5,7 @@ import { GUTTER_MUI } from '@/core/ui/grid/constants';
 import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
@@ -30,7 +30,7 @@ const SpaceCardsDemo = () => {
           <PageContentBlock>
             <PageContentBlockHeader title="Explore Spaces Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
                 displayName="Space L1 Card"
@@ -40,7 +40,7 @@ const SpaceCardsDemo = () => {
                 level={SpaceLevel.L1}
                 locked
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
                 displayName="Really Long Subspace Card Display Name"
@@ -49,7 +49,7 @@ const SpaceCardsDemo = () => {
                 level={SpaceLevel.L0}
                 isPrivate
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
                 displayName="Really Long Subspace Card Display Name That Doesn't Even Fit On 2 Lines"
@@ -82,7 +82,7 @@ const SpaceCardsDemo = () => {
           <PageContentBlock>
             <PageContentBlockHeader title="Space Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 displayName="Space Card"
@@ -90,7 +90,7 @@ const SpaceCardsDemo = () => {
                 spaceUri=""
                 level={SpaceLevel.L0}
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 displayName="Space Card"
@@ -98,7 +98,7 @@ const SpaceCardsDemo = () => {
                 spaceUri=""
                 level={SpaceLevel.L0}
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 displayName="Space Card"
@@ -111,7 +111,7 @@ const SpaceCardsDemo = () => {
           <PageContentBlock>
             <PageContentBlockHeader title="Subspace Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 displayName="Subspace Card"
@@ -119,7 +119,7 @@ const SpaceCardsDemo = () => {
                 spaceUri=""
                 parentInfo={{ displayName: 'Parent Space', url: '' }}
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 displayName="Really Long Subspace Card Display Name"
@@ -127,7 +127,7 @@ const SpaceCardsDemo = () => {
                 spaceUri=""
                 parentInfo={{ displayName: 'Parent Space', url: '' }}
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 displayName="Really Long Subspace Card Display Name That Doesn't Even Fit On 2 Lines"

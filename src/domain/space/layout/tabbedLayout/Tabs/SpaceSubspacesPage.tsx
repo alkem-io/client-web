@@ -7,11 +7,12 @@ import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
-import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
 import SubspaceView from '@/domain/space/components/subspaces/SubspaceView';
 import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { useSubspaceCardData } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 
 const SpaceSubspacesPage = () => {
   const {
@@ -44,6 +45,9 @@ const SpaceSubspacesPage = () => {
 
   const subspaces = space?.subspaces ?? [];
 
+  // Use shared hook for parent info and avatar stacking
+  const { parentInfo, collectAvatars } = useSubspaceCardData(space);
+
   const { level, childLevel } = useMemo(() => {
     let childLevel = SpaceLevel.L1;
 
@@ -66,7 +70,7 @@ const SpaceSubspacesPage = () => {
       childEntityTagsGetter={spaceAboutTagsGetter}
       state={{ loading: loading, error: error }}
       renderChildEntityCard={item => (
-        <SubspaceCard
+        <SpaceCard
           spaceId={item.id}
           displayName={item.about.profile.displayName}
           banner={item.about.profile.cardBanner}
@@ -81,6 +85,8 @@ const SpaceSubspacesPage = () => {
           leadUsers={item.about.membership?.leadUsers}
           leadOrganizations={item.about.membership?.leadOrganizations}
           showLeads={isAuthenticated}
+          parentInfo={parentInfo}
+          avatarUris={collectAvatars(item)}
         />
       )}
       onClickCreate={() => setCreateDialogOpen(true)}
