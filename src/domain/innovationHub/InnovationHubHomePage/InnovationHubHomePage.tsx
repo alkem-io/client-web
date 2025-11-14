@@ -18,12 +18,15 @@ import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { collectSubspaceAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 
 const isMember = (about: { membership?: { myMembershipStatus?: CommunityMembershipStatus } }) =>
   about.membership?.myMembershipStatus === CommunityMembershipStatus.Member;
 
 const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHubAttrs }) => {
   const { t } = useTranslation();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const { data: spacesData } = useDashboardSpacesQuery();
 
@@ -62,6 +65,11 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
                 member={isMember(space.about)}
                 spaceVisibility={space.visibility}
                 spaceId={space.id}
+                level={space.level}
+                avatarUris={collectSubspaceAvatars(space)}
+                leadUsers={space.about.membership?.leadUsers}
+                leadOrganizations={space.about.membership?.leadOrganizations}
+                showLeads={isAuthenticated}
               />
             ))}
           </ScrollableCardsLayoutContainer>
