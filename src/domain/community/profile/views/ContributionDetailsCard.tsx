@@ -9,6 +9,11 @@ import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCa
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import SpaceLeads, { Lead, LeadOrganization } from '@/domain/space/components/cards/components/SpaceLeads';
+import StackedAvatar from '@/domain/space/components/cards/components/StackedAvatar';
+import { Box } from '@mui/material';
+import { gutters } from '@/core/ui/grid/utils';
+import { ParentInfo } from '@/domain/space/components/cards/components/SpaceParentInfo';
 
 interface ContributionDetailsCardProps extends Omit<SpaceCardProps, 'iconComponent' | 'header'> {
   tagline: string;
@@ -21,6 +26,11 @@ interface ContributionDetailsCardProps extends Omit<SpaceCardProps, 'iconCompone
   loading?: boolean;
   visibility?: SpaceVisibility;
   level: SpaceLevel;
+  avatarUris?: { src: string; alt: string }[];
+  leadUsers?: Lead[];
+  leadOrganizations?: LeadOrganization[];
+  showLeads?: boolean;
+  parentInfo?: ParentInfo;
 }
 
 const ContributionDetailsCard = ({
@@ -34,6 +44,11 @@ const ContributionDetailsCard = ({
   loading,
   visibility,
   level,
+  avatarUris,
+  leadUsers,
+  leadOrganizations,
+  showLeads = false,
+  parentInfo,
   ...props
 }: ContributionDetailsCardProps) => {
   const { t } = useTranslation();
@@ -56,10 +71,18 @@ const ContributionDetailsCard = ({
       ? 'pages.user-profile.membership.space.confirmation-dialog.text'
       : 'pages.user-profile.membership.subspace.confirmation-dialog.text';
 
+  // Show avatarUris as visual in BadgeCardView if provided
+  const hasAvatarUris = Boolean(avatarUris && avatarUris.length > 0);
+  const visualContent = hasAvatarUris ? <StackedAvatar avatarUris={avatarUris!} /> : undefined;
+
+  // Show leads at the bottom of the card if authenticated
+  const hasLeads = Boolean(showLeads && (leadUsers?.length || leadOrganizations?.length));
+
   return (
     <>
       <SpaceCardBase
         {...props}
+        visual={visualContent}
         header={
           <BlockTitle component="div" sx={webkitLineClamp(2)}>
             {displayName}
@@ -86,6 +109,12 @@ const ContributionDetailsCard = ({
         bannerOverlay={ribbon}
       >
         <SpaceCardTagline>{tagline}</SpaceCardTagline>
+        {hasLeads && (
+          <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: gutters(0.5) }}>
+            <Caption>Led by:</Caption>
+            <SpaceLeads leadUsers={leadUsers} leadOrganizations={leadOrganizations} showLeads={showLeads} />
+          </Box>
+        )}
       </SpaceCardBase>
       {enableLeave && (
         <Dialog open={leavingCommunityDialogOpen} maxWidth="xs" aria-label="confirm-leave-space">

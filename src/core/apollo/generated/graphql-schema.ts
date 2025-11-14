@@ -19370,6 +19370,15 @@ export type SpaceContributionDetailsQuery = {
               url: string;
               displayName: string;
               tagline?: string | undefined;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
               cardBanner?:
                 | {
                     __typename?: 'Visual';
@@ -19381,7 +19390,49 @@ export type SpaceContributionDetailsQuery = {
                 | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             };
-            membership: { __typename?: 'SpaceAboutMembership'; roleSetID: string; communityID: string };
+            membership: {
+              __typename?: 'SpaceAboutMembership';
+              roleSetID: string;
+              communityID: string;
+              leadUsers: Array<{
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }>;
+              leadOrganizations: Array<{
+                __typename?: 'Organization';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }>;
+            };
           };
         }
       | undefined;

@@ -4,6 +4,8 @@ import useContributionProvider, {
 } from '../../profile/useContributionProvider/useContributionProvider';
 import ContributionDetailsCard from '../../profile/views/ContributionDetailsCard';
 import { useState } from 'react';
+import { collectSubspaceAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 export type ContributionCardProps = {
   onLeave?: () => Promise<unknown>;
@@ -14,6 +16,7 @@ export type ContributionCardProps = {
 
 const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributionClick }: ContributionCardProps) => {
   const [leavingRoleSetId, setLeavingRoleSetId] = useState<string>();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const { details, loading, isLeavingCommunity, leaveCommunity } = useContributionProvider({
     spaceHostedItem: contributionItem,
@@ -40,6 +43,10 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
       leavingCommunityDialogOpen={!!leavingRoleSetId && leavingRoleSetId === details?.roleSetId}
       onLeaveCommunityDialogOpen={isOpen => setLeavingRoleSetId(isOpen ? details?.roleSetId : undefined)}
       banner={details.about.profile.cardBanner}
+      avatarUris={collectSubspaceAvatars(details)}
+      leadUsers={details.about.membership?.leadUsers}
+      leadOrganizations={details.about.membership?.leadOrganizations}
+      showLeads={isAuthenticated}
       {...(onContributionClick
         ? { onClick: event => onContributionClick(event, details) }
         : details.about.profile.url

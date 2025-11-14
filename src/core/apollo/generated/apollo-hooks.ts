@@ -12925,6 +12925,9 @@ export const SpaceContributionDetailsDocument = gql`
             url
             displayName
             tagline
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
             cardBanner: visual(type: CARD) {
               ...VisualModel
             }
@@ -12936,6 +12939,28 @@ export const SpaceContributionDetailsDocument = gql`
           membership {
             roleSetID
             communityID
+            leadUsers {
+              id
+              profile {
+                id
+                url
+                displayName
+                avatar: visual(type: AVATAR) {
+                  ...VisualModel
+                }
+              }
+            }
+            leadOrganizations {
+              id
+              profile {
+                id
+                url
+                displayName
+                avatar: visual(type: AVATAR) {
+                  ...VisualModel
+                }
+              }
+            }
           }
           isContentPublic
         }
