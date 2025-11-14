@@ -3559,8 +3559,41 @@ export const ExploreSpacesFragmentDoc = gql`
         id
         url
         displayName
+        tagline
+        avatar: visual(type: AVATAR) {
+          ...VisualModel
+        }
         cardBanner: visual(type: CARD) {
           ...VisualModel
+        }
+        tagset {
+          id
+          tags
+        }
+      }
+      membership {
+        myMembershipStatus
+        leadUsers {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+        leadOrganizations {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
         }
       }
     }
