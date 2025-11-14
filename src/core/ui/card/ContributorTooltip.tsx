@@ -15,7 +15,6 @@ interface ContributorTooltipProps extends UserCardProps {
  */
 const ContributorTooltip = ({ children, ...props }: ContributorTooltipProps) => (
   <Tooltip
-    arrow
     title={
       <RootThemeProvider>
         <GridProvider columns={CONTRIBUTE_CARD_COLUMNS}>
