@@ -9,6 +9,7 @@ import CollaborationSettings from '../../realTimeCollaboration/CollaborationSett
 import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
 import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
+import { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardId?: string;
@@ -102,7 +103,7 @@ const WhiteboardView = ({
             readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
             fullscreen,
             previewSettingsDialogOpen: previewSettingsDialogOpen,
-            headerActions: (
+            headerActions: (collabState: CollabState) => (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
                   {hasUpdatePrivileges && <CollaborationSettings element={whiteboard} elementType="whiteboard" />}
@@ -112,7 +113,9 @@ const WhiteboardView = ({
 
                 <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
 
-                <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
+                {hasUpdatePrivileges && collabState.mode === 'write' && (
+                  <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
+                )}
               </>
             ),
           }}

@@ -8,7 +8,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Identifiable } from '@/core/utils/Identifiable';
 import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
-import { CollabAPI } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
@@ -81,7 +81,7 @@ interface WhiteboardDialogProps {
     show: boolean;
     canEdit?: boolean;
     canDelete?: boolean;
-    headerActions?: ReactNode;
+    headerActions?: (state: CollabState) => ReactNode;
     dialogTitle: ReactNode;
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
@@ -292,7 +292,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
           onSceneInitChange: setSceneInitialized,
         }}
       >
-        {({ children, mode, modeReason, restartCollaboration }) => {
+        {({ children, mode, modeReason, collaborating, connecting, restartCollaboration }) => {
           return (
             <Formik
               innerRef={formikRef}
@@ -310,7 +310,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                 fullScreen={options.fullscreen || columns <= 4}
               >
                 <DialogHeader
-                  actions={options.headerActions}
+                  actions={options.headerActions?.({ mode, modeReason, collaborating, connecting })}
                   onClose={onClose}
                   titleContainerProps={{ flexDirection: 'row', gap: 0, marginRight: -1 }}
                 >
@@ -321,7 +321,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                     onChangeDisplayName={newDisplayName => actions.onChangeDisplayName(whiteboard?.id, newDisplayName)}
                   />
                   <WhiteboardDialogTemplatesLibrary
-                    editModeEnabled={editModeEnabled}
+                    editModeEnabled={editModeEnabled && mode === 'write'}
                     disabled={!isSceneInitialized}
                     onImportTemplate={handleImportTemplate}
                   />

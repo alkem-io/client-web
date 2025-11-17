@@ -5,9 +5,11 @@ import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import VisibilityForm from '../components/VisibilityForm';
 import BodyOfKnowledgeManagement from '../components/BodyOfKnowledgeManagement';
-import PromptConfig from '../components/PromptConfig';
+import { PromptGraphConfig } from '../components/promptGraph';
+import { PromptConfig } from '../components/PromptConfig';
 import ExternalConfig from '../components/ExternalConfig';
-import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaEngine, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 
 const VirtualContributorSettingsPage = () => {
   const { vcId } = useUrlResolver();
@@ -15,6 +17,8 @@ const VirtualContributorSettingsPage = () => {
     variables: { id: vcId! },
     skip: !vcId,
   });
+
+  const { platformPrivilegeWrapper: userWrapper } = useCurrentUserContext();
 
   const vc = data?.lookup.virtualContributor;
 
@@ -24,7 +28,13 @@ const VirtualContributorSettingsPage = () => {
     AiPersonaEngine.GenericOpenai,
   ].includes(vc?.aiPersona?.engine!);
 
-  const isPromptConfigAvailable = [AiPersonaEngine.LibraFlow].includes(vc?.aiPersona?.engine!);
+  const isPromptConfigAvailable = [AiPersonaEngine.GenericOpenai, AiPersonaEngine.LibraFlow].includes(
+    vc?.aiPersona?.engine!
+  );
+
+  const isPromptGraphConfighAvailable =
+    userWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin) &&
+    vc?.aiPersona?.engine === AiPersonaEngine.Expert;
 
   if (!vc || !vc.aiPersona) {
     return null;
@@ -35,6 +45,7 @@ const VirtualContributorSettingsPage = () => {
       <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
         <VisibilityForm vc={vc} />
         <BodyOfKnowledgeManagement vc={vc} />
+        {isPromptGraphConfighAvailable && <PromptGraphConfig vc={vc} />}
         {isPromptConfigAvailable && <PromptConfig vc={vc} />}
         {isExternalConfigAvailable && <ExternalConfig vc={vc} />}
       </VCSettingsPageLayout>

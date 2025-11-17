@@ -54,6 +54,9 @@ query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQuery
       ... on ActivityLogEntryCalloutWhiteboardContentModified {
         ...ActivityLogCalloutWhiteboardContentModified
       }
+      ... on ActivityLogEntryCalloutMemoCreated {
+        ...ActivityLogCalloutMemoCreated
+      }
       ... on ActivityLogEntryCalloutDiscussionComment {
         ...ActivityLogCalloutDiscussionComment
       }

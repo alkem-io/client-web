@@ -48,6 +48,10 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
             email
             inApp
           }
+          communityCalendarEvents {
+            email
+            inApp
+          }
           admin {
             communityApplicationReceived {
               email

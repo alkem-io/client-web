@@ -163,6 +163,7 @@
     "importing": "Importeren...",
     "go-to-entity": "Ga naar {{entity}}",
     "reply": "Reageren",
+    "reset": "Reset",
     "select": "Selecteer",
     "change-field": "{{field}} wijzigen",
     "send": "Verzenden",
@@ -735,8 +736,8 @@
       }
     },
     "pendingMembership": {
-      "pendingMemberships": "Mijn openstaande $t(common.memberships)",
-      "pendingMembershipsWithCount": "Mijn openstaande $t(common.memberships) ({{count}})",
+      "pendingMemberships": "Mijn open $t(common.memberships)",
+      "pendingMembershipsWithCount": "Mijn open $t(common.memberships) ({{count}})",
       "invitationsSectionTitle": "Uitnodigingen",
       "virtualInvitationsSectionTitle": "Uitnodigingen voor mijn $t(common.virtualContributor)",
       "applicationsSectionTitle": "Open aanmeldingen",
@@ -912,8 +913,8 @@
       "more-links": "{{count}} links, klik hier voor alle links",
       "new-temporary-reference": "Tijdelijke link ID: {{temp}}"
     },
-    "singleWhiteboard": {
-      "clickToSee": "Klik om het volledige $t(common.whiteboard) te bekijken"
+    "whiteboard": {
+      "clickToSee": "Click to open $t(common.whiteboard)"
     },
     "memo": {
       "clickToSee": "Klik om de volledige $t(common.memo) te bekijken"
@@ -1196,7 +1197,7 @@
       }
     },
     "notifications": {
-      "templateSaved": "$t(common.template) succesvol verwijderd"
+      "templateSaved": "$t(common.template) succesvol opgeslagen"
     }
   },
   "innovation-templates": {
@@ -1960,7 +1961,7 @@
         },
         "USER_SPACE_COMMUNITY_INVITATION": {
           "subject": "{{triggeredByName}} nodigde je uit om lid te worden van {{spaceName}}",
-          "description": "{{spaceName}} - {{spaceDescription}}"
+          "description": ""
         },
         "USER_MESSAGE_SENDER": {
           "subject": "Je hebt een DM verstuurd naar {{receiverName}}",
@@ -1993,6 +1994,10 @@
         "SPACE_ADMIN_COMMUNITY_APPLICATION": {
           "subject": "{{triggeredByName}} heeft gevraagd om lid te worden van {{spaceName}}",
           "description": "Bekijk aanmelding in de $t(common.space) $t(common.settings)"
+        },
+        "SPACE_ADMIN_VIRTUAL_CONTRIBUTOR_COMMUNITY_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your invitation for {{contributorName}} to join {{spaceName}}",
+          "description": ""
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
           "subject": "Als lead van {{spaceName}}, heb je een bericht ontvangen van {{triggeredByName}}",
@@ -2049,10 +2054,24 @@
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "subject": "{{triggeredByName}} heeft een nieuwe $t(common.space) gemaakt",
           "description": "{{spaceName}}"
+        },
+        "USER_SIGN_UP_WELCOME": {
+          "subject": "Welkom op Alkemio! 🎉",
+          "description": "Je maakt nu deel uit van een community die groeit door middel van samenwerking 🤝 Klik om de Aan de slag Gids te ontdekken en deel te nemen in de $t(common.spaces), waar elk inzicht ons allemaal helpt vooruit te komen.\nVragen? E-mail support@alkem.io"
+        },
+        "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
+          "description": ""
         }
       },
       "emptyInbox": "Geen openstaande $t(common.notifications)",
-      "markAllAsRead": "Alles markeren als gelezen"
+      "markAllAsRead": "Alles markeren als gelezen",
+      "filters": {
+        "all": "All",
+        "messagesAndReplies": "Messages & Replies",
+        "space": "Space notifications",
+        "platform": "Platform notifications"
+      }
     },
     "spaceWelcomeDialog": {
       "title": "🎉 Je $t(common.space) is klaar!",
@@ -2547,7 +2566,7 @@
       "unauthorized": "Log in om de bijdragers van deze $t(common.space) te zien.",
       "search": {
         "title": "Vind talent en expertise!",
-        "subtitle": "Zoek naar andere mensen en $t(common.organizations) die kunnen helpen in deze $t(common.subspace), bijvoorbeeld vanwege hun vaardigheden of interesses.",
+        "subtitle": "Zoek naar andere mensen en $t(common.organizations) die kunnen helpen met jouw $t(common.space), bijvoorbeeld vanwege hun vaardigheden of interesses.",
         "placeholder": "Zoek naar gebruikers en organisaties"
       },
       "organizations": {
@@ -2947,7 +2966,37 @@
           "generic": "Je kunt dit $t(common.whiteboard) niet bewerken om een van de volgende redenen:\n\n- Je bent 2 uur of langer inactief\n- Je bent geen $t(common.member) van de $t(common.space)\n- Deze $t(common.space) staat slechts één $t(common.whiteboard) editor tegelijk toe \n- Deze $t(common.space) staat meer gelijktijdige editors toe, maar het maximum aantal deelnemers is bereikt"
         }
       },
-      "restartCollaboration": "Doorgaan met bewerken"
+      "restartCollaboration": "Doorgaan met bewerken",
+      "previewSettings": {
+        "title": "Preview Settings",
+        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "modes": {
+          "auto": {
+            "title": "Auto Preview",
+            "description": "We'll automatically generate the best preview from your whiteboard content."
+          },
+          "custom": {
+            "title": "Manual Selection",
+            "description": "Choose exactly which part of your whiteboard to show as a preview."
+          },
+          "fixed": {
+            "title": "Fixed Selection",
+            "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
+          }
+        },
+        "cropDialog": {
+          "previewArea": "Crop preview area",
+          "reset": "$t(buttons.reset)",
+          "cancel": "$t(buttons.cancel)",
+          "confirm": "Confirm Selection"
+        }
+      },
+      "preview": {
+        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
+        "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
+      }
     },
     "memo": {
       "readonlyReason": {
@@ -3327,7 +3376,7 @@
       "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "verification-flow-continue": "Volgende",
       "login-flow-account-exists": "Dit e-mailadres is al verbonden met een $t(common.account). Als je je eerder hebt aangemeld via LinkedIn, GitHub of Microsoft, gebruik dan die inlogmethode. Anders kun je ook je wachtwoord herstellen.",
-      "invalid-credentials": "Het ingevoerde e-mailadres of wachtwoord is ongeldig. Controleer je gegevens en probeer het opnieuw. Probeer je je in plaats daarvan aan te melden? Je kunt dit doen door op de link hierboven te klikken.",
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "claim-missing": "Je hebt je Vidua-identiteit nog niet geverifieerd. Controleer je identiteit en probeer het opnieuw of probeer een andere registratiemethode.",
       "pick-password": "Kies een wachtwoord voor je $t(common.account)"
     },
@@ -3358,7 +3407,8 @@
       "FORMAT_NOT_SUPPORTED": "Formaat niet ondersteund",
       "BAD_USER_INPUT": "Verkeerde gebruikersinvoer: {{message}}",
       "NOT_SUPPORTED": "Niet ondersteund: {{message}}",
-      "OPERATION_NOT_ALLOWED": "{{message}}"
+      "OPERATION_NOT_ALLOWED": "{{message}}",
+      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time."
     }
   },
   "dashboard-updates-section": {
@@ -3495,6 +3545,9 @@
     "dialog": {
       "title": "Videooproep starten",
       "content": "Je staat op het punt een video-oproep te starten met Jitsi, een veilige videoconferentie service van derden. De oproep wordt geopend in een nieuw browsertabblad, buiten de Alkemio omgeving. Anderen kunnen zich aanmelden via dezelfde knop of via de gedeelde URL. <br/><br/>Lees meer over Jitsi <jitsiLink>hier</jitsiLink>, inclusief hoe je toegang en privacy instellingen beheert."
+    },
+    "error": {
+      "emptyUrl": "Unable to generate video call URL. Please refresh the page and try again."
     }
   },
   "createSpace": {

@@ -858,6 +858,15 @@
               "text": "Default description"
             }
           },
+          "memo": {
+            "title": "$t(common.Memos)",
+            "tooltip": "Enable responding with $t(common.memos)",
+            "settings": {
+              "label": "Default text:",
+              "explanation": "Add default text to the $t(common.memos), for example, questions that you like people to answer.",
+              "text": "Default description"
+            }
+          },
           "whiteboard": {
             "title": "$t(common.Whiteboards)",
             "tooltip": "Enable responding with $t(common.whiteboards)",
@@ -1445,7 +1454,8 @@
         "UPDATE_SENT": "{{subject}}",
         "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
         "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
-        "CALENDAR_EVENT_CREATED": "{{subject}}"
+        "CALENDAR_EVENT_CREATED": "{{subject}}",
+        "CALLOUT_MEMO_CREATED": "{{subject}}"
       },
       "detailedDescription": {
         "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
@@ -1696,6 +1706,15 @@
         "title": "NameID",
         "placeholder": "Unique textual identifier, used for URL paths. Note: cannot be modified after creation."
       }
+    },
+    "tagCloud": {
+      "resultsCount_one": "{{count}} result",
+      "resultsCount_other": "{{count}} results",
+      "showMoreTags_one": "Show {{count}} more tag",
+      "showMoreTags_other": "Show {{count}} more tags",
+      "showFewerTags": "Show fewer tags",
+      "filterByTag": "Filter posts with tag: {{tag}}",
+      "clearFilter": "Clear filter"
     },
     "visualSegment": {
       "title": "Visual",
@@ -2076,10 +2095,16 @@
         "SPACE_COMMUNITY_CALENDAR_EVENT_CREATED": {
           "subject": "New {{type}} scheduled in {{spaceName}}",
           "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
+        },
+        "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
+          "subject": "New $t(common.comment) on {{type}}: {{eventTitle}}",
+          "description": "{{triggeredByName}} left a $t(common.comment) on the {{eventTitle}} in the {{spaceName}} calendar"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
       "markAllAsRead": "Mark all as read",
+      "unknownUser": "Unknown $t(common.user)",
+      "unknownOrganization": "Unknown $t(common.organization)",
       "filters": {
         "all": "All",
         "messagesAndReplies": "Messages & Replies",
@@ -2995,7 +3020,7 @@
       "restartCollaboration": "Continue Editing",
       "previewSettings": {
         "title": "Preview Settings",
-        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
+        "subtitle": "Choose how your whiteboard preview appears in posts and $t(common.spaces).",
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
         "modes": {
           "AUTO": {
@@ -3233,6 +3258,39 @@
           "infoText": "Available variables: [{{availableVariables}}] . Do not include any alternative text between { } in the prompt, as this will disrupt the functionality of this $t(common.virtualContributor).",
           "saveBtn": "Save prompt"
         },
+        "promptGraph": {
+          "saveBtn": "Save Prompt Graph",
+          "title": "Prompt Graph",
+          "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
+          "warning": "Warning: Advanced mode is intended for experienced users only. Incorrect or complex configurations may negatively affect system performance and can break the Virtual Contributor's functionality.",
+          "stepsTitle": "Steps",
+          "systemNodeTooltip": "System Node - not editable",
+          "promptFieldTitle": "Prompt",
+          "statePropertiesTitle": "State Properties",
+          "noStateProperties": "No state properties",
+          "addButton": "Add",
+          "editBtn": "Edit Prompt Graph",
+          "advancedSettingsButton": "Prompt graph advanced mode",
+          "propertyTable": {
+            "title": "Output Properties",
+            "columns": {
+              "name": "Name",
+              "type": "Type",
+              "optional": "Optional",
+              "description": "Description",
+              "actions": "Actions"
+            },
+            "yes": "Yes",
+            "no": "No",
+            "notAvailable": "N/A",
+            "addProperty": "Add Property",
+            "typeOptions": {
+              "string": "string",
+              "number": "number",
+              "boolean": "boolean"
+            }
+          }
+        },
         "externalConfig": {
           "title": "External Configuration",
           "infoText": "The $t(common.virtualContributor) is powered by an external AI service. Please provide the following information to connect to the service.",
@@ -3283,7 +3341,8 @@
           "collaborationCalloutPublished": "Receive a $t(common.notification) when a $t(common.callout) is published in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutContributionCreated": "Receive a $t(common.notification) when a new contribution ($t(common.whiteboard), $t(common.post), link, $t(common.memo) etc.) is created in a $t(common.community) I am a $t(common.member) of",
           "collaborationCalloutComment": "Receive a $t(common.notification) when a a $t(common.comment) is made on a $t(common.callout) in a $t(common.community) I am a $t(common.member) of",
-          "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.callout) contribution in a $t(common.community) I am a $t(common.member) of"
+          "collaborationCalloutPostContributionComment": "Receive a $t(common.notification) when a new $t(common.comment) is added to a $t(common.callout) contribution in a $t(common.community) I am a $t(common.member) of",
+          "communityCalendarEvents": "Receive calendar $t(common.notifications) for a $t(common.community) I am a $t(common.member) of"
         }
       },
       "spaceAdmin": {
@@ -3552,7 +3611,7 @@
         "text": "{{displayName}}'s avatar: {{altText}}"
       },
       "innovationPack": {
-        "text": "{{displayName}}'s innovation pack avatar: {{altText}}"
+        "text": "{{displayName}}'s $t(common.innovationPack) avatar: {{altText}}"
       }
     }
   },

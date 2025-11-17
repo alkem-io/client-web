@@ -1,4 +1,4 @@
-query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false, $includeWhiteboard: Boolean! = false, $includePost: Boolean! = false) {
+query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false, $includeWhiteboard: Boolean! = false, $includeMemo: Boolean! = false, $includePost: Boolean! = false) {
   lookup {
     contribution(ID: $contributionId) {
       id
@@ -20,6 +20,23 @@ query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false
             ...VisualModel
           }
         }
+        createdDate
+        createdBy {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+      memo @include(if: $includeMemo)  {
+        id
+        profile {
+          id
+          url
+          displayName
+        }
+        markdown
         createdDate
         createdBy {
           id

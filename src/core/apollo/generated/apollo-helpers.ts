@@ -179,6 +179,33 @@ export type ActivityLogEntryCalloutLinkCreatedFieldPolicy = {
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ActivityLogEntryCalloutMemoCreatedKeySpecifier = (
+  | 'callout'
+  | 'child'
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'memo'
+  | 'parentDisplayName'
+  | 'space'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryCalloutMemoCreatedKeySpecifier
+)[];
+export type ActivityLogEntryCalloutMemoCreatedFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ActivityLogEntryCalloutPostCommentKeySpecifier = (
   | 'callout'
   | 'child'
@@ -681,6 +708,7 @@ export type CalloutContributionKeySpecifier = (
   | 'createdDate'
   | 'id'
   | 'link'
+  | 'memo'
   | 'post'
   | 'sortOrder'
   | 'updatedDate'
@@ -693,6 +721,7 @@ export type CalloutContributionFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -792,6 +821,7 @@ export type CalloutsSetKeySpecifier = (
   | 'callouts'
   | 'createdDate'
   | 'id'
+  | 'tags'
   | 'tagsetTemplates'
   | 'type'
   | 'updatedDate'
@@ -802,6 +832,7 @@ export type CalloutsSetFieldPolicy = {
   callouts?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  tags?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1578,13 +1609,6 @@ export type InAppNotificationPayloadKeySpecifier = ('type' | InAppNotificationPa
 export type InAppNotificationPayloadFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type InAppNotificationPayloadOrganizationKeySpecifier = (
-  | 'type'
-  | InAppNotificationPayloadOrganizationKeySpecifier
-)[];
-export type InAppNotificationPayloadOrganizationFieldPolicy = {
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type InAppNotificationPayloadOrganizationMessageDirectKeySpecifier = (
   | 'message'
   | 'organization'
@@ -1607,10 +1631,6 @@ export type InAppNotificationPayloadOrganizationMessageRoomFieldPolicy = {
   comment?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   roomID?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type InAppNotificationPayloadPlatformKeySpecifier = ('type' | InAppNotificationPayloadPlatformKeySpecifier)[];
-export type InAppNotificationPayloadPlatformFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadPlatformForumDiscussionKeySpecifier = (
@@ -1745,20 +1765,25 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFieldPolicy = {
 };
 export type InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier = (
   | 'calendarEvent'
-  | 'calendarEventID'
-  | 'calendarEventTitle'
-  | 'calendarEventType'
-  | 'createdBy'
   | 'space'
   | 'type'
   | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
 )[];
 export type InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy = {
   calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
-  calendarEventID?: FieldPolicy<any> | FieldReadFunction<any>;
-  calendarEventTitle?: FieldPolicy<any> | FieldReadFunction<any>;
-  calendarEventType?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier = (
+  | 'calendarEvent'
+  | 'commentText'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFieldPolicy = {
+  calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentText?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1806,14 +1831,12 @@ export type InAppNotificationPayloadVirtualContributorKeySpecifier = (
   | 'contributor'
   | 'space'
   | 'type'
-  | 'virtualContributorID'
   | InAppNotificationPayloadVirtualContributorKeySpecifier
 )[];
 export type InAppNotificationPayloadVirtualContributorFieldPolicy = {
   contributor?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-  virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationFlowKeySpecifier = (
   | 'authorization'
@@ -3347,6 +3370,7 @@ export type PromptGraphFieldPolicy = {
 };
 export type PromptGraphDataPointKeySpecifier = (
   | 'description'
+  | 'items'
   | 'name'
   | 'optional'
   | 'type'
@@ -3354,6 +3378,7 @@ export type PromptGraphDataPointKeySpecifier = (
 )[];
 export type PromptGraphDataPointFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
+  items?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   optional?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4425,6 +4450,7 @@ export type UrlResolverQueryResultCalloutsSetKeySpecifier = (
   | 'calloutId'
   | 'contributionId'
   | 'id'
+  | 'memoId'
   | 'postId'
   | 'type'
   | 'whiteboardId'
@@ -4434,6 +4460,7 @@ export type UrlResolverQueryResultCalloutsSetFieldPolicy = {
   calloutId?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionId?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  memoId?: FieldPolicy<any> | FieldReadFunction<any>;
   postId?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardId?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5036,6 +5063,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | ActivityLogEntryCalloutLinkCreatedKeySpecifier);
     fields?: ActivityLogEntryCalloutLinkCreatedFieldPolicy;
   };
+  ActivityLogEntryCalloutMemoCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryCalloutMemoCreatedKeySpecifier
+      | (() => undefined | ActivityLogEntryCalloutMemoCreatedKeySpecifier);
+    fields?: ActivityLogEntryCalloutMemoCreatedFieldPolicy;
+  };
   ActivityLogEntryCalloutPostComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5516,13 +5550,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | InAppNotificationPayloadKeySpecifier | (() => undefined | InAppNotificationPayloadKeySpecifier);
     fields?: InAppNotificationPayloadFieldPolicy;
   };
-  InAppNotificationPayloadOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | InAppNotificationPayloadOrganizationKeySpecifier
-      | (() => undefined | InAppNotificationPayloadOrganizationKeySpecifier);
-    fields?: InAppNotificationPayloadOrganizationFieldPolicy;
-  };
   InAppNotificationPayloadOrganizationMessageDirect?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5536,13 +5563,6 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadOrganizationMessageRoomKeySpecifier
       | (() => undefined | InAppNotificationPayloadOrganizationMessageRoomKeySpecifier);
     fields?: InAppNotificationPayloadOrganizationMessageRoomFieldPolicy;
-  };
-  InAppNotificationPayloadPlatform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | InAppNotificationPayloadPlatformKeySpecifier
-      | (() => undefined | InAppNotificationPayloadPlatformKeySpecifier);
-    fields?: InAppNotificationPayloadPlatformFieldPolicy;
   };
   InAppNotificationPayloadPlatformForumDiscussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -5634,6 +5654,13 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier
       | (() => undefined | InAppNotificationPayloadSpaceCommunityCalendarEventKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCommunityCalendarEventFieldPolicy;
+  };
+  InAppNotificationPayloadSpaceCommunityCalendarEventComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCommunityCalendarEventCommentKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCommunityCalendarEventCommentFieldPolicy;
   };
   InAppNotificationPayloadSpaceCommunityContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
