@@ -38,6 +38,9 @@ fragment Callout on Callout {
   }
   settings {
     visibility
+    contribution {
+      allowedTypes
+    }
   }
 }
 
