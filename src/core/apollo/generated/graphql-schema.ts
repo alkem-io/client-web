@@ -10583,7 +10583,16 @@ export type InnovationFlowSettingsQuery = {
               framing: {
                 __typename?: 'CalloutFraming';
                 id: string;
+                type: CalloutFramingType;
                 profile: { __typename?: 'Profile'; id: string; displayName: string };
+              };
+              settings: {
+                __typename?: 'CalloutSettings';
+                visibility: CalloutVisibility;
+                contribution: {
+                  __typename?: 'CalloutSettingsContribution';
+                  allowedTypes: Array<CalloutContributionType>;
+                };
               };
             }>;
           };
@@ -10745,7 +10754,13 @@ export type InnovationFlowCollaborationFragment = {
       framing: {
         __typename?: 'CalloutFraming';
         id: string;
+        type: CalloutFramingType;
         profile: { __typename?: 'Profile'; id: string; displayName: string };
+      };
+      settings: {
+        __typename?: 'CalloutSettings';
+        visibility: CalloutVisibility;
+        contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
       };
     }>;
   };
@@ -14609,7 +14624,14 @@ export type CalloutsOnCalloutsSetUsingClassificationQuery = {
               type: CalloutFramingType;
               profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
             };
-            settings: { __typename?: 'CalloutSettings'; visibility: CalloutVisibility };
+            settings: {
+              __typename?: 'CalloutSettings';
+              visibility: CalloutVisibility;
+              contribution: {
+                __typename?: 'CalloutSettingsContribution';
+                allowedTypes: Array<CalloutContributionType>;
+              };
+            };
             classification?:
               | {
                   __typename?: 'Classification';
@@ -14646,7 +14668,11 @@ export type CalloutFragment = {
     type: CalloutFramingType;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   };
-  settings: { __typename?: 'CalloutSettings'; visibility: CalloutVisibility };
+  settings: {
+    __typename?: 'CalloutSettings';
+    visibility: CalloutVisibility;
+    contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+  };
 };
 
 export type CalloutDetailsQueryVariables = Exact<{
@@ -27852,6 +27878,13 @@ export type TemplateContentQuery = {
                             }
                           | undefined;
                       };
+                      settings: {
+                        __typename?: 'CalloutSettings';
+                        contribution: {
+                          __typename?: 'CalloutSettingsContribution';
+                          allowedTypes: Array<CalloutContributionType>;
+                        };
+                      };
                     }>;
                   };
                 };
@@ -28029,6 +28062,13 @@ export type SpaceTemplateContentQuery = {
                         };
                       }
                     | undefined;
+                };
+                settings: {
+                  __typename?: 'CalloutSettings';
+                  contribution: {
+                    __typename?: 'CalloutSettingsContribution';
+                    allowedTypes: Array<CalloutContributionType>;
+                  };
                 };
               }>;
             };
@@ -28386,6 +28426,10 @@ export type SpaceTemplateContentFragment = {
               }
             | undefined;
         };
+        settings: {
+          __typename?: 'CalloutSettings';
+          contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+        };
       }>;
     };
   };
@@ -28522,6 +28566,10 @@ export type SpaceTemplateContent_CollaborationFragment = {
               };
             }
           | undefined;
+      };
+      settings: {
+        __typename?: 'CalloutSettings';
+        contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
       };
     }>;
   };

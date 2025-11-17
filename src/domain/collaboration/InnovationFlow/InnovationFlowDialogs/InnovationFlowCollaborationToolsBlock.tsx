@@ -1,16 +1,17 @@
-import { Box, BoxProps, Skeleton, styled, SvgIconProps } from '@mui/material';
+import { Box, BoxProps, Skeleton, styled } from '@mui/material';
 import { groupBy } from 'lodash';
-import { ComponentType, FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import { GenericCalloutIcon } from '@/domain/collaboration/callout/icons/calloutIcons';
+import { CalloutIcon } from '@/domain/collaboration/callout/icons/calloutIcons';
 import InnovationFlowDragNDropEditor, {
   InnovationFlowDragNDropEditorProps,
 } from '../InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { GUTTER_PX } from '@/core/ui/grid/constants';
+import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 
 const SKELETON_COUNT = 3;
 
@@ -32,6 +33,14 @@ interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlow
     profile: {
       displayName: string;
     };
+    framing?: {
+      type?: CalloutFramingType;
+    };
+    settings?: {
+      contribution?: {
+        allowedTypes?: CalloutContributionType[];
+      };
+    };
     flowState:
       | {
           tagsetId: string;
@@ -46,23 +55,23 @@ interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlow
 
 interface ListItemProps extends BoxProps {
   displayName: string;
-  icon?: ComponentType<SvgIconProps>;
+  Icon: ReactNode;
   activity?: number;
 }
 
 const ListItem = ({
   ref,
   displayName,
-  icon: Icon,
+  Icon,
   activity = 0,
   ...boxProps
 }: ListItemProps & {
   ref: React.Ref<HTMLDivElement>;
 }) => {
   return (
-    <Box ref={ref} {...boxProps}>
+    <Box ref={ref} {...boxProps} sx={{ gap: gutters(0.5) }}>
+      {Icon}
       <Caption>
-        {Icon && <Icon sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />}
         {displayName} {activity > 0 && `(${activity})`}
       </Caption>
     </Box>
@@ -125,8 +134,16 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
                         ref={provider.innerRef}
                         {...provider.draggableProps}
                         {...provider.dragHandleProps}
+                        {...{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: gutters(0.5) }}
                         displayName={callout.profile.displayName}
-                        icon={GenericCalloutIcon}
+                        Icon={
+                          <CalloutIcon
+                            framingType={callout.framing?.type || CalloutFramingType.None}
+                            allowedTypes={callout.settings?.contribution?.allowedTypes}
+                            tooltip
+                            iconProps={{ fontSize: 'small' }}
+                          />
+                        }
                         activity={callout.activity}
                       />
                     )}
