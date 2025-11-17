@@ -15,7 +15,8 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import { DefaultWhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
+import { isEqual } from 'lodash';
 
 export interface FormikWhiteboardPreviewRef {
   openEditDialog: () => void;
@@ -64,9 +65,9 @@ const FormikWhiteboardPreview = ({
 
   const [field, , whiteboardContentField] = useField<string>(name); // Whiteboard content JSON string
   const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(previewImagesName ?? 'previewImages');
-  const [previewSettingsField, , previewSettingsFieldHelpers] = useField<WhiteboardPreviewSettings | undefined>(
-    previewSettingsName ?? 'previewSettings'
-  );
+  const [previewSettingsField, previewSettingsFieldContext, previewSettingsFieldHelpers] = useField<
+    WhiteboardPreviewSettings | undefined
+  >(previewSettingsName ?? 'previewSettings');
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState<boolean>(false);
@@ -155,13 +156,27 @@ const FormikWhiteboardPreview = ({
                 actions={{
                   onCancel: handleClose,
                   onUpdate: async (whiteboard, previewImages) => {
+                    // Update the content of the whiteboard
                     whiteboardContentField.setValue(whiteboard.content);
+
+                    // Update the preview images if the field is provided
                     if (previewImagesName) {
-                      previewImagesField.setValue(previewImages);
+                      if (
+                        whiteboard.previewSettings.mode === WhiteboardPreviewMode.Fixed &&
+                        isEqual(whiteboard.previewSettings, previewSettingsFieldContext.initialValue)
+                      ) {
+                        // If previewSettings is FIXED and has not changed,
+                        // do not update preview images
+                      } else {
+                        previewImagesField.setValue(previewImages);
+                      }
                     }
+
+                    // Update the preview settings if the field is provided
                     if (previewSettingsName) {
                       previewSettingsFieldHelpers.setValue(whiteboard.previewSettings);
                     }
+
                     onChangeContent?.(whiteboard.content, previewImages);
                     setEditDialogOpen(false);
                   },
