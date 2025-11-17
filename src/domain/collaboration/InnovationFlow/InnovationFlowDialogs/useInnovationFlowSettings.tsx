@@ -87,10 +87,10 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
         ?.map<GroupedCallout>(callout => ({
           id: callout.id,
           profile: {
-            displayName: callout.framing.profile.displayName,
+            displayName: callout.framing?.profile.displayName,
           },
           framing: {
-            type: callout.framing.type,
+            type: callout.framing?.type,
           },
           settings: {
             contribution: {

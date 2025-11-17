@@ -5,10 +5,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { Text, CaptionSmall } from '@/core/ui/typography';
+import { CaptionSmall, Text } from '@/core/ui/typography';
 import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
 import { CalloutModelLight } from '../callout/models/CalloutModelLight';
 import { getCalloutIconBasedOnType } from '../callout/icons/calloutIcons';
+import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 
 export interface InnovationFlowCalloutsPreviewProps {
   selectedState: string | undefined;
@@ -70,7 +71,7 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
                   <RoundedIcon
                     size="small"
                     component={getCalloutIconBasedOnType(
-                      callout.framing.type,
+                      callout.framing?.type || CalloutFramingType.None,
                       callout.settings?.contribution?.allowedTypes
                     )}
                   />
