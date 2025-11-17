@@ -11599,6 +11599,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -11660,6 +11669,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -11725,6 +11743,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -11791,6 +11818,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -11861,6 +11897,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -11922,6 +11967,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -11992,6 +12046,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -12057,6 +12120,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -12127,6 +12199,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -12197,6 +12278,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -12289,6 +12379,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -12355,6 +12454,15 @@ export type ActivityLogOnCollaborationQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -21418,6 +21526,9 @@ export type DashboardSpacesQuery = {
         displayName: string;
         url: string;
         tagline?: string | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
         cardBanner?:
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
@@ -22972,6 +23083,9 @@ export type SpaceAboutCardBannerFragment = {
     displayName: string;
     url: string;
     tagline?: string | undefined;
+    avatar?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | undefined;
     cardBanner?:
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
@@ -23363,6 +23477,9 @@ export type CreateSubspaceMutation = {
         url: string;
         displayName: string;
         tagline?: string | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
         cardBanner?:
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
@@ -23377,9 +23494,6 @@ export type CreateSubspaceMutation = {
             }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
-          | undefined;
-        avatar?:
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
       };
@@ -23650,6 +23764,15 @@ export type SpaceDashboardNavigationSubspacesQuery = {
               displayName: string;
               url: string;
               tagline?: string | undefined;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
               cardBanner?:
                 | {
                     __typename?: 'Visual';
@@ -23865,6 +23988,15 @@ export type SpaceSubspaceCardsQuery = {
                 displayName: string;
                 url: string;
                 tagline?: string | undefined;
+                avatar?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
                 cardBanner?:
                   | {
                       __typename?: 'Visual';
@@ -23940,6 +24072,9 @@ export type SubspaceCardFragment = {
       displayName: string;
       url: string;
       tagline?: string | undefined;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
       cardBanner?:
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
@@ -24020,6 +24155,9 @@ export type SubspacesOnSpaceFragment = {
         displayName: string;
         url: string;
         tagline?: string | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
         cardBanner?:
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
@@ -24474,6 +24612,15 @@ export type SubspacesInSpaceQuery = {
                 displayName: string;
                 url: string;
                 tagline?: string | undefined;
+                avatar?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
                 cardBanner?:
                   | {
                       __typename?: 'Visual';
@@ -24569,6 +24716,9 @@ export type SubspaceCreatedSubscription = {
           displayName: string;
           url: string;
           tagline?: string | undefined;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
           cardBanner?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
@@ -36339,6 +36489,15 @@ export type DashboardWithMembershipsQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
             cardBanner?:
               | {
                   __typename?: 'Visual';
@@ -36386,6 +36545,15 @@ export type DashboardWithMembershipsQuery = {
               url: string;
               tagline?: string | undefined;
               spaceBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              avatar?:
                 | {
                     __typename?: 'Visual';
                     id: string;
@@ -36443,6 +36611,9 @@ export type DashboardSpaceMembershipFragment = {
       url: string;
       tagline?: string | undefined;
       spaceBanner?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+      avatar?:
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
       cardBanner?:
@@ -36960,7 +37131,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -37022,7 +37201,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -37088,7 +37275,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -37159,7 +37354,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -37230,7 +37433,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -37292,7 +37503,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -37363,7 +37582,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -37429,7 +37656,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -37500,7 +37735,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -37571,7 +37814,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -37664,7 +37915,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -37731,7 +37990,15 @@ export type LatestContributionsQuery = {
                     displayName: string;
                     url: string;
                     tagline?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
                     cardBanner?:
                       | {
                           __typename?: 'Visual';
@@ -38532,6 +38799,15 @@ export type MyMembershipsQuery = {
             displayName: string;
             url: string;
             tagline?: string | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
             cardBanner?:
               | {
                   __typename?: 'Visual';
@@ -38582,6 +38858,15 @@ export type MyMembershipsQuery = {
               displayName: string;
               url: string;
               tagline?: string | undefined;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
               cardBanner?:
                 | {
                     __typename?: 'Visual';
@@ -38632,6 +38917,15 @@ export type MyMembershipsQuery = {
                 displayName: string;
                 url: string;
                 tagline?: string | undefined;
+                avatar?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
                 cardBanner?:
                   | {
                       __typename?: 'Visual';
@@ -38682,6 +38976,9 @@ export type SpaceMembershipFragment = {
       displayName: string;
       url: string;
       tagline?: string | undefined;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
       cardBanner?:
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
@@ -39191,16 +39488,21 @@ export type RecentSpacesQuery = {
           __typename?: 'SpaceAbout';
           isContentPublic: boolean;
           id: string;
-          membership: {
-            __typename?: 'SpaceAboutMembership';
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
-          };
           profile: {
             __typename?: 'Profile';
             id: string;
             displayName: string;
             url: string;
             tagline?: string | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
             cardBanner?:
               | {
                   __typename?: 'Visual';
@@ -39323,6 +39625,15 @@ export type SpaceExplorerSearchQuery = {
                   displayName: string;
                   url: string;
                   tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   cardBanner?:
                     | {
                         __typename?: 'Visual';
@@ -39415,6 +39726,9 @@ export type SpaceExplorerSearchSpaceFragment = {
         displayName: string;
         url: string;
         tagline?: string | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
         cardBanner?:
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
@@ -39576,6 +39890,9 @@ export type SpaceExplorerMemberSpacesQuery = {
         displayName: string;
         url: string;
         tagline?: string | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
         cardBanner?:
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
@@ -39665,6 +39982,9 @@ export type SpaceExplorerAllSpacesQuery = {
           displayName: string;
           url: string;
           tagline?: string | undefined;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
           cardBanner?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
@@ -39827,6 +40147,9 @@ export type SpaceExplorerSpaceFragment = {
       displayName: string;
       url: string;
       tagline?: string | undefined;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
       cardBanner?:
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;

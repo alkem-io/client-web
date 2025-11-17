@@ -5,6 +5,9 @@ fragment SpaceAboutCardBanner on SpaceAbout {
     displayName
     url
     tagline
+    avatar: visual(type: AVATAR) {
+      ...VisualModel
+    }
     cardBanner: visual(type: CARD) {
       ...VisualModel
     }

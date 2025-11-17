@@ -1867,6 +1867,9 @@ export const SpaceAboutCardBannerFragmentDoc = gql`
       displayName
       url
       tagline
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
       cardBanner: visual(type: CARD) {
         ...VisualModel
       }
@@ -26105,9 +26108,6 @@ export const RecentSpacesDocument = gql`
           about {
             ...SpaceAboutCardBanner
             isContentPublic
-            membership {
-              myMembershipStatus
-            }
           }
           level
           __typename

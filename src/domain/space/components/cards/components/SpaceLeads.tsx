@@ -36,7 +36,11 @@ interface SpaceLeadsProps {
 
 const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads }: SpaceLeadsProps) => {
   if (!showLeads || (leadUsers.length === 0 && leadOrganizations.length === 0)) {
-    return null;
+    return showLeads ? (
+      <Box width="36px" height="36px">
+        &nbsp;
+      </Box>
+    ) : null;
   }
 
   const allLeads = [...leadUsers, ...leadOrganizations];

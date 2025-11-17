@@ -1,14 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import { Button, Paper } from '@mui/material';
+import { Button } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
 import { useRecentSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Caption } from '@/core/ui/typography';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
+import Gutters from '@/core/ui/grid/Gutters';
 import GridItem from '@/core/ui/grid/GridItem';
-import SpaceTile, { RECENT_SPACE_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
 import { useMemo } from 'react';
-import { useScreenSize } from '@/core/ui/grid/constants';
 
 interface RecentSpacesListProps {
   onSeeMore?: () => void;
@@ -17,39 +16,40 @@ interface RecentSpacesListProps {
 const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
   const { t } = useTranslation();
   const columns = useColumns();
-  const visibleSpaces = Math.max(1, Math.floor(columns / 2) - 1);
+
+  // Calculate visible spaces and card columns based on total columns
+  const { visibleSpaces, cardColumns } = useMemo(() => {
+    if (columns >= 8) {
+      return { visibleSpaces: 3, cardColumns: columns / 3 };
+    } else if (columns >= 4) {
+      return { visibleSpaces: 2, cardColumns: columns / 2 };
+    } else {
+      return { visibleSpaces: 1, cardColumns: columns };
+    }
+  }, [columns]);
 
   const { data } = useRecentSpacesQuery({ variables: { limit: visibleSpaces } });
 
-  const { isSmallScreen } = useScreenSize();
-  const cardColumns = useMemo(() => (isSmallScreen ? columns / 2 : columns / 4), [isSmallScreen, columns]);
-
   return (
-    <PageContentBlockSeamless row disablePadding>
-      {data?.me.mySpaces.slice(0, visibleSpaces).map(result => (
-        <SpaceTile
-          key={result.space.id}
-          columns={cardColumns}
-          space={{
-            id: result.space.id,
-            about: result.space.about,
-            level: result.space.level,
-          }}
-        />
-      ))}
-
-      <GridItem columns={cardColumns}>
-        <Paper
-          variant="outlined"
-          component={Button}
-          endIcon={<DoubleArrowOutlined />}
-          sx={{ textTransform: 'none', aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO }}
-          onClick={onSeeMore}
-        >
-          <Caption>{t('pages.home.sections.recentSpaces.seeMore')}</Caption>
-        </Paper>
-      </GridItem>
-    </PageContentBlockSeamless>
+    <Gutters disablePadding>
+      <Gutters row disablePadding>
+        {data?.me.mySpaces.slice(0, visibleSpaces).map(result => (
+          <GridItem key={result.space.id} columns={cardColumns}>
+            <SpaceCard
+              spaceId={result.space.id}
+              displayName={result.space.about.profile.displayName}
+              banner={result.space.about.profile.cardBanner}
+              spaceUri={result.space.about.profile.url}
+              isPrivate={!result.space.about.isContentPublic}
+              compact
+            />
+          </GridItem>
+        ))}
+      </Gutters>
+      <Button endIcon={<DoubleArrowOutlined />} sx={{ textTransform: 'none' }} onClick={onSeeMore}>
+        <Caption>{t('pages.home.sections.recentSpaces.seeMore')}</Caption>
+      </Button>
+    </Gutters>
   );
 };
 

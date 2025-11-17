@@ -26,6 +26,7 @@ interface SubspaceCardProps extends Omit<SpaceCardProps, 'header'> {
   leadUsers?: Lead[];
   leadOrganizations?: LeadOrganization[];
   showLeads?: boolean;
+  compact?: boolean;
 }
 
 const SpaceCard = ({
@@ -33,7 +34,7 @@ const SpaceCard = ({
   vision,
   tagline,
   spaceVisibility,
-  level,
+  level = SpaceLevel.L0,
   member,
   parentInfo,
   isPrivate,
@@ -41,6 +42,7 @@ const SpaceCard = ({
   leadUsers,
   leadOrganizations,
   showLeads = false,
+  compact = false,
   tags,
   ...props
 }: SubspaceCardProps) => {
@@ -50,12 +52,48 @@ const SpaceCard = ({
   const hasAvatarUris = Boolean(avatarUris && avatarUris.length > 0);
   const visualContent = hasAvatarUris ? <StackedAvatar avatarUris={avatarUris!} /> : undefined;
 
-  // Show leads at the bottom of the card if authenticated
-  const hasLeads = Boolean(showLeads && (leadUsers?.length || leadOrganizations?.length));
+  // Show leads at the bottom of the card if authenticated (and not in compact mode)
+  const hasLeads = Boolean(!compact && showLeads && (leadUsers?.length || leadOrganizations?.length));
 
   // Show visibility banner for non-Active spaces
   const showVisibilityBanner = Boolean(spaceVisibility && spaceVisibility !== SpaceVisibility.Active);
 
+  // Compact mode uses a completely different layout (tile-style)
+  if (compact) {
+    return (
+      <SpaceCardBase
+        header={null}
+        banner={props.banner}
+        spaceId={props.spaceId}
+        locked={isPrivate}
+        visual={visualContent}
+        sx={{
+          position: 'relative',
+          height: '100%',
+          '& .MuiCardContent-root': { display: 'none' },
+        }}
+        {...props}
+      >
+        {/* Display name and optional parent info - rendered in BadgeCardView footer */}
+        <Box display="flex" flexDirection="column" gap={0} width="100%">
+          <BlockTitle
+            noWrap
+            component="dt"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {displayName}
+          </BlockTitle>
+          {isSubspace && parentInfo && <SpaceParentInfo parent={parentInfo} />}
+        </Box>
+      </SpaceCardBase>
+    );
+  }
+
+  // Regular mode - standard card layout
   return (
     <SpaceCardBase
       header={
@@ -86,12 +124,15 @@ const SpaceCard = ({
       {...props}
     >
       <SpaceCardTagline>{tagline ?? ''}</SpaceCardTagline>
-      {hasLeads && (
-        <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: gutters(0.5) }}>
-          <Caption>Led by:</Caption>
+
+      <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: gutters(0.5) }}>
+        <Caption>{hasLeads ? 'Led by:' : 'No lead yet'}</Caption>
+        {hasLeads ? (
           <SpaceLeads leadUsers={leadUsers} leadOrganizations={leadOrganizations} showLeads={showLeads} />
-        </Box>
-      )}
+        ) : (
+          <SpaceLeads showLeads />
+        )}
+      </Box>
     </SpaceCardBase>
   );
 };
