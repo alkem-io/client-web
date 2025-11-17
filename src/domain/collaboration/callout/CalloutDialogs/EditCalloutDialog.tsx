@@ -143,7 +143,8 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           ? formData.contributionDefaults.whiteboardContent
           : undefined,
       postDescription:
-        formData.settings.contribution.allowedTypes === CalloutContributionType.Post
+        formData.settings.contribution.allowedTypes === CalloutContributionType.Post ||
+        formData.settings.contribution.allowedTypes === CalloutContributionType.Memo
           ? formData.contributionDefaults.postDescription
           : undefined,
     };
@@ -160,6 +161,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       variables: {
         calloutData: updateCalloutContentInput,
       },
+      refetchQueries: ['CalloutsSetTags'],
     });
     if (result.data?.updateCallout.framing.whiteboard?.profile.preview?.id) {
       await uploadVisuals(formData.framing.whiteboard?.previewImages, {

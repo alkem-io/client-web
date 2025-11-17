@@ -858,6 +858,15 @@
               "text": "Default description"
             }
           },
+          "memo": {
+            "title": "$t(common.Memos)",
+            "tooltip": "Enable responding with $t(common.memos)",
+            "settings": {
+              "label": "Default text:",
+              "explanation": "Add default text to the $t(common.memos), for example, questions that you like people to answer.",
+              "text": "Default description"
+            }
+          },
           "whiteboard": {
             "title": "$t(common.Whiteboards)",
             "tooltip": "Enable responding with $t(common.whiteboards)",
@@ -1445,7 +1454,8 @@
         "UPDATE_SENT": "{{subject}}",
         "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
         "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
-        "CALENDAR_EVENT_CREATED": "{{subject}}"
+        "CALENDAR_EVENT_CREATED": "{{subject}}",
+        "CALLOUT_MEMO_CREATED": "{{subject}}"
       },
       "detailedDescription": {
         "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
@@ -1696,6 +1706,15 @@
         "title": "NameID",
         "placeholder": "Unique textual identifier, used for URL paths. Note: cannot be modified after creation."
       }
+    },
+    "tagCloud": {
+      "resultsCount_one": "{{count}} result",
+      "resultsCount_other": "{{count}} results",
+      "showMoreTags_one": "Show {{count}} more tag",
+      "showMoreTags_other": "Show {{count}} more tags",
+      "showFewerTags": "Show fewer tags",
+      "filterByTag": "Filter posts with tag: {{tag}}",
+      "clearFilter": "Clear filter"
     },
     "visualSegment": {
       "title": "Visual",
@@ -2078,8 +2097,8 @@
           "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
         },
         "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
-          "subject": "New comment on {{type}}: {{eventTitle}}",
-          "description": "{{triggeredByName}} left a comment on the {{eventTitle}} in the {{spaceName}} calendar"
+          "subject": "New $t(common.comment) on {{type}}: {{eventTitle}}",
+          "description": "{{triggeredByName}} left a $t(common.comment) on the {{eventTitle}} in the {{spaceName}} calendar"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
@@ -3003,7 +3022,7 @@
       "restartCollaboration": "Continue Editing",
       "previewSettings": {
         "title": "Preview Settings",
-        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
+        "subtitle": "Choose how your whiteboard preview appears in posts and $t(common.spaces).",
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
         "modes": {
           "AUTO": {
@@ -3594,7 +3613,7 @@
         "text": "{{displayName}}'s avatar: {{altText}}"
       },
       "innovationPack": {
-        "text": "{{displayName}}'s innovation pack avatar: {{altText}}"
+        "text": "{{displayName}}'s $t(common.innovationPack) avatar: {{altText}}"
       }
     }
   },

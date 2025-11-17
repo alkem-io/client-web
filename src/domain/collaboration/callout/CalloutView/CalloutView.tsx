@@ -24,14 +24,18 @@ import { gutters } from '@/core/ui/grid/utils';
 import CalloutContributionPreview from '../../calloutContributions/calloutContributionPreview/CalloutContributionPreview';
 import CalloutContributionPreviewPost from '../../calloutContributions/post/CalloutContributionPreviewPost';
 import CalloutContributionPreviewWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionPreviewWhiteboard';
+import CalloutContributionPreviewMemo from '../../calloutContributions/memo/CalloutContributionPreviewMemo';
 import CalloutContributionDialogWhiteboard from '../../calloutContributions/whiteboard/CalloutContributionDialogWhiteboard';
 import CalloutContributionDialogPost from '../../calloutContributions/post/CalloutContributionDialogPost';
+import CalloutContributionDialogMemo from '../../calloutContributions/memo/CalloutContributionDialogMemo';
 import CalloutContributionsHorizontalPager from '../../calloutContributions/CalloutContributionsHorizontalPager';
 import PostCard from '../../calloutContributions/post/PostCard';
 import ContributionsCardsExpandable from '../../calloutContributions/contributionsCardsExpandable/ContributionsCardsExpandable';
 import WhiteboardCard from '../../calloutContributions/whiteboard/WhiteboardCard';
+import MemoCard from '../../calloutContributions/memo/MemoCard';
 import CreateContributionButtonWhiteboard from '../../calloutContributions/whiteboard/CreateContributionButtonWhiteboard';
 import CreateContributionButtonPost from '../../calloutContributions/post/CreateContributionButtonPost';
+import CreateContributionButtonMemo from '../../calloutContributions/memo/CreateContributionButtonMemo';
 import Gutters from '@/core/ui/grid/Gutters';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import useNavigate from '@/core/routing/useNavigate';
@@ -98,7 +102,8 @@ const CalloutView = ({
       keepScroll: true,
     };
     // TODO: When contribution.type is available, use it to decide which url to use
-    const url = contribution.whiteboard?.profile.url ?? contribution.post?.profile.url;
+    const url =
+      contribution.whiteboard?.profile.url ?? contribution.post?.profile.url ?? contribution.memo?.profile.url;
     if (url) {
       navigate(url, { state });
     }
@@ -225,6 +230,49 @@ const CalloutView = ({
                   onCalloutUpdate={onCalloutUpdate}
                   contributionCardComponent={PostCard}
                   createContributionButtonComponent={CreateContributionButtonPost}
+                  onClickOnContribution={handleClickOnContribution}
+                  calloutRestrictions={calloutRestrictions}
+                />
+              )}
+            </>
+          )}
+
+          {/* Collaborate with Memos */}
+          {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Memo) && (
+            <>
+              {contributionId && (
+                /* Selected Contribution */
+                <CalloutContributionPreview
+                  ref={contributionPreviewRef}
+                  callout={callout}
+                  contributionId={contributionId}
+                  previewComponent={CalloutContributionPreviewMemo}
+                  dialogComponent={CalloutContributionDialogMemo}
+                  calloutRestrictions={calloutRestrictions}
+                  onCalloutUpdate={onCalloutUpdate}
+                />
+              )}
+              {/* If there is a contributionId show the scroller */}
+              {contributionId && (
+                <CalloutContributionsHorizontalPager
+                  callout={callout}
+                  contributionType={CalloutContributionType.Memo}
+                  contributionSelectedId={contributionId}
+                  cardComponent={MemoCard}
+                  onClickOnContribution={handleClickOnContribution}
+                />
+              )}
+              {/* else show the expandable container with the cards */}
+              {!contributionId && (
+                <ContributionsCardsExpandable
+                  callout={callout}
+                  contributionType={CalloutContributionType.Memo}
+                  expanded={expanded}
+                  onExpand={onExpand}
+                  onCollapse={onCollapse}
+                  onCalloutUpdate={onCalloutUpdate}
+                  contributionCardComponent={MemoCard}
+                  createContributionButtonComponent={CreateContributionButtonMemo}
                   onClickOnContribution={handleClickOnContribution}
                   calloutRestrictions={calloutRestrictions}
                 />

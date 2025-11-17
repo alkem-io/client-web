@@ -2,6 +2,7 @@ query CalloutsOnCalloutsSetUsingClassification(
   $calloutsSetId: UUID!
   $classificationTagsets: [TagsetArgs!] = [],
   $withClassification: Boolean = true,
+  $tagsFilter: [String!]
 ) {
   lookup {
     calloutsSet(ID: $calloutsSetId) {
@@ -10,7 +11,7 @@ query CalloutsOnCalloutsSetUsingClassification(
         id
         myPrivileges
       }
-      callouts(classificationTagsets: $classificationTagsets) {
+      callouts(classificationTagsets: $classificationTagsets, withTags: $tagsFilter) {
         ...Callout
         ...ClassificationDetails @include(if: $withClassification)
       }

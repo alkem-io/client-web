@@ -93,6 +93,7 @@ const useCalloutContributions = ({
       calloutId: callout?.id!,
       includeLink: contributionType === CalloutContributionType.Link,
       includeWhiteboard: contributionType === CalloutContributionType.Whiteboard,
+      includeMemo: contributionType === CalloutContributionType.Memo,
       includePost: contributionType === CalloutContributionType.Post,
       limit: fetchAllEnabled ? undefined : pageSize,
     },
@@ -160,6 +161,8 @@ const useCalloutContributions = ({
           return (effectiveData ?? data)?.lookup.callout?.contributionsCount.whiteboard;
         case CalloutContributionType.Post:
           return (effectiveData ?? data)?.lookup.callout?.contributionsCount.post;
+        case CalloutContributionType.Memo:
+          return (effectiveData ?? data)?.lookup.callout?.contributionsCount.memo;
       }
     })() ?? 0;
 

@@ -487,6 +487,21 @@ export const ActivityLogCalloutWhiteboardContentModifiedFragmentDoc = gql`
   ${ActivityCalloutContextFragmentDoc}
   ${ActivitySubjectProfileFragmentDoc}
 `;
+export const ActivityLogCalloutMemoCreatedFragmentDoc = gql`
+  fragment ActivityLogCalloutMemoCreated on ActivityLogEntryCalloutMemoCreated {
+    callout {
+      ...ActivityCalloutContext
+    }
+    memo {
+      id
+      profile {
+        ...ActivitySubjectProfile
+      }
+    }
+  }
+  ${ActivityCalloutContextFragmentDoc}
+  ${ActivitySubjectProfileFragmentDoc}
+`;
 export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
   fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
     description
@@ -552,6 +567,9 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     ... on ActivityLogEntryCalloutWhiteboardContentModified {
       ...ActivityLogCalloutWhiteboardContentModified
     }
+    ... on ActivityLogEntryCalloutMemoCreated {
+      ...ActivityLogCalloutMemoCreated
+    }
     ... on ActivityLogEntryCalloutDiscussionComment {
       ...ActivityLogCalloutDiscussionComment
     }
@@ -572,6 +590,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
+  ${ActivityLogCalloutMemoCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
@@ -598,6 +617,25 @@ export const CalloutContributionsWhiteboardCardFragmentDoc = gql`
     }
   }
   ${VisualModelFragmentDoc}
+`;
+export const CalloutContributionsMemoCardFragmentDoc = gql`
+  fragment CalloutContributionsMemoCard on Memo {
+    id
+    profile {
+      id
+      url
+      displayName
+    }
+    markdown
+    createdDate
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
 `;
 export const CalloutContributionsPostCardFragmentDoc = gql`
   fragment CalloutContributionsPostCard on Post {
@@ -6747,6 +6785,9 @@ export const ActivityLogOnCollaborationDocument = gql`
       ... on ActivityLogEntryCalloutWhiteboardContentModified {
         ...ActivityLogCalloutWhiteboardContentModified
       }
+      ... on ActivityLogEntryCalloutMemoCreated {
+        ...ActivityLogCalloutMemoCreated
+      }
       ... on ActivityLogEntryCalloutDiscussionComment {
         ...ActivityLogCalloutDiscussionComment
       }
@@ -6769,6 +6810,7 @@ export const ActivityLogOnCollaborationDocument = gql`
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
+  ${ActivityLogCalloutMemoCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
@@ -7121,6 +7163,7 @@ export const CalloutContributionDocument = gql`
     $contributionId: UUID!
     $includeLink: Boolean! = false
     $includeWhiteboard: Boolean! = false
+    $includeMemo: Boolean! = false
     $includePost: Boolean! = false
   ) {
     lookup {
@@ -7144,6 +7187,23 @@ export const CalloutContributionDocument = gql`
               ...VisualModel
             }
           }
+          createdDate
+          createdBy {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
+        memo @include(if: $includeMemo) {
+          id
+          profile {
+            id
+            url
+            displayName
+          }
+          markdown
           createdDate
           createdBy {
             id
@@ -7209,6 +7269,7 @@ export const CalloutContributionDocument = gql`
  *      contributionId: // value for 'contributionId'
  *      includeLink: // value for 'includeLink'
  *      includeWhiteboard: // value for 'includeWhiteboard'
+ *      includeMemo: // value for 'includeMemo'
  *      includePost: // value for 'includePost'
  *   },
  * });
@@ -7293,6 +7354,13 @@ export const CalloutContributionsSortOrderDocument = gql`
             comments {
               id
               messagesCount
+            }
+          }
+          memo {
+            id
+            profile {
+              id
+              displayName
             }
           }
         }
@@ -7696,6 +7764,60 @@ export type UpdateLinkMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateLinkMutation,
   SchemaTypes.UpdateLinkMutationVariables
 >;
+export const CreateMemoOnCalloutDocument = gql`
+  mutation CreateMemoOnCallout($calloutId: UUID!, $memo: CreateMemoInput!) {
+    createContributionOnCallout(contributionData: { calloutID: $calloutId, type: MEMO, memo: $memo }) {
+      memo {
+        ...MemoDetails
+        profile {
+          url
+        }
+      }
+    }
+  }
+  ${MemoDetailsFragmentDoc}
+`;
+export type CreateMemoOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateMemoOnCalloutMutation,
+  SchemaTypes.CreateMemoOnCalloutMutationVariables
+>;
+
+/**
+ * __useCreateMemoOnCalloutMutation__
+ *
+ * To run a mutation, you first call `useCreateMemoOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMemoOnCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMemoOnCalloutMutation, { data, loading, error }] = useCreateMemoOnCalloutMutation({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      memo: // value for 'memo'
+ *   },
+ * });
+ */
+export function useCreateMemoOnCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateMemoOnCalloutMutation,
+    SchemaTypes.CreateMemoOnCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateMemoOnCalloutMutation, SchemaTypes.CreateMemoOnCalloutMutationVariables>(
+    CreateMemoOnCalloutDocument,
+    options
+  );
+}
+export type CreateMemoOnCalloutMutationHookResult = ReturnType<typeof useCreateMemoOnCalloutMutation>;
+export type CreateMemoOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateMemoOnCalloutMutation>;
+export type CreateMemoOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateMemoOnCalloutMutation,
+  SchemaTypes.CreateMemoOnCalloutMutationVariables
+>;
 export const CalloutPostCreatedDocument = gql`
   subscription CalloutPostCreated($calloutId: UUID!) {
     calloutPostCreated(calloutID: $calloutId) {
@@ -7800,8 +7922,9 @@ export const CalloutContributionsDocument = gql`
     $calloutId: UUID!
     $includeLink: Boolean! = false
     $includeWhiteboard: Boolean! = false
+    $includeMemo: Boolean! = false
     $includePost: Boolean! = false
-    $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, POST]
+    $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, MEMO, POST]
     $limit: Int
   ) {
     lookup {
@@ -7816,6 +7939,9 @@ export const CalloutContributionsDocument = gql`
           whiteboard @include(if: $includeWhiteboard) {
             ...CalloutContributionsWhiteboardCard
           }
+          memo @include(if: $includeMemo) {
+            ...CalloutContributionsMemoCard
+          }
           post @include(if: $includePost) {
             ...CalloutContributionsPostCard
           }
@@ -7823,6 +7949,7 @@ export const CalloutContributionsDocument = gql`
         contributionsCount {
           link @include(if: $includeLink)
           whiteboard @include(if: $includeWhiteboard)
+          memo @include(if: $includeMemo)
           post @include(if: $includePost)
         }
       }
@@ -7830,6 +7957,7 @@ export const CalloutContributionsDocument = gql`
   }
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CalloutContributionsWhiteboardCardFragmentDoc}
+  ${CalloutContributionsMemoCardFragmentDoc}
   ${CalloutContributionsPostCardFragmentDoc}
 `;
 
@@ -7848,6 +7976,7 @@ export const CalloutContributionsDocument = gql`
  *      calloutId: // value for 'calloutId'
  *      includeLink: // value for 'includeLink'
  *      includeWhiteboard: // value for 'includeWhiteboard'
+ *      includeMemo: // value for 'includeMemo'
  *      includePost: // value for 'includePost'
  *      filter: // value for 'filter'
  *      limit: // value for 'limit'
@@ -8090,6 +8219,74 @@ export type CalloutsSetAuthorizationQueryResult = Apollo.QueryResult<
 export function refetchCalloutsSetAuthorizationQuery(variables: SchemaTypes.CalloutsSetAuthorizationQueryVariables) {
   return { query: CalloutsSetAuthorizationDocument, variables: variables };
 }
+export const CalloutsSetTagsDocument = gql`
+  query CalloutsSetTags($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
+    lookup {
+      calloutsSet(ID: $calloutsSetId) {
+        id
+        tags(classificationTagsets: $classificationTagsets)
+      }
+    }
+  }
+`;
+
+/**
+ * __useCalloutsSetTagsQuery__
+ *
+ * To run a query within a React component, call `useCalloutsSetTagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutsSetTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutsSetTagsQuery({
+ *   variables: {
+ *      calloutsSetId: // value for 'calloutsSetId'
+ *      classificationTagsets: // value for 'classificationTagsets'
+ *   },
+ * });
+ */
+export function useCalloutsSetTagsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables> &
+    ({ variables: SchemaTypes.CalloutsSetTagsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables>(
+    CalloutsSetTagsDocument,
+    options
+  );
+}
+export function useCalloutsSetTagsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables>(
+    CalloutsSetTagsDocument,
+    options
+  );
+}
+export function useCalloutsSetTagsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutsSetTagsQuery, SchemaTypes.CalloutsSetTagsQueryVariables>(
+    CalloutsSetTagsDocument,
+    options
+  );
+}
+export type CalloutsSetTagsQueryHookResult = ReturnType<typeof useCalloutsSetTagsQuery>;
+export type CalloutsSetTagsLazyQueryHookResult = ReturnType<typeof useCalloutsSetTagsLazyQuery>;
+export type CalloutsSetTagsSuspenseQueryHookResult = ReturnType<typeof useCalloutsSetTagsSuspenseQuery>;
+export type CalloutsSetTagsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutsSetTagsQuery,
+  SchemaTypes.CalloutsSetTagsQueryVariables
+>;
+export function refetchCalloutsSetTagsQuery(variables: SchemaTypes.CalloutsSetTagsQueryVariables) {
+  return { query: CalloutsSetTagsDocument, variables: variables };
+}
 export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!) {
     createCalloutOnCalloutsSet(calloutData: $calloutData) {
@@ -8144,6 +8341,7 @@ export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
     $calloutsSetId: UUID!
     $classificationTagsets: [TagsetArgs!] = []
     $withClassification: Boolean = true
+    $tagsFilter: [String!]
   ) {
     lookup {
       calloutsSet(ID: $calloutsSetId) {
@@ -8152,7 +8350,7 @@ export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
           id
           myPrivileges
         }
-        callouts(classificationTagsets: $classificationTagsets) {
+        callouts(classificationTagsets: $classificationTagsets, withTags: $tagsFilter) {
           ...Callout
           ...ClassificationDetails @include(if: $withClassification)
         }
@@ -8178,6 +8376,7 @@ export const CalloutsOnCalloutsSetUsingClassificationDocument = gql`
  *      calloutsSetId: // value for 'calloutsSetId'
  *      classificationTagsets: // value for 'classificationTagsets'
  *      withClassification: // value for 'withClassification'
+ *      tagsFilter: // value for 'tagsFilter'
  *   },
  * });
  */
@@ -24948,6 +25147,9 @@ export const LatestContributionsDocument = gql`
         ... on ActivityLogEntryCalloutWhiteboardContentModified {
           ...ActivityLogCalloutWhiteboardContentModified
         }
+        ... on ActivityLogEntryCalloutMemoCreated {
+          ...ActivityLogCalloutMemoCreated
+        }
         ... on ActivityLogEntryCalloutDiscussionComment {
           ...ActivityLogCalloutDiscussionComment
         }
@@ -24975,6 +25177,7 @@ export const LatestContributionsDocument = gql`
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
+  ${ActivityLogCalloutMemoCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}
@@ -25082,6 +25285,9 @@ export const LatestContributionsGroupedDocument = gql`
       ... on ActivityLogEntryCalloutWhiteboardContentModified {
         ...ActivityLogCalloutWhiteboardContentModified
       }
+      ... on ActivityLogEntryCalloutMemoCreated {
+        ...ActivityLogCalloutMemoCreated
+      }
       ... on ActivityLogEntryCalloutDiscussionComment {
         ...ActivityLogCalloutDiscussionComment
       }
@@ -25104,6 +25310,7 @@ export const LatestContributionsGroupedDocument = gql`
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
   ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
+  ${ActivityLogCalloutMemoCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogSubspaceCreatedFragmentDoc}
   ${ActivityLogUpdateSentFragmentDoc}

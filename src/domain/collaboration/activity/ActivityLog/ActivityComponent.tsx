@@ -4,6 +4,7 @@ import {
   ActivityLogCalendarEventCreatedFragment,
   ActivityLogCalloutDiscussionCommentFragment,
   ActivityLogCalloutLinkCreatedFragment,
+  ActivityLogCalloutMemoCreatedFragment,
   ActivityLogCalloutPostCommentFragment,
   ActivityLogCalloutPostCreatedFragment,
   ActivityLogCalloutPublishedFragment,
@@ -16,6 +17,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import {
   ActivityCalloutLinkCreatedView,
+  ActivityCalloutMemoActivityView,
   ActivityCalloutPostCommentCreatedView,
   ActivityCalloutPostCreatedView,
   ActivityCalloutPublishedView,
@@ -47,6 +49,7 @@ type TypedActivityLogResults = {
   [ActivityEventType.CalloutPublished]: ActivityLogCalloutPublishedFragment;
   [ActivityEventType.CalloutWhiteboardCreated]: ActivityLogCalloutWhiteboardCreatedFragment;
   [ActivityEventType.CalloutWhiteboardContentModified]: ActivityLogCalloutWhiteboardContentModifiedFragment;
+  [ActivityEventType.CalloutMemoCreated]: ActivityLogCalloutMemoCreatedFragment;
   [ActivityEventType.CalloutPostCreated]: ActivityLogCalloutPostCreatedFragment;
   [ActivityEventType.CalloutLinkCreated]: ActivityLogCalloutLinkCreatedFragment;
   [ActivityEventType.CalloutPostComment]: ActivityLogCalloutPostCommentFragment;
@@ -111,6 +114,8 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.CalloutWhiteboardContentModified:
       // we use the same view for whiteboard created and whiteboard content modified events
       return <ActivityCalloutWhiteboardActivityView {...activity} {...rest} />;
+    case ActivityEventType.CalloutMemoCreated:
+      return <ActivityCalloutMemoActivityView {...activity} {...rest} />;
     case ActivityEventType.CalloutPostComment:
       return <ActivityCalloutPostCommentCreatedView {...activity} {...rest} />;
     case ActivityEventType.CalloutPostCreated:

@@ -32,6 +32,13 @@ query CalloutContributionsSortOrder(
             messagesCount
           }
         }
+        memo {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
       }
     }
   }
