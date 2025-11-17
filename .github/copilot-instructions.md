@@ -98,6 +98,9 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
 
 ## Active Technologies
 
+- TypeScript 5.x (Vite React 19 SPA) + React 19, Apollo Client 3, React Router, MUI + Emotion, i18nex (001-guest-access-toggle)
+- N/A (client caches via Apollo normalized cache) (001-guest-access-toggle)
+
 - TypeScript 5.x, React 19 (Vite, Node 20.15.1 via Volta) + Apollo Client (GraphQL), React Router, MUI + Emotion, lodash utilities (002-tag-cloud-filter)
 - Remote GraphQL API via Apollo (no local persistence changes) (002-tag-cloud-filter)
 
