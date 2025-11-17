@@ -12,6 +12,8 @@ import useSpaceTabProvider from '../../SpaceTabProvider';
 import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
+import CalloutsSetTagCloud from '@/domain/collaboration/calloutsSet/tagCloud/CalloutsSetTagCloud';
+import { sortedUniq } from 'lodash';
 
 const CreateCalloutDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')
@@ -30,10 +32,12 @@ const FlowStateTabPage = ({ sectionIndex }: FlowStateTabPageProps) => {
   const { t } = useTranslation();
 
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
+  const [tagsFilter, setTagsFilter] = useState<string[]>([]);
 
   const { callouts, canCreateCallout, loading, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
+    tagsFilter,
   });
 
   return (
@@ -57,6 +61,15 @@ const FlowStateTabPage = ({ sectionIndex }: FlowStateTabPageProps) => {
         </InfoColumn>
 
         <ContentColumn>
+          <CalloutsSetTagCloud
+            calloutsSetId={calloutsSetId}
+            classificationTagsets={classificationTagsets}
+            selectedTags={tagsFilter}
+            resultsCount={callouts?.length}
+            onSelectTag={tag => setTagsFilter(tagsFilter => sortedUniq([...tagsFilter, tag].sort()))}
+            onDeselectTag={tag => setTagsFilter(tagsFilter => tagsFilter.filter(t => t !== tag))}
+            onClear={() => setTagsFilter([])}
+          />
           {loading && <Loading />}
           <CalloutsGroupView
             calloutsSetId={calloutsSetId}

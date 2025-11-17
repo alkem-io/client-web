@@ -1,0 +1,11 @@
+query CalloutsSetTags(
+  $calloutsSetId: UUID!
+  $classificationTagsets: [TagsetArgs!] = [],
+) {
+  lookup {
+    calloutsSet(ID: $calloutsSetId) {
+      id
+      tags(classificationTagsets: $classificationTagsets)
+    }
+  }
+}
