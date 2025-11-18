@@ -23609,6 +23609,52 @@ export type SubspacePageBannerQuery = {
   };
 };
 
+export type ParentSpaceInfoQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type ParentSpaceInfoQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type SpaceBreadcrumbsQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
   subspaceL1Id?: InputMaybe<Scalars['UUID']['input']>;

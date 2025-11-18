@@ -52,3 +52,4 @@ query SpaceContributionDetails($spaceId: UUID!) {
     }
   }
 }
+

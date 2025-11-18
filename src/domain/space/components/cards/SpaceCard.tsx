@@ -14,12 +14,9 @@ interface SubspaceCardProps extends Omit<SpaceCardProps, 'header'> {
   spaceId?: string;
   tagline?: string | null;
   displayName: string;
-  vision?: string;
-  member?: boolean;
   spaceUri?: string;
   spaceVisibility?: SpaceVisibility;
   parentInfo?: ParentInfo;
-  hideJoin?: boolean;
   isPrivate?: boolean;
   avatarUris?: { src: string; alt: string }[];
   level?: SpaceLevel;
@@ -31,11 +28,9 @@ interface SubspaceCardProps extends Omit<SpaceCardProps, 'header'> {
 
 const SpaceCard = ({
   displayName,
-  vision,
   tagline,
   spaceVisibility,
   level = SpaceLevel.L0,
-  member,
   parentInfo,
   isPrivate,
   avatarUris,
@@ -126,14 +121,16 @@ const SpaceCard = ({
     >
       <SpaceCardTagline>{tagline ?? ''}</SpaceCardTagline>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: gutters(0.5) }}>
-        <Caption>{hasLeads ? 'Led by:' : 'No lead yet'}</Caption>
-        {hasLeads ? (
-          <SpaceLeads leadUsers={leadUsers} leadOrganizations={leadOrganizations} showLeads={showLeads} />
-        ) : (
-          <SpaceLeads showLeads />
-        )}
-      </Box>
+      {showLeads && (
+        <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: gutters(0.5) }}>
+          <Caption>{hasLeads ? 'Led by:' : 'No lead yet'}</Caption>
+          {hasLeads ? (
+            <SpaceLeads leadUsers={leadUsers} leadOrganizations={leadOrganizations} showLeads={showLeads} />
+          ) : (
+            <SpaceLeads showLeads={showLeads} />
+          )}
+        </Box>
+      )}
     </SpaceCardBase>
   );
 };
