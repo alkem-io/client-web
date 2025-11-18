@@ -130,7 +130,12 @@ const DashboardSpaces = () => {
 
               <Box position="relative">
                 <Box sx={styles.gradientOverlay} />
-                <Gutters gap={gutters(0.3)} padding={gutters(0.3)} style={styles.titleAndDescContainer}>
+                <Gutters
+                  gap={gutters(0.3)}
+                  paddingTop={gutters(0.5)}
+                  paddingBottom={gutters(1)}
+                  style={styles.titleAndDescContainer}
+                >
                   <PageTitle textAlign="center" style={styles.spaceTitle}>
                     {profile?.displayName}
                   </PageTitle>
