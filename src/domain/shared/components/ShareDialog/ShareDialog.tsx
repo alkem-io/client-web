@@ -11,6 +11,10 @@ import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
 // Import the handler components directly
 import { ClipboardShareHandler } from './platforms/ShareOnClipboard';
 import { AlkemioShareHandler } from './platforms/ShareOnAlkemio';
+import GuestAccessToggle from './GuestAccessToggle';
+
+const buildFullUrl = (url: string) =>
+  isAbsoluteUrl(url) ? url : window.location.protocol + '//' + window.location.host + url;
 
 export interface ShareDialogProps extends ShareComponentProps {
   open: boolean;
@@ -30,6 +34,16 @@ export interface ShareDialogProps extends ShareComponentProps {
     | 'whiteboard'
     | 'link'
     | 'memo';
+}
+
+export interface ShareDialogGuestAccessState {
+  enabled: boolean;
+  canToggle: boolean;
+  isMutating: boolean;
+  onToggle: (nextState: boolean) => Promise<void>;
+  guestLink?: string;
+  error?: { code: string; message: string };
+  resetError?: () => void;
 }
 
 export const ShareDialog = ({ open, onClose, entityTypeName, ...props }: ShareDialogProps) => {
@@ -54,12 +68,23 @@ export interface ShareComponentProps extends PropsWithChildren {
   entityTypeName: ShareDialogProps['entityTypeName'];
   loading?: boolean;
   onClose?: () => void;
+  guestAccess?: ShareDialogGuestAccessState;
 }
 
-export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, loading, onClose, children }) => {
+export const ShareComponent: FC<ShareComponentProps> = ({
+  url,
+  entityTypeName,
+  loading,
+  onClose,
+  children,
+  guestAccess,
+}) => {
   const { t } = useTranslation();
   const [activeHandler, setActiveHandler] = useState<string>();
-  const fullUrl = isAbsoluteUrl(url) ? url : window.location.protocol + '//' + window.location.host + url;
+  const fullUrl = buildFullUrl(url);
+  const showGuestWarning = Boolean(guestAccess?.enabled);
+  const notify = useNotification();
+  const shouldRenderGuestSection = Boolean(guestAccess && (guestAccess.canToggle || guestAccess.enabled));
 
   const handleDialogClose = useCallback(() => {
     setActiveHandler(undefined);
@@ -69,6 +94,22 @@ export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, l
   const handleClick = e => {
     e.target.select();
   };
+
+  const handleCopyGuestLink = useCallback(async () => {
+    if (!guestAccess?.guestLink) {
+      return;
+    }
+
+    try {
+      if (typeof navigator === 'undefined' || !navigator.clipboard) {
+        throw new Error('Clipboard API unavailable');
+      }
+      await navigator.clipboard.writeText(guestAccess.guestLink);
+      notify(t('share-dialog.platforms.clipboard.copied'), 'success');
+    } catch (_copyError) {
+      notify(t('share-dialog.guestAccess.errors.UNKNOWN'), 'error');
+    }
+  }, [guestAccess?.guestLink, notify, t]);
 
   if (!url || loading) {
     return <Skeleton variant="rectangular" />;
@@ -104,7 +145,6 @@ export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, l
         value={fullUrl}
         sx={{ flexGrow: 1, minWidth: gutters(13), marginBottom: gutters(1.5) }}
       />
-
       <ShareOnClipboardButton setShareHandler={setActiveHandler} />
       <Box height={gutters(3)} display="flex" flexDirection="column" justifyContent="center" textAlign="center">
         {t('share-dialog.or')}

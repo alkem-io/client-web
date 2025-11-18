@@ -10,7 +10,7 @@
   - `authorization.myPrivileges` (Privilege[]) — used to determine whether the viewer sees toggle controls.
   - `previewSettings` (existing object) — unchanged but warnings overlay the preview when guests are allowed.
 - **Derived Fields**:
-  - `guestShareUrl` (string, client-computed) — generated from space slug + whiteboard `nameID`; not persisted in backend.
+  - `guestShareUrl` (string, placeholder) — static placeholder value surfaced only while `guestContributionsAllowed` is true; will be replaced by the dedicated guest-share feature.
 - **State Transitions**:
   1. **Disabled → Enabled**: triggered via `updateWhiteboardGuestAccess` mutation with `allowGuestContributions = true`; UI renders link and warnings on confirmation.
   2. **Enabled → Disabled**: triggered with `allowGuestContributions = false`; UI hides link and warnings immediately after confirmation.
@@ -23,18 +23,18 @@
 - **Relationships**: belongs to a Space that contains the whiteboard.
 - **Responsibilities**: authorized members invoke toggle; all members view warnings/link when enabled.
 
-### Guest Share Link (client derived)
+### Guest Share Link (client placeholder)
 
-- **Source Data**: space slug, whiteboard `nameID`
-- **Format**: `https://{alkemio-domain}/guest/whiteboard/{spaceSlug}/{whiteboardNameID}` (final path confirmed during implementation).
-- **Lifecycle**: regenerated deterministically each time guest access turns on; invalid when the flag becomes false.
+- **Source Data**: None (placeholder only)
+- **Format**: `https://guest-link-placeholder.invalid` (represents the future guest share endpoint without exposing a real link).
+- **Lifecycle**: Displayed whenever the backend reports `guestContributionsAllowed = true`; hidden otherwise. Real generation is deferred to a follow-up feature.
 
 ## Validation Rules
 
 - Toggle requests must originate from viewers whose privileges include `PUBLIC_SHARE`.
 - UI must confirm backend `guestContributionsAllowed` before exposing the generated link.
 - Warnings must remain visible while `guestContributionsAllowed` is true for the current whiteboard state.
-- Client must remove any cached guest link when the backend returns false or an error.
+- Client must remove the placeholder guest link when the backend returns false or an error to avoid implying access remains active.
 
 ## Relationships
 

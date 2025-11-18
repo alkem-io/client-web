@@ -52,6 +52,46 @@ const WhiteboardView = ({
 
   const { fullscreen, setFullscreen } = useFullscreen();
 
+  const {
+    guestAccessEnabled,
+    canToggle: canToggleGuestAccess,
+    isMutating: isGuestAccessMutating,
+    toggleGuestAccess,
+    error: guestAccessError,
+    resetError: resetGuestAccessError,
+  } = useWhiteboardGuestAccess({
+    whiteboardId,
+    guestContributionsAllowed: whiteboard?.guestContributionsAllowed,
+    authorization,
+  });
+
+  const guestShareLink = guestAccessEnabled ? buildGuestShareUrl() : undefined;
+
+  const shareDialogGuestAccess = useMemo<ShareDialogGuestAccessState | undefined>(
+    () =>
+      whiteboard
+        ? {
+            enabled: guestAccessEnabled,
+            canToggle: canToggleGuestAccess,
+            isMutating: isGuestAccessMutating,
+            onToggle: toggleGuestAccess,
+            guestLink: guestShareLink,
+            error: guestAccessError,
+            resetError: resetGuestAccessError,
+          }
+        : undefined,
+    [
+      whiteboard,
+      guestAccessEnabled,
+      canToggleGuestAccess,
+      isGuestAccessMutating,
+      toggleGuestAccess,
+      guestShareLink,
+      guestAccessError,
+      resetGuestAccessError,
+    ]
+  );
+
   const handleCancel = () => {
     backToWhiteboards();
     if (fullscreen) {

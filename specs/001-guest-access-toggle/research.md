@@ -10,10 +10,10 @@
 - **Rationale**: Prevents stale exposure if privilege is revoked mid-action and ensures UI reflects authoritative `guestContributionsAllowed` before rendering warnings or public URL.
 - **Alternatives considered**: Optimistic toggling without confirmation (risk: showing link when backend denies); polling whiteboard after mutation (adds redundant network calls).
 
-## Decision: Generate guest share URL on the client from canonical identifiers
+## Decision: Defer guest share URL generation to a dedicated feature
 
-- **Rationale**: Requirement specifies the client as the generator; using existing space and whiteboard slugs keeps links predictable and avoids API expansions.
-- **Alternatives considered**: Requesting backend-generated URLs (conflicts with clarified requirement); storing multiple versions per toggle (adds complexity and storage overhead).
+- **Rationale**: Backend contract for guest links is still evolving; shipping a placeholder keeps UI progress scoped while avoiding brittle client-derived URLs that might conflict with the forthcoming API.
+- **Alternatives considered**: Generating URLs from space/whiteboard slugs now (risk: breaking changes once backend finalizes format); blocking UI work until backend is ready (delays guest access controls entirely).
 
 ## Decision: Surface warnings with `Alert` patterns used elsewhere
 

@@ -105,14 +105,14 @@ _Example of marking unclear requirements:_
 
 - **Whiteboard**: Collaboration artifact that now exposes `guestContributionsAllowed` to indicate whether an anonymous guest link is active, alongside existing preview and profile data.
 - **Space Member**: Authenticated user scoped to the whiteboard’s parent space who may view warnings and, when permitted, enable or disable guest access via PUBLIC_SHARE privilege.
-- **Guest Share Link**: Generated public URL surfaced only when the backend confirms guest contributions are allowed; must be treated as sensitive exposure information rather than a configurable resource.
+- **Guest Share Link**: Placeholder URL surfaced only when the backend confirms guest contributions are allowed; acts as a visual indicator until the real public endpoint is available and still must be treated as sensitive exposure information.
 
 ### Assumptions
 
-- The backend already exposes or will expose a mutation that accepts the desired guest access state and returns the updated whiteboard with `guestContributionsAllowed` and the canonical public URL.
+- The backend already exposes or will expose a mutation that accepts the desired guest access state and returns the updated whiteboard with `guestContributionsAllowed`; the canonical public URL will arrive in a follow-up feature.
 - The PUBLIC_SHARE privilege gating is enforced server-side; the client change only reveals or hides controls and responds to privilege changes, without adding new authorization logic.
 - Copywriting for warning banners and toggle labels can reuse existing localization patterns; new strings will be provided through the standard translation workflow without additional approval cycles.
-- The public guest link is generated client-side from existing whiteboard identifiers; re-enabling guest access reuses the same deterministic URL format rather than requesting a new link from the backend.
+- The public guest link remains a placeholder until the dedicated guest-share feature lands; this effort only surfaces UI affordances once the backend confirms `guestContributionsAllowed` is true.
 
 ## Success Criteria _(mandatory)_
 
@@ -132,4 +132,4 @@ _Example of marking unclear requirements:_
 
 ### Session 2025-11-17
 
-- Q: What should happen to the public URL if guest access is disabled then re-enabled? → A: Client generates the public URL deterministically without rotation.
+- Q: What should happen to the public URL if guest access is disabled then re-enabled? → A: Until the dedicated guest-share feature ships, the UI continues to display the placeholder link whenever `guestContributionsAllowed` is true.
