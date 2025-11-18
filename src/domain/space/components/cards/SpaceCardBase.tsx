@@ -64,10 +64,10 @@ const SpaceCardBase = ({
           <Box
             sx={{
               position: 'absolute',
-              bottom: 59, // Height of the footer
+              bottom: 60, // Height of the footer
               left: 0,
               right: 0,
-              height: '35%', // height of the gradient
+              height: '25%', // height of the gradient
               background: CARD_BANNER_GRADIENT,
             }}
           />
