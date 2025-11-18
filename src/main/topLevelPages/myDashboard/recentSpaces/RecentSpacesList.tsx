@@ -3,11 +3,10 @@ import { Button } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
 import { useRecentSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Caption } from '@/core/ui/typography';
-import { useColumns } from '@/core/ui/grid/GridContext';
+import { useSpaceCardLayout } from '@/main/topLevelPages/myDashboard/useSpaceCardLayout';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import Gutters from '@/core/ui/grid/Gutters';
 import GridItem from '@/core/ui/grid/GridItem';
-import { useMemo } from 'react';
 
 interface RecentSpacesListProps {
   onSeeMore?: () => void;
@@ -15,18 +14,8 @@ interface RecentSpacesListProps {
 
 const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
   const { t } = useTranslation();
-  const columns = useColumns();
 
-  // Calculate visible spaces and card columns based on total columns
-  const { visibleSpaces, cardColumns } = useMemo(() => {
-    if (columns >= 8) {
-      return { visibleSpaces: 3, cardColumns: columns / 3 };
-    } else if (columns >= 4) {
-      return { visibleSpaces: 2, cardColumns: columns / 2 };
-    } else {
-      return { visibleSpaces: 1, cardColumns: columns };
-    }
-  }, [columns]);
+  const { visibleSpaces, cardColumns } = useSpaceCardLayout();
 
   const { data } = useRecentSpacesQuery({ variables: { limit: visibleSpaces } });
 

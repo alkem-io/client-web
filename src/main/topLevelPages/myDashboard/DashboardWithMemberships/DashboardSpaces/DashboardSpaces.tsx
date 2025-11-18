@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Paper, Button, Avatar, useTheme } from '@mui/material';
+import { Button, Avatar, useTheme } from '@mui/material';
 import { Card } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -11,14 +11,13 @@ import { Caption, Tagline } from '@/core/ui/typography';
 import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMemberships/MyMembershipsDialog';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import SpaceTile, { RECENT_SPACE_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { Actions } from '@/core/ui/actions/Actions';
-import { useColumns } from '@/core/ui/grid/GridContext';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { useSpaceCardLayout } from '@/main/topLevelPages/myDashboard/useSpaceCardLayout';
 
 const DASHBOARD_MEMBERSHIPS_ALL = 100; // hardcoded limit for expensive query
 
@@ -71,20 +70,11 @@ const DashboardSpaces = () => {
     spaceTagline: {
       color: theme.palette.background.paper,
     },
-
-    exploreAllButton: {
-      textTransform: 'none',
-      border: `1px solid ${theme.palette.divider}`,
-      aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO,
-    },
   };
 
   const { t } = useTranslation();
 
-  const columns = useColumns();
-  const { isSmallScreen } = useScreenSize();
-  const cardColumns = useMemo(() => (isSmallScreen ? columns / 2 : columns / 4), [isSmallScreen, columns]);
-  const visibleSpaces = Math.max(1, Math.floor(columns / 2) - 1);
+  const { visibleSpaces, cardColumns } = useSpaceCardLayout();
 
   useEffect(() => {
     fetchSpaces(); // with default limit
@@ -141,44 +131,44 @@ const DashboardSpaces = () => {
             </Gutters>
 
             {hasChildMemberships && (
-              <Gutters row disablePadding>
-                {childMemberships?.slice(0, visibleSpaces).map(({ space: subSpace }) => {
-                  if (!subSpace) {
-                    return null;
-                  }
+              <>
+                <Gutters row disablePadding>
+                  {childMemberships?.slice(0, visibleSpaces).map(({ space: subSpace }) => {
+                    if (!subSpace) {
+                      return null;
+                    }
 
-                  const { id: subSpaceId, about, level } = subSpace;
+                    const { id: subSpaceId, about } = subSpace;
 
-                  return (
-                    <SpaceTile
-                      key={subSpaceId}
-                      columns={cardColumns}
-                      space={{
-                        id: subSpaceId,
-                        about: about,
-                        level: level,
-                      }}
-                    />
-                  );
-                })}
+                    return (
+                      <GridItem key={subSpaceId} columns={cardColumns}>
+                        <SpaceCard
+                          spaceId={subSpaceId}
+                          displayName={about.profile.displayName}
+                          banner={about.profile.cardBanner}
+                          spaceUri={about.profile.url}
+                          isPrivate={!about.isContentPublic}
+                          compact
+                        />
+                      </GridItem>
+                    );
+                  })}
+                </Gutters>
 
-                {childMemberships.length > 3 && (
-                  <GridItem columns={cardColumns}>
-                    <Paper
-                      component={Button}
-                      sx={styles.exploreAllButton}
-                      endIcon={<DoubleArrowOutlined />}
-                      onClick={handleDialogOpen(idx, profile?.displayName)}
-                    >
-                      <Caption>
-                        {t('pages.home.sections.recentSpaces.seeMoreSubspaces', {
-                          spaceName: profile?.displayName,
-                        })}
-                      </Caption>
-                    </Paper>
-                  </GridItem>
+                {childMemberships.length > visibleSpaces && (
+                  <Button
+                    endIcon={<DoubleArrowOutlined />}
+                    sx={{ textTransform: 'none' }}
+                    onClick={handleDialogOpen(idx, profile?.displayName)}
+                  >
+                    <Caption>
+                      {t('pages.home.sections.recentSpaces.seeMoreSubspaces', {
+                        spaceName: profile?.displayName,
+                      })}
+                    </Caption>
+                  </Button>
                 )}
-              </Gutters>
+              </>
             )}
           </PageContentBlock>
         );
