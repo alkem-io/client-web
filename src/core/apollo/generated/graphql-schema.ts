@@ -747,6 +747,7 @@ export enum AuthorizationCredential {
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalGuest = 'GLOBAL_GUEST',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -2357,6 +2358,7 @@ export enum CredentialType {
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalGuest = 'GLOBAL_GUEST',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -4511,6 +4513,8 @@ export type Mutation = {
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
   updateWhiteboard: Whiteboard;
+  /** Grants or revokes GLOBAL_GUEST permissions for a whiteboard using a single toggle. */
+  updateWhiteboardGuestAccess: UpdateWhiteboardGuestAccessResult;
   /** Create a new Document on the Storage and return the value as part of the returned Link. */
   uploadFileOnLink: Link;
   /** Create a new Document on the Storage and return the value as part of the returned Reference. */
@@ -5167,6 +5171,10 @@ export type MutationUpdateVisualArgs = {
 
 export type MutationUpdateWhiteboardArgs = {
   whiteboardData: UpdateWhiteboardEntityInput;
+};
+
+export type MutationUpdateWhiteboardGuestAccessArgs = {
+  input: UpdateWhiteboardGuestAccessInput;
 };
 
 export type MutationUploadFileOnLinkArgs = {
@@ -8236,6 +8244,23 @@ export type UpdateWhiteboardEntityInput = {
   profile?: InputMaybe<UpdateProfileInput>;
 };
 
+export type UpdateWhiteboardGuestAccessInput = {
+  /** Target state for guest collaboration. True enables GLOBAL_GUEST privileges. */
+  guestAccessEnabled: Scalars['Boolean']['input'];
+  /** The identifier of the whiteboard whose guest access should be toggled. */
+  whiteboardId: Scalars['UUID']['input'];
+};
+
+export type UpdateWhiteboardGuestAccessResult = {
+  __typename?: 'UpdateWhiteboardGuestAccessResult';
+  /** Structured error collection when the toggle fails. */
+  errors?: Maybe<Array<WhiteboardGuestAccessError>>;
+  /** Indicates whether the mutation completed successfully. */
+  success: Scalars['Boolean']['output'];
+  /** Whiteboard snapshot reflecting the latest guest access state. */
+  whiteboard?: Maybe<Whiteboard>;
+};
+
 export type UpdateWhiteboardPreviewSettingsInput = {
   /** The coordinates for the preview. */
   coordinates?: InputMaybe<WhiteboardPreviewCoordinatesInput>;
@@ -8826,6 +8851,8 @@ export type Whiteboard = {
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** Indicates whether guest collaborators are currently allowed via GLOBAL_GUEST permissions. */
+  guestContributionsAllowed: Scalars['Boolean']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Whether the Whiteboard is multi-user enabled on Space level. */
@@ -8839,6 +8866,21 @@ export type Whiteboard = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
+
+export type WhiteboardGuestAccessError = {
+  __typename?: 'WhiteboardGuestAccessError';
+  /** Machine friendly error code describing the failure reason. */
+  code: WhiteboardGuestAccessErrorCode;
+  /** Human readable description of the error. */
+  message: Scalars['String']['output'];
+};
+
+export enum WhiteboardGuestAccessErrorCode {
+  NotAuthorized = 'NOT_AUTHORIZED',
+  SpaceGuestDisabled = 'SPACE_GUEST_DISABLED',
+  Unknown = 'UNKNOWN',
+  WhiteboardNotFound = 'WHITEBOARD_NOT_FOUND',
+}
 
 export type WhiteboardPreviewCoordinates = {
   __typename?: 'WhiteboardPreviewCoordinates';
@@ -12682,6 +12724,7 @@ export type UpdateCalloutContentMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13053,6 +13096,7 @@ export type UpdateCalloutVisibilityMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -14161,6 +14205,7 @@ export type CreateWhiteboardOnCalloutMutation = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -14372,6 +14417,7 @@ export type CreateCalloutMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -14836,6 +14882,7 @@ export type CalloutDetailsQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  guestContributionsAllowed: boolean;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -15296,6 +15343,7 @@ export type CalloutDetailsFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -16033,6 +16081,60 @@ export type UpdateMemoContentUpdatePolicyMutation = {
   updateMemo: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
+export type WhiteboardGuestAccessFieldsFragment = {
+  __typename?: 'Whiteboard';
+  id: string;
+  guestContributionsAllowed: boolean;
+  authorization?:
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        credentialRules?:
+          | Array<{
+              __typename?: 'AuthorizationPolicyRuleCredential';
+              name?: string | undefined;
+              grantedPrivileges: Array<AuthorizationPrivilege>;
+            }>
+          | undefined;
+      }
+    | undefined;
+};
+
+export type UpdateWhiteboardGuestAccessMutationVariables = Exact<{
+  input: UpdateWhiteboardGuestAccessInput;
+}>;
+
+export type UpdateWhiteboardGuestAccessMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboardGuestAccess: {
+    __typename?: 'UpdateWhiteboardGuestAccessResult';
+    success: boolean;
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          guestContributionsAllowed: boolean;
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                credentialRules?:
+                  | Array<{
+                      __typename?: 'AuthorizationPolicyRuleCredential';
+                      name?: string | undefined;
+                      grantedPrivileges: Array<AuthorizationPrivilege>;
+                    }>
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+    errors?:
+      | Array<{ __typename?: 'WhiteboardGuestAccessError'; code: WhiteboardGuestAccessErrorCode; message: string }>
+      | undefined;
+  };
+};
+
 export type WhiteboardPreviewSettingsFragment = {
   __typename?: 'WhiteboardPreviewSettings';
   mode: WhiteboardPreviewMode;
@@ -16115,6 +16217,7 @@ export type WhiteboardDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
+  guestContributionsAllowed: boolean;
   contentUpdatePolicy: ContentUpdatePolicy;
   profile: {
     __typename?: 'Profile';
@@ -16216,6 +16319,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
+              guestContributionsAllowed: boolean;
               contentUpdatePolicy: ContentUpdatePolicy;
               profile: {
                 __typename?: 'Profile';
@@ -16317,6 +16421,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
+              guestContributionsAllowed: boolean;
               contentUpdatePolicy: ContentUpdatePolicy;
               profile: {
                 __typename?: 'Profile';
@@ -16437,6 +16542,7 @@ export type WhiteboardFromCalloutQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  guestContributionsAllowed: boolean;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -28112,6 +28218,7 @@ export type TemplateContentQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        guestContributionsAllowed: boolean;
                         contentUpdatePolicy: ContentUpdatePolicy;
                         profile: {
                           __typename?: 'Profile';
@@ -28734,6 +28841,7 @@ export type CalloutTemplateContentFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';

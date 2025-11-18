@@ -2696,6 +2696,7 @@ export type MutationKeySpecifier = (
   | 'updateVirtualContributorSettings'
   | 'updateVisual'
   | 'updateWhiteboard'
+  | 'updateWhiteboardGuestAccess'
   | 'uploadFileOnLink'
   | 'uploadFileOnReference'
   | 'uploadFileOnStorageBucket'
@@ -2880,6 +2881,7 @@ export type MutationFieldPolicy = {
   updateVirtualContributorSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateWhiteboardGuestAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnLink?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4390,6 +4392,17 @@ export type TimelineFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UpdateWhiteboardGuestAccessResultKeySpecifier = (
+  | 'errors'
+  | 'success'
+  | 'whiteboard'
+  | UpdateWhiteboardGuestAccessResultKeySpecifier
+)[];
+export type UpdateWhiteboardGuestAccessResultFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UrlResolverQueryResultCalendarKeySpecifier = (
   | 'calendarEventId'
   | 'id'
@@ -4915,6 +4928,7 @@ export type WhiteboardKeySpecifier = (
   | 'contentUpdatePolicy'
   | 'createdBy'
   | 'createdDate'
+  | 'guestContributionsAllowed'
   | 'id'
   | 'isMultiUser'
   | 'nameID'
@@ -4929,12 +4943,18 @@ export type WhiteboardFieldPolicy = {
   contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  guestContributionsAllowed?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   previewSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WhiteboardGuestAccessErrorKeySpecifier = ('code' | 'message' | WhiteboardGuestAccessErrorKeySpecifier)[];
+export type WhiteboardGuestAccessErrorFieldPolicy = {
+  code?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WhiteboardPreviewCoordinatesKeySpecifier = (
   | 'height'
@@ -6258,6 +6278,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | TimelineKeySpecifier | (() => undefined | TimelineKeySpecifier);
     fields?: TimelineFieldPolicy;
   };
+  UpdateWhiteboardGuestAccessResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UpdateWhiteboardGuestAccessResultKeySpecifier
+      | (() => undefined | UpdateWhiteboardGuestAccessResultKeySpecifier);
+    fields?: UpdateWhiteboardGuestAccessResultFieldPolicy;
+  };
   UrlResolverQueryResultCalendar?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -6478,6 +6505,13 @@ export type StrictTypedTypePolicies = {
   Whiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardKeySpecifier | (() => undefined | WhiteboardKeySpecifier);
     fields?: WhiteboardFieldPolicy;
+  };
+  WhiteboardGuestAccessError?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | WhiteboardGuestAccessErrorKeySpecifier
+      | (() => undefined | WhiteboardGuestAccessErrorKeySpecifier);
+    fields?: WhiteboardGuestAccessErrorFieldPolicy;
   };
   WhiteboardPreviewCoordinates?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

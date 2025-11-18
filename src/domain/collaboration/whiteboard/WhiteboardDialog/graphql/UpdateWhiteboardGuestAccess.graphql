@@ -1,0 +1,24 @@
+fragment WhiteboardGuestAccessFields on Whiteboard {
+  id
+  guestContributionsAllowed
+  authorization {
+    id
+    credentialRules {
+      name
+      grantedPrivileges
+    }
+  }
+}
+
+mutation UpdateWhiteboardGuestAccess($input: UpdateWhiteboardGuestAccessInput!) {
+  updateWhiteboardGuestAccess(input: $input) {
+    success
+    whiteboard {
+      ...WhiteboardGuestAccessFields
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

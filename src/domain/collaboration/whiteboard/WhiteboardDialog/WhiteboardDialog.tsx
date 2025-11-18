@@ -37,9 +37,14 @@ import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/use
 export interface WhiteboardDetails {
   id: string;
   nameID: string; // NameID is used to name screenshots uploaded as visuals (banner, card...)
+  guestContributionsAllowed?: boolean;
   contentUpdatePolicy?: ContentUpdatePolicy;
   authorization?: {
     myPrivileges?: AuthorizationPrivilege[];
+    credentialRules?: Array<{
+      name?: string | null;
+      grantedPrivileges: AuthorizationPrivilege[];
+    }>;
   };
   profile: {
     id: string;
