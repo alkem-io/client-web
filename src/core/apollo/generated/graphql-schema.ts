@@ -18721,6 +18721,7 @@ export type AccountResourcesInfoQuery = {
                 id: string;
                 displayName: string;
                 url: string;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 cardBanner?:
                   | {
                       __typename?: 'Visual';

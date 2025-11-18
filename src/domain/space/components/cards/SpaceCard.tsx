@@ -67,6 +67,7 @@ const SpaceCard = ({
         spaceId={props.spaceId}
         locked={isPrivate}
         visual={visualContent}
+        bannerOverlay={tags && tags.length > 0 ? <SpaceCardTagsOverlay tags={tags} compact /> : undefined}
         sx={{
           position: 'relative',
           height: '100%',

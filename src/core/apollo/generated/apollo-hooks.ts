@@ -11743,6 +11743,10 @@ export const AccountResourcesInfoDocument = gql`
             id
             profile {
               ...AccountResourceProfile
+              tagset {
+                id
+                tags
+              }
               cardBanner: visual(type: CARD) {
                 ...VisualModel
               }

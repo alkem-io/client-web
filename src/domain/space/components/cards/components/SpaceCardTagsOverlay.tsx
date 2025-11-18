@@ -4,9 +4,10 @@ import { gutters } from '@/core/ui/grid/utils';
 interface SpaceCardTagsOverlayProps {
   tags: string[];
   maxVisibleTags?: number;
+  compact?: boolean;
 }
 
-const SpaceCardTagsOverlay = ({ tags, maxVisibleTags = 2 }: SpaceCardTagsOverlayProps) => {
+const SpaceCardTagsOverlay = ({ tags, maxVisibleTags = 2, compact = false }: SpaceCardTagsOverlayProps) => {
   if (!tags || tags.length === 0) {
     return null;
   }
@@ -21,9 +22,10 @@ const SpaceCardTagsOverlay = ({ tags, maxVisibleTags = 2 }: SpaceCardTagsOverlay
       gap={0.5}
       sx={{
         position: 'absolute',
-        bottom: gutters(0.5),
+        bottom: compact ? 60 : gutters(0.5), // Push tags up 60px in compact mode to clear footer
         left: gutters(0.5),
         right: gutters(0.5),
+        zIndex: compact ? 2 : 'auto', // Ensure tags appear above gradient but below footer
       }}
     >
       {visibleTags.map((tag, index) => (
