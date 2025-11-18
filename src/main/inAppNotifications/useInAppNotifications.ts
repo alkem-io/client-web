@@ -51,6 +51,7 @@ export const useInAppNotifications = () => {
       types: notificationTypes,
       first: IN_APP_NOTIFICATIONS_PAGE_SIZE,
     },
+    errorPolicy: 'all',
     skip: !isEnabled || !isOpen,
   });
 
