@@ -1454,7 +1454,8 @@
         "UPDATE_SENT": "{{subject}}",
         "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
         "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
-        "CALENDAR_EVENT_CREATED": "{{subject}}"
+        "CALENDAR_EVENT_CREATED": "{{subject}}",
+        "CALLOUT_MEMO_CREATED": "{{subject}}"
       },
       "detailedDescription": {
         "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
@@ -1705,6 +1706,15 @@
         "title": "NameID",
         "placeholder": "Unique textual identifier, used for URL paths. Note: cannot be modified after creation."
       }
+    },
+    "tagCloud": {
+      "resultsCount_one": "{{count}} result",
+      "resultsCount_other": "{{count}} results",
+      "showMoreTags_one": "Show {{count}} more tag",
+      "showMoreTags_other": "Show {{count}} more tags",
+      "showFewerTags": "Show fewer tags",
+      "filterByTag": "Filter posts with tag: {{tag}}",
+      "clearFilter": "Clear filter"
     },
     "visualSegment": {
       "title": "Visual",
@@ -2453,6 +2463,7 @@
           "space-removed": "$t(common.space) removed successfully."
         },
         "settings": {
+          "updateFailed": "Failed to update $t(common.settings). Please try again.",
           "savedSuccessfully": "$t(common.Settings) saved successfully",
           "visibility": {
             "title": "Visibility",

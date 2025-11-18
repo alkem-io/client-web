@@ -47,6 +47,9 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
     ... on ActivityLogEntryCalloutWhiteboardContentModified {
       ...ActivityLogCalloutWhiteboardContentModified
     }
+    ... on ActivityLogEntryCalloutMemoCreated {
+      ...ActivityLogCalloutMemoCreated
+    }
     ... on ActivityLogEntryCalloutDiscussionComment {
       ...ActivityLogCalloutDiscussionComment
     }

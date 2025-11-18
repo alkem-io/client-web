@@ -95,6 +95,7 @@ export const useCalloutCreation = ({ calloutsSetId }: CalloutCreationParams): Ca
         },
       });
     },
+    refetchQueries: ['CalloutsSetTags'],
   });
 
   const handleCreateCallout = useCallback(

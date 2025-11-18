@@ -34,6 +34,7 @@ const ACTIVITY_TYPES = [
   ActivityEventType.CalloutLinkCreated,
   ActivityEventType.CalloutWhiteboardCreated,
   ActivityEventType.CalloutWhiteboardContentModified,
+  ActivityEventType.CalloutMemoCreated,
   ActivityEventType.DiscussionComment,
 ];
 
