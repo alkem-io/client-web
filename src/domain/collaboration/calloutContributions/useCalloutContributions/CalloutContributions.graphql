@@ -2,8 +2,9 @@ query CalloutContributions(
   $calloutId: UUID!
   $includeLink: Boolean! = false
   $includeWhiteboard: Boolean! = false
+  $includeMemo: Boolean! = false
   $includePost: Boolean! = false
-  $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, POST]
+  $filter: [CalloutContributionType!] = [LINK, WHITEBOARD, MEMO, POST]
   $limit: Int
 ) {
   lookup {
@@ -17,6 +18,9 @@ query CalloutContributions(
         }
         whiteboard @include(if: $includeWhiteboard) {
           ...CalloutContributionsWhiteboardCard
+        }
+        memo @include(if: $includeMemo) {
+          ...CalloutContributionsMemoCard
         }
         post @include(if: $includePost) {
           ...CalloutContributionsPostCard
