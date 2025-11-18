@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Button, Avatar, useTheme } from '@mui/material';
+import { Button, Avatar, useTheme, Paper, Box } from '@mui/material';
 import { Card } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -18,6 +18,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { useEffect } from 'react';
 import { Actions } from '@/core/ui/actions/Actions';
 import { useSpaceCardLayout } from '@/main/topLevelPages/myDashboard/useSpaceCardLayout';
+import { CARD_BANNER_GRADIENT } from '@/core/ui/card/CardImageHeader';
 
 const DASHBOARD_MEMBERSHIPS_ALL = 100; // hardcoded limit for expensive query
 
@@ -60,15 +61,25 @@ const DashboardSpaces = () => {
     titleAndDescContainer: {
       borderBottomLeftRadius: 16,
       borderBottomRightRadius: 16,
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: theme.palette.background.paper,
+    },
+
+    gradientOverlay: {
+      position: 'absolute',
+      top: -50,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      height: '50px',
+      background: CARD_BANNER_GRADIENT,
     },
 
     spaceTitle: {
-      color: theme.palette.background.paper,
+      color: theme.palette.primary.main,
     },
 
     spaceTagline: {
-      color: theme.palette.background.paper,
+      color: theme.palette.primary.main,
     },
   };
 
@@ -105,7 +116,7 @@ const DashboardSpaces = () => {
 
         return (
           <PageContentBlock key={id}>
-            <Gutters component={RouterLink} to={profile?.url} disableGap disablePadding>
+            <Paper component={RouterLink} to={profile?.url}>
               <Card style={styles.spaceCard}>
                 <Avatar
                   variant="square"
@@ -117,18 +128,21 @@ const DashboardSpaces = () => {
                 />
               </Card>
 
-              <Gutters gap={gutters(0.3)} padding={gutters(0.3)} style={styles.titleAndDescContainer}>
-                <PageTitle textAlign="center" style={styles.spaceTitle}>
-                  {profile?.displayName}
-                </PageTitle>
+              <Box position="relative">
+                <Box sx={styles.gradientOverlay} />
+                <Gutters gap={gutters(0.3)} padding={gutters(0.3)} style={styles.titleAndDescContainer}>
+                  <PageTitle textAlign="center" style={styles.spaceTitle}>
+                    {profile?.displayName}
+                  </PageTitle>
 
-                {tagline && (
-                  <Tagline textAlign="center" fontStyle="italic" color={styles.spaceTagline.color}>
-                    {tagline}
-                  </Tagline>
-                )}
-              </Gutters>
-            </Gutters>
+                  {tagline && (
+                    <Tagline textAlign="center" fontStyle="italic" color={styles.spaceTagline.color}>
+                      {tagline}
+                    </Tagline>
+                  )}
+                </Gutters>
+              </Box>
+            </Paper>
 
             {hasChildMemberships && (
               <>
