@@ -2,17 +2,14 @@
 
 ## GetPublicWhiteboard Query
 
-```graphql
 query GetPublicWhiteboard($whiteboardId: UUID!) {
   whiteboard(ID: $whiteboardId) {
     ...PublicWhiteboardFragment
   }
 }
-```
 
 ## PublicWhiteboardFragment
 
-```graphql
 fragment PublicWhiteboardFragment on Whiteboard {
   id
   content
@@ -30,4 +27,3 @@ fragment PublicWhiteboardFragment on Whiteboard {
   createdDate
   updatedDate
 }
-```

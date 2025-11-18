@@ -1,4 +1,5 @@
 import { createContext, FC, ReactNode, useState, useEffect, useContext } from 'react';
+import { clearGuestWhiteboardUrl } from '../utils/sessionStorage';
 
 const STORAGE_KEY = 'alkemio_guest_name';
 
@@ -49,6 +50,8 @@ export const GuestSessionProvider: FC<GuestSessionProviderProps> = ({ children }
     setGuestNameState(null);
     try {
       sessionStorage.removeItem(STORAGE_KEY);
+      // Also clear stored whiteboard URL when guest session ends
+      clearGuestWhiteboardUrl();
     } catch (error) {
       console.warn('Failed to clear guest session:', error);
     }

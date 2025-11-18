@@ -73,11 +73,27 @@ class Portal {
     return new Promise(async (resolve, reject) => {
       const { default: socketIOClient } = await import('socket.io-client');
 
+      // Prepare auth data for Socket.IO connection
+      const auth: Record<string, string> = {};
+
+      // Add guest name for public whiteboard routes
+      if (globalThis.window?.location.pathname.startsWith('/public/whiteboard')) {
+        try {
+          const guestName = globalThis.sessionStorage.getItem('alkemio_guest_name');
+          if (guestName) {
+            auth.guestName = guestName;
+          }
+        } catch (error) {
+          console.warn('Failed to read guest name from session storage:', error);
+        }
+      }
+
       const socket = socketIOClient(connectionOptions.url, {
         transports: connectionOptions.polling ? ['websocket', 'polling'] : ['websocket'],
         path: connectionOptions.path,
         retries: 0,
         reconnection: false,
+        auth,
       });
 
       this.socket = socket;
