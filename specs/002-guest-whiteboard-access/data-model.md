@@ -275,6 +275,62 @@ try {
 
 **Invalidation**: On whiteboard update (handled by existing app logic)
 
+### 4.4 Socket.IO WebSocket Connection
+
+**Purpose**: Real-time collaborative editing with guest attribution
+
+**Connection Parameters**:
+
+- URL: `VITE_APP_COLLAB_URL` (e.g., `http://localhost:3000`)
+- Path: `VITE_APP_COLLAB_PATH` (e.g., `/api/private/ws/socket.io`)
+- Transport: WebSocket (with polling fallback)
+
+**Guest Name Injection**:
+
+```typescript
+const auth: Record<string, string> = {};
+if (guestName) {
+  auth.guestName = guestName; // Available as socket.handshake.auth.guestName on server
+}
+
+const socket = socketIOClient(url, {
+  path,
+  auth, // ← Guest name sent with connection
+});
+```
+
+**Implementation**: `src/domain/common/whiteboard/excalidraw/collab/Portal.ts`
+
+**Server Access**: Backend reads guest name from `socket.handshake.auth.guestName`
+
+### 4.5 Error Handler Suppression
+
+**Purpose**: Prevent error toasters for expected query failures (e.g., CurrentUser when not authenticated)
+
+**Mechanism**: Custom context flag `skipGlobalErrorHandler`
+
+**Implementation**:
+
+```typescript
+// Query with suppressed error handling
+const { data } = useCurrentUserFullQuery({
+  errorPolicy: 'ignore',
+  context: {
+    skipGlobalErrorHandler: true, // ← Prevents error toaster
+  },
+});
+```
+
+**Error Link Logic**: `src/core/apollo/graphqlLinks/useErrorHandlerLink.ts`
+
+```typescript
+onError(({ operation }) => {
+  const { skipGlobalErrorHandler } = operation.getContext();
+  if (skipGlobalErrorHandler) return; // Skip error toaster
+  // ... normal error handling
+});
+```
+
 ---
 
 ## 5. Component State Ownership

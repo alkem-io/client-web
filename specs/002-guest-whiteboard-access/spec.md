@@ -20,9 +20,9 @@ As a **guest user**, I want to access a public whiteboard via a shared URL witho
 1. **Given** I am a guest user with a public whiteboard URL, **When** I navigate to `/public/whiteboard/:whiteboardId`, **Then** the application attempts to load the whiteboard from the server
 2. **Given** the whiteboard cannot be loaded without authentication, **When** the initial load fails, **Then** I see a modal dialog prompting me to "Join Whiteboard" with a nickname input field
 3. **Given** the join dialog is displayed, **When** I enter a nickname and click "JOIN AS GUEST", **Then** the nickname is stored in session storage and added as `x-guest-name` header to all subsequent requests
-3. **Given** I have provided a valid nickname, **When** the whiteboard loads successfully, **Then** I see only the whiteboard content without any application layout (navigation, sidebar, header, etc.)
-4. **Given** the whiteboard is displayed, **When** I look at the dialog header area, **Then** I see a persistent error-severity alert badge with a public icon reading "This whiteboard is visible and editable by guest users"
-5. **Given** I am viewing a public whiteboard as a guest, **When** I refresh the page, **Then** my nickname persists from session storage and I am not prompted again
+4. **Given** I have provided a valid nickname, **When** the whiteboard loads successfully, **Then** I see only the whiteboard content without any application layout (navigation, sidebar, header, etc.)
+5. **Given** the whiteboard is displayed, **When** I look at the dialog header area, **Then** I see a persistent error-severity alert badge with a public icon reading "This whiteboard is visible and editable by guest users"
+6. **Given** I am viewing a public whiteboard as a guest, **When** I refresh the page, **Then** my nickname persists from session storage and I am not prompted again
 
 ---
 
@@ -95,6 +95,33 @@ As a **guest user**, I want to edit the whiteboard (add shapes, draw, add text, 
 8. **Given** I am a guest user and the connection drops, **When** the WebSocket disconnects, **Then** the system attempts auto-reconnect and shows "Reconnecting..." status
 9. **Given** I am a guest user with an active connection, **When** other users edit the same whiteboard, **Then** I see their changes appear in real-time
 10. **Given** I am viewing a public whiteboard as a guest, **When** I click the close/cancel button in the WhiteboardDialog, **Then** I am redirected to the `/home` page
+
+---
+
+### User Story 6 - Guest Session Return Flow (Priority: P2)
+
+As a **guest user**, I want to see a helpful notification when I close the whiteboard and land on the sign-in page, so that I can easily return to my whiteboard session, explore Alkemio, or sign up for a full account.
+
+**Why this priority**: Improves user retention and conversion by providing clear next steps after closing the whiteboard, preventing drop-off and encouraging account creation.
+
+**Independent Test**: Can be tested by opening a whiteboard as a guest, providing a nickname, then closing the whiteboard and verifying the notification appears on the sign-in page with all three action options working correctly.
+
+**Acceptance Scenarios**:
+
+1. **Given** I am viewing a public whiteboard as a guest with an active session, **When** I close the WhiteboardDialog, **Then** I am redirected to `/sign_up` (not `/home`) with the whiteboard URL stored in session storage
+2. **Given** I closed the whiteboard as a guest, **When** I land on the sign-up page, **Then** I see a notification box with the title "You've left your whiteboard"
+3. **Given** the notification box is displayed, **When** I read the content, **Then** I see:
+   - Main message: "Your guest session is still active. You can return to your whiteboard, or explore what Alkemio has to offer."
+   - Primary button: "BACK TO WHITEBOARD" (dark blue background)
+   - Secondary button: "GO TO OUR WEBSITE" (white background with border)
+   - Info box: "Want to contribute more?" with arrow icon
+   - Info text: "Sign up for an Alkemio account on the right to collaborate with teams and access advanced tools."
+4. **Given** the notification box is displayed, **When** I click "BACK TO WHITEBOARD", **Then** I am redirected to the public whiteboard URL I was previously viewing (with my guest session still active)
+5. **Given** the notification box is displayed, **When** I click "GO TO OUR WEBSITE", **Then** I am redirected to the main Alkemio website (external URL)
+6. **Given** I close the whiteboard and see the notification, **When** I complete sign-up or sign-in, **Then** the notification disappears and I see the normal authenticated experience
+7. **Given** I closed the whiteboard as a guest, **When** I navigate directly to `/sign_up` without an active guest session, **Then** I do NOT see the notification box (it only appears when there's an active guest session from a closed whiteboard)
+8. **Given** I see the notification box, **When** I refresh the page, **Then** the notification persists as long as my guest session is active in session storage
+9. **Given** I see the notification box, **When** my session storage is cleared, **Then** the notification disappears on the next page load
 
 ---
 
@@ -226,9 +253,10 @@ This feature satisfies the Constitution as follows:
     **FR-009**: System MUST clear the guest name from session storage when the browser session ends (not on tab close)
     **FR-010**: System MUST redirect to the sign-in page when the user clicks "SIGN IN TO ALKEMIO", preserving return URL
     **FR-011**: System MUST redirect authenticated users back to the public whiteboard URL after successful sign-in, retaining stripped public layout (no app chrome)
-  **FR-011a**: System MUST clear any prior guest name from session storage when sign-in completes; historical guest contributions remain attributed to previous guest name value
-  **FR-012**: System MUST display a persistent visibility warning to all viewers (guest or authenticated): "This whiteboard is visible and editable by guest users". Implementation: MUI Alert badge in the WhiteboardDialog header (top-right), always visible, using severity="error" with PublicIcon.
-  **FR-013**: System MUST handle whiteboard load errors gracefully:
+    **FR-011a**: System MUST clear all guest session data (guest name and whiteboard URL) from session storage when sign-in completes using `clearAllGuestSessionData()`; historical guest contributions remain attributed to previous guest name value
+    **FR-011b**: System MUST clear all guest session data (guest name and whiteboard URL) from session storage when registration completes using `clearAllGuestSessionData()`
+    **FR-012**: System MUST display a persistent visibility warning to all viewers (guest or authenticated): "This whiteboard is visible and editable by guest users". Implementation: MUI Alert badge in the WhiteboardDialog header (top-right), always visible, using severity="error" with PublicIcon.
+    **FR-013**: System MUST handle whiteboard load errors gracefully:
   - 404: "Whiteboard not found"
   - 403: "This whiteboard is not available for guest access"
   - 500/other: "Unable to load whiteboard. Please try again later"
@@ -240,17 +268,47 @@ This feature satisfies the Constitution as follows:
     **FR-019**: System MUST derive an anonymized guest name using algorithm: both names -> `First L.`; only first -> `First`; only last -> `L.`; neither -> prompt
     **FR-020**: System MUST store derived anonymized guest name in session storage and use it as `x-guest-name` header without prompting
     **FR-021**: System MUST fall back to prompting for a guest name if CurrentUser fetch fails or yields no usable name fields
-  **FR-022**: System MUST apply validation rules to user-entered guest names; derived names bypass user validation except safe character enforcement
-  **FR-023**: System MUST ensure all GraphQL requests on the public page include `x-guest-name` header once a guest name is set or derived
-  **FR-024**: System MUST redirect guest users to `/home` when the WhiteboardDialog close/cancel button is clicked, providing a clear exit path from the public whiteboard view
+    **FR-022**: System MUST apply validation rules to user-entered guest names; derived names bypass user validation except safe character enforcement
+    **FR-023**: System MUST ensure all GraphQL requests on the public page include `x-guest-name` header once a guest name is set or derived
+    **FR-024**: System MUST redirect guest users to `/home` when the WhiteboardDialog close/cancel button is clicked, providing a clear exit path from the public whiteboard view
+    **FR-025**: System MUST include guest name in Socket.IO WebSocket connection via `auth` option to enable backend tracking and attribution in real-time collaboration sessions
+    **FR-026**: System MUST suppress error toaster notifications for CurrentUser query failures on public whiteboard page using `errorPolicy: 'ignore'` and custom `skipGlobalErrorHandler` context flag
+    **FR-027**: System MUST allow individual GraphQL queries to opt-out of global error handling by setting `context.skipGlobalErrorHandler: true`, preventing unwanted error notifications for expected failures
 
-### Key Entities- **Guest Session**: Ephemeral user session representing a guest user identified by a guest name (user-entered or anonymized derived). Attributes: `guestName` (string, 1-50 chars). Note: guest name is display-only; server uses internal session ID for unique identification.
+#### Guest Session Return Flow (User Story 6)
+
+**FR-028**: System MUST redirect guest users to `/sign_up` (instead of `/home`) when the WhiteboardDialog close/cancel button is clicked IF the user has an active guest session, using `buildSignUpUrl(currentPath)` to preserve return URL
+**FR-029**: System MUST store the last visited public whiteboard URL in session storage (key: `alkemio_guest_whiteboard_url`) when a guest closes the whiteboard
+**FR-030**: System MUST display a "Guest Session Notification" component on the sign-up page when: - User navigates to `/sign_up` page - AND has an active guest session (`alkemio_guest_name` exists in session storage) - AND has a stored whiteboard URL (`alkemio_guest_whiteboard_url` exists in session storage)
+**FR-031**: Guest Session Notification component MUST include: - Title: "You've left your whiteboard" (Montserrat Medium, 40px, #181828) - Description: "Your guest session is still active. You can return to your whiteboard, or explore what Alkemio has to offer." (Source Sans Pro Regular, 14px, #717182) - Primary button: "BACK TO WHITEBOARD" with left arrow icon (dark blue #1D384A background, white text, uppercase) - Secondary button: "GO TO OUR WEBSITE" (white background, light grey border, dark text, uppercase) - Info box with light blue background (#DEEFF6) containing: - Heading: "Want to contribute more?" with right arrow icon (Montserrat Regular, 15px) - Text: "Sign up for an Alkemio account on the right to collaborate with teams and access advanced tools." (Source Sans Pro Regular, 14px, #717182, centered)
+**FR-032**: System MUST navigate to stored whiteboard URL when "BACK TO WHITEBOARD" button is clicked
+**FR-033**: System MUST navigate to main Alkemio website (external URL) when "GO TO OUR WEBSITE" button is clicked
+**FR-034**: System MUST hide the Guest Session Notification component when: - User successfully signs in or signs up (authenticated session created) - OR guest session is cleared from session storage - OR user navigates away from `/sign_up` page
+**FR-035**: System MUST persist the notification across page refreshes as long as guest session data remains in session storage
+**FR-036**: System MUST clear all guest session data (guest name and whiteboard URL) when user successfully authenticates, using `clearAllGuestSessionData()` utility (called from both LoginSuccessPage and RegistrationSuccessPage)
+
+### Key Entities
+
+- **Guest Session**: Ephemeral user session representing a guest user identified by a guest name (user-entered or anonymized derived). Attributes: `guestName` (string, 1-50 chars). Note: guest name is display-only; server uses internal session ID for unique identification.
 - **Public Whiteboard**: A whiteboard entity accessible via public URL. Core attributes from GraphQL schema: `id` (UUID), `content` (WhiteboardContent), `profile` (Profile), `createdBy` (User), `createdDate`, `updatedDate`. Note: Guest access control is determined server-side; if a guest can access a whiteboard, it is returned in the GraphQL response, otherwise an error is returned.
 - **Guest Authentication Context**: React context providing guest session state and methods. Exposes: `guestName` (string | null), `setGuestName(name: string)` (function), `clearGuestSession()` (function), `isGuest` (boolean).
+- **Guest Whiteboard Session**: Transient session tracking guest's last visited whiteboard. Attributes: `whiteboardUrl` (string, stored in session storage). Used to support return-to-whiteboard flow after sign-in interruption.
 
 ## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
+
+**SC-001**: 100% of public whiteboard URLs are accessible to unauthenticated users with a valid whiteboard ID
+**SC-002**: Guest name input validates 100% of invalid inputs (empty, >50 chars, XSS attempts) before submission
+**SC-003**: Guest name persists across page refreshes with 100% reliability using session storage
+**SC-004**: Real-time collaboration enables guests to see and make whiteboard changes with <500ms latency (p95)
+**SC-005**: Guest contributions display guest name attribution in contribution history with 100% accuracy
+**SC-006**: Whiteboard dialog loads with <2s TTI (Time to Interactive) for public users on 3G connections (p75)
+**SC-007**: Socket.IO WebSocket connections include guest name in auth metadata with 100% reliability
+**SC-008**: CurrentUser query errors are suppressed on public whiteboard page with 0 error toasters displayed to guests
+**SC-009**: Guest Session Notification displays on `/sign_up` page when guest session active and whiteboard URL stored
+**SC-010**: "Back to Whiteboard" button navigates to stored whiteboard URL with 100% accuracy
+**SC-011**: Guest session data persists notification visibility across page refreshes with 100% reliability until authentication or session clear
 
 **SC-001**: Zero layout elements (navigation, sidebar, header) are visible on the public whiteboard page for any user (guest or authenticated)
 **SC-002**: 100% of public whiteboard loads display the visibility warning Alert badge in the WhiteboardDialog header
@@ -258,3 +316,5 @@ This feature satisfies the Constitution as follows:
 **SC-004**: ≤5% of authenticated visits fall back to manual guest name prompt
 **SC-005**: 100% of GraphQL requests on public page include `x-guest-name` header once a guest name is set or derived
 **SC-006**: Derived anonymized names never expose full last name (sample audits)
+**SC-007**: Socket.IO WebSocket connections include guest name in auth payload for real-time collaboration tracking
+**SC-008**: Zero error toasters displayed for expected CurrentUser query failures on public whiteboard page when users are not authenticated

@@ -20,7 +20,9 @@ Create a completely isolated public whiteboard **real-time collaborative editing
 - Vite (code splitting for isolated bundle)
 - Material-UI (MUI) - existing theme and component library
 
-**Storage**: Session Storage (`alkemio_guest_name` key for guest name persistence; user-entered or derived from authenticated profile)
+**Storage**: Session Storage (`alkemio_guest_name` key for guest name persistence; user-entered or derived from authenticated profile, `alkemio_guest_whiteboard_url` for storing the last visited whiteboard URL to support return-to-whiteboard flow)
+
+**Authentication Integration**: Both `LoginSuccessPage` and `RegistrationSuccessPage` call `clearAllGuestSessionData()` to remove all guest session data (`alkemio_guest_name` and `alkemio_guest_whiteboard_url`) when authentication succeeds. Historical guest contributions remain attributed to the previous guest name value.
 
 **Testing**: Vitest (unit tests), React Testing Library (component tests), E2E framework for integration
 
@@ -87,6 +89,8 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 - **Side-effect isolation**:
   - `useGuestSession`: reads/writes session storage (single responsibility, supports derived names)
   - Apollo Link middleware: injects `x-guest-name` header (isolated to `src/core/apollo/graphqlLinks/guestHeaderLink.ts`)
+  - Socket.IO Portal: injects guest name via `auth` option for WebSocket connections (`src/domain/common/whiteboard/excalidraw/collab/Portal.ts`)
+  - Error handler link: respects `skipGlobalErrorHandler` context flag to suppress error toasters for specific queries (`src/core/apollo/graphqlLinks/useErrorHandlerLink.ts`)
   - Error notifications: via existing `useNotification` adapter from `src/core/ui/notifications`
 - **Pure components**: All UI components free of side effects; hooks encapsulate all I/O
 
@@ -154,7 +158,7 @@ src/
 │               │   ├── useGuestWhiteboardAccess.ts   # NEW: Whiteboard loading logic
 │               │   └── useGuestNicknameValidation.ts # NEW: Nickname validation
 │               └── utils/
-│                   ├── sessionStorage.ts             # NEW: Session storage helpers
+│                   ├── sessionStorage.ts             # NEW: Session storage helpers (getGuestName, setGuestName, clearGuestName, getGuestWhiteboardUrl, setGuestWhiteboardUrl, clearGuestWhiteboardUrl, clearAllGuestSessionData)
 │                   └── nicknameValidator.ts          # NEW: Validation rules
 │
 ├── core/
@@ -376,6 +380,34 @@ x-guest-name: <nickname from session storage>
    - "SIGN IN TO ALKEMIO" link (router navigation)
    - Focus trap, Esc to close
    - Styled with Material-UI components (TextField, Button) and existing theme
+
+   **Implementation Details**:
+   - **Form Management**: Formik-based with integrated validation via `validateGuestName`
+   - **Input Component**: `FormikInputField` (application standard) instead of raw MUI TextField
+     - Provides built-in ARIA support, error handling, and consistent styling
+     - Configured with `title=""` (no visible label per design)
+     - Placeholder text from i18n: `public.whiteboard.join.placeholder`
+   - **Typography System**: Uses MUI typography variants for semantic hierarchy
+     - Welcome text: `variant="body1"` (16px Source Sans Pro)
+     - Title: `variant="h2"` (40px Montserrat, fontWeight 500, lineHeight 48px)
+     - Description: `variant="body2"` (14px Source Sans Pro)
+   - **Theme Integration**: All colors via `theme.palette` (zero hardcoded hex values)
+     - Text: `theme.palette.neutral.light` (#646464)
+     - Title: `theme.palette.primary.main` (#1D384A)
+     - Placeholder: `theme.palette.muted.main` (#A8A8A8)
+     - Borders: `theme.palette.divider` (lightgrey)
+     - Background: `theme.palette.background.paper` / `.default`
+   - **Spacing System**: All spacing via `theme.spacing()` (10px base unit)
+     - Container padding: `theme.spacing(4.4, 4.1)` (44px/41px)
+     - Element gaps: `theme.spacing(2.5, 2, 1)` (25px, 20px, 10px)
+     - Button padding: `py: 1.25` (12.5px vertical) for improved clickability
+   - **CSS Optimization**: Removed ~15 style declarations that MUI provides by default
+     - Font families (inherited from theme)
+     - Default font weights and line heights
+     - TextField border radius, background, border colors
+     - Button background/hover states (handled by variants)
+   - **Accessibility**: FormikInputField provides ARIA labels, error announcements, and keyboard navigation
+   - **Validation**: Client-side via Formik, integrated with `guestNameValidator.ts` (non-empty, max 50 chars, alphanumeric + hyphens/underscores)
 
 4. **WhiteboardDialog** (REUSED existing component - no modifications)
    - Accepts guest-configured options via props

@@ -1,19 +1,21 @@
-import { FC, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Alert } from '@mui/material';
-import PublicIcon from '@mui/icons-material/Public';
 import { GuestSessionProvider } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
 import { useGuestSession } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSession';
 import { useGuestWhiteboardAccess } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestWhiteboardAccess';
 import { useGuestAnalytics } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestAnalytics';
-import WhiteboardDialog, { WhiteboardDetails } from '@/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog';
+import { setGuestWhiteboardUrl } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
+import { useCurrentUserFullQuery } from '@/core/apollo/generated/apollo-hooks';
+import { buildSignUpUrl } from '@/main/routing/urlBuilders';
+import WhiteboardDialog, {
+  WhiteboardDetails,
+} from '@/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import PublicWhiteboardLayout from './PublicWhiteboardLayout';
 import JoinWhiteboardDialog from './JoinWhiteboardDialog';
 import PublicWhiteboardError from './PublicWhiteboardError';
 import Loading from '@/core/ui/loading/Loading';
-import { Box } from '@mui/system';
 
 /**
  * Inner component that uses guest session context
@@ -21,10 +23,23 @@ import { Box } from '@mui/system';
 const PublicWhiteboardPageContent: FC = () => {
   const { whiteboardId } = useParams<{ whiteboardId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { guestName, isDerived, setGuestName } = useGuestSession();
+
+  // Check if user is authenticated
+  // Use errorPolicy 'ignore' and context flag to prevent error toaster on public page
+  const { data: currentUser, loading: userLoading } = useCurrentUserFullQuery({
+    errorPolicy: 'ignore',
+    context: {
+      skipGlobalErrorHandler: true,
+    },
+  });
+  const isAuthenticated = !!currentUser?.me?.user;
+
   const { whiteboard, loading, error, refetch, needsGuestName } = useGuestWhiteboardAccess(whiteboardId!);
   const { trackWhiteboardLoadSuccess, trackWhiteboardLoadFailure, trackDerivedNameUsed } = useGuestAnalytics();
   const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState(0);
   const { t } = useTranslation();
 
@@ -65,8 +80,19 @@ const PublicWhiteboardPageContent: FC = () => {
     refetch();
   };
 
-  // Show loading state
-  if (loading) {
+  const handleCloseWhiteboard = useCallback(() => {
+    const currentPath = location.pathname;
+
+    if (!isAuthenticated) {
+      setGuestWhiteboardUrl(currentPath);
+      navigate(buildSignUpUrl(currentPath));
+    } else {
+      navigate('/home');
+    }
+  }, [isAuthenticated, location.pathname, navigate]);
+
+  // Show loading state (including user authentication check)
+  if (loading || userLoading) {
     return (
       <PublicWhiteboardLayout>
         <Loading />
@@ -83,14 +109,11 @@ const PublicWhiteboardPageContent: FC = () => {
     );
   }
 
-  // Show join dialog if guest name is needed
-  if (needsGuestName) {
+  // Show join dialog only for non-authenticated users who need a guest name
+  if (!isAuthenticated && needsGuestName) {
     return (
       <PublicWhiteboardLayout>
-        <JoinWhiteboardDialog
-          open
-          onSubmit={handleGuestNameSubmit}
-        />
+        <JoinWhiteboardDialog open onSubmit={handleGuestNameSubmit} />
       </PublicWhiteboardLayout>
     );
   }
@@ -122,26 +145,26 @@ const PublicWhiteboardPageContent: FC = () => {
     };
 
     return (
-        <WhiteboardDialog
-          entities={{ whiteboard: whiteboardDetails }}
-          lastSuccessfulSavedDate={lastSuccessfulSavedDate}
-          actions={{
-            onCancel: () => navigate('/home'), // Redirect to home page when closing
-            onUpdate: async () => ({ success: true }), // Read-only for guests
-            onChangeDisplayName: async () => {}, // No-op for public view
-            onDelete: async () => {}, // No-op for public view
-            setLastSuccessfulSavedDate,
-            setConsecutiveSaveErrors,
-          }}
-          options={{
-            show: true,
-            canEdit: true, // Guests can edit via collaboration
-            canDelete: false, // Guests cannot delete
-            dialogTitle: whiteboard.profile?.displayName || t('pages.publicWhiteboard.fallbackTitle'),
-            fullscreen: false,
-            readOnlyDisplayName: true, // Guests cannot edit display name
-          }}
-        />
+      <WhiteboardDialog
+        entities={{ whiteboard: whiteboardDetails }}
+        lastSuccessfulSavedDate={lastSuccessfulSavedDate}
+        actions={{
+          onCancel: handleCloseWhiteboard,
+          onUpdate: async () => ({ success: true }), // Read-only for guests
+          onChangeDisplayName: async () => {}, // No-op for public view
+          onDelete: async () => {}, // No-op for public view
+          setLastSuccessfulSavedDate,
+          setConsecutiveSaveErrors,
+        }}
+        options={{
+          show: true,
+          canEdit: true, // Guests can edit via collaboration
+          canDelete: false, // Guests cannot delete
+          dialogTitle: whiteboard.profile?.displayName || t('pages.publicWhiteboard.fallbackTitle'),
+          fullscreen: false,
+          readOnlyDisplayName: true, // Guests cannot edit display name
+        }}
+      />
     );
   }
 

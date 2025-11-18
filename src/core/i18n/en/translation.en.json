@@ -3061,13 +3061,22 @@
     "public": {
       "whiteboard": {
         "join": {
+          "welcome": "Welcome to Alkemio!",
           "title": "Join Whiteboard",
-          "description": "Choose a guest name to join this whiteboard.",
+          "description": "Choose a nickname to join this whiteboard as a guest",
           "guestNameLabel": "Guest Name",
-          "placeholder": "Enter a guest name",
-          "joinButton": "JOIN AS GUEST",
-          "joiningButton": "JOINING...",
-          "signInButton": "SIGN IN TO ALKEMIO"
+          "placeholder": "Enter your nickname",
+          "joinButton": "Join as guest",
+          "joiningButton": "Joining...",
+          "signInButton": "Sign in to Alkemio"
+        },
+        "guestSessionNotification": {
+          "title": "You've left your whiteboard",
+          "description": "Your guest session is still active. You can return to your whiteboard, or explore what Alkemio has to offer.",
+          "backButton": "Back to Whiteboard",
+          "websiteButton": "Go to our website",
+          "contributeMoreTitle": "Want to contribute more?",
+          "contributeMoreDescription": "Sign up for an Alkemio account on the right to collaborate with teams and access advanced tools."
         },
         "error": {
           "404": {
