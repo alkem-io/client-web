@@ -967,31 +967,14 @@
     "share-this": "Share this {{entity}}",
     "share-this-on": "Share this {{entity}} on {{platform}}",
     "guest-access": {
+      "label": "Guest access",
+      "toggle-label": "Enable guest access",
       "url-label": "Guest Access URL",
       "copy-url": "Copy Guest Access URL"
     },
     "or": "or",
     "url": "URL",
     "warning": "Please note that your personal email will be visible for the user when you send them a message.",
-    "guestAccess": {
-      "sectionTitle": "Guest access",
-      "toggleLabel": "Allow guest contributions",
-      "toggleDescription": "Let anyone with the guest link view and contribute to this whiteboard.",
-      "toggleAriaLabel": "Toggle guest access for this whiteboard",
-      "warningTitle": "Guests can edit this whiteboard",
-      "warningDescription": "Anyone with the guest link can view and contribute. Remove access when you're done collaborating.",
-      "linkLabel": "Guest link",
-      "errors": {
-        "NOT_AUTHORIZED": "You no longer have permission to update guest access.",
-        "NOT_AUTHORIZED_LOCAL": "You can't change guest access right now.",
-        "SPACE_GUEST_DISABLED": "Guest access is disabled for this space.",
-        "WHITEBOARD_NOT_FOUND": "We couldn't find this whiteboard while updating guest access.",
-        "MISSING_WHITEBOARD_ID": "Guest access can't be updated until the whiteboard finishes loading.",
-        "NETWORK_ERROR": "Check your connection and try again.",
-        "UNKNOWN": "We couldn't update guest access. Please try again.",
-        "generic": "We couldn't update guest access. Please try again."
-      }
-    },
     "platforms": {
       "clipboard": {
         "title": "Copy Link",

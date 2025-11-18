@@ -26,10 +26,10 @@ _No new setup tasks required beyond existing workspace configuration._
 
 **Purpose**: Core updates required before any user story can be implemented.
 
-- [x] T001 Add `guestContributionsAllowed` to whiteboard fragments (Domain, GraphQL) in `src/domain/collaboration/whiteboard/containers/WhiteboardQueries.graphql`
-- [x] T002 Create guest access toggle mutation document (Domain, GraphQL) at `src/domain/collaboration/whiteboard/WhiteboardDialog/graphql/UpdateWhiteboardGuestAccess.graphql`
-- [x] T003 Execute `pnpm codegen` to regenerate Apollo hooks with guest access types (GraphQL) touching `src/core/apollo/generated/apollo-hooks.ts`
-- [x] T004 Extend whiteboard TypeScript models with `guestContributionsAllowed` (Domain) in `src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx`
+- [ ] T001 Add `guestContributionsAllowed` to whiteboard fragments (Domain, GraphQL) in `src/domain/collaboration/whiteboard/containers/WhiteboardQueries.graphql`
+- [ ] T002 Create guest access toggle mutation document (Domain, GraphQL) at `src/domain/collaboration/whiteboard/WhiteboardDialog/graphql/UpdateWhiteboardGuestAccess.graphql`
+- [ ] T003 Execute `pnpm codegen` to regenerate Apollo hooks with guest access types (GraphQL) touching `src/core/apollo/generated/apollo-hooks.ts`
+- [ ] T004 Extend whiteboard TypeScript models with `guestContributionsAllowed` (Domain) in `src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx`
 
 **Checkpoint**: GraphQL schema and generated types support guest access flows. Guest share URL generation remains a placeholder until a dedicated feature delivers the backend contract.
 

@@ -16081,60 +16081,6 @@ export type UpdateMemoContentUpdatePolicyMutation = {
   updateMemo: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
-export type WhiteboardGuestAccessFieldsFragment = {
-  __typename?: 'Whiteboard';
-  id: string;
-  guestContributionsAllowed: boolean;
-  authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        credentialRules?:
-          | Array<{
-              __typename?: 'AuthorizationPolicyRuleCredential';
-              name?: string | undefined;
-              grantedPrivileges: Array<AuthorizationPrivilege>;
-            }>
-          | undefined;
-      }
-    | undefined;
-};
-
-export type UpdateWhiteboardGuestAccessMutationVariables = Exact<{
-  input: UpdateWhiteboardGuestAccessInput;
-}>;
-
-export type UpdateWhiteboardGuestAccessMutation = {
-  __typename?: 'Mutation';
-  updateWhiteboardGuestAccess: {
-    __typename?: 'UpdateWhiteboardGuestAccessResult';
-    success: boolean;
-    whiteboard?:
-      | {
-          __typename?: 'Whiteboard';
-          id: string;
-          guestContributionsAllowed: boolean;
-          authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                credentialRules?:
-                  | Array<{
-                      __typename?: 'AuthorizationPolicyRuleCredential';
-                      name?: string | undefined;
-                      grantedPrivileges: Array<AuthorizationPrivilege>;
-                    }>
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-    errors?:
-      | Array<{ __typename?: 'WhiteboardGuestAccessError'; code: WhiteboardGuestAccessErrorCode; message: string }>
-      | undefined;
-  };
-};
-
 export type WhiteboardPreviewSettingsFragment = {
   __typename?: 'WhiteboardPreviewSettings';
   mode: WhiteboardPreviewMode;
