@@ -84,7 +84,9 @@ safeguards ensure sustainable delivery.
 2. Styling standardizes on MUI theming. Any addition to the design system must pass through
    `src/core/ui` with tokens documented in the theme.
 3. Internationalization uses `react-i18next`. All user-visible strings MUST be declared via the
-   localization pipeline; hard-coded copy is forbidden.
+   localization pipeline; hard-coded copy is forbidden. Only the English source file
+   (`src/core/i18n/en/translation.en.json`) MAY be edited directly. All other locale files are
+   generated downstream and MUST remain untouched in this repository.
 4. Build artifacts remain deterministic: Vite config changes require documenting their impact on
    chunking, env exposure, and React Server Component compatibility.
 5. Import transparency requires explicit module paths. Barrel exports via `index.ts` files are
