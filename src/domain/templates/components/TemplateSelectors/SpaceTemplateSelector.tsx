@@ -111,8 +111,8 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
         setFieldValue('tags', profile.tagsets[0].tags);
       }
 
-      if (profile?.visuals) {
-        onTemplateVisualsLoaded?.(getVisualUrls(profile.visuals));
+      if (profile?.cardBanner) {
+        onTemplateVisualsLoaded?.(getVisualUrls([profile.cardBanner]));
       }
 
       setDialogOpen(false);

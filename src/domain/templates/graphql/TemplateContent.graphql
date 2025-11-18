@@ -191,6 +191,7 @@ fragment SpaceTemplateContent_Collaboration on Collaboration {
 
 fragment SpaceTemplateContent_About on SpaceAbout {
   id
+  isContentPublic
   profile {
     id
     displayName
@@ -199,7 +200,10 @@ fragment SpaceTemplateContent_About on SpaceAbout {
     tagsets {
       ...TagsetDetails
     }
-    visuals {
+    avatar: visual(type: AVATAR) {
+      ...VisualModel
+    }
+    cardBanner: visual(type: CARD) {
       ...VisualModel
     }
     url

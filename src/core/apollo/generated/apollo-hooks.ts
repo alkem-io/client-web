@@ -2560,6 +2560,7 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
 export const SpaceTemplateContent_AboutFragmentDoc = gql`
   fragment SpaceTemplateContent_About on SpaceAbout {
     id
+    isContentPublic
     profile {
       id
       displayName
@@ -2568,7 +2569,10 @@ export const SpaceTemplateContent_AboutFragmentDoc = gql`
       tagsets {
         ...TagsetDetails
       }
-      visuals {
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+      cardBanner: visual(type: CARD) {
         ...VisualModel
       }
       url
@@ -2735,9 +2739,13 @@ export const SpaceTemplateFragmentDoc = gql`
       id
       about {
         id
+        isContentPublic
         profile {
           id
-          visual(type: CARD) {
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+          cardBanner: visual(type: CARD) {
             ...VisualModel
           }
         }
