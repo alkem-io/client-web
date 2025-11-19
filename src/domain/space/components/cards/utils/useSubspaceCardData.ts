@@ -32,7 +32,7 @@ export interface ParentInfo {
   avatar?: {
     id: string;
     uri: string;
-    alternativeText: string;
+    alternativeText: string | undefined;
   };
 }
 
