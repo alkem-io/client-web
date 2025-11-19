@@ -77,7 +77,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
             const newChallengeRef = cache.writeFragment({
               data: createSubspace,
               fragment: SubspaceCardFragmentDoc,
-              fragmentName: 'SpaceCard',
+              fragmentName: 'SubspaceCard',
             });
             return [...existingChallenges, newChallengeRef];
           },

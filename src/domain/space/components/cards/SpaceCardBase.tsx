@@ -13,6 +13,8 @@ import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import CardTags from '@/core/ui/card/CardTags';
 
+export const CARD_FOOTER_HEIGHT = gutters(3);
+
 export interface SpaceCardProps extends ContributeCardProps {
   header: ReactNode | null;
   banner?: SpaceCardBanner;
@@ -64,7 +66,7 @@ const SpaceCardBase = ({
           <Box
             sx={{
               position: 'absolute',
-              bottom: 60, // Height of the footer
+              bottom: CARD_FOOTER_HEIGHT, // Height of the footer
               left: 0,
               right: 0,
               height: '25%', // height of the gradient

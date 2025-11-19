@@ -1,5 +1,6 @@
 import { Chip, Box } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
+import { CARD_FOOTER_HEIGHT } from '@/domain/space/components/cards/SpaceCardBase';
 
 interface SpaceCardTagsOverlayProps {
   tags: string[];
@@ -22,10 +23,10 @@ const SpaceCardTagsOverlay = ({ tags, maxVisibleTags = 2, compact = false }: Spa
       gap={0.5}
       sx={{
         position: 'absolute',
-        bottom: compact ? 60 : gutters(0.5), // Push tags up 60px in compact mode to clear footer
+        bottom: compact ? CARD_FOOTER_HEIGHT : gutters(0.5), // Push tags up in compact mode
         left: gutters(0.5),
         right: gutters(0.5),
-        zIndex: compact ? 2 : 'auto', // Ensure tags appear above gradient but below footer
+        zIndex: compact ? 2 : 'auto', // Ensure tags appear above gradient
       }}
     >
       {visibleTags.map((tag, index) => (
