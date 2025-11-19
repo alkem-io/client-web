@@ -16081,6 +16081,38 @@ export type UpdateMemoContentUpdatePolicyMutation = {
   updateMemo: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
+export type WhiteboardGuestAccessFieldsFragment = {
+  __typename?: 'Whiteboard';
+  id: string;
+  nameID: string;
+  guestContributionsAllowed: boolean;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type UpdateWhiteboardGuestAccessMutationVariables = Exact<{
+  input: UpdateWhiteboardGuestAccessInput;
+}>;
+
+export type UpdateWhiteboardGuestAccessMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboardGuestAccess: {
+    __typename?: 'UpdateWhiteboardGuestAccessResult';
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          nameID: string;
+          guestContributionsAllowed: boolean;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type WhiteboardPreviewSettingsFragment = {
   __typename?: 'WhiteboardPreviewSettings';
   mode: WhiteboardPreviewMode;

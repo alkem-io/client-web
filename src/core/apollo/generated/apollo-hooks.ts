@@ -1061,6 +1061,17 @@ export const PostSettingsCalloutFragmentDoc = gql`
     }
   }
 `;
+export const WhiteboardGuestAccessFieldsFragmentDoc = gql`
+  fragment WhiteboardGuestAccessFields on Whiteboard {
+    id
+    nameID
+    guestContributionsAllowed
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+`;
 export const WhiteboardContentFragmentDoc = gql`
   fragment WhiteboardContent on Whiteboard {
     id
@@ -9345,6 +9356,57 @@ export type UpdateMemoContentUpdatePolicyMutationResult =
 export type UpdateMemoContentUpdatePolicyMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateMemoContentUpdatePolicyMutation,
   SchemaTypes.UpdateMemoContentUpdatePolicyMutationVariables
+>;
+export const UpdateWhiteboardGuestAccessDocument = gql`
+  mutation UpdateWhiteboardGuestAccess($input: UpdateWhiteboardGuestAccessInput!) {
+    updateWhiteboardGuestAccess(input: $input) {
+      whiteboard {
+        ...WhiteboardGuestAccessFields
+      }
+    }
+  }
+  ${WhiteboardGuestAccessFieldsFragmentDoc}
+`;
+export type UpdateWhiteboardGuestAccessMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateWhiteboardGuestAccessMutation,
+  SchemaTypes.UpdateWhiteboardGuestAccessMutationVariables
+>;
+
+/**
+ * __useUpdateWhiteboardGuestAccessMutation__
+ *
+ * To run a mutation, you first call `useUpdateWhiteboardGuestAccessMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWhiteboardGuestAccessMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWhiteboardGuestAccessMutation, { data, loading, error }] = useUpdateWhiteboardGuestAccessMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateWhiteboardGuestAccessMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateWhiteboardGuestAccessMutation,
+    SchemaTypes.UpdateWhiteboardGuestAccessMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateWhiteboardGuestAccessMutation,
+    SchemaTypes.UpdateWhiteboardGuestAccessMutationVariables
+  >(UpdateWhiteboardGuestAccessDocument, options);
+}
+export type UpdateWhiteboardGuestAccessMutationHookResult = ReturnType<typeof useUpdateWhiteboardGuestAccessMutation>;
+export type UpdateWhiteboardGuestAccessMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateWhiteboardGuestAccessMutation>;
+export type UpdateWhiteboardGuestAccessMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateWhiteboardGuestAccessMutation,
+  SchemaTypes.UpdateWhiteboardGuestAccessMutationVariables
 >;
 export const UpdateWhiteboardPreviewSettingsDocument = gql`
   mutation UpdateWhiteboardPreviewSettings(
