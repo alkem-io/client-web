@@ -39,16 +39,16 @@ const GuestAccessToggle: FC<GuestAccessToggleProps> = ({
 
   const errorTranslationKey = (() => {
     if (!error) {
-      return 'share-dialog.guestAccess.errors.UNKNOWN' as const;
+      return 'share-dialog.guest-access.errors.UNKNOWN' as const;
     }
 
     switch (error.code) {
       case 'PERMISSION_DENIED':
-        return 'share-dialog.guestAccess.errors.PERMISSION_DENIED' as const;
+        return 'share-dialog.guest-access.errors.PERMISSION_DENIED' as const;
       case 'NETWORK':
-        return 'share-dialog.guestAccess.errors.NETWORK' as const;
+        return 'share-dialog.guest-access.errors.NETWORK' as const;
       default:
-        return 'share-dialog.guestAccess.errors.UNKNOWN' as const;
+        return 'share-dialog.guest-access.errors.UNKNOWN' as const;
     }
   })();
 
@@ -57,10 +57,10 @@ const GuestAccessToggle: FC<GuestAccessToggleProps> = ({
       <Box display="flex" alignItems="center" justifyContent="space-between" gap={gutters(0.5)}>
         <Box display="flex" alignItems="center" gap={0.5}>
           <Typography component="span" variant="subtitle2">
-            {t('share-dialog.guestAccess.toggleLabel')}
+            {t('share-dialog.guest-access.toggle-label')}
           </Typography>
           {!canToggle && (
-            <Tooltip title={t('share-dialog.guestAccess.disabledTooltip')}>
+            <Tooltip title={t('share-dialog.guest-access.disabled-tooltip')}>
               <InfoOutlinedIcon color="action" fontSize="small" />
             </Tooltip>
           )}
@@ -69,11 +69,11 @@ const GuestAccessToggle: FC<GuestAccessToggleProps> = ({
           checked={enabled}
           disabled={!canToggle || isMutating}
           onChange={handleChange}
-          inputProps={{ 'aria-label': t('share-dialog.guestAccess.toggleLabel') }}
+          inputProps={{ 'aria-label': t('share-dialog.guest-access.toggle-label') }}
         />
       </Box>
       <Typography variant="body2" color="text.secondary">
-        {t('share-dialog.guestAccess.toggleDescription')}
+        {t('share-dialog.guest-access.toggle-description')}
       </Typography>
       {error && (
         <Alert severity="error" onClose={resetError} data-testid="guest-access-error">

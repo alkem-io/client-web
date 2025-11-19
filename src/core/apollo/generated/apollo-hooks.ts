@@ -7318,6 +7318,7 @@ export const CalloutContributionDocument = gql`
         }
         whiteboard @include(if: $includeWhiteboard) {
           id
+          guestContributionsAllowed
           profile {
             id
             url

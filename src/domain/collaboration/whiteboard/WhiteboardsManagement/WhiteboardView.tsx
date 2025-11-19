@@ -111,16 +111,16 @@ const WhiteboardView = ({
             readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
             fullscreen,
             previewSettingsDialogOpen: previewSettingsDialogOpen,
-            guestAccessEnabled: guestAccess.enabled,
             headerActions: (collabState: CollabState) => (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
-                  <WhiteboardGuestAccessControls whiteboard={whiteboard}>
-                    <WhiteboardGuestAccessSection guestAccess={guestAccess} />
-                  </WhiteboardGuestAccessControls>
+                  <>
+                    <WhiteboardGuestAccessControls whiteboard={whiteboard} guestAccessEnabled={guestAccess.enabled}>
+                      <WhiteboardGuestAccessSection guestAccess={guestAccess} />
+                    </WhiteboardGuestAccessControls>
+                    {hasUpdatePrivileges && <CollaborationSettings element={whiteboard} elementType="whiteboard" />}
+                  </>
                 </ShareButton>
-
-                {hasUpdatePrivileges && <CollaborationSettings element={whiteboard} elementType="whiteboard" />}
 
                 <FullscreenButton />
 

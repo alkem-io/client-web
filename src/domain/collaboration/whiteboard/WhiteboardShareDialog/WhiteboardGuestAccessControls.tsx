@@ -7,6 +7,7 @@ export interface WhiteboardGuestAccessControlsProps {
       myPrivileges?: AuthorizationPrivilege[];
     };
   };
+  guestAccessEnabled?: boolean;
   children: ReactNode;
 }
 
@@ -19,13 +20,17 @@ export interface WhiteboardGuestAccessControlsProps {
  * - Hides controls silently if privilege is missing (no error state)
  * - Type-safe check using AuthorizationPrivilege enum
  */
-export const WhiteboardGuestAccessControls: FC<WhiteboardGuestAccessControlsProps> = ({ whiteboard, children }) => {
+export const WhiteboardGuestAccessControls: FC<WhiteboardGuestAccessControlsProps> = ({
+  whiteboard,
+  guestAccessEnabled,
+  children,
+}) => {
   // Check for PUBLIC_SHARE privilege (Decision 1 from research.md)
   const hasPublicSharePrivilege =
     whiteboard?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.PublicShare) ?? false;
 
   // Hide controls if user doesn't have PUBLIC_SHARE privilege (Decision 2: Silent failure)
-  if (!hasPublicSharePrivilege) {
+  if (!hasPublicSharePrivilege && !guestAccessEnabled) {
     return null;
   }
 

@@ -23,7 +23,7 @@ const privilegedWhiteboard = {
 };
 
 describe('WhiteboardGuestAccessSection', () => {
-  it('shows guest link and warning when access is enabled', () => {
+  it('shows guest link when access is enabled', () => {
     render(
       <WhiteboardGuestAccessControls whiteboard={privilegedWhiteboard}>
         <WhiteboardGuestAccessSection guestAccess={buildGuestAccess({ enabled: true })} />
@@ -31,10 +31,9 @@ describe('WhiteboardGuestAccessSection', () => {
     );
 
     expect(screen.getByRole('textbox', { name: /guest link/i })).toBeInTheDocument();
-    expect(screen.getByText('Guests can edit this whiteboard')).toBeInTheDocument();
   });
 
-  it('hides the section when user lacks PUBLIC_SHARE privilege', () => {
+  it('hides the section when user lacks PUBLIC_SHARE privilege and guest access is disabled', () => {
     render(
       <WhiteboardGuestAccessControls whiteboard={{ authorization: { myPrivileges: [] } }}>
         <WhiteboardGuestAccessSection guestAccess={buildGuestAccess({ enabled: true })} />
@@ -42,6 +41,16 @@ describe('WhiteboardGuestAccessSection', () => {
     );
 
     expect(screen.queryByTestId('guest-access-section')).not.toBeInTheDocument();
+  });
+
+  it('shows guest link for non-privileged users when guest access is enabled', () => {
+    render(
+      <WhiteboardGuestAccessControls whiteboard={{ authorization: { myPrivileges: [] } }} guestAccessEnabled>
+        <WhiteboardGuestAccessSection guestAccess={buildGuestAccess({ enabled: true })} />
+      </WhiteboardGuestAccessControls>
+    );
+
+    expect(screen.getByRole('textbox', { name: /guest link/i })).toBeInTheDocument();
   });
 
   it('invokes onToggle when the switch is clicked', () => {
@@ -53,18 +62,18 @@ describe('WhiteboardGuestAccessSection', () => {
       </WhiteboardGuestAccessControls>
     );
 
-    fireEvent.click(screen.getByRole('checkbox', { name: /allow guest contributions/i }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /guest access/i }));
     expect(guestAccess.onToggle).toHaveBeenCalledWith(true);
   });
 
-  it('removes guest warning and link when disabled', () => {
+  it('hides guest link when access is disabled', () => {
     const { rerender } = render(
       <WhiteboardGuestAccessControls whiteboard={privilegedWhiteboard}>
         <WhiteboardGuestAccessSection guestAccess={buildGuestAccess({ enabled: true })} />
       </WhiteboardGuestAccessControls>
     );
 
-    expect(screen.getByText('Guests can edit this whiteboard')).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /guest link/i })).toBeInTheDocument();
 
     rerender(
       <WhiteboardGuestAccessControls whiteboard={privilegedWhiteboard}>
@@ -72,6 +81,23 @@ describe('WhiteboardGuestAccessSection', () => {
       </WhiteboardGuestAccessControls>
     );
 
-    expect(screen.queryByText('Guests can edit this whiteboard')).not.toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: /guest link/i })).not.toBeInTheDocument();
+  });
+
+  it('shows an error message when guest access update fails', () => {
+    const guestAccess = buildGuestAccess({
+      error: { code: 'NETWORK', message: 'Network issue' },
+    });
+
+    render(
+      <WhiteboardGuestAccessControls whiteboard={privilegedWhiteboard}>
+        <WhiteboardGuestAccessSection guestAccess={guestAccess} />
+      </WhiteboardGuestAccessControls>
+    );
+
+    expect(screen.getByTestId('guest-access-error')).toHaveTextContent('Network issue');
+
+    fireEvent.click(screen.getByRole('button', { name: /close/i }));
+    expect(guestAccess.resetError).toHaveBeenCalled();
   });
 });

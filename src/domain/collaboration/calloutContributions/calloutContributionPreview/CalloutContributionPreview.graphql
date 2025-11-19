@@ -12,6 +12,7 @@ query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false
       }
       whiteboard @include(if: $includeWhiteboard)  {
         id
+        guestContributionsAllowed
         profile {
           id
           url

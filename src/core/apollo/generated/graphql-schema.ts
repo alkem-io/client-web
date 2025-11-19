@@ -13485,6 +13485,7 @@ export type CalloutContributionQuery = {
             | {
                 __typename?: 'Whiteboard';
                 id: string;
+                guestContributionsAllowed: boolean;
                 createdDate: Date;
                 profile: {
                   __typename?: 'Profile';

@@ -1,6 +1,6 @@
 import { MouseEventHandler, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-import { Alert, AlertTitle, Button, DialogContent } from '@mui/material';
+import { Box, Button, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import { DeleteOutline } from '@mui/icons-material';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -22,6 +22,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import GuestVisibilityBadge from '../components/GuestVisibilityBadge';
 
 interface WhiteboardDialogFooterProps {
   whiteboardUrl: string | undefined;
@@ -31,7 +32,6 @@ interface WhiteboardDialogFooterProps {
   canDelete?: boolean;
   onRestart?: () => void;
   updating?: boolean;
-  guestAccessEnabled?: boolean;
   createdBy:
     | (Identifiable & {
         profile: {
@@ -44,6 +44,7 @@ interface WhiteboardDialogFooterProps {
   contentUpdatePolicy: ContentUpdatePolicy | undefined;
   collaboratorMode: CollaboratorMode | null;
   collaboratorModeReason: CollaboratorModeReasons | null;
+  guestAccessEnabled?: boolean;
 }
 
 enum ReadonlyReason {
@@ -64,7 +65,7 @@ const WhiteboardDialogFooter = ({
   collaboratorMode,
   collaboratorModeReason,
   updating = false,
-  guestAccessEnabled,
+  guestAccessEnabled = false,
 }: WhiteboardDialogFooterProps) => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
@@ -142,22 +143,13 @@ const WhiteboardDialogFooter = ({
 
   return (
     <>
-      {guestAccessEnabled && (
-        <Alert
-          severity="warning"
-          sx={{ marginX: gutters(), marginTop: gutters(), marginBottom: gutters(0.5) }}
-          data-testid="whiteboard-guest-access-warning"
-        >
-          <AlertTitle>{t('share-dialog.guestAccess.warningTitle')}</AlertTitle>
-          {t('share-dialog.guestAccess.warningDescription')}
-        </Alert>
-      )}
       <Actions
         paddingX={gutters()}
         paddingY={gutters(0.5)}
         gap={gutters(0.5)}
         justifyContent="start"
         alignItems="center"
+        flexWrap="wrap"
       >
         {canDelete && (
           <Button
@@ -200,6 +192,12 @@ const WhiteboardDialogFooter = ({
           <Button onClick={onRestart} variant="outlined" sx={{ textTransform: 'none' }} size="small">
             {t('pages.whiteboard.restartCollaboration')}
           </Button>
+        )}
+
+        {guestAccessEnabled && (
+          <Box marginLeft="auto">
+            <GuestVisibilityBadge size="compact" data-testid="guest-visibility-badge-footer" />
+          </Box>
         )}
 
         {directMessageDialog}
