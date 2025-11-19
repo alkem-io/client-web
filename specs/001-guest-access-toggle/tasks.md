@@ -26,10 +26,10 @@ _No new setup tasks required beyond existing workspace configuration._
 
 **Purpose**: Core updates required before any user story can be implemented.
 
-- [ ] T001 Add `guestContributionsAllowed` to whiteboard fragments (Domain, GraphQL) in `src/domain/collaboration/whiteboard/containers/WhiteboardQueries.graphql`
-- [ ] T002 Create guest access toggle mutation document (Domain, GraphQL) at `src/domain/collaboration/whiteboard/WhiteboardDialog/graphql/UpdateWhiteboardGuestAccess.graphql`
-- [ ] T003 Execute `pnpm codegen` to regenerate Apollo hooks with guest access types (GraphQL) touching `src/core/apollo/generated/apollo-hooks.ts`
-- [ ] T004 Extend whiteboard TypeScript models with `guestContributionsAllowed` (Domain) in `src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx`
+- [x] T001 Add `guestContributionsAllowed` to whiteboard fragments (Domain, GraphQL) in `src/domain/collaboration/whiteboard/containers/WhiteboardQueries.graphql`
+- [x] T002 Create guest access toggle mutation document (Domain, GraphQL) at `src/domain/collaboration/whiteboard/WhiteboardDialog/graphql/UpdateWhiteboardGuestAccess.graphql`
+- [x] T003 Execute `pnpm codegen` to regenerate Apollo hooks with guest access types (GraphQL) touching `src/core/apollo/generated/apollo-hooks.ts`
+- [x] T004 Extend whiteboard TypeScript models with `guestContributionsAllowed` (Domain) in `src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx`
 
 **Checkpoint**: GraphQL schema and generated types support guest access flows. Guest share URL generation remains a placeholder until a dedicated feature delivers the backend contract.
 
@@ -43,13 +43,13 @@ _No new setup tasks required beyond existing workspace configuration._
 
 ### Implementation
 
-- [ ] T006 [US1] Create `useWhiteboardGuestAccess` hook exposing state + mutation (Domain, GraphQL) in `src/domain/collaboration/whiteboard/hooks/useWhiteboardGuestAccess.ts`
-- [ ] T007 [US1] Inject guest access hook into whiteboard header share button (Domain, React19) in `src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx`
-- [ ] T008 [US1] Extend ShareDialog/ShareButton props to accept guest access controls (Domain, React19) in `src/domain/shared/components/ShareDialog/ShareDialog.tsx` and `src/domain/shared/components/ShareDialog/ShareButton.tsx`
-- [ ] T009 [US1] Add guest access toggle component with `startTransition` rollback handling (React19, Quality) at `src/domain/shared/components/ShareDialog/GuestAccessToggle.tsx`
-- [ ] T010 [US1] Render share dialog guest warning banner when toggle is active (Quality) in `src/domain/shared/components/ShareDialog/ShareDialog.tsx`
-- [ ] T011 [P] [US1] Add i18n copy for guest toggle labels/warnings (Quality) in `src/core/i18n/en/translation.en.json` (propagate English fallback to other locale files)
-- [ ] T012 [US1] Add vitest coverage for toggle success and denial flows (Quality) in `src/domain/shared/components/ShareDialog/__tests__/ShareDialogGuestToggle.test.tsx`
+- [x] T006 [US1] Create `useWhiteboardGuestAccess` hook exposing state + mutation (Domain, GraphQL) in `src/domain/collaboration/whiteboard/hooks/useWhiteboardGuestAccess.ts`
+- [x] T007 [US1] Inject guest access hook into whiteboard header share button (Domain, React19) in `src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx`
+- [x] T008 [US1] Extend ShareDialog/ShareButton props to accept guest access controls (Domain, React19) in `src/domain/shared/components/ShareDialog/ShareDialog.tsx` and `src/domain/shared/components/ShareDialog/ShareButton.tsx`
+- [x] T009 [US1] Add guest access toggle component with `startTransition` rollback handling (React19, Quality) at `src/domain/shared/components/ShareDialog/GuestAccessToggle.tsx`
+- [x] T010 [US1] Render share dialog guest warning banner when toggle is active (Quality) in `src/domain/shared/components/ShareDialog/ShareDialog.tsx`
+- [x] T011 [P] [US1] Add i18n copy for guest toggle labels/warnings (Quality) in `src/core/i18n/en/translation.en.json` (propagate English fallback to other locale files)
+- [x] T012 [US1] Add vitest coverage for toggle success and denial flows (Quality) in `src/domain/shared/components/ShareDialog/__tests__/ShareDialogGuestToggle.test.tsx`
 
 **Checkpoint**: Privileged users can enable guest access, see the new warning, and recover gracefully from backend denials.
 
@@ -63,10 +63,10 @@ _No new setup tasks required beyond existing workspace configuration._
 
 ### Implementation
 
-- [ ] T013 [US2] Extend `WhiteboardProvider` to expose guest access state and computed guest link (Domain) in `src/domain/collaboration/whiteboard/containers/WhiteboardProvider.tsx`
-- [ ] T014 [US2] Pass guest access props to ShareButton across whiteboard entry points (Domain) in `src/domain/collaboration/calloutContributions/whiteboard/CalloutContributionDialogWhiteboard.tsx`, `src/domain/collaboration/callout/CalloutFramings/CalloutFramingWhiteboard.tsx`, and `src/domain/collaboration/whiteboard/EntityWhiteboardPage/WhiteboardPage.tsx`
-- [ ] T015 [US2] Make ShareDialog render read-only guest link & copy controls only when `guestContributionsAllowed` is true (Quality) in `src/domain/shared/components/ShareDialog/ShareDialog.tsx`
-- [ ] T016 [US2] Add vitest to verify member view shows/hides link correctly (Quality) in `src/domain/shared/components/ShareDialog/__tests__/ShareDialogMemberView.test.tsx`
+- [x] T013 [US2] Extend `WhiteboardProvider` to expose guest access state and computed guest link (Domain) in `src/domain/collaboration/whiteboard/containers/WhiteboardProvider.tsx`
+- [x] T014 [US2] Pass guest access props to ShareButton across whiteboard entry points (Domain) in `src/domain/collaboration/calloutContributions/whiteboard/CalloutContributionDialogWhiteboard.tsx`, `src/domain/collaboration/callout/CalloutFramings/CalloutFramingWhiteboard.tsx`, and `src/domain/collaboration/whiteboard/EntityWhiteboardPage/WhiteboardPage.tsx`
+- [x] T015 [US2] Make ShareDialog render read-only guest link & copy controls only when `guestContributionsAllowed` is true (Quality) in `src/domain/shared/components/ShareDialog/ShareDialog.tsx`
+- [x] T016 [US2] Add vitest to verify member view shows/hides link correctly (Quality) in `src/domain/shared/components/ShareDialog/__tests__/ShareDialogMemberView.test.tsx`
 
 **Checkpoint**: Any space member can view and copy the guest link when active, with UI reflecting backend truth.
 
@@ -80,10 +80,10 @@ _No new setup tasks required beyond existing workspace configuration._
 
 ### Implementation
 
-- [ ] T017 [US3] Synchronize ShareDialog state with Apollo updates and clear optimistic toggles on denials (React19, Quality) in `src/domain/shared/components/ShareDialog/ShareDialog.tsx`
-- [ ] T018 [US3] Surface guest access warning banner in whiteboard editor footer (Domain, Quality) in `src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialogFooter.tsx`
-- [ ] T019 [US3] Emit telemetry events for guest access toggle attempts/outcomes (Quality) in `src/core/analytics/events/collaborationGuestAccess.ts`
-- [ ] T020 [US3] Add vitest ensuring disabling guest access hides link/warnings everywhere (Quality) in `src/domain/shared/components/ShareDialog/__tests__/ShareDialogGuestDisable.test.tsx`
+- [x] T017 [US3] Synchronize ShareDialog state with Apollo updates and clear optimistic toggles on denials (React19, Quality) in `src/domain/shared/components/ShareDialog/ShareDialog.tsx`
+- [x] T018 [US3] Surface guest access warning banner in whiteboard editor footer (Domain, Quality) in `src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialogFooter.tsx`
+- [x] T019 [US3] Emit telemetry events for guest access toggle attempts/outcomes (Quality) in `src/core/analytics/events/collaborationGuestAccess.ts`
+- [x] T020 [US3] Add vitest ensuring disabling guest access hides link/warnings everywhere (Quality) in `src/domain/shared/components/ShareDialog/__tests__/ShareDialogGuestDisable.test.tsx`
 
 **Checkpoint**: Guest access can be revoked safely with immediate UI feedback and telemetry.
 
@@ -93,8 +93,8 @@ _No new setup tasks required beyond existing workspace configuration._
 
 **Purpose**: Wrap-up tasks that span multiple user stories.
 
-- [ ] T021 Update developer guidance for guest access validation in `docs/development-setup.md`
-- [ ] T022 Run project quality gates (`pnpm lint` & `pnpm vitest run --reporter=basic`) to validate changes in `package.json`
+- [x] T021 Update developer guidance for guest access validation in `docs/development-setup.md`
+- [x] T022 Run project quality gates (`pnpm lint` & `pnpm vitest run --reporter=basic`) to validate changes in `package.json`
 
 ---
 
