@@ -7,14 +7,12 @@
  * when guestContributionsAllowed is true.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, cleanup } from '@/main/test/testUtils';
 import '@testing-library/jest-dom/vitest';
 import { MemoryRouter } from 'react-router-dom';
-import { ThemeProvider } from '@emotion/react';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { theme } from '@/core/ui/themes/default/Theme';
 
 // Mock dependencies
 vi.mock('@/domain/space/context/useSpace', () => ({
@@ -77,22 +75,23 @@ describe('WhiteboardDialogFooter - Guest Contributions Warning Badge', () => {
     vi.clearAllMocks();
   });
 
-  const renderComponent = (props = {}) => {
-    return render(
+  afterEach(() => {
+    cleanup();
+  });
+
+  const renderComponent = (props = {}) =>
+    render(
       <MemoryRouter>
-        <ThemeProvider theme={theme}>
-          <WhiteboardDialogFooter {...defaultProps} {...props} />
-        </ThemeProvider>
+        <WhiteboardDialogFooter {...defaultProps} {...props} />
       </MemoryRouter>
     );
-  };
 
   describe('Warning badge visibility', () => {
     it('should display warning badge when guestContributionsAllowed is true', () => {
       renderComponent({ guestContributionsAllowed: true });
 
       // The warning text should be visible
-      const warningText = screen.getByText(/visible to guest users/i);
+      const warningText = screen.getByText('This whiteboard is visible to guest users');
       expect(warningText).toBeInTheDocument();
     });
 
@@ -100,7 +99,7 @@ describe('WhiteboardDialogFooter - Guest Contributions Warning Badge', () => {
       renderComponent({ guestContributionsAllowed: false });
 
       // The warning text should NOT be visible
-      const warningText = screen.queryByText(/visible to guest users/i);
+      const warningText = screen.queryByText('This whiteboard is visible to guest users');
       expect(warningText).not.toBeInTheDocument();
     });
 
@@ -108,7 +107,7 @@ describe('WhiteboardDialogFooter - Guest Contributions Warning Badge', () => {
       renderComponent(); // No guestContributionsAllowed prop
 
       // The warning text should NOT be visible
-      const warningText = screen.queryByText(/visible to guest users/i);
+      const warningText = screen.queryByText('This whiteboard is visible to guest users');
       expect(warningText).not.toBeInTheDocument();
     });
   });
@@ -118,7 +117,7 @@ describe('WhiteboardDialogFooter - Guest Contributions Warning Badge', () => {
       renderComponent({ guestContributionsAllowed: true });
 
       // Find the warning text and check for SVG (icon) in the container
-      const warningText = screen.getByText(/visible to guest users/i);
+      const warningText = screen.getByText('This whiteboard is visible to guest users');
       const warningContainer = warningText.closest('div');
       const publicIcon = warningContainer?.querySelector('svg');
 

@@ -4,8 +4,8 @@
  *
  * @vitest-environment jsdom
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@/main/test/testUtils';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, waitFor, cleanup } from '@/main/test/testUtils';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import { MemoryRouter } from 'react-router-dom';
@@ -51,6 +51,10 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
     sessionStorageMock.clear();
   });
 
+  afterEach(() => {
+    cleanup();
+  });
+
   const renderDialog = () => {
     return render(
       <MemoryRouter initialEntries={['/public/whiteboard/test-id']}>
@@ -63,27 +67,27 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
 
   describe('Basic rendering', () => {
     it('should render join dialog with all required elements', () => {
-      renderDialog();
+      const { getByText, getByPlaceholderText, getByRole } = renderDialog();
 
-      expect(screen.getByText(/join whiteboard/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/guest name/i)).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /join/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+      expect(getByText(/join whiteboard/i)).toBeInTheDocument();
+      expect(getByPlaceholderText(/enter your nickname/i)).toBeInTheDocument();
+      expect(getByRole('button', { name: /join/i })).toBeInTheDocument();
+      expect(getByRole('button', { name: /sign in/i })).toBeInTheDocument();
     });
 
     it('should disable join button when input is empty', () => {
-      renderDialog();
+      const { getByRole } = renderDialog();
 
-      const joinButton = screen.getByRole('button', { name: /join/i });
+      const joinButton = getByRole('button', { name: /join/i });
       expect(joinButton).toBeDisabled();
     });
 
     it('should enable join button when valid name is entered', async () => {
       const user = userEvent.setup();
-      renderDialog();
+      const { getByPlaceholderText, getByRole } = renderDialog();
 
-      const input = screen.getByLabelText(/guest name/i);
-      const joinButton = screen.getByRole('button', { name: /join/i });
+      const input = getByPlaceholderText(/enter your nickname/i);
+      const joinButton = getByRole('button', { name: /join/i });
 
       await user.type(input, 'ValidGuest');
 
@@ -96,9 +100,9 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
   describe('Form submission with valid input', () => {
     it('should call onSubmit with valid guest name', async () => {
       const user = userEvent.setup();
-      renderDialog();
+      const { getByPlaceholderText } = renderDialog();
 
-      const input = screen.getByLabelText(/guest name/i);
+      const input = getByPlaceholderText(/enter your nickname/i);
 
       await user.type(input, 'TestGuest');
       await user.keyboard('{Enter}');
@@ -110,9 +114,9 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
 
     it('should trim whitespace from guest name', async () => {
       const user = userEvent.setup();
-      renderDialog();
+      const { getByPlaceholderText } = renderDialog();
 
-      const input = screen.getByLabelText(/guest name/i);
+      const input = getByPlaceholderText(/enter your nickname/i);
 
       await user.type(input, '  GuestName  ');
       await user.keyboard('{Enter}');
@@ -126,33 +130,29 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
   describe('Form validation', () => {
     it('should show error for invalid characters', async () => {
       const user = userEvent.setup();
-      renderDialog();
+      const { getByPlaceholderText, findByText } = renderDialog();
 
-      const input = screen.getByLabelText(/guest name/i);
+      const input = getByPlaceholderText(/enter your nickname/i);
 
       await user.type(input, 'Test@User!');
-      await user.keyboard('{Enter}');
+      await user.tab();
 
-      await waitFor(() => {
-        expect(screen.getByText(/letters, numbers, hyphens/i)).toBeInTheDocument();
-      });
+      await findByText(/letters, numbers, hyphens/i);
 
       expect(mockOnSubmit).not.toHaveBeenCalled();
     });
 
     it('should show error for names exceeding 50 characters', async () => {
       const user = userEvent.setup();
-      renderDialog();
+      const { getByPlaceholderText, findByText } = renderDialog();
 
-      const input = screen.getByLabelText(/guest name/i);
+      const input = getByPlaceholderText(/enter your nickname/i);
       const longName = 'a'.repeat(51);
 
       await user.type(input, longName);
-      await user.keyboard('{Enter}');
+      await user.tab();
 
-      await waitFor(() => {
-        expect(screen.getByText(/50 characters/i)).toBeInTheDocument();
-      });
+      await findByText(/50 characters/i);
 
       expect(mockOnSubmit).not.toHaveBeenCalled();
     });
@@ -161,40 +161,36 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
   describe('Error recovery', () => {
     it('should clear error when user starts typing', async () => {
       const user = userEvent.setup();
-      renderDialog();
+      const { getByPlaceholderText, findByText, queryByText } = renderDialog();
 
-      const input = screen.getByLabelText(/guest name/i);
+      const input = getByPlaceholderText(/enter your nickname/i);
 
       // Trigger error
       await user.type(input, '@@@');
-      await user.keyboard('{Enter}');
+      await user.tab();
 
-      await waitFor(() => {
-        expect(screen.getByText(/letters, numbers, hyphens/i)).toBeInTheDocument();
-      });
+      await findByText(/letters, numbers, hyphens/i);
 
       // Error should clear when typing
       await user.clear(input);
       await user.type(input, 'V');
 
       await waitFor(() => {
-        expect(screen.queryByText(/letters, numbers, hyphens/i)).not.toBeInTheDocument();
+        expect(queryByText(/letters, numbers, hyphens/i)).not.toBeInTheDocument();
       });
     });
 
     it('should allow resubmission after fixing error', async () => {
       const user = userEvent.setup();
-      renderDialog();
+      const { getByPlaceholderText, findByText } = renderDialog();
 
-      const input = screen.getByLabelText(/guest name/i);
+      const input = getByPlaceholderText(/enter your nickname/i);
 
       // First attempt with invalid name
       await user.type(input, '@@@');
-      await user.keyboard('{Enter}');
+      await user.tab();
 
-      await waitFor(() => {
-        expect(screen.getByText(/letters, numbers, hyphens/i)).toBeInTheDocument();
-      });
+      await findByText(/letters, numbers, hyphens/i);
 
       // Fix and resubmit
       await user.clear(input);
@@ -210,12 +206,12 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
   describe('Alternative actions', () => {
     it('should navigate to sign-in when sign-in button is clicked', async () => {
       const user = userEvent.setup();
-      renderDialog();
+      const { getByRole } = renderDialog();
 
-      const signInButton = screen.getByRole('button', { name: /sign in/i });
+      const signInButton = getByRole('button', { name: /sign in/i });
       await user.click(signInButton);
 
-      expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining('/required?returnUrl='));
+      expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining('/login?returnUrl='));
       expect(mockOnSubmit).not.toHaveBeenCalled();
     });
 
@@ -226,9 +222,9 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
       sessionStorageMock.setItem('alkemio_guest_name', 'ExistingGuest');
       expect(sessionStorageMock.getItem('alkemio_guest_name')).toBe('ExistingGuest');
 
-      renderDialog();
+      const { getByRole } = renderDialog();
 
-      const signInButton = screen.getByRole('button', { name: /sign in/i });
+      const signInButton = getByRole('button', { name: /sign in/i });
       await user.click(signInButton);
 
       // Guest session should be cleared

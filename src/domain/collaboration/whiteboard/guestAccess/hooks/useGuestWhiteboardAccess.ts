@@ -15,7 +15,7 @@ export const useGuestWhiteboardAccess = (whiteboardId: string) => {
   });
 
   return {
-    whiteboard: data?.lookup.whiteboard,
+    whiteboard: data?.lookup?.whiteboard,
     loading: loading || !derivationAttempted,
     error,
     refetch,

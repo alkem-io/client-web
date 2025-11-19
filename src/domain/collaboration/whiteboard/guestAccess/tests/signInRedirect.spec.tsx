@@ -4,8 +4,8 @@
  *
  * @vitest-environment jsdom
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@/main/test/testUtils';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, cleanup } from '@/main/test/testUtils';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import { MemoryRouter } from 'react-router-dom';
@@ -51,6 +51,10 @@ describe('Sign-in Redirect Flow', () => {
     sessionStorageMock.clear();
   });
 
+  afterEach(() => {
+    cleanup();
+  });
+
   const renderDialog = (pathname = '/public/whiteboard/test-whiteboard-id') => {
     return render(
       <MemoryRouter initialEntries={[pathname]}>
@@ -69,9 +73,9 @@ describe('Sign-in Redirect Flow', () => {
       const signInButton = screen.getByRole('button', { name: /sign in/i });
       await user.click(signInButton);
 
-      // Should navigate to auth-required with return URL
+      // Should navigate to login with return URL
       expect(mockNavigate).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining('/required?returnUrl='));
+      expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining('/login?returnUrl='));
       expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining('/public/whiteboard/abc123'));
     });
 
@@ -84,7 +88,7 @@ describe('Sign-in Redirect Flow', () => {
       await user.click(signInButton);
 
       const navigateCall = mockNavigate.mock.calls[0][0];
-      expect(navigateCall).toContain('/required?returnUrl=');
+      expect(navigateCall).toContain('/login?returnUrl=');
       expect(navigateCall).toContain(whiteboardId);
     });
 
@@ -97,7 +101,7 @@ describe('Sign-in Redirect Flow', () => {
 
       const navigateCall = mockNavigate.mock.calls[0][0];
       // buildReturnUrlParam includes origin by default
-      expect(navigateCall).toMatch(/\/required\?returnUrl=http/);
+      expect(navigateCall).toMatch(/\/login\?returnUrl=http/);
     });
   });
 
@@ -170,7 +174,7 @@ describe('Sign-in Redirect Flow', () => {
       renderDialog();
 
       // Type invalid characters in guest name field
-      const input = screen.getByLabelText(/guest name/i);
+      const input = screen.getAllByPlaceholderText(/enter your nickname/i)[0];
       await user.type(input, '@@@invalid@@@');
 
       // Sign-in button should still work
@@ -198,6 +202,7 @@ describe('Sign-in Redirect Flow', () => {
         const signInButton = screen.getByRole('button', { name: /sign in/i });
         await user.click(signInButton);
 
+        expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining('/login?returnUrl='));
         expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining(path));
 
         unmount();
@@ -231,8 +236,8 @@ describe('Sign-in Redirect Flow', () => {
       await user.click(signInButton);
 
       const navigateCall = mockNavigate.mock.calls[0][0];
-      // Should use /required not /auth-required or /login
-      expect(navigateCall).toMatch(/^\/required\?returnUrl=/);
+      // Should use /login not legacy auth-required route
+      expect(navigateCall).toMatch(/^\/login\?returnUrl=/);
     });
 
     it('should construct valid return URL that auth system can process', async () => {

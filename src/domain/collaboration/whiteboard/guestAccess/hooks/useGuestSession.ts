@@ -13,11 +13,10 @@ export const useGuestSession = () => {
   const [derivationAttempted, setDerivationAttempted] = useState(false);
 
   // Detect auth cookie
-  const hasAuthCookie =
-    typeof document !== 'undefined' && document.cookie.includes('ory_kratos_session=');
+  const hasAuthCookie = typeof document !== 'undefined' && document.cookie.includes('ory_kratos_session=');
 
   // Fetch current user data only if authenticated
-  const { data: userData } = useCurrentUserFullQuery({
+  const { data: userData, error: userError } = useCurrentUserFullQuery({
     skip: !hasAuthCookie || !!context.guestName || derivationAttempted,
   });
 
@@ -37,19 +36,29 @@ export const useGuestSession = () => {
       return;
     }
 
-    // If we have user data, attempt to derive guest name
-    if (userData?.me?.user) {
-      const { firstName, lastName } = userData.me.user;
-      const anonymized = anonymizeGuestName(firstName, lastName);
+    // If the query errored, fallback to prompt
+    if (userError) {
+      setDerivationAttempted(true);
+      return;
+    }
 
-      if (anonymized) {
-        context.setGuestName(anonymized);
-        setIsDerived(true);
+    // If we have user data, attempt to derive guest name
+    if (userData?.me) {
+      const user = userData.me.user;
+
+      if (user) {
+        const { firstName, lastName } = user;
+        const anonymized = anonymizeGuestName(firstName, lastName);
+
+        if (anonymized) {
+          context.setGuestName(anonymized);
+          setIsDerived(true);
+        }
       }
 
       setDerivationAttempted(true);
     }
-  }, [context, derivationAttempted, hasAuthCookie, userData]);
+  }, [context, derivationAttempted, hasAuthCookie, userData, userError]);
 
   return {
     ...context,
@@ -58,7 +67,7 @@ export const useGuestSession = () => {
   };
 };
 
-export { anonymizeGuestName };
+export { anonymizeGuestName } from '../utils/anonymizeGuestName';
 
 /**
  * Clears guest session data when user signs in
@@ -66,7 +75,11 @@ export { anonymizeGuestName };
  * to prevent stale guest data from persisting after login
  */
 export const clearGuestSessionOnSignIn = (): void => {
-  if (typeof window !== 'undefined' && window.sessionStorage) {
-    window.sessionStorage.removeItem('alkemio_guest_name');
+  if (typeof globalThis === 'undefined') {
+    return;
   }
+
+  const storage = globalThis.sessionStorage ?? globalThis.window?.sessionStorage;
+
+  storage?.removeItem('alkemio_guest_name');
 };

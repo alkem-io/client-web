@@ -3,6 +3,8 @@
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
+import { InMemoryCache } from '@apollo/client';
 import { useGuestSession } from './useGuestSession';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import type { FC, PropsWithChildren } from 'react';
@@ -35,11 +37,13 @@ if (globalThis.window !== undefined) {
 }
 
 const wrapper: FC<PropsWithChildren> = ({ children }) => (
-  <RootThemeProvider>
-    <I18nextProvider i18n={i18n}>
-      <GuestSessionProvider>{children}</GuestSessionProvider>
-    </I18nextProvider>
-  </RootThemeProvider>
+  <MockedProvider mocks={[]} cache={new InMemoryCache()}>
+    <RootThemeProvider>
+      <I18nextProvider i18n={i18n}>
+        <GuestSessionProvider>{children}</GuestSessionProvider>
+      </I18nextProvider>
+    </RootThemeProvider>
+  </MockedProvider>
 );
 
 describe('useGuestSession', () => {

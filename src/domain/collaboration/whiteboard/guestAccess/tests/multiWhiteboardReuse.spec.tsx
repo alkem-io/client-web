@@ -9,7 +9,55 @@ import { render, screen, waitFor, cleanup } from '@/main/test/testUtils';
 import '@testing-library/jest-dom/vitest';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { useGuestSession } from '../hooks/useGuestSession';
-import { FC, useEffect } from 'react';
+import { FC, PropsWithChildren, ReactElement, useEffect } from 'react';
+import { MockedProvider } from '@apollo/client/testing';
+import { InMemoryCache } from '@apollo/client';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
+import i18n from '@/core/i18n/config';
+import { I18nextProvider } from 'react-i18next';
+
+// Mock session storage (shared across tests)
+const sessionStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => {
+      store[key] = value;
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
+  };
+})();
+
+Object.defineProperty(globalThis, 'sessionStorage', {
+  value: sessionStorageMock,
+  configurable: true,
+  writable: true,
+});
+
+if (globalThis.window !== undefined) {
+  Object.defineProperty(globalThis.window, 'sessionStorage', {
+    value: sessionStorageMock,
+    configurable: true,
+    writable: true,
+  });
+}
+
+const Providers: FC<PropsWithChildren> = ({ children }) => (
+  <MockedProvider mocks={[]} cache={new InMemoryCache()}>
+    <RootThemeProvider>
+      <I18nextProvider i18n={i18n}>
+        <GuestSessionProvider>{children}</GuestSessionProvider>
+      </I18nextProvider>
+    </RootThemeProvider>
+  </MockedProvider>
+);
+
+const renderWithProviders = (ui: ReactElement) => render(<Providers>{ui}</Providers>);
 
 // Test component that uses the guest session
 const TestWhiteboardComponent: FC<{ whiteboardId: string; onGuestNameReady?: (name: string | null) => void }> = ({
@@ -17,6 +65,10 @@ const TestWhiteboardComponent: FC<{ whiteboardId: string; onGuestNameReady?: (na
   onGuestNameReady,
 }) => {
   const { guestName, setGuestName } = useGuestSession();
+
+  const handleSetGuestName = () => {
+    setGuestName('TestGuest');
+  };
 
   useEffect(() => {
     if (onGuestNameReady) {
@@ -28,7 +80,21 @@ const TestWhiteboardComponent: FC<{ whiteboardId: string; onGuestNameReady?: (na
     <div>
       <h1>Whiteboard: {whiteboardId}</h1>
       <div data-testid="guest-name">{guestName || 'No guest name'}</div>
-      <button onClick={() => setGuestName('TestGuest')}>Set Guest Name</button>
+      <button onClick={handleSetGuestName}>Set Guest Name</button>
+    </div>
+  );
+};
+
+const TestComponentWithGuestNameUpdate: FC = () => {
+  const { setGuestName } = useGuestSession();
+
+  const handleUpdateName = () => {
+    setGuestName('UpdatedGuest');
+  };
+
+  return (
+    <div>
+      <button onClick={handleUpdateName}>Update Name</button>
     </div>
   );
 };
@@ -36,23 +102,19 @@ const TestWhiteboardComponent: FC<{ whiteboardId: string; onGuestNameReady?: (na
 describe('Multi-Whiteboard Guest Session Reuse', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    sessionStorage.clear();
+    sessionStorageMock.clear();
     cleanup();
   });
 
   afterEach(() => {
-    sessionStorage.clear();
+    sessionStorageMock.clear();
     cleanup();
   });
 
   describe('Session persistence across whiteboards', () => {
     it('should persist guest name when navigating to a different whiteboard', async () => {
       // Render first whiteboard and set guest name
-      const { unmount } = render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="whiteboard-1" />
-        </GuestSessionProvider>
-      );
+      const { unmount } = renderWithProviders(<TestWhiteboardComponent whiteboardId="whiteboard-1" />);
 
       // Set guest name
       const setButton = screen.getByText('Set Guest Name');
@@ -63,17 +125,13 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       });
 
       // Verify session storage has the name
-      expect(sessionStorage.getItem('alkemio_guest_name')).toBe('TestGuest');
+      expect(sessionStorageMock.getItem('alkemio_guest_name')).toBe('TestGuest');
 
       // Unmount first whiteboard (simulating navigation away)
       unmount();
 
       // Render second whiteboard (different whiteboard ID)
-      render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="whiteboard-2" />
-        </GuestSessionProvider>
-      );
+      renderWithProviders(<TestWhiteboardComponent whiteboardId="whiteboard-2" />);
 
       // Guest name should be automatically loaded from session storage
       await waitFor(() => {
@@ -86,16 +144,12 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
 
     it('should reuse guest name without prompting on second whiteboard', async () => {
       // Set guest name in session storage before mounting
-      sessionStorage.setItem('alkemio_guest_name', 'ExistingGuest');
+      sessionStorageMock.setItem('alkemio_guest_name', 'ExistingGuest');
 
       const guestNameCallback = vi.fn();
 
       // Render whiteboard - should immediately have guest name
-      render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="whiteboard-3" onGuestNameReady={guestNameCallback} />
-        </GuestSessionProvider>
-      );
+      renderWithProviders(<TestWhiteboardComponent whiteboardId="whiteboard-3" onGuestNameReady={guestNameCallback} />);
 
       // Should load guest name from storage immediately
       await waitFor(() => {
@@ -107,14 +161,10 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
     });
 
     it('should maintain same guest name across multiple whiteboard mounts', async () => {
-      sessionStorage.setItem('alkemio_guest_name', 'PersistentGuest');
+      sessionStorageMock.setItem('alkemio_guest_name', 'PersistentGuest');
 
       // Mount whiteboard 1
-      const { unmount: unmount1 } = render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="wb-1" />
-        </GuestSessionProvider>
-      );
+      const { unmount: unmount1 } = renderWithProviders(<TestWhiteboardComponent whiteboardId="wb-1" />);
 
       await waitFor(() => {
         expect(screen.getByTestId('guest-name')).toHaveTextContent('PersistentGuest');
@@ -123,11 +173,7 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       unmount1();
 
       // Mount whiteboard 2
-      const { unmount: unmount2 } = render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="wb-2" />
-        </GuestSessionProvider>
-      );
+      const { unmount: unmount2 } = renderWithProviders(<TestWhiteboardComponent whiteboardId="wb-2" />);
 
       await waitFor(() => {
         expect(screen.getByTestId('guest-name')).toHaveTextContent('PersistentGuest');
@@ -136,29 +182,21 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       unmount2();
 
       // Mount whiteboard 3
-      render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="wb-3" />
-        </GuestSessionProvider>
-      );
+      renderWithProviders(<TestWhiteboardComponent whiteboardId="wb-3" />);
 
       await waitFor(() => {
         expect(screen.getByTestId('guest-name')).toHaveTextContent('PersistentGuest');
       });
 
       // All three whiteboards should use the same guest name
-      expect(sessionStorage.getItem('alkemio_guest_name')).toBe('PersistentGuest');
+      expect(sessionStorageMock.getItem('alkemio_guest_name')).toBe('PersistentGuest');
     });
   });
 
   describe('Session updates across whiteboard instances', () => {
     it('should not prompt for guest name on subsequent whiteboard if name exists', async () => {
       // User visits first whiteboard and sets name
-      const { unmount } = render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="first-wb" />
-        </GuestSessionProvider>
-      );
+      const { unmount } = renderWithProviders(<TestWhiteboardComponent whiteboardId="first-wb" />);
 
       screen.getByText('Set Guest Name').click();
 
@@ -170,11 +208,7 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
 
       // User navigates to second whiteboard
       const onGuestNameReady = vi.fn();
-      render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="second-wb" onGuestNameReady={onGuestNameReady} />
-        </GuestSessionProvider>
-      );
+      renderWithProviders(<TestWhiteboardComponent whiteboardId="second-wb" onGuestNameReady={onGuestNameReady} />);
 
       // Should immediately have guest name, no prompt needed
       await waitFor(() => {
@@ -185,29 +219,21 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
     });
 
     it('should handle session storage being cleared mid-session', async () => {
-      sessionStorage.setItem('alkemio_guest_name', 'InitialGuest');
+      sessionStorageMock.setItem('alkemio_guest_name', 'InitialGuest');
 
-      const { unmount } = render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="wb-clear-test" />
-        </GuestSessionProvider>
-      );
+      const { unmount } = renderWithProviders(<TestWhiteboardComponent whiteboardId="wb-clear-test" />);
 
       await waitFor(() => {
         expect(screen.getByTestId('guest-name')).toHaveTextContent('InitialGuest');
       });
 
       // Simulate session storage being cleared (e.g., by another tab or user action)
-      sessionStorage.clear();
+      sessionStorageMock.clear();
 
       unmount();
 
       // New whiteboard mount should not have guest name
-      render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="wb-after-clear" />
-        </GuestSessionProvider>
-      );
+      renderWithProviders(<TestWhiteboardComponent whiteboardId="wb-after-clear" />);
 
       // Should show no guest name since storage was cleared
       await waitFor(() => {
@@ -218,14 +244,10 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
 
   describe('Session isolation between different contexts', () => {
     it('should share guest name across provider instances via session storage', async () => {
-      sessionStorage.clear();
+      sessionStorageMock.clear();
 
       // Render first provider and set guest name
-      const { unmount: unmount1 } = render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="isolated-1" />
-        </GuestSessionProvider>
-      );
+      const { unmount: unmount1 } = renderWithProviders(<TestWhiteboardComponent whiteboardId="isolated-1" />);
 
       screen.getByText('Set Guest Name').click();
 
@@ -236,11 +258,7 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       unmount1();
 
       // Render second provider - should load same guest name from storage
-      render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="isolated-2" />
-        </GuestSessionProvider>
-      );
+      renderWithProviders(<TestWhiteboardComponent whiteboardId="isolated-2" />);
 
       await waitFor(() => {
         expect(screen.getByTestId('guest-name')).toHaveTextContent('TestGuest');
@@ -251,30 +269,44 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
   describe('Session storage availability checks', () => {
     it('should handle unavailable session storage gracefully', () => {
       // Mock session storage to throw
-      const originalSessionStorage = window.sessionStorage;
-      Object.defineProperty(window, 'sessionStorage', {
+      const originalSessionStorage = globalThis.sessionStorage;
+      Object.defineProperty(globalThis, 'sessionStorage', {
         get: () => {
           throw new Error('Session storage unavailable');
         },
         configurable: true,
       });
 
+      if (globalThis.window !== undefined) {
+        Object.defineProperty(globalThis.window, 'sessionStorage', {
+          get: () => {
+            throw new Error('Session storage unavailable');
+          },
+          configurable: true,
+        });
+      }
+
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-      render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="storage-unavailable" />
-        </GuestSessionProvider>
-      );
+      renderWithProviders(<TestWhiteboardComponent whiteboardId="storage-unavailable" />);
 
       // Should warn about unavailable storage
       expect(consoleWarnSpy).toHaveBeenCalledWith('Session storage unavailable:', expect.any(Error));
 
       // Restore
-      Object.defineProperty(window, 'sessionStorage', {
+      Object.defineProperty(globalThis, 'sessionStorage', {
         value: originalSessionStorage,
         configurable: true,
+        writable: true,
       });
+
+      if (globalThis.window !== undefined) {
+        Object.defineProperty(globalThis.window, 'sessionStorage', {
+          value: originalSessionStorage,
+          configurable: true,
+          writable: true,
+        });
+      }
       consoleWarnSpy.mockRestore();
     });
 
@@ -282,16 +314,11 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       // Mock setItem to throw quota exceeded error
-      const originalSetItem = Storage.prototype.setItem;
-      Storage.prototype.setItem = vi.fn(() => {
+      const setItemSpy = vi.spyOn(sessionStorageMock, 'setItem').mockImplementation(() => {
         throw new Error('QuotaExceededError');
       });
 
-      render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="quota-test" />
-        </GuestSessionProvider>
-      );
+      renderWithProviders(<TestWhiteboardComponent whiteboardId="quota-test" />);
 
       screen.getByText('Set Guest Name').click();
 
@@ -300,46 +327,32 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       });
 
       // Restore
-      Storage.prototype.setItem = originalSetItem;
+      setItemSpy.mockRestore();
       consoleWarnSpy.mockRestore();
     });
   });
 
   describe('Guest name updates propagate correctly', () => {
     it('should update session storage when guest name changes', async () => {
-      const { rerender } = render(
-        <GuestSessionProvider>
-          <TestWhiteboardComponent whiteboardId="update-test" />
-        </GuestSessionProvider>
-      );
+      const { rerender } = renderWithProviders(<TestWhiteboardComponent whiteboardId="update-test" />);
 
       // Set initial guest name
       screen.getByText('Set Guest Name').click();
 
       await waitFor(() => {
-        expect(sessionStorage.getItem('alkemio_guest_name')).toBe('TestGuest');
+        expect(sessionStorageMock.getItem('alkemio_guest_name')).toBe('TestGuest');
       });
 
-      // Change guest name
-      const TestComponentWithUpdate: FC = () => {
-        const { setGuestName } = useGuestSession();
-        return (
-          <div>
-            <button onClick={() => setGuestName('UpdatedGuest')}>Update Name</button>
-          </div>
-        );
-      };
-
       rerender(
-        <GuestSessionProvider>
-          <TestComponentWithUpdate />
-        </GuestSessionProvider>
+        <Providers>
+          <TestComponentWithGuestNameUpdate />
+        </Providers>
       );
 
       screen.getByText('Update Name').click();
 
       await waitFor(() => {
-        expect(sessionStorage.getItem('alkemio_guest_name')).toBe('UpdatedGuest');
+        expect(sessionStorageMock.getItem('alkemio_guest_name')).toBe('UpdatedGuest');
       });
     });
   });
