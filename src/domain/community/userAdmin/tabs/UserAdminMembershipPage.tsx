@@ -41,6 +41,7 @@ const UserAdminMembershipPage = () => {
         spaceLevel: subspace.level,
         contributorId: userId!,
         contributorType: RoleSetContributorType.User,
+        parentSpaceId: space.id,
       }));
 
       return acc.concat(subspaces);

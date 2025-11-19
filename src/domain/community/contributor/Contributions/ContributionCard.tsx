@@ -13,6 +13,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Caption } from '@/core/ui/typography';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useParentSpaceInfo } from '@/domain/space/components/cards/utils/useParentSpaceInfo';
 
 export type ContributionCardProps = {
   onLeave?: () => Promise<unknown>;
@@ -29,6 +30,9 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
   const { details, loading, isLeavingCommunity, leaveCommunity } = useContributionProvider({
     spaceHostedItem: contributionItem,
   });
+
+  // Fetch parent space info if this is a subspace
+  const { parentInfo, parentAvatarUri, parentDisplayName } = useParentSpaceInfo(contributionItem.parentSpaceId);
 
   if (loading || !details) {
     return null;
@@ -68,7 +72,8 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
         level={details.level}
         member={details.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member}
         isPrivate={!details.about.isContentPublic}
-        avatarUris={collectSubspaceAvatars(details)}
+        avatarUris={collectSubspaceAvatars(details, parentAvatarUri, parentDisplayName)}
+        parentInfo={parentInfo}
         leadUsers={details.about.membership?.leadUsers}
         leadOrganizations={details.about.membership?.leadOrganizations}
         showLeads={isAuthenticated}
