@@ -979,7 +979,10 @@
       "errors": {
         "PERMISSION_DENIED": "You don't have permission to change guest access.",
         "NETWORK": "Check your connection and try again.",
-        "UNKNOWN": "We couldn't update guest access. Please try again."
+        "UNKNOWN": "We couldn't update guest access. Please try again.",
+        "NOT_AUTHORIZED": "You're not authorized to change guest access.",
+        "SPACE_GUEST_DISABLED": "Guest access is disabled for this space.",
+        "WHITEBOARD_NOT_FOUND": "This whiteboard couldn't be found. Refresh and try again."
       }
     },
     "or": "or",

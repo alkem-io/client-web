@@ -63,30 +63,32 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
       width="100%"
       data-testid="guest-access-section"
     >
-      <Box display="flex" width="100%" alignItems="center" justifyContent="space-between">
-        <Box>
-          <Typography
-            id={guestAccessLabelId}
-            color="text.primary"
-            sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 400, fontSize: '15px', lineHeight: '20px' }}
-          >
-            {t('share-dialog.guest-access.label', 'Guest access')}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t('share-dialog.guest-access.toggle-description')}
-          </Typography>
+      {guestAccess.canToggle && (
+        <Box display="flex" width="100%" alignItems="center" justifyContent="space-between">
+          <Box>
+            <Typography
+              id={guestAccessLabelId}
+              color="text.primary"
+              sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 400, fontSize: '15px', lineHeight: '20px' }}
+            >
+              {t('share-dialog.guest-access.label', 'Guest access')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('share-dialog.guest-access.toggle-description')}
+            </Typography>
+          </Box>
+          <Switch
+            checked={guestAccess.enabled}
+            onChange={handleToggleChange}
+            color="primary"
+            disabled={guestAccess.isMutating}
+            inputProps={{
+              'aria-label': t('share-dialog.guest-access.toggle-label', 'Enable guest access'),
+              'aria-labelledby': guestAccessLabelId,
+            }}
+          />
         </Box>
-        <Switch
-          checked={guestAccess.enabled}
-          onChange={handleToggleChange}
-          color="primary"
-          disabled={!guestAccess.canToggle || guestAccess.isMutating}
-          inputProps={{
-            'aria-label': t('share-dialog.guest-access.toggle-label', 'Enable guest access'),
-            'aria-labelledby': guestAccessLabelId,
-          }}
-        />
-      </Box>
+      )}
       {guestAccess.error && (
         <Alert
           severity="error"
