@@ -9,6 +9,7 @@ import SpaceCardTagsOverlay from './components/SpaceCardTagsOverlay';
 import SpaceVisibilityBanner from './components/SpaceVisibilityBanner';
 import { Box } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
+import { useTranslation } from 'react-i18next';
 
 interface SubspaceCardProps extends Omit<SpaceCardProps, 'header'> {
   spaceId?: string;
@@ -41,6 +42,7 @@ const SpaceCard = ({
   tags,
   ...props
 }: SubspaceCardProps) => {
+  const { t } = useTranslation();
   const isSubspace = level !== SpaceLevel.L0;
 
   // Show avatarUris as visual in BadgeCardView (next to displayName) if provided
@@ -123,7 +125,7 @@ const SpaceCard = ({
 
       {showLeads && (
         <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: gutters(0.5) }}>
-          <Caption>{hasLeads ? 'Led by:' : 'No lead yet'}</Caption>
+          <Caption>{hasLeads ? t('components.spaceCard.ledBy') : t('components.spaceCard.noLead')}</Caption>
           {hasLeads ? (
             <SpaceLeads leadUsers={leadUsers} leadOrganizations={leadOrganizations} showLeads={showLeads} />
           ) : (

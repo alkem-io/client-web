@@ -2116,6 +2116,10 @@
       "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",
       "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and $t(common.settings).<br>\uD83D\uDCDD <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>\uD83E\uDD1D <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>\uD83D\uDCDA <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
       "button": "Get Started"
+    },
+    "spaceCard": {
+      "ledBy": "Led by:",
+      "noLead": "No $t(common.lead) yet"
     }
   },
   "navigation": {
