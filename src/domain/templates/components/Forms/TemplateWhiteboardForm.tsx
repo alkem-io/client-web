@@ -1,6 +1,4 @@
-import React, { ReactNode } from 'react';
 import * as yup from 'yup';
-import { FormikProps } from 'formik';
 import TemplateFormBase, {
   TemplateFormProfileSubmittedValues,
   TemplateFormWithPreviewImages,
@@ -12,9 +10,17 @@ import { mapTemplateProfileToUpdateProfileInput } from './common/mappings';
 import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
 import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { gutters } from '@/core/ui/grid/utils';
+import { TemplateFormProps } from './TemplateForm';
+import {
+  DefaultWhiteboardPreviewSettings,
+  WhiteboardPreviewSettings,
+} from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import { CardVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
 
 interface TemplateContentWhiteboard {
   content: string;
+  previewSettings: WhiteboardPreviewSettings;
   preview?: {
     name: VisualType.WhiteboardPreview;
     uri: string;
@@ -27,11 +33,8 @@ export interface TemplateWhiteboardFormSubmittedValues
   whiteboard?: TemplateContentWhiteboard;
 }
 
-interface TemplateWhiteboardFormProps {
-  template?: WhiteboardTemplate;
-  onSubmit: (values: TemplateWhiteboardFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<TemplateWhiteboardFormSubmittedValues>) => ReactNode);
-}
+interface TemplateWhiteboardFormProps
+  extends TemplateFormProps<WhiteboardTemplate, TemplateWhiteboardFormSubmittedValues> {}
 
 const validator = {
   whiteboard: yup.object().shape({
@@ -43,9 +46,10 @@ const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhitebo
   const { t } = useTranslation();
 
   const initialValues: TemplateWhiteboardFormSubmittedValues = {
-    profile: mapTemplateProfileToUpdateProfileInput(template?.profile),
+    profile: mapTemplateProfileToUpdateProfileInput(template.profile),
     whiteboard: {
-      content: template?.whiteboard?.content || JSON.stringify(EmptyWhiteboard),
+      content: template.whiteboard?.content || JSON.stringify(EmptyWhiteboard),
+      previewSettings: template.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
     },
   };
 
@@ -61,6 +65,9 @@ const TemplateWhiteboardForm = ({ template, onSubmit, actions }: TemplateWhitebo
       <FormikWhiteboardPreview
         name="whiteboard.content"
         previewImagesName="whiteboardPreviewImages"
+        previewSettingsName="whiteboard.previewSettings"
+        previewImagesSettings={[{ visualType: VisualType.Card, dimensions: CardVisualDimensions }]}
+        maxHeight={gutters(20)}
         canEdit
         dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}
       />

@@ -87,6 +87,10 @@ fragment userSettingsFragment on UserSettings {
         email
         inApp
       }
+      communityCalendarEvents {
+        email
+        inApp
+      }
     }
     user {
       membership {
