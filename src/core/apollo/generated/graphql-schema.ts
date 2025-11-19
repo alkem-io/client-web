@@ -16101,6 +16101,10 @@ export type UpdateWhiteboardGuestAccessMutation = {
   __typename?: 'Mutation';
   updateWhiteboardGuestAccess: {
     __typename?: 'UpdateWhiteboardGuestAccessResult';
+    success: boolean;
+    errors?:
+      | Array<{ __typename?: 'WhiteboardGuestAccessError'; code: WhiteboardGuestAccessErrorCode; message: string }>
+      | undefined;
     whiteboard?:
       | {
           __typename?: 'Whiteboard';
