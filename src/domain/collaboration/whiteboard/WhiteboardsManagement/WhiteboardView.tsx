@@ -14,6 +14,8 @@ import { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCol
 import { gutters } from '@/core/ui/grid/utils';
 import WhiteboardGuestAccessControls from '../WhiteboardShareDialog/WhiteboardGuestAccessControls';
 import WhiteboardGuestAccessSection from '../WhiteboardShareDialog/WhiteboardGuestAccessSection';
+import { Divider } from '@mui/material';
+import { gutters } from '@/core/ui/grid/utils';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardId?: string;
@@ -69,6 +71,9 @@ const WhiteboardView = ({
   const hasUpdateContentPrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
   const hasDeletePrivileges =
     !preventWhiteboardDeletion && authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
+  const hasPublicSharePrivilege =
+    whiteboard?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.PublicShare) ?? false;
+
   const computedGuestShareUrl = guestShareUrl ?? buildGuestShareUrl(whiteboard?.id ?? whiteboard?.nameID);
   const guestAccess = useWhiteboardGuestAccess({ whiteboard, guestShareUrl: computedGuestShareUrl });
 
@@ -114,12 +119,17 @@ const WhiteboardView = ({
             headerActions: (collabState: CollabState) => (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
-                  <>
-                    <WhiteboardGuestAccessControls whiteboard={whiteboard} guestAccessEnabled={guestAccess.enabled}>
-                      <WhiteboardGuestAccessSection guestAccess={guestAccess} />
-                    </WhiteboardGuestAccessControls>
-                    {hasUpdatePrivileges && <CollaborationSettings element={whiteboard} elementType="whiteboard" />}
-                  </>
+                  <WhiteboardGuestAccessControls whiteboard={whiteboard} guestAccessEnabled={guestAccess.enabled}>
+                    <WhiteboardGuestAccessSection guestAccess={guestAccess} />
+                  </WhiteboardGuestAccessControls>
+                  {hasUpdatePrivileges && (
+                    <>
+                      {hasPublicSharePrivilege && (
+                        <Divider orientation="horizontal" flexItem sx={{ marginTop: gutters(1) }} />
+                      )}
+                      <CollaborationSettings element={whiteboard} elementType="whiteboard" />
+                    </>
+                  )}
                 </ShareButton>
 
                 <FullscreenButton />

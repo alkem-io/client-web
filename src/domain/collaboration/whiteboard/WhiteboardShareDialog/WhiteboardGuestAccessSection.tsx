@@ -58,7 +58,7 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
       display="flex"
       flexDirection="column"
       alignItems="flex-start"
-      marginTop={gutters(-0.5)}
+      marginTop={gutters(0.1)}
       gap={gutters(0.5)}
       width="100%"
       data-testid="guest-access-section"
@@ -96,11 +96,11 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
           sx={{ width: '100%' }}
           data-testid="guest-access-error"
         >
-          {guestAccess.error.message || t(`share-dialog.guest-access.errors.${guestAccess.error.code}`)}
+          {t(`share-dialog.guest-access.errors.${guestAccess.error.code}`)}
         </Alert>
       )}
       {guestAccess.enabled && (
-        <Box display="flex" alignItems="center" width="100%" gap={gutters(0.5)}>
+        <Box display="flex" alignItems="center" width="100%" gap={gutters(0.5)} marginTop={gutters(0.5)}>
           <TextField
             variant="outlined"
             value={guestAccess.guestLink ?? ''}

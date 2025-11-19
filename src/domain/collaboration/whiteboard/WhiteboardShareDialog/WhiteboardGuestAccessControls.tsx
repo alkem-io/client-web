@@ -1,5 +1,7 @@
 import { FC, ReactNode } from 'react';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { Divider } from '@mui/material';
+import { gutters } from '@/core/ui/grid/utils';
 
 export interface WhiteboardGuestAccessControlsProps {
   whiteboard?: {
@@ -35,7 +37,16 @@ export const WhiteboardGuestAccessControls: FC<WhiteboardGuestAccessControlsProp
   }
 
   // Render guest access controls (toggle, URL, etc.) provided as children
-  return <>{children}</>;
+  return (
+    <>
+      {children && (
+        <>
+          <Divider orientation="horizontal" sx={{ marginY: gutters(1) }} />
+          {children}
+        </>
+      )}
+    </>
+  );
 };
 
 export default WhiteboardGuestAccessControls;
