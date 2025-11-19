@@ -143,4 +143,8 @@ export default defineConfig({
     },
   },
   optimizeDeps: { include: ['@emotion/react', '@emotion/styled', '@mui/material/Tooltip', '@mui/icons-material'] },
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/setupTests.ts'],
+  },
 });
