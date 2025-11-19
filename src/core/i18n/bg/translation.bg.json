@@ -555,6 +555,8 @@
     },
     "roles": {
       "ADMIN": "$t(common.Admin)",
+      "ANONYMOUS": "Anonymous",
+      "REGISTERED": "Registered",
       "LEAD": "Лидер",
       "HOST": "Домакин",
       "MEMBER": "$t(common.Member)",
@@ -604,7 +606,14 @@
     },
     "supportEmail": "support@alkem.io",
     "options": "Опции",
-    "externalLinkDisclaimer": "Тази връзка Ви пренася към външен сайт. Alkemio не носи отговорност за съдържанието му."
+    "externalLinkDisclaimer": "Тази връзка Ви пренася към външен сайт. Alkemio не носи отговорност за съдържанието му.",
+    "calloutType": {
+      "LINK": "$t(common.Link)",
+      "POST": "$t(common.Post)",
+      "WHITEBOARD": "$t(common.Whiteboard)",
+      "MEMO": "$t(common.Memo)",
+      "NONE": "$t(common.Post)"
+    }
   },
   "community": {
     "memberUsers": "$t(common.Member) потребители ({{count}})",
@@ -1656,7 +1665,8 @@
     "file-upload": {
       "uploadFile": "Качи файл",
       "file-size-error": "Размерът на файла надвишава лимита от {{limit}}MB",
-      "file-upload-success": "Файлът е качен успешно"
+      "file-upload-success": "Файлът е качен успешно",
+      "file-upload-error": "Error occurred while uploading the file"
     },
     "editSpaceForm": {
       "host": {
@@ -2062,10 +2072,20 @@
         "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
           "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
           "description": ""
+        },
+        "SPACE_COMMUNITY_CALENDAR_EVENT_CREATED": {
+          "subject": "New {{type}} scheduled in {{spaceName}}",
+          "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
+        },
+        "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
+          "subject": "New comment on {{type}}: {{eventTitle}}",
+          "description": "{{triggeredByName}} left a comment on the {{eventTitle}} in the {{spaceName}} calendar"
         }
       },
       "emptyInbox": "Няма чакащи $t(common.notifications)",
       "markAllAsRead": "Маркирай всички като прочетени",
+      "unknownUser": "Unknown $t(common.user)",
+      "unknownOrganization": "Unknown $t(common.organization)",
       "filters": {
         "all": "All",
         "messagesAndReplies": "Messages & Replies",
@@ -2430,7 +2450,7 @@
             "public": "<b>Публично:</b> Този $t(common.space) и съдържанието му са видими за всички в платформата. Потребителите могат да допринасят само ако са $t(common.member).",
             "private": "<b>Частно:</b> Този $t(common.space) е видим за всички в платформата, но съдържанието е видимо само за $t(common.members). Имайте предвид, че и информацията в $t(common.profile), и контекстът са публично видими.",
             "publicSubspace": "<b>Публично:</b> Този $t(common.subspace) и цялото му съдържание са видими за всички, които имат достъп до $t(common.space), към който принадлежи. Ако $t(common.space) е публичен, този $t(common.subspace) и съдържанието му ще бъдат видими за всички потребители, включително и тези извън $t(common.space).",
-            "privateSubspace": "<b>Частно:</b> Този $t(common.subspace) е видим за всички $t(common.members) на $t(common.space), но съдържанието му е ограничено и може да бъде достъпено само от $t(common.members) на $t(common.subspace). Не е необходимо кандидатстване: Всички $t(common.space) $t(common.members) могат директно да се присъединят, без да е необходимо да преглеждате тяхното кандидатстване."
+            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace)."
           },
           "license-features": {
             "title": "$t(common.space) Функции",
@@ -2510,12 +2530,20 @@
         "changeNameId": "Промяна на името/ID на $t(common.space)",
         "manageLicensePlans": "Управление на лицензионни планове"
       },
+      "innovationPack": {
+        "notifications": {
+          "packRemoved": "$t(common.innovationPack) removed successfully."
+        }
+      },
       "innovationHub": {
         "spaceListFilter": {
           "header": {
             "title": "Текуща селекция",
             "subtitle": "Подредбата по-долу е редът, в който $t(common.spaces) ще бъдат видими на $t(common.customHomepage)"
           }
+        },
+        "notifications": {
+          "hubRemoved": "$t(common.innovation-hub) removed successfully."
         }
       }
     },
@@ -2552,6 +2580,10 @@
       "BANNER_WIDE": {
         "title": "Широк банер",
         "description1": "Резолюция: {{width}} ширина x {{height}} височина (пиксели)"
+      },
+      "WHITEBOARD_PREVIEW": {
+        "title": "Whiteboard Preview",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
       },
       "form": {
         "altText": {
@@ -2972,15 +3004,15 @@
         "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
         "modes": {
-          "auto": {
+          "AUTO": {
             "title": "Auto Preview",
             "description": "We'll automatically generate the best preview from your whiteboard content."
           },
-          "custom": {
+          "CUSTOM": {
             "title": "Manual Selection",
             "description": "Choose exactly which part of your whiteboard to show as a preview."
           },
-          "fixed": {
+          "FIXED": {
             "title": "Fixed Selection",
             "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
           }
@@ -3013,7 +3045,8 @@
           "noUpdateAccess": "Не можете да редактирате тази $t(common.memo), защото нямате права да го правите. Помолете собственика, <ownerlink>{{ownerName}}</ownerlink>, да промени настройките за споделяне, ако искате да допринесете.",
           "multiUserNotAllowed": "Не можете да редактирате тази $t(common.memo), защото този $t(common.space) позволява само един редактор на $t(common.memo) наведнъж",
           "roomCapacityReached": "Не можете да редактирате тази $t(common.memo), защото този $t(common.space) позволява няколко редактора едновременно, но максимума е достигнат",
-          "generic": "Не можете да редактирате тази $t(common.memo) по една от следните причини:\n\nНе сте $t(common.member) на $t(common.space)\n- Този $t(common.space) позволява само един редактор на $t(common.memo) наведнъж\n- Този $t(common.space) позволява повече редактора, но максимума е достигнат"
+          "generic": "Не можете да редактирате тази $t(common.memo) по една от следните причини:\n\nНе сте $t(common.member) на $t(common.space)\n- Този $t(common.space) позволява само един редактор на $t(common.memo) наведнъж\n- Този $t(common.space) позволява повече редактора, но максимума е достигнат",
+          "notAuthenticated": "You have to be signed in to edit this $t(common.memo). Click here to <signinlink>sign in</signinlink>"
         }
       }
     },
@@ -3206,6 +3239,39 @@
           "infoText": "Налични променливи: [{{availableVariables}}] . Не включвайте алтернативен текст между { } в подканата, тъй като това ще наруши функционалността на този $t(common.virtualContributor).",
           "saveBtn": "Запази подканата"
         },
+        "promptGraph": {
+          "saveBtn": "Save Prompt Graph",
+          "title": "Prompt Graph",
+          "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
+          "warning": "Warning: Advanced mode is intended for experienced users only. Incorrect or complex configurations may negatively affect system performance and can break the Virtual Contributor's functionality.",
+          "stepsTitle": "Steps",
+          "systemNodeTooltip": "System Node - not editable",
+          "promptFieldTitle": "Prompt",
+          "statePropertiesTitle": "State Properties",
+          "noStateProperties": "No state properties",
+          "addButton": "Add",
+          "editBtn": "Edit Prompt Graph",
+          "advancedSettingsButton": "Prompt graph advanced mode",
+          "propertyTable": {
+            "title": "Output Properties",
+            "columns": {
+              "name": "Name",
+              "type": "Type",
+              "optional": "Optional",
+              "description": "Description",
+              "actions": "Actions"
+            },
+            "yes": "Yes",
+            "no": "No",
+            "notAvailable": "N/A",
+            "addProperty": "Add Property",
+            "typeOptions": {
+              "string": "string",
+              "number": "number",
+              "boolean": "boolean"
+            }
+          }
+        },
         "externalConfig": {
           "title": "Външна конфигурация",
           "infoText": "$t(common.virtualContributor) се задвижва от външна ИИ услуга. Моля, предоставете следната информация, за да се свържете с услугата.",
@@ -3256,7 +3322,8 @@
           "collaborationCalloutPublished": "Получаване на $t(common.notification), когато $t(common.callout) е публикуван в $t(common.community), в която съм $t(common.member)",
           "collaborationCalloutContributionCreated": "Получаване на $t(common.notification), когато ново допринасяне ($t(common.whiteboard), $t(common.post), връзка, $t(common.memo) и др.) е създадено в $t(common.community), в която съм $t(common.member)",
           "collaborationCalloutComment": "Получаване на $t(common.notification), когато е направен $t(common.comment) върху $t(common.callout) в $t(common.community), в която съм $t(common.member)",
-          "collaborationCalloutPostContributionComment": "Получаване на $t(common.notification), когато нов $t(common.comment) е добавен към допринасяне в $t(common.callout) в $t(common.community), в която съм $t(common.member)"
+          "collaborationCalloutPostContributionComment": "Получаване на $t(common.notification), когато нов $t(common.comment) е добавен към допринасяне в $t(common.callout) в $t(common.community), в която съм $t(common.member)",
+          "communityCalendarEvents": "Receive calendar $t(common.notifications) for a $t(common.community) I am a $t(common.member) of"
         }
       },
       "spaceAdmin": {
@@ -3523,6 +3590,9 @@
     "avatar": {
       "contributor": {
         "text": "Аватар на {{displayName}}: {{altText}}"
+      },
+      "innovationPack": {
+        "text": "{{displayName}}'s innovation pack avatar: {{altText}}"
       }
     }
   },

@@ -44,7 +44,7 @@ const InnovationPackProfilePage = () => {
         <PageContent>
           <PageContentColumn columns={isMediumSmallScreen ? 12 : 3}>
             <PageContentBlock sx={{ flexDirection: 'row' }}>
-              <Gutters disablePadding>
+              <Gutters disablePadding width={'100%'}>
                 <PageContentBlockHeader title={displayName} />
                 <WrapperMarkdown disableParagraphPadding>{description ?? ''}</WrapperMarkdown>
                 <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
