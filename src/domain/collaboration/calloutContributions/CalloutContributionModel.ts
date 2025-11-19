@@ -24,6 +24,14 @@ type CalloutContributionModel = Identifiable & {
       preview?: { uri: string };
     };
   };
+  memo?: {
+    id: string;
+    profile: {
+      displayName: string;
+      url: string;
+    };
+    markdown?: string;
+  };
 };
 
 export default CalloutContributionModel;

@@ -31,6 +31,9 @@ query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     ... on ActivityLogEntryCalloutWhiteboardContentModified {
       ...ActivityLogCalloutWhiteboardContentModified
     }
+    ... on ActivityLogEntryCalloutMemoCreated {
+      ...ActivityLogCalloutMemoCreated
+    }
     ... on ActivityLogEntryCalloutDiscussionComment {
       ...ActivityLogCalloutDiscussionComment
     }

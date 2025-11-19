@@ -23,6 +23,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   disabled?: boolean;
   storageBucketId?: string;
   fullScreen?: boolean;
+  autoFocus?: boolean;
 }
 
 export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
@@ -38,6 +39,7 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
     disabled,
     storageBucketId = '',
     fullScreen = false,
+    autoFocus = false,
   }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
@@ -97,6 +99,17 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
     useEffect(() => {
       editorRef.current = editor;
     }, [editor]);
+
+    // Auto-focus editor when autoFocus is true and editor is ready
+    useEffect(() => {
+      if (autoFocus && editor && !disabled && synced) {
+        // Small delay to ensure the editor is fully rendered
+        const timeout = setTimeout(() => {
+          editor.commands.focus();
+        }, 100);
+        return () => clearTimeout(timeout);
+      }
+    }, [autoFocus, editor, disabled, synced]);
 
     const [currentCollaborationState, setCollaborationState] = useState<RealTimeCollaborationState>();
 
