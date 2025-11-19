@@ -57,7 +57,6 @@ const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps
                         tags={subspace.about.profile.tagset?.tags!}
                         tagline={subspace.about.profile.tagline ?? ''}
                         spaceUri={subspace.about.profile.url}
-                        locked={!subspace.about.isContentPublic}
                         isPrivate={!subspace.about.isContentPublic}
                         spaceVisibility={visibility}
                         level={subspace.level}

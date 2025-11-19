@@ -2,11 +2,7 @@ import { Box } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useTranslation } from 'react-i18next';
-
-export interface ParentInfo {
-  displayName: string;
-  url: string;
-}
+import { ParentInfo } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 
 interface SpaceParentInfoProps {
   parent?: ParentInfo;
