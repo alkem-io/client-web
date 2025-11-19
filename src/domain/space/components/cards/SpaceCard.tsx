@@ -125,7 +125,9 @@ const SpaceCard = ({
 
       {showLeads && (
         <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: gutters(0.5) }}>
-          <Caption>{hasLeads ? t('components.spaceCard.ledBy') : t('components.spaceCard.noLead')}</Caption>
+          <Caption whiteSpace="nowrap">
+            {hasLeads ? t('components.spaceCard.ledBy') : t('components.spaceCard.noLead')}
+          </Caption>
           {hasLeads ? (
             <SpaceLeads leadUsers={leadUsers} leadOrganizations={leadOrganizations} showLeads={showLeads} />
           ) : (

@@ -46,7 +46,7 @@ const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads }: Space
   const allLeads = [...leadUsers, ...leadOrganizations];
 
   return (
-    <Box display="flex" flexWrap="wrap" gap={1} paddingX={1.5}>
+    <Box display="flex" flexWrap="wrap" gap={1} paddingLeft={1.5}>
       {allLeads.map(lead => {
         return (
           <ContributorTooltip
