@@ -3,21 +3,18 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { gutters } from '@/core/ui/grid/utils';
 import { isAbsoluteUrl } from '@/core/utils/links';
 import { Box, Button, ButtonProps, DialogContent, Divider, Skeleton, TextField } from '@mui/material';
-import { FC, PropsWithChildren, useCallback, useState } from 'react';
+import { FC, PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ShareOnAlkemioButton } from './platforms/ShareOnAlkemio';
-import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
-
-// Import the handler components directly
-import { ClipboardShareHandler } from './platforms/ShareOnClipboard';
 import { AlkemioShareHandler } from './platforms/ShareOnAlkemio';
+import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
+import { ClipboardShareHandler } from './platforms/ShareOnClipboard';
 
 const buildFullUrl = (url: string) =>
   isAbsoluteUrl(url) ? url : window.location.protocol + '//' + window.location.host + url;
 
-export interface ShareDialogProps extends ShareComponentProps {
-  open: boolean;
-  onClose: () => void;
+export interface ShareComponentProps extends PropsWithChildren {
+  url: string;
   entityTypeName:
     | 'space'
     | 'subspace'
@@ -33,6 +30,13 @@ export interface ShareDialogProps extends ShareComponentProps {
     | 'whiteboard'
     | 'link'
     | 'memo';
+  loading?: boolean;
+  onClose?: () => void;
+}
+
+export interface ShareDialogProps extends ShareComponentProps {
+  open: boolean;
+  onClose: () => void;
 }
 
 export const ShareDialog = ({ open, onClose, entityTypeName, ...props }: ShareDialogProps) => {
@@ -52,21 +56,14 @@ export const ShareDialog = ({ open, onClose, entityTypeName, ...props }: ShareDi
   );
 };
 
-export interface ShareComponentProps extends PropsWithChildren {
-  url: string;
-  entityTypeName: ShareDialogProps['entityTypeName'];
-  loading?: boolean;
-  onClose?: () => void;
-}
-
 export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, loading, onClose, children }) => {
   const { t } = useTranslation();
   const [activeHandler, setActiveHandler] = useState<string>();
-  const fullUrl = buildFullUrl(url);
+  const fullUrl = useMemo(() => buildFullUrl(url), [url]);
 
   const handleDialogClose = useCallback(() => {
     setActiveHandler(undefined);
-    if (onClose) onClose();
+    onClose?.();
   }, [onClose]);
 
   const handleClick = e => {
@@ -77,7 +74,6 @@ export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, l
     return <Skeleton variant="rectangular" />;
   }
 
-  // Return to the list of available platforms to share
   const goBack = () => setActiveHandler(undefined);
 
   const handlerProps: ShareOnPlatformHandlerProps = {

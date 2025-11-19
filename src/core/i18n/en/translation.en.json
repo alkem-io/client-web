@@ -966,11 +966,20 @@
     "title": "Copy the link below to share this {{entity}}",
     "share-this": "Share this {{entity}}",
     "share-this-on": "Share this {{entity}} on {{platform}}",
-    "guest-access": {
-      "label": "Guest access",
-      "toggle-label": "Enable guest access",
-      "url-label": "Guest Access URL",
-      "copy-url": "Copy Guest Access URL"
+    "guestAccess": {
+      "sectionTitle": "Guest access",
+      "toggleLabel": "Allow guest contributions",
+      "toggleDescription": "Let anyone with the guest link view and contribute to this whiteboard.",
+      "disabledTooltip": "You don't have permission to change guest access.",
+      "linkLabel": "Guest link",
+      "copyLabel": "Copy guest link",
+      "warningTitle": "Guests can edit this whiteboard",
+      "warningDescription": "Anyone with the guest link can view and contribute. Remove access when you're done collaborating.",
+      "errors": {
+        "PERMISSION_DENIED": "You don't have permission to change guest access.",
+        "NETWORK": "Check your connection and try again.",
+        "UNKNOWN": "We couldn't update guest access. Please try again."
+      }
     },
     "or": "or",
     "url": "URL",

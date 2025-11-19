@@ -1,6 +1,6 @@
 import { MouseEventHandler, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
-import { Button, DialogContent } from '@mui/material';
+import { Alert, AlertTitle, Button, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import { DeleteOutline } from '@mui/icons-material';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -31,6 +31,7 @@ interface WhiteboardDialogFooterProps {
   canDelete?: boolean;
   onRestart?: () => void;
   updating?: boolean;
+  guestAccessEnabled?: boolean;
   createdBy:
     | (Identifiable & {
         profile: {
@@ -63,6 +64,7 @@ const WhiteboardDialogFooter = ({
   collaboratorMode,
   collaboratorModeReason,
   updating = false,
+  guestAccessEnabled,
 }: WhiteboardDialogFooterProps) => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
@@ -140,6 +142,16 @@ const WhiteboardDialogFooter = ({
 
   return (
     <>
+      {guestAccessEnabled && (
+        <Alert
+          severity="warning"
+          sx={{ marginX: gutters(), marginTop: gutters(), marginBottom: gutters(0.5) }}
+          data-testid="whiteboard-guest-access-warning"
+        >
+          <AlertTitle>{t('share-dialog.guestAccess.warningTitle')}</AlertTitle>
+          {t('share-dialog.guestAccess.warningDescription')}
+        </Alert>
+      )}
       <Actions
         paddingX={gutters()}
         paddingY={gutters(0.5)}

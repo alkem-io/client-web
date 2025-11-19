@@ -93,6 +93,7 @@ interface WhiteboardDialogProps {
     readOnlyDisplayName?: boolean;
     editDisplayName?: boolean;
     previewSettingsDialogOpen?: boolean;
+    guestAccessEnabled?: boolean;
   };
   state?: {
     loadingWhiteboardValue?: boolean;
@@ -343,6 +344,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                   canUpdateContent={options.canEdit!}
                   createdBy={whiteboard?.createdBy}
                   contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
+                  guestAccessEnabled={options.guestAccessEnabled}
                 />
               </Dialog>
             </Formik>
