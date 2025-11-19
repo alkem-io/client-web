@@ -7036,7 +7036,7 @@ export type SpaceSettingsCollaboration = {
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
   allowEventsFromSubspaces: Scalars['Boolean']['output'];
   /** Flag to control if guest users can contribute to this Space. */
-  allowGuestContributions?: Maybe<Scalars['Boolean']['output']>;
+  allowGuestContributions: Scalars['Boolean']['output'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean']['output'];
   /** Flag to control if members can create subspaces. */
@@ -26062,7 +26062,7 @@ export type SpaceSettingsQuery = {
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
               allowMembersToVideoCall: boolean;
-              allowGuestContributions?: boolean | undefined;
+              allowGuestContributions: boolean;
             };
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
@@ -26087,7 +26087,7 @@ export type SpaceSettingsFragment = {
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
     allowMembersToVideoCall: boolean;
-    allowGuestContributions?: boolean | undefined;
+    allowGuestContributions: boolean;
   };
 };
 
@@ -26116,7 +26116,7 @@ export type UpdateSpaceSettingsMutation = {
         inheritMembershipRights: boolean;
         allowEventsFromSubspaces: boolean;
         allowMembersToVideoCall: boolean;
-        allowGuestContributions?: boolean | undefined;
+        allowGuestContributions: boolean;
       };
     };
   };
@@ -28014,7 +28014,7 @@ export type TemplateContentQuery = {
                     inheritMembershipRights: boolean;
                     allowEventsFromSubspaces: boolean;
                     allowMembersToVideoCall: boolean;
-                    allowGuestContributions?: boolean | undefined;
+                    allowGuestContributions: boolean;
                   };
                 };
                 subspaces: Array<{
@@ -28199,7 +28199,7 @@ export type SpaceTemplateContentQuery = {
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
               allowMembersToVideoCall: boolean;
-              allowGuestContributions?: boolean | undefined;
+              allowGuestContributions: boolean;
             };
           };
           subspaces: Array<{
@@ -28556,7 +28556,7 @@ export type SpaceTemplateContentFragment = {
       inheritMembershipRights: boolean;
       allowEventsFromSubspaces: boolean;
       allowMembersToVideoCall: boolean;
-      allowGuestContributions?: boolean | undefined;
+      allowGuestContributions: boolean;
     };
   };
   subspaces: Array<{
@@ -28699,7 +28699,7 @@ export type SpaceTemplateContent_SettingsFragment = {
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
     allowMembersToVideoCall: boolean;
-    allowGuestContributions?: boolean | undefined;
+    allowGuestContributions: boolean;
   };
 };
 
@@ -31604,7 +31604,6 @@ export type InAppNotificationReceivedSubscription = {
             profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
-      | { __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadSpaceCommunityCalendarEventComment';
           type: NotificationEventPayload;
