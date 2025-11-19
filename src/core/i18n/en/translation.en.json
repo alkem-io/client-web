@@ -971,7 +971,7 @@
       "toggle-label": "Enable guest access",
       "toggle-description": "Let anyone with the guest link view and contribute to this whiteboard.",
       "disabled-tooltip": "You don't have permission to change guest access.",
-      "url-label": "Guest link",
+      "url-label": "Guest Access URL",
       "copy-url": "Copy guest link",
       "warning-title": "Guests can edit this whiteboard",
       "warning-description": "Anyone with the guest link can view and contribute. Remove access when you're done collaborating.",
