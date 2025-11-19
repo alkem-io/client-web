@@ -5,7 +5,7 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@/main/test/testUtils';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import { MemoryRouter } from 'react-router-dom';
@@ -215,9 +215,7 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
       const signInButton = screen.getByRole('button', { name: /sign in/i });
       await user.click(signInButton);
 
-      expect(mockNavigate).toHaveBeenCalledWith(
-        expect.stringContaining('/required?returnUrl=')
-      );
+      expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining('/required?returnUrl='));
       expect(mockOnSubmit).not.toHaveBeenCalled();
     });
 

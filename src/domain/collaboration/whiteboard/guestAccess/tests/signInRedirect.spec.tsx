@@ -5,7 +5,7 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/main/test/testUtils';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import { MemoryRouter } from 'react-router-dom';
@@ -71,12 +71,8 @@ describe('Sign-in Redirect Flow', () => {
 
       // Should navigate to auth-required with return URL
       expect(mockNavigate).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).toHaveBeenCalledWith(
-        expect.stringContaining('/required?returnUrl=')
-      );
-      expect(mockNavigate).toHaveBeenCalledWith(
-        expect.stringContaining('/public/whiteboard/abc123')
-      );
+      expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining('/required?returnUrl='));
+      expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining('/public/whiteboard/abc123'));
     });
 
     it('should encode return URL correctly for different whiteboard IDs', async () => {
@@ -202,9 +198,7 @@ describe('Sign-in Redirect Flow', () => {
         const signInButton = screen.getByRole('button', { name: /sign in/i });
         await user.click(signInButton);
 
-        expect(mockNavigate).toHaveBeenCalledWith(
-          expect.stringContaining(path)
-        );
+        expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining(path));
 
         unmount();
       }

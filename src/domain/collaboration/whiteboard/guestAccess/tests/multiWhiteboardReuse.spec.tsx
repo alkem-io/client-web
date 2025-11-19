@@ -5,7 +5,7 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor, cleanup } from '@testing-library/react';
+import { render, screen, waitFor, cleanup } from '@/main/test/testUtils';
 import '@testing-library/jest-dom/vitest';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { useGuestSession } from '../hooks/useGuestSession';
@@ -268,10 +268,7 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       );
 
       // Should warn about unavailable storage
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Session storage unavailable:',
-        expect.any(Error)
-      );
+      expect(consoleWarnSpy).toHaveBeenCalledWith('Session storage unavailable:', expect.any(Error));
 
       // Restore
       Object.defineProperty(window, 'sessionStorage', {
@@ -299,10 +296,7 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       screen.getByText('Set Guest Name').click();
 
       await waitFor(() => {
-        expect(consoleWarnSpy).toHaveBeenCalledWith(
-          'Failed to persist guest name:',
-          expect.any(Error)
-        );
+        expect(consoleWarnSpy).toHaveBeenCalledWith('Failed to persist guest name:', expect.any(Error));
       });
 
       // Restore

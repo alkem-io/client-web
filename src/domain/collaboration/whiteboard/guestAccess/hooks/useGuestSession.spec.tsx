@@ -6,6 +6,9 @@ import { renderHook, act } from '@testing-library/react';
 import { useGuestSession } from './useGuestSession';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import type { FC, PropsWithChildren } from 'react';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
+import i18n from '@/core/i18n/config';
+import { I18nextProvider } from 'react-i18next';
 
 // Mock session storage
 const sessionStorageMock = (() => {
@@ -24,15 +27,19 @@ const sessionStorageMock = (() => {
   };
 })();
 
-if (typeof window !== 'undefined') {
-  Object.defineProperty(window, 'sessionStorage', {
+if (globalThis.window !== undefined) {
+  Object.defineProperty(globalThis.window, 'sessionStorage', {
     value: sessionStorageMock,
     writable: true,
   });
 }
 
 const wrapper: FC<PropsWithChildren> = ({ children }) => (
-  <GuestSessionProvider>{children}</GuestSessionProvider>
+  <RootThemeProvider>
+    <I18nextProvider i18n={i18n}>
+      <GuestSessionProvider>{children}</GuestSessionProvider>
+    </I18nextProvider>
+  </RootThemeProvider>
 );
 
 describe('useGuestSession', () => {

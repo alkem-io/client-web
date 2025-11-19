@@ -5,7 +5,7 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor, cleanup } from '@testing-library/react';
+import { render, screen, waitFor, cleanup } from '@/main/test/testUtils';
 import '@testing-library/jest-dom/vitest';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { useGuestSession } from '../hooks/useGuestSession';
@@ -312,10 +312,7 @@ describe('Session Clear on Browser Restart', () => {
       );
 
       // Should warn about unavailable storage
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Session storage unavailable:',
-        expect.any(Error)
-      );
+      expect(consoleWarnSpy).toHaveBeenCalledWith('Session storage unavailable:', expect.any(Error));
 
       // Should gracefully handle and show no guest name
       expect(screen.getByTestId('guest-name')).toHaveTextContent('No guest name');
@@ -331,7 +328,7 @@ describe('Session Clear on Browser Restart', () => {
       // Mock to throw on getItem but succeed on setItem
       const originalGetItem = Storage.prototype.getItem;
       let getItemCallCount = 0;
-      Storage.prototype.getItem = vi.fn((key) => {
+      Storage.prototype.getItem = vi.fn(key => {
         getItemCallCount++;
         if (getItemCallCount === 1) {
           throw new Error('Read failed');
