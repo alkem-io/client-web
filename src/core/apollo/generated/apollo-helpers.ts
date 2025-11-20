@@ -2520,6 +2520,7 @@ export type ModelCardSpaceUsageResultFieldPolicy = {
 };
 export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
+  | 'addNotificationEmailToBlacklist'
   | 'addReactionToMessageInRoom'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
@@ -2626,6 +2627,7 @@ export type MutationKeySpecifier = (
   | 'removeCommunityGuidelinesContent'
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
+  | 'removeNotificationEmailFromBlacklist'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
   | 'removeRoleFromOrganization'
@@ -2705,6 +2707,7 @@ export type MutationKeySpecifier = (
 )[];
 export type MutationFieldPolicy = {
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
+  addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2811,6 +2814,7 @@ export type MutationFieldPolicy = {
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3152,9 +3156,14 @@ export type PlatformFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformIntegrationSettingsKeySpecifier = ('iframeAllowedUrls' | PlatformIntegrationSettingsKeySpecifier)[];
+export type PlatformIntegrationSettingsKeySpecifier = (
+  | 'iframeAllowedUrls'
+  | 'notificationEmailBlacklist'
+  | PlatformIntegrationSettingsKeySpecifier
+)[];
 export type PlatformIntegrationSettingsFieldPolicy = {
   iframeAllowedUrls?: FieldPolicy<any> | FieldReadFunction<any>;
+  notificationEmailBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformInvitationKeySpecifier = (
   | 'authorization'
@@ -4393,13 +4402,11 @@ export type TimelineFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UpdateWhiteboardGuestAccessResultKeySpecifier = (
-  | 'errors'
   | 'success'
   | 'whiteboard'
   | UpdateWhiteboardGuestAccessResultKeySpecifier
 )[];
 export type UpdateWhiteboardGuestAccessResultFieldPolicy = {
-  errors?: FieldPolicy<any> | FieldReadFunction<any>;
   success?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -4950,11 +4957,6 @@ export type WhiteboardFieldPolicy = {
   previewSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type WhiteboardGuestAccessErrorKeySpecifier = ('code' | 'message' | WhiteboardGuestAccessErrorKeySpecifier)[];
-export type WhiteboardGuestAccessErrorFieldPolicy = {
-  code?: FieldPolicy<any> | FieldReadFunction<any>;
-  message?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WhiteboardPreviewCoordinatesKeySpecifier = (
   | 'height'
@@ -6505,13 +6507,6 @@ export type StrictTypedTypePolicies = {
   Whiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardKeySpecifier | (() => undefined | WhiteboardKeySpecifier);
     fields?: WhiteboardFieldPolicy;
-  };
-  WhiteboardGuestAccessError?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | WhiteboardGuestAccessErrorKeySpecifier
-      | (() => undefined | WhiteboardGuestAccessErrorKeySpecifier);
-    fields?: WhiteboardGuestAccessErrorFieldPolicy;
   };
   WhiteboardPreviewCoordinates?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

@@ -4161,6 +4161,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Adds an Iframe Allowed URL to the Platform Settings */
   addIframeAllowedURL: Array<Scalars['String']['output']>;
+  /** Adds a full email address to the platform notification blacklist */
+  addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Ensure all community members are registered for communications. */
@@ -4373,6 +4375,8 @@ export type Mutation = {
   removeIframeAllowedURL: Array<Scalars['String']['output']>;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID']['output'];
+  /** Removes an email address from the platform notification blacklist */
+  removeNotificationEmailFromBlacklist: Array<Scalars['String']['output']>;
   /** Removes a User from a Role on the Platform. */
   removePlatformRoleFromUser: User;
   /** Remove a reaction on a message from the specified Room. */
@@ -4527,6 +4531,10 @@ export type Mutation = {
 
 export type MutationAddIframeAllowedUrlArgs = {
   whitelistedURL: Scalars['String']['input'];
+};
+
+export type MutationAddNotificationEmailToBlacklistArgs = {
+  input: NotificationEmailAddressInput;
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -4901,6 +4909,10 @@ export type MutationRemoveMessageOnRoomArgs = {
   messageData: RoomRemoveMessageInput;
 };
 
+export type MutationRemoveNotificationEmailFromBlacklistArgs = {
+  input: NotificationEmailAddressInput;
+};
+
 export type MutationRemovePlatformRoleFromUserArgs = {
   roleData: RemovePlatformRoleInput;
 };
@@ -5219,6 +5231,11 @@ export type Nvp = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   value: Scalars['String']['output'];
+};
+
+export type NotificationEmailAddressInput = {
+  /** Full email address to add/remove; lowercase enforced by server */
+  email: Scalars['String']['input'];
 };
 
 export enum NotificationEvent {
@@ -5678,6 +5695,8 @@ export type PlatformIntegrationSettings = {
   __typename?: 'PlatformIntegrationSettings';
   /** The list of allowed URLs for iFrames within Markdown content. */
   iframeAllowedUrls: Array<Scalars['String']['output']>;
+  /** List of fully-qualified email addresses blocked from receiving notifications */
+  notificationEmailBlacklist: Array<Scalars['String']['output']>;
 };
 
 export type PlatformInvitation = {
@@ -7904,6 +7923,8 @@ export type UpdatePlatformSettingsInput = {
 export type UpdatePlatformSettingsIntegrationInput = {
   /** Update the list of allowed URLs for iFrames within Markdown content. */
   iframeAllowedUrls: Array<Scalars['String']['input']>;
+  /** Update the list of email addresses blocked from receiving notifications. */
+  notificationEmailBlacklist?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type UpdatePostInput = {
@@ -8254,8 +8275,6 @@ export type UpdateWhiteboardGuestAccessInput = {
 
 export type UpdateWhiteboardGuestAccessResult = {
   __typename?: 'UpdateWhiteboardGuestAccessResult';
-  /** Structured error collection when the toggle fails. */
-  errors?: Maybe<Array<WhiteboardGuestAccessError>>;
   /** Indicates whether the mutation completed successfully. */
   success: Scalars['Boolean']['output'];
   /** Whiteboard snapshot reflecting the latest guest access state. */
@@ -8867,21 +8886,6 @@ export type Whiteboard = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
-
-export type WhiteboardGuestAccessError = {
-  __typename?: 'WhiteboardGuestAccessError';
-  /** Machine friendly error code describing the failure reason. */
-  code: WhiteboardGuestAccessErrorCode;
-  /** Human readable description of the error. */
-  message: Scalars['String']['output'];
-};
-
-export enum WhiteboardGuestAccessErrorCode {
-  NotAuthorized = 'NOT_AUTHORIZED',
-  SpaceGuestDisabled = 'SPACE_GUEST_DISABLED',
-  Unknown = 'UNKNOWN',
-  WhiteboardNotFound = 'WHITEBOARD_NOT_FOUND',
-}
 
 export type WhiteboardPreviewCoordinates = {
   __typename?: 'WhiteboardPreviewCoordinates';

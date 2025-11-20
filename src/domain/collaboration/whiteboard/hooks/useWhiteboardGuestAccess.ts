@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ApolloError } from '@apollo/client';
-import { AuthorizationPrivilege, WhiteboardGuestAccessErrorCode } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useUpdateWhiteboardGuestAccessMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   trackGuestAccessToggleAttempt,
@@ -10,7 +10,13 @@ import {
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import buildGuestShareUrl from '../utils/buildGuestShareUrl';
 
-export type GuestAccessErrorCode = 'PERMISSION_DENIED' | 'NETWORK' | 'UNKNOWN' | WhiteboardGuestAccessErrorCode;
+export type GuestAccessErrorCode =
+  | 'PERMISSION_DENIED'
+  | 'NETWORK'
+  | 'UNKNOWN'
+  | 'NOT_AUTHORIZED'
+  | 'SPACE_GUEST_DISABLED'
+  | 'WHITEBOARD_NOT_FOUND';
 
 export interface GuestAccessErrorState {
   code: GuestAccessErrorCode;
@@ -52,7 +58,11 @@ const buildGuestLink = (guestShareUrl?: string, enabled?: boolean) => {
   return guestShareUrl || DEFAULT_GUEST_LINK;
 };
 
-const whiteboardGuestAccessErrorCodes = new Set(Object.values(WhiteboardGuestAccessErrorCode));
+const WHITEBOARD_GUEST_ACCESS_SERVER_ERROR_CODES: GuestAccessErrorCode[] = [
+  'NOT_AUTHORIZED',
+  'SPACE_GUEST_DISABLED',
+  'WHITEBOARD_NOT_FOUND',
+];
 
 const deriveGuestAccessError = (error?: ApolloError): GuestAccessErrorState => {
   if (!error) {
@@ -68,12 +78,14 @@ const deriveGuestAccessError = (error?: ApolloError): GuestAccessErrorState => {
     return { code: 'UNKNOWN' };
   }
 
-  if (graphQlCode === 'FORBIDDEN' || graphQlCode === 'UNAUTHORIZED') {
+  const normalizedCode = graphQlCode.toUpperCase();
+
+  if (normalizedCode === 'FORBIDDEN' || normalizedCode === 'UNAUTHORIZED') {
     return { code: 'PERMISSION_DENIED' };
   }
 
-  if (whiteboardGuestAccessErrorCodes.has(graphQlCode as WhiteboardGuestAccessErrorCode)) {
-    return { code: graphQlCode as WhiteboardGuestAccessErrorCode };
+  if (WHITEBOARD_GUEST_ACCESS_SERVER_ERROR_CODES.includes(normalizedCode as GuestAccessErrorCode)) {
+    return { code: normalizedCode as GuestAccessErrorCode };
   }
 
   return { code: 'UNKNOWN' };
