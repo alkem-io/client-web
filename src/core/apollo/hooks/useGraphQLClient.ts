@@ -29,7 +29,6 @@ export const useGraphQLClient = (
     once(
       () =>
         new InMemoryCache({
-          addTypename: true,
           typePolicies,
           possibleTypes: {
             Contributor: ['User', 'Organization', 'VirtualContributor'],

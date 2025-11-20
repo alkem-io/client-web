@@ -15,6 +15,7 @@ import { InMemoryCache } from '@apollo/client';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import i18n from '@/core/i18n/config';
 import { I18nextProvider } from 'react-i18next';
+import userEvent from '@testing-library/user-event';
 
 // Mock session storage (shared across tests)
 const sessionStorageMock = (() => {
@@ -117,8 +118,8 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       const { unmount } = renderWithProviders(<TestWhiteboardComponent whiteboardId="whiteboard-1" />);
 
       // Set guest name
-      const setButton = screen.getByText('Set Guest Name');
-      setButton.click();
+      const user = userEvent.setup();
+      await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
         expect(screen.getByTestId('guest-name')).toHaveTextContent('TestGuest');
@@ -198,7 +199,8 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       // User visits first whiteboard and sets name
       const { unmount } = renderWithProviders(<TestWhiteboardComponent whiteboardId="first-wb" />);
 
-      screen.getByText('Set Guest Name').click();
+      const user = userEvent.setup();
+      await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
         expect(screen.getByTestId('guest-name')).toHaveTextContent('TestGuest');
@@ -249,7 +251,8 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       // Render first provider and set guest name
       const { unmount: unmount1 } = renderWithProviders(<TestWhiteboardComponent whiteboardId="isolated-1" />);
 
-      screen.getByText('Set Guest Name').click();
+      const user = userEvent.setup();
+      await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
         expect(screen.getByTestId('guest-name')).toHaveTextContent('TestGuest');
@@ -320,7 +323,8 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
 
       renderWithProviders(<TestWhiteboardComponent whiteboardId="quota-test" />);
 
-      screen.getByText('Set Guest Name').click();
+      const user = userEvent.setup();
+      await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
         expect(consoleWarnSpy).toHaveBeenCalledWith('Failed to persist guest name:', expect.any(Error));
@@ -337,7 +341,8 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
       const { rerender } = renderWithProviders(<TestWhiteboardComponent whiteboardId="update-test" />);
 
       // Set initial guest name
-      screen.getByText('Set Guest Name').click();
+      const user = userEvent.setup();
+      await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
         expect(sessionStorageMock.getItem('alkemio_guest_name')).toBe('TestGuest');
@@ -349,7 +354,7 @@ describe('Multi-Whiteboard Guest Session Reuse', () => {
         </Providers>
       );
 
-      screen.getByText('Update Name').click();
+      await user.click(screen.getByText('Update Name'));
 
       await waitFor(() => {
         expect(sessionStorageMock.getItem('alkemio_guest_name')).toBe('UpdatedGuest');

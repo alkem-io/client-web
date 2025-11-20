@@ -7,12 +7,33 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { InMemoryCache } from '@apollo/client';
+import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import PublicWhiteboardPage from '@/main/public/whiteboard/PublicWhiteboardPage';
-import { GetPublicWhiteboardDocument } from '@/core/apollo/generated/apollo-hooks';
+import { GetPublicWhiteboardDocument, CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
 
 import '@testing-library/jest-dom/vitest';
+const buildCurrentUserMock = (): MockedResponse => ({
+  request: {
+    query: CurrentUserFullDocument,
+  },
+  result: {
+    data: {
+      me: {
+        user: null,
+        __typename: 'MeQueryResults',
+      },
+    },
+  },
+});
+
+const withCurrentUserMocks = (responses: MockedResponse[]): MockedResponse[] => [
+  buildCurrentUserMock(),
+  buildCurrentUserMock(),
+  ...responses,
+];
+
 describe('Guest Whiteboard Access - 500 Error Handling', () => {
   beforeEach(() => {
     cleanup();
@@ -28,7 +49,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
     sessionStorage.setItem('alkemio_guest_name', 'TestUser');
     const whiteboardId = 'any-whiteboard-id';
 
-    const mocks = [
+    const mocks = withCurrentUserMocks([
       {
         request: {
           query: GetPublicWhiteboardDocument,
@@ -36,7 +57,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
         },
         error: new Error('Internal server error'),
       },
-    ];
+    ]);
 
     render(
       <MemoryRouter initialEntries={[`/public/whiteboard/${whiteboardId}`]}>
@@ -44,7 +65,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
           <Route
             path="/public/whiteboard/:whiteboardId"
             element={
-              <MockedProvider mocks={mocks} addTypename={false}>
+              <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
                 <PublicWhiteboardPage />
               </MockedProvider>
             }
@@ -70,7 +91,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
     sessionStorage.setItem('alkemio_guest_name', 'TestUser');
     const whiteboardId = 'any-whiteboard-id';
 
-    const mocks = [
+    const mocks = withCurrentUserMocks([
       {
         request: {
           query: GetPublicWhiteboardDocument,
@@ -85,7 +106,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
         },
         error: new Error('Database connection failed'),
       },
-    ];
+    ]);
 
     render(
       <MemoryRouter initialEntries={[`/public/whiteboard/${whiteboardId}`]}>
@@ -93,7 +114,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
           <Route
             path="/public/whiteboard/:whiteboardId"
             element={
-              <MockedProvider mocks={mocks} addTypename={false}>
+              <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
                 <PublicWhiteboardPage />
               </MockedProvider>
             }
@@ -119,7 +140,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
     sessionStorage.setItem('alkemio_guest_name', 'TestUser');
     const whiteboardId = 'any-whiteboard-id';
 
-    const mocks = [
+    const mocks = withCurrentUserMocks([
       {
         request: {
           query: GetPublicWhiteboardDocument,
@@ -127,7 +148,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
         },
         error: new Error('Network request failed'),
       },
-    ];
+    ]);
 
     render(
       <MemoryRouter initialEntries={[`/public/whiteboard/${whiteboardId}`]}>
@@ -135,7 +156,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
           <Route
             path="/public/whiteboard/:whiteboardId"
             element={
-              <MockedProvider mocks={mocks} addTypename={false}>
+              <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
                 <PublicWhiteboardPage />
               </MockedProvider>
             }
@@ -153,7 +174,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
     sessionStorage.setItem('alkemio_guest_name', 'TestUser');
     const whiteboardId = 'any-whiteboard-id';
 
-    const mocks = [
+    const mocks = withCurrentUserMocks([
       {
         request: {
           query: GetPublicWhiteboardDocument,
@@ -161,7 +182,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
         },
         error: new Error('GraphQL error: Something unexpected happened'),
       },
-    ];
+    ]);
 
     render(
       <MemoryRouter initialEntries={[`/public/whiteboard/${whiteboardId}`]}>
@@ -169,7 +190,7 @@ describe('Guest Whiteboard Access - 500 Error Handling', () => {
           <Route
             path="/public/whiteboard/:whiteboardId"
             element={
-              <MockedProvider mocks={mocks} addTypename={false}>
+              <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
                 <PublicWhiteboardPage />
               </MockedProvider>
             }

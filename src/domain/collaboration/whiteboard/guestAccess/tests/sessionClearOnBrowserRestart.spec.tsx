@@ -15,6 +15,7 @@ import { InMemoryCache } from '@apollo/client';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import i18n from '@/core/i18n/config';
 import { I18nextProvider } from 'react-i18next';
+import userEvent from '@testing-library/user-event';
 
 // Mock session storage to provide deterministic behavior across tests
 const sessionStorageMock = (() => {
@@ -127,7 +128,8 @@ describe('Session Clear on Browser Restart', () => {
       renderWithProviders(<TestWhiteboardComponent whiteboardId="original-session" />);
 
       // Set guest name
-      screen.getByText('Set Guest Name').click();
+      const user = userEvent.setup();
+      await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
         expect(screen.getByTestId('guest-name')).toHaveTextContent('SessionGuest');
@@ -145,7 +147,7 @@ describe('Session Clear on Browser Restart', () => {
       expect(screen.getByTestId('guest-name')).toHaveTextContent('No guest name');
 
       // User must set guest name again
-      screen.getByText('Set Guest Name').click();
+      await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
         expect(screen.getByTestId('guest-name')).toHaveTextContent('SessionGuest');
@@ -161,7 +163,8 @@ describe('Session Clear on Browser Restart', () => {
 
       renderWithProviders(<TestWhiteboardComponent whiteboardId="storage-type-test" />);
 
-      screen.getByText('Set Guest Name').click();
+      const user = userEvent.setup();
+      await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
         expect(sessionStorage.getItem('alkemio_guest_name')).toBe('SessionGuest');
@@ -175,7 +178,8 @@ describe('Session Clear on Browser Restart', () => {
       // Set guest name in session
       renderWithProviders(<TestWhiteboardComponent whiteboardId="reload-test-1" />);
 
-      screen.getByText('Set Guest Name').click();
+      const user = userEvent.setup();
+      await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
         expect(sessionStorage.getItem('alkemio_guest_name')).toBe('SessionGuest');
@@ -198,7 +202,8 @@ describe('Session Clear on Browser Restart', () => {
       // Tab 1
       const { unmount: unmountTab1 } = renderWithProviders(<TestWhiteboardComponent whiteboardId="tab-1" />);
 
-      screen.getByText('Set Guest Name').click();
+      const user = userEvent.setup();
+      await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
         expect(sessionStorage.getItem('alkemio_guest_name')).toBe('SessionGuest');
@@ -232,7 +237,8 @@ describe('Session Clear on Browser Restart', () => {
       // Set guest name in sessionStorage
       renderWithProviders(<TestWhiteboardComponent whiteboardId="storage-comparison" />);
 
-      screen.getByText('Set Guest Name').click();
+      const user = userEvent.setup();
+      await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
         expect(sessionStorage.getItem('alkemio_guest_name')).toBe('SessionGuest');
