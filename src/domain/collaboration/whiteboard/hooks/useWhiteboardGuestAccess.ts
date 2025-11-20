@@ -7,6 +7,7 @@ import {
   trackGuestAccessToggleFailure,
   trackGuestAccessToggleSuccess,
 } from '@/core/analytics/events/collaborationGuestAccess';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import buildGuestShareUrl from '../utils/buildGuestShareUrl';
 
 export type GuestAccessErrorCode = 'PERMISSION_DENIED' | 'NETWORK' | 'UNKNOWN' | WhiteboardGuestAccessErrorCode;
@@ -101,6 +102,7 @@ const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGu
   const [optimisticState, setOptimisticState] = useState<boolean | undefined>(undefined);
   const [errorState, setErrorState] = useState<GuestAccessErrorState | undefined>();
   const [updateGuestAccess, { loading }] = useUpdateWhiteboardGuestAccessMutation();
+  const handleApolloError = useApolloErrorHandler();
 
   const resolvedGuestShareUrl = useMemo(() => {
     if (guestShareUrl) {
@@ -183,12 +185,13 @@ const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGu
         setOptimisticState(undefined);
         trackGuestAccessToggleSuccess({ whiteboardId: whiteboard.id, nextState });
       } catch (error) {
+        handleApolloError(error as ApolloError);
         const parsed = parseGuestAccessError(error as ApolloError);
         handleMutationFailure(nextState, parsed);
         throw error;
       }
     },
-    [whiteboard, canToggle, updateGuestAccess, handleMutationFailure]
+    [whiteboard, canToggle, updateGuestAccess, handleMutationFailure, handleApolloError]
   );
 
   const resetError = useCallback(() => setErrorState(undefined), []);

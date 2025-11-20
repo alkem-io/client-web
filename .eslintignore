@@ -1,7 +1,0 @@
-node_modules/
-build/
-dist/
-coverage/
-public/env-config.js
-public/meta.json
-**/*.min.js
