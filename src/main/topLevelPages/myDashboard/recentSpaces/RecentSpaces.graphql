@@ -6,9 +6,6 @@ query RecentSpaces($limit: Float) {
         about {
           ...SpaceAboutCardBanner
           isContentPublic
-          membership {
-            myMembershipStatus
-          }
         }
         level
         __typename # do not remove

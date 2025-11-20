@@ -4,7 +4,6 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
 import SpaceCardBase from '@/domain/space/components/cards/SpaceCardBase';
-import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
@@ -108,7 +107,6 @@ const InvitationDialog = ({
                     alignItems={isSmallScreen ? 'center' : 'start'}
                   >
                     <SpaceCardBase
-                      iconComponent={spaceLevelIcon[invitation.space.level]}
                       header={invitation.space.about.profile.displayName}
                       tags={invitation.space.about.profile.tagset?.tags ?? []}
                       banner={invitation.space.about.profile.cardBanner}

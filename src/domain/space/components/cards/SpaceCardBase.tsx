@@ -1,29 +1,25 @@
-import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
-import { Box, SvgIconProps } from '@mui/material';
+import React, { PropsWithChildren, ReactNode, ReactElement } from 'react';
+import { Box } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { gutters } from '@/core/ui/grid/utils';
 import CardContent from '@/core/ui/card/CardContent';
 import RouterLink from '@/core/ui/link/RouterLink';
-import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
-import CardBanner from '@/core/ui/card/CardImageHeader';
+import CardBanner, { CARD_BANNER_GRADIENT } from '@/core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
 import { SpaceCardBanner } from './components/SpaceCardBanner';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import CardTags from '@/core/ui/card/CardTags';
-import { SpaceL0Icon } from '../../icons/SpaceL0Icon';
 
-export interface SpaceCard2Props extends ContributeCardProps {
-  iconComponent: ComponentType<SvgIconProps>;
-  header: ReactNode;
+export const CARD_FOOTER_HEIGHT = gutters(3);
+
+export interface SpaceCardProps extends ContributeCardProps {
+  header: ReactNode | null;
   banner?: SpaceCardBanner;
   tags?: string[];
   spaceUri?: string;
-  expansion?: ReactNode;
-  expansionActions?: ReactNode;
   bannerOverlay?: ReactNode;
   member?: boolean;
   locked?: boolean;
@@ -34,13 +30,10 @@ export interface SpaceCard2Props extends ContributeCardProps {
 }
 
 const SpaceCardBase = ({
-  iconComponent: Icon = SpaceL0Icon,
   header,
   banner,
   tags,
   spaceUri,
-  expansion,
-  expansionActions,
   bannerOverlay,
   member,
   locked,
@@ -48,13 +41,8 @@ const SpaceCardBase = ({
   children,
   visual,
   ...containerProps
-}: PropsWithChildren<SpaceCard2Props>) => {
+}: PropsWithChildren<SpaceCardProps>) => {
   const { t } = useTranslation();
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const canBeExpanded = !!expansion;
-
-  const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
   const wrapperProps =
     spaceUri && !containerProps.onClick
@@ -64,6 +52,61 @@ const SpaceCardBase = ({
         } as const)
       : {};
 
+  // Compact tile mode - banner fills entire card, footer overlaid at bottom with BadgeCardView
+  if (header === null) {
+    return (
+      <ContributeCard sx={{ position: 'relative', overflow: 'hidden' }} {...containerProps}>
+        <Box {...wrapperProps} sx={{ position: 'relative', height: '100%' }}>
+          <CardBanner
+            src={banner?.uri || getDefaultSpaceVisualUrl(VisualType.Card, containerProps.spaceId)}
+            alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}
+            overlay={bannerOverlay}
+          />
+          {/* Gradient overlay on top of banner for smooth transition to footer */}
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: CARD_FOOTER_HEIGHT, // Height of the footer
+              left: 0,
+              right: 0,
+              height: '25%', // height of the gradient
+              background: CARD_BANNER_GRADIENT,
+            }}
+          />
+          {/* Footer with BadgeCardView - overlaid at bottom */}
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+            }}
+          >
+            <BadgeCardView
+              visual={
+                visual && React.isValidElement(visual)
+                  ? (visual as ReactElement<{ sx: { flexShrink: number } }>)
+                  : undefined
+              }
+              visualRight={locked ? <LockOutlined fontSize="small" color="primary" /> : undefined}
+              gap={1}
+              height={gutters(3)}
+              paddingY={1}
+              paddingX={1.5}
+              sx={{
+                backgroundColor: 'white',
+                borderRadius: theme => ` 0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
+              }}
+            >
+              {children}
+            </BadgeCardView>
+          </Box>
+        </Box>
+      </ContributeCard>
+    );
+  }
+
+  // Regular mode - standard card layout with header and content
   return (
     <ContributeCard sx={{ position: 'relative' }} {...containerProps}>
       <Box {...wrapperProps}>
@@ -73,7 +116,11 @@ const SpaceCardBase = ({
           overlay={bannerOverlay}
         />
         <BadgeCardView
-          visual={visual && React.isValidElement(visual) ? visual : <RoundedIcon size="small" component={Icon} />}
+          visual={
+            visual && React.isValidElement(visual)
+              ? (visual as ReactElement<{ sx: { flexShrink: number } }>)
+              : undefined
+          }
           visualRight={locked ? <LockOutlined fontSize="small" color="primary" /> : undefined}
           gap={1}
           height={gutters(3)}
@@ -83,33 +130,11 @@ const SpaceCardBase = ({
           {header}
         </BadgeCardView>
       </Box>
-      <Box
-        onClick={canBeExpanded ? toggleExpanded : undefined}
-        sx={{ cursor: canBeExpanded || containerProps.onClick || containerProps.to ? 'pointer' : 'default' }}
-        paddingBottom={1}
-        aria-expanded={canBeExpanded ? isExpanded : undefined}
-        tabIndex={canBeExpanded ? 0 : undefined}
-        onKeyDown={
-          canBeExpanded
-            ? e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  toggleExpanded();
-                }
-              }
-            : undefined
-        }
-      >
-        <CardContent flexGrow={1}>{children}</CardContent>
-        <ExpandableCardFooter
-          expanded={isExpanded}
-          expandable={canBeExpanded}
-          expansion={expansion}
-          actions={actions}
-          expansionActions={expansionActions}
-          tags={tags && <CardTags disableIndentation tags={tags} />}
-        />
-      </Box>
+      <CardContent flexGrow={1} paddingBottom={1}>
+        {children}
+        {actions}
+        {tags && <CardTags disableIndentation tags={tags} />}
+      </CardContent>
     </ContributeCard>
   );
 };

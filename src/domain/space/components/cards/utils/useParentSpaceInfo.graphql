@@ -1,13 +1,14 @@
-query SpaceSubspaceCards($spaceId: UUID!) {
+query ParentSpaceInfo($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
       level
       about {
+        id
         profile {
           id
-          url
           displayName
+          url
           avatar: visual(type: AVATAR) {
             ...VisualModel
           }
@@ -16,9 +17,7 @@ query SpaceSubspaceCards($spaceId: UUID!) {
           }
         }
       }
-      subspaces {
-        ...SubspaceCard
-      }
     }
   }
 }
+

@@ -149,6 +149,8 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
               isContentPublic: true,
               membership: {
                 myMembershipStatus: CommunityMembershipStatus.Member,
+                leadUsers: [],
+                leadOrganizations: [],
               },
             },
           },
