@@ -1,5 +1,7 @@
 import { FC, ReactNode } from 'react';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { Divider } from '@mui/material';
+import { gutters } from '@/core/ui/grid/utils';
 
 export interface WhiteboardGuestAccessControlsProps {
   whiteboard?: {
@@ -7,6 +9,7 @@ export interface WhiteboardGuestAccessControlsProps {
       myPrivileges?: AuthorizationPrivilege[];
     };
   };
+  guestAccessEnabled?: boolean;
   children: ReactNode;
 }
 
@@ -19,18 +22,31 @@ export interface WhiteboardGuestAccessControlsProps {
  * - Hides controls silently if privilege is missing (no error state)
  * - Type-safe check using AuthorizationPrivilege enum
  */
-export const WhiteboardGuestAccessControls: FC<WhiteboardGuestAccessControlsProps> = ({ whiteboard, children }) => {
+export const WhiteboardGuestAccessControls: FC<WhiteboardGuestAccessControlsProps> = ({
+  whiteboard,
+  guestAccessEnabled,
+  children,
+}) => {
   // Check for PUBLIC_SHARE privilege (Decision 1 from research.md)
   const hasPublicSharePrivilege =
     whiteboard?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.PublicShare) ?? false;
 
   // Hide controls if user doesn't have PUBLIC_SHARE privilege (Decision 2: Silent failure)
-  if (!hasPublicSharePrivilege) {
+  if (!hasPublicSharePrivilege && !guestAccessEnabled) {
     return null;
   }
 
   // Render guest access controls (toggle, URL, etc.) provided as children
-  return <>{children}</>;
+  return (
+    <>
+      {children && (
+        <>
+          <Divider orientation="horizontal" sx={{ marginY: gutters(1) }} />
+          {children}
+        </>
+      )}
+    </>
+  );
 };
 
 export default WhiteboardGuestAccessControls;

@@ -561,6 +561,7 @@
       "HOST": "Host",
       "MEMBER": "$t(common.Member)",
       "ASSOCIATE": "Associate",
+      "GUEST": "Guest",
       "OWNER": "Owner",
       "GLOBAL_ADMIN": "Global $t(common.Admin)",
       "GLOBAL_SUPPORT": "Support $t(common.Admin)",
@@ -967,8 +968,23 @@
     "share-this": "Share this {{entity}}",
     "share-this-on": "Share this {{entity}} on {{platform}}",
     "guest-access": {
+      "label": "Guest access",
+      "toggle-label": "Enable guest access",
+      "toggle-description": "Let anyone with the guest link view and contribute to this whiteboard.",
+      "disabled-tooltip": "You don't have permission to change guest access.",
       "url-label": "Guest Access URL",
-      "copy-url": "Copy Guest Access URL"
+      "copy-url": "Copy guest link",
+      "warning-title": "Guests can edit this whiteboard",
+      "warning-description": "Anyone with the guest link can view and contribute. Remove access when you're done collaborating.",
+      "visibility-warning": "This whiteboard is visible to guest users.",
+      "errors": {
+        "PERMISSION_DENIED": "You don't have permission to change guest access.",
+        "NETWORK": "Check your connection and try again.",
+        "UNKNOWN": "We couldn't update guest access. Please try again.",
+        "NOT_AUTHORIZED": "You're not authorized to change guest access.",
+        "SPACE_GUEST_DISABLED": "Guest access is disabled for this space.",
+        "WHITEBOARD_NOT_FOUND": "This whiteboard couldn't be found. Refresh and try again."
+      }
     },
     "or": "or",
     "url": "URL",

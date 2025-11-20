@@ -1,11 +1,9 @@
 # Tasks: Guest Whiteboard Contributions Toggle
 
-**Status**: ✅ PARTIALLY IMPLEMENTED (Space Settings Complete)
+**Status**: ✅ COMPLETE (Space Settings + Share Dialog Guest Access)
 **Implementation Date**: November 2025
 
-**What was built**: Space-level admin toggle for `allowGuestContributions` setting with optimistic updates
-
-**What was NOT built**: Share dialog integration (deferred to feature 002 - PUBLIC_SHARE privilege system)
+**What was built**: Space-level admin toggle for `allowGuestContributions` with optimistic updates **and** share dialog guest access controls (toggle, warning, copyable URL) gated by PUBLIC_SHARE privilege
 
 ---
 
@@ -36,13 +34,11 @@
 
 ### Phase 4: Share Dialog Integration
 
-**Note**: This phase was NOT implemented. Share dialog integration was deferred to feature 002 (PUBLIC_SHARE privilege system).
-
-- [ ] ~~T016 Create WhiteboardShareControls component with Switch toggle~~ - Deferred to feature 002
-- [ ] ~~T017 Add conditional rendering based on space setting and user authorization~~ - Deferred to feature 002
-- [ ] ~~T018 Implement authorization check (creators and admins only)~~ - Deferred to feature 002
-- [ ] ~~T019 Add translation keys for Share dialog guest access UI~~ - Deferred to feature 002
-- [ ] ~~T020 Add TextField with integrated copy button for guest URL~~ - Deferred to feature 002
+- [x] T016 Create WhiteboardShareControls component with Switch toggle → Implemented `GuestAccessToggle` + ShareDialog guest section
+- [x] T017 Add conditional rendering based on space setting and user authorization → Share dialog only renders guest section when PUBLIC_SHARE is available or guest mode already enabled
+- [x] T018 Implement authorization check (creators and admins only) → `useWhiteboardGuestAccess` inspects `AuthorizationPrivilege.PublicShare`
+- [x] T019 Add translation keys for Share dialog guest access UI → Added `share-dialog.guestAccess.*` entries
+- [x] T020 Add TextField with integrated copy button for guest URL → Share dialog renders read-only field with inline copy button + notifications
 
 ### Additional Improvements
 
@@ -63,6 +59,10 @@
 4. `src/domain/spaceAdmin/SpaceAdminSettings/components/MembershipSettings.tsx` - Extracted settings component
 5. `src/domain/spaceAdmin/SpaceAdminSettings/components/VisibilitySettings.tsx` - Extracted settings component
 6. `src/domain/spaceAdmin/SpaceAdminSettings/useSpaceSettingsUpdate.ts` - Settings update hook
+7. `src/domain/collaboration/whiteboard/WhiteboardDialog/graphql/UpdateWhiteboardGuestAccess.graphql` - Mutation + fragment for guest access
+8. `src/domain/collaboration/whiteboard/hooks/useWhiteboardGuestAccess.ts` - Whiteboard guest access domain hook
+9. `src/core/analytics/events/collaborationGuestAccess.ts` - Telemetry helpers for toggle attempts
+10. `src/domain/shared/components/ShareDialog/GuestAccessToggle.tsx` - Share dialog toggle component
 
 ### Files Modified
 
@@ -78,6 +78,9 @@
 10. `.specify/memory/constitution.md` (v1.0.5)
 11. `src/domain/templates/graphql/TemplateContent.graphql`
 12. `src/domain/spaceAdmin/SpaceAdminSettings/useSpaceSettingsUpdate.ts`
+13. `src/domain/shared/components/ShareDialog/ShareDialog.tsx` - Guest access section, copy controls, telemetry wiring
+14. `src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx` - Pass guest access state into header actions
+15. `src/domain/collaboration/whiteboard/utils/buildGuestShareUrl.ts` - Deterministic placeholder guest URLs
 
 ### What Works
 
@@ -88,13 +91,13 @@
 5. **Accessibility**: Full WCAG 2.1 AA compliance with ARIA labels
 6. **Space Independence**: Each space/subspace has independent settings (no inheritance)
 7. **Code Quality**: Refactored settings page using SOLID principles (extracted components)
+8. **Share Dialog UI**: `ShareDialog` now renders a guest access section with toggle, warnings, and copy-to-clipboard field
+9. **Privilege Enforcement**: Only whiteboard creators/admins with `PUBLIC_SHARE` see the toggle; members only see copy controls when enabled
 
-### Not Implemented (Deferred to Feature 002)
+### Remaining Follow-Ups (Future Backend Work)
 
-- Share dialog integration (guest access toggle in whiteboard Share dialog)
-- Guest URL display field with copy button
-- Authorization check for whiteboard creators/admins in Share dialog
-- Share dialog translation keys for guest access UI
+- Public URL generation + routing for guest-facing page
+- Public whiteboard access endpoint / guest session management
 
 ### Backend Integration Status
 
@@ -117,5 +120,5 @@
 
 ---
 
-**Total Tasks Completed**: 15/20 (75%)
-**Status**: Space settings implementation complete; Share dialog integration deferred to feature 002 (PUBLIC_SHARE privilege system)
+**Total Tasks Completed**: 20/20 (100%)
+**Status**: Space settings + Share dialog guest access experience complete (PUBLIC_SHARE integration delivered)
