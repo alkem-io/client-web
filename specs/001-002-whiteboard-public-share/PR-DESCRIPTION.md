@@ -81,7 +81,7 @@
 - ✅ Space settings toggle for `allowGuestContributions`
 - ✅ `useSpaceGuestContributions()` domain hook
 - ✅ Settings page refactoring (SOLID principles)
-- ✅ Space level utilities (DRY compliance)
+- ✅ Space-level utilities (DRY compliance)
 
 **Metric Readiness**: Ready for integration testing once backend mutations are available
 
@@ -98,7 +98,7 @@
 **Architecture Standards**:
 
 - ✅ SOLID Principles: SRP (focused components), DIP (abstraction via hooks), ISP (minimal props)
-- ✅ DRY: Privilege check logic in wrapper component, space level utilities extracted
+- ✅ DRY: Privilege check logic in wrapper component, space-level utilities extracted
 - ✅ Import transparency: Direct imports, no barrel exports
 
 ---
@@ -123,7 +123,7 @@
 **Files Created**:
 
 1. `src/domain/space/settings/useSpaceGuestContributions.ts` - Domain façade hook
-2. `src/domain/space/utils/spaceLevel.ts` - Space level utilities (DRY)
+2. `src/domain/space/utils/spaceLevel.ts` - Space-level utilities (DRY)
 3. `src/domain/spaceAdmin/SpaceAdminSettings/components/MemberActionsSettings.tsx` - Extracted component
 4. `src/domain/spaceAdmin/SpaceAdminSettings/components/MembershipSettings.tsx` - Extracted component
 5. `src/domain/spaceAdmin/SpaceAdminSettings/components/VisibilitySettings.tsx` - Extracted component
@@ -161,13 +161,13 @@
 
 ## Related Artifacts
 
-- **Spec**: [specs/001-002-whiteboard-public-share/spec.md](../specs/001-002-whiteboard-public-share/spec.md)
-- **Plan**: [specs/001-002-whiteboard-public-share/plan.md](../specs/001-002-whiteboard-public-share/plan.md)
-- **Tasks**: [specs/001-002-whiteboard-public-share/tasks.md](../specs/001-002-whiteboard-public-share/tasks.md) (33/36 complete)
-- **Contracts**: [specs/001-002-whiteboard-public-share/contracts/](../specs/001-002-whiteboard-public-share/contracts/)
-- **Quickstart**: [specs/001-002-whiteboard-public-share/quickstart.md](../specs/001-002-whiteboard-public-share/quickstart.md)
-- **Research**: [specs/001-002-whiteboard-public-share/research.md](../specs/001-002-whiteboard-public-share/research.md)
-- **Data Model**: [specs/001-002-whiteboard-public-share/data-model.md](../specs/001-002-whiteboard-public-share/data-model.md)
+- **Spec**: [spec.md](./spec.md)
+- **Plan**: [plan.md](./plan.md)
+- **Tasks**: [tasks.md](./tasks.md) (33/36 complete)
+- **Contracts**: [contracts/](./contracts/)
+- **Quickstart**: [quickstart.md](./quickstart.md)
+- **Research**: [research.md](./research.md)
+- **Data Model**: [data-model.md](./data-model.md)
 
 ---
 

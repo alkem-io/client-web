@@ -98,8 +98,8 @@ Document how this feature satisfies the Constitution:
 
 _Example of marking unclear requirements:_
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **EX-001**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
+- **EX-002**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
 ### Key Entities _(include if feature involves data)_
 
