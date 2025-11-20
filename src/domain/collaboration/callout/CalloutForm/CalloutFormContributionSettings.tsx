@@ -80,7 +80,7 @@ const CalloutFormContributionSettings = ({ calloutRestrictions }: CalloutFormCon
       seamless
     >
       <Box display="flex" gap={gutters()} flexDirection={isMediumSmallScreen ? 'column' : 'row'}>
-        <PageContentBlock sx={{ flex: 1 }}>
+        <PageContentBlock sx={{ flex: 1, minWidth: 300 }}>
           <PageContentBlockHeader title={t('callout.create.contributionSettings.comments.title')} />
           <FormikRadioButtonsGroup
             options={[
