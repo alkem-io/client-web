@@ -3,8 +3,10 @@
 ## GetPublicWhiteboard Query
 
 query GetPublicWhiteboard($whiteboardId: UUID!) {
-  whiteboard(ID: $whiteboardId) {
-    ...PublicWhiteboardFragment
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...PublicWhiteboardFragment
+    }
   }
 }
 
@@ -13,9 +15,14 @@ query GetPublicWhiteboard($whiteboardId: UUID!) {
 fragment PublicWhiteboardFragment on Whiteboard {
   id
   content
+  guestContributionsAllowed
   profile {
     id
     displayName
+    url
+    storageBucket {
+      id
+    }
     description
   }
   createdBy {

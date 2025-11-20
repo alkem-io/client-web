@@ -238,6 +238,7 @@
     "Account": "Account",
     "account": "account",
     "anonymous": "Anonymous",
+    "guestSuffix": "(guest)",
     "all": "All",
     "knowledge-base": "Knowledge base",
     "or": "Or",

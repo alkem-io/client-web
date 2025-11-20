@@ -16,37 +16,47 @@ import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import i18n from '@/core/i18n/config';
 import { I18nextProvider } from 'react-i18next';
 import userEvent from '@testing-library/user-event';
+import {
+  SessionStorageMock,
+  createSessionStorageMockInstance,
+  setSessionStorageImplementation,
+} from './utils/sessionStorageMock';
 
-// Mock session storage to provide deterministic behavior across tests
-const sessionStorageMock = (() => {
-  let store: Record<string, string> = {};
+type BrowserTabSession = {
+  storage: SessionStorageMock;
+  activate: () => void;
+};
+
+let activeSessionStorage: SessionStorageMock | null = null;
+
+const setActiveSessionStorage = (storage: SessionStorageMock) => {
+  activeSessionStorage = storage;
+  setSessionStorageImplementation(storage);
+};
+
+const createBrowserTabSession = (): BrowserTabSession => {
+  const storage = createSessionStorageMockInstance();
   return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => {
-      store[key] = value;
-    },
-    removeItem: (key: string) => {
-      delete store[key];
-    },
-    clear: () => {
-      store = {};
-    },
+    storage,
+    activate: () => setActiveSessionStorage(storage),
   };
-})();
+};
 
-Object.defineProperty(globalThis, 'sessionStorage', {
-  value: sessionStorageMock,
-  configurable: true,
-  writable: true,
-});
+const startBrowserSession = (): BrowserTabSession => {
+  const session = createBrowserTabSession();
+  session.activate();
+  return session;
+};
 
-if (globalThis.window !== undefined) {
-  Object.defineProperty(globalThis.window, 'sessionStorage', {
-    value: sessionStorageMock,
-    configurable: true,
-    writable: true,
-  });
-}
+const getActiveSessionStorage = (): SessionStorageMock => {
+  if (!activeSessionStorage) {
+    startBrowserSession();
+  }
+
+  return activeSessionStorage as SessionStorageMock;
+};
+
+const simulateBrowserRestart = () => startBrowserSession();
 
 const Providers: FC<PropsWithChildren> = ({ children }) => (
   <MockedProvider mocks={[]} cache={new InMemoryCache()}>
@@ -59,6 +69,11 @@ const Providers: FC<PropsWithChildren> = ({ children }) => (
 );
 
 const renderWithProviders = (ui: ReactElement) => render(<Providers>{ui}</Providers>);
+
+const renderInTab = (tab: BrowserTabSession, whiteboardId: string) => {
+  tab.activate();
+  return renderWithProviders(<TestWhiteboardComponent whiteboardId={whiteboardId} />);
+};
 
 // Test component that uses the guest session
 const TestWhiteboardComponent: FC<{ whiteboardId: string }> = ({ whiteboardId }) => {
@@ -75,23 +90,21 @@ const TestWhiteboardComponent: FC<{ whiteboardId: string }> = ({ whiteboardId })
 
 describe('Session Clear on Browser Restart', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-    sessionStorageMock.clear();
-    localStorage.clear();
     cleanup();
+    vi.clearAllMocks();
+    startBrowserSession();
+    sessionStorage.clear();
+    localStorage.clear();
   });
 
   afterEach(() => {
-    sessionStorageMock.clear();
-    localStorage.clear();
     cleanup();
+    localStorage.clear();
+    getActiveSessionStorage().clear();
   });
 
   describe('Browser session lifecycle', () => {
     it('should start with no guest name on fresh browser session', () => {
-      // Simulate fresh browser session - no session storage data
-      sessionStorage.clear();
-
       renderWithProviders(<TestWhiteboardComponent whiteboardId="fresh-session" />);
 
       // Should have no guest name
@@ -112,8 +125,8 @@ describe('Session Clear on Browser Restart', () => {
 
       unmount();
 
-      // Simulate browser restart - clear session storage
-      sessionStorage.clear();
+      // Simulate browser restart - allocate a brand new session storage
+      simulateBrowserRestart();
 
       // Render new session
       renderWithProviders(<TestWhiteboardComponent whiteboardId="session-2" />);
@@ -137,8 +150,8 @@ describe('Session Clear on Browser Restart', () => {
 
       cleanup();
 
-      // Simulate browser restart
-      sessionStorage.clear();
+      // Simulate browser restart with new session storage instance
+      simulateBrowserRestart();
 
       // New browser session
       renderWithProviders(<TestWhiteboardComponent whiteboardId="new-browser-session" />);
@@ -198,34 +211,37 @@ describe('Session Clear on Browser Restart', () => {
       });
     });
 
-    it('should handle multiple tab closures within same browser session', async () => {
-      // Tab 1
-      const { unmount: unmountTab1 } = renderWithProviders(<TestWhiteboardComponent whiteboardId="tab-1" />);
-
+    it('should isolate guest names per browser tab within same session', async () => {
       const user = userEvent.setup();
+
+      const tab1 = createBrowserTabSession();
+      const { unmount: closeTab1 } = renderInTab(tab1, 'tab-1');
+
       await user.click(screen.getByText('Set Guest Name'));
 
       await waitFor(() => {
-        expect(sessionStorage.getItem('alkemio_guest_name')).toBe('SessionGuest');
+        expect(tab1.storage.getItem('alkemio_guest_name')).toBe('SessionGuest');
       });
 
-      unmountTab1();
+      closeTab1();
 
-      // Tab 2 (same session)
-      const { unmount: unmountTab2 } = renderWithProviders(<TestWhiteboardComponent whiteboardId="tab-2" />);
+      const tab2 = createBrowserTabSession();
+      const { unmount: closeTab2 } = renderInTab(tab2, 'tab-2');
+
+      await waitFor(() => {
+        expect(screen.getByTestId('guest-name')).toHaveTextContent('No guest name');
+      });
+      expect(tab2.storage.getItem('alkemio_guest_name')).toBeNull();
+
+      closeTab2();
+
+      const { unmount: closeTab1Return } = renderInTab(tab1, 'tab-1-return');
 
       await waitFor(() => {
         expect(screen.getByTestId('guest-name')).toHaveTextContent('SessionGuest');
       });
 
-      unmountTab2();
-
-      // Tab 3 (still same session)
-      renderWithProviders(<TestWhiteboardComponent whiteboardId="tab-3" />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('guest-name')).toHaveTextContent('SessionGuest');
-      });
+      closeTab1Return();
     });
   });
 
@@ -246,8 +262,8 @@ describe('Session Clear on Browser Restart', () => {
 
       cleanup();
 
-      // Simulate browser restart - clear session storage only
-      sessionStorage.clear();
+      // Simulate browser restart - allocate new session storage while localStorage persists
+      simulateBrowserRestart();
       // localStorage is NOT cleared (would persist in real browser)
 
       renderWithProviders(<TestWhiteboardComponent whiteboardId="after-restart" />);
@@ -270,8 +286,8 @@ describe('Session Clear on Browser Restart', () => {
 
       sessionStorage.setItem('alkemio_guest_name', 'TemporaryGuest');
 
-      // Simulate browser close
-      sessionStorage.clear();
+      // Simulate browser close by starting a new session without copying previous data
+      simulateBrowserRestart();
 
       // New browser session
       renderWithProviders(<TestWhiteboardComponent whiteboardId="new-browser-instance" />);
@@ -296,7 +312,8 @@ describe('Session Clear on Browser Restart', () => {
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       // Mock sessionStorage.getItem to throw
-      const getItemSpy = vi.spyOn(sessionStorageMock, 'getItem').mockImplementation(() => {
+      const storage = getActiveSessionStorage();
+      const getItemSpy = vi.spyOn(storage, 'getItem').mockImplementation(() => {
         throw new Error('Session storage unavailable');
       });
 
@@ -317,14 +334,15 @@ describe('Session Clear on Browser Restart', () => {
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       // Mock to throw on getItem but succeed on setItem
-      const originalGetItem = sessionStorageMock.getItem;
+      const storage = getActiveSessionStorage();
+      const originalGetItem = storage.getItem;
       let getItemCallCount = 0;
-      const getItemSpy = vi.spyOn(sessionStorageMock, 'getItem').mockImplementation(key => {
+      const getItemSpy = vi.spyOn(storage, 'getItem').mockImplementation(key => {
         getItemCallCount++;
         if (getItemCallCount === 1) {
           throw new Error('Read failed');
         }
-        return originalGetItem.call(sessionStorageMock, key);
+        return originalGetItem.call(storage, key);
       });
 
       renderWithProviders(<TestWhiteboardComponent whiteboardId="read-failure" />);
@@ -334,11 +352,6 @@ describe('Session Clear on Browser Restart', () => {
 
       // Restore
       getItemSpy.mockRestore();
-      Object.defineProperty(sessionStorageMock, 'getItem', {
-        value: originalGetItem,
-        configurable: true,
-        writable: true,
-      });
       consoleWarnSpy.mockRestore();
     });
   });

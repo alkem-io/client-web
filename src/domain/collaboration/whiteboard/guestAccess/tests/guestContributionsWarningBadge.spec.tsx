@@ -20,7 +20,119 @@
  * - PublicWhiteboardPage: Sources guestContributionsAllowed from GraphQL
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { MemoryRouter } from 'react-router-dom';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '@/core/i18n/config';
+import WhiteboardDialogFooter from '@/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialogFooter';
+import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+
+const sendMessageMock = vi.fn();
+
+vi.mock('@/domain/space/context/useSpace', () => ({
+  useSpace: () => ({
+    space: {
+      about: {
+        membership: { myMembershipStatus: CommunityMembershipStatus.Member },
+        profile: { url: '/space', displayName: 'Space Owner' },
+      },
+    },
+  }),
+}));
+
+vi.mock('@/domain/space/hooks/useSubSpace', () => ({
+  useSubSpace: () => ({
+    subspace: {
+      about: {
+        membership: { myMembershipStatus: CommunityMembershipStatus.Member },
+        profile: { url: '/subspace', displayName: 'Subspace Owner' },
+      },
+    },
+  }),
+}));
+
+vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
+  useAuthenticationContext: () => ({ isAuthenticated: true }),
+}));
+
+vi.mock('@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog', () => ({
+  default: () => ({ sendMessage: sendMessageMock, directMessageDialog: null }),
+}));
+
+vi.mock('@/main/routing/urlResolver/useUrlResolver', () => ({
+  default: () => ({ spaceLevel: SpaceLevel.L0 }),
+}));
+
+const warningTranslationKey = 'pages.whiteboard.guestContributionsWarning';
+const warningText = i18n.t(warningTranslationKey);
+const deleteButtonLabel = i18n.t('buttons.delete');
+
+type FooterProps = Parameters<typeof WhiteboardDialogFooter>[0];
+
+const baseProps: FooterProps = {
+  whiteboardUrl: '/whiteboard/test',
+  lastSaveError: undefined,
+  canUpdateContent: true,
+  onDelete: vi.fn(),
+  canDelete: true,
+  onRestart: vi.fn(),
+  updating: false,
+  guestContributionsAllowed: true,
+  createdBy: undefined,
+  contentUpdatePolicy: undefined,
+  collaboratorMode: null,
+  collaboratorModeReason: null,
+};
+
+const renderFooter = (overrideProps?: Partial<FooterProps>) => {
+  const theme = createTheme();
+  const props: FooterProps = { ...baseProps, ...overrideProps } as FooterProps;
+  const utils = render(
+    <MemoryRouter>
+      <ThemeProvider theme={theme}>
+        <I18nextProvider i18n={i18n}>
+          <WhiteboardDialogFooter {...props} />
+        </I18nextProvider>
+      </ThemeProvider>
+    </MemoryRouter>
+  );
+
+  const rerenderWithProps = (newProps?: Partial<FooterProps>) => {
+    utils.rerender(
+      <MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <I18nextProvider i18n={i18n}>
+            <WhiteboardDialogFooter {...{ ...baseProps, ...newProps }} />
+          </I18nextProvider>
+        </ThemeProvider>
+      </MemoryRouter>
+    );
+  };
+
+  return { theme, rerenderWithProps, ...utils };
+};
+
+const expectWarningVisible = () => {
+  const badge = screen.getByTestId('guest-contributions-warning');
+  const icon = screen.getByTestId('PublicIcon');
+  const caption = screen.getByText(warningText);
+  expect(badge).toBeInTheDocument();
+  expect(icon).toBeInTheDocument();
+  expect(caption).toBeInTheDocument();
+  return { badge, icon, caption };
+};
+
+const expectWarningHidden = () => {
+  expect(screen.queryByTestId('guest-contributions-warning')).toBeNull();
+  expect(screen.queryByTestId('PublicIcon')).toBeNull();
+  expect(screen.queryByText(warningText)).toBeNull();
+};
+
+beforeEach(() => {
+  sendMessageMock.mockReset();
+});
 
 describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
   describe('Component behavior', () => {
@@ -55,7 +167,8 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       //
       // See: WhiteboardDialogFooter.spec.tsx for complete unit test coverage
 
-      expect(true).toBe(true);
+      renderFooter({ guestContributionsAllowed: true });
+      expectWarningVisible();
     });
 
     it('should hide warning badge when guestContributionsAllowed is false or undefined', () => {
@@ -78,7 +191,11 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       // - "should NOT display warning badge when guestContributionsAllowed is false"
       // - "should NOT display warning badge when guestContributionsAllowed is undefined"
 
-      expect(true).toBe(true);
+      const { rerenderWithProps } = renderFooter({ guestContributionsAllowed: false });
+      expectWarningHidden();
+
+      rerenderWithProps({ guestContributionsAllowed: undefined });
+      expectWarningHidden();
     });
   });
 
@@ -99,7 +216,11 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       // Accessibility: Error color meets WCAG 2.1 AA contrast requirements
       // when used against white/light backgrounds.
 
-      expect(true).toBe(true);
+      const { theme } = renderFooter();
+      const { badge, caption } = expectWarningVisible();
+      expect(badge).toHaveStyle(`border: 1px solid ${theme.palette.error.main}`);
+      expect(badge).toHaveStyle(`color: ${theme.palette.error.main}`);
+      expect(caption).toHaveStyle(`color: ${theme.palette.error.main}`);
     });
 
     it('should position warning on right with space-between layout', () => {
@@ -127,7 +248,11 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       // - Left content wrapped in Box for grouping
       // - Warning badge on right creates balanced layout
 
-      expect(true).toBe(true);
+      renderFooter();
+      const actions = screen.getByTestId('whiteboard-dialog-footer-actions');
+      expect(actions).toHaveStyle('justify-content: space-between');
+      const badge = screen.getByTestId('guest-contributions-warning');
+      expect(actions.lastElementChild).toBe(badge);
     });
   });
 
@@ -157,7 +282,8 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       // - Translation key is already in place
       // - Other language files should add this key when feature is ready for i18n
 
-      expect(true).toBe(true);
+      renderFooter();
+      expect(screen.getByText(warningText)).toBeInTheDocument();
     });
   });
 
@@ -200,7 +326,10 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       // This end-to-end flow ensures the warning badge accurately reflects
       // the backend state of the whiteboard's guest access configuration.
 
-      expect(true).toBe(true);
+      const { rerenderWithProps } = renderFooter({ guestContributionsAllowed: false });
+      expectWarningHidden();
+      rerenderWithProps({ guestContributionsAllowed: true });
+      expectWarningVisible();
     });
   });
 
@@ -232,7 +361,10 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       // - Text alternative to icon (both present in same container)
       // - No interactive elements (informational only, no keyboard trap)
 
-      expect(true).toBe(true);
+      renderFooter();
+      const { icon, caption } = expectWarningVisible();
+      expect(icon).toBeVisible();
+      expect(caption).toBeVisible();
     });
   });
 
@@ -252,7 +384,11 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       //
       // Verified by WhiteboardDialogFooter.spec.tsx unit tests
 
-      expect(true).toBe(true);
+      const { theme } = renderFooter();
+      const { badge, caption, icon } = expectWarningVisible();
+      expect(icon).toBeVisible();
+      expect(badge).toHaveStyle(`border: 1px solid ${theme.palette.error.main}`);
+      expect(caption).toHaveTextContent(warningText);
     });
 
     it('should meet SC-010: Warning not displayed when false/undefined', () => {
@@ -267,7 +403,10 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       //
       // Verified by WhiteboardDialogFooter.spec.tsx unit tests
 
-      expect(true).toBe(true);
+      const { rerenderWithProps } = renderFooter({ guestContributionsAllowed: false });
+      expectWarningHidden();
+      rerenderWithProps({ guestContributionsAllowed: undefined });
+      expectWarningHidden();
     });
 
     it('should meet SC-011: Correct layout with space-between', () => {
@@ -287,7 +426,11 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       // - Screenshot with warning hidden
       // - Compare layout consistency
 
-      expect(true).toBe(true);
+      renderFooter();
+      const actions = screen.getByTestId('whiteboard-dialog-footer-actions');
+      expect(actions).toHaveStyle('justify-content: space-between');
+      const badge = screen.getByTestId('guest-contributions-warning');
+      expect(actions.lastElementChild).toBe(badge);
     });
   });
 
@@ -311,7 +454,10 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       // - ThemeProvider + I18nextProvider wrappers
       // - Mocked space context hooks
 
-      expect(true).toBe(true);
+      const { rerenderWithProps } = renderFooter({ guestContributionsAllowed: false });
+      expectWarningHidden();
+      rerenderWithProps({ guestContributionsAllowed: true });
+      expectWarningVisible();
     });
 
     it('should support visual regression testing', () => {
@@ -335,7 +481,12 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       // - Icon rendering
       // - Responsive behavior
 
-      expect(true).toBe(true);
+      renderFooter();
+      const actions = screen.getByTestId('whiteboard-dialog-footer-actions');
+      const deleteButton = screen.getByLabelText(deleteButtonLabel);
+      const badge = screen.getByTestId('guest-contributions-warning');
+      expect(actions).toContainElement(deleteButton);
+      expect(actions).toContainElement(badge);
     });
 
     it('should support integration testing for data flow', () => {
@@ -362,7 +513,10 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       // - Props correctly passed through component chain
       // - UI correctly reflects backend state
 
-      expect(true).toBe(true);
+      const { rerenderWithProps } = renderFooter({ guestContributionsAllowed: false });
+      expectWarningHidden();
+      rerenderWithProps({ guestContributionsAllowed: true });
+      expectWarningVisible();
     });
 
     it('should support accessibility auditing', () => {
@@ -393,7 +547,10 @@ describe('Guest Whiteboard Access - Guest Contributions Warning Badge', () => {
       // - WAVE: Browser extension for visual accessibility review
       // - NVDA/JAWS: Manual screen reader testing
 
-      expect(true).toBe(true);
+      renderFooter();
+      const { icon, caption } = expectWarningVisible();
+      expect(icon.getAttribute('aria-hidden')).toBe('true');
+      expect(caption.textContent).toBe(warningText);
     });
   });
 });

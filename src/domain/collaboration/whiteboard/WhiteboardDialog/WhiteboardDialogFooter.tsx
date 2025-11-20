@@ -33,14 +33,14 @@ interface WhiteboardDialogFooterProps {
   updating?: boolean;
   guestContributionsAllowed?: boolean;
   createdBy:
-  | (Identifiable & {
-    profile: {
-      displayName: string;
-      url: string;
-      avatar?: Visual;
-    };
-  })
-  | undefined;
+    | (Identifiable & {
+        profile: {
+          displayName: string;
+          url: string;
+          avatar?: Visual;
+        };
+      })
+    | undefined;
   contentUpdatePolicy: ContentUpdatePolicy | undefined;
   collaboratorMode: CollaboratorMode | null;
   collaboratorModeReason: CollaboratorModeReasons | null;
@@ -148,6 +148,7 @@ const WhiteboardDialogFooter = ({
         gap={gutters(0.5)}
         justifyContent="space-between"
         alignItems="center"
+        data-testid="whiteboard-dialog-footer-actions"
       >
         <Box display="flex" gap={gutters(0.5)} alignItems="center">
           {canDelete && (
@@ -204,6 +205,7 @@ const WhiteboardDialogFooter = ({
               borderRadius: 1,
               color: theme.palette.error.main,
             })}
+            data-testid="guest-contributions-warning"
           >
             <Public fontSize="small" />
             <Caption sx={theme => ({ color: theme.palette.error.main })}>

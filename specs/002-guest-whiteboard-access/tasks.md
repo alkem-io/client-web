@@ -110,19 +110,19 @@ Anonymized derivation and fallback prompt (spans US1 & flows for authenticated a
 
 Implement notification when guest navigates to sign-in after closing whiteboard.
 
-- [ ] T053 [US6] Create `GuestSessionNotification` component in `src/domain/collaboration/whiteboard/guestAccess/components/GuestSessionNotification.tsx` with MUI styling matching Figma design (title, description, buttons, info box)
-- [ ] T054 [US6] [P] Add session storage helper `setGuestWhiteboardUrl(url: string)` and `getGuestWhiteboardUrl(): string | null` in `src/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage.ts`
-- [ ] T055 [US6] [P] Add session storage helper `clearGuestWhiteboardUrl()` in `src/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage.ts`
-- [ ] T056 [US6] Update `PublicWhiteboardPage.tsx` close handler to call `setGuestWhiteboardUrl(currentUrl)` and redirect to `/signin` instead of `/home` when guest session active
-- [ ] T057 [US6] Create `useGuestSessionReturn` hook in `src/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn.ts` exposing `shouldShowNotification`, `whiteboardUrl`, `handleBackToWhiteboard`, `handleGoToWebsite`, `clearSession`
-- [ ] T058 [US6] Integrate `GuestSessionNotification` component into sign-in page (`src/main/auth/authentication/SignInPage.tsx` or similar) conditionally rendered via `useGuestSessionReturn`
-- [ ] T059 [US6] Implement "BACK TO WHITEBOARD" button click handler to navigate to stored URL via `useNavigate()` from React Router
-- [ ] T060 [US6] Implement "GO TO OUR WEBSITE" button click handler to navigate to external Alkemio website URL (defined in env config)
-- [ ] T061 [US6] Add `clearGuestWhiteboardUrl()` call in authentication success callback to clear stored URL after login/signup
-- [ ] T062 [US6] Add tests for `GuestSessionNotification` component (visibility, button clicks, session storage interactions) in `tests/domain/collaboration/whiteboard/guestAccess/GuestSessionNotification.test.tsx`
-- [ ] T063 [US6] [P] Add tests for `useGuestSessionReturn` hook logic (should show notification, button handlers) in `tests/domain/collaboration/whiteboard/guestAccess/useGuestSessionReturn.test.ts`
-- [ ] T064 [US6] Verify notification persists across page refreshes when guest session active (manual test + document in PR)
-- [ ] T065 [US6] Verify notification hides after successful authentication (manual test + document in PR)
+[ ] T053 [US6] Create `GuestSessionNotification` component in `src/domain/collaboration/whiteboard/guestAccess/components/GuestSessionNotification.tsx` with MUI styling matching Figma design (title, description, buttons, info box) — pending implementation
+[x] T054 [US6] [P] Add session storage helper `setGuestWhiteboardUrl(url: string)` and `getGuestWhiteboardUrl(): string | null` in `src/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage.ts` — implemented
+[x] T055 [US6] [P] Add session storage helper `clearGuestWhiteboardUrl()` in `src/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage.ts` — implemented
+[ ] T056 [US6] Update `PublicWhiteboardPage.tsx` close handler to call `setGuestWhiteboardUrl(currentUrl)` and redirect to `/signin` instead of `/home` when guest session active — pending
+[x] T057 [US6] Create `useGuestSessionReturn` hook in `src/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn.ts` exposing `shouldShowNotification`, `whiteboardUrl`, `handleBackToWhiteboard`, `handleGoToWebsite`, `clearSession` — implemented (hook stub + core logic present)
+[ ] T058 [US6] Integrate `GuestSessionNotification` component into sign-in page (`src/main/auth/authentication/SignInPage.tsx` or similar) conditionally rendered via `useGuestSessionReturn` — pending integration
+[ ] T059 [US6] Implement "BACK TO WHITEBOARD" button click handler to navigate to stored URL via `useNavigate()` from React Router — pending (integration required)
+[ ] T060 [US6] Implement "GO TO OUR WEBSITE" button click handler to navigate to external Alkemio website URL (defined in env config) — pending
+[ ] T061 [US6] Add `clearGuestWhiteboardUrl()` call in authentication success callback to clear stored URL after login/signup — pending
+[ ] T062 [US6] Add tests for `GuestSessionNotification` component (visibility, button clicks, session storage interactions) in `tests/domain/collaboration/whiteboard/guestAccess/GuestSessionNotification.test.tsx` — pending
+[ ] T063 [US6] [P] Add tests for `useGuestSessionReturn` hook logic (should show notification, button handlers) in `tests/domain/collaboration/whiteboard/guestAccess/useGuestSessionReturn.test.ts` — pending
+[ ] T064 [US6] Verify notification persists across page refreshes when guest session active (manual test + document in PR) — pending
+[ ] T065 [US6] Verify notification hides after successful authentication (manual test + document in PR) — pending
 
 ## Phase 9: Performance & Accessibility Polish
 

@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,7 @@ interface GuestSessionNotificationProps {
 
 const GuestSessionNotification = ({ onBackToWhiteboard, onGoToWebsite }: GuestSessionNotificationProps) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   return (
     <Box
@@ -62,8 +63,8 @@ const GuestSessionNotification = ({ onBackToWhiteboard, onGoToWebsite }: GuestSe
             startIcon={<ArrowBackIcon sx={{ fontSize: '16px' }} />}
             onClick={onBackToWhiteboard}
             sx={{
-              backgroundColor: '#1D384A',
-              color: 'white',
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.getContrastText(theme.palette.primary.main),
               textTransform: 'uppercase',
               fontSize: 12,
               fontWeight: 500,
@@ -72,7 +73,7 @@ const GuestSessionNotification = ({ onBackToWhiteboard, onGoToWebsite }: GuestSe
               px: 14.375,
               borderRadius: 1,
               '&:hover': {
-                backgroundColor: '#152A38',
+                backgroundColor: theme.palette.action.hover,
               },
             }}
           >
@@ -85,10 +86,10 @@ const GuestSessionNotification = ({ onBackToWhiteboard, onGoToWebsite }: GuestSe
             fullWidth
             onClick={onGoToWebsite}
             sx={{
-              backgroundColor: 'white',
-              borderColor: 'lightgrey',
+              backgroundColor: theme.palette.background.paper,
+              borderColor: theme.palette.divider,
               borderWidth: '1.111px',
-              color: 'text.primary',
+              color: theme.palette.text.primary,
               textTransform: 'uppercase',
               fontSize: 12,
               fontWeight: 500,
@@ -97,8 +98,8 @@ const GuestSessionNotification = ({ onBackToWhiteboard, onGoToWebsite }: GuestSe
               px: 14.5,
               borderRadius: 1,
               '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                borderColor: 'lightgrey',
+                backgroundColor: theme.palette.action.hover,
+                borderColor: theme.palette.divider,
               },
             }}
           >
@@ -108,7 +109,7 @@ const GuestSessionNotification = ({ onBackToWhiteboard, onGoToWebsite }: GuestSe
           {/* Info Box */}
           <Box
             sx={{
-              backgroundColor: '#DEEFF6',
+              backgroundColor: theme.palette.info.main,
               borderRadius: '10px',
               p: 2.5,
               display: 'flex',

@@ -22,7 +22,7 @@
 - Apollo Client 3.x + GraphQL codegen
 - Session Storage API
 - Cookie inspection basics (for `ory_kratos_session`)
-- React Router 6.x
+- React Router 7.x
 - Material-UI (MUI) theme & components
 
 ---
@@ -259,6 +259,7 @@ function anonymizeGuestName(firstName?: string | null, lastName?: string | null)
 ```
 
 **Derivation Trigger Logic**:
+
 - Checks `ory_kratos_session` cookie → if present, user is authenticated
 - Fetches `CurrentUserFull.profile` data (firstName, lastName)
 - Applies anonymization algorithm
@@ -292,6 +293,7 @@ function anonymizeGuestName(firstName?: string | null, lastName?: string | null)
 ```
 
 **Edge Cases Handled**:
+
 - Empty strings (`""`) → treated as missing
 - Whitespace-only (`"   "`) → treated as missing
 - Multi-word first names (`"Mary Jane"`) → preserved as "Mary Jane L."

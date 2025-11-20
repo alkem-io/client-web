@@ -19,13 +19,14 @@ Beyond the bootstrap configuration to point to the Alkemio server, all further c
 
 ## Public Routes
 
-### Guest Whiteboard Access (`/public/whiteboard/:id`)
+### Guest Whiteboard Access (`/public/whiteboard/:whiteboardId`)
 
 The client includes a public guest access route for whiteboards, allowing anonymous and authenticated users to view and **edit** whiteboards collaboratively without full platform authentication.
 
 **Route**: `/public/whiteboard/:whiteboardId`
 
 **Features**:
+
 - **Anonymous Access**: Guests prompted to enter a display name via dialog
 - **Authenticated Derivation**: Signed-in users automatically get an anonymized guest name (e.g., "Alice S.") derived from their profile
 - **Real-Time Collaboration**: Guest edits sync immediately with other users via WebSocket connections
@@ -37,6 +38,7 @@ The client includes a public guest access route for whiteboards, allowing anonym
 - **Stripped Layout**: No navigation/sidebars; focused whiteboard-only view
 
 **Implementation Details**:
+
 - **Context Provider**: `GuestSessionProvider` (React Context for guest state management)
 - **Custom Hooks**: `useGuestSession`, `useGuestWhiteboardAccess`
 - **Apollo Middleware**: `guestHeaderLink` (injects `x-guest-name` into all GraphQL requests)
@@ -44,11 +46,13 @@ The client includes a public guest access route for whiteboards, allowing anonym
 - **Accessibility**: WCAG 2.1 AA compliant (keyboard navigation, screen reader support, ARIA labels)
 
 **Example Usage**:
-```
+
+```text
 https://alkem.io/public/whiteboard/f47ac10b-58cc-4372-a567-0e02b2c3d479
 ```
 
 **Documentation**:
+
 - Full specification: [`specs/002-guest-whiteboard-access/spec.md`](specs/002-guest-whiteboard-access/spec.md)
 - Developer quickstart: [`specs/002-guest-whiteboard-access/quickstart.md`](specs/002-guest-whiteboard-access/quickstart.md)
 - Implementation plan: [`specs/002-guest-whiteboard-access/plan.md`](specs/002-guest-whiteboard-access/plan.md)

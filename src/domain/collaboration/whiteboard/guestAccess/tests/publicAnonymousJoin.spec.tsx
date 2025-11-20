@@ -11,6 +11,7 @@ import '@testing-library/jest-dom/vitest';
 import { MemoryRouter } from 'react-router-dom';
 import JoinWhiteboardDialog from '@/main/public/whiteboard/JoinWhiteboardDialog';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
+import { sessionStorageMock } from './utils/sessionStorageMock';
 
 // Mock react-router-dom navigate
 const mockNavigate = vi.fn();
@@ -20,27 +21,6 @@ vi.mock('react-router-dom', async () => {
     ...actual,
     useNavigate: () => mockNavigate,
   };
-});
-
-// Mock sessionStorage
-const sessionStorageMock = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => {
-      store[key] = value;
-    },
-    removeItem: (key: string) => {
-      delete store[key];
-    },
-    clear: () => {
-      store = {};
-    },
-  };
-})();
-
-Object.defineProperty(window, 'sessionStorage', {
-  value: sessionStorageMock,
 });
 
 describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
