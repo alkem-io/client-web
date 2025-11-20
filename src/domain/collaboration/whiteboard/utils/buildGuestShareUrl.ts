@@ -1,5 +1,5 @@
 const GUEST_SHARE_LINK_PLACEHOLDER = 'https://guest-link-placeholder.invalid';
-const GUEST_SHARE_PATH = '/guest/whiteboard';
+const GUEST_SHARE_PATH = '/public/whiteboard';
 
 export const buildGuestShareUrl = (whiteboardId?: string) => {
   if (!whiteboardId) {
