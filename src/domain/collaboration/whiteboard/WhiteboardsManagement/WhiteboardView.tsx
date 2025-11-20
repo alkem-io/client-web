@@ -12,6 +12,8 @@ import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apoll
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import { gutters } from '@/core/ui/grid/utils';
+import WhiteboardGuestAccessControls from '../WhiteboardShareDialog/WhiteboardGuestAccessControls';
+import WhiteboardGuestAccessSection from '../WhiteboardShareDialog/WhiteboardGuestAccessSection';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardId?: string;
