@@ -561,6 +561,7 @@
       "HOST": "Host",
       "MEMBER": "$t(common.Member)",
       "ASSOCIATE": "Associate",
+      "GUEST": "Guest",
       "OWNER": "Owner",
       "GLOBAL_ADMIN": "Global $t(common.Admin)",
       "GLOBAL_SUPPORT": "Support $t(common.Admin)",
