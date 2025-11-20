@@ -9362,10 +9362,6 @@ export const UpdateWhiteboardGuestAccessDocument = gql`
   mutation UpdateWhiteboardGuestAccess($input: UpdateWhiteboardGuestAccessInput!) {
     updateWhiteboardGuestAccess(input: $input) {
       success
-      errors {
-        code
-        message
-      }
       whiteboard {
         ...WhiteboardGuestAccessFields
       }

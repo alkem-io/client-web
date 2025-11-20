@@ -11,10 +11,6 @@ fragment WhiteboardGuestAccessFields on Whiteboard {
 mutation UpdateWhiteboardGuestAccess($input: UpdateWhiteboardGuestAccessInput!) {
   updateWhiteboardGuestAccess(input: $input) {
     success
-    errors {
-      code
-      message
-    }
     whiteboard {
       ...WhiteboardGuestAccessFields
     }

@@ -46,21 +46,6 @@ const PUBLIC_SHARE_PRIVILEGE =
 
 const DEFAULT_FAILURE_MESSAGE = 'Guest access update failed. Please try again.';
 
-const parseGuestAccessError = (error: ApolloError): GuestAccessErrorState => {
-  if (!error) {
-    return { code: 'UNKNOWN' };
-  }
-  const graphQLError = error.graphQLErrors?.[0];
-  const graphQlCode = graphQLError?.extensions?.code;
-  if (graphQlCode === 'FORBIDDEN' || graphQlCode === 'UNAUTHORIZED') {
-    return { code: 'PERMISSION_DENIED', message: graphQLError?.message };
-  }
-  if (error.networkError) {
-    return { code: 'NETWORK', message: error.networkError.message };
-  }
-  return { code: 'UNKNOWN', message: graphQLError?.message ?? error.message };
-};
-
 const buildGuestLink = (guestShareUrl?: string, enabled?: boolean) => {
   if (!enabled) {
     return undefined;
@@ -76,6 +61,40 @@ const mapServerGuestAccessError = (
     code: (error?.code as GuestAccessErrorCode) ?? 'UNKNOWN',
     message: error?.message ?? fallbackMessage,
   };
+};
+
+type GuestAccessGraphQLErrorExtension = {
+  guestAccessError?: {
+    code?: WhiteboardGuestAccessErrorCode | null;
+    message?: string | null;
+  } | null;
+  error?: {
+    code?: WhiteboardGuestAccessErrorCode | null;
+    message?: string | null;
+  } | null;
+  code?: string;
+};
+
+const parseGuestAccessError = (error: ApolloError): GuestAccessErrorState => {
+  if (!error) {
+    return { code: 'UNKNOWN', message: DEFAULT_FAILURE_MESSAGE };
+  }
+
+  const graphQLError = error.graphQLErrors?.[0];
+  const extensions = graphQLError?.extensions as GuestAccessGraphQLErrorExtension | undefined;
+  const extensionError = extensions?.guestAccessError || extensions?.error;
+  if (extensionError) {
+    return mapServerGuestAccessError(extensionError);
+  }
+
+  const graphQlCode = extensions?.code;
+  if (graphQlCode === 'FORBIDDEN' || graphQlCode === 'UNAUTHORIZED') {
+    return { code: 'PERMISSION_DENIED', message: graphQLError?.message };
+  }
+  if (error.networkError) {
+    return { code: 'NETWORK', message: error.networkError.message };
+  }
+  return { code: 'UNKNOWN', message: graphQLError?.message ?? error.message ?? DEFAULT_FAILURE_MESSAGE };
 };
 
 const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGuestAccessOptions) => {
@@ -135,7 +154,6 @@ const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGu
             updateWhiteboardGuestAccess: {
               __typename: 'UpdateWhiteboardGuestAccessResult',
               success: true,
-              errors: [],
               whiteboard: {
                 __typename: 'Whiteboard',
                 id: whiteboard.id,
@@ -152,13 +170,14 @@ const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGu
         });
 
         const result = data?.updateWhiteboardGuestAccess;
-        const serverError = mapServerGuestAccessError(result?.errors?.[0]);
         const updatedWhiteboard = result?.whiteboard;
         if (!result?.success || !updatedWhiteboard) {
-          handleMutationFailure(nextState, serverError);
-          throw new Error(
-            `updateWhiteboardGuestAccess failed: success=${result?.success ?? 'unknown'} message=${serverError.message}`
-          );
+          const fallbackError: GuestAccessErrorState = {
+            code: 'UNKNOWN',
+            message: DEFAULT_FAILURE_MESSAGE,
+          };
+          handleMutationFailure(nextState, fallbackError);
+          throw new Error('updateWhiteboardGuestAccess failed without a whiteboard payload.');
         }
 
         setOptimisticState(undefined);

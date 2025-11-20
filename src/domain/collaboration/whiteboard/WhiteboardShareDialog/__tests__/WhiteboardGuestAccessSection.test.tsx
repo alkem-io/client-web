@@ -30,7 +30,7 @@ describe('WhiteboardGuestAccessSection', () => {
       </WhiteboardGuestAccessControls>
     );
 
-    expect(screen.getByRole('textbox', { name: /guest link/i })).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /guest access url/i })).toBeInTheDocument();
   });
 
   it('hides the section when user lacks PUBLIC_SHARE privilege and guest access is disabled', () => {
@@ -50,7 +50,7 @@ describe('WhiteboardGuestAccessSection', () => {
       </WhiteboardGuestAccessControls>
     );
 
-    expect(screen.getByRole('textbox', { name: /guest link/i })).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /guest access url/i })).toBeInTheDocument();
   });
 
   it('invokes onToggle when the switch is clicked', () => {
@@ -73,7 +73,7 @@ describe('WhiteboardGuestAccessSection', () => {
       </WhiteboardGuestAccessControls>
     );
 
-    expect(screen.getByRole('textbox', { name: /guest link/i })).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /guest access url/i })).toBeInTheDocument();
 
     rerender(
       <WhiteboardGuestAccessControls whiteboard={privilegedWhiteboard}>
@@ -81,7 +81,7 @@ describe('WhiteboardGuestAccessSection', () => {
       </WhiteboardGuestAccessControls>
     );
 
-    expect(screen.queryByRole('textbox', { name: /guest link/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: /guest access url/i })).not.toBeInTheDocument();
   });
 
   it('shows an error message when guest access update fails', () => {
@@ -95,7 +95,7 @@ describe('WhiteboardGuestAccessSection', () => {
       </WhiteboardGuestAccessControls>
     );
 
-    expect(screen.getByTestId('guest-access-error')).toHaveTextContent('Network issue');
+    expect(screen.getByTestId('guest-access-error')).toHaveTextContent('Check your connection and try again.');
 
     fireEvent.click(screen.getByRole('button', { name: /close/i }));
     expect(guestAccess.resetError).toHaveBeenCalled();
