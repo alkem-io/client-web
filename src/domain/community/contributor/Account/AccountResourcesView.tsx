@@ -3,7 +3,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import SpaceTile from '@/domain/space/components/cards/SpaceTile';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -18,6 +18,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 import { ExpandMore } from '@mui/icons-material';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { collectSubspaceAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 
 const VISIBLE_SPACE_LIMIT = 6;
 
@@ -86,16 +87,37 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
       {accountResources?.spaces && accountResources?.spaces.length > 0 && (
         <PageContentBlockGrid disablePadding>
           <ScrollableCardsLayoutContainer containerProps={{ flex: 1 }}>
-            {accountResources.spaces?.slice(0, visibleSpacesCount).map(contributionItem => (
-              <SpaceTile
-                key={contributionItem.id}
-                space={{
+            {accountResources.spaces?.slice(0, visibleSpacesCount).map(contributionItem => {
+              const avatarUris = collectSubspaceAvatars(
+                {
                   id: contributionItem.id,
-                  about: contributionItem.about,
-                  level: SpaceLevel.L0,
-                }}
-              />
-            ))}
+                  about: {
+                    profile: {
+                      displayName: contributionItem.about.profile.displayName,
+                      avatar: contributionItem.about.profile.avatar,
+                      cardBanner: contributionItem.about.profile.cardBanner,
+                    },
+                  },
+                },
+                undefined, // no parent for L0 spaces
+                undefined
+              );
+
+              return (
+                <SpaceCard
+                  key={contributionItem.id}
+                  spaceId={contributionItem.id}
+                  displayName={contributionItem.about.profile.displayName}
+                  banner={contributionItem.about.profile.cardBanner}
+                  spaceUri={contributionItem.about.profile.url}
+                  isPrivate={!contributionItem.about.isContentPublic}
+                  level={SpaceLevel.L0}
+                  avatarUris={avatarUris}
+                  tags={contributionItem.about.profile.tagset?.tags}
+                  compact
+                />
+              );
+            })}
           </ScrollableCardsLayoutContainer>
         </PageContentBlockGrid>
       )}
@@ -140,7 +162,9 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
             <Gutters>
               <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
               <Gutters disablePadding>
-                {accountResources?.innovationHubs?.map(hub => <InnovationHubCardHorizontal key={hub.id} {...hub} />)}
+                {accountResources?.innovationHubs?.map(hub => (
+                  <InnovationHubCardHorizontal key={hub.id} {...hub} />
+                ))}
               </Gutters>
             </Gutters>
           </GridItem>

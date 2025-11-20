@@ -1,0 +1,23 @@
+query ParentSpaceInfo($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      level
+      about {
+        id
+        profile {
+          id
+          displayName
+          url
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+          cardBanner: visual(type: CARD) {
+            ...VisualModel
+          }
+        }
+      }
+    }
+  }
+}
+

@@ -10,8 +10,30 @@ fragment SubspaceCard on Space {
       value
     }
     membership {
-        myMembershipStatus
-        myPrivileges
+      myMembershipStatus
+      myPrivileges
+      leadUsers {
+        id
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+      leadOrganizations {
+        id
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
     }
     isContentPublic
     why

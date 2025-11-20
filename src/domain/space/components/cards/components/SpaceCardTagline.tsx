@@ -7,7 +7,16 @@ interface SpaceCardTaglineProps {
 }
 
 const SpaceCardTagline = ({ children }: SpaceCardTaglineProps) => {
-  return <CardText sx={webkitLineClamp(3, { keepMinHeight: true })}>{children}</CardText>;
+  return (
+    <CardText
+      sx={{
+        ...webkitLineClamp(2, { keepMinHeight: true }),
+        color: theme => theme.palette.neutral.light,
+      }}
+    >
+      {children}
+    </CardText>
+  );
 };
 
 export default SpaceCardTagline;

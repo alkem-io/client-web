@@ -21,6 +21,7 @@ fragment WhiteboardDetails on Whiteboard {
   id
   nameID # Used to name the screenshots uploaded as visuals (banner, card, etc.)
   createdDate
+  guestContributionsAllowed
   profile {
     ...WhiteboardProfile
   }

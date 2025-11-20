@@ -562,6 +562,7 @@
       "HOST": "Host",
       "MEMBER": "$t(common.Member)",
       "ASSOCIATE": "Associate",
+      "GUEST": "Guest",
       "OWNER": "Owner",
       "GLOBAL_ADMIN": "Global $t(common.Admin)",
       "GLOBAL_SUPPORT": "Support $t(common.Admin)",
@@ -967,6 +968,25 @@
     "title": "Copy the link below to share this {{entity}}",
     "share-this": "Share this {{entity}}",
     "share-this-on": "Share this {{entity}} on {{platform}}",
+    "guest-access": {
+      "label": "Guest access",
+      "toggle-label": "Enable guest access",
+      "toggle-description": "Let anyone with the guest link view and contribute to this whiteboard.",
+      "disabled-tooltip": "You don't have permission to change guest access.",
+      "url-label": "Guest Access URL",
+      "copy-url": "Copy guest link",
+      "warning-title": "Guests can edit this whiteboard",
+      "warning-description": "Anyone with the guest link can view and contribute. Remove access when you're done collaborating.",
+      "visibility-warning": "This whiteboard is visible to guest users.",
+      "errors": {
+        "PERMISSION_DENIED": "You don't have permission to change guest access.",
+        "NETWORK": "Check your connection and try again.",
+        "UNKNOWN": "We couldn't update guest access. Please try again.",
+        "NOT_AUTHORIZED": "You're not authorized to change guest access.",
+        "SPACE_GUEST_DISABLED": "Guest access is disabled for this space.",
+        "WHITEBOARD_NOT_FOUND": "This whiteboard couldn't be found. Refresh and try again."
+      }
+    },
     "or": "or",
     "url": "URL",
     "warning": "Please note that your personal email will be visible for the user when you send them a message.",
@@ -2117,6 +2137,10 @@
       "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",
       "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and $t(common.settings).<br>\uD83D\uDCDD <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>\uD83E\uDD1D <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>\uD83D\uDCDA <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
       "button": "Get Started"
+    },
+    "spaceCard": {
+      "ledBy": "Led by:",
+      "noLead": "No $t(common.lead) yet"
     }
   },
   "navigation": {
@@ -3056,8 +3080,7 @@
     },
     "publicWhiteboard": {
       "title": "$t(common.Whiteboard)",
-      "fallbackTitle": "Whiteboard",
-      "guestWarning": "This whiteboard is visible and editable by guest users"
+      "fallbackTitle": "Whiteboard"
     },
     "public": {
       "whiteboard": {
@@ -3207,13 +3230,13 @@
         "space": {
           "confirmation-dialog": {
             "title": "Leaving Space {{space}}",
-            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this $t(common.space) or its $t(common.subspaces). If this $t(common.space) is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a $t(common.member) of a $t(common.subspace) inside this $t(common.space), you will also be automatically removed from there."
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this $t(common.space) or its $t(common.subspaces). If this $t(common.space) is public, you can rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a $t(common.member) of a $t(common.subspace) inside this $t(common.space), you will also be automatically removed from there."
           }
         },
         "subspace": {
           "confirmation-dialog": {
             "title": "Leaving $t(common.subspace) {{space}}",
-            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br />You will no longer receive updates or have access to shared resources from this $t(common.subspace) or its $t(common.subspaces). If this $t(common.subspace) is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a $t(common.member) of a $t(common.subspace) inside this $t(common.subspace), you will also be automatically removed from there."
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br />You will no longer receive updates or have access to shared resources from this $t(common.subspace) or its $t(common.subspaces). If this $t(common.subspace) is public, you can rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a $t(common.member) of a $t(common.subspace) inside this $t(common.subspace), you will also be automatically removed from there."
           }
         }
       },

@@ -22,6 +22,7 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import GuestVisibilityBadge from '../components/GuestVisibilityBadge';
 
 interface WhiteboardDialogFooterProps {
   whiteboardUrl: string | undefined;
@@ -44,6 +45,7 @@ interface WhiteboardDialogFooterProps {
   contentUpdatePolicy: ContentUpdatePolicy | undefined;
   collaboratorMode: CollaboratorMode | null;
   collaboratorModeReason: CollaboratorModeReasons | null;
+  guestAccessEnabled?: boolean;
 }
 
 enum ReadonlyReason {
@@ -65,6 +67,7 @@ const WhiteboardDialogFooter = ({
   collaboratorModeReason,
   guestContributionsAllowed = false,
   updating = false,
+  guestAccessEnabled = false,
 }: WhiteboardDialogFooterProps) => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuthenticationContext();
@@ -149,6 +152,7 @@ const WhiteboardDialogFooter = ({
         justifyContent="space-between"
         alignItems="center"
         data-testid="whiteboard-dialog-footer-actions"
+        flexWrap="wrap"
       >
         <Box display="flex" gap={gutters(0.5)} alignItems="center">
           {canDelete && (
@@ -213,6 +217,43 @@ const WhiteboardDialogFooter = ({
             </Caption>
           </Box>
         )}
+        {readonlyReason && (
+          <Caption>
+            <Trans
+              i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
+              values={{
+                spaceLevel: t(`common.space-level.${spaceLevel}`),
+                ownerName: createdBy?.profile.displayName,
+              }}
+              components={{
+                ownerlink: createdBy ? (
+                  <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
+                ) : (
+                  <span />
+                ),
+                spacelink: spaceAboutProfile ? (
+                  <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument />
+                ) : (
+                  <span />
+                ),
+                signinlink: <RouterLink to={buildLoginUrl(whiteboardUrl)} state={{}} underline="always" />,
+                learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
+              }}
+            />
+          </Caption>
+        )}
+        {canRestart && (
+          <Button onClick={onRestart} variant="outlined" sx={{ textTransform: 'none' }} size="small">
+            {t('pages.whiteboard.restartCollaboration')}
+          </Button>
+        )}
+
+        {guestAccessEnabled && (
+          <Box marginLeft="auto">
+            <GuestVisibilityBadge size="compact" data-testid="guest-visibility-badge-footer" />
+          </Box>
+        )}
+
         {directMessageDialog}
       </Actions>
       <DialogWithGrid

@@ -9,9 +9,24 @@ type CardBannerProps = {
   overlay?: ReactNode;
 };
 
+export const CARD_BANNER_GRADIENT =
+  'linear-gradient(0deg, #FFFFFF 0%, rgba(255, 255, 255, 0.9) 15%, rgba(255, 255, 255, 0.7) 35%, rgba(255, 255, 255, 0.4) 55%, rgba(255, 255, 255, 0.15) 75%, rgba(255, 255, 255, 0) 100%)';
+
 const CardBanner = ({ src, alt, overlay }: CardBannerProps) => (
   <Box position="relative">
     {src ? <CardImage src={src} alt={alt} /> : <SpaceCardBannerPlaceholder />}
+    {/* Gradient overlay for blending with content below */}
+    <Box
+      sx={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: '35%',
+        background: CARD_BANNER_GRADIENT,
+        pointerEvents: 'none',
+      }}
+    />
     {overlay}
   </Box>
 );

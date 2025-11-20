@@ -37,10 +37,14 @@ import useUpdateWhiteboardPreviewSettings from '../WhiteboardPreviewSettings/use
 export interface WhiteboardDetails {
   id: string;
   nameID: string; // NameID is used to name screenshots uploaded as visuals (banner, card...)
-  contentUpdatePolicy?: ContentUpdatePolicy;
   guestContributionsAllowed?: boolean;
+  contentUpdatePolicy?: ContentUpdatePolicy;
   authorization?: {
     myPrivileges?: AuthorizationPrivilege[];
+    credentialRules?: Array<{
+      name?: string | null;
+      grantedPrivileges: AuthorizationPrivilege[];
+    }>;
   };
   profile: {
     id: string;
@@ -339,7 +343,7 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
                   canUpdateContent={options.canEdit!}
                   createdBy={whiteboard?.createdBy}
                   contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
-                  guestContributionsAllowed={whiteboard?.guestContributionsAllowed}
+                  guestAccessEnabled={whiteboard?.guestContributionsAllowed}
                 />
               </Dialog>
             </Formik>

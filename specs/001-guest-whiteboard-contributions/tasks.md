@@ -1,9 +1,9 @@
 # Tasks: Guest Whiteboard Contributions Toggle
 
-**Status**: ✅ IMPLEMENTED (User Story 1 Complete)
+**Status**: ✅ COMPLETE (Space Settings + Share Dialog Guest Access)
 **Implementation Date**: November 2025
 
-**What was built**: Space-level admin toggle for guest whiteboard contributions with Share dialog integration
+**What was built**: Space-level admin toggle for `allowGuestContributions` with optimistic updates **and** share dialog guest access controls (toggle, warning, copyable URL) gated by PUBLIC_SHARE privilege
 
 ---
 
@@ -34,18 +34,18 @@
 
 ### Phase 4: Share Dialog Integration
 
-- [x] T016 Create WhiteboardShareControls component with Switch toggle
-- [x] T017 Add conditional rendering based on space setting and user authorization
-- [x] T018 Implement authorization check (creators and admins only)
-- [x] T019 Add translation keys for Share dialog guest access UI
-- [x] T020 Add TextField with integrated copy button for guest URL
+- [x] T016 Create WhiteboardShareControls component with Switch toggle → Implemented `GuestAccessToggle` + ShareDialog guest section
+- [x] T017 Add conditional rendering based on space setting and user authorization → Share dialog only renders guest section when PUBLIC_SHARE is available or guest mode already enabled
+- [x] T018 Implement authorization check (creators and admins only) → `useWhiteboardGuestAccess` inspects `AuthorizationPrivilege.PublicShare`
+- [x] T019 Add translation keys for Share dialog guest access UI → Added `share-dialog.guestAccess.*` entries
+- [x] T020 Add TextField with integrated copy button for guest URL → Share dialog renders read-only field with inline copy button + notifications
 
 ### Additional Improvements
 
 - [x] Create spaceLevel utility functions (isSubspace, isNotLastLevel) for DRY compliance
 - [x] Update constitution to v1.0.5 with comprehensive SOLID principles
 - [x] Document space hierarchy independence (no inheritance between spaces/subspaces)
-- [x] Create backend coordination documentation for future public URL implementation
+- [x] Refactored SpaceAdminSettingsPage.tsx to extract settings components (MemberActionsSettings, MembershipSettings, VisibilitySettings)
 
 ---
 
@@ -55,8 +55,14 @@
 
 1. `src/domain/space/settings/useSpaceGuestContributions.ts` - Domain façade hook
 2. `src/domain/space/utils/spaceLevel.ts` - Shared space level utilities
-3. `src/domain/collaboration/whiteboard/WhiteboardShareDialog/WhiteboardShareControls.tsx` - Share dialog controls
-4. `specs/001-guest-whiteboard-contributions/backend-coordination.md` - Backend integration docs
+3. `src/domain/spaceAdmin/SpaceAdminSettings/components/MemberActionsSettings.tsx` - Extracted settings component
+4. `src/domain/spaceAdmin/SpaceAdminSettings/components/MembershipSettings.tsx` - Extracted settings component
+5. `src/domain/spaceAdmin/SpaceAdminSettings/components/VisibilitySettings.tsx` - Extracted settings component
+6. `src/domain/spaceAdmin/SpaceAdminSettings/useSpaceSettingsUpdate.ts` - Settings update hook
+7. `src/domain/collaboration/whiteboard/WhiteboardDialog/graphql/UpdateWhiteboardGuestAccess.graphql` - Mutation + fragment for guest access
+8. `src/domain/collaboration/whiteboard/hooks/useWhiteboardGuestAccess.ts` - Whiteboard guest access domain hook
+9. `src/core/analytics/events/collaborationGuestAccess.ts` - Telemetry helpers for toggle attempts
+10. `src/domain/shared/components/ShareDialog/GuestAccessToggle.tsx` - Share dialog toggle component
 
 ### Files Modified
 
@@ -64,33 +70,42 @@
 2. `src/domain/spaceAdmin/SpaceAdminSettings/graphql/UpdateSpaceSettings.graphql`
 3. `src/domain/space/settings/SpaceSettingsModel.ts`
 4. `src/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings.tsx`
-5. `src/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage.tsx`
+5. `src/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage.tsx` - Refactored to use extracted components
 6. `src/domain/spaceAdmin/SpaceAdminSettings/components/MemberActionsSettings.tsx`
 7. `src/domain/spaceAdmin/SpaceAdminSettings/components/VisibilitySettings.tsx`
 8. `src/domain/spaceAdmin/SpaceAdminSettings/components/MembershipSettings.tsx`
-9. `src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx`
-10. `src/core/ui/forms/SettingsGroups/SwitchSettingsGroup.tsx`
-11. `src/core/i18n/en/translation.en.json`
-12. `.specify/memory/constitution.md` (v1.0.5)
+9. `src/core/i18n/en/translation.en.json`
+10. `.specify/memory/constitution.md` (v1.0.5)
+11. `src/domain/templates/graphql/TemplateContent.graphql`
+12. `src/domain/spaceAdmin/SpaceAdminSettings/useSpaceSettingsUpdate.ts`
+13. `src/domain/shared/components/ShareDialog/ShareDialog.tsx` - Guest access section, copy controls, telemetry wiring
+14. `src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx` - Pass guest access state into header actions
+15. `src/domain/collaboration/whiteboard/utils/buildGuestShareUrl.ts` - Deterministic placeholder guest URLs
 
 ### What Works
 
 1. **Admin Control**: Space admins can toggle guest contributions on/off in Space Settings
-2. **Share Dialog**: Switch toggle appears in whiteboard Share dialog when space setting is enabled
-3. **Authorization**: Toggle only visible to whiteboard creators and space admins
-4. **Guest URL**: Placeholder URL field with integrated copy button
-5. **Reactive UI**: All controls automatically hide when space setting is disabled
-6. **Accessibility**: Full WCAG 2.1 AA compliance with ARIA labels
-7. **Space Independence**: Each space/subspace has independent settings (no inheritance)
+2. **Domain Hook**: `useSpaceGuestContributions()` hook provides type-safe access to space setting
+3. **Optimistic Updates**: UI updates immediately with React 19 `useOptimistic` and `useTransition`
+4. **Reactive UI**: All controls respond to space setting changes
+5. **Accessibility**: Full WCAG 2.1 AA compliance with ARIA labels
+6. **Space Independence**: Each space/subspace has independent settings (no inheritance)
+7. **Code Quality**: Refactored settings page using SOLID principles (extracted components)
+8. **Share Dialog UI**: `ShareDialog` now renders a guest access section with toggle, warnings, and copy-to-clipboard field
+9. **Privilege Enforcement**: Only whiteboard creators/admins with `PUBLIC_SHARE` see the toggle; members only see copy controls when enabled
 
-### Not Implemented (Backend Required)
+### Remaining Follow-Ups (Future Backend Work)
 
-- Actual public URL generation (placeholder URLs shown)
-- Public whiteboard access endpoint
-- Guest session management
-- URL 404 behavior when disabled
+- Public URL generation + routing for guest-facing page
+- Public whiteboard access endpoint / guest session management
 
-See `backend-coordination.md` for backend integration requirements.
+### Backend Integration Status
+
+- Backend provides `allowGuestContributions` field in SpaceSettingsCollaboration ✅
+- Backend provides PUBLIC_SHARE privilege system ✅ (added for feature 002)
+- Public URL generation - **Not Yet Implemented**
+- Public whiteboard access endpoint - **Not Yet Implemented**
+- Guest session management - **Not Yet Implemented**
 
 ---
 
@@ -106,4 +121,4 @@ See `backend-coordination.md` for backend integration requirements.
 ---
 
 **Total Tasks Completed**: 20/20 (100%)
-**Status**: Ready for deployment as progressive enhancement
+**Status**: Space settings + Share dialog guest access experience complete (PUBLIC_SHARE integration delivered)

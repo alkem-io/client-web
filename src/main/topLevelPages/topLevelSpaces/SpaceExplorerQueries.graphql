@@ -71,6 +71,28 @@ fragment SpaceExplorerSpace on Space {
     ...SpaceAboutCardBanner
     membership {
       myMembershipStatus
+      leadUsers {
+        id
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+      leadOrganizations {
+        id
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
     }
     isContentPublic
   }
@@ -89,6 +111,28 @@ fragment SpaceExplorerSubspace on Space {
     }
     membership {
       myMembershipStatus
+      leadUsers {
+        id
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+      leadOrganizations {
+        id
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
     }
     isContentPublic
   }

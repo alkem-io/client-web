@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { cleanupVersionUpdateListeners, onVersionUpdate, syncClientVersion } from '@/serviceWorker';
 import NotificationView from '@/core/ui/notifications/NotificationView';
 import { SnackbarContent, Button, Box } from '@mui/material';
-import { info as logInfo } from '@/core/logging/sentry/log';
+import { info as logInfo, warn as logWarn } from '@/core/logging/sentry/log';
 import { rem } from '@/core/ui/typography/utils';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
@@ -25,15 +25,15 @@ export const VersionHandling = () => {
   const setLastVersionDetected = (oldVersion: string, newVersion: string) => {
     try {
       localStorage.setItem(LAST_VERSION_MISMATCH_LS_KEY, buildVersionMismatchPair(oldVersion, newVersion));
-    } catch (e) {
-      console.warn('Failed to store version mismatch info: ', e);
+    } catch (_error) {
+      logWarn('Failed to store version mismatch info while writing.', { label: 'VERSION_MISMATCH_STORAGE' });
     }
   };
   const getLastVersionDetected = () => {
     try {
       return localStorage.getItem(LAST_VERSION_MISMATCH_LS_KEY) || '';
-    } catch (e) {
-      console.warn('Failed to store version mismatch info: ', e);
+    } catch (_error) {
+      logWarn('Failed to read version mismatch info.', { label: 'VERSION_MISMATCH_STORAGE' });
       return '';
     }
   };

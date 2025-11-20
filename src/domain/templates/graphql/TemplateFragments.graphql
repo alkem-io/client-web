@@ -39,9 +39,13 @@ fragment SpaceTemplate on Template {
     id
     about {
       id
+      isContentPublic
       profile {
         id
-        visual(type: CARD) {
+        avatar: visual(type: AVATAR) {
+          ...VisualModel
+        }
+        cardBanner: visual(type: CARD) {
           ...VisualModel
         }
       }

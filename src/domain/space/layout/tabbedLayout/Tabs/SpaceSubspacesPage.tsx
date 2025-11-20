@@ -7,10 +7,12 @@ import useSpaceTabProvider from '../SpaceTabProvider';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSubSpaceCreatedSubscription from '@/domain/space/hooks/useSubSpaceCreatedSubscription';
-import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { spaceAboutTagsGetter, spaceAboutValueGetter } from '@/domain/space/about/util/spaceAboutValueGetter';
 import SubspaceView from '@/domain/space/components/subspaces/SubspaceView';
 import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { useSubspaceCardData } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 
 const SpaceSubspacesPage = () => {
   const {
@@ -23,6 +25,7 @@ const SpaceSubspacesPage = () => {
   const { spaceId } = urlInfo;
 
   const { permissions, visibility } = useSpace();
+  const { isAuthenticated } = useCurrentUserContext();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -41,6 +44,9 @@ const SpaceSubspacesPage = () => {
   const space = data?.lookup.space;
 
   const subspaces = space?.subspaces ?? [];
+
+  // Use shared hook for parent info and avatar stacking
+  const { parentInfo, collectAvatars } = useSubspaceCardData(space);
 
   const { level, childLevel } = useMemo(() => {
     let childLevel = SpaceLevel.L1;
@@ -64,18 +70,23 @@ const SpaceSubspacesPage = () => {
       childEntityTagsGetter={spaceAboutTagsGetter}
       state={{ loading: loading, error: error }}
       renderChildEntityCard={item => (
-        <SubspaceCard
+        <SpaceCard
           spaceId={item.id}
           displayName={item.about.profile.displayName}
           banner={item.about.profile.cardBanner}
           tags={item.about.profile.tagset?.tags!}
           tagline={item.about.profile.tagline ?? ''}
-          vision={item.about.why!}
           spaceUri={item.about.profile.url}
           locked={!item.about.isContentPublic}
+          isPrivate={!item.about.isContentPublic}
           spaceVisibility={visibility}
           level={childLevel}
           member={item.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
+          leadUsers={item.about.membership?.leadUsers}
+          leadOrganizations={item.about.membership?.leadOrganizations}
+          showLeads={isAuthenticated}
+          parentInfo={parentInfo}
+          avatarUris={collectAvatars(item)}
         />
       )}
       onClickCreate={() => setCreateDialogOpen(true)}
