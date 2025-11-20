@@ -1,9 +1,0 @@
-node_modules/
-build/
-dist/
-coverage/
-.env*
-*.log
-public/env-config.js
-specs/
-docs/
