@@ -115,7 +115,7 @@ const UserCard = ({
           <ExpandableCardFooter
             expanded={isExpanded}
             expandable={tags.length > 0}
-            tags={<TagsComponent tags={tags} loading={loading} />}
+            tags={<TagsComponent tags={tags} loading={loading} hideNoTagsMessage />}
           />
         </Box>
       ) : (

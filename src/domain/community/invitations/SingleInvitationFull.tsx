@@ -16,7 +16,6 @@ import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Actions } from '@/core/ui/actions/Actions';
-import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
 type SingleInvitationFullProps = {
@@ -88,7 +87,6 @@ const SingleInvitationFull = ({
                   alignItems={isSmallScreen ? 'center' : 'start'}
                 >
                   <SpaceCardBase
-                    iconComponent={spaceLevelIcon[invitation.space.level]}
                     header={invitation.space.about.profile.displayName}
                     tags={invitation.space.about.profile.tagset?.tags ?? []}
                     banner={invitation.space.about.profile.cardBanner}

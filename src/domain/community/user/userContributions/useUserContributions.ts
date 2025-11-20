@@ -36,6 +36,7 @@ const useUserContributions = (userId: string | undefined) => {
           contributorId: userId!,
           contributorType: RoleSetContributorType.User,
           roles: ss.roles,
+          parentSpaceId: e.id, // Track parent space for subspaces
         });
       });
     });

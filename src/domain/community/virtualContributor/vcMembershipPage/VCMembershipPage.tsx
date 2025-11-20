@@ -57,6 +57,7 @@ const VCMembershipPage = () => {
         spaceLevel: subspace.level,
         contributorId: vcId,
         contributorType: RoleSetContributorType.Virtual,
+        parentSpaceId: space.id, // Track parent space for subspaces
       }));
 
       return acc.concat(subspaces);

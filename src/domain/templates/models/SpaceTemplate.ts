@@ -16,10 +16,11 @@ export interface SpaceTemplate extends TemplateBase {
     id: string;
     about?: {
       profile?: {
-        visual?: {
+        cardBanner?: {
           uri: string;
         };
       };
+      isContentPublic?: boolean;
     };
     collaboration: {
       innovationFlow: {

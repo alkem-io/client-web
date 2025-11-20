@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Paper, Button, Avatar, useTheme } from '@mui/material';
+import { Button, Avatar, useTheme, Paper, Box } from '@mui/material';
 import { Card } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -11,14 +11,14 @@ import { Caption, Tagline } from '@/core/ui/typography';
 import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMemberships/MyMembershipsDialog';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import SpaceTile, { RECENT_SPACE_CARD_ASPECT_RATIO } from '@/domain/space/components/cards/SpaceTile';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { Actions } from '@/core/ui/actions/Actions';
-import { useColumns } from '@/core/ui/grid/GridContext';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { useSpaceCardLayout } from '@/main/topLevelPages/myDashboard/useSpaceCardLayout';
+import { CARD_BANNER_GRADIENT } from '@/core/ui/card/CardImageHeader';
 
 const DASHBOARD_MEMBERSHIPS_ALL = 100; // hardcoded limit for expensive query
 
@@ -61,30 +61,31 @@ const DashboardSpaces = () => {
     titleAndDescContainer: {
       borderBottomLeftRadius: 16,
       borderBottomRightRadius: 16,
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: theme.palette.background.paper,
+    },
+
+    gradientOverlay: {
+      position: 'absolute',
+      top: -50,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      height: '50px',
+      background: CARD_BANNER_GRADIENT,
     },
 
     spaceTitle: {
-      color: theme.palette.background.paper,
+      color: theme.palette.primary.main,
     },
 
     spaceTagline: {
-      color: theme.palette.background.paper,
-    },
-
-    exploreAllButton: {
-      textTransform: 'none',
-      border: `1px solid ${theme.palette.divider}`,
-      aspectRatio: RECENT_SPACE_CARD_ASPECT_RATIO,
+      color: theme.palette.primary.main,
     },
   };
 
   const { t } = useTranslation();
 
-  const columns = useColumns();
-  const { isSmallScreen } = useScreenSize();
-  const cardColumns = useMemo(() => (isSmallScreen ? columns / 2 : columns / 4), [isSmallScreen, columns]);
-  const visibleSpaces = Math.max(1, Math.floor(columns / 2) - 1);
+  const { visibleSpaces, cardColumns } = useSpaceCardLayout();
 
   useEffect(() => {
     fetchSpaces(); // with default limit
@@ -115,7 +116,7 @@ const DashboardSpaces = () => {
 
         return (
           <PageContentBlock key={id}>
-            <Gutters component={RouterLink} to={profile?.url} disableGap disablePadding>
+            <Paper component={RouterLink} to={profile?.url}>
               <Card style={styles.spaceCard}>
                 <Avatar
                   variant="square"
@@ -127,58 +128,66 @@ const DashboardSpaces = () => {
                 />
               </Card>
 
-              <Gutters gap={gutters(0.3)} padding={gutters(0.3)} style={styles.titleAndDescContainer}>
-                <PageTitle textAlign="center" style={styles.spaceTitle}>
-                  {profile?.displayName}
-                </PageTitle>
+              <Box position="relative">
+                <Box sx={styles.gradientOverlay} />
+                <Gutters
+                  gap={gutters(0.3)}
+                  paddingTop={gutters(0.5)}
+                  paddingBottom={gutters(1)}
+                  style={styles.titleAndDescContainer}
+                >
+                  <PageTitle textAlign="center" style={styles.spaceTitle}>
+                    {profile?.displayName}
+                  </PageTitle>
 
-                {tagline && (
-                  <Tagline textAlign="center" fontStyle="italic" color={styles.spaceTagline.color}>
-                    {tagline}
-                  </Tagline>
-                )}
-              </Gutters>
-            </Gutters>
+                  {tagline && (
+                    <Tagline textAlign="center" fontStyle="italic" color={styles.spaceTagline.color}>
+                      {tagline}
+                    </Tagline>
+                  )}
+                </Gutters>
+              </Box>
+            </Paper>
 
             {hasChildMemberships && (
-              <Gutters row disablePadding>
-                {childMemberships?.slice(0, visibleSpaces).map(({ space: subSpace }) => {
-                  if (!subSpace) {
-                    return null;
-                  }
+              <>
+                <Gutters row disablePadding>
+                  {childMemberships?.slice(0, visibleSpaces).map(({ space: subSpace }) => {
+                    if (!subSpace) {
+                      return null;
+                    }
 
-                  const { id: subSpaceId, about, level } = subSpace;
+                    const { id: subSpaceId, about } = subSpace;
 
-                  return (
-                    <SpaceTile
-                      key={subSpaceId}
-                      columns={cardColumns}
-                      space={{
-                        id: subSpaceId,
-                        about: about,
-                        level: level,
-                      }}
-                    />
-                  );
-                })}
+                    return (
+                      <GridItem key={subSpaceId} columns={cardColumns}>
+                        <SpaceCard
+                          spaceId={subSpaceId}
+                          displayName={about.profile.displayName}
+                          banner={about.profile.cardBanner}
+                          spaceUri={about.profile.url}
+                          isPrivate={!about.isContentPublic}
+                          compact
+                        />
+                      </GridItem>
+                    );
+                  })}
+                </Gutters>
 
-                {childMemberships.length > 3 && (
-                  <GridItem columns={cardColumns}>
-                    <Paper
-                      component={Button}
-                      sx={styles.exploreAllButton}
-                      endIcon={<DoubleArrowOutlined />}
-                      onClick={handleDialogOpen(idx, profile?.displayName)}
-                    >
-                      <Caption>
-                        {t('pages.home.sections.recentSpaces.seeMoreSubspaces', {
-                          spaceName: profile?.displayName,
-                        })}
-                      </Caption>
-                    </Paper>
-                  </GridItem>
+                {childMemberships.length > visibleSpaces && (
+                  <Button
+                    endIcon={<DoubleArrowOutlined />}
+                    sx={{ textTransform: 'none' }}
+                    onClick={handleDialogOpen(idx, profile?.displayName)}
+                  >
+                    <Caption>
+                      {t('pages.home.sections.recentSpaces.seeMoreSubspaces', {
+                        spaceName: profile?.displayName,
+                      })}
+                    </Caption>
+                  </Button>
                 )}
-              </Gutters>
+              </>
             )}
           </PageContentBlock>
         );

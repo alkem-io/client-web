@@ -1877,6 +1877,9 @@ export const SpaceAboutCardBannerFragmentDoc = gql`
       displayName
       url
       tagline
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
       cardBanner: visual(type: CARD) {
         ...VisualModel
       }
@@ -1903,12 +1906,35 @@ export const SubspaceCardFragmentDoc = gql`
       membership {
         myMembershipStatus
         myPrivileges
+        leadUsers {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+        leadOrganizations {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
       }
       isContentPublic
       why
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const SubspacesOnSpaceFragmentDoc = gql`
   fragment SubspacesOnSpace on Space {
@@ -2550,6 +2576,7 @@ export const SpaceTemplateContent_CollaborationFragmentDoc = gql`
 export const SpaceTemplateContent_AboutFragmentDoc = gql`
   fragment SpaceTemplateContent_About on SpaceAbout {
     id
+    isContentPublic
     profile {
       id
       displayName
@@ -2558,7 +2585,10 @@ export const SpaceTemplateContent_AboutFragmentDoc = gql`
       tagsets {
         ...TagsetDetails
       }
-      visuals {
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+      cardBanner: visual(type: CARD) {
         ...VisualModel
       }
       url
@@ -2726,9 +2756,13 @@ export const SpaceTemplateFragmentDoc = gql`
       id
       about {
         id
+        isContentPublic
         profile {
           id
-          visual(type: CARD) {
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+          cardBanner: visual(type: CARD) {
             ...VisualModel
           }
         }
@@ -3553,8 +3587,41 @@ export const ExploreSpacesFragmentDoc = gql`
         id
         url
         displayName
+        tagline
+        avatar: visual(type: AVATAR) {
+          ...VisualModel
+        }
         cardBanner: visual(type: CARD) {
           ...VisualModel
+        }
+        tagset {
+          id
+          tags
+        }
+      }
+      membership {
+        myMembershipStatus
+        leadUsers {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+        leadOrganizations {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
         }
       }
     }
@@ -3660,11 +3727,34 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
       ...SpaceAboutCardBanner
       membership {
         myMembershipStatus
+        leadUsers {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+        leadOrganizations {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
       }
       isContentPublic
     }
   }
   ${SpaceAboutCardBannerFragmentDoc}
+  ${VisualModelFragmentDoc}
 `;
 export const SpaceExplorerSearchSpaceFragmentDoc = gql`
   fragment SpaceExplorerSearchSpace on SearchResultSpace {
@@ -3688,6 +3778,28 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
       }
       membership {
         myMembershipStatus
+        leadUsers {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+        leadOrganizations {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
       }
       isContentPublic
     }
@@ -11648,6 +11760,10 @@ export const AccountResourcesInfoDocument = gql`
             id
             profile {
               ...AccountResourceProfile
+              tagset {
+                id
+                tags
+              }
               cardBanner: visual(type: CARD) {
                 ...VisualModel
               }
@@ -12874,6 +12990,9 @@ export const SpaceContributionDetailsDocument = gql`
             url
             displayName
             tagline
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
             cardBanner: visual(type: CARD) {
               ...VisualModel
             }
@@ -12885,6 +13004,28 @@ export const SpaceContributionDetailsDocument = gql`
           membership {
             roleSetID
             communityID
+            leadUsers {
+              id
+              profile {
+                id
+                url
+                displayName
+                avatar: visual(type: AVATAR) {
+                  ...VisualModel
+                }
+              }
+            }
+            leadOrganizations {
+              id
+              profile {
+                id
+                url
+                displayName
+                avatar: visual(type: AVATAR) {
+                  ...VisualModel
+                }
+              }
+            }
           }
           isContentPublic
         }
@@ -18310,6 +18451,88 @@ export type SubspacePageBannerQueryResult = Apollo.QueryResult<
 export function refetchSubspacePageBannerQuery(variables: SchemaTypes.SubspacePageBannerQueryVariables) {
   return { query: SubspacePageBannerDocument, variables: variables };
 }
+export const ParentSpaceInfoDocument = gql`
+  query ParentSpaceInfo($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        level
+        about {
+          id
+          profile {
+            id
+            displayName
+            url
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+            cardBanner: visual(type: CARD) {
+              ...VisualModel
+            }
+          }
+        }
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
+
+/**
+ * __useParentSpaceInfoQuery__
+ *
+ * To run a query within a React component, call `useParentSpaceInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useParentSpaceInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useParentSpaceInfoQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useParentSpaceInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ParentSpaceInfoQuery, SchemaTypes.ParentSpaceInfoQueryVariables> &
+    ({ variables: SchemaTypes.ParentSpaceInfoQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ParentSpaceInfoQuery, SchemaTypes.ParentSpaceInfoQueryVariables>(
+    ParentSpaceInfoDocument,
+    options
+  );
+}
+export function useParentSpaceInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.ParentSpaceInfoQuery, SchemaTypes.ParentSpaceInfoQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ParentSpaceInfoQuery, SchemaTypes.ParentSpaceInfoQueryVariables>(
+    ParentSpaceInfoDocument,
+    options
+  );
+}
+export function useParentSpaceInfoSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.ParentSpaceInfoQuery, SchemaTypes.ParentSpaceInfoQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.ParentSpaceInfoQuery, SchemaTypes.ParentSpaceInfoQueryVariables>(
+    ParentSpaceInfoDocument,
+    options
+  );
+}
+export type ParentSpaceInfoQueryHookResult = ReturnType<typeof useParentSpaceInfoQuery>;
+export type ParentSpaceInfoLazyQueryHookResult = ReturnType<typeof useParentSpaceInfoLazyQuery>;
+export type ParentSpaceInfoSuspenseQueryHookResult = ReturnType<typeof useParentSpaceInfoSuspenseQuery>;
+export type ParentSpaceInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.ParentSpaceInfoQuery,
+  SchemaTypes.ParentSpaceInfoQueryVariables
+>;
+export function refetchParentSpaceInfoQuery(variables: SchemaTypes.ParentSpaceInfoQueryVariables) {
+  return { query: ParentSpaceInfoDocument, variables: variables };
+}
 export const SpaceBreadcrumbsDocument = gql`
   query SpaceBreadcrumbs(
     $spaceId: UUID!
@@ -18671,12 +18894,26 @@ export const SpaceSubspaceCardsDocument = gql`
       space(ID: $spaceId) {
         id
         level
+        about {
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+            cardBanner: visual(type: CARD) {
+              ...VisualModel
+            }
+          }
+        }
         subspaces {
           ...SubspaceCard
         }
       }
     }
   }
+  ${VisualModelFragmentDoc}
   ${SubspaceCardFragmentDoc}
 `;
 
@@ -25983,9 +26220,6 @@ export const RecentSpacesDocument = gql`
           about {
             ...SpaceAboutCardBanner
             isContentPublic
-            membership {
-              myMembershipStatus
-            }
           }
           level
           __typename
