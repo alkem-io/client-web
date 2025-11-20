@@ -11,10 +11,10 @@ import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollabo
 import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
-import { gutters } from '@/core/ui/grid/utils';
+import useWhiteboardGuestAccess from '../hooks/useWhiteboardGuestAccess';
+import buildGuestShareUrl from '../utils/buildGuestShareUrl';
 import WhiteboardGuestAccessControls from '../WhiteboardShareDialog/WhiteboardGuestAccessControls';
 import WhiteboardGuestAccessSection from '../WhiteboardShareDialog/WhiteboardGuestAccessSection';
-import { Divider } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 
 export interface ActiveWhiteboardIdHolder {
