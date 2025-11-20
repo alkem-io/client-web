@@ -966,6 +966,10 @@
     "title": "Copy the link below to share this {{entity}}",
     "share-this": "Share this {{entity}}",
     "share-this-on": "Share this {{entity}} on {{platform}}",
+    "guest-access": {
+      "url-label": "Guest Access URL",
+      "copy-url": "Copy Guest Access URL"
+    },
     "or": "or",
     "url": "URL",
     "warning": "Please note that your personal email will be visible for the user when you send them a message.",

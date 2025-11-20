@@ -1,9 +1,11 @@
 # Tasks: Guest Whiteboard Contributions Toggle
 
-**Status**: ✅ IMPLEMENTED (User Story 1 Complete)
+**Status**: ✅ PARTIALLY IMPLEMENTED (Space Settings Complete)
 **Implementation Date**: November 2025
 
-**What was built**: Space-level admin toggle for guest whiteboard contributions with Share dialog integration
+**What was built**: Space-level admin toggle for `allowGuestContributions` setting with optimistic updates
+
+**What was NOT built**: Share dialog integration (deferred to feature 002 - PUBLIC_SHARE privilege system)
 
 ---
 
@@ -34,18 +36,20 @@
 
 ### Phase 4: Share Dialog Integration
 
-- [x] T016 Create WhiteboardShareControls component with Switch toggle
-- [x] T017 Add conditional rendering based on space setting and user authorization
-- [x] T018 Implement authorization check (creators and admins only)
-- [x] T019 Add translation keys for Share dialog guest access UI
-- [x] T020 Add TextField with integrated copy button for guest URL
+**Note**: This phase was NOT implemented. Share dialog integration was deferred to feature 002 (PUBLIC_SHARE privilege system).
+
+- [ ] ~~T016 Create WhiteboardShareControls component with Switch toggle~~ - Deferred to feature 002
+- [ ] ~~T017 Add conditional rendering based on space setting and user authorization~~ - Deferred to feature 002
+- [ ] ~~T018 Implement authorization check (creators and admins only)~~ - Deferred to feature 002
+- [ ] ~~T019 Add translation keys for Share dialog guest access UI~~ - Deferred to feature 002
+- [ ] ~~T020 Add TextField with integrated copy button for guest URL~~ - Deferred to feature 002
 
 ### Additional Improvements
 
 - [x] Create spaceLevel utility functions (isSubspace, isNotLastLevel) for DRY compliance
 - [x] Update constitution to v1.0.5 with comprehensive SOLID principles
 - [x] Document space hierarchy independence (no inheritance between spaces/subspaces)
-- [x] Create backend coordination documentation for future public URL implementation
+- [x] Refactored SpaceAdminSettingsPage.tsx to extract settings components (MemberActionsSettings, MembershipSettings, VisibilitySettings)
 
 ---
 
@@ -55,8 +59,10 @@
 
 1. `src/domain/space/settings/useSpaceGuestContributions.ts` - Domain façade hook
 2. `src/domain/space/utils/spaceLevel.ts` - Shared space level utilities
-3. `src/domain/collaboration/whiteboard/WhiteboardShareDialog/WhiteboardShareControls.tsx` - Share dialog controls
-4. `specs/001-guest-whiteboard-contributions/backend-coordination.md` - Backend integration docs
+3. `src/domain/spaceAdmin/SpaceAdminSettings/components/MemberActionsSettings.tsx` - Extracted settings component
+4. `src/domain/spaceAdmin/SpaceAdminSettings/components/MembershipSettings.tsx` - Extracted settings component
+5. `src/domain/spaceAdmin/SpaceAdminSettings/components/VisibilitySettings.tsx` - Extracted settings component
+6. `src/domain/spaceAdmin/SpaceAdminSettings/useSpaceSettingsUpdate.ts` - Settings update hook
 
 ### Files Modified
 
@@ -64,33 +70,39 @@
 2. `src/domain/spaceAdmin/SpaceAdminSettings/graphql/UpdateSpaceSettings.graphql`
 3. `src/domain/space/settings/SpaceSettingsModel.ts`
 4. `src/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings.tsx`
-5. `src/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage.tsx`
+5. `src/domain/spaceAdmin/SpaceAdminSettings/SpaceAdminSettingsPage.tsx` - Refactored to use extracted components
 6. `src/domain/spaceAdmin/SpaceAdminSettings/components/MemberActionsSettings.tsx`
 7. `src/domain/spaceAdmin/SpaceAdminSettings/components/VisibilitySettings.tsx`
 8. `src/domain/spaceAdmin/SpaceAdminSettings/components/MembershipSettings.tsx`
-9. `src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx`
-10. `src/core/ui/forms/SettingsGroups/SwitchSettingsGroup.tsx`
-11. `src/core/i18n/en/translation.en.json`
-12. `.specify/memory/constitution.md` (v1.0.5)
+9. `src/core/i18n/en/translation.en.json`
+10. `.specify/memory/constitution.md` (v1.0.5)
+11. `src/domain/templates/graphql/TemplateContent.graphql`
+12. `src/domain/spaceAdmin/SpaceAdminSettings/useSpaceSettingsUpdate.ts`
 
 ### What Works
 
 1. **Admin Control**: Space admins can toggle guest contributions on/off in Space Settings
-2. **Share Dialog**: Switch toggle appears in whiteboard Share dialog when space setting is enabled
-3. **Authorization**: Toggle only visible to whiteboard creators and space admins
-4. **Guest URL**: Placeholder URL field with integrated copy button
-5. **Reactive UI**: All controls automatically hide when space setting is disabled
-6. **Accessibility**: Full WCAG 2.1 AA compliance with ARIA labels
-7. **Space Independence**: Each space/subspace has independent settings (no inheritance)
+2. **Domain Hook**: `useSpaceGuestContributions()` hook provides type-safe access to space setting
+3. **Optimistic Updates**: UI updates immediately with React 19 `useOptimistic` and `useTransition`
+4. **Reactive UI**: All controls respond to space setting changes
+5. **Accessibility**: Full WCAG 2.1 AA compliance with ARIA labels
+6. **Space Independence**: Each space/subspace has independent settings (no inheritance)
+7. **Code Quality**: Refactored settings page using SOLID principles (extracted components)
 
-### Not Implemented (Backend Required)
+### Not Implemented (Deferred to Feature 002)
 
-- Actual public URL generation (placeholder URLs shown)
-- Public whiteboard access endpoint
-- Guest session management
-- URL 404 behavior when disabled
+- Share dialog integration (guest access toggle in whiteboard Share dialog)
+- Guest URL display field with copy button
+- Authorization check for whiteboard creators/admins in Share dialog
+- Share dialog translation keys for guest access UI
 
-See `backend-coordination.md` for backend integration requirements.
+### Backend Integration Status
+
+- Backend provides `allowGuestContributions` field in SpaceSettingsCollaboration ✅
+- Backend provides PUBLIC_SHARE privilege system ✅ (added for feature 002)
+- Public URL generation - **Not Yet Implemented**
+- Public whiteboard access endpoint - **Not Yet Implemented**
+- Guest session management - **Not Yet Implemented**
 
 ---
 
@@ -105,5 +117,5 @@ See `backend-coordination.md` for backend integration requirements.
 
 ---
 
-**Total Tasks Completed**: 20/20 (100%)
-**Status**: Ready for deployment as progressive enhancement
+**Total Tasks Completed**: 15/20 (75%)
+**Status**: Space settings implementation complete; Share dialog integration deferred to feature 002 (PUBLIC_SHARE privilege system)

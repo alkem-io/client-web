@@ -2,6 +2,7 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { Divider } from '@mui/material';
 import { useState, useEffect, ReactNode } from 'react';
 import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
 import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
@@ -10,6 +11,9 @@ import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollabo
 import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import { gutters } from '@/core/ui/grid/utils';
+import WhiteboardGuestAccessControls from '../WhiteboardShareDialog/WhiteboardGuestAccessControls';
+import WhiteboardGuestAccessSection from '../WhiteboardShareDialog/WhiteboardGuestAccessSection';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardId?: string;
@@ -63,6 +67,8 @@ const WhiteboardView = ({
   const hasUpdateContentPrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
   const hasDeletePrivileges =
     !preventWhiteboardDeletion && authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
+  const hasPublicSharePrivilege =
+    whiteboard?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.PublicShare) ?? false;
 
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
     variables: { whiteboardId: whiteboard?.id! },
@@ -106,7 +112,17 @@ const WhiteboardView = ({
             headerActions: (collabState: CollabState) => (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
-                  {hasUpdatePrivileges && <CollaborationSettings element={whiteboard} elementType="whiteboard" />}
+                  <WhiteboardGuestAccessControls whiteboard={whiteboard}>
+                    <WhiteboardGuestAccessSection whiteboard={whiteboard} />
+                  </WhiteboardGuestAccessControls>
+                  {hasUpdatePrivileges && (
+                    <>
+                      {hasPublicSharePrivilege && (
+                        <Divider orientation="horizontal" flexItem sx={{ marginTop: gutters(1) }} />
+                      )}
+                      <CollaborationSettings element={whiteboard} elementType="whiteboard" />
+                    </>
+                  )}
                 </ShareButton>
 
                 <FullscreenButton />
