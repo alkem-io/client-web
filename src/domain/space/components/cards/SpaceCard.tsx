@@ -77,7 +77,6 @@ const SpaceCard = ({
         <Box display="flex" flexDirection="column" gap={0} width="100%">
           <BlockTitle
             noWrap
-            component="dt"
             sx={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -99,7 +98,6 @@ const SpaceCard = ({
         <Box display="flex" flexDirection="column" gap={0} width="100%">
           <BlockTitle
             noWrap
-            component="dt"
             sx={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',
