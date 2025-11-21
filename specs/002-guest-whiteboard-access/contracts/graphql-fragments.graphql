@@ -25,12 +25,6 @@ fragment PublicWhiteboardFragment on Whiteboard {
     }
     description
   }
-  createdBy {
-    id
-    profile {
-      displayName
-    }
-  }
   createdDate
   updatedDate
 }

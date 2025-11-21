@@ -125,23 +125,24 @@ src/
 
 ```graphql
 query GetPublicWhiteboard($whiteboardId: UUID!) {
-  whiteboard(ID: $whiteboardId) {
-    ...PublicWhiteboardFragment
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...PublicWhiteboardFragment
+    }
   }
 }
 
 fragment PublicWhiteboardFragment on Whiteboard {
   id
   content
+  guestContributionsAllowed
   profile {
     id
     displayName
     description
-  }
-  createdBy {
-    id
-    profile {
-      displayName
+    url
+    storageBucket {
+      id
     }
   }
   createdDate

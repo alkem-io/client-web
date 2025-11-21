@@ -261,7 +261,7 @@ export const JoinWhiteboardDialog = ({
             onChange={e => setGuestName(e.target.value)}
             required
             fullWidth
-            inputProps={{ maxLength: 50, pattern: '[a-zA-Z0-9_-]+' }}
+            inputProps={{ maxLength: 50, pattern: '[a-zA-Z0-9 _-]+' }}
             placeholder="Enter a guest name"
             autoComplete="off"
           />
@@ -366,7 +366,7 @@ Implement **client-side validation** with HTML5 pattern + custom hook, and **ser
 
 - **Non-empty**: Required before enabling JOIN
 - **Max length**: 50 characters (`maxLength={50}`)
-- **Character set**: Alphanumeric + hyphens/underscores (`pattern="[a-zA-Z0-9_-]+"`)
+- **Character set**: Alphanumeric + spaces/hyphens/underscores (`pattern="[a-zA-Z0-9 _-]+"`)
 - **No leading/trailing whitespace**: Trim prior to persistence
 - **Derived names**: Algorithm yields only allowed characters; skip redundant regex validation
 
@@ -378,8 +378,8 @@ export const validateGuestName = (guestName: string): { valid: boolean; error?: 
   const trimmed = guestName.trim();
   if (!trimmed) return { valid: false, error: 'Please enter a valid guest name' };
   if (trimmed.length > 50) return { valid: false, error: 'Guest name must be 50 characters or less' };
-  if (!/^[a-zA-Z0-9_-]+$/.test(trimmed)) {
-    return { valid: false, error: 'Guest name can only contain letters, numbers, hyphens, and underscores' };
+  if (!/^[a-zA-Z0-9 _-]+$/.test(trimmed)) {
+    return { valid: false, error: 'Guest name can only contain letters, numbers, spaces, hyphens, and underscores' };
   }
   return { valid: true };
 };

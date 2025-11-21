@@ -38,8 +38,10 @@ Always required for any public whiteboard GraphQL operation. For authenticated u
 
 ```graphql
 query GetPublicWhiteboard($whiteboardId: UUID!) {
-  whiteboard(ID: $whiteboardId) {
-    ...PublicWhiteboardFragment
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...PublicWhiteboardFragment
+    }
   }
 }
 ```
@@ -57,22 +59,23 @@ query GetPublicWhiteboard($whiteboardId: UUID!) {
 ```json
 {
   "data": {
-    "whiteboard": {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "content": "{ /* Excalidraw JSON */ }",
-      "profile": {
-        "id": "660e8400-e29b-41d4-a716-446655440111",
-        "displayName": "Product Roadmap Q4",
-        "description": "Collaborative roadmap planning"
-      },
-      "createdBy": {
-        "id": "770e8400-e29b-41d4-a716-446655440222",
+    "lookup": {
+      "whiteboard": {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "content": "{ /* Excalidraw JSON */ }",
+        "guestContributionsAllowed": true,
         "profile": {
-          "displayName": "Alice Smith"
-        }
-      },
-      "createdDate": "2025-11-01T10:30:00Z",
-      "updatedDate": "2025-11-05T14:45:00Z"
+          "id": "660e8400-e29b-41d4-a716-446655440111",
+          "displayName": "Product Roadmap Q4",
+          "description": "Collaborative roadmap planning",
+          "url": null,
+          "storageBucket": {
+            "id": "bucket-123"
+          }
+        },
+        "createdDate": "2025-11-01T10:30:00Z",
+        "updatedDate": "2025-11-05T14:45:00Z"
+      }
     }
   }
 }
@@ -100,7 +103,9 @@ query GetPublicWhiteboard($whiteboardId: UUID!) {
     }
   ],
   "data": {
-    "whiteboard": null
+    "lookup": {
+      "whiteboard": null
+    }
   }
 }
 ```
@@ -121,15 +126,14 @@ query GetPublicWhiteboard($whiteboardId: UUID!) {
 fragment PublicWhiteboardFragment on Whiteboard {
   id
   content
+  guestContributionsAllowed
   profile {
     id
     displayName
     description
-  }
-  createdBy {
-    id
-    profile {
-      displayName
+    url
+    storageBucket {
+      id
     }
   }
   createdDate
@@ -139,17 +143,18 @@ fragment PublicWhiteboardFragment on Whiteboard {
 
 **Field Descriptions**:
 
-| Field                           | Type              | Required | Description                       |
-| ------------------------------- | ----------------- | -------- | --------------------------------- |
-| `id`                            | UUID              | Yes      | Unique whiteboard identifier      |
-| `content`                       | WhiteboardContent | Yes      | Excalidraw JSON data              |
-| `profile.id`                    | UUID              | Yes      | Profile identifier                |
-| `profile.displayName`           | String            | Yes      | Whiteboard title                  |
-| `profile.description`           | String            | No       | Whiteboard description (optional) |
-| `createdBy.id`                  | UUID              | No       | Creator user ID (optional)        |
-| `createdBy.profile.displayName` | String            | No       | Creator display name (optional)   |
-| `createdDate`                   | DateTime          | Yes      | ISO 8601 timestamp                |
-| `updatedDate`                   | DateTime          | Yes      | ISO 8601 timestamp                |
+| Field                       | Type              | Required | Description                       |
+| --------------------------- | ----------------- | -------- | --------------------------------- |
+| `id`                        | UUID              | Yes      | Unique whiteboard identifier      |
+| `content`                   | WhiteboardContent | Yes      | Excalidraw JSON data              |
+| `guestContributionsAllowed` | Boolean           | Yes      | Whether guest edits are permitted |
+| `profile.id`                | UUID              | Yes      | Profile identifier                |
+| `profile.displayName`       | String            | Yes      | Whiteboard title                  |
+| `profile.description`       | String            | No       | Whiteboard description (optional) |
+| `profile.url`               | String            | No       | Optional shareable URL            |
+| `profile.storageBucket.id`  | UUID              | Yes      | Bucket identifier for assets      |
+| `createdDate`               | DateTime          | Yes      | ISO 8601 timestamp                |
+| `updatedDate`               | DateTime          | Yes      | ISO 8601 timestamp                |
 
 ---
 
@@ -216,7 +221,7 @@ async function getPublicWhiteboard(whiteboardId: UUID, guestName: string | null)
 import {
   omitTypenameLink,
   consoleLink,
-  guestHeaderLink,  // ← Registered in link chain
+  guestHeaderLink, // ← Registered in link chain
   retryLink,
   redirectLink,
   httpLink,
@@ -229,7 +234,7 @@ return new ApolloClient({
   link: from([
     omitTypenameLink,
     consoleLink(enableQueryDebug),
-    guestHeaderLink,        // ← Injects x-guest-name for /public/whiteboard/* routes
+    guestHeaderLink, // ← Injects x-guest-name for /public/whiteboard/* routes
     errorLoggerLink,
     errorHandlerLink,
     retryLink,
@@ -244,7 +249,7 @@ return new ApolloClient({
 
 ```typescript
 export * from './consoleLink';
-export * from './guestHeaderLink';  // ← Exported for use in useGraphQLClient
+export * from './guestHeaderLink'; // ← Exported for use in useGraphQLClient
 export * from './useErrorLoggerLink';
 export * from './httpLink';
 export * from './omitTypenameLink';

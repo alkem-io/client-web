@@ -290,7 +290,7 @@ This feature satisfies the Constitution as follows:
 ### Key Entities
 
 - **Guest Session**: Ephemeral user session representing a guest user identified by a guest name (user-entered or anonymized derived). Attributes: `guestName` (string, 1-50 chars). Note: guest name is display-only; server uses internal session ID for unique identification.
-- **Public Whiteboard**: A whiteboard entity accessible via public URL. Core attributes from GraphQL schema: `id` (UUID), `content` (WhiteboardContent), `profile` (Profile), `createdBy` (User), `createdDate`, `updatedDate`. Note: Guest access control is determined server-side; if a guest can access a whiteboard, it is returned in the GraphQL response, otherwise an error is returned.
+- **Public Whiteboard**: A whiteboard entity accessible via public URL. Core attributes from GraphQL schema: `id` (UUID), `content` (WhiteboardContent), `profile` (Profile), `createdDate`, `updatedDate`. Note: Guest access control is determined server-side; if a guest can access a whiteboard, it is returned in the GraphQL response, otherwise an error is returned.
 - **Guest Authentication Context**: React context providing guest session state and methods. Exposes: `guestName` (string | null), `setGuestName(name: string)` (function), `clearGuestSession()` (function), `isGuest` (boolean).
 - **Guest Whiteboard Session**: Transient session tracking guest's last visited whiteboard. Attributes: `whiteboardUrl` (string, stored in session storage). Used to support return-to-whiteboard flow after sign-in interruption.
 

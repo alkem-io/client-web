@@ -1125,12 +1125,6 @@ export const PublicWhiteboardFragmentFragmentDoc = gql`
         id
       }
     }
-    createdBy {
-      id
-      profile {
-        displayName
-      }
-    }
     createdDate
     updatedDate
   }

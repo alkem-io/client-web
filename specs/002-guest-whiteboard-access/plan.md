@@ -73,7 +73,7 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - **Queries**:
   - `GetPublicWhiteboard(whiteboardId: UUID!)` - fetch whiteboard for guest
-  - Fragment: `PublicWhiteboardFragment` (id, content, profile, createdBy)
+  - Fragment: `PublicWhiteboardFragment` (id, content, profile)
 - **Mutations**: None (guest contributions handled by existing whiteboard mutations with guest context)
 - **Codegen workflow**: Run `pnpm run codegen` after backend schema update
 - **Schema diff review**: Required when `GetPublicWhiteboard` query is added to backend schema
@@ -254,7 +254,7 @@ All findings documented in: `specs/002-guest-whiteboard-access/research.md`
 
 1. **Guest Session** (Client-side)
 
-- `guestName: string` (1-50 chars, alphanumeric + hyphens/underscores) — user-entered or derived (`First L.` / `First` / `L.`)
+- `guestName: string` (1-50 chars, alphanumeric + spaces/hyphens/underscores) — user-entered or derived (`First L.` / `First` / `L.`)
 - Stored in: Session Storage (`alkemio_guest_name`)
 - Lifecycle: Cleared on browser close
 - Validation: Non-empty, max length, character restrictions
@@ -271,9 +271,10 @@ All findings documented in: `specs/002-guest-whiteboard-access/research.md`
    ```
 
 3. **Public Whiteboard** (GraphQL)
-   - Schema type: `Whiteboard` (existing)
-   - Accessed fields: `id`, `content`, `profile`, `createdBy`, `createdDate`
-   - Access control: Server-side (returns 403 if guest access disabled)
+
+- Schema type: `Whiteboard` (existing)
+- Accessed fields: `id`, `content`, `profile`, `createdDate`
+- Access control: Server-side (returns 403 if guest access disabled)
 
 ### API Contracts
 
@@ -292,15 +293,14 @@ query GetPublicWhiteboard($whiteboardId: UUID!) {
 fragment PublicWhiteboardFragment on Whiteboard {
   id
   content
+  guestContributionsAllowed
   profile {
     id
     displayName
     description
-  }
-  createdBy {
-    id
-    profile {
-      displayName
+    url
+    storageBucket {
+      id
     }
   }
   createdDate

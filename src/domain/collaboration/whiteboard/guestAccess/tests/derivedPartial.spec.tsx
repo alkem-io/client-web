@@ -116,14 +116,6 @@ const createWhiteboard = ({
       id: storageBucketId,
     },
   },
-  createdBy: {
-    __typename: 'User' as const,
-    id: `${id}-creator`,
-    profile: {
-      __typename: 'Profile' as const,
-      displayName: `${displayName} Owner`,
-    },
-  },
   createdDate: '2024-01-01T00:00:00.000Z',
   updatedDate: '2024-01-02T00:00:00.000Z',
 });

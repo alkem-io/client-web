@@ -28,9 +28,9 @@ This document defines the data structures, state management, and entity relation
 
 **Attributes**:
 
-| Field       | Type   | Required | Constraints                                    | Description                       |
-| ----------- | ------ | -------- | ---------------------------------------------- | --------------------------------- |
-| `guestName` | string | Yes      | 1-50 chars, alphanumeric + hyphens/underscores | Display name (entered or derived) |
+| Field       | Type   | Required | Constraints                                           | Description                       |
+| ----------- | ------ | -------- | ----------------------------------------------------- | --------------------------------- |
+| `guestName` | string | Yes      | 1-50 chars, alphanumeric + spaces/hyphens/underscores | Display name (entered or derived) |
 
 **Validation Rules**:
 
@@ -38,12 +38,12 @@ This document defines the data structures, state management, and entity relation
 interface GuestSessionValidation {
   minLength: 1;
   maxLength: 50;
-  pattern: /^[a-zA-Z0-9_-]+$/;
+  pattern: /^[a-zA-Z0-9 _-]+$/;
   trimWhitespace: true;
   errorMessages: {
     empty: "Please enter a valid guest name";
     tooLong: "Guest name must be 50 characters or less";
-    invalidChars: "Guest name can only contain letters, numbers, hyphens, and underscores";
+    invalidChars: "Guest name can only contain letters, numbers, spaces, hyphens, and underscores";
   };
 }
 ```
@@ -121,7 +121,7 @@ type Whiteboard {
   id: UUID!
   content: WhiteboardContent!
   profile: Profile!
-  createdBy: User
+  createdBy: User # available in schema but not requested for guest view
   createdDate: DateTime!
   updatedDate: DateTime!
   # ... other fields not used by guest view
@@ -141,7 +141,6 @@ type Whiteboard {
 | `id`          | UUID              | Unique identifier             |
 | `content`     | WhiteboardContent | Whiteboard data for rendering |
 | `profile`     | Profile           | Display name, description     |
-| `createdBy`   | User              | Original creator (optional)   |
 | `createdDate` | DateTime          | Creation timestamp            |
 | `updatedDate` | DateTime          | Last modification timestamp   |
 
@@ -350,12 +349,12 @@ onError(({ operation }) => {
 
 ### Guest Name
 
-| Rule            | Value                             | Error Message                                                            |
-| --------------- | --------------------------------- | ------------------------------------------------------------------------ |
-| Required        | Non-empty after trim (if entered) | "Please enter a valid guest name"                                        |
-| Max length      | 50 characters                     | "Guest name must be 50 characters or less"                               |
-| Character set   | `[a-zA-Z0-9_-]+`                  | "Guest name can only contain letters, numbers, hyphens, and underscores" |
-| Trim whitespace | Auto-trim before validation       | N/A                                                                      |
+| Rule            | Value                             | Error Message                                                                    |
+| --------------- | --------------------------------- | -------------------------------------------------------------------------------- |
+| Required        | Non-empty after trim (if entered) | "Please enter a valid guest name"                                                |
+| Max length      | 50 characters                     | "Guest name must be 50 characters or less"                                       |
+| Character set   | `[a-zA-Z0-9 _-]+`                 | "Guest name can only contain letters, numbers, spaces, hyphens, and underscores" |
+| Trim whitespace | Auto-trim before validation       | N/A                                                                              |
 
 ---
 
@@ -384,15 +383,14 @@ extend type Query {
 fragment PublicWhiteboardFragment on Whiteboard {
   id
   content
+  guestContributionsAllowed
   profile {
     id
     displayName
     description
-  }
-  createdBy {
-    id
-    profile {
-      displayName
+    url
+    storageBucket {
+      id
     }
   }
   createdDate

@@ -10,6 +10,8 @@ describe('guestNameValidator', () => {
         'john-doe',
         'JohnDoe123',
         'J',
+        'John Doe',
+        'Guest Name With Spaces',
         'a'.repeat(50), // max length
       ];
 
@@ -40,7 +42,6 @@ describe('guestNameValidator', () => {
       const invalidNames = [
         'John@Doe',
         'John#Doe',
-        'John Doe', // space
         'John!',
         'John$',
         'John%',
@@ -55,17 +56,12 @@ describe('guestNameValidator', () => {
       invalidNames.forEach(name => {
         const result = validateGuestName(name);
         expect(result.valid).toBe(false);
-        expect(result.error).toContain('letters, numbers, hyphens');
+        expect(result.error).toContain('letters, numbers, spaces, hyphens');
       });
     });
 
     it('should accept names with hyphens and underscores', () => {
-      const validNames = [
-        'John-Doe',
-        'John_Doe',
-        'John-Doe_Smith',
-        'Test-Name_123',
-      ];
+      const validNames = ['John-Doe', 'John_Doe', 'John-Doe_Smith', 'Test-Name_123'];
 
       validNames.forEach(name => {
         expect(validateGuestName(name)).toEqual({ valid: true });
@@ -73,12 +69,7 @@ describe('guestNameValidator', () => {
     });
 
     it('should trim whitespace before validation', () => {
-      const namesWithWhitespace = [
-        '  John  ',
-        '\tJohn\t',
-        '\nJohn\n',
-        '  John_Doe  ',
-      ];
+      const namesWithWhitespace = ['  John  ', '\tJohn\t', '\nJohn\n', '  John_Doe  '];
 
       namesWithWhitespace.forEach(name => {
         expect(validateGuestName(name)).toEqual({ valid: true });
@@ -100,12 +91,7 @@ describe('guestNameValidator', () => {
     });
 
     it('should handle unicode characters appropriately', () => {
-      const unicodeNames = [
-        'José',
-        'François',
-        'Müller',
-        '李明',
-      ];
+      const unicodeNames = ['José', 'François', 'Müller', '李明'];
 
       unicodeNames.forEach(name => {
         const result = validateGuestName(name);

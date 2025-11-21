@@ -16709,9 +16709,6 @@ export type GetPublicWhiteboardQuery = {
             url: string;
             storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
-          createdBy?:
-            | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; displayName: string } }
-            | undefined;
         }
       | undefined;
   };
@@ -16732,7 +16729,6 @@ export type PublicWhiteboardFragmentFragment = {
     url: string;
     storageBucket: { __typename?: 'StorageBucket'; id: string };
   };
-  createdBy?: { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; displayName: string } } | undefined;
 };
 
 export type LinkDetailsFragment = {

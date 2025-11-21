@@ -131,16 +131,6 @@ const PublicWhiteboardPageContent: FC = () => {
         storageBucket: whiteboard.profile?.storageBucket ?? { id: '' },
         url: whiteboard.profile?.url,
       },
-      createdBy: whiteboard.createdBy
-        ? {
-            id: whiteboard.createdBy.id,
-            profile: {
-              displayName: whiteboard.createdBy.profile.displayName,
-              url: '',
-              avatar: undefined,
-            },
-          }
-        : undefined,
       previewSettings: DefaultWhiteboardPreviewSettings,
     };
 

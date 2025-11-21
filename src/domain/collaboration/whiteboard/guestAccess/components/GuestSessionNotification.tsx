@@ -109,7 +109,7 @@ const GuestSessionNotification = ({ onBackToWhiteboard, onGoToWebsite }: GuestSe
           {/* Info Box */}
           <Box
             sx={{
-              backgroundColor: theme.palette.info.main,
+              backgroundColor: theme.palette.highlight?.light ?? '#DEEFF6',
               borderRadius: '10px',
               p: 2.5,
               display: 'flex',
