@@ -1,5 +1,9 @@
 import { useMemo, useState } from 'react';
-import { useAiPersonaQuery, useUpdateAiPersonaMutation } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useAiPersonaQuery,
+  useUpdateAiPersonaMutation,
+  useUpdateVirtualContributorPlatformSettingsMutation,
+} from '@/core/apollo/generated/apollo-hooks';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContent from '@/core/ui/content/PageContent';
@@ -13,7 +17,12 @@ import PromptGraphConfigForm from './PromptGraphConfigForm';
 import { transformNodesMapToArray } from './utils';
 
 type PromptGraphConfigProps = {
-  vc: { id: string };
+  vc: {
+    id: string;
+    platformSettings?: {
+      promptGraphEditingEnabled?: boolean | null;
+    } | null;
+  };
   isPlatformAdmin?: boolean;
 };
 
@@ -21,7 +30,6 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
   const { t } = useTranslation();
   const notify = useNotification();
   const [isValid, setIsValid] = useState(false);
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const vcId = vc?.id;
 
   const { data } = useAiPersonaQuery({
@@ -31,6 +39,8 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
   const aiPersona = data?.virtualContributor?.aiPersona;
 
   const [updateAiPersona] = useUpdateAiPersonaMutation();
+  const [updatePlatformSettings, { loading: updatingPlatformSettings }] =
+    useUpdateVirtualContributorPlatformSettingsMutation();
 
   const initialValues: FormValueType = useMemo(() => {
     // Use a deep copy of the promptGraph from aiPersona so we don't mutate the original
@@ -87,13 +97,41 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
 
   const availableVariables = 'duration, audience, workshop_type, role, purpose';
   const promptGraph = aiPersona?.promptGraph || { nodes: [], edges: [] };
+  const promptGraphEditingEnabled = vc.platformSettings?.promptGraphEditingEnabled ?? false;
+
+  const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.checked;
+
+    // Only allow platform admins to change the platform-wide flag
+    if (!isPlatformAdmin) {
+      return;
+    }
+
+    if (!vcId) return;
+
+    updatePlatformSettings({
+      variables: {
+        settingsData: {
+          virtualContributorID: vcId,
+          settings: {
+            promptGraphEditingEnabled: nextValue,
+          },
+        },
+      },
+    });
+  };
 
   return (
     <PageContent background="background.paper">
       <PageContentColumn columns={12}>
         <PageContentBlock>
           <BlockTitle sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <Switch checked={showAdvanced} onChange={() => setShowAdvanced(s => !s)} />
+            <Switch
+              checked={promptGraphEditingEnabled}
+              onChange={handleToggleChange}
+              color="primary"
+              disabled={updatingPlatformSettings}
+            />
             {t('pages.virtualContributorProfile.settings.promptGraph.title')}
           </BlockTitle>
           <Caption>
@@ -102,7 +140,7 @@ const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigPro
             </Alert>
             {t('pages.virtualContributorProfile.settings.promptGraph.infoText', { availableVariables })}
           </Caption>
-          {showAdvanced && (
+          {promptGraphEditingEnabled && (
             <Formik initialValues={initialValues} enableReinitialize validateOnMount onSubmit={() => {}}>
               <PromptGraphConfigForm
                 promptGraph={promptGraph}
