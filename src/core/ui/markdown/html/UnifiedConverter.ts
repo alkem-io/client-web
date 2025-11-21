@@ -9,6 +9,25 @@ import { emptyParagraph, html } from '../utils/unist-builders';
 
 const isEmptyLine = (node: Html, parent: Parent | null | undefined) => node.value === '<br>' && parent?.type === 'root';
 
+const isInsideTable = (parent: (Parent & { tagName?: string }) | undefined) => {
+  return parent?.tagName && ['td', 'th'].includes(parent.tagName);
+};
+
+const isEmptyCell = (parent: Parent | undefined, element: Element) => {
+  if (!parent) {
+    return false;
+  }
+  if (isInsideTable(parent) && parent.children.length > 1) {
+    return false;
+  }
+  return (
+    element.children.length === 0 ||
+    (element.children.length === 1 &&
+      element.children[0].type === 'element' &&
+      (element.children[0] as Element).tagName === 'br')
+  );
+};
+
 const allowDangerousHtmlIframeProps = [
   'src',
   'width',
@@ -29,6 +48,7 @@ const UnifiedConverter = (): Converter => {
     const { default: rehypeRemark } = await import('rehype-remark');
     const { default: rehypeRaw } = await import('rehype-raw');
     const { default: remarkStringify } = await import('remark-stringify');
+    const { default: remarkGfm } = await import('remark-gfm');
 
     const trimmer = (nodeType: 'strong' | 'emphasis') => (state: H2MState, element: Element) => {
       if (element.children.length === 1) {
@@ -56,8 +76,24 @@ const UnifiedConverter = (): Converter => {
         // @ts-ignore
         .use(rehypeRemark, {
           handlers: {
-            p: (state: H2MState, element: Element) =>
-              element.children.length === 0 ? html('<br>') : defaultHTMLHandlers.p(state, element),
+            p: (state: H2MState, element: Element, parent: Parent | undefined) => {
+              if (isInsideTable(parent)) {
+                if (isEmptyCell(parent, element)) {
+                  return null;
+                }
+
+                const children = state.all(element);
+                const siblings = (parent?.children as unknown as Element[]).filter(c => c.type === 'element') ?? [];
+                const index = siblings.indexOf(element);
+                const isLast = index === siblings.length - 1;
+
+                if (!isLast) {
+                  return [...children, html('<br>')];
+                }
+                return children;
+              }
+              return element.children.length === 0 ? html('<br>') : defaultHTMLHandlers.p(state, element);
+            },
             strong: trimmer('strong'),
             emphasis: trimmer('emphasis'),
             iframe: (_state: H2MState, element: Element) => ({
@@ -75,6 +111,7 @@ const UnifiedConverter = (): Converter => {
             }),
           },
         })
+        .use(remarkGfm)
         .use(remarkStringify)
     );
   });
@@ -82,6 +119,7 @@ const UnifiedConverter = (): Converter => {
   const constructMarkdownToHTMLPipeline = once(async () => {
     const { unified } = await import('unified');
     const { default: remarkParse } = await import('remark-parse');
+    const { default: remarkGfm } = await import('remark-gfm');
     const { default: remarkRehype, defaultHandlers: defaultMarkdownHandlers } = await import('remark-rehype');
     const { default: rehypeRaw } = await import('rehype-raw');
     const { default: rehypeSanitize } = await import('rehype-sanitize');
@@ -98,6 +136,7 @@ const UnifiedConverter = (): Converter => {
 
     return unified()
       .use(remarkParse)
+      .use(remarkGfm)
       .use(remarkRehype, {
         allowDangerousHtml: true,
         handlers: {

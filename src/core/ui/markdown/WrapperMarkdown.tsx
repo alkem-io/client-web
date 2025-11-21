@@ -4,9 +4,11 @@ import rehypeRaw from 'rehype-raw';
 import components from './components';
 import PlainText from './PlainText';
 import { MarkdownOptions, MarkdownOptionsProvider } from './MarkdownOptionsContext';
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, SxProps, Theme } from '@mui/material';
 import { remarkVerifyIframe } from './embed/remarkVerifyIframe';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import { gutters } from '@/core/ui/grid/utils';
+
 /**
  * WARNING: About `mdast-util-gfm-autolink-literal` package.
  * We are not using this package directly, but do not remove the dependency from our package.json
@@ -53,6 +55,23 @@ export const WrapperMarkdown = ({
 }: WrapperMarkdownProps) => {
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
 
+  const mergedSx: SxProps<Theme> = {
+    li: { marginY: caption ? 0 : 1 },
+    display: plain ? 'inline' : undefined,
+    table: theme => ({ borderCollapse: theme.palette.markdownTable.borderCollapse }),
+    tr: theme => ({
+      '&:nth-child(odd)': { background: theme.palette.markdownTable.rowBackgroundOdd },
+      '&:nth-child(even)': { background: theme.palette.markdownTable.rowBackgroundEven },
+    }),
+    th: { border: theme => `1px solid ${theme.palette.markdownTable.border}`, padding: gutters(0.5) },
+    td: {
+      border: theme => `1px solid ${theme.palette.markdownTable.border}`,
+      padding: gutters(0.5),
+      verticalAlign: 'top',
+    },
+    ...sx,
+  };
+
   return (
     <MarkdownOptionsProvider
       card={card}
@@ -61,11 +80,7 @@ export const WrapperMarkdown = ({
       disableParagraphPadding={disableParagraphPadding}
       caption={caption}
     >
-      <Box
-        sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined, ...sx }}
-        className={`${MARKDOWN_CLASS_NAME} ${className || ''}`.trim()}
-        {...containerProps}
-      >
+      <Box sx={mergedSx} className={`${MARKDOWN_CLASS_NAME} ${className || ''}`.trim()} {...containerProps}>
         <ReactMarkdown
           components={components}
           remarkPlugins={[
