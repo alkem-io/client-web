@@ -2520,6 +2520,7 @@ export type ModelCardSpaceUsageResultFieldPolicy = {
 };
 export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
+  | 'addNotificationEmailToBlacklist'
   | 'addReactionToMessageInRoom'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
@@ -2626,6 +2627,7 @@ export type MutationKeySpecifier = (
   | 'removeCommunityGuidelinesContent'
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
+  | 'removeNotificationEmailFromBlacklist'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
   | 'removeRoleFromOrganization'
@@ -2693,6 +2695,7 @@ export type MutationKeySpecifier = (
   | 'updateUserPlatformSettings'
   | 'updateUserSettings'
   | 'updateVirtualContributor'
+  | 'updateVirtualContributorPlatformSettings'
   | 'updateVirtualContributorSettings'
   | 'updateVisual'
   | 'updateWhiteboard'
@@ -2704,6 +2707,7 @@ export type MutationKeySpecifier = (
 )[];
 export type MutationFieldPolicy = {
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
+  addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2810,6 +2814,7 @@ export type MutationFieldPolicy = {
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2877,6 +2882,7 @@ export type MutationFieldPolicy = {
   updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateVirtualContributorPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributorSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3150,9 +3156,14 @@ export type PlatformFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformIntegrationSettingsKeySpecifier = ('iframeAllowedUrls' | PlatformIntegrationSettingsKeySpecifier)[];
+export type PlatformIntegrationSettingsKeySpecifier = (
+  | 'iframeAllowedUrls'
+  | 'notificationEmailBlacklist'
+  | PlatformIntegrationSettingsKeySpecifier
+)[];
 export type PlatformIntegrationSettingsFieldPolicy = {
   iframeAllowedUrls?: FieldPolicy<any> | FieldReadFunction<any>;
+  notificationEmailBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformInvitationKeySpecifier = (
   | 'authorization'
@@ -4777,6 +4788,7 @@ export type VirtualContributorKeySpecifier = (
   | 'listedInStore'
   | 'modelCard'
   | 'nameID'
+  | 'platformSettings'
   | 'profile'
   | 'promptGraphDefinition'
   | 'provider'
@@ -4804,6 +4816,7 @@ export type VirtualContributorFieldPolicy = {
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   modelCard?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  platformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   promptGraphDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4831,6 +4844,13 @@ export type VirtualContributorModelCardFlagKeySpecifier = (
 export type VirtualContributorModelCardFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualContributorPlatformSettingsKeySpecifier = (
+  | 'promptGraphEditingEnabled'
+  | VirtualContributorPlatformSettingsKeySpecifier
+)[];
+export type VirtualContributorPlatformSettingsFieldPolicy = {
+  promptGraphEditingEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VirtualContributorSettingsKeySpecifier = ('privacy' | VirtualContributorSettingsKeySpecifier)[];
 export type VirtualContributorSettingsFieldPolicy = {
@@ -6436,6 +6456,13 @@ export type StrictTypedTypePolicies = {
       | VirtualContributorModelCardFlagKeySpecifier
       | (() => undefined | VirtualContributorModelCardFlagKeySpecifier);
     fields?: VirtualContributorModelCardFlagFieldPolicy;
+  };
+  VirtualContributorPlatformSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | VirtualContributorPlatformSettingsKeySpecifier
+      | (() => undefined | VirtualContributorPlatformSettingsKeySpecifier);
+    fields?: VirtualContributorPlatformSettingsFieldPolicy;
   };
   VirtualContributorSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

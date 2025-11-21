@@ -63,6 +63,9 @@ query VirtualContributor($id: UUID!) {
         id
         myPrivileges
       }
+      platformSettings {
+        promptGraphEditingEnabled
+      }
       settings {
         privacy {
           knowledgeBaseContentVisible
