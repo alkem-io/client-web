@@ -15,6 +15,8 @@ export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
 export type BinaryFilesWithUrl = Record<string, BinaryFileDataWithUrl>;
 export type BinaryFilesWithOptionalUrl = Record<string, BinaryFileDataWithOptionalUrl>;
 
+const guestName = globalThis.sessionStorage.getItem('alkemio_guest_name');
+
 const isValidDataURL = (url: string) =>
   url.match(/^(data:)([\w/+-]*)(;charset=[\w-]+|;base64){0,1},[A-Za-z0-9+/=]+$/gi) !== null;
 
@@ -50,7 +52,11 @@ const blobToDataURL = (blob: Blob): Promise<string> => {
 };
 
 const fetchFileToDataURL = async (url: string): Promise<string> => {
-  const response = await fetch(url);
+  const headers = {};
+  if (guestName) {
+    Object.assign(headers, { 'x-guest-name': guestName });
+  }
+  const response = await fetch(url, { headers });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch file from ${url}`);
@@ -233,7 +239,9 @@ const useWhiteboardFilesManager = ({
 
         log('DOWNLOADING ', file);
         try {
-          const dataURL = await fetchFileToDataURL(file.url);
+          const dataURL = await fetchFileToDataURL(
+            file.url.replace('http://localhost:3000/api/private/', 'http://localhost:4003/')
+          );
           // try-catch will avoid putting the file in the store if fetching fails
           fileStoreAddFile(fileId, { ...file, dataURL } as BinaryFileDataWithUrl);
         } catch (e) {
