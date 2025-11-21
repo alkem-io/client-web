@@ -8,7 +8,6 @@ import BodyOfKnowledgeManagement from '../components/BodyOfKnowledgeManagement';
 import { PromptGraphConfig } from '../components/promptGraph';
 import { PromptConfig } from '../components/PromptConfig';
 import ExternalConfig from '../components/ExternalConfig';
-import VirtualContributorPlatformSettingsSection from './VirtualContributorPlatformSettingsSection';
 import { AiPersonaEngine, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '../../userCurrent/useCurrentUserContext';
 
@@ -35,7 +34,9 @@ const VirtualContributorSettingsPage = () => {
     vc?.aiPersona?.engine!
   );
 
-  const isPromptGraphConfigAvailable = isPlatformAdmin && vc?.aiPersona?.engine === AiPersonaEngine.Expert;
+  const canShowPromptGraphSection =
+    vc?.aiPersona?.engine === AiPersonaEngine.Expert &&
+    (isPlatformAdmin || vc.platformSettings?.promptGraphEditingEnabled);
 
   if (!vc || !vc.aiPersona) {
     return null;
@@ -46,10 +47,11 @@ const VirtualContributorSettingsPage = () => {
       <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
         <VisibilityForm vc={vc} />
         <BodyOfKnowledgeManagement vc={vc} />
-        {isPromptGraphConfigAvailable && <PromptGraphConfig vc={vc} />}
+        {canShowPromptGraphSection && (
+          <PromptGraphConfig vc={vc} isPlatformAdmin={!!isPlatformAdmin} />
+        )}
         {isPromptConfigAvailable && <PromptConfig vc={vc} />}
         {isExternalConfigAvailable && <ExternalConfig vc={vc} />}
-        {isPlatformAdmin && <VirtualContributorPlatformSettingsSection vc={vc} />}
       </VCSettingsPageLayout>
     </StorageConfigContextProvider>
   );

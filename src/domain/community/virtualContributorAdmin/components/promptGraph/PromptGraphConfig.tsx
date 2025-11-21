@@ -14,9 +14,10 @@ import { transformNodesMapToArray } from './utils';
 
 type PromptGraphConfigProps = {
   vc: { id: string };
+  isPlatformAdmin?: boolean;
 };
 
-const PromptGraphConfig = ({ vc }: PromptGraphConfigProps) => {
+const PromptGraphConfig = ({ vc, isPlatformAdmin = false }: PromptGraphConfigProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const [isValid, setIsValid] = useState(false);

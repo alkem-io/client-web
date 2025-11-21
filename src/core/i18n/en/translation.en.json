@@ -37,12 +37,6 @@
       }
     ]
   },
-  "pages": {
-    "virtualContributorPlatformSettings": {
-      "title": "Virtual contributor platform settings",
-      "promptGraphEditingEnabled": "Allow editing of the prompt graph (platform-wide setting)"
-    }
-  },
   "releaseNotes": {
     "title": "<big>🎉 Platform update!</big> <small>We have some exciting news for you… Click here to read all about it!</small>",
     "url": "/forum/releases/latest?date=4725",
