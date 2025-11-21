@@ -16,6 +16,7 @@ export interface ConfirmationDialogProps {
     content?: ReactNode;
     confirmButtonTextId?: TranslationKey;
     confirmButtonText?: string;
+    cancelButtonTextId?: TranslationKey;
     cancelButtonText?: string;
   };
   actions: {
@@ -41,7 +42,9 @@ const ConfirmationDialog = ({ entities, actions, options, state }: ConfirmationD
   if (!content) {
     throw new Error('The confirmation dialog needs text content provided');
   }
-  const cancelButtonText = entities.cancelButtonText;
+  const cancelButtonText = entities.cancelButtonTextId
+    ? (t(entities.cancelButtonTextId) as string)
+    : entities.cancelButtonText;
   const confirmButtonText = entities.confirmButtonTextId
     ? (t(entities.confirmButtonTextId) as string)
     : entities.confirmButtonText;
@@ -57,11 +60,16 @@ const ConfirmationDialog = ({ entities, actions, options, state }: ConfirmationD
         <>{content}</>
       </DialogContent>
       <Actions padding={gutters()} sx={{ justifyContent: 'end' }}>
-        <Button variant="contained" onClick={actions.onCancel}>
+        <Button variant="text" onClick={actions.onCancel}>
           {cancelButtonText || t('buttons.cancel')}
         </Button>
         {Boolean(actions.onConfirm) && (
-          <Button variant="text" loading={state?.isLoading} disabled={state?.isLoading} onClick={actions.onConfirm}>
+          <Button
+            variant="contained"
+            loading={state?.isLoading}
+            disabled={state?.isLoading}
+            onClick={actions.onConfirm}
+          >
             {confirmButtonText}
           </Button>
         )}

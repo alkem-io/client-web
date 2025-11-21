@@ -113,9 +113,10 @@ const PostCreationDialog = ({
             show: closeConfirmDialogOpen,
           }}
           entities={{
-            titleId: 'post-edit.closeConfirm.title',
-            contentId: 'post-edit.closeConfirm.description',
-            confirmButtonTextId: 'buttons.yes-close',
+            titleId: 'post-edit.cancelConfirm.title',
+            contentId: 'post-edit.cancelConfirm.description',
+            confirmButtonTextId: 'buttons.yesCancel',
+            cancelButtonTextId: 'buttons.close',
           }}
         />
       </DialogContent>
