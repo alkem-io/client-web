@@ -4508,7 +4508,7 @@ export type Mutation = {
   updateVirtualContributor: VirtualContributor;
   /** Updates platform-level settings of a VirtualContributor (platform admins only). */
   updateVirtualContributorPlatformSettings: VirtualContributor;
-  /** Updates one of the Setting on an Organization */
+  /** Updates one of the Setting on an Virtual Contributor */
   updateVirtualContributorSettings: VirtualContributor;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
@@ -8225,14 +8225,14 @@ export type UpdateVirtualContributorInput = {
 
 export type UpdateVirtualContributorPlatformSettingsEntityInput = {
   /** Enable or disable the editing of the prompt graph for this Virtual Contributor. */
-  promptGraphEditingEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  promptGraphEditingEnabled: Scalars['Boolean']['input'];
 };
 
 export type UpdateVirtualContributorPlatformSettingsInput = {
   /** Platform-level settings to apply to this Virtual Contributor. */
   settings: UpdateVirtualContributorPlatformSettingsEntityInput;
   /** ID of the Virtual Contributor to update. */
-  virtualContributorID: Scalars['String']['input'];
+  virtualContributorID: Scalars['UUID']['input'];
 };
 
 export type UpdateVirtualContributorSettingsEntityInput = {
@@ -8693,7 +8693,7 @@ export type VirtualContributor = Contributor & {
   /** A name identifier of the Contributor, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
   /** Platform-level settings of this Virtual Contributor, modifiable only by platform admins. */
-  platformSettings?: Maybe<VirtualContributorPlatformSettings>;
+  platformSettings: VirtualContributorPlatformSettings;
   /** The profile for this Virtual. */
   profile: Profile;
   /** Prompt graph definition for this Virtual Contributor. */
@@ -20684,9 +20684,7 @@ export type VirtualContributorQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          platformSettings?:
-            | { __typename?: 'VirtualContributorPlatformSettings'; promptGraphEditingEnabled: boolean }
-            | undefined;
+          platformSettings: { __typename?: 'VirtualContributorPlatformSettings'; promptGraphEditingEnabled: boolean };
           settings: {
             __typename?: 'VirtualContributorSettings';
             privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
@@ -21329,9 +21327,7 @@ export type UpdateVirtualContributorPlatformSettingsMutation = {
     __typename?: 'VirtualContributor';
     id: string;
     aiPersona?: { __typename?: 'AiPersona'; id: string } | undefined;
-    platformSettings?:
-      | { __typename?: 'VirtualContributorPlatformSettings'; promptGraphEditingEnabled: boolean }
-      | undefined;
+    platformSettings: { __typename?: 'VirtualContributorPlatformSettings'; promptGraphEditingEnabled: boolean };
   };
 };
 
