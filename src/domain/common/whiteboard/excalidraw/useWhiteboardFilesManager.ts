@@ -239,9 +239,7 @@ const useWhiteboardFilesManager = ({
 
         log('DOWNLOADING ', file);
         try {
-          const dataURL = await fetchFileToDataURL(
-            file.url.replace('http://localhost:3000/api/private/', 'http://localhost:4003/')
-          );
+          const dataURL = await fetchFileToDataURL(file.url);
           // try-catch will avoid putting the file in the store if fetching fails
           fileStoreAddFile(fileId, { ...file, dataURL } as BinaryFileDataWithUrl);
         } catch (e) {
