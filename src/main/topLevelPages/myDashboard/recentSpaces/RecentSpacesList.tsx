@@ -19,8 +19,13 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
 
   const { data } = useRecentSpacesQuery({ variables: { limit: visibleSpaces } });
 
+  // an edge case, a different layout should be shown in this case
+  if (!data?.me.mySpaces.length) {
+    return null;
+  }
+
   return (
-    <Gutters disablePadding>
+    <Gutters disablePadding sx={{ width: '100%' }}>
       <Gutters row disablePadding>
         {data?.me.mySpaces.slice(0, visibleSpaces).map(result => (
           <GridItem key={result.space.id} columns={cardColumns}>
@@ -35,9 +40,11 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
           </GridItem>
         ))}
       </Gutters>
-      <Button endIcon={<DoubleArrowOutlined />} sx={{ textTransform: 'none' }} onClick={onSeeMore}>
-        <Caption>{t('pages.home.sections.recentSpaces.seeMore')}</Caption>
-      </Button>
+      {data?.me.mySpaces.length >= visibleSpaces && (
+        <Button endIcon={<DoubleArrowOutlined />} sx={{ textTransform: 'none' }} onClick={onSeeMore}>
+          <Caption>{t('pages.home.sections.recentSpaces.seeMore')}</Caption>
+        </Button>
+      )}
     </Gutters>
   );
 };
