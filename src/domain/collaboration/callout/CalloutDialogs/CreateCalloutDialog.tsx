@@ -117,6 +117,21 @@ const CreateCalloutDialog = ({
         ...formData.framing,
         profile: mapProfileModelToCreateProfileInput(formData.framing.profile),
         tags: mapProfileTagsToCreateTags(formData.framing.profile),
+        // Map media gallery items to CreateMediaGalleryInput
+        mediaGallery: formData.framing.mediaGallery
+          ? {
+              visuals: formData.framing.mediaGallery.items.map(item => ({
+                aspectRatio: 1.5,
+                maxHeight: 1000,
+                maxWidth: 1000,
+                minHeight: 100,
+                minWidth: 100,
+                name: 'CARD',
+                uri: item.url,
+                alternativeText: item.title || '',
+              })),
+            }
+          : undefined,
       };
 
       // And map the radio button allowed contribution types to an array

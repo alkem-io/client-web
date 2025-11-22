@@ -78,6 +78,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           previewImages: [],
         },
         link: calloutData.framing.link,
+        mediaGallery: calloutData.framing.mediaGallery,
       },
       settings: mapCalloutSettingsModelToCalloutSettingsFormValues(calloutData.settings),
       contributionDefaults: {
@@ -123,6 +124,15 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       link:
         formData.framing.type === CalloutFramingType.Link
           ? mapLinkDataToUpdateLinkInput(formData.framing.link)
+          : undefined,
+      mediaGallery:
+        formData.framing.type === CalloutFramingType.MediaGallery && formData.framing.mediaGallery?.visuals?.length
+          ? {
+              visuals: formData.framing.mediaGallery.visuals.map(v => ({
+                uri: v.uri,
+                visualID: v.id ?? '',
+              })),
+            }
           : undefined,
     };
 

@@ -7073,6 +7073,13 @@ export const CalloutContentDocument = gql`
           link {
             ...LinkDetails
           }
+          mediaGallery {
+            visuals {
+              id
+              uri
+              name
+            }
+          }
         }
         contributionDefaults {
           id

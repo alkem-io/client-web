@@ -2269,6 +2269,8 @@ export type CreateVirtualContributorOnAccountInput = {
 
 export type CreateVisualData = {
   __typename?: 'CreateVisualData';
+  /** Alternative text for the visual. */
+  alternativeText?: Maybe<Scalars['String']['output']>;
   /** Dimensions ratio width / height. */
   aspectRatio: Scalars['Float']['output'];
   /** Maximum allowed height for the visual. */
@@ -2281,9 +2283,13 @@ export type CreateVisualData = {
   minWidth: Scalars['Float']['output'];
   /** Type of visual to create (e.g. banner, avatar). */
   name: VisualType;
+  /** URI for the visual. */
+  uri?: Maybe<Scalars['String']['output']>;
 };
 
 export type CreateVisualInput = {
+  /** Alternative text for the visual. */
+  alternativeText?: InputMaybe<Scalars['String']['input']>;
   /** Dimensions ratio width / height. */
   aspectRatio: Scalars['Float']['input'];
   /** Maximum allowed height for the visual. */
@@ -2296,6 +2302,8 @@ export type CreateVisualInput = {
   minWidth: Scalars['Float']['input'];
   /** Type of visual to create (e.g. banner, avatar). */
   name: VisualType;
+  /** URI for the visual. */
+  uri?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateVisualOnProfileData = {
@@ -7919,7 +7927,7 @@ export type UpdateLocationInput = {
 
 export type UpdateMediaGalleryInput = {
   /** The new list of visuals for the media gallery. Replaces existing ones. */
-  visuals: Array<CreateVisualInput>;
+  visuals: Array<UpdateVisualInput>;
 };
 
 export type UpdateMemoEntityInput = {
@@ -12702,6 +12710,12 @@ export type CalloutContentQuery = {
                     displayName: string;
                     description?: string | undefined;
                   };
+                }
+              | undefined;
+            mediaGallery?:
+              | {
+                  __typename?: 'MediaGallery';
+                  visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: VisualType }> | undefined;
                 }
               | undefined;
           };

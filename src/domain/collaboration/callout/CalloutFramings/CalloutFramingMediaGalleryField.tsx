@@ -12,7 +12,7 @@ import { gutters } from '@/core/ui/grid/utils';
 const CalloutFramingMediaGalleryField = () => {
   const { t } = useTranslation();
   const { values } = useFormikContext<CalloutFormSubmittedValues>();
-  const mediaItems = values.framing.mediaGallery?.items || [];
+  const mediaVisuals = values.framing.mediaGallery?.visuals || [];
 
   return (
     <PageContentBlockSeamless disablePadding>
@@ -21,20 +21,20 @@ const CalloutFramingMediaGalleryField = () => {
       </Typography>
 
       <FieldArray
-        name="framing.mediaGallery.items"
+        name="framing.mediaGallery.visuals"
         render={arrayHelpers => (
           <Box display="flex" flexDirection="column" gap={gutters()}>
-            {mediaItems.map((item, index) => (
+            {mediaVisuals.map((visual, index) => (
               <Box key={index} display="flex" gap={gutters()} alignItems="flex-start">
                 <FormikInputField
-                  name={`framing.mediaGallery.items.${index}.url`}
+                  name={`framing.mediaGallery.visuals.${index}.uri`}
                   title={t('common.url')}
                   placeholder="https://example.com/image.jpg"
                   containerProps={{ sx: { flex: 1 } }}
                   required
                 />
                 <FormikInputField
-                  name={`framing.mediaGallery.items.${index}.title`}
+                  name={`framing.mediaGallery.visuals.${index}.name`}
                   title={t('common.title')}
                   placeholder="Image Title"
                   containerProps={{ sx: { flex: 1 } }}
@@ -47,7 +47,7 @@ const CalloutFramingMediaGalleryField = () => {
 
             <Button
               startIcon={<AddIcon />}
-              onClick={() => arrayHelpers.push({ url: '', title: '' })}
+              onClick={() => arrayHelpers.push({ uri: '', name: '' })}
               variant="outlined"
               size="small"
               sx={{ alignSelf: 'flex-start' }}

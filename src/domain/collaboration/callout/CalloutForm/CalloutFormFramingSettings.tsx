@@ -76,7 +76,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           ...framing,
           type: newType,
           mediaGallery: {
-            items: [],
+            visuals: [],
           },
           whiteboard: undefined,
           memo: undefined,

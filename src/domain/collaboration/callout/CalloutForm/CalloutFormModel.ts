@@ -31,9 +31,10 @@ export interface CalloutFormSubmittedValues {
       };
     };
     mediaGallery?: {
-      items: {
-        url: string;
-        title?: string;
+      visuals: {
+        id?: string;
+        uri: string;
+        name?: string;
       }[];
     };
   };
@@ -67,7 +68,7 @@ export const DefaultCalloutFormValues: CalloutFormSubmittedValues = {
     whiteboard: undefined,
     memo: undefined,
     link: undefined,
-    mediaGallery: { items: [] },
+    mediaGallery: { visuals: [] },
   },
   contributionDefaults: {
     defaultDisplayName: '',

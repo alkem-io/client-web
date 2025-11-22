@@ -1336,21 +1336,25 @@ export type CreateTagsetDataFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateVisualDataKeySpecifier = (
+  | 'alternativeText'
   | 'aspectRatio'
   | 'maxHeight'
   | 'maxWidth'
   | 'minHeight'
   | 'minWidth'
   | 'name'
+  | 'uri'
   | CreateVisualDataKeySpecifier
 )[];
 export type CreateVisualDataFieldPolicy = {
+  alternativeText?: FieldPolicy<any> | FieldReadFunction<any>;
   aspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
   maxHeight?: FieldPolicy<any> | FieldReadFunction<any>;
   maxWidth?: FieldPolicy<any> | FieldReadFunction<any>;
   minHeight?: FieldPolicy<any> | FieldReadFunction<any>;
   minWidth?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
+  uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateVisualOnProfileDataKeySpecifier = ('name' | 'uri' | CreateVisualOnProfileDataKeySpecifier)[];
 export type CreateVisualOnProfileDataFieldPolicy = {
