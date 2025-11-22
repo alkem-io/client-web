@@ -1,6 +1,7 @@
 import {
   CalloutContributionType,
   CalloutFramingType,
+  MediaGallery,
   UpdateLinkInput,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -43,6 +44,7 @@ export const mapCalloutTemplateToCalloutForm = (
           displayName: string;
         };
       };
+      mediaGallery?: MediaGallery;
     };
     settings: CalloutSettingsModelFull;
     contributionDefaults: {
@@ -96,6 +98,7 @@ export const mapCalloutTemplateToCalloutForm = (
             },
           }
         : undefined,
+      mediaGallery: calloutTemplate.framing.mediaGallery,
     };
     const templateContributionDefaults =
       mapContributionDefaultsModelToCalloutFormValues(calloutTemplate.contributionDefaults) ??
@@ -111,6 +114,7 @@ export const mapCalloutTemplateToCalloutForm = (
       templateFraming.type = CalloutFramingType.None;
       templateFraming.memo = undefined;
     }
+    // TODO: Add restriction handling for MediaGallery if needed
     if (
       calloutRestrictions?.disableWhiteboards &&
       templateSettings.contribution.allowedTypes === CalloutContributionType.Whiteboard

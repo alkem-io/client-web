@@ -1,4 +1,4 @@
-import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutFramingType, MediaGallery } from '@/core/apollo/generated/graphql-schema';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
@@ -28,6 +28,7 @@ export type CalloutDetailsModel = CalloutModelLight & {
     whiteboard?: WhiteboardDetails;
     memo?: MemoModel;
     link?: LinkDetails;
+    mediaGallery?: MediaGallery;
   };
   classification?: {
     flowState?: ClassificationTagsetWithAllowedValuesModel;

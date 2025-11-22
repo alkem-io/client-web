@@ -762,6 +762,7 @@ export type CalloutFramingKeySpecifier = (
   | 'createdDate'
   | 'id'
   | 'link'
+  | 'mediaGallery'
   | 'memo'
   | 'profile'
   | 'type'
@@ -774,6 +775,7 @@ export type CalloutFramingFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
+  mediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1170,6 +1172,7 @@ export type CreateCalloutDataFieldPolicy = {
 };
 export type CreateCalloutFramingDataKeySpecifier = (
   | 'link'
+  | 'mediaGallery'
   | 'memo'
   | 'profile'
   | 'tags'
@@ -1179,6 +1182,7 @@ export type CreateCalloutFramingDataKeySpecifier = (
 )[];
 export type CreateCalloutFramingDataFieldPolicy = {
   link?: FieldPolicy<any> | FieldReadFunction<any>;
+  mediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1284,6 +1288,11 @@ export type CreateLocationDataFieldPolicy = {
   postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateMediaGalleryDataKeySpecifier = ('nameID' | 'visuals' | CreateMediaGalleryDataKeySpecifier)[];
+export type CreateMediaGalleryDataFieldPolicy = {
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  visuals?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateMemoDataKeySpecifier = ('markdown' | 'profile' | CreateMemoDataKeySpecifier)[];
 export type CreateMemoDataFieldPolicy = {
   markdown?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1325,6 +1334,23 @@ export type CreateTagsetDataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateVisualDataKeySpecifier = (
+  | 'aspectRatio'
+  | 'maxHeight'
+  | 'maxWidth'
+  | 'minHeight'
+  | 'minWidth'
+  | 'name'
+  | CreateVisualDataKeySpecifier
+)[];
+export type CreateVisualDataFieldPolicy = {
+  aspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxHeight?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+  minHeight?: FieldPolicy<any> | FieldReadFunction<any>;
+  minWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateVisualOnProfileDataKeySpecifier = ('name' | 'uri' | CreateVisualOnProfileDataKeySpecifier)[];
 export type CreateVisualOnProfileDataFieldPolicy = {
@@ -2406,6 +2432,25 @@ export type MeQueryResultsFieldPolicy = {
   spaceMembershipsHierarchical?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MediaGalleryKeySpecifier = (
+  | 'authorization'
+  | 'createdBy'
+  | 'createdDate'
+  | 'id'
+  | 'nameID'
+  | 'updatedDate'
+  | 'visuals'
+  | MediaGalleryKeySpecifier
+)[];
+export type MediaGalleryFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  visuals?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MemoKeySpecifier = (
   | 'authorization'
   | 'content'
@@ -2520,6 +2565,7 @@ export type ModelCardSpaceUsageResultFieldPolicy = {
 };
 export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
+  | 'addNotificationEmailToBlacklist'
   | 'addReactionToMessageInRoom'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
@@ -2626,6 +2672,7 @@ export type MutationKeySpecifier = (
   | 'removeCommunityGuidelinesContent'
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
+  | 'removeNotificationEmailFromBlacklist'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
   | 'removeRoleFromOrganization'
@@ -2704,6 +2751,7 @@ export type MutationKeySpecifier = (
 )[];
 export type MutationFieldPolicy = {
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
+  addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2810,6 +2858,7 @@ export type MutationFieldPolicy = {
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3150,9 +3199,14 @@ export type PlatformFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformIntegrationSettingsKeySpecifier = ('iframeAllowedUrls' | PlatformIntegrationSettingsKeySpecifier)[];
+export type PlatformIntegrationSettingsKeySpecifier = (
+  | 'iframeAllowedUrls'
+  | 'notificationEmailBlacklist'
+  | PlatformIntegrationSettingsKeySpecifier
+)[];
 export type PlatformIntegrationSettingsFieldPolicy = {
   iframeAllowedUrls?: FieldPolicy<any> | FieldReadFunction<any>;
+  notificationEmailBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformInvitationKeySpecifier = (
   | 'authorization'
@@ -5391,6 +5445,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CreateLocationDataKeySpecifier | (() => undefined | CreateLocationDataKeySpecifier);
     fields?: CreateLocationDataFieldPolicy;
   };
+  CreateMediaGalleryData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateMediaGalleryDataKeySpecifier | (() => undefined | CreateMediaGalleryDataKeySpecifier);
+    fields?: CreateMediaGalleryDataFieldPolicy;
+  };
   CreateMemoData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateMemoDataKeySpecifier | (() => undefined | CreateMemoDataKeySpecifier);
     fields?: CreateMemoDataFieldPolicy;
@@ -5410,6 +5468,10 @@ export type StrictTypedTypePolicies = {
   CreateTagsetData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateTagsetDataKeySpecifier | (() => undefined | CreateTagsetDataKeySpecifier);
     fields?: CreateTagsetDataFieldPolicy;
+  };
+  CreateVisualData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateVisualDataKeySpecifier | (() => undefined | CreateVisualDataKeySpecifier);
+    fields?: CreateVisualDataFieldPolicy;
   };
   CreateVisualOnProfileData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -5767,6 +5829,10 @@ export type StrictTypedTypePolicies = {
   MeQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);
     fields?: MeQueryResultsFieldPolicy;
+  };
+  MediaGallery?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MediaGalleryKeySpecifier | (() => undefined | MediaGalleryKeySpecifier);
+    fields?: MediaGalleryFieldPolicy;
   };
   Memo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MemoKeySpecifier | (() => undefined | MemoKeySpecifier);

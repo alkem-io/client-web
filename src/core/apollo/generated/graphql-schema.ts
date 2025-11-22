@@ -820,6 +820,7 @@ export enum AuthorizationPolicyType {
   LicensePolicy = 'LICENSE_POLICY',
   Licensing = 'LICENSING',
   Link = 'LINK',
+  MediaGallery = 'MEDIA_GALLERY',
   Memo = 'MEMO',
   Organization = 'ORGANIZATION',
   OrganizationVerification = 'ORGANIZATION_VERIFICATION',
@@ -1092,6 +1093,8 @@ export type CalloutFraming = {
   id: Scalars['UUID']['output'];
   /** The Link for framing the associated Callout. */
   link?: Maybe<Link>;
+  /** Media gallery attached to this callout framing. */
+  mediaGallery?: Maybe<MediaGallery>;
   /** The Memo for framing the associated Callout. */
   memo?: Maybe<Memo>;
   /** The Profile for framing the associated Callout. */
@@ -1106,6 +1109,7 @@ export type CalloutFraming = {
 
 export enum CalloutFramingType {
   Link = 'LINK',
+  MediaGallery = 'MEDIA_GALLERY',
   Memo = 'MEMO',
   None = 'NONE',
   Whiteboard = 'WHITEBOARD',
@@ -1671,6 +1675,7 @@ export type CreateCalloutData = {
 export type CreateCalloutFramingData = {
   __typename?: 'CreateCalloutFramingData';
   link?: Maybe<CreateLinkData>;
+  mediaGallery?: Maybe<CreateMediaGalleryData>;
   memo?: Maybe<CreateMemoData>;
   profile: CreateProfileData;
   tags?: Maybe<Array<Scalars['String']['output']>>;
@@ -1681,6 +1686,7 @@ export type CreateCalloutFramingData = {
 
 export type CreateCalloutFramingInput = {
   link?: InputMaybe<CreateLinkInput>;
+  mediaGallery?: InputMaybe<CreateMediaGalleryInput>;
   memo?: InputMaybe<CreateMemoInput>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -1974,6 +1980,21 @@ export type CreateLocationInput = {
   stateOrProvince?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type CreateMediaGalleryData = {
+  __typename?: 'CreateMediaGalleryData';
+  /** A readable identifier, unique within the containing scope. */
+  nameID?: Maybe<Scalars['NameID']['output']>;
+  /** The visuals to be added to the media gallery. */
+  visuals: Array<CreateVisualData>;
+};
+
+export type CreateMediaGalleryInput = {
+  /** A readable identifier, unique within the containing scope. */
+  nameID?: InputMaybe<Scalars['NameID']['input']>;
+  /** The visuals to be added to the media gallery. */
+  visuals: Array<CreateVisualInput>;
+};
+
 export type CreateMemoData = {
   __typename?: 'CreateMemoData';
   markdown?: Maybe<Scalars['Markdown']['output']>;
@@ -2244,6 +2265,37 @@ export type CreateVirtualContributorOnAccountInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   profileData: CreateProfileInput;
+};
+
+export type CreateVisualData = {
+  __typename?: 'CreateVisualData';
+  /** Dimensions ratio width / height. */
+  aspectRatio: Scalars['Float']['output'];
+  /** Maximum allowed height for the visual. */
+  maxHeight: Scalars['Float']['output'];
+  /** Maximum allowed width for the visual. */
+  maxWidth: Scalars['Float']['output'];
+  /** Minimum allowed height for the visual. */
+  minHeight: Scalars['Float']['output'];
+  /** Minimum allowed width for the visual. */
+  minWidth: Scalars['Float']['output'];
+  /** Type of visual to create (e.g. banner, avatar). */
+  name: VisualType;
+};
+
+export type CreateVisualInput = {
+  /** Dimensions ratio width / height. */
+  aspectRatio: Scalars['Float']['input'];
+  /** Maximum allowed height for the visual. */
+  maxHeight: Scalars['Float']['input'];
+  /** Maximum allowed width for the visual. */
+  maxWidth: Scalars['Float']['input'];
+  /** Minimum allowed height for the visual. */
+  minHeight: Scalars['Float']['input'];
+  /** Minimum allowed width for the visual. */
+  minWidth: Scalars['Float']['input'];
+  /** Type of visual to create (e.g. banner, avatar). */
+  name: VisualType;
 };
 
 export type CreateVisualOnProfileData = {
@@ -3996,6 +4048,23 @@ export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
   limit?: InputMaybe<Scalars['Float']['input']>;
 };
 
+export type MediaGallery = {
+  __typename?: 'MediaGallery';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  createdBy?: Maybe<Scalars['String']['output']>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID']['output'];
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
+  /** The visuals contained in this media gallery. */
+  visuals?: Maybe<Array<Visual>>;
+};
+
 export type Memo = {
   __typename?: 'Memo';
   /** The authorization rules for the entity */
@@ -4156,6 +4225,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Adds an Iframe Allowed URL to the Platform Settings */
   addIframeAllowedURL: Array<Scalars['String']['output']>;
+  /** Adds a full email address to the platform notification blacklist */
+  addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Ensure all community members are registered for communications. */
@@ -4368,6 +4439,8 @@ export type Mutation = {
   removeIframeAllowedURL: Array<Scalars['String']['output']>;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID']['output'];
+  /** Removes an email address from the platform notification blacklist */
+  removeNotificationEmailFromBlacklist: Array<Scalars['String']['output']>;
   /** Removes a User from a Role on the Platform. */
   removePlatformRoleFromUser: User;
   /** Remove a reaction on a message from the specified Room. */
@@ -4520,6 +4593,10 @@ export type Mutation = {
 
 export type MutationAddIframeAllowedUrlArgs = {
   whitelistedURL: Scalars['String']['input'];
+};
+
+export type MutationAddNotificationEmailToBlacklistArgs = {
+  input: NotificationEmailAddressInput;
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -4894,6 +4971,10 @@ export type MutationRemoveMessageOnRoomArgs = {
   messageData: RoomRemoveMessageInput;
 };
 
+export type MutationRemoveNotificationEmailFromBlacklistArgs = {
+  input: NotificationEmailAddressInput;
+};
+
 export type MutationRemovePlatformRoleFromUserArgs = {
   roleData: RemovePlatformRoleInput;
 };
@@ -5208,6 +5289,11 @@ export type Nvp = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   value: Scalars['String']['output'];
+};
+
+export type NotificationEmailAddressInput = {
+  /** Full email address to add/remove; lowercase enforced by server */
+  email: Scalars['String']['input'];
 };
 
 export enum NotificationEvent {
@@ -5667,6 +5753,8 @@ export type PlatformIntegrationSettings = {
   __typename?: 'PlatformIntegrationSettings';
   /** The list of allowed URLs for iFrames within Markdown content. */
   iframeAllowedUrls: Array<Scalars['String']['output']>;
+  /** List of fully-qualified email addresses blocked from receiving notifications */
+  notificationEmailBlacklist: Array<Scalars['String']['output']>;
 };
 
 export type PlatformInvitation = {
@@ -7589,6 +7677,7 @@ export type UpdateCalloutEntityInput = {
 
 export type UpdateCalloutFramingInput = {
   link?: InputMaybe<UpdateLinkInput>;
+  mediaGallery?: InputMaybe<UpdateMediaGalleryInput>;
   /** The new markdown content for the Memo. */
   memoContent?: InputMaybe<Scalars['Markdown']['input']>;
   /** The Profile of the Template. */
@@ -7828,6 +7917,11 @@ export type UpdateLocationInput = {
   stateOrProvince?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateMediaGalleryInput = {
+  /** The new list of visuals for the media gallery. Replaces existing ones. */
+  visuals: Array<CreateVisualInput>;
+};
+
 export type UpdateMemoEntityInput = {
   ID: Scalars['UUID']['input'];
   contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
@@ -7890,6 +7984,8 @@ export type UpdatePlatformSettingsInput = {
 export type UpdatePlatformSettingsIntegrationInput = {
   /** Update the list of allowed URLs for iFrames within Markdown content. */
   iframeAllowedUrls: Array<Scalars['String']['input']>;
+  /** Update the list of email addresses blocked from receiving notifications. */
+  notificationEmailBlacklist?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type UpdatePostInput = {
@@ -12826,6 +12922,21 @@ export type UpdateCalloutContentMutation = {
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
+      mediaGallery?:
+        | {
+            __typename?: 'MediaGallery';
+            nameID: string;
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
@@ -13195,6 +13306,21 @@ export type UpdateCalloutVisibilityMutation = {
             id: string;
             uri: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      mediaGallery?:
+        | {
+            __typename?: 'MediaGallery';
+            nameID: string;
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }>
+              | undefined;
           }
         | undefined;
     };
@@ -14516,6 +14642,21 @@ export type CreateCalloutMutation = {
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
+      mediaGallery?:
+        | {
+            __typename?: 'MediaGallery';
+            nameID: string;
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
     };
     contributionDefaults: {
       __typename?: 'CalloutContributionDefaults';
@@ -15009,6 +15150,21 @@ export type CalloutDetailsQuery = {
                   };
                 }
               | undefined;
+            mediaGallery?:
+              | {
+                  __typename?: 'MediaGallery';
+                  nameID: string;
+                  visuals?:
+                    | Array<{
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }>
+                    | undefined;
+                }
+              | undefined;
           };
           contributionDefaults: {
             __typename?: 'CalloutContributionDefaults';
@@ -15438,6 +15594,21 @@ export type CalloutDetailsFragment = {
           id: string;
           uri: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        }
+      | undefined;
+    mediaGallery?:
+      | {
+          __typename?: 'MediaGallery';
+          nameID: string;
+          visuals?:
+            | Array<{
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+              }>
+            | undefined;
         }
       | undefined;
   };
@@ -16682,6 +16853,15 @@ export type VisualModelFullFragment = {
   minHeight: number;
   minWidth: number;
   alternativeText?: string | undefined;
+};
+
+export type UpdateVisualMutationVariables = Exact<{
+  updateData: UpdateVisualInput;
+}>;
+
+export type UpdateVisualMutation = {
+  __typename?: 'Mutation';
+  updateVisual: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined };
 };
 
 export type UploadVisualMutationVariables = Exact<{

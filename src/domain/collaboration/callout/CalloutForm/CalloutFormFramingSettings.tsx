@@ -1,5 +1,6 @@
 import BlockIcon from '@mui/icons-material/Block';
 import CampaignIcon from '@mui/icons-material/Campaign';
+import PermMediaIcon from '@mui/icons-material/PermMedia';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
@@ -23,6 +24,7 @@ import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { DefaultWhiteboardPreviewSettings } from '../../whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import CalloutFramingMediaGalleryField from '../CalloutFramings/CalloutFramingMediaGalleryField';
 
 interface CalloutFormFramingSettingsProps {
   calloutRestrictions?: CalloutRestrictions;
@@ -62,10 +64,23 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           type: newType,
           whiteboard: undefined,
           link: undefined,
+          mediaGallery: undefined,
           memo: {
             profile: { displayName: t('common.memo') },
             markdown: undefined,
           },
+        };
+        break;
+      case CalloutFramingType.MediaGallery:
+        newFraming = {
+          ...framing,
+          type: newType,
+          mediaGallery: {
+            items: [],
+          },
+          whiteboard: undefined,
+          memo: undefined,
+          link: undefined,
         };
         break;
       case CalloutFramingType.Link:
@@ -80,6 +95,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           },
           whiteboard: undefined,
           memo: undefined,
+          mediaGallery: undefined,
         };
         break;
       case CalloutFramingType.None:
@@ -90,6 +106,7 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           whiteboard: undefined,
           memo: undefined,
           link: undefined,
+          mediaGallery: undefined,
         };
         break;
     }
@@ -136,6 +153,12 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           label: t('callout.create.framingSettings.link.title'),
           tooltip: t('callout.create.framingSettings.link.tooltip'),
           disabled: calloutRestrictions?.disableLinks,
+        },
+        {
+          icon: PermMediaIcon,
+          value: CalloutFramingType.MediaGallery,
+          label: 'Media Gallery', // TODO: Add translation
+          tooltip: 'Create a media gallery', // TODO: Add translation
         },
       ]}
       onChange={handleFramingTypeChange}
@@ -217,6 +240,8 @@ const CalloutFormFramingSettings = ({ calloutRestrictions, edit, template }: Cal
           </>
         </PageContentBlockSeamless>
       )}
+
+      {framing.type === CalloutFramingType.MediaGallery && <CalloutFramingMediaGalleryField />}
     </>
   );
 };

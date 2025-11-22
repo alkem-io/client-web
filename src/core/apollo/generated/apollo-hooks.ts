@@ -985,6 +985,15 @@ export const CalloutDetailsFragmentDoc = gql`
       link {
         ...LinkDetails
       }
+      mediaGallery {
+        nameID
+        visuals {
+          id
+          uri
+          name
+          alternativeText
+        }
+      }
     }
     contributionDefaults {
       id
@@ -9811,6 +9820,52 @@ export type CreateTagsetOnProfileMutationResult = Apollo.MutationResult<SchemaTy
 export type CreateTagsetOnProfileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTagsetOnProfileMutation,
   SchemaTypes.CreateTagsetOnProfileMutationVariables
+>;
+export const UpdateVisualDocument = gql`
+  mutation updateVisual($updateData: UpdateVisualInput!) {
+    updateVisual(updateData: $updateData) {
+      id
+      uri
+      alternativeText
+    }
+  }
+`;
+export type UpdateVisualMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateVisualMutation,
+  SchemaTypes.UpdateVisualMutationVariables
+>;
+
+/**
+ * __useUpdateVisualMutation__
+ *
+ * To run a mutation, you first call `useUpdateVisualMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVisualMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVisualMutation, { data, loading, error }] = useUpdateVisualMutation({
+ *   variables: {
+ *      updateData: // value for 'updateData'
+ *   },
+ * });
+ */
+export function useUpdateVisualMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateVisualMutation, SchemaTypes.UpdateVisualMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateVisualMutation, SchemaTypes.UpdateVisualMutationVariables>(
+    UpdateVisualDocument,
+    options
+  );
+}
+export type UpdateVisualMutationHookResult = ReturnType<typeof useUpdateVisualMutation>;
+export type UpdateVisualMutationResult = Apollo.MutationResult<SchemaTypes.UpdateVisualMutation>;
+export type UpdateVisualMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateVisualMutation,
+  SchemaTypes.UpdateVisualMutationVariables
 >;
 export const UploadVisualDocument = gql`
   mutation uploadVisual($file: Upload!, $uploadData: VisualUploadImageInput!) {

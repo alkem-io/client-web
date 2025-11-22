@@ -10,6 +10,7 @@ import {
   CreateCalloutOnCalloutsSetInput,
   CreateReferenceInput,
   CreateTagsetInput,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
 import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
@@ -29,6 +30,17 @@ export interface CalloutCreationType {
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
     tags?: string[];
+    mediaGallery?: {
+      nameID?: string;
+      visuals: {
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        name: VisualType;
+      }[];
+    };
   };
   settings?: {
     framing?: {
