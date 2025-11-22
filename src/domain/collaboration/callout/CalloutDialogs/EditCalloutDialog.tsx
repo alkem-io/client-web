@@ -5,6 +5,7 @@ import {
   CalloutFramingType,
   UpdateCalloutEntityInput,
   UpdateCalloutSettingsInput,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useCallback, useMemo, useState } from 'react';
@@ -78,7 +79,16 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           previewImages: [],
         },
         link: calloutData.framing.link,
-        mediaGallery: calloutData.framing.mediaGallery,
+        mediaGallery: calloutData.framing.mediaGallery
+          ? {
+              visuals:
+                calloutData.framing.mediaGallery.visuals?.map(v => ({
+                  id: v.id,
+                  uri: v.uri,
+                  name: v.alternativeText || '',
+                })) ?? [],
+            }
+          : undefined,
       },
       settings: mapCalloutSettingsModelToCalloutSettingsFormValues(calloutData.settings),
       contributionDefaults: {
@@ -131,6 +141,8 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
               visuals: formData.framing.mediaGallery.visuals.map(v => ({
                 uri: v.uri,
                 visualID: v.id ?? '',
+                name: VisualType.Card,
+                alternativeText: v.name || '',
               })),
             }
           : undefined,

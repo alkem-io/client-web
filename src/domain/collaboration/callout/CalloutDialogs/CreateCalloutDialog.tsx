@@ -5,6 +5,7 @@ import {
   CalloutContributionType,
   CalloutVisibility,
   TemplateType,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -120,15 +121,15 @@ const CreateCalloutDialog = ({
         // Map media gallery items to CreateMediaGalleryInput
         mediaGallery: formData.framing.mediaGallery
           ? {
-              visuals: formData.framing.mediaGallery.items.map(item => ({
+              visuals: formData.framing.mediaGallery.visuals.map(item => ({
                 aspectRatio: 1.5,
                 maxHeight: 1000,
                 maxWidth: 1000,
                 minHeight: 100,
                 minWidth: 100,
-                name: 'CARD',
-                uri: item.url,
-                alternativeText: item.title || '',
+                name: VisualType.Card,
+                uri: item.uri,
+                alternativeText: item.name || '',
               })),
             }
           : undefined,

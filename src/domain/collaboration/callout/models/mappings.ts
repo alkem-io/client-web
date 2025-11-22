@@ -98,7 +98,16 @@ export const mapCalloutTemplateToCalloutForm = (
             },
           }
         : undefined,
-      mediaGallery: calloutTemplate.framing.mediaGallery,
+      mediaGallery: calloutTemplate.framing.mediaGallery
+        ? {
+            visuals:
+              calloutTemplate.framing.mediaGallery.visuals?.map(v => ({
+                id: v.id,
+                uri: v.uri,
+                name: v.alternativeText || '',
+              })) ?? [],
+          }
+        : undefined,
     };
     const templateContributionDefaults =
       mapContributionDefaultsModelToCalloutFormValues(calloutTemplate.contributionDefaults) ??

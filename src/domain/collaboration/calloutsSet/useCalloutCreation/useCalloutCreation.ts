@@ -39,6 +39,8 @@ export interface CalloutCreationType {
         minHeight: number;
         minWidth: number;
         name: VisualType;
+        uri: string;
+        alternativeText?: string;
       }[];
     };
   };

@@ -8318,6 +8318,7 @@ export type UpdateVirtualContributorSettingsPrivacyInput = {
 
 export type UpdateVisualInput = {
   alternativeText?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<VisualType>;
   uri: Scalars['String']['input'];
   visualID: Scalars['String']['input'];
 };
