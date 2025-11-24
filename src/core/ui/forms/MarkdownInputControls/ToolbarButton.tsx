@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/react';
-import { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { produce } from 'immer';
 import MarkdownInputToolbarButton, { MarkdownInputToolbarButtonProps } from './MarkdownInputToolbarButton';
 import { ChainedCommands } from '@tiptap/core';

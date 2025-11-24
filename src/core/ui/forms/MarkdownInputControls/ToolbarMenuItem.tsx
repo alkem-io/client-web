@@ -2,7 +2,7 @@ import { MenuItem } from '@mui/material';
 import { ChainedCommands } from '@tiptap/core';
 import { Editor } from '@tiptap/react';
 import { produce } from 'immer';
-import { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 interface ToolbarMenuItemProps {
   editor: Editor | null;
