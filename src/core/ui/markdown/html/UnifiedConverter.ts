@@ -7,9 +7,8 @@ import { State as M2HState } from 'mdast-util-to-hast';
 import { defaultHandlers as defaultHTMLHandlers, State as H2MState } from 'hast-util-to-mdast';
 import { emptyParagraph, html } from '../utils/unist-builders';
 
-const isNewLine = (node: Html, parent: Parent | null | undefined) => {
+const isNewLine = (node: Html, _parent: Parent | null | undefined) => {
   const result = /^\s*<br\s*\/?>\s*$/i.test(node.value);
-  console.log('isNewLine check for node:', node, result, parent);
   return result;
 };
 
@@ -125,14 +124,12 @@ const UnifiedConverter = (): Converter => {
   const markdownToHTML = async (markdown: string) => {
     const markdownToHTMLPipeline = await constructMarkdownToHTMLPipeline();
     const result = await markdownToHTMLPipeline.process(markdown);
-    console.log('HTML Result:', String(result));
     return String(result);
   };
 
   const HTMLToMarkdown = async (html: string) => {
     const htmlToMarkdownPipeline = await constructHtmlToMarkdownPipeline();
     const result = await htmlToMarkdownPipeline.process(html);
-    console.log('Markdown Result:', String(result));
     return String(result);
   };
 
