@@ -67,7 +67,7 @@ const CalloutFramingMediaGalleryField = () => {
             <Box display="flex" gap={gutters()} flexWrap="wrap">
               <Button
                 startIcon={<AddIcon />}
-                onClick={() => arrayHelpers.push({ uri: '', altText: '' })}
+                onClick={() => arrayHelpers.push({ uri: '', altText: '', visualType: getMediaGalleryVisualType() })}
                 variant="outlined"
                 size="small"
               >
