@@ -48,6 +48,7 @@ const InsertTableMenu = ({ anchorEl, open, onClose, onInsert }: InsertTableMenuP
 
   const handleClick = (rows: number, cols: number) => {
     onInsert(rows, cols);
+    setHovered({ rows: 0, cols: 0 });
     onClose();
   };
 

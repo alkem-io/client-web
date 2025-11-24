@@ -1,4 +1,4 @@
-import { IconButton, IconButtonProps, Tooltip } from '@mui/material';
+import { Box, IconButton, IconButtonProps, Tooltip } from '@mui/material';
 
 export type MarkdownInputToolbarButtonProps = IconButtonProps & { tooltip: string } & {
   ref?: React.Ref<HTMLButtonElement>;
@@ -12,6 +12,7 @@ export type MarkdownInputToolbarButtonProps = IconButtonProps & { tooltip: strin
 const MarkdownInputToolbarButton = ({
   ref,
   tooltip,
+  hidden,
   ...props
 }: MarkdownInputToolbarButtonProps & {
   ref?: React.Ref<HTMLButtonElement>;
@@ -23,7 +24,11 @@ const MarkdownInputToolbarButton = ({
   return (
     <Tooltip title={tooltip} arrow>
       <span>
-        <IconButton aria-label={tooltip} {...curedProps} ref={ref} />
+        {!hidden ? (
+          <IconButton aria-label={tooltip} {...curedProps} ref={ref} />
+        ) : (
+          <Box width={0} height={0} ref={ref} />
+        )}
       </span>
     </Tooltip>
   );

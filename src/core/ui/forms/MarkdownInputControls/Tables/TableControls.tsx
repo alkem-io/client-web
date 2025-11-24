@@ -10,7 +10,6 @@ import {
   DeleteSweep,
 } from '@mui/icons-material';
 import { Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import { gutters } from '@/core/ui/grid/utils';
 import MarkdownInputToolbarButton from '../MarkdownInputToolbarButton';
 import { useTranslation } from 'react-i18next';
 import InsertTableMenu from './InsertTableMenu';
@@ -22,13 +21,12 @@ const useTableState = (editor: Editor | null) => {
   const [isActive, setIsActive] = useState(false);
   useEffect(() => {
     if (!editor) return;
-    const update = () => setIsActive(editor.isActive('table'));
-    editor.on('transaction', update);
-    editor.on('selectionUpdate', update);
-    update();
+    const onSelectionUpdate = ({ editor }: { editor: Editor }) => {
+      setIsActive(editor.isActive('table'));
+    };
+    editor.on('selectionUpdate', onSelectionUpdate);
     return () => {
-      editor.off('transaction', update);
-      editor.off('selectionUpdate', update);
+      editor.off('selectionUpdate', onSelectionUpdate);
     };
   }, [editor]);
   return isActive;
@@ -82,7 +80,6 @@ const TableControls = ({ editor }: TableControlsProps) => {
         tooltip={t('components.wysiwyg-editor.toolbar.table.insert')}
         disabled={!editor?.can().insertTable()}
         hidden={isTableActive}
-        sx={{ width: gutters(2), height: gutters(2) }}
       >
         <TableChartOutlined />
       </MarkdownInputToolbarButton>
@@ -95,7 +92,6 @@ const TableControls = ({ editor }: TableControlsProps) => {
       <MarkdownInputToolbarButton
         onClick={handleTableMenuOpen}
         tooltip={t('components.wysiwyg-editor.toolbar.table.operations')}
-        sx={{ width: gutters(2), height: gutters(2) }}
         hidden={!isTableActive}
       >
         <TableOperationsIcon />
