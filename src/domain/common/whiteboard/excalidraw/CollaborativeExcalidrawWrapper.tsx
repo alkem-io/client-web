@@ -29,6 +29,15 @@ import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log'
 
 const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
+const GUEST_NAME_STORAGE_KEY = 'alkemio_guest_name';
+
+const getGuestNameFromSessionStorage = () => {
+  try {
+    return globalThis.sessionStorage?.getItem(GUEST_NAME_STORAGE_KEY) ?? null;
+  } catch {
+    return null;
+  }
+};
 
 const Excalidraw = lazyWithGlobalErrorHandler(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
@@ -103,11 +112,20 @@ const CollaborativeExcalidrawWrapper = ({
 
   const { whiteboard, filesManager, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
+  const { t } = useTranslation();
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
 
   const { userModel } = useCurrentUserContext();
-  const username = userModel?.profile.displayName ?? 'User';
+  const username = useMemo(() => {
+    if (userModel?.profile.displayName) {
+      return userModel.profile.displayName;
+    }
+
+    const guestName = getGuestNameFromSessionStorage() ?? 'User';
+    const guestSuffix = t('common.guestSuffix');
+    return guestSuffix ? `${guestName} ${guestSuffix}` : guestName;
+  }, [t, userModel?.profile.displayName]);
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
@@ -213,8 +231,6 @@ const CollaborativeExcalidrawWrapper = ({
     },
     [actions.onInitApi]
   );
-
-  const { t } = useTranslation();
 
   const children = (
     <Box sx={{ height: 1, flexGrow: 1, position: 'relative' }}>

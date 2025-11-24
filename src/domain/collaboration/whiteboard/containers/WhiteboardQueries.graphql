@@ -29,6 +29,7 @@ fragment WhiteboardDetails on Whiteboard {
     id
     myPrivileges
   }
+  guestContributionsAllowed
   contentUpdatePolicy
   createdBy {
     id

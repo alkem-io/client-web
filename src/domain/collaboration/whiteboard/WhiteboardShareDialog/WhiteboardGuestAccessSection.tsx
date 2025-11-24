@@ -6,6 +6,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { theme } from '@/core/ui/themes/default/Theme';
 import { UseWhiteboardGuestAccessResult } from '../hooks/useWhiteboardGuestAccess';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { ParseKeys } from 'i18next';
 
 export interface WhiteboardGuestAccessSectionProps {
   guestAccess: UseWhiteboardGuestAccessResult;
@@ -96,7 +97,7 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
           sx={{ width: '100%' }}
           data-testid="guest-access-error"
         >
-          {t(`share-dialog.guest-access.errors.${guestAccess.error.code}`)}
+          {t(`share-dialog.guest-access.errors.${guestAccess.error.code}` as ParseKeys)}
         </Alert>
       )}
       {guestAccess.enabled && (

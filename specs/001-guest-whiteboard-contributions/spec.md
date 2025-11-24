@@ -90,6 +90,24 @@ As a **space admin or member**, I want to see the status of guest contributions 
 
 ---
 
+### User Story 6 - Guest Contributions Warning in Whiteboard Dialog (Priority: P2)
+
+As a **whiteboard owner, admin, or space member**, when I open a whiteboard that allows guest contributions, I want to see a clear visual warning indicator, so that I am aware the whiteboard is publicly accessible.
+
+**Why this priority**: Critical for transparency and security awareness. Users must know when their whiteboard content is visible to unauthenticated guests.
+
+**Independent Test**: Can be tested by opening a whiteboard with `guestContributionsAllowed: true` and verifying the warning badge appears in the dialog footer with correct styling and translated text.
+
+**Acceptance Scenarios**:
+
+1. **Given** I open a whiteboard with `guestContributionsAllowed: true`, **When** the whiteboard dialog is displayed, **Then** I see a warning badge in the footer with red border, Public icon, and text "This whiteboard is visible to guest users"
+2. **Given** I open a whiteboard with `guestContributionsAllowed: false` or undefined, **When** the whiteboard dialog is displayed, **Then** I do NOT see the guest contributions warning badge
+3. **Given** the warning badge is displayed, **Then** it uses the error color from the theme (`theme.palette.error.main`) for border and text
+4. **Given** the warning badge is displayed, **Then** it is positioned on the right side of the dialog footer, space-between layout with other footer controls on the left
+5. **Given** the warning text is displayed, **Then** it is translated using the i18next key `pages.whiteboard.guestContributionsWarning`
+
+---
+
 ### Edge Cases
 
 - **What happens when guest contributions are toggled OFF while guests are actively collaborating?**
@@ -173,12 +191,18 @@ This feature satisfies the Constitution as follows:
 - **FR-011**: System MUST display a status indicator on whiteboard callout pages showing whether guest contributions are enabled or disabled at the space level.
 - **FR-012**: System MUST restrict toggle control to users with `UPDATE` authorization on the space's settings (admin-only).
 - **FR-013**: System MUST display toast notification when toggle state changes (e.g., "Guest contributions enabled/disabled").
+- **FR-014**: System MUST display a visual warning badge in the whiteboard dialog footer when `guestContributionsAllowed` is `true`, indicating the whiteboard is visible to guest users.
+- **FR-015**: Warning badge MUST use error color from theme (`theme.palette.error.main`) for border and text, include a Public icon, and display translated text from `pages.whiteboard.guestContributionsWarning`.
+- **FR-016**: Warning badge MUST be positioned on the right side of the dialog footer with space-between layout, while other footer controls (delete button, readonly messages) remain on the left.
+- **FR-017**: Warning badge MUST NOT be displayed when `guestContributionsAllowed` is `false` or `undefined`.
 
 ### Key Entities
 
 - **SpaceSettingsCollaboration**: Extended to include `allowGuestContributions: Boolean!` field. Represents collaboration settings for a space, including whether guest contributions to whiteboards are permitted.
 - **Space**: Context for the setting; each space independently manages its `allowGuestContributions` flag. No inheritance to/from subspaces.
-- **Whiteboard**: Future relationship (not implemented in this spec): will have a `publicSharingEnabled: Boolean` field when the Share dialog enhancements are built. This spec only establishes the space-level permission gate.
+- **Whiteboard**: Extended to include `guestContributionsAllowed: Boolean!` field. When `true`, the whiteboard can be accessed and edited by unauthenticated guest users via a public URL. The whiteboard dialog footer displays a visual warning badge to indicate public visibility.
+- **WhiteboardDetails**: TypeScript interface extended with optional `guestContributionsAllowed?: boolean` field to support guest contributions warning display in WhiteboardDialog component.
+- **WhiteboardDialogFooter**: React component extended to display conditional warning badge when `guestContributionsAllowed` is `true`. Uses MUI Box, Public icon, error theme colors, and i18next translation.
 
 ## Success Criteria _(mandatory)_
 
@@ -192,6 +216,77 @@ This feature satisfies the Constitution as follows:
 - **SC-006**: Documentation and code comments clearly indicate extensibility points for future Share dialog and public URL implementation.
 - **SC-007**: Zero inheritance errors: changing a parent space's setting does not affect subspace settings (verified by integration test).
 - **SC-008**: Toggle functionality tested with spaces containing 10-20 whiteboards (typical use case) without performance degradation.
+- **SC-009**: Guest contributions warning badge is displayed in whiteboard dialog footer when `guestContributionsAllowed: true`, with correct styling (red border, error color, Public icon, translated text).
+- **SC-010**: Warning badge is NOT displayed when `guestContributionsAllowed` is `false` or `undefined` (verified via conditional rendering test).
+- **SC-011**: Warning badge layout uses space-between justification with left-aligned footer controls and right-aligned warning (verified via visual regression test).
+
+---
+
+## Implementation Details
+
+### Guest Contributions Warning Badge
+
+**Status**: ✅ Implemented
+
+The guest contributions warning feature provides visual feedback to users when a whiteboard is publicly accessible. This ensures transparency and security awareness for all whiteboard users.
+
+#### Components Modified
+
+1. **WhiteboardDialog.tsx** (`src/domain/collaboration/whiteboard/WhiteboardDialog/`)
+   - Extended `WhiteboardDetails` interface with `guestContributionsAllowed?: boolean`
+   - Passes `guestContributionsAllowed` prop from whiteboard data to `WhiteboardDialogFooter`
+
+2. **WhiteboardDialogFooter.tsx** (`src/domain/collaboration/whiteboard/WhiteboardDialog/`)
+   - Extended `WhiteboardDialogFooterProps` interface with `guestContributionsAllowed?: boolean`
+   - Added conditional warning badge rendering when `guestContributionsAllowed === true`
+   - Restructured `Actions` layout from `justifyContent="start"` to `justifyContent="space-between"`
+   - Wrapped existing footer controls (delete button, readonly messages) in left-aligned Box
+   - Added right-aligned warning badge with:
+     - Red border: `border: 1px solid ${theme.palette.error.main}`
+     - Error color text: `color: theme.palette.error.main`
+     - Public icon: `<Public fontSize="small" />`
+     - Translated text: `t('pages.whiteboard.guestContributionsWarning')`
+     - Padding and border-radius for visual emphasis
+
+3. **PublicWhiteboardPage.tsx** (`src/main/public/whiteboard/`)
+   - Added `guestContributionsAllowed` to `whiteboardDetails` adapter object
+   - Maps GraphQL field `whiteboard.guestContributionsAllowed` to `WhiteboardDetails` interface
+
+4. **translation.en.json** (`src/core/i18n/en/`)
+   - Added translation key: `pages.whiteboard.guestContributionsWarning: "This whiteboard is visible to guest users"`
+
+#### GraphQL Schema
+
+The `guestContributionsAllowed` field is present in:
+- `PublicWhiteboardFragment` in `GetPublicWhiteboard.graphql`
+- Backend `Whiteboard` type (manually added, requires backend schema update)
+
+#### Visual Design
+
+The warning badge appears as:
+```
+┌──────────────────────────────────────────────────────────────────┐
+│ [Delete] Readonly message...          [🌐 Public] Warning text   │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+- Left side: Existing footer controls (delete button, readonly messages, restart button)
+- Right side: Warning badge (only when `guestContributionsAllowed: true`)
+- Layout: `display: flex`, `justifyContent: space-between`
+
+#### Accessibility
+
+- Semantic HTML: Uses MUI `Box` with proper ARIA attributes inherited from parent dialog
+- Color contrast: Error color meets WCAG 2.1 AA standards (verified via theme)
+- Icon + text: Provides both visual (icon) and textual (translated message) indicators
+- Screen reader friendly: Caption component ensures text is announced
+
+#### Testing Recommendations
+
+1. **Unit Tests**: Verify conditional rendering of warning badge based on `guestContributionsAllowed` prop
+2. **Visual Regression**: Capture screenshots with warning visible and hidden
+3. **Integration Tests**: Test data flow from GraphQL → PublicWhiteboardPage → WhiteboardDialog → WhiteboardDialogFooter
+4. **Accessibility Audit**: Verify color contrast and screen reader compatibility
 
 ---
 

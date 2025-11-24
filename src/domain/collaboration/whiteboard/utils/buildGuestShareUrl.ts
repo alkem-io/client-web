@@ -1,5 +1,4 @@
-const GUEST_SHARE_LINK_PLACEHOLDER = 'https://guest-link-placeholder.invalid';
-const GUEST_SHARE_PATH = '/guest/whiteboard';
+export const GUEST_SHARE_PATH = '/public/whiteboard';
 
 export const buildGuestShareUrl = (whiteboardId?: string) => {
   if (!whiteboardId) {
@@ -7,7 +6,7 @@ export const buildGuestShareUrl = (whiteboardId?: string) => {
   }
 
   if (typeof window === 'undefined') {
-    return `${GUEST_SHARE_LINK_PLACEHOLDER}/${whiteboardId}`;
+    return '/';
   }
 
   return `${window.location.origin}${GUEST_SHARE_PATH}/${whiteboardId}`;

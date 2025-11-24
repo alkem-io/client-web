@@ -58,17 +58,17 @@ export default defineConfig({
             const originalWrite = res.write;
 
             // Override response methods to set headers just before sending
-            res.send = function (chunk) {
+            res.send = function(chunk) {
               setNoCacheHeaders(res);
               return originalSend.call(this, chunk);
             };
 
-            res.end = function (chunk) {
+            res.end = function(chunk) {
               setNoCacheHeaders(res);
               return originalEnd.call(this, chunk);
             };
 
-            res.write = function (chunk) {
+            res.write = function(chunk) {
               setNoCacheHeaders(res);
               return originalWrite.call(this, chunk);
             };
@@ -145,6 +145,7 @@ export default defineConfig({
   optimizeDeps: { include: ['@emotion/react', '@emotion/styled', '@mui/material/Tooltip', '@mui/icons-material'] },
   test: {
     environment: 'jsdom',
-    setupFiles: ['./src/setupTests.ts'],
+    setupFiles: ['src/setupTests.ts'],
+    globals: true,
   },
 });

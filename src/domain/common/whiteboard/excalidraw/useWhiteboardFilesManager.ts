@@ -15,6 +15,8 @@ export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
 export type BinaryFilesWithUrl = Record<string, BinaryFileDataWithUrl>;
 export type BinaryFilesWithOptionalUrl = Record<string, BinaryFileDataWithOptionalUrl>;
 
+const guestName = globalThis.sessionStorage.getItem('alkemio_guest_name');
+
 const isValidDataURL = (url: string) =>
   url.match(/^(data:)([\w/+-]*)(;charset=[\w-]+|;base64){0,1},[A-Za-z0-9+/=]+$/gi) !== null;
 
@@ -50,7 +52,11 @@ const blobToDataURL = (blob: Blob): Promise<string> => {
 };
 
 const fetchFileToDataURL = async (url: string): Promise<string> => {
-  const response = await fetch(url);
+  const headers = {};
+  if (guestName) {
+    Object.assign(headers, { 'x-guest-name': guestName });
+  }
+  const response = await fetch(url, { headers });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch file from ${url}`);

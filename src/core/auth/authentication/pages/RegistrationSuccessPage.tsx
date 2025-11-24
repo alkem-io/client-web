@@ -5,9 +5,16 @@ import AuthenticationLayout from '../AuthenticationLayout';
 import { AuthFormHeader } from '../components/AuthFormHeader';
 import { Box } from '@mui/material';
 import Paragraph from '@/domain/shared/components/Text/Paragraph';
+import { useEffect } from 'react';
+import { clearAllGuestSessionData } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
 
 export const RegistrationSuccessPage = () => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    // Clear all guest session data (name, whiteboard URL) on successful registration
+    clearAllGuestSessionData();
+  }, []);
 
   return (
     <AuthenticationLayout>

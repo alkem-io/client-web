@@ -14060,6 +14060,13 @@ export type CalloutContributionsQuery = {
                         }
                       | undefined;
                   };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   createdBy?:
                     | {
                         __typename?: 'User';
@@ -14150,6 +14157,9 @@ export type CalloutContributionsWhiteboardCardFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
@@ -16672,6 +16682,52 @@ export type UpdateWhiteboardMutation = {
         | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
         | undefined;
     };
+  };
+};
+
+export type GetPublicWhiteboardQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID']['input'];
+}>;
+
+export type GetPublicWhiteboardQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          content: string;
+          guestContributionsAllowed: boolean;
+          createdDate: Date;
+          updatedDate: Date;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type PublicWhiteboardFragmentFragment = {
+  __typename?: 'Whiteboard';
+  id: string;
+  content: string;
+  guestContributionsAllowed: boolean;
+  createdDate: Date;
+  updatedDate: Date;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    storageBucket: { __typename?: 'StorageBucket'; id: string };
   };
 };
 

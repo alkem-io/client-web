@@ -238,6 +238,7 @@
     "Account": "Account",
     "account": "account",
     "anonymous": "Anonymous",
+    "guestSuffix": "(guest)",
     "all": "All",
     "knowledge-base": "Knowledge base",
     "or": "Or",
@@ -2534,7 +2535,8 @@
           "account": {
             "vc-section-title": "$t(common.virtualContributors) created from this $t(common.space)",
             "vc-create-button": "Create $t(common.virtualContributor)"
-          }
+          },
+          "updateFailed": "An error occurred while updating the $t(common.settings). Please try again later."
         }
       },
       "users": {
@@ -3034,6 +3036,7 @@
         "noMembership": "You have to be a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
         "unauthenticated": "You have to be signed in and a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
+      "guestContributionsWarning": "This whiteboard is visible to guest users",
       "readonlyDialog": {
         "title": "View only mode",
         "reason": {
@@ -3073,6 +3076,46 @@
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
         "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
         "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
+      }
+    },
+    "publicWhiteboard": {
+      "title": "$t(common.Whiteboard)",
+      "fallbackTitle": "Whiteboard"
+    },
+    "public": {
+      "whiteboard": {
+        "join": {
+          "welcome": "Welcome to Alkemio!",
+          "title": "Join Whiteboard",
+          "description": "Choose a nickname to join this whiteboard as a guest",
+          "guestNameLabel": "Guest Name",
+          "placeholder": "Enter your nickname",
+          "joinButton": "Join as guest",
+          "joiningButton": "Joining...",
+          "signInButton": "Sign in to Alkemio"
+        },
+        "guestSessionNotification": {
+          "title": "You've left your whiteboard",
+          "description": "Your guest session is still active. You can return to your whiteboard, or explore what Alkemio has to offer.",
+          "backButton": "Back to Whiteboard",
+          "websiteButton": "Go to our website",
+          "contributeMoreTitle": "Want to contribute more?",
+          "contributeMoreDescription": "Sign up for an Alkemio account on the right to collaborate with teams and access advanced tools."
+        },
+        "error": {
+          "404": {
+            "title": "Whiteboard Not Found",
+            "message": "The whiteboard link may be incorrect or the whiteboard may have been deleted."
+          },
+          "403": {
+            "title": "Access Denied",
+            "message": "This whiteboard is not available for guest access. Please contact the whiteboard owner."
+          },
+          "500": {
+            "title": "Unable to Load Whiteboard",
+            "message": "Please try again later or check your internet connection."
+          }
+        }
       }
     },
     "memo": {

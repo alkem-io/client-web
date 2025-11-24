@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { ParseKeys } from 'i18next';
 import { Button } from '@mui/material';
 
 import Avatar from '@/core/ui/avatar/Avatar';
@@ -87,7 +88,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
 
             {isSmallScreen && (
               <Caption color="primary">
-                {communityRoles?.map(role => t(`common.roles.${role}` as const)).join(', ')}
+                {communityRoles?.map(role => t(`common.roles.${role}` as ParseKeys)).join(', ')}
               </Caption>
             )}
           </BadgeCardView>
@@ -95,7 +96,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
           <Gutters flexDirection="row" disableGap padding={0}>
             {!isSmallScreen && (
               <Caption color="primary" display="flex" alignItems="center">
-                {communityRoles?.map(role => t(`common.roles.${role}` as const)).join(', ')}
+                {communityRoles?.map(role => t(`common.roles.${role}` as ParseKeys)).join(', ')}
               </Caption>
             )}
 
