@@ -60,7 +60,6 @@ const ToolbarButton = memo(
 
     useEffect(() => {
       if (editor) {
-        setState(produceButtonState()); //!! an agent did this, not sure about it
         return refreshOnEditorUpdate(editor);
       }
     }, [editor]);
