@@ -67,6 +67,29 @@ const CreateCalloutDialog = ({
 
   const [templateSelected, setTemplateSelected] = useState<CalloutFormSubmittedValues | undefined>(undefined);
   const [fetchTemplateContent] = useTemplateContentLazyQuery();
+  const normalizeTemplateMediaGallery = useCallback(
+    (formData: CalloutFormSubmittedValues | undefined): CalloutFormSubmittedValues | undefined => {
+      if (!formData?.framing.mediaGallery?.visuals) {
+        return formData;
+      }
+
+      return {
+        ...formData,
+        framing: {
+          ...formData.framing,
+          mediaGallery: {
+            ...formData.framing.mediaGallery,
+            visuals: formData.framing.mediaGallery.visuals.map(visual => ({
+              ...visual,
+              altText: visual.altText ?? '',
+            })),
+          },
+        },
+      };
+    },
+    []
+  );
+
   const handleSelectTemplate = async ({ id: templateId }: Identifiable) => {
     const { data } = await fetchTemplateContent({
       variables: {
@@ -77,7 +100,9 @@ const CreateCalloutDialog = ({
 
     const template = data?.lookup.template;
     const templateCallout = template?.callout;
-    setTemplateSelected(mapCalloutTemplateToCalloutForm(templateCallout, calloutRestrictions));
+    setTemplateSelected(
+      normalizeTemplateMediaGallery(mapCalloutTemplateToCalloutForm(templateCallout, calloutRestrictions))
+    );
     if (!template || !templateCallout) {
       throw new Error("Couldn't load CalloutTemplate");
     }
@@ -129,9 +154,9 @@ const CreateCalloutDialog = ({
                 maxWidth: 1000,
                 minHeight: 100,
                 minWidth: 100,
-                name: getMediaGalleryVisualType(item.file),
+                name: item.visualType ?? getMediaGalleryVisualType(item.file, item.uri),
                 uri: item.file ? undefined : item.uri,
-                alternativeText: item.name || item.file?.name || '',
+                alternativeText: item.altText || item.file?.name || '',
               })),
             }
           : undefined,

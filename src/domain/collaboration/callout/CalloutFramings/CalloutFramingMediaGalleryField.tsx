@@ -9,6 +9,7 @@ import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless
 import { useTranslation } from 'react-i18next';
 import { CalloutFormSubmittedValues } from '../CalloutForm/CalloutFormModel';
 import { gutters } from '@/core/ui/grid/utils';
+import { getMediaGalleryVisualType } from './mediaGalleryVisualType';
 
 const CalloutFramingMediaGalleryField = () => {
   const { t } = useTranslation();
@@ -23,14 +24,15 @@ const CalloutFramingMediaGalleryField = () => {
   };
 
   const handleFilesSelected = (files: FileList, push: (obj: unknown) => void) => {
-    Array.from(files).forEach(file => {
+    for (const file of files) {
       push({
         uri: '',
-        name: file.name,
         file,
         previewUrl: URL.createObjectURL(file),
+        altText: '',
+        visualType: getMediaGalleryVisualType(file),
       });
-    });
+    }
   };
 
   const handleUploadClick = () => {
@@ -40,14 +42,17 @@ const CalloutFramingMediaGalleryField = () => {
     }
   };
 
-  const columns = useMemo(() => ({
-    container: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-      gap: gutters(2),
-      alignItems: 'stretch',
-    },
-  }), []);
+  const columns = useMemo(
+    () => ({
+      container: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+        gap: gutters(2),
+        alignItems: 'stretch',
+      },
+    }),
+    []
+  );
 
   return (
     <PageContentBlockSeamless disablePadding>
@@ -60,7 +65,12 @@ const CalloutFramingMediaGalleryField = () => {
         render={arrayHelpers => (
           <Stack gap={gutters()}>
             <Box display="flex" gap={gutters()} flexWrap="wrap">
-              <Button startIcon={<AddIcon />} onClick={() => arrayHelpers.push({ uri: '', name: '' })} variant="outlined" size="small">
+              <Button
+                startIcon={<AddIcon />}
+                onClick={() => arrayHelpers.push({ uri: '', altText: '' })}
+                variant="outlined"
+                size="small"
+              >
                 {t('common.add')}
               </Button>
               <Button variant="contained" size="small" onClick={handleUploadClick} startIcon={<PermMediaIcon />}>
@@ -82,63 +92,78 @@ const CalloutFramingMediaGalleryField = () => {
             </Box>
 
             <Box sx={columns.container}>
-              {mediaVisuals.map((visual, index) => (
-                <Card key={`${visual.id ?? 'visual'}-${index}`} variant="outlined" sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                  <CardMedia>
-                    <Box
-                      sx={{
-                        position: 'relative',
-                        paddingTop: '56.25%',
-                        backgroundColor: theme => theme.palette.grey[100],
-                      }}
-                    >
-                      {(visual.previewUrl || visual.uri) && (
-                        <Box
-                          component="img"
-                          src={visual.previewUrl || visual.uri}
-                          alt={visual.name || 'Image'}
-                          sx={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                          }}
-                        />
-                      )}
-                    </Box>
-                  </CardMedia>
-                  <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: gutters() }}>
-                    <FormikInputField
-                      name={`framing.mediaGallery.visuals.${index}.uri`}
-                      title={t('common.url')}
-                      placeholder="https://example.com/image.jpg"
-                      containerProps={{ sx: { flex: 1 } }}
-                      helperText={visual.file ? t('components.mediaGallery.fileSelected', 'Local file selected') : undefined}
-                      disabled={Boolean(visual.file)}
-                      required={!visual.file}
-                    />
-                    <FormikInputField
-                      name={`framing.mediaGallery.visuals.${index}.name`}
-                      title={t('common.title')}
-                      placeholder="Image Title"
-                      containerProps={{ sx: { flex: 1 } }}
-                    />
-                    <Box display="flex" justifyContent="flex-end">
-                      <IconButton
-                        onClick={() => {
-                          revokePreviewUrl(visual.previewUrl);
-                          arrayHelpers.remove(index);
+              {mediaVisuals.map((visual, index) => {
+                let uriHelperText: string | undefined;
+
+                if (visual.file) {
+                  uriHelperText = t('components.mediaGallery.fileSelected', 'Local file selected');
+                } else if (visual.id) {
+                  uriHelperText = t('components.mediaGallery.uriLocked', 'Saved visuals use a fixed URL');
+                }
+
+                return (
+                  <Card
+                    key={`${visual.id ?? 'visual'}-${index}`}
+                    variant="outlined"
+                    sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+                  >
+                    <CardMedia>
+                      <Box
+                        sx={{
+                          position: 'relative',
+                          paddingTop: '56.25%',
+                          backgroundColor: theme => theme.palette.grey[100],
                         }}
-                        aria-label="remove media item"
                       >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
-                  </CardContent>
-                </Card>
-              ))}
+                        {(visual.previewUrl || visual.uri) && (
+                          <Box
+                            component="img"
+                            src={visual.previewUrl || visual.uri}
+                            alt={visual.altText || visual.name || 'Image'}
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                            }}
+                          />
+                        )}
+                      </Box>
+                    </CardMedia>
+                    <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: gutters() }}>
+                      <FormikInputField
+                        name={`framing.mediaGallery.visuals.${index}.uri`}
+                        title={t('common.url')}
+                        placeholder="https://example.com/image.jpg"
+                        containerProps={{ sx: { flex: 1 } }}
+                        helperText={uriHelperText}
+                        disabled={Boolean(visual.file)}
+                        readOnly={Boolean(visual.id)}
+                        required={!visual.file}
+                      />
+                      <FormikInputField
+                        name={`framing.mediaGallery.visuals.${index}.altText`}
+                        title={t('common.description')}
+                        placeholder={t('components.mediaGallery.altTextPlaceholder', 'Describe this media item')}
+                        containerProps={{ sx: { flex: 1 } }}
+                      />
+                      <Box display="flex" justifyContent="flex-end">
+                        <IconButton
+                          onClick={() => {
+                            revokePreviewUrl(visual.previewUrl);
+                            arrayHelpers.remove(index);
+                          }}
+                          aria-label="remove media item"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </Box>
           </Stack>
         )}

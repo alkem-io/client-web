@@ -2,6 +2,7 @@ import {
   CalloutAllowedContributors,
   CalloutFramingType,
   CalloutVisibility,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
@@ -42,6 +43,8 @@ export interface CalloutFormSubmittedValues {
         /** Local preview URL used to display the selected file before upload. */
         previewUrl?: string;
         name?: string;
+        altText?: string;
+        visualType?: VisualType;
       }[];
     };
   };

@@ -86,7 +86,9 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
                 calloutData.framing.mediaGallery.visuals?.map(v => ({
                   id: v.id,
                   uri: v.uri,
-                  name: v.name ?? '',
+                  name: v.alternativeText ?? '',
+                  altText: v.alternativeText ?? '',
+                  visualType: v.name,
                 })) ?? [],
             }
           : undefined,
@@ -140,12 +142,18 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
       mediaGallery:
         formData.framing.type === CalloutFramingType.MediaGallery && formData.framing.mediaGallery?.visuals?.length
           ? {
-              visuals: formData.framing.mediaGallery.visuals.map(v => ({
-                uri: v.file ? v.uri || '' : v.uri,
-                visualID: v.id ?? '',
-                name: getMediaGalleryVisualType(v.file),
-                alternativeText: v.name || v.file?.name || '',
-              })),
+              visuals: formData.framing.mediaGallery.visuals.map(v => {
+                const visualType = v.file
+                  ? getMediaGalleryVisualType(v.file, v.uri)
+                  : (v.visualType ?? getMediaGalleryVisualType(undefined, v.uri));
+
+                return {
+                  uri: v.file ? v.uri || '' : v.uri,
+                  visualID: v.id ?? '',
+                  name: visualType,
+                  alternativeText: v.altText || v.name || v.file?.name || '',
+                };
+              }),
             }
           : undefined,
     };
