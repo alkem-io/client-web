@@ -217,37 +217,6 @@ const WhiteboardDialogFooter = ({
             </Caption>
           </Box>
         )}
-        {readonlyReason && (
-          <Caption>
-            <Trans
-              i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
-              values={{
-                spaceLevel: t(`common.space-level.${spaceLevel}`),
-                ownerName: createdBy?.profile.displayName,
-              }}
-              components={{
-                ownerlink: createdBy ? (
-                  <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
-                ) : (
-                  <span />
-                ),
-                spacelink: spaceAboutProfile ? (
-                  <RouterLink to={spaceAboutProfile.url} underline="always" reloadDocument />
-                ) : (
-                  <span />
-                ),
-                signinlink: <RouterLink to={buildLoginUrl(whiteboardUrl)} state={{}} underline="always" />,
-                learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
-              }}
-            />
-          </Caption>
-        )}
-        {canRestart && (
-          <Button onClick={onRestart} variant="outlined" sx={{ textTransform: 'none' }} size="small">
-            {t('pages.whiteboard.restartCollaboration')}
-          </Button>
-        )}
-
         {guestAccessEnabled && (
           <Box marginLeft="auto">
             <GuestVisibilityBadge size="compact" data-testid="guest-visibility-badge-footer" />
