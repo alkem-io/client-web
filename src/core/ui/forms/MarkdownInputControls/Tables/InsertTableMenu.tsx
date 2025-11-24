@@ -19,6 +19,7 @@ const GridContainer = styled(Box)(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: `repeat(${MAX_SIZE}, 1fr)`,
   gap: '2px',
+  cursor: 'pointer',
   padding: theme.spacing(1.2, 2),
 }));
 
@@ -29,7 +30,6 @@ const Cell = styled(Box, {
   height: gutters()(theme),
   border: `1px solid ${theme.palette.divider}`,
   backgroundColor: highlighted ? theme.palette.primary.light : theme.palette.background.paper,
-  cursor: 'pointer',
   '&:hover': {
     backgroundColor: theme.palette.primary.main,
   },
@@ -46,7 +46,7 @@ const InsertTableMenu = ({ anchorEl, open, onClose, onInsert }: InsertTableMenuP
     setHovered({ rows, cols });
   };
 
-  const handleClick = (rows: number, cols: number) => {
+  const handleClick = ({ rows, cols }: { rows: number; cols: number }) => {
     onInsert(rows, cols);
     setHovered({ rows: 0, cols: 0 });
     onClose();
@@ -69,14 +69,7 @@ const InsertTableMenu = ({ anchorEl, open, onClose, onInsert }: InsertTableMenuP
     for (let r = 1; r <= MAX_SIZE; r++) {
       for (let c = 1; c <= MAX_SIZE; c++) {
         const isHighlighted = r <= hovered.rows && c <= hovered.cols;
-        cells.push(
-          <Cell
-            key={`${r}-${c}`}
-            highlighted={isHighlighted}
-            onMouseEnter={() => handleMouseEnter(r, c)}
-            onClick={() => handleClick(r, c)}
-          />
-        );
+        cells.push(<Cell key={`${r}-${c}`} highlighted={isHighlighted} onMouseEnter={() => handleMouseEnter(r, c)} />);
       }
     }
     return cells;
@@ -102,7 +95,9 @@ const InsertTableMenu = ({ anchorEl, open, onClose, onInsert }: InsertTableMenuP
       {!isCustomMode
         ? [
             <Box key="grid">
-              <GridContainer onMouseLeave={() => setHovered({ rows: 0, cols: 0 })}>{renderGrid()}</GridContainer>
+              <GridContainer onMouseLeave={() => setHovered({ rows: 0, cols: 0 })} onClick={() => handleClick(hovered)}>
+                {renderGrid()}
+              </GridContainer>
               <Caption textAlign="center" marginBottom={gutters(0.5)}>
                 {hovered.cols > 0
                   ? t('components.wysiwyg-editor.toolbar.table.gridSize', { columns: hovered.cols, rows: hovered.rows })

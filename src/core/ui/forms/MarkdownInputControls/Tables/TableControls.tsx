@@ -1,4 +1,4 @@
-import { Editor } from '@tiptap/react';
+import { ChainedCommands, Editor } from '@tiptap/react';
 import { useEffect, useState } from 'react';
 import {
   TableChartOutlined,
@@ -39,28 +39,48 @@ interface TableControlsProps {
 const TableControls = ({ editor }: TableControlsProps) => {
   const { t } = useTranslation();
   const isTableActive = useTableState(editor);
-  const [tableMenuAnchorEl, setTableMenuAnchorEl] = useState<null | HTMLElement>(null);
-  const [insertMenuAnchorEl, setInsertMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [insertTableMenuAnchorEl, setInsertTableMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [tableOperationsMenuAnchorEl, setTableOperationsMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [isDeleteTableDialogOpen, setIsDeleteTableDialogOpen] = useState(false);
+  const [currentSelection, setCurrentSelection] = useState<null | { from: number; to: number }>(null);
+
+  const updateCurrentSelection = () => {
+    if (editor?.state.selection) {
+      setCurrentSelection({ from: editor.state.selection.from, to: editor.state.selection.to });
+    } else {
+      setCurrentSelection(null);
+    }
+  };
+  const restoreUserSelection = (e: ChainedCommands) => {
+    if (currentSelection && editor) {
+      return e.focus().setTextSelection({ from: currentSelection.from, to: currentSelection.to });
+    }
+    return e;
+  };
 
   const handleTableMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setTableMenuAnchorEl(event.currentTarget);
+    updateCurrentSelection();
+    setTableOperationsMenuAnchorEl(event.currentTarget);
   };
 
   const handleTableMenuClose = () => {
-    setTableMenuAnchorEl(null);
+    setCurrentSelection(null);
+    setTableOperationsMenuAnchorEl(null);
   };
 
   const handleInsertMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setInsertMenuAnchorEl(event.currentTarget);
+    updateCurrentSelection();
+    setInsertTableMenuAnchorEl(event.currentTarget);
   };
 
   const handleInsertMenuClose = () => {
-    setInsertMenuAnchorEl(null);
+    setCurrentSelection(null);
+    setInsertTableMenuAnchorEl(null);
   };
 
   const handleInsertTable = (rows: number, cols: number) => {
-    editor?.chain().focus().insertTable({ rows, cols, withHeaderRow: true }).run();
+    if (!editor) return;
+    restoreUserSelection(editor?.chain()).insertTable({ rows, cols, withHeaderRow: true }).run();
   };
 
   const openDeleteTableDialog = () => {
@@ -69,7 +89,8 @@ const TableControls = ({ editor }: TableControlsProps) => {
   };
 
   const handleDeleteTable = () => {
-    editor?.chain().focus().deleteTable().run();
+    if (!editor) return;
+    restoreUserSelection(editor?.chain()).deleteTable().run();
     setIsDeleteTableDialogOpen(false);
   };
 
@@ -84,8 +105,8 @@ const TableControls = ({ editor }: TableControlsProps) => {
         <TableChartOutlined />
       </MarkdownInputToolbarButton>
       <InsertTableMenu
-        anchorEl={insertMenuAnchorEl}
-        open={Boolean(insertMenuAnchorEl)}
+        anchorEl={insertTableMenuAnchorEl}
+        open={Boolean(insertTableMenuAnchorEl)}
         onClose={handleInsertMenuClose}
         onInsert={handleInsertTable}
       />
@@ -96,44 +117,72 @@ const TableControls = ({ editor }: TableControlsProps) => {
       >
         <TableOperationsIcon />
       </MarkdownInputToolbarButton>
-      <Menu anchorEl={tableMenuAnchorEl} open={Boolean(tableMenuAnchorEl)} onClose={handleTableMenuClose}>
+      <Menu
+        anchorEl={tableOperationsMenuAnchorEl}
+        open={Boolean(tableOperationsMenuAnchorEl)}
+        onClose={handleTableMenuClose}
+      >
         <MenuItem onClick={openDeleteTableDialog} disabled={!editor?.can().deleteTable()}>
           <ListItemIcon>
             <DeleteForever fontSize="small" />
           </ListItemIcon>
           <ListItemText>{t('components.wysiwyg-editor.toolbar.table.deleteTable')}</ListItemText>
         </MenuItem>
-        <ToolbarMenuItem editor={editor} command={e => e.addColumnBefore()} onClick={handleTableMenuClose}>
+        <ToolbarMenuItem
+          editor={editor}
+          command={e => restoreUserSelection(e).addColumnBefore()}
+          onClick={handleTableMenuClose}
+        >
           <ListItemIcon>
             <BorderLeft fontSize="small" />
           </ListItemIcon>
           <ListItemText>{t('components.wysiwyg-editor.toolbar.table.addColumnBefore')}</ListItemText>
         </ToolbarMenuItem>
-        <ToolbarMenuItem editor={editor} command={e => e.addColumnAfter()} onClick={handleTableMenuClose}>
+        <ToolbarMenuItem
+          editor={editor}
+          command={e => restoreUserSelection(e).addColumnAfter()}
+          onClick={handleTableMenuClose}
+        >
           <ListItemIcon>
             <BorderRight fontSize="small" />
           </ListItemIcon>
           <ListItemText>{t('components.wysiwyg-editor.toolbar.table.addColumnAfter')}</ListItemText>
         </ToolbarMenuItem>
-        <ToolbarMenuItem editor={editor} command={e => e.deleteColumn()} onClick={handleTableMenuClose}>
+        <ToolbarMenuItem
+          editor={editor}
+          command={e => restoreUserSelection(e).deleteColumn()}
+          onClick={handleTableMenuClose}
+        >
           <ListItemIcon>
             <DeleteSweep fontSize="small" sx={{ transform: 'rotate(90deg)' }} />
           </ListItemIcon>
           <ListItemText>{t('components.wysiwyg-editor.toolbar.table.deleteColumn')}</ListItemText>
         </ToolbarMenuItem>
-        <ToolbarMenuItem editor={editor} command={e => e.addRowBefore()} onClick={handleTableMenuClose}>
+        <ToolbarMenuItem
+          editor={editor}
+          command={e => restoreUserSelection(e).addRowBefore()}
+          onClick={handleTableMenuClose}
+        >
           <ListItemIcon>
             <BorderTop fontSize="small" />
           </ListItemIcon>
           <ListItemText>{t('components.wysiwyg-editor.toolbar.table.addRowBefore')}</ListItemText>
         </ToolbarMenuItem>
-        <ToolbarMenuItem editor={editor} command={e => e.addRowAfter()} onClick={handleTableMenuClose}>
+        <ToolbarMenuItem
+          editor={editor}
+          command={e => restoreUserSelection(e).addRowAfter()}
+          onClick={handleTableMenuClose}
+        >
           <ListItemIcon>
             <BorderBottom fontSize="small" />
           </ListItemIcon>
           <ListItemText>{t('components.wysiwyg-editor.toolbar.table.addRowAfter')}</ListItemText>
         </ToolbarMenuItem>
-        <ToolbarMenuItem editor={editor} command={e => e.deleteRow()} onClick={handleTableMenuClose}>
+        <ToolbarMenuItem
+          editor={editor}
+          command={e => restoreUserSelection(e).deleteRow()}
+          onClick={handleTableMenuClose}
+        >
           <ListItemIcon>
             <DeleteSweep fontSize="small" />
           </ListItemIcon>
