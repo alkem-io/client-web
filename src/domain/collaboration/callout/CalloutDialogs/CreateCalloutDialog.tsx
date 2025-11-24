@@ -18,6 +18,7 @@ import {
   CalloutCreationTypeWithPreviewImages,
   useCalloutCreationWithPreviewImages,
 } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import useUploadMediaGalleryVisuals from '../CalloutFramings/useUploadMediaGalleryVisuals';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { ClassificationTagsetModel } from '../../calloutsSet/Classification/ClassificationTagset.model';
 import CalloutForm from '../CalloutForm/CalloutForm';
@@ -56,6 +57,7 @@ const CreateCalloutDialog = ({
   const ensurePresence = useEnsurePresence();
 
   const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
+  const { uploadMediaGalleryVisuals } = useUploadMediaGalleryVisuals();
 
   const [importCalloutTemplateDialogOpen, setImportCalloutTemplateDialogOpen] = useState(false);
   const [importCalloutTemplateConfirmDialogOpen, setImportCalloutTemplateConfirmDialogOpen] = useState(false);
@@ -128,8 +130,8 @@ const CreateCalloutDialog = ({
                 minHeight: 100,
                 minWidth: 100,
                 name: VisualType.Card,
-                uri: item.uri,
-                alternativeText: item.name || '',
+                uri: item.file ? undefined : item.uri,
+                alternativeText: item.name || item.file?.name || '',
               })),
             }
           : undefined,
@@ -182,7 +184,13 @@ const CreateCalloutDialog = ({
         sendNotification,
       };
 
-      await handleCreateCallout(createCalloutInput);
+      const createdCallout = await handleCreateCallout(createCalloutInput);
+      if (createdCallout?.framing.mediaGallery?.visuals) {
+        await uploadMediaGalleryVisuals(
+          formData.framing.mediaGallery?.visuals,
+          createdCallout.framing.mediaGallery.visuals
+        );
+      }
       handleClose();
       setTimeout(scrollToTop, 100);
     }

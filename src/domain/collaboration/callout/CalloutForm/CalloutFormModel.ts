@@ -34,6 +34,13 @@ export interface CalloutFormSubmittedValues {
       visuals: {
         id?: string;
         uri: string;
+        /**
+         * Optional local file to upload as part of the media gallery visual.
+         * When present, the uri is only used for local preview purposes.
+         */
+        file?: File;
+        /** Local preview URL used to display the selected file before upload. */
+        previewUrl?: string;
         name?: string;
       }[];
     };
