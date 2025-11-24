@@ -29,6 +29,8 @@ import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls
 import { InAppNotificationModel } from '../model/InAppNotificationModel';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
+const ACTIONS_WIDTH = 60;
+
 interface InAppNotificationBaseViewProps {
   notification: InAppNotificationModel;
   values: Record<string, string | undefined>;
@@ -127,6 +129,7 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
     if (values.comment) {
       return (
         <WrapperMarkdown
+          plain
           disableParagraphPadding
           caption
           sx={{
@@ -177,7 +180,13 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
         }
       >
         <Gutters row disablePadding>
-          <Gutters flexGrow={1} disablePadding disableGap justifyContent={'center'}>
+          <Gutters
+            flexGrow={1}
+            disablePadding
+            disableGap
+            justifyContent={'center'}
+            sx={{ maxWidth: `calc(100% - ${ACTIONS_WIDTH}px)` }}
+          >
             <Typography
               variant="h4"
               color="primary"
@@ -239,8 +248,8 @@ export const InAppNotificationBaseView = ({ notification, values, url }: InAppNo
             {renderComments()}
           </Gutters>
           <Gutters disablePadding alignItems={'center'}>
-            <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>
             <ActionsMenu>{renderActions()}</ActionsMenu>
+            <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>
           </Gutters>
         </Gutters>
       </BadgeCardView>
