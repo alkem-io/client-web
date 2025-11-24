@@ -41,7 +41,10 @@ const PublicWhiteboardPageContent: FC = () => {
   });
   const isAuthenticated = !!currentUser?.me?.user;
 
-  const { whiteboard, loading, error, refetch, needsGuestName } = useGuestWhiteboardAccess(whiteboardId!);
+  const { whiteboard, loading, error, refetch, needsGuestName } = useGuestWhiteboardAccess(
+    whiteboardId!,
+    isAuthenticated
+  );
   const { trackWhiteboardLoadSuccess, trackWhiteboardLoadFailure, trackDerivedNameUsed } = useGuestAnalytics();
   const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState(0);

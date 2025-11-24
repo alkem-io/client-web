@@ -5,13 +5,13 @@ import { useGuestSession } from './useGuestSession';
  * Hook for accessing public whiteboard data
  * Manages loading state and guest session requirements
  */
-export const useGuestWhiteboardAccess = (whiteboardId: string) => {
+export const useGuestWhiteboardAccess = (whiteboardId: string, isAuthenticated = false) => {
   const { guestName, derivationAttempted } = useGuestSession();
 
-  // Only fetch whiteboard if we have a guest name (either derived or entered)
+  // Only fetch whiteboard if we have a guest name (either derived or entered) or if the user is authenticated
   const { data, loading, error, refetch } = useGetPublicWhiteboardQuery({
     variables: { whiteboardId },
-    skip: !whiteboardId,
+    skip: (!guestName && !isAuthenticated) || !whiteboardId,
   });
 
   return {
