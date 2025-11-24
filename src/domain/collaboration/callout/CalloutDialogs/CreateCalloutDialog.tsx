@@ -5,7 +5,6 @@ import {
   CalloutContributionType,
   CalloutVisibility,
   TemplateType,
-  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -34,6 +33,7 @@ import scrollToTop from '@/core/ui/utils/scrollToTop';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
 import { mapCalloutTemplateToCalloutForm, mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
+import { getMediaGalleryVisualType } from '../CalloutFramings/mediaGalleryVisualType';
 
 export interface CreateCalloutDialogProps {
   open?: boolean;
@@ -129,7 +129,7 @@ const CreateCalloutDialog = ({
                 maxWidth: 1000,
                 minHeight: 100,
                 minWidth: 100,
-                name: VisualType.Card,
+                name: getMediaGalleryVisualType(item.file),
                 uri: item.file ? undefined : item.uri,
                 alternativeText: item.name || item.file?.name || '',
               })),

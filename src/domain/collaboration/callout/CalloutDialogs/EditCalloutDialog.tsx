@@ -5,7 +5,6 @@ import {
   CalloutFramingType,
   UpdateCalloutEntityInput,
   UpdateCalloutSettingsInput,
-  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useCallback, useMemo, useState } from 'react';
@@ -29,6 +28,7 @@ import {
 import { CalloutRestrictions } from '@/domain/collaboration/callout/CalloutRestrictionsTypes';
 import useUploadWhiteboardVisuals from '../../whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import useUploadMediaGalleryVisuals from '../CalloutFramings/useUploadMediaGalleryVisuals';
+import { getMediaGalleryVisualType } from '../CalloutFramings/mediaGalleryVisualType';
 
 export interface EditCalloutDialogProps {
   open?: boolean;
@@ -143,7 +143,7 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
               visuals: formData.framing.mediaGallery.visuals.map(v => ({
                 uri: v.file ? v.uri || '' : v.uri,
                 visualID: v.id ?? '',
-                name: VisualType.Card,
+                name: getMediaGalleryVisualType(v.file),
                 alternativeText: v.name || v.file?.name || '',
               })),
             }
