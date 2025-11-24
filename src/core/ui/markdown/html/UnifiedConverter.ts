@@ -49,9 +49,8 @@ const allowDangerousHtmlIframeProps = [
 
 const UnifiedConverter = (): Converter => {
   const { t } = useTranslation();
-  // Logs act a bit like a documentation for the conversion process. Please don't remove until fully stable
   const log = (..._args) => {
-    console.log('[UnifiedConverter]', ..._args);
+    // console.log('[UnifiedConverter]', ..._args);
   };
 
   const constructHtmlToMarkdownPipeline = once(async () => {
