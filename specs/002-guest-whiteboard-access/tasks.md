@@ -124,6 +124,15 @@ Implement notification when guest navigates to sign-in after closing whiteboard.
 [ ] T064 [US6] Verify notification persists across page refreshes when guest session active (manual test + document in PR) — pending
 [ ] T065 [US6] Verify notification hides after successful authentication (manual test + document in PR) — pending
 
+## Phase 8c: User Story 7 - Public Whiteboard Header Actions
+
+Implement and test header actions in public whiteboard view.
+
+- [ ] T065a [US7] Update `PublicWhiteboardPage.tsx` to include `headerActions` prop in `WhiteboardDialog` (Share, Fullscreen, Save Indicator) — implemented
+- [ ] T065b [US7] [P] Add integration test for header actions presence `headerActions.test.tsx` in `src/domain/collaboration/whiteboard/guestAccess/tests/headerActions.spec.tsx`
+- [ ] T065c [US7] Verify Share dialog shows guest link but hides toggle/settings for guests (manual/auto test)
+- [ ] T065d [US7] Verify Fullscreen toggle functionality in public view (manual/auto test)
+
 ## Phase 9: Performance & Accessibility Polish
 
 Refinements & audits.

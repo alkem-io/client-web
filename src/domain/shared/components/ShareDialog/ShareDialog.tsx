@@ -32,6 +32,7 @@ export interface ShareComponentProps extends PropsWithChildren {
     | 'memo';
   loading?: boolean;
   onClose?: () => void;
+  showShareOnAlkemio?: boolean;
 }
 
 export interface ShareDialogProps extends ShareComponentProps {
@@ -56,7 +57,14 @@ export const ShareDialog = ({ open, onClose, entityTypeName, ...props }: ShareDi
   );
 };
 
-export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, loading, onClose, children }) => {
+export const ShareComponent: FC<ShareComponentProps> = ({
+  url,
+  entityTypeName,
+  loading,
+  onClose,
+  children,
+  showShareOnAlkemio = true,
+}) => {
   const { t } = useTranslation();
   const [activeHandler, setActiveHandler] = useState<string>();
   const fullUrl = useMemo(() => buildFullUrl(url), [url]);
@@ -104,10 +112,14 @@ export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, l
         sx={{ flexGrow: 1, minWidth: gutters(13), marginBottom: gutters(1.5) }}
       />
       <ShareOnClipboardButton setShareHandler={setActiveHandler} />
-      <Box height={gutters(3)} display="flex" flexDirection="column" justifyContent="center" textAlign="center">
-        {t('share-dialog.or')}
-      </Box>
-      <ShareOnAlkemioButton setShareHandler={setActiveHandler} />
+      {showShareOnAlkemio && (
+        <>
+          <Box height={gutters(3)} display="flex" flexDirection="column" justifyContent="center" textAlign="center">
+            {t('share-dialog.or')}
+          </Box>
+          <ShareOnAlkemioButton setShareHandler={setActiveHandler} />
+        </>
+      )}
       {children && <Box>{children}</Box>}
     </Box>
   );

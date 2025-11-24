@@ -125,6 +125,29 @@ As a **guest user**, I want to see a helpful notification when I close the white
 
 ---
 
+### User Story 7 - Public Whiteboard Header Actions (Priority: P2)
+
+As a **guest user**, I want to access essential whiteboard controls (fullscreen, share link, save status) directly from the header, so that I can have a productive collaboration experience similar to authenticated users.
+
+**Why this priority**: Improves usability and feature parity for guests, making the public whiteboard a viable tool for real work.
+
+**Independent Test**: Can be tested by loading a public whiteboard as a guest and verifying the presence and functionality of the Share button (with guest link), Fullscreen button, and Save indicator.
+
+**Acceptance Scenarios**:
+
+1. **Given** I am viewing a public whiteboard as a guest, **When** I look at the dialog header, **Then** I see the following actions:
+   - Share button (opens dialog with guest link)
+   - Fullscreen toggle button
+   - Save status indicator (cloud icon)
+2. **Given** I click the Share button, **When** the dialog opens, **Then** I see the guest link URL and a copy button
+3. **Given** I am a guest user, **When** I view the Share dialog, **Then** I do NOT see the "Enable guest access" toggle (as I lack permissions)
+4. **Given** I am a guest user, **When** I view the Share dialog, **Then** I do NOT see the "Collaboration Settings" section (as I lack permissions)
+5. **Given** I click the Fullscreen button, **When** the action triggers, **Then** the whiteboard expands to fill the entire screen
+6. **Given** I make changes to the whiteboard, **When** the changes are saving, **Then** the Save indicator shows the saving status
+7. **Given** I am an authenticated user viewing a public whiteboard, **When** I have update privileges, **Then** I see additional controls (Collaboration Settings, Preview Settings) consistent with the standard whiteboard view
+
+---
+
 ### Edge Cases
 
 - **What happens when a guest provides an empty or invalid nickname (e.g., only whitespace)?**

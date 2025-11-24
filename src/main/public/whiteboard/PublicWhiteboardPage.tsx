@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GuestSessionProvider } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
@@ -16,6 +16,11 @@ import PublicWhiteboardLayout from './PublicWhiteboardLayout';
 import JoinWhiteboardDialog from './JoinWhiteboardDialog';
 import PublicWhiteboardError from './PublicWhiteboardError';
 import Loading from '@/core/ui/loading/Loading';
+import FullscreenButton from '@/core/ui/button/FullscreenButton';
+import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
+import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 
 /**
  * Inner component that uses guest session context
@@ -39,9 +44,30 @@ const PublicWhiteboardPageContent: FC = () => {
   const { whiteboard, loading, error, refetch, needsGuestName } = useGuestWhiteboardAccess(whiteboardId!);
   const { trackWhiteboardLoadSuccess, trackWhiteboardLoadFailure, trackDerivedNameUsed } = useGuestAnalytics();
   const [lastSuccessfulSavedDate, setLastSuccessfulSavedDate] = useState<Date | undefined>(undefined);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState(0);
+  const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState<boolean>(false);
+  const { fullscreen, setFullscreen } = useFullscreen();
   const { t } = useTranslation();
+
+  const whiteboardDetails = useMemo<WhiteboardDetails | undefined>(() => {
+    if (!whiteboard) return undefined;
+    return {
+      id: whiteboard.id,
+      nameID: whiteboard.id, // Use ID as nameID for guests
+      guestContributionsAllowed: whiteboard.guestContributionsAllowed,
+      profile: {
+        id: whiteboard.profile?.id ?? '',
+        displayName: whiteboard.profile?.displayName ?? 'Whiteboard',
+        storageBucket: whiteboard.profile?.storageBucket ?? { id: '' },
+        url: whiteboard.profile?.url,
+      },
+      previewSettings: DefaultWhiteboardPreviewSettings,
+    };
+  }, [whiteboard]);
+
+  const computedGuestShareUrl = useMemo(() => {
+    return whiteboardDetails ? buildGuestShareUrl(whiteboardDetails.id ?? whiteboardDetails.nameID) : undefined;
+  }, [whiteboardDetails]);
 
   // Track successful whiteboard load
   useEffect(() => {
@@ -83,13 +109,17 @@ const PublicWhiteboardPageContent: FC = () => {
   const handleCloseWhiteboard = useCallback(() => {
     const currentPath = location.pathname;
 
+    if (fullscreen) {
+      setFullscreen(false);
+    }
+
     if (!isAuthenticated) {
       setGuestWhiteboardUrl(currentPath);
       navigate(buildSignUpUrl(currentPath));
     } else {
       navigate('/home');
     }
-  }, [isAuthenticated, location.pathname, navigate]);
+  }, [isAuthenticated, location.pathname, navigate, fullscreen, setFullscreen]);
 
   // Show loading state (including user authentication check)
   if (loading || userLoading) {
@@ -119,21 +149,7 @@ const PublicWhiteboardPageContent: FC = () => {
   }
 
   // Show whiteboard
-  if (whiteboard) {
-    // Adapt public whiteboard data to WhiteboardDialog format
-    const whiteboardDetails: WhiteboardDetails = {
-      id: whiteboard.id,
-      nameID: whiteboard.id, // Use ID as nameID for guests
-      guestContributionsAllowed: whiteboard.guestContributionsAllowed,
-      profile: {
-        id: whiteboard.profile?.id ?? '',
-        displayName: whiteboard.profile?.displayName ?? 'Whiteboard',
-        storageBucket: whiteboard.profile?.storageBucket ?? { id: '' },
-        url: whiteboard.profile?.url,
-      },
-      previewSettings: DefaultWhiteboardPreviewSettings,
-    };
-
+  if (whiteboard && whiteboardDetails) {
     return (
       <WhiteboardDialog
         entities={{ whiteboard: whiteboardDetails }}
@@ -145,14 +161,30 @@ const PublicWhiteboardPageContent: FC = () => {
           onDelete: async () => {}, // No-op for public view
           setLastSuccessfulSavedDate,
           setConsecutiveSaveErrors,
+          onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
         }}
         options={{
           show: true,
           canEdit: true, // Guests can edit via collaboration
           canDelete: false, // Guests cannot delete
           dialogTitle: whiteboard.profile?.displayName || t('pages.publicWhiteboard.fallbackTitle'),
-          fullscreen: false,
+          fullscreen,
+          previewSettingsDialogOpen: previewSettingsDialogOpen,
           readOnlyDisplayName: true, // Guests cannot edit display name
+          headerActions: () => (
+            <>
+              <ShareButton
+                url={computedGuestShareUrl}
+                entityTypeName="whiteboard"
+                disabled={!computedGuestShareUrl}
+                showShareOnAlkemio={false}
+              />
+
+              <FullscreenButton />
+
+              <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
+            </>
+          ),
         }}
       />
     );

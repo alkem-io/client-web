@@ -11,7 +11,7 @@ export const useGuestWhiteboardAccess = (whiteboardId: string) => {
   // Only fetch whiteboard if we have a guest name (either derived or entered)
   const { data, loading, error, refetch } = useGetPublicWhiteboardQuery({
     variables: { whiteboardId },
-    skip: !guestName || !whiteboardId,
+    skip: !whiteboardId,
   });
 
   return {
