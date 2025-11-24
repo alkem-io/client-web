@@ -151,6 +151,15 @@ const PublicWhiteboardPageContent: FC = () => {
     );
   }
 
+  // Treat disabled guest contributions as inaccessible whiteboard
+  if (whiteboard && !whiteboard.guestContributionsAllowed) {
+    return (
+      <PublicWhiteboardLayout>
+        <PublicWhiteboardError error={new Error('404: Guest access disabled')} />
+      </PublicWhiteboardLayout>
+    );
+  }
+
   // Show whiteboard
   if (whiteboard && whiteboardDetails) {
     return (

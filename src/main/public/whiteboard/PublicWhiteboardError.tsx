@@ -19,22 +19,18 @@ const PublicWhiteboardError: FC<PublicWhiteboardErrorProps> = ({ error, onRetry 
   const getErrorMessage = () => {
     const errorMessage = error.message.toLowerCase();
 
-    if (errorMessage.includes('404') || errorMessage.includes('not found')) {
+    if (
+      errorMessage.includes('404') ||
+      errorMessage.includes('not found') ||
+      errorMessage.includes('403') ||
+      errorMessage.includes('forbidden') ||
+      errorMessage.includes('not available')
+    ) {
       return {
         title: t('pages.public.whiteboard.error.404.title', 'Whiteboard Not Found'),
         message: t(
           'pages.public.whiteboard.error.404.message',
           'The whiteboard link may be incorrect or the whiteboard may have been deleted.'
-        ),
-      };
-    }
-
-    if (errorMessage.includes('403') || errorMessage.includes('forbidden') || errorMessage.includes('not available')) {
-      return {
-        title: t('pages.public.whiteboard.error.403.title', 'Access Denied'),
-        message: t(
-          'pages.public.whiteboard.error.403.message',
-          'This whiteboard is not available for guest access. Please contact the whiteboard owner.'
         ),
       };
     }

@@ -69,7 +69,7 @@ As a **guest user**, I want to see clear error messages when a whiteboard cannot
 **Acceptance Scenarios**:
 
 1. **Given** I navigate to a public whiteboard URL that does not exist, **When** the server returns a 404 error, **Then** I see an error message "Whiteboard not found"
-2. **Given** I navigate to a public whiteboard where guest contributions are disabled, **When** the server denies access, **Then** I see an error message "This whiteboard is not available for guest access"
+2. **Given** I navigate to a public whiteboard where guest contributions are disabled, **When** the server denies access, **Then** I see an error message "Whiteboard not found"
 3. **Given** the server encounters an error while loading the whiteboard, **When** the request fails, **Then** I see a generic error message "Unable to load whiteboard. Please try again later"
 4. **Given** an error message is displayed, **When** I click a retry or back button, **Then** I can either retry the request or navigate away gracefully
 
@@ -157,7 +157,7 @@ As a **guest user**, I want to access essential whiteboard controls (fullscreen,
   - System should display an offline indicator and attempt to reconnect when connectivity is restored
 
 - **What happens when a guest tries to access a whiteboard that was public but guest access is now disabled?**
-  - System should return an error: "This whiteboard is no longer available for guest access"
+  - System should surface the 404 experience: "Whiteboard not found"
 
 - **What happens when the `x-guest-name` header is missing or invalid in subsequent requests?**
   - System should detect missing header and re-prompt the join dialog
@@ -281,8 +281,9 @@ This feature satisfies the Constitution as follows:
     **FR-012**: System MUST display a persistent visibility warning to all viewers (guest or authenticated): "This whiteboard is visible and editable by guest users". Implementation: MUI Alert badge in the WhiteboardDialog header (top-right), always visible, using severity="error" with PublicIcon.
     **FR-013**: System MUST handle whiteboard load errors gracefully:
   - 404: "Whiteboard not found"
-  - 403: "This whiteboard is not available for guest access"
+  - 403: Present the same "Whiteboard not found" messaging to avoid leaking private whiteboard existence
   - 500/other: "Unable to load whiteboard. Please try again later"
+    **FR-013a**: System MUST treat a successful response with `guestContributionsAllowed = false` as a 404 state, rendering the "Whiteboard not found" experience instead of exposing the whiteboard content
     **FR-014**: System MUST provide a retry mechanism or back navigation option when an error occurs
     **FR-015**: (Removed – superseded by FR-012 always-show rule)
     **FR-016**: System MUST NOT display any application layout elements (navigation, sidebar, header, footer) on the public whiteboard page for any user

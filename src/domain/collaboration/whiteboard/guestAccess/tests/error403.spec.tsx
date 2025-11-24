@@ -96,7 +96,7 @@ describe('Guest Whiteboard Access - 403 Error Handling', () => {
     sessionStorage.clear();
   });
 
-  it('should display 403 error message when access is forbidden', async () => {
+  it('should display 404 error experience when access is forbidden', async () => {
     sessionStorage.setItem('alkemio_guest_name', 'TestUser');
     const whiteboardId = 'private-whiteboard-id';
 
@@ -120,11 +120,11 @@ describe('Guest Whiteboard Access - 403 Error Handling', () => {
     );
 
     // Wait for error state to appear
-    const errorTitle = await screen.findByText(/Access Denied/i, {}, { timeout: 3000 });
+    const errorTitle = await screen.findByText(/Whiteboard Not Found/i, {}, { timeout: 3000 });
     expect(errorTitle).toBeInTheDocument();
 
     // Verify error message - check for key parts
-    const errorMessage = screen.getByText(/not available for guest access/i);
+    const errorMessage = screen.getByText(/may be incorrect or the whiteboard may have been deleted/i);
     expect(errorMessage).toBeInTheDocument();
 
     // Verify retry button is present
@@ -164,7 +164,7 @@ describe('Guest Whiteboard Access - 403 Error Handling', () => {
     );
 
     // Wait for error state
-    const errorTitle = await screen.findByText(/Access Denied/i, {}, { timeout: 3000 });
+    const errorTitle = await screen.findByText(/Whiteboard Not Found/i, {}, { timeout: 3000 });
     expect(errorTitle).toBeInTheDocument();
 
     // Click retry button
@@ -172,7 +172,7 @@ describe('Guest Whiteboard Access - 403 Error Handling', () => {
     retryButton.click();
 
     // Error should still be displayed after retry
-    const errorTitleAfterRetry = await screen.findByText(/Access Denied/i, {}, { timeout: 3000 });
+    const errorTitleAfterRetry = await screen.findByText(/Whiteboard Not Found/i, {}, { timeout: 3000 });
     expect(errorTitleAfterRetry).toBeInTheDocument();
   });
 
@@ -200,11 +200,11 @@ describe('Guest Whiteboard Access - 403 Error Handling', () => {
     );
 
     // Should show 403-specific error message
-    const errorTitle = await screen.findByText(/Access Denied/i, {}, { timeout: 3000 });
+    const errorTitle = await screen.findByText(/Whiteboard Not Found/i, {}, { timeout: 3000 });
     expect(errorTitle).toBeInTheDocument();
   });
 
-  it('should suggest sign-in for 403 error', async () => {
+  it('should surface neutral 404 messaging for 403 error', async () => {
     sessionStorage.setItem('alkemio_guest_name', 'TestUser');
     const whiteboardId = 'private-whiteboard-id';
 
@@ -228,11 +228,11 @@ describe('Guest Whiteboard Access - 403 Error Handling', () => {
     );
 
     // Wait for error state
-    const errorTitle = await screen.findByText(/Access Denied/i, {}, { timeout: 3000 });
+    const errorTitle = await screen.findByText(/Whiteboard Not Found/i, {}, { timeout: 3000 });
     expect(errorTitle).toBeInTheDocument();
 
-    // Verify contact owner message is present
-    const contactMessage = screen.getByText(/contact the whiteboard owner/i);
-    expect(contactMessage).toBeInTheDocument();
+    // Verify generic guidance message is presented
+    const guidanceMessage = screen.getByText(/may be incorrect or the whiteboard may have been deleted/i);
+    expect(guidanceMessage).toBeInTheDocument();
   });
 });
