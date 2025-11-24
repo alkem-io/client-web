@@ -19,8 +19,7 @@ const GridContainer = styled(Box)(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: `repeat(${MAX_SIZE}, 1fr)`,
   gap: '2px',
-  padding: gutters(1)(theme),
-  paddingBottom: gutters(0.5)(theme),
+  padding: theme.spacing(1.2, 2),
 }));
 
 const Cell = styled(Box, {

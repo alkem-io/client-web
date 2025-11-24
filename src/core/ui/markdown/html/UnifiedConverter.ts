@@ -7,25 +7,18 @@ import { State as M2HState } from 'mdast-util-to-hast';
 import { defaultHandlers as defaultHTMLHandlers, State as H2MState } from 'hast-util-to-mdast';
 import { emptyParagraph, html } from '../utils/unist-builders';
 
-const isEmptyLine = (node: Html, parent: Parent | null | undefined) => node.value === '<br>' && parent?.type === 'root';
-
-const isInsideTable = (parent: (Parent & { tagName?: string }) | undefined) => {
-  return parent?.tagName && ['td', 'th'].includes(parent.tagName);
-};
-
-const isEmptyCell = (parent: Parent | undefined, element: Element) => {
-  if (!parent) {
-    return false;
+/*const isEmptyLine = (node: Html, parent: Parent | null | undefined) => {
+  if (node.value === '<br>' && parent?.type === 'root') {
+    return true;
+  } else {
+    return /^\s*<br\s*\/?>\s*$/i.test(node.value);
   }
-  if (isInsideTable(parent) && parent.children.length > 1) {
-    return false;
-  }
-  return (
-    element.children.length === 0 ||
-    (element.children.length === 1 &&
-      element.children[0].type === 'element' &&
-      (element.children[0] as Element).tagName === 'br')
-  );
+}
+  */
+const isNewLine = (node: Html, parent: Parent | null | undefined) => {
+  const result = /^\s*<br\s*\/?>\s*$/i.test(node.value);
+  console.log('isNewLine check for node:', node, result, parent);
+  return result;
 };
 
 const allowDangerousHtmlIframeProps = [
@@ -76,24 +69,60 @@ const UnifiedConverter = (): Converter => {
         // @ts-ignore
         .use(rehypeRemark, {
           handlers: {
-            p: (state: H2MState, element: Element, parent: Parent | undefined) => {
-              if (isInsideTable(parent)) {
-                if (isEmptyCell(parent, element)) {
-                  return null;
+            /*            p: (state: H2MState, element: Element, parent: (Parent & { tagName: string }) | undefined) => {
+              console.log('Processing paragraph element:', { element, state, parent });
+              if (['th', 'td'].includes(parent?.tagName ?? '')) {
+                const siblings = parent?.children as ElementContent[] ?? [];
+                if (element.children.length === 0) {
+                  // It's an empty paragraph inside a table cell
+                  if (siblings.length === 1) {
+                    // It's the only child
+                    console.log('returning empty text node for empty table cell');
+                    return { type: 'text', value: '' };
+                  } else {
+                    // It's not the only child, return a line break
+                    console.log('returning <br> for non empty table cell');
+                    console.log(html('<br>'));
+                    return html('<br>');
+                  }
+                } else {
+                  // It's a non-empty paragraph inside a table cell
+                  if (siblings.length === 1) {
+                    // It's the only child in the cell
+                    console.log('handling default for table cell with a single child');
+                    const result = defaultHTMLHandlers.p(state, element);
+                    console.log('Result for table cell paragraph:', result, state, element);
+                    return result;
+                  } else {
+                    if (siblings.indexOf(element) === -1) {
+                      console.log('something weird, just handle it');
+                      return defaultHTMLHandlers.p(state, element);
+                    } else if (siblings.indexOf(element) === 0) {
+                      console.log('its the first child just handle normally');
+                      return defaultHTMLHandlers.p(state, element);
+                    } else {
+                      console.log('its some other child, should prepend a line break');
+                      console.log({ siblings, element });
+                      const result = defaultHTMLHandlers.p(state, element);
+                      result?.children.unshift({ type: 'html', value: '<br>' });
+                      console.log({ result, state, element })
+                      return result;
+                    }
+                  }
                 }
-
-                const children = state.all(element);
-                const siblings = (parent?.children as unknown as Element[]).filter(c => c.type === 'element') ?? [];
-                const index = siblings.indexOf(element);
-                const isLast = index === siblings.length - 1;
-
-                if (!isLast) {
-                  return [...children, html('<br>')];
+              } else {
+                if (element.children.length === 0) {
+                  console.log('returning <br>');
+                  return html('<br>');
+                } else {
+                  console.log('handling default');
+                  return defaultHTMLHandlers.p(state, element);
                 }
-                return children;
               }
-              return element.children.length === 0 ? html('<br>') : defaultHTMLHandlers.p(state, element);
             },
+            */
+            p: (state: H2MState, element: Element) =>
+              element.children.length === 0 ? html('<br>') : defaultHTMLHandlers.p(state, element),
             strong: trimmer('strong'),
             emphasis: trimmer('emphasis'),
             iframe: (_state: H2MState, element: Element) => ({
@@ -141,7 +170,7 @@ const UnifiedConverter = (): Converter => {
         allowDangerousHtml: true,
         handlers: {
           html: (state: M2HState, node: Html, parent: Parents | undefined): ElementContent => {
-            if (isEmptyLine(node, parent)) {
+            if (isNewLine(node, parent)) {
               return emptyParagraph();
             }
             return defaultMarkdownHandlers.html(state, node) ?? emptyParagraph();
@@ -156,12 +185,14 @@ const UnifiedConverter = (): Converter => {
   const markdownToHTML = async (markdown: string) => {
     const markdownToHTMLPipeline = await constructMarkdownToHTMLPipeline();
     const result = await markdownToHTMLPipeline.process(markdown);
+    console.log('HTML Result:', String(result));
     return String(result);
   };
 
   const HTMLToMarkdown = async (html: string) => {
     const htmlToMarkdownPipeline = await constructHtmlToMarkdownPipeline();
     const result = await htmlToMarkdownPipeline.process(html);
+    console.log('Markdown Result:', String(result));
     return String(result);
   };
 

@@ -1392,6 +1392,7 @@
         "table.insert": "Insert Table",
         "table.operations": "Table Operations",
         "table.deleteTable": "Delete Table",
+        "table.deleteConfirm": "Are you sure you want to delete this table?",
         "table.addColumnBefore": "Add Column Before",
         "table.addColumnAfter": "Add Column After",
         "table.deleteColumn": "Delete Column",

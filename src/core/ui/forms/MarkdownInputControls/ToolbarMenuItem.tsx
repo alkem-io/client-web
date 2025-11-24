@@ -10,7 +10,6 @@ interface ToolbarMenuItemProps {
   specs?: string | [attributes: {}] | [nodeOrMark: string, attributes?: {}];
   onClick?: () => void;
   children: React.ReactNode;
-  tooltip?: string;
 }
 
 interface ButtonState {
@@ -19,7 +18,7 @@ interface ButtonState {
 }
 
 const ToolbarMenuItem = memo(
-  ({ editor, command, specs, onClick, children, tooltip, ...menuItemProps }: ToolbarMenuItemProps) => {
+  ({ editor, command, specs, onClick, children, ...menuItemProps }: ToolbarMenuItemProps) => {
     const isActiveArgs = specs && ((typeof specs === 'string' ? [specs] : specs) as Parameters<Editor['isActive']>);
 
     const getActiveState = () => (isActiveArgs && editor ? editor.isActive(...isActiveArgs) : false);
