@@ -8,6 +8,7 @@ import { Socket } from 'socket.io-client';
 import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFilesManager';
 import type { isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw/dist/types/element/src';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 
 interface PortalProps {
   onRemoteSave: () => void;
@@ -77,7 +78,7 @@ class Portal {
       const auth: Record<string, string> = {};
 
       // Add guest name for public whiteboard routes
-      if (globalThis.window?.location.pathname.startsWith('/public/whiteboard')) {
+      if (globalThis.window?.location.pathname.startsWith(GUEST_SHARE_PATH)) {
         try {
           const guestName = globalThis.sessionStorage.getItem('alkemio_guest_name');
           if (guestName) {

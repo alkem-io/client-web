@@ -1,4 +1,4 @@
-const GUEST_SHARE_PATH = '/public/whiteboard';
+export const GUEST_SHARE_PATH = '/public/whiteboard';
 
 export const buildGuestShareUrl = (whiteboardId?: string) => {
   if (!whiteboardId) {

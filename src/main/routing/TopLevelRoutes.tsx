@@ -18,6 +18,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
+import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 
 const PublicWhiteboardPage = lazyWithGlobalErrorHandler(() => import('@/main/public/whiteboard/PublicWhiteboardPage'));
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
@@ -61,9 +62,9 @@ export const TopLevelRoutes = () => {
         <Route path={TopLevelRoutePath._Landing} element={<RedirectToWelcomeSite />} />
         {/* Public routes - accessible without authentication */}
         <Route
-          path="/public/whiteboard/:whiteboardId"
+          path={`${GUEST_SHARE_PATH}/:whiteboardId`}
           element={
-            <WithApmTransaction path="/public/whiteboard/:whiteboardId">
+            <WithApmTransaction path={`${GUEST_SHARE_PATH}/:whiteboardId`}>
               <Suspense fallback={<Loading />}>
                 <PublicWhiteboardPage />
               </Suspense>
