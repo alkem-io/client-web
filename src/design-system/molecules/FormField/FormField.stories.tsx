@@ -3,7 +3,7 @@ import { FormField } from './FormField';
 import { Input } from '../../atoms/Input/Input';
 
 const meta: Meta<typeof FormField> = {
-  title: 'Molecules/FormField',
+  title: 'Design System/Molecules/FormField',
   component: FormField,
   tags: ['autodocs'],
 };

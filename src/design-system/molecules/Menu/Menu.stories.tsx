@@ -4,7 +4,7 @@ import { Button } from '../../atoms/Button/Button';
 import { useState } from 'react';
 
 const meta: Meta<typeof Menu> = {
-  title: 'Molecules/Menu',
+  title: 'Design System/Molecules/Menu',
   component: Menu,
   tags: ['autodocs'],
 };

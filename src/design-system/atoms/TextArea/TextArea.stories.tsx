@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TextArea } from './TextArea';
 
 const meta: Meta<typeof TextArea> = {
-  title: 'Atoms/TextArea',
+  title: 'Design System/Atoms/TextArea',
   component: TextArea,
   tags: ['autodocs'],
 };

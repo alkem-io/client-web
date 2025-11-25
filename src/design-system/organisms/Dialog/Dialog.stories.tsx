@@ -4,7 +4,7 @@ import { Button } from '../../atoms/Button/Button';
 import { Typography } from '../../atoms/Typography/Typography';
 
 const meta: Meta<typeof Dialog> = {
-  title: 'Organisms/Dialog',
+  title: 'Design System/Organisms/Dialog',
   component: Dialog,
   tags: ['autodocs'],
 };

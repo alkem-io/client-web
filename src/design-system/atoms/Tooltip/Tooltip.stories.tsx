@@ -5,7 +5,7 @@ import { IconButton } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 
 const meta: Meta<typeof Tooltip> = {
-  title: 'Atoms/Tooltip',
+  title: 'Design System/Atoms/Tooltip',
   component: Tooltip,
   tags: ['autodocs'],
   argTypes: {

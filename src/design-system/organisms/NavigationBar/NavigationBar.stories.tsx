@@ -3,7 +3,7 @@ import { NavigationBar } from './NavigationBar';
 import { Typography } from '../../atoms/Typography/Typography';
 
 const meta: Meta<typeof NavigationBar> = {
-  title: 'Organisms/NavigationBar',
+  title: 'Design System/Organisms/NavigationBar',
   component: NavigationBar,
   tags: ['autodocs'],
 };

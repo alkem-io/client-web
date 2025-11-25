@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Box } from '@mui/material';
 
 const meta: Meta<typeof Drawer> = {
-  title: 'Organisms/Drawer',
+  title: 'Design System/Organisms/Drawer',
   component: Drawer,
   tags: ['autodocs'],
   argTypes: {
