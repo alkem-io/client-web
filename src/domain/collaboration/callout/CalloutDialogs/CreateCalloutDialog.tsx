@@ -32,6 +32,7 @@ import scrollToTop from '@/core/ui/utils/scrollToTop';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
 import { mapCalloutTemplateToCalloutForm, mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface CreateCalloutDialogProps {
   open?: boolean;
@@ -52,6 +53,8 @@ const CreateCalloutDialog = ({
   calloutRestrictions,
 }: CreateCalloutDialogProps) => {
   const { t } = useTranslation();
+  const { isSmallScreen: isMobile } = useScreenSize();
+
   const ensurePresence = useEnsurePresence();
 
   const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
@@ -174,7 +177,13 @@ const CreateCalloutDialog = ({
 
   return (
     <>
-      <DialogWithGrid open={open} onClose={handleCloseButtonClick} fullWidth aria-labelledby="create-callout-dialog">
+      <DialogWithGrid
+        open={open}
+        onClose={handleCloseButtonClick}
+        fullWidth
+        fullScreen={isMobile}
+        aria-labelledby="create-callout-dialog"
+      >
         <DialogHeader
           id="create-callout-dialog"
           title={t('callout.create.dialogTitle')}
