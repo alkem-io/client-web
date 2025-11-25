@@ -1,4 +1,4 @@
-import { StoryObj } from '@storybook/react';
+import { StoryObj } from '@storybook/react-vite';
 import { Badge } from './Badge';
 import { Mail } from '@mui/icons-material';
 

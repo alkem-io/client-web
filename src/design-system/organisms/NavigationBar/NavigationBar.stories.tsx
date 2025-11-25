@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { NavigationBar } from './NavigationBar';
 import { Typography } from '../../atoms/Typography/Typography';
 

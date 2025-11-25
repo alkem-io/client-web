@@ -1,4 +1,4 @@
-import { StoryObj } from '@storybook/react';
+import { StoryObj } from '@storybook/react-vite';
 import { List } from './List';
 import { Inbox, Drafts } from '@mui/icons-material';
 

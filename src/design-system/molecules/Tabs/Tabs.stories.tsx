@@ -1,4 +1,4 @@
-import { StoryObj } from '@storybook/react';
+import { StoryObj } from '@storybook/react-vite';
 import { Tabs } from './Tabs';
 import { Home, Person, Settings } from '@mui/icons-material';
 import React from 'react';
