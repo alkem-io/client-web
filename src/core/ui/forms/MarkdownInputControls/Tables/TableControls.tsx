@@ -80,7 +80,7 @@ const TableControls = ({ editor }: TableControlsProps) => {
 
   const handleInsertTable = (rows: number, cols: number) => {
     if (!editor) return;
-    restoreUserSelection(editor?.chain()).insertTable({ rows, cols, withHeaderRow: true }).run();
+    restoreUserSelection(editor.chain()).insertTable({ rows, cols, withHeaderRow: true }).run();
   };
 
   const openDeleteTableDialog = () => {
@@ -90,7 +90,7 @@ const TableControls = ({ editor }: TableControlsProps) => {
 
   const handleDeleteTable = () => {
     if (!editor) return;
-    restoreUserSelection(editor?.chain()).deleteTable().run();
+    restoreUserSelection(editor.chain()).deleteTable().run();
     setIsDeleteTableDialogOpen(false);
   };
 

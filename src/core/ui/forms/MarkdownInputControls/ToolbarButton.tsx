@@ -47,7 +47,7 @@ const ToolbarButton = memo(
     const [state, setState] = useState<ButtonState>({ disabled: true, active: false });
 
     const refreshOnEditorUpdate = (editor: Editor) => {
-      const handleStateChange = async () => {
+      const handleStateChange = () => {
         setState(produceButtonState);
       };
 

@@ -8,15 +8,13 @@ import { defaultHandlers as defaultHTMLHandlers, State as H2MState } from 'hast-
 import { emptyParagraph, html, text } from '../utils/unist-builders';
 
 // Not sure why it doesn't have the tagName property in TS, it's always there when debugging.
-// Overriding children to cast it to Element[] for cleaner code.
 type Parent = MDASTParent & { tagName?: string } & { children: Element[] };
 
 const isNewLine = (node: Html) => /^\s*<br\s*\/?>\s*$/i.test(node.value);
 const isTableCellNode = (parent: Parent | undefined) => ['td', 'th'].includes(parent?.tagName ?? '');
 
 /**
- * The nightmare of the newlines:
- * Code below can be confusing, so I'm leaving log function for now also as documentation
+ * Code below can be confusing, so I'm leaving log calls as comments for now also as documentation
  *
  * NewLines in html don't have any effect, but in markdown they do.
  * But in Markdown tables you just cannot use \n as line breaker, you need to use HTML <br> tags.
@@ -49,9 +47,6 @@ const allowDangerousHtmlIframeProps = [
 
 const UnifiedConverter = (): Converter => {
   const { t } = useTranslation();
-  const log = (..._args) => {
-    // console.log('[UnifiedConverter]', ..._args);
-  };
 
   const constructHtmlToMarkdownPipeline = once(async () => {
     const { unified } = await import('unified');
@@ -89,9 +84,9 @@ const UnifiedConverter = (): Converter => {
           handlers: {
             p: (state: H2MState, element: Element, parent: Parent | undefined) => {
               if (isTableCellNode(parent)) {
-                log('paragraph inside a table cell', element, parent, state);
+                // log('paragraph inside a table cell', element, parent, state);
                 if (element.children.length === 0) {
-                  log('was an empty line, converting to <br>');
+                  // log('was an empty line, converting to <br>');
                   return html('<br>');
                 } else {
                   // if it's a child after another p, prepend a <br>
@@ -103,15 +98,15 @@ const UnifiedConverter = (): Converter => {
                     const previousSibling = siblings[position - 1];
                     if (previousSibling && previousSibling.tagName === 'p') {
                       result?.children.unshift(html('<br>') as PhrasingContent);
-                      log('p inside a table cell after another p', element, parent, state, result);
+                      // log('p inside a table cell after another p', element, parent, state, result);
                       return result;
                     }
                   }
-                  log('was not after another p, returned as is', element, parent, state, result);
+                  // log('was not after another p, returned as is', element, parent, state, result);
                   return result;
                 }
               } else {
-                log('p not in a table cell', element, parent, state);
+                // log('p not in a table cell', element, parent, state);
                 // If it's in the root of the document, convert it to <br>, if not just handle normally
                 return element.children.length === 0 && parent?.type === 'root'
                   ? html('<br>')
@@ -167,33 +162,33 @@ const UnifiedConverter = (): Converter => {
           html: (state: M2HState, node: Html, parent: MDASTParent | undefined): ElementContent => {
             if (isNewLine(node)) {
               if (parent?.type === 'root') {
-                log('NewLine at root level => new empty paragraph', node, parent);
+                // log('NewLine at root level => new empty paragraph', node, parent);
                 return emptyParagraph();
               }
               const siblings = parent?.children ?? [];
               const position = siblings.indexOf(node);
               if (position <= 0) {
-                log('NewLine as the first node of the parent => new empty paragraph', node, parent);
+                // log('NewLine as the first node of the parent => new empty paragraph', node, parent);
                 return emptyParagraph();
               } else {
                 // Otherwise, only if the previous node is also a <br>, return an empty paragraph
                 if (siblings[position - 1].type === 'html' && isNewLine(siblings[position - 1] as Html)) {
-                  log('consecutive NewLine nodes => new empty paragraph', node, parent);
+                  // log('consecutive NewLine nodes => new empty paragraph', node, parent);
                   return emptyParagraph();
                 } else {
                   // Else strip out this node, the texts are going to be converted to <p> below
-                  log('NewLine node stripped', node, parent);
+                  // log('NewLine node stripped', node, parent);
                   return text('');
                 }
               }
             } else {
-              log('Non NewLine HTML node', node, parent);
+              // log('Non NewLine HTML node', node, parent);
               return defaultMarkdownHandlers.html(state, node) ?? emptyParagraph();
             }
           },
           text: (state: M2HState, node, parent: MDASTParent | undefined): ElementContent => {
             if (parent?.children.length === 1) {
-              log('Single text node', node, parent);
+              // log('Single text node', node, parent);
               return defaultMarkdownHandlers.text(state, node);
             } else {
               const siblings = parent?.children ?? [];
@@ -203,7 +198,7 @@ const UnifiedConverter = (): Converter => {
               if (nextNode && nextNode.type === 'html' && isNewLine(nextNode as Html)) {
                 const paragraphNode = defaultMarkdownHandlers.paragraph(state, node);
                 paragraphNode.children.push(defaultMarkdownHandlers.text(state, node)); // append the text to the paragraph
-                log('Text node followed by <br>, converting to paragraph', node, parent, paragraphNode);
+                // log('Text node followed by <br>, converting to paragraph', node, parent, paragraphNode);
                 return paragraphNode;
               }
 
@@ -220,14 +215,14 @@ const UnifiedConverter = (): Converter => {
   const markdownToHTML = async (markdown: string) => {
     const markdownToHTMLPipeline = await constructMarkdownToHTMLPipeline();
     const result = await markdownToHTMLPipeline.process(markdown);
-    log('HTML Result:', String(result));
+    // log('HTML Result:', String(result));
     return String(result);
   };
 
   const HTMLToMarkdown = async (html: string) => {
     const htmlToMarkdownPipeline = await constructHtmlToMarkdownPipeline();
     const result = await htmlToMarkdownPipeline.process(html);
-    log('Markdown Result:', String(result));
+    // log('Markdown Result:', String(result));
     return String(result);
   };
 
