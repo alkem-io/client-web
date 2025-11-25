@@ -2,6 +2,7 @@ import {
   CalloutAllowedContributors,
   CalloutFramingType,
   CalloutVisibility,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import { EmptyTagset, TagsetModel } from '@/domain/common/tagset/TagsetModel';
@@ -34,7 +35,16 @@ export interface CalloutFormSubmittedValues {
       visuals: {
         id?: string;
         uri: string;
+        /**
+         * Optional local file to upload as part of the media gallery visual.
+         * When present, the uri is only used for local preview purposes.
+         */
+        file?: File;
+        /** Local preview URL used to display the selected file before upload. */
+        previewUrl?: string;
         name?: string;
+        altText?: string;
+        visualType?: VisualType;
       }[];
     };
   };

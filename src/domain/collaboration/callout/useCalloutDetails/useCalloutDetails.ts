@@ -45,7 +45,7 @@ const useCalloutDetails = ({
     skip: skip || !calloutId,
   });
 
-  const result: CalloutDetailsModelExtended | undefined = useMemo(() => {
+  const result = useMemo<CalloutDetailsModelExtended | undefined>(() => {
     const calloutDetails = data?.lookup.callout;
 
     // Only use cached data if we don't have fresh data yet
@@ -66,7 +66,7 @@ const useCalloutDetails = ({
       canBeSavedAsTemplate: calloutsCanBeSavedAsTemplate,
       classificationTagsets: [],
       ...overrideCalloutSettings,
-    };
+    } as CalloutDetailsModelExtended;
   }, [
     data,
     loading,

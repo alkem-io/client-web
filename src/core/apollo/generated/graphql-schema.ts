@@ -8904,6 +8904,8 @@ export enum VisualType {
   Banner = 'BANNER',
   BannerWide = 'BANNER_WIDE',
   Card = 'CARD',
+  MediaGalleryImage = 'MEDIA_GALLERY_IMAGE',
+  MediaGalleryVideo = 'MEDIA_GALLERY_VIDEO',
   WhiteboardPreview = 'WHITEBOARD_PREVIEW',
 }
 
