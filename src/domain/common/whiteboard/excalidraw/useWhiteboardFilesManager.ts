@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useContext, useMemo, useRef, useState } from 'react';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import type {
   BinaryFileData,
@@ -9,13 +9,12 @@ import type {
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 import Semaphore from 'ts-semaphore';
 import { error } from '@/core/logging/sentry/log';
+import { GuestSessionContext } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
 
 export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
 export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
 export type BinaryFilesWithUrl = Record<string, BinaryFileDataWithUrl>;
 export type BinaryFilesWithOptionalUrl = Record<string, BinaryFileDataWithOptionalUrl>;
-
-const guestName = globalThis.sessionStorage.getItem('alkemio_guest_name');
 
 const isValidDataURL = (url: string) =>
   url.match(/^(data:)([\w/+-]*)(;charset=[\w-]+|;base64){0,1},[A-Za-z0-9+/=]+$/gi) !== null;
@@ -51,8 +50,9 @@ const blobToDataURL = (blob: Blob): Promise<string> => {
   });
 };
 
-const fetchFileToDataURL = async (url: string): Promise<string> => {
+const fetchFileToDataURL = async (url: string, guestName?: string | null): Promise<string> => {
   const headers = {};
+
   if (guestName) {
     Object.assign(headers, { 'x-guest-name': guestName });
   }
@@ -100,6 +100,8 @@ const useWhiteboardFilesManager = ({
     // TODO: Remove those `log()`s when this is confirmed to be fully stable
     //console.log('[FileManager]', ..._args);
   };
+  const guestSessionContext = useContext(GuestSessionContext);
+  const guestName = guestSessionContext?.guestName;
 
   /**
    * Stores all the files temporarily:
@@ -239,7 +241,7 @@ const useWhiteboardFilesManager = ({
 
         log('DOWNLOADING ', file);
         try {
-          const dataURL = await fetchFileToDataURL(file.url);
+          const dataURL = await fetchFileToDataURL(file.url, guestName);
           // try-catch will avoid putting the file in the store if fetching fails
           fileStoreAddFile(fileId, { ...file, dataURL } as BinaryFileDataWithUrl);
         } catch (e) {
