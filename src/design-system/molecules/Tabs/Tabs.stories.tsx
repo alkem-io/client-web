@@ -27,7 +27,7 @@ export const Default: Story = {
   },
   render: args => {
     const [value, setValue] = React.useState(args.value);
-    const handleChange = (event: React.SyntheticEvent, newValue: string | number) => {
+    const handleChange = (_event: React.SyntheticEvent, newValue: string | number) => {
       setValue(newValue);
     };
     return <Tabs {...args} value={value} onChange={handleChange} />;
@@ -46,7 +46,7 @@ export const WithIcons: Story = {
   },
   render: args => {
     const [value, setValue] = React.useState(args.value);
-    const handleChange = (event: React.SyntheticEvent, newValue: string | number) => {
+    const handleChange = (_event: React.SyntheticEvent, newValue: string | number) => {
       setValue(newValue);
     };
     return <Tabs {...args} value={value} onChange={handleChange} />;

@@ -1,0 +1,410 @@
+{
+  "v": 5,
+  "entries": {
+    "atoms-alert--docs": {
+      "id": "atoms-alert--docs",
+      "title": "Atoms/Alert",
+      "name": "Docs",
+      "importPath": "./src/design-system/atoms/Alert/Alert.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "atoms-alert--info": {
+      "type": "story",
+      "id": "atoms-alert--info",
+      "name": "Info",
+      "title": "Atoms/Alert",
+      "importPath": "./src/design-system/atoms/Alert/Alert.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Alert/Alert.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-atoms-avatar--docs": {
+      "id": "design-system-atoms-avatar--docs",
+      "title": "Design System/Atoms/Avatar",
+      "name": "Docs",
+      "importPath": "./src/design-system/atoms/Avatar/Avatar.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "design-system-atoms-avatar--image": {
+      "type": "story",
+      "id": "design-system-atoms-avatar--image",
+      "name": "Image",
+      "title": "Design System/Atoms/Avatar",
+      "importPath": "./src/design-system/atoms/Avatar/Avatar.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Avatar/Avatar.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-atoms-avatar--letter": {
+      "type": "story",
+      "id": "design-system-atoms-avatar--letter",
+      "name": "Letter",
+      "title": "Design System/Atoms/Avatar",
+      "importPath": "./src/design-system/atoms/Avatar/Avatar.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Avatar/Avatar.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-atoms-badge--docs": {
+      "id": "design-system-atoms-badge--docs",
+      "title": "Design System/Atoms/Badge",
+      "name": "Docs",
+      "importPath": "./src/design-system/atoms/Badge/Badge.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "design-system-atoms-badge--default": {
+      "type": "story",
+      "id": "design-system-atoms-badge--default",
+      "name": "Default",
+      "title": "Design System/Atoms/Badge",
+      "importPath": "./src/design-system/atoms/Badge/Badge.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Badge/Badge.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-atoms-badge--dot": {
+      "type": "story",
+      "id": "design-system-atoms-badge--dot",
+      "name": "Dot",
+      "title": "Design System/Atoms/Badge",
+      "importPath": "./src/design-system/atoms/Badge/Badge.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Badge/Badge.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "atoms-button--docs": {
+      "id": "atoms-button--docs",
+      "title": "Atoms/Button",
+      "name": "Docs",
+      "importPath": "./src/design-system/atoms/Button/Button.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "atoms-button--primary": {
+      "type": "story",
+      "id": "atoms-button--primary",
+      "name": "Primary",
+      "title": "Atoms/Button",
+      "importPath": "./src/design-system/atoms/Button/Button.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Button/Button.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "atoms-button--secondary": {
+      "type": "story",
+      "id": "atoms-button--secondary",
+      "name": "Secondary",
+      "title": "Atoms/Button",
+      "importPath": "./src/design-system/atoms/Button/Button.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Button/Button.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "atoms-checkbox--docs": {
+      "id": "atoms-checkbox--docs",
+      "title": "Atoms/Checkbox",
+      "name": "Docs",
+      "importPath": "./src/design-system/atoms/Checkbox/Checkbox.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "atoms-checkbox--default": {
+      "type": "story",
+      "id": "atoms-checkbox--default",
+      "name": "Default",
+      "title": "Atoms/Checkbox",
+      "importPath": "./src/design-system/atoms/Checkbox/Checkbox.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Checkbox/Checkbox.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "atoms-checkbox--with-label": {
+      "type": "story",
+      "id": "atoms-checkbox--with-label",
+      "name": "With Label",
+      "title": "Atoms/Checkbox",
+      "importPath": "./src/design-system/atoms/Checkbox/Checkbox.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Checkbox/Checkbox.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "atoms-chip--docs": {
+      "id": "atoms-chip--docs",
+      "title": "Atoms/Chip",
+      "name": "Docs",
+      "importPath": "./src/design-system/atoms/Chip/Chip.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "atoms-chip--default": {
+      "type": "story",
+      "id": "atoms-chip--default",
+      "name": "Default",
+      "title": "Atoms/Chip",
+      "importPath": "./src/design-system/atoms/Chip/Chip.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Chip/Chip.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "atoms-input--docs": {
+      "id": "atoms-input--docs",
+      "title": "Atoms/Input",
+      "name": "Docs",
+      "importPath": "./src/design-system/atoms/Input/Input.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "atoms-input--default": {
+      "type": "story",
+      "id": "atoms-input--default",
+      "name": "Default",
+      "title": "Atoms/Input",
+      "importPath": "./src/design-system/atoms/Input/Input.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Input/Input.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "atoms-input--full-width": {
+      "type": "story",
+      "id": "atoms-input--full-width",
+      "name": "Full Width",
+      "title": "Atoms/Input",
+      "importPath": "./src/design-system/atoms/Input/Input.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Input/Input.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "atoms-select--docs": {
+      "id": "atoms-select--docs",
+      "title": "Atoms/Select",
+      "name": "Docs",
+      "importPath": "./src/design-system/atoms/Select/Select.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "atoms-select--default": {
+      "type": "story",
+      "id": "atoms-select--default",
+      "name": "Default",
+      "title": "Atoms/Select",
+      "importPath": "./src/design-system/atoms/Select/Select.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Select/Select.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-atoms-spinner--docs": {
+      "id": "design-system-atoms-spinner--docs",
+      "title": "Design System/Atoms/Spinner",
+      "name": "Docs",
+      "importPath": "./src/design-system/atoms/Spinner/Spinner.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "design-system-atoms-spinner--default": {
+      "type": "story",
+      "id": "design-system-atoms-spinner--default",
+      "name": "Default",
+      "title": "Design System/Atoms/Spinner",
+      "importPath": "./src/design-system/atoms/Spinner/Spinner.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Spinner/Spinner.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-atoms-spinner--small": {
+      "type": "story",
+      "id": "design-system-atoms-spinner--small",
+      "name": "Small",
+      "title": "Design System/Atoms/Spinner",
+      "importPath": "./src/design-system/atoms/Spinner/Spinner.stories.tsx",
+      "componentPath": "./src/design-system/atoms/Spinner/Spinner.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "atoms-textarea--docs": {
+      "id": "atoms-textarea--docs",
+      "title": "Atoms/TextArea",
+      "name": "Docs",
+      "importPath": "./src/design-system/atoms/TextArea/TextArea.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "atoms-textarea--default": {
+      "type": "story",
+      "id": "atoms-textarea--default",
+      "name": "Default",
+      "title": "Atoms/TextArea",
+      "importPath": "./src/design-system/atoms/TextArea/TextArea.stories.tsx",
+      "componentPath": "./src/design-system/atoms/TextArea/TextArea.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-molecules-breadcrumbs--docs": {
+      "id": "design-system-molecules-breadcrumbs--docs",
+      "title": "Design System/Molecules/Breadcrumbs",
+      "name": "Docs",
+      "importPath": "./src/design-system/molecules/Breadcrumbs/Breadcrumbs.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "design-system-molecules-breadcrumbs--default": {
+      "type": "story",
+      "id": "design-system-molecules-breadcrumbs--default",
+      "name": "Default",
+      "title": "Design System/Molecules/Breadcrumbs",
+      "importPath": "./src/design-system/molecules/Breadcrumbs/Breadcrumbs.stories.tsx",
+      "componentPath": "./src/design-system/molecules/Breadcrumbs/Breadcrumbs.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-molecules-commentinput--docs": {
+      "id": "design-system-molecules-commentinput--docs",
+      "title": "Design System/Molecules/CommentInput",
+      "name": "Docs",
+      "importPath": "./src/design-system/molecules/CommentInput/CommentInput.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "design-system-molecules-commentinput--default": {
+      "type": "story",
+      "id": "design-system-molecules-commentinput--default",
+      "name": "Default",
+      "title": "Design System/Molecules/CommentInput",
+      "importPath": "./src/design-system/molecules/CommentInput/CommentInput.stories.tsx",
+      "componentPath": "./src/design-system/molecules/CommentInput/CommentInput.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "molecules-formfield--docs": {
+      "id": "molecules-formfield--docs",
+      "title": "Molecules/FormField",
+      "name": "Docs",
+      "importPath": "./src/design-system/molecules/FormField/FormField.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "molecules-formfield--default": {
+      "type": "story",
+      "id": "molecules-formfield--default",
+      "name": "Default",
+      "title": "Molecules/FormField",
+      "importPath": "./src/design-system/molecules/FormField/FormField.stories.tsx",
+      "componentPath": "./src/design-system/molecules/FormField/FormField.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-molecules-list--docs": {
+      "id": "design-system-molecules-list--docs",
+      "title": "Design System/Molecules/List",
+      "name": "Docs",
+      "importPath": "./src/design-system/molecules/List/List.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "design-system-molecules-list--default": {
+      "type": "story",
+      "id": "design-system-molecules-list--default",
+      "name": "Default",
+      "title": "Design System/Molecules/List",
+      "importPath": "./src/design-system/molecules/List/List.stories.tsx",
+      "componentPath": "./src/design-system/molecules/List/List.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-molecules-list--with-secondary-text": {
+      "type": "story",
+      "id": "design-system-molecules-list--with-secondary-text",
+      "name": "With Secondary Text",
+      "title": "Design System/Molecules/List",
+      "importPath": "./src/design-system/molecules/List/List.stories.tsx",
+      "componentPath": "./src/design-system/molecules/List/List.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-molecules-tabs--docs": {
+      "id": "design-system-molecules-tabs--docs",
+      "title": "Design System/Molecules/Tabs",
+      "name": "Docs",
+      "importPath": "./src/design-system/molecules/Tabs/Tabs.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "design-system-molecules-tabs--default": {
+      "type": "story",
+      "id": "design-system-molecules-tabs--default",
+      "name": "Default",
+      "title": "Design System/Molecules/Tabs",
+      "importPath": "./src/design-system/molecules/Tabs/Tabs.stories.tsx",
+      "componentPath": "./src/design-system/molecules/Tabs/Tabs.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-molecules-tabs--with-icons": {
+      "type": "story",
+      "id": "design-system-molecules-tabs--with-icons",
+      "name": "With Icons",
+      "title": "Design System/Molecules/Tabs",
+      "importPath": "./src/design-system/molecules/Tabs/Tabs.stories.tsx",
+      "componentPath": "./src/design-system/molecules/Tabs/Tabs.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "organisms-dialog--docs": {
+      "id": "organisms-dialog--docs",
+      "title": "Organisms/Dialog",
+      "name": "Docs",
+      "importPath": "./src/design-system/organisms/Dialog/Dialog.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "organisms-dialog--default": {
+      "type": "story",
+      "id": "organisms-dialog--default",
+      "name": "Default",
+      "title": "Organisms/Dialog",
+      "importPath": "./src/design-system/organisms/Dialog/Dialog.stories.tsx",
+      "componentPath": "./src/design-system/organisms/Dialog/Dialog.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "organisms-navigationbar--docs": {
+      "id": "organisms-navigationbar--docs",
+      "title": "Organisms/NavigationBar",
+      "name": "Docs",
+      "importPath": "./src/design-system/organisms/NavigationBar/NavigationBar.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "organisms-navigationbar--default": {
+      "type": "story",
+      "id": "organisms-navigationbar--default",
+      "name": "Default",
+      "title": "Organisms/NavigationBar",
+      "importPath": "./src/design-system/organisms/NavigationBar/NavigationBar.stories.tsx",
+      "componentPath": "./src/design-system/organisms/NavigationBar/NavigationBar.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-organisms-pagebanner--docs": {
+      "id": "design-system-organisms-pagebanner--docs",
+      "title": "Design System/Organisms/PageBanner",
+      "name": "Docs",
+      "importPath": "./src/design-system/organisms/PageBanner/PageBanner.stories.tsx",
+      "type": "docs",
+      "tags": ["dev", "test", "autodocs"],
+      "storiesImports": []
+    },
+    "design-system-organisms-pagebanner--default": {
+      "type": "story",
+      "id": "design-system-organisms-pagebanner--default",
+      "name": "Default",
+      "title": "Design System/Organisms/PageBanner",
+      "importPath": "./src/design-system/organisms/PageBanner/PageBanner.stories.tsx",
+      "componentPath": "./src/design-system/organisms/PageBanner/PageBanner.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    },
+    "design-system-organisms-pagebanner--with-image": {
+      "type": "story",
+      "id": "design-system-organisms-pagebanner--with-image",
+      "name": "With Image",
+      "title": "Design System/Organisms/PageBanner",
+      "importPath": "./src/design-system/organisms/PageBanner/PageBanner.stories.tsx",
+      "componentPath": "./src/design-system/organisms/PageBanner/PageBanner.tsx",
+      "tags": ["dev", "test", "autodocs"]
+    }
+  }
+}

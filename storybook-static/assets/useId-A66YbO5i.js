@@ -1,0 +1,1 @@
+import{a as c,r as s}from"./index-DZ_CqB28.js";let a=0;function f(t){const[e,n]=s.useState(t),o=t||e;return s.useEffect(()=>{e==null&&(a+=1,n(`mui-${a}`))},[e]),o}const l={...c},u=l.useId;function d(t){if(u!==void 0){const e=u();return t??e}return f(t)}export{d as u};

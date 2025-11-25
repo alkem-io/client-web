@@ -6,6 +6,3 @@ export * from './Select/Select';
 export * from './TextArea/TextArea';
 export * from './Chip/Chip';
 export * from './Alert/Alert';
-export * from './Avatar/Avatar';
-export * from './Badge/Badge';
-export * from './Spinner/Spinner';
