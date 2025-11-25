@@ -12,3 +12,8 @@ export * from './Spinner/Spinner';
 export * from './Switch/Switch';
 export * from './Tooltip/Tooltip';
 export * from './Divider/Divider';
+export * from './ProgressBar/ProgressBar';
+export * from './Skeleton/Skeleton';
+export * from './Snackbar/Snackbar';
+export * from './Link/Link';
+export * from './Paper/Paper';

@@ -6,3 +6,4 @@ export * from './List/List';
 export * from './Breadcrumbs/Breadcrumbs';
 export * from './CommentInput/CommentInput';
 export * from './Menu/Menu';
+export * from './Accordion/Accordion';
