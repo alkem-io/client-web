@@ -1,4 +1,4 @@
-import { Box, IconButton, IconButtonProps, Tooltip } from '@mui/material';
+import { IconButton, IconButtonProps, Tooltip } from '@mui/material';
 
 export type MarkdownInputToolbarButtonProps = IconButtonProps & { tooltip: string } & {
   ref?: React.Ref<HTMLButtonElement>;
@@ -17,6 +17,9 @@ const MarkdownInputToolbarButton = ({
 }: MarkdownInputToolbarButtonProps & {
   ref?: React.Ref<HTMLButtonElement>;
 }) => {
+  if (hidden) {
+    return null;
+  }
   const curedProps = { ...props };
   const removeProps = ['indicator', 'fullWidth', 'selectionFollowsFocus', 'textColor'];
   removeProps.forEach(prop => prop in curedProps && delete curedProps[prop]);
@@ -24,11 +27,7 @@ const MarkdownInputToolbarButton = ({
   return (
     <Tooltip title={tooltip} arrow>
       <span>
-        {!hidden ? (
-          <IconButton aria-label={tooltip} {...curedProps} ref={ref} />
-        ) : (
-          <Box width={0} height={0} ref={ref} />
-        )}
+        <IconButton aria-label={tooltip} {...curedProps} ref={ref} />
       </span>
     </Tooltip>
   );
