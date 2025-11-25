@@ -63,12 +63,15 @@ export const WrapperMarkdown = ({
       '&:nth-child(odd)': { background: theme.palette.markdownTable.rowBackgroundOdd },
       '&:nth-child(even)': { background: theme.palette.markdownTable.rowBackgroundEven },
     }),
-    th: { border: theme => `1px solid ${theme.palette.markdownTable.border}`, padding: gutters(0.5) },
-    td: {
-      border: theme => `1px solid ${theme.palette.markdownTable.border}`,
-      padding: gutters(0.5),
+    th: theme => ({
+      border: `1px solid ${theme.palette.markdownTable.border}`,
+      padding: gutters(0.5)(theme),
+    }),
+    td: theme => ({
+      border: `1px solid ${theme.palette.markdownTable.border}`,
+      padding: gutters(0.5)(theme),
       verticalAlign: 'top',
-    },
+    }),
     ...sx,
   };
 
