@@ -144,8 +144,8 @@ const EditCalloutDialog = ({ open = false, onClose, calloutId, calloutRestrictio
           ? {
               visuals: formData.framing.mediaGallery.visuals.map(v => {
                 const visualType = v.file
-                  ? getMediaGalleryVisualType(v.file)
-                  : (v.visualType ?? getMediaGalleryVisualType());
+                  ? getMediaGalleryVisualType(v.file, v.uri)
+                  : (v.visualType ?? getMediaGalleryVisualType(undefined, v.uri));
 
                 return {
                   uri: v.file ? v.uri || '' : v.uri,

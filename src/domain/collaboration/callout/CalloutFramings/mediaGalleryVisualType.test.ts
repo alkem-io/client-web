@@ -13,7 +13,19 @@ describe('getMediaGalleryVisualType', () => {
     expect(getMediaGalleryVisualType(file)).toBe(VisualType.MediaGalleryVideo);
   });
 
-  it('falls back to the default image type when no file is provided', () => {
-    expect(getMediaGalleryVisualType()).toBe(VisualType.MediaGalleryImage);
+  it('returns image visual type for urls ending with image extensions', () => {
+    expect(getMediaGalleryVisualType(undefined, 'https://example.com/image.JPG?version=1')).toBe(
+      VisualType.MediaGalleryImage
+    );
+  });
+
+  it('returns video visual type for urls ending with video extensions', () => {
+    expect(getMediaGalleryVisualType(undefined, 'https://cdn.example.com/video.webm')).toBe(
+      VisualType.MediaGalleryVideo
+    );
+  });
+
+  it('falls back to default visual type when no hints are present', () => {
+    expect(getMediaGalleryVisualType(undefined, 'https://example.com/asset.bin')).toBe(VisualType.Card);
   });
 });

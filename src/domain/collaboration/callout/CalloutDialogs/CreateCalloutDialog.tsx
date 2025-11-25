@@ -154,7 +154,7 @@ const CreateCalloutDialog = ({
                 maxWidth: 1000,
                 minHeight: 100,
                 minWidth: 100,
-                name: item.visualType ?? getMediaGalleryVisualType(item.file),
+                name: item.visualType ?? getMediaGalleryVisualType(item.file, item.uri),
                 uri: item.file ? undefined : item.uri,
                 alternativeText: item.altText || item.file?.name || '',
               })),
