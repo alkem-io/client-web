@@ -54,7 +54,9 @@ const MemoPreview = ({ memo, onClick, sx }: MemoPreviewProps) => {
           <MemoIcon />
         </Centered>
         <CaptionContainer>
-          <Caption sx={{ color: theme => theme.palette.primary.main }}>{t('callout.memo.clickToSee')}</Caption>
+          {onClick && (
+            <Caption sx={{ color: theme => theme.palette.primary.main }}>{t('callout.memo.clickToSee')}</Caption>
+          )}
         </CaptionContainer>
       </Container>
     );
