@@ -46,7 +46,6 @@ export interface UseWhiteboardGuestAccessResult {
   resetError: () => void;
 }
 
-const DEFAULT_GUEST_LINK = 'https://guest-link-placeholder.invalid';
 const PUBLIC_SHARE_PRIVILEGE =
   (AuthorizationPrivilege as Record<string, AuthorizationPrivilege | undefined>).PublicShare ??
   ('PUBLIC_SHARE' as AuthorizationPrivilege);
@@ -55,7 +54,7 @@ const buildGuestLink = (guestShareUrl?: string, enabled?: boolean) => {
   if (!enabled) {
     return undefined;
   }
-  return guestShareUrl || DEFAULT_GUEST_LINK;
+  return guestShareUrl;
 };
 
 const WHITEBOARD_GUEST_ACCESS_SERVER_ERROR_CODES: GuestAccessErrorCode[] = [
@@ -197,4 +196,3 @@ const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGu
 };
 
 export default useWhiteboardGuestAccess;
-export { DEFAULT_GUEST_LINK };
