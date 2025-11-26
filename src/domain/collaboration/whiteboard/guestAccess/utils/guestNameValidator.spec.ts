@@ -56,7 +56,7 @@ describe('guestNameValidator', () => {
       invalidNames.forEach(name => {
         const result = validateGuestName(name);
         expect(result.valid).toBe(false);
-        expect(result.error).toContain('letters, numbers, spaces, hyphens');
+        expect(result.error).toContain('letters');
       });
     });
 
@@ -90,14 +90,31 @@ describe('guestNameValidator', () => {
       });
     });
 
-    it('should handle unicode characters appropriately', () => {
-      const unicodeNames = ['José', 'François', 'Müller', '李明'];
+    it('should accept unicode names with accented and international characters', () => {
+      const unicodeNames = ['José', 'François', 'Müller', '李明', 'Владимир', 'Σωκράτης'];
 
       unicodeNames.forEach(name => {
         const result = validateGuestName(name);
-        // Document the behavior - may depend on regex implementation
-        expect(result).toBeDefined();
-        expect(result.valid).toBeDefined();
+        expect(result.valid).toBe(true);
+        expect(result.error).toBeUndefined();
+      });
+    });
+
+    it('should accept mixed unicode and ASCII with special characters', () => {
+      const mixedNames = ['José-María', 'François_Dubois', 'Müller 123', 'María José García', 'José-André_Smith'];
+
+      mixedNames.forEach(name => {
+        expect(validateGuestName(name)).toEqual({ valid: true });
+      });
+    });
+
+    it('should reject emojis and special unicode symbols', () => {
+      const invalidUnicode = ['John 😀', 'Test™', 'Name©', 'User®', 'Guest♥', '🎉Party'];
+
+      invalidUnicode.forEach(name => {
+        const result = validateGuestName(name);
+        expect(result.valid).toBe(false);
+        expect(result.error).toContain('letters');
       });
     });
 

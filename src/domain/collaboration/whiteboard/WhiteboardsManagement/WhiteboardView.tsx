@@ -12,7 +12,7 @@ import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apoll
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardGuestAccess from '../hooks/useWhiteboardGuestAccess';
-import buildGuestShareUrl from '../utils/buildGuestShareUrl';
+import { buildGuestShareUrl } from '../utils/buildGuestShareUrl';
 import WhiteboardGuestAccessControls from '../WhiteboardShareDialog/WhiteboardGuestAccessControls';
 import WhiteboardGuestAccessSection from '../WhiteboardShareDialog/WhiteboardGuestAccessSection';
 import { gutters } from '@/core/ui/grid/utils';

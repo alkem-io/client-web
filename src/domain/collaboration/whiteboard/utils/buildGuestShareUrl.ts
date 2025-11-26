@@ -6,7 +6,7 @@ export const buildGuestShareUrl = (whiteboardId?: string) => {
   }
 
   if (typeof window === 'undefined') {
-    return '/';
+    return `${GUEST_SHARE_PATH}/${whiteboardId}`;
   }
 
   return `${window.location.origin}${GUEST_SHARE_PATH}/${whiteboardId}`;

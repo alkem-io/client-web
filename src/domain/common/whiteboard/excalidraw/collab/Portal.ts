@@ -9,6 +9,7 @@ import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFiles
 import type { isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw/dist/types/element/src';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import { validateGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/guestNameValidator';
 
 interface PortalProps {
   onRemoteSave: () => void;
@@ -82,7 +83,10 @@ class Portal {
         try {
           const guestName = globalThis.sessionStorage.getItem('alkemio_guest_name');
           if (guestName) {
-            auth.guestName = guestName;
+            const validation = validateGuestName(guestName);
+            if (validation.valid) {
+              auth.guestName = guestName;
+            }
           }
         } catch (error) {
           console.warn('Failed to read guest name from session storage:', error);

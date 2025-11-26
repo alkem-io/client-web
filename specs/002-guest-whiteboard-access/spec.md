@@ -44,17 +44,23 @@ As a **guest user**, I want the option to sign in to Alkemio from the public whi
 
 ### User Story 3 - Guest Session Persistence (Priority: P2)
 
-As a **guest user**, I want my nickname to persist for the duration of my session, so that I don't have to re-enter it when navigating between whiteboards or refreshing the page.
+As a **guest user**, I want my nickname to persist while my browser tab remains open, so that I don't have to re-enter it when navigating between whiteboards or refreshing the page.
 
-**Why this priority**: Ensures a smooth user experience by avoiding repetitive authentication prompts within the same session.
+**Why this priority**: Ensures a smooth user experience by avoiding repetitive authentication prompts within the same tab session.
 
-**Independent Test**: Can be tested by providing a nickname, navigating away, returning to a public whiteboard URL, and verifying the nickname is still present in session storage and headers.
+**Independent Test**: Can be tested by providing a nickname, navigating away, returning to a public whiteboard URL in the same tab, and verifying the nickname is still present in session storage and headers.
 
 **Acceptance Scenarios**:
 
-1. **Given** I have provided a nickname for one public whiteboard, **When** I navigate to a different public whiteboard URL in the same session, **Then** my nickname is automatically applied without prompting
-2. **Given** I close the browser tab (but not the entire browser), **When** I reopen the public whiteboard URL in a new tab within the same browser session, **Then** my nickname persists (session storage behavior)
-3. **Given** I close the entire browser, **When** I reopen the public whiteboard URL in a new browser session, **Then** I am prompted to enter a nickname again (session storage cleared)
+1. **Given** I have provided a nickname for one public whiteboard, **When** I navigate to a different public whiteboard URL in the same tab, **Then** my nickname is automatically applied without prompting
+2. **Given** I have provided a nickname and am viewing a whiteboard, **When** I refresh the page in the same tab, **Then** my nickname persists and I am not prompted again (sessionStorage behavior)
+3. **Given** I close the browser tab, **When** I reopen the public whiteboard URL in a new tab, **Then** I am prompted to enter a nickname again (sessionStorage is tab-specific and cleared on tab close)
+
+**Note on Storage Mechanism**: This feature uses `sessionStorage` (not `localStorage`) to store guest names. SessionStorage is **tab-specific** and clears when the tab closes, providing a privacy-conscious approach that doesn't persist guest identities across browser sessions or tabs. This means:
+
+- ✅ Nickname persists within the same tab (page refreshes, navigating between whiteboards)
+- ❌ Nickname does NOT persist when opening new tabs or windows
+- ❌ Nickname does NOT persist after closing the tab
 
 ---
 
@@ -270,10 +276,10 @@ This feature satisfies the Constitution as follows:
   - "JOIN AS GUEST" button (primary action)
   - "SIGN IN TO ALKEMIO" button (secondary action)
     **FR-005**: System MUST validate guest name input (non-empty, max 50 characters, alphanumeric plus hyphens/underscores)
-    **FR-006**: System MUST store the validated guest name in session storage (key: `alkemio_guest_name`) when the user clicks "JOIN AS GUEST"
+    **FR-006**: System MUST store the validated guest name in session storage (key: `alkemio_guest_name`) when the user clicks "JOIN AS GUEST". Note: sessionStorage is tab-specific and persists only while the tab remains open (cleared on tab close, not shared across tabs)
     **FR-007**: System MUST inject the guest name as an `x-guest-name` HTTP header in all GraphQL requests when accessing public whiteboards
-    **FR-008**: System MUST retrieve the guest name from session storage on subsequent requests and auto-populate the header without prompting
-    **FR-009**: System MUST clear the guest name from session storage when the browser session ends (not on tab close)
+    **FR-008**: System MUST retrieve the guest name from session storage on subsequent requests within the same tab and auto-populate the header without prompting
+    **FR-009**: System MUST clear the guest name from session storage when the browser tab closes (sessionStorage lifecycle: tab-specific, not browser-wide)
     **FR-010**: System MUST redirect to the sign-in page when the user clicks "SIGN IN TO ALKEMIO", preserving return URL
     **FR-011**: System MUST redirect authenticated users back to the public whiteboard URL after successful sign-in, retaining stripped public layout (no app chrome)
     **FR-011a**: System MUST clear all guest session data (guest name and whiteboard URL) from session storage when sign-in completes using `clearAllGuestSessionData()`; historical guest contributions remain attributed to previous guest name value

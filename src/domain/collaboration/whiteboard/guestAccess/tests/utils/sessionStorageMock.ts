@@ -46,8 +46,12 @@ const installSessionStorageMock = () => {
   const originalDescriptor = Object.getOwnPropertyDescriptor(host, 'sessionStorage');
 
   defineSessionStorage(host, sessionStorageMock);
+
+  let originalWindowDescriptor: PropertyDescriptor | undefined;
   if (globalThis.window !== undefined) {
-    defineSessionStorage(globalThis.window as Window & { sessionStorage?: Storage }, sessionStorageMock);
+    const win = globalThis.window as Window & { sessionStorage?: Storage };
+    originalWindowDescriptor = Object.getOwnPropertyDescriptor(win, 'sessionStorage');
+    defineSessionStorage(win, sessionStorageMock);
   }
 
   restoreOriginal = () => {
@@ -55,6 +59,15 @@ const installSessionStorageMock = () => {
       Object.defineProperty(host, 'sessionStorage', originalDescriptor);
     } else {
       Reflect.deleteProperty(host, 'sessionStorage');
+    }
+
+    if (globalThis.window !== undefined) {
+      const win = globalThis.window as Window & { sessionStorage?: Storage };
+      if (originalWindowDescriptor) {
+        Object.defineProperty(win, 'sessionStorage', originalWindowDescriptor);
+      } else {
+        Reflect.deleteProperty(win, 'sessionStorage');
+      }
     }
   };
 

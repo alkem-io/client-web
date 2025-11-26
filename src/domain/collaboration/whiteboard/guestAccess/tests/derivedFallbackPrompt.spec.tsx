@@ -17,36 +17,7 @@ import i18n from '@/core/i18n/config';
 import { CurrentUserFullDocument } from '@/core/apollo/generated/apollo-hooks';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { useGuestSession } from '../hooks/useGuestSession';
-
-const sessionStorageMock = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: (key: string) => store[key] ?? null,
-    setItem: (key: string, value: string) => {
-      store[key] = value;
-    },
-    removeItem: (key: string) => {
-      delete store[key];
-    },
-    clear: () => {
-      store = {};
-    },
-  };
-})();
-
-Object.defineProperty(globalThis, 'sessionStorage', {
-  value: sessionStorageMock,
-  configurable: true,
-  writable: true,
-});
-
-if (globalThis.window !== undefined) {
-  Object.defineProperty(globalThis.window, 'sessionStorage', {
-    value: sessionStorageMock,
-    configurable: true,
-    writable: true,
-  });
-}
+import { sessionStorageMock } from './utils/sessionStorageMock';
 
 const createWrapper = (mocks: MockedResponse[]): FC<PropsWithChildren> => {
   const Wrapper: FC<PropsWithChildren> = ({ children }) => (

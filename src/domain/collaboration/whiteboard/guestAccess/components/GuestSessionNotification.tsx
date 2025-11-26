@@ -73,7 +73,7 @@ const GuestSessionNotification = ({ onBackToWhiteboard, onGoToWebsite }: GuestSe
               px: 14.375,
               borderRadius: 1,
               '&:hover': {
-                backgroundColor: theme.palette.action.hover,
+                backgroundColor: theme.palette.primary.dark,
               },
             }}
           >
@@ -99,7 +99,8 @@ const GuestSessionNotification = ({ onBackToWhiteboard, onGoToWebsite }: GuestSe
               borderRadius: 1,
               '&:hover': {
                 backgroundColor: theme.palette.action.hover,
-                borderColor: theme.palette.divider,
+                borderColor: theme.palette.primary.main,
+                color: theme.palette.primary.main,
               },
             }}
           >

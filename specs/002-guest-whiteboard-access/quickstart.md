@@ -245,14 +245,19 @@ http://localhost:3001/public/whiteboard/00000000-0000-0000-0000-000000000000
 ```typescript
 // 4-tier priority system for privacy-safe name derivation
 function anonymizeGuestName(firstName?: string | null, lastName?: string | null): string | null {
-  // 1. Full name → "FirstName L." (preferred)
-  if (firstName && lastName) return `${firstName} ${lastName.charAt(0)}.`;
+  const trimmedFirst = firstName?.trim();
+  const trimmedLast = lastName?.trim();
+  const firstToken = trimmedFirst?.split(/\s+/)[0];
+  const lastInitial = trimmedLast ? `${trimmedLast.charAt(0).toUpperCase()}.` : null;
 
-  // 2. First name only → "FirstName"
-  if (firstName) return firstName;
+  // 1. Full name → "First L." (preferred)
+  if (firstToken && lastInitial) return `${firstToken} ${lastInitial}`;
+
+  // 2. First name only → "First"
+  if (firstToken) return firstToken;
 
   // 3. Last name only → "L."
-  if (lastName) return `${lastName.charAt(0)}.`;
+  if (lastInitial) return lastInitial;
 
   // 4. No usable fields → null (fallback to join dialog)
   return null;
@@ -297,8 +302,9 @@ function anonymizeGuestName(firstName?: string | null, lastName?: string | null)
 
 - Empty strings (`""`) → treated as missing
 - Whitespace-only (`"   "`) → treated as missing
-- Multi-word first names (`"Mary Jane"`) → preserved as "Mary Jane L."
-- Unicode characters (`"François"`) → preserved correctly
+- Multi-word first names (`"Mary Jane"`) → reduced to the first token (`"Mary T."`)
+- Last-name initials are always uppercased before appending the period
+- Unicode characters (`"François"`) are preserved by anonymization; the current `guestNameValidator` still blocks manual Unicode entry (documentation will be updated when validator rules change)
 
 #### 8. Sign-In After Anonymous Guest
 

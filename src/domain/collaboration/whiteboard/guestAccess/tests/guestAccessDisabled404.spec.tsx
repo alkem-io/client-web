@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { InMemoryCache } from '@apollo/client';
 import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -37,13 +37,11 @@ const withCurrentUserMocks = (responses: MockedResponse[]): MockedResponse[] => 
 
 describe('Guest Whiteboard Access - Disabled guest contributions', () => {
   beforeEach(() => {
-    cleanup();
     sessionStorage.clear();
     sessionStorage.setItem('alkemio_guest_name', 'SpecTester');
   });
 
   afterEach(() => {
-    cleanup();
     sessionStorage.clear();
   });
 

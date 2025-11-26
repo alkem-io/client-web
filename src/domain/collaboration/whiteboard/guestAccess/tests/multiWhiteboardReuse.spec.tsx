@@ -16,37 +16,7 @@ import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import i18n from '@/core/i18n/config';
 import { I18nextProvider } from 'react-i18next';
 import userEvent from '@testing-library/user-event';
-
-// Mock session storage (shared across tests)
-const sessionStorageMock = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => {
-      store[key] = value;
-    },
-    removeItem: (key: string) => {
-      delete store[key];
-    },
-    clear: () => {
-      store = {};
-    },
-  };
-})();
-
-Object.defineProperty(globalThis, 'sessionStorage', {
-  value: sessionStorageMock,
-  configurable: true,
-  writable: true,
-});
-
-if (globalThis.window !== undefined) {
-  Object.defineProperty(globalThis.window, 'sessionStorage', {
-    value: sessionStorageMock,
-    configurable: true,
-    writable: true,
-  });
-}
+import { sessionStorageMock } from './utils/sessionStorageMock';
 
 const Providers: FC<PropsWithChildren> = ({ children }) => (
   <MockedProvider mocks={[]} cache={new InMemoryCache()}>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useGuestSessionContext } from '../context/GuestSessionContext';
 import { anonymizeGuestName } from '../utils/anonymizeGuestName';
 import { useCurrentUserFullQuery } from '@/core/apollo/generated/apollo-hooks';
+import { clearAllGuestSessionData } from '../utils/sessionStorage';
 
 /**
  * Hook for guest session management with auth cookie detection and derivation
@@ -75,11 +76,5 @@ export { anonymizeGuestName } from '../utils/anonymizeGuestName';
  * to prevent stale guest data from persisting after login
  */
 export const clearGuestSessionOnSignIn = (): void => {
-  if (typeof globalThis === 'undefined') {
-    return;
-  }
-
-  const storage = globalThis.sessionStorage ?? globalThis.window?.sessionStorage;
-
-  storage?.removeItem('alkemio_guest_name');
+  clearAllGuestSessionData();
 };

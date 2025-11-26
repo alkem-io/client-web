@@ -117,7 +117,7 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
       await user.type(input, 'Test@User!');
       await user.tab();
 
-      await findByText(/letters, numbers, spaces/i);
+      await findByText(/letters \(including accented characters\)/i);
 
       expect(mockOnSubmit).not.toHaveBeenCalled();
     });
@@ -149,14 +149,14 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
       await user.type(input, '@@@');
       await user.tab();
 
-      await findByText(/letters, numbers, spaces/i);
+      await findByText(/letters \(including accented characters\)/i);
 
       // Error should clear when typing
       await user.clear(input);
       await user.type(input, 'V');
 
       await waitFor(() => {
-        expect(queryByText(/letters, numbers, spaces/i)).not.toBeInTheDocument();
+        expect(queryByText(/letters \(including accented characters\)/i)).not.toBeInTheDocument();
       });
     });
 
@@ -170,7 +170,7 @@ describe('PublicWhiteboardPage - Anonymous Join Flow', () => {
       await user.type(input, '@@@');
       await user.tab();
 
-      await findByText(/letters, numbers, spaces/i);
+      await findByText(/letters \(including accented characters\)/i);
 
       // Fix and resubmit
       await user.clear(input);

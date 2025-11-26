@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useCallback, useId } from 'react';
+import { ChangeEvent, FC, useCallback, useId, MouseEvent } from 'react';
 import { Alert, Box, IconButton, Switch, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -50,7 +50,7 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
     }
   }, [guestAccess?.guestLink, notify, t]);
 
-  const handleClick = (event: React.MouseEvent<HTMLInputElement>) => {
+  const handleClick = (event: MouseEvent<HTMLInputElement>) => {
     event.currentTarget.select();
   };
 

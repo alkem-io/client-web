@@ -26,18 +26,10 @@ import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
+import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
 
 const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
-const GUEST_NAME_STORAGE_KEY = 'alkemio_guest_name';
-
-const getGuestNameFromSessionStorage = () => {
-  try {
-    return globalThis.sessionStorage?.getItem(GUEST_NAME_STORAGE_KEY) ?? null;
-  } catch {
-    return null;
-  }
-};
 
 const Excalidraw = lazyWithGlobalErrorHandler(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
@@ -122,9 +114,11 @@ const CollaborativeExcalidrawWrapper = ({
       return userModel.profile.displayName;
     }
 
-    const guestName = getGuestNameFromSessionStorage() ?? 'User';
+    const guestName = getGuestName() ?? t('common.guestUserFallback', { defaultValue: 'User' });
     const guestSuffix = t('common.guestSuffix');
     return guestSuffix ? `${guestName} ${guestSuffix}` : guestName;
+    // getGuestName() is intentionally omitted from dependencies - guest names are set once per session
+    // and don't change dynamically. Including it would cause unnecessary re-renders without benefit.
   }, [t, userModel?.profile.displayName]);
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
