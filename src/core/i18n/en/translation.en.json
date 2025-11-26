@@ -1411,7 +1411,21 @@
         "list.outdent": "Remove indent",
         "remove.remove": "Remove",
         "embed.video": "Embed Video or other Media",
-        "horizontal.line": "Insert horizontal line"
+        "horizontal.line": "Insert horizontal line",
+        "table.insert": "Insert Table",
+        "table.operations": "Table Operations",
+        "table.deleteTable": "Delete Table",
+        "table.deleteConfirm": "Are you sure you want to delete this table?",
+        "table.addColumnBefore": "Add Column Before",
+        "table.addColumnAfter": "Add Column After",
+        "table.deleteColumn": "Delete Column",
+        "table.addRowBefore": "Add Row Before",
+        "table.addRowAfter": "Add Row After",
+        "table.deleteRow": "Delete Row",
+        "table.custom": "Custom size",
+        "table.columns": "Columns",
+        "table.rows": "Rows",
+        "table.gridSize": "{{columns}} $t(components.wysiwyg-editor.toolbar.table.columns) x {{rows}} $t(components.wysiwyg-editor.toolbar.table.rows)"
       },
       "image": {
         "dialogHeader": "Insert Image"
