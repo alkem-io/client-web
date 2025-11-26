@@ -275,17 +275,17 @@ This feature satisfies the Constitution as follows:
   - Nickname input field with placeholder "Enter your nickname"
   - "JOIN AS GUEST" button (primary action)
   - "SIGN IN TO ALKEMIO" button (secondary action)
-    **FR-005**: System MUST validate guest name input (non-empty, max 50 characters, alphanumeric plus hyphens/underscores)
-    **FR-006**: System MUST store the validated guest name in session storage (key: `alkemio_guest_name`) when the user clicks "JOIN AS GUEST". Note: sessionStorage is tab-specific and persists only while the tab remains open (cleared on tab close, not shared across tabs)
-    **FR-007**: System MUST inject the guest name as an `x-guest-name` HTTP header in all GraphQL requests when accessing public whiteboards
-    **FR-008**: System MUST retrieve the guest name from session storage on subsequent requests within the same tab and auto-populate the header without prompting
-    **FR-009**: System MUST clear the guest name from session storage when the browser tab closes (sessionStorage lifecycle: tab-specific, not browser-wide)
-    **FR-010**: System MUST redirect to the sign-in page when the user clicks "SIGN IN TO ALKEMIO", preserving return URL
-    **FR-011**: System MUST redirect authenticated users back to the public whiteboard URL after successful sign-in, retaining stripped public layout (no app chrome)
-    **FR-011a**: System MUST clear all guest session data (guest name and whiteboard URL) from session storage when sign-in completes using `clearAllGuestSessionData()`; historical guest contributions remain attributed to previous guest name value
-    **FR-011b**: System MUST clear all guest session data (guest name and whiteboard URL) from session storage when registration completes using `clearAllGuestSessionData()`
-    **FR-012**: System MUST display a persistent visibility warning to all viewers (guest or authenticated): "This whiteboard is visible and editable by guest users". Implementation: MUI Alert badge in the WhiteboardDialog header (top-right), always visible, using severity="error" with PublicIcon.
-    **FR-013**: System MUST handle whiteboard load errors gracefully:
+- **FR-005**: System MUST validate guest name input (non-empty, max 50 characters, alphanumeric plus hyphens/underscores)
+- **FR-006**: System MUST store the validated guest name in session storage (key: `alkemio_guest_name`) when the user clicks "JOIN AS GUEST". Note: sessionStorage is tab-specific and persists only while the tab remains open (cleared on tab close, not shared across tabs)
+  **FR-007**: System MUST inject the guest name as an `x-guest-name` HTTP header in all GraphQL requests when accessing public whiteboards
+  **FR-008**: System MUST retrieve the guest name from session storage on subsequent requests within the same tab and auto-populate the header without prompting
+  **FR-009**: System MUST clear the guest name from session storage when the browser tab closes (sessionStorage lifecycle: tab-specific, not browser-wide)
+  **FR-010**: System MUST redirect to the sign-in page when the user clicks "SIGN IN TO ALKEMIO", preserving return URL
+  **FR-011**: System MUST redirect authenticated users back to the public whiteboard URL after successful sign-in, retaining stripped public layout (no app chrome)
+  **FR-011a**: System MUST clear all guest session data (guest name and whiteboard URL) from session storage when sign-in completes using `clearAllGuestSessionData()`; historical guest contributions remain attributed to previous guest name value
+  **FR-011b**: System MUST clear all guest session data (guest name and whiteboard URL) from session storage when registration completes using `clearAllGuestSessionData()`
+  **FR-012**: System MUST display a persistent visibility warning to all viewers (guest or authenticated): "This whiteboard is visible and editable by guest users". Implementation: MUI Alert badge in the WhiteboardDialog header (top-right), always visible, using severity="error" with PublicIcon.
+  **FR-013**: System MUST handle whiteboard load errors gracefully:
   - 404: "Whiteboard not found"
   - 403: Present the same "Whiteboard not found" messaging to avoid leaking private whiteboard existence
   - 500/other: "Unable to load whiteboard. Please try again later"
@@ -340,11 +340,8 @@ This feature satisfies the Constitution as follows:
 **SC-010**: "Back to Whiteboard" button navigates to stored whiteboard URL with 100% accuracy
 **SC-011**: Guest session data persists notification visibility across page refreshes with 100% reliability until authentication or session clear
 
-**SC-001**: Zero layout elements (navigation, sidebar, header) are visible on the public whiteboard page for any user (guest or authenticated)
-**SC-002**: 100% of public whiteboard loads display the visibility warning Alert badge in the WhiteboardDialog header
-**SC-003**: ≥95% of authenticated visits derive and store an anonymized guest name without prompting
-**SC-004**: ≤5% of authenticated visits fall back to manual guest name prompt
-**SC-005**: 100% of GraphQL requests on public page include `x-guest-name` header once a guest name is set or derived
-**SC-006**: Derived anonymized names never expose full last name (sample audits)
-**SC-007**: Socket.IO WebSocket connections include guest name in auth payload for real-time collaboration tracking
-**SC-008**: Zero error toasters displayed for expected CurrentUser query failures on public whiteboard page when users are not authenticated
+**SC-012**: Zero layout elements (navigation, sidebar, header) are visible on the public whiteboard page for any user (guest or authenticated)
+**SC-013**: 100% of public whiteboard loads display the visibility warning Alert badge in the WhiteboardDialog header
+**SC-014**: 100% of GraphQL requests on public page include `x-guest-name` header once a guest name is set or derived
+**SC-015**: Derived anonymized names never expose full last name (sample audits)
+**SC-016**: Socket.IO WebSocket connections include guest name in auth payload for real-time collaboration tracking

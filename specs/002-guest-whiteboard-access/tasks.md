@@ -160,7 +160,7 @@ Cross-cutting validations before merge.
 - [ ] T076 [P] Run lint & type checks `pnpm lint` / `tsc --noEmit` confirm no errors
 - [ ] T077 Ensure all GraphQL requests show `x-guest-name` in dev tools for both anonymous & derived flows
 - [ ] T078 [P] Produce feature diff summary (spec alignment) for PR description
-- [ ] T079 Verify success criteria SC-001..SC-011 manually / via tests (document measurements)
+- [ ] T079 Verify success criteria SC-001..SC-019 manually / via tests (document measurements)
 
 ---
 
