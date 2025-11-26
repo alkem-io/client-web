@@ -118,6 +118,7 @@
     "see-more": "See more",
     "see-all": "More {{subject}}",
     "readMore": "Read more",
+    "retry": "Try again",
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
@@ -2489,7 +2490,6 @@
           "space-removed": "$t(common.space) removed successfully."
         },
         "settings": {
-          "updateFailed": "Failed to update $t(common.settings). Please try again.",
           "savedSuccessfully": "$t(common.Settings) saved successfully",
           "visibility": {
             "title": "Visibility",

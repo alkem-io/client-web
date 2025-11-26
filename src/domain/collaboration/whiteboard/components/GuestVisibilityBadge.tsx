@@ -31,7 +31,7 @@ const GuestVisibilityBadge = ({ size = 'default', className, ...rest }: GuestVis
     >
       <Box component={PublicOutlinedIcon} sx={{ fontSize: '1.1em' }} aria-hidden />
       <Typography variant="caption" component="span" color="inherit">
-        {t('share-dialog.guest-access.visibility-warning', 'This whiteboard is visible to guest users.')}
+        {t('share-dialog.guest-access.visibility-warning')}
       </Typography>
     </Stack>
   );

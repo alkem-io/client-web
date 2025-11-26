@@ -27,20 +27,14 @@ const PublicWhiteboardError: FC<PublicWhiteboardErrorProps> = ({ error, onRetry 
       errorMessage.includes('not available')
     ) {
       return {
-        title: t('pages.public.whiteboard.error.404.title', 'Whiteboard Not Found'),
-        message: t(
-          'pages.public.whiteboard.error.404.message',
-          'The whiteboard link may be incorrect or the whiteboard may have been deleted.'
-        ),
+        title: t('pages.public.whiteboard.error.404.title'),
+        message: t('pages.public.whiteboard.error.404.message'),
       };
     }
 
     return {
-      title: t('pages.public.whiteboard.error.500.title', 'Unable to Load Whiteboard'),
-      message: t(
-        'pages.public.whiteboard.error.500.message',
-        'Please try again later or check your internet connection.'
-      ),
+      title: t('pages.public.whiteboard.error.500.title'),
+      message: t('pages.public.whiteboard.error.500.message'),
     };
   };
 
@@ -65,7 +59,7 @@ const PublicWhiteboardError: FC<PublicWhiteboardErrorProps> = ({ error, onRetry 
       </Typography>
       {onRetry && (
         <Button variant="contained" onClick={onRetry}>
-          {t('buttons.retry', 'Try Again')}
+          {t('buttons.retry')}
         </Button>
       )}
     </Box>

@@ -72,7 +72,7 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
               color="text.primary"
               sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 400, fontSize: '15px', lineHeight: '20px' }}
             >
-              {t('share-dialog.guest-access.label', 'Guest access')}
+              {t('share-dialog.guest-access.label')}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {t('share-dialog.guest-access.toggle-description')}
@@ -84,7 +84,7 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
             color="primary"
             disabled={guestAccess.isMutating}
             inputProps={{
-              'aria-label': t('share-dialog.guest-access.toggle-label', 'Enable guest access'),
+              'aria-label': t('share-dialog.guest-access.toggle-label'),
               'aria-labelledby': guestAccessLabelId,
             }}
           />
