@@ -5,7 +5,7 @@ import { GUTTER_MUI } from '@/core/ui/grid/constants';
 import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
@@ -30,48 +30,34 @@ const SpaceCardsDemo = () => {
           <PageContentBlock>
             <PageContentBlockHeader title="Explore Spaces Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Space L1 Card"
                 tags={['subspace', 'card']}
                 spaceUri=""
-                spaceDisplayName="Parent Space"
+                parentInfo={{ displayName: 'Parent Space', url: '' }}
                 level={SpaceLevel.L1}
-                avatarUris={[
-                  { src: '', alt: 'Member avatar' },
-                  { src: '', alt: 'Member avatar' },
-                ]}
                 locked
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name"
                 tags={['subspace', 'card']}
                 spaceUri=""
-                spaceDisplayName=""
                 level={SpaceLevel.L0}
                 isPrivate
-                avatarUris={[{ src: '', alt: 'Member avatar' }]}
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: getDefaultSpaceVisualUrl(VisualType.Card) }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name That Doesn't Even Fit On 2 Lines"
                 tags={['subspace', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
                 member
                 spaceUri=""
-                spaceDisplayName="Parent Space"
+                parentInfo={{ displayName: 'Parent Space', url: '' }}
                 level={SpaceLevel.L2}
-                avatarUris={[
-                  { src: '', alt: 'Member avatar' },
-                  { src: '', alt: 'Member avatar' },
-                  { src: '', alt: 'Member avatar' },
-                ]}
               />
             </PageContentBlockGrid>
           </PageContentBlock>
@@ -96,28 +82,25 @@ const SpaceCardsDemo = () => {
           <PageContentBlock>
             <PageContentBlockHeader title="Space Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card']}
                 spaceUri=""
                 level={SpaceLevel.L0}
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card']}
                 spaceUri=""
                 level={SpaceLevel.L0}
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Space Card"
                 tags={['space', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
                 spaceUri=""
@@ -128,32 +111,29 @@ const SpaceCardsDemo = () => {
           <PageContentBlock>
             <PageContentBlockHeader title="Subspace Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Subspace Card"
                 tags={['subspace', 'card']}
                 spaceUri=""
-                spaceDisplayName="Parent Space"
+                parentInfo={{ displayName: 'Parent Space', url: '' }}
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name"
                 tags={['subspace', 'card']}
                 spaceUri=""
-                spaceDisplayName="Parent Space"
+                parentInfo={{ displayName: 'Parent Space', url: '' }}
               />
-              <SubspaceCard
+              <SpaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
-                vision={loremIpsum}
                 displayName="Really Long Subspace Card Display Name That Doesn't Even Fit On 2 Lines"
                 tags={['subspace', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
                 spaceUri=""
-                spaceDisplayName="Parent Space"
+                parentInfo={{ displayName: 'Parent Space', url: '' }}
               />
             </PageContentBlockGrid>
           </PageContentBlock>

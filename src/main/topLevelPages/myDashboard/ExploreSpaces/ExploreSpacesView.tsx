@@ -9,10 +9,11 @@ import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/Scrollabl
 import { gutters, useGridItem } from '@/core/ui/grid/utils';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
-import SpaceTile from '@/domain/space/components/cards/SpaceTile';
-import { ExploreSpacesViewProps } from './ExploreSpacesTypes';
-import { useColumns } from '@/core/ui/grid/GridContext';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
+import { ExploreSpacesViewProps, SpaceWithParent } from './ExploreSpacesTypes';
+import { collectParentAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 
 const DEFAULT_ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
 
@@ -36,12 +37,7 @@ export const ExploreSpacesView = ({
   itemsLimit = DEFAULT_ITEMS_LIMIT,
 }: ExploreSpacesViewProps) => {
   const { t } = useTranslation();
-
-  const columns = useColumns();
-  const { isSmallScreen, isMediumSmallScreen } = useScreenSize();
-
-  // 2 items on small and full width on mobile; issue with 8 columns on isSmall instead of 12
-  const cardColumns = isSmallScreen ? columns : columns / (isMediumSmallScreen ? 2 : 4);
+  const { isAuthenticated } = useCurrentUserContext();
 
   const [hasExpanded, setHasExpanded] = useState(false);
   const enabledFilters = filtersConfig.flatMap(category => category.key);
@@ -65,8 +61,43 @@ export const ExploreSpacesView = ({
     setSelectedFilter(filter);
   };
 
-  const renderSkeleton = (size: number) =>
-    Array.from({ length: size }).map((_, index) => <SpaceTile key={index} space={undefined} columns={cardColumns} />);
+  const renderSpaceCard = (space: SpaceWithParent | undefined) => {
+    if (!space) {
+      return <SpaceCard displayName="" tagline="" spaceId="" key={Math.random()} />;
+    }
+
+    const membershipWithLeads = space.about.membership as typeof space.about.membership & {
+      leadUsers?: Array<{
+        id: string;
+        profile: { id: string; url: string; displayName: string; avatar?: { uri: string; alternativeText?: string } };
+      }>;
+      leadOrganizations?: Array<{
+        id: string;
+        profile: { id: string; url: string; displayName: string; avatar?: { uri: string; alternativeText?: string } };
+      }>;
+    };
+
+    return (
+      <SpaceCard
+        key={space.id}
+        spaceId={space.id}
+        displayName={space.about.profile.displayName}
+        tagline={space.about.profile.tagline ?? ''}
+        banner={space.about.profile.cardBanner}
+        tags={space.about.profile.tagset?.tags}
+        spaceUri={space.about.profile.url}
+        level={space.level}
+        member={space.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member}
+        isPrivate={!space.about.isContentPublic}
+        avatarUris={collectParentAvatars(space)}
+        leadUsers={membershipWithLeads?.leadUsers}
+        leadOrganizations={membershipWithLeads?.leadOrganizations}
+        showLeads={isAuthenticated}
+      />
+    );
+  };
+
+  const renderSkeleton = (size: number) => Array.from({ length: size }).map(() => renderSpaceCard(undefined));
 
   const isSearching = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
 
@@ -115,13 +146,11 @@ export const ExploreSpacesView = ({
         </CaptionSmall>
       )}
       <ScrollableCardsLayoutContainer orientation="vertical">
-        {visibleFirstWelcomeSpace && <SpaceTile space={welcomeSpace} columns={cardColumns} />}
+        {visibleFirstWelcomeSpace && renderSpaceCard(welcomeSpace)}
         {spacesLength > 0 && (
           <>
             {visibleSpaces!.map(space =>
-              visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
-                <SpaceTile key={space.id} space={space} columns={cardColumns} />
-              )
+              visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : renderSpaceCard(space)
             )}
             {enableLazyLoading && loader}
           </>

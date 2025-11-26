@@ -8,6 +8,10 @@ query AccountResourcesInfo($accountId: UUID!) {
           id
           profile {
             ...AccountResourceProfile
+            tagset {
+              id
+              tags
+            }
             cardBanner: visual(type: CARD) {
               ...VisualModel
             }

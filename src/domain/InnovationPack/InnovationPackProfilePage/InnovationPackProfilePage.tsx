@@ -18,6 +18,8 @@ import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import InnovationPackTemplateMenu from './InnovationPackTemplateMenu';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import React from 'react';
 
 const InnovationPackProfilePage = () => {
   const { t } = useTranslation();
@@ -44,7 +46,7 @@ const InnovationPackProfilePage = () => {
         <PageContent>
           <PageContentColumn columns={isMediumSmallScreen ? 12 : 3}>
             <PageContentBlock sx={{ flexDirection: 'row' }}>
-              <Gutters disablePadding>
+              <Gutters disablePadding width={'100%'}>
                 <PageContentBlockHeader title={displayName} />
                 <WrapperMarkdown disableParagraphPadding>{description ?? ''}</WrapperMarkdown>
                 <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
@@ -69,6 +71,10 @@ const InnovationPackProfilePage = () => {
             <PageContentBlock sx={{ flexDirection: 'column' }}>
               <PageContentBlockHeader title={t('common.templateTypes')} />
               <InnovationPackTemplateMenu templatesSetId={templatesSetId} />
+            </PageContentBlock>
+            <PageContentBlock>
+              <PageContentBlockHeader title={t('community.host')} />
+              <ContributorCardHorizontal profile={innovationPack?.provider?.profile} seamless />
             </PageContentBlock>
           </PageContentColumn>
           <PageContentColumn columns={isMediumSmallScreen ? 12 : 9}>
