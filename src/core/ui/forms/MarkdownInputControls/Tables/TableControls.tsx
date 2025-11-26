@@ -1,5 +1,5 @@
 import { ChainedCommands, Editor } from '@tiptap/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   TableChartOutlined,
   DeleteForever,
@@ -17,28 +17,13 @@ import TableOperationsIcon from './TableOperationsIcon';
 import ToolbarMenuItem from '../ToolbarMenuItem';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
-const useTableState = (editor: Editor | null) => {
-  const [isActive, setIsActive] = useState(false);
-  useEffect(() => {
-    if (!editor) return;
-    const onSelectionUpdate = ({ editor }: { editor: Editor }) => {
-      setIsActive(editor.isActive('table'));
-    };
-    editor.on('selectionUpdate', onSelectionUpdate);
-    return () => {
-      editor.off('selectionUpdate', onSelectionUpdate);
-    };
-  }, [editor]);
-  return isActive;
-};
-
 interface TableControlsProps {
   editor: Editor | null;
+  isEditingTable: boolean;
 }
 
-const TableControls = ({ editor }: TableControlsProps) => {
+const TableControls = ({ editor, isEditingTable }: TableControlsProps) => {
   const { t } = useTranslation();
-  const isTableActive = useTableState(editor);
   const [insertTableMenuAnchorEl, setInsertTableMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [tableOperationsMenuAnchorEl, setTableOperationsMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [isDeleteTableDialogOpen, setIsDeleteTableDialogOpen] = useState(false);
@@ -100,7 +85,7 @@ const TableControls = ({ editor }: TableControlsProps) => {
         onClick={handleInsertMenuOpen}
         tooltip={t('components.wysiwyg-editor.toolbar.table.insert')}
         disabled={!editor?.can().insertTable()}
-        hidden={isTableActive}
+        hidden={isEditingTable}
       >
         <TableChartOutlined />
       </MarkdownInputToolbarButton>
@@ -113,7 +98,7 @@ const TableControls = ({ editor }: TableControlsProps) => {
       <MarkdownInputToolbarButton
         onClick={handleTableMenuOpen}
         tooltip={t('components.wysiwyg-editor.toolbar.table.operations')}
-        hidden={!isTableActive}
+        hidden={!isEditingTable}
       >
         <TableOperationsIcon />
       </MarkdownInputToolbarButton>
