@@ -25,8 +25,8 @@ export const VersionHandling = () => {
   const setLastVersionDetected = (oldVersion: string, newVersion: string) => {
     try {
       localStorage.setItem(LAST_VERSION_MISMATCH_LS_KEY, buildVersionMismatchPair(oldVersion, newVersion));
-    } catch (_error) {
-      logWarn('Failed to store version mismatch info while writing.', { label: 'VERSION_MISMATCH_STORAGE' });
+    } catch (e) {
+      console.warn('Failed to store version mismatch info: ', e);
     }
   };
   const getLastVersionDetected = () => {
