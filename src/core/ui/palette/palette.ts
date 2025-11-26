@@ -2,6 +2,7 @@ import { PaletteColor, PaletteColorOptions, PaletteOptions } from '@mui/material
 import { grey } from '@mui/material/colors';
 
 const COLOR_POSITIVE_CONTAINER = '#CDE7ED';
+const COLOR_DIVIDER = '#D3D3D3';
 
 export const paletteOptions: PaletteOptions = {
   primary: { main: '#1D384A' },
@@ -20,7 +21,7 @@ export const paletteOptions: PaletteOptions = {
   },
   neutralLight: { main: '#F9F9F9' },
   background: { default: '#F1F4F5', paper: '#FFFFFF' },
-  divider: '#D3D3D3',
+  divider: COLOR_DIVIDER,
   mode: 'light',
   grey: {
     main: grey[300],
@@ -38,6 +39,13 @@ export const paletteOptions: PaletteOptions = {
   icons: {
     dark: '#1C1B1F',
   },
+  markdownTable: {
+    border: COLOR_DIVIDER,
+    borderCollapse: 'collapse',
+    headerBackground: '#FFFFFF',
+    rowBackgroundEven: '#FAFAFA',
+    rowBackgroundOdd: '#FFFFFF',
+  },
 };
 
 declare module '@mui/material/styles/createPalette' {
@@ -51,6 +59,13 @@ declare module '@mui/material/styles/createPalette' {
     highlight: PaletteColorOptions;
     space: PaletteColorOptions;
     icons: PaletteColorOptions;
+    markdownTable: {
+      border: string;
+      borderCollapse: string;
+      headerBackground: string;
+      rowBackgroundEven: string;
+      rowBackgroundOdd: string;
+    };
   }
 
   interface Palette {
@@ -63,5 +78,12 @@ declare module '@mui/material/styles/createPalette' {
     highlight: PaletteColor;
     space: PaletteColor;
     icons: PaletteColor;
+    markdownTable: {
+      border: string;
+      borderCollapse: string;
+      headerBackground: string;
+      rowBackgroundEven: string;
+      rowBackgroundOdd: string;
+    };
   }
 }
