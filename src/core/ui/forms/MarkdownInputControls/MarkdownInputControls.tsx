@@ -151,6 +151,7 @@ const MarkdownInputControls = ({
         <ToolbarButton
           editor={editor}
           command={e => e.setHorizontalRule()}
+          disabled={isEditingTable}
           tooltip={t('components.wysiwyg-editor.toolbar.horizontal.line')}
         >
           <HorizontalRuleOutlined />
