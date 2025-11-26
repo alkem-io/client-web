@@ -9,7 +9,7 @@ interface SpaceTemplateCardProps extends TemplateCardProps {
 
 const SpaceTemplateCard = ({ template, loading, ...props }: SpaceTemplateCardProps) => {
   if (loading || !template) {
-    return <SpaceCard displayName="" compact {...props} />;
+    return <SpaceCard displayName="" {...props} />;
   }
 
   // todo: we don't have the contentSpace data available
@@ -19,7 +19,6 @@ const SpaceTemplateCard = ({ template, loading, ...props }: SpaceTemplateCardPro
       displayName={template.profile.displayName}
       banner={template.contentSpace?.about?.profile?.cardBanner}
       isPrivate={template.contentSpace?.about?.isContentPublic === false}
-      compact
       {...props}
     />
   );
