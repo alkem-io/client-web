@@ -123,7 +123,8 @@
     "close": "Close",
     "yes": "Yes",
     "no": "No",
-    "yes-close": "Yes, close",
+    "yesClose": "Yes, close",
+    "yesCancel": "Yes, cancel",
     "yesContinue": "Yes, continue",
     "yesReplace": "Yes, replace",
     "yesDelete": "Yes, delete",
@@ -3600,6 +3601,10 @@
     "closeConfirm": {
       "title": "Discard $t(common.post)",
       "description": "Are you sure you want to close this $t(common.post)? Unsaved changes will be lost."
+    },
+    "cancelConfirm": {
+      "title": "Discard $t(common.post)",
+      "description": "Are you sure you want to cancel this $t(common.post)? Unsaved changes will be lost."
     }
   },
   "innovation-edit": {

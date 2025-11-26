@@ -155,7 +155,6 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
-                  ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewWhiteboard}
@@ -200,7 +199,6 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
-                  ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewPost}
@@ -243,7 +241,6 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
-                  ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewMemo}
