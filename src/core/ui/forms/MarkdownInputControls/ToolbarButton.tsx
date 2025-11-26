@@ -60,6 +60,7 @@ const ToolbarButton = memo(
 
     useEffect(() => {
       if (editor) {
+        setState(produceButtonState());
         return refreshOnEditorUpdate(editor);
       }
     }, [editor]);
