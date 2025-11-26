@@ -53,6 +53,7 @@ interface ParentSpace extends Identifiable {
       displayName: string;
       avatar?: Visual;
       cardBanner?: Visual;
+      url: string;
     };
   };
 }
@@ -147,7 +148,7 @@ export const SpaceExplorerView = ({
       const parentInfo = space.parent
         ? {
             displayName: space.parent.about.profile.displayName,
-            url: `/${space.parent.id}`,
+            url: space.parent.about.profile.url,
             avatar: space.parent.about.profile.avatar
               ? {
                   id: '',
