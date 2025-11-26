@@ -22,7 +22,6 @@ import { useColumns } from '@/core/ui/grid/GridContext';
 import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
 
 interface CalloutContributionPreviewProps {
-  ref: React.Ref<HTMLElement>;
   callout: CalloutDetailsModelExtended;
   contributionId: string;
   previewComponent: React.ComponentType<CalloutContributionPreviewComponentProps>;
@@ -38,7 +37,6 @@ const CalloutContributionPreview = ({
   dialogComponent: DialogComponent,
   calloutRestrictions,
   onCalloutUpdate,
-  ref,
 }: CalloutContributionPreviewProps) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -126,7 +124,7 @@ const CalloutContributionPreview = ({
     contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
   return (
-    <Gutters ref={ref}>
+    <Gutters>
       <PageContentBlock>
         <PageContentBlockHeaderCardLike
           icon={Icon}

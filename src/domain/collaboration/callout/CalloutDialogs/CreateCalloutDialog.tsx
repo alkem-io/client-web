@@ -275,7 +275,7 @@ const CreateCalloutDialog = ({
         entities={{
           titleId: 'components.callout-creation.closeDialog.title',
           contentId: 'components.callout-creation.closeDialog.text',
-          confirmButtonTextId: 'buttons.yes-close',
+          confirmButtonTextId: 'buttons.yesClose',
         }}
         options={{
           show: confirmCloseDialogOpen,
