@@ -8,6 +8,7 @@ import { defaultHandlers as defaultHTMLHandlers, State as H2MState } from 'hast-
 import { emptyParagraph, html, text } from '../utils/unist-builders';
 
 // Not sure why it doesn't have the tagName property in TS, it's always there when debugging.
+// Also this overrides the children to be Element[] for cleaner code in this file, we don't access properties inside children, so it's safe.
 type Parent = MDASTParent & { tagName?: string } & { children: Element[] };
 
 const isNewLine = (node: Html) => /^\s*<br\s*\/?>\s*$/i.test(node.value);
