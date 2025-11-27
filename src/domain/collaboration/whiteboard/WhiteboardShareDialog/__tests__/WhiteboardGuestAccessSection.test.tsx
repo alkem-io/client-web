@@ -10,7 +10,7 @@ const buildGuestAccess = (overrides: Partial<UseWhiteboardGuestAccessResult> = {
   canToggle: true,
   isMutating: false,
   guestLink: 'https://example.com/guest',
-  error: undefined,
+  hasError: false,
   onToggle: vi.fn(() => Promise.resolve()),
   resetError: vi.fn(),
   ...overrides,
@@ -85,9 +85,7 @@ describe('WhiteboardGuestAccessSection', () => {
   });
 
   it('shows an error message when guest access update fails', () => {
-    const guestAccess = buildGuestAccess({
-      error: { code: 'NETWORK', message: 'Network issue' },
-    });
+    const guestAccess = buildGuestAccess({ hasError: true });
 
     render(
       <WhiteboardGuestAccessControls whiteboard={privilegedWhiteboard}>
@@ -95,7 +93,9 @@ describe('WhiteboardGuestAccessSection', () => {
       </WhiteboardGuestAccessControls>
     );
 
-    expect(screen.getByTestId('guest-access-error')).toHaveTextContent('Check your connection and try again.');
+    expect(screen.getByTestId('guest-access-error')).toHaveTextContent(
+      "We couldn't update guest access. Please try again."
+    );
 
     fireEvent.click(screen.getByRole('button', { name: /close/i }));
     expect(guestAccess.resetError).toHaveBeenCalled();

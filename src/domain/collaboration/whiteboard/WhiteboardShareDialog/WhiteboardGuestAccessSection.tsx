@@ -6,7 +6,6 @@ import { gutters } from '@/core/ui/grid/utils';
 import { theme } from '@/core/ui/themes/default/Theme';
 import { UseWhiteboardGuestAccessResult } from '../hooks/useWhiteboardGuestAccess';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { ParseKeys } from 'i18next';
 
 export interface WhiteboardGuestAccessSectionProps {
   guestAccess: UseWhiteboardGuestAccessResult;
@@ -90,14 +89,14 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
           />
         </Box>
       )}
-      {guestAccess.error && (
+      {guestAccess.hasError && (
         <Alert
           severity="error"
           onClose={guestAccess.resetError}
           sx={{ width: '100%' }}
           data-testid="guest-access-error"
         >
-          {t(`share-dialog.guest-access.errors.${guestAccess.error.code}` as ParseKeys)}
+          {t('share-dialog.guest-access.errors.UNKNOWN')}
         </Alert>
       )}
       {guestAccess.enabled && (
@@ -106,10 +105,12 @@ const WhiteboardGuestAccessSection: FC<WhiteboardGuestAccessSectionProps> = ({ g
             variant="outlined"
             value={guestAccess.guestLink ?? ''}
             label={t('share-dialog.guest-access.url-label')}
-            InputProps={{
-              readOnly: true,
-              onClick: handleClick,
-              sx: { color: theme => theme.palette.neutralMedium.dark },
+            slotProps={{
+              input: {
+                readOnly: true,
+                onClick: handleClick,
+                sx: { color: theme => theme.palette.neutralMedium.dark },
+              },
             }}
             fullWidth
             sx={{ flexGrow: 1 }}

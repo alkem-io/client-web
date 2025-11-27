@@ -10,19 +10,6 @@ import {
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import buildGuestShareUrl from '../utils/buildGuestShareUrl';
 
-export type GuestAccessErrorCode =
-  | 'PERMISSION_DENIED'
-  | 'NETWORK'
-  | 'UNKNOWN'
-  | 'NOT_AUTHORIZED'
-  | 'SPACE_GUEST_DISABLED'
-  | 'WHITEBOARD_NOT_FOUND';
-
-export interface GuestAccessErrorState {
-  code: GuestAccessErrorCode;
-  message?: string;
-}
-
 export interface UseWhiteboardGuestAccessOptions {
   whiteboard?: {
     id?: string;
@@ -41,7 +28,7 @@ export interface UseWhiteboardGuestAccessResult {
   canToggle: boolean;
   isMutating: boolean;
   guestLink?: string;
-  error?: GuestAccessErrorState;
+  hasError: boolean;
   onToggle: (nextState: boolean) => Promise<void>;
   resetError: () => void;
 }
@@ -57,42 +44,9 @@ const buildGuestLink = (guestShareUrl?: string, enabled?: boolean) => {
   return guestShareUrl;
 };
 
-const WHITEBOARD_GUEST_ACCESS_SERVER_ERROR_CODES: GuestAccessErrorCode[] = [
-  'NOT_AUTHORIZED',
-  'SPACE_GUEST_DISABLED',
-  'WHITEBOARD_NOT_FOUND',
-];
-
-const deriveGuestAccessError = (error?: ApolloError): GuestAccessErrorState => {
-  if (!error) {
-    return { code: 'UNKNOWN' };
-  }
-
-  if (error.networkError) {
-    return { code: 'NETWORK', message: error.networkError.message };
-  }
-
-  const graphQlCode = error.graphQLErrors?.[0]?.extensions?.code as string | undefined;
-  if (!graphQlCode) {
-    return { code: 'UNKNOWN' };
-  }
-
-  const normalizedCode = graphQlCode.toUpperCase();
-
-  if (normalizedCode === 'FORBIDDEN' || normalizedCode === 'UNAUTHORIZED') {
-    return { code: 'PERMISSION_DENIED' };
-  }
-
-  if (WHITEBOARD_GUEST_ACCESS_SERVER_ERROR_CODES.includes(normalizedCode as GuestAccessErrorCode)) {
-    return { code: normalizedCode as GuestAccessErrorCode };
-  }
-
-  return { code: 'UNKNOWN' };
-};
-
 const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGuestAccessOptions) => {
   const [optimisticState, setOptimisticState] = useState<boolean | undefined>(undefined);
-  const [errorState, setErrorState] = useState<GuestAccessErrorState | undefined>();
+  const [hasError, setHasError] = useState(false);
   const [updateGuestAccess, { loading }] = useUpdateWhiteboardGuestAccessMutation();
   const handleApolloError = useApolloErrorHandler();
 
@@ -116,11 +70,15 @@ const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGu
   const guestLink = useMemo(() => buildGuestLink(resolvedGuestShareUrl, enabled), [resolvedGuestShareUrl, enabled]);
 
   const handleMutationFailure = useCallback(
-    (nextState: boolean, error: GuestAccessErrorState) => {
+    (nextState: boolean, error: unknown) => {
       setOptimisticState(undefined);
-      setErrorState(error);
+      setHasError(true);
       if (whiteboard?.id) {
-        trackGuestAccessToggleFailure({ whiteboardId: whiteboard.id, nextState, reason: error.code });
+        trackGuestAccessToggleFailure({
+          whiteboardId: whiteboard.id,
+          nextState,
+          reason: error instanceof Error ? error.message : undefined,
+        });
       }
     },
     [whiteboard?.id]
@@ -132,7 +90,7 @@ const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGu
         return;
       }
 
-      setErrorState(undefined);
+      setHasError(false);
       setOptimisticState(nextState);
       trackGuestAccessToggleAttempt({ whiteboardId: whiteboard.id, nextState });
 
@@ -166,30 +124,29 @@ const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGu
         const result = data?.updateWhiteboardGuestAccess;
         const updatedWhiteboard = result?.whiteboard;
         if (!result?.success || !updatedWhiteboard) {
-          handleMutationFailure(nextState, { code: 'UNKNOWN' });
-          throw new Error('updateWhiteboardGuestAccess failed without a whiteboard payload.');
+          handleMutationFailure(nextState, new Error('Guest access mutation failed.'));
+          return;
         }
 
         setOptimisticState(undefined);
         trackGuestAccessToggleSuccess({ whiteboardId: whiteboard.id, nextState });
       } catch (error) {
         handleApolloError(error as ApolloError);
-        const parsed = deriveGuestAccessError(error as ApolloError);
-        handleMutationFailure(nextState, parsed);
+        handleMutationFailure(nextState, error);
         throw error;
       }
     },
     [whiteboard, canToggle, updateGuestAccess, handleMutationFailure, handleApolloError]
   );
 
-  const resetError = useCallback(() => setErrorState(undefined), []);
+  const resetError = useCallback(() => setHasError(false), []);
 
   return {
     enabled,
     canToggle,
     isMutating: loading,
     guestLink,
-    error: errorState,
+    hasError,
     onToggle,
     resetError,
   } satisfies UseWhiteboardGuestAccessResult;

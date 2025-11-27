@@ -151,6 +151,7 @@ As a **guest user**, I want to access essential whiteboard controls (fullscreen,
 5. **Given** I click the Fullscreen button, **When** the action triggers, **Then** the whiteboard expands to fill the entire screen
 6. **Given** I make changes to the whiteboard, **When** the changes are saving, **Then** the Save indicator shows the saving status
 7. **Given** I am an authenticated user viewing a public whiteboard, **When** I have update privileges, **Then** I see additional controls (Collaboration Settings, Preview Settings) consistent with the standard whiteboard view
+8. **Given** I have PUBLIC_SHARE privilege, **When** the guest access toggle fails to update, **Then** the Share dialog displays a single generic error alert that I can dismiss (no server-specific error codes are surfaced)
 
 ---
 
