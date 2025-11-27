@@ -127,7 +127,11 @@ const WhiteboardView = ({
                       {hasPublicSharePrivilege && (
                         <Divider orientation="horizontal" flexItem sx={{ marginTop: gutters(1) }} />
                       )}
-                      <CollaborationSettings element={whiteboard} elementType="whiteboard" />
+                      <CollaborationSettings
+                        element={whiteboard}
+                        elementType="whiteboard"
+                        guestAccessEnabled={guestAccess.enabled}
+                      />
                     </>
                   )}
                 </ShareButton>

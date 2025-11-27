@@ -1254,6 +1254,7 @@
     "shareSettings": {
       "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users \u2028at once. If you do not want others to edit, change the $t(common.settings) below.",
       "disabled": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
+      "guestAccessWarning": "Note: If you make this whiteboard public, everyone in the space will be able to edit the whiteboard.",
       "ownedBy": {
         "title": "This {{elementName}} is owned by:"
       },
