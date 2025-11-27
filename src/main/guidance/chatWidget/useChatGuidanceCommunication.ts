@@ -29,8 +29,8 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   const { data: conversationGuidanceData, loading: conversationIdLoading } = useConversationWithGuidanceVcQuery({
     skip,
   });
-  const conversation= conversationGuidanceData?.me.conversations.conversationGuidanceVc;
-  const conversationId = conversation?.id
+  const conversation = conversationGuidanceData?.me.conversations.conversationGuidanceVc;
+  const conversationId = conversation?.id;
   const roomId = conversation?.room?.id;
 
   const { data: messagesData, loading: messagesLoading } = useConversationVcMessagesQuery({
@@ -74,11 +74,15 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   const askQuestion = async (
     question: string,
     refetchQueries?: AskVirtualContributorQuestionMutationOptions['refetchQueries']
-  ) =>
-    askVcQuestion({
+  ) => {
+    if (!conversationId) {
+      return;
+    }
+
+    return askVcQuestion({
       variables: {
         input: {
-          conversationID: conversationId!,
+          conversationID: conversationId,
           question,
           language: i18n.language.toUpperCase(),
         },
@@ -86,6 +90,7 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
       refetchQueries,
       awaitRefetchQueries: true,
     });
+  };
 
   const handleSendMessage = async (message: string): Promise<void> => {
     await askQuestion(message, ['ConversationVcMessages']);
