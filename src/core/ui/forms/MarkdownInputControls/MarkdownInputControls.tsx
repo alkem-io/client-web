@@ -167,7 +167,12 @@ const MarkdownInputControls = ({
           />
         )}
         {!hideImageOptions && ( // Don't join these two, they throw a warning about MUI Tabs component not accepting React Fragments
-          <InsertEmbedCodeButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+          <InsertEmbedCodeButton
+            editor={editor}
+            onDialogOpen={onDialogOpen}
+            onDialogClose={onDialogClose}
+            disabled={isEditingTable}
+          />
         )}
         <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
       </Toolbar>

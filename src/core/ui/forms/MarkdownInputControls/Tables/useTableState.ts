@@ -5,16 +5,19 @@ import { Editor } from '@tiptap/core';
  * Determines if the current selection is inside a table
  */
 export const useTableState = (editor: Editor | null) => {
-  const [isActive, setIsActive] = useState(false);
+  const [isEditingTable, setIsEditingTable] = useState(false);
   useEffect(() => {
-    if (!editor) return;
+    if (!editor) {
+      setIsEditingTable(false);
+      return;
+    }
     const onSelectionUpdate = ({ editor }: { editor: Editor }) => {
-      setIsActive(editor.isActive('table'));
+      setIsEditingTable(editor.isActive('table'));
     };
     editor.on('selectionUpdate', onSelectionUpdate);
     return () => {
       editor.off('selectionUpdate', onSelectionUpdate);
     };
   }, [editor]);
-  return isActive;
+  return isEditingTable;
 };
