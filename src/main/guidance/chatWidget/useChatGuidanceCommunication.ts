@@ -97,7 +97,19 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   };
 
   const [clearChat, loadingClearChat] = useLoadingState(async () => {
-    await resetConversationVc();
+    if (!conversationId) {
+      return;
+    }
+
+    await resetConversationVc({
+      variables: {
+        input: {
+          conversationID: conversationId,
+        },
+      },
+      refetchQueries: ['ConversationVcMessages'],
+      awaitRefetchQueries: true,
+    });
   });
 
   return {
