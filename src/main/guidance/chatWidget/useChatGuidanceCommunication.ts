@@ -1,17 +1,16 @@
-import { useMemo, useState } from 'react';
-import {
-  AskChatGuidanceQuestionMutationOptions,
-  useAskChatGuidanceQuestionMutation,
-  useCreateGuidanceRoomMutation,
-  useGuidanceRoomIdQuery,
-  useGuidanceRoomMessagesQuery,
-  useResetChatGuidanceMutation,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useMemo } from 'react';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import { Message } from '@/domain/communication/room/models/Message';
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import { useTranslation } from 'react-i18next';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import {
+  AskVirtualContributorQuestionMutationOptions,
+  useAskVirtualContributorQuestionMutation,
+  useConversationVcMessagesQuery,
+  useConversationWithGuidanceVcQuery,
+  useResetConversationVcMutation,
+} from '@/core/apollo/generated/apollo-hooks';
 
 interface Provided {
   loading?: boolean;
@@ -19,30 +18,26 @@ interface Provided {
   clearChat: () => Promise<void>;
   sendMessage: (message: string) => Promise<unknown>;
   isSubscribedToMessages: boolean;
+  conversationId: string;
 }
 
 const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   const { t, i18n } = useTranslation();
 
-  const [createGuidanceRoom] = useCreateGuidanceRoomMutation();
-  const [resetChatGuidance] = useResetChatGuidanceMutation();
+  const [resetConversationVc] = useResetConversationVcMutation();
 
-  const [sendingFirstMessage, setSendingFirstMessage] = useState<boolean>(false);
-
-  const {
-    data: roomIdData,
-    loading: roomIdLoading,
-    refetch: refetchGuidanceRoomId,
-  } = useGuidanceRoomIdQuery({
+  const { data: conversationGuidanceData, loading: conversationIdLoading } = useConversationWithGuidanceVcQuery({
     skip,
   });
-  const roomId = roomIdData?.me.user?.guidanceRoom?.id;
+  const conversation = conversationGuidanceData?.me.conversations.conversationGuidanceVc;
+  const conversationId = conversation?.id;
+  const roomId = conversation?.room?.id;
 
-  const { data: messagesData, loading: messagesLoading } = useGuidanceRoomMessagesQuery({
+  const { data: messagesData, loading: messagesLoading } = useConversationVcMessagesQuery({
     variables: {
-      roomId: roomId!,
+      conversationId: conversationId!,
     },
-    skip: !roomId || sendingFirstMessage,
+    skip: !conversationId,
   });
 
   const messages: Message[] = useMemo(() => {
@@ -53,11 +48,12 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
       message: t('chatbot.intro'),
       author: undefined,
     };
+    const room = messagesData?.lookup.conversation?.room;
 
-    if (messagesData?.lookup.room?.messages.length) {
+    if (room?.messages?.length) {
       return [
         introMessage,
-        ...messagesData?.lookup.room?.messages?.map(message => ({
+        ...room.messages.map(message => ({
           id: message.id,
           threadID: message.threadID,
           message: message.message,
@@ -70,47 +66,59 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
       // No messages or just no room at all => Return just one message with the intro text
       return [introMessage];
     }
-  }, [messagesData?.lookup.room?.messages, roomId, sendingFirstMessage, roomIdLoading, messagesLoading]);
+  }, [messagesData?.lookup.conversation?.room?.messages, conversationId, conversationIdLoading, messagesLoading]);
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, !roomId);
 
-  const [askChatGuidanceQuestion] = useAskChatGuidanceQuestionMutation();
+  const [askVcQuestion] = useAskVirtualContributorQuestionMutation();
   const askQuestion = async (
     question: string,
-    refetchQueries?: AskChatGuidanceQuestionMutationOptions['refetchQueries']
-  ) =>
-    askChatGuidanceQuestion({
+    refetchQueries?: AskVirtualContributorQuestionMutationOptions['refetchQueries']
+  ) => {
+    if (!conversationId) {
+      return;
+    }
+
+    return askVcQuestion({
       variables: {
-        chatData: { question, language: i18n.language.toUpperCase() },
+        input: {
+          conversationID: conversationId,
+          question,
+          language: i18n.language.toUpperCase(),
+        },
       },
       refetchQueries,
       awaitRefetchQueries: true,
     });
+  };
 
   const handleSendMessage = async (message: string): Promise<void> => {
-    if (!roomId) {
-      setSendingFirstMessage(true);
-      await createGuidanceRoom({
-        refetchQueries: ['GuidanceRoomId', 'GuidanceRoomMessages'],
-      });
-      await askQuestion(message);
-      setSendingFirstMessage(false);
-    } else {
-      await askQuestion(message, ['GuidanceRoomMessages']);
-    }
+    await askQuestion(message, ['ConversationVcMessages']);
   };
 
   const [clearChat, loadingClearChat] = useLoadingState(async () => {
-    await resetChatGuidance();
-    await refetchGuidanceRoomId();
+    if (!conversationId) {
+      return;
+    }
+
+    await resetConversationVc({
+      variables: {
+        input: {
+          conversationID: conversationId,
+        },
+      },
+      refetchQueries: ['ConversationVcMessages'],
+      awaitRefetchQueries: true,
+    });
   });
 
   return {
-    loading: roomIdLoading || messagesLoading || loadingClearChat,
+    loading: conversationIdLoading || messagesLoading || loadingClearChat,
     messages,
     isSubscribedToMessages,
     clearChat,
     sendMessage: handleSendMessage,
+    conversationId: conversationId!,
   };
 };
 
