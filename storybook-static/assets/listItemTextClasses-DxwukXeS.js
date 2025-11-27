@@ -1,0 +1,1 @@
+import{g as s,a as e}from"./memoTheme-DhAmGcnE.js";function a(t){return e("MuiListItemIcon",t)}const n=s("MuiListItemIcon",["root","alignItemsFlexStart"]);function l(t){return e("MuiListItemText",t)}const o=s("MuiListItemText",["root","multiline","dense","inset","primary","secondary"]);export{o as a,l as b,a as g,n as l};

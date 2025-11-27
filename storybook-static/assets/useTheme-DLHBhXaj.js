@@ -1,0 +1,1 @@
+import{e as n,f as r}from"./DefaultPropsProvider-Rl9Bykhz.js";import{r as s}from"./index-DZ_CqB28.js";function o(e){return Object.keys(e).length===0}function m(e=null){const t=s.useContext(n);return!t||o(t)?e:t}const u=r();function f(e=u){return m(e)}export{m as a,f as u};

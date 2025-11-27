@@ -1,0 +1,1 @@
+import{j as e}from"./jsx-runtime-BjG_zV1W.js";import{T as o}from"./TextField-Dv3990LZ.js";const r=t=>e.jsx(o,{variant:"outlined",...t});try{r.displayName="Input",r.__docgenInfo={description:"",displayName:"Input",props:{}}}catch{}export{r as I};
