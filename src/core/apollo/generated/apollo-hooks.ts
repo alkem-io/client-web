@@ -14324,6 +14324,9 @@ export const VirtualContributorDocument = gql`
           id
           myPrivileges
         }
+        platformSettings {
+          promptGraphEditingEnabled
+        }
         settings {
           privacy {
             knowledgeBaseContentVisible
@@ -15126,6 +15129,62 @@ export type UpdateVirtualContributorMutationResult =
 export type UpdateVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateVirtualContributorMutation,
   SchemaTypes.UpdateVirtualContributorMutationVariables
+>;
+export const UpdateVirtualContributorPlatformSettingsDocument = gql`
+  mutation UpdateVirtualContributorPlatformSettings($settingsData: UpdateVirtualContributorPlatformSettingsInput!) {
+    updateVirtualContributorPlatformSettings(settingsData: $settingsData) {
+      id
+      aiPersona {
+        id
+      }
+      platformSettings {
+        promptGraphEditingEnabled
+      }
+    }
+  }
+`;
+export type UpdateVirtualContributorPlatformSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateVirtualContributorPlatformSettingsMutation,
+  SchemaTypes.UpdateVirtualContributorPlatformSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateVirtualContributorPlatformSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateVirtualContributorPlatformSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVirtualContributorPlatformSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVirtualContributorPlatformSettingsMutation, { data, loading, error }] = useUpdateVirtualContributorPlatformSettingsMutation({
+ *   variables: {
+ *      settingsData: // value for 'settingsData'
+ *   },
+ * });
+ */
+export function useUpdateVirtualContributorPlatformSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateVirtualContributorPlatformSettingsMutation,
+    SchemaTypes.UpdateVirtualContributorPlatformSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateVirtualContributorPlatformSettingsMutation,
+    SchemaTypes.UpdateVirtualContributorPlatformSettingsMutationVariables
+  >(UpdateVirtualContributorPlatformSettingsDocument, options);
+}
+export type UpdateVirtualContributorPlatformSettingsMutationHookResult = ReturnType<
+  typeof useUpdateVirtualContributorPlatformSettingsMutation
+>;
+export type UpdateVirtualContributorPlatformSettingsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateVirtualContributorPlatformSettingsMutation>;
+export type UpdateVirtualContributorPlatformSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateVirtualContributorPlatformSettingsMutation,
+  SchemaTypes.UpdateVirtualContributorPlatformSettingsMutationVariables
 >;
 export const UpdateVirtualContributorSettingsDocument = gql`
   mutation UpdateVirtualContributorSettings($settingsData: UpdateVirtualContributorSettingsInput!) {
