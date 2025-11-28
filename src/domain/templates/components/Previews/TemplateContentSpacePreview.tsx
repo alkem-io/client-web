@@ -7,7 +7,7 @@ import InnovationFlowCalloutsPreview from '../../../collaboration/InnovationFlow
 import { TemplateContentSpaceModel } from '../../contentSpace/model/TemplateContentSpaceModel';
 import { Caption } from '@/core/ui/typography';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import SpaceTile from '@/domain/space/components/cards/SpaceTile';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -55,15 +55,15 @@ const TemplateContentSpacePreview = ({ template, loading }: TemplateContentSpace
           <Caption>{t('templateLibrary.spaceTemplates.includesSubspaces')}</Caption>
           <Gutters row disablePadding flexWrap="wrap">
             {template.contentSpace.subspaces.map((subspace, index) => (
-              <SpaceTile
+              <SpaceCard
                 key={index}
                 columns={cardColumns}
-                space={{
-                  id: subspace.id,
-                  about: subspace.about,
-                  level: SpaceLevel.L1,
-                }}
-                disableLink
+                spaceId={subspace.id}
+                displayName={subspace.about.profile.displayName}
+                banner={subspace.about.profile.cardBanner}
+                isPrivate={!subspace.about.isContentPublic}
+                level={SpaceLevel.L1}
+                compact
               />
             ))}
           </Gutters>

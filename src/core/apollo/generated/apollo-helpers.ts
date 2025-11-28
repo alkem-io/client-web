@@ -179,6 +179,33 @@ export type ActivityLogEntryCalloutLinkCreatedFieldPolicy = {
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ActivityLogEntryCalloutMemoCreatedKeySpecifier = (
+  | 'callout'
+  | 'child'
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'memo'
+  | 'parentDisplayName'
+  | 'space'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryCalloutMemoCreatedKeySpecifier
+)[];
+export type ActivityLogEntryCalloutMemoCreatedFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ActivityLogEntryCalloutPostCommentKeySpecifier = (
   | 'callout'
   | 'child'
@@ -681,6 +708,7 @@ export type CalloutContributionKeySpecifier = (
   | 'createdDate'
   | 'id'
   | 'link'
+  | 'memo'
   | 'post'
   | 'sortOrder'
   | 'updatedDate'
@@ -693,6 +721,7 @@ export type CalloutContributionFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -792,6 +821,7 @@ export type CalloutsSetKeySpecifier = (
   | 'callouts'
   | 'createdDate'
   | 'id'
+  | 'tags'
   | 'tagsetTemplates'
   | 'type'
   | 'updatedDate'
@@ -802,6 +832,7 @@ export type CalloutsSetFieldPolicy = {
   callouts?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  tags?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2489,6 +2520,7 @@ export type ModelCardSpaceUsageResultFieldPolicy = {
 };
 export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
+  | 'addNotificationEmailToBlacklist'
   | 'addReactionToMessageInRoom'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
@@ -2595,6 +2627,7 @@ export type MutationKeySpecifier = (
   | 'removeCommunityGuidelinesContent'
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
+  | 'removeNotificationEmailFromBlacklist'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
   | 'removeRoleFromOrganization'
@@ -2665,6 +2698,7 @@ export type MutationKeySpecifier = (
   | 'updateVirtualContributorSettings'
   | 'updateVisual'
   | 'updateWhiteboard'
+  | 'updateWhiteboardGuestAccess'
   | 'uploadFileOnLink'
   | 'uploadFileOnReference'
   | 'uploadFileOnStorageBucket'
@@ -2673,6 +2707,7 @@ export type MutationKeySpecifier = (
 )[];
 export type MutationFieldPolicy = {
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
+  addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2779,6 +2814,7 @@ export type MutationFieldPolicy = {
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2849,6 +2885,7 @@ export type MutationFieldPolicy = {
   updateVirtualContributorSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateWhiteboardGuestAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnLink?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3119,9 +3156,14 @@ export type PlatformFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformIntegrationSettingsKeySpecifier = ('iframeAllowedUrls' | PlatformIntegrationSettingsKeySpecifier)[];
+export type PlatformIntegrationSettingsKeySpecifier = (
+  | 'iframeAllowedUrls'
+  | 'notificationEmailBlacklist'
+  | PlatformIntegrationSettingsKeySpecifier
+)[];
 export type PlatformIntegrationSettingsFieldPolicy = {
   iframeAllowedUrls?: FieldPolicy<any> | FieldReadFunction<any>;
+  notificationEmailBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformInvitationKeySpecifier = (
   | 'authorization'
@@ -3999,6 +4041,7 @@ export type SpaceSettingsFieldPolicy = {
 };
 export type SpaceSettingsCollaborationKeySpecifier = (
   | 'allowEventsFromSubspaces'
+  | 'allowGuestContributions'
   | 'allowMembersToCreateCallouts'
   | 'allowMembersToCreateSubspaces'
   | 'allowMembersToVideoCall'
@@ -4007,6 +4050,7 @@ export type SpaceSettingsCollaborationKeySpecifier = (
 )[];
 export type SpaceSettingsCollaborationFieldPolicy = {
   allowEventsFromSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  allowGuestContributions?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToVideoCall?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4357,6 +4401,15 @@ export type TimelineFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UpdateWhiteboardGuestAccessResultKeySpecifier = (
+  | 'success'
+  | 'whiteboard'
+  | UpdateWhiteboardGuestAccessResultKeySpecifier
+)[];
+export type UpdateWhiteboardGuestAccessResultFieldPolicy = {
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UrlResolverQueryResultCalendarKeySpecifier = (
   | 'calendarEventId'
   | 'id'
@@ -4370,6 +4423,7 @@ export type UrlResolverQueryResultCalloutsSetKeySpecifier = (
   | 'calloutId'
   | 'contributionId'
   | 'id'
+  | 'memoId'
   | 'postId'
   | 'type'
   | 'whiteboardId'
@@ -4379,6 +4433,7 @@ export type UrlResolverQueryResultCalloutsSetFieldPolicy = {
   calloutId?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionId?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  memoId?: FieldPolicy<any> | FieldReadFunction<any>;
   postId?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardId?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4880,6 +4935,7 @@ export type WhiteboardKeySpecifier = (
   | 'contentUpdatePolicy'
   | 'createdBy'
   | 'createdDate'
+  | 'guestContributionsAllowed'
   | 'id'
   | 'isMultiUser'
   | 'nameID'
@@ -4894,6 +4950,7 @@ export type WhiteboardFieldPolicy = {
   contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  guestContributionsAllowed?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4984,6 +5041,13 @@ export type StrictTypedTypePolicies = {
       | ActivityLogEntryCalloutLinkCreatedKeySpecifier
       | (() => undefined | ActivityLogEntryCalloutLinkCreatedKeySpecifier);
     fields?: ActivityLogEntryCalloutLinkCreatedFieldPolicy;
+  };
+  ActivityLogEntryCalloutMemoCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryCalloutMemoCreatedKeySpecifier
+      | (() => undefined | ActivityLogEntryCalloutMemoCreatedKeySpecifier);
+    fields?: ActivityLogEntryCalloutMemoCreatedFieldPolicy;
   };
   ActivityLogEntryCalloutPostComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -6215,6 +6279,13 @@ export type StrictTypedTypePolicies = {
   Timeline?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TimelineKeySpecifier | (() => undefined | TimelineKeySpecifier);
     fields?: TimelineFieldPolicy;
+  };
+  UpdateWhiteboardGuestAccessResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UpdateWhiteboardGuestAccessResultKeySpecifier
+      | (() => undefined | UpdateWhiteboardGuestAccessResultKeySpecifier);
+    fields?: UpdateWhiteboardGuestAccessResultFieldPolicy;
   };
   UrlResolverQueryResultCalendar?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

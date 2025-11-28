@@ -184,6 +184,11 @@ fragment SpaceTemplateContent_Collaboration on Collaboration {
           }
         }
       }
+      settings {
+        contribution {
+          allowedTypes
+        }
+      }
       sortOrder
     }
   }
@@ -191,6 +196,7 @@ fragment SpaceTemplateContent_Collaboration on Collaboration {
 
 fragment SpaceTemplateContent_About on SpaceAbout {
   id
+  isContentPublic
   profile {
     id
     displayName
@@ -199,7 +205,10 @@ fragment SpaceTemplateContent_About on SpaceAbout {
     tagsets {
       ...TagsetDetails
     }
-    visuals {
+    avatar: visual(type: AVATAR) {
+      ...VisualModel
+    }
+    cardBanner: visual(type: CARD) {
       ...VisualModel
     }
     url
@@ -222,6 +231,7 @@ fragment SpaceTemplateContent_Settings on SpaceSettings {
     inheritMembershipRights
     allowEventsFromSubspaces
     allowMembersToVideoCall
+    allowGuestContributions
   }
 }
 

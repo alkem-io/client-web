@@ -10,6 +10,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 
 export interface ContributionDetails {
+  id: string;
   about: SpaceAboutLightModel;
   roleSetId?: string;
   level: SpaceLevel;
@@ -43,6 +44,7 @@ const useContributionProvider = ({ spaceHostedItem: entities }: UseContributionP
     if (spaceData?.lookup.space) {
       const space = spaceData.lookup.space;
       return {
+        id: space.id,
         about: space.about,
         roleSetId: space.about.membership.roleSetID,
         level: space.level,

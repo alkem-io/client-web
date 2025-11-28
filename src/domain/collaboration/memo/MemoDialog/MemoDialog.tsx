@@ -3,7 +3,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import CollaborativeMarkdownInput from '@/core/ui/forms/CollaborativeMarkdownInput/CollaborativeMarkdownInput';
 import { CharacterCountContextProvider } from '@/core/ui/forms/MarkdownInput/CharacterCountContext';
-import { Box, DialogContent, OutlinedInput } from '@mui/material';
+import { Box, DialogContent, IconButton, OutlinedInput, Tooltip } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 import useMemoManager from '../MemoManager/useMemoManager';
 import Loading from '@/core/ui/loading/Loading';
@@ -17,17 +17,29 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import CollaborationSettings from '../../realTimeCollaboration/CollaborationSettings/CollaborationSettings';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 interface MemoDialogProps {
   open?: boolean;
   onClose?: () => void;
   memoId: string;
   calloutId: string;
+  onDelete?: () => Promise<void>;
+  isContribution?: boolean;
 }
 
-const MemoDialog = ({ open = false, onClose, memoId, calloutId }: MemoDialogProps) => {
+const MemoDialog = ({
+  open = false,
+  onClose,
+  memoId,
+  calloutId,
+  onDelete,
+  isContribution = false,
+}: MemoDialogProps) => {
   const { t } = useTranslation();
   const [collaborationState, setCollaborationState] = useState<RealTimeCollaborationState>();
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const { fullscreen, setFullscreen } = useFullscreen();
 
@@ -41,7 +53,15 @@ const MemoDialog = ({ open = false, onClose, memoId, calloutId }: MemoDialogProp
     onClose?.();
   };
 
+  const handleDelete = async () => {
+    setDeleteConfirmDialogOpen(false);
+    // Close dialog before deleting to prevent errors
+    onClose?.();
+    await onDelete?.();
+  };
+
   const hasUpdatePrivileges = (memo?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Update);
+  const hasDeletePrivileges = (memo?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Delete);
   const hasContributePrivileges = (memo?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Contribute);
   const notConnected = !collaborationState || collaborationState.status !== MemoStatus.CONNECTED;
   const notSynced = !collaborationState || !collaborationState.synced;
@@ -62,6 +82,17 @@ const MemoDialog = ({ open = false, onClose, memoId, calloutId }: MemoDialogProp
         id="memo-dialog-title"
         actions={
           <>
+            {isContribution && hasDeletePrivileges && onDelete && (
+              <Tooltip title={t('buttons.delete')} arrow>
+                <IconButton
+                  onClick={() => setDeleteConfirmDialogOpen(true)}
+                  aria-label={t('buttons.delete')}
+                  size="small"
+                >
+                  <DeleteOutlinedIcon color="error" />
+                </IconButton>
+              </Tooltip>
+            )}
             <ShareButton url={memo?.profile.url} entityTypeName="memo" disabled={!memo?.profile.url}>
               {hasUpdatePrivileges && <CollaborationSettings element={memo} elementType="memo" />}
             </ShareButton>
@@ -109,6 +140,7 @@ const MemoDialog = ({ open = false, onClose, memoId, calloutId }: MemoDialogProp
                     fullScreen: fullscreen,
                     onChangeCollaborationState: setCollaborationState,
                     storageBucketId: memo?.profile.storageBucket.id,
+                    autoFocus: true,
                   }}
                   sx={{
                     '&.MuiOutlinedInput-root': {
@@ -133,6 +165,20 @@ const MemoDialog = ({ open = false, onClose, memoId, calloutId }: MemoDialogProp
           contentUpdatePolicy={memo?.contentUpdatePolicy}
         />
       </DialogFooter>
+      <ConfirmationDialog
+        actions={{
+          onConfirm: handleDelete,
+          onCancel: () => setDeleteConfirmDialogOpen(false),
+        }}
+        options={{
+          show: deleteConfirmDialogOpen,
+        }}
+        entities={{
+          title: t('components.deleteEntity.confirmDialog.title', { entity: t('common.Memo') }),
+          content: t('components.deleteEntity.confirmDialog.descriptionShort', { entity: t('common.Memo') }),
+          confirmButtonTextId: 'buttons.delete',
+        }}
+      />
     </DialogWithGrid>
   );
 };

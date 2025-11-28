@@ -10,6 +10,7 @@ import { useEditorConfig } from './hooks/useEditorConfig';
 import { useImageUpload } from './hooks/useImageUpload';
 import { useMarkdownInputUI } from './hooks/useMarkdownInputUI';
 import { useMarkdownEditor } from './hooks/useMarkdownEditor';
+import { MarkdownInputStyles } from './hooks/MarkdownInputStyles';
 
 export interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -154,6 +155,7 @@ export const MarkdownInput = memo<MarkdownInputProps>(
 
     return (
       <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlurWithScrollPosition}>
+        {MarkdownInputStyles}
         <MarkdownInputControls
           ref={toolbarRef}
           editor={editor}

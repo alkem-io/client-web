@@ -1,0 +1,34 @@
+{
+  "servers": {
+    "sentry": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "MCP_SENTRY_AUTH_TOKEN",
+        "mcp/sentry",
+        "--auth-token",
+        "$MCP_SENTRY_AUTH_TOKEN"
+      ],
+      "env": {
+        "MCP_SENTRY_AUTH_TOKEN": "${input:MCP_SENTRY_AUTH_TOKEN}"
+      },
+      "type": "stdio"
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["chrome-devtools-mcp@latest"],
+      "type": "stdio"
+    }
+  },
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "MCP_SENTRY_AUTH_TOKEN",
+      "description": "Sentry Auth Token for Sentry MCP server",
+      "password": true
+    }
+  ]
+}

@@ -18,9 +18,16 @@ fragment InnovationFlowCollaboration on Collaboration {
       }
       framing {
         id
+        type
         profile {
           id
           displayName
+        }
+      }
+      settings {
+        visibility
+        contribution {
+          allowedTypes
         }
       }
     }

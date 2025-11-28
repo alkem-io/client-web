@@ -26,6 +26,7 @@ import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
+import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
 
 const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
@@ -103,11 +104,22 @@ const CollaborativeExcalidrawWrapper = ({
 
   const { whiteboard, filesManager, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
+  const { t } = useTranslation();
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
 
   const { userModel } = useCurrentUserContext();
-  const username = userModel?.profile.displayName ?? 'User';
+  const username = useMemo(() => {
+    if (userModel?.profile.displayName) {
+      return userModel.profile.displayName;
+    }
+
+    const guestName = getGuestName() ?? t('common.guestUserFallback', { defaultValue: 'User' });
+    const guestSuffix = t('common.guestSuffix');
+    return guestSuffix ? `${guestName} ${guestSuffix}` : guestName;
+    // getGuestName() is intentionally omitted from dependencies - guest names are set once per session
+    // and don't change dynamically. Including it would cause unnecessary re-renders without benefit.
+  }, [t, userModel?.profile.displayName]);
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
 
@@ -213,8 +225,6 @@ const CollaborativeExcalidrawWrapper = ({
     },
     [actions.onInitApi]
   );
-
-  const { t } = useTranslation();
 
   const children = (
     <Box sx={{ height: 1, flexGrow: 1, position: 'relative' }}>

@@ -6,11 +6,12 @@ import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControl
 import { gutters } from '@/core/ui/grid/utils';
 import { isEqual } from 'lodash';
 import { RealTimeCollaborationState } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
-import './styles.scss';
 import { useEditorConfig } from '../MarkdownInput/hooks/useEditorConfig';
 import { useImageUpload } from '../MarkdownInput/hooks/useImageUpload';
 import { useMarkdownInputUI } from '../MarkdownInput/hooks/useMarkdownInputUI';
 import { useCollaboration } from './hooks/useCollaboration';
+import { MarkdownInputStyles } from '../MarkdownInput/hooks/MarkdownInputStyles';
+import { CollaborativeMarkdownInputStyles } from './CollaborativeMarkdownInputStyles';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -23,6 +24,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   disabled?: boolean;
   storageBucketId?: string;
   fullScreen?: boolean;
+  autoFocus?: boolean;
 }
 
 export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
@@ -38,6 +40,7 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
     disabled,
     storageBucketId = '',
     fullScreen = false,
+    autoFocus = false,
   }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
@@ -97,6 +100,17 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
     useEffect(() => {
       editorRef.current = editor;
     }, [editor]);
+
+    // Auto-focus editor when autoFocus is true and editor is ready
+    useEffect(() => {
+      if (autoFocus && editor && !disabled && synced) {
+        // Small delay to ensure the editor is fully rendered
+        const timeout = setTimeout(() => {
+          editor.commands.focus();
+        }, 100);
+        return () => clearTimeout(timeout);
+      }
+    }, [autoFocus, editor, disabled, synced]);
 
     const [currentCollaborationState, setCollaborationState] = useState<RealTimeCollaborationState>();
 
@@ -160,6 +174,8 @@ export const CollaborativeMarkdownInput = memo<MarkdownInputProps>(
             borderBottom: '1px solid #efefef',
           }}
         >
+          {MarkdownInputStyles}
+          {CollaborativeMarkdownInputStyles}
           <MarkdownInputControls
             ref={toolbarRef}
             editor={editor}

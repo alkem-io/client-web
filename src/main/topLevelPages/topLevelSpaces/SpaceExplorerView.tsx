@@ -8,13 +8,13 @@ import { Box, Button, DialogContent, IconButton } from '@mui/material';
 import SearchTagsInput from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
 import Gutters from '@/core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import SubspaceCard from '@/domain/space/components/cards/SubspaceCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
+import { Lead, LeadOrganization } from '@/domain/space/components/cards/components/SpaceLeads';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { Visual } from '@/domain/common/visual/Visual';
 import { gutters, useGridItem } from '@/core/ui/grid/utils';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
-import SpaceSubspaceCardLabel from '@/domain/space/components/cards/components/SpaceSubspaceCardLabel';
 import SeeMoreExpandable from '@/core/ui/content/SeeMoreExpandable';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -24,8 +24,7 @@ import { compact } from 'lodash';
 import Loading from '@/core/ui/loading/Loading';
 import { useSpaceExplorerWelcomeSpaceQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { getDefaultSpaceVisualUrl } from '@/domain/space/icons/defaultVisualUrls';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { collectParentAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
   setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
@@ -54,6 +53,7 @@ interface ParentSpace extends Identifiable {
       displayName: string;
       avatar?: Visual;
       cardBanner?: Visual;
+      url: string;
     };
   };
 }
@@ -67,35 +67,6 @@ interface Space extends Identifiable {
   about: SpaceAboutLightModel;
   matchedTerms?: string[];
 }
-
-interface WithBanner {
-  id?: string;
-  about: { profile: { avatar?: Visual; cardBanner?: Visual } };
-}
-
-const collectParentAvatars = <SpaceWithVisuals extends WithBanner & WithParent<WithBanner>>(
-  { about, parent, id }: SpaceWithVisuals,
-  initial: { src: string; alt: string }[] = []
-) => {
-  if (!about?.profile) {
-    return initial;
-  }
-
-  const { cardBanner, avatar = cardBanner } = about.profile;
-  const { uri, alternativeText } = avatar || {};
-
-  // Use default avatar visual if no cardBanner or avatar is available
-  const avatarUri = uri || getDefaultSpaceVisualUrl(VisualType.Avatar, id);
-  const collected = [
-    {
-      src: avatarUri,
-      alt: alternativeText || '',
-    },
-    ...initial,
-  ];
-
-  return parent ? collectParentAvatars(parent, collected) : collected;
-};
 
 export const ITEMS_LIMIT = 10;
 
@@ -167,35 +138,50 @@ export const SpaceExplorerView = ({
 
       const { profile, isContentPublic, membership } = about;
 
+      // TypeScript doesn't know that membership has leadUsers/leadOrganizations
+      // but the actual GraphQL fragment SpaceExplorerSpace includes them
+      const membershipWithLeads = membership as typeof membership & {
+        leadUsers?: Lead[];
+        leadOrganizations?: LeadOrganization[];
+      };
+
+      const parentInfo = space.parent
+        ? {
+            displayName: space.parent.about.profile.displayName,
+            url: space.parent.about.profile.url,
+            avatar: space.parent.about.profile.avatar
+              ? {
+                  id: '',
+                  uri: space.parent.about.profile.avatar.uri,
+                  alternativeText: space.parent.about.profile.avatar.alternativeText,
+                }
+              : undefined,
+          }
+        : undefined;
+
       vs.push(
-        <SubspaceCard
+        <SpaceCard
           key={id}
           spaceId={id}
           tagline={profile?.tagline ?? ''}
           displayName={profile?.displayName}
-          vision={profile.description ?? ''}
           spaceUri={profile?.url}
           level={level}
           banner={profile?.cardBanner}
+          tags={profile?.tagset?.tags}
           avatarUris={collectParentAvatars(space) ?? []}
-          tags={(space.matchedTerms ?? profile?.tagset?.tags.length) ? profile?.tagset?.tags : undefined}
-          spaceDisplayName={space.parent?.about?.profile?.displayName}
+          parentInfo={parentInfo}
           matchedTerms={!!space.matchedTerms}
-          label={
-            shouldDisplayPrivacyInfo && (
-              <SpaceSubspaceCardLabel
-                level={level}
-                member={membership?.myMembershipStatus === CommunityMembershipStatus.Member}
-                isPrivate={!isContentPublic}
-              />
-            )
-          }
+          leadUsers={membershipWithLeads?.leadUsers}
+          leadOrganizations={membershipWithLeads?.leadOrganizations}
+          showLeads={authenticated}
+          isPrivate={!isContentPublic}
         />
       );
     });
 
     return vs;
-  }, [visibleSpaces, shouldDisplayPrivacyInfo]);
+  }, [visibleSpaces, shouldDisplayPrivacyInfo, authenticated]);
 
   const getGridItemStyle = useGridItem();
 

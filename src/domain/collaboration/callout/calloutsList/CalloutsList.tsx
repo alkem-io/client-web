@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemIcon, Skeleton, useTheme } from '@mui/material';
+import { List, ListItem, ListItemButton, ListItemIcon, Skeleton, useTheme } from '@mui/material';
 import { ReactNode, useMemo, useState } from 'react';
 import { CalloutIcon } from '../icons/calloutIcons';
 import { useTranslation } from 'react-i18next';
@@ -52,17 +52,20 @@ const CalloutsList = <Callout extends CalloutModelLight>({
         )}
         {filteredCallouts?.map(callout => {
           return (
-            <ListItem key={callout.id} disableGutters component={RouterLink} to={callout.framing.profile.url ?? ''}>
-              <ListItemIcon>
-                <CalloutIcon
-                  framingType={callout.framing.type}
-                  tooltip
-                  iconProps={{ sx: { color: theme.palette.primary.dark } }}
-                />
-              </ListItemIcon>
-              <BlockSectionTitle minWidth={0} noWrap>
-                <CalloutsListItemTitle callout={callout} />
-              </BlockSectionTitle>
+            <ListItem key={callout.id} disableGutters>
+              <ListItemButton component={RouterLink} to={callout.framing.profile.url ?? ''} sx={{ py: 0 }}>
+                <ListItemIcon sx={{ minWidth: theme.spacing(3) }}>
+                  <CalloutIcon
+                    framingType={callout.framing.type}
+                    allowedTypes={callout.settings?.contribution?.allowedTypes}
+                    tooltip
+                    iconProps={{ fontSize: 'small', sx: { color: theme.palette.primary.dark } }}
+                  />
+                </ListItemIcon>
+                <BlockSectionTitle minWidth={0} noWrap>
+                  <CalloutsListItemTitle callout={callout} />
+                </BlockSectionTitle>
+              </ListItemButton>
             </ListItem>
           );
         })}
