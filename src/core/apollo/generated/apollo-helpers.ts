@@ -2520,6 +2520,7 @@ export type ModelCardSpaceUsageResultFieldPolicy = {
 };
 export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
+  | 'addNotificationEmailToBlacklist'
   | 'addReactionToMessageInRoom'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
@@ -2626,6 +2627,7 @@ export type MutationKeySpecifier = (
   | 'removeCommunityGuidelinesContent'
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
+  | 'removeNotificationEmailFromBlacklist'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
   | 'removeRoleFromOrganization'
@@ -2696,6 +2698,7 @@ export type MutationKeySpecifier = (
   | 'updateVirtualContributorSettings'
   | 'updateVisual'
   | 'updateWhiteboard'
+  | 'updateWhiteboardGuestAccess'
   | 'uploadFileOnLink'
   | 'uploadFileOnReference'
   | 'uploadFileOnStorageBucket'
@@ -2704,6 +2707,7 @@ export type MutationKeySpecifier = (
 )[];
 export type MutationFieldPolicy = {
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
+  addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2810,6 +2814,7 @@ export type MutationFieldPolicy = {
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2880,6 +2885,7 @@ export type MutationFieldPolicy = {
   updateVirtualContributorSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateWhiteboardGuestAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnLink?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3150,9 +3156,14 @@ export type PlatformFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformIntegrationSettingsKeySpecifier = ('iframeAllowedUrls' | PlatformIntegrationSettingsKeySpecifier)[];
+export type PlatformIntegrationSettingsKeySpecifier = (
+  | 'iframeAllowedUrls'
+  | 'notificationEmailBlacklist'
+  | PlatformIntegrationSettingsKeySpecifier
+)[];
 export type PlatformIntegrationSettingsFieldPolicy = {
   iframeAllowedUrls?: FieldPolicy<any> | FieldReadFunction<any>;
+  notificationEmailBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformInvitationKeySpecifier = (
   | 'authorization'
@@ -4030,6 +4041,7 @@ export type SpaceSettingsFieldPolicy = {
 };
 export type SpaceSettingsCollaborationKeySpecifier = (
   | 'allowEventsFromSubspaces'
+  | 'allowGuestContributions'
   | 'allowMembersToCreateCallouts'
   | 'allowMembersToCreateSubspaces'
   | 'allowMembersToVideoCall'
@@ -4038,6 +4050,7 @@ export type SpaceSettingsCollaborationKeySpecifier = (
 )[];
 export type SpaceSettingsCollaborationFieldPolicy = {
   allowEventsFromSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  allowGuestContributions?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToVideoCall?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4387,6 +4400,15 @@ export type TimelineFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UpdateWhiteboardGuestAccessResultKeySpecifier = (
+  | 'success'
+  | 'whiteboard'
+  | UpdateWhiteboardGuestAccessResultKeySpecifier
+)[];
+export type UpdateWhiteboardGuestAccessResultFieldPolicy = {
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UrlResolverQueryResultCalendarKeySpecifier = (
   | 'calendarEventId'
@@ -4913,6 +4935,7 @@ export type WhiteboardKeySpecifier = (
   | 'contentUpdatePolicy'
   | 'createdBy'
   | 'createdDate'
+  | 'guestContributionsAllowed'
   | 'id'
   | 'isMultiUser'
   | 'nameID'
@@ -4927,6 +4950,7 @@ export type WhiteboardFieldPolicy = {
   contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  guestContributionsAllowed?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6255,6 +6279,13 @@ export type StrictTypedTypePolicies = {
   Timeline?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TimelineKeySpecifier | (() => undefined | TimelineKeySpecifier);
     fields?: TimelineFieldPolicy;
+  };
+  UpdateWhiteboardGuestAccessResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UpdateWhiteboardGuestAccessResultKeySpecifier
+      | (() => undefined | UpdateWhiteboardGuestAccessResultKeySpecifier);
+    fields?: UpdateWhiteboardGuestAccessResultFieldPolicy;
   };
   UrlResolverQueryResultCalendar?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

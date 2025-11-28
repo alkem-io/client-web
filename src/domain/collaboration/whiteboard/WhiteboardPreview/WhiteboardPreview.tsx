@@ -6,6 +6,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
 import Centered from '@/core/ui/utils/Centered';
 import { WhiteboardPreviewVisualDimensions } from '../WhiteboardVisuals/WhiteboardVisualsDimensions';
+import GuestVisibilityBadge from '../components/GuestVisibilityBadge';
 
 type WhiteboardPreviewProps = {
   displayName?: string;
@@ -14,6 +15,7 @@ type WhiteboardPreviewProps = {
         profile: {
           preview?: { uri: string };
         };
+        guestContributionsAllowed?: boolean;
       }
     | undefined;
   onClick?: MouseEventHandler;
@@ -119,9 +121,23 @@ const WhiteboardChipButton = ({ disableClick, ...props }: ButtonProps & { disabl
 const WhiteboardPreview = ({ displayName, whiteboard, onClick }: WhiteboardPreviewProps) => {
   const imageSrc = whiteboard?.profile.preview?.uri;
   const defaultImage = <WhiteboardIcon />;
+  const showGuestWarning = Boolean(whiteboard?.guestContributionsAllowed);
 
   return (
     <Container onClick={onClick}>
+      {showGuestWarning && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          position="absolute"
+          top={gutters(0.5)}
+          left={gutters(1)}
+          right={gutters(1)}
+          zIndex={3}
+        >
+          <GuestVisibilityBadge data-testid="guest-visibility-badge-preview" />
+        </Box>
+      )}
       <ImageContainer>
         {!imageSrc && defaultImage && <Centered>{defaultImage}</Centered>}
         {imageSrc && (

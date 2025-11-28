@@ -747,6 +747,7 @@ export enum AuthorizationCredential {
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalGuest = 'GLOBAL_GUEST',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -879,6 +880,7 @@ export enum AuthorizationPrivilege {
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
+  PublicShare = 'PUBLIC_SHARE',
   Read = 'READ',
   ReadAbout = 'READ_ABOUT',
   ReadLicense = 'READ_LICENSE',
@@ -2087,6 +2089,8 @@ export type CreateSpaceOnAccountInput = {
 export type CreateSpaceSettingsCollaborationInput = {
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
   allowEventsFromSubspaces: Scalars['Boolean']['input'];
+  /** Flag to control if guest users can contribute to this Space. */
+  allowGuestContributions: Scalars['Boolean']['input'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
@@ -2354,6 +2358,7 @@ export enum CredentialType {
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalGuest = 'GLOBAL_GUEST',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -4156,6 +4161,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Adds an Iframe Allowed URL to the Platform Settings */
   addIframeAllowedURL: Array<Scalars['String']['output']>;
+  /** Adds a full email address to the platform notification blacklist */
+  addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Ensure all community members are registered for communications. */
@@ -4368,6 +4375,8 @@ export type Mutation = {
   removeIframeAllowedURL: Array<Scalars['String']['output']>;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID']['output'];
+  /** Removes an email address from the platform notification blacklist */
+  removeNotificationEmailFromBlacklist: Array<Scalars['String']['output']>;
   /** Removes a User from a Role on the Platform. */
   removePlatformRoleFromUser: User;
   /** Remove a reaction on a message from the specified Room. */
@@ -4508,6 +4517,8 @@ export type Mutation = {
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
   updateWhiteboard: Whiteboard;
+  /** Grants or revokes GLOBAL_GUEST permissions for a whiteboard using a single toggle. */
+  updateWhiteboardGuestAccess: UpdateWhiteboardGuestAccessResult;
   /** Create a new Document on the Storage and return the value as part of the returned Link. */
   uploadFileOnLink: Link;
   /** Create a new Document on the Storage and return the value as part of the returned Reference. */
@@ -4520,6 +4531,10 @@ export type Mutation = {
 
 export type MutationAddIframeAllowedUrlArgs = {
   whitelistedURL: Scalars['String']['input'];
+};
+
+export type MutationAddNotificationEmailToBlacklistArgs = {
+  input: NotificationEmailAddressInput;
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -4894,6 +4909,10 @@ export type MutationRemoveMessageOnRoomArgs = {
   messageData: RoomRemoveMessageInput;
 };
 
+export type MutationRemoveNotificationEmailFromBlacklistArgs = {
+  input: NotificationEmailAddressInput;
+};
+
 export type MutationRemovePlatformRoleFromUserArgs = {
   roleData: RemovePlatformRoleInput;
 };
@@ -5166,6 +5185,10 @@ export type MutationUpdateWhiteboardArgs = {
   whiteboardData: UpdateWhiteboardEntityInput;
 };
 
+export type MutationUpdateWhiteboardGuestAccessArgs = {
+  input: UpdateWhiteboardGuestAccessInput;
+};
+
 export type MutationUploadFileOnLinkArgs = {
   file: Scalars['Upload']['input'];
   uploadData: StorageBucketUploadFileOnLinkInput;
@@ -5208,6 +5231,11 @@ export type Nvp = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   value: Scalars['String']['output'];
+};
+
+export type NotificationEmailAddressInput = {
+  /** Full email address to add/remove; lowercase enforced by server */
+  email: Scalars['String']['input'];
 };
 
 export enum NotificationEvent {
@@ -5667,6 +5695,8 @@ export type PlatformIntegrationSettings = {
   __typename?: 'PlatformIntegrationSettings';
   /** The list of allowed URLs for iFrames within Markdown content. */
   iframeAllowedUrls: Array<Scalars['String']['output']>;
+  /** List of fully-qualified email addresses blocked from receiving notifications */
+  notificationEmailBlacklist: Array<Scalars['String']['output']>;
 };
 
 export type PlatformInvitation = {
@@ -6395,6 +6425,7 @@ export enum RoleName {
   GlobalSpacesReader = 'GLOBAL_SPACES_READER',
   GlobalSupport = 'GLOBAL_SUPPORT',
   GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
+  Guest = 'GUEST',
   Lead = 'LEAD',
   Member = 'MEMBER',
   Owner = 'OWNER',
@@ -7029,6 +7060,8 @@ export type SpaceSettingsCollaboration = {
   __typename?: 'SpaceSettingsCollaboration';
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
   allowEventsFromSubspaces: Scalars['Boolean']['output'];
+  /** Flag to control if guest users can contribute to this Space. */
+  allowGuestContributions: Scalars['Boolean']['output'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean']['output'];
   /** Flag to control if members can create subspaces. */
@@ -7890,6 +7923,8 @@ export type UpdatePlatformSettingsInput = {
 export type UpdatePlatformSettingsIntegrationInput = {
   /** Update the list of allowed URLs for iFrames within Markdown content. */
   iframeAllowedUrls: Array<Scalars['String']['input']>;
+  /** Update the list of email addresses blocked from receiving notifications. */
+  notificationEmailBlacklist?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type UpdatePostInput = {
@@ -7955,6 +7990,8 @@ export type UpdateSpacePlatformSettingsInput = {
 export type UpdateSpaceSettingsCollaborationInput = {
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
   allowEventsFromSubspaces: Scalars['Boolean']['input'];
+  /** Flag to control if guest users can contribute to this Space. */
+  allowGuestContributions: Scalars['Boolean']['input'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
@@ -8227,6 +8264,21 @@ export type UpdateWhiteboardEntityInput = {
   previewSettings?: InputMaybe<UpdateWhiteboardPreviewSettingsInput>;
   /** The Profile of this entity. */
   profile?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateWhiteboardGuestAccessInput = {
+  /** Target state for guest collaboration. True enables GLOBAL_GUEST privileges. */
+  guestAccessEnabled: Scalars['Boolean']['input'];
+  /** The identifier of the whiteboard whose guest access should be toggled. */
+  whiteboardId: Scalars['UUID']['input'];
+};
+
+export type UpdateWhiteboardGuestAccessResult = {
+  __typename?: 'UpdateWhiteboardGuestAccessResult';
+  /** Indicates whether the mutation completed successfully. */
+  success: Scalars['Boolean']['output'];
+  /** Whiteboard snapshot reflecting the latest guest access state. */
+  whiteboard?: Maybe<Whiteboard>;
 };
 
 export type UpdateWhiteboardPreviewSettingsInput = {
@@ -8819,6 +8871,8 @@ export type Whiteboard = {
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** Indicates whether guest collaborators are currently allowed via GLOBAL_GUEST permissions. */
+  guestContributionsAllowed: Scalars['Boolean']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Whether the Whiteboard is multi-user enabled on Space level. */
@@ -12675,6 +12729,7 @@ export type UpdateCalloutContentMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13046,6 +13101,7 @@ export type UpdateCalloutVisibilityMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13433,6 +13489,7 @@ export type CalloutContributionQuery = {
             | {
                 __typename?: 'Whiteboard';
                 id: string;
+                guestContributionsAllowed: boolean;
                 createdDate: Date;
                 profile: {
                   __typename?: 'Profile';
@@ -14003,6 +14060,13 @@ export type CalloutContributionsQuery = {
                         }
                       | undefined;
                   };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   createdBy?:
                     | {
                         __typename?: 'User';
@@ -14093,6 +14157,9 @@ export type CalloutContributionsWhiteboardCardFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
@@ -14154,6 +14221,7 @@ export type CreateWhiteboardOnCalloutMutation = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -14365,6 +14433,7 @@ export type CreateCalloutMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -14829,6 +14898,7 @@ export type CalloutDetailsQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  guestContributionsAllowed: boolean;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -15289,6 +15359,7 @@ export type CalloutDetailsFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -16026,6 +16097,39 @@ export type UpdateMemoContentUpdatePolicyMutation = {
   updateMemo: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
+export type WhiteboardGuestAccessFieldsFragment = {
+  __typename?: 'Whiteboard';
+  id: string;
+  nameID: string;
+  guestContributionsAllowed: boolean;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type UpdateWhiteboardGuestAccessMutationVariables = Exact<{
+  input: UpdateWhiteboardGuestAccessInput;
+}>;
+
+export type UpdateWhiteboardGuestAccessMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboardGuestAccess: {
+    __typename?: 'UpdateWhiteboardGuestAccessResult';
+    success: boolean;
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          nameID: string;
+          guestContributionsAllowed: boolean;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type WhiteboardPreviewSettingsFragment = {
   __typename?: 'WhiteboardPreviewSettings';
   mode: WhiteboardPreviewMode;
@@ -16108,6 +16212,7 @@ export type WhiteboardDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
+  guestContributionsAllowed: boolean;
   contentUpdatePolicy: ContentUpdatePolicy;
   profile: {
     __typename?: 'Profile';
@@ -16209,6 +16314,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
+              guestContributionsAllowed: boolean;
               contentUpdatePolicy: ContentUpdatePolicy;
               profile: {
                 __typename?: 'Profile';
@@ -16310,6 +16416,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
+              guestContributionsAllowed: boolean;
               contentUpdatePolicy: ContentUpdatePolicy;
               profile: {
                 __typename?: 'Profile';
@@ -16430,6 +16537,7 @@ export type WhiteboardFromCalloutQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  guestContributionsAllowed: boolean;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -16574,6 +16682,52 @@ export type UpdateWhiteboardMutation = {
         | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
         | undefined;
     };
+  };
+};
+
+export type GetPublicWhiteboardQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID']['input'];
+}>;
+
+export type GetPublicWhiteboardQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          content: string;
+          guestContributionsAllowed: boolean;
+          createdDate: Date;
+          updatedDate: Date;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type PublicWhiteboardFragmentFragment = {
+  __typename?: 'Whiteboard';
+  id: string;
+  content: string;
+  guestContributionsAllowed: boolean;
+  createdDate: Date;
+  updatedDate: Date;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    storageBucket: { __typename?: 'StorageBucket'; id: string };
   };
 };
 
@@ -26471,6 +26625,7 @@ export type SpaceSettingsQuery = {
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
               allowMembersToVideoCall: boolean;
+              allowGuestContributions: boolean;
             };
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
@@ -26495,6 +26650,7 @@ export type SpaceSettingsFragment = {
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
     allowMembersToVideoCall: boolean;
+    allowGuestContributions: boolean;
   };
 };
 
@@ -26523,6 +26679,7 @@ export type UpdateSpaceSettingsMutation = {
         inheritMembershipRights: boolean;
         allowEventsFromSubspaces: boolean;
         allowMembersToVideoCall: boolean;
+        allowGuestContributions: boolean;
       };
     };
   };
@@ -28102,6 +28259,7 @@ export type TemplateContentQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        guestContributionsAllowed: boolean;
                         contentUpdatePolicy: ContentUpdatePolicy;
                         profile: {
                           __typename?: 'Profile';
@@ -28441,6 +28599,7 @@ export type TemplateContentQuery = {
                     inheritMembershipRights: boolean;
                     allowEventsFromSubspaces: boolean;
                     allowMembersToVideoCall: boolean;
+                    allowGuestContributions: boolean;
                   };
                 };
                 subspaces: Array<{
@@ -28637,6 +28796,7 @@ export type SpaceTemplateContentQuery = {
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
               allowMembersToVideoCall: boolean;
+              allowGuestContributions: boolean;
             };
           };
           subspaces: Array<{
@@ -28722,6 +28882,7 @@ export type CalloutTemplateContentFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -28992,6 +29153,7 @@ export type SpaceTemplateContentFragment = {
       inheritMembershipRights: boolean;
       allowEventsFromSubspaces: boolean;
       allowMembersToVideoCall: boolean;
+      allowGuestContributions: boolean;
     };
   };
   subspaces: Array<{
@@ -29134,6 +29296,7 @@ export type SpaceTemplateContent_SettingsFragment = {
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
     allowMembersToVideoCall: boolean;
+    allowGuestContributions: boolean;
   };
 };
 
