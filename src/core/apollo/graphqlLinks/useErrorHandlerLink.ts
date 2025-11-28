@@ -13,7 +13,13 @@ const EXCLUDE_FROM_GLOBAL_HANDLER_ERRORS = [
 export const useErrorHandlerLink = () => {
   const handleError = useApolloErrorHandler();
 
-  return onError(({ graphQLErrors, networkError }) => {
+  return onError(({ graphQLErrors, networkError, operation }) => {
+    // Check if this operation should skip global error handling
+    const { skipGlobalErrorHandler } = operation.getContext();
+    if (skipGlobalErrorHandler) {
+      return;
+    }
+
     const nonForbiddenGraphqlErrors = graphQLErrors?.filter(
       x => !EXCLUDE_FROM_GLOBAL_HANDLER_ERRORS.includes(x.extensions?.code as AlkemioGraphqlErrorCode)
     );

@@ -1,0 +1,30 @@
+# GraphQL Schema Fragments
+
+## GetPublicWhiteboard Query
+
+query GetPublicWhiteboard($whiteboardId: UUID!) {
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...PublicWhiteboardFragment
+    }
+  }
+}
+
+## PublicWhiteboardFragment
+
+fragment PublicWhiteboardFragment on Whiteboard {
+  id
+  content
+  guestContributionsAllowed
+  profile {
+    id
+    displayName
+    url
+    storageBucket {
+      id
+    }
+    description
+  }
+  createdDate
+  updatedDate
+}

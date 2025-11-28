@@ -50,7 +50,6 @@ const AuthenticationLayout = ({ children }: AuthenticationLayoutProps) => {
             </Text>
           </Gutters>
         </PageBannerCardWrapper>
-
         <Card
           sx={{
             maxWidth: { xs: '100%', sm: '100%', md: '444px' },
