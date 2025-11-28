@@ -1,0 +1,8 @@
+{
+  "operations": {
+    "user-group": {
+      "updated-successfully": "Groep {{name}} is geupdate!",
+      "deleted-successfully": "Groep {{name}} is succesvol verwijderd"
+    }
+  }
+}
