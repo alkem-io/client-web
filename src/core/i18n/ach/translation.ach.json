@@ -123,7 +123,8 @@
     "close": "crwdns17512:0crwdne17512:0",
     "yes": "crwdns17514:0crwdne17514:0",
     "no": "crwdns37112:0crwdne37112:0",
-    "yes-close": "crwdns17516:0crwdne17516:0",
+    "yesClose": "crwdns43264:0crwdne43264:0",
+    "yesCancel": "crwdns43266:0crwdne43266:0",
     "yesContinue": "crwdns37318:0crwdne37318:0",
     "yesReplace": "crwdns17518:0crwdne17518:0",
     "yesDelete": "crwdns37188:0crwdne37188:0",
@@ -858,6 +859,15 @@
               "text": "crwdns37254:0crwdne37254:0"
             }
           },
+          "memo": {
+            "title": "crwdns43220:0$t(common.Memos)crwdne43220:0",
+            "tooltip": "crwdns43222:0$t(common.memos)crwdne43222:0",
+            "settings": {
+              "label": "crwdns43224:0crwdne43224:0",
+              "explanation": "crwdns43226:0$t(common.memos)crwdne43226:0",
+              "text": "crwdns43228:0crwdne43228:0"
+            }
+          },
           "whiteboard": {
             "title": "crwdns40866:0$t(common.Whiteboards)crwdne40866:0",
             "tooltip": "crwdns40868:0$t(common.whiteboards)crwdne40868:0",
@@ -1379,7 +1389,21 @@
         "list.outdent": "crwdns18904:0crwdne18904:0",
         "remove.remove": "crwdns18906:0crwdne18906:0",
         "embed.video": "crwdns18908:0crwdne18908:0",
-        "horizontal.line": "crwdns28942:0crwdne28942:0"
+        "horizontal.line": "crwdns28942:0crwdne28942:0",
+        "table.insert": "crwdns43272:0crwdne43272:0",
+        "table.operations": "crwdns43274:0crwdne43274:0",
+        "table.deleteTable": "crwdns43276:0crwdne43276:0",
+        "table.deleteConfirm": "crwdns43278:0crwdne43278:0",
+        "table.addColumnBefore": "crwdns43280:0crwdne43280:0",
+        "table.addColumnAfter": "crwdns43282:0crwdne43282:0",
+        "table.deleteColumn": "crwdns43284:0crwdne43284:0",
+        "table.addRowBefore": "crwdns43286:0crwdne43286:0",
+        "table.addRowAfter": "crwdns43288:0crwdne43288:0",
+        "table.deleteRow": "crwdns43290:0crwdne43290:0",
+        "table.custom": "crwdns43292:0crwdne43292:0",
+        "table.columns": "crwdns43294:0crwdne43294:0",
+        "table.rows": "crwdns43296:0crwdne43296:0",
+        "table.gridSize": "crwdns43298:0{{columns}}crwdnd43298:0$t(components.wysiwyg-editor.toolbar.table.columns)crwdnd43298:0{{rows}}crwdnd43298:0$t(components.wysiwyg-editor.toolbar.table.rows)crwdne43298:0"
       },
       "image": {
         "dialogHeader": "crwdns18910:0crwdne18910:0"
@@ -1445,7 +1469,8 @@
         "UPDATE_SENT": "crwdns18976:0{{subject}}crwdne18976:0",
         "CALLOUT_WHITEBOARD_CREATED": "crwdns18978:0{{subject}}crwdne18978:0",
         "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "crwdns18980:0{{subject}}crwdne18980:0",
-        "CALENDAR_EVENT_CREATED": "crwdns18982:0{{subject}}crwdne18982:0"
+        "CALENDAR_EVENT_CREATED": "crwdns18982:0{{subject}}crwdne18982:0",
+        "CALLOUT_MEMO_CREATED": "crwdns43252:0{{subject}}crwdne43252:0"
       },
       "detailedDescription": {
         "parentLink": "crwdns36874:0{{spaceDisplayName}}crwdne36874:0"
@@ -1696,6 +1721,15 @@
         "title": "crwdns19276:0crwdne19276:0",
         "placeholder": "crwdns19278:0crwdne19278:0"
       }
+    },
+    "tagCloud": {
+      "resultsCount_one": "crwdns43238:0{{count}}crwdne43238:0",
+      "resultsCount_other": "crwdns43240:0{{count}}crwdne43240:0",
+      "showMoreTags_one": "crwdns43242:0{{count}}crwdne43242:0",
+      "showMoreTags_other": "crwdns43244:0{{count}}crwdne43244:0",
+      "showFewerTags": "crwdns43246:0crwdne43246:0",
+      "filterByTag": "crwdns43248:0{{tag}}crwdne43248:0",
+      "clearFilter": "crwdns43250:0crwdne43250:0"
     },
     "visualSegment": {
       "title": "crwdns19280:0crwdne19280:0",
@@ -2078,8 +2112,8 @@
           "description": "crwdns43118:0{{triggeredByName}}crwdnd43118:0{{type}}crwdnd43118:0{{spaceName}}crwdnd43118:0{{eventTitle}}crwdne43118:0"
         },
         "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
-          "subject": "crwdns43210:0{{type}}crwdnd43210:0{{eventTitle}}crwdne43210:0",
-          "description": "crwdns43212:0{{triggeredByName}}crwdnd43212:0{{eventTitle}}crwdnd43212:0{{spaceName}}crwdne43212:0"
+          "subject": "crwdns43230:0$t(common.comment)crwdnd43230:0{{type}}crwdnd43230:0{{eventTitle}}crwdne43230:0",
+          "description": "crwdns43232:0{{triggeredByName}}crwdnd43232:0$t(common.comment)crwdnd43232:0{{eventTitle}}crwdnd43232:0{{spaceName}}crwdne43232:0"
         }
       },
       "emptyInbox": "crwdns41168:0$t(common.notifications)crwdne41168:0",
@@ -2097,6 +2131,10 @@
       "title": "crwdns40288:0$t(common.space)crwdne40288:0",
       "description": "crwdns41170:0$t(common.settings)crwdnd41170:0$t(common.whiteboards)crwdnd41170:0$t(common.posts)crwdnd41170:0$t(common.space)crwdnd41170:0$t(common.settings)crwdnd41170:0$t(common.space)crwdne41170:0",
       "button": "crwdns28756:0crwdne28756:0"
+    },
+    "spaceCard": {
+      "ledBy": "crwdns43256:0crwdne43256:0",
+      "noLead": "crwdns43258:0$t(common.lead)crwdne43258:0"
     }
   },
   "navigation": {
@@ -3010,7 +3048,7 @@
       "restartCollaboration": "crwdns20414:0crwdne20414:0",
       "previewSettings": {
         "title": "crwdns43076:0crwdne43076:0",
-        "subtitle": "crwdns43078:0crwdne43078:0",
+        "subtitle": "crwdns43234:0$t(common.spaces)crwdne43234:0",
         "errorGeneratingPreview": "crwdns43080:0$t(common.whiteboard)crwdne43080:0",
         "modes": {
           "AUTO": {
@@ -3151,13 +3189,13 @@
         "space": {
           "confirmation-dialog": {
             "title": "crwdns36747:0{{space}}crwdne36747:0",
-            "text": "crwdns41658:0{{space}}crwdnd41658:0$t(common.space)crwdnd41658:0$t(common.subspaces)crwdnd41658:0$t(common.space)crwdnd41658:0$t(common.member)crwdnd41658:0$t(common.subspace)crwdnd41658:0$t(common.space)crwdne41658:0"
+            "text": "crwdns43260:0{{space}}crwdnd43260:0$t(common.space)crwdnd43260:0$t(common.subspaces)crwdnd43260:0$t(common.space)crwdnd43260:0$t(common.member)crwdnd43260:0$t(common.subspace)crwdnd43260:0$t(common.space)crwdne43260:0"
           }
         },
         "subspace": {
           "confirmation-dialog": {
             "title": "crwdns41660:0$t(common.subspace)crwdnd41660:0{{space}}crwdne41660:0",
-            "text": "crwdns41662:0{{space}}crwdnd41662:0$t(common.subspace)crwdnd41662:0$t(common.subspaces)crwdnd41662:0$t(common.subspace)crwdnd41662:0$t(common.member)crwdnd41662:0$t(common.subspace)crwdnd41662:0$t(common.subspace)crwdne41662:0"
+            "text": "crwdns43262:0{{space}}crwdnd43262:0$t(common.subspace)crwdnd43262:0$t(common.subspaces)crwdnd43262:0$t(common.subspace)crwdnd43262:0$t(common.member)crwdnd43262:0$t(common.subspace)crwdnd43262:0$t(common.subspace)crwdne43262:0"
           }
         }
       },
@@ -3249,6 +3287,7 @@
           "saveBtn": "crwdns36807:0crwdne36807:0"
         },
         "promptGraph": {
+          "editingEnabledLabel": "crwdns43300:0crwdne43300:0",
           "saveBtn": "crwdns43160:0crwdne43160:0",
           "title": "crwdns43162:0crwdne43162:0",
           "infoText": "crwdns43164:0$t(common.virtualContributor)crwdne43164:0",
@@ -3521,6 +3560,10 @@
     "closeConfirm": {
       "title": "crwdns41832:0$t(common.post)crwdne41832:0",
       "description": "crwdns41834:0$t(common.post)crwdne41834:0"
+    },
+    "cancelConfirm": {
+      "title": "crwdns43268:0$t(common.post)crwdne43268:0",
+      "description": "crwdns43270:0$t(common.post)crwdne43270:0"
     }
   },
   "innovation-edit": {
@@ -3601,7 +3644,7 @@
         "text": "crwdns20840:0{{displayName}}crwdnd20840:0{{altText}}crwdne20840:0"
       },
       "innovationPack": {
-        "text": "crwdns43158:0{{displayName}}crwdnd43158:0{{altText}}crwdne43158:0"
+        "text": "crwdns43236:0{{displayName}}crwdnd43236:0$t(common.innovationPack)crwdnd43236:0{{altText}}crwdne43236:0"
       }
     }
   },
