@@ -22,10 +22,6 @@
       "args": ["chrome-devtools-mcp@latest"],
       "type": "stdio"
     }
-    // "figma": {
-    // 	"url": "https://www.figma.com/design/44zLTs7qQLFGesxmRbtw9N/User-to-User-Messaging?node-id=28-143&m=dev",
-    // 	"type": "http"
-    // }
   },
   "inputs": [
     {

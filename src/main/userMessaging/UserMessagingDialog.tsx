@@ -1,5 +1,6 @@
-import { Box, DialogContent } from '@mui/material';
-import MarkUnreadChatAltOutlinedIcon from '@mui/icons-material/MarkUnreadChatAltOutlined';
+import { Box, DialogContent, IconButton } from '@mui/material';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -91,7 +92,7 @@ export const UserMessagingDialog = () => {
           onClose={handleClose}
           aria-labelledby="user-messaging-dialog"
         >
-          <DialogHeader id="user-messaging-dialog" icon={<MarkUnreadChatAltOutlinedIcon />} onClose={handleClose}>
+          <DialogHeader id="user-messaging-dialog" icon={<ChatOutlinedIcon />} onClose={handleClose}>
             {selectedConversation
               ? selectedConversation.user.displayName
               : t('components.userMessaging.title' as TranslationKey)}
@@ -128,6 +129,19 @@ export const UserMessagingDialog = () => {
   return (
     <>
       <DialogWithGrid open={isOpen} columns={12} onClose={handleClose} aria-labelledby="user-messaging-dialog">
+        {/* Close button */}
+        <IconButton
+          onClick={handleClose}
+          aria-label={t('buttons.close')}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            zIndex: 1,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <DialogContent sx={{ padding: 0, display: 'flex', minHeight: 500 }}>
           {/* Chat list - 1/3 */}
           <Box
