@@ -180,7 +180,6 @@ const CalloutContributionsLink = ({
         title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
         onClose={closeAddNewDialog}
         onSave={handleSaveNewLinks}
-        calloutId={callout.id}
       />
       <EditLinkDialog
         open={Boolean(editLink)}

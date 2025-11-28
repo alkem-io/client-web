@@ -41,7 +41,6 @@ interface CreateLinksDialogProps {
   onClose: () => void;
   title: ReactNode;
   onSave: (links: CreateLinkFormValues[]) => Promise<void>;
-  calloutId?: string;
 }
 
 const fieldName = 'links';
@@ -183,8 +182,7 @@ const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogPr
                                   name={`${fieldName}.${index}.uri`}
                                   title={t('common.url')}
                                   fullWidth
-                                  entityID={link.id}
-                                  entityType={'link'}
+                                  temporaryLocation
                                   helperText={tLinks('components.referenceSegment.url-helper-text', {
                                     terms: {
                                       href: locations?.terms,
