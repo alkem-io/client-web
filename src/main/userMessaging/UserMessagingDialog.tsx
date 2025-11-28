@@ -27,7 +27,11 @@ export const UserMessagingDialog = () => {
     }
 
     const intervalId = setInterval(() => {
-      refetch();
+      refetch().catch(error => {
+        // in case of an error, stop polling
+        console.log('Failed to poll for new messages: ', error);
+        clearInterval(intervalId);
+      });
     }, POLLING_INTERVAL_MS);
 
     return () => {
@@ -88,7 +92,7 @@ export const UserMessagingDialog = () => {
           columns={12}
           fullScreen
           onClose={handleClose}
-          aria-labelledby="user-messaging-dialog"
+          aria-labelledby={t('components.userMessaging.title' as const)}
         >
           {/* Close button */}
           <IconButton
@@ -134,7 +138,12 @@ export const UserMessagingDialog = () => {
   // Desktop view: split layout
   return (
     <>
-      <DialogWithGrid open={isOpen} columns={8} onClose={handleClose} aria-labelledby="user-messaging-dialog">
+      <DialogWithGrid
+        open={isOpen}
+        columns={8}
+        onClose={handleClose}
+        aria-labelledby={t('components.userMessaging.title' as const)}
+      >
         {/* Close button */}
         <IconButton
           onClick={handleClose}
