@@ -33,7 +33,8 @@ const MessageBubble = ({ message, isOwnMessage }: MessageBubbleProps) => {
         <Avatar
           src={message.sender?.avatarUri}
           alt={message.sender?.displayName ?? ''}
-          sx={{ width: 32, height: 32 }}
+          size="medium"
+          sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
         />
       )}
       <Box
@@ -137,14 +138,19 @@ export const UserMessagingConversationView = ({
         padding={gutters(0.5)}
         paddingX={gutters()}
         borderBottom={theme => `1px solid ${theme.palette.divider}`}
-        sx={{ backgroundColor: 'background.paper' }}
+        sx={{ backgroundColor: 'background.paper', height: 60 }}
       >
         {showBackButton && (
           <IconButton onClick={onBack} size="small" aria-label={t('buttons.back')}>
             <ArrowBack />
           </IconButton>
         )}
-        <Avatar src={conversation.user.avatarUri} alt={conversation.user.displayName} sx={{ width: 36, height: 36 }} />
+        <Avatar
+          src={conversation.user.avatarUri}
+          alt={conversation.user.displayName}
+          size="medium"
+          sx={{ boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)' }}
+        />
         <Typography variant="h4" fontWeight={500}>
           {conversation.user.displayName}
         </Typography>
@@ -166,12 +172,18 @@ export const UserMessagingConversationView = ({
 
       {/* Message Input */}
       <Box
-        padding={gutters(0.5)}
-        paddingX={gutters()}
+        padding={gutters()}
         borderTop={theme => `1px solid ${theme.palette.divider}`}
-        sx={{ backgroundColor: 'background.paper' }}
+        sx={{
+          backgroundColor: '#F1F4F5',
+          boxShadow: 'inset 0 2px 2px rgba(0, 0, 0, 0.15)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
       >
         <PostMessageToCommentsForm
+          sx={{ width: '100%', marginBottom: '-20px' }}
           onPostComment={handleSendMessage}
           placeholder={t('components.userMessaging.typeMessage' as const)}
           disabled={isSending}

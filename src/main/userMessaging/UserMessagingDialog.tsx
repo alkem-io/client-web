@@ -1,5 +1,5 @@
 import { Box, DialogContent } from '@mui/material';
-import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import MarkUnreadChatAltOutlinedIcon from '@mui/icons-material/MarkUnreadChatAltOutlined';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -91,7 +91,7 @@ export const UserMessagingDialog = () => {
           onClose={handleClose}
           aria-labelledby="user-messaging-dialog"
         >
-          <DialogHeader id="user-messaging-dialog" icon={<ChatOutlinedIcon />} onClose={handleClose}>
+          <DialogHeader id="user-messaging-dialog" icon={<MarkUnreadChatAltOutlinedIcon />} onClose={handleClose}>
             {selectedConversation
               ? selectedConversation.user.displayName
               : t('components.userMessaging.title' as TranslationKey)}
@@ -128,16 +128,15 @@ export const UserMessagingDialog = () => {
   return (
     <>
       <DialogWithGrid open={isOpen} columns={12} onClose={handleClose} aria-labelledby="user-messaging-dialog">
-        <DialogHeader id="user-messaging-dialog" icon={<ChatOutlinedIcon />} onClose={handleClose}>
-          {t('components.userMessaging.title' as TranslationKey)}
-        </DialogHeader>
         <DialogContent sx={{ padding: 0, display: 'flex', minHeight: 500 }}>
           {/* Chat list - 1/3 */}
           <Box
             sx={{
               width: '33%',
               borderRight: theme => `1px solid ${theme.palette.divider}`,
-              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
             }}
           >
             <UserMessagingChatList

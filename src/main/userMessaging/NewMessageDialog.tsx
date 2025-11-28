@@ -154,7 +154,8 @@ export const NewMessageDialog = ({ open, onClose, onMessageSent }: NewMessageDia
                         <Avatar
                           src={selectedUser.avatarUri}
                           alt={selectedUser.displayName}
-                          sx={{ width: 24, height: 24 }}
+                          size="medium"
+                          sx={{ boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)' }}
                         />
                       }
                       label={selectedUser.displayName}

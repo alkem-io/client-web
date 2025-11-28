@@ -1,10 +1,10 @@
 import { Box, List, ListItemButton, ListItemAvatar, ListItemText, Typography, IconButton } from '@mui/material';
-import AddCommentOutlinedIcon from '@mui/icons-material/AddCommentOutlined';
+import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@/core/ui/avatar/Avatar';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { gutters } from '@/core/ui/grid/utils';
-import { Caption } from '@/core/ui/typography';
+import { Caption, BlockTitle } from '@/core/ui/typography';
 import Loading from '@/core/ui/loading/Loading';
 import Gutters from '@/core/ui/grid/Gutters';
 import { UserConversation } from './useUserConversations';
@@ -30,12 +30,17 @@ export const UserMessagingChatList = ({
   const headerContent = (
     <Box
       display="flex"
-      justifyContent="flex-end"
+      justifyContent="space-between"
       alignItems="center"
-      padding={gutters(0.5)}
+      paddingY={gutters(0.5)}
       paddingX={gutters()}
-      borderBottom={theme => `1px solid ${theme.palette.divider}`}
+      sx={{
+        height: 60,
+        borderBottom: theme => `1px solid ${theme.palette.divider}`,
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.08)',
+      }}
     >
+      <BlockTitle>{t('components.userMessaging.title' as TranslationKey)}</BlockTitle>
       <IconButton
         onClick={onNewMessage}
         size="small"
@@ -43,7 +48,7 @@ export const UserMessagingChatList = ({
         title={t('components.userMessaging.newMessage' as TranslationKey)}
         color="primary"
       >
-        <AddCommentOutlinedIcon />
+        <EditNoteOutlinedIcon />
       </IconButton>
     </Box>
   );
@@ -61,12 +66,12 @@ export const UserMessagingChatList = ({
 
   if (conversations.length === 0) {
     return (
-      <>
+      <Box display="flex" flexDirection="column" height="100%">
         {headerContent}
         <Gutters alignItems="center" paddingY={gutters(2)}>
           <Caption>{t('components.userMessaging.noConversations' as TranslationKey)}</Caption>
         </Gutters>
-      </>
+      </Box>
     );
   }
 
@@ -82,7 +87,6 @@ export const UserMessagingChatList = ({
             sx={{
               paddingX: gutters(),
               paddingY: gutters(0.5),
-              borderBottom: theme => `1px solid ${theme.palette.divider}`,
               '&.Mui-selected': {
                 backgroundColor: theme => theme.palette.highlight.light,
               },
@@ -92,7 +96,8 @@ export const UserMessagingChatList = ({
               <Avatar
                 src={conversation.user.avatarUri}
                 alt={conversation.user.displayName}
-                sx={{ width: 40, height: 40 }}
+                size="medium"
+                sx={{ boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)' }}
               />
             </ListItemAvatar>
             <ListItemText
