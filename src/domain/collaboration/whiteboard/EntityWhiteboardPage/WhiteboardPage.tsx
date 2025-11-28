@@ -16,6 +16,7 @@ const WhiteboardPage = ({ parentUrl, ...props }: WhiteboardPageProps) => {
           whiteboardId={entities.whiteboard?.id}
           backToWhiteboards={backToParentPage}
           whiteboardShareUrl={entities.whiteboard?.profile.url ?? ''}
+          guestShareUrl={entities.guestShareUrl}
           whiteboard={entities.whiteboard}
           authorization={entities.whiteboard?.authorization}
           loadingWhiteboards={state.loadingWhiteboards}

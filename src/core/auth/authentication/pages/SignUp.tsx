@@ -1,5 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { UiContainer, UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
+import { Box, Card } from '@mui/material';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
+import Footer from '@/main/ui/platformFooter/PlatformFooter';
+import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
+import Overlay from '@/core/ui/utils/Overlay';
+import Image from '@/core/ui/image/Image';
+import FixedHeightLogo from '../components/FixedHeightLogo';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import PageBannerCardWrapper from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
+import { Text } from '@/core/ui/typography';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
 import { PARAM_NAME_RETURN_URL } from '../constants/authentication.constants';
@@ -19,9 +30,10 @@ import {
 import { isInputNode, isSubmitButton } from '../components/Kratos/helpers';
 import { useReturnUrl } from '../utils/useSignUpReturnUrl';
 import { useQueryParams } from '@/core/routing/useQueryParams';
-import AuthenticationLayout from '../AuthenticationLayout';
 import { AuthFormHeader } from '../components/AuthFormHeader';
 import { sortBy } from 'lodash';
+import { useGuestSessionReturn } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn';
+import GuestSessionNotification from '@/domain/collaboration/whiteboard/guestAccess/components/GuestSessionNotification';
 
 const getMinimalSocialLoginNodes = (ui: UiContainer) =>
   ui.nodes.filter(
@@ -41,6 +53,8 @@ const SignUp = () => {
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+
+  const { shouldShowNotification, whiteboardUrl, handleBackToWhiteboard, handleGoToWebsite } = useGuestSessionReturn();
 
   // Sign Up flow is a flow reduced to just showing Accept Terms checkbox, Email and a selection of Sign Up options.
   const signUpFlow =
@@ -124,31 +138,90 @@ const SignUp = () => {
   }
 
   return (
-    <AuthenticationLayout>
-      <AuthFormHeader title={t('authentication.sign-up')} haveAccountMessage />
-      <KratosForm ui={signUpFlow?.ui}>
-        <AuthPageContentContainer>
-          <PlatformIntroduction label="pages.registration.introduction-short" />
-          <AcceptTermsContext hasAcceptedTerms={hasAcceptedTerms}>
-            <KratosUI
-              disableInputs={!hasAcceptedTerms}
-              submitDisabled={isSubmitDisabled}
-              onInputChange={handleInputChange}
-              ui={signUpFlow?.ui}
-              flowType="registration"
-              renderAcceptTermsCheckbox={checkbox => (
-                <KratosVisibleAcceptTermsCheckbox
-                  value={hasAcceptedTerms}
-                  onChange={setHasAcceptedTerms}
-                  node={checkbox}
-                  sx={{ marginBottom: 2, alignSelf: 'center' }}
-                />
-              )}
-            />
-          </AcceptTermsContext>
-        </AuthPageContentContainer>
-      </KratosForm>
-    </AuthenticationLayout>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Overlay sx={{ zIndex: 0 }} role="banner">
+        <Image
+          src="/alkemio-banner/global-banner.svg"
+          alt={t('visuals-alt-text.alkemio-banner-alt')}
+          sx={{ objectFit: 'cover', width: '100%', height: '464px' }}
+        />
+      </Overlay>
+      <Gutters
+        component="main"
+        row
+        fullHeight
+        sx={{
+          padding: { xs: 1, sm: 6 },
+          zIndex: 999,
+          flexDirection: { xs: 'column', sm: 'column', md: 'row' },
+          justifyContent: { xs: 'flex-start', sm: 'flex-start', md: 'space-between' },
+          minWidth: '375px',
+          paddingX: { sm: 10, md: 20 },
+          height: '100%',
+          flexGrow: 1,
+        }}
+      >
+        <PageBannerCardWrapper sx={{ maxWidth: { xs: '100%', sm: '100%', md: '260px' }, maxHeight: '114px' }}>
+          <Gutters disablePadding gap={gutters(0.5)}>
+            <FixedHeightLogo />
+            <Text color="textSecondary" noWrap sx={{ paddingLeft: gutters(0.7) }}>
+              {t('pages.registration.logo-subtitle')}
+            </Text>
+          </Gutters>
+        </PageBannerCardWrapper>
+
+        {shouldShowNotification && whiteboardUrl && (
+          <Card
+            sx={{
+              maxWidth: { xs: '100%', sm: '100%', md: '622px' },
+              minWidth: '375px',
+              marginTop: { xs: 1, sm: 1, md: 20 },
+              height: 'fit-content',
+            }}
+          >
+            <GuestSessionNotification onBackToWhiteboard={handleBackToWhiteboard} onGoToWebsite={handleGoToWebsite} />
+          </Card>
+        )}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            maxWidth: { xs: '100%', sm: '100%', md: '444px' },
+            minWidth: '375px',
+            marginTop: { xs: 1, sm: 1, md: 20 },
+          }}
+        >
+          <Card sx={{ height: 'fit-content' }}>
+            <AuthFormHeader title={t('authentication.sign-up')} haveAccountMessage />
+            <KratosForm ui={signUpFlow?.ui}>
+              <AuthPageContentContainer>
+                <PlatformIntroduction label="pages.registration.introduction-short" />
+                <AcceptTermsContext hasAcceptedTerms={hasAcceptedTerms}>
+                  <KratosUI
+                    disableInputs={!hasAcceptedTerms}
+                    submitDisabled={isSubmitDisabled}
+                    onInputChange={handleInputChange}
+                    ui={signUpFlow?.ui}
+                    flowType="registration"
+                    renderAcceptTermsCheckbox={checkbox => (
+                      <KratosVisibleAcceptTermsCheckbox
+                        value={hasAcceptedTerms}
+                        onChange={setHasAcceptedTerms}
+                        node={checkbox}
+                        sx={{ marginBottom: 2, alignSelf: 'center' }}
+                      />
+                    )}
+                  />
+                </AcceptTermsContext>
+              </AuthPageContentContainer>
+            </KratosForm>
+          </Card>
+        </Box>
+      </Gutters>
+      <Footer sx={{ flexShrink: 0 }} />
+      <FloatingActionButtons floatingActions={<PlatformHelpButton />} />
+    </Box>
   );
 };
 

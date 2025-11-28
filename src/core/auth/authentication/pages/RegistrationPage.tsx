@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Navigate, useLocation } from 'react-router-dom';
 import { produce } from 'immer';
+import { Card } from '@mui/material';
 import KratosUI from '../components/KratosUI';
 import Loading from '@/core/ui/loading/Loading';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
@@ -106,22 +107,29 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
 
   return (
     <AuthenticationLayout>
-      <AuthFormHeader title={t('authentication.sign-up')} haveAccountMessage />
-      <KratosForm ui={registrationFlow?.ui}>
-        <AuthPageContentContainer>
-          {mustAcceptTerms && <AcceptTerms ui={registrationFlow!.ui} />}
-          {!mustAcceptTerms && (
-            <>
+      <Card
+        sx={{
+          maxWidth: { xs: '100%', sm: '100%', md: '444px' },
+          minWidth: '375px',
+          marginTop: { xs: 1, sm: 1, md: 20 },
+          height: 'fit-content',
+        }}
+      >
+        <AuthFormHeader title={t('authentication.sign-up')} haveAccountMessage />
+        <KratosForm ui={registrationFlow?.ui}>
+          <AuthPageContentContainer>
+            {mustAcceptTerms && <AcceptTerms ui={registrationFlow!.ui} />}
+            {!mustAcceptTerms && (
               <KratosUI
                 ui={registrationFlowWithAcceptedTerms?.ui}
                 onBeforeSubmit={storeHasAcceptedTerms}
                 acceptTermsComponent={AcceptTerms}
                 flowType="registration"
               />
-            </>
-          )}
-        </AuthPageContentContainer>
-      </KratosForm>
+            )}
+          </AuthPageContentContainer>
+        </KratosForm>
+      </Card>
     </AuthenticationLayout>
   );
 };

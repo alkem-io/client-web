@@ -123,7 +123,8 @@
     "close": "Затвори",
     "yes": "Да",
     "no": "Не",
-    "yes-close": "Да, затвори",
+    "yesClose": "Да, затвори",
+    "yesCancel": "Да, откажи",
     "yesContinue": "Да, продължи",
     "yesReplace": "Да, замени",
     "yesDelete": "Да, изтрий",
@@ -163,7 +164,7 @@
     "importing": "Импортиране...",
     "go-to-entity": "Отиди към {{entity}}",
     "reply": "Отговори",
-    "reset": "Reset",
+    "reset": "Начално състояние",
     "select": "Избери",
     "change-field": "Промени {{field}}",
     "send": "Изпрати",
@@ -555,8 +556,8 @@
     },
     "roles": {
       "ADMIN": "$t(common.Admin)",
-      "ANONYMOUS": "Anonymous",
-      "REGISTERED": "Registered",
+      "ANONYMOUS": "Анонимен",
+      "REGISTERED": "Регистриран",
       "LEAD": "Лидер",
       "HOST": "Домакин",
       "MEMBER": "$t(common.Member)",
@@ -858,6 +859,15 @@
               "text": "Описание по подразбиране"
             }
           },
+          "memo": {
+            "title": "$t(common.Memos)",
+            "tooltip": "Разреши отговори с $t(common.memos)",
+            "settings": {
+              "label": "Текст по подразбиране:",
+              "explanation": "Добавете текст по подразбиране към $t(common.memos), например въпроси, на които искате хората да отговорят.",
+              "text": "Описание по подразбиране"
+            }
+          },
           "whiteboard": {
             "title": "$t(common.Whiteboards)",
             "tooltip": "Разреши отговори с $t(common.whiteboards)",
@@ -923,7 +933,7 @@
       "new-temporary-reference": "Временен идентификатор на връзка: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Click to open $t(common.whiteboard)"
+      "clickToSee": "Кликнете, за да отворите $t(common.whiteboard)"
     },
     "memo": {
       "clickToSee": "Кликнете, за да видите пълната $t(common.memo)"
@@ -1379,7 +1389,21 @@
         "list.outdent": "Премахни отстъпа",
         "remove.remove": "Премахни",
         "embed.video": "Вгради видео или друг медиен файл",
-        "horizontal.line": "Вмъкни хоризонтална линия"
+        "horizontal.line": "Вмъкни хоризонтална линия",
+        "table.insert": "Вмъкване на таблица",
+        "table.operations": "Операции с таблица",
+        "table.deleteTable": "Изтриване на таблица",
+        "table.deleteConfirm": "Сигурни ли сте, че искате да изтриете тази таблица?",
+        "table.addColumnBefore": "Добавяне на колона преди",
+        "table.addColumnAfter": "Добавяне на колона след",
+        "table.deleteColumn": "Изтриване на колона",
+        "table.addRowBefore": "Добавяне на ред преди",
+        "table.addRowAfter": "Добавяне на ред след",
+        "table.deleteRow": "Изтриване на ред",
+        "table.custom": "Персонализиран размер",
+        "table.columns": "Колони",
+        "table.rows": "Редове",
+        "table.gridSize": "{{columns}} $t(components.wysiwyg-editor.toolbar.table.columns) x {{rows}} $t(components.wysiwyg-editor.toolbar.table.rows)"
       },
       "image": {
         "dialogHeader": "Вмъкни изображение"
@@ -1445,7 +1469,8 @@
         "UPDATE_SENT": "{{subject}}",
         "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
         "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
-        "CALENDAR_EVENT_CREATED": "{{subject}}"
+        "CALENDAR_EVENT_CREATED": "{{subject}}",
+        "CALLOUT_MEMO_CREATED": "{{subject}}"
       },
       "detailedDescription": {
         "parentLink": " в <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
@@ -1666,7 +1691,7 @@
       "uploadFile": "Качи файл",
       "file-size-error": "Размерът на файла надвишава лимита от {{limit}}MB",
       "file-upload-success": "Файлът е качен успешно",
-      "file-upload-error": "Error occurred while uploading the file"
+      "file-upload-error": "Възникна грешка при качването на файла"
     },
     "editSpaceForm": {
       "host": {
@@ -1696,6 +1721,15 @@
         "title": "ИмеID",
         "placeholder": "Уникален текстов идентификатор, използван за URL пътища. Забележка: не може да бъде променян след създаване."
       }
+    },
+    "tagCloud": {
+      "resultsCount_one": "{{count}} резултат",
+      "resultsCount_other": "{{count}} резултати",
+      "showMoreTags_one": "Покажи още {{count}} етикет",
+      "showMoreTags_other": "Покажи още {{count}} етикети",
+      "showFewerTags": "Покажи по-малко етикети",
+      "filterByTag": "Филтрирай публикации с етикет: {{tag}}",
+      "clearFilter": "Изчисти филтъра"
     },
     "visualSegment": {
       "title": "Визуално",
@@ -2006,7 +2040,7 @@
           "description": "Разгледайте заявката в $t(common.space) $t(common.settings)"
         },
         "SPACE_ADMIN_VIRTUAL_CONTRIBUTOR_COMMUNITY_INVITATION_DECLINED": {
-          "subject": "{{triggeredByName}} declined your invitation for {{contributorName}} to join {{spaceName}}",
+          "subject": "{{triggeredByName}} отхвърли вашата покана за {{contributorName}} да се присъедини към {{spaceName}}",
           "description": ""
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
@@ -2070,33 +2104,37 @@
           "description": "Вече сте част от общност, която расте чрез сътрудничество! 🤝 Щракнете, за да разгледате ръководството за започване и започнете да участвате в $t(common.spaces), където всяка идея ни помага да напредваме. Имате въпроси? Изпратете имейл на support@alkem.io"
         },
         "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
-          "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
+          "subject": "{{triggeredByName}} отхвърли вашата заявка да се присъедините към {{spaceName}}",
           "description": ""
         },
         "SPACE_COMMUNITY_CALENDAR_EVENT_CREATED": {
-          "subject": "New {{type}} scheduled in {{spaceName}}",
-          "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
+          "subject": "Ново {{type}} е насрочено в {{spaceName}}",
+          "description": "{{triggeredByName}} насрочи ново {{type}} в календара на {{spaceName}}: {{eventTitle}}"
         },
         "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
-          "subject": "New comment on {{type}}: {{eventTitle}}",
-          "description": "{{triggeredByName}} left a comment on the {{eventTitle}} in the {{spaceName}} calendar"
+          "subject": "Нов $t(common.comment) към {{type}}: {{eventTitle}}",
+          "description": "{{triggeredByName}} остави $t(common.comment) на {{eventTitle}} в календара на {{spaceName}}"
         }
       },
       "emptyInbox": "Няма чакащи $t(common.notifications)",
       "markAllAsRead": "Маркирай всички като прочетени",
-      "unknownUser": "Unknown $t(common.user)",
-      "unknownOrganization": "Unknown $t(common.organization)",
+      "unknownUser": "Неизвестен $t(common.user)",
+      "unknownOrganization": "Неизвестен $t(common.organization)",
       "filters": {
-        "all": "All",
-        "messagesAndReplies": "Messages & Replies",
-        "space": "Space notifications",
-        "platform": "Platform notifications"
+        "all": "Всички",
+        "messagesAndReplies": "Съобщения и отговори",
+        "space": "Известия за $t(common.space)",
+        "platform": "Известия за платформата"
       }
     },
     "spaceWelcomeDialog": {
       "title": "🎉 Вашият/а $t(common.space) е готов/а!",
       "description": "Сега го/я персонализирайте:<br>⚙ <b>Настройте го/я</b> – Персонализирайте структурата и $t(common.settings).<br>📝 <b>Добавете съдържание</b> – Създайте $t(common.whiteboards), $t(common.posts) и др.<br>🤝 <b>Поканете сътрудници</b> – Намерете поканите в $t(common.space) $t(common.settings).<br>📚 <b>Нужен Ви е помощ?</b> Ръководствата са достъпни в Вашия/а $t(common.space), ако сте избрали да ги включите.<br/><br/>✨ Искате повече функции? Надградете към <b>Plus или Premium</b> по всяко време – просто <contact>свържете се с екипа ни</contact>!",
       "button": "Започнете"
+    },
+    "spaceCard": {
+      "ledBy": "Воден от:",
+      "noLead": "Все още няма $t(common.lead)"
     }
   },
   "navigation": {
@@ -2450,7 +2488,7 @@
             "public": "<b>Публично:</b> Този $t(common.space) и съдържанието му са видими за всички в платформата. Потребителите могат да допринасят само ако са $t(common.member).",
             "private": "<b>Частно:</b> Този $t(common.space) е видим за всички в платформата, но съдържанието е видимо само за $t(common.members). Имайте предвид, че и информацията в $t(common.profile), и контекстът са публично видими.",
             "publicSubspace": "<b>Публично:</b> Този $t(common.subspace) и цялото му съдържание са видими за всички, които имат достъп до $t(common.space), към който принадлежи. Ако $t(common.space) е публичен, този $t(common.subspace) и съдържанието му ще бъдат видими за всички потребители, включително и тези извън $t(common.space).",
-            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace)."
+            "privateSubspace": "<b>Частно:</b> Това $t(common.subspace) е видимо за всички $t(common.members) на $t(common.space), но съдържанието му е ограничено и може да бъде достъпено само от $t(common.members) на $t(common.subspace)."
           },
           "license-features": {
             "title": "$t(common.space) Функции",
@@ -2532,7 +2570,7 @@
       },
       "innovationPack": {
         "notifications": {
-          "packRemoved": "$t(common.innovationPack) removed successfully."
+          "packRemoved": "$t(common.innovationPack) е премахнат успешно."
         }
       },
       "innovationHub": {
@@ -2543,7 +2581,7 @@
           }
         },
         "notifications": {
-          "hubRemoved": "$t(common.innovation-hub) removed successfully."
+          "hubRemoved": "$t(common.innovation-hub) е премахнат успешно."
         }
       }
     },
@@ -2582,8 +2620,8 @@
         "description1": "Резолюция: {{width}} ширина x {{height}} височина (пиксели)"
       },
       "WHITEBOARD_PREVIEW": {
-        "title": "Whiteboard Preview",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+        "title": "Преглед на $t(common.whiteboard)",
+        "description1": "Резолюция: {{width}} ширина x {{height}} височина (пиксели)"
       },
       "form": {
         "altText": {
@@ -3000,34 +3038,34 @@
       },
       "restartCollaboration": "Продължете редактирането",
       "previewSettings": {
-        "title": "Preview Settings",
-        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
-        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "title": "Настройки за преглед",
+        "subtitle": "Изберете как прегледът на вашия $t(common.whiteboard) се показва в публикациите и $t(common.spaces).",
+        "errorGeneratingPreview": "Грешка при генериране на преглед за тази $t(common.whiteboard).",
         "modes": {
           "AUTO": {
-            "title": "Auto Preview",
-            "description": "We'll automatically generate the best preview from your whiteboard content."
+            "title": "Автоматичен преглед",
+            "description": "Автоматично ще генерираме най-добрия преглед от съдържанието на вашия $t(common.whiteboard)."
           },
           "CUSTOM": {
-            "title": "Manual Selection",
-            "description": "Choose exactly which part of your whiteboard to show as a preview."
+            "title": "Ръчен избор",
+            "description": "Изберете точно коя част от вашия $t(common.whiteboard) да се показва като преглед."
           },
           "FIXED": {
-            "title": "Fixed Selection",
-            "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
+            "title": "Фиксиран избор",
+            "description": "Направете екранна снимка на вашия Whiteboard, за да я използвате като преглед. Тази екранна снимка няма да се актуализира, когато актуализирате дъската си."
           }
         },
         "cropDialog": {
-          "previewArea": "Crop preview area",
+          "previewArea": "Изрежете областта за преглед",
           "reset": "$t(buttons.reset)",
           "cancel": "$t(buttons.cancel)",
-          "confirm": "Confirm Selection"
+          "confirm": "Потвърдете избора"
         }
       },
       "preview": {
-        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
-        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
-        "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
+        "errorGeneratingPreview": "Грешка при генериране на преглед за тази $t(common.whiteboard).",
+        "ariaLabel": "Преглед на $t(common.whiteboard). Кликнете, за да отворите $t(common.whiteboard).",
+        "ariaLabelDisabled": "Преглед на Whiteboard. Тази Whiteboard не може да бъде отворена."
       }
     },
     "memo": {
@@ -3046,7 +3084,7 @@
           "multiUserNotAllowed": "Не можете да редактирате тази $t(common.memo), защото този $t(common.space) позволява само един редактор на $t(common.memo) наведнъж",
           "roomCapacityReached": "Не можете да редактирате тази $t(common.memo), защото този $t(common.space) позволява няколко редактора едновременно, но максимума е достигнат",
           "generic": "Не можете да редактирате тази $t(common.memo) по една от следните причини:\n\nНе сте $t(common.member) на $t(common.space)\n- Този $t(common.space) позволява само един редактор на $t(common.memo) наведнъж\n- Този $t(common.space) позволява повече редактора, но максимума е достигнат",
-          "notAuthenticated": "You have to be signed in to edit this $t(common.memo). Click here to <signinlink>sign in</signinlink>"
+          "notAuthenticated": "Трябва да сте влезли, за да редактирате тази $t(common.memo). Кликнете тук, за да <signinlink>влезете</signinlink>"
         }
       }
     },
@@ -3142,13 +3180,13 @@
         "space": {
           "confirmation-dialog": {
             "title": "Напускане на Пространство {{space}}",
-            "text": "Сигурни ли сте, че искате да напуснете <b>{{space}}</b>? <br /><br /> Няма да получавате повече актуализации или да имате достъп до споделени ресурси от това $t(common.space) или неговите $t(common.subspaces). Ако този $t(common.space) е публичен, можете да се присъедините отново по всяко време, или ако е частен, ще ви е необходима покана, за да се присъедините отново. <br /><br />Имайте предвид, че ако сте $t(common.member) на $t(common.subspace) в този $t(common.space), ще бъдете автоматично премахнати и оттам."
+            "text": "Сигурни ли сте, че искате да напуснете <b>{{space}}</b>? <br /><br />Вече няма да получавате актуализации и няма да имате достъп до споделените ресурси на този $t(common.space) или на неговите $t(common.subspaces). Ако този $t(common.space) е публичен, можете да се присъедините отново по всяко време, а ако е частен, ще ви е необходима покана, за да се присъедините наново. <br /><br />Обърнете внимание, че ако сте $t(common.member) на $t(common.subspace) в рамките на този $t(common.space), и вие ще бъдете автоматично премахнати оттам."
           }
         },
         "subspace": {
           "confirmation-dialog": {
             "title": "Напускане на $t(common.subspace) {{space}}",
-            "text": "Сигурни ли сте, че искате да напуснете <b>{{space}}</b>? <br /><br />Няма да получавате повече актуализации или да имате достъп до споделени ресурси от този $t(common.subspace) или неговите $t(common.subspaces). Ако този $t(common.subspace) е публичен, можете да се присъедините отново по всяко време, или ако е частен, ще ви е необходима покана, за да се присъедините отново. <br /><br />Имайте предвид, че ако сте $t(common.member) на $t(common.subspace) в този $t(common.subspace), ще бъдете автоматично премахнати и оттам."
+            "text": "Сигурни ли сте, че искате да напуснете <b>{{space}}</b>? <br /><br />Вече няма да получавате актуализации и няма да имате достъп до споделените ресурси на този $t(common.subspace) или на неговите $t(common.subspaces). Ако този $t(common.subspace) е публичен, можете да се присъедините отново по всяко време, а ако е частен, ще ви е необходима покана, за да се присъедините наново. <br /><br />Обърнете внимание, че ако сте $t(common.member) на $t(common.subspace) в рамките на този $t(common.subspace), и вие ще бъдете автоматично премахнати оттам."
           }
         }
       },
@@ -3240,35 +3278,36 @@
           "saveBtn": "Запази подканата"
         },
         "promptGraph": {
-          "saveBtn": "Save Prompt Graph",
-          "title": "Prompt Graph",
-          "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
-          "warning": "Warning: Advanced mode is intended for experienced users only. Incorrect or complex configurations may negatively affect system performance and can break the Virtual Contributor's functionality.",
-          "stepsTitle": "Steps",
-          "systemNodeTooltip": "System Node - not editable",
-          "promptFieldTitle": "Prompt",
-          "statePropertiesTitle": "State Properties",
-          "noStateProperties": "No state properties",
-          "addButton": "Add",
-          "editBtn": "Edit Prompt Graph",
-          "advancedSettingsButton": "Prompt graph advanced mode",
+          "editingEnabledLabel": "Разрешаване на редактиране на графа на подкани (глобална настройка на платформата)",
+          "saveBtn": "Запазете графа на подкани",
+          "title": "Граф на подкани",
+          "infoText": "Определете поведението на $t(common.virtualContributor), като създадете граф на подкани. Графът се състои от възли, които представляват различни действия или условия, и ребра, които определят потока между тези възли. Можете да персонализирате графа на подкани, за да отговаря на вашия конкретен случай на употреба и на вашите изисквания.",
+          "warning": "Предупреждение: Разширеният режим е предназначен само за опитни потребители. Неправилни или сложни конфигурации могат да повлияят отрицателно на производителността на системата и да нарушат функционалността на Virtual Contributor.",
+          "stepsTitle": "Стъпки",
+          "systemNodeTooltip": "Системен възел - не може да бъде редактиран",
+          "promptFieldTitle": "Подкана",
+          "statePropertiesTitle": "Свойства на състоянието",
+          "noStateProperties": "Няма свойства на състоянието",
+          "addButton": "Добави",
+          "editBtn": "Редактирайте графа на подкани",
+          "advancedSettingsButton": "Разширен режим на графа на подкани",
           "propertyTable": {
-            "title": "Output Properties",
+            "title": "Свойства на изхода",
             "columns": {
-              "name": "Name",
-              "type": "Type",
-              "optional": "Optional",
-              "description": "Description",
-              "actions": "Actions"
+              "name": "Име",
+              "type": "Тип",
+              "optional": "По избор",
+              "description": "Описание",
+              "actions": "Действия"
             },
-            "yes": "Yes",
-            "no": "No",
-            "notAvailable": "N/A",
-            "addProperty": "Add Property",
+            "yes": "Да",
+            "no": "Не",
+            "notAvailable": "Не е приложимо",
+            "addProperty": "Добави свойство",
             "typeOptions": {
-              "string": "string",
-              "number": "number",
-              "boolean": "boolean"
+              "string": "низ",
+              "number": "брой",
+              "boolean": "булев"
             }
           }
         },
@@ -3323,7 +3362,7 @@
           "collaborationCalloutContributionCreated": "Получаване на $t(common.notification), когато ново допринасяне ($t(common.whiteboard), $t(common.post), връзка, $t(common.memo) и др.) е създадено в $t(common.community), в която съм $t(common.member)",
           "collaborationCalloutComment": "Получаване на $t(common.notification), когато е направен $t(common.comment) върху $t(common.callout) в $t(common.community), в която съм $t(common.member)",
           "collaborationCalloutPostContributionComment": "Получаване на $t(common.notification), когато нов $t(common.comment) е добавен към допринасяне в $t(common.callout) в $t(common.community), в която съм $t(common.member)",
-          "communityCalendarEvents": "Receive calendar $t(common.notifications) for a $t(common.community) I am a $t(common.member) of"
+          "communityCalendarEvents": "Получавайте календарни $t(common.notifications) за $t(common.community), от които съм $t(common.member)"
         }
       },
       "spaceAdmin": {
@@ -3443,7 +3482,7 @@
       "recovery-flow-expired": "Този линк за нулиране на парола е изтекъл. Моля, поискайте нов, като въведете отново вашия имейл адрес.",
       "verification-flow-continue": "Продължете",
       "login-flow-account-exists": "Този имейл вече е свързан с $t(common.account). Ако преди това сте се регистрирали през LinkedIn, GitHub или Microsoft, моля използвайте този метод за вход. В противен случай, нулирайте паролата си.",
-      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
+      "invalid-credentials": "Въведеният имейл адрес или парола е невалиден. Моля, проверете вашите идентификационни данни и опитайте отново. Искате ли вместо това да се регистрирате? Можете да го направите, като кликнете върху връзката по-горе.",
       "claim-missing": "Не сте потвърдили вашата Vidua самоличност. Моля, потвърдете самоличността си и опитайте отново или опитайте друг метод за регистрация.",
       "pick-password": "Изберете парола за вашия $t(common.account)"
     },
@@ -3475,7 +3514,7 @@
       "BAD_USER_INPUT": "Невалидни потребителски данни: {{message}}",
       "NOT_SUPPORTED": "Не се поддържа: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
-      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time."
+      "MESSAGING_NOT_ENABLED": "Този потребител е деактивирал директните съобщения. Не можете да им изпратите съобщение в момента."
     }
   },
   "dashboard-updates-section": {
@@ -3512,6 +3551,10 @@
     "closeConfirm": {
       "title": "Отхвърляне на $t(common.post)",
       "description": "Сигурни ли сте, че искате да затворите тази $t(common.post)? Незапазените промени ще бъдат загубени."
+    },
+    "cancelConfirm": {
+      "title": "Изхвърли $t(common.post)",
+      "description": "Сигурни ли сте, че искате да отмените тази $t(common.post)? Незаписаните промени ще бъдат загубени."
     }
   },
   "innovation-edit": {
@@ -3592,7 +3635,7 @@
         "text": "Аватар на {{displayName}}: {{altText}}"
       },
       "innovationPack": {
-        "text": "{{displayName}}'s innovation pack avatar: {{altText}}"
+        "text": "Аватарът за $t(common.innovationPack) на {{displayName}}: {{altText}}"
       }
     }
   },
@@ -3617,7 +3660,7 @@
       "content": "Вие се кандите да стартирате видео разговор, използвайки Jitsi — сигурна услуга за видео конференции на трета страна. Разговорът ще се отвори в нова раздел на браузъра, извън средата на Alkemio. Други могат да се присъединят през същия бутон или чрез споделената връзка.<br/><br/>Научете повече за Jitsi <jitsiLink>тук</jitsiLink>, включително как да управлявате настройките за достъп и поверителност."
     },
     "error": {
-      "emptyUrl": "Unable to generate video call URL. Please refresh the page and try again."
+      "emptyUrl": "Не може да бъде генериран URL за видеоразговор. Моля, презаредете страницата и опитайте отново."
     }
   },
   "createSpace": {
