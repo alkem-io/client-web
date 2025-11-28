@@ -133,12 +133,12 @@ export const UserMessagingDialog = () => {
         <IconButton
           onClick={handleClose}
           aria-label={t('buttons.close')}
-          sx={{
+          sx={theme => ({
             position: 'absolute',
-            top: 8,
-            right: 8,
+            top: theme.spacing(2),
+            right: theme.spacing(2),
             zIndex: 1,
-          }}
+          })}
         >
           <CloseIcon />
         </IconButton>

@@ -138,7 +138,7 @@ export const UserMessagingConversationView = ({
         padding={gutters(0.5)}
         paddingX={gutters()}
         borderBottom={theme => `1px solid ${theme.palette.divider}`}
-        sx={{ backgroundColor: 'background.paper', height: 60 }}
+        sx={{ backgroundColor: 'background.paper', height: 80 }}
       >
         {showBackButton && (
           <IconButton onClick={onBack} size="small" aria-label={t('buttons.back')}>
@@ -157,7 +157,15 @@ export const UserMessagingConversationView = ({
       </Box>
 
       {/* Messages */}
-      <Box flex={1} overflow="auto" paddingX={gutters()} paddingY={gutters(0.5)} display="flex" flexDirection="column">
+      <Box
+        flex={1}
+        overflow="auto"
+        paddingX={gutters()}
+        paddingY={gutters(0.5)}
+        display="flex"
+        flexDirection="column"
+        sx={{ boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.15) inset' }}
+      >
         {conversation.messages.length === 0 ? (
           <Gutters alignItems="center" justifyContent="center" flex={1}>
             <Caption>{t('components.userMessaging.noMessages' as const)}</Caption>
@@ -176,7 +184,7 @@ export const UserMessagingConversationView = ({
         borderTop={theme => `1px solid ${theme.palette.divider}`}
         sx={{
           backgroundColor: '#F1F4F5',
-          boxShadow: 'inset 0 2px 2px rgba(0, 0, 0, 0.15)',
+          boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.15) inset',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

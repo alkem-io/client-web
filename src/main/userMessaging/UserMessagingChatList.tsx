@@ -35,9 +35,8 @@ export const UserMessagingChatList = ({
       paddingY={gutters(0.5)}
       paddingX={gutters()}
       sx={{
-        height: 60,
+        height: 80,
         borderBottom: theme => `1px solid ${theme.palette.divider}`,
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.08)',
       }}
     >
       <BlockTitle>{t('components.userMessaging.title' as TranslationKey)}</BlockTitle>
@@ -78,7 +77,10 @@ export const UserMessagingChatList = ({
   return (
     <Box display="flex" flexDirection="column" height="100%">
       {headerContent}
-      <List disablePadding sx={{ width: '100%', overflowY: 'auto', flex: 1 }}>
+      <List
+        disablePadding
+        sx={{ width: '100%', overflowY: 'auto', flex: 1, boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.15) inset' }}
+      >
         {conversations.map(conversation => (
           <ListItemButton
             key={conversation.id}
@@ -97,7 +99,7 @@ export const UserMessagingChatList = ({
                 src={conversation.user.avatarUri}
                 alt={conversation.user.displayName}
                 size="medium"
-                sx={{ boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)' }}
+                sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
               />
             </ListItemAvatar>
             <ListItemText
