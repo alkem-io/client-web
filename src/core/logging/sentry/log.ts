@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react';
+import { getNavigationHistory } from '@/core/routing/NavigationHistory';
 
 export const enum TagCategoryValues {
   SERVER = 'SERVER',
@@ -70,6 +71,7 @@ export const log404NotFound = () => {
   const severity = 'error';
   const currentURL = document.location.href;
   const referrer = document.referrer;
+  const history = getNavigationHistory();
   const message = `404: url: '${currentURL}', referrer: '${referrer}'`;
   const tags = { code: '404' };
 
@@ -78,6 +80,6 @@ export const log404NotFound = () => {
   Sentry.withScope(scope => {
     scope.setLevel(severity);
     setTags(tags, scope);
-    Sentry.captureEvent({ message, extra: { url: currentURL, referrer: referrer } });
+    Sentry.captureEvent({ message, extra: { url: currentURL, referrer: referrer, history } });
   });
 };
