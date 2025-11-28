@@ -21,6 +21,7 @@ import Loading from '@/core/ui/loading/Loading';
 import Gutters from '@/core/ui/grid/Gutters';
 import { UserConversation } from './useUserConversations';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { useScreenSize } from '@/core/ui/grid/constants';
 
 interface UserMessagingChatListProps {
   conversations: UserConversation[];
@@ -39,6 +40,7 @@ export const UserMessagingChatList = ({
 }: UserMessagingChatListProps) => {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
+  const { isSmallScreen: isMobile } = useScreenSize();
 
   const filteredConversations = useMemo(() => {
     if (!searchTerm.trim()) {
@@ -87,7 +89,7 @@ export const UserMessagingChatList = ({
   const headerContent = (
     <Box
       display="flex"
-      justifyContent="space-between"
+      justifyContent={isMobile ? 'flex-start' : 'space-between'}
       alignItems="center"
       paddingY={gutters(0.5)}
       paddingX={gutters()}
@@ -103,8 +105,11 @@ export const UserMessagingChatList = ({
         aria-label={t('components.userMessaging.newMessage' as TranslationKey)}
         title={t('components.userMessaging.newMessage' as TranslationKey)}
         color="primary"
+        sx={{
+          margin: isMobile ? '0 20px' : 0,
+        }}
       >
-        <EditNoteOutlinedIcon />
+        <EditNoteOutlinedIcon fontSize="large" />
       </IconButton>
     </Box>
   );

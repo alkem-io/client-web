@@ -2,7 +2,6 @@ import { DialogContent, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useUserMessagingContext } from './UserMessagingContext';
 import { useUserConversations } from './useUserConversations';
 import { UserMessagingChatList } from './UserMessagingChatList';
@@ -10,7 +9,6 @@ import { UserMessagingConversationView } from './UserMessagingConversationView';
 import { NewMessageDialog } from './NewMessageDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { useMemo, useCallback, useState, useEffect } from 'react';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 
 const POLLING_INTERVAL_MS = 5000; // Poll every 5 seconds
@@ -92,11 +90,19 @@ export const UserMessagingDialog = () => {
           onClose={handleClose}
           aria-labelledby="user-messaging-dialog"
         >
-          <DialogHeader id="user-messaging-dialog" onClose={handleClose}>
-            {selectedConversation
-              ? selectedConversation.user.displayName
-              : t('components.userMessaging.title' as TranslationKey)}
-          </DialogHeader>
+          {/* Close button */}
+          <IconButton
+            onClick={handleClose}
+            aria-label={t('buttons.close')}
+            sx={theme => ({
+              position: 'absolute',
+              top: theme.spacing(2),
+              right: theme.spacing(2),
+              zIndex: 1,
+            })}
+          >
+            <CloseIcon />
+          </IconButton>
           <DialogContent sx={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             {selectedConversationId ? (
               <UserMessagingConversationView
