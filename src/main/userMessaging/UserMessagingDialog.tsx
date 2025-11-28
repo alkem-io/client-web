@@ -1,4 +1,4 @@
-import { Box, DialogContent, IconButton } from '@mui/material';
+import { DialogContent, IconButton } from '@mui/material';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import { NewMessageDialog } from './NewMessageDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { useMemo, useCallback, useState, useEffect } from 'react';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 
 const POLLING_INTERVAL_MS = 5000; // Poll every 5 seconds
 
@@ -128,7 +129,7 @@ export const UserMessagingDialog = () => {
   // Desktop view: split layout
   return (
     <>
-      <DialogWithGrid open={isOpen} columns={12} onClose={handleClose} aria-labelledby="user-messaging-dialog">
+      <DialogWithGrid open={isOpen} columns={8} onClose={handleClose} aria-labelledby="user-messaging-dialog">
         {/* Close button */}
         <IconButton
           onClick={handleClose}
@@ -143,14 +144,11 @@ export const UserMessagingDialog = () => {
           <CloseIcon />
         </IconButton>
         <DialogContent sx={{ padding: 0, display: 'flex', minHeight: 500 }}>
-          {/* Chat list - 1/3 */}
-          <Box
+          <PageContentBlockSeamless
+            disablePadding
+            columns={3}
             sx={{
-              width: '33%',
               borderRight: theme => `1px solid ${theme.palette.divider}`,
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'hidden',
             }}
           >
             <UserMessagingChatList
@@ -160,12 +158,10 @@ export const UserMessagingDialog = () => {
               onSelectConversation={handleSelectConversation}
               onNewMessage={handleOpenNewMessage}
             />
-          </Box>
-
-          {/* Conversation view - 2/3 */}
-          <Box sx={{ width: '67%', display: 'flex', flexDirection: 'column' }}>
+          </PageContentBlockSeamless>
+          <PageContentBlockSeamless disablePadding disableGap columns={5} sx={{ flexGrow: 1 }}>
             <UserMessagingConversationView conversation={selectedConversation} onMessageSent={handleMessageSent} />
-          </Box>
+          </PageContentBlockSeamless>
         </DialogContent>
       </DialogWithGrid>
       <NewMessageDialog
