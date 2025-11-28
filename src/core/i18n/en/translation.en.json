@@ -2138,7 +2138,8 @@
       "selectUser": "To",
       "noUsersFound": "No users found",
       "startTyping": "Start typing to search users",
-      "searchUsers": "Search users..."
+      "searchUsers": "Search users...",
+      "searchConversations": "Search..."
     },
     "spaceWelcomeDialog": {
       "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",

@@ -1,5 +1,17 @@
-import { Box, List, ListItemButton, ListItemAvatar, ListItemText, Typography, IconButton } from '@mui/material';
+import { useState, useMemo } from 'react';
+import {
+  Box,
+  List,
+  ListItemButton,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+  IconButton,
+  InputBase,
+  InputAdornment,
+} from '@mui/material';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@/core/ui/avatar/Avatar';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -26,6 +38,51 @@ export const UserMessagingChatList = ({
   onNewMessage,
 }: UserMessagingChatListProps) => {
   const { t } = useTranslation();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredConversations = useMemo(() => {
+    if (!searchTerm.trim()) {
+      return conversations;
+    }
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return conversations.filter(conversation => conversation.user.displayName.toLowerCase().includes(lowerSearchTerm));
+  }, [conversations, searchTerm]);
+
+  const handleClearSearch = () => {
+    setSearchTerm('');
+  };
+
+  const searchInput = (
+    <Box padding={gutters()} sx={{ boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.15) inset' }}>
+      <InputBase
+        value={searchTerm}
+        onChange={e => setSearchTerm(e.target.value)}
+        placeholder={t('components.userMessaging.searchConversations' as TranslationKey)}
+        fullWidth
+        sx={{
+          height: 30,
+          backgroundColor: theme => theme.palette.background.default,
+          borderRadius: 1,
+          paddingX: 1,
+          border: theme => `1px solid ${theme.palette.divider}`,
+        }}
+        endAdornment={
+          searchTerm ? (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={handleClearSearch}
+                size="small"
+                aria-label={t('buttons.close')}
+                sx={{ padding: 0.25 }}
+              >
+                <CloseIcon sx={{ fontSize: 16 }} />
+              </IconButton>
+            </InputAdornment>
+          ) : null
+        }
+      />
+    </Box>
+  );
 
   const headerContent = (
     <Box
@@ -77,11 +134,9 @@ export const UserMessagingChatList = ({
   return (
     <Box display="flex" flexDirection="column" height="100%">
       {headerContent}
-      <List
-        disablePadding
-        sx={{ width: '100%', overflowY: 'auto', flex: 1, boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.15) inset' }}
-      >
-        {conversations.map(conversation => (
+      {searchInput}
+      <List disablePadding sx={{ width: '100%', overflowY: 'auto', flex: 1 }}>
+        {filteredConversations.map(conversation => (
           <ListItemButton
             key={conversation.id}
             selected={selectedConversationId === conversation.id}

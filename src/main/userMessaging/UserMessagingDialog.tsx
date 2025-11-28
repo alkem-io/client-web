@@ -1,5 +1,4 @@
 import { DialogContent, IconButton } from '@mui/material';
-import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -93,7 +92,7 @@ export const UserMessagingDialog = () => {
           onClose={handleClose}
           aria-labelledby="user-messaging-dialog"
         >
-          <DialogHeader id="user-messaging-dialog" icon={<ChatOutlinedIcon />} onClose={handleClose}>
+          <DialogHeader id="user-messaging-dialog" onClose={handleClose}>
             {selectedConversation
               ? selectedConversation.user.displayName
               : t('components.userMessaging.title' as TranslationKey)}
