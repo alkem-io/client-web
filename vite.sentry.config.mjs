@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgrPlugin from 'vite-plugin-svgr';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
+import { visualizer } from 'rollup-plugin-visualizer';
 import { version } from './package.json';
 import { generateMetaJson } from './build-utils.mjs';
 
@@ -25,7 +26,11 @@ export default defineConfig({
     },
   },
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    }),
     viteTsconfigPaths(),
     svgrPlugin(),
     sentryVitePlugin({
@@ -45,7 +50,14 @@ export default defineConfig({
       apply: 'build',
       buildStart() {
         generateMetaJson();
-      }
-    }
-  ],
+      },
+    },
+    // Bundle analyzer - generates stats.html when ANALYZE=true
+    process.env.ANALYZE === 'true' && visualizer({
+      open: true,
+      filename: 'build/stats.html',
+      gzipSize: true,
+      brotliSize: true,
+    }),
+  ].filter(Boolean),
 });
