@@ -45,21 +45,18 @@ const MessageBubble = ({ message, isOwnMessage }: MessageBubbleProps) => {
           borderRadius: theme => `${theme.shape.borderRadius}px`,
           padding: gutters(0.5),
           paddingX: gutters(),
+          display: 'flex',
+          alignItems: 'flex-end',
+          gap: gutters(0.5),
         }}
       >
-        {!isOwnMessage && message.sender && (
-          <Caption fontWeight={600} sx={{ color: isOwnMessage ? 'inherit' : 'primary.main' }}>
-            {message.sender.displayName}
-          </Caption>
-        )}
-        <WrapperMarkdown sx={{ '& p': { margin: 0 } }}>{message.message}</WrapperMarkdown>
+        <WrapperMarkdown sx={{ '& p': { margin: 0 }, flex: 1 }}>{message.message}</WrapperMarkdown>
         <Caption
           sx={{
-            display: 'block',
-            textAlign: 'right',
             color: isOwnMessage ? 'rgba(255,255,255,0.7)' : 'neutral.light',
             fontSize: '0.7rem',
-            marginTop: gutters(0.25),
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
           }}
         >
           {formatTimeElapsed(new Date(message.timestamp), t)}
