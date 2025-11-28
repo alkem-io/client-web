@@ -1,4 +1,3 @@
-import { useUpdateAnswerRelevanceMutation } from '@/core/apollo/generated/apollo-hooks';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
@@ -30,6 +29,7 @@ import ChatWidgetStyles from './ChatWidgetStyles';
 import ChatWidgetTitle from './ChatWidgetTitle';
 import useChatGuidanceCommunication from './useChatGuidanceCommunication';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { useFeedbackOnVcAnswerRelevanceMutation } from '@/core/apollo/generated/apollo-hooks';
 
 type FeedbackType = 'positive' | 'negative';
 
@@ -85,10 +85,11 @@ const FeedbackButton = ({
 
 interface FeedbackProps {
   answerId: string;
+  conversationId: string;
 }
 
-const Feedback = ({ answerId }: FeedbackProps) => {
-  const [updateAnswerRelevance, { loading }] = useUpdateAnswerRelevanceMutation();
+const Feedback = ({ answerId, conversationId }: FeedbackProps) => {
+  const [updateAnswerRelevance, { loading }] = useFeedbackOnVcAnswerRelevanceMutation();
 
   const [lastFeedbackType, setLastFeedbackType] = useState<FeedbackType | undefined>(undefined);
 
@@ -101,6 +102,7 @@ const Feedback = ({ answerId }: FeedbackProps) => {
       await updateAnswerRelevance({
         variables: {
           input: {
+            conversationID: conversationId,
             id: answerId,
             relevant: feedbackType === 'positive',
           },
@@ -167,7 +169,7 @@ const ChatWidgetInner = () => {
   const [openClearConfirm, setOpenClearConfirm] = useState(false);
   const [chatToggleTime, setChatToggleTime] = useState(Date.now());
 
-  const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
+  const { messages, sendMessage, clearChat, conversationId, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
   const { userModel } = useCurrentUserContext();
   const userId = userModel?.id;
 
@@ -211,7 +213,7 @@ const ChatWidgetInner = () => {
       });
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.author?.id && lastMessage.author.id !== userId) {
-        addComponentMessage(Feedback, { answerId: lastMessage.id }, false);
+        addComponentMessage(Feedback, { answerId: lastMessage.id, conversationId: conversationId }, false);
         if (lastMessage.createdAt > new Date(chatToggleTime)) {
           setBadgeCount(1);
         } else {

@@ -3344,6 +3344,7 @@
           "saveBtn": "Save prompt"
         },
         "promptGraph": {
+          "editingEnabledLabel": "Allow editing of the prompt graph (platform-wide setting)",
           "saveBtn": "Save Prompt Graph",
           "title": "Prompt Graph",
           "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
