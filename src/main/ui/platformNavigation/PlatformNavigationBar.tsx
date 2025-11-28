@@ -17,6 +17,7 @@ import SkipLink from '@/core/ui/keyboardNavigation/SkipLink';
 import { useTranslation } from 'react-i18next';
 import PoweredBy from '../poweredBy/PoweredBy';
 import { PlatformNotificationsButton } from './PlatformNotificationsButton';
+import { UserMessagingButton } from '@/main/userMessaging/UserMessagingButton';
 
 export interface PlatformNavigationBarProps {
   breadcrumbs?: ReactElement<UncontrolledExpandable & { ref: Ref<Collapsible> }>;
@@ -99,6 +100,7 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
           <PlatformSearch ref={searchBoxRef} onExpand={handleExpandSearch} compact={isSmallScreen}>
             <PlatformNavigationUncollapse ref={uncollapseButtonRef} visible={rightSideShift !== 0} />
           </PlatformSearch>
+          <UserMessagingButton />
           <PlatformNotificationsButton />
           {!isSmallScreen && <PlatformNavigationMenuButton />}
           <PlatformNavigationUserAvatar drawer={isSmallScreen}>
