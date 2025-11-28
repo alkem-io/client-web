@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Button, DialogContent, IconButton, Link, Tooltip } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +23,8 @@ import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/
 import { newLinkName } from '@/domain/common/link/newLinkName';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import useLoadingState from '../../utils/useLoadingState';
+import { v4 as uuid } from 'uuid';
+import useDeleteDocument from './useDeleteDocument';
 
 export interface CreateLinkFormValues {
   id: string;
@@ -39,8 +41,6 @@ interface CreateLinksDialogProps {
   open: boolean;
   onClose: () => void;
   title: ReactNode;
-  onAddMore: () => Promise<string>;
-  onRemove: (linkId: string) => Promise<unknown>;
   onSave: (links: CreateLinkFormValues[]) => Promise<void>;
 }
 
@@ -61,49 +61,47 @@ export const linkSegmentValidationObject = yup.object().shape({
 });
 export const linkSegmentSchema = yup.array().of(linkSegmentValidationObject);
 
-const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }: CreateLinksDialogProps) => {
+const isEmptyLinkForm = (links: CreateLinkFormValues[] | undefined): boolean => {
+  if (!links || links.length === 0) {
+    return true;
+  }
+  // Form is empty if no link has a URI or description entered
+  return links.every(link => !link.uri && !link.description);
+};
+
+const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogProps) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
   const { isMediumSmallScreen } = useScreenSize();
 
   const CalloutIcon = contributionIcons[CalloutContributionType.Link];
-  const [newLinkId, setNewLinkId] = useState<string>();
-  const [hangingLinkIds, setHangingLinkIds] = useState<string[]>([]);
   const [isCancelling, setCancelling] = useState(false);
 
-  const handleOnClose = () => setCancelling(true);
-  const handleConfirmCancelling = async () => {
-    for (const linkId of hangingLinkIds) {
-      await onRemove(linkId);
-    }
-    setHangingLinkIds([]);
-    setCancelling(false);
-    onClose();
-  };
+  // Generate a local ID for new links (not yet on server)
+  const generateLocalId = () => `temp-${uuid()}`;
+
+  // Delete uploaded documents when links are removed or dialog is cancelled
+  const { deleteDocument, deleteDocuments } = useDeleteDocument();
+
+  const deleteAllUploadedDocuments = useCallback(
+    async (links: CreateLinkFormValues[]) => {
+      await deleteDocuments(links.map(link => link.uri));
+    },
+    [deleteDocuments]
+  );
 
   const [handleSave, isSaving] = useLoadingState(async (currentLinks: CreateLinkFormValues[]) => {
-    setHangingLinkIds([]);
-    return onSave(currentLinks);
+    await onSave(currentLinks);
+    onClose();
   });
-
-  useEffect(() => {
-    const run = async () => {
-      const newId = await onAddMore();
-      setNewLinkId(newId);
-      setHangingLinkIds([...hangingLinkIds, newId]);
-    };
-    if (open) {
-      run();
-    }
-  }, [open]);
 
   const initialValues: FormValueType = useMemo(
     () => ({
-      links: newLinkId
+      links: open
         ? [
             {
-              id: newLinkId,
+              id: generateLocalId(),
               name: newLinkName(t, 0),
               uri: '',
               description: '',
@@ -111,7 +109,7 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
           ]
         : [],
     }),
-    [newLinkId]
+    [open, t]
   );
 
   const validationSchema = yup.object().shape({
@@ -128,8 +126,7 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
 
   return (
     <>
-      <DialogWithGrid columns={12} open={open} aria-labelledby="link-creation" onClose={handleOnClose}>
-        <DialogHeader id="link-creation" icon={<CalloutIcon />} title={title} onClose={handleOnClose} />
+      <DialogWithGrid columns={12} open={open} aria-labelledby="link-creation">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -141,9 +138,23 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
             const { values, setFieldValue, isValid } = formikState;
             const { links: currentLinks } = values;
 
-            const handleAddMore = async () => {
-              const newId = await onAddMore();
-              setHangingLinkIds([...hangingLinkIds, newId]);
+            const handleOnClose = () => {
+              if (!isEmptyLinkForm(currentLinks)) {
+                setCancelling(true);
+              } else {
+                onClose();
+              }
+            };
+
+            const handleConfirmCancelling = async () => {
+              // Delete all uploaded documents before closing
+              await deleteAllUploadedDocuments(currentLinks);
+              setCancelling(false);
+              onClose();
+            };
+
+            const handleAddMore = () => {
+              const newId = generateLocalId();
 
               const newLink: CreateLinkFormValues = {
                 id: newId,
@@ -153,12 +164,25 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
               };
 
               setFieldValue(fieldName, [...currentLinks, newLink]);
-
               setNextLinkId(newId);
+            };
+
+            const handleRemoveLink = async (index: number) => {
+              if (currentLinks.length > 1) {
+                const removedLink = currentLinks[index];
+                // Delete the uploaded document if it exists
+                if (removedLink?.uri) {
+                  await deleteDocument(removedLink.uri);
+                }
+                const nextValue = [...currentLinks];
+                nextValue.splice(index, 1);
+                setFieldValue(fieldName, nextValue);
+              }
             };
 
             return (
               <>
+                <DialogHeader id="link-creation" icon={<CalloutIcon />} title={title} onClose={handleOnClose} />
                 <DialogContent ref={contentRef}>
                   <FieldArray name={fieldName}>
                     {() =>
@@ -176,8 +200,7 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
                                   name={`${fieldName}.${index}.uri`}
                                   title={t('common.url')}
                                   fullWidth
-                                  entityID={link.id}
-                                  entityType={'link'}
+                                  temporaryLocation
                                   helperText={tLinks('components.referenceSegment.url-helper-text', {
                                     terms: {
                                       href: locations?.terms,
@@ -194,21 +217,9 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
                                   >
                                     <IconButton
                                       aria-label={t('buttons.delete')}
-                                      onClick={async () => {
-                                        if (currentLinks.length > 1) {
-                                          // Remove the temporary link from the server:
-                                          await onRemove(link.id);
-                                          // Remove the id from the list of pending to confirm links:
-                                          const nextHangingLinkIds = [...hangingLinkIds];
-                                          nextHangingLinkIds.splice(index, 1);
-                                          setHangingLinkIds(nextHangingLinkIds);
-                                          // Remove the link from the Formik Field value
-                                          const nextValue = [...currentLinks];
-                                          nextValue.splice(index, 1);
-                                          setFieldValue(fieldName, nextValue);
-                                        }
-                                      }}
+                                      onClick={() => handleRemoveLink(index)}
                                       size="large"
+                                      disabled={currentLinks.length <= 1}
                                     >
                                       <DeleteOutlineIcon />
                                     </IconButton>
@@ -253,25 +264,25 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
                     {t('buttons.save')}
                   </Button>
                 </Actions>
+                <ConfirmationDialog
+                  actions={{
+                    onConfirm: handleConfirmCancelling,
+                    onCancel: () => setCancelling(false),
+                  }}
+                  options={{
+                    show: isCancelling,
+                  }}
+                  entities={{
+                    titleId: 'callout.link-collection.cancel-confirm-title',
+                    contentId: 'callout.link-collection.cancel-confirm',
+                    confirmButtonTextId: 'buttons.yesClose',
+                  }}
+                />
               </>
             );
           }}
         </Formik>
       </DialogWithGrid>
-      <ConfirmationDialog
-        actions={{
-          onConfirm: handleConfirmCancelling,
-          onCancel: () => setCancelling(false),
-        }}
-        options={{
-          show: isCancelling,
-        }}
-        entities={{
-          titleId: 'callout.link-collection.cancel-confirm-title',
-          contentId: 'callout.link-collection.cancel-confirm',
-          confirmButtonTextId: 'buttons.confirm',
-        }}
-      />
     </>
   );
 };
