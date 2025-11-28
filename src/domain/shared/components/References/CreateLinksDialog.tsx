@@ -23,6 +23,7 @@ import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/
 import { newLinkName } from '@/domain/common/link/newLinkName';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import useLoadingState from '../../utils/useLoadingState';
+import { v4 as uuid } from 'uuid';
 
 export interface CreateLinkFormValues {
   id: string;
@@ -39,9 +40,8 @@ interface CreateLinksDialogProps {
   open: boolean;
   onClose: () => void;
   title: ReactNode;
-  onAddMore: () => Promise<string>;
-  onRemove: (linkId: string) => Promise<unknown>;
   onSave: (links: CreateLinkFormValues[]) => Promise<void>;
+  calloutId?: string;
 }
 
 const fieldName = 'links';
@@ -61,49 +61,37 @@ export const linkSegmentValidationObject = yup.object().shape({
 });
 export const linkSegmentSchema = yup.array().of(linkSegmentValidationObject);
 
-const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }: CreateLinksDialogProps) => {
+const isEmptyLinkForm = (links: CreateLinkFormValues[] | undefined): boolean => {
+  if (!links || links.length === 0) {
+    return true;
+  }
+  // Form is empty if no link has a URI or description entered
+  return links.every(link => !link.uri && !link.description);
+};
+
+const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogProps) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
   const { isMediumSmallScreen } = useScreenSize();
 
   const CalloutIcon = contributionIcons[CalloutContributionType.Link];
-  const [newLinkId, setNewLinkId] = useState<string>();
-  const [hangingLinkIds, setHangingLinkIds] = useState<string[]>([]);
-  const [isCancelling, setCancelling] = useState(false);
+  const [isCanceling, setCanceling] = useState(false);
 
-  const handleOnClose = () => setCancelling(true);
-  const handleConfirmCancelling = async () => {
-    for (const linkId of hangingLinkIds) {
-      await onRemove(linkId);
-    }
-    setHangingLinkIds([]);
-    setCancelling(false);
-    onClose();
-  };
+  // Generate a local ID for new links (not yet on server)
+  const generateLocalId = () => `temp-${uuid()}`;
 
   const [handleSave, isSaving] = useLoadingState(async (currentLinks: CreateLinkFormValues[]) => {
-    setHangingLinkIds([]);
-    return onSave(currentLinks);
+    await onSave(currentLinks);
+    onClose();
   });
-
-  useEffect(() => {
-    const run = async () => {
-      const newId = await onAddMore();
-      setNewLinkId(newId);
-      setHangingLinkIds([...hangingLinkIds, newId]);
-    };
-    if (open) {
-      run();
-    }
-  }, [open]);
 
   const initialValues: FormValueType = useMemo(
     () => ({
-      links: newLinkId
+      links: open
         ? [
             {
-              id: newLinkId,
+              id: generateLocalId(),
               name: newLinkName(t, 0),
               uri: '',
               description: '',
@@ -111,7 +99,7 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
           ]
         : [],
     }),
-    [newLinkId]
+    [open, t]
   );
 
   const validationSchema = yup.object().shape({
@@ -128,8 +116,7 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
 
   return (
     <>
-      <DialogWithGrid columns={12} open={open} aria-labelledby="link-creation" onClose={handleOnClose}>
-        <DialogHeader id="link-creation" icon={<CalloutIcon />} title={title} onClose={handleOnClose} />
+      <DialogWithGrid columns={12} open={open} aria-labelledby="link-creation">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -141,9 +128,21 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
             const { values, setFieldValue, isValid } = formikState;
             const { links: currentLinks } = values;
 
-            const handleAddMore = async () => {
-              const newId = await onAddMore();
-              setHangingLinkIds([...hangingLinkIds, newId]);
+            const handleOnClose = () => {
+              if (!isEmptyLinkForm(currentLinks)) {
+                setCanceling(true);
+              } else {
+                onClose();
+              }
+            };
+
+            const handleConfirmCancelling = () => {
+              setCanceling(false);
+              onClose();
+            };
+
+            const handleAddMore = () => {
+              const newId = generateLocalId();
 
               const newLink: CreateLinkFormValues = {
                 id: newId,
@@ -153,12 +152,20 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
               };
 
               setFieldValue(fieldName, [...currentLinks, newLink]);
-
               setNextLinkId(newId);
+            };
+
+            const handleRemoveLink = (index: number) => {
+              if (currentLinks.length > 1) {
+                const nextValue = [...currentLinks];
+                nextValue.splice(index, 1);
+                setFieldValue(fieldName, nextValue);
+              }
             };
 
             return (
               <>
+                <DialogHeader id="link-creation" icon={<CalloutIcon />} title={title} onClose={handleOnClose} />
                 <DialogContent ref={contentRef}>
                   <FieldArray name={fieldName}>
                     {() =>
@@ -194,21 +201,9 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
                                   >
                                     <IconButton
                                       aria-label={t('buttons.delete')}
-                                      onClick={async () => {
-                                        if (currentLinks.length > 1) {
-                                          // Remove the temporary link from the server:
-                                          await onRemove(link.id);
-                                          // Remove the id from the list of pending to confirm links:
-                                          const nextHangingLinkIds = [...hangingLinkIds];
-                                          nextHangingLinkIds.splice(index, 1);
-                                          setHangingLinkIds(nextHangingLinkIds);
-                                          // Remove the link from the Formik Field value
-                                          const nextValue = [...currentLinks];
-                                          nextValue.splice(index, 1);
-                                          setFieldValue(fieldName, nextValue);
-                                        }
-                                      }}
+                                      onClick={() => handleRemoveLink(index)}
                                       size="large"
+                                      disabled={currentLinks.length <= 1}
                                     >
                                       <DeleteOutlineIcon />
                                     </IconButton>
@@ -253,25 +248,25 @@ const CreateLinksDialog = ({ open, onClose, title, onAddMore, onRemove, onSave }
                     {t('buttons.save')}
                   </Button>
                 </Actions>
+                <ConfirmationDialog
+                  actions={{
+                    onConfirm: handleConfirmCancelling,
+                    onCancel: () => setCanceling(false),
+                  }}
+                  options={{
+                    show: isCanceling,
+                  }}
+                  entities={{
+                    titleId: 'callout.link-collection.cancel-confirm-title',
+                    contentId: 'callout.link-collection.cancel-confirm',
+                    confirmButtonTextId: 'buttons.yesClose',
+                  }}
+                />
               </>
             );
           }}
         </Formik>
       </DialogWithGrid>
-      <ConfirmationDialog
-        actions={{
-          onConfirm: handleConfirmCancelling,
-          onCancel: () => setCancelling(false),
-        }}
-        options={{
-          show: isCancelling,
-        }}
-        entities={{
-          titleId: 'callout.link-collection.cancel-confirm-title',
-          contentId: 'callout.link-collection.cancel-confirm',
-          confirmButtonTextId: 'buttons.confirm',
-        }}
-      />
     </>
   );
 };
