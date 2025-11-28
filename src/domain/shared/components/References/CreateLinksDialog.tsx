@@ -24,7 +24,7 @@ import { newLinkName } from '@/domain/common/link/newLinkName';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import useLoadingState from '../../utils/useLoadingState';
 import { v4 as uuid } from 'uuid';
-import { useDeleteDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
+import useDeleteDocument from './useDeleteDocument';
 
 export interface CreateLinkFormValues {
   id: string;
@@ -69,24 +69,6 @@ const isEmptyLinkForm = (links: CreateLinkFormValues[] | undefined): boolean => 
   return links.every(link => !link.uri && !link.description);
 };
 
-// Storage URLs have the format: /api/private/rest/storage/document/{UUID}
-const STORAGE_DOCUMENT_PATH = '/api/private/rest/storage/document/';
-
-const extractDocumentIdFromUri = (uri: string): string | undefined => {
-  const pathIndex = uri.indexOf(STORAGE_DOCUMENT_PATH);
-  if (pathIndex === -1) {
-    return undefined;
-  }
-  const idStart = pathIndex + STORAGE_DOCUMENT_PATH.length;
-  // UUID is 36 characters
-  const documentId = uri.substring(idStart, idStart + 36);
-  // Basic UUID validation
-  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(documentId)) {
-    return documentId;
-  }
-  return undefined;
-};
-
 const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogProps) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
@@ -94,36 +76,19 @@ const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogPr
   const { isMediumSmallScreen } = useScreenSize();
 
   const CalloutIcon = contributionIcons[CalloutContributionType.Link];
-  const [isCanceling, setCanceling] = useState(false);
+  const [isCancelling, setCancelling] = useState(false);
 
   // Generate a local ID for new links (not yet on server)
   const generateLocalId = () => `temp-${uuid()}`;
 
   // Delete uploaded documents when links are removed or dialog is cancelled
-  const [deleteDocument] = useDeleteDocumentMutation();
-
-  const deleteUploadedDocument = useCallback(
-    async (uri: string) => {
-      const documentId = extractDocumentIdFromUri(uri);
-      if (documentId) {
-        try {
-          await deleteDocument({ variables: { documentId } });
-        } catch {
-          // Silently fail - document may already be deleted or user may not have permission
-        }
-      }
-    },
-    [deleteDocument]
-  );
+  const { deleteDocument, deleteDocuments } = useDeleteDocument();
 
   const deleteAllUploadedDocuments = useCallback(
     async (links: CreateLinkFormValues[]) => {
-      const deletePromises = links
-        .filter(link => link.uri && extractDocumentIdFromUri(link.uri))
-        .map(link => deleteUploadedDocument(link.uri));
-      await Promise.all(deletePromises);
+      await deleteDocuments(links.map(link => link.uri));
     },
-    [deleteUploadedDocument]
+    [deleteDocuments]
   );
 
   const [handleSave, isSaving] = useLoadingState(async (currentLinks: CreateLinkFormValues[]) => {
@@ -175,7 +140,7 @@ const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogPr
 
             const handleOnClose = () => {
               if (!isEmptyLinkForm(currentLinks)) {
-                setCanceling(true);
+                setCancelling(true);
               } else {
                 onClose();
               }
@@ -184,7 +149,7 @@ const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogPr
             const handleConfirmCancelling = async () => {
               // Delete all uploaded documents before closing
               await deleteAllUploadedDocuments(currentLinks);
-              setCanceling(false);
+              setCancelling(false);
               onClose();
             };
 
@@ -207,7 +172,7 @@ const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogPr
                 const removedLink = currentLinks[index];
                 // Delete the uploaded document if it exists
                 if (removedLink?.uri) {
-                  await deleteUploadedDocument(removedLink.uri);
+                  await deleteDocument(removedLink.uri);
                 }
                 const nextValue = [...currentLinks];
                 nextValue.splice(index, 1);
@@ -302,10 +267,10 @@ const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogPr
                 <ConfirmationDialog
                   actions={{
                     onConfirm: handleConfirmCancelling,
-                    onCancel: () => setCanceling(false),
+                    onCancel: () => setCancelling(false),
                   }}
                   options={{
-                    show: isCanceling,
+                    show: isCancelling,
                   }}
                   entities={{
                     titleId: 'callout.link-collection.cancel-confirm-title',
