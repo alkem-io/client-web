@@ -1,0 +1,73 @@
+# ResolveResource contract (client ↔ Alkemio API)
+# Generated as part of /speckit.plan Phase 1
+
+query ResolveResource($resourcePath: String!, $viewerContext: ViewerContextInput) {
+  resolveResource(input: { resourcePath: $resourcePath, viewer: $viewerContext }) {
+    requestId
+    authState                # AUTHENTICATED | ANONYMOUS | UNAUTHORIZED
+    exists
+    fallbackReason           # LOGGED_OUT | UNAUTHORIZED | DELETED | null
+    latencyMs
+    target {
+      id
+      type                   # SPACE | SUBSPACE | CALLOUT | CONTRIBUTION | PAGE
+      slug
+      displayName
+      canonicalUrl
+      isAccessible
+    }
+    parentChain(limit: 5) {
+      depth
+      accessible
+      reasonBlocked
+      node {
+        id
+        type
+        slug
+        displayName
+        canonicalUrl
+        isAccessible
+      }
+    }
+  }
+}
+
+fragment ResolveResourceNode on ResourceNode {
+  id
+  type
+  slug
+  displayName
+  canonicalUrl
+  isAccessible
+}
+
+# Schema additions communicated to backend team
+
+type ResolveResourcePayload {
+  requestId: ID!
+  authState: ResolveAuthState!
+  exists: Boolean!
+  fallbackReason: ResolveFallbackReason
+  latencyMs: Int!
+  target: ResourceNode!
+  parentChain(limit: Int = 5): [ResolveFallbackNode!]!
+}
+
+type ResolveFallbackNode {
+  depth: Int!
+  accessible: Boolean!
+  reasonBlocked: String
+  node: ResourceNode!
+}
+
+enum ResolveAuthState {
+  AUTHENTICATED
+  ANONYMOUS
+  UNAUTHORIZED
+}
+
+enum ResolveFallbackReason {
+  LOGGED_OUT
+  UNAUTHORIZED
+  DELETED
+}
