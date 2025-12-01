@@ -1,26 +1,20 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, DialogContent, DialogActions, TextField, Chip, CircularProgress } from '@mui/material';
+import { Box, DialogContent, DialogActions, TextField, Chip, CircularProgress, Button } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from 'lodash';
-import * as yup from 'yup';
-import { Formik } from 'formik';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import SendButton from '@/core/ui/actions/SendButton';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
-import { useSendMessageToUsersMutation } from '@/core/apollo/generated/apollo-hooks';
-import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
+import { useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
+import { CommunicationConversationType, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
   ContributorItem,
   useContributors,
 } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
-import { UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import Avatar from '@/core/ui/avatar/Avatar';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
@@ -28,11 +22,7 @@ import TranslationKey from '@/core/i18n/utils/TranslationKey';
 interface NewMessageDialogProps {
   open: boolean;
   onClose: () => void;
-  onMessageSent: (userId: string) => void;
-}
-
-interface NewMessageFormValues {
-  message: string;
+  onConversationCreated: (userId: string) => void;
 }
 
 interface SelectedUser {
@@ -43,14 +33,14 @@ interface SelectedUser {
   country?: string;
 }
 
-export const NewMessageDialog = ({ open, onClose, onMessageSent }: NewMessageDialogProps) => {
+export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMessageDialogProps) => {
   const { t } = useTranslation();
   const { userModel: currentUser } = useCurrentUserContext();
   const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [filter, setFilter] = useState<UserFilterInput>();
 
-  const [sendMessageToUsers] = useSendMessageToUsersMutation();
+  const [createConversation] = useCreateConversationMutation();
 
   const { data: contributors = [], loading: loadingContributors } = useContributors({
     filter,
@@ -95,27 +85,19 @@ export const NewMessageDialog = ({ open, onClose, onMessageSent }: NewMessageDia
     setSelectedUser(null);
   };
 
-  const validationSchema = yup.object().shape({
-    message: textLengthValidator({ required: true }),
-  });
-
-  const initialValues: NewMessageFormValues = {
-    message: '',
-  };
-
-  const [handleSubmit, isSending] = useLoadingState(async (values: NewMessageFormValues) => {
+  const [handleCreateChat, isCreating] = useLoadingState(async () => {
     if (!selectedUser) return;
 
-    await sendMessageToUsers({
+    await createConversation({
       variables: {
-        messageData: {
-          message: values.message,
-          receiverIds: [selectedUser.id],
+        conversationData: {
+          type: CommunicationConversationType.UserUser,
+          userID: selectedUser.id,
         },
       },
     });
 
-    onMessageSent(selectedUser.id);
+    onConversationCreated(selectedUser.id);
     handleClose();
   });
 
@@ -130,100 +112,78 @@ export const NewMessageDialog = ({ open, onClose, onMessageSent }: NewMessageDia
     <DialogWithGrid open={open} columns={8} onClose={handleClose} aria-labelledby="new-message-dialog">
       <DialogHeader
         id="new-message-dialog"
-        title={t('send-message-dialog.direct-message-title')}
+        title={t('components.userMessaging.newMessage' as TranslationKey)}
         onClose={handleClose}
       />
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        enableReinitialize
-        onSubmit={handleSubmit}
-      >
-        {({ handleSubmit: formikSubmit, isValid }) => (
-          <>
-            <DialogContent>
-              <Box display="flex" flexDirection="column" gap={gutters()}>
-                {/* User selector */}
-                <Box>
-                  <Caption marginBottom={gutters(0.5)}>
-                    {t('components.userMessaging.selectUser' as TranslationKey)}
-                  </Caption>
-                  {selectedUser ? (
-                    <Chip
-                      avatar={
-                        <Avatar
-                          src={selectedUser.avatarUri}
-                          alt={selectedUser.displayName}
-                          size="medium"
-                          sx={{ boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)' }}
-                        />
-                      }
-                      label={selectedUser.displayName}
-                      onDelete={handleClearUser}
-                      sx={{ marginTop: gutters(0.5) }}
+      <DialogContent>
+        <Box display="flex" flexDirection="column" gap={gutters()}>
+          {/* User selector */}
+          <Box>
+            <Caption marginBottom={gutters(0.5)}>{t('components.userMessaging.selectUser' as TranslationKey)}</Caption>
+            {selectedUser ? (
+              <Chip
+                avatar={
+                  <Avatar
+                    src={selectedUser.avatarUri}
+                    alt={selectedUser.displayName}
+                    size="medium"
+                    sx={{ boxShadow: '0 0 2px rgba(0, 0, 0, 0.2)' }}
+                  />
+                }
+                label={selectedUser.displayName}
+                onDelete={handleClearUser}
+                sx={{ marginTop: gutters(0.5) }}
+              />
+            ) : (
+              <Autocomplete
+                options={filteredContributors}
+                getOptionLabel={option => option.profile.displayName}
+                inputValue={inputValue}
+                onInputChange={handleInputChange}
+                onChange={handleUserSelect}
+                loading={loadingContributors}
+                noOptionsText={
+                  inputValue
+                    ? t('components.userMessaging.noUsersFound' as TranslationKey)
+                    : t('components.userMessaging.startTyping' as TranslationKey)
+                }
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    placeholder={t('components.userMessaging.searchUsers' as TranslationKey)}
+                    variant="outlined"
+                    size="small"
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <>
+                          {loadingContributors && <CircularProgress size={20} />}
+                          {params.InputProps.endAdornment}
+                        </>
+                      ),
+                    }}
+                  />
+                )}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    <ProfileChipView
+                      displayName={option.profile.displayName}
+                      avatarUrl={option.profile.visual?.uri}
+                      city={option.profile.location?.city}
+                      country={option.profile.location?.country}
                     />
-                  ) : (
-                    <Autocomplete
-                      options={filteredContributors}
-                      getOptionLabel={option => option.profile.displayName}
-                      inputValue={inputValue}
-                      onInputChange={handleInputChange}
-                      onChange={handleUserSelect}
-                      loading={loadingContributors}
-                      noOptionsText={
-                        inputValue
-                          ? t('components.userMessaging.noUsersFound' as TranslationKey)
-                          : t('components.userMessaging.startTyping' as TranslationKey)
-                      }
-                      renderInput={params => (
-                        <TextField
-                          {...params}
-                          placeholder={t('components.userMessaging.searchUsers' as TranslationKey)}
-                          variant="outlined"
-                          size="small"
-                          InputProps={{
-                            ...params.InputProps,
-                            endAdornment: (
-                              <>
-                                {loadingContributors && <CircularProgress size={20} />}
-                                {params.InputProps.endAdornment}
-                              </>
-                            ),
-                          }}
-                        />
-                      )}
-                      renderOption={(props, option) => (
-                        <li {...props} key={option.id}>
-                          <ProfileChipView
-                            displayName={option.profile.displayName}
-                            avatarUrl={option.profile.visual?.uri}
-                            city={option.profile.location?.city}
-                            country={option.profile.location?.country}
-                          />
-                        </li>
-                      )}
-                    />
-                  )}
-                </Box>
-
-                {/* Message input */}
-                <FormikInputField
-                  name="message"
-                  title={t('messaging.message')}
-                  placeholder={t('components.userMessaging.typeMessage' as TranslationKey)}
-                  multiline
-                  rows={5}
-                  maxLength={LONG_TEXT_LENGTH}
-                  disabled={!selectedUser}
-                />
-              </Box>
-            </DialogContent>
-            <DialogActions>
-              <SendButton loading={isSending} disabled={!isValid || !selectedUser} onClick={() => formikSubmit()} />
-            </DialogActions>
-          </>
-        )}
-      </Formik>
+                  </li>
+                )}
+              />
+            )}
+          </Box>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button variant="contained" onClick={handleCreateChat} disabled={!selectedUser || isCreating}>
+          {t('components.userMessaging.createChat' as TranslationKey)}
+        </Button>
+      </DialogActions>
     </DialogWithGrid>
   );
 };

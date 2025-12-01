@@ -75,11 +75,14 @@ export const useUserConversations = () => {
             lastMessage: messages.length > 0 ? messages[messages.length - 1] : undefined,
           };
         })
-        // Sort conversations by last message timestamp (most recent first)
+        // Sort conversations: no messages first (newest chats), then by last message timestamp (most recent first)
         .sort((a, b) => {
-          const aTime = a.lastMessage?.timestamp ?? 0;
-          const bTime = b.lastMessage?.timestamp ?? 0;
-          return bTime - aTime;
+          // Conversations without messages go to the top
+          if (!a.lastMessage && !b.lastMessage) return 0;
+          if (!a.lastMessage) return -1;
+          if (!b.lastMessage) return 1;
+          // Both have messages - sort by most recent first
+          return b.lastMessage.timestamp - a.lastMessage.timestamp;
         })
     );
   }, [data?.me?.conversations?.users]);

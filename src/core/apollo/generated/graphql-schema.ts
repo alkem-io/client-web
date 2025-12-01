@@ -40779,6 +40779,19 @@ export type SpaceExplorerWelcomeSpaceQuery = {
   };
 };
 
+export type CreateConversationMutationVariables = Exact<{
+  conversationData: CreateConversationInput;
+}>;
+
+export type CreateConversationMutation = {
+  __typename?: 'Mutation';
+  createConversationOnConversationsSet: {
+    __typename?: 'Conversation';
+    id: string;
+    room?: { __typename?: 'Room'; id: string } | undefined;
+  };
+};
+
 export type UserConversationsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserConversationsQuery = {

@@ -129,7 +129,7 @@ export const UserMessagingDialog = () => {
         <NewMessageDialog
           open={isNewMessageDialogOpen}
           onClose={handleCloseNewMessage}
-          onMessageSent={handleNewMessageSent}
+          onConversationCreated={handleNewMessageSent}
         />
       </>
     );
@@ -181,7 +181,7 @@ export const UserMessagingDialog = () => {
       <NewMessageDialog
         open={isNewMessageDialogOpen}
         onClose={handleCloseNewMessage}
-        onMessageSent={handleNewMessageSent}
+        onConversationCreated={handleNewMessageSent}
       />
     </>
   );

@@ -26965,6 +26965,56 @@ export type SpaceExplorerWelcomeSpaceQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables) {
   return { query: SpaceExplorerWelcomeSpaceDocument, variables: variables };
 }
+export const CreateConversationDocument = gql`
+  mutation CreateConversation($conversationData: CreateConversationInput!) {
+    createConversationOnConversationsSet(conversationData: $conversationData) {
+      id
+      room {
+        id
+      }
+    }
+  }
+`;
+export type CreateConversationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateConversationMutation,
+  SchemaTypes.CreateConversationMutationVariables
+>;
+
+/**
+ * __useCreateConversationMutation__
+ *
+ * To run a mutation, you first call `useCreateConversationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateConversationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createConversationMutation, { data, loading, error }] = useCreateConversationMutation({
+ *   variables: {
+ *      conversationData: // value for 'conversationData'
+ *   },
+ * });
+ */
+export function useCreateConversationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateConversationMutation,
+    SchemaTypes.CreateConversationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateConversationMutation, SchemaTypes.CreateConversationMutationVariables>(
+    CreateConversationDocument,
+    options
+  );
+}
+export type CreateConversationMutationHookResult = ReturnType<typeof useCreateConversationMutation>;
+export type CreateConversationMutationResult = Apollo.MutationResult<SchemaTypes.CreateConversationMutation>;
+export type CreateConversationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateConversationMutation,
+  SchemaTypes.CreateConversationMutationVariables
+>;
 export const UserConversationsDocument = gql`
   query UserConversations {
     me {
