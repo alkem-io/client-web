@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo, useRef, useState } from 'react';
 import { Box, Button, Dialog, DialogContent } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +22,7 @@ import { urlValidator } from '@/core/ui/forms/validator/urlValidator';
 import { textLengthValidator } from '@/core/ui/forms/validator/textLengthValidator';
 import useLoadingState from '../../utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import useDeleteDocument, { extractDocumentIdFromUri } from './useDeleteDocument';
+import useDeleteDocument from './useDeleteDocument';
 
 const validationSchema = yup.object().shape({
   id: yup.string().required(),
@@ -60,8 +60,11 @@ const EditLinkDialog = ({ open, onClose, title, link, onSave, canDelete, onDelet
 
   const initialValues: LinkDetails = useMemo(() => ({ ...link }), [link]);
 
+  // Track uploaded document ID for cleanup on cancel
+  const uploadedDocumentId = useRef<string | undefined>(undefined);
+
   // Delete uploaded documents when cancelling with a new uploaded file
-  const { deleteDocument } = useDeleteDocument();
+  const { deleteDocumentById } = useDeleteDocument();
 
   const [handleSave, isSaving] = useLoadingState((values: LinkDetails) => onSave(values));
 
@@ -87,9 +90,10 @@ const EditLinkDialog = ({ open, onClose, title, link, onSave, canDelete, onDelet
             };
 
             const handleConfirmCancelling = async () => {
-              // If a new file was uploaded (URI changed and is a storage URL), delete it
-              if (values.uri !== initialValues.uri && extractDocumentIdFromUri(values.uri)) {
-                await deleteDocument(values.uri);
+              // If a new file was uploaded, delete it
+              if (uploadedDocumentId.current) {
+                await deleteDocumentById(uploadedDocumentId.current);
+                uploadedDocumentId.current = undefined;
               }
               setCanceling(false);
               onClose();
@@ -117,6 +121,9 @@ const EditLinkDialog = ({ open, onClose, title, link, onSave, canDelete, onDelet
                           title={t('common.url')}
                           sx={{ flexGrow: 1 }}
                           temporaryLocation
+                          onDocumentUploaded={document => {
+                            uploadedDocumentId.current = document.id;
+                          }}
                         />
                       </Box>
                     </Gutters>

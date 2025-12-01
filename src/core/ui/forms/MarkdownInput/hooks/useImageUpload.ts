@@ -25,7 +25,7 @@ export const useImageUpload = ({
     onCompleted: data => {
       notify(t('components.file-upload.file-upload-success'), 'success');
       const editor = getEditor?.();
-      editor?.commands.setImage({ src: data.uploadFileOnStorageBucket, alt: 'pasted-image' });
+      editor?.commands.setImage({ src: data.uploadFileOnStorageBucket.url, alt: 'pasted-image' });
     },
     onError: error => {
       console.error('File upload failed:', error.message);

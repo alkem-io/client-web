@@ -15,6 +15,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { contributionIcons } from '@/domain/collaboration/callout/icons/calloutIcons';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
+import { UploadedDocument } from '@/core/ui/upload/FileUpload/FileUpload';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -81,15 +82,21 @@ const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogPr
   // Generate a local ID for new links (not yet on server)
   const generateLocalId = () => `temp-${uuid()}`;
 
-  // Delete uploaded documents when links are removed or dialog is cancelled
-  const { deleteDocument, deleteDocuments } = useDeleteDocument();
+  // Track uploaded document IDs by form link ID for cleanup
+  const uploadedDocumentIds = useRef<Map<string, string>>(new Map());
 
-  const deleteAllUploadedDocuments = useCallback(
-    async (links: CreateLinkFormValues[]) => {
-      await deleteDocuments(links.map(link => link.uri));
-    },
-    [deleteDocuments]
-  );
+  // Delete uploaded documents when links are removed or dialog is cancelled
+  const { deleteDocumentById, deleteDocumentsById } = useDeleteDocument();
+
+  const deleteAllUploadedDocuments = useCallback(async () => {
+    const documentIds = Array.from(uploadedDocumentIds.current.values());
+    await deleteDocumentsById(documentIds);
+    uploadedDocumentIds.current.clear();
+  }, [deleteDocumentsById]);
+
+  const handleDocumentUploaded = useCallback((linkId: string, document: UploadedDocument) => {
+    uploadedDocumentIds.current.set(linkId, document.id);
+  }, []);
 
   const [handleSave, isSaving] = useLoadingState(async (currentLinks: CreateLinkFormValues[]) => {
     await onSave(currentLinks);
@@ -148,7 +155,7 @@ const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogPr
 
             const handleConfirmCancelling = async () => {
               // Delete all uploaded documents before closing
-              await deleteAllUploadedDocuments(currentLinks);
+              await deleteAllUploadedDocuments();
               setCancelling(false);
               onClose();
             };
@@ -171,8 +178,10 @@ const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogPr
               if (currentLinks.length > 1) {
                 const removedLink = currentLinks[index];
                 // Delete the uploaded document if it exists
-                if (removedLink?.uri) {
-                  await deleteDocument(removedLink.uri);
+                const documentId = uploadedDocumentIds.current.get(removedLink.id);
+                if (documentId) {
+                  await deleteDocumentById(documentId);
+                  uploadedDocumentIds.current.delete(removedLink.id);
                 }
                 const nextValue = [...currentLinks];
                 nextValue.splice(index, 1);
@@ -208,6 +217,7 @@ const CreateLinksDialog = ({ open, onClose, title, onSave }: CreateLinksDialogPr
                                     },
                                   })}
                                   onChange={fileName => setFieldValue(`${fieldName}.${index}.name`, fileName)}
+                                  onDocumentUploaded={document => handleDocumentUploaded(link.id, document)}
                                 />
                                 <Box>
                                   <Tooltip
