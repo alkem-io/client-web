@@ -747,6 +747,7 @@ export enum AuthorizationCredential {
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalGuest = 'GLOBAL_GUEST',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -803,6 +804,8 @@ export enum AuthorizationPolicyType {
   Classification = 'CLASSIFICATION',
   Collaboration = 'COLLABORATION',
   Communication = 'COMMUNICATION',
+  CommunicationConversation = 'COMMUNICATION_CONVERSATION',
+  CommunicationConversationsSet = 'COMMUNICATION_CONVERSATIONS_SET',
   Community = 'COMMUNITY',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
   Discussion = 'DISCUSSION',
@@ -879,6 +882,7 @@ export enum AuthorizationPrivilege {
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
+  PublicShare = 'PUBLIC_SHARE',
   Read = 'READ',
   ReadAbout = 'READ_ABOUT',
   ReadLicense = 'READ_LICENSE',
@@ -1195,20 +1199,6 @@ export enum CalloutsSetType {
   KnowledgeBase = 'KNOWLEDGE_BASE',
 }
 
-export type ChatGuidanceAnswerRelevanceInput = {
-  /** The answer id. */
-  id: Scalars['String']['input'];
-  /** Is the answer relevant or not. */
-  relevant: Scalars['Boolean']['input'];
-};
-
-export type ChatGuidanceInput = {
-  /** The language of the answer. */
-  language?: InputMaybe<Scalars['String']['input']>;
-  /** The question that is being asked. */
-  question: Scalars['String']['input'];
-};
-
 export type Classification = {
   __typename?: 'Classification';
   /** The authorization rules for the entity */
@@ -1326,6 +1316,11 @@ export type CommunicationAdminUpdateRoomStateInput = {
   isWorldVisible: Scalars['Boolean']['input'];
   roomID: Scalars['String']['input'];
 };
+
+export enum CommunicationConversationType {
+  UserUser = 'USER_USER',
+  UserVc = 'USER_VC',
+}
 
 export type CommunicationSendMessageToCommunityLeadsInput = {
   /** The Community the message is being sent to */
@@ -1563,6 +1558,49 @@ export type ContributorRolesApplicationsArgs = {
 
 export type ContributorRolesInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type Conversation = {
+  __typename?: 'Conversation';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The room for this Conversation. */
+  room?: Maybe<Room>;
+  type: CommunicationConversationType;
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
+  /** The user participating in this Conversation. */
+  user?: Maybe<User>;
+  /** The virtual contributor participating in this Conversation (only for USER_AGENT conversations). */
+  virtualContributor?: Maybe<VirtualContributor>;
+  wellKnownVirtualContributor?: Maybe<VirtualContributorWellKnown>;
+};
+
+export type ConversationVcAnswerRelevanceInput = {
+  /** The ID of the conversation. */
+  conversationID: Scalars['UUID']['input'];
+  /** The answer id. */
+  id: Scalars['String']['input'];
+  /** Is the answer relevant or not. */
+  relevant: Scalars['Boolean']['input'];
+};
+
+export type ConversationVcAskQuestionInput = {
+  /** The ID of the conversation. */
+  conversationID: Scalars['UUID']['input'];
+  /** The language of the answer. */
+  language?: InputMaybe<Scalars['String']['input']>;
+  /** The question that is being asked. */
+  question: Scalars['String']['input'];
+};
+
+export type ConversationVcResetInput = {
+  /** The ID of the conversation. */
+  conversationID: Scalars['UUID']['input'];
 };
 
 export type ConversionVcSpaceToVcKnowledgeBaseInput = {
@@ -1835,6 +1873,13 @@ export type CreateContributionOnCalloutInput = {
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
+export type CreateConversationInput = {
+  type: CommunicationConversationType;
+  userID: Scalars['UUID']['input'];
+  virtualContributorID?: InputMaybe<Scalars['UUID']['input']>;
+  wellKnownVirtualContributor?: InputMaybe<VirtualContributorWellKnown>;
+};
+
 export type CreateInnovationFlowData = {
   __typename?: 'CreateInnovationFlowData';
   profile: CreateProfileData;
@@ -2087,6 +2132,8 @@ export type CreateSpaceOnAccountInput = {
 export type CreateSpaceSettingsCollaborationInput = {
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
   allowEventsFromSubspaces: Scalars['Boolean']['input'];
+  /** Flag to control if guest users can contribute to this Space. */
+  allowGuestContributions: Scalars['Boolean']['input'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
@@ -2354,6 +2401,7 @@ export enum CredentialType {
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalGuest = 'GLOBAL_GUEST',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalPlatformManager = 'GLOBAL_PLATFORM_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -2398,6 +2446,10 @@ export type DeleteCalloutInput = {
 };
 
 export type DeleteContributionInput = {
+  ID: Scalars['UUID']['input'];
+};
+
+export type DeleteConversationInput = {
   ID: Scalars['UUID']['input'];
 };
 
@@ -2485,18 +2537,6 @@ export type DeleteVirtualContributorInput = {
 
 export type DeleteWhiteboardInput = {
   ID: Scalars['UUID']['input'];
-};
-
-export type DirectRoom = {
-  __typename?: 'DirectRoom';
-  /** The display name of the room */
-  displayName: Scalars['String']['output'];
-  /** The identifier of the room */
-  id: Scalars['String']['output'];
-  /** The messages that have been sent to the Room. */
-  messages: Array<Message>;
-  /** The recipient userID */
-  receiverID?: Maybe<Scalars['String']['output']>;
 };
 
 export type Discussion = {
@@ -3743,6 +3783,8 @@ export type LookupQueryResults = {
   communityGuidelines?: Maybe<CommunityGuidelines>;
   /** Lookup the specified CalloutContribution */
   contribution?: Maybe<CalloutContribution>;
+  /** Lookup the specified Conversation */
+  conversation?: Maybe<Conversation>;
   /** Lookup the specified Document */
   document?: Maybe<Document>;
   /** Lookup the specified InnovationFlow */
@@ -3848,6 +3890,10 @@ export type LookupQueryResultsContributionArgs = {
   ID: Scalars['UUID']['input'];
 };
 
+export type LookupQueryResultsConversationArgs = {
+  ID: Scalars['UUID']['input'];
+};
+
 export type LookupQueryResultsDocumentArgs = {
   ID: Scalars['UUID']['input'];
 };
@@ -3944,6 +3990,20 @@ export type LookupQueryResultsWhiteboardArgs = {
   ID: Scalars['UUID']['input'];
 };
 
+export type MeConversationsResult = {
+  __typename?: 'MeConversationsResult';
+  /** Conversations between users. */
+  users: Array<Conversation>;
+  /** Get a conversation with a well-known virtual contributor for the current user. */
+  virtualContributor?: Maybe<Conversation>;
+  /** Conversations between users and virtual contributors. */
+  virtualContributors: Array<Conversation>;
+};
+
+export type MeConversationsResultVirtualContributorArgs = {
+  wellKnown: VirtualContributorWellKnown;
+};
+
 export type MeQueryResults = {
   __typename?: 'MeQueryResults';
   /** The community applications current authenticated user can act on. */
@@ -3952,6 +4012,8 @@ export type MeQueryResults = {
   communityInvitations: Array<CommunityInvitationResult>;
   /** The number of invitations the current authenticated user can act on. */
   communityInvitationsCount: Scalars['Float']['output'];
+  /** The conversations the current authenticated user is part of. */
+  conversations: MeConversationsResult;
   /** The query id */
   id: Scalars['String']['output'];
   /** The Spaces I am contributing to */
@@ -4156,6 +4218,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Adds an Iframe Allowed URL to the Platform Settings */
   addIframeAllowedURL: Array<Scalars['String']['output']>;
+  /** Adds a full email address to the platform notification blacklist */
+  addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Ensure all community members are registered for communications. */
@@ -4197,7 +4261,7 @@ export type Mutation = {
   /** Apply to join the specified RoleSet in the entry Role. */
   applyForEntryRoleOnRoleSet: Application;
   /** Ask the chat engine for guidance. */
-  askChatGuidanceQuestion: MessageAnswerQuestion;
+  askVcQuestion: MessageAnswerQuestion;
   /** Assign the specified LicensePlan to an Account. */
   assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
@@ -4244,10 +4308,10 @@ export type Mutation = {
   convertVirtualContributorToUseKnowledgeBase: VirtualContributor;
   /** Create a new Callout on the CalloutsSet. */
   createCalloutOnCalloutsSet: Callout;
-  /** Create a guidance chat room. */
-  createChatGuidanceRoom?: Maybe<Room>;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
+  /** Create a new Conversation on the ConversationsSet. */
+  createConversationOnConversationsSet: Conversation;
   /** Creates a new Discussion as part of this Forum. */
   createDiscussion: Discussion;
   /** Create a new CalendarEvent on the Calendar. */
@@ -4294,6 +4358,8 @@ export type Mutation = {
   deleteCallout: Callout;
   /** Deletes a contribution. */
   deleteContribution: CalloutContribution;
+  /** Deletes a Conversation. The Matrix room is only deleted if no reciprocal conversation exists. */
+  deleteConversation: Conversation;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
   /** Deletes the specified Document. */
@@ -4342,6 +4408,8 @@ export type Mutation = {
   eventOnInvitation: Invitation;
   /** Trigger an event on the Organization Verification. */
   eventOnOrganizationVerification: OrganizationVerification;
+  /** User vote if a specific answer is relevant. */
+  feedbackOnVcAnswerRelevance: Scalars['Boolean']['output'];
   /** Grants an authorization credential to an Organization. */
   grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
@@ -4368,6 +4436,8 @@ export type Mutation = {
   removeIframeAllowedURL: Array<Scalars['String']['output']>;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID']['output'];
+  /** Removes an email address from the platform notification blacklist */
+  removeNotificationEmailFromBlacklist: Array<Scalars['String']['output']>;
   /** Removes a User from a Role on the Platform. */
   removePlatformRoleFromUser: User;
   /** Remove a reaction on a message from the specified Room. */
@@ -4381,7 +4451,7 @@ export type Mutation = {
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
   /** Resets the interaction with the chat engine. */
-  resetChatGuidance: Scalars['Boolean']['output'];
+  resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
   resetLicenseOnAccounts: Space;
   /** Removes an authorization credential from an Organization. */
@@ -4400,10 +4470,10 @@ export type Mutation = {
   sendMessageToOrganization: Scalars['Boolean']['output'];
   /** Sends an comment message. Returns the id of the new Update message. */
   sendMessageToRoom: Message;
-  /** Sends a message on the specified User`s behalf and returns the room id */
-  sendMessageToUserDirect: Scalars['String']['output'];
   /** Send message to multiple Users. */
   sendMessageToUsers: Scalars['Boolean']['output'];
+  /** Set the mapping of a well-known Virtual Contributor to a specific Virtual Contributor UUID. */
+  setPlatformWellKnownVirtualContributor: PlatformWellKnownVirtualContributors;
   /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
   transferCallout: Callout;
   /** Transfer the specified InnovationHub to another Account. */
@@ -4414,8 +4484,6 @@ export type Mutation = {
   transferSpaceToAccount: Space;
   /** Transfer the specified Virtual Contributor to another Account. */
   transferVirtualContributorToAccount: InnovationPack;
-  /** User vote if a specific answer is relevant. */
-  updateAnswerRelevance: Scalars['Boolean']['output'];
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
   /** Update the baseline License Plan on the specified Account. */
@@ -4502,12 +4570,16 @@ export type Mutation = {
   updateUserSettings: User;
   /** Updates the specified VirtualContributor. */
   updateVirtualContributor: VirtualContributor;
-  /** Updates one of the Setting on an Organization */
+  /** Updates platform-level settings of a VirtualContributor (platform admins only). */
+  updateVirtualContributorPlatformSettings: VirtualContributor;
+  /** Updates one of the Setting on an Virtual Contributor */
   updateVirtualContributorSettings: VirtualContributor;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
   updateWhiteboard: Whiteboard;
+  /** Grants or revokes GLOBAL_GUEST permissions for a whiteboard using a single toggle. */
+  updateWhiteboardGuestAccess: UpdateWhiteboardGuestAccessResult;
   /** Create a new Document on the Storage and return the value as part of the returned Link. */
   uploadFileOnLink: Link;
   /** Create a new Document on the Storage and return the value as part of the returned Reference. */
@@ -4520,6 +4592,10 @@ export type Mutation = {
 
 export type MutationAddIframeAllowedUrlArgs = {
   whitelistedURL: Scalars['String']['input'];
+};
+
+export type MutationAddNotificationEmailToBlacklistArgs = {
+  input: NotificationEmailAddressInput;
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -4582,8 +4658,8 @@ export type MutationApplyForEntryRoleOnRoleSetArgs = {
   applicationData: ApplyForEntryRoleOnRoleSetInput;
 };
 
-export type MutationAskChatGuidanceQuestionArgs = {
-  chatData: ChatGuidanceInput;
+export type MutationAskVcQuestionArgs = {
+  input: ConversationVcAskQuestionInput;
 };
 
 export type MutationAssignLicensePlanToAccountArgs = {
@@ -4660,6 +4736,10 @@ export type MutationCreateCalloutOnCalloutsSetArgs = {
 
 export type MutationCreateContributionOnCalloutArgs = {
   contributionData: CreateContributionOnCalloutInput;
+};
+
+export type MutationCreateConversationOnConversationsSetArgs = {
+  conversationData: CreateConversationInput;
 };
 
 export type MutationCreateDiscussionArgs = {
@@ -4748,6 +4828,10 @@ export type MutationDeleteCalloutArgs = {
 
 export type MutationDeleteContributionArgs = {
   deleteData: DeleteContributionInput;
+};
+
+export type MutationDeleteConversationArgs = {
+  deleteData: DeleteConversationInput;
 };
 
 export type MutationDeleteDiscussionArgs = {
@@ -4846,6 +4930,10 @@ export type MutationEventOnOrganizationVerificationArgs = {
   eventData: OrganizationVerificationEventInput;
 };
 
+export type MutationFeedbackOnVcAnswerRelevanceArgs = {
+  input: ConversationVcAnswerRelevanceInput;
+};
+
 export type MutationGrantCredentialToOrganizationArgs = {
   grantCredentialData: GrantOrganizationAuthorizationCredentialInput;
 };
@@ -4894,6 +4982,10 @@ export type MutationRemoveMessageOnRoomArgs = {
   messageData: RoomRemoveMessageInput;
 };
 
+export type MutationRemoveNotificationEmailFromBlacklistArgs = {
+  input: NotificationEmailAddressInput;
+};
+
 export type MutationRemovePlatformRoleFromUserArgs = {
   roleData: RemovePlatformRoleInput;
 };
@@ -4916,6 +5008,10 @@ export type MutationRemoveRoleFromVirtualContributorArgs = {
 
 export type MutationRemoveUserFromGroupArgs = {
   membershipData: RemoveUserGroupMemberInput;
+};
+
+export type MutationResetConversationVcArgs = {
+  input: ConversationVcResetInput;
 };
 
 export type MutationRevokeCredentialFromOrganizationArgs = {
@@ -4950,12 +5046,12 @@ export type MutationSendMessageToRoomArgs = {
   messageData: RoomSendMessageInput;
 };
 
-export type MutationSendMessageToUserDirectArgs = {
-  messageData: UserSendMessageInput;
-};
-
 export type MutationSendMessageToUsersArgs = {
   messageData: CommunicationSendMessageToUsersInput;
+};
+
+export type MutationSetPlatformWellKnownVirtualContributorArgs = {
+  mappingData: SetPlatformWellKnownVirtualContributorInput;
 };
 
 export type MutationTransferCalloutArgs = {
@@ -4976,10 +5072,6 @@ export type MutationTransferSpaceToAccountArgs = {
 
 export type MutationTransferVirtualContributorToAccountArgs = {
   transferData: TransferAccountVirtualContributorInput;
-};
-
-export type MutationUpdateAnswerRelevanceArgs = {
-  input: ChatGuidanceAnswerRelevanceInput;
 };
 
 export type MutationUpdateApplicationFormOnRoleSetArgs = {
@@ -5154,6 +5246,10 @@ export type MutationUpdateVirtualContributorArgs = {
   virtualContributorData: UpdateVirtualContributorInput;
 };
 
+export type MutationUpdateVirtualContributorPlatformSettingsArgs = {
+  settingsData: UpdateVirtualContributorPlatformSettingsInput;
+};
+
 export type MutationUpdateVirtualContributorSettingsArgs = {
   settingsData: UpdateVirtualContributorSettingsInput;
 };
@@ -5164,6 +5260,10 @@ export type MutationUpdateVisualArgs = {
 
 export type MutationUpdateWhiteboardArgs = {
   whiteboardData: UpdateWhiteboardEntityInput;
+};
+
+export type MutationUpdateWhiteboardGuestAccessArgs = {
+  input: UpdateWhiteboardGuestAccessInput;
 };
 
 export type MutationUploadFileOnLinkArgs = {
@@ -5208,6 +5308,11 @@ export type Nvp = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   value: Scalars['String']['output'];
+};
+
+export type NotificationEmailAddressInput = {
+  /** Full email address to add/remove; lowercase enforced by server */
+  email: Scalars['String']['input'];
 };
 
 export enum NotificationEvent {
@@ -5523,8 +5628,6 @@ export type Platform = {
   __typename?: 'Platform';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The Virtual Contributor that is used to provide chat help on the platform. */
-  chatGuidanceVirtualContributor: VirtualContributor;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** The date at which the entity was created. */
@@ -5553,6 +5656,8 @@ export type Platform = {
   templatesManager?: Maybe<TemplatesManager>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+  /** The mappings of well-known Virtual Contributors to their UUIDs. */
+  wellKnownVirtualContributors: PlatformWellKnownVirtualContributors;
 };
 
 export type PlatformInnovationHubArgs = {
@@ -5667,6 +5772,8 @@ export type PlatformIntegrationSettings = {
   __typename?: 'PlatformIntegrationSettings';
   /** The list of allowed URLs for iFrames within Markdown content. */
   iframeAllowedUrls: Array<Scalars['String']['output']>;
+  /** List of fully-qualified email addresses blocked from receiving notifications */
+  notificationEmailBlacklist: Array<Scalars['String']['output']>;
 };
 
 export type PlatformInvitation = {
@@ -5760,6 +5867,20 @@ export type PlatformSettings = {
   __typename?: 'PlatformSettings';
   /** The integration settings for this Platform */
   integration: PlatformIntegrationSettings;
+};
+
+export type PlatformWellKnownVirtualContributorMapping = {
+  __typename?: 'PlatformWellKnownVirtualContributorMapping';
+  /** The UUID of the Virtual Contributor. */
+  virtualContributorID: Scalars['UUID']['output'];
+  /** The well-known identifier for the Virtual Contributor. */
+  wellKnown: VirtualContributorWellKnown;
+};
+
+export type PlatformWellKnownVirtualContributors = {
+  __typename?: 'PlatformWellKnownVirtualContributors';
+  /** The mappings of well-known Virtual Contributors to their UUIDs. */
+  mappings: Array<PlatformWellKnownVirtualContributorMapping>;
 };
 
 export type Post = {
@@ -6395,6 +6516,7 @@ export enum RoleName {
   GlobalSpacesReader = 'GLOBAL_SPACES_READER',
   GlobalSupport = 'GLOBAL_SUPPORT',
   GlobalSupportManager = 'GLOBAL_SUPPORT_MANAGER',
+  Guest = 'GUEST',
   Lead = 'LEAD',
   Member = 'MEMBER',
   Owner = 'OWNER',
@@ -6883,6 +7005,13 @@ export type ServiceMetadata = {
   version?: Maybe<Scalars['String']['output']>;
 };
 
+export type SetPlatformWellKnownVirtualContributorInput = {
+  /** The UUID of the Virtual Contributor. */
+  virtualContributorID: Scalars['UUID']['input'];
+  /** The well-known Virtual Contributor type. */
+  wellKnown: VirtualContributorWellKnown;
+};
+
 export type Space = {
   __typename?: 'Space';
   /** About this space. */
@@ -7029,6 +7158,8 @@ export type SpaceSettingsCollaboration = {
   __typename?: 'SpaceSettingsCollaboration';
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
   allowEventsFromSubspaces: Scalars['Boolean']['output'];
+  /** Flag to control if guest users can contribute to this Space. */
+  allowGuestContributions: Scalars['Boolean']['output'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean']['output'];
   /** Flag to control if members can create subspaces. */
@@ -7890,6 +8021,8 @@ export type UpdatePlatformSettingsInput = {
 export type UpdatePlatformSettingsIntegrationInput = {
   /** Update the list of allowed URLs for iFrames within Markdown content. */
   iframeAllowedUrls: Array<Scalars['String']['input']>;
+  /** Update the list of email addresses blocked from receiving notifications. */
+  notificationEmailBlacklist?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type UpdatePostInput = {
@@ -7955,6 +8088,8 @@ export type UpdateSpacePlatformSettingsInput = {
 export type UpdateSpaceSettingsCollaborationInput = {
   /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
   allowEventsFromSubspaces: Scalars['Boolean']['input'];
+  /** Flag to control if guest users can contribute to this Space. */
+  allowGuestContributions: Scalars['Boolean']['input'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean']['input'];
   /** Flag to control if members can create subspaces. */
@@ -8196,6 +8331,18 @@ export type UpdateVirtualContributorInput = {
   searchVisibility?: InputMaybe<SearchVisibility>;
 };
 
+export type UpdateVirtualContributorPlatformSettingsEntityInput = {
+  /** Enable or disable the editing of the prompt graph for this Virtual Contributor. */
+  promptGraphEditingEnabled: Scalars['Boolean']['input'];
+};
+
+export type UpdateVirtualContributorPlatformSettingsInput = {
+  /** Platform-level settings to apply to this Virtual Contributor. */
+  settings: UpdateVirtualContributorPlatformSettingsEntityInput;
+  /** ID of the Virtual Contributor to update. */
+  virtualContributorID: Scalars['UUID']['input'];
+};
+
 export type UpdateVirtualContributorSettingsEntityInput = {
   privacy?: InputMaybe<UpdateVirtualContributorSettingsPrivacyInput>;
 };
@@ -8227,6 +8374,21 @@ export type UpdateWhiteboardEntityInput = {
   previewSettings?: InputMaybe<UpdateWhiteboardPreviewSettingsInput>;
   /** The Profile of this entity. */
   profile?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateWhiteboardGuestAccessInput = {
+  /** Target state for guest collaboration. True enables GLOBAL_GUEST privileges. */
+  guestAccessEnabled: Scalars['Boolean']['input'];
+  /** The identifier of the whiteboard whose guest access should be toggled. */
+  whiteboardId: Scalars['UUID']['input'];
+};
+
+export type UpdateWhiteboardGuestAccessResult = {
+  __typename?: 'UpdateWhiteboardGuestAccessResult';
+  /** Indicates whether the mutation completed successfully. */
+  success: Scalars['Boolean']['output'];
+  /** Whiteboard snapshot reflecting the latest guest access state. */
+  whiteboard?: Maybe<Whiteboard>;
 };
 
 export type UpdateWhiteboardPreviewSettingsInput = {
@@ -8354,13 +8516,9 @@ export type User = Contributor & {
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** The direct rooms this user is a member of */
-  directRooms?: Maybe<Array<DirectRoom>>;
   /** The email address for this User. */
   email: Scalars['String']['output'];
   firstName: Scalars['String']['output'];
-  /** Guidance Chat Room for this user */
-  guidanceRoom?: Maybe<Room>;
   /** The ID of the Contributor */
   id: Scalars['UUID']['output'];
   /** Can a message be sent to this User. */
@@ -8418,13 +8576,6 @@ export type UserGroup = {
   profile?: Maybe<Profile>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
-};
-
-export type UserSendMessageInput = {
-  /** The message being sent */
-  message: Scalars['String']['input'];
-  /** The user a message is being sent to */
-  receivingUserID: Scalars['String']['input'];
 };
 
 export type UserSettings = {
@@ -8653,6 +8804,8 @@ export type VirtualContributor = Contributor & {
   modelCard: VirtualContributorModelCard;
   /** A name identifier of the Contributor, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
+  /** Platform-level settings of this Virtual Contributor, modifiable only by platform admins. */
+  platformSettings: VirtualContributorPlatformSettings;
   /** The profile for this Virtual. */
   profile: Profile;
   /** Prompt graph definition for this Virtual Contributor. */
@@ -8722,6 +8875,12 @@ export type VirtualContributorModelCardFlag = {
   name: VirtualContributorModelCardEntryFlagName;
 };
 
+export type VirtualContributorPlatformSettings = {
+  __typename?: 'VirtualContributorPlatformSettings';
+  /** Enable or disable the editing of the prompt graph for this Virtual Contributor. */
+  promptGraphEditingEnabled: Scalars['Boolean']['output'];
+};
+
 export type VirtualContributorSettings = {
   __typename?: 'VirtualContributorSettings';
   /** The privacy settings for this VirtualContributor */
@@ -8745,6 +8904,11 @@ export type VirtualContributorUpdatedSubscriptionResult = {
   /** The Virtual Contributor that was updated */
   virtualContributor: VirtualContributor;
 };
+
+export enum VirtualContributorWellKnown {
+  ChatGuidance = 'CHAT_GUIDANCE',
+  StewardOwnershipExpert = 'STEWARD_OWNERSHIP_EXPERT',
+}
 
 export type VirtualContributorsInRolesResponse = {
   __typename?: 'VirtualContributorsInRolesResponse';
@@ -8819,6 +8983,8 @@ export type Whiteboard = {
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** Indicates whether guest collaborators are currently allowed via GLOBAL_GUEST permissions. */
+  guestContributionsAllowed: Scalars['Boolean']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** Whether the Whiteboard is multi-user enabled on Space level. */
@@ -12675,6 +12841,7 @@ export type UpdateCalloutContentMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13046,6 +13213,7 @@ export type UpdateCalloutVisibilityMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -13433,6 +13601,7 @@ export type CalloutContributionQuery = {
             | {
                 __typename?: 'Whiteboard';
                 id: string;
+                guestContributionsAllowed: boolean;
                 createdDate: Date;
                 profile: {
                   __typename?: 'Profile';
@@ -14003,6 +14172,13 @@ export type CalloutContributionsQuery = {
                         }
                       | undefined;
                   };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   createdBy?:
                     | {
                         __typename?: 'User';
@@ -14093,6 +14269,9 @@ export type CalloutContributionsWhiteboardCardFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
@@ -14154,6 +14333,7 @@ export type CreateWhiteboardOnCalloutMutation = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -14365,6 +14545,7 @@ export type CreateCalloutMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            guestContributionsAllowed: boolean;
             contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
@@ -14829,6 +15010,7 @@ export type CalloutDetailsQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  guestContributionsAllowed: boolean;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -15289,6 +15471,7 @@ export type CalloutDetailsFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -16026,6 +16209,39 @@ export type UpdateMemoContentUpdatePolicyMutation = {
   updateMemo: { __typename?: 'Memo'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
+export type WhiteboardGuestAccessFieldsFragment = {
+  __typename?: 'Whiteboard';
+  id: string;
+  nameID: string;
+  guestContributionsAllowed: boolean;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type UpdateWhiteboardGuestAccessMutationVariables = Exact<{
+  input: UpdateWhiteboardGuestAccessInput;
+}>;
+
+export type UpdateWhiteboardGuestAccessMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboardGuestAccess: {
+    __typename?: 'UpdateWhiteboardGuestAccessResult';
+    success: boolean;
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          nameID: string;
+          guestContributionsAllowed: boolean;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type WhiteboardPreviewSettingsFragment = {
   __typename?: 'WhiteboardPreviewSettings';
   mode: WhiteboardPreviewMode;
@@ -16108,6 +16324,7 @@ export type WhiteboardDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
+  guestContributionsAllowed: boolean;
   contentUpdatePolicy: ContentUpdatePolicy;
   profile: {
     __typename?: 'Profile';
@@ -16209,6 +16426,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
+              guestContributionsAllowed: boolean;
               contentUpdatePolicy: ContentUpdatePolicy;
               profile: {
                 __typename?: 'Profile';
@@ -16310,6 +16528,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               id: string;
               nameID: string;
               createdDate: Date;
+              guestContributionsAllowed: boolean;
               contentUpdatePolicy: ContentUpdatePolicy;
               profile: {
                 __typename?: 'Profile';
@@ -16430,6 +16649,7 @@ export type WhiteboardFromCalloutQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  guestContributionsAllowed: boolean;
                   contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
@@ -16574,6 +16794,52 @@ export type UpdateWhiteboardMutation = {
         | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
         | undefined;
     };
+  };
+};
+
+export type GetPublicWhiteboardQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID']['input'];
+}>;
+
+export type GetPublicWhiteboardQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          content: string;
+          guestContributionsAllowed: boolean;
+          createdDate: Date;
+          updatedDate: Date;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type PublicWhiteboardFragmentFragment = {
+  __typename?: 'Whiteboard';
+  id: string;
+  content: string;
+  guestContributionsAllowed: boolean;
+  createdDate: Date;
+  updatedDate: Date;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    storageBucket: { __typename?: 'StorageBucket'; id: string };
   };
 };
 
@@ -20637,6 +20903,7 @@ export type VirtualContributorQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          platformSettings: { __typename?: 'VirtualContributorPlatformSettings'; promptGraphEditingEnabled: boolean };
           settings: {
             __typename?: 'VirtualContributorSettings';
             privacy: { __typename?: 'VirtualContributorSettingsPrivacy'; knowledgeBaseContentVisible: boolean };
@@ -21266,6 +21533,20 @@ export type UpdateVirtualContributorMutation = {
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
+  };
+};
+
+export type UpdateVirtualContributorPlatformSettingsMutationVariables = Exact<{
+  settingsData: UpdateVirtualContributorPlatformSettingsInput;
+}>;
+
+export type UpdateVirtualContributorPlatformSettingsMutation = {
+  __typename?: 'Mutation';
+  updateVirtualContributorPlatformSettings: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    aiPersona?: { __typename?: 'AiPersona'; id: string } | undefined;
+    platformSettings: { __typename?: 'VirtualContributorPlatformSettings'; promptGraphEditingEnabled: boolean };
   };
 };
 
@@ -26471,6 +26752,7 @@ export type SpaceSettingsQuery = {
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
               allowMembersToVideoCall: boolean;
+              allowGuestContributions: boolean;
             };
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
@@ -26495,6 +26777,7 @@ export type SpaceSettingsFragment = {
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
     allowMembersToVideoCall: boolean;
+    allowGuestContributions: boolean;
   };
 };
 
@@ -26523,6 +26806,7 @@ export type UpdateSpaceSettingsMutation = {
         inheritMembershipRights: boolean;
         allowEventsFromSubspaces: boolean;
         allowMembersToVideoCall: boolean;
+        allowGuestContributions: boolean;
       };
     };
   };
@@ -28102,6 +28386,7 @@ export type TemplateContentQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        guestContributionsAllowed: boolean;
                         contentUpdatePolicy: ContentUpdatePolicy;
                         profile: {
                           __typename?: 'Profile';
@@ -28441,6 +28726,7 @@ export type TemplateContentQuery = {
                     inheritMembershipRights: boolean;
                     allowEventsFromSubspaces: boolean;
                     allowMembersToVideoCall: boolean;
+                    allowGuestContributions: boolean;
                   };
                 };
                 subspaces: Array<{
@@ -28637,6 +28923,7 @@ export type SpaceTemplateContentQuery = {
               inheritMembershipRights: boolean;
               allowEventsFromSubspaces: boolean;
               allowMembersToVideoCall: boolean;
+              allowGuestContributions: boolean;
             };
           };
           subspaces: Array<{
@@ -28722,6 +29009,7 @@ export type CalloutTemplateContentFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          guestContributionsAllowed: boolean;
           contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
@@ -28992,6 +29280,7 @@ export type SpaceTemplateContentFragment = {
       inheritMembershipRights: boolean;
       allowEventsFromSubspaces: boolean;
       allowMembersToVideoCall: boolean;
+      allowGuestContributions: boolean;
     };
   };
   subspaces: Array<{
@@ -29134,6 +29423,7 @@ export type SpaceTemplateContent_SettingsFragment = {
     inheritMembershipRights: boolean;
     allowEventsFromSubspaces: boolean;
     allowMembersToVideoCall: boolean;
+    allowGuestContributions: boolean;
   };
 };
 
@@ -31189,186 +31479,212 @@ export type AuthorizationPrivilegesForUserQuery = {
   };
 };
 
-export type UpdateAnswerRelevanceMutationVariables = Exact<{
-  input: ChatGuidanceAnswerRelevanceInput;
+export type FeedbackOnVcAnswerRelevanceMutationVariables = Exact<{
+  input: ConversationVcAnswerRelevanceInput;
 }>;
 
-export type UpdateAnswerRelevanceMutation = { __typename?: 'Mutation'; updateAnswerRelevance: boolean };
+export type FeedbackOnVcAnswerRelevanceMutation = { __typename?: 'Mutation'; feedbackOnVcAnswerRelevance: boolean };
 
-export type ResetChatGuidanceMutationVariables = Exact<{ [key: string]: never }>;
-
-export type ResetChatGuidanceMutation = { __typename?: 'Mutation'; resetChatGuidance: boolean };
-
-export type CreateGuidanceRoomMutationVariables = Exact<{ [key: string]: never }>;
-
-export type CreateGuidanceRoomMutation = {
-  __typename?: 'Mutation';
-  createChatGuidanceRoom?: { __typename?: 'Room'; id: string } | undefined;
-};
-
-export type AskChatGuidanceQuestionMutationVariables = Exact<{
-  chatData: ChatGuidanceInput;
+export type ResetConversationVcMutationVariables = Exact<{
+  input: ConversationVcResetInput;
 }>;
 
-export type AskChatGuidanceQuestionMutation = {
+export type ResetConversationVcMutation = {
   __typename?: 'Mutation';
-  askChatGuidanceQuestion: { __typename?: 'MessageAnswerQuestion'; id?: string | undefined; success: boolean };
+  resetConversationVc: { __typename?: 'Conversation'; id: string };
 };
 
-export type GuidanceRoomIdQueryVariables = Exact<{ [key: string]: never }>;
+export type AskVirtualContributorQuestionMutationVariables = Exact<{
+  input: ConversationVcAskQuestionInput;
+}>;
 
-export type GuidanceRoomIdQuery = {
+export type AskVirtualContributorQuestionMutation = {
+  __typename?: 'Mutation';
+  askVcQuestion: { __typename?: 'MessageAnswerQuestion'; id?: string | undefined; success: boolean };
+};
+
+export type ConversationWithGuidanceVcQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ConversationWithGuidanceVcQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    user?:
-      | { __typename?: 'User'; id: string; guidanceRoom?: { __typename?: 'Room'; id: string } | undefined }
-      | undefined;
+    conversations: {
+      __typename?: 'MeConversationsResult';
+      conversationGuidanceVc?:
+        | { __typename?: 'Conversation'; id: string; room?: { __typename?: 'Room'; id: string } | undefined }
+        | undefined;
+    };
   };
 };
 
-export type GuidanceRoomMessagesQueryVariables = Exact<{
-  roomId: Scalars['UUID']['input'];
+export type ConversationVcMessagesQueryVariables = Exact<{
+  conversationId: Scalars['UUID']['input'];
 }>;
 
-export type GuidanceRoomMessagesQuery = {
+export type ConversationVcMessagesQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    room?:
+    conversation?:
       | {
-          __typename?: 'Room';
+          __typename?: 'Conversation';
           id: string;
-          messagesCount: number;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          room?:
+            | {
+                __typename?: 'Room';
+                id: string;
+                messagesCount: number;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                messages: Array<{
+                  __typename?: 'Message';
+                  id: string;
+                  message: string;
+                  timestamp: number;
+                  threadID?: string | undefined;
+                  reactions: Array<{
+                    __typename?: 'Reaction';
+                    id: string;
+                    emoji: string;
+                    sender?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          profile: { __typename?: 'Profile'; id: string; displayName: string };
+                        }
+                      | undefined;
+                  }>;
+                  sender?:
+                    | {
+                        __typename?: 'Organization';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          description?: string | undefined;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                          tagsets?:
+                            | Array<{
+                                __typename?: 'Tagset';
+                                id: string;
+                                name: string;
+                                tags: Array<string>;
+                                allowedValues: Array<string>;
+                                type: TagsetType;
+                              }>
+                            | undefined;
+                          location?:
+                            | {
+                                __typename?: 'Location';
+                                id: string;
+                                country?: string | undefined;
+                                city?: string | undefined;
+                              }
+                            | undefined;
+                        };
+                      }
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          description?: string | undefined;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                          tagsets?:
+                            | Array<{
+                                __typename?: 'Tagset';
+                                id: string;
+                                name: string;
+                                tags: Array<string>;
+                                allowedValues: Array<string>;
+                                type: TagsetType;
+                              }>
+                            | undefined;
+                          location?:
+                            | {
+                                __typename?: 'Location';
+                                id: string;
+                                country?: string | undefined;
+                                city?: string | undefined;
+                              }
+                            | undefined;
+                        };
+                      }
+                    | {
+                        __typename?: 'VirtualContributor';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          description?: string | undefined;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                          tagsets?:
+                            | Array<{
+                                __typename?: 'Tagset';
+                                id: string;
+                                name: string;
+                                tags: Array<string>;
+                                allowedValues: Array<string>;
+                                type: TagsetType;
+                              }>
+                            | undefined;
+                          location?:
+                            | {
+                                __typename?: 'Location';
+                                id: string;
+                                country?: string | undefined;
+                                city?: string | undefined;
+                              }
+                            | undefined;
+                        };
+                      }
+                    | undefined;
+                }>;
+                vcInteractions: Array<{
+                  __typename?: 'VcInteraction';
+                  id: string;
+                  threadID: string;
+                  virtualContributorID: string;
+                }>;
+              }
             | undefined;
-          messages: Array<{
-            __typename?: 'Message';
-            id: string;
-            message: string;
-            timestamp: number;
-            threadID?: string | undefined;
-            reactions: Array<{
-              __typename?: 'Reaction';
-              id: string;
-              emoji: string;
-              sender?:
-                | {
-                    __typename?: 'User';
-                    id: string;
-                    profile: { __typename?: 'Profile'; id: string; displayName: string };
-                  }
-                | undefined;
-            }>;
-            sender?:
-              | {
-                  __typename?: 'Organization';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    description?: string | undefined;
-                    avatar?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: VisualType;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagsets?:
-                      | Array<{
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }>
-                      | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                      | undefined;
-                  };
-                }
-              | {
-                  __typename?: 'User';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    description?: string | undefined;
-                    avatar?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: VisualType;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagsets?:
-                      | Array<{
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }>
-                      | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                      | undefined;
-                  };
-                }
-              | {
-                  __typename?: 'VirtualContributor';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    description?: string | undefined;
-                    avatar?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: VisualType;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagsets?:
-                      | Array<{
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }>
-                      | undefined;
-                    location?:
-                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                      | undefined;
-                  };
-                }
-              | undefined;
-          }>;
-          vcInteractions: Array<{
-            __typename?: 'VcInteraction';
-            id: string;
-            threadID: string;
-            virtualContributorID: string;
-          }>;
         }
       | undefined;
   };

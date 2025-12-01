@@ -1119,6 +1119,29 @@ export type ContributorRolesFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ConversationKeySpecifier = (
+  | 'authorization'
+  | 'createdDate'
+  | 'id'
+  | 'room'
+  | 'type'
+  | 'updatedDate'
+  | 'user'
+  | 'virtualContributor'
+  | 'wellKnownVirtualContributor'
+  | ConversationKeySpecifier
+)[];
+export type ConversationFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  room?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  wellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateCalloutContributionDataKeySpecifier = (
   | 'link'
   | 'memo'
@@ -1393,13 +1416,6 @@ export type CredentialMetadataOutputFieldPolicy = {
   schema?: FieldPolicy<any> | FieldReadFunction<any>;
   types?: FieldPolicy<any> | FieldReadFunction<any>;
   uniqueType?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type DirectRoomKeySpecifier = ('displayName' | 'id' | 'messages' | 'receiverID' | DirectRoomKeySpecifier)[];
-export type DirectRoomFieldPolicy = {
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  messages?: FieldPolicy<any> | FieldReadFunction<any>;
-  receiverID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type DiscussionKeySpecifier = (
   | 'authorization'
@@ -2314,6 +2330,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'community'
   | 'communityGuidelines'
   | 'contribution'
+  | 'conversation'
   | 'document'
   | 'innovationFlow'
   | 'innovationHub'
@@ -2355,6 +2372,7 @@ export type LookupQueryResultsFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   contribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversation?: FieldPolicy<any> | FieldReadFunction<any>;
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2381,10 +2399,22 @@ export type LookupQueryResultsFieldPolicy = {
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MeConversationsResultKeySpecifier = (
+  | 'users'
+  | 'virtualContributor'
+  | 'virtualContributors'
+  | MeConversationsResultKeySpecifier
+)[];
+export type MeConversationsResultFieldPolicy = {
+  users?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MeQueryResultsKeySpecifier = (
   | 'communityApplications'
   | 'communityInvitations'
   | 'communityInvitationsCount'
+  | 'conversations'
   | 'id'
   | 'mySpaces'
   | 'notifications'
@@ -2398,6 +2428,7 @@ export type MeQueryResultsFieldPolicy = {
   communityApplications?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitationsCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversations?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   notifications?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2520,6 +2551,7 @@ export type ModelCardSpaceUsageResultFieldPolicy = {
 };
 export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
+  | 'addNotificationEmailToBlacklist'
   | 'addReactionToMessageInRoom'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
@@ -2540,7 +2572,7 @@ export type MutationKeySpecifier = (
   | 'aiServerDeleteAiPersona'
   | 'aiServerUpdateAiPersona'
   | 'applyForEntryRoleOnRoleSet'
-  | 'askChatGuidanceQuestion'
+  | 'askVcQuestion'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
   | 'assignPlatformRoleToUser'
@@ -2564,8 +2596,8 @@ export type MutationKeySpecifier = (
   | 'convertSpaceL2ToSpaceL1'
   | 'convertVirtualContributorToUseKnowledgeBase'
   | 'createCalloutOnCalloutsSet'
-  | 'createChatGuidanceRoom'
   | 'createContributionOnCallout'
+  | 'createConversationOnConversationsSet'
   | 'createDiscussion'
   | 'createEventOnCalendar'
   | 'createGroupOnCommunity'
@@ -2589,6 +2621,7 @@ export type MutationKeySpecifier = (
   | 'deleteCalendarEvent'
   | 'deleteCallout'
   | 'deleteContribution'
+  | 'deleteConversation'
   | 'deleteDiscussion'
   | 'deleteDocument'
   | 'deleteInnovationHub'
@@ -2613,6 +2646,7 @@ export type MutationKeySpecifier = (
   | 'eventOnApplication'
   | 'eventOnInvitation'
   | 'eventOnOrganizationVerification'
+  | 'feedbackOnVcAnswerRelevance'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'inviteForEntryRoleOnRoleSet'
@@ -2626,13 +2660,14 @@ export type MutationKeySpecifier = (
   | 'removeCommunityGuidelinesContent'
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
+  | 'removeNotificationEmailFromBlacklist'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
   | 'removeRoleFromOrganization'
   | 'removeRoleFromUser'
   | 'removeRoleFromVirtualContributor'
   | 'removeUserFromGroup'
-  | 'resetChatGuidance'
+  | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromOrganization'
   | 'revokeCredentialFromUser'
@@ -2642,14 +2677,13 @@ export type MutationKeySpecifier = (
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
-  | 'sendMessageToUserDirect'
   | 'sendMessageToUsers'
+  | 'setPlatformWellKnownVirtualContributor'
   | 'transferCallout'
   | 'transferInnovationHubToAccount'
   | 'transferInnovationPackToAccount'
   | 'transferSpaceToAccount'
   | 'transferVirtualContributorToAccount'
-  | 'updateAnswerRelevance'
   | 'updateApplicationFormOnRoleSet'
   | 'updateBaselineLicensePlanOnAccount'
   | 'updateCalendarEvent'
@@ -2693,9 +2727,11 @@ export type MutationKeySpecifier = (
   | 'updateUserPlatformSettings'
   | 'updateUserSettings'
   | 'updateVirtualContributor'
+  | 'updateVirtualContributorPlatformSettings'
   | 'updateVirtualContributorSettings'
   | 'updateVisual'
   | 'updateWhiteboard'
+  | 'updateWhiteboardGuestAccess'
   | 'uploadFileOnLink'
   | 'uploadFileOnReference'
   | 'uploadFileOnStorageBucket'
@@ -2704,6 +2740,7 @@ export type MutationKeySpecifier = (
 )[];
 export type MutationFieldPolicy = {
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
+  addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2724,7 +2761,7 @@ export type MutationFieldPolicy = {
   aiServerDeleteAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
+  askVcQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2748,8 +2785,8 @@ export type MutationFieldPolicy = {
   convertSpaceL2ToSpaceL1?: FieldPolicy<any> | FieldReadFunction<any>;
   convertVirtualContributorToUseKnowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCalloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  createChatGuidanceRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  createConversationOnConversationsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2773,6 +2810,7 @@ export type MutationFieldPolicy = {
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteContribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteConversation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2797,6 +2835,7 @@ export type MutationFieldPolicy = {
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
+  feedbackOnVcAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2810,13 +2849,14 @@ export type MutationFieldPolicy = {
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  resetChatGuidance?: FieldPolicy<any> | FieldReadFunction<any>;
+  resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2826,14 +2866,13 @@ export type MutationFieldPolicy = {
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  sendMessageToUserDirect?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  setPlatformWellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationPackToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferSpaceToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   transferVirtualContributorToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   updateApplicationFormOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   updateBaselineLicensePlanOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2877,9 +2916,11 @@ export type MutationFieldPolicy = {
   updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateVirtualContributorPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributorSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateWhiteboardGuestAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnLink?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3068,7 +3109,6 @@ export type PaginatedVirtualContributorFieldPolicy = {
 };
 export type PlatformKeySpecifier = (
   | 'authorization'
-  | 'chatGuidanceVirtualContributor'
   | 'configuration'
   | 'createdDate'
   | 'forum'
@@ -3083,11 +3123,11 @@ export type PlatformKeySpecifier = (
   | 'storageAggregator'
   | 'templatesManager'
   | 'updatedDate'
+  | 'wellKnownVirtualContributors'
   | PlatformKeySpecifier
 )[];
 export type PlatformFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  chatGuidanceVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   forum?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3102,6 +3142,7 @@ export type PlatformFieldPolicy = {
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  wellKnownVirtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformAccessRoleKeySpecifier = ('grantedPrivileges' | 'roleName' | PlatformAccessRoleKeySpecifier)[];
 export type PlatformAccessRoleFieldPolicy = {
@@ -3150,9 +3191,14 @@ export type PlatformFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformIntegrationSettingsKeySpecifier = ('iframeAllowedUrls' | PlatformIntegrationSettingsKeySpecifier)[];
+export type PlatformIntegrationSettingsKeySpecifier = (
+  | 'iframeAllowedUrls'
+  | 'notificationEmailBlacklist'
+  | PlatformIntegrationSettingsKeySpecifier
+)[];
 export type PlatformIntegrationSettingsFieldPolicy = {
   iframeAllowedUrls?: FieldPolicy<any> | FieldReadFunction<any>;
+  notificationEmailBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformInvitationKeySpecifier = (
   | 'authorization'
@@ -3247,6 +3293,22 @@ export type PlatformRolesAccessFieldPolicy = {
 export type PlatformSettingsKeySpecifier = ('integration' | PlatformSettingsKeySpecifier)[];
 export type PlatformSettingsFieldPolicy = {
   integration?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformWellKnownVirtualContributorMappingKeySpecifier = (
+  | 'virtualContributorID'
+  | 'wellKnown'
+  | PlatformWellKnownVirtualContributorMappingKeySpecifier
+)[];
+export type PlatformWellKnownVirtualContributorMappingFieldPolicy = {
+  virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
+  wellKnown?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformWellKnownVirtualContributorsKeySpecifier = (
+  | 'mappings'
+  | PlatformWellKnownVirtualContributorsKeySpecifier
+)[];
+export type PlatformWellKnownVirtualContributorsFieldPolicy = {
+  mappings?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PostKeySpecifier = (
   | 'authorization'
@@ -4030,6 +4092,7 @@ export type SpaceSettingsFieldPolicy = {
 };
 export type SpaceSettingsCollaborationKeySpecifier = (
   | 'allowEventsFromSubspaces'
+  | 'allowGuestContributions'
   | 'allowMembersToCreateCallouts'
   | 'allowMembersToCreateSubspaces'
   | 'allowMembersToVideoCall'
@@ -4038,6 +4101,7 @@ export type SpaceSettingsCollaborationKeySpecifier = (
 )[];
 export type SpaceSettingsCollaborationFieldPolicy = {
   allowEventsFromSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  allowGuestContributions?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToVideoCall?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4388,6 +4452,15 @@ export type TimelineFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UpdateWhiteboardGuestAccessResultKeySpecifier = (
+  | 'success'
+  | 'whiteboard'
+  | UpdateWhiteboardGuestAccessResultKeySpecifier
+)[];
+export type UpdateWhiteboardGuestAccessResultFieldPolicy = {
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UrlResolverQueryResultCalendarKeySpecifier = (
   | 'calendarEventId'
   | 'id'
@@ -4499,10 +4572,8 @@ export type UserKeySpecifier = (
   | 'authentication'
   | 'authorization'
   | 'createdDate'
-  | 'directRooms'
   | 'email'
   | 'firstName'
-  | 'guidanceRoom'
   | 'id'
   | 'isContactable'
   | 'lastName'
@@ -4521,10 +4592,8 @@ export type UserFieldPolicy = {
   authentication?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
-  guidanceRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4777,6 +4846,7 @@ export type VirtualContributorKeySpecifier = (
   | 'listedInStore'
   | 'modelCard'
   | 'nameID'
+  | 'platformSettings'
   | 'profile'
   | 'promptGraphDefinition'
   | 'provider'
@@ -4804,6 +4874,7 @@ export type VirtualContributorFieldPolicy = {
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   modelCard?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  platformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   promptGraphDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4831,6 +4902,13 @@ export type VirtualContributorModelCardFlagKeySpecifier = (
 export type VirtualContributorModelCardFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualContributorPlatformSettingsKeySpecifier = (
+  | 'promptGraphEditingEnabled'
+  | VirtualContributorPlatformSettingsKeySpecifier
+)[];
+export type VirtualContributorPlatformSettingsFieldPolicy = {
+  promptGraphEditingEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VirtualContributorSettingsKeySpecifier = ('privacy' | VirtualContributorSettingsKeySpecifier)[];
 export type VirtualContributorSettingsFieldPolicy = {
@@ -4913,6 +4991,7 @@ export type WhiteboardKeySpecifier = (
   | 'contentUpdatePolicy'
   | 'createdBy'
   | 'createdDate'
+  | 'guestContributionsAllowed'
   | 'id'
   | 'isMultiUser'
   | 'nameID'
@@ -4927,6 +5006,7 @@ export type WhiteboardFieldPolicy = {
   contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  guestContributionsAllowed?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5303,6 +5383,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ContributorRolesKeySpecifier | (() => undefined | ContributorRolesKeySpecifier);
     fields?: ContributorRolesFieldPolicy;
   };
+  Conversation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ConversationKeySpecifier | (() => undefined | ConversationKeySpecifier);
+    fields?: ConversationFieldPolicy;
+  };
   CreateCalloutContributionData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -5440,10 +5524,6 @@ export type StrictTypedTypePolicies = {
   CredentialMetadataOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialMetadataOutputKeySpecifier | (() => undefined | CredentialMetadataOutputKeySpecifier);
     fields?: CredentialMetadataOutputFieldPolicy;
-  };
-  DirectRoom?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | DirectRoomKeySpecifier | (() => undefined | DirectRoomKeySpecifier);
-    fields?: DirectRoomFieldPolicy;
   };
   Discussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | DiscussionKeySpecifier | (() => undefined | DiscussionKeySpecifier);
@@ -5764,6 +5844,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | LookupQueryResultsKeySpecifier | (() => undefined | LookupQueryResultsKeySpecifier);
     fields?: LookupQueryResultsFieldPolicy;
   };
+  MeConversationsResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MeConversationsResultKeySpecifier | (() => undefined | MeConversationsResultKeySpecifier);
+    fields?: MeConversationsResultFieldPolicy;
+  };
   MeQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);
     fields?: MeQueryResultsFieldPolicy;
@@ -5955,6 +6039,20 @@ export type StrictTypedTypePolicies = {
   PlatformSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformSettingsKeySpecifier | (() => undefined | PlatformSettingsKeySpecifier);
     fields?: PlatformSettingsFieldPolicy;
+  };
+  PlatformWellKnownVirtualContributorMapping?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PlatformWellKnownVirtualContributorMappingKeySpecifier
+      | (() => undefined | PlatformWellKnownVirtualContributorMappingKeySpecifier);
+    fields?: PlatformWellKnownVirtualContributorMappingFieldPolicy;
+  };
+  PlatformWellKnownVirtualContributors?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PlatformWellKnownVirtualContributorsKeySpecifier
+      | (() => undefined | PlatformWellKnownVirtualContributorsKeySpecifier);
+    fields?: PlatformWellKnownVirtualContributorsFieldPolicy;
   };
   Post?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PostKeySpecifier | (() => undefined | PostKeySpecifier);
@@ -6256,6 +6354,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | TimelineKeySpecifier | (() => undefined | TimelineKeySpecifier);
     fields?: TimelineFieldPolicy;
   };
+  UpdateWhiteboardGuestAccessResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UpdateWhiteboardGuestAccessResultKeySpecifier
+      | (() => undefined | UpdateWhiteboardGuestAccessResultKeySpecifier);
+    fields?: UpdateWhiteboardGuestAccessResultFieldPolicy;
+  };
   UrlResolverQueryResultCalendar?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -6436,6 +6541,13 @@ export type StrictTypedTypePolicies = {
       | VirtualContributorModelCardFlagKeySpecifier
       | (() => undefined | VirtualContributorModelCardFlagKeySpecifier);
     fields?: VirtualContributorModelCardFlagFieldPolicy;
+  };
+  VirtualContributorPlatformSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | VirtualContributorPlatformSettingsKeySpecifier
+      | (() => undefined | VirtualContributorPlatformSettingsKeySpecifier);
+    fields?: VirtualContributorPlatformSettingsFieldPolicy;
   };
   VirtualContributorSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

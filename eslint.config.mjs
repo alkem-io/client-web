@@ -8,6 +8,9 @@ import js from '@eslint/js';
 
 export default [
   {
+    ignores: ['node_modules/', 'build/', 'dist/', 'coverage/', 'public/env-config.js', 'public/meta.json', '**/*.min.js'],
+  },
+  {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       parser: tsParser,

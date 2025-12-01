@@ -42,5 +42,6 @@ fragment SpaceSettings on SpaceSettings {
     inheritMembershipRights
     allowEventsFromSubspaces
     allowMembersToVideoCall
+    allowGuestContributions
   }
 }
