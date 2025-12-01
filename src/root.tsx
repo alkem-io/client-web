@@ -8,6 +8,7 @@ import '@/core/i18n/config';
 import { NotFoundErrorBoundary } from '@/core/notFound/NotFoundErrorBoundary';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import ScrollToTop from '@/core/routing/ScrollToTop';
+import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { fontFamilySourceSans, fontFamilyVerdana, subHeading } from '@/core/ui/typography/themeTypographyOptions';
@@ -114,6 +115,7 @@ const Root: FC = () => {
                               <UserProvider>
                                 <PendingMembershipsDialogProvider>
                                   <InAppNotificationsProvider>
+                                    <NavigationHistoryTracker />
                                     <ApmUserSetter />
                                     <ScrollToTop />
                                     <InAppNotificationsDialog />
