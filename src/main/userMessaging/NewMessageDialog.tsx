@@ -153,14 +153,16 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
                     placeholder={t('components.userMessaging.searchUsers' as TranslationKey)}
                     variant="outlined"
                     size="small"
-                    InputProps={{
-                      ...params.InputProps,
-                      endAdornment: (
-                        <>
-                          {loadingContributors && <CircularProgress size={20} />}
-                          {params.InputProps.endAdornment}
-                        </>
-                      ),
+                    slotProps={{
+                      input: {
+                        ...params.InputProps,
+                        endAdornment: (
+                          <>
+                            {loadingContributors && <CircularProgress size={20} />}
+                            {params.InputProps.endAdornment}
+                          </>
+                        ),
+                      },
                     }}
                   />
                 )}
