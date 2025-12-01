@@ -5,6 +5,7 @@ import { env } from '@/main/env';
 import {
   omitTypenameLink,
   consoleLink,
+  guestHeaderLink,
   retryLink,
   redirectLink,
   httpLink,
@@ -28,7 +29,6 @@ export const useGraphQLClient = (
     once(
       () =>
         new InMemoryCache({
-          addTypename: true,
           typePolicies,
           possibleTypes: {
             Contributor: ['User', 'Organization', 'VirtualContributor'],
@@ -45,6 +45,7 @@ export const useGraphQLClient = (
       link: from([
         omitTypenameLink,
         consoleLink(enableQueryDebug),
+        guestHeaderLink,
         errorLoggerLink,
         errorHandlerLink,
         retryLink,

@@ -614,6 +614,10 @@ export const CalloutContributionsWhiteboardCardFragmentDoc = gql`
         ...VisualModel
       }
     }
+    authorization {
+      id
+      myPrivileges
+    }
     createdDate
     createdBy {
       id
@@ -758,6 +762,7 @@ export const WhiteboardDetailsFragmentDoc = gql`
     id
     nameID
     createdDate
+    guestContributionsAllowed
     profile {
       ...WhiteboardProfile
     }
@@ -765,6 +770,7 @@ export const WhiteboardDetailsFragmentDoc = gql`
       id
       myPrivileges
     }
+    guestContributionsAllowed
     contentUpdatePolicy
     createdBy {
       id
@@ -1060,6 +1066,17 @@ export const PostSettingsCalloutFragmentDoc = gql`
     }
   }
 `;
+export const WhiteboardGuestAccessFieldsFragmentDoc = gql`
+  fragment WhiteboardGuestAccessFields on Whiteboard {
+    id
+    nameID
+    guestContributionsAllowed
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+`;
 export const WhiteboardContentFragmentDoc = gql`
   fragment WhiteboardContent on Whiteboard {
     id
@@ -1093,6 +1110,24 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
     }
   }
   ${WhiteboardDetailsFragmentDoc}
+`;
+export const PublicWhiteboardFragmentFragmentDoc = gql`
+  fragment PublicWhiteboardFragment on Whiteboard {
+    id
+    content
+    guestContributionsAllowed
+    profile {
+      id
+      displayName
+      description
+      url
+      storageBucket {
+        id
+      }
+    }
+    createdDate
+    updatedDate
+  }
 `;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
@@ -2316,6 +2351,7 @@ export const SpaceSettingsFragmentDoc = gql`
       inheritMembershipRights
       allowEventsFromSubspaces
       allowMembersToVideoCall
+      allowGuestContributions
     }
   }
 `;
@@ -2613,6 +2649,7 @@ export const SpaceTemplateContent_SettingsFragmentDoc = gql`
       inheritMembershipRights
       allowEventsFromSubspaces
       allowMembersToVideoCall
+      allowGuestContributions
     }
   }
 `;
@@ -7304,6 +7341,7 @@ export const CalloutContributionDocument = gql`
         }
         whiteboard @include(if: $includeWhiteboard) {
           id
+          guestContributionsAllowed
           profile {
             id
             url
@@ -9343,6 +9381,58 @@ export type UpdateMemoContentUpdatePolicyMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.UpdateMemoContentUpdatePolicyMutation,
   SchemaTypes.UpdateMemoContentUpdatePolicyMutationVariables
 >;
+export const UpdateWhiteboardGuestAccessDocument = gql`
+  mutation UpdateWhiteboardGuestAccess($input: UpdateWhiteboardGuestAccessInput!) {
+    updateWhiteboardGuestAccess(input: $input) {
+      success
+      whiteboard {
+        ...WhiteboardGuestAccessFields
+      }
+    }
+  }
+  ${WhiteboardGuestAccessFieldsFragmentDoc}
+`;
+export type UpdateWhiteboardGuestAccessMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateWhiteboardGuestAccessMutation,
+  SchemaTypes.UpdateWhiteboardGuestAccessMutationVariables
+>;
+
+/**
+ * __useUpdateWhiteboardGuestAccessMutation__
+ *
+ * To run a mutation, you first call `useUpdateWhiteboardGuestAccessMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWhiteboardGuestAccessMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWhiteboardGuestAccessMutation, { data, loading, error }] = useUpdateWhiteboardGuestAccessMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateWhiteboardGuestAccessMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateWhiteboardGuestAccessMutation,
+    SchemaTypes.UpdateWhiteboardGuestAccessMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateWhiteboardGuestAccessMutation,
+    SchemaTypes.UpdateWhiteboardGuestAccessMutationVariables
+  >(UpdateWhiteboardGuestAccessDocument, options);
+}
+export type UpdateWhiteboardGuestAccessMutationHookResult = ReturnType<typeof useUpdateWhiteboardGuestAccessMutation>;
+export type UpdateWhiteboardGuestAccessMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateWhiteboardGuestAccessMutation>;
+export type UpdateWhiteboardGuestAccessMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateWhiteboardGuestAccessMutation,
+  SchemaTypes.UpdateWhiteboardGuestAccessMutationVariables
+>;
 export const UpdateWhiteboardPreviewSettingsDocument = gql`
   mutation UpdateWhiteboardPreviewSettings(
     $whiteboardId: UUID!
@@ -9668,6 +9758,82 @@ export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardMutation,
   SchemaTypes.UpdateWhiteboardMutationVariables
 >;
+export const GetPublicWhiteboardDocument = gql`
+  query GetPublicWhiteboard($whiteboardId: UUID!) {
+    lookup {
+      whiteboard(ID: $whiteboardId) {
+        ...PublicWhiteboardFragment
+      }
+    }
+  }
+  ${PublicWhiteboardFragmentFragmentDoc}
+`;
+
+/**
+ * __useGetPublicWhiteboardQuery__
+ *
+ * To run a query within a React component, call `useGetPublicWhiteboardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicWhiteboardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicWhiteboardQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useGetPublicWhiteboardQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.GetPublicWhiteboardQuery,
+    SchemaTypes.GetPublicWhiteboardQueryVariables
+  > &
+    ({ variables: SchemaTypes.GetPublicWhiteboardQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.GetPublicWhiteboardQuery, SchemaTypes.GetPublicWhiteboardQueryVariables>(
+    GetPublicWhiteboardDocument,
+    options
+  );
+}
+export function useGetPublicWhiteboardLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.GetPublicWhiteboardQuery,
+    SchemaTypes.GetPublicWhiteboardQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.GetPublicWhiteboardQuery, SchemaTypes.GetPublicWhiteboardQueryVariables>(
+    GetPublicWhiteboardDocument,
+    options
+  );
+}
+export function useGetPublicWhiteboardSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.GetPublicWhiteboardQuery,
+        SchemaTypes.GetPublicWhiteboardQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.GetPublicWhiteboardQuery, SchemaTypes.GetPublicWhiteboardQueryVariables>(
+    GetPublicWhiteboardDocument,
+    options
+  );
+}
+export type GetPublicWhiteboardQueryHookResult = ReturnType<typeof useGetPublicWhiteboardQuery>;
+export type GetPublicWhiteboardLazyQueryHookResult = ReturnType<typeof useGetPublicWhiteboardLazyQuery>;
+export type GetPublicWhiteboardSuspenseQueryHookResult = ReturnType<typeof useGetPublicWhiteboardSuspenseQuery>;
+export type GetPublicWhiteboardQueryResult = Apollo.QueryResult<
+  SchemaTypes.GetPublicWhiteboardQuery,
+  SchemaTypes.GetPublicWhiteboardQueryVariables
+>;
+export function refetchGetPublicWhiteboardQuery(variables: SchemaTypes.GetPublicWhiteboardQueryVariables) {
+  return { query: GetPublicWhiteboardDocument, variables: variables };
+}
 export const CreateReferenceOnProfileDocument = gql`
   mutation createReferenceOnProfile($input: CreateReferenceOnProfileInput!) {
     createReferenceOnProfile(referenceInput: $input) {
@@ -20504,6 +20670,7 @@ export const UpdateSpaceSettingsDocument = gql`
           inheritMembershipRights
           allowEventsFromSubspaces
           allowMembersToVideoCall
+          allowGuestContributions
         }
       }
     }

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useContext, useMemo, useRef, useState } from 'react';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import type {
   BinaryFileData,
@@ -9,6 +9,7 @@ import type {
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 import Semaphore from 'ts-semaphore';
 import { error } from '@/core/logging/sentry/log';
+import { GuestSessionContext } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
 
 export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
 export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
@@ -49,8 +50,13 @@ const blobToDataURL = (blob: Blob): Promise<string> => {
   });
 };
 
-const fetchFileToDataURL = async (url: string): Promise<string> => {
-  const response = await fetch(url);
+const fetchFileToDataURL = async (url: string, guestName?: string | null): Promise<string> => {
+  const headers = {};
+
+  if (guestName) {
+    Object.assign(headers, { 'x-guest-name': guestName });
+  }
+  const response = await fetch(url, { headers });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch file from ${url}`);
@@ -94,6 +100,8 @@ const useWhiteboardFilesManager = ({
     // TODO: Remove those `log()`s when this is confirmed to be fully stable
     //console.log('[FileManager]', ..._args);
   };
+  const guestSessionContext = useContext(GuestSessionContext);
+  const guestName = guestSessionContext?.guestName;
 
   /**
    * Stores all the files temporarily:
@@ -233,7 +241,7 @@ const useWhiteboardFilesManager = ({
 
         log('DOWNLOADING ', file);
         try {
-          const dataURL = await fetchFileToDataURL(file.url);
+          const dataURL = await fetchFileToDataURL(file.url, guestName);
           // try-catch will avoid putting the file in the store if fetching fails
           fileStoreAddFile(fileId, { ...file, dataURL } as BinaryFileDataWithUrl);
         } catch (e) {

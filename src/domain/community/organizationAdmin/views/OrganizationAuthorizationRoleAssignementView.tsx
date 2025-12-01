@@ -2,6 +2,7 @@ import React from 'react';
 import EditMemberUsers from '@/domain/platformAdmin/components/Community/EditMembersUsers';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { useTranslation } from 'react-i18next';
+import { ParseKeys } from 'i18next';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -47,7 +48,7 @@ export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: R
 
   return (
     <PageContentBlock>
-      <PageContentBlockHeader title={t(`common.roles.${role}`)} />
+      <PageContentBlockHeader title={t(`common.roles.${role}` as ParseKeys)} />
       <EditMemberUsers
         members={usersByRole[role] ?? []}
         availableMembers={availableAssociates ?? []}
