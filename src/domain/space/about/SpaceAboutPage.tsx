@@ -1,11 +1,13 @@
 import { useSpace } from '../context/useSpace';
-import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
 import SpaceAboutDialog from '@/domain/space/about/SpaceAboutDialog';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Box } from '@mui/material';
+import useNavigate from '@/core/routing/useNavigate';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 
 const SpaceAboutPage = () => {
+  const navigate = useNavigate();
   const { space, permissions, loading: loadingSpace } = useSpace();
   const { data, loading: loadingDetails } = useSpaceAboutDetailsQuery({
     variables: { spaceId: space.id },
@@ -14,7 +16,7 @@ const SpaceAboutPage = () => {
   const loading = loadingSpace || loadingDetails;
   const spaceDetails = data?.lookup.space;
 
-  const backToParentPage = useBackWithDefaultUrl(permissions.canRead ? space.about.profile.url : undefined);
+  const handleClose = () => navigate(permissions.canRead ? space.about.profile.url : `/${TopLevelRoutePath.Home}`);
 
   return (
     <>
@@ -26,7 +28,7 @@ const SpaceAboutPage = () => {
             open
             space={spaceDetails}
             loading={loading}
-            onClose={backToParentPage}
+            onClose={handleClose}
             hasReadPrivilege={permissions.canRead}
             hasEditPrivilege={permissions.canUpdate}
           />
