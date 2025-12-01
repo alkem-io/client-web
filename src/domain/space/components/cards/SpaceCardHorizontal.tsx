@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { ParseKeys } from 'i18next';
 import { gutters } from '@/core/ui/grid/utils';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import {
@@ -125,14 +126,14 @@ const SpaceCardHorizontal = ({
             <Chip
               variant="filled"
               color="default"
-              label={t(`common.enums.licenseEntitlementType.${spaceSubscriptionLevel}` as const)}
+              label={t(`common.enums.licenseEntitlementType.${spaceSubscriptionLevel}` as ParseKeys)}
             />
           )}
           {communityRole && (
             <Chip
               variant="filled"
               color="primary"
-              label={<Typography variant="button">{t(`common.roles.${communityRole}` as const)}</Typography>}
+              label={<Typography variant="button">{t(`common.roles.${communityRole}` as ParseKeys)}</Typography>}
             />
           )}
         </BlockTitleWithIcon>

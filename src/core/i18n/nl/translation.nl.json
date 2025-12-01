@@ -123,7 +123,8 @@
     "close": "Sluit",
     "yes": "Ja",
     "no": "Nee",
-    "yes-close": "Ja, sluiten",
+    "yesClose": "Ja, sluiten",
+    "yesCancel": "Ja, annuleren",
     "yesContinue": "Ja, doorgaan",
     "yesReplace": "Ja, vervang",
     "yesDelete": "Ja, verwijderen",
@@ -555,8 +556,8 @@
     },
     "roles": {
       "ADMIN": "$t(common.Admin)",
-      "ANONYMOUS": "Anonymous",
-      "REGISTERED": "Registered",
+      "ANONYMOUS": "Anoniem",
+      "REGISTERED": "Geregistreerd",
       "LEAD": "Lead",
       "HOST": "Host",
       "MEMBER": "$t(common.Member)",
@@ -858,6 +859,15 @@
               "text": "Standaard beschrijving"
             }
           },
+          "memo": {
+            "title": "$t(common.Memos)",
+            "tooltip": "Reageren met $t(common.memos) inschakelen",
+            "settings": {
+              "label": "Standaard tekst:",
+              "explanation": "Voeg een standaard tekst toe aan de $t(common.memos), bijvoorbeeld een aantal vragen die je wilt dat mensen beantwoorden.",
+              "text": "Standaard omschrijving"
+            }
+          },
           "whiteboard": {
             "title": "$t(common.Whiteboards)",
             "tooltip": "Reageren met $t(common.whiteboards) inschakelen",
@@ -923,7 +933,7 @@
       "new-temporary-reference": "Tijdelijke link ID: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Click to open $t(common.whiteboard)"
+      "clickToSee": "Klik om het $t(common.whiteboard) te openen"
     },
     "memo": {
       "clickToSee": "Klik om de volledige $t(common.memo) te bekijken"
@@ -1379,7 +1389,21 @@
         "list.outdent": "Inspringing verwijderen",
         "remove.remove": "Verwijderen",
         "embed.video": "Video of andere Media insluiten",
-        "horizontal.line": "Horizontale lijn invoegen"
+        "horizontal.line": "Horizontale lijn invoegen",
+        "table.insert": "Tabel toevoegen",
+        "table.operations": "Tabel acties",
+        "table.deleteTable": "Tabel verwijderen",
+        "table.deleteConfirm": "Weet je zeker dat je deze tabel wilt verwijderen?",
+        "table.addColumnBefore": "Kolom toevoegen voor",
+        "table.addColumnAfter": "Kolom Toevoegen Na",
+        "table.deleteColumn": "Kolom Verwijderen",
+        "table.addRowBefore": "Rij Toevoegen Voor",
+        "table.addRowAfter": "Rij Toevoegen Na",
+        "table.deleteRow": "Rij Verwijderen",
+        "table.custom": "Aangepaste grootte",
+        "table.columns": "Kolommen",
+        "table.rows": "Rijen",
+        "table.gridSize": "{{columns}} $t(components.wysiwyg-editor.toolbar.table.columns) x {{rows}} $t(components.wysiwyg-editor.toolbar.table.rows)"
       },
       "image": {
         "dialogHeader": "Afbeelding invoegen"
@@ -1445,7 +1469,8 @@
         "UPDATE_SENT": "{{subject}}",
         "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
         "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
-        "CALENDAR_EVENT_CREATED": "{{subject}}"
+        "CALENDAR_EVENT_CREATED": "{{subject}}",
+        "CALLOUT_MEMO_CREATED": "{{subject}}"
       },
       "detailedDescription": {
         "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
@@ -1666,7 +1691,7 @@
       "uploadFile": "Bestand uploaden",
       "file-size-error": "Bestandsgrootte overschrijdt de limiet van {{limit}}MB",
       "file-upload-success": "Bestand succesvol geüpload",
-      "file-upload-error": "Error occurred while uploading the file"
+      "file-upload-error": "Er is een fout opgetreden tijdens het uploaden van het bestand"
     },
     "editSpaceForm": {
       "host": {
@@ -1696,6 +1721,15 @@
         "title": "NaamID",
         "placeholder": "Unieke textuele identificator, gebruikt voor URL-paden. Opmerking: kan niet aangepast worden na aanmaak."
       }
+    },
+    "tagCloud": {
+      "resultsCount_one": "{{count}} resultaat",
+      "resultsCount_other": "{{count}} resultaten",
+      "showMoreTags_one": "Toon {{count}} meer tag",
+      "showMoreTags_other": "Toon {{count}} meer tags",
+      "showFewerTags": "Minder tags weergeven",
+      "filterByTag": "Berichten filteren met tag: {{tag}}",
+      "clearFilter": "Leeg filter"
     },
     "visualSegment": {
       "title": "Visueel",
@@ -2006,7 +2040,7 @@
           "description": "Bekijk aanmelding in de $t(common.space) $t(common.settings)"
         },
         "SPACE_ADMIN_VIRTUAL_CONTRIBUTOR_COMMUNITY_INVITATION_DECLINED": {
-          "subject": "{{triggeredByName}} declined your invitation for {{contributorName}} to join {{spaceName}}",
+          "subject": "{{triggeredByName}} heeft je uitnodiging voor {{contributorName}} om lid te worden van {{spaceName}} afgewezen",
           "description": ""
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
@@ -2070,33 +2104,37 @@
           "description": "Je maakt nu deel uit van een community die groeit door middel van samenwerking 🤝 Klik om de Aan de slag Gids te ontdekken en deel te nemen in de $t(common.spaces), waar elk inzicht ons allemaal helpt vooruit te komen.\nVragen? E-mail support@alkem.io"
         },
         "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
-          "subject": "{{triggeredByName}} declined your application to join {{spaceName}}",
+          "subject": "{{triggeredByName}} heeft je aanvraag om lid te worden van {{spaceName}} afgewezen",
           "description": ""
         },
         "SPACE_COMMUNITY_CALENDAR_EVENT_CREATED": {
-          "subject": "New {{type}} scheduled in {{spaceName}}",
-          "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
+          "subject": "Nieuw {{type}} gepland in {{spaceName}}",
+          "description": "{{triggeredByName}} heeft een nieuwe {{type}} ingepland in de kalender van {{spaceName}}: {{eventTitle}}"
         },
         "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
-          "subject": "New comment on {{type}}: {{eventTitle}}",
-          "description": "{{triggeredByName}} left a comment on the {{eventTitle}} in the {{spaceName}} calendar"
+          "subject": "Nieuwe $t(common.comment) op {{type}}: {{eventTitle}}",
+          "description": "{{triggeredByName}} heeft een $t(common.comment) achtergelaten op de {{eventTitle}} in de {{spaceName}} kalender"
         }
       },
       "emptyInbox": "Geen openstaande $t(common.notifications)",
       "markAllAsRead": "Alles markeren als gelezen",
-      "unknownUser": "Unknown $t(common.user)",
-      "unknownOrganization": "Unknown $t(common.organization)",
+      "unknownUser": "Onbekende $t(common.user)",
+      "unknownOrganization": "Onbekende $t(common.organization)",
       "filters": {
-        "all": "All",
-        "messagesAndReplies": "Messages & Replies",
-        "space": "Space notifications",
-        "platform": "Platform notifications"
+        "all": "Alles",
+        "messagesAndReplies": "Berichten & Antwoorden",
+        "space": "Space meldingen",
+        "platform": "Platform meldingen"
       }
     },
     "spaceWelcomeDialog": {
       "title": "🎉 Je $t(common.space) is klaar!",
       "description": "Maak het nu eigen:<br>⚙️ <b>Stel het in</b> – Pas je structuur en $t(common.settings) aan.<br>📝 <b>Voeg inhoud toe</b> toe - Maak $t(common.whiteboards), $t(common.posts) en meer.<br>🤝 <b>Nodig bijdragers uit</b> – Je kunt de uitnodigingen vinden in de $t(common.space) $t(common.settings).<br>📚 <b>Hulp nodig?</b> Tutorials zijn beschikbaar in jouw $t(common.space) als je ervoor kiest deze toe te voegen bij het aanmaken van de Space.<br/><br/>✨ Wil je meer functies? Upgrade naar <b>Plus of Premium</b> op elk moment - neem <contact>contact op met ons team</contact>!",
       "button": "Aan de slag"
+    },
+    "spaceCard": {
+      "ledBy": "Geleid door:",
+      "noLead": "Nog geen $t(common.lead)"
     }
   },
   "navigation": {
@@ -2450,7 +2488,7 @@
             "public": "<b>Openbaar:</b> deze $t(common.space) en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Alleen $t(common.members) kunnen bijdragen.",
             "private": "<b>Privé:</b> Deze $t(common.space) is zichtbaar voor iedereen op het platform, maar de inhoud is alleen zichtbaar voor $t(common.members). Houd er rekening mee dat zowel de informatie in het $t(common.profile) als de context openbaar zichtbaar zijn.",
             "publicSubspace": "<b>Publiek:</b> Deze $t(common.subspace) en alle bijbehorende inhoud zijn zichtbaar voor iedereen die toegang heeft tot de $t(common.space) waartoe hij behoort. Als de $t(common.space) zelf openbaar is, zal deze $t(common.subspace) en de inhoud ervan zichtbaar zijn voor alle gebruikers, inclusief degenen buiten de $t(common.space).",
-            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace)."
+            "privateSubspace": "<b>Privé:</b> Deze $t(common.subspace) is zichtbaar voor alle $t(common.members) van de $t(common.space), maar de inhoud is beperkt en kan alleen worden geopend door $t(common.members) van de $t(common.subspace)."
           },
           "license-features": {
             "title": "$t(common.space) functies",
@@ -2532,7 +2570,7 @@
       },
       "innovationPack": {
         "notifications": {
-          "packRemoved": "$t(common.innovationPack) removed successfully."
+          "packRemoved": "$t(common.innovationPack) succesvol verwijderd."
         }
       },
       "innovationHub": {
@@ -2543,7 +2581,7 @@
           }
         },
         "notifications": {
-          "hubRemoved": "$t(common.innovation-hub) removed successfully."
+          "hubRemoved": "$t(common.innovation-hub) succesvol verwijderd."
         }
       }
     },
@@ -2582,8 +2620,8 @@
         "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)"
       },
       "WHITEBOARD_PREVIEW": {
-        "title": "Whiteboard Preview",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
+        "title": "Whiteboard Voorvertoning",
+        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)"
       },
       "form": {
         "altText": {
@@ -3000,34 +3038,34 @@
       },
       "restartCollaboration": "Doorgaan met bewerken",
       "previewSettings": {
-        "title": "Preview Settings",
-        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
-        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
+        "title": "Voorvertoning instellingen",
+        "subtitle": "Kies hoe je whiteboard voorbeeld wordt weergegeven in posts en $t(common.spaces).",
+        "errorGeneratingPreview": "Fout bij het genereren van voorvertoning voor deze $$t(common.whiteboard).",
         "modes": {
           "AUTO": {
-            "title": "Auto Preview",
-            "description": "We'll automatically generate the best preview from your whiteboard content."
+            "title": "Automatische Voorvertoning",
+            "description": "We genereren automatisch de beste voorvertoning van je whiteboardinhoud."
           },
           "CUSTOM": {
-            "title": "Manual Selection",
-            "description": "Choose exactly which part of your whiteboard to show as a preview."
+            "title": "Handmatige selectie",
+            "description": "Kies precies welk deel van je whiteboard je als voorvertoning wilt tonen."
           },
           "FIXED": {
-            "title": "Fixed Selection",
-            "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
+            "title": "Vaste Selectie",
+            "description": "Maak een screenshot van je whiteboard om als voorvertoning te gebruiken. Deze screenshot wordt niet bijgewerkt wanneer je je bord bijwerkt."
           }
         },
         "cropDialog": {
-          "previewArea": "Crop preview area",
+          "previewArea": "Voorvertoning bijsnijden",
           "reset": "$t(buttons.reset)",
           "cancel": "$t(buttons.cancel)",
-          "confirm": "Confirm Selection"
+          "confirm": "Bevestig keuze"
         }
       },
       "preview": {
-        "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
-        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
-        "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
+        "errorGeneratingPreview": "Fout bij het genereren van voorvertoning voor deze $$t(common.whiteboard).",
+        "ariaLabel": "Voorvertoning van het whiteboard. Klik om het whiteboard te openen.",
+        "ariaLabelDisabled": "Voorvertoning van het whiteboard. This whiteboard kan niet worden geopend."
       }
     },
     "memo": {
@@ -3046,7 +3084,7 @@
           "multiUserNotAllowed": "Je kunt deze $t(common.memo) niet bewerken omdat deze $t(common.space) slechts één $t(common.memo) editor tegelijk toestaat",
           "roomCapacityReached": "Je kunt deze $t(common.memo) niet bewerken, hoewel deze $t(common.space) meerdere editors gelijktijdig toestaat, is het maximum deelnemers bereikt",
           "generic": "Je kunt deze $t(common.memo) niet bewerken om een van de volgende redenen:\n\n- Je bent geen $t(common.member) van de $t(common.space)\n- Deze $t(common.space) staat slechts één $t(common.memo) editor tegelijk toe \n- Deze $t(common.space) staat meer gelijktijdige editors toe, maar het maximum aantal deelnemers is bereikt",
-          "notAuthenticated": "You have to be signed in to edit this $t(common.memo). Click here to <signinlink>sign in</signinlink>"
+          "notAuthenticated": "Je moet ingelogd zijn om deze $t(common.memo) te bewerken. Klik hier om <signinlink>in te loggen</signinlink>"
         }
       }
     },
@@ -3142,13 +3180,13 @@
         "space": {
           "confirmation-dialog": {
             "title": "Space verlaten {{space}}",
-            "text": "Weet je zeker dat je <b>{{space}}</b>wilt verlaten? <br /><br /> Je zult niet langer updates ontvangen of toegang hebben tot gedeelde bronnen vanuit deze $t(common.space)of de $t(common.subspaces) die de $t(common.space) eventueel bevat. Als deze $t(common.space) openbaar is, kun je op elk gewenst moment opnieuw aanmelden. <br /><br />Let op dat als je $t(common.member) bent van een $t(common.subspace) in deze $t(common.space), je die ook automatisch verlaat."
+            "text": "Weet je zeker dat je <b>{{space}}</b>wilt verlaten? <br /><br /> Je zult niet langer updates ontvangen of toegang hebben tot gedeelde bronnen vanuit deze $t(common.space)of de $t(common.subspaces). Als deze $t(common.space) openbaar is, kun je op elk gewenst moment opnieuw aanmelden, of als deze privé is heb je een uitnodiging nodig om opnieuw lid te worden. <br /><br />Let op dat als je $t(common.member) bent van een $t(common.subspace) in deze $t(common.space), je die ook automatisch verlaat."
           }
         },
         "subspace": {
           "confirmation-dialog": {
             "title": "Verlaat $t(common.subspace) {{space}}",
-            "text": "Weet je zeker dat je <b>{{space}}</b>wilt verlaten? <br /><br /> Je zult niet langer updates ontvangen of toegang hebben tot gedeelde bronnen vanuit deze $t(common.subspace)of de $t(common.subspaces) die de $t(common.subspace) eventueel bevat. Als deze $t(common.subspace) openbaar is, kun je op elk gewenst moment opnieuw aanmelden. <br /><br />Let op dat als je $t(common.member) bent van een $t(common.subspace) in deze $t(common.subspace), je die ook automatisch verlaat."
+            "text": "Weet je zeker dat je <b>{{space}}</b>wilt verlaten? <br /><br /> Je zult niet langer updates ontvangen of toegang hebben tot gedeelde bronnen vanuit deze $t(common.subspace)of de $t(common.subspaces). Als deze $t(common.subspace) openbaar is, kun je op elk gewenst moment opnieuw aanmelden, of als deze privé is heb je een uitnodiging nodig om opnieuw lid te worden. <br /><br />Let op dat als je $t(common.member) bent van een $t(common.subspace) in deze $t(common.subspace), je die ook automatisch verlaat."
           }
         }
       },
@@ -3240,34 +3278,35 @@
           "saveBtn": "Bewaar prompt"
         },
         "promptGraph": {
-          "saveBtn": "Save Prompt Graph",
-          "title": "Prompt Graph",
-          "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
-          "warning": "Warning: Advanced mode is intended for experienced users only. Incorrect or complex configurations may negatively affect system performance and can break the Virtual Contributor's functionality.",
-          "stepsTitle": "Steps",
-          "systemNodeTooltip": "System Node - not editable",
+          "editingEnabledLabel": "Bewerken van de prompt grafiek toestaan (platform-wide instelling)",
+          "saveBtn": "Prompts opslaan",
+          "title": "Prompt grafiek",
+          "infoText": "Definieer het gedrag van de $t(common.virtualContributor) door een prompt grafiek te maken. De grafiek bestaat uit knooppunten die verschillende acties of voorwaarden vertegenwoordigen en de randen die de stroom tussen deze knooppunten definiëren. Je kunt de prompte grafiek aanpassen aan uw specifieke gebruiksvoorwaarden.",
+          "warning": "Waarschuwing: De geavanceerde modus is alleen bedoeld voor ervaren gebruikers. Onjuiste of complexe configuraties kunnen een negatieve invloed hebben op de systeemprestaties en kunnen de functionaliteit van de Virtual Contributor beschadigen.",
+          "stepsTitle": "Stappen",
+          "systemNodeTooltip": "Systeem node - niet bewerkbaar",
           "promptFieldTitle": "Prompt",
-          "statePropertiesTitle": "State Properties",
-          "noStateProperties": "No state properties",
-          "addButton": "Add",
-          "editBtn": "Edit Prompt Graph",
-          "advancedSettingsButton": "Prompt graph advanced mode",
+          "statePropertiesTitle": "Staat Eigenschappen",
+          "noStateProperties": "Geen staat eigenschappen",
+          "addButton": "Toevoegen",
+          "editBtn": "Prompt grafiek bewerken",
+          "advancedSettingsButton": "Prompt grafiek geavanceerde modus",
           "propertyTable": {
-            "title": "Output Properties",
+            "title": "Output eigenschappen",
             "columns": {
-              "name": "Name",
+              "name": "Naam",
               "type": "Type",
-              "optional": "Optional",
-              "description": "Description",
-              "actions": "Actions"
+              "optional": "Optioneel",
+              "description": "Omschrijving",
+              "actions": "Acties"
             },
-            "yes": "Yes",
-            "no": "No",
-            "notAvailable": "N/A",
-            "addProperty": "Add Property",
+            "yes": "Ja",
+            "no": "Nee",
+            "notAvailable": "N.v.t.",
+            "addProperty": "Eigenschap toevoegen",
             "typeOptions": {
-              "string": "string",
-              "number": "number",
+              "string": "Tekenreeks",
+              "number": "nummer",
               "boolean": "boolean"
             }
           }
@@ -3323,7 +3362,7 @@
           "collaborationCalloutContributionCreated": "Ontvang een $t(common.notification) wanneer een nieuwe bijdrage ($t(common.whiteboard), $t(common.post), link, $t(common.memo) etc.) is gemaakt in een $t(common.community) waar ik $t(common.member) van ben",
           "collaborationCalloutComment": "Ontvang een $t(common.notification) wanneer een $t(common.comment) is geplaatst op een $t(common.callout) in een $t(common.community) waar ik $t(common.member) van ben",
           "collaborationCalloutPostContributionComment": "Ontvang een $t(common.notification) wanneer een nieuwe $t(common.comment) is toegevoegd aan een $t(common.callout) in een $t(common.community) waar ik $t(common.member) van ben",
-          "communityCalendarEvents": "Receive calendar $t(common.notifications) for a $t(common.community) I am a $t(common.member) of"
+          "communityCalendarEvents": "Ontvang kalender $t(common.notificaties) voor een $t(common.community) waar ik $t(common.member) van ben"
         }
       },
       "spaceAdmin": {
@@ -3443,7 +3482,7 @@
       "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "verification-flow-continue": "Volgende",
       "login-flow-account-exists": "Dit e-mailadres is al verbonden met een $t(common.account). Als je je eerder hebt aangemeld via LinkedIn, GitHub of Microsoft, gebruik dan die inlogmethode. Anders kun je ook je wachtwoord herstellen.",
-      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
+      "invalid-credentials": "Het ingevoerde e-mailadres of wachtwoord is ongeldig. Controleer je gegevens en probeer het opnieuw. Probeer je je in plaats daarvan aan te melden? Je kunt dit doen door op de link hierboven te klikken.",
       "claim-missing": "Je hebt je Vidua-identiteit nog niet geverifieerd. Controleer je identiteit en probeer het opnieuw of probeer een andere registratiemethode.",
       "pick-password": "Kies een wachtwoord voor je $t(common.account)"
     },
@@ -3475,7 +3514,7 @@
       "BAD_USER_INPUT": "Verkeerde gebruikersinvoer: {{message}}",
       "NOT_SUPPORTED": "Niet ondersteund: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
-      "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time."
+      "MESSAGING_NOT_ENABLED": "Deze gebruiker heeft direct berichten uitgeschakeld. Je kunt hen op dit moment geen bericht sturen."
     }
   },
   "dashboard-updates-section": {
@@ -3512,6 +3551,10 @@
     "closeConfirm": {
       "title": "Verwijder $t(common.post)",
       "description": "Weet je zeker dat je deze $t(common.post) wilt sluiten? Niet-opgeslagen wijzigingen gaan verloren."
+    },
+    "cancelConfirm": {
+      "title": "Verwijder $t(common.post)",
+      "description": "Weet je zeker dat je deze $t(common.post) wilt annuleren? Niet-opgeslagen wijzigingen gaan verloren."
     }
   },
   "innovation-edit": {
@@ -3592,7 +3635,7 @@
         "text": "Avatar van {{displayName}}: {{altText}}"
       },
       "innovationPack": {
-        "text": "{{displayName}}'s innovation pack avatar: {{altText}}"
+        "text": "{{displayName}}'s $t(common.innovationPack) avatar: {{altText}}"
       }
     }
   },
@@ -3617,7 +3660,7 @@
       "content": "Je staat op het punt een video-oproep te starten met Jitsi, een veilige videoconferentie service van derden. De oproep wordt geopend in een nieuw browsertabblad, buiten de Alkemio omgeving. Anderen kunnen zich aanmelden via dezelfde knop of via de gedeelde URL. <br/><br/>Lees meer over Jitsi <jitsiLink>hier</jitsiLink>, inclusief hoe je toegang en privacy instellingen beheert."
     },
     "error": {
-      "emptyUrl": "Unable to generate video call URL. Please refresh the page and try again."
+      "emptyUrl": "Kan geen video oproep URL genereren. Ververs de pagina en probeer het opnieuw."
     }
   },
   "createSpace": {
