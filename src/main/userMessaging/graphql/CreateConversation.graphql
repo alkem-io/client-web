@@ -1,0 +1,8 @@
+mutation CreateConversation($conversationData: CreateConversationInput!) {
+  createConversationOnConversationsSet(conversationData: $conversationData) {
+    id
+    room {
+      id
+    }
+  }
+}
