@@ -123,7 +123,8 @@
     "close": "Schließen",
     "yes": "Yes",
     "no": "No",
-    "yes-close": "Yes, close",
+    "yesClose": "Yes, close",
+    "yesCancel": "Yes, cancel",
     "yesContinue": "Yes, continue",
     "yesReplace": "Yes, replace",
     "yesDelete": "Yes, delete",
@@ -858,6 +859,15 @@
               "text": "Default description"
             }
           },
+          "memo": {
+            "title": "$t(common.Memos)",
+            "tooltip": "Enable responding with $t(common.memos)",
+            "settings": {
+              "label": "Default text:",
+              "explanation": "Add default text to the $t(common.memos), for example, questions that you like people to answer.",
+              "text": "Default description"
+            }
+          },
           "whiteboard": {
             "title": "$t(common.Whiteboards)",
             "tooltip": "Enable responding with $t(common.whiteboards)",
@@ -1379,7 +1389,21 @@
         "list.outdent": "Einzug entfernen",
         "remove.remove": "Entfernen",
         "embed.video": "Embed Video or other Media",
-        "horizontal.line": "Insert horizontal line"
+        "horizontal.line": "Insert horizontal line",
+        "table.insert": "Insert Table",
+        "table.operations": "Table Operations",
+        "table.deleteTable": "Delete Table",
+        "table.deleteConfirm": "Are you sure you want to delete this table?",
+        "table.addColumnBefore": "Add Column Before",
+        "table.addColumnAfter": "Add Column After",
+        "table.deleteColumn": "Delete Column",
+        "table.addRowBefore": "Add Row Before",
+        "table.addRowAfter": "Add Row After",
+        "table.deleteRow": "Delete Row",
+        "table.custom": "Custom size",
+        "table.columns": "Columns",
+        "table.rows": "Rows",
+        "table.gridSize": "{{columns}} $t(components.wysiwyg-editor.toolbar.table.columns) x {{rows}} $t(components.wysiwyg-editor.toolbar.table.rows)"
       },
       "image": {
         "dialogHeader": "Bild einfügen"
@@ -1445,7 +1469,8 @@
         "UPDATE_SENT": "{{subject}}",
         "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
         "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
-        "CALENDAR_EVENT_CREATED": "{{subject}}"
+        "CALENDAR_EVENT_CREATED": "{{subject}}",
+        "CALLOUT_MEMO_CREATED": "{{subject}}"
       },
       "detailedDescription": {
         "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
@@ -1696,6 +1721,15 @@
         "title": "Name ID",
         "placeholder": "Eindeutige Textbezeichnung, die für URL-Pfade verwendet wird. Hinweis: kann nach der Erstellung nicht geändert werden."
       }
+    },
+    "tagCloud": {
+      "resultsCount_one": "{{count}} result",
+      "resultsCount_other": "{{count}} results",
+      "showMoreTags_one": "Show {{count}} more tag",
+      "showMoreTags_other": "Show {{count}} more tags",
+      "showFewerTags": "Show fewer tags",
+      "filterByTag": "Filter posts with tag: {{tag}}",
+      "clearFilter": "Clear filter"
     },
     "visualSegment": {
       "title": "Anzeige",
@@ -2078,8 +2112,8 @@
           "description": "{{triggeredByName}} scheduled a new {{type}} in the {{spaceName}} calendar: {{eventTitle}}"
         },
         "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
-          "subject": "New comment on {{type}}: {{eventTitle}}",
-          "description": "{{triggeredByName}} left a comment on the {{eventTitle}} in the {{spaceName}} calendar"
+          "subject": "New $t(common.comment) on {{type}}: {{eventTitle}}",
+          "description": "{{triggeredByName}} left a $t(common.comment) on the {{eventTitle}} in the {{spaceName}} calendar"
         }
       },
       "emptyInbox": "No pending $t(common.notifications)",
@@ -2097,6 +2131,10 @@
       "title": "🎉 Your $t(common.space) is Ready!",
       "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and $t(common.settings).<br>📝 <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>🤝 <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>📚 <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
       "button": "Get Started"
+    },
+    "spaceCard": {
+      "ledBy": "Led by:",
+      "noLead": "No $t(common.lead) yet"
     }
   },
   "navigation": {
@@ -3001,7 +3039,7 @@
       "restartCollaboration": "Continue Editing",
       "previewSettings": {
         "title": "Preview Settings",
-        "subtitle": "Choose how your whiteboard preview appears in posts and spaces.",
+        "subtitle": "Choose how your whiteboard preview appears in posts and $t(common.spaces).",
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
         "modes": {
           "AUTO": {
@@ -3142,13 +3180,13 @@
         "space": {
           "confirmation-dialog": {
             "title": "Leaving Space {{space}}",
-            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this $t(common.space) or its $t(common.subspaces). If this $t(common.space) is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a $t(common.member) of a $t(common.subspace) inside this $t(common.space), you will also be automatically removed from there."
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br /> You will no longer receive updates or have access to shared resources from this $t(common.space) or its $t(common.subspaces). If this $t(common.space) is public, you can rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a $t(common.member) of a $t(common.subspace) inside this $t(common.space), you will also be automatically removed from there."
           }
         },
         "subspace": {
           "confirmation-dialog": {
             "title": "Leaving $t(common.subspace) {{space}}",
-            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br />You will no longer receive updates or have access to shared resources from this $t(common.subspace) or its $t(common.subspaces). If this $t(common.subspace) is public, you an rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a $t(common.member) of a $t(common.subspace) inside this $t(common.subspace), you will also be automatically removed from there."
+            "text": "Are you sure you want to leave <b>{{space}}</b>? <br /><br />You will no longer receive updates or have access to shared resources from this $t(common.subspace) or its $t(common.subspaces). If this $t(common.subspace) is public, you can rejoin at any time, or if private, you will need an invitation to rejoin. <br /><br />Note that if you're a $t(common.member) of a $t(common.subspace) inside this $t(common.subspace), you will also be automatically removed from there."
           }
         }
       },
@@ -3240,6 +3278,7 @@
           "saveBtn": "Save prompt"
         },
         "promptGraph": {
+          "editingEnabledLabel": "Allow editing of the prompt graph (platform-wide setting)",
           "saveBtn": "Save Prompt Graph",
           "title": "Prompt Graph",
           "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",
@@ -3512,6 +3551,10 @@
     "closeConfirm": {
       "title": "Discard $t(common.post)",
       "description": "Are you sure you want to close this $t(common.post)? Unsaved changes will be lost."
+    },
+    "cancelConfirm": {
+      "title": "Discard $t(common.post)",
+      "description": "Are you sure you want to cancel this $t(common.post)? Unsaved changes will be lost."
     }
   },
   "innovation-edit": {
@@ -3592,7 +3635,7 @@
         "text": "{{displayName}}'s Avatar: {{altText}}"
       },
       "innovationPack": {
-        "text": "{{displayName}}'s innovation pack avatar: {{altText}}"
+        "text": "{{displayName}}'s $t(common.innovationPack) avatar: {{altText}}"
       }
     }
   },

@@ -15,6 +15,7 @@ import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models
 import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { useTranslation } from 'react-i18next';
 import { useOrganizationContext } from '../hooks/useOrganizationContext';
+import { ParseKeys } from 'i18next/typescript/t';
 
 export interface UseOrganizationProvided {
   organization?: OrganizationInfoFragment;
@@ -91,7 +92,8 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
       usersWithRoles?.map<ContributorCardSquareProps>(x => ({
         id: x.id,
         displayName: x.profile.displayName,
-        roleName: x.roles.map(role => t(`common.roles.${role}`)).join(', '),
+
+        roleName: x.roles.map(role => t(`common.roles.${role}` as ParseKeys)).join(', '),
         avatar: x.profile.avatar?.uri,
         tooltip: {
           city: x.profile.location?.city,

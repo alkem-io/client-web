@@ -1,0 +1,33 @@
+# Contract blueprint for whiteboard guest access toggle
+
+# Server-side schema adjustments expected:
+# - Whiteboard.guestContributionsAllowed: Boolean! (authoritative flag for public guest link)
+# - Mutation updateWhiteboardGuestAccess(input: { whiteboardId, allowGuestContributions }): returns updated Whiteboard
+#   including guestContributionsAllowed and any relevant authorization metadata.
+
+# Client-side operations (executed once schema changes land):
+#
+# fragment WhiteboardGuestAccessFields on Whiteboard {
+#   id
+#   nameID
+#   guestContributionsAllowed
+# }
+#
+# mutation UpdateWhiteboardGuestAccess($whiteboardId: UUID!, $allowGuestContributions: Boolean!) {
+#   updateWhiteboardGuestAccess(
+#     input: { whiteboardId: $whiteboardId, allowGuestContributions: $allowGuestContributions }
+#   ) {
+#     whiteboard {
+#       ...WhiteboardGuestAccessFields
+#     }
+#   }
+# }
+#
+# query WhiteboardGuestAccess($whiteboardId: UUID!) {
+#   lookup {
+#     whiteboard(ID: $whiteboardId) {
+#       ...WhiteboardGuestAccessFields
+#     }
+#   }
+# }
+

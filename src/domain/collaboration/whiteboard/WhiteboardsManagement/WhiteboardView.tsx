@@ -2,6 +2,7 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import { Divider } from '@mui/material';
 import { useState, useEffect, ReactNode } from 'react';
 import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
 import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
@@ -10,6 +11,11 @@ import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollabo
 import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
 import { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import useWhiteboardGuestAccess from '../hooks/useWhiteboardGuestAccess';
+import { buildGuestShareUrl } from '../utils/buildGuestShareUrl';
+import WhiteboardGuestAccessControls from '../WhiteboardShareDialog/WhiteboardGuestAccessControls';
+import WhiteboardGuestAccessSection from '../WhiteboardShareDialog/WhiteboardGuestAccessSection';
+import { gutters } from '@/core/ui/grid/utils';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardId?: string;
@@ -22,6 +28,7 @@ export interface WhiteboardViewProps extends ActiveWhiteboardIdHolder, Whiteboar
   whiteboard: WhiteboardDetails | undefined;
   authorization: { myPrivileges?: AuthorizationPrivilege[] } | undefined;
   whiteboardShareUrl: string;
+  guestShareUrl?: string;
   displayName?: ReactNode;
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
@@ -36,6 +43,7 @@ const WhiteboardView = ({
   backToWhiteboards,
   loadingWhiteboards,
   whiteboardShareUrl,
+  guestShareUrl,
   displayName,
   readOnlyDisplayName,
   preventWhiteboardDeletion,
@@ -63,6 +71,11 @@ const WhiteboardView = ({
   const hasUpdateContentPrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
   const hasDeletePrivileges =
     !preventWhiteboardDeletion && authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
+  const hasPublicSharePrivilege =
+    whiteboard?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.PublicShare) ?? false;
+
+  const computedGuestShareUrl = guestShareUrl ?? buildGuestShareUrl(whiteboard?.id ?? whiteboard?.nameID);
+  const guestAccess = useWhiteboardGuestAccess({ whiteboard, guestShareUrl: computedGuestShareUrl });
 
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
     variables: { whiteboardId: whiteboard?.id! },
@@ -106,7 +119,21 @@ const WhiteboardView = ({
             headerActions: (collabState: CollabState) => (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
-                  {hasUpdatePrivileges && <CollaborationSettings element={whiteboard} elementType="whiteboard" />}
+                  <WhiteboardGuestAccessControls whiteboard={whiteboard} guestAccessEnabled={guestAccess.enabled}>
+                    <WhiteboardGuestAccessSection guestAccess={guestAccess} />
+                  </WhiteboardGuestAccessControls>
+                  {hasUpdatePrivileges && (
+                    <>
+                      {hasPublicSharePrivilege && (
+                        <Divider orientation="horizontal" flexItem sx={{ marginTop: gutters(1) }} />
+                      )}
+                      <CollaborationSettings
+                        element={whiteboard}
+                        elementType="whiteboard"
+                        guestAccessEnabled={guestAccess.enabled}
+                      />
+                    </>
+                  )}
                 </ShareButton>
 
                 <FullscreenButton />

@@ -1,14 +1,11 @@
 <!--
 Sync Impact Report
-Version change: 1.0.1 → 1.0.2 (aligned templates + clarified principles)
-Modified principles: I, II, III, IV, V
-Modified sections: Architecture Standards #1, Engineering Workflow #2
-Added sections: (none)
+Version change: 1.0.4 → 1.0.5 (expanded DRY to SOLID principles)
+Modified principles: (none)
+Modified sections: Architecture Standards #6
+Added sections: Architecture Standards #6 (SOLID principles)
 Removed sections: (none)
-Templates requiring updates:
- - .specify/templates/plan-template.md (Constitution Check gates) ✅
- - .specify/templates/spec-template.md (story guidance alignment) ✅
- - .specify/templates/tasks-template.md (task structuring guidance) ✅
+Templates requiring updates: (none)
 Deferred TODOs: None
 -->
 
@@ -87,9 +84,51 @@ safeguards ensure sustainable delivery.
 2. Styling standardizes on MUI theming. Any addition to the design system must pass through
    `src/core/ui` with tokens documented in the theme.
 3. Internationalization uses `react-i18next`. All user-visible strings MUST be declared via the
-   localization pipeline; hard-coded copy is forbidden.
+   localization pipeline; hard-coded copy is forbidden. Only the English source file
+   (`src/core/i18n/en/translation.en.json`) MAY be edited directly. All other locale files are
+   generated downstream and MUST remain untouched in this repository.
 4. Build artifacts remain deterministic: Vite config changes require documenting their impact on
    chunking, env exposure, and React Server Component compatibility.
+5. Import transparency requires explicit module paths. Barrel exports via `index.ts` files are
+   forbidden to maintain import traceability and prevent circular dependency issues. All imports
+   MUST specify the direct file path to the exported module.
+6. SOLID Principles & Code Quality: All code MUST adhere to SOLID design principles to ensure
+   maintainability, testability, and extensibility:
+
+   **a) Single Responsibility Principle (SRP)**: Each component, hook, or function MUST have one
+   clear reason to change. Extract multi-purpose components into focused, composable units. Domain
+   logic, UI presentation, and data fetching belong in separate modules. Example: Split a component
+   that both fetches data and renders complex UI into a custom hook for data and a presentation
+   component for UI.
+
+   **b) Open/Closed Principle (OCP)**: Code MUST be open for extension but closed for modification.
+   Use composition, hooks, and render props to extend behavior without altering existing code.
+   Prefer configuration over conditionals. Example: Create configurable components via props rather
+   than hardcoding variants; use strategy patterns via function props.
+
+   **c) Liskov Substitution Principle (LSP)**: Derived components or implementations MUST be
+   substitutable for their base types without breaking functionality. Props interfaces MUST honor
+   contracts; overrides cannot violate parent expectations. Example: If a base component expects
+   `onSubmit` to be async, all implementations must respect that contract.
+
+   **d) Interface Segregation Principle (ISP)**: Components and hooks MUST NOT be forced to depend
+   on props or parameters they don't use. Split large prop interfaces into focused subsets. Use
+   TypeScript discriminated unions for variant-specific props. Example: Instead of one large
+   `ButtonProps` with optional icon/loading/onClick, create `IconButton`, `LoadingButton`,
+   `ActionButton` with specific, minimal interfaces.
+
+   **e) Dependency Inversion Principle (DIP)**: High-level modules (UI components) MUST depend on
+   abstractions (hooks, context), not concrete implementations (direct GraphQL queries). Domain
+   hooks provide abstractions; components consume them. Example: Components use
+   `useSpaceGuestContributions()` hook abstraction instead of directly calling
+   `useSpaceSettingsQuery()`.
+
+   **f) DRY (Don't Repeat Yourself)**: Repetitive logic, constants, or derived values MUST be
+   extracted into shared utilities, hooks, or constants. Examples include boolean derivations
+   (e.g., `isSubspace = level !== SpaceLevel.L0`), repeated calculations, or duplicated
+   conditionals across components. When the same logic appears in multiple components within a
+   feature domain, create a shared hook or helper in `src/domain/<context>/utils` or
+   `src/core/utils`. For UI patterns, extract into reusable components in `src/core/ui`.
 
 ## Engineering Workflow
 
@@ -122,4 +161,4 @@ Compliance expectations:
   violations remain unmitigated.
 - CI workflows SHOULD enforce linting, testing, and type generation steps aligned with these rules.
 
-**Version**: 1.0.2 | **Ratified**: 2025-10-30 | **Last Amended**: 2025-10-30
+**Version**: 1.0.5 | **Ratified**: 2025-10-30 | **Last Amended**: 2025-11-04
