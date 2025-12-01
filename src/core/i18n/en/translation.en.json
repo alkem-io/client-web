@@ -188,6 +188,7 @@
     "toolPosition": "Position of tool",
     "createOwnSpace": "...or click here to create your own $t(common.space)",
     "notifications": "$t(common.Notifications) Button",
+    "messages": "Messages Button",
     "invite": "Invite",
     "visit": "Visit",
     "returnToDashboard": "Return to $t(common.dashboard) as guest",
@@ -2149,6 +2150,20 @@
         "space": "Space notifications",
         "platform": "Platform notifications"
       }
+    },
+    "userMessaging": {
+      "title": "Messages",
+      "noConversations": "No conversations yet",
+      "noMessages": "No messages",
+      "selectConversation": "Select a conversation to start messaging",
+      "typeMessage": "Type a message",
+      "newMessage": "New Message",
+      "selectUser": "To",
+      "noUsersFound": "No users found",
+      "startTyping": "Start typing to search users",
+      "searchUsers": "Search users...",
+      "searchConversations": "Search...",
+      "createChat": "Create Chat"
     },
     "spaceWelcomeDialog": {
       "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",

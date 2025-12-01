@@ -27,6 +27,8 @@ import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
+import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext';
+import { UserMessagingDialog } from './main/userMessaging/UserMessagingDialog';
 import { VersionHandling } from './main/versionHandling';
 import { rem } from '@/core/ui/typography/utils';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
@@ -115,22 +117,25 @@ const Root: FC = () => {
                               <UserProvider>
                                 <PendingMembershipsDialogProvider>
                                   <InAppNotificationsProvider>
-                                    <NavigationHistoryTracker />
-                                    <ApmUserSetter />
-                                    <ScrollToTop />
-                                    <InAppNotificationsDialog />
-                                    <InAppNotificationCountSubscriber />
-                                    <VersionHandling />
-                                    <NotFoundErrorBoundary
-                                      errorComponent={
-                                        <TopLevelLayout>
-                                          <Error404 />
-                                        </TopLevelLayout>
-                                      }
-                                    >
-                                      <TopLevelRoutes />
-                                      <GlobalErrorDialog />
-                                    </NotFoundErrorBoundary>
+                                    <UserMessagingProvider>
+                                      <NavigationHistoryTracker />
+                                      <ApmUserSetter />
+                                      <ScrollToTop />
+                                      <InAppNotificationsDialog />
+                                      <InAppNotificationCountSubscriber />
+                                      <UserMessagingDialog />
+                                      <VersionHandling />
+                                      <NotFoundErrorBoundary
+                                        errorComponent={
+                                          <TopLevelLayout>
+                                            <Error404 />
+                                          </TopLevelLayout>
+                                        }
+                                      >
+                                        <TopLevelRoutes />
+                                        <GlobalErrorDialog />
+                                      </NotFoundErrorBoundary>
+                                    </UserMessagingProvider>
                                   </InAppNotificationsProvider>
                                 </PendingMembershipsDialogProvider>
                               </UserProvider>
