@@ -13,21 +13,26 @@ import useNavigate from '../routing/useNavigate';
 
 const REDIRECT_COUNTDOWN_SECONDS = 10;
 
-interface RedirectToAncestorDialogProps {
-  open: boolean;
-  closestAncestor: {
-    url: string;
-    type: UrlType;
-    space?: {
-      id: string;
-    };
+interface ClosestAncestor {
+  url: string;
+  type: UrlType;
+  space?: {
+    id: string;
   };
 }
 
-export const RedirectToAncestorDialog: React.FC<RedirectToAncestorDialogProps> = ({ open, closestAncestor }) => {
+interface RedirectToAncestorDialogProps {
+  open: boolean;
+  closestAncestor: ClosestAncestor;
+}
+
+const RedirectToAncestorDialogContent = ({
+  open,
+  closestAncestor,
+  onCancel,
+}: RedirectToAncestorDialogProps & { onCancel: () => void }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [cancelled, setCancelled] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(REDIRECT_COUNTDOWN_SECONDS);
 
   const { data: spaceData, loading: loadingSpace } = useSpaceCardQuery({
@@ -40,13 +45,9 @@ export const RedirectToAncestorDialog: React.FC<RedirectToAncestorDialogProps> =
 
     const timer = setInterval(() => {
       setSecondsLeft(prev => {
-        if (cancelled) {
-          clearInterval(timer);
-          return prev;
-        }
         if (prev <= 1) {
           clearInterval(timer);
-          handleRedirect();
+          navigate(closestAncestor.url);
           return 0;
         }
         return prev - 1;
@@ -56,16 +57,8 @@ export const RedirectToAncestorDialog: React.FC<RedirectToAncestorDialogProps> =
     return () => clearInterval(timer);
   }, [open, closestAncestor]);
 
-  const handleRedirect = () => {
-    navigate(closestAncestor.url);
-  };
-
-  const onCancel = () => {
-    setCancelled(true);
-  };
-
   return (
-    <Dialog open={open && !cancelled} maxWidth="sm" fullWidth>
+    <Dialog open={open} maxWidth="sm" fullWidth>
       <DialogHeader icon={<LockOutlineIcon />}>{t('components.urlResolver.redirectDialog.title')}</DialogHeader>
       <DialogContent>
         <Box display="flex" flexDirection="column" gap={2}>
@@ -94,10 +87,22 @@ export const RedirectToAncestorDialog: React.FC<RedirectToAncestorDialogProps> =
             {t('buttons.cancel')}
           </Button>
         )}
-        <Button variant="contained" onClick={handleRedirect}>
+        <Button variant="contained" onClick={() => navigate(closestAncestor.url)}>
           {t('components.urlResolver.redirectDialog.goNow')}
         </Button>
       </Actions>
     </Dialog>
+  );
+};
+
+export const RedirectToAncestorDialog = ({ open, closestAncestor }: RedirectToAncestorDialogProps) => {
+  const [cancelled, setCancelled] = useState(false);
+
+  return (
+    <RedirectToAncestorDialogContent
+      open={open && !cancelled}
+      closestAncestor={closestAncestor}
+      onCancel={() => setCancelled(true)}
+    />
   );
 };
