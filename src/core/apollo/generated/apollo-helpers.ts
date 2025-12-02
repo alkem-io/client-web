@@ -4208,6 +4208,11 @@ export type StorageBucketParentFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type StorageBucketUploadFileResultKeySpecifier = ('id' | 'url' | StorageBucketUploadFileResultKeySpecifier)[];
+export type StorageBucketUploadFileResultFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type StorageConfigKeySpecifier = ('file' | StorageConfigKeySpecifier)[];
 export type StorageConfigFieldPolicy = {
   file?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6328,6 +6333,13 @@ export type StrictTypedTypePolicies = {
   StorageBucketParent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageBucketParentKeySpecifier | (() => undefined | StorageBucketParentKeySpecifier);
     fields?: StorageBucketParentFieldPolicy;
+  };
+  StorageBucketUploadFileResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | StorageBucketUploadFileResultKeySpecifier
+      | (() => undefined | StorageBucketUploadFileResultKeySpecifier);
+    fields?: StorageBucketUploadFileResultFieldPolicy;
   };
   StorageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageConfigKeySpecifier | (() => undefined | StorageConfigKeySpecifier);

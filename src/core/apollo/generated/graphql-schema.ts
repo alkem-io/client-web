@@ -4584,8 +4584,8 @@ export type Mutation = {
   uploadFileOnLink: Link;
   /** Create a new Document on the Storage and return the value as part of the returned Reference. */
   uploadFileOnReference: Reference;
-  /** Create a new Document on the Storage and return the public Url. */
-  uploadFileOnStorageBucket: Scalars['String']['output'];
+  /** Create a new Document on the Storage and return the ID and public URL. */
+  uploadFileOnStorageBucket: StorageBucketUploadFileResult;
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
 };
@@ -7306,6 +7306,14 @@ export type StorageBucketUploadFileOnReferenceInput = {
   referenceID: Scalars['String']['input'];
 };
 
+export type StorageBucketUploadFileResult = {
+  __typename?: 'StorageBucketUploadFileResult';
+  /** The ID of the uploaded Document. */
+  id: Scalars['UUID']['output'];
+  /** The publicly accessible URL for the uploaded file. */
+  url: Scalars['String']['output'];
+};
+
 export type StorageConfig = {
   __typename?: 'StorageConfig';
   /** Config for uploading files to Alkemio. */
@@ -9099,7 +9107,10 @@ export type UploadFileMutationVariables = Exact<{
   uploadData: StorageBucketUploadFileInput;
 }>;
 
-export type UploadFileMutation = { __typename?: 'Mutation'; uploadFileOnStorageBucket: string };
+export type UploadFileMutation = {
+  __typename?: 'Mutation';
+  uploadFileOnStorageBucket: { __typename?: 'StorageBucketUploadFileResult'; id: string; url: string };
+};
 
 export type DefaultVisualTypeConstraintsQueryVariables = Exact<{
   visualType: VisualType;
