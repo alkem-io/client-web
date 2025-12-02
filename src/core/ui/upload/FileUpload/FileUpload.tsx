@@ -16,8 +16,14 @@ const DEFAULT_REFERENCE_TYPE = 'reference';
 
 export type FileUploadEntityType = 'reference' | 'link';
 
+export interface UploadedDocument {
+  id: string;
+  url: string;
+}
+
 type FileUploadProps = {
-  onUpload?: (fileCID: string) => void;
+  onUpload?: (url: string) => void;
+  onDocumentUploaded?: (document: UploadedDocument) => void;
   onChange?: (fileName: string) => void;
   entityID?: string;
   entityType?: FileUploadEntityType;
@@ -28,6 +34,7 @@ const bytesInMegabyte = Math.pow(1024, 2);
 
 const FileUploadButton = ({
   onUpload,
+  onDocumentUploaded,
   onChange,
   entityID,
   entityType = DEFAULT_REFERENCE_TYPE,
@@ -102,7 +109,9 @@ const FileUploadButton = ({
   const [uploadFile, { loading: loadingOnStorageBucket }] = useUploadFileMutation({
     onCompleted: data => {
       notify(t('components.file-upload.file-upload-success'), 'success');
-      onUpload?.(data.uploadFileOnStorageBucket);
+      const { id, url } = data.uploadFileOnStorageBucket;
+      onUpload?.(url);
+      onDocumentUploaded?.({ id, url });
     },
   });
   const loading = loadingOnReference || loadingOnLink || loadingOnStorageBucket;
