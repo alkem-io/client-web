@@ -17,7 +17,7 @@ import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager'
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import SwapColors from '@/core/ui/palette/SwapColors';
-import { useNavigateWithOrigin } from '@/core/routing/useBackToPath';
+import { useNavigate } from 'react-router-dom';
 
 export interface SpaceWelcomeBlockProps {
   spaceAbout: {
@@ -34,7 +34,7 @@ const SpaceWelcomeBlock = ({ spaceAbout, description }: SpaceWelcomeBlockProps) 
   const { t } = useTranslation();
 
   const { spaceLevel } = useUrlResolver();
-  const navigateWithOrigin = useNavigateWithOrigin();
+  const navigate = useNavigate();
 
   const isMember = spaceAbout?.membership?.myMembershipStatus === CommunityMembershipStatus.Member;
   const welcomeDescription = description ?? spaceAbout?.profile?.description;
@@ -58,7 +58,7 @@ const SpaceWelcomeBlock = ({ spaceAbout, description }: SpaceWelcomeBlockProps) 
         overflowMarker={
           <SeeMore
             label="buttons.readMore"
-            onClick={() => navigateWithOrigin(`./${EntityPageSection.About}`)}
+            onClick={() => navigate(`./${EntityPageSection.About}`)}
             sx={{ marginTop: -1 }}
           />
         }
