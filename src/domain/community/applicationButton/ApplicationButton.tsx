@@ -312,7 +312,10 @@ export const ApplicationButton = ({
           onClose={() => setIsApplicationSubmittedDialogOpen(false)}
         />
         <PreJoinParentDialog open={isJoinParentDialogOpen} onClose={handleClose} onJoin={handleJoinParent} />
-        <InvitationActionsContainer onUpdate={handleAcceptInvitation}>
+        <InvitationActionsContainer
+          onUpdate={handleAcceptInvitation}
+          spaceId={userInvitation?.spacePendingMembershipInfo.id}
+        >
           {props => (
             <InvitationDialog
               open={isInvitationDialogOpen}

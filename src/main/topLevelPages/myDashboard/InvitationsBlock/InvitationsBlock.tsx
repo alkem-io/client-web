@@ -21,7 +21,11 @@ export const InvitationsBlock = () => {
   return (
     <PageContentBlock columns={12}>
       {communityInvitations.map(invitation => (
-        <InvitationActionsContainer key={invitation.id} onAccept={onInvitationAccept}>
+        <InvitationActionsContainer
+          key={invitation.id}
+          onAccept={onInvitationAccept}
+          spaceId={invitation.spacePendingMembershipInfo.id}
+        >
           {props => <SingleInvitationFull invitation={invitation} {...props} />}
         </InvitationActionsContainer>
       ))}
