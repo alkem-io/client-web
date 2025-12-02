@@ -15,7 +15,7 @@ const SpaceAboutPage = () => {
   const spaceDetails = data?.lookup.space;
 
   const goBackPage = permissions.canRead ? space.about.profile.url : undefined;
-  const goBackSteps = permissions.canRead ? undefined : -2;
+  const goBackSteps = permissions.canRead ? undefined : 2;
 
   const backToParentPage = useBackWithDefaultUrl(goBackPage, goBackSteps);
 
