@@ -1,4 +1,7 @@
-import { AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import {
+  AUTH_SIGN_UP_PATH,
+  PARAM_NAME_RETURN_URL,
+} from '@/core/auth/authentication/constants/authentication.constants';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { buildReturnUrlParam } from '@/main/routing/urlBuilders';
 import { Box, Button } from '@mui/material';
@@ -15,7 +18,7 @@ import { Container, LeftArea, Picture, RightArea } from '@/core/pages/Errors/Err
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 
 export const AuthRequiredPage = () => {
-  const returnUrl = useQueryParams().get('returnUrl') ?? undefined;
+  const returnUrl = useQueryParams().get(PARAM_NAME_RETURN_URL) ?? undefined;
   const { t } = useTranslation();
 
   /**

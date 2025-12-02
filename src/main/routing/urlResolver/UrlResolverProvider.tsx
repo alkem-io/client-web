@@ -1,11 +1,14 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, UrlResolverResult, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
 import { PartialRecord } from '@/core/utils/PartialRecord';
 import { compact } from 'lodash';
-import { createContext, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { TabbedLayoutParams } from '../urlBuilders';
+import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { buildReturnUrlParam, TabbedLayoutParams } from '../urlBuilders';
+import { AuthenticationContext } from '@/core/auth/authentication/context/AuthenticationProvider';
+import { useLocation } from 'react-router-dom';
+import { AUTH_REQUIRED_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 
 export type SpaceHierarchyPath = [] | [string] | [string, string] | [string, string, string];
 
@@ -113,6 +116,8 @@ const UrlResolverContext = createContext<UrlResolverContextValue>(emptyResult);
 const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   // Using a state to force a re-render of the children when the url changes
   const [currentUrl, setCurrentUrl] = useState<string>('');
+  const { isAuthenticated } = useContext(AuthenticationContext);
+  const location = useLocation();
 
   // Keep a stable ref of the last processed URL to avoid duplicate updates
   const lastProcessedUrlRef = useRef<string>('');
@@ -145,7 +150,15 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
   });
 
   if (!urlResolverLoading && error && isUrlResolverError(error)) {
+    // Normally the urlResolver doesn't throw an error, it returns a UrlResolverResult.Error instead
     throw new NotFoundError();
+  }
+  if (!urlResolverLoading && urlResolverData?.urlResolver.state === UrlResolverResult.Error) {
+    if (!isAuthenticated) {
+      const returnUrl = location.pathname + location.search + location.hash;
+      throw new NotFoundError({ redirectUrl: `${AUTH_REQUIRED_PATH}${buildReturnUrlParam(returnUrl)}` });
+    }
+    throw new NotFoundError({ closestAncestor: urlResolverData.urlResolver.closestAncestor });
   }
 
   useEffect(() => {
