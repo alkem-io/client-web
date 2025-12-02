@@ -17,6 +17,7 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { createContext } from 'react';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import Loading from '@/core/ui/loading/Loading';
+import { NavigateWithOrigin } from '@/core/routing/useBackToPath';
 export interface InnovationFlowStateContextProps {
   selectedInnovationFlowState?: string;
   setSelectedInnovationFlowState?: Dispatch<SetStateAction<string>>;
@@ -42,7 +43,7 @@ const SubspaceRoute = ({ level = SpaceLevel.L1 }: { level?: SpaceLevel }) => {
     return (
       <Routes>
         <Route path={EntityPageSection.About} element={<SubspaceAboutPage />} />
-        <Route path="*" element={<Navigate to={`../${EntityPageSection.About}`} replace />} />
+        <Route path="*" element={<NavigateWithOrigin to={`../${EntityPageSection.About}`} replace />} />
       </Routes>
     );
   }

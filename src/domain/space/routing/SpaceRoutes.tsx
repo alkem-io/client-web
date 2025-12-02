@@ -19,6 +19,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import { useSectionIndex } from '../layout/useSectionIndex';
 import useSpaceTabs from '../layout/tabbedLayout/layout/useSpaceTabs';
+import { NavigateWithOrigin } from '@/core/routing/useBackToPath';
 
 const LegacyRoutesRedirects = () => {
   const {
@@ -62,7 +63,7 @@ const SpaceProtectedRoutes = () => {
   }
 
   if (!permissions.canRead) {
-    return <Navigate to={`../${EntityPageSection.About}`} replace />;
+    return <NavigateWithOrigin to={`../${EntityPageSection.About}`} replace />;
   }
 
   return <Outlet />;
