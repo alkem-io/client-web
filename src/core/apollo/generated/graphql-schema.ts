@@ -4584,8 +4584,8 @@ export type Mutation = {
   uploadFileOnLink: Link;
   /** Create a new Document on the Storage and return the value as part of the returned Reference. */
   uploadFileOnReference: Reference;
-  /** Create a new Document on the Storage and return the public Url. */
-  uploadFileOnStorageBucket: Scalars['String']['output'];
+  /** Create a new Document on the Storage and return the ID and public URL. */
+  uploadFileOnStorageBucket: StorageBucketUploadFileResult;
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
 };
@@ -7306,6 +7306,14 @@ export type StorageBucketUploadFileOnReferenceInput = {
   referenceID: Scalars['String']['input'];
 };
 
+export type StorageBucketUploadFileResult = {
+  __typename?: 'StorageBucketUploadFileResult';
+  /** The ID of the uploaded Document. */
+  id: Scalars['UUID']['output'];
+  /** The publicly accessible URL for the uploaded file. */
+  url: Scalars['String']['output'];
+};
+
 export type StorageConfig = {
   __typename?: 'StorageConfig';
   /** Config for uploading files to Alkemio. */
@@ -9079,7 +9087,10 @@ export type UploadFileMutationVariables = Exact<{
   uploadData: StorageBucketUploadFileInput;
 }>;
 
-export type UploadFileMutation = { __typename?: 'Mutation'; uploadFileOnStorageBucket: string };
+export type UploadFileMutation = {
+  __typename?: 'Mutation';
+  uploadFileOnStorageBucket: { __typename?: 'StorageBucketUploadFileResult'; id: string; url: string };
+};
 
 export type DefaultVisualTypeConstraintsQueryVariables = Exact<{
   visualType: VisualType;
@@ -40776,5 +40787,74 @@ export type SpaceExplorerWelcomeSpaceQuery = {
           };
         }
       | undefined;
+  };
+};
+
+export type CreateConversationMutationVariables = Exact<{
+  conversationData: CreateConversationInput;
+}>;
+
+export type CreateConversationMutation = {
+  __typename?: 'Mutation';
+  createConversationOnConversationsSet: {
+    __typename?: 'Conversation';
+    id: string;
+    room?: { __typename?: 'Room'; id: string } | undefined;
+  };
+};
+
+export type UserConversationsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserConversationsQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    conversations: {
+      __typename?: 'MeConversationsResult';
+      users: Array<{
+        __typename?: 'Conversation';
+        id: string;
+        room?:
+          | {
+              __typename?: 'Room';
+              id: string;
+              messagesCount: number;
+              messages: Array<{
+                __typename?: 'Message';
+                id: string;
+                message: string;
+                timestamp: number;
+                sender?:
+                  | { __typename?: 'Organization' }
+                  | {
+                      __typename?: 'User';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
+                    }
+                  | { __typename?: 'VirtualContributor' }
+                  | undefined;
+              }>;
+            }
+          | undefined;
+        user?:
+          | {
+              __typename?: 'User';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
+      }>;
+    };
   };
 };
