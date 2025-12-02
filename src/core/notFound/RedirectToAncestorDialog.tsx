@@ -99,6 +99,9 @@ const RedirectToAncestorDialogContent = ({
  */
 export const RedirectToAncestorDialog = ({ closestAncestor }: RedirectToAncestorDialogProps) => {
   const [cancelled, setCancelled] = useState(false);
+  useEffect(() => {
+    setCancelled(false);
+  }, [closestAncestor.url]);
 
   return (
     <RedirectToAncestorDialogContent

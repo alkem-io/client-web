@@ -41,7 +41,7 @@ class NotFoundErrorBoundaryInternal extends React.Component<InternalProps, State
         closestAncestor: error.closestAncestor,
       };
     } else {
-      return { hasError: false };
+      return { hasError: false, redirectUrl: undefined, closestAncestor: undefined };
     }
   }
 
@@ -52,6 +52,8 @@ class NotFoundErrorBoundaryInternal extends React.Component<InternalProps, State
       return {
         hasError: false,
         pathname: currentPathname,
+        redirectUrl: undefined,
+        closestAncestor: undefined,
       };
     }
     return { pathname: currentPathname };
