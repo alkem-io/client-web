@@ -3942,7 +3942,10 @@ export type UploadFileOnLinkMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const UploadFileDocument = gql`
   mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
-    uploadFileOnStorageBucket(uploadData: $uploadData, file: $file)
+    uploadFileOnStorageBucket(uploadData: $uploadData, file: $file) {
+      id
+      url
+    }
   }
 `;
 export type UploadFileMutationFn = Apollo.MutationFunction<

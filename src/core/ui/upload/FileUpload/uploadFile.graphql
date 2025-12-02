@@ -13,5 +13,8 @@ mutation UploadFileOnLink($file: Upload!, $uploadData: StorageBucketUploadFileOn
 }
 
 mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
-  uploadFileOnStorageBucket(uploadData: $uploadData, file: $file)
+  uploadFileOnStorageBucket(uploadData: $uploadData, file: $file) {
+    id
+    url
+  }
 }
