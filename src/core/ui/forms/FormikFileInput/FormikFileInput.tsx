@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useField } from 'formik';
 import FormikInputField, { FormikInputFieldProps } from '../FormikInputField/FormikInputField';
-import FileUploadButton, { FileUploadEntityType } from '@/core/ui/upload/FileUpload/FileUpload';
+import FileUploadButton, { FileUploadEntityType, UploadedDocument } from '@/core/ui/upload/FileUpload/FileUpload';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 const DEFAULT_PROTOCOL = 'https';
@@ -12,6 +12,7 @@ type FormikFileInputProps = FormikInputFieldProps & {
   entityType?: FileUploadEntityType;
   defaultProtocol?: string;
   onChange?: (fileName: string) => void;
+  onDocumentUploaded?: (document: UploadedDocument) => void;
   temporaryLocation?: boolean;
 };
 
@@ -21,6 +22,7 @@ const FormikFileInput = ({
   defaultProtocol = DEFAULT_PROTOCOL,
   entityType,
   onChange,
+  onDocumentUploaded,
   temporaryLocation = false,
   ...props
 }: FormikFileInputProps) => {
@@ -62,6 +64,7 @@ const FormikFileInput = ({
         updatedStorageConfig && (
           <FileUploadButton
             onUpload={onUpload}
+            onDocumentUploaded={onDocumentUploaded}
             onChange={(fileName: string) => {
               helpers.setTouched(true);
               onChange?.(fileName);
