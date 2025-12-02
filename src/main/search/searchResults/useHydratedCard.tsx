@@ -1,11 +1,9 @@
 import {
-  CommunityMembershipStatus,
   SearchResultOrganizationFragment,
   SearchResultPostFragment,
   SearchResultSpaceFragment,
   SearchResultType,
   SearchResultUserFragment,
-  SpaceLevel,
   UserRolesSearchCardsQuery,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -15,13 +13,12 @@ import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hoo
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
-import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '@/core/ui/card/CardContent';
 import ContributingOrganizationCard from '@/domain/community/organization/ContributingOrganizationCard/ContributingOrganizationCard';
 import CardParentSpaceSegment from '@/domain/space/components/cards/components/CardParentSpaceSegment';
-import SearchSpaceCard from '@/domain/shared/components/search-cards/base/SearchSpaceCard';
+import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
@@ -86,44 +83,34 @@ const hydrateSpaceCard = (
   const tagline = spaceProfile?.tagline ?? '';
   const name = spaceProfile.displayName;
   const tags = space.about.profile.tagset?.tags;
-  const vision = space.about.why ?? '';
 
-  const isMember = space.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
-
-  const parentSegment = (
-    data: TypedSearchResult<SearchResultType.Space | SearchResultType.Subspace, SearchResultSpaceFragment>
-  ) => {
-    if (!data.parentSpace) {
-      return null;
-    }
-
-    const parentIcon = data.parentSpace.level === SpaceLevel.L0 ? SpaceL0Icon : SpaceL1Icon;
-
-    return (
-      <CardParentSpaceSegment
-        iconComponent={parentIcon}
-        parentSpaceUri={data.parentSpace?.about.profile.url ?? ''}
-        locked={!data.parentSpace?.about.isContentPublic}
-      >
-        {data.parentSpace?.about.profile.displayName}
-      </CardParentSpaceSegment>
-    );
-  };
+  // Create parentInfo for SpaceCard
+  const parentInfo = data.parentSpace
+    ? {
+        displayName: data.parentSpace.about.profile.displayName,
+        url: data.parentSpace.about.profile.url ?? '',
+        avatar: data.parentSpace.about.profile.avatar?.uri
+          ? {
+              id: data.parentSpace.about.profile.avatar.id ?? '',
+              uri: data.parentSpace.about.profile.avatar.uri,
+              alternativeText: data.parentSpace.about.profile.avatar.alternativeText ?? undefined,
+            }
+          : undefined,
+      }
+    : undefined;
 
   return (
-    <SearchSpaceCard
-      spaceLevel={space.level}
-      banner={getVisualByType(VisualType.Card, spaceProfile.visuals)}
-      member={isMember}
+    <SpaceCard
       displayName={name}
       tagline={tagline}
+      spaceVisibility={space.visibility}
+      level={space.level}
+      isPrivate={!space.about.isContentPublic}
+      showLeads={false}
+      banner={getVisualByType(VisualType.Card, spaceProfile.visuals)}
       spaceUri={spaceProfile.url}
       tags={tags}
-      matchedTerms
-      vision={vision}
-      locked={!space.about.isContentPublic}
-      spaceVisibility={space.visibility}
-      parentSegment={parentSegment(data)}
+      parentInfo={parentInfo}
     />
   );
 };
