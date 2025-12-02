@@ -65,7 +65,7 @@ class NotFoundErrorBoundaryInternal extends React.Component<InternalProps, State
       return (
         <>
           {this.props.errorComponent}
-          {this.state.closestAncestor && <RedirectToAncestorDialog open closestAncestor={this.state.closestAncestor} />}
+          {this.state.closestAncestor && <RedirectToAncestorDialog closestAncestor={this.state.closestAncestor} />}
         </>
       );
     }

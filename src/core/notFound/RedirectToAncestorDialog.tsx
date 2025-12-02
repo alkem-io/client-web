@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogContent, Button, Box } from '@mui/material';
+import { Dialog, DialogContent, Button, Box, DialogProps } from '@mui/material';
 import { Trans, useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Caption, Text } from '@/core/ui/typography';
@@ -22,15 +22,14 @@ interface ClosestAncestor {
 }
 
 interface RedirectToAncestorDialogProps {
-  open: boolean;
   closestAncestor: ClosestAncestor;
 }
 
 const RedirectToAncestorDialogContent = ({
   open,
+  onClose,
   closestAncestor,
-  onCancel,
-}: RedirectToAncestorDialogProps & { onCancel: () => void }) => {
+}: RedirectToAncestorDialogProps & DialogProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [secondsLeft, setSecondsLeft] = useState(REDIRECT_COUNTDOWN_SECONDS);
@@ -58,7 +57,7 @@ const RedirectToAncestorDialogContent = ({
   }, [open, closestAncestor]);
 
   return (
-    <Dialog open={open} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogHeader icon={<LockOutlineIcon />}>{t('components.urlResolver.redirectDialog.title')}</DialogHeader>
       <DialogContent>
         <Box display="flex" flexDirection="column" gap={2}>
@@ -82,8 +81,8 @@ const RedirectToAncestorDialogContent = ({
       </DialogContent>
       <Actions padding={gutters()} sx={{ justifyContent: 'flex-end' }}>
         <Caption>{t('components.urlResolver.redirectDialog.countdown', { seconds: secondsLeft })}</Caption>
-        {onCancel && (
-          <Button variant="text" onClick={onCancel}>
+        {onClose && (
+          <Button variant="text" onClick={event => onClose(event, 'escapeKeyDown')}>
             {t('buttons.cancel')}
           </Button>
         )}
@@ -95,14 +94,17 @@ const RedirectToAncestorDialogContent = ({
   );
 };
 
-export const RedirectToAncestorDialog = ({ open, closestAncestor }: RedirectToAncestorDialogProps) => {
+/**
+ * Wraps the real dialog to be able to close it from here
+ */
+export const RedirectToAncestorDialog = ({ closestAncestor }: RedirectToAncestorDialogProps) => {
   const [cancelled, setCancelled] = useState(false);
 
   return (
     <RedirectToAncestorDialogContent
-      open={open && !cancelled}
+      open={!cancelled}
+      onClose={() => setCancelled(true)}
       closestAncestor={closestAncestor}
-      onCancel={() => setCancelled(true)}
     />
   );
 };
