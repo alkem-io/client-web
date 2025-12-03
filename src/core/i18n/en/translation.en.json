@@ -192,6 +192,7 @@
     "invite": "Invite",
     "visit": "Visit",
     "returnToDashboard": "Return to $t(common.dashboard) as guest",
+    "takeMeHome": "Take me home",
     "approveApplication": "Approve application",
     "rejectApplication": "Reject application"
   },
@@ -1461,7 +1462,6 @@
       "contact-support-sentence": "If this problem persists, please contact support.",
       "buttons": {
         "reload": "Reload",
-        "take-me-home": "Take me home",
         "contact-support": "Contact support"
       }
     },
@@ -3435,6 +3435,11 @@
       "header": "Access Restricted",
       "subheader": "The page you're trying to access is only available to registered users.",
       "subheader2": "Please sign in to continue. Don’t have an $t(common.account)? Sign up for free."
+    },
+    "unauthorized": {
+      "header": "Access Restricted",
+      "subheader": "The page you're trying to access is not available for you.",
+      "subheader2": "Please confirm that you have permissions to access this url."
     },
     "userNotificationsSettings": {
       "general": {

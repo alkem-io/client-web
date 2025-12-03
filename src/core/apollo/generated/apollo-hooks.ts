@@ -21199,6 +21199,13 @@ export const SpacePrivilegesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        about {
+          id
+          profile {
+            id
+            url
+          }
+        }
         authorization {
           id
           myPrivileges

@@ -1,7 +1,7 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceLevel, UrlResolverResult, UrlType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, UrlResolverResultState, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { NotFoundError } from '@/core/40XErrorHandler/40XErrors';
+import { NotAuthorizedError, NotFoundError } from '@/core/40XErrorHandler/40XErrors';
 import { PartialRecord } from '@/core/utils/PartialRecord';
 import { compact } from 'lodash';
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -153,12 +153,15 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     // Normally the urlResolver doesn't throw an error, it returns a UrlResolverResult.Error instead
     throw new NotFoundError();
   }
-  if (!urlResolverLoading && urlResolverData?.urlResolver.state === UrlResolverResult.Error) {
+  if (!urlResolverLoading && urlResolverData?.urlResolver.state === UrlResolverResultState.NotFound) {
+    throw new NotFoundError({ closestAncestor: urlResolverData.urlResolver.closestAncestor });
+  }
+  if (!urlResolverLoading && urlResolverData?.urlResolver.state === UrlResolverResultState.Forbidden) {
     if (!isAuthenticated) {
       const returnUrl = location.pathname + location.search + location.hash;
-      throw new NotFoundError({ redirectUrl: `${AUTH_REQUIRED_PATH}${buildReturnUrlParam(returnUrl)}` });
+      throw new NotAuthorizedError({ redirectUrl: `${AUTH_REQUIRED_PATH}${buildReturnUrlParam(returnUrl)}` });
     }
-    throw new NotFoundError({ closestAncestor: urlResolverData.urlResolver.closestAncestor });
+    throw new NotAuthorizedError({ closestAncestor: urlResolverData.urlResolver.closestAncestor });
   }
 
   useEffect(() => {

@@ -6,6 +6,7 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { NotAuthorizedError } from '../40XErrorHandler/40XErrors';
 import { useLocation } from 'react-router-dom';
 import { AUTH_REQUIRED_PATH } from '../auth/authentication/constants/authentication.constants';
+import { buildReturnUrlParam } from '@/main/routing/urlBuilders';
 
 interface RestrictedRedirectQueryResponse<Data extends {}> {
   data?: Data;
@@ -26,7 +27,7 @@ const useRestrictedRedirect = <Data extends {}>(
   readPrivileges: PrivilegesReader<Data>,
   { requiredPrivilege = AuthorizationPrivilege.Read }: RestrictedRedirectOptions
 ) => {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const { isAuthenticated } = useCurrentUserContext();
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const useRestrictedRedirect = <Data extends {}>(
       // If we have an authorization error, check authentication
       if (!isAuthenticated) {
         // Not authenticated with auth error -> redirect to sign in
-        throw new NotAuthorizedError({ redirectUrl: `${AUTH_REQUIRED_PATH}${location.pathname}` });
+        throw new NotAuthorizedError({ redirectUrl: `${AUTH_REQUIRED_PATH}${buildReturnUrlParam(pathname)}` });
       } else {
         // Authenticated but authorization error -> redirect to restricted
         throw new NotAuthorizedError();

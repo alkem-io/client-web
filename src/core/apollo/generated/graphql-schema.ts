@@ -8485,15 +8485,16 @@ export type UrlResolverQueryResults = {
   innovationPack?: Maybe<UrlResolverQueryResultInnovationPack>;
   organizationId?: Maybe<Scalars['UUID']['output']>;
   space?: Maybe<UrlResolverQueryResultSpace>;
-  state: UrlResolverResult;
+  state: UrlResolverResultState;
   type: UrlType;
   userId?: Maybe<Scalars['UUID']['output']>;
   virtualContributor?: Maybe<UrlResolverQueryResultVirtualContributor>;
 };
 
-export enum UrlResolverResult {
-  Error = 'ERROR',
-  Resolved = 'RESOLVED',
+export enum UrlResolverResultState {
+  Forbidden = 'Forbidden',
+  NotFound = 'NotFound',
+  Resolved = 'Resolved',
 }
 
 export enum UrlType {
@@ -27460,6 +27461,11 @@ export type SpacePrivilegesQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; url: string };
+          };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -35727,7 +35733,7 @@ export type UrlResolverQuery = {
   __typename?: 'Query';
   urlResolver: {
     __typename?: 'UrlResolverQueryResults';
-    state: UrlResolverResult;
+    state: UrlResolverResultState;
     type: UrlType;
     organizationId?: string | undefined;
     userId?: string | undefined;

@@ -10,16 +10,9 @@ import { useSpaceCardQuery } from '../apollo/generated/apollo-hooks';
 import SpaceCardHorizontal, { SpaceCardHorizontalSkeleton } from '@/domain/space/components/cards/SpaceCardHorizontal';
 import LockOutlineIcon from '@mui/icons-material/LockOutline';
 import useNavigate from '../routing/useNavigate';
+import { ClosestAncestor } from './40XErrors';
 
 const REDIRECT_COUNTDOWN_SECONDS = 10;
-
-interface ClosestAncestor {
-  url: string;
-  type: UrlType;
-  space?: {
-    id: string;
-  };
-}
 
 interface RedirectToAncestorDialogProps {
   closestAncestor: ClosestAncestor;
@@ -96,7 +89,7 @@ const RedirectToAncestorDialogContent = ({
               {t('components.urlResolver.redirectDialog.countdown', { seconds: secondsLeft })}
               {onClose && (
                 <Link sx={{ cursor: 'pointer', ml: gutters(0.5) }} onClick={handleStopTimer}>
-                  [Click to cancel]
+                  {t('components.urlResolver.redirectDialog.cancelCountdown')}
                 </Link>
               )}
             </>
