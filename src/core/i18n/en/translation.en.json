@@ -1475,6 +1475,7 @@
         "title": "We are redirecting you...",
         "message": "You don't have permission to access this item or it doesn't exist anymore.<br/>You are being redirected to the closest page you can access.",
         "countdown": "Redirecting in {{seconds}} seconds...",
+        "cancelCountdown": "[Click to cancel]",
         "goNow": "Go now"
       }
     },

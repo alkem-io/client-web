@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogContent, Button, Box, DialogProps } from '@mui/material';
+import { Dialog, DialogContent, Button, Box, DialogProps, Link } from '@mui/material';
 import { Trans, useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Caption, Text } from '@/core/ui/typography';
@@ -33,6 +33,7 @@ const RedirectToAncestorDialogContent = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [secondsLeft, setSecondsLeft] = useState(REDIRECT_COUNTDOWN_SECONDS);
+  const [cancelled, setCancelled] = useState(false);
 
   const { data: spaceData, loading: loadingSpace } = useSpaceCardQuery({
     variables: { spaceId: closestAncestor.space?.id! },
@@ -44,6 +45,9 @@ const RedirectToAncestorDialogContent = ({
 
     const timer = setInterval(() => {
       setSecondsLeft(prev => {
+        if (cancelled) {
+          clearInterval(timer);
+        }
         if (prev <= 1) {
           clearInterval(timer);
           navigate(closestAncestor.url);
@@ -54,11 +58,17 @@ const RedirectToAncestorDialogContent = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [open, closestAncestor]);
+  }, [open, closestAncestor, cancelled]);
+
+  const handleStopTimer = () => {
+    setCancelled(true);
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogHeader icon={<LockOutlineIcon />}>{t('components.urlResolver.redirectDialog.title')}</DialogHeader>
+      <DialogHeader icon={<LockOutlineIcon />} onClose={onClose ? evt => onClose(evt, 'escapeKeyDown') : undefined}>
+        {t('components.urlResolver.redirectDialog.title')}
+      </DialogHeader>
       <DialogContent>
         <Box display="flex" flexDirection="column" gap={2}>
           <Text>
@@ -79,13 +89,19 @@ const RedirectToAncestorDialogContent = ({
           )}
         </Box>
       </DialogContent>
-      <Actions padding={gutters()} sx={{ justifyContent: 'flex-end' }}>
-        <Caption>{t('components.urlResolver.redirectDialog.countdown', { seconds: secondsLeft })}</Caption>
-        {onClose && (
-          <Button variant="text" onClick={event => onClose(event, 'escapeKeyDown')}>
-            {t('buttons.cancel')}
-          </Button>
-        )}
+      <Actions padding={gutters()} sx={{ justifyContent: 'space-between' }}>
+        <Caption>
+          {!cancelled && (
+            <>
+              {t('components.urlResolver.redirectDialog.countdown', { seconds: secondsLeft })}
+              {onClose && (
+                <Link sx={{ cursor: 'pointer', ml: gutters(0.5) }} onClick={handleStopTimer}>
+                  [Click to cancel]
+                </Link>
+              )}
+            </>
+          )}
+        </Caption>
         <Button variant="contained" onClick={() => navigate(closestAncestor.url)}>
           {t('components.urlResolver.redirectDialog.goNow')}
         </Button>
@@ -98,16 +114,13 @@ const RedirectToAncestorDialogContent = ({
  * Wraps the real dialog to be able to close it from here
  */
 export const RedirectToAncestorDialog = ({ closestAncestor }: RedirectToAncestorDialogProps) => {
-  const [cancelled, setCancelled] = useState(false);
+  const [closed, setClosed] = useState(false);
   useEffect(() => {
-    setCancelled(false);
+    // If the closest ancestor changes, reopen the dialog
+    setClosed(false);
   }, [closestAncestor.url]);
 
   return (
-    <RedirectToAncestorDialogContent
-      open={!cancelled}
-      onClose={() => setCancelled(true)}
-      closestAncestor={closestAncestor}
-    />
+    <RedirectToAncestorDialogContent open={!closed} onClose={() => setClosed(true)} closestAncestor={closestAncestor} />
   );
 };
