@@ -1,32 +1,27 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { RedirectToAncestorDialog } from './RedirectToAncestorDialog';
-import { UrlType } from '../apollo/generated/graphql-schema';
+import { ClosestAncestor, NotAuthorizedError, NotFoundError } from './40XErrors';
 
 interface Props extends React.PropsWithChildren {
-  errorComponent: React.ReactNode;
+  errorComponent: (errorState: State) => React.ReactNode;
 }
 
 interface InternalProps extends Props {
   pathname: string;
 }
 
-interface ClosestAncestor {
-  url: string;
-  type: UrlType;
-  space?: {
-    id: string;
-  };
-}
-
 interface State {
   hasError: boolean;
+  error?: Error;
+  isNotFound?: boolean;
+  isNotAuthorized?: boolean;
   pathname?: string;
   redirectUrl?: string; // Redirect to this URL immediately if set
   closestAncestor?: ClosestAncestor; // Show a dialog that will redirect to this URL after countdown
 }
 
-class NotFoundErrorBoundaryInternal extends React.Component<InternalProps, State> {
+class Error40XBoundaryInternal extends React.Component<InternalProps, State> {
   constructor(props: InternalProps) {
     super(props);
     this.state = { hasError: false };
@@ -37,11 +32,31 @@ class NotFoundErrorBoundaryInternal extends React.Component<InternalProps, State
     if (error instanceof NotFoundError) {
       return {
         hasError: true,
+        error,
+        isNotFound: true,
+        isNotAuthorized: false,
+        redirectUrl: error.redirectUrl,
+        closestAncestor: error.closestAncestor,
+      };
+    } else if (error instanceof NotAuthorizedError) {
+      return {
+        hasError: true,
+        error,
+        isNotFound: false,
+        isNotAuthorized: true,
         redirectUrl: error.redirectUrl,
         closestAncestor: error.closestAncestor,
       };
     } else {
-      return { hasError: false, redirectUrl: undefined, closestAncestor: undefined };
+      // Any other error:
+      return {
+        hasError: true,
+        error,
+        isNotFound: false,
+        isNotAuthorized: false,
+        redirectUrl: undefined,
+        closestAncestor: undefined,
+      };
     }
   }
 
@@ -51,7 +66,10 @@ class NotFoundErrorBoundaryInternal extends React.Component<InternalProps, State
     if (currentPathname && currentPathname !== state.pathname) {
       return {
         hasError: false,
+        error: undefined,
         pathname: currentPathname,
+        isNotFound: false,
+        isNotAuthorized: false,
         redirectUrl: undefined,
         closestAncestor: undefined,
       };
@@ -66,7 +84,7 @@ class NotFoundErrorBoundaryInternal extends React.Component<InternalProps, State
       }
       return (
         <>
-          {this.props.errorComponent}
+          {this.props.errorComponent(this.state)}
           {this.state.closestAncestor && <RedirectToAncestorDialog closestAncestor={this.state.closestAncestor} />}
         </>
       );
@@ -76,17 +94,7 @@ class NotFoundErrorBoundaryInternal extends React.Component<InternalProps, State
 }
 
 // Wrapper component to inject location into the error boundary
-export const NotFoundErrorBoundary = (props: Props) => {
+export const Error40XBoundary = (props: Props) => {
   const location = useLocation();
-  return <NotFoundErrorBoundaryInternal {...props} pathname={location.pathname} />;
+  return <Error40XBoundaryInternal {...props} pathname={location.pathname} />;
 };
-
-export class NotFoundError extends Error {
-  public closestAncestor?: ClosestAncestor;
-  public redirectUrl?: string;
-  constructor(params?: { redirectUrl?: string; closestAncestor?: ClosestAncestor }) {
-    super('Not Found');
-    this.closestAncestor = params?.closestAncestor;
-    this.redirectUrl = params?.redirectUrl;
-  }
-}

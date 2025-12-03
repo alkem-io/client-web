@@ -1,7 +1,7 @@
 import { useUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlResolverResult, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { isUrlResolverError } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
+import { NotFoundError } from '@/core/40XErrorHandler/40XErrors';
 import { PartialRecord } from '@/core/utils/PartialRecord';
 import { compact } from 'lodash';
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
