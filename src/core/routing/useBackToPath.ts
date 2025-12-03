@@ -3,6 +3,9 @@ import useNavigate from './useNavigate';
 import useCanGoBack from './useCanGoBack';
 import { normalizeLink } from '../utils/links';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
+import { getPreviousPath } from './NavigationHistory';
+
+const ROUTE_HOME = `/${TopLevelRoutePath.Home}`;
 
 /**
  * Goes back only if the previous history item has the specified URL.
@@ -35,32 +38,36 @@ export const useBackToStaticPath = (parentPagePath: string) => {
 };
 
 /**
- * Useful to close dialogs.
- * Will navigate back using the history API if possible, but will navigate to the default URL if it's not possible or if the previous URL is the same as the current one.
+ * Useful to close dialogs and navigate safely within the Alkemio platform.
+ *
+ * Navigation priority:
+ * 1. If there's a previous path tracked within the SPA (via NavigationHistoryTracker), navigate there
+ * 2. Otherwise, navigate to parentPagePath (or /home if not provided)
+ *
+ * This ensures users always stay within the platform. Since NavigationHistoryTracker only tracks
+ * paths within our SPA, we never navigate to external sites.
+ *
+ * @param parentPagePath - Default fallback path if no previous path exists (defaults to /home)
+ * @param steps - How many steps back to go (1 = previous page, 2 = two pages back, etc.)
+ *                Useful when a redirect occurred and you want to skip the redirected-from page.
  */
-export const useBackWithDefaultUrl = (parentPagePath: string = `/${TopLevelRoutePath.Home}`) => {
-  parentPagePath = parentPagePath ?? `/${TopLevelRoutePath.Home}`;
+export const useBackWithDefaultUrl = (parentPagePath: string = ROUTE_HOME, steps: number = 1) => {
+  const normalizedDefaultPath = normalizeLink(parentPagePath ?? ROUTE_HOME);
   const navigate = useNavigate();
-  const canGoBack = useCanGoBack();
 
   return useCallback(() => {
-    parentPagePath = normalizeLink(parentPagePath);
-    if (!canGoBack) {
-      navigate(parentPagePath);
+    // Get the previous path from the global navigation history tracker
+    const previousPath = getPreviousPath(steps);
+
+    // If we have a previous path from within the SPA, use it
+    if (previousPath) {
+      navigate(previousPath);
       return;
     }
-    const currentUrl = window.location.pathname;
-    const handlePopState = () => {
-      window.removeEventListener('popstate', handlePopState);
-      const previousUrl = window.location.pathname;
 
-      if (currentUrl === previousUrl) {
-        navigate(parentPagePath);
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    navigate(-1);
-  }, [parentPagePath]);
+    // Otherwise, use the default path
+    navigate(normalizedDefaultPath);
+  }, [normalizedDefaultPath, navigate, steps]);
 };
 
 export default useBackToPath;
