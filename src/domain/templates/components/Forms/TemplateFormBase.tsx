@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -93,9 +93,18 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
 
   const renderChildren = typeof children === 'function' ? children : () => children;
 
+  // Track dirty state changes using a ref to avoid re-renders
+  const previousDirtyRef = useRef<boolean | undefined>(undefined);
+
   return (
     <Formik enableReinitialize initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {formState => {
+        // Call onDirtyChange when dirty state changes
+        if (previousDirtyRef.current !== formState.dirty) {
+          previousDirtyRef.current = formState.dirty;
+          actions.onDirtyChange?.(formState.dirty);
+        }
+
         const actionsContent = actions.renderActions(formState);
         const renderedActions = actionsContent ? (
           actions.portal ? (
