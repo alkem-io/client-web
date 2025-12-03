@@ -3620,7 +3620,6 @@ export const SearchResultSpaceFragmentDoc = gql`
       level
       about {
         id
-        why
         profile {
           id
           url
@@ -3634,9 +3633,6 @@ export const SearchResultSpaceFragmentDoc = gql`
           }
         }
         isContentPublic
-        membership {
-          myMembershipStatus
-        }
       }
       visibility
     }

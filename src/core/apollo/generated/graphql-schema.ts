@@ -35980,7 +35980,6 @@ export type SearchQuery = {
               about: {
                 __typename?: 'SpaceAbout';
                 id: string;
-                why?: string | undefined;
                 isContentPublic: boolean;
                 profile: {
                   __typename?: 'Profile';
@@ -36005,10 +36004,6 @@ export type SearchQuery = {
                     name: VisualType;
                     alternativeText?: string | undefined;
                   }>;
-                };
-                membership: {
-                  __typename?: 'SpaceAboutMembership';
-                  myMembershipStatus?: CommunityMembershipStatus | undefined;
                 };
               };
             };
@@ -36810,7 +36805,6 @@ export type SearchResultSpaceFragment = {
     about: {
       __typename?: 'SpaceAbout';
       id: string;
-      why?: string | undefined;
       isContentPublic: boolean;
       profile: {
         __typename?: 'Profile';
@@ -36836,7 +36830,6 @@ export type SearchResultSpaceFragment = {
           alternativeText?: string | undefined;
         }>;
       };
-      membership: { __typename?: 'SpaceAboutMembership'; myMembershipStatus?: CommunityMembershipStatus | undefined };
     };
   };
 };

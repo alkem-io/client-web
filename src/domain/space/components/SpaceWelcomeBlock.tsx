@@ -12,12 +12,12 @@ import {
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import SwapColors from '@/core/ui/palette/SwapColors';
+import { useNavigate } from 'react-router-dom';
 
 export interface SpaceWelcomeBlockProps {
   spaceAbout: {
