@@ -1,0 +1,43 @@
+query UserConversations {
+  me {
+    conversations {
+      users {
+        id
+        room {
+          id
+          messages {
+            id
+            message
+            timestamp
+            sender {
+              ... on User {
+                id
+                profile {
+                  id
+                  displayName
+                  avatar: visual(type: AVATAR) {
+                    id
+                    uri
+                  }
+                }
+              }
+            }
+          }
+          messagesCount
+        }
+        user {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+            url
+          }
+        }
+      }
+    }
+  }
+}

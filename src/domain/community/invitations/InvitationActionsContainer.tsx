@@ -3,6 +3,7 @@ import {
   refetchLatestContributionsSpacesFlatQuery,
   refetchPendingInvitationsCountQuery,
   refetchPendingInvitationsQuery,
+  refetchSpaceAboutBaseQuery,
   useInvitationStateEventMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
@@ -20,9 +21,20 @@ interface InvitationActionsContainerProps extends SimpleContainerProps<Invitatio
   onUpdate?: () => void;
   onAccept?: (spaceUrl: string) => void;
   onReject?: () => void;
+  /**
+   * When provided, the SpaceAboutBaseQuery for this space will be refetched after accepting
+   * an invitation, ensuring the user's new permissions are reflected immediately.
+   */
+  spaceId?: string;
 }
 
-const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: InvitationActionsContainerProps) => {
+const InvitationActionsContainer = ({
+  onUpdate,
+  onAccept,
+  onReject,
+  spaceId,
+  children,
+}: InvitationActionsContainerProps) => {
   const [invitationStateEventMutation] = useInvitationStateEventMutation();
 
   const [updateInvitationState, isUpdatingInvitationState] = useLoadingState(
@@ -45,6 +57,8 @@ const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: 
         refetchLatestContributionsSpacesFlatQuery(),
         refetchPendingInvitationsQuery(),
         refetchPendingInvitationsCountQuery(),
+        // Refetch space privileges so the user's new permissions are reflected immediately
+        ...(spaceId ? [refetchSpaceAboutBaseQuery({ spaceId })] : []),
       ],
     })
   );
@@ -61,15 +75,6 @@ const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: 
       refetchQueries: [refetchPendingInvitationsQuery(), refetchPendingInvitationsCountQuery()],
     })
   );
-
-  // TODO Uncomment when hiding an Invitation is available in the API
-  // const [hideInvitation, isHiding] = useLoadingState((invitationId: string) =>
-  //   deleteInvitation({
-  //     variables: {
-  //       invitationId,
-  //     },
-  //   })
-  // );
 
   return (
     <>

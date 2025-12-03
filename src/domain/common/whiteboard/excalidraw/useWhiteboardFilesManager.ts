@@ -167,7 +167,7 @@ const useWhiteboardFilesManager = ({
       },
     });
 
-    if (!data?.uploadFileOnStorageBucket || errors) {
+    if (!data?.uploadFileOnStorageBucket.url || errors) {
       log('Error uploading!', data, errors);
       return Promise.reject(errors?.[0]?.message);
     }
@@ -175,7 +175,7 @@ const useWhiteboardFilesManager = ({
     log('newFile uploaded', fileId, data.uploadFileOnStorageBucket);
 
     const fileFromExcalidraw = excalidrawAPI?.getFiles()?.[fileId];
-    const url = data.uploadFileOnStorageBucket;
+    const url = data.uploadFileOnStorageBucket.url;
 
     if (fileFromExcalidraw) {
       fileStoreAddFile(fileId, {

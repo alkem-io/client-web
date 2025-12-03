@@ -8,6 +8,7 @@ import '@/core/i18n/config';
 import { NotFoundErrorBoundary } from '@/core/notFound/NotFoundErrorBoundary';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import ScrollToTop from '@/core/routing/ScrollToTop';
+import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { fontFamilySourceSans, fontFamilyVerdana, subHeading } from '@/core/ui/typography/themeTypographyOptions';
@@ -26,6 +27,8 @@ import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
+import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext';
+import { UserMessagingDialog } from './main/userMessaging/UserMessagingDialog';
 import { VersionHandling } from './main/versionHandling';
 import { rem } from '@/core/ui/typography/utils';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
@@ -114,21 +117,25 @@ const Root: FC = () => {
                               <UserProvider>
                                 <PendingMembershipsDialogProvider>
                                   <InAppNotificationsProvider>
-                                    <ApmUserSetter />
-                                    <ScrollToTop />
-                                    <InAppNotificationsDialog />
-                                    <InAppNotificationCountSubscriber />
-                                    <VersionHandling />
-                                    <NotFoundErrorBoundary
-                                      errorComponent={
-                                        <TopLevelLayout>
-                                          <Error404 />
-                                        </TopLevelLayout>
-                                      }
-                                    >
-                                      <TopLevelRoutes />
-                                      <GlobalErrorDialog />
-                                    </NotFoundErrorBoundary>
+                                    <UserMessagingProvider>
+                                      <NavigationHistoryTracker />
+                                      <ApmUserSetter />
+                                      <ScrollToTop />
+                                      <InAppNotificationsDialog />
+                                      <InAppNotificationCountSubscriber />
+                                      <UserMessagingDialog />
+                                      <VersionHandling />
+                                      <NotFoundErrorBoundary
+                                        errorComponent={
+                                          <TopLevelLayout>
+                                            <Error404 />
+                                          </TopLevelLayout>
+                                        }
+                                      >
+                                        <TopLevelRoutes />
+                                        <GlobalErrorDialog />
+                                      </NotFoundErrorBoundary>
+                                    </UserMessagingProvider>
                                   </InAppNotificationsProvider>
                                 </PendingMembershipsDialogProvider>
                               </UserProvider>
