@@ -53,7 +53,7 @@ const useRestrictedRedirect = <Data extends {}>(
     if (data && !privileges?.includes(requiredPrivilege)) {
       throw new NotAuthorizedError();
     }
-  }, [data, error, skip, isAuthenticated]);
+  }, [data, error, skip, isAuthenticated, requiredPrivilege]);
 };
 
 export default useRestrictedRedirect;
