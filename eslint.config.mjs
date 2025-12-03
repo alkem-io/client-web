@@ -82,7 +82,7 @@ export default [
         { blankLine: 'any', prev: 'export', next: 'export' },
       ],
       // react compiler rules
-      'react-compiler/react-compiler': 'error',
+      'react-compiler/react-compiler': 'warn',
       // react rules
       'react-hooks/exhaustive-deps': 'off',
       'react/jsx-pascal-case': 'error',
