@@ -50,7 +50,23 @@ const MessageBubble = ({ message, isOwnMessage }: MessageBubbleProps) => {
           gap: gutters(0.5),
         }}
       >
-        <WrapperMarkdown sx={{ '& p': { margin: 0 }, flex: 1 }}>{message.message}</WrapperMarkdown>
+        <WrapperMarkdown
+          sx={{
+            '& p': { margin: 0 },
+            flex: 1,
+            ...(isOwnMessage && {
+              '& a': {
+                color: 'inherit',
+                textDecoration: 'underline',
+                '&:hover': {
+                  color: 'rgba(255, 255, 255, 0.8)',
+                },
+              },
+            }),
+          }}
+        >
+          {message.message}
+        </WrapperMarkdown>
         <Caption
           sx={{
             color: isOwnMessage ? 'rgba(255,255,255,0.7)' : 'neutral.light',
