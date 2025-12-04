@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import OverflowGradient from '@/core/ui/overflow/OverflowGradient';
 import { gutters } from '@/core/ui/grid/utils';
 import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
@@ -18,6 +19,9 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import SwapColors from '@/core/ui/palette/SwapColors';
 import { useNavigate } from 'react-router-dom';
+import { Box, IconButton } from '@mui/material';
+import { EditOutlined } from '@mui/icons-material';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 
 export interface SpaceWelcomeBlockProps {
   spaceAbout: {
@@ -28,13 +32,16 @@ export interface SpaceWelcomeBlockProps {
     profile: { description?: string };
   };
   description?: string; // explicitly passing description to support both the tabDescription and the about's description
+  canEdit?: boolean;
 }
 
-const SpaceWelcomeBlock = ({ spaceAbout, description }: SpaceWelcomeBlockProps) => {
+const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit = false }: SpaceWelcomeBlockProps) => {
   const { t } = useTranslation();
 
   const { spaceLevel } = useUrlResolver();
   const navigate = useNavigate();
+
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const isMember = spaceAbout?.membership?.myMembershipStatus === CommunityMembershipStatus.Member;
   const welcomeDescription = description ?? spaceAbout?.profile?.description;
@@ -50,22 +57,39 @@ const SpaceWelcomeBlock = ({ spaceAbout, description }: SpaceWelcomeBlockProps) 
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
+  const handleEditClick = () => {
+    navigate(`./${EntityPageSection.Settings}/${SettingsSection.Layout}`);
+  };
+
+  const handleExpandToggle = () => {
+    setIsExpanded(prev => !prev);
+  };
+
   return (
     <>
       <SwapColors swap>{directMessageDialog}</SwapColors>
-      <OverflowGradient
-        maxHeight={gutters(11)}
-        overflowMarker={
-          <SeeMore
-            label="buttons.readMore"
-            onClick={() => navigate(`./${EntityPageSection.About}`)}
-            sx={{ marginTop: -1 }}
-          />
-        }
-      >
-        {isMember && <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} />}
-        {welcomeDescription && <WrapperMarkdown disableParagraphPadding>{welcomeDescription}</WrapperMarkdown>}
-      </OverflowGradient>
+      {canEdit && (
+        <Box display="flex" justifyContent="flex-end">
+          <IconButton onClick={handleEditClick} size="small" sx={{ color: 'primary.main' }}>
+            <EditOutlined />
+          </IconButton>
+        </Box>
+      )}
+      {isExpanded ? (
+        <>
+          {isMember && <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} />}
+          {welcomeDescription && <WrapperMarkdown disableParagraphPadding>{welcomeDescription}</WrapperMarkdown>}
+          <SeeMore label="buttons.showLess" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />
+        </>
+      ) : (
+        <OverflowGradient
+          maxHeight={gutters(11)}
+          overflowMarker={<SeeMore label="buttons.readMore" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
+        >
+          {isMember && <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} />}
+          {welcomeDescription && <WrapperMarkdown disableParagraphPadding>{welcomeDescription}</WrapperMarkdown>}
+        </OverflowGradient>
+      )}
       {(leadUsers.length > 0 || leadOrganizations.length > 0) && (
         <Gutters flexWrap="wrap" row disablePadding>
           {leadUsers.slice(0, 2).map(user => (

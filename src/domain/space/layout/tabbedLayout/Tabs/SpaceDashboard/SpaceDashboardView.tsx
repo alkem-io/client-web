@@ -118,7 +118,7 @@ const SpaceDashboardView = ({
       <PageContent>
         <InfoColumn>
           <PageContentBlock accent>
-            <SpaceWelcomeBlock spaceAbout={space?.about!} description={tabDescription} />
+            <SpaceWelcomeBlock spaceAbout={space?.about!} description={tabDescription} canEdit={canEdit} />
           </PageContentBlock>
 
           <FullWidthButton
