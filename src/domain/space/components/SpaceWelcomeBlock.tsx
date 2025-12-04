@@ -1,11 +1,3 @@
-import { useState } from 'react';
-import AutomaticOverflowGradient from '@/core/ui/overflow/AutomaticOverflowGradient';
-import { gutters } from '@/core/ui/grid/utils';
-import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import Gutters from '@/core/ui/grid/Gutters';
-import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
-import SeeMore from '@/core/ui/content/SeeMore';
 import {
   CommunityMembershipStatus,
   RoleName,
@@ -18,10 +10,11 @@ import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager'
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import SwapColors from '@/core/ui/palette/SwapColors';
-import { useNavigate } from 'react-router-dom';
-import { Box, IconButton } from '@mui/material';
-import { EditOutlined } from '@mui/icons-material';
+import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import Gutters from '@/core/ui/grid/Gutters';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import ExpandableDescription from './ExpandableDescription';
 
 export interface SpaceWelcomeBlockProps {
   spaceAbout: {
@@ -37,11 +30,7 @@ export interface SpaceWelcomeBlockProps {
 
 const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit = false }: SpaceWelcomeBlockProps) => {
   const { t } = useTranslation();
-
   const { spaceLevel } = useUrlResolver();
-  const navigate = useNavigate();
-
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const isMember = spaceAbout?.membership?.myMembershipStatus === CommunityMembershipStatus.Member;
   const welcomeDescription = description ?? spaceAbout?.profile?.description;
@@ -57,39 +46,23 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit = false }: SpaceWe
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const handleEditClick = () => {
-    const isL0 = spaceLevel === SpaceLevel.L0;
-    const path = isL0
-      ? `${EntityPageSection.Settings}/${SettingsSection.Layout}`
-      : `${EntityPageSection.Settings}/${SettingsSection.About}#description`;
-    navigate(`./${path}`);
-  };
-
-  const handleExpandToggle = () => {
-    setIsExpanded(prev => !prev);
-  };
+  const isL0 = spaceLevel === SpaceLevel.L0;
+  const editPath = isL0
+    ? `./${EntityPageSection.Settings}/${SettingsSection.Layout}`
+    : `./${EntityPageSection.Settings}/${SettingsSection.About}#description`;
 
   const showMemberIcon = isMember && !canEdit;
-  const showEditIcon = canEdit;
 
   return (
     <>
       <SwapColors swap>{directMessageDialog}</SwapColors>
-      <AutomaticOverflowGradient
-        maxHeight={isExpanded ? undefined : gutters(4)}
-        overflowMarker={<SeeMore label="buttons.readMore" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
-      >
-        {showMemberIcon && <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} />}
-        {showEditIcon && (
-          <Box paddingLeft={0.5} paddingBottom={1} sx={{ float: 'right' }}>
-            <IconButton onClick={handleEditClick} size="small" sx={{ color: 'primary.main' }}>
-              <EditOutlined />
-            </IconButton>
-          </Box>
-        )}
-        {welcomeDescription && <WrapperMarkdown disableParagraphPadding>{welcomeDescription}</WrapperMarkdown>}
-      </AutomaticOverflowGradient>
-      {isExpanded && <SeeMore label="buttons.showLess" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
+      <ExpandableDescription
+        description={welcomeDescription}
+        editPath={editPath}
+        canEdit={canEdit}
+        disableParagraphPadding
+        headerSlot={showMemberIcon ? <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} /> : undefined}
+      />
       {(leadUsers.length > 0 || leadOrganizations.length > 0) && (
         <Gutters flexWrap="wrap" row disablePadding>
           {leadUsers.slice(0, 2).map(user => (

@@ -92,6 +92,7 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
           tabDescription={tabDescription}
           canCreateSubentity={childEntityCreateAccess}
           onCreateSubentity={childEntityOnCreate}
+          canEdit={permissions.canUpdate}
         />
         {createSubentityDialog}
         <PageContentBlock>

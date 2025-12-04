@@ -1,26 +1,36 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import ExpandableDescription from '../ExpandableDescription';
 
 interface CreateSubspaceBlockProps {
   canCreateSubentity: boolean;
+  canEdit?: boolean;
   onCreateSubentity?: () => void;
   tabDescription: string;
 }
 
-const CreateSubspaceBlock = ({ canCreateSubentity, onCreateSubentity, tabDescription }: CreateSubspaceBlockProps) => {
+const CreateSubspaceBlock = ({
+  canCreateSubentity,
+  canEdit = false,
+  onCreateSubentity,
+  tabDescription,
+}: CreateSubspaceBlockProps) => {
   const { t } = useTranslation();
 
   if (!tabDescription && !canCreateSubentity) {
     return null;
   }
 
+  const editPath = `./${EntityPageSection.Settings}/${SettingsSection.Layout}`;
+
   return (
     <PageContentBlock accent>
-      {tabDescription && <WrapperMarkdown>{tabDescription}</WrapperMarkdown>}
+      <ExpandableDescription description={tabDescription} editPath={editPath} canEdit={canEdit} />
       {canCreateSubentity && (
         <Box display="flex" justifyContent="flex-end">
           <Button startIcon={<AddOutlinedIcon />} variant="contained" onClick={onCreateSubentity}>
