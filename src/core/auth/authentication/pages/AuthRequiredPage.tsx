@@ -49,7 +49,7 @@ export const AuthRequiredPage = () => {
                   </Button>
                   <Caption>{t('common.or')}</Caption>
                   <Button component={Link} to={homeUrl} variant="outlined" color="primary" sx={{ minWidth: '70%' }}>
-                    {t('buttons.returnToDashboard')}
+                    {t('buttons.returnToDashboardAsGuest')}
                   </Button>
                 </Box>
               </LeftArea>

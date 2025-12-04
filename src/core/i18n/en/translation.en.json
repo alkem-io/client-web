@@ -191,7 +191,8 @@
     "messages": "Messages Button",
     "invite": "Invite",
     "visit": "Visit",
-    "returnToDashboard": "Return to $t(common.dashboard) as guest",
+    "returnToDashboardAsGuest": "Return to $t(common.dashboard) as guest",
+    "returnToDashboard": "Return to $t(common.dashboard)",
     "takeMeHome": "Take me home",
     "approveApplication": "Approve application",
     "rejectApplication": "Reject application"

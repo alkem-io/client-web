@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { RedirectToAncestorDialog } from './RedirectToAncestorDialog';
 import { ClosestAncestor, NotAuthorizedError, NotFoundError } from './40XErrors';
+import { setNavigationHistoryError } from '../routing/NavigationHistory';
 
 interface Props extends React.PropsWithChildren {
   errorComponent: (errorState: State) => React.ReactNode;
@@ -28,6 +29,8 @@ class Error40XBoundaryInternal extends React.Component<InternalProps, State> {
   }
 
   static getDerivedStateFromError(error: Error) {
+    setNavigationHistoryError(window.location.pathname + window.location.search + window.location.hash);
+
     // Update state so the next render will show the fallback UI.
     if (error instanceof NotFoundError) {
       return {
