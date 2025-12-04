@@ -28,13 +28,15 @@ import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager'
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import ExpandableDescription from '@/domain/space/components/ExpandableDescription';
 import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
 import { Identifiable } from '@/core/utils/Identifiable';
 
 const SpaceCommunityPage = () => {
-  const { space, entitlements } = useSpace();
+  const { space, entitlements, permissions } = useSpace();
   const { about } = space;
   const { t } = useTranslation();
   const { isAuthenticated } = useCurrentUserContext();
@@ -122,6 +124,8 @@ const SpaceCommunityPage = () => {
   const showVirtualContributorsBlock = hasVcSpaceEntitlement && (virtualContributors?.length > 0 || hasInvitePrivilege);
   const showInviteOption = hasInvitePrivilege && hasVcSpaceEntitlement;
 
+  const editPath = `./${EntityPageSection.Settings}/${SettingsSection.Layout}`;
+
   const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout, loading } = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
@@ -131,7 +135,7 @@ const SpaceCommunityPage = () => {
       <InfoColumn>
         {tabDescription && (
           <PageContentBlock accent>
-            <WrapperMarkdown>{tabDescription}</WrapperMarkdown>
+            <ExpandableDescription description={tabDescription} editPath={editPath} canEdit={permissions.canUpdate} />
           </PageContentBlock>
         )}
         <EntityDashboardLeadsSection
