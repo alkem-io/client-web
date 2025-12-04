@@ -155,7 +155,7 @@ const useAdminGlobalUserList = ({
           name: licensePlan.name,
           sortOrder: licensePlan.sortOrder,
         })) || [],
-    [data]
+    [platformLicensePlans]
   );
 
   return {

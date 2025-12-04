@@ -188,6 +188,7 @@
     "toolPosition": "Position of tool",
     "createOwnSpace": "...or click here to create your own $t(common.space)",
     "notifications": "$t(common.Notifications) Button",
+    "messages": "Messages Button",
     "invite": "Invite",
     "visit": "Visit",
     "returnToDashboard": "Return to $t(common.dashboard) as guest",
@@ -2150,6 +2151,20 @@
         "platform": "Platform notifications"
       }
     },
+    "userMessaging": {
+      "title": "Messages",
+      "noConversations": "No conversations yet",
+      "noMessages": "No messages",
+      "selectConversation": "Select a conversation to start messaging",
+      "typeMessage": "Type a message",
+      "newMessage": "New Message",
+      "selectUser": "To",
+      "noUsersFound": "No users found",
+      "startTyping": "Start typing to search users",
+      "searchUsers": "Search users...",
+      "searchConversations": "Search...",
+      "createChat": "Create Chat"
+    },
     "spaceWelcomeDialog": {
       "title": "\uD83C\uDF89 Your $t(common.space) is Ready!",
       "description": "Now, make it your own:<br>⚙ <b>Set it up</b> – Customize your structure and $t(common.settings).<br>\uD83D\uDCDD <b>Add content</b> - Create $t(common.whiteboards), $t(common.posts), and more.<br>\uD83E\uDD1D <b>Invite collaborators</b> – Find the invitations in the $t(common.space) $t(common.settings).<br>\uD83D\uDCDA <b>Need help?</b> Tutorials are available in your $t(common.space) if you chose to include them.<br/><br/>✨ Want more features? Upgrade to <b>Plus or Premium</b> anytime - just <contact>contact our team</contact>!",
@@ -3344,6 +3359,7 @@
           "saveBtn": "Save prompt"
         },
         "promptGraph": {
+          "editingEnabledLabel": "Allow editing of the prompt graph (platform-wide setting)",
           "saveBtn": "Save Prompt Graph",
           "title": "Prompt Graph",
           "infoText": "Define the behavior of the $t(common.virtualContributor) by creating a prompt graph. The graph consists of nodes that represent different actions or conditions, and edges that define the flow between these nodes. You can customize the prompt graph to suit your specific use case and requirements.",

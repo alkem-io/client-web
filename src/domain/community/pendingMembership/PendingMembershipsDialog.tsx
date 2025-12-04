@@ -151,7 +151,11 @@ const PendingMembershipsDialog = () => {
           )}
         </Gutters>
       </DialogWithGrid>
-      <InvitationActionsContainer onAccept={onInvitationAccept} onReject={onInvitationReject}>
+      <InvitationActionsContainer
+        onAccept={onInvitationAccept}
+        onReject={onInvitationReject}
+        spaceId={currentInvitation?.spacePendingMembershipInfo.id}
+      >
         {props => (
           <InvitationDialog
             open={openDialog?.type === PendingMembershipsDialogType.InvitationView}

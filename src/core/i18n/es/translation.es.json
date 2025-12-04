@@ -118,6 +118,7 @@
     "see-more": "Ver más",
     "see-all": "Más {{subject}}",
     "readMore": "Leer más",
+    "retry": "Try again",
     "home": "Inicio",
     "take-me-home": "Llévame al inicio",
     "close": "Cerrar",
@@ -187,6 +188,7 @@
     "toolPosition": "Posición de la herramienta",
     "createOwnSpace": "...o haz clic aquí para crear tu propio $t(common.space)",
     "notifications": "Botón de $t(common.Notifications)",
+    "messages": "Messages Button",
     "invite": "Invitar",
     "visit": "Visitar",
     "returnToDashboard": "Volver al $t(common.dashboard) como invitado",
@@ -239,6 +241,7 @@
     "Account": "Cuenta",
     "account": "cuenta",
     "anonymous": "Anónimo",
+    "guestSuffix": "(guest)",
     "all": "Todo",
     "knowledge-base": "Base de conocimientos",
     "or": "O",
@@ -562,6 +565,7 @@
       "HOST": "Anfitrión",
       "MEMBER": "$t(common.Member)",
       "ASSOCIATE": "Asociado",
+      "GUEST": "Guest",
       "OWNER": "Propietario",
       "GLOBAL_ADMIN": "Administrador $t(common.global)",
       "GLOBAL_SUPPORT": "$t(common.Admin) de soporte",
@@ -967,6 +971,25 @@
     "title": "Copia el enlace a continuación para compartir este {{entity}}",
     "share-this": "Compartir este {{entity}}",
     "share-this-on": "Compartir este {{entity}} en {{platform}}",
+    "guest-access": {
+      "label": "Guest access",
+      "toggle-label": "Enable guest access",
+      "toggle-description": "Let anyone with the guest link view and contribute to this whiteboard.",
+      "disabled-tooltip": "You don't have permission to change guest access.",
+      "url-label": "Guest Access URL",
+      "copy-url": "Copy guest link",
+      "warning-title": "Guests can edit this whiteboard",
+      "warning-description": "Anyone with the guest link can view and contribute. Remove access when you're done collaborating.",
+      "visibility-warning": "This whiteboard is visible to guest users.",
+      "errors": {
+        "PERMISSION_DENIED": "You don't have permission to change guest access.",
+        "NETWORK": "Check your connection and try again.",
+        "UNKNOWN": "We couldn't update guest access. Please try again.",
+        "NOT_AUTHORIZED": "You're not authorized to change guest access.",
+        "SPACE_GUEST_DISABLED": "Guest access is disabled for this space.",
+        "WHITEBOARD_NOT_FOUND": "This whiteboard couldn't be found. Refresh and try again."
+      }
+    },
     "or": "o",
     "url": "URL",
     "warning": "Ten en cuenta que tu correo electrónico personal será visible para el usuario cuando le envíes un mensaje.",
@@ -1232,6 +1255,7 @@
     "shareSettings": {
       "description": "Según los $t(common.settings) del $t(common.space) en el que se encuentra este {{elementName}}, puedes editar con varios usuarios a la vez. Si no quieres que otros editen, cambia los $t(common.settings) a continuación.",
       "disabled": "Según los $t(common.settings) del $t(common.space) en el que se encuentra este {{elementName}}, la colaboración en tiempo real no está habilitada. Esto significa que solo un usuario puede editar a la vez.",
+      "guestAccessWarning": "Note: If you make this whiteboard public, everyone in the space will be able to edit the whiteboard.",
       "ownedBy": {
         "title": "Este {{elementName}} es propiedad de:"
       },
@@ -2127,6 +2151,20 @@
         "platform": "Notificaciones de plataforma"
       }
     },
+    "userMessaging": {
+      "title": "Messages",
+      "noConversations": "No conversations yet",
+      "noMessages": "No messages",
+      "selectConversation": "Select a conversation to start messaging",
+      "typeMessage": "Type a message",
+      "newMessage": "New Message",
+      "selectUser": "To",
+      "noUsersFound": "No users found",
+      "startTyping": "Start typing to search users",
+      "searchUsers": "Search users...",
+      "searchConversations": "Search...",
+      "createChat": "Create Chat"
+    },
     "spaceWelcomeDialog": {
       "title": "🎉 ¡Tu $t(common.space) está listo!",
       "description": "Ahora, hazlo tuyo:<br>⚙ <b>Configúralo</b> – Personaliza tu estructura y $t(common.settings).<br>📝 <b>Añade contenido</b> - Crea $t(common.whiteboards), $t(common.posts) y más.<br>🤝 <b>Invita a colaboradores</b> – Encuentra las invitaciones en la $t(common.space) $t(common.settings).<br>📚 <b>¿Necesitas ayuda?</b> Los tutoriales están disponibles en tu $t(common.space) si elegiste incluirlos.<br/><br/>✨ ¿Quieres más funciones? Actualiza a <b>Plus o Premium</b> en cualquier momento: <contact>contáctanos</contact>.",
@@ -2513,6 +2551,7 @@
             "createBlocks": "<b>Crear $t(common.posts):</b> Permitir que los $t(common.members) creen $t(common.posts). Si desactivas esto, los $t(common.members) aún podrán contribuir a los $t(common.posts) existentes, pero no podrán crear nuevos $t(common.posts).",
             "createSubspaces": "<b>Crear $t(common.subspaces):</b> Permitir que los $t(common.members) creen $t(common.subspaces) en este $t(common.space). Si desactivas esto, aún podrás crear $t(common.subspaces) tú mismo y añadir a otras personas como $t(common.admin) dentro del $t(common.subspace).",
             "videoCall": "<b>Videollamada:</b> Mostrar el botón de videollamada en el menú de pestañas. Todos los miembros de este Espacio pueden usar este botón para iniciar una videoconferencia de Jitsi. Lee más sobre Jitsi <jitsiInfoLink>aquí</jitsiInfoLink>.",
+            "guestContributions": "<b>Guest Contributions</b>: Allow $t(common.whiteboards) in this $t(common.space) to be shared with guest users (non-members) for collaborative contributions.",
             "eventsFromSubspaces": "<b>Eventos de $t(common.subspaces):</b> Permitir que los eventos de los $t(common.subspaces) también sean visibles en el calendario de este $t(common.space).",
             "inheritRights": "Permitir que los $t(common.members) de la $t(common.community) padre contribuyan sin necesidad de unirse primero.",
             "supportAsAdmin": "<b>Soporte de Alkemio:</b> Permitir que el equipo de Soporte de Alkemio actúe como $t(common.admin) en este $t(common.space)."
@@ -2527,7 +2566,8 @@
           "account": {
             "vc-section-title": "$t(common.virtualContributors) creados desde este $t(common.space)",
             "vc-create-button": "Crear $t(common.virtualContributor)"
-          }
+          },
+          "updateFailed": "An error occurred while updating the $t(common.settings). Please try again later."
         }
       },
       "users": {
@@ -3036,6 +3076,7 @@
         "noMembership": "Debes ser $t(common.member) del {{spaceLevel}} en el que está este $t(common.whiteboard) para poder editar. Haz clic aquí para <spacelink>unirte/solicitar</spacelink>",
         "unauthenticated": "Debes iniciar sesión y ser $t(common.member) del {{spaceLevel}} en el que está este $t(common.whiteboard) para poder editar. Haz clic aquí para <signinlink>iniciar sesión</signinlink>"
       },
+      "guestContributionsWarning": "This whiteboard is visible to guest users",
       "readonlyDialog": {
         "title": "Modo solo lectura",
         "reason": {
@@ -3075,6 +3116,46 @@
         "errorGeneratingPreview": "Error al generar vista previa para esta $t(common.whiteboard).",
         "ariaLabel": "Vista previa de la pizarra. Haga clic para abrir la pizarra.",
         "ariaLabelDisabled": "Vista previa de la pizarra. Esta pizarra no se puede abrir."
+      }
+    },
+    "publicWhiteboard": {
+      "title": "$t(common.Whiteboard)",
+      "fallbackTitle": "Whiteboard"
+    },
+    "public": {
+      "whiteboard": {
+        "join": {
+          "welcome": "Welcome to Alkemio!",
+          "title": "Join Whiteboard",
+          "description": "Choose a nickname to join this whiteboard as a guest",
+          "guestNameLabel": "Guest Name",
+          "placeholder": "Enter your nickname",
+          "joinButton": "Join as guest",
+          "joiningButton": "Joining...",
+          "signInButton": "Sign in to Alkemio"
+        },
+        "guestSessionNotification": {
+          "title": "You've left your whiteboard",
+          "description": "Your guest session is still active. You can return to your whiteboard, or explore what Alkemio has to offer.",
+          "backButton": "Back to Whiteboard",
+          "websiteButton": "Go to our website",
+          "contributeMoreTitle": "Want to contribute more?",
+          "contributeMoreDescription": "Sign up for an Alkemio account on the right to collaborate with teams and access advanced tools."
+        },
+        "error": {
+          "404": {
+            "title": "Whiteboard Not Found",
+            "message": "The whiteboard link may be incorrect or the whiteboard may have been deleted."
+          },
+          "403": {
+            "title": "Access Denied",
+            "message": "This whiteboard is not available for guest access. Please contact the whiteboard owner."
+          },
+          "500": {
+            "title": "Unable to Load Whiteboard",
+            "message": "Please try again later or check your internet connection."
+          }
+        }
       }
     },
     "memo": {

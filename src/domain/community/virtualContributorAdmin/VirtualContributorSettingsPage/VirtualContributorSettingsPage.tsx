@@ -22,6 +22,8 @@ const VirtualContributorSettingsPage = () => {
 
   const vc = data?.lookup.virtualContributor;
 
+  const isPlatformAdmin = userWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
+
   const isExternalConfigAvailable = [
     AiPersonaEngine.LibraFlow,
     AiPersonaEngine.OpenaiAssistant,
@@ -32,9 +34,9 @@ const VirtualContributorSettingsPage = () => {
     vc?.aiPersona?.engine!
   );
 
-  const isPromptGraphConfighAvailable =
-    userWrapper?.hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin) &&
-    vc?.aiPersona?.engine === AiPersonaEngine.Expert;
+  const canShowPromptGraphSection =
+    vc?.aiPersona?.engine === AiPersonaEngine.Expert &&
+    (isPlatformAdmin || vc.platformSettings?.promptGraphEditingEnabled);
 
   if (!vc || !vc.aiPersona) {
     return null;
@@ -45,7 +47,9 @@ const VirtualContributorSettingsPage = () => {
       <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
         <VisibilityForm vc={vc} />
         <BodyOfKnowledgeManagement vc={vc} />
-        {isPromptGraphConfighAvailable && <PromptGraphConfig vc={vc} />}
+        {canShowPromptGraphSection && (
+          <PromptGraphConfig vc={vc} isPlatformAdmin={!!isPlatformAdmin} />
+        )}
         {isPromptConfigAvailable && <PromptConfig vc={vc} />}
         {isExternalConfigAvailable && <ExternalConfig vc={vc} />}
       </VCSettingsPageLayout>
