@@ -37,7 +37,7 @@ export const Error403 = () => {
               <Tagline sx={{ marginTop: gutters(0.5) }}>{t('pages.unauthorized.subheader2')}</Tagline>
               <Box display="flex" flexDirection="column" alignItems="center" marginTop={gutters(2)} gap={2}>
                 <Button component={Link} to={homeUrl} variant="contained" color="primary" sx={{ minWidth: '70%' }}>
-                  {t('buttons.takeMeHome')}
+                  {t('buttons.returnToDashboard')}
                 </Button>
               </Box>
             </LeftArea>
