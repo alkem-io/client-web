@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import OverflowGradient from '@/core/ui/overflow/OverflowGradient';
+import AutomaticOverflowGradient from '@/core/ui/overflow/AutomaticOverflowGradient';
 import { gutters } from '@/core/ui/grid/utils';
 import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
@@ -65,31 +65,27 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit = false }: SpaceWe
     setIsExpanded(prev => !prev);
   };
 
+  const showMemberIcon = isMember && !canEdit;
+  const showEditIcon = canEdit;
+
   return (
     <>
       <SwapColors swap>{directMessageDialog}</SwapColors>
-      {canEdit && (
-        <Box display="flex" justifyContent="flex-end">
-          <IconButton onClick={handleEditClick} size="small" sx={{ color: 'primary.main' }}>
-            <EditOutlined />
-          </IconButton>
-        </Box>
-      )}
-      {isExpanded ? (
-        <>
-          {isMember && <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} />}
-          {welcomeDescription && <WrapperMarkdown disableParagraphPadding>{welcomeDescription}</WrapperMarkdown>}
-          <SeeMore label="buttons.showLess" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />
-        </>
-      ) : (
-        <OverflowGradient
-          maxHeight={gutters(11)}
-          overflowMarker={<SeeMore label="buttons.readMore" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
-        >
-          {isMember && <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} />}
-          {welcomeDescription && <WrapperMarkdown disableParagraphPadding>{welcomeDescription}</WrapperMarkdown>}
-        </OverflowGradient>
-      )}
+      <AutomaticOverflowGradient
+        maxHeight={isExpanded ? undefined : gutters(4)}
+        overflowMarker={<SeeMore label="buttons.readMore" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
+      >
+        {showMemberIcon && <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} />}
+        {showEditIcon && (
+          <Box paddingLeft={0.5} paddingBottom={1} sx={{ float: 'right' }}>
+            <IconButton onClick={handleEditClick} size="small" sx={{ color: 'primary.main' }}>
+              <EditOutlined />
+            </IconButton>
+          </Box>
+        )}
+        {welcomeDescription && <WrapperMarkdown disableParagraphPadding>{welcomeDescription}</WrapperMarkdown>}
+      </AutomaticOverflowGradient>
+      {isExpanded && <SeeMore label="buttons.showLess" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
       {(leadUsers.length > 0 || leadOrganizations.length > 0) && (
         <Gutters flexWrap="wrap" row disablePadding>
           {leadUsers.slice(0, 2).map(user => (
