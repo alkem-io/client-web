@@ -12,15 +12,6 @@ import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 
 export const Error403 = () => {
   const { t } = useTranslation();
-
-  /**
-   * Error403 can't use buildLoginUrl() directly for the following reasons:
-   * - it belongs to /identity routes and is accessed from identity subdomain while the resource the user was trying
-   * to access most likely was on the root domain or in an innovation hub.
-   * - it isn't meant to be returned back to, the page the user intended to visit is the previous one.
-   *
-   * For Login/SignUp redirection to work this component receives the full returnUrl with origin already baked in.
-   */
   const homeUrl = `/${TopLevelRoutePath.Home}`;
 
   return (
