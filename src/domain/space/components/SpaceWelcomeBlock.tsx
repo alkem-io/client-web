@@ -58,7 +58,11 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit = false }: SpaceWe
   });
 
   const handleEditClick = () => {
-    navigate(`./${EntityPageSection.Settings}/${SettingsSection.Layout}`);
+    const isL0 = spaceLevel === SpaceLevel.L0;
+    const path = isL0
+      ? `${EntityPageSection.Settings}/${SettingsSection.Layout}`
+      : `${EntityPageSection.Settings}/${SettingsSection.About}#description`;
+    navigate(`./${path}`);
   };
 
   const handleExpandToggle = () => {
