@@ -79,7 +79,7 @@ const EditTemplateDialog = ({
         actions={{
           onCancel: () => setConfirmCloseDialogOpen(false),
           onConfirm: () => {
-            onClose?.();
+            onClose();
             setConfirmCloseDialogOpen(false);
           },
         }}
