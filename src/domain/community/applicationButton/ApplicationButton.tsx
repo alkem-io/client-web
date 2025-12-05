@@ -14,6 +14,7 @@ import InvitationDialog from '@/domain/community/invitations/InvitationDialog';
 import useNavigate from '@/core/routing/useNavigate';
 import ApplicationDialog from './ApplicationDialog';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import FullWidthButton from '@/core/ui/button/FullWidthButton';
 
 export interface ApplicationButtonProps {
   spaceId: string | undefined;
@@ -64,7 +65,7 @@ export const ApplicationButton = ({
   onJoin,
   spaceLevel,
   loading = false,
-  component: Button = MuiButton,
+  component: Button = FullWidthButton,
   extended = false,
   onUpdateInvitation,
   noAuthApplyButtonText,
