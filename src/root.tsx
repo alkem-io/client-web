@@ -5,8 +5,8 @@ import { UserGeoProvider } from '@/core/analytics/geo';
 import AlkemioApolloProvider from '@/core/apollo/context/ApolloProvider';
 import { AuthenticationProvider } from '@/core/auth/authentication/context/AuthenticationProvider';
 import '@/core/i18n/config';
-import { NotFoundErrorBoundary } from '@/core/notFound/NotFoundErrorBoundary';
-import { Error404 } from '@/core/pages/Errors/Error404';
+import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
+import { Error40X } from './core/pages/Errors/Error40X';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
@@ -125,16 +125,16 @@ const Root: FC = () => {
                                       <InAppNotificationCountSubscriber />
                                       <UserMessagingDialog />
                                       <VersionHandling />
-                                      <NotFoundErrorBoundary
-                                        errorComponent={
+                                      <Error40XBoundary
+                                        errorComponent={errorState => (
                                           <TopLevelLayout>
-                                            <Error404 />
+                                            <Error40X {...errorState} />
                                           </TopLevelLayout>
-                                        }
+                                        )}
                                       >
                                         <TopLevelRoutes />
                                         <GlobalErrorDialog />
-                                      </NotFoundErrorBoundary>
+                                      </Error40XBoundary>
                                     </UserMessagingProvider>
                                   </InAppNotificationsProvider>
                                 </PendingMembershipsDialogProvider>
