@@ -1,0 +1,21 @@
+query SpaceCard($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      level
+      about {
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+          cardBanner: visual(type: CARD) {
+            ...VisualModel
+          }
+        }
+      }
+    }
+  }
+}

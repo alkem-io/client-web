@@ -3385,6 +3385,65 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
   ${InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc}
   ${InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc}
 `;
+export const UrlResolverResultFragmentDoc = gql`
+  fragment UrlResolverResult on UrlResolverQueryResults {
+    type
+    space {
+      id
+      level
+      levelZeroSpaceID
+      collaboration {
+        id
+        calloutsSet {
+          id
+          calloutId
+          contributionId
+          postId
+          whiteboardId
+        }
+      }
+      calendar {
+        id
+        calendarEventId
+      }
+      templatesSet {
+        id
+        templateId
+      }
+      parentSpaces
+    }
+    organizationId
+    userId
+    virtualContributor {
+      id
+      calloutsSet {
+        id
+        calloutId
+        contributionId
+        postId
+      }
+    }
+    discussionId
+    innovationPack {
+      id
+      templatesSet {
+        id
+        templateId
+      }
+    }
+    innovationHubId
+  }
+`;
+export const UrlResolverResultClosestAncestorFragmentDoc = gql`
+  fragment UrlResolverResultClosestAncestor on UrlResolverQueryClosestAncestor {
+    type
+    space {
+      id
+      level
+      levelZeroSpaceID
+    }
+  }
+`;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
     id
@@ -19025,6 +19084,81 @@ export type SpaceEntitlementsQueryResult = Apollo.QueryResult<
 export function refetchSpaceEntitlementsQuery(variables: SchemaTypes.SpaceEntitlementsQueryVariables) {
   return { query: SpaceEntitlementsDocument, variables: variables };
 }
+export const SpaceCardDocument = gql`
+  query SpaceCard($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        level
+        about {
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+            cardBanner: visual(type: CARD) {
+              ...VisualModel
+            }
+          }
+        }
+      }
+    }
+  }
+  ${VisualModelFragmentDoc}
+`;
+
+/**
+ * __useSpaceCardQuery__
+ *
+ * To run a query within a React component, call `useSpaceCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceCardQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceCardQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceCardQuery, SchemaTypes.SpaceCardQueryVariables> &
+    ({ variables: SchemaTypes.SpaceCardQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceCardQuery, SchemaTypes.SpaceCardQueryVariables>(SpaceCardDocument, options);
+}
+export function useSpaceCardLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceCardQuery, SchemaTypes.SpaceCardQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceCardQuery, SchemaTypes.SpaceCardQueryVariables>(
+    SpaceCardDocument,
+    options
+  );
+}
+export function useSpaceCardSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.SpaceCardQuery, SchemaTypes.SpaceCardQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.SpaceCardQuery, SchemaTypes.SpaceCardQueryVariables>(
+    SpaceCardDocument,
+    options
+  );
+}
+export type SpaceCardQueryHookResult = ReturnType<typeof useSpaceCardQuery>;
+export type SpaceCardLazyQueryHookResult = ReturnType<typeof useSpaceCardLazyQuery>;
+export type SpaceCardSuspenseQueryHookResult = ReturnType<typeof useSpaceCardSuspenseQuery>;
+export type SpaceCardQueryResult = Apollo.QueryResult<SchemaTypes.SpaceCardQuery, SchemaTypes.SpaceCardQueryVariables>;
+export function refetchSpaceCardQuery(variables: SchemaTypes.SpaceCardQueryVariables) {
+  return { query: SpaceCardDocument, variables: variables };
+}
 export const SpaceTemplatesManagerDocument = gql`
   query SpaceTemplatesManager($spaceId: UUID!) {
     lookup {
@@ -21065,6 +21199,13 @@ export const SpacePrivilegesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        about {
+          id
+          profile {
+            id
+            url
+          }
+        }
         authorization {
           id
           myPrivileges
@@ -24477,53 +24618,16 @@ export function refetchInAppNotificationsUnreadCountQuery(
 export const UrlResolverDocument = gql`
   query UrlResolver($url: String!) {
     urlResolver(url: $url) {
-      type
-      space {
-        id
-        level
-        levelZeroSpaceID
-        collaboration {
-          id
-          calloutsSet {
-            id
-            calloutId
-            contributionId
-            postId
-            whiteboardId
-          }
-        }
-        calendar {
-          id
-          calendarEventId
-        }
-        templatesSet {
-          id
-          templateId
-        }
-        parentSpaces
+      state
+      ...UrlResolverResult
+      closestAncestor {
+        ...UrlResolverResultClosestAncestor
+        url
       }
-      organizationId
-      userId
-      virtualContributor {
-        id
-        calloutsSet {
-          id
-          calloutId
-          contributionId
-          postId
-        }
-      }
-      discussionId
-      innovationPack {
-        id
-        templatesSet {
-          id
-          templateId
-        }
-      }
-      innovationHubId
     }
   }
+  ${UrlResolverResultFragmentDoc}
+  ${UrlResolverResultClosestAncestorFragmentDoc}
 `;
 
 /**

@@ -192,7 +192,9 @@
     "messages": "Messages Button",
     "invite": "Invite",
     "visit": "Visit",
-    "returnToDashboard": "Return to $t(common.dashboard) as guest",
+    "returnToDashboardAsGuest": "Return to $t(common.dashboard) as guest",
+    "returnToDashboard": "Return to $t(common.dashboard)",
+    "takeMeHome": "Take me home",
     "approveApplication": "Approve application",
     "rejectApplication": "Reject application"
   },
@@ -1462,7 +1464,6 @@
       "contact-support-sentence": "If this problem persists, please contact support.",
       "buttons": {
         "reload": "Reload",
-        "take-me-home": "Take me home",
         "contact-support": "Contact support"
       }
     },
@@ -1471,6 +1472,13 @@
         "invalidUrl": "Invalid URL",
         "invalidUrlOrigin": "Invalid URL origin",
         "invalidUrlFormat": "Invalid URL format"
+      },
+      "redirectDialog": {
+        "title": "We are redirecting you...",
+        "message": "You don't have permission to access this item or it doesn't exist anymore.<br/>You are being redirected to the closest page you can access.",
+        "countdown": "Redirecting in {{seconds}} seconds...",
+        "cancelCountdown": "[Click to cancel]",
+        "goNow": "Go now"
       }
     },
     "search-cards": {
@@ -3429,6 +3437,11 @@
       "header": "Access Restricted",
       "subheader": "The page you're trying to access is only available to registered users.",
       "subheader2": "Please sign in to continue. Don’t have an $t(common.account)? Sign up for free."
+    },
+    "unauthorized": {
+      "header": "Access Restricted",
+      "subheader": "The page you're trying to access is not available for you.",
+      "subheader2": "Please confirm that you have permissions to access this url."
     },
     "userNotificationsSettings": {
       "general": {
