@@ -26,6 +26,7 @@ interface SubspaceDrawerMenuProps {
   onSelectState: (stateName: string) => void;
   about?: SpaceWelcomeBlockProps['spaceAbout'];
   isVideoCallEnabled?: boolean;
+  canEdit?: boolean;
 }
 
 export const SubspaceDrawerMenu = ({
@@ -36,6 +37,7 @@ export const SubspaceDrawerMenu = ({
   onSelectState,
   about,
   isVideoCallEnabled = false,
+  canEdit = false,
 }: SubspaceDrawerMenuProps) => {
   const { isSmallScreen } = useScreenSize();
 
@@ -77,7 +79,9 @@ export const SubspaceDrawerMenu = ({
             onClose={() => setIsInfoDrawerOpen(false)}
             sx={{ '.MuiDrawer-paper': { width: '60vw' } }}
           >
-            <PageContentBlockSeamless>{about && <SpaceWelcomeBlock spaceAbout={about} />}</PageContentBlockSeamless>
+            <PageContentBlockSeamless>
+              {about && <SpaceWelcomeBlock spaceAbout={about} canEdit={canEdit} />}
+            </PageContentBlockSeamless>
             <MenuList sx={{ paddingTop: 0, paddingBottom: 1 }}>
               <DialogActionButton onClick={handleCloseDrawer} actionDisplay="menuItem" dialog={SubspaceDialog.About} />
               <DialogActionButton

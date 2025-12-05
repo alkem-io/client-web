@@ -50,7 +50,9 @@ const AutomaticOverflowGradient = ({
         }}
         {...props}
       >
-        <Box ref={internalRef}>{children}</Box>
+        <Box ref={internalRef} sx={{ paddingBottom: gutters(0.5) }}>
+          {children}
+        </Box>
       </Box>
       {isOverflowing && overflowMarker}
     </>

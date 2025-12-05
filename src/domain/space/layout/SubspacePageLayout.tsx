@@ -192,6 +192,7 @@ export const SubspacePageLayout = () => {
         onSelectState={setSelectedInnovationFlowState!}
         about={about}
         isVideoCallEnabled={isVideoCallEnabled}
+        canEdit={permissions.canUpdate}
       />
       <DialogActions />
       <FloatingActionButtons

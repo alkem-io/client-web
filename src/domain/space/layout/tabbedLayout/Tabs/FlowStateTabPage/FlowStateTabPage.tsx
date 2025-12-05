@@ -10,6 +10,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
 import Loading from '@/core/ui/loading/Loading';
+import { useSpace } from '@/domain/space/context/useSpace';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import CalloutsSetTagCloud from '@/domain/collaboration/calloutsSet/tagCloud/CalloutsSetTagCloud';
@@ -30,6 +31,7 @@ const FlowStateTabPage = ({ sectionIndex }: FlowStateTabPageProps) => {
   const { calloutsSetId } = urlInfo;
 
   const { t } = useTranslation();
+  const { permissions } = useSpace();
 
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
@@ -48,6 +50,7 @@ const FlowStateTabPage = ({ sectionIndex }: FlowStateTabPageProps) => {
             canCreate={canCreateCallout}
             handleCreate={() => setIsCalloutCreationDialogOpen(true)}
             tabDescription={tabDescription}
+            canEdit={permissions.canUpdate}
           />
           <PageContentBlock>
             <CalloutsList
