@@ -46,8 +46,8 @@ const SpaceCard = ({
   const { t } = useTranslation();
   const isSubspace = level !== SpaceLevel.L0;
 
-  // Show avatarUris as visual in BadgeCardView (next to displayName) if provided
-  const hasAvatarUris = Boolean(avatarUris && avatarUris.length > 0);
+  // Show stacked avatars only for subspaces (L1, L2), not for L0 spaces
+  const hasAvatarUris = Boolean(isSubspace && avatarUris && avatarUris.length > 0);
   const visualContent = hasAvatarUris ? <StackedAvatar avatarUris={avatarUris!} /> : undefined;
 
   // Show leads at the bottom of the card if authenticated (and not in compact mode)
