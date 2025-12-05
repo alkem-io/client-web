@@ -23,7 +23,7 @@ const AutomaticOverflowGradient = ({
   const outerRef = useRef<HTMLElement>(null);
   useEffect(() => {
     if (outerRef.current && internalRef.current) {
-      setIsOverflowing(internalRef.current.scrollHeight >= outerRef.current.clientHeight);
+      setIsOverflowing(internalRef.current.scrollHeight > outerRef.current.clientHeight);
     }
   }, [outerRef, internalRef, height, children]);
 
@@ -50,7 +50,9 @@ const AutomaticOverflowGradient = ({
         }}
         {...props}
       >
-        <Box ref={internalRef}>{children}</Box>
+        <Box ref={internalRef} sx={{ paddingBottom: gutters(0.5) }}>
+          {children}
+        </Box>
       </Box>
       {isOverflowing && overflowMarker}
     </>
