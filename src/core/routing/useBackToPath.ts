@@ -3,7 +3,7 @@ import useNavigate from './useNavigate';
 import useCanGoBack from './useCanGoBack';
 import { normalizeLink } from '../utils/links';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
-import { getPreviousPath } from './NavigationHistory';
+import { getPreviousSafePath } from './NavigationHistory';
 
 const ROUTE_HOME = `/${TopLevelRoutePath.Home}`;
 
@@ -57,7 +57,7 @@ export const useBackWithDefaultUrl = (parentPagePath: string = ROUTE_HOME, steps
 
   return useCallback(() => {
     // Get the previous path from the global navigation history tracker
-    const previousPath = getPreviousPath(steps);
+    const previousPath = getPreviousSafePath(steps);
 
     // If we have a previous path from within the SPA, use it
     if (previousPath) {

@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, UrlType } from '@/core/apollo/generated/graphql-schema';
 import { useSpacePrivilegesQuery } from '@/core/apollo/generated/apollo-hooks';
 import NonAdminRedirect from '@/main/admin/NonAdminRedirect';
 
@@ -20,6 +20,17 @@ const NonSpaceAdminRedirect = ({ spaceId, children }: PropsWithChildren<NonSpace
       privileges={data?.lookup.space?.authorization?.myPrivileges}
       adminPrivilege={AuthorizationPrivilege.Update} // Space admins don't have ADMIN privilege for the space for now
       loading={isLoadingPrivileges || !spaceId}
+      ancestorFallback={
+        data?.lookup.space?.about.profile.url
+          ? {
+              type: UrlType.Space,
+              url: data.lookup.space.about.profile.url,
+              space: {
+                id: data.lookup.space.id,
+              },
+            }
+          : undefined
+      }
     >
       {children}
     </NonAdminRedirect>
