@@ -51,6 +51,7 @@ const FlowStateTabPage = ({ sectionIndex }: FlowStateTabPageProps) => {
             handleCreate={() => setIsCalloutCreationDialogOpen(true)}
             tabDescription={tabDescription}
             canEdit={permissions.canUpdate}
+            tabIndex={sectionIndex}
           />
           <PageContentBlock>
             <CalloutsList

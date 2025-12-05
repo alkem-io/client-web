@@ -12,6 +12,7 @@ type ContributeCreationBlockProps = {
   canEdit?: boolean;
   handleCreate: () => void;
   tabDescription: string;
+  tabIndex?: number;
 };
 
 export const ContributeCreationBlock = ({
@@ -19,6 +20,7 @@ export const ContributeCreationBlock = ({
   canCreate,
   canEdit = false,
   handleCreate,
+  tabIndex,
 }: ContributeCreationBlockProps) => {
   const { t } = useTranslation();
 
@@ -30,7 +32,7 @@ export const ContributeCreationBlock = ({
 
   return (
     <PageContentBlock accent>
-      <ExpandableDescription description={tabDescription} editPath={editPath} canEdit={canEdit} />
+      <ExpandableDescription description={tabDescription} editPath={editPath} canEdit={canEdit} tabIndex={tabIndex} />
       {canCreate && (
         <Actions justifyContent="end">
           <Button variant="contained" startIcon={<AddOutlinedIcon />} onClick={handleCreate}>

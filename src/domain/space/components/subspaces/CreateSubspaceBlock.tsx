@@ -12,6 +12,7 @@ interface CreateSubspaceBlockProps {
   canEdit?: boolean;
   onCreateSubentity?: () => void;
   tabDescription: string;
+  tabIndex?: number;
 }
 
 const CreateSubspaceBlock = ({
@@ -19,6 +20,7 @@ const CreateSubspaceBlock = ({
   canEdit = false,
   onCreateSubentity,
   tabDescription,
+  tabIndex,
 }: CreateSubspaceBlockProps) => {
   const { t } = useTranslation();
 
@@ -30,7 +32,7 @@ const CreateSubspaceBlock = ({
 
   return (
     <PageContentBlock accent>
-      <ExpandableDescription description={tabDescription} editPath={editPath} canEdit={canEdit} />
+      <ExpandableDescription description={tabDescription} editPath={editPath} canEdit={canEdit} tabIndex={tabIndex} />
       {canCreateSubentity && (
         <Box display="flex" justifyContent="flex-end">
           <Button startIcon={<AddOutlinedIcon />} variant="contained" onClick={onCreateSubentity}>

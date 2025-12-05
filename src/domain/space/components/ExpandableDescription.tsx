@@ -13,6 +13,8 @@ export interface ExpandableDescriptionProps {
   canEdit?: boolean;
   disableParagraphPadding?: boolean;
   headerSlot?: ReactNode;
+  /** Tab index (0-based) to auto-open the edit dialog on the settings page */
+  tabIndex?: number;
 }
 
 const ExpandableDescription = ({
@@ -21,9 +23,11 @@ const ExpandableDescription = ({
   canEdit = false,
   disableParagraphPadding = false,
   headerSlot,
+  tabIndex,
 }: ExpandableDescriptionProps) => {
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   if (!description) {
     return null;
@@ -31,7 +35,8 @@ const ExpandableDescription = ({
 
   const handleEditClick = () => {
     if (editPath) {
-      navigate(editPath);
+      const pathWithEditTab = tabIndex !== undefined ? `${editPath}?editTab=${tabIndex}` : editPath;
+      navigate(pathWithEditTab);
     }
   };
 
@@ -40,14 +45,21 @@ const ExpandableDescription = ({
   };
 
   return (
-    <>
+    <Box onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <AutomaticOverflowGradient
         maxHeight={isExpanded ? undefined : gutters(4)}
         overflowMarker={<SeeMore label="buttons.readMore" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
       >
         {headerSlot}
-        {canEdit && editPath && (
-          <Box paddingLeft={0.5} paddingBottom={1} sx={{ float: 'right' }}>
+        {canEdit && editPath && isHovered && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: gutters(0.2),
+              right: gutters(0.5),
+              zIndex: 1,
+            }}
+          >
             <IconButton onClick={handleEditClick} size="small" sx={{ color: 'primary.main' }}>
               <EditOutlined />
             </IconButton>
@@ -56,7 +68,7 @@ const ExpandableDescription = ({
         <WrapperMarkdown disableParagraphPadding={disableParagraphPadding}>{description}</WrapperMarkdown>
       </AutomaticOverflowGradient>
       {isExpanded && <SeeMore label="buttons.showLess" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
-    </>
+    </Box>
   );
 };
 

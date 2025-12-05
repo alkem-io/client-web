@@ -12,9 +12,10 @@ import { Caption } from '@/core/ui/typography';
 import { EditOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, DialogContent, IconButton, IconButtonProps, styled } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { gutters } from '@/core/ui/grid/utils';
 import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import InnovationFlowStateForm from './InnovationFlowStateForm';
@@ -91,6 +92,7 @@ const InnovationFlowDragNDropEditor = ({
   disableStateNumberChange = false,
 }: InnovationFlowDragNDropEditorProps) => {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const innovationFlowStates = innovationFlow?.states;
   const currentStateId = innovationFlow?.currentState?.id;
 
@@ -100,6 +102,20 @@ const InnovationFlowDragNDropEditor = ({
   >(undefined);
   const [editFlowState, setEditFlowState] = useState<(Identifiable & InnovationFlowStateModel) | undefined>();
   const [deleteFlowStateId, setDeleteFlowStateId] = useState<string | undefined>();
+
+  // Auto-open edit dialog if editTab URL param is present
+  useEffect(() => {
+    const editTabParam = searchParams.get('editTab');
+    if (editTabParam !== null && innovationFlowStates) {
+      const tabIndex = parseInt(editTabParam, 10);
+      if (!isNaN(tabIndex) && tabIndex >= 0 && tabIndex < innovationFlowStates.length) {
+        setEditFlowState(innovationFlowStates[tabIndex]);
+        // Clear the URL param after opening dialog
+        searchParams.delete('editTab');
+        setSearchParams(searchParams, { replace: true });
+      }
+    }
+  }, [searchParams, innovationFlowStates, setSearchParams]);
 
   const handleDragEnd: OnDragEndResponder = (result, provided) => {
     const { draggableId, destination } = result;
