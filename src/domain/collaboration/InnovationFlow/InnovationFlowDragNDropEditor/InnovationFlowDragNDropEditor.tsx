@@ -110,10 +110,10 @@ const InnovationFlowDragNDropEditor = ({
       const tabIndex = parseInt(editTabParam, 10);
       if (!isNaN(tabIndex) && tabIndex >= 0 && tabIndex < innovationFlowStates.length) {
         setEditFlowState(innovationFlowStates[tabIndex]);
-        // Clear the URL param after opening dialog
-        searchParams.delete('editTab');
-        setSearchParams(searchParams, { replace: true });
       }
+      // Clear the URL param after opening dialog
+      searchParams.delete('editTab');
+      setSearchParams(searchParams, { replace: true });
     }
   }, [searchParams, innovationFlowStates, setSearchParams]);
 
