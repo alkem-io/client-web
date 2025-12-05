@@ -1926,6 +1926,44 @@ export const SpaceAboutCardBannerFragmentDoc = gql`
   ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
+export const SpaceCardFragmentDoc = gql`
+  fragment SpaceCard on Space {
+    id
+    level
+    visibility
+    about {
+      ...SpaceAboutCardBanner
+      membership {
+        myPrivileges
+        leadUsers {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+        leadOrganizations {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+          }
+        }
+      }
+      isContentPublic
+    }
+  }
+  ${SpaceAboutCardBannerFragmentDoc}
+  ${VisualModelFragmentDoc}
+`;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
     id
@@ -16052,10 +16090,10 @@ export function refetchInnovationHubBannerWideQuery(variables?: SchemaTypes.Inno
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
-      ...SubspaceCard
+      ...SpaceCard
     }
   }
-  ${SubspaceCardFragmentDoc}
+  ${SpaceCardFragmentDoc}
 `;
 
 /**
