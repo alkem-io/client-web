@@ -4466,6 +4466,29 @@ export type UpdateWhiteboardGuestAccessResultFieldPolicy = {
   success?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UrlResolverQueryClosestAncestorKeySpecifier = (
+  | 'discussionId'
+  | 'innovationHubId'
+  | 'innovationPack'
+  | 'organizationId'
+  | 'space'
+  | 'type'
+  | 'url'
+  | 'userId'
+  | 'virtualContributor'
+  | UrlResolverQueryClosestAncestorKeySpecifier
+)[];
+export type UrlResolverQueryClosestAncestorFieldPolicy = {
+  discussionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationHubId?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
+  userId?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UrlResolverQueryResultCalendarKeySpecifier = (
   | 'calendarEventId'
   | 'id'
@@ -4550,22 +4573,26 @@ export type UrlResolverQueryResultVirtualContributorFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UrlResolverQueryResultsKeySpecifier = (
+  | 'closestAncestor'
   | 'discussionId'
   | 'innovationHubId'
   | 'innovationPack'
   | 'organizationId'
   | 'space'
+  | 'state'
   | 'type'
   | 'userId'
   | 'virtualContributor'
   | UrlResolverQueryResultsKeySpecifier
 )[];
 export type UrlResolverQueryResultsFieldPolicy = {
+  closestAncestor?: FieldPolicy<any> | FieldReadFunction<any>;
   discussionId?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubId?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationId?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   userId?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6372,6 +6399,13 @@ export type StrictTypedTypePolicies = {
       | UpdateWhiteboardGuestAccessResultKeySpecifier
       | (() => undefined | UpdateWhiteboardGuestAccessResultKeySpecifier);
     fields?: UpdateWhiteboardGuestAccessResultFieldPolicy;
+  };
+  UrlResolverQueryClosestAncestor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryClosestAncestorKeySpecifier
+      | (() => undefined | UrlResolverQueryClosestAncestorKeySpecifier);
+    fields?: UrlResolverQueryClosestAncestorFieldPolicy;
   };
   UrlResolverQueryResultCalendar?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

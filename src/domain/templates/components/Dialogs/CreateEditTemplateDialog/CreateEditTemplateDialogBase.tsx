@@ -13,6 +13,7 @@ import { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
 
 export interface TemplateFormActions<T = AnyTemplateFormSubmittedValues> {
   renderActions: (formik: FormikProps<T>) => ReactNode;
+  onDirtyChange?: (dirty: boolean) => void;
   portal: HTMLElement | null;
 }
 
@@ -23,6 +24,7 @@ interface TemplateDialogBaseProps {
   editMode?: boolean;
   templateType: TemplateType;
   onDelete?: () => void;
+  onDirtyChange?: (dirty: boolean) => void;
   children?: (props: { actions: TemplateFormActions }) => ReactNode;
 }
 
@@ -34,6 +36,7 @@ const CreateEditTemplateDialogBase = ({
   editMode,
   templateType,
   onDelete,
+  onDirtyChange,
 }: TemplateDialogBaseProps) => {
   const { t } = useTranslation();
   const [actionsPortalContainer, setActionsPortalContainer] = useState<HTMLElement | null>(null);
@@ -56,6 +59,7 @@ const CreateEditTemplateDialogBase = ({
           /* Actions will be rendered down in the dialog footer, but it needs the formik context */
           actions: {
             portal: actionsPortalContainer,
+            onDirtyChange,
             renderActions: formik => (
               <DialogActions sx={{ marginLeft: 'auto' }}>
                 {editMode && onDelete && <DeleteButton onClick={onDelete} disabled={formik.isSubmitting} />}

@@ -7,7 +7,7 @@ import OrganizationAdminCommunityPage from './tabs/OrganizationAdminCommunityPag
 import OrganizationAdminAuthorizationPage from './tabs/OrganizationAdminAuthorizationPage';
 import NonAdminRedirect from '@/main/admin/NonAdminRedirect';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, UrlType } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import OrganizationAdminSettingsPage from './tabs/OrganizationAdminSettingsPage';
@@ -30,6 +30,14 @@ const OrganizationAdminRoutes: FC = () => {
       privileges={organization?.authorization?.myPrivileges}
       adminPrivilege={AuthorizationPrivilege.Update}
       loading={loading}
+      ancestorFallback={
+        organization?.profile.url
+          ? {
+              type: UrlType.Organization,
+              url: organization.profile.url,
+            }
+          : undefined
+      }
     >
       <Routes>
         <Route index element={<Navigate to="profile" replace />} />

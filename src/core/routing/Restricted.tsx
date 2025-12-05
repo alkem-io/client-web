@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useTransactionScope } from '../analytics/SentryTransactionScopeContext';
 import { useQueryParams } from './useQueryParams';
-import { RestrictedPage } from '../pages/Restricted/RestrictedPage';
 import { info as logInfo } from '../logging/sentry/log';
+import Error403 from '../pages/Errors/Error403';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 
 export const Restricted = () => {
   useTransactionScope({ type: 'authentication' });
@@ -13,5 +14,9 @@ export const Restricted = () => {
     logInfo(`Attempted access to: ${origin}`);
   }, [origin]);
 
-  return <RestrictedPage attemptedTarget={origin || ''} />;
+  return (
+    <TopLevelLayout>
+      <Error403 />
+    </TopLevelLayout>
+  );
 };
