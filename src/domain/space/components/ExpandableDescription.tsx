@@ -31,7 +31,6 @@ const ExpandableDescription = ({
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   if (!description) {
     return null;
@@ -56,7 +55,14 @@ const ExpandableDescription = ({
   };
 
   return (
-    <Box onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} sx={{ position: 'relative' }}>
+    <Box
+      sx={{
+        position: 'relative',
+        '&:hover .edit-button': {
+          opacity: 1,
+        },
+      }}
+    >
       <AutomaticOverflowGradient
         maxHeight={isExpanded ? undefined : gutters(4)}
         overflowMarker={<SeeMore label="buttons.readMore" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
@@ -66,19 +72,23 @@ const ExpandableDescription = ({
           <Box
             sx={{
               position: 'absolute',
-              top: gutters(0.2),
-              right: gutters(0.5),
+              top: gutters(0.05),
+              right: gutters(0.4),
               zIndex: 1,
             }}
           >
             <IconButton
+              className="edit-button"
               onClick={handleEditClick}
               size="small"
               sx={{
                 color: 'primary.main',
-                opacity: isHovered ? 1 : 0,
-                '&:focus': {
+                opacity: 0,
+                '&:focus-visible, &:hover': {
+                  color: 'highlight.dark',
+
                   opacity: 1,
+                  backgroundColor: 'highlight.main',
                 },
               }}
               aria-label={`${t('common.enums.edit-mode.edit')} ${t('common.description')}`}
