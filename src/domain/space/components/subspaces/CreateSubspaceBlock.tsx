@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { SPACE_LAYOUT_EDIT_PATH } from '@/domain/space/constants/spaceEditPaths';
 import ExpandableDescription from '../ExpandableDescription';
 
 interface CreateSubspaceBlockProps {
@@ -26,11 +25,9 @@ const CreateSubspaceBlock = ({
     return null;
   }
 
-  const editPath = `./${EntityPageSection.Settings}/${SettingsSection.Layout}`;
-
   return (
     <PageContentBlock accent>
-      <ExpandableDescription description={tabDescription} editPath={editPath} canEdit={canEdit} />
+      <ExpandableDescription description={tabDescription} editPath={SPACE_LAYOUT_EDIT_PATH} canEdit={canEdit} />
       {canCreateSubentity && (
         <Box display="flex" justifyContent="flex-end">
           <Button startIcon={<AddOutlinedIcon />} variant="contained" onClick={onCreateSubentity}>

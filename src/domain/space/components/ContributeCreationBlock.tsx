@@ -3,8 +3,7 @@ import { Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Actions } from '@/core/ui/actions/Actions';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { SPACE_LAYOUT_EDIT_PATH } from '@/domain/space/constants/spaceEditPaths';
 import ExpandableDescription from './ExpandableDescription';
 
 type ContributeCreationBlockProps = {
@@ -26,11 +25,9 @@ export const ContributeCreationBlock = ({
     return null;
   }
 
-  const editPath = `./${EntityPageSection.Settings}/${SettingsSection.Layout}`;
-
   return (
     <PageContentBlock accent>
-      <ExpandableDescription description={tabDescription} editPath={editPath} canEdit={canEdit} />
+      <ExpandableDescription description={tabDescription} editPath={SPACE_LAYOUT_EDIT_PATH} canEdit={canEdit} />
       {canCreate && (
         <Actions justifyContent="end">
           <Button variant="contained" startIcon={<AddOutlinedIcon />} onClick={handleCreate}>

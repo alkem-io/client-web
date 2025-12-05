@@ -41,9 +41,9 @@ const ExpandableDescription = ({
     if (editPath) {
       if (useEditTab) {
         // Get current tab from URL (1-based), default to 1 if not present
-        const currentTab = parseInt(searchParams.get(TabbedLayoutParams.Section) ?? '1', 10);
-        // Convert to 0-based index for editTab
-        const editTabIndex = currentTab - 1;
+        const currentTab = Number.parseInt(searchParams.get(TabbedLayoutParams.Section) ?? '1', 10);
+        // Convert to 0-based index for editTab, ensuring it's never negative
+        const editTabIndex = Math.max(0, currentTab - 1);
         navigate(`${editPath}?editTab=${editTabIndex}`);
       } else {
         navigate(editPath);

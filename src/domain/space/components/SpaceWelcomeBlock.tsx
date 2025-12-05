@@ -5,7 +5,6 @@ import {
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
@@ -13,7 +12,7 @@ import SwapColors from '@/core/ui/palette/SwapColors';
 import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import Gutters from '@/core/ui/grid/Gutters';
-import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
+import { SPACE_LAYOUT_EDIT_PATH, SUBSPACE_ABOUT_EDIT_PATH } from '@/domain/space/constants/spaceEditPaths';
 import ExpandableDescription from './ExpandableDescription';
 
 export interface SpaceWelcomeBlockProps {
@@ -47,9 +46,7 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit = false }: SpaceWe
   });
 
   const isL0 = spaceLevel === SpaceLevel.L0;
-  const editPath = isL0
-    ? `./${EntityPageSection.Settings}/${SettingsSection.Layout}`
-    : `./${EntityPageSection.Settings}/${SettingsSection.About}#description`;
+  const editPath = isL0 ? SPACE_LAYOUT_EDIT_PATH : SUBSPACE_ABOUT_EDIT_PATH;
 
   const showMemberIcon = isMember && !canEdit;
 
