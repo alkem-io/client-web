@@ -7,6 +7,7 @@ import AutomaticOverflowGradient from '@/core/ui/overflow/AutomaticOverflowGradi
 import SeeMore from '@/core/ui/content/SeeMore';
 import { gutters } from '@/core/ui/grid/utils';
 import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
+import { useTranslation } from 'react-i18next';
 
 export interface ExpandableDescriptionProps {
   description: string | undefined;
@@ -26,6 +27,7 @@ const ExpandableDescription = ({
   headerSlot,
   useEditTab = true,
 }: ExpandableDescriptionProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -54,13 +56,13 @@ const ExpandableDescription = ({
   };
 
   return (
-    <Box onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+    <Box onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} sx={{ position: 'relative' }}>
       <AutomaticOverflowGradient
         maxHeight={isExpanded ? undefined : gutters(4)}
         overflowMarker={<SeeMore label="buttons.readMore" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
       >
         {headerSlot}
-        {canEdit && editPath && isHovered && (
+        {canEdit && editPath && (
           <Box
             sx={{
               position: 'absolute',
@@ -69,7 +71,18 @@ const ExpandableDescription = ({
               zIndex: 1,
             }}
           >
-            <IconButton onClick={handleEditClick} size="small" sx={{ color: 'primary.main' }}>
+            <IconButton
+              onClick={handleEditClick}
+              size="small"
+              sx={{
+                color: 'primary.main',
+                opacity: isHovered ? 1 : 0,
+                '&:focus': {
+                  opacity: 1,
+                },
+              }}
+              aria-label={`${t('common.enums.edit-mode.edit')} ${t('common.description')}`}
+            >
               <EditOutlined />
             </IconButton>
           </Box>
