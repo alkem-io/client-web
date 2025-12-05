@@ -1,0 +1,21 @@
+{
+  "forms": {
+    "validations": {
+      "field": "crwdns37378:0crwdne37378:0",
+      "fieldNotPresent": "crwdns37380:0{{fieldName}}crwdne37380:0",
+      "required": "crwdns18588:0crwdne18588:0",
+      "requiredField": "crwdns18590:0{{field}}crwdne18590:0",
+      "minLength": "crwdns18592:0{{field}}crwdnd18592:0{{min}}crwdne18592:0",
+      "maxLength": "crwdns18594:0{{max}}crwdne18594:0",
+      "alphaNumeric": "crwdns18596:0{{field}}crwdne18596:0",
+      "nonBlank": "crwdns40910:0{{field}}crwdnd40910:0$t(common.spaces)crwdne40910:0",
+      "atLeastOne": "crwdns18600:0{{item}}crwdne18600:0",
+      "reservedTopLevelRoute": "crwdns18602:0crwdne18602:0",
+      "invalidUrl": "crwdns36854:0crwdne36854:0",
+      "invalidEmail": "crwdns37046:0crwdne37046:0",
+      "duplicateEmail": "crwdns37052:0crwdne37052:0",
+      "elementMustBeValidUrl": "crwdns37054:0{{name}}crwdne37054:0",
+      "acceptedTerms": "crwdns37382:0crwdne37382:0"
+    }
+  }
+}

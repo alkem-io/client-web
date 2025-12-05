@@ -1,0 +1,25 @@
+{
+  "calendar": {
+    "add-event": "Adicionar evento",
+    "edit-event": "Editar evento",
+    "delete-event": "Apagar evento",
+    "delete-confirmation": "Tem certeza que quer deletar o evento: '{{title}}' de {{entity}}?",
+    "event": {
+      "type": "Tipos de Evento",
+      "multiple-days": "{{days}} dias",
+      "whole-day": "Dia Todo",
+      "visibleOnParentCalendar": "Also visible on the parent $t(common.space) calendar"
+    },
+    "validation": {
+      "durationMinutes": {
+        "positive": "Hora Final do Evento não pode ser antes da Hora Inicial do Evento"
+      }
+    },
+    "no-data": "Nenhum evento foi encontrado",
+    "no-upcoming-events": "Atualmente, não há eventos futuros para serem exibidos",
+    "past-events": "Eventos Anteriores",
+    "show-calendar": "Exibir calendário",
+    "defaultEventDescription": "",
+    "adminsOnly": "Since there are no events, this block is only visible for $t(common.admins) and $t(common.leads)"
+  }
+}

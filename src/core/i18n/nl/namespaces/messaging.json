@@ -1,0 +1,23 @@
+{
+  "messaging": {
+    "message": "Bericht",
+    "message-optional": "Bericht (optioneel)",
+    "successfully-sent": "Bericht succesvol verstuurd",
+    "messageDeleted": "Dit bericht is verwijderd.",
+    "insertEmoji": "Emoji toevoegen",
+    "addReaction": "Reactie toevoegen",
+    "addMention": "Vermeld iemand",
+    "formattingHelp": "Opmaak hulp",
+    "missingAuthor": "Alkemio (virtual) contributor"
+  },
+  "send-message-dialog": {
+    "direct-message-title": "Verstuur een bericht",
+    "community-message-title": "Stuur een bericht naar {{contact}}(s)"
+  },
+  "snackbars": {
+    "appVersion": {
+      "message": "Er is een nieuwe versie van de app beschikbaar.",
+      "recurringMessage": "Sluit alle Alkemio tabbladen en laad opnieuw om bij te werken."
+    }
+  }
+}
