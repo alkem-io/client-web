@@ -3113,8 +3113,8 @@
       },
       "preview": {
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
-        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
-        "ariaLabelDisabled": "Preview of the whiteboard. This $t(common.whiteboard) cannot be opened."
+        "ariaLabel": "Preview of the $t(common.whiteboard). Click to open the $t(common.whiteboard).",
+        "ariaLabelDisabled": "Preview of the $t(common.whiteboard). This $t(common.whiteboard) cannot be opened."
       }
     },
     "publicWhiteboard": {
