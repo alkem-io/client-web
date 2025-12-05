@@ -1,4 +1,4 @@
-import { Box, Avatar } from '@mui/material';
+import { Box, Avatar, Typography } from '@mui/material';
 import ContributorTooltip from '@/core/ui/card/ContributorTooltip';
 import RouterLink from '@/core/ui/link/RouterLink';
 
@@ -34,6 +34,8 @@ interface SpaceLeadsProps {
   showLeads: boolean;
 }
 
+const MAX_VISIBLE_LEADS = 3;
+
 const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads }: SpaceLeadsProps) => {
   if (!showLeads || (leadUsers.length === 0 && leadOrganizations.length === 0)) {
     return showLeads ? (
@@ -44,10 +46,15 @@ const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads }: Space
   }
 
   const allLeads = [...leadUsers, ...leadOrganizations];
+  const totalCount = allLeads.length;
+
+  // Show only first 2 leads if we have more than 3, to leave room for the "+N" indicator
+  const visibleLeads = totalCount > MAX_VISIBLE_LEADS ? allLeads.slice(0, MAX_VISIBLE_LEADS - 1) : allLeads;
+  const overflowCount = totalCount > MAX_VISIBLE_LEADS ? totalCount - (MAX_VISIBLE_LEADS - 1) : 0;
 
   return (
     <Box display="flex" flexWrap="wrap" gap={1} paddingLeft={1.5}>
-      {allLeads.map(lead => {
+      {visibleLeads.map(lead => {
         return (
           <ContributorTooltip
             key={lead.id}
@@ -79,6 +86,23 @@ const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads }: Space
           </ContributorTooltip>
         );
       })}
+      {overflowCount > 0 && (
+        <Avatar
+          sx={{
+            width: 36,
+            height: 36,
+            borderRadius: 1,
+            bgcolor: 'grey.300',
+            color: 'grey.700',
+            fontSize: '0.875rem',
+            fontWeight: 500,
+          }}
+        >
+          <Typography variant="caption" fontWeight={500}>
+            +{overflowCount}
+          </Typography>
+        </Avatar>
+      )}
     </Box>
   );
 };
