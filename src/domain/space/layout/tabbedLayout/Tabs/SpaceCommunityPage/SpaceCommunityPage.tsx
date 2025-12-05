@@ -135,12 +135,7 @@ const SpaceCommunityPage = () => {
       <InfoColumn>
         {tabDescription && (
           <PageContentBlock accent>
-            <ExpandableDescription
-              description={tabDescription}
-              editPath={editPath}
-              canEdit={permissions.canUpdate}
-              tabIndex={1}
-            />
+            <ExpandableDescription description={tabDescription} editPath={editPath} canEdit={permissions.canUpdate} />
           </PageContentBlock>
         )}
         <EntityDashboardLeadsSection

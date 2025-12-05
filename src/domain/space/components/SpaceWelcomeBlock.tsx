@@ -26,10 +26,9 @@ export interface SpaceWelcomeBlockProps {
   };
   description?: string; // explicitly passing description to support both the tabDescription and the about's description
   canEdit?: boolean;
-  tabIndex?: number;
 }
 
-const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit = false, tabIndex }: SpaceWelcomeBlockProps) => {
+const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit = false }: SpaceWelcomeBlockProps) => {
   const { t } = useTranslation();
   const { spaceLevel } = useUrlResolver();
 
@@ -62,8 +61,8 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit = false, tabIndex 
         editPath={editPath}
         canEdit={canEdit}
         disableParagraphPadding
+        useEditTab={isL0}
         headerSlot={showMemberIcon ? <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} /> : undefined}
-        tabIndex={isL0 ? tabIndex : undefined}
       />
       {(leadUsers.length > 0 || leadOrganizations.length > 0) && (
         <Gutters flexWrap="wrap" row disablePadding>

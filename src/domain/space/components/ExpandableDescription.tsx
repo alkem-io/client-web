@@ -1,11 +1,12 @@
 import { useState, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Box, IconButton } from '@mui/material';
 import { EditOutlined } from '@mui/icons-material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import AutomaticOverflowGradient from '@/core/ui/overflow/AutomaticOverflowGradient';
 import SeeMore from '@/core/ui/content/SeeMore';
 import { gutters } from '@/core/ui/grid/utils';
+import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
 
 export interface ExpandableDescriptionProps {
   description: string | undefined;
@@ -13,8 +14,8 @@ export interface ExpandableDescriptionProps {
   canEdit?: boolean;
   disableParagraphPadding?: boolean;
   headerSlot?: ReactNode;
-  /** Tab index (0-based) to auto-open the edit dialog on the settings page */
-  tabIndex?: number;
+  /** If true, appends editTab param based on current tab URL param (for L0 tabbed layout only) */
+  useEditTab?: boolean;
 }
 
 const ExpandableDescription = ({
@@ -23,9 +24,10 @@ const ExpandableDescription = ({
   canEdit = false,
   disableParagraphPadding = false,
   headerSlot,
-  tabIndex,
+  useEditTab = true,
 }: ExpandableDescriptionProps) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -35,8 +37,15 @@ const ExpandableDescription = ({
 
   const handleEditClick = () => {
     if (editPath) {
-      const pathWithEditTab = tabIndex !== undefined ? `${editPath}?editTab=${tabIndex}` : editPath;
-      navigate(pathWithEditTab);
+      if (useEditTab) {
+        // Get current tab from URL (1-based), default to 1 if not present
+        const currentTab = parseInt(searchParams.get(TabbedLayoutParams.Section) ?? '1', 10);
+        // Convert to 0-based index for editTab
+        const editTabIndex = currentTab - 1;
+        navigate(`${editPath}?editTab=${editTabIndex}`);
+      } else {
+        navigate(editPath);
+      }
     }
   };
 
