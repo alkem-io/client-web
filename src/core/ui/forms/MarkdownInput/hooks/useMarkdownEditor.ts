@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Editor, useEditor } from '@tiptap/react';
 import { EditorState } from '@tiptap/pm/state';
 import { Selection } from 'prosemirror-state';
 import { FormEvent } from 'react';
-import usePersistentValue from '@/core/utils/usePersistentValue';
 import UnifiedConverter from '@/core/ui/markdown/html/UnifiedConverter';
 import { useSetCharacterCount } from '../CharacterCountContext';
 import { EditorOptions } from '@tiptap/core';
@@ -24,7 +23,11 @@ export const useMarkdownEditor = ({
   isInteractingWithInput,
 }: UseMarkdownEditorProps) => {
   const [htmlContent, setHtmlContent] = useState('');
-  const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
+  const converter = UnifiedConverter();
+  const converterRef = useRef(converter);
+  // Always keep the ref updated with the latest converter, but use the initial one for stability
+  converterRef.current ??= converter;
+  const { markdownToHTML, HTMLToMarkdown } = converterRef.current;
   const setCharacterCount = useSetCharacterCount();
 
   const updateHtmlContent = useCallback(async () => {

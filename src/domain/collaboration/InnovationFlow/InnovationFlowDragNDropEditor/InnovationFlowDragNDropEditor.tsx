@@ -90,6 +90,8 @@ const InnovationFlowDragNDropEditor = ({
   onDeleteFlowState,
   disableStateNumberChange = false,
 }: InnovationFlowDragNDropEditorProps) => {
+  // eslint-disable-next-line react-compiler/react-compiler -- Required: @hello-pangea/dnd render props pattern breaks with React Compiler memoization
+  'use no memo';
   const { t } = useTranslation();
   const innovationFlowStates = innovationFlow?.states;
   const currentStateId = innovationFlow?.currentState?.id;
