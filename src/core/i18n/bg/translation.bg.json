@@ -118,6 +118,7 @@
     "see-more": "Виж още",
     "see-all": "Още {{subject}}",
     "readMore": "Прочети повече",
+    "retry": "Try again",
     "home": "Начало",
     "take-me-home": "Върни ме в началото",
     "close": "Затвори",
@@ -187,6 +188,7 @@
     "toolPosition": "Позиция на инструмента",
     "createOwnSpace": "...или кликнете тук, за да създадете собствено $t(common.space)",
     "notifications": "Бутон $t(common.Notifications)",
+    "messages": "Messages Button",
     "invite": "Покани",
     "visit": "Посети",
     "returnToDashboard": "Върни се към $t(common.dashboard) като гост",
@@ -239,6 +241,7 @@
     "Account": "Акаунт",
     "account": "акаунт",
     "anonymous": "Анонимен",
+    "guestSuffix": "(guest)",
     "all": "Всички",
     "knowledge-base": "База знания",
     "or": "Или",
@@ -562,6 +565,7 @@
       "HOST": "Домакин",
       "MEMBER": "$t(common.Member)",
       "ASSOCIATE": "Асоцииран",
+      "GUEST": "Guest",
       "OWNER": "Собственик",
       "GLOBAL_ADMIN": "Глобален $t(common.Admin)",
       "GLOBAL_SUPPORT": "Поддържащ $t(common.Admin)",
@@ -967,6 +971,25 @@
     "title": "Копирай връзката по-долу, за да споделите този/тази {{entity}}",
     "share-this": "Сподели този/тази {{entity}}",
     "share-this-on": "Сподели този/тази {{entity}} в {{platform}}",
+    "guest-access": {
+      "label": "Guest access",
+      "toggle-label": "Enable guest access",
+      "toggle-description": "Let anyone with the guest link view and contribute to this whiteboard.",
+      "disabled-tooltip": "You don't have permission to change guest access.",
+      "url-label": "Guest Access URL",
+      "copy-url": "Copy guest link",
+      "warning-title": "Guests can edit this whiteboard",
+      "warning-description": "Anyone with the guest link can view and contribute. Remove access when you're done collaborating.",
+      "visibility-warning": "This whiteboard is visible to guest users.",
+      "errors": {
+        "PERMISSION_DENIED": "You don't have permission to change guest access.",
+        "NETWORK": "Check your connection and try again.",
+        "UNKNOWN": "We couldn't update guest access. Please try again.",
+        "NOT_AUTHORIZED": "You're not authorized to change guest access.",
+        "SPACE_GUEST_DISABLED": "Guest access is disabled for this space.",
+        "WHITEBOARD_NOT_FOUND": "This whiteboard couldn't be found. Refresh and try again."
+      }
+    },
     "or": "или",
     "url": "URL",
     "warning": "Моля, имайте предвид, че вашият личен имейл ще бъде видим за потребителя, когато му изпратите съобщение.",
@@ -1232,6 +1255,7 @@
     "shareSettings": {
       "description": "Базирано на $t(common.settings) на $t(common.space), в който се намира този/тази {{elementName}}, можете да редактирате с множество потребители едновременно. Ако не искате други да редактират, променете $t(common.settings) по-долу.",
       "disabled": "Базирано на $t(common.settings) на $t(common.space), в който се намира този/тази {{elementName}}, съвместната работа в реално време не е разрешена. Това означава, че само един потребител може да редактира наведнъж.",
+      "guestAccessWarning": "Note: If you make this whiteboard public, everyone in the space will be able to edit the whiteboard.",
       "ownedBy": {
         "title": "Този/тази {{elementName}} е притежаван от:"
       },
@@ -2127,6 +2151,20 @@
         "platform": "Известия за платформата"
       }
     },
+    "userMessaging": {
+      "title": "Messages",
+      "noConversations": "No conversations yet",
+      "noMessages": "No messages",
+      "selectConversation": "Select a conversation to start messaging",
+      "typeMessage": "Type a message",
+      "newMessage": "New Message",
+      "selectUser": "To",
+      "noUsersFound": "No users found",
+      "startTyping": "Start typing to search users",
+      "searchUsers": "Search users...",
+      "searchConversations": "Search...",
+      "createChat": "Create Chat"
+    },
     "spaceWelcomeDialog": {
       "title": "🎉 Вашият/а $t(common.space) е готов/а!",
       "description": "Сега го/я персонализирайте:<br>⚙ <b>Настройте го/я</b> – Персонализирайте структурата и $t(common.settings).<br>📝 <b>Добавете съдържание</b> – Създайте $t(common.whiteboards), $t(common.posts) и др.<br>🤝 <b>Поканете сътрудници</b> – Намерете поканите в $t(common.space) $t(common.settings).<br>📚 <b>Нужен Ви е помощ?</b> Ръководствата са достъпни в Вашия/а $t(common.space), ако сте избрали да ги включите.<br/><br/>✨ Искате повече функции? Надградете към <b>Plus или Premium</b> по всяко време – просто <contact>свържете се с екипа ни</contact>!",
@@ -2513,6 +2551,7 @@
             "createBlocks": "<b>Създаване на $t(common.posts)</b>: Разрешете на $t(common.members) да създават $t(common.posts). Ако деактивирате това, $t(common.members) все още ще могат да допринасят към съществуващи $t(common.posts), но няма да могат да създават нови $t(common.posts).",
             "createSubspaces": "<b>Създаване на $t(common.subspaces)</b>: Разрешете на $t(common.members) да създават $t(common.subspaces) в този $t(common.space). Ако деактивирате това, все още можете да създавате $t(common.subspaces) и да добавяте други хора като $t(common.admin) в $t(common.subspace).",
             "videoCall": "<b>Видео разговор</b>: Показване на бутон за видео разговор в менюто с раздели. Всички членове на това Пространство могат да използват този бутон, за да стартират Jitsi видео конференция. Прочетете повече за Jitsi <jitsiInfoLink>тук</jitsiInfoLink>.",
+            "guestContributions": "<b>Guest Contributions</b>: Allow $t(common.whiteboards) in this $t(common.space) to be shared with guest users (non-members) for collaborative contributions.",
             "eventsFromSubspaces": "<b>Събития от $t(common.subspaces)</b>: Разрешете събития от $t(common.subspaces) да бъдат видими и в календара на този $t(common.space).",
             "inheritRights": "Разрешете на $t(common.members) на родителската $t(common.community) да допринасят, без да е необходимо първо да се присъединят.",
             "supportAsAdmin": "<b>Поддръжка на Alkemio</b>: Разрешете на екипа за поддръжка на Alkemio да действа като $t(common.admin) в този $t(common.space)."
@@ -2527,7 +2566,8 @@
           "account": {
             "vc-section-title": "$t(common.virtualContributors), създадени от този $t(common.space)",
             "vc-create-button": "Създай $t(common.virtualContributor)"
-          }
+          },
+          "updateFailed": "An error occurred while updating the $t(common.settings). Please try again later."
         }
       },
       "users": {
@@ -3027,6 +3067,7 @@
         "noMembership": "Трябва да сте $t(common.member) на {{spaceLevel}}, в който се намира този $t(common.whiteboard), за да можете да редактирате. Кликнете тук, за да <spacelink>се присъедините/кандидатствате</spacelink>",
         "unauthenticated": "Трябва да сте влезли в системата и да сте $t(common.member) на {{spaceLevel}}, в който се намира този $t(common.whiteboard), за да можете да редактирате. Кликнете тук, за да <signinlink>влезете</signinlink>"
       },
+      "guestContributionsWarning": "This whiteboard is visible to guest users",
       "readonlyDialog": {
         "title": "Режим само за преглед",
         "reason": {
@@ -3066,6 +3107,46 @@
         "errorGeneratingPreview": "Грешка при генериране на преглед за тази $t(common.whiteboard).",
         "ariaLabel": "Преглед на $t(common.whiteboard). Кликнете, за да отворите $t(common.whiteboard).",
         "ariaLabelDisabled": "Преглед на Whiteboard. Тази Whiteboard не може да бъде отворена."
+      }
+    },
+    "publicWhiteboard": {
+      "title": "$t(common.Whiteboard)",
+      "fallbackTitle": "Whiteboard"
+    },
+    "public": {
+      "whiteboard": {
+        "join": {
+          "welcome": "Welcome to Alkemio!",
+          "title": "Join Whiteboard",
+          "description": "Choose a nickname to join this whiteboard as a guest",
+          "guestNameLabel": "Guest Name",
+          "placeholder": "Enter your nickname",
+          "joinButton": "Join as guest",
+          "joiningButton": "Joining...",
+          "signInButton": "Sign in to Alkemio"
+        },
+        "guestSessionNotification": {
+          "title": "You've left your whiteboard",
+          "description": "Your guest session is still active. You can return to your whiteboard, or explore what Alkemio has to offer.",
+          "backButton": "Back to Whiteboard",
+          "websiteButton": "Go to our website",
+          "contributeMoreTitle": "Want to contribute more?",
+          "contributeMoreDescription": "Sign up for an Alkemio account on the right to collaborate with teams and access advanced tools."
+        },
+        "error": {
+          "404": {
+            "title": "Whiteboard Not Found",
+            "message": "The whiteboard link may be incorrect or the whiteboard may have been deleted."
+          },
+          "403": {
+            "title": "Access Denied",
+            "message": "This whiteboard is not available for guest access. Please contact the whiteboard owner."
+          },
+          "500": {
+            "title": "Unable to Load Whiteboard",
+            "message": "Please try again later or check your internet connection."
+          }
+        }
       }
     },
     "memo": {
