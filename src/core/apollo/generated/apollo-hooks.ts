@@ -19809,6 +19809,10 @@ export const SpaceTabDocument = gql`
           id
           innovationFlow {
             id
+            authorization {
+              id
+              myPrivileges
+            }
             states {
               id
               displayName

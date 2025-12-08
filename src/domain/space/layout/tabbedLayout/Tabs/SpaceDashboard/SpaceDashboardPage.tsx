@@ -106,8 +106,8 @@ const SpaceDashboardPage = () => {
         tabDescription={tabDescription}
         dashboardNavigation={dashboardNavigation}
         dashboardNavigationLoading={dashboardNavigationLoading}
-        readUsersAccess={permissions.readUsers}
         canEdit={permissions.canEdit}
+        readUsersAccess={permissions.readUsers}
         calloutsSetProvided={calloutsSetProvided}
         flowStateForNewCallouts={flowStateForNewCallouts}
         shareUpdatesUrl={updatesUrl}

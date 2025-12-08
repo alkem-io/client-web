@@ -13,6 +13,8 @@ import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIc
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import Gutters from '@/core/ui/grid/Gutters';
 import { SPACE_LAYOUT_EDIT_PATH, SUBSPACE_ABOUT_EDIT_PATH } from '@/domain/space/constants/spaceEditPaths';
+import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
+import useCurrentTabPosition from '@/domain/space/layout/tabbedLayout/useCurrentTabPosition';
 import ExpandableDescription from './ExpandableDescription';
 
 export interface SpaceWelcomeBlockProps {
@@ -24,10 +26,10 @@ export interface SpaceWelcomeBlockProps {
     profile: { description?: string };
   };
   description?: string; // explicitly passing description to support both the tabDescription and the about's description
-  canEdit?: boolean;
+  canEdit?: boolean; // optional override for subspaces where edit permission comes from subspace privileges
 }
 
-const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit = false }: SpaceWelcomeBlockProps) => {
+const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit: canEditProp }: SpaceWelcomeBlockProps) => {
   const { t } = useTranslation();
   const { spaceLevel } = useUrlResolver();
 
@@ -46,6 +48,10 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit = false }: SpaceWe
   });
 
   const isL0 = spaceLevel === SpaceLevel.L0;
+  const tabPosition = useCurrentTabPosition();
+  const { canEditInnovationFlow } = useSpaceTabProvider({ tabPosition, skip: canEditProp !== undefined });
+  // For L0 spaces, use innovation flow permission; for subspaces, use passed prop if provided
+  const canEdit = canEditProp ?? canEditInnovationFlow;
   const editPath = isL0 ? SPACE_LAYOUT_EDIT_PATH : SUBSPACE_ABOUT_EDIT_PATH;
 
   const showMemberIcon = isMember && !canEdit;
