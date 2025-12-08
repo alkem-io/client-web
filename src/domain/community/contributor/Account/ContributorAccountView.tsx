@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle, Caption } from '@/core/ui/typography';
@@ -39,9 +39,10 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import EntityConfirmDeleteDialog from '@/domain/shared/components/EntityConfirmDeleteDialog';
 import AddIcon from '@mui/icons-material/Add';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import { Button, IconButton } from '@mui/material';
+import { Button, IconButton, Link } from '@mui/material';
 import useNavigate from '@/core/routing/useNavigate';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 const enum Entities {
   Space = 'Space',
@@ -167,6 +168,8 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const navigate = useNavigate();
   const notify = useNotification();
   const ensurePresence = useEnsurePresence();
+  const { locations } = useConfig();
+  const supportLink = locations?.support;
   const { startWizard, VirtualContributorWizard } = useVirtualContributorWizard();
   const [createSpaceDialogOpen, setCreateSpaceDialogOpen] = useState(false);
   const [createInnovationHubDialogOpen, setCreateInnovationHubDialogOpen] = useState(false);
@@ -467,6 +470,15 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
     </>
   );
 
+  const limitNoticeTooltip = (
+    <Trans
+      i18nKey="pages.admin.generic.sections.account.limitNotice"
+      components={{
+        contact: <Link href={supportLink} target="_blank" sx={{ color: 'inherit' }} underline="always" />,
+      }}
+    />
+  );
+
   return (
     <>
       <PageContentColumn columns={12} justifyContent="end">
@@ -533,7 +545,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                     />
                   }
                   disabled={!isEntitledToCreateSpace}
-                  disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
+                  disabledTooltip={limitNoticeTooltip}
                 />
                 <CreateSpace
                   accountId={account.id}
@@ -580,7 +592,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                     />
                   }
                   disabled={!isEntitledToCreateVC}
-                  disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
+                  disabledTooltip={limitNoticeTooltip}
                 />
               )}
             </Actions>
@@ -616,7 +628,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                       />
                     }
                     disabled={!isEntitledToCreateInnovationPack}
-                    disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
+                    disabledTooltip={limitNoticeTooltip}
                   />
                   <CreateInnovationPackDialog
                     accountId={account?.id}
@@ -657,7 +669,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                       />
                     }
                     disabled={!isEntitledToCreateInnovationHub}
-                    disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
+                    disabledTooltip={limitNoticeTooltip}
                   />
                   <CreateInnovationHubDialog
                     accountId={account.id}
