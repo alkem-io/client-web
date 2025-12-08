@@ -95,7 +95,7 @@ const ContributorTooltip = ({
       onOpen={onOpenTooltipShow}
       arrow
       {...props}
-      slotProps={{ popper: { sx: { '.MuiTooltip-tooltip': { backgroundColor: 'transparent' } } } }}
+      slotProps={{ popper: { sx: { '.MuiTooltip-tooltip': { backgroundColor: 'transparent', paddingY: 0 } } } }}
     >
       {children}
     </Tooltip>

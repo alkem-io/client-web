@@ -120,18 +120,17 @@ const SpaceSubspacesPage = () => {
             parentSpaceId={spaceId}
           />
         }
-        children={
-          <CalloutsGroupView
-            calloutsSetId={calloutsSetId}
-            createInFlowState={flowStateForTab?.displayName}
-            callouts={callouts}
-            canCreateCallout={canCreateCallout}
-            loading={loading}
-            onSortOrderUpdate={onCalloutsSortOrderUpdate}
-            onCalloutUpdate={refetchCallout}
-          />
-        }
-      />
+      >
+        <CalloutsGroupView
+          calloutsSetId={calloutsSetId}
+          createInFlowState={flowStateForTab?.displayName}
+          callouts={callouts}
+          canCreateCallout={canCreateCallout}
+          loading={loading}
+          onSortOrderUpdate={onCalloutsSortOrderUpdate}
+          onCalloutUpdate={refetchCallout}
+        />
+      </SubspaceView>
       {directMessageDialog}
     </>
   );
