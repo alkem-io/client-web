@@ -7,7 +7,7 @@ const CreationButton = ({
   disabled,
   buttonComponent,
 }: {
-  disabledTooltip: React.ReactNode;
+  disabledTooltip?: React.ReactNode;
   buttonComponent: React.ReactNode;
   disabled?: boolean;
 }) => {
