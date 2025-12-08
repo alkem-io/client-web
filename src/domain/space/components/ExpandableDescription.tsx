@@ -1,13 +1,13 @@
 import { useState, ReactNode } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, IconButton } from '@mui/material';
 import { EditOutlined } from '@mui/icons-material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import AutomaticOverflowGradient from '@/core/ui/overflow/AutomaticOverflowGradient';
 import SeeMore from '@/core/ui/content/SeeMore';
 import { gutters } from '@/core/ui/grid/utils';
-import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
+import useCurrentTabPosition from '../layout/tabbedLayout/useCurrentTabPosition';
 
 export interface ExpandableDescriptionProps {
   description: string | undefined;
@@ -29,8 +29,8 @@ const ExpandableDescription = ({
 }: ExpandableDescriptionProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const [isExpanded, setIsExpanded] = useState(false);
+  const tabPosition = useCurrentTabPosition();
 
   if (!description) {
     return null;
@@ -39,10 +39,8 @@ const ExpandableDescription = ({
   const handleEditClick = () => {
     if (editPath) {
       if (useEditTab) {
-        // Get current tab from URL (1-based), default to 1 if not present
-        const currentTab = Number.parseInt(searchParams.get(TabbedLayoutParams.Section) ?? '1', 10);
         // Convert to 0-based index for editTab, ensuring it's never negative
-        const editTabIndex = Math.max(0, currentTab - 1);
+        const editTabIndex = Math.max(0, tabPosition - 1);
         navigate(`${editPath}?editTab=${editTabIndex}`);
       } else {
         navigate(editPath);
