@@ -41,7 +41,7 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     loading: loadingSpaceTab,
     refetch: refetchSpaceTab,
   } = useSpaceTabQuery({
-    variables: { spaceId: spaceId! },
+    variables: { spaceId: spaceId },
     skip: shouldSkip,
   });
 

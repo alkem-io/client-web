@@ -1,20 +1,17 @@
 import { useState } from 'react';
-import { Box, IconButton } from '@mui/material';
+import { Box, IconButton, Paper, Drawer, MenuList } from '@mui/material';
 import { Menu } from '@mui/icons-material';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import { DialogActionButton } from '../components/subspaces/DialogActionButton';
 import { SubspaceDialog } from '../components/subspaces/SubspaceDialog';
 import { gutters } from '@/core/ui/grid/utils';
-import { Paper } from '@mui/material';
 import Gutters from '@/core/ui/grid/Gutters';
 import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
 import { GRID_COLUMNS_MOBILE, useScreenSize } from '@/core/ui/grid/constants';
 import SwapColors from '@/core/ui/palette/SwapColors';
-import { Drawer } from '@mui/material';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import { MenuList } from '@mui/material';
 import SpaceWelcomeBlock, { SpaceWelcomeBlockProps } from '../components/SpaceWelcomeBlock';
 import { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 
