@@ -19,7 +19,7 @@ const CreateCalloutDialog = lazyWithGlobalErrorHandler(
 const CalloutsGroupView = ({
   canCreateCallout,
   createInFlowState,
-  createButtonPlace = 'bottom',
+  createButtonPlace = 'top',
   calloutsSetId,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
