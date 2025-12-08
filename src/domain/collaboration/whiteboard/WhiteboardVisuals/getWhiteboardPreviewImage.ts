@@ -11,6 +11,13 @@ type ExcalidrawUtils = {
 };
 
 /**
+ * Maximum dimension (width or height) for generated whiteboard preview images.
+ * The maximum depends on the browser, computer memory, and other factors.
+ * This value has been chosen as a reasonable compromise to avoid crashes in most cases and avoid pixellation.
+ */
+const MAX_DIMENSION = 16000;
+
+/**
  * Generates the preview of the image calling Excalidraw's exportToCanvas function
  * @param excalidrawAPI
  * @param desiredDimensions Desired dimensions for the preview image
@@ -49,7 +56,6 @@ const getWhiteboardPreviewImage = async (
       };
     }
 
-    const MAX_DIMENSION = 12000;
     const maxInputDimension = Math.max(width, height);
     // For mid-size whiteboards just export at original size
     if (maxInputDimension <= MAX_DIMENSION) {
