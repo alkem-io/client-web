@@ -2366,7 +2366,7 @@
             "innovationPacks": "$t(common.innovation-packs)",
             "genericUsageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your $t(common.account).",
             "spaceUsageNotice": "From the available $t(common.spaces) in your $t(common.account), you have created:\n{{freeUsage}} out of {{freeLimit}} Free $t(common.spaces)\n{{plusUsage}} out of {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} out of {{premiumLimit}} Premium $t(common.spaces)",
-            "limitNotice": "To increase the limits on your $t(common.account), fill out the form at the bottom of [the contact page](https://welcome.alkem.io/contact/).",
+            "limitNotice": "To increase the limits on your $t(common.account), fill out the form at the bottom of <contact>the contact page</contact>.",
             "notAvailable": "Not available",
             "notAvailableNotice": "Contact the Alkemio team to enable this feature on your $t(common.account)",
             "noTemplates": "This $t(common.innovationPack) doesn't have any $t(common.template) yet",
