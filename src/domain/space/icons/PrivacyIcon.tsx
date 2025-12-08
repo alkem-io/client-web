@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { LockOutlined } from '@mui/icons-material';
 import { Paper } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
@@ -10,7 +9,7 @@ type PrivacyIconProps = {
   ariaLabel?: string;
 };
 
-export const PrivacyIcon = memo(({ top = 8, size = 8, right = 8, ariaLabel = 'Private space' }: PrivacyIconProps) => {
+export const PrivacyIcon = ({ top = 8, size = 8, right = 8, ariaLabel = 'Private space' }: PrivacyIconProps) => {
   return (
     <Paper
       elevation={3}
@@ -36,4 +35,4 @@ export const PrivacyIcon = memo(({ top = 8, size = 8, right = 8, ariaLabel = 'Pr
       <LockOutlined fontSize="small" color="primary" />
     </Paper>
   );
-});
+};

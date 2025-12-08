@@ -70,17 +70,19 @@ const ExternalConfig = ({ vc }: ExternalConfigProps) => {
   });
 
   const handleSubmit = () => {
-    if (!externalConfig.apiKey || aiPersona?.externalConfig?.apiKey === externalConfig.apiKey) {
-      delete externalConfig.apiKey;
+    // Don't mutate state directly, create a new object
+    const configToSubmit = { ...externalConfig };
+    if (!configToSubmit.apiKey || aiPersona?.externalConfig?.apiKey === configToSubmit.apiKey) {
+      delete configToSubmit.apiKey;
     }
     if (!isAssistantFieldAvailable) {
-      delete externalConfig.assistantId;
+      delete configToSubmit.assistantId;
     }
     updateAiPersona({
       variables: {
         aiPersonaData: {
           ID: aiPersona?.id!,
-          externalConfig,
+          externalConfig: configToSubmit,
         },
       },
       onCompleted: () => {

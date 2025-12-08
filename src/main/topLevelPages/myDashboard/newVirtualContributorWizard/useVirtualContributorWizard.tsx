@@ -511,19 +511,19 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   // ###STEP 'externalProvider' - External VC
   const handleCreateExternal = async (externalVcValues: ExternalVcFormValues) => {
     if (virtualContributorInput && myAccountId) {
-      virtualContributorInput.engine = externalVcValues.engine;
-
-      virtualContributorInput.externalConfig = {
-        apiKey: externalVcValues.apiKey,
+      // Don't mutate state directly, create a new object
+      const updatedInput = {
+        ...virtualContributorInput,
+        engine: externalVcValues.engine,
+        externalConfig: {
+          apiKey: externalVcValues.apiKey,
+          ...(externalVcValues.assistantId && { assistantId: externalVcValues.assistantId }),
+        },
+        bodyOfKnowledgeType: VirtualContributorBodyOfKnowledgeType.None,
       };
-      if (externalVcValues.assistantId) {
-        virtualContributorInput.externalConfig.assistantId = externalVcValues.assistantId;
-      }
-
-      virtualContributorInput.bodyOfKnowledgeType = VirtualContributorBodyOfKnowledgeType.None;
 
       const createdVc = await executeVcCreation({
-        values: virtualContributorInput,
+        values: updatedInput,
         accountId: myAccountId,
       });
 
