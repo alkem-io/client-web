@@ -2,7 +2,7 @@ import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-sch
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import SpaceCardBase, { SpaceCardProps } from '@/domain/space/components/cards/SpaceCardBase';
 import SpaceCardTagline from '@/domain/space/components/cards/components/SpaceCardTagline';
-import SpaceLeads, { Lead, LeadOrganization } from './components/SpaceLeads';
+import SpaceLeads, { Lead, LeadOrganization, LeadType } from './components/SpaceLeads';
 import SpaceParentInfo from './components/SpaceParentInfo';
 import { ParentInfo } from './utils/useSubspaceCardData';
 import StackedAvatar from './components/StackedAvatar';
@@ -26,6 +26,7 @@ interface SubspaceCardProps extends Omit<SpaceCardProps, 'header'> {
   leadOrganizations?: LeadOrganization[];
   showLeads?: boolean;
   compact?: boolean;
+  onContactLead?: (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => void;
 }
 
 const SpaceCard = ({
@@ -41,6 +42,7 @@ const SpaceCard = ({
   showLeads = false,
   compact = false,
   tags,
+  onContactLead,
   ...props
 }: SubspaceCardProps) => {
   const { t } = useTranslation();
@@ -128,7 +130,12 @@ const SpaceCard = ({
             {hasLeads ? t('components.spaceCard.ledBy') : t('components.spaceCard.noLead')}
           </Caption>
           {hasLeads ? (
-            <SpaceLeads leadUsers={leadUsers} leadOrganizations={leadOrganizations} showLeads={showLeads} />
+            <SpaceLeads
+              leadUsers={leadUsers}
+              leadOrganizations={leadOrganizations}
+              showLeads={showLeads}
+              onContactLead={onContactLead}
+            />
           ) : (
             <SpaceLeads showLeads={showLeads} />
           )}

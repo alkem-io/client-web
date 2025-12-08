@@ -12,6 +12,13 @@ export interface Lead {
       uri: string;
       alternativeText?: string;
     };
+    location?: {
+      city?: string;
+      country?: string;
+    };
+    tagsets?: {
+      tags: string[];
+    }[];
   };
 }
 
@@ -25,18 +32,28 @@ export interface LeadOrganization {
       uri: string;
       alternativeText?: string;
     };
+    location?: {
+      city?: string;
+      country?: string;
+    };
+    tagsets?: {
+      tags: string[];
+    }[];
   };
 }
+
+export type LeadType = 'user' | 'organization';
 
 interface SpaceLeadsProps {
   leadUsers?: Lead[];
   leadOrganizations?: LeadOrganization[];
   showLeads: boolean;
+  onContactLead?: (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => void;
 }
 
 const MAX_VISIBLE_LEADS = 3;
 
-const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads }: SpaceLeadsProps) => {
+const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads, onContactLead }: SpaceLeadsProps) => {
   if (!showLeads || (leadUsers.length === 0 && leadOrganizations.length === 0)) {
     return showLeads ? (
       <Box width="36px" height="36px">
@@ -52,18 +69,31 @@ const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads }: Space
   const visibleLeads = totalCount > MAX_VISIBLE_LEADS ? allLeads.slice(0, MAX_VISIBLE_LEADS - 1) : allLeads;
   const overflowCount = totalCount > MAX_VISIBLE_LEADS ? totalCount - (MAX_VISIBLE_LEADS - 1) : 0;
 
+  // Helper to check if a lead is a user (has isContactable property)
+  const isUserLead = (lead: Lead | LeadOrganization): lead is Lead => 'isContactable' in lead;
+
   return (
     <Box display="flex" flexWrap="wrap" gap={1} paddingLeft={1.5}>
       {visibleLeads.map(lead => {
+        const tags = lead.profile.tagsets?.flatMap(tagset => tagset.tags) ?? [];
+        const isUser = isUserLead(lead);
+        const isContactable = Boolean(onContactLead);
+        const leadType: LeadType = isUser ? 'user' : 'organization';
+
         return (
           <ContributorTooltip
             key={lead.id}
             displayName={lead.profile.displayName}
             avatarSrc={lead.profile.avatar?.uri}
-            tags={[]} // Tags not available in this context
-            city={undefined}
-            country={undefined}
-            isContactable={false}
+            tags={tags}
+            city={lead.profile.location?.city}
+            country={lead.profile.location?.country}
+            isContactable={isContactable}
+            onContact={
+              isContactable
+                ? () => onContactLead?.(leadType, lead.id, lead.profile.displayName, lead.profile.avatar?.uri)
+                : undefined
+            }
           >
             <Avatar
               component={RouterLink}

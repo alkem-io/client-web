@@ -21726,6 +21726,10 @@ export type DashboardSpacesQuery = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -21745,6 +21749,10 @@ export type DashboardSpacesQuery = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -24382,6 +24390,10 @@ export type SpaceCardFragment = {
           id: string;
           url: string;
           displayName: string;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
@@ -24395,6 +24407,10 @@ export type SpaceCardFragment = {
           id: string;
           url: string;
           displayName: string;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;

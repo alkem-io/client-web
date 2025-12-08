@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { InnovationHubAttrs } from './InnovationHubAttrs';
@@ -19,6 +20,7 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { collectSubspaceAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 
 const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHubAttrs }) => {
   const { t } = useTranslation();
@@ -31,6 +33,21 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
   const { locations } = useConfig();
 
   const mainHomeUrl = `//${locations?.domain}${ROUTE_HOME}`;
+
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
+
+  const handleContactLead = useCallback(
+    (leadType: 'user' | 'organization', leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+      sendMessage(leadType, {
+        id: leadId,
+        displayName: leadDisplayName,
+        avatarUri: leadAvatarUri,
+      });
+    },
+    [sendMessage]
+  );
 
   return (
     <TopLevelLayout
@@ -66,6 +83,7 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
                 leadOrganizations={space.about.membership?.leadOrganizations}
                 showLeads={isAuthenticated}
                 isPrivate={!space.about.isContentPublic}
+                onContactLead={handleContactLead}
               />
             ))}
           </ScrollableCardsLayoutContainer>
@@ -87,6 +105,7 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
           </Gutters>
         </PageContentBlock>
       </PageContent>
+      {directMessageDialog}
     </TopLevelLayout>
   );
 };

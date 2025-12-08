@@ -1941,6 +1941,15 @@ export const SpaceCardFragmentDoc = gql`
             id
             url
             displayName
+            location {
+              id
+              city
+              country
+            }
+            tagsets {
+              id
+              tags
+            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -1952,6 +1961,15 @@ export const SpaceCardFragmentDoc = gql`
             id
             url
             displayName
+            location {
+              id
+              city
+              country
+            }
+            tagsets {
+              id
+              tags
+            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
