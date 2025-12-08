@@ -174,6 +174,7 @@ const CollaborativeExcalidrawWrapper = ({
       });
     },
     onInitialize: collabApi => {
+      // eslint-disable-next-line react-compiler/react-compiler -- Refs are meant to be mutated
       combinedCollabApiRef.current = collabApi;
     },
     onSceneInitChange: (initialized: boolean) => {
