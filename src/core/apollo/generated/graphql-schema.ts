@@ -8412,6 +8412,19 @@ export type UpdateWhiteboardPreviewSettingsInput = {
   mode?: InputMaybe<WhiteboardPreviewMode>;
 };
 
+export type UrlResolverQueryClosestAncestor = {
+  __typename?: 'UrlResolverQueryClosestAncestor';
+  discussionId?: Maybe<Scalars['UUID']['output']>;
+  innovationHubId?: Maybe<Scalars['UUID']['output']>;
+  innovationPack?: Maybe<UrlResolverQueryResultInnovationPack>;
+  organizationId?: Maybe<Scalars['UUID']['output']>;
+  space?: Maybe<UrlResolverQueryResultSpace>;
+  type: UrlType;
+  url: Scalars['String']['output'];
+  userId?: Maybe<Scalars['UUID']['output']>;
+  virtualContributor?: Maybe<UrlResolverQueryResultVirtualContributor>;
+};
+
 export type UrlResolverQueryResultCalendar = {
   __typename?: 'UrlResolverQueryResultCalendar';
   calendarEventId?: Maybe<Scalars['UUID']['output']>;
@@ -8466,15 +8479,23 @@ export type UrlResolverQueryResultVirtualContributor = {
 
 export type UrlResolverQueryResults = {
   __typename?: 'UrlResolverQueryResults';
+  closestAncestor?: Maybe<UrlResolverQueryClosestAncestor>;
   discussionId?: Maybe<Scalars['UUID']['output']>;
   innovationHubId?: Maybe<Scalars['UUID']['output']>;
   innovationPack?: Maybe<UrlResolverQueryResultInnovationPack>;
   organizationId?: Maybe<Scalars['UUID']['output']>;
   space?: Maybe<UrlResolverQueryResultSpace>;
+  state: UrlResolverResultState;
   type: UrlType;
   userId?: Maybe<Scalars['UUID']['output']>;
   virtualContributor?: Maybe<UrlResolverQueryResultVirtualContributor>;
 };
+
+export enum UrlResolverResultState {
+  Forbidden = 'Forbidden',
+  NotFound = 'NotFound',
+  Resolved = 'Resolved',
+}
 
 export enum UrlType {
   Admin = 'ADMIN',
@@ -24217,6 +24238,51 @@ export type SpaceEntitlementsQuery = {
   };
 };
 
+export type SpaceCardQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceCardQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              url: string;
+              displayName: string;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type SpaceTemplatesManagerQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
 }>;
@@ -27395,6 +27461,11 @@ export type SpacePrivilegesQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; url: string };
+          };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -35662,11 +35733,22 @@ export type UrlResolverQuery = {
   __typename?: 'Query';
   urlResolver: {
     __typename?: 'UrlResolverQueryResults';
+    state: UrlResolverResultState;
     type: UrlType;
     organizationId?: string | undefined;
     userId?: string | undefined;
     discussionId?: string | undefined;
     innovationHubId?: string | undefined;
+    closestAncestor?:
+      | {
+          __typename?: 'UrlResolverQueryClosestAncestor';
+          url: string;
+          type: UrlType;
+          space?:
+            | { __typename?: 'UrlResolverQueryResultSpace'; id: string; level: SpaceLevel; levelZeroSpaceID: string }
+            | undefined;
+        }
+      | undefined;
     space?:
       | {
           __typename?: 'UrlResolverQueryResultSpace';
@@ -35719,6 +35801,74 @@ export type UrlResolverQuery = {
         }
       | undefined;
   };
+};
+
+export type UrlResolverResultFragment = {
+  __typename?: 'UrlResolverQueryResults';
+  type: UrlType;
+  organizationId?: string | undefined;
+  userId?: string | undefined;
+  discussionId?: string | undefined;
+  innovationHubId?: string | undefined;
+  space?:
+    | {
+        __typename?: 'UrlResolverQueryResultSpace';
+        id: string;
+        level: SpaceLevel;
+        levelZeroSpaceID: string;
+        parentSpaces: Array<string>;
+        collaboration: {
+          __typename?: 'UrlResolverQueryResultCollaboration';
+          id: string;
+          calloutsSet: {
+            __typename?: 'UrlResolverQueryResultCalloutsSet';
+            id: string;
+            calloutId?: string | undefined;
+            contributionId?: string | undefined;
+            postId?: string | undefined;
+            whiteboardId?: string | undefined;
+          };
+        };
+        calendar?:
+          | { __typename?: 'UrlResolverQueryResultCalendar'; id: string; calendarEventId?: string | undefined }
+          | undefined;
+        templatesSet?:
+          | { __typename?: 'UrlResolverQueryResultTemplatesSet'; id: string; templateId?: string | undefined }
+          | undefined;
+      }
+    | undefined;
+  virtualContributor?:
+    | {
+        __typename?: 'UrlResolverQueryResultVirtualContributor';
+        id: string;
+        calloutsSet: {
+          __typename?: 'UrlResolverQueryResultCalloutsSet';
+          id: string;
+          calloutId?: string | undefined;
+          contributionId?: string | undefined;
+          postId?: string | undefined;
+        };
+      }
+    | undefined;
+  innovationPack?:
+    | {
+        __typename?: 'UrlResolverQueryResultInnovationPack';
+        id: string;
+        templatesSet: {
+          __typename?: 'UrlResolverQueryResultTemplatesSet';
+          id: string;
+          templateId?: string | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type UrlResolverResultClosestAncestorFragment = {
+  __typename?: 'UrlResolverQueryClosestAncestor';
+  type: UrlType;
+  space?:
+    | { __typename?: 'UrlResolverQueryResultSpace'; id: string; level: SpaceLevel; levelZeroSpaceID: string }
+    | undefined;
 };
 
 export type SpaceUrlResolverQueryVariables = Exact<{
@@ -35836,7 +35986,6 @@ export type SearchQuery = {
               about: {
                 __typename?: 'SpaceAbout';
                 id: string;
-                why?: string | undefined;
                 isContentPublic: boolean;
                 profile: {
                   __typename?: 'Profile';
@@ -35861,10 +36010,6 @@ export type SearchQuery = {
                     name: VisualType;
                     alternativeText?: string | undefined;
                   }>;
-                };
-                membership: {
-                  __typename?: 'SpaceAboutMembership';
-                  myMembershipStatus?: CommunityMembershipStatus | undefined;
                 };
               };
             };
@@ -36666,7 +36811,6 @@ export type SearchResultSpaceFragment = {
     about: {
       __typename?: 'SpaceAbout';
       id: string;
-      why?: string | undefined;
       isContentPublic: boolean;
       profile: {
         __typename?: 'Profile';
@@ -36692,7 +36836,6 @@ export type SearchResultSpaceFragment = {
           alternativeText?: string | undefined;
         }>;
       };
-      membership: { __typename?: 'SpaceAboutMembership'; myMembershipStatus?: CommunityMembershipStatus | undefined };
     };
   };
 };

@@ -1,51 +1,69 @@
 query UrlResolver($url: String!) {
   urlResolver(url: $url) {
-    type
-    space {
-      id
-      level
-      levelZeroSpaceID
-      collaboration {
-        id
-        calloutsSet {
-          id
-          calloutId
-          contributionId
-          postId
-          whiteboardId
-        }
-      }
-      calendar {
-        id
-        calendarEventId
-      }
-      templatesSet {
-        id
-        templateId
-      }
-      parentSpaces
+    state
+    ...UrlResolverResult
+    closestAncestor {
+      ...UrlResolverResultClosestAncestor
+      url
     }
-    organizationId
-    userId
-    virtualContributor {
+  }
+}
+
+fragment UrlResolverResult on UrlResolverQueryResults {
+  type
+  space {
+    id
+    level
+    levelZeroSpaceID
+    collaboration {
       id
       calloutsSet {
         id
         calloutId
         contributionId
         postId
-        # whiteboardId  # VCs still don't have whiteboards
+        whiteboardId
       }
     }
-    discussionId
-    innovationPack {
+    calendar {
       id
-      templatesSet {
-        id
-        templateId
-      }
+      calendarEventId
     }
-    innovationHubId
+    templatesSet {
+      id
+      templateId
+    }
+    parentSpaces
+  }
+  organizationId
+  userId
+  virtualContributor {
+    id
+    calloutsSet {
+      id
+      calloutId
+      contributionId
+      postId
+      # whiteboardId  # VCs still don't have whiteboards
+    }
+  }
+  discussionId
+  innovationPack {
+    id
+    templatesSet {
+      id
+      templateId
+    }
+  }
+  innovationHubId
+}
+
+fragment UrlResolverResultClosestAncestor on UrlResolverQueryClosestAncestor {
+  type
+  space {
+    id
+    level
+    levelZeroSpaceID
   }
 }
 
