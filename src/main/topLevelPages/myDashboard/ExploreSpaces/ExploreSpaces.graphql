@@ -66,6 +66,15 @@ fragment ExploreSpaces on Space {
           avatar: visual(type: AVATAR) {
             ...VisualModel
           }
+          location {
+            id
+            city
+            country
+          }
+          tagsets {
+            id
+            tags
+          }
         }
       }
       leadOrganizations {
@@ -76,6 +85,15 @@ fragment ExploreSpaces on Space {
           displayName
           avatar: visual(type: AVATAR) {
             ...VisualModel
+          }
+          location {
+            id
+            city
+            country
+          }
+          tagsets {
+            id
+            tags
           }
         }
       }

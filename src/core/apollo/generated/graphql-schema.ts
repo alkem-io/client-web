@@ -19744,6 +19744,10 @@ export type SpaceContributionDetailsQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
               }>;
               leadOrganizations: Array<{
@@ -19763,6 +19767,10 @@ export type SpaceContributionDetailsQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
               }>;
             };
@@ -23765,6 +23773,10 @@ export type CreateSubspaceMutation = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -23784,6 +23796,10 @@ export type CreateSubspaceMutation = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -24297,6 +24313,10 @@ export type SpaceSubspaceCardsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                      | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -24316,6 +24336,10 @@ export type SpaceSubspaceCardsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                      | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -24466,6 +24490,10 @@ export type SubspaceCardFragment = {
           id: string;
           url: string;
           displayName: string;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
@@ -24479,6 +24507,10 @@ export type SubspaceCardFragment = {
           id: string;
           url: string;
           displayName: string;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
@@ -24537,6 +24569,10 @@ export type SubspacesOnSpaceFragment = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -24556,6 +24592,10 @@ export type SubspacesOnSpaceFragment = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -25100,6 +25140,10 @@ export type SubspaceCreatedSubscription = {
               id: string;
               url: string;
               displayName: string;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -25119,6 +25163,10 @@ export type SubspaceCreatedSubscription = {
               id: string;
               url: string;
               displayName: string;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -37349,6 +37397,15 @@ export type ExploreSpacesSearchQuery = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     };
                   }>;
                   leadOrganizations: Array<{
@@ -37368,6 +37425,15 @@ export type ExploreSpacesSearchQuery = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     };
                   }>;
                 };
@@ -37424,6 +37490,10 @@ export type ExploreSpacesSearchFragment = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
         leadOrganizations: Array<{
@@ -37443,6 +37513,10 @@ export type ExploreSpacesSearchFragment = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
       };
@@ -37496,6 +37570,10 @@ export type ExploreAllSpacesQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
         leadOrganizations: Array<{
@@ -37515,6 +37593,10 @@ export type ExploreAllSpacesQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
       };
@@ -37585,6 +37667,10 @@ export type WelcomeSpaceQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
               }>;
               leadOrganizations: Array<{
@@ -37604,6 +37690,10 @@ export type WelcomeSpaceQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
               }>;
             };
@@ -37649,6 +37739,10 @@ export type ExploreSpacesFragment = {
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>;
       leadOrganizations: Array<{
@@ -37662,6 +37756,10 @@ export type ExploreSpacesFragment = {
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>;
     };
@@ -40234,6 +40332,15 @@ export type SpaceExplorerSearchQuery = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     };
                   }>;
                   leadOrganizations: Array<{
@@ -40253,6 +40360,15 @@ export type SpaceExplorerSearchQuery = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     };
                   }>;
                 };
@@ -40335,6 +40451,10 @@ export type SpaceExplorerSearchSpaceFragment = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
         leadOrganizations: Array<{
@@ -40354,6 +40474,10 @@ export type SpaceExplorerSearchSpaceFragment = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
       };
@@ -40499,6 +40623,10 @@ export type SpaceExplorerMemberSpacesQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
         leadOrganizations: Array<{
@@ -40518,6 +40646,10 @@ export type SpaceExplorerMemberSpacesQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
       };
@@ -40591,6 +40723,10 @@ export type SpaceExplorerAllSpacesQuery = {
                     alternativeText?: string | undefined;
                   }
                 | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             };
           }>;
           leadOrganizations: Array<{
@@ -40610,6 +40746,10 @@ export type SpaceExplorerAllSpacesQuery = {
                     alternativeText?: string | undefined;
                   }
                 | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             };
           }>;
         };
@@ -40762,6 +40902,10 @@ export type SpaceExplorerSpaceFragment = {
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>;
       leadOrganizations: Array<{
@@ -40775,6 +40919,10 @@ export type SpaceExplorerSpaceFragment = {
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>;
     };

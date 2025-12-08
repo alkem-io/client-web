@@ -18,6 +18,15 @@ fragment SubspaceCard on Space {
           id
           url
           displayName
+          location {
+            id
+            city
+            country
+          }
+          tagsets {
+            id
+            tags
+          }
           avatar: visual(type: AVATAR) {
             ...VisualModel
           }
@@ -29,6 +38,15 @@ fragment SubspaceCard on Space {
           id
           url
           displayName
+          location {
+            id
+            city
+            country
+          }
+          tagsets {
+            id
+            tags
+          }
           avatar: visual(type: AVATAR) {
             ...VisualModel
           }

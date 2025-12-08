@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSpace } from '../../../context/useSpace';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -13,8 +14,10 @@ import SubspaceView from '@/domain/space/components/subspaces/SubspaceView';
 import CreateSubspace from '@/domain/space/components/CreateSpace/SubspaceCreationDialog/CreateSubspace';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useSubspaceCardData } from '@/domain/space/components/cards/utils/useSubspaceCardData';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 
 const SpaceSubspacesPage = () => {
+  const { t } = useTranslation();
   const {
     urlInfo,
     flowStateForNewCallouts: flowStateForTab,
@@ -48,6 +51,21 @@ const SpaceSubspacesPage = () => {
   // Use shared hook for parent info and avatar stacking
   const { parentInfo, collectAvatars } = useSubspaceCardData(space);
 
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
+
+  const handleContactLead = useCallback(
+    (leadType: 'user' | 'organization', leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+      sendMessage(leadType, {
+        id: leadId,
+        displayName: leadDisplayName,
+        avatarUri: leadAvatarUri,
+      });
+    },
+    [sendMessage]
+  );
+
   const { level, childLevel } = useMemo(() => {
     let childLevel = SpaceLevel.L1;
 
@@ -62,51 +80,59 @@ const SpaceSubspacesPage = () => {
   }, [space?.level]);
 
   return (
-    <SubspaceView
-      childEntities={subspaces}
-      level={level}
-      childEntitiesIcon={<SpaceL1Icon />}
-      childEntityValueGetter={spaceAboutValueGetter}
-      childEntityTagsGetter={spaceAboutTagsGetter}
-      state={{ loading: loading, error: error }}
-      renderChildEntityCard={item => (
-        <SpaceCard
-          spaceId={item.id}
-          displayName={item.about.profile.displayName}
-          banner={item.about.profile.cardBanner}
-          tags={item.about.profile.tagset?.tags!}
-          tagline={item.about.profile.tagline ?? ''}
-          spaceUri={item.about.profile.url}
-          locked={!item.about.isContentPublic}
-          isPrivate={!item.about.isContentPublic}
-          spaceVisibility={visibility}
-          level={childLevel}
-          member={item.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
-          leadUsers={item.about.membership?.leadUsers}
-          leadOrganizations={item.about.membership?.leadOrganizations}
-          showLeads={isAuthenticated}
-          parentInfo={parentInfo}
-          avatarUris={collectAvatars(item)}
-        />
-      )}
-      onClickCreate={() => setCreateDialogOpen(true)}
-      childEntityCreateAccess={permissions.canCreateSubspaces}
-      childEntityOnCreate={() => setCreateDialogOpen(true)}
-      createSubentityDialog={
-        <CreateSubspace open={isCreateDialogOpen} onClose={() => setCreateDialogOpen(false)} parentSpaceId={spaceId} />
-      }
-      children={
-        <CalloutsGroupView
-          calloutsSetId={calloutsSetId}
-          createInFlowState={flowStateForTab?.displayName}
-          callouts={callouts}
-          canCreateCallout={canCreateCallout}
-          loading={loading}
-          onSortOrderUpdate={onCalloutsSortOrderUpdate}
-          onCalloutUpdate={refetchCallout}
-        />
-      }
-    />
+    <>
+      <SubspaceView
+        childEntities={subspaces}
+        level={level}
+        childEntitiesIcon={<SpaceL1Icon />}
+        childEntityValueGetter={spaceAboutValueGetter}
+        childEntityTagsGetter={spaceAboutTagsGetter}
+        state={{ loading: loading, error: error }}
+        renderChildEntityCard={item => (
+          <SpaceCard
+            spaceId={item.id}
+            displayName={item.about.profile.displayName}
+            banner={item.about.profile.cardBanner}
+            tags={item.about.profile.tagset?.tags!}
+            tagline={item.about.profile.tagline ?? ''}
+            spaceUri={item.about.profile.url}
+            locked={!item.about.isContentPublic}
+            isPrivate={!item.about.isContentPublic}
+            spaceVisibility={visibility}
+            level={childLevel}
+            member={item.about.membership.myMembershipStatus === CommunityMembershipStatus.Member}
+            leadUsers={item.about.membership?.leadUsers}
+            leadOrganizations={item.about.membership?.leadOrganizations}
+            showLeads={isAuthenticated}
+            onContactLead={handleContactLead}
+            parentInfo={parentInfo}
+            avatarUris={collectAvatars(item)}
+          />
+        )}
+        onClickCreate={() => setCreateDialogOpen(true)}
+        childEntityCreateAccess={permissions.canCreateSubspaces}
+        childEntityOnCreate={() => setCreateDialogOpen(true)}
+        createSubentityDialog={
+          <CreateSubspace
+            open={isCreateDialogOpen}
+            onClose={() => setCreateDialogOpen(false)}
+            parentSpaceId={spaceId}
+          />
+        }
+        children={
+          <CalloutsGroupView
+            calloutsSetId={calloutsSetId}
+            createInFlowState={flowStateForTab?.displayName}
+            callouts={callouts}
+            canCreateCallout={canCreateCallout}
+            loading={loading}
+            onSortOrderUpdate={onCalloutsSortOrderUpdate}
+            onCalloutUpdate={refetchCallout}
+          />
+        }
+      />
+      {directMessageDialog}
+    </>
   );
 };
 

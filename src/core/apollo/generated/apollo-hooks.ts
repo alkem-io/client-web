@@ -2003,6 +2003,15 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
+            location {
+              id
+              city
+              country
+            }
+            tagsets {
+              id
+              tags
+            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -2014,6 +2023,15 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
+            location {
+              id
+              city
+              country
+            }
+            tagsets {
+              id
+              tags
+            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -3756,6 +3774,15 @@ export const ExploreSpacesFragmentDoc = gql`
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
+            location {
+              id
+              city
+              country
+            }
+            tagsets {
+              id
+              tags
+            }
           }
         }
         leadOrganizations {
@@ -3766,6 +3793,15 @@ export const ExploreSpacesFragmentDoc = gql`
             displayName
             avatar: visual(type: AVATAR) {
               ...VisualModel
+            }
+            location {
+              id
+              city
+              country
+            }
+            tagsets {
+              id
+              tags
             }
           }
         }
@@ -3882,6 +3918,15 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
+            location {
+              id
+              city
+              country
+            }
+            tagsets {
+              id
+              tags
+            }
           }
         }
         leadOrganizations {
@@ -3892,6 +3937,15 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
             displayName
             avatar: visual(type: AVATAR) {
               ...VisualModel
+            }
+            location {
+              id
+              city
+              country
+            }
+            tagsets {
+              id
+              tags
             }
           }
         }
@@ -13291,6 +13345,15 @@ export const SpaceContributionDetailsDocument = gql`
                 avatar: visual(type: AVATAR) {
                   ...VisualModel
                 }
+                location {
+                  id
+                  city
+                  country
+                }
+                tagsets {
+                  id
+                  tags
+                }
               }
             }
             leadOrganizations {
@@ -13301,6 +13364,15 @@ export const SpaceContributionDetailsDocument = gql`
                 displayName
                 avatar: visual(type: AVATAR) {
                   ...VisualModel
+                }
+                location {
+                  id
+                  city
+                  country
+                }
+                tagsets {
+                  id
+                  tags
                 }
               }
             }

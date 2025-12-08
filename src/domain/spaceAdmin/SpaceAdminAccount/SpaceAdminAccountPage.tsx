@@ -163,11 +163,11 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
                 <BlockTitle>{t('pages.admin.generic.sections.account.hostTitle')}</BlockTitle>
                 <ContributorCardHorizontal
                   profile={{
-                    displayName: space.about.provider.profile.displayName,
-                    avatar: space.about.provider.profile.avatar,
-                    location: space.about.provider.profile.location,
+                    displayName: space.about.provider?.profile.displayName ?? '',
+                    avatar: space.about.provider?.profile.avatar,
+                    location: space.about.provider?.profile.location,
                     tagsets: undefined,
-                    url: space?.about.provider.profile.url,
+                    url: space?.about.provider?.profile.url,
                   }}
                   seamless
                 />

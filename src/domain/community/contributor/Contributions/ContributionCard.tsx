@@ -2,7 +2,7 @@ import { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
 import useContributionProvider, {
   ContributionDetails,
 } from '../../profile/useContributionProvider/useContributionProvider';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { collectSubspaceAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
@@ -14,6 +14,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Caption } from '@/core/ui/typography';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useParentSpaceInfo } from '@/domain/space/components/cards/utils/useParentSpaceInfo';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 
 export type ContributionCardProps = {
   onLeave?: () => Promise<unknown>;
@@ -33,6 +34,21 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
 
   // Fetch parent space info if this is a subspace
   const { parentInfo, parentAvatarUri, parentDisplayName } = useParentSpaceInfo(contributionItem.parentSpaceId);
+
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
+
+  const handleContactLead = useCallback(
+    (leadType: 'user' | 'organization', leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+      sendMessage(leadType, {
+        id: leadId,
+        displayName: leadDisplayName,
+        avatarUri: leadAvatarUri,
+      });
+    },
+    [sendMessage]
+  );
 
   if (loading || !details) {
     return null;
@@ -77,6 +93,7 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
         leadUsers={details.about.membership?.leadUsers}
         leadOrganizations={details.about.membership?.leadOrganizations}
         showLeads={isAuthenticated}
+        onContactLead={handleContactLead}
         actions={
           enableLeave && (
             <CardActions justifyContent="end" flexBasis="100%">
@@ -138,6 +155,7 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
           </DialogActions>
         </Dialog>
       )}
+      {directMessageDialog}
     </>
   );
 };
