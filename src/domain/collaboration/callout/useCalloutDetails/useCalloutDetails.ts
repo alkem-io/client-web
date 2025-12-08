@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { CalloutModelExtension } from '../models/CalloutModelLight';
 import { useCalloutsSetAuthorization } from '../../calloutsSet/authorization/useCalloutsSetAuthorization';
+import { useDeepCompareMemoize } from 'use-deep-compare-effect';
 
 interface useCalloutDetailsProvided {
   callout: CalloutDetailsModelExtended | undefined;
@@ -45,6 +46,9 @@ const useCalloutDetails = ({
     skip: skip || !calloutId,
   });
 
+  // Use deep comparison for overrideCalloutSettings to avoid unnecessary rerenders
+  const memoizedOverrideCalloutSettings = useDeepCompareMemoize(overrideCalloutSettings);
+
   const result: CalloutDetailsModelExtended | undefined = useMemo(() => {
     const calloutDetails = data?.lookup.callout;
 
@@ -65,7 +69,7 @@ const useCalloutDetails = ({
       movable: canMoveCallouts,
       canBeSavedAsTemplate: calloutsCanBeSavedAsTemplate,
       classificationTagsets: [],
-      ...overrideCalloutSettings,
+      ...memoizedOverrideCalloutSettings,
     };
   }, [
     data,
@@ -73,7 +77,7 @@ const useCalloutDetails = ({
     calloutsSetId,
     canMoveCallouts,
     calloutsCanBeSavedAsTemplate,
-    JSON.stringify(overrideCalloutSettings),
+    memoizedOverrideCalloutSettings,
   ]);
 
   return {

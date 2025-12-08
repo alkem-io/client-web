@@ -17,11 +17,12 @@ type InvitationCardHorizontalProps = {
 };
 
 const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizontalProps) => {
+  const { t } = useTranslation();
+
   if (!invitation) {
     return null;
   }
 
-  const { t } = useTranslation();
   const time = formatTimeElapsed(invitation.invitation.createdDate, t);
 
   return (

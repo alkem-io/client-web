@@ -51,6 +51,7 @@ const useKeepElementScroll = ({ scrollContainerRef }: UseKeepElementScrollOption
     if (!container) {
       return;
     }
+    // eslint-disable-next-line react-compiler/react-compiler -- DOM property mutation is valid
     container.style.scrollBehavior = 'smooth';
     state.scroller = container;
     return () => {

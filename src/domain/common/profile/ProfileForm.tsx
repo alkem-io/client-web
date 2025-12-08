@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import React from 'react';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -25,14 +25,18 @@ export interface ProfileFormValues {
   tagsets: TagsetModel[];
 }
 
+export interface ProfileFormHandle {
+  submit: () => void;
+}
+
 type ProfileFormProps = {
   profile: ProfileModel;
   onSubmit: (formData: ProfileFormValues) => void;
-  wireSubmit: (setter: () => void) => void;
   spaceLevel?: SpaceLevel;
 };
 
-const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0 }: ProfileFormProps) => {
+const ProfileForm = forwardRef<ProfileFormHandle, ProfileFormProps>(
+  ({ profile, onSubmit, spaceLevel = SpaceLevel.L0 }, ref) => {
   const { t } = useTranslation();
 
   const initialValues: ProfileFormValues = {
@@ -53,7 +57,14 @@ const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0
     tagsets: tagsetsSegmentSchema,
   });
 
-  let isSubmitWired = false;
+  const submitRef = useRef<(() => void) | null>(null);
+
+  // Expose submit method to parent component
+  useImperativeHandle(ref, () => ({
+    submit: () => {
+      submitRef.current?.();
+    },
+  }));
 
   return (
     <Formik
@@ -65,11 +76,8 @@ const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0
       }}
     >
       {({ values: { references }, handleSubmit }) => {
-        // TODO [ATS]: Research useImperativeHandle and useRef to achieve this.
-        if (!isSubmitWired) {
-          wireSubmit(handleSubmit);
-          isSubmitWired = true;
-        }
+        // Store handleSubmit in ref
+        submitRef.current = handleSubmit;
 
         return (
           <>
@@ -88,6 +96,8 @@ const ProfileForm = ({ profile, onSubmit, wireSubmit, spaceLevel = SpaceLevel.L0
       }}
     </Formik>
   );
-};
+});
+
+ProfileForm.displayName = 'ProfileForm';
 
 export default ProfileForm;
