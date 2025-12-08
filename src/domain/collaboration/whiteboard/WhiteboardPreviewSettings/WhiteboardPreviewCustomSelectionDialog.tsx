@@ -140,6 +140,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
               crop={crop}
               onChange={onCropChange}
               keepSelection
+              style={{ maxHeight: 'calc(100vh - 300px)' }}
             >
               <img
                 src={imageObjectUrl}
