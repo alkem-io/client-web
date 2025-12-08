@@ -15,7 +15,7 @@ import { collectParentAvatars } from '@/domain/space/components/cards/utils/useS
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { Lead, LeadOrganization } from '@/domain/space/components/cards/components/SpaceLeads';
+import { Lead, LeadOrganization, LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
 
 const DEFAULT_ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
 
@@ -68,7 +68,7 @@ export const ExploreSpacesView = ({
   });
 
   const handleContactLead = useCallback(
-    (leadType: 'user' | 'organization', leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
       sendMessage(leadType, {
         id: leadId,
         displayName: leadDisplayName,

@@ -15,6 +15,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useSubspaceCardData } from './cards/utils/useSubspaceCardData';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { LeadType } from './cards/components/SpaceLeads';
 export interface SubspacesListDialogProps {
   open?: boolean;
   onClose?: () => void;
@@ -38,7 +39,7 @@ const SubspacesListDialog = ({ open = false, onClose }: SubspacesListDialogProps
   });
 
   const handleContactLead = useCallback(
-    (leadType: 'user' | 'organization', leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
       sendMessage(leadType, {
         id: leadId,
         displayName: leadDisplayName,

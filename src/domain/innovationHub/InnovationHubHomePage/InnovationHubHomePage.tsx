@@ -21,6 +21,7 @@ import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumb
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { collectSubspaceAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
 
 const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHubAttrs }) => {
   const { t } = useTranslation();
@@ -39,7 +40,7 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
   });
 
   const handleContactLead = useCallback(
-    (leadType: 'user' | 'organization', leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
       sendMessage(leadType, {
         id: leadId,
         displayName: leadDisplayName,

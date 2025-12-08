@@ -1,6 +1,7 @@
 import { Box, Avatar, Typography } from '@mui/material';
-import ContributorTooltip from '@/core/ui/card/ContributorTooltip';
+import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
 import RouterLink from '@/core/ui/link/RouterLink';
+import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
 export interface Lead {
   id: string;
@@ -12,13 +13,6 @@ export interface Lead {
       uri: string;
       alternativeText?: string;
     };
-    location?: {
-      city?: string;
-      country?: string;
-    };
-    tagsets?: {
-      tags: string[];
-    }[];
   };
 }
 
@@ -32,13 +26,6 @@ export interface LeadOrganization {
       uri: string;
       alternativeText?: string;
     };
-    location?: {
-      city?: string;
-      country?: string;
-    };
-    tagsets?: {
-      tags: string[];
-    }[];
   };
 }
 
@@ -62,35 +49,37 @@ const SpaceLeads = ({ leadUsers = [], leadOrganizations = [], showLeads, onConta
     ) : null;
   }
 
-  const allLeads = [...leadUsers, ...leadOrganizations];
+  // Create typed lead entries that preserve whether they're users or organizations
+  type TypedLead = { type: 'user'; data: Lead } | { type: 'organization'; data: LeadOrganization };
+
+  const typedLeadUsers: TypedLead[] = leadUsers.map(user => ({ type: 'user' as const, data: user }));
+  const typedLeadOrganizations: TypedLead[] = leadOrganizations.map(org => ({
+    type: 'organization' as const,
+    data: org,
+  }));
+  const allLeads = [...typedLeadUsers, ...typedLeadOrganizations];
   const totalCount = allLeads.length;
 
   // Show only first 2 leads if we have more than 3, to leave room for the "+N" indicator
   const visibleLeads = totalCount > MAX_VISIBLE_LEADS ? allLeads.slice(0, MAX_VISIBLE_LEADS - 1) : allLeads;
   const overflowCount = totalCount > MAX_VISIBLE_LEADS ? totalCount - (MAX_VISIBLE_LEADS - 1) : 0;
 
-  // Helper to check if a lead is a user (has isContactable property)
-  const isUserLead = (lead: Lead | LeadOrganization): lead is Lead => 'isContactable' in lead;
-
   return (
     <Box display="flex" flexWrap="wrap" gap={1} paddingLeft={1.5}>
-      {visibleLeads.map(lead => {
-        const tags = lead.profile.tagsets?.flatMap(tagset => tagset.tags) ?? [];
-        const isUser = isUserLead(lead);
-        const isContactable = Boolean(onContactLead);
+      {visibleLeads.map(typedLead => {
+        const lead = typedLead.data;
+        const isUser = typedLead.type === 'user';
         const leadType: LeadType = isUser ? 'user' : 'organization';
+        const contributorType = isUser ? RoleSetContributorType.User : RoleSetContributorType.Organization;
+        const hasContactCallback = Boolean(onContactLead);
 
         return (
           <ContributorTooltip
             key={lead.id}
-            displayName={lead.profile.displayName}
-            avatarSrc={lead.profile.avatar?.uri}
-            tags={tags}
-            city={lead.profile.location?.city}
-            country={lead.profile.location?.country}
-            isContactable={isContactable}
+            contributorId={lead.id}
+            contributorType={contributorType}
             onContact={
-              isContactable
+              hasContactCallback
                 ? () => onContactLead?.(leadType, lead.id, lead.profile.displayName, lead.profile.avatar?.uri)
                 : undefined
             }

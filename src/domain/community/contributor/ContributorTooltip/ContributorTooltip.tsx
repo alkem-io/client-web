@@ -3,7 +3,6 @@ import { Tooltip, TooltipProps } from '@mui/material';
 import { useContributorTooltipLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
 import GridProvider from '@/core/ui/grid/GridProvider';
-import Loading from '@/core/ui/loading/Loading';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
@@ -12,12 +11,14 @@ interface ContributorTooltipProps extends Omit<TooltipProps, 'title'> {
   contributorId: string;
   contributorType: RoleSetContributorType;
   override?: string;
+  onContact?: () => void;
 }
 
 const ContributorTooltip = ({
   contributorId,
   contributorType,
   override,
+  onContact,
   children,
   ...props
 }: ContributorTooltipProps) => {
@@ -29,10 +30,14 @@ const ContributorTooltip = ({
         case RoleSetContributorType.User:
           fetchUserData({ variables: { userId: contributorId, includeUser: true } });
           break;
-        case RoleSetContributorType.Organization: // TODO: Pending implementation
+        case RoleSetContributorType.Organization:
+          fetchUserData({ variables: { organizationId: contributorId, includeOrganization: true } });
+          break;
         case RoleSetContributorType.Virtual:
-        default: // Do nothing for now - Inviting Organizations is not implemented and Virtual Contributors are invited in a different way
-        // throw new Error('Unsupported contributor type for tooltip');
+          fetchUserData({ variables: { virtualContributorId: contributorId, includeVirtualContributor: true } });
+          break;
+        default:
+        // Do nothing
       }
     }
   };
@@ -43,31 +48,46 @@ const ContributorTooltip = ({
     }
 
     const user = data?.user;
-    if (loading || !user) {
-      return <Loading />;
+    const organization = data?.organization;
+    const virtualContributor = data?.lookup?.virtualContributor;
+
+    let contributor;
+
+    switch (contributorType) {
+      case RoleSetContributorType.User:
+        contributor = user;
+        break;
+      case RoleSetContributorType.Organization:
+        contributor = organization;
+        break;
+      case RoleSetContributorType.Virtual:
+        contributor = virtualContributor;
+        break;
+      default:
+        return <div>Details not available</div>;
     }
-    if (contributorType === RoleSetContributorType.User) {
-      return (
-        <RootThemeProvider>
-          <GridProvider columns={CONTRIBUTE_CARD_COLUMNS}>
-            <UserCard
-              id={user.id}
-              avatarSrc={user.profile.avatar?.uri}
-              avatarAltText={user.profile.displayName}
-              displayName={user.profile.displayName}
-              tags={user.profile.tagsets?.flatMap(tagset => tagset.tags)}
-              url={user.profile.url}
-              city={user.profile.location?.city}
-              country={user.profile.location?.country}
-              isContactable={false}
-            />
-          </GridProvider>
-        </RootThemeProvider>
-      );
-    }
-    // TODO: Handle Organization and Virtual Contributor types
-    return <div>Details not available</div>; // In theory this will never be reached
-  }, [data, loading, override, contributorType]);
+
+    return (
+      <RootThemeProvider>
+        <GridProvider columns={CONTRIBUTE_CARD_COLUMNS}>
+          <UserCard
+            id={contributor?.id}
+            loading={loading || !contributor}
+            avatarSrc={contributor?.profile.avatar?.uri}
+            avatarAltText={contributor?.profile.displayName}
+            displayName={contributor?.profile.displayName}
+            tags={contributor?.profile.tagsets?.flatMap(tagset => tagset.tags)}
+            url={contributor?.profile.url}
+            city={contributor?.profile.location?.city}
+            country={contributor?.profile.location?.country}
+            isContactable={Boolean(onContact)}
+            onContact={onContact}
+            isExpandable={false}
+          />
+        </GridProvider>
+      </RootThemeProvider>
+    );
+  }, [data, loading, override, contributorType, onContact]);
 
   return (
     <Tooltip

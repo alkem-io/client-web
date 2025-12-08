@@ -12,15 +12,6 @@ fragment SpaceCard on Space {
           id
           url
           displayName
-          location {
-            id
-            city
-            country
-          }
-          tagsets {
-            id
-            tags
-          }
           avatar: visual(type: AVATAR) {
             ...VisualModel
           }
@@ -32,15 +23,6 @@ fragment SpaceCard on Space {
           id
           url
           displayName
-          location {
-            id
-            city
-            country
-          }
-          tagsets {
-            id
-            tags
-          }
           avatar: visual(type: AVATAR) {
             ...VisualModel
           }

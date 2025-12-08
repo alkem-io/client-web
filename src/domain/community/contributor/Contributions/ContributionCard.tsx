@@ -15,6 +15,7 @@ import { Caption } from '@/core/ui/typography';
 import { CommunityMembershipStatus, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useParentSpaceInfo } from '@/domain/space/components/cards/utils/useParentSpaceInfo';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
 
 export type ContributionCardProps = {
   onLeave?: () => Promise<unknown>;
@@ -40,7 +41,7 @@ const ContributionCard = ({ contributionItem, onLeave, enableLeave, onContributi
   });
 
   const handleContactLead = useCallback(
-    (leadType: 'user' | 'organization', leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
+    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
       sendMessage(leadType, {
         id: leadId,
         displayName: leadDisplayName,

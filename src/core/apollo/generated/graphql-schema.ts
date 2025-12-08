@@ -18585,8 +18585,12 @@ export type CreateWingbackAccountMutationVariables = Exact<{
 export type CreateWingbackAccountMutation = { __typename?: 'Mutation'; createWingbackAccount: string };
 
 export type ContributorTooltipQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
+  userId?: Scalars['UUID']['input'];
   includeUser?: InputMaybe<Scalars['Boolean']['input']>;
+  organizationId?: Scalars['UUID']['input'];
+  includeOrganization?: InputMaybe<Scalars['Boolean']['input']>;
+  virtualContributorId?: Scalars['UUID']['input'];
+  includeVirtualContributor?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type ContributorTooltipQuery = {
@@ -18607,6 +18611,51 @@ export type ContributorTooltipQuery = {
         | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     };
+  };
+  organization?: {
+    __typename?: 'Organization';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+        | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+    };
+  };
+  lookup?: {
+    __typename?: 'LookupQueryResults';
+    virtualContributor?:
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
