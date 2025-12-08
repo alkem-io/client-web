@@ -51,7 +51,7 @@ export const usePlatformAdminOrganizationsList = () => {
         },
       });
     },
-    [data, fetchMoreRaw, pageInfo?.endCursor, searchTerm]
+    [data, fetchMoreRaw, pageInfo?.endCursor, searchTerm, PAGE_SIZE]
   );
 
   const { t } = useTranslation();

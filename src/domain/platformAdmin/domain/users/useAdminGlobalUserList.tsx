@@ -10,11 +10,7 @@ import {
   usePlatformAdminUsersListQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import {
-  LicensingCredentialBasedPlanType,
-  PlatformAdminUsersListQuery,
-  PlatformAdminUsersListQueryVariables,
-} from '@/core/apollo/generated/graphql-schema';
+import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';

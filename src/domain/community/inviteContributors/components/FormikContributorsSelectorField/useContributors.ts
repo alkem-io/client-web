@@ -1,8 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useInviteUsersDialogQuery, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
-  UserSelectorQuery,
-  UserSelectorQueryVariables,
   UserFilterInput,
   RoleSetContributorType,
   RoleName,

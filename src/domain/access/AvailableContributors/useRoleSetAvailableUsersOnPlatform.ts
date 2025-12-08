@@ -48,7 +48,7 @@ const useRoleSetAvailableUsersOnPlatform = ({
         },
       });
     },
-    [data, fetchMoreRaw, pageInfo?.endCursor, filter]
+    [data, fetchMoreRaw, pageInfo?.endCursor, filter, AVAILABLE_USERS_PAGE_SIZE]
   );
 
   const firstPage = data?.usersPaginated;

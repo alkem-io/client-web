@@ -52,7 +52,7 @@ const useRoleSetAvailableUsersOnRoleSet = ({
         },
       });
     },
-    [data, fetchMoreRaw, pageInfo?.endCursor, roleSetId, role, filter]
+    [data, fetchMoreRaw, pageInfo?.endCursor, roleSetId, role, filter, AVAILABLE_USERS_PAGE_SIZE]
   );
 
   const users = data?.lookup.roleSet?.availableUsersForElevatedRole.users ?? [];

@@ -19,10 +19,6 @@ import {
   useContributorsVirtualInLibraryQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
-  ContributorsPageOrganizationsQuery,
-  ContributorsPageOrganizationsQueryVariables,
-  ContributorsPageUsersQuery,
-  ContributorsPageUsersQueryVariables,
   OrganizationContributorFragment,
   OrganizationVerificationEnum,
   UserContributorFragment,
@@ -177,7 +173,14 @@ const ContributorsPage = () => {
         },
       });
     },
-    [organizationsData, organizationsFetchMoreRaw, organizationsPageInfo?.endCursor, pageSize, searchTerms]
+    [
+      organizationsData,
+      organizationsFetchMoreRaw,
+      organizationsPageInfo?.endCursor,
+      pageSize,
+      searchTerms,
+      OrganizationVerificationEnum.VerifiedManualAttestation,
+    ]
   );
 
   const organizations: PaginatedResult<OrganizationContributorFragment> = {

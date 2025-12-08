@@ -9,8 +9,6 @@ import {
 import {
   ActivityEventType,
   ActivityFeedRoles,
-  LatestContributionsQuery,
-  LatestContributionsQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent, Skeleton, useTheme } from '@mui/material';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
@@ -126,7 +124,7 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
         },
       },
     });
-  }, [data, fetchMoreRaw, pageInfo?.endCursor, filter.space, filter.role]);
+  }, [data, fetchMoreRaw, pageInfo?.endCursor, filter.space, filter.role, LATEST_CONTRIBUTIONS_PAGE_SIZE]);
 
   const loader = useLazyLoading(Loader, { hasMore, loading, fetchMore });
 

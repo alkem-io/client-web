@@ -106,7 +106,7 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
         after: spacePageInfo?.endCursor,
       },
     });
-  }, [spacesData, fetchMoreSpacesRaw, spacePageInfo?.endCursor]);
+  }, [spacesData, fetchMoreSpacesRaw, spacePageInfo?.endCursor, ITEMS_LIMIT]);
 
   const fetchMore = usesPagination ? fetchMoreSpaces : () => Promise.resolve();
 
