@@ -13,6 +13,7 @@ import useEnsurePresence from '@/core/utils/ensurePresence';
 import { CropConfig } from '@/core/utils/images/cropImage';
 import { getDefaultCropConfigForWhiteboardPreview } from '../WhiteboardVisuals/utils/getDefaultCropConfigForWhiteboardPreview';
 import validateCropConfig from '../WhiteboardVisuals/utils/validateCropConfig';
+import { clampCoordinatesTranslation, translateCropConfig } from './WhiteboardPreviewCustomSelectionDialog.utils';
 
 interface WhiteboardPreviewCustomSelectionDialogProps {
   open: boolean;
@@ -28,132 +29,6 @@ const MINIMUM_SELECTION_SIZE = 0.05; // 5% of the image width
 const MIN_SCALE = 1;
 const MAX_SCALE = 8;
 const SCALE_STEP = 0.1;
-const ZERO_PAN = { x: 0, y: 0 };
-
-const clampValue = (value: number, min: number, max: number): number => {
-  if (value < min) {
-    return min;
-  }
-  if (value > max) {
-    return max;
-  }
-  return value;
-};
-
-const clampTranslation = (
-  translation: { x: number; y: number },
-  img: HTMLImageElement | null,
-  scale: number
-): { x: number; y: number } => {
-  if (!img) {
-    return translation;
-  }
-  const viewportWidth = img.width;
-  const viewportHeight = img.height;
-  const maxOffsetX = Math.max(0, (viewportWidth * scale - viewportWidth) / 2);
-  const maxOffsetY = Math.max(0, (viewportHeight * scale - viewportHeight) / 2);
-
-  return {
-    x: clampValue(translation.x, -maxOffsetX, maxOffsetX),
-    y: clampValue(translation.y, -maxOffsetY, maxOffsetY),
-  };
-};
-/*
-const applyPanToCrop = ({
-  cropConfig,
-  translation,
-  scale,
-  img,
-}: {
-  cropConfig: CropConfig;
-  translation: { x: number; y: number };
-  scale: number;
-  img: { width: number; height: number };
-}): CropConfig => {
-  if ((!translation.x && !translation.y) || scale === 0) {
-    return cropConfig;
-  }
-
-  const deltaX = translation.x / scale;
-  const deltaY = translation.y / scale;
-  const maxX = Math.max(0, img.width - cropConfig.width);
-  const maxY = Math.max(0, img.height - cropConfig.height);
-
-  return {
-    ...cropConfig,
-    x: clampValue(cropConfig.x - deltaX, 0, maxX),
-    y: clampValue(cropConfig.y - deltaY, 0, maxY),
-  };
-};
-*/
-
-/*  const commitTranslationIntoCrop = useCallback((): Crop | undefined => {
-    const img = imgRef.current;
-    if (!img) {
-      return crop;
-    }
-    if (!crop) {
-      setTranslation({ x: 0, y: 0 });
-      return undefined;
-    }
-    if (!translationRef.current.x && !translationRef.current.y) {
-      return crop;
-    }
-
-    const updatedCropConfig = applyPanToCrop({
-      cropConfig: crop,
-      translation: translationRef.current,
-      scale,
-      img,
-    });
-
-    const updatedCrop: Crop = {
-      ...updatedCropConfig,
-      unit: 'px',
-    };
-
-    setCrop(updatedCrop);
-    setTranslation({ x: 0, y: 0 });
-
-    return updatedCrop;
-  }, [crop, scale]);
-  */
-
-const translateCropConfig = ({
-  cropConfig,
-  img,
-  scale = MIN_SCALE,
-  pan = ZERO_PAN,
-  inverse,
-}: {
-  cropConfig: CropConfig | undefined;
-  img: { width: number; height: number; naturalWidth: number; naturalHeight: number } | null;
-  scale?: number;
-  pan?: { x: number; y: number };
-  inverse?: boolean;
-}): CropConfig | undefined => {
-  if (!cropConfig || !img) {
-    return undefined;
-  }
-  console.log({
-    cropConfig,
-    width: img.width,
-    height: img.height,
-    naturalWidth: img.naturalWidth,
-    naturalHeight: img.naturalHeight,
-    scale,
-    pan,
-    inverse,
-  });
-  const translationX = inverse ? img.width / img.naturalWidth : img.naturalWidth / img.width;
-  const translationY = inverse ? img.height / img.naturalHeight : img.naturalHeight / img.height;
-  return {
-    x: cropConfig.x * translationX,
-    y: cropConfig.y * translationY,
-    width: cropConfig.width * translationX,
-    height: cropConfig.height * translationY,
-  };
-};
 
 const WhiteboardPreviewCustomSelectionDialog = ({
   open,
@@ -226,7 +101,6 @@ const WhiteboardPreviewCustomSelectionDialog = ({
   );
 
   const handleConfirmCrop = () => {
-    /* const updatedCrop = commitTranslationIntoCrop(); */
     const cropConfig = ensurePresence(crop);
     const img = ensurePresence(imgRef.current);
     // Translate crop to the real generated image dimensions:
@@ -242,6 +116,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
 
   const [imageObjectUrl, setImageObjectUrl] = useState<string>();
 
+  // Zoom and Pan handlers
   const handleWheel = useCallback(
     (event: WheelEvent<HTMLDivElement>) => {
       if (!ready) {
@@ -251,14 +126,14 @@ const WhiteboardPreviewCustomSelectionDialog = ({
       setImgScale(previousScale => {
         const nextScale = Number((previousScale + deltaDirection * SCALE_STEP).toFixed(2));
         if (nextScale < MIN_SCALE) {
-          setImgPan(current => clampTranslation(current, imgRef.current, MIN_SCALE));
+          setImgPan(current => clampCoordinatesTranslation(current, imgRef.current, MIN_SCALE));
           return MIN_SCALE;
         }
         if (nextScale > MAX_SCALE) {
-          setImgPan(current => clampTranslation(current, imgRef.current, MAX_SCALE));
+          setImgPan(current => clampCoordinatesTranslation(current, imgRef.current, MAX_SCALE));
           return MAX_SCALE;
         }
-        setImgPan(current => clampTranslation(current, imgRef.current, nextScale));
+        setImgPan(current => clampCoordinatesTranslation(current, imgRef.current, nextScale));
         return nextScale;
       });
     },
@@ -286,7 +161,7 @@ const WhiteboardPreviewCustomSelectionDialog = ({
     const deltaY = event.clientY - imgPanPointerOriginRef.current.y;
     imgPanPointerOriginRef.current = { x: event.clientX, y: event.clientY };
     setImgPan(previousTranslation =>
-      clampTranslation(
+      clampCoordinatesTranslation(
         {
           x: previousTranslation.x + deltaX,
           y: previousTranslation.y + deltaY,
@@ -309,12 +184,14 @@ const WhiteboardPreviewCustomSelectionDialog = ({
     event.currentTarget.releasePointerCapture(event.pointerId);
   };
 
+  // Load the image when dialog is opened
   useEffect(() => {
     if (open && whiteboardPreviewImage) {
-      const objectUrl = URL.createObjectURL(whiteboardPreviewImage);
-      setImageObjectUrl(objectUrl);
       setImgPan({ x: 0, y: 0 });
       setIsPanning(false);
+
+      const objectUrl = URL.createObjectURL(whiteboardPreviewImage);
+      setImageObjectUrl(objectUrl);
 
       return () => {
         setImageObjectUrl(undefined);
@@ -377,10 +254,9 @@ const WhiteboardPreviewCustomSelectionDialog = ({
           onChange={(event, value) => {
             const nextScale = value as number;
             setImgScale(nextScale);
-            setImgPan(current => clampTranslation(current, imgRef.current, nextScale));
+            setImgPan(current => clampCoordinatesTranslation(current, imgRef.current, nextScale));
           }}
         />
-        <pre>{JSON.stringify({ crop, imgScale, imgPan })}</pre>
       </DialogContent>
       <DialogFooter>
         <DialogActions>
