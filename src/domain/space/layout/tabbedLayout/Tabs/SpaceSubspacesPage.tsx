@@ -31,7 +31,7 @@ const SpaceSubspacesPage = () => {
   const { permissions, visibility } = useSpace();
   const { isAuthenticated } = useCurrentUserContext();
 
-  const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const { callouts, canCreateCallout, onCalloutsSortOrderUpdate, refetchCallout } = useCalloutsSet({
     calloutsSetId,
@@ -94,7 +94,7 @@ const SpaceSubspacesPage = () => {
             spaceId={item.id}
             displayName={item.about.profile.displayName}
             banner={item.about.profile.cardBanner}
-            tags={item.about.profile.tagset?.tags!}
+            tags={item.about.profile.tagset?.tags ?? []}
             tagline={item.about.profile.tagline ?? ''}
             spaceUri={item.about.profile.url}
             locked={!item.about.isContentPublic}
@@ -110,13 +110,13 @@ const SpaceSubspacesPage = () => {
             avatarUris={collectAvatars(item)}
           />
         )}
-        onClickCreate={() => setCreateDialogOpen(true)}
+        onClickCreate={() => setIsCreateDialogOpen(true)}
         childEntityCreateAccess={permissions.canCreateSubspaces}
-        childEntityOnCreate={() => setCreateDialogOpen(true)}
+        childEntityOnCreate={() => setIsCreateDialogOpen(true)}
         createSubentityDialog={
           <CreateSubspace
             open={isCreateDialogOpen}
-            onClose={() => setCreateDialogOpen(false)}
+            onClose={() => setIsCreateDialogOpen(false)}
             parentSpaceId={spaceId}
           />
         }
