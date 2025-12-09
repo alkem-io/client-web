@@ -12,10 +12,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  DID: { input: string; output: string };
   DateTime: { input: Date; output: Date };
   Emoji: { input: string; output: string };
-  JSON: { input: string; output: string };
   LifecycleDefinition: { input: string; output: string };
   Markdown: { input: string; output: string };
   MessageID: { input: string; output: string };
@@ -517,32 +515,12 @@ export type Agent = {
   createdDate: Scalars['DateTime']['output'];
   /** The Credentials held by this Agent. */
   credentials?: Maybe<Array<Credential>>;
-  /** The Decentralized Identifier (DID) for this Agent. */
-  did?: Maybe<Scalars['DID']['output']>;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
   /** A type of entity that this Agent is being used with. */
   type: AgentType;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
-  /** The Verfied Credentials for this Agent. */
-  verifiedCredentials?: Maybe<Array<VerifiedCredential>>;
-};
-
-export type AgentBeginVerifiedCredentialOfferOutput = {
-  __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
-  /** The token containing the information about issuer, callback endpoint and the credentials offered */
-  jwt: Scalars['String']['output'];
-  /** The QR Code Image to be offered on the client for scanning by a mobile wallet */
-  qrCodeImg: Scalars['String']['output'];
-};
-
-export type AgentBeginVerifiedCredentialRequestOutput = {
-  __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
-  /** The token containing the information about issuer, callback endpoint and the credentials offered */
-  jwt: Scalars['String']['output'];
-  /** The QR Code Image to be offered on the client for scanning by a mobile wallet */
-  qrCodeImg: Scalars['String']['output'];
 };
 
 export enum AgentType {
@@ -733,8 +711,6 @@ export type Authorization = {
   type?: Maybe<AuthorizationPolicyType>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
-  /** The set of verified credential rules that are contained by this Authorization Policy. */
-  verifiedCredentialRules?: Maybe<Array<AuthorizationPolicyRuleVerifiedCredential>>;
 };
 
 export type AuthorizationHasPrivilegeArgs = {
@@ -780,13 +756,6 @@ export type AuthorizationPolicyRulePrivilege = {
   grantedPrivileges: Array<AuthorizationPrivilege>;
   name?: Maybe<Scalars['String']['output']>;
   sourcePrivilege: AuthorizationPrivilege;
-};
-
-export type AuthorizationPolicyRuleVerifiedCredential = {
-  __typename?: 'AuthorizationPolicyRuleVerifiedCredential';
-  claimRule: Scalars['String']['output'];
-  credentialName: Scalars['String']['output'];
-  grantedPrivileges: Array<AuthorizationPrivilege>;
 };
 
 export enum AuthorizationPolicyType {
@@ -2376,22 +2345,6 @@ export type CredentialDefinition = {
   resourceID: Scalars['String']['output'];
   /** The type for this CredentialDefinition */
   type: Scalars['String']['output'];
-};
-
-export type CredentialMetadataOutput = {
-  __typename?: 'CredentialMetadataOutput';
-  /** A json description of what the claim contains and schema validation definition */
-  context: Scalars['String']['output'];
-  /** The purpose of the credential */
-  description: Scalars['String']['output'];
-  /** The display name of the credential */
-  name: Scalars['String']['output'];
-  /** The schema that the credential will be validated against */
-  schema: Scalars['String']['output'];
-  /** The credential types that are associated with this credential */
-  types: Array<Scalars['String']['output']>;
-  /** System recognized unique type for the credential */
-  uniqueType: Scalars['String']['output'];
 };
 
 export enum CredentialType {
@@ -4290,12 +4243,6 @@ export type Mutation = {
   authorizationPolicyResetOnUser: User;
   /** Reset the specified Authorization Policy to global admin privileges */
   authorizationPolicyResetToGlobalAdminsAccess: Authorization;
-  /** Generate Alkemio user credential offer */
-  beginAlkemioUserVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
-  /** Generate community member credential offer */
-  beginCommunityMemberVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
-  /** Generate verified credential share request */
-  beginVerifiedCredentialRequestInteraction: AgentBeginVerifiedCredentialRequestOutput;
   /** Deletes collections nameID-... */
   cleanupCollections: MigrateEmbeddings;
   /** Move an L1 Space up in the hierarchy, to be a L0 Space. */
@@ -4704,14 +4651,6 @@ export type MutationAuthorizationPolicyResetOnUserArgs = {
 
 export type MutationAuthorizationPolicyResetToGlobalAdminsAccessArgs = {
   authorizationID: Scalars['String']['input'];
-};
-
-export type MutationBeginCommunityMemberVerifiedCredentialOfferInteractionArgs = {
-  communityID: Scalars['String']['input'];
-};
-
-export type MutationBeginVerifiedCredentialRequestInteractionArgs = {
-  types: Array<Scalars['String']['input']>;
 };
 
 export type MutationConvertSpaceL1ToSpaceL0Args = {
@@ -5763,7 +5702,6 @@ export enum PlatformFeatureFlagName {
   LandingPage = 'LANDING_PAGE',
   Memo = 'MEMO',
   Notifications = 'NOTIFICATIONS',
-  Ssi = 'SSI',
   Subscriptions = 'SUBSCRIPTIONS',
   Whiteboards = 'WHITEBOARDS',
 }
@@ -5947,14 +5885,6 @@ export type ProfileVisualArgs = {
   type: VisualType;
 };
 
-export type ProfileCredentialVerified = {
-  __typename?: 'ProfileCredentialVerified';
-  /** The email */
-  userEmail: Scalars['String']['output'];
-  /** The vc. */
-  vc: Scalars['String']['output'];
-};
-
 export enum ProfileType {
   CalendarEvent = 'CALENDAR_EVENT',
   CalloutFraming = 'CALLOUT_FRAMING',
@@ -6115,8 +6045,6 @@ export type Query = {
   aiServer: AiServer;
   /** Active Spaces only, order by most active in the past X days. */
   exploreSpaces: Array<Space>;
-  /** Get supported credential metadata */
-  getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow creation of inputs based on existing entities in the domain model */
   inputCreator: InputCreatorQueryResults;
   /** Allow direct lookup of entities from the domain model */
@@ -7089,7 +7017,7 @@ export type SpaceAbout = {
   /** The Profile for the Space. */
   profile: Profile;
   /** The Space provider (host). */
-  provider: Contributor;
+  provider?: Maybe<Contributor>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   /** Who should get involved in this challenge */
@@ -7331,8 +7259,6 @@ export type Subscription = {
   inAppNotificationReceived: InAppNotification;
   /** Counter of unread in-app notifications for the currently authenticated user. */
   notificationsUnreadCount: Scalars['Int']['output'];
-  /** Received on verified credentials change */
-  profileVerifiedCredential: ProfileCredentialVerified;
   /** Receive Room event */
   roomEvents: RoomEventSubscriptionResult;
   /** Receive new Subspaces created on the Space. */
@@ -8769,32 +8695,6 @@ export type VcInteraction = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   virtualContributorID: Scalars['UUID']['output'];
-};
-
-export type VerifiedCredential = {
-  __typename?: 'VerifiedCredential';
-  /** The time at which the credential is no longer valid */
-  claims: Array<VerifiedCredentialClaim>;
-  /** JSON for the context in the credential */
-  context: Scalars['JSON']['output'];
-  /** The time at which the credential is no longer valid */
-  expires: Scalars['String']['output'];
-  /** The time at which the credential was issued */
-  issued: Scalars['String']['output'];
-  /** The party issuing the VC */
-  issuer: Scalars['String']['output'];
-  /** The name of the VC */
-  name: Scalars['String']['output'];
-  /** The type of VC */
-  type: Scalars['String']['output'];
-};
-
-export type VerifiedCredentialClaim = {
-  __typename?: 'VerifiedCredentialClaim';
-  /** The name of the claim */
-  name: Scalars['JSON']['output'];
-  /** The value for the claim */
-  value: Scalars['JSON']['output'];
 };
 
 export type VirtualContributor = Contributor & {
@@ -18685,8 +18585,12 @@ export type CreateWingbackAccountMutationVariables = Exact<{
 export type CreateWingbackAccountMutation = { __typename?: 'Mutation'; createWingbackAccount: string };
 
 export type ContributorTooltipQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
+  userId?: Scalars['UUID']['input'];
   includeUser?: InputMaybe<Scalars['Boolean']['input']>;
+  organizationId?: Scalars['UUID']['input'];
+  includeOrganization?: InputMaybe<Scalars['Boolean']['input']>;
+  virtualContributorId?: Scalars['UUID']['input'];
+  includeVirtualContributor?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type ContributorTooltipQuery = {
@@ -18707,6 +18611,51 @@ export type ContributorTooltipQuery = {
         | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     };
+  };
+  organization?: {
+    __typename?: 'Organization';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+        | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+    };
+  };
+  lookup?: {
+    __typename?: 'LookupQueryResults';
+    virtualContributor?:
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
@@ -19844,6 +19793,10 @@ export type SpaceContributionDetailsQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
               }>;
               leadOrganizations: Array<{
@@ -19863,6 +19816,10 @@ export type SpaceContributionDetailsQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
               }>;
             };
@@ -21814,12 +21771,9 @@ export type DashboardSpacesQuery = {
     about: {
       __typename?: 'SpaceAbout';
       isContentPublic: boolean;
-      why?: string | undefined;
       id: string;
-      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       membership: {
         __typename?: 'SpaceAboutMembership';
-        myMembershipStatus?: CommunityMembershipStatus | undefined;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
         leadUsers: Array<{
           __typename?: 'User';
@@ -21829,6 +21783,10 @@ export type DashboardSpacesQuery = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -21848,6 +21806,10 @@ export type DashboardSpacesQuery = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -21948,7 +21910,7 @@ export type CreateInnovationHubMutation = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
-            provider:
+            provider?:
               | {
                   __typename?: 'Organization';
                   id: string;
@@ -21963,7 +21925,8 @@ export type CreateInnovationHubMutation = {
                   __typename?: 'VirtualContributor';
                   id: string;
                   profile: { __typename?: 'Profile'; id: string; displayName: string };
-                };
+                }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -22029,7 +21992,7 @@ export type UpdateInnovationHubMutation = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
-            provider:
+            provider?:
               | {
                   __typename?: 'Organization';
                   id: string;
@@ -22044,7 +22007,8 @@ export type UpdateInnovationHubMutation = {
                   __typename?: 'VirtualContributor';
                   id: string;
                   profile: { __typename?: 'Profile'; id: string; displayName: string };
-                };
+                }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -22069,7 +22033,7 @@ export type InnovationHubAvailableSpacesQuery = {
     about: {
       __typename?: 'SpaceAbout';
       id: string;
-      provider:
+      provider?:
         | {
             __typename?: 'Organization';
             id: string;
@@ -22080,7 +22044,8 @@ export type InnovationHubAvailableSpacesQuery = {
             __typename?: 'VirtualContributor';
             id: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
+          }
+        | undefined;
       profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
     };
   }>;
@@ -22093,7 +22058,7 @@ export type InnovationHubSpaceFragment = {
   about: {
     __typename?: 'SpaceAbout';
     id: string;
-    provider:
+    provider?:
       | {
           __typename?: 'Organization';
           id: string;
@@ -22104,7 +22069,8 @@ export type InnovationHubSpaceFragment = {
           __typename?: 'VirtualContributor';
           id: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
-        };
+        }
+      | undefined;
     profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
   };
 };
@@ -22199,7 +22165,7 @@ export type InnovationHubSettingsQuery = {
                 about: {
                   __typename?: 'SpaceAbout';
                   id: string;
-                  provider:
+                  provider?:
                     | {
                         __typename?: 'Organization';
                         id: string;
@@ -22214,7 +22180,8 @@ export type InnovationHubSettingsQuery = {
                         __typename?: 'VirtualContributor';
                         id: string;
                         profile: { __typename?: 'Profile'; id: string; displayName: string };
-                      };
+                      }
+                    | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -22276,7 +22243,7 @@ export type InnovationHubSettingsFragment = {
         about: {
           __typename?: 'SpaceAbout';
           id: string;
-          provider:
+          provider?:
             | {
                 __typename?: 'Organization';
                 id: string;
@@ -22287,7 +22254,8 @@ export type InnovationHubSettingsFragment = {
                 __typename?: 'VirtualContributor';
                 id: string;
                 profile: { __typename?: 'Profile'; id: string; displayName: string };
-              };
+              }
+            | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -22685,7 +22653,7 @@ export type PlatformAdminSpacesListQuery = {
         __typename?: 'SpaceAbout';
         id: string;
         profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-        provider:
+        provider?:
           | {
               __typename?: 'Organization';
               id: string;
@@ -22696,7 +22664,8 @@ export type PlatformAdminSpacesListQuery = {
               __typename?: 'VirtualContributor';
               id: string;
               profile: { __typename?: 'Profile'; id: string; displayName: string };
-            };
+            }
+          | undefined;
       };
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -23015,7 +22984,7 @@ export type SpaceAboutDetailsQuery = {
                 };
               }>;
             };
-            provider:
+            provider?:
               | {
                   __typename?: 'Organization';
                   id: string;
@@ -23084,7 +23053,8 @@ export type SpaceAboutDetailsQuery = {
                       | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                       | undefined;
                   };
-                };
+                }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -23244,7 +23214,7 @@ export type SpaceAboutFullQuery = {
                 };
               }>;
             };
-            provider:
+            provider?:
               | {
                   __typename?: 'Organization';
                   id: string;
@@ -23313,7 +23283,8 @@ export type SpaceAboutFullQuery = {
                       | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                       | undefined;
                   };
-                };
+                }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -23489,7 +23460,7 @@ export type SpaceAboutDetailsFragment = {
       };
     }>;
   };
-  provider:
+  provider?:
     | {
         __typename?: 'Organization';
         id: string;
@@ -23540,7 +23511,8 @@ export type SpaceAboutDetailsFragment = {
             | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
         };
-      };
+      }
+    | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -23850,6 +23822,10 @@ export type CreateSubspaceMutation = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -23869,6 +23845,10 @@ export type CreateSubspaceMutation = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -24382,6 +24362,10 @@ export type SpaceSubspaceCardsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                      | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -24401,6 +24385,10 @@ export type SpaceSubspaceCardsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
+                    location?:
+                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                      | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -24455,6 +24443,79 @@ export type SpaceSubspaceCardsQuery = {
   };
 };
 
+export type SpaceCardFragment = {
+  __typename?: 'Space';
+  id: string;
+  level: SpaceLevel;
+  visibility: SpaceVisibility;
+  about: {
+    __typename?: 'SpaceAbout';
+    isContentPublic: boolean;
+    id: string;
+    membership: {
+      __typename?: 'SpaceAboutMembership';
+      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      leadUsers: Array<{
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }>;
+      leadOrganizations: Array<{
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }>;
+    };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      tagline?: string | undefined;
+      avatar?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+      cardBanner?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type SubspaceCardFragment = {
   __typename?: 'Space';
   id: string;
@@ -24478,6 +24539,10 @@ export type SubspaceCardFragment = {
           id: string;
           url: string;
           displayName: string;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
@@ -24491,6 +24556,10 @@ export type SubspaceCardFragment = {
           id: string;
           url: string;
           displayName: string;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
@@ -24549,6 +24618,10 @@ export type SubspacesOnSpaceFragment = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -24568,6 +24641,10 @@ export type SubspacesOnSpaceFragment = {
             id: string;
             url: string;
             displayName: string;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -24680,7 +24757,7 @@ export type UpdateSpaceMutation = {
           };
         }>;
       };
-      provider:
+      provider?:
         | {
             __typename?: 'Organization';
             id: string;
@@ -24749,7 +24826,8 @@ export type UpdateSpaceMutation = {
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
             };
-          };
+          }
+        | undefined;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -24874,7 +24952,7 @@ export type SpaceInfoFragment = {
         };
       }>;
     };
-    provider:
+    provider?:
       | {
           __typename?: 'Organization';
           id: string;
@@ -24943,7 +25021,8 @@ export type SpaceInfoFragment = {
               | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
               | undefined;
           };
-        };
+        }
+      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -25110,6 +25189,10 @@ export type SubspaceCreatedSubscription = {
               id: string;
               url: string;
               displayName: string;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -25129,6 +25212,10 @@ export type SubspaceCreatedSubscription = {
               id: string;
               url: string;
               displayName: string;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -25583,7 +25670,7 @@ export type SpacePageQuery = {
                   }>
                 | undefined;
             };
-            provider:
+            provider?:
               | {
                   __typename?: 'Organization';
                   id: string;
@@ -25685,7 +25772,8 @@ export type SpacePageQuery = {
                         }>
                       | undefined;
                   };
-                };
+                }
+              | undefined;
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -25865,7 +25953,7 @@ export type SpacePageFragment = {
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
-    provider:
+    provider?:
       | {
           __typename?: 'Organization';
           id: string;
@@ -25967,7 +26055,8 @@ export type SpacePageFragment = {
                 }>
               | undefined;
           };
-        };
+        }
+      | undefined;
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -26068,7 +26157,7 @@ export type SpaceAccountQuery = {
             __typename?: 'SpaceAbout';
             id: string;
             isContentPublic: boolean;
-            provider:
+            provider?:
               | {
                   __typename: 'Organization';
                   id: string;
@@ -26143,7 +26232,8 @@ export type SpaceAccountQuery = {
                       | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                       | undefined;
                   };
-                };
+                }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -26791,7 +26881,7 @@ export type SpaceSettingsQuery = {
           about: {
             __typename?: 'SpaceAbout';
             id: string;
-            provider:
+            provider?:
               | {
                   __typename?: 'Organization';
                   id: string;
@@ -26806,7 +26896,8 @@ export type SpaceSettingsQuery = {
                   __typename?: 'VirtualContributor';
                   id: string;
                   profile: { __typename?: 'Profile'; id: string; displayName: string };
-                };
+                }
+              | undefined;
             membership: { __typename?: 'SpaceAboutMembership'; roleSetID: string; communityID: string };
           };
           settings: {
@@ -37355,6 +37446,15 @@ export type ExploreSpacesSearchQuery = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     };
                   }>;
                   leadOrganizations: Array<{
@@ -37374,6 +37474,15 @@ export type ExploreSpacesSearchQuery = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     };
                   }>;
                 };
@@ -37430,6 +37539,10 @@ export type ExploreSpacesSearchFragment = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
         leadOrganizations: Array<{
@@ -37449,6 +37562,10 @@ export type ExploreSpacesSearchFragment = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
       };
@@ -37502,6 +37619,10 @@ export type ExploreAllSpacesQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
         leadOrganizations: Array<{
@@ -37521,6 +37642,10 @@ export type ExploreAllSpacesQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
       };
@@ -37591,6 +37716,10 @@ export type WelcomeSpaceQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
               }>;
               leadOrganizations: Array<{
@@ -37610,6 +37739,10 @@ export type WelcomeSpaceQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
               }>;
             };
@@ -37655,6 +37788,10 @@ export type ExploreSpacesFragment = {
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>;
       leadOrganizations: Array<{
@@ -37668,6 +37805,10 @@ export type ExploreSpacesFragment = {
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>;
     };
@@ -40240,6 +40381,15 @@ export type SpaceExplorerSearchQuery = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     };
                   }>;
                   leadOrganizations: Array<{
@@ -40259,6 +40409,15 @@ export type SpaceExplorerSearchQuery = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            city?: string | undefined;
+                            country?: string | undefined;
+                          }
+                        | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     };
                   }>;
                 };
@@ -40341,6 +40500,10 @@ export type SpaceExplorerSearchSpaceFragment = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
         leadOrganizations: Array<{
@@ -40360,6 +40523,10 @@ export type SpaceExplorerSearchSpaceFragment = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
       };
@@ -40505,6 +40672,10 @@ export type SpaceExplorerMemberSpacesQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
         leadOrganizations: Array<{
@@ -40524,6 +40695,10 @@ export type SpaceExplorerMemberSpacesQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
       };
@@ -40597,6 +40772,10 @@ export type SpaceExplorerAllSpacesQuery = {
                     alternativeText?: string | undefined;
                   }
                 | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             };
           }>;
           leadOrganizations: Array<{
@@ -40616,6 +40795,10 @@ export type SpaceExplorerAllSpacesQuery = {
                     alternativeText?: string | undefined;
                   }
                 | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             };
           }>;
         };
@@ -40768,6 +40951,10 @@ export type SpaceExplorerSpaceFragment = {
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>;
       leadOrganizations: Array<{
@@ -40781,6 +40968,10 @@ export type SpaceExplorerSpaceFragment = {
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>;
     };
