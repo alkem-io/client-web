@@ -49,7 +49,7 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const { data, loading } = useSpaceAccountQuery({
-    variables: { spaceId: spaceId! },
+    variables: { spaceId: spaceId },
     skip: !spaceId,
   });
 
@@ -104,10 +104,9 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
       return undefined;
     }
 
-    const daysLeft =
-      activeSubscription && activeSubscription.expires
-        ? Math.ceil((new Date(activeSubscription.expires).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-        : undefined;
+    const daysLeft = activeSubscription?.expires
+      ? Math.ceil((new Date(activeSubscription.expires).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+      : undefined;
 
     return {
       currentPlan,
