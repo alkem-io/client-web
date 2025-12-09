@@ -25500,6 +25500,9 @@ export type SpaceTabQuery = {
             innovationFlow: {
               __typename?: 'InnovationFlow';
               id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
               states: Array<{
                 __typename?: 'InnovationFlowState';
                 id: string;
