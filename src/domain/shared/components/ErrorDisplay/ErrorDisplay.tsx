@@ -38,7 +38,7 @@ export const ErrorDisplay: FC = () => {
           <Typography variant="h4">{t('components.error-display.contact-support-sentence')}</Typography>
           <ButtonBox>
             <Button component={RouterLink} to={ROUTE_HOME}>
-              {t('components.error-display.buttons.take-me-home')}
+              {t('buttons.takeMeHome')}
             </Button>
             <Button onClick={handleReload}>{t('components.error-display.buttons.reload')}</Button>
             <Link href={supportLink} target="_blank">
