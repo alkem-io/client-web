@@ -8,7 +8,7 @@ import type {
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 import Semaphore from 'ts-semaphore';
-import { error } from '@/core/logging/sentry/log';
+import { error, TagCategoryValues } from '@/core/logging/sentry/log';
 import { GuestSessionContext } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
 
 export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
@@ -144,16 +144,20 @@ const useWhiteboardFilesManager = ({
   const uploadFileToStorage = async (file: File): Promise<{ id: string; url: string }> => {
     const fileId = await generateIdFromFile(file);
 
-    if (fileStore.current[fileId]) {
-      log('file was already in our store', fileId, fileStore.current[fileId]);
-      return { id: fileId, url: fileStore.current[fileId].url };
+    // Check fileStore with defensive copy to avoid race conditions
+    const cachedFile = fileStore.current[fileId];
+    if (cachedFile?.url) {
+      log('file was already in our store', fileId, cachedFile);
+      return { id: fileId, url: cachedFile.url };
     }
 
     if (!storageBucketId) {
       if (allowFallbackToAttached) {
         return { id: fileId, url: '' };
       } else {
-        throw new Error('Missing StorageBucket: Uploading images to this whiteboard is not supported');
+        const errorMessage = `Missing StorageBucket: Uploading images to this whiteboard is not supported (fileId: ${fileId}, fileName: ${file.name})`;
+        error(errorMessage, { category: TagCategoryValues.WHITEBOARD, label: 'upload-no-storage-bucket' });
+        throw new Error(errorMessage);
       }
     }
 
@@ -168,7 +172,8 @@ const useWhiteboardFilesManager = ({
     });
 
     if (!data?.uploadFileOnStorageBucket.url || errors) {
-      log('Error uploading!', data, errors);
+      const errorMessage = `Failed to upload file to storage: ${errors?.[0]?.message || 'Unknown upload error'} (fileId: ${fileId}, fileName: ${file.name})`;
+      error(errorMessage, { category: TagCategoryValues.WHITEBOARD, label: 'upload-failed' });
       return Promise.reject(errors?.[0]?.message);
     }
 
@@ -227,7 +232,7 @@ const useWhiteboardFilesManager = ({
 
     setDownloadingFiles(true);
 
-    await Promise.allSettled(
+    const results = await Promise.allSettled(
       downloadableFileIds.map(async fileId => {
         if (fileStore.current[fileId]?.dataURL) {
           log(`No need to download ${fileId} already in the store`, fileStore.current[fileId]);
@@ -235,7 +240,10 @@ const useWhiteboardFilesManager = ({
         }
         const file = whiteboard!.files![fileId];
         if (!file.url) {
-          error(`Cannot download: ${file.id}`, { label: 'whiteboard-file-manager' });
+          error(`Cannot download file - missing URL: ${file.id}`, {
+            category: TagCategoryValues.WHITEBOARD,
+            label: 'download-missing-url',
+          });
           throw new Error(`Cannot download: ${file.id}`);
         }
 
@@ -245,11 +253,24 @@ const useWhiteboardFilesManager = ({
           // try-catch will avoid putting the file in the store if fetching fails
           fileStoreAddFile(fileId, { ...file, dataURL } as BinaryFileDataWithUrl);
         } catch (e) {
-          error(`Error downloading file: ${file.url}`, { label: 'whiteboard-file-manager' });
+          error(`Error downloading file: ${file.url}`, {
+            category: TagCategoryValues.WHITEBOARD,
+            label: 'download-fetch-failed',
+          });
           throw e;
         }
       })
     );
+
+    // Log any failed downloads
+    const failedDownloads = results.filter(result => result.status === 'rejected');
+    if (failedDownloads.length > 0) {
+      const reasons = failedDownloads.map(r => (r as PromiseRejectedResult).reason?.message).join(', ');
+      error(
+        `Failed to download ${failedDownloads.length} of ${downloadableFileIds.length} whiteboard files: ${reasons}`,
+        { category: TagCategoryValues.WHITEBOARD, label: 'download-batch-failures' }
+      );
+    }
 
     setDownloadingFiles(false);
   };
@@ -267,6 +288,7 @@ const useWhiteboardFilesManager = ({
     if (!files) {
       return result;
     }
+    const failedFileIds: string[] = [];
     for (const id of Object.keys(files)) {
       if (fileStore.current[id]) {
         result[id] = fileStore.current[id];
@@ -274,8 +296,16 @@ const useWhiteboardFilesManager = ({
         const file = await convertLocalFileToRemote(files[id]);
         if (file) {
           result[id] = file;
+        } else {
+          failedFileIds.push(id);
         }
       }
+    }
+    if (failedFileIds.length > 0) {
+      error(
+        `Failed to convert ${failedFileIds.length} of ${Object.keys(files).length} local files to remote: [${failedFileIds.join(', ')}]`,
+        { category: TagCategoryValues.WHITEBOARD, label: 'convert-to-remote-failures' }
+      );
     }
     return result;
   };
@@ -318,6 +348,7 @@ const useWhiteboardFilesManager = ({
 
     const { files, ...rest } = whiteboard;
     const filesNext: Record<string, BinaryFileDataWithUrl | BinaryFileData> = {};
+    const failedConversions: string[] = [];
 
     await Promise.all(
       Object.keys(files).map(async fileId => {
@@ -328,9 +359,23 @@ const useWhiteboardFilesManager = ({
         } else if (allowFallbackToAttached) {
           // TODO remove when all whiteboards are known to have a storageBucketId
           filesNext[fileId] = file;
+        } else {
+          // File conversion failed and no fallback - this file will be lost
+          failedConversions.push(fileId);
+          error(
+            `File conversion failed and will be dropped: ${fileId} (hasUrl: ${!!file.url}, hasDataURL: ${!!file.dataURL}, storageBucketId: ${storageBucketId})`,
+            { category: TagCategoryValues.WHITEBOARD, label: 'file-dropped-no-fallback' }
+          );
         }
       })
     );
+
+    if (failedConversions.length > 0) {
+      error(
+        `${failedConversions.length} of ${Object.keys(files).length} files dropped during conversion - whiteboard may lose files: [${failedConversions.join(', ')}]`,
+        { category: TagCategoryValues.WHITEBOARD, label: 'files-dropped-batch' }
+      );
+    }
 
     return { files: filesNext, ...rest } as W;
   };
@@ -368,6 +413,13 @@ const useWhiteboardFilesManager = ({
         const { id, url } = await uploadFileToStorage(fileObject);
         log('Uploaded ', file.id, file, fileObject, id, url);
         return { ...file, url, dataURL: '' } as BinaryFileDataWithUrl;
+      } else {
+        // File cannot be converted - log the reason
+        error(
+          `Cannot convert file to remote - missing required data: ${file.id} (hasUrl: ${!!file.url}, hasDataURL: ${!!file.dataURL}, hasStorageBucketId: ${!!storageBucketId}, inFileStore: ${!!fileStore.current[file.id]})`,
+          { category: TagCategoryValues.WHITEBOARD, label: 'convert-missing-data' }
+        );
+        return undefined;
       }
     });
   };
