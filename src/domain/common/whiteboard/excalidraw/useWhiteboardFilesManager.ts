@@ -218,11 +218,17 @@ const useWhiteboardFilesManager = ({
     // we don't need to download these
     Object.values(files)
       .filter<BinaryFileData>((file): file is BinaryFileData => !!file.dataURL)
-      .forEach(file => fileStoreAddFile(file.id, { ...file, url: '' } as BinaryFileDataWithUrl));
+      .forEach(file => {
+        // Preserve the URL if it exists, even when we have dataURL
+        const fileWithOptionalUrl = file as BinaryFileData & { url?: string };
+        const url = fileWithOptionalUrl.url || '';
+        fileStoreAddFile(file.id, { ...file, url } as BinaryFileDataWithUrl);
+      });
     // leave only the incoming files that don't have a dataURL but have URL and are not in the fileStore
-    const downloadableFileIds = Object.keys(files).filter(
-      fileId => !files[fileId]?.dataURL && !fileStore.current[fileId]
-    );
+    const downloadableFileIds = Object.keys(files).filter(fileId => {
+      const file = files[fileId];
+      return !file?.dataURL && (file as { url?: string })?.url && !fileStore.current[fileId];
+    });
 
     if (!downloadableFileIds.length) {
       return;
@@ -322,7 +328,13 @@ const useWhiteboardFilesManager = ({
     }
     const filesAlreadyInExcalidraw = excalidrawAPI.getFiles();
     const filesAsArray = Object.keys(fileStore.current)
-      .filter(fileId => !filesAlreadyInExcalidraw[fileId]?.dataURL) // filter out all the files that are already loaded in Excalidraw
+      .filter(fileId => {
+        const fileInExcalidraw = filesAlreadyInExcalidraw[fileId];
+        const fileInStore = fileStore.current[fileId];
+
+        // Only push if file is not in Excalidraw OR if we have a dataURL that Excalidraw doesn't have
+        return !fileInExcalidraw || (!fileInExcalidraw.dataURL && fileInStore.dataURL);
+      })
       .map(fileId => fileStore.current[fileId]);
 
     if (filesAsArray.length > 0) {
@@ -398,12 +410,13 @@ const useWhiteboardFilesManager = ({
   ): Promise<BinaryFileDataWithUrl | undefined> => {
     return semaphore.use(async () => {
       if (file.url) {
-        return { ...file, dataURL: '' } as BinaryFileDataWithUrl;
+        // Keep dataURL empty for remote files to save memory, but file already has URL
+        return { ...file, dataURL: '' as DataURL } as BinaryFileDataWithUrl;
       }
       // the file might be in the store, but does it have a URL to return?
       if (fileStore.current[file.id]?.url) {
         // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
-        return { ...file, dataURL: '', url: fileStore.current[file.id].url } as BinaryFileDataWithUrl;
+        return { ...file, dataURL: '' as DataURL, url: fileStore.current[file.id].url } as BinaryFileDataWithUrl;
       }
       // it doesn't matter if the file is in the store, but can we upload it`s content?
       else if (file.dataURL && storageBucketId) {
@@ -412,7 +425,8 @@ const useWhiteboardFilesManager = ({
         // In theory id should be equal to fileId, but Excalidraw modifies files after it loads them in memory, so hashes don't have to necessarily match anymore
         const { id, url } = await uploadFileToStorage(fileObject);
         log('Uploaded ', file.id, file, fileObject, id, url);
-        return { ...file, url, dataURL: '' } as BinaryFileDataWithUrl;
+        // Clear dataURL after successful upload to save memory
+        return { ...file, url, dataURL: '' as DataURL } as BinaryFileDataWithUrl;
       } else {
         // File cannot be converted - log the reason
         error(
