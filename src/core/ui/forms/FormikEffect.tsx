@@ -5,11 +5,12 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 export interface FormikEffectProps<T> {
   onChange?: (values: T) => void;
   onStatusChange?: (valid: boolean) => void;
+  onDirtyChange?: (dirty: boolean) => void;
   canSave?: (isDirtyAndValid: boolean) => void;
 }
 
 const FormikEffectFactory = <T,>() => {
-  const Instance = ({ onChange, onStatusChange, canSave }: FormikEffectProps<T>) => {
+  const Instance = ({ onChange, onStatusChange, onDirtyChange, canSave }: FormikEffectProps<T>) => {
     const formik = useFormikContext<T>();
 
     if (!formik) {
@@ -20,6 +21,7 @@ const FormikEffectFactory = <T,>() => {
 
     useDeepCompareEffect(() => onChange && onChange(values), [values]);
     useEffect(() => onStatusChange && onStatusChange(isValid), [isValid, onStatusChange]);
+    useEffect(() => onDirtyChange && onDirtyChange(dirty), [dirty, onDirtyChange]);
     useEffect(() => canSave && canSave(isValid && dirty), [isValid, dirty, canSave]);
 
     return <></>;

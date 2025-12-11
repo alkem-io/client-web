@@ -118,6 +118,7 @@
     "see-more": "Mehr anzeigen",
     "see-all": "Mehr {{subject}}",
     "readMore": "Read more",
+    "showLess": "Show less",
     "retry": "Try again",
     "home": "Zurück",
     "take-me-home": "Zurück zur Hauptseite",
@@ -191,7 +192,9 @@
     "messages": "Messages Button",
     "invite": "Invite",
     "visit": "Visit",
-    "returnToDashboard": "Return to $t(common.dashboard) as guest",
+    "returnToDashboardAsGuest": "Return to $t(common.dashboard) as guest",
+    "returnToDashboard": "Return to $t(common.dashboard)",
+    "takeMeHome": "Take me home",
     "approveApplication": "Approve application",
     "rejectApplication": "Reject application"
   },
@@ -974,20 +977,20 @@
     "guest-access": {
       "label": "Guest access",
       "toggle-label": "Enable guest access",
-      "toggle-description": "Let anyone with the guest link view and contribute to this whiteboard.",
+      "toggle-description": "Let anyone with the guest link view and contribute to this $t(common.whiteboard).",
       "disabled-tooltip": "You don't have permission to change guest access.",
       "url-label": "Guest Access URL",
       "copy-url": "Copy guest link",
-      "warning-title": "Guests can edit this whiteboard",
+      "warning-title": "Guests can edit this $t(common.whiteboard)",
       "warning-description": "Anyone with the guest link can view and contribute. Remove access when you're done collaborating.",
-      "visibility-warning": "This whiteboard is visible to guest users.",
+      "visibility-warning": "This $t(common.whiteboard) is visible to guest users.",
       "errors": {
         "PERMISSION_DENIED": "You don't have permission to change guest access.",
         "NETWORK": "Check your connection and try again.",
         "UNKNOWN": "We couldn't update guest access. Please try again.",
         "NOT_AUTHORIZED": "You're not authorized to change guest access.",
-        "SPACE_GUEST_DISABLED": "Guest access is disabled for this space.",
-        "WHITEBOARD_NOT_FOUND": "This whiteboard couldn't be found. Refresh and try again."
+        "SPACE_GUEST_DISABLED": "Guest access is disabled for this $t(common.space).",
+        "WHITEBOARD_NOT_FOUND": "This $t(common.whiteboard) couldn't be found. Refresh and try again."
       }
     },
     "or": "oder",
@@ -1255,7 +1258,7 @@
     "shareSettings": {
       "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users \u2028at once. If you do not want others to edit, change the $t(common.settings) below.",
       "disabled": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}}  is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
-      "guestAccessWarning": "Note: If you make this whiteboard public, everyone in the space will be able to edit the whiteboard.",
+      "guestAccessWarning": "Note: If you make this $t(common.whiteboard) public, everyone in the $t(common.space) will be able to edit the $t(common.whiteboard).",
       "ownedBy": {
         "title": "This {{elementName}} is owned by:"
       },
@@ -1461,7 +1464,6 @@
       "contact-support-sentence": "Wenn dieses Problem weiterhin bestehen bleibt, kontaktiere bitte den Support.",
       "buttons": {
         "reload": "Erneut laden",
-        "take-me-home": "Zurück zur Hauptseite",
         "contact-support": "Kontaktiere den Support"
       }
     },
@@ -1470,6 +1472,13 @@
         "invalidUrl": "Invalid URL",
         "invalidUrlOrigin": "Invalid URL origin",
         "invalidUrlFormat": "Invalid URL format"
+      },
+      "redirectDialog": {
+        "title": "We are redirecting you...",
+        "message": "You don't have permission to access this item or it doesn't exist anymore.<br/>You are being redirected to the closest page you can access.",
+        "countdown": "Redirecting in {{seconds}} seconds...",
+        "cancelCountdown": "[Click to cancel]",
+        "goNow": "Go now"
       }
     },
     "search-cards": {
@@ -2366,7 +2375,7 @@
             "innovationPacks": "$t(common.innovation-packs)",
             "genericUsageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your $t(common.account).",
             "spaceUsageNotice": "From the available $t(common.spaces) in your $t(common.account), you have created:\n{{freeUsage}} out of {{freeLimit}} Free $t(common.spaces)\n{{plusUsage}} out of {{plusLimit}} Plus $t(common.spaces)\n{{premiumUsage}} out of {{premiumLimit}} Premium $t(common.spaces)",
-            "limitNotice": "Contact the Alkemio team to increase the limits on your $t(common.account)",
+            "limitNotice": "To increase the limits on your $t(common.account), fill out the form at the bottom of <contact>the contact page</contact>.",
             "notAvailable": "Not available",
             "notAvailableNotice": "Contact the Alkemio team to enable this feature on your $t(common.account)",
             "noTemplates": "This $t(common.innovationPack) doesn't have any $t(common.template) yet",
@@ -3067,7 +3076,7 @@
         "noMembership": "You have to be a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
         "unauthenticated": "You have to be signed in and a $t(common.member) of the {{spaceLevel}} this $t(common.whiteboard) is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
-      "guestContributionsWarning": "This whiteboard is visible to guest users",
+      "guestContributionsWarning": "This $t(common.whiteboard) is visible to guest users",
       "readonlyDialog": {
         "title": "View only mode",
         "reason": {
@@ -3080,20 +3089,20 @@
       "restartCollaboration": "Continue Editing",
       "previewSettings": {
         "title": "Preview Settings",
-        "subtitle": "Choose how your whiteboard preview appears in posts and $t(common.spaces).",
+        "subtitle": "Choose how your $t(common.whiteboard) preview appears in posts and $t(common.spaces).",
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
         "modes": {
           "AUTO": {
             "title": "Auto Preview",
-            "description": "We'll automatically generate the best preview from your whiteboard content."
+            "description": "We'll automatically generate the best preview from your $t(common.whiteboard) content."
           },
           "CUSTOM": {
             "title": "Manual Selection",
-            "description": "Choose exactly which part of your whiteboard to show as a preview."
+            "description": "Choose exactly which part of your $t(common.whiteboard) to show as a preview."
           },
           "FIXED": {
             "title": "Fixed Selection",
-            "description": "Take a screenshot of your whiteboard to use as preview. This screenshot will not update as you update your board."
+            "description": "Take a screenshot of your $t(common.whiteboard) to use as preview. This screenshot will not update as you update your board."
           }
         },
         "cropDialog": {
@@ -3105,8 +3114,8 @@
       },
       "preview": {
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
-        "ariaLabel": "Preview of the whiteboard. Click to open the whiteboard.",
-        "ariaLabelDisabled": "Preview of the whiteboard. This whiteboard cannot be opened."
+        "ariaLabel": "Preview of the $t(common.whiteboard). Click to open the $t(common.whiteboard).",
+        "ariaLabelDisabled": "Preview of the $t(common.whiteboard). This $t(common.whiteboard) cannot be opened."
       }
     },
     "publicWhiteboard": {
@@ -3118,7 +3127,7 @@
         "join": {
           "welcome": "Welcome to Alkemio!",
           "title": "Join Whiteboard",
-          "description": "Choose a nickname to join this whiteboard as a guest",
+          "description": "Choose a nickname to join this $t(common.whiteboard) as a guest",
           "guestNameLabel": "Guest Name",
           "placeholder": "Enter your nickname",
           "joinButton": "Join as guest",
@@ -3126,24 +3135,24 @@
           "signInButton": "Sign in to Alkemio"
         },
         "guestSessionNotification": {
-          "title": "You've left your whiteboard",
-          "description": "Your guest session is still active. You can return to your whiteboard, or explore what Alkemio has to offer.",
-          "backButton": "Back to Whiteboard",
+          "title": "You've left your $t(common.whiteboard)",
+          "description": "Your guest session is still active. You can return to your $t(common.whiteboard), or explore what Alkemio has to offer.",
+          "backButton": "Back to $t(common.whiteboard)",
           "websiteButton": "Go to our website",
           "contributeMoreTitle": "Want to contribute more?",
           "contributeMoreDescription": "Sign up for an Alkemio account on the right to collaborate with teams and access advanced tools."
         },
         "error": {
           "404": {
-            "title": "Whiteboard Not Found",
-            "message": "The whiteboard link may be incorrect or the whiteboard may have been deleted."
+            "title": "$t(common.Whiteboard) Not Found",
+            "message": "The $t(common.whiteboard) link may be incorrect or the $t(common.whiteboard) may have been deleted."
           },
           "403": {
             "title": "Access Denied",
-            "message": "This whiteboard is not available for guest access. Please contact the whiteboard owner."
+            "message": "This $t(common.whiteboard) is not available for guest access. Please contact the $t(common.whiteboard) owner."
           },
           "500": {
-            "title": "Unable to Load Whiteboard",
+            "title": "Unable to Load $t(common.Whiteboard)",
             "message": "Please try again later or check your internet connection."
           }
         }
@@ -3428,6 +3437,11 @@
       "header": "Access Restricted",
       "subheader": "The page you're trying to access is only available to registered users.",
       "subheader2": "Please sign in to continue. Don’t have an $t(common.account)? Sign up for free."
+    },
+    "unauthorized": {
+      "header": "Access Restricted",
+      "subheader": "The page you're trying to access is not available for you.",
+      "subheader2": "Please confirm that you have permissions to access this url."
     },
     "userNotificationsSettings": {
       "general": {
