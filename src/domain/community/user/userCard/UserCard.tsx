@@ -56,27 +56,14 @@ const UserCard = ({
     setIsExpanded(wasExpanded => !wasExpanded);
   };
 
-  if (loading) {
-    return (
-      <ContributeCard to={url} aria-label="user-card">
-        <Box onClick={onCardClick} sx={{ cursor: onCardClick !== noop ? 'pointer' : 'default' }}>
-          <Skeleton variant={'rectangular'}>
-            <Avatar
-              sx={{
-                width: gutters(10),
-                height: gutters(10),
-              }}
-            />
-          </Skeleton>
-        </Box>
-      </ContributeCard>
-    );
-  }
-
   return (
     <ContributeCard to={url} aria-label="user-card">
       <Box onClick={onCardClick} sx={{ cursor: onCardClick !== noop ? 'pointer' : 'default' }}>
-        {avatarSrc ? (
+        {loading ? (
+          <Skeleton variant={'rectangular'}>
+            <Avatar />
+          </Skeleton>
+        ) : avatarSrc ? (
           <ImageBlurredSides
             src={avatarSrc}
             alt={t('common.avatar-of', { user: displayName })}

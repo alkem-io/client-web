@@ -33,15 +33,6 @@ query SpaceContributionDetails($spaceId: UUID!) {
               avatar: visual(type: AVATAR) {
                 ...VisualModel
               }
-              location {
-                id
-                city
-                country
-              }
-              tagsets {
-                id
-                tags
-              }
             }
           }
           leadOrganizations {
@@ -52,15 +43,6 @@ query SpaceContributionDetails($spaceId: UUID!) {
               displayName
               avatar: visual(type: AVATAR) {
                 ...VisualModel
-              }
-              location {
-                id
-                city
-                country
-              }
-              tagsets {
-                id
-                tags
               }
             }
           }

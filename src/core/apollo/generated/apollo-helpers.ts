@@ -426,18 +426,40 @@ export type AgentKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'credentials'
+  | 'did'
   | 'id'
   | 'type'
   | 'updatedDate'
+  | 'verifiedCredentials'
   | AgentKeySpecifier
 )[];
 export type AgentFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   credentials?: FieldPolicy<any> | FieldReadFunction<any>;
+  did?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  verifiedCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AgentBeginVerifiedCredentialOfferOutputKeySpecifier = (
+  | 'jwt'
+  | 'qrCodeImg'
+  | AgentBeginVerifiedCredentialOfferOutputKeySpecifier
+)[];
+export type AgentBeginVerifiedCredentialOfferOutputFieldPolicy = {
+  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+  qrCodeImg?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AgentBeginVerifiedCredentialRequestOutputKeySpecifier = (
+  | 'jwt'
+  | 'qrCodeImg'
+  | AgentBeginVerifiedCredentialRequestOutputKeySpecifier
+)[];
+export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
+  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+  qrCodeImg?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AiPersonaKeySpecifier = (
   | 'authorization'
@@ -534,6 +556,7 @@ export type AuthorizationKeySpecifier = (
   | 'privilegeRules'
   | 'type'
   | 'updatedDate'
+  | 'verifiedCredentialRules'
   | AuthorizationKeySpecifier
 )[];
 export type AuthorizationFieldPolicy = {
@@ -545,6 +568,7 @@ export type AuthorizationFieldPolicy = {
   privilegeRules?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  verifiedCredentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationPolicyRuleCredentialKeySpecifier = (
   | 'cascade'
@@ -569,6 +593,17 @@ export type AuthorizationPolicyRulePrivilegeFieldPolicy = {
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   sourcePrivilege?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AuthorizationPolicyRuleVerifiedCredentialKeySpecifier = (
+  | 'claimRule'
+  | 'credentialName'
+  | 'grantedPrivileges'
+  | AuthorizationPolicyRuleVerifiedCredentialKeySpecifier
+)[];
+export type AuthorizationPolicyRuleVerifiedCredentialFieldPolicy = {
+  claimRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentialName?: FieldPolicy<any> | FieldReadFunction<any>;
+  grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalendarKeySpecifier = (
   | 'authorization'
@@ -1364,6 +1399,23 @@ export type CredentialDefinitionKeySpecifier = ('resourceID' | 'type' | Credenti
 export type CredentialDefinitionFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CredentialMetadataOutputKeySpecifier = (
+  | 'context'
+  | 'description'
+  | 'name'
+  | 'schema'
+  | 'types'
+  | 'uniqueType'
+  | CredentialMetadataOutputKeySpecifier
+)[];
+export type CredentialMetadataOutputFieldPolicy = {
+  context?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  schema?: FieldPolicy<any> | FieldReadFunction<any>;
+  types?: FieldPolicy<any> | FieldReadFunction<any>;
+  uniqueType?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type DiscussionKeySpecifier = (
   | 'authorization'
@@ -2535,6 +2587,9 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetOnPlatform'
   | 'authorizationPolicyResetOnUser'
   | 'authorizationPolicyResetToGlobalAdminsAccess'
+  | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
+  | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
+  | 'beginVerifiedCredentialRequestInteraction'
   | 'cleanupCollections'
   | 'convertSpaceL1ToSpaceL0'
   | 'convertSpaceL1ToSpaceL2'
@@ -2721,6 +2776,9 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetOnPlatform?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetToGlobalAdminsAccess?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   cleanupCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   convertSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
   convertSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3310,6 +3368,11 @@ export type ProfileFieldPolicy = {
   visual?: FieldPolicy<any> | FieldReadFunction<any>;
   visuals?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ProfileCredentialVerifiedKeySpecifier = ('userEmail' | 'vc' | ProfileCredentialVerifiedKeySpecifier)[];
+export type ProfileCredentialVerifiedFieldPolicy = {
+  userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
+  vc?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PromptGraphKeySpecifier = ('edges' | 'end' | 'nodes' | 'start' | 'state' | PromptGraphKeySpecifier)[];
 export type PromptGraphFieldPolicy = {
   edges?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3435,6 +3498,7 @@ export type QueryKeySpecifier = (
   | 'adminIdentitiesUnverified'
   | 'aiServer'
   | 'exploreSpaces'
+  | 'getSupportedVerifiedCredentialMetadata'
   | 'inputCreator'
   | 'lookup'
   | 'lookupByName'
@@ -3471,6 +3535,7 @@ export type QueryFieldPolicy = {
   adminIdentitiesUnverified?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   lookupByName?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4158,6 +4223,7 @@ export type SubscriptionKeySpecifier = (
   | 'forumDiscussionUpdated'
   | 'inAppNotificationReceived'
   | 'notificationsUnreadCount'
+  | 'profileVerifiedCredential'
   | 'roomEvents'
   | 'subspaceCreated'
   | 'virtualContributorUpdated'
@@ -4169,6 +4235,7 @@ export type SubscriptionFieldPolicy = {
   forumDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   inAppNotificationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4769,6 +4836,30 @@ export type VcInteractionFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type VerifiedCredentialKeySpecifier = (
+  | 'claims'
+  | 'context'
+  | 'expires'
+  | 'issued'
+  | 'issuer'
+  | 'name'
+  | 'type'
+  | VerifiedCredentialKeySpecifier
+)[];
+export type VerifiedCredentialFieldPolicy = {
+  claims?: FieldPolicy<any> | FieldReadFunction<any>;
+  context?: FieldPolicy<any> | FieldReadFunction<any>;
+  expires?: FieldPolicy<any> | FieldReadFunction<any>;
+  issued?: FieldPolicy<any> | FieldReadFunction<any>;
+  issuer?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VerifiedCredentialClaimKeySpecifier = ('name' | 'value' | VerifiedCredentialClaimKeySpecifier)[];
+export type VerifiedCredentialClaimFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  value?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type VirtualContributorKeySpecifier = (
   | 'account'
   | 'agent'
@@ -5106,6 +5197,20 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | AgentKeySpecifier | (() => undefined | AgentKeySpecifier);
     fields?: AgentFieldPolicy;
   };
+  AgentBeginVerifiedCredentialOfferOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AgentBeginVerifiedCredentialOfferOutputKeySpecifier
+      | (() => undefined | AgentBeginVerifiedCredentialOfferOutputKeySpecifier);
+    fields?: AgentBeginVerifiedCredentialOfferOutputFieldPolicy;
+  };
+  AgentBeginVerifiedCredentialRequestOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AgentBeginVerifiedCredentialRequestOutputKeySpecifier
+      | (() => undefined | AgentBeginVerifiedCredentialRequestOutputKeySpecifier);
+    fields?: AgentBeginVerifiedCredentialRequestOutputFieldPolicy;
+  };
   AiPersona?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiPersonaKeySpecifier | (() => undefined | AiPersonaKeySpecifier);
     fields?: AiPersonaFieldPolicy;
@@ -5146,6 +5251,13 @@ export type StrictTypedTypePolicies = {
       | AuthorizationPolicyRulePrivilegeKeySpecifier
       | (() => undefined | AuthorizationPolicyRulePrivilegeKeySpecifier);
     fields?: AuthorizationPolicyRulePrivilegeFieldPolicy;
+  };
+  AuthorizationPolicyRuleVerifiedCredential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AuthorizationPolicyRuleVerifiedCredentialKeySpecifier
+      | (() => undefined | AuthorizationPolicyRuleVerifiedCredentialKeySpecifier);
+    fields?: AuthorizationPolicyRuleVerifiedCredentialFieldPolicy;
   };
   Calendar?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalendarKeySpecifier | (() => undefined | CalendarKeySpecifier);
@@ -5440,6 +5552,10 @@ export type StrictTypedTypePolicies = {
   CredentialDefinition?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialDefinitionKeySpecifier | (() => undefined | CredentialDefinitionKeySpecifier);
     fields?: CredentialDefinitionFieldPolicy;
+  };
+  CredentialMetadataOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CredentialMetadataOutputKeySpecifier | (() => undefined | CredentialMetadataOutputKeySpecifier);
+    fields?: CredentialMetadataOutputFieldPolicy;
   };
   Discussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | DiscussionKeySpecifier | (() => undefined | DiscussionKeySpecifier);
@@ -5978,6 +6094,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ProfileKeySpecifier | (() => undefined | ProfileKeySpecifier);
     fields?: ProfileFieldPolicy;
   };
+  ProfileCredentialVerified?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ProfileCredentialVerifiedKeySpecifier
+      | (() => undefined | ProfileCredentialVerifiedKeySpecifier);
+    fields?: ProfileCredentialVerifiedFieldPolicy;
+  };
   PromptGraph?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PromptGraphKeySpecifier | (() => undefined | PromptGraphKeySpecifier);
     fields?: PromptGraphFieldPolicy;
@@ -6438,6 +6561,14 @@ export type StrictTypedTypePolicies = {
   VcInteraction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VcInteractionKeySpecifier | (() => undefined | VcInteractionKeySpecifier);
     fields?: VcInteractionFieldPolicy;
+  };
+  VerifiedCredential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VerifiedCredentialKeySpecifier | (() => undefined | VerifiedCredentialKeySpecifier);
+    fields?: VerifiedCredentialFieldPolicy;
+  };
+  VerifiedCredentialClaim?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VerifiedCredentialClaimKeySpecifier | (() => undefined | VerifiedCredentialClaimKeySpecifier);
+    fields?: VerifiedCredentialClaimFieldPolicy;
   };
   VirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VirtualContributorKeySpecifier | (() => undefined | VirtualContributorKeySpecifier);

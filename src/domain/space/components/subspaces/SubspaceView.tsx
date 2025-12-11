@@ -16,6 +16,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import { ValueType } from '@/core/utils/filtering/filterFn';
 import SpaceFilter from '@/domain/space/components/SpaceFilter';
 import { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { useSpace } from '@/domain/space/context/useSpace';
 import { ApolloError } from '@apollo/client';
 import AddIcon from '@mui/icons-material/Add';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -25,7 +26,6 @@ import { useTranslation } from 'react-i18next';
 import CreateSubspaceBlock from './CreateSubspaceBlock';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
 import { getDefaultSpaceVisualUrl } from '../../icons/defaultVisualUrls';
-import { useSpace } from '@/domain/space/context/useSpace';
 
 export interface SubspacesState {
   loading: boolean;
@@ -66,8 +66,9 @@ const SubspaceView = <ChildEntity extends BaseChildEntity>({
   onClickCreate,
 }: SubspaceViewProps<ChildEntity>) => {
   const [filter, setFilter] = useState('');
-  const { permissions } = useSpace();
+
   const { t } = useTranslation();
+  const { permissions } = useSpace();
   const { tabDescription } = useSpaceTabProvider({ tabPosition: 2 });
   const filteredItems = useMemo(
     () =>

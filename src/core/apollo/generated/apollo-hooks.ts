@@ -1926,62 +1926,6 @@ export const SpaceAboutCardBannerFragmentDoc = gql`
   ${VisualModelFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
-export const SpaceCardFragmentDoc = gql`
-  fragment SpaceCard on Space {
-    id
-    level
-    visibility
-    about {
-      ...SpaceAboutCardBanner
-      membership {
-        myPrivileges
-        leadUsers {
-          id
-          profile {
-            id
-            url
-            displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
-            avatar: visual(type: AVATAR) {
-              ...VisualModel
-            }
-          }
-        }
-        leadOrganizations {
-          id
-          profile {
-            id
-            url
-            displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
-            avatar: visual(type: AVATAR) {
-              ...VisualModel
-            }
-          }
-        }
-      }
-      isContentPublic
-    }
-  }
-  ${SpaceAboutCardBannerFragmentDoc}
-  ${VisualModelFragmentDoc}
-`;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
     id
@@ -2003,15 +1947,6 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -2023,15 +1958,6 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -3774,15 +3700,6 @@ export const ExploreSpacesFragmentDoc = gql`
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
           }
         }
         leadOrganizations {
@@ -3793,15 +3710,6 @@ export const ExploreSpacesFragmentDoc = gql`
             displayName
             avatar: visual(type: AVATAR) {
               ...VisualModel
-            }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
             }
           }
         }
@@ -3918,15 +3826,6 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
           }
         }
         leadOrganizations {
@@ -3937,15 +3836,6 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
             displayName
             avatar: visual(type: AVATAR) {
               ...VisualModel
-            }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
             }
           }
         }
@@ -11727,14 +11617,7 @@ export type CreateWingbackAccountMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateWingbackAccountMutationVariables
 >;
 export const ContributorTooltipDocument = gql`
-  query ContributorTooltip(
-    $userId: UUID! = "00000000-0000-0000-0000-000000000000"
-    $includeUser: Boolean = false
-    $organizationId: UUID! = "00000000-0000-0000-0000-000000000000"
-    $includeOrganization: Boolean = false
-    $virtualContributorId: UUID! = "00000000-0000-0000-0000-000000000000"
-    $includeVirtualContributor: Boolean = false
-  ) {
+  query ContributorTooltip($userId: UUID!, $includeUser: Boolean = false) {
     user(ID: $userId) @include(if: $includeUser) {
       id
       profile {
@@ -11756,50 +11639,6 @@ export const ContributorTooltipDocument = gql`
         url
       }
     }
-    organization(ID: $organizationId) @include(if: $includeOrganization) {
-      id
-      profile {
-        id
-        displayName
-        avatar: visual(type: AVATAR) {
-          ...VisualModel
-        }
-        location {
-          id
-          city
-          country
-        }
-        tagsets {
-          id
-          name
-          tags
-        }
-        url
-      }
-    }
-    lookup @include(if: $includeVirtualContributor) {
-      virtualContributor(ID: $virtualContributorId) {
-        id
-        profile {
-          id
-          displayName
-          avatar: visual(type: AVATAR) {
-            ...VisualModel
-          }
-          location {
-            id
-            city
-            country
-          }
-          tagsets {
-            id
-            name
-            tags
-          }
-          url
-        }
-      }
-    }
   }
   ${VisualModelFragmentDoc}
 `;
@@ -11818,18 +11657,15 @@ export const ContributorTooltipDocument = gql`
  *   variables: {
  *      userId: // value for 'userId'
  *      includeUser: // value for 'includeUser'
- *      organizationId: // value for 'organizationId'
- *      includeOrganization: // value for 'includeOrganization'
- *      virtualContributorId: // value for 'virtualContributorId'
- *      includeVirtualContributor: // value for 'includeVirtualContributor'
  *   },
  * });
  */
 export function useContributorTooltipQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.ContributorTooltipQuery,
     SchemaTypes.ContributorTooltipQueryVariables
-  >
+  > &
+    ({ variables: SchemaTypes.ContributorTooltipQueryVariables; skip?: boolean } | { skip: boolean })
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ContributorTooltipQuery, SchemaTypes.ContributorTooltipQueryVariables>(
@@ -11867,7 +11703,7 @@ export type ContributorTooltipQueryResult = Apollo.QueryResult<
   SchemaTypes.ContributorTooltipQuery,
   SchemaTypes.ContributorTooltipQueryVariables
 >;
-export function refetchContributorTooltipQuery(variables?: SchemaTypes.ContributorTooltipQueryVariables) {
+export function refetchContributorTooltipQuery(variables: SchemaTypes.ContributorTooltipQueryVariables) {
   return { query: ContributorTooltipDocument, variables: variables };
 }
 export const ContributorsPageOrganizationsDocument = gql`
@@ -13399,15 +13235,6 @@ export const SpaceContributionDetailsDocument = gql`
                 avatar: visual(type: AVATAR) {
                   ...VisualModel
                 }
-                location {
-                  id
-                  city
-                  country
-                }
-                tagsets {
-                  id
-                  tags
-                }
               }
             }
             leadOrganizations {
@@ -13418,15 +13245,6 @@ export const SpaceContributionDetailsDocument = gql`
                 displayName
                 avatar: visual(type: AVATAR) {
                   ...VisualModel
-                }
-                location {
-                  id
-                  city
-                  country
-                }
-                tagsets {
-                  id
-                  tags
                 }
               }
             }
@@ -16234,10 +16052,10 @@ export function refetchInnovationHubBannerWideQuery(variables?: SchemaTypes.Inno
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
-      ...SpaceCard
+      ...SubspaceCard
     }
   }
-  ${SpaceCardFragmentDoc}
+  ${SubspaceCardFragmentDoc}
 `;
 
 /**
@@ -19991,10 +19809,6 @@ export const SpaceTabDocument = gql`
           id
           innovationFlow {
             id
-            authorization {
-              id
-              myPrivileges
-            }
             states {
               id
               displayName

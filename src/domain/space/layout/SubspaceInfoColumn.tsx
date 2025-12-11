@@ -93,15 +93,14 @@ export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
 
   const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false);
 
-  const canEdit = subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-
-  const areAllIconsVisible = isVideoCallEnabled && canEdit && !isCollapsed;
+  const areAllIconsVisible =
+    isVideoCallEnabled &&
+    subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) &&
+    !isCollapsed;
 
   return (
     <InfoColumn collapsed={isCollapsed}>
-      {!isCollapsed && (
-        <WelcomeBlock>{about && <SpaceWelcomeBlock spaceAbout={about} canEdit={canEdit} />}</WelcomeBlock>
-      )}
+      {!isCollapsed && <WelcomeBlock>{about && <SpaceWelcomeBlock spaceAbout={about} />}</WelcomeBlock>}
       {!isCollapsed && (
         <FullWidthButton
           startIcon={<KeyboardTab />}
@@ -142,7 +141,9 @@ export const SubspaceInfoColumn = ({ subspace }: SubspaceInfoColumnProps) => {
         {innovationFlowProvided.canEditInnovationFlow && isSmallScreen && (
           <DialogActionButton dialog={SubspaceDialog.ManageFlow} />
         )}
-        {canEdit && <DialogActionButton dialog={SubspaceDialog.Settings} />}
+        {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
+          <DialogActionButton dialog={SubspaceDialog.Settings} />
+        )}
         <SubmenuActionButton dialogs={[SubspaceDialog.Index, SubspaceDialog.Subspaces, SubspaceDialog.Share]} />
         {isCollapsed && (
           <ButtonWithTooltip

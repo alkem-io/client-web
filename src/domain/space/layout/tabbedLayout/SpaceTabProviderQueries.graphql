@@ -13,10 +13,6 @@ query SpaceTab($spaceId: UUID!) {
         id
         innovationFlow {
           id
-          authorization {
-            id
-            myPrivileges
-          }
           states {
             id
             displayName

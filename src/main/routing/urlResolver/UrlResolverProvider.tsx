@@ -144,7 +144,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     loading: urlResolverLoading,
   } = useUrlResolverQuery({
     variables: {
-      url: currentUrl,
+      url: currentUrl!,
     },
     skip: !currentUrl,
   });
@@ -192,7 +192,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
 
     const handleUrlChange = () => {
       // Get the normalized URL
-      let nextUrl = processUrl(globalThis.location.origin + globalThis.location.pathname);
+      let nextUrl = processUrl(window.location.origin + window.location.pathname);
 
       // Skip update if URL hasn't changed from the last processed URL
       if (nextUrl === lastProcessedUrlRef.current) {
@@ -205,10 +205,10 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     };
 
     // Set up event listeners
-    globalThis.addEventListener('popstate', handleUrlChange);
-    const originalPushState = globalThis.history.pushState;
-    globalThis.history.pushState = function (...args) {
-      originalPushState.apply(globalThis.history, args);
+    window.addEventListener('popstate', handleUrlChange);
+    const originalPushState = window.history.pushState;
+    window.history.pushState = function (...args) {
+      originalPushState.apply(window.history, args);
       handleUrlChange();
     };
 
@@ -216,9 +216,9 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
     handleUrlChange();
 
     return () => {
-      globalThis.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('popstate', handleUrlChange);
       // Restore original pushState
-      globalThis.history.pushState = originalPushState;
+      window.history.pushState = originalPushState;
     };
   }, []);
 
@@ -239,7 +239,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         spaceId: data.space?.id,
         spaceLevel: data.space?.level,
         levelZeroSpaceId: data.space?.levelZeroSpaceID,
-        parentSpaceId: (data.space?.parentSpaces ?? []).at(-1),
+        parentSpaceId: (data.space?.parentSpaces ?? []).slice(-1)[0],
         spaceHierarchyPath: spaceHierarchyPath,
 
         // Collaboration:

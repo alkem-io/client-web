@@ -1,3 +1,10 @@
+import OverflowGradient from '@/core/ui/overflow/OverflowGradient';
+import { gutters } from '@/core/ui/grid/utils';
+import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import Gutters from '@/core/ui/grid/Gutters';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import SeeMore from '@/core/ui/content/SeeMore';
 import {
   CommunityMembershipStatus,
   RoleName,
@@ -5,17 +12,12 @@ import {
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import SwapColors from '@/core/ui/palette/SwapColors';
-import DashboardMemberIcon from '@/domain/community/membership/DashboardMemberIcon/DashboardMemberIcon';
-import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
-import Gutters from '@/core/ui/grid/Gutters';
-import { SPACE_LAYOUT_EDIT_PATH, SUBSPACE_ABOUT_EDIT_PATH } from '@/domain/space/constants/spaceEditPaths';
-import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
-import useCurrentTabPosition from '@/domain/space/layout/tabbedLayout/useCurrentTabPosition';
-import ExpandableDescription from './ExpandableDescription';
+import { useNavigate } from 'react-router-dom';
 
 export interface SpaceWelcomeBlockProps {
   spaceAbout: {
@@ -26,12 +28,13 @@ export interface SpaceWelcomeBlockProps {
     profile: { description?: string };
   };
   description?: string; // explicitly passing description to support both the tabDescription and the about's description
-  canEdit?: boolean; // optional override for subspaces where edit permission comes from subspace privileges
 }
 
-const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit: canEditProp }: SpaceWelcomeBlockProps) => {
+const SpaceWelcomeBlock = ({ spaceAbout, description }: SpaceWelcomeBlockProps) => {
   const { t } = useTranslation();
+
   const { spaceLevel } = useUrlResolver();
+  const navigate = useNavigate();
 
   const isMember = spaceAbout?.membership?.myMembershipStatus === CommunityMembershipStatus.Member;
   const welcomeDescription = description ?? spaceAbout?.profile?.description;
@@ -47,26 +50,22 @@ const SpaceWelcomeBlock = ({ spaceAbout, description, canEdit: canEditProp }: Sp
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const isL0 = spaceLevel === SpaceLevel.L0;
-  const tabPosition = useCurrentTabPosition();
-  const { canEditInnovationFlow } = useSpaceTabProvider({ tabPosition, skip: canEditProp !== undefined });
-  // For L0 spaces, use innovation flow permission; for subspaces, use passed prop if provided
-  const canEdit = canEditProp ?? canEditInnovationFlow;
-  const editPath = isL0 ? SPACE_LAYOUT_EDIT_PATH : SUBSPACE_ABOUT_EDIT_PATH;
-
-  const showMemberIcon = isMember && !canEdit;
-
   return (
     <>
       <SwapColors swap>{directMessageDialog}</SwapColors>
-      <ExpandableDescription
-        description={welcomeDescription}
-        editPath={editPath}
-        canEdit={canEdit}
-        disableParagraphPadding
-        useEditTab={isL0}
-        headerSlot={showMemberIcon ? <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} /> : undefined}
-      />
+      <OverflowGradient
+        maxHeight={gutters(11)}
+        overflowMarker={
+          <SeeMore
+            label="buttons.readMore"
+            onClick={() => navigate(`./${EntityPageSection.About}`)}
+            sx={{ marginTop: -1 }}
+          />
+        }
+      >
+        {isMember && <DashboardMemberIcon level={spaceLevel || SpaceLevel.L0} />}
+        {welcomeDescription && <WrapperMarkdown disableParagraphPadding>{welcomeDescription}</WrapperMarkdown>}
+      </OverflowGradient>
       {(leadUsers.length > 0 || leadOrganizations.length > 0) && (
         <Gutters flexWrap="wrap" row disablePadding>
           {leadUsers.slice(0, 2).map(user => (

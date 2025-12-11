@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { InnovationHubAttrs } from './InnovationHubAttrs';
@@ -11,6 +10,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { useDashboardSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import RouterLink from '@/core/ui/link/RouterLink';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -20,8 +20,9 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { collectSubspaceAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
-import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
+
+const isMember = (about: { membership?: { myMembershipStatus?: CommunityMembershipStatus } }) =>
+  about.membership?.myMembershipStatus === CommunityMembershipStatus.Member;
 
 const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHubAttrs }) => {
   const { t } = useTranslation();
@@ -34,21 +35,6 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
   const { locations } = useConfig();
 
   const mainHomeUrl = `//${locations?.domain}${ROUTE_HOME}`;
-
-  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
-    dialogTitle: t('send-message-dialog.direct-message-title'),
-  });
-
-  const handleContactLead = useCallback(
-    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
-      sendMessage(leadType, {
-        id: leadId,
-        displayName: leadDisplayName,
-        avatarUri: leadAvatarUri,
-      });
-    },
-    [sendMessage]
-  );
 
   return (
     <TopLevelLayout
@@ -76,6 +62,7 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
                 tagline={space.about.profile.tagline ?? ''}
                 tags={space.about.profile.tagset?.tags ?? []}
                 spaceUri={space.about.profile.url}
+                member={isMember(space.about)}
                 spaceVisibility={space.visibility}
                 spaceId={space.id}
                 level={space.level}
@@ -83,8 +70,6 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
                 leadUsers={space.about.membership?.leadUsers}
                 leadOrganizations={space.about.membership?.leadOrganizations}
                 showLeads={isAuthenticated}
-                isPrivate={!space.about.isContentPublic}
-                onContactLead={handleContactLead}
               />
             ))}
           </ScrollableCardsLayoutContainer>
@@ -106,7 +91,6 @@ const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHub
           </Gutters>
         </PageContentBlock>
       </PageContent>
-      {directMessageDialog}
     </TopLevelLayout>
   );
 };

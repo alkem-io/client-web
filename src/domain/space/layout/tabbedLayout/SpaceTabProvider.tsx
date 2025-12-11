@@ -16,7 +16,6 @@ interface SpaceTabProvided {
   classificationTagsets: ClassificationTagsetModel[];
   calloutsSetId: string | undefined;
   tabDescription: string;
-  canEditInnovationFlow: boolean;
   refetch: () => Promise<unknown>;
   loading: boolean;
   updating: boolean;
@@ -41,7 +40,7 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     loading: loadingSpaceTab,
     refetch: refetchSpaceTab,
   } = useSpaceTabQuery({
-    variables: { spaceId: spaceId },
+    variables: { spaceId: spaceId! },
     skip: shouldSkip,
   });
 
@@ -61,8 +60,6 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
     const canReadSpace = myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
     const innovationFlow = space?.collaboration.innovationFlow;
     const innovationFlowStates = innovationFlow?.states;
-    const canEditInnovationFlow =
-      innovationFlow?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateInnovationFlow) ?? false;
     const about: SpaceAboutLightModel | undefined = space?.about;
     const calloutsSetId = space?.collaboration.calloutsSet.id;
 
@@ -91,7 +88,6 @@ const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): 
       tabDescription,
       calloutsSetId,
       classificationTagsets,
-      canEditInnovationFlow,
     };
   }, [dataToUse, tabPosition]);
 

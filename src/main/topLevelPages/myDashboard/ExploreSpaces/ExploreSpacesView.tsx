@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 import { Box, Button } from '@mui/material';
@@ -14,8 +14,6 @@ import { ExploreSpacesViewProps, SpaceWithParent } from './ExploreSpacesTypes';
 import { collectParentAvatars } from '@/domain/space/components/cards/utils/useSubspaceCardData';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
-import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { Lead, LeadOrganization, LeadType } from '@/domain/space/components/cards/components/SpaceLeads';
 
 const DEFAULT_ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
 
@@ -63,29 +61,20 @@ export const ExploreSpacesView = ({
     setSelectedFilter(filter);
   };
 
-  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
-    dialogTitle: t('send-message-dialog.direct-message-title'),
-  });
-
-  const handleContactLead = useCallback(
-    (leadType: LeadType, leadId: string, leadDisplayName: string, leadAvatarUri?: string) => {
-      sendMessage(leadType, {
-        id: leadId,
-        displayName: leadDisplayName,
-        avatarUri: leadAvatarUri,
-      });
-    },
-    [sendMessage]
-  );
-
   const renderSpaceCard = (space: SpaceWithParent | undefined) => {
     if (!space) {
       return <SpaceCard displayName="" tagline="" spaceId="" key={Math.random()} />;
     }
 
     const membershipWithLeads = space.about.membership as typeof space.about.membership & {
-      leadUsers?: Lead[];
-      leadOrganizations?: LeadOrganization[];
+      leadUsers?: Array<{
+        id: string;
+        profile: { id: string; url: string; displayName: string; avatar?: { uri: string; alternativeText?: string } };
+      }>;
+      leadOrganizations?: Array<{
+        id: string;
+        profile: { id: string; url: string; displayName: string; avatar?: { uri: string; alternativeText?: string } };
+      }>;
     };
 
     return (
@@ -104,7 +93,6 @@ export const ExploreSpacesView = ({
         leadUsers={membershipWithLeads?.leadUsers}
         leadOrganizations={membershipWithLeads?.leadOrganizations}
         showLeads={isAuthenticated}
-        onContactLead={handleContactLead}
       />
     );
   };
@@ -172,7 +160,6 @@ export const ExploreSpacesView = ({
       {enableShowAll && (
         <SeeMoreExpandable onExpand={() => setHasExpanded(true)} label={t('pages.exploreSpaces.seeAll')} />
       )}
-      {directMessageDialog}
     </>
   );
 };
