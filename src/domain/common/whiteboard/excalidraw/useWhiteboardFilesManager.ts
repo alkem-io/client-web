@@ -50,11 +50,24 @@ const blobToDataURL = (blob: Blob): Promise<string> => {
   });
 };
 
+/**
+ * Encodes a string to Base64, handling Unicode characters properly.
+ * This is necessary because HTTP headers only support ISO-8859-1 characters.
+ */
+const encodeToBase64 = (str: string): string => {
+  // TextEncoder converts the string to UTF-8 bytes
+  const bytes = new TextEncoder().encode(str);
+  // Convert bytes to a binary string
+  const binaryString = Array.from(bytes, byte => String.fromCharCode(byte)).join('');
+  // Encode to Base64
+  return btoa(binaryString);
+};
+
 const fetchFileToDataURL = async (url: string, guestName?: string | null): Promise<string> => {
-  const headers = {};
+  const headers: Record<string, string> = {};
 
   if (guestName) {
-    Object.assign(headers, { 'x-guest-name': guestName });
+    Object.assign(headers, { 'x-guest-name': encodeToBase64(guestName) });
   }
   const response = await fetch(url, { headers });
 
