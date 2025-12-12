@@ -1941,15 +1941,6 @@ export const SpaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -1961,15 +1952,6 @@ export const SpaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -2003,15 +1985,6 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -2023,15 +1996,6 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -3774,15 +3738,6 @@ export const ExploreSpacesFragmentDoc = gql`
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
           }
         }
         leadOrganizations {
@@ -3793,15 +3748,6 @@ export const ExploreSpacesFragmentDoc = gql`
             displayName
             avatar: visual(type: AVATAR) {
               ...VisualModel
-            }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
             }
           }
         }

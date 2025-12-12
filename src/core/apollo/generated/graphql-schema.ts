@@ -507,6 +507,18 @@ export type ActivityLogInput = {
   types?: InputMaybe<Array<ActivityEventType>>;
 };
 
+export type AdminAuthenticationIdBackfillResult = {
+  __typename?: 'AdminAuthenticationIDBackfillResult';
+  /** Total users examined during the backfill run */
+  processed: Scalars['Int']['output'];
+  /** Batches that initially failed but succeeded after a retry during the run */
+  retriedBatches: Scalars['Int']['output'];
+  /** Users skipped because they already had authenticationID or no Kratos identity was found */
+  skipped: Scalars['Int']['output'];
+  /** Users whose authenticationID was updated during the run */
+  updated: Scalars['Int']['output'];
+};
+
 export type Agent = {
   __typename?: 'Agent';
   /** The authorization rules for the entity */
@@ -774,7 +786,7 @@ export enum AuthorizationPolicyType {
   Collaboration = 'COLLABORATION',
   Communication = 'COMMUNICATION',
   CommunicationConversation = 'COMMUNICATION_CONVERSATION',
-  CommunicationConversationsSet = 'COMMUNICATION_CONVERSATIONS_SET',
+  CommunicationMessaging = 'COMMUNICATION_MESSAGING',
   Community = 'COMMUNITY',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
   Discussion = 'DISCUSSION',
@@ -1533,12 +1545,16 @@ export type Conversation = {
   __typename?: 'Conversation';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** @deprecated Use messaging instead */
+  conversationsSet: ConversationsSet;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  messaging: Messaging;
   /** The room for this Conversation. */
   room?: Maybe<Room>;
+  /** The type of this Conversation (USER_USER or USER_VC), inferred from member agent types. */
   type: CommunicationConversationType;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
@@ -1546,7 +1562,6 @@ export type Conversation = {
   user?: Maybe<User>;
   /** The virtual contributor participating in this Conversation (only for USER_AGENT conversations). */
   virtualContributor?: Maybe<VirtualContributor>;
-  wellKnownVirtualContributor?: Maybe<VirtualContributorWellKnown>;
 };
 
 export type ConversationVcAnswerRelevanceInput = {
@@ -1570,6 +1585,18 @@ export type ConversationVcAskQuestionInput = {
 export type ConversationVcResetInput = {
   /** The ID of the conversation. */
   conversationID: Scalars['UUID']['input'];
+};
+
+export type ConversationsSet = {
+  __typename?: 'ConversationsSet';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type ConversionVcSpaceToVcKnowledgeBaseInput = {
@@ -1843,7 +1870,6 @@ export type CreateContributionOnCalloutInput = {
 };
 
 export type CreateConversationInput = {
-  type: CommunicationConversationType;
   userID: Scalars['UUID']['input'];
   virtualContributorID?: InputMaybe<Scalars['UUID']['input']>;
   wellKnownVirtualContributor?: InputMaybe<VirtualContributorWellKnown>;
@@ -2233,7 +2259,6 @@ export type CreateUserGroupInput = {
 };
 
 export type CreateUserInput = {
-  accountUpn?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
@@ -4089,6 +4114,18 @@ export type MessageParent = {
   url: Scalars['String']['output'];
 };
 
+export type Messaging = {
+  __typename?: 'Messaging';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
+};
+
 export type Metadata = {
   __typename?: 'Metadata';
   /** Collection of metadata about Alkemio services. */
@@ -4175,6 +4212,8 @@ export type Mutation = {
   addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
+  /** Populate authenticationID for existing users by querying Kratos Admin API */
+  adminBackfillAuthenticationIDs: AdminAuthenticationIdBackfillResult;
   /** Ensure all community members are registered for communications. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean']['output'];
   /** Remove an orphaned room from messaging platform. */
@@ -4257,7 +4296,12 @@ export type Mutation = {
   createCalloutOnCalloutsSet: Callout;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
-  /** Create a new Conversation on the ConversationsSet. */
+  /** Create a new Conversation on the Messaging. */
+  createConversation: Conversation;
+  /**
+   * Create a new Conversation on the ConversationsSet.
+   * @deprecated Use createConversation instead
+   */
   createConversationOnConversationsSet: Conversation;
   /** Creates a new Discussion as part of this Forum. */
   createDiscussion: Discussion;
@@ -4675,6 +4719,10 @@ export type MutationCreateCalloutOnCalloutsSetArgs = {
 
 export type MutationCreateContributionOnCalloutArgs = {
   contributionData: CreateContributionOnCalloutInput;
+};
+
+export type MutationCreateConversationArgs = {
+  conversationData: CreateConversationInput;
 };
 
 export type MutationCreateConversationOnConversationsSetArgs = {
@@ -5569,6 +5617,8 @@ export type Platform = {
   authorization?: Maybe<Authorization>;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
+  /** @deprecated Use messaging instead */
+  conversationsSet: ConversationsSet;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The Forum for the platform */
@@ -5583,6 +5633,7 @@ export type Platform = {
   library: Library;
   /** The Licensing in use by the platform. */
   licensingFramework: Licensing;
+  messaging?: Maybe<Messaging>;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
   /** The RoleSet for this Platform. */
@@ -8110,7 +8161,6 @@ export type UpdateUserGroupInput = {
 
 export type UpdateUserInput = {
   ID: Scalars['UUID']['input'];
-  accountUpn?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
@@ -8461,8 +8511,6 @@ export type User = Contributor & {
   __typename?: 'User';
   /** The account hosted by this User. */
   account?: Maybe<Account>;
-  /** The unique personal identifier (upn) for the account associated with this user profile */
-  accountUpn: Scalars['String']['output'];
   /** The Agent representing this User. */
   agent: Agent;
   /** Details about the authentication used for this User. */
@@ -8686,15 +8734,15 @@ export type UsersWithAuthorizationCredentialInput = {
 
 export type VcInteraction = {
   __typename?: 'VcInteraction';
-  /** The date at which the entity was created. */
-  createdDate: Scalars['DateTime']['output'];
-  /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  room: Room;
+  /**
+   * The ID of the VC Interaction
+   * @deprecated This field is for backward compatibility only and will be removed in a future version.
+   */
+  id: Scalars['ID']['output'];
+  /** The thread ID (Matrix message ID) where VC is engaged */
   threadID: Scalars['String']['output'];
-  /** The date at which the entity was last updated. */
-  updatedDate: Scalars['DateTime']['output'];
-  virtualContributorID: Scalars['UUID']['output'];
+  /** The actor ID (agent.id) of the Virtual Contributor */
+  virtualContributorID: Scalars['String']['output'];
 };
 
 export type VirtualContributor = Contributor & {
@@ -8749,6 +8797,8 @@ export type VirtualContributor = Contributor & {
   status: VirtualContributorStatus;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+  /** The well-known identifier of this Virtual Contributor, if configured at platform level. */
+  wellKnownVirtualContributor?: Maybe<VirtualContributorWellKnown>;
 };
 
 export enum VirtualContributorBodyOfKnowledgeType {
@@ -21783,10 +21833,6 @@ export type DashboardSpacesQuery = {
             id: string;
             url: string;
             displayName: string;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -21806,10 +21852,6 @@ export type DashboardSpacesQuery = {
             id: string;
             url: string;
             displayName: string;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -23822,10 +23864,6 @@ export type CreateSubspaceMutation = {
             id: string;
             url: string;
             displayName: string;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -23845,10 +23883,6 @@ export type CreateSubspaceMutation = {
             id: string;
             url: string;
             displayName: string;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -24362,10 +24396,6 @@ export type SpaceSubspaceCardsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
-                    location?:
-                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                      | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -24385,10 +24415,6 @@ export type SpaceSubspaceCardsQuery = {
                     id: string;
                     url: string;
                     displayName: string;
-                    location?:
-                      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                      | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     avatar?:
                       | {
                           __typename?: 'Visual';
@@ -24463,10 +24489,6 @@ export type SpaceCardFragment = {
           id: string;
           url: string;
           displayName: string;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
@@ -24480,10 +24502,6 @@ export type SpaceCardFragment = {
           id: string;
           url: string;
           displayName: string;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
@@ -24539,10 +24557,6 @@ export type SubspaceCardFragment = {
           id: string;
           url: string;
           displayName: string;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
@@ -24556,10 +24570,6 @@ export type SubspaceCardFragment = {
           id: string;
           url: string;
           displayName: string;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
@@ -24618,10 +24628,6 @@ export type SubspacesOnSpaceFragment = {
             id: string;
             url: string;
             displayName: string;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -24641,10 +24647,6 @@ export type SubspacesOnSpaceFragment = {
             id: string;
             url: string;
             displayName: string;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -25189,10 +25191,6 @@ export type SubspaceCreatedSubscription = {
               id: string;
               url: string;
               displayName: string;
-              location?:
-                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -25212,10 +25210,6 @@ export type SubspaceCreatedSubscription = {
               id: string;
               url: string;
               displayName: string;
-              location?:
-                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -37449,15 +37443,6 @@ export type ExploreSpacesSearchQuery = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
-                      location?:
-                        | {
-                            __typename?: 'Location';
-                            id: string;
-                            city?: string | undefined;
-                            country?: string | undefined;
-                          }
-                        | undefined;
-                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     };
                   }>;
                   leadOrganizations: Array<{
@@ -37477,15 +37462,6 @@ export type ExploreSpacesSearchQuery = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
-                      location?:
-                        | {
-                            __typename?: 'Location';
-                            id: string;
-                            city?: string | undefined;
-                            country?: string | undefined;
-                          }
-                        | undefined;
-                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                     };
                   }>;
                 };
@@ -37542,10 +37518,6 @@ export type ExploreSpacesSearchFragment = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
         leadOrganizations: Array<{
@@ -37565,10 +37537,6 @@ export type ExploreSpacesSearchFragment = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
       };
@@ -37622,10 +37590,6 @@ export type ExploreAllSpacesQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
         leadOrganizations: Array<{
@@ -37645,10 +37609,6 @@ export type ExploreAllSpacesQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>;
       };
@@ -37719,10 +37679,6 @@ export type WelcomeSpaceQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
-                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
               }>;
               leadOrganizations: Array<{
@@ -37742,10 +37698,6 @@ export type WelcomeSpaceQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
-                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
               }>;
             };
@@ -37791,10 +37743,6 @@ export type ExploreSpacesFragment = {
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>;
       leadOrganizations: Array<{
@@ -37808,10 +37756,6 @@ export type ExploreSpacesFragment = {
           avatar?:
             | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
             | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>;
     };
