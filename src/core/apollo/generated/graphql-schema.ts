@@ -1545,8 +1545,6 @@ export type Conversation = {
   __typename?: 'Conversation';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** @deprecated Use messaging instead */
-  conversationsSet: ConversationsSet;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
@@ -1585,18 +1583,6 @@ export type ConversationVcAskQuestionInput = {
 export type ConversationVcResetInput = {
   /** The ID of the conversation. */
   conversationID: Scalars['UUID']['input'];
-};
-
-export type ConversationsSet = {
-  __typename?: 'ConversationsSet';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The date at which the entity was created. */
-  createdDate: Scalars['DateTime']['output'];
-  /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  /** The date at which the entity was last updated. */
-  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type ConversionVcSpaceToVcKnowledgeBaseInput = {
@@ -4298,11 +4284,6 @@ export type Mutation = {
   createContributionOnCallout: CalloutContribution;
   /** Create a new Conversation on the Messaging. */
   createConversation: Conversation;
-  /**
-   * Create a new Conversation on the ConversationsSet.
-   * @deprecated Use createConversation instead
-   */
-  createConversationOnConversationsSet: Conversation;
   /** Creates a new Discussion as part of this Forum. */
   createDiscussion: Discussion;
   /** Create a new CalendarEvent on the Calendar. */
@@ -4722,10 +4703,6 @@ export type MutationCreateContributionOnCalloutArgs = {
 };
 
 export type MutationCreateConversationArgs = {
-  conversationData: CreateConversationInput;
-};
-
-export type MutationCreateConversationOnConversationsSetArgs = {
   conversationData: CreateConversationInput;
 };
 
@@ -5617,8 +5594,6 @@ export type Platform = {
   authorization?: Maybe<Authorization>;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
-  /** @deprecated Use messaging instead */
-  conversationsSet: ConversationsSet;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The Forum for the platform */
@@ -41077,7 +41052,7 @@ export type CreateConversationMutationVariables = Exact<{
 
 export type CreateConversationMutation = {
   __typename?: 'Mutation';
-  createConversationOnConversationsSet: {
+  createConversation: {
     __typename?: 'Conversation';
     id: string;
     room?: { __typename?: 'Room'; id: string } | undefined;

@@ -27202,7 +27202,7 @@ export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.Spa
 }
 export const CreateConversationDocument = gql`
   mutation CreateConversation($conversationData: CreateConversationInput!) {
-    createConversationOnConversationsSet(conversationData: $conversationData) {
+    createConversation(conversationData: $conversationData) {
       id
       room {
         id

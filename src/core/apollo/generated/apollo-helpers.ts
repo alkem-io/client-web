@@ -1099,7 +1099,6 @@ export type ContributorRolesFieldPolicy = {
 };
 export type ConversationKeySpecifier = (
   | 'authorization'
-  | 'conversationsSet'
   | 'createdDate'
   | 'id'
   | 'messaging'
@@ -1112,7 +1111,6 @@ export type ConversationKeySpecifier = (
 )[];
 export type ConversationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  conversationsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messaging?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1121,19 +1119,6 @@ export type ConversationFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ConversationsSetKeySpecifier = (
-  | 'authorization'
-  | 'createdDate'
-  | 'id'
-  | 'updatedDate'
-  | ConversationsSetKeySpecifier
-)[];
-export type ConversationsSetFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutContributionDataKeySpecifier = (
   | 'link'
@@ -2579,7 +2564,6 @@ export type MutationKeySpecifier = (
   | 'createCalloutOnCalloutsSet'
   | 'createContributionOnCallout'
   | 'createConversation'
-  | 'createConversationOnConversationsSet'
   | 'createDiscussion'
   | 'createEventOnCalendar'
   | 'createGroupOnCommunity'
@@ -2767,7 +2751,6 @@ export type MutationFieldPolicy = {
   createCalloutOnCalloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createConversation?: FieldPolicy<any> | FieldReadFunction<any>;
-  createConversationOnConversationsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3091,7 +3074,6 @@ export type PaginatedVirtualContributorFieldPolicy = {
 export type PlatformKeySpecifier = (
   | 'authorization'
   | 'configuration'
-  | 'conversationsSet'
   | 'createdDate'
   | 'forum'
   | 'id'
@@ -3112,7 +3094,6 @@ export type PlatformKeySpecifier = (
 export type PlatformFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
-  conversationsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   forum?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5345,10 +5326,6 @@ export type StrictTypedTypePolicies = {
   Conversation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ConversationKeySpecifier | (() => undefined | ConversationKeySpecifier);
     fields?: ConversationFieldPolicy;
-  };
-  ConversationsSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ConversationsSetKeySpecifier | (() => undefined | ConversationsSetKeySpecifier);
-    fields?: ConversationsSetFieldPolicy;
   };
   CreateCalloutContributionData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
