@@ -1,5 +1,5 @@
 mutation CreateConversation($conversationData: CreateConversationInput!) {
-  createConversationOnConversationsSet(conversationData: $conversationData) {
+  createConversation(conversationData: $conversationData) {
     id
     room {
       id
