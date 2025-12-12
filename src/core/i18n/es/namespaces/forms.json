@@ -1,0 +1,21 @@
+{
+  "forms": {
+    "validations": {
+      "field": "Field",
+      "fieldNotPresent": "{{fieldName}} is not present",
+      "required": "¡Este campo es obligatorio!",
+      "requiredField": "{{field}} is required!",
+      "minLength": "{{field}} deben tener al menos {{min}} de caracteres",
+      "maxLength": "Excede el límite de {{max}} caracteres",
+      "alphaNumeric": "{{field}} puede contener solo caracteres en minúscula, números y guiones",
+      "nonBlank": "{{field}} must not consist of just $t(common.spaces)",
+      "atLeastOne": "Debes seleccionar al menos un {{item}}.",
+      "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one.",
+      "invalidUrl": "Invalid URL",
+      "invalidEmail": "Invalid Email address",
+      "duplicateEmail": "Duplicated email address",
+      "elementMustBeValidUrl": "{{name}} must be a valid URL",
+      "acceptedTerms": "You must accept the terms and conditions"
+    }
+  }
+}

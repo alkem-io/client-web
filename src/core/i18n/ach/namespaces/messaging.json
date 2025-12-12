@@ -1,0 +1,23 @@
+{
+  "messaging": {
+    "message": "crwdns18406:0crwdne18406:0",
+    "message-optional": "crwdns18408:0crwdne18408:0",
+    "successfully-sent": "crwdns18410:0crwdne18410:0",
+    "messageDeleted": "crwdns18412:0crwdne18412:0",
+    "insertEmoji": "crwdns18414:0crwdne18414:0",
+    "addReaction": "crwdns18416:0crwdne18416:0",
+    "addMention": "crwdns18418:0crwdne18418:0",
+    "formattingHelp": "crwdns18420:0crwdne18420:0",
+    "missingAuthor": "crwdns37406:0crwdne37406:0"
+  },
+  "send-message-dialog": {
+    "direct-message-title": "crwdns18422:0crwdne18422:0",
+    "community-message-title": "crwdns18424:0{{contact}}crwdne18424:0"
+  },
+  "snackbars": {
+    "appVersion": {
+      "message": "crwdns37168:0crwdne37168:0",
+      "recurringMessage": "crwdns37170:0crwdne37170:0"
+    }
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "context": {
+    "L0": {
+      "displayName": {
+        "title": "crwdns37344:0crwdne37344:0",
+        "description": "crwdns37346:0crwdne37346:0",
+        "placeholder": "crwdns37348:0crwdne37348:0"
+      },
+      "nameId": {
+        "title": "crwdns37350:0crwdne37350:0",
+        "description": "crwdns37352:0crwdne37352:0",
+        "placeholder": "crwdns37354:0crwdne37354:0"
+      },
+      "tagline": {
+        "title": "crwdns28800:0crwdne28800:0",
+        "description": "crwdns37356:0crwdne37356:0",
+        "placeholder": "crwdns28804:0crwdne28804:0"
+      },
+      "description": {
+        "title": "crwdns36668:0crwdne36668:0",
+        "description": "crwdns36670:0crwdne36670:0",
+        "placeholder": "crwdns36672:0crwdne36672:0"
+      },
+      "when": {
+        "title": "crwdns36674:0crwdne36674:0",
+        "description": "crwdns36676:0crwdne36676:0",
+        "placeholder": "crwdns36678:0crwdne36678:0"
+      },
+      "why": {
+        "title": "crwdns36680:0crwdne36680:0",
+        "description": "crwdns36682:0crwdne36682:0",
+        "placeholder": "crwdns36684:0crwdne36684:0"
+      },
+      "who": {
+        "title": "crwdns36686:0crwdne36686:0",
+        "description": "crwdns36688:0crwdne36688:0",
+        "placeholder": "crwdns28828:0crwdne28828:0"
+      },
+      "tags": {
+        "title": "crwdns37358:0crwdne37358:0",
+        "description": "crwdns37360:0crwdne37360:0",
+        "placeholder": "crwdns37362:0crwdne37362:0",
+        "tooltip": "crwdns37364:0crwdne37364:0"
+      },
+      "template": {
+        "title": "crwdns37366:0crwdne37366:0",
+        "defaultTemplate": "crwdns40896:0$t(common.template)crwdnd40896:0$t(common.spaces)crwdne40896:0"
+      }
+    },
+    "L1": {
+      "displayName": {
+        "title": "crwdns28830:0crwdne28830:0",
+        "description": "crwdns28832:0crwdne28832:0",
+        "placeholder": "crwdns28834:0crwdne28834:0"
+      },
+      "tagline": {
+        "title": "crwdns28836:0crwdne28836:0",
+        "description": "crwdns28838:0crwdne28838:0",
+        "placeholder": "crwdns28840:0crwdne28840:0"
+      },
+      "description": {
+        "title": "crwdns36690:0crwdne36690:0",
+        "description": "crwdns28844:0crwdne28844:0",
+        "placeholder": "crwdns28846:0crwdne28846:0"
+      },
+      "when": {
+        "title": "crwdns36692:0crwdne36692:0",
+        "description": "crwdns36694:0crwdne36694:0",
+        "placeholder": "crwdns36696:0crwdne36696:0"
+      },
+      "why": {
+        "title": "crwdns36698:0crwdne36698:0",
+        "description": "crwdns36700:0crwdne36700:0",
+        "placeholder": "crwdns36702:0crwdne36702:0"
+      },
+      "who": {
+        "title": "crwdns36704:0crwdne36704:0",
+        "description": "crwdns36706:0crwdne36706:0",
+        "placeholder": "crwdns28870:0crwdne28870:0"
+      },
+      "tags": {
+        "title": "crwdns28872:0crwdne28872:0",
+        "description": "crwdns28874:0crwdne28874:0",
+        "placeholder": "crwdns28876:0crwdne28876:0",
+        "tooltip": "crwdns28878:0crwdne28878:0"
+      },
+      "template": {
+        "title": "crwdns40898:0$t(common.template)crwdne40898:0",
+        "defaultTemplate": "crwdns40900:0$t(common.template)crwdnd40900:0$t(common.subspaces)crwdne40900:0"
+      }
+    },
+    "L2": {
+      "displayName": {
+        "title": "crwdns28886:0crwdne28886:0",
+        "description": "crwdns28888:0crwdne28888:0",
+        "placeholder": "crwdns28890:0crwdne28890:0"
+      },
+      "tagline": {
+        "title": "crwdns28892:0crwdne28892:0",
+        "description": "crwdns37372:0crwdne37372:0",
+        "placeholder": "crwdns28896:0crwdne28896:0"
+      },
+      "description": {
+        "title": "crwdns36708:0crwdne36708:0",
+        "description": "crwdns36710:0crwdne36710:0",
+        "placeholder": "crwdns36712:0crwdne36712:0"
+      },
+      "when": {
+        "title": "crwdns36714:0crwdne36714:0",
+        "description": "crwdns36716:0crwdne36716:0",
+        "placeholder": "crwdns36718:0crwdne36718:0"
+      },
+      "why": {
+        "title": "crwdns36720:0crwdne36720:0",
+        "description": "crwdns36722:0crwdne36722:0",
+        "placeholder": "crwdns36724:0crwdne36724:0"
+      },
+      "who": {
+        "title": "crwdns36726:0crwdne36726:0",
+        "description": "crwdns36728:0crwdne36728:0",
+        "placeholder": "crwdns28920:0crwdne28920:0"
+      },
+      "tags": {
+        "title": "crwdns28922:0crwdne28922:0",
+        "description": "crwdns40902:0$t(common.subspace)crwdne40902:0",
+        "placeholder": "crwdns28926:0crwdne28926:0"
+      },
+      "innovationFlow": {
+        "title": "crwdns40904:0$t(common.subspace)crwdne40904:0"
+      },
+      "template": {
+        "title": "crwdns40906:0$t(common.template)crwdne40906:0",
+        "defaultTemplate": "crwdns40908:0$t(common.template)crwdnd40908:0$t(common.subspaces)crwdne40908:0"
+      }
+    }
+  }
+}

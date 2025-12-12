@@ -1,0 +1,38 @@
+{
+  "share-dialog": {
+    "title": "Копирай линка отдолу, за да споделиш този {{entity}}",
+    "share-this": "Сподели този {{entity}}",
+    "share-this-on": "Share this {{entity}} on {{platform}}",
+    "or": "or",
+    "url": "URL",
+    "warning": "Please note that your personal email will be visible for the user when you send them a message.",
+    "platforms": {
+      "clipboard": {
+        "title": "Copy Link",
+        "copy": "Copy",
+        "copied": "Copied!"
+      },
+      "alkemio": {
+        "name": "Alkemio",
+        "title": "Share on Alkemio",
+        "description": "Share this {{entity}} directly with other Alkemio users. You can search for Alkemio users below and attach a personalized message.",
+        "default-template": "Hi!\n\nI would like to share this {{entity}} with you.\n\nHave a look!"
+      },
+      "linkedin": {
+        "title": "Share on Linkedin"
+      },
+      "twitter": {
+        "title": "Share on Twitter"
+      },
+      "whatsapp": {
+        "title": "Share on Whatsapp"
+      },
+      "email": {
+        "title": "Share through E-mail"
+      }
+    }
+  },
+  "aboutDialog": {
+    "applyNotSignedInHelperText": "You’ll be redirected to Sign in to Alkemio first"
+  }
+}
