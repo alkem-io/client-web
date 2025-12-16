@@ -4774,9 +4774,8 @@ export type UsersInRolesResponseFieldPolicy = {
   role?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type VcInteractionKeySpecifier = ('id' | 'threadID' | 'virtualContributorID' | VcInteractionKeySpecifier)[];
+export type VcInteractionKeySpecifier = ('threadID' | 'virtualContributorID' | VcInteractionKeySpecifier)[];
 export type VcInteractionFieldPolicy = {
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
 };

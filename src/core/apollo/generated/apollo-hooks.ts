@@ -924,7 +924,6 @@ export const MessageDetailsFragmentDoc = gql`
 `;
 export const VcInteractionsDetailsFragmentDoc = gql`
   fragment VcInteractionsDetails on VcInteraction {
-    id
     threadID
     virtualContributorID
   }

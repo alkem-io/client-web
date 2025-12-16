@@ -1556,7 +1556,7 @@ export type Conversation = {
   type: CommunicationConversationType;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
-  /** The user participating in this Conversation. */
+  /** The other user participating in this Conversation (excludes the current user). */
   user?: Maybe<User>;
   /** The virtual contributor participating in this Conversation (only for USER_AGENT conversations). */
   virtualContributor?: Maybe<VirtualContributor>;
@@ -8709,11 +8709,6 @@ export type UsersWithAuthorizationCredentialInput = {
 
 export type VcInteraction = {
   __typename?: 'VcInteraction';
-  /**
-   * The ID of the VC Interaction
-   * @deprecated This field is for backward compatibility only and will be removed in a future version.
-   */
-  id: Scalars['ID']['output'];
   /** The thread ID (Matrix message ID) where VC is engaged */
   threadID: Scalars['String']['output'];
   /** The actor ID (agent.id) of the Virtual Contributor */
@@ -13102,12 +13097,7 @@ export type UpdateCalloutContentMutation = {
                 }
               | undefined;
           }>;
-          vcInteractions: Array<{
-            __typename?: 'VcInteraction';
-            id: string;
-            threadID: string;
-            virtualContributorID: string;
-          }>;
+          vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
         }
       | undefined;
     authorization?:
@@ -13474,12 +13464,7 @@ export type UpdateCalloutVisibilityMutation = {
                 }
               | undefined;
           }>;
-          vcInteractions: Array<{
-            __typename?: 'VcInteraction';
-            id: string;
-            threadID: string;
-            virtualContributorID: string;
-          }>;
+          vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
         }
       | undefined;
     authorization?:
@@ -13879,7 +13864,6 @@ export type CalloutContributionCommentsQuery = {
                   }>;
                   vcInteractions: Array<{
                     __typename?: 'VcInteraction';
-                    id: string;
                     threadID: string;
                     virtualContributorID: string;
                   }>;
@@ -14806,12 +14790,7 @@ export type CreateCalloutMutation = {
                 }
               | undefined;
           }>;
-          vcInteractions: Array<{
-            __typename?: 'VcInteraction';
-            id: string;
-            threadID: string;
-            virtualContributorID: string;
-          }>;
+          vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
         }
       | undefined;
     authorization?:
@@ -15328,12 +15307,7 @@ export type CalloutDetailsQuery = {
                       }
                     | undefined;
                 }>;
-                vcInteractions: Array<{
-                  __typename?: 'VcInteraction';
-                  id: string;
-                  threadID: string;
-                  virtualContributorID: string;
-                }>;
+                vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
               }
             | undefined;
           authorization?:
@@ -15732,12 +15706,7 @@ export type CalloutDetailsFragment = {
               }
             | undefined;
         }>;
-        vcInteractions: Array<{
-          __typename?: 'VcInteraction';
-          id: string;
-          threadID: string;
-          virtualContributorID: string;
-        }>;
+        vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
       }
     | undefined;
   authorization?:
@@ -17920,7 +17889,7 @@ export type CommentsWithMessagesFragment = {
         }
       | undefined;
   }>;
-  vcInteractions: Array<{ __typename?: 'VcInteraction'; id: string; threadID: string; virtualContributorID: string }>;
+  vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
 };
 
 export type RemoveReactionMutationVariables = Exact<{
@@ -17953,7 +17922,6 @@ export type ReplyToMessageMutation = {
 
 export type VcInteractionsDetailsFragment = {
   __typename?: 'VcInteraction';
-  id: string;
   threadID: string;
   virtualContributorID: string;
 };
@@ -18051,12 +18019,7 @@ export type RoomEventsSubscription = {
     roomID: string;
     room: {
       __typename?: 'Room';
-      vcInteractions: Array<{
-        __typename?: 'VcInteraction';
-        id: string;
-        threadID: string;
-        virtualContributorID: string;
-      }>;
+      vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
     };
     message?:
       | {
@@ -30741,12 +30704,7 @@ export type CalendarEventDetailsQuery = {
                   }
                 | undefined;
             }>;
-            vcInteractions: Array<{
-              __typename?: 'VcInteraction';
-              id: string;
-              threadID: string;
-              virtualContributorID: string;
-            }>;
+            vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
           };
           profile: {
             __typename?: 'Profile';
@@ -30986,7 +30944,7 @@ export type CalendarEventDetailsFragment = {
           }
         | undefined;
     }>;
-    vcInteractions: Array<{ __typename?: 'VcInteraction'; id: string; threadID: string; virtualContributorID: string }>;
+    vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
   };
   profile: {
     __typename?: 'Profile';
@@ -31246,12 +31204,7 @@ export type CreateCalendarEventMutation = {
             }
           | undefined;
       }>;
-      vcInteractions: Array<{
-        __typename?: 'VcInteraction';
-        id: string;
-        threadID: string;
-        virtualContributorID: string;
-      }>;
+      vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
     };
     profile: {
       __typename?: 'Profile';
@@ -31490,12 +31443,7 @@ export type UpdateCalendarEventMutation = {
             }
           | undefined;
       }>;
-      vcInteractions: Array<{
-        __typename?: 'VcInteraction';
-        id: string;
-        threadID: string;
-        virtualContributorID: string;
-      }>;
+      vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
     };
     profile: {
       __typename?: 'Profile';
@@ -31822,12 +31770,7 @@ export type ConversationVcMessagesQuery = {
                       }
                     | undefined;
                 }>;
-                vcInteractions: Array<{
-                  __typename?: 'VcInteraction';
-                  id: string;
-                  threadID: string;
-                  virtualContributorID: string;
-                }>;
+                vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
               }
             | undefined;
         }
