@@ -4,7 +4,7 @@ import MicrosoftIcon from '../AuthProviders/microsoft.svg?react';
 import AppleIcon from '../AuthProviders/apple.svg?react';
 import LinkedInIcon from '../AuthProviders/linkedin.svg?react';
 import GithubIcon from '../AuthProviders/github.svg?react';
-import ViduaIcon from '../AuthProviders/vidua.svg?react';
+import CleverbaseIcon from '../AuthProviders/cleverbase.svg?react';
 
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
@@ -35,9 +35,9 @@ const socialCustomizations: Record<string, SocialCustomization> = {
     icon: AppleIcon,
     label: 'apple',
   },
-  vidua: {
-    icon: ViduaIcon,
-    label: 'vidua',
+  cleverbase: {
+    icon: CleverbaseIcon,
+    label: 'cleverbase',
   },
 };
 
