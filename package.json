@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.122.1",
+  "version": "0.123.1",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -154,10 +154,10 @@
     "markdown-it-link-attributes": "^4.0.1",
     "markdown-it-sanitizer": "^0.4.3",
     "markdown-it-sup": "^2.0.0",
-    "react": "19.1.0",
+    "react": "19.2.1",
     "react-calendar": "^5.1.0",
     "react-cookie": "^8.0.1",
-    "react-dom": "19.1.0",
+    "react-dom": "19.2.1",
     "react-i18next": "^15.5.1",
     "react-image-crop": "^10.1.8",
     "react-image-file-resizer": "^0.4.7",
