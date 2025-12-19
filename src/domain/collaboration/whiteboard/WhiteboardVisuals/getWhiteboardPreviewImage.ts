@@ -4,12 +4,18 @@ import type { exportToCanvas as ExcalidrawExportToCanvas } from '@alkemio/excali
 import { WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions';
 import { error as logError } from '@/core/logging/sentry/log';
 import createFallbackWhiteboardPreview from './createFallbackWhiteboardPreview';
-
-const EXPORT_PADDING = 0.1; // 10% padding of the biggest dimension as padding
+import { padImage } from '@/core/utils/images/padImage';
 
 type ExcalidrawUtils = {
   exportToCanvas: typeof ExcalidrawExportToCanvas;
 };
+
+/**
+ * Maximum dimension (width or height) for generated whiteboard preview images.
+ * The maximum depends on the browser, computer memory, and other factors.
+ * This value has been chosen as a reasonable compromise to avoid crashes in most cases and avoid pixellation.
+ */
+const MAX_DIMENSION = 16000;
 
 /**
  * Generates the preview of the image calling Excalidraw's exportToCanvas function
@@ -25,36 +31,61 @@ const getWhiteboardPreviewImage = async (
     elements = excalidrawAPI.getSceneElements(),
     files = excalidrawAPI.getFiles();
 
-  // Calculate the bounding box of all elements
-  const exportPadding = (elements => {
-    if (elements.length === 0) {
-      return 0;
-    } else {
-      const { minX, minY, maxX, maxY } = elements.reduce(
-        (acc, element) => ({
-          minX: Math.min(acc.minX, element.x),
-          minY: Math.min(acc.minY, element.y),
-          maxX: Math.max(acc.maxX, element.x + element.width),
-          maxY: Math.max(acc.maxY, element.y + element.height),
-        }),
-        { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
-      );
-      return Math.max(maxX - minX, maxY - minY) * EXPORT_PADDING;
-    }
-  })(elements);
-
   const getDimensions = (width: number, height: number) => {
-    if (width <= WhiteboardPreviewVisualDimensions.minWidth || height <= WhiteboardPreviewVisualDimensions.minHeight) {
+    // Handle edge case of zero-dimension whiteboards
+    if (width <= 0 || height <= 0) {
       return {
-        width: Math.max(WhiteboardPreviewVisualDimensions.minWidth * 2, width * 2),
-        height: Math.max(WhiteboardPreviewVisualDimensions.minHeight * 2, height * 2),
-        scale: 2,
+        width: WhiteboardPreviewVisualDimensions.minWidth,
+        height: WhiteboardPreviewVisualDimensions.minHeight,
+        scale: 1,
       };
     }
+
+    // Handle small images - scale up to at least meet minimum dimensions
+    if (width <= WhiteboardPreviewVisualDimensions.minWidth || height <= WhiteboardPreviewVisualDimensions.minHeight) {
+      const scale = Math.ceil(
+        Math.max(
+          WhiteboardPreviewVisualDimensions.minWidth / width,
+          WhiteboardPreviewVisualDimensions.minHeight / height
+        )
+      );
+      return {
+        width: width * scale,
+        height: height * scale,
+        scale,
+      };
+    }
+
+    const maxInputDimension = Math.max(width, height);
+    // For mid-size whiteboards just export at original size
+    if (maxInputDimension <= MAX_DIMENSION) {
+      return {
+        width,
+        height,
+        scale: 1,
+      };
+    }
+
+    // Discrete scale steps - ordered from largest to smallest
+    const SCALE_STEPS = [0.75, 0.5, 0.25, 0.1, 0.05];
+    // For normal/large images - find the largest scale that keeps dimensions under MAX_DIMENSION
+    for (const scale of SCALE_STEPS) {
+      const scaledMax = maxInputDimension * scale;
+      if (scaledMax <= MAX_DIMENSION) {
+        return {
+          width: width * scale,
+          height: height * scale,
+          scale,
+        };
+      }
+    }
+
+    // Fallback for extremely large images - use smallest scale step and crop
+    const smallestScale = SCALE_STEPS[SCALE_STEPS.length - 1];
     return {
-      width: width,
-      height: height,
-      scale: 1,
+      width: Math.min(width * smallestScale, MAX_DIMENSION),
+      height: Math.min(height * smallestScale, MAX_DIMENSION),
+      scale: smallestScale,
     };
   };
 
@@ -66,12 +97,16 @@ const getWhiteboardPreviewImage = async (
     elements,
     files: files ?? null,
     getDimensions,
-    exportPadding,
-  }).catch(error => {
-    errorGenerating = true;
-    logError(error);
-    return createFallbackWhiteboardPreview();
-  });
+    exportPadding: 10,
+  })
+    .then(canvas => {
+      return padImage(canvas, WhiteboardPreviewVisualDimensions.aspectRatio);
+    })
+    .catch(error => {
+      errorGenerating = true;
+      logError(error);
+      return createFallbackWhiteboardPreview();
+    });
 
   return {
     image: canvas,
