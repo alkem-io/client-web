@@ -68,7 +68,7 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
 
   const hasEmailClaimMissingError = !!emailClaimMissingMessageDetails;
 
-  const isViduaOidcFlow =
+  const isCleverbaseOidcFlow =
     registrationFlow?.active === 'oidc' &&
     registrationFlow?.ui?.nodes?.some(
       node =>
@@ -86,7 +86,7 @@ export const RegistrationPage = ({ flow }: { flow?: string }) => {
   }
   // if the Cleverbase email is not verified (4000002) during a Cleverbase OIDC flow,
   // navigate to the login page.
-  if (hasEmailClaimMissingError && isViduaOidcFlow) {
+  if (hasEmailClaimMissingError && isCleverbaseOidcFlow) {
     // Pass only the specific email claim missing message
     const state: LocationStateWithKratosErrors = {
       kratosErrors: emailClaimMissingMessageDetails ? [emailClaimMissingMessageDetails] : [],
