@@ -24,6 +24,7 @@ export const GlobalErrorProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [error, setError] = useState<Error | null>(null);
 
   // Set the global error function during initialization
+  // eslint-disable-next-line react-compiler/react-compiler -- Intentional singleton pattern for global error handler
   setGlobalError = setError;
 
   return <GlobalErrorContext value={{ error, setError }}>{children}</GlobalErrorContext>;
