@@ -12,8 +12,9 @@ import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView'
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import { compact } from 'lodash';
-import { FC, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import SpaceAboutView from './components/SpaceAboutView';
 import { EmptyProfileModel, ProfileModel } from '@/domain/common/profile/ProfileModel';
@@ -28,6 +29,15 @@ export interface SpaceAdminAboutPageProps extends SettingsPageProps {
 const SpaceAdminAboutPage: FC<SpaceAdminAboutPageProps> = ({ useL0Layout, spaceId, routePrefix = '../' }) => {
   const notify = useNotification();
   const { t } = useTranslation();
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      const element = document.getElementById(hash.slice(1));
+      element?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [hash]);
+
   const { data: spaceData } = useSpaceAboutDetailsQuery({
     variables: {
       spaceId,
@@ -77,7 +87,7 @@ const SpaceAdminAboutPage: FC<SpaceAdminAboutPageProps> = ({ useL0Layout, spaceI
             <SaveButton loading={loading} onClick={() => profileFormRef.current?.submit()} />
           </Actions>
         </PageContentBlock>
-        <PageContentBlock>
+        <PageContentBlock id="description">
           <PageContentBlockHeader title={t('common.description')} />
           <SpaceAboutView />
         </PageContentBlock>

@@ -37,7 +37,7 @@ const SpaceDashboardPage = () => {
 
   const { data: spacePageData, loading: loadingSpacePageQuery } = useSpacePageQuery({
     variables: {
-      spaceId: spaceId!,
+      spaceId: spaceId,
     },
     errorPolicy: 'all',
     skip: !spaceId || spaceLevel !== SpaceLevel.L0 || loading,
@@ -58,7 +58,7 @@ const SpaceDashboardPage = () => {
   };
 
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
-    spaceId: spaceId!,
+    spaceId: spaceId,
   });
 
   const calloutsSetProvided = useCalloutsSet({
@@ -106,8 +106,8 @@ const SpaceDashboardPage = () => {
         tabDescription={tabDescription}
         dashboardNavigation={dashboardNavigation}
         dashboardNavigationLoading={dashboardNavigationLoading}
-        readUsersAccess={permissions.readUsers}
         canEdit={permissions.canEdit}
+        readUsersAccess={permissions.readUsers}
         calloutsSetProvided={calloutsSetProvided}
         flowStateForNewCallouts={flowStateForNewCallouts}
         shareUpdatesUrl={updatesUrl}

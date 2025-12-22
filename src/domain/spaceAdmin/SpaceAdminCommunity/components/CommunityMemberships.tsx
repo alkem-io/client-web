@@ -398,7 +398,7 @@ const CommunityMemberships = ({
 
   return (
     <>
-      <Box minHeight={gutters(10)}>
+      <Box minHeight={gutters(10)} data-testid="communityMemberships">
         {loading ? (
           <DataGridSkeleton />
         ) : (

@@ -26,7 +26,7 @@ import SpaceAdminSubspacesPage, { SpaceAdminSubspacesPageProps } from '../SpaceA
 const SpaceAdminL0Route: FC = () => {
   useTransactionScope({ type: 'admin' });
   const { space, loading, entitlements } = useSpace();
-  const spaceId = space.id!;
+  const spaceId = space.id;
 
   const communityPageProps: SpaceAdminCommunityPageProps = {
     about: space?.about,

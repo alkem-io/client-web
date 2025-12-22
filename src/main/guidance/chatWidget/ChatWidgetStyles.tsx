@@ -32,7 +32,7 @@ const ChatWidgetStyles = ({
         [`.rcw-message-text ${SOURCES_HEADING_TAG_HTML}`]: {
           ...theme.typography.body2,
           whiteSpace: 'normal',
-          margin: 0,
+          fontWeight: 'bold',
           '+ ul': {
             ...theme.typography.body2,
             whiteSpace: 'normal',

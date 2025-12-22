@@ -118,6 +118,7 @@
     "see-more": "crwdns17502:0crwdne17502:0",
     "see-all": "crwdns17504:0{{subject}}crwdne17504:0",
     "readMore": "crwdns17506:0crwdne17506:0",
+    "showLess": "crwdns43482:0crwdne43482:0",
     "retry": "crwdns43302:0crwdne43302:0",
     "home": "crwdns17508:0crwdne17508:0",
     "take-me-home": "crwdns17510:0crwdne17510:0",
@@ -191,7 +192,9 @@
     "messages": "crwdns43390:0crwdne43390:0",
     "invite": "crwdns17634:0crwdne17634:0",
     "visit": "crwdns17636:0crwdne17636:0",
-    "returnToDashboard": "crwdns40520:0$t(common.dashboard)crwdne40520:0",
+    "returnToDashboardAsGuest": "crwdns43416:0$t(common.dashboard)crwdne43416:0",
+    "returnToDashboard": "crwdns43418:0$t(common.dashboard)crwdne43418:0",
+    "takeMeHome": "crwdns43420:0crwdne43420:0",
     "approveApplication": "crwdns36940:0crwdne36940:0",
     "rejectApplication": "crwdns36942:0crwdne36942:0"
   },
@@ -974,20 +977,20 @@
     "guest-access": {
       "label": "crwdns43308:0crwdne43308:0",
       "toggle-label": "crwdns43310:0crwdne43310:0",
-      "toggle-description": "crwdns43312:0crwdne43312:0",
+      "toggle-description": "crwdns43438:0$t(common.whiteboard)crwdne43438:0",
       "disabled-tooltip": "crwdns43314:0crwdne43314:0",
       "url-label": "crwdns43316:0crwdne43316:0",
       "copy-url": "crwdns43318:0crwdne43318:0",
-      "warning-title": "crwdns43320:0crwdne43320:0",
+      "warning-title": "crwdns43440:0$t(common.whiteboard)crwdne43440:0",
       "warning-description": "crwdns43322:0crwdne43322:0",
-      "visibility-warning": "crwdns43324:0crwdne43324:0",
+      "visibility-warning": "crwdns43442:0$t(common.whiteboard)crwdne43442:0",
       "errors": {
         "PERMISSION_DENIED": "crwdns43326:0crwdne43326:0",
         "NETWORK": "crwdns43328:0crwdne43328:0",
         "UNKNOWN": "crwdns43330:0crwdne43330:0",
         "NOT_AUTHORIZED": "crwdns43332:0crwdne43332:0",
-        "SPACE_GUEST_DISABLED": "crwdns43334:0crwdne43334:0",
-        "WHITEBOARD_NOT_FOUND": "crwdns43336:0crwdne43336:0"
+        "SPACE_GUEST_DISABLED": "crwdns43444:0$t(common.space)crwdne43444:0",
+        "WHITEBOARD_NOT_FOUND": "crwdns43446:0$t(common.whiteboard)crwdne43446:0"
       }
     },
     "or": "crwdns18432:0crwdne18432:0",
@@ -1255,7 +1258,7 @@
     "shareSettings": {
       "description": "crwdns42622:0$t(common.settings)crwdnd42622:0$t(common.space)crwdnd42622:0{{elementName}}crwdnd42622:0$t(common.settings)crwdne42622:0",
       "disabled": "crwdns40964:0$t(common.settings)crwdnd40964:0$t(common.space)crwdnd40964:0{{elementName}}crwdne40964:0",
-      "guestAccessWarning": "crwdns43338:0crwdne43338:0",
+      "guestAccessWarning": "crwdns43448:0$t(common.whiteboard)crwdnd43448:0$t(common.space)crwdnd43448:0$t(common.whiteboard)crwdne43448:0",
       "ownedBy": {
         "title": "crwdns40048:0{{elementName}}crwdne40048:0"
       },
@@ -1461,7 +1464,6 @@
       "contact-support-sentence": "crwdns18936:0crwdne18936:0",
       "buttons": {
         "reload": "crwdns18938:0crwdne18938:0",
-        "take-me-home": "crwdns18940:0crwdne18940:0",
         "contact-support": "crwdns18942:0crwdne18942:0"
       }
     },
@@ -1470,6 +1472,13 @@
         "invalidUrl": "crwdns18944:0crwdne18944:0",
         "invalidUrlOrigin": "crwdns18946:0crwdne18946:0",
         "invalidUrlFormat": "crwdns18948:0crwdne18948:0"
+      },
+      "redirectDialog": {
+        "title": "crwdns43422:0crwdne43422:0",
+        "message": "crwdns43424:0crwdne43424:0",
+        "countdown": "crwdns43426:0{{seconds}}crwdne43426:0",
+        "cancelCountdown": "crwdns43428:0crwdne43428:0",
+        "goNow": "crwdns43430:0crwdne43430:0"
       }
     },
     "search-cards": {
@@ -2366,7 +2375,7 @@
             "innovationPacks": "crwdns19686:0$t(common.innovation-packs)crwdne19686:0",
             "genericUsageNotice": "crwdns41256:0{{usage}}crwdnd41256:0{{limit}}crwdnd41256:0{{type}}crwdnd41256:0$t(common.account)crwdne41256:0",
             "spaceUsageNotice": "crwdns41258:0$t(common.spaces)crwdnd41258:0$t(common.account)crwdnd41258:0{{freeUsage}}crwdnd41258:0{{freeLimit}}crwdnd41258:0$t(common.spaces)crwdnd41258:0{{plusUsage}}crwdnd41258:0{{plusLimit}}crwdnd41258:0$t(common.spaces)crwdnd41258:0{{premiumUsage}}crwdnd41258:0{{premiumLimit}}crwdnd41258:0$t(common.spaces)crwdne41258:0",
-            "limitNotice": "crwdns41260:0$t(common.account)crwdne41260:0",
+            "limitNotice": "crwdns43450:0$t(common.account)crwdne43450:0",
             "notAvailable": "crwdns19692:0crwdne19692:0",
             "notAvailableNotice": "crwdns41262:0$t(common.account)crwdne41262:0",
             "noTemplates": "crwdns42452:0$t(common.innovationPack)crwdnd42452:0$t(common.template)crwdne42452:0",
@@ -3076,7 +3085,7 @@
         "noMembership": "crwdns41602:0$t(common.member)crwdnd41602:0{{spaceLevel}}crwdnd41602:0$t(common.whiteboard)crwdne41602:0",
         "unauthenticated": "crwdns41604:0$t(common.member)crwdnd41604:0{{spaceLevel}}crwdnd41604:0$t(common.whiteboard)crwdne41604:0"
       },
-      "guestContributionsWarning": "crwdns43344:0crwdne43344:0",
+      "guestContributionsWarning": "crwdns43452:0$t(common.whiteboard)crwdne43452:0",
       "readonlyDialog": {
         "title": "crwdns20404:0crwdne20404:0",
         "reason": {
@@ -3089,20 +3098,20 @@
       "restartCollaboration": "crwdns20414:0crwdne20414:0",
       "previewSettings": {
         "title": "crwdns43076:0crwdne43076:0",
-        "subtitle": "crwdns43234:0$t(common.spaces)crwdne43234:0",
+        "subtitle": "crwdns43454:0$t(common.whiteboard)crwdnd43454:0$t(common.spaces)crwdne43454:0",
         "errorGeneratingPreview": "crwdns43080:0$t(common.whiteboard)crwdne43080:0",
         "modes": {
           "AUTO": {
             "title": "crwdns43130:0crwdne43130:0",
-            "description": "crwdns43132:0crwdne43132:0"
+            "description": "crwdns43456:0$t(common.whiteboard)crwdne43456:0"
           },
           "CUSTOM": {
             "title": "crwdns43134:0crwdne43134:0",
-            "description": "crwdns43136:0crwdne43136:0"
+            "description": "crwdns43458:0$t(common.whiteboard)crwdne43458:0"
           },
           "FIXED": {
             "title": "crwdns43138:0crwdne43138:0",
-            "description": "crwdns43140:0crwdne43140:0"
+            "description": "crwdns43460:0$t(common.whiteboard)crwdne43460:0"
           }
         },
         "cropDialog": {
@@ -3114,8 +3123,8 @@
       },
       "preview": {
         "errorGeneratingPreview": "crwdns43102:0$t(common.whiteboard)crwdne43102:0",
-        "ariaLabel": "crwdns43104:0crwdne43104:0",
-        "ariaLabelDisabled": "crwdns43106:0crwdne43106:0"
+        "ariaLabel": "crwdns43462:0$t(common.whiteboard)crwdnd43462:0$t(common.whiteboard)crwdne43462:0",
+        "ariaLabelDisabled": "crwdns43464:0$t(common.whiteboard)crwdnd43464:0$t(common.whiteboard)crwdne43464:0"
       }
     },
     "publicWhiteboard": {
@@ -3127,7 +3136,7 @@
         "join": {
           "welcome": "crwdns43350:0crwdne43350:0",
           "title": "crwdns43352:0crwdne43352:0",
-          "description": "crwdns43354:0crwdne43354:0",
+          "description": "crwdns43466:0$t(common.whiteboard)crwdne43466:0",
           "guestNameLabel": "crwdns43356:0crwdne43356:0",
           "placeholder": "crwdns43358:0crwdne43358:0",
           "joinButton": "crwdns43360:0crwdne43360:0",
@@ -3135,24 +3144,24 @@
           "signInButton": "crwdns43364:0crwdne43364:0"
         },
         "guestSessionNotification": {
-          "title": "crwdns43366:0crwdne43366:0",
-          "description": "crwdns43368:0crwdne43368:0",
-          "backButton": "crwdns43370:0crwdne43370:0",
+          "title": "crwdns43468:0$t(common.whiteboard)crwdne43468:0",
+          "description": "crwdns43470:0$t(common.whiteboard)crwdne43470:0",
+          "backButton": "crwdns43472:0$t(common.whiteboard)crwdne43472:0",
           "websiteButton": "crwdns43372:0crwdne43372:0",
           "contributeMoreTitle": "crwdns43374:0crwdne43374:0",
           "contributeMoreDescription": "crwdns43376:0crwdne43376:0"
         },
         "error": {
           "404": {
-            "title": "crwdns43378:0crwdne43378:0",
-            "message": "crwdns43380:0crwdne43380:0"
+            "title": "crwdns43474:0$t(common.Whiteboard)crwdne43474:0",
+            "message": "crwdns43476:0$t(common.whiteboard)crwdnd43476:0$t(common.whiteboard)crwdne43476:0"
           },
           "403": {
             "title": "crwdns43382:0crwdne43382:0",
-            "message": "crwdns43384:0crwdne43384:0"
+            "message": "crwdns43478:0$t(common.whiteboard)crwdnd43478:0$t(common.whiteboard)crwdne43478:0"
           },
           "500": {
-            "title": "crwdns43386:0crwdne43386:0",
+            "title": "crwdns43480:0$t(common.Whiteboard)crwdne43480:0",
             "message": "crwdns43388:0crwdne43388:0"
           }
         }
@@ -3437,6 +3446,11 @@
       "header": "crwdns36922:0crwdne36922:0",
       "subheader": "crwdns36924:0crwdne36924:0",
       "subheader2": "crwdns41714:0$t(common.account)crwdne41714:0"
+    },
+    "unauthorized": {
+      "header": "crwdns43432:0crwdne43432:0",
+      "subheader": "crwdns43434:0crwdne43434:0",
+      "subheader2": "crwdns43436:0crwdne43436:0"
     },
     "userNotificationsSettings": {
       "general": {
