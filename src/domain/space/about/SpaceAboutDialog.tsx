@@ -83,9 +83,9 @@ const SpaceAboutDialog = ({
   const aboutProfile = about?.profile;
   const communityGuidelinesId = about?.guidelines.id;
 
-  const openEditDialog = () => {
+  const openEditDialog = (goToPath?: string) => {
     if (aboutProfile?.url) {
-      navigate(buildSettingsUrl(aboutProfile?.url!));
+      navigate(buildSettingsUrl(aboutProfile.url) + (goToPath ? `${goToPath}` : ''));
     }
   };
 
@@ -130,7 +130,7 @@ const SpaceAboutDialog = ({
             component={Link}
             onClick={() => {
               if (!isAuthenticated) {
-                navigate(buildSignUpUrl(window.location.pathname, window.location.search));
+                navigate(buildSignUpUrl(globalThis.location.pathname, globalThis.location.search));
                 return;
               }
 
@@ -204,7 +204,7 @@ const SpaceAboutDialog = ({
                   metrics={metrics}
                   iconColor="white"
                   canEdit={hasEditPrivilege}
-                  onEditClick={openEditDialog}
+                  onEditClick={() => openEditDialog('/about#description')}
                 />
               </PageContentBlock>
               <Gutters disablePadding display="flex" flexDirection="column" alignItems="center" width="100%">

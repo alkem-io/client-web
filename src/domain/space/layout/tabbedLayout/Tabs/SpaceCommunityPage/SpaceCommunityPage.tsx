@@ -27,9 +27,11 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import useSpaceTabProvider from '../../SpaceTabProvider';
+import useCurrentTabPosition from '../../useCurrentTabPosition';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { SPACE_LAYOUT_EDIT_PATH } from '@/domain/space/constants/spaceEditPaths';
+import ExpandableDescription from '@/domain/space/components/ExpandableDescription';
 import InviteContributorsWizard from '@/domain/community/inviteContributors/InviteContributorsWizard';
 import { Identifiable } from '@/core/utils/Identifiable';
 
@@ -38,13 +40,15 @@ const SpaceCommunityPage = () => {
   const { about } = space;
   const { t } = useTranslation();
   const { isAuthenticated } = useCurrentUserContext();
+  const tabPosition = useCurrentTabPosition();
   const {
     classificationTagsets,
     tabDescription,
     flowStateForNewCallouts: flowStateForTab,
     calloutsSetId,
+    canEditInnovationFlow,
   } = useSpaceTabProvider({
-    tabPosition: 1,
+    tabPosition,
   });
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
@@ -131,7 +135,11 @@ const SpaceCommunityPage = () => {
       <InfoColumn>
         {tabDescription && (
           <PageContentBlock accent>
-            <WrapperMarkdown>{tabDescription}</WrapperMarkdown>
+            <ExpandableDescription
+              description={tabDescription}
+              editPath={SPACE_LAYOUT_EDIT_PATH}
+              canEdit={canEditInnovationFlow}
+            />
           </PageContentBlock>
         )}
         <EntityDashboardLeadsSection

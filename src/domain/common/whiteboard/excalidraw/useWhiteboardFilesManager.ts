@@ -145,14 +145,12 @@ const useWhiteboardFilesManager = ({
         }
       }
     }
-
     if (failedFileIds.length > 0) {
       error(
         `Failed to convert ${failedFileIds.length} of ${Object.keys(files).length} local files to remote: [${failedFileIds.join(', ')}]`,
         { category: TagCategoryValues.WHITEBOARD, label: 'convert-to-remote-failures' }
       );
     }
-
     return result;
   };
 
