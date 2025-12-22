@@ -3,7 +3,6 @@ import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import type {
   BinaryFileData,
   BinaryFiles,
-  DataURL,
   ExcalidrawImperativeAPI,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
 import { error, TagCategoryValues } from '@/core/logging/sentry/log';
@@ -61,10 +60,16 @@ const useWhiteboardFilesManager = ({
   const [downloadingFiles, setDownloadingFiles] = useState(false);
   const [uploadFile, { loading: uploadingFile }] = useUploadFileMutation();
 
+  // Store the latest uploadFile in a ref to avoid stale closure issues
+  const uploadFileRef = useRef(uploadFile);
+  useEffect(() => {
+    uploadFileRef.current = uploadFile;
+  }, [uploadFile]);
+
   // Core services (created once, stable across renders)
   const cache = useRef(new WhiteboardFileCache()).current;
   const uploader = useRef(
-    new FileUploader({ storageBucketId, allowFallbackToAttached }, variables => uploadFile({ variables }))
+    new FileUploader({ storageBucketId, allowFallbackToAttached }, variables => uploadFileRef.current({ variables }))
   ).current;
   const downloader = useRef(new FileDownloader()).current;
   const semaphore = useRef(new Semaphore(1)).current;
@@ -79,10 +84,9 @@ const useWhiteboardFilesManager = ({
    * Upload a new file and return its ID
    */
   const addNewFile = async (file: File): Promise<string> => {
-    const { id } = await uploader.upload(file);
     const fileData = await uploader.uploadAndCreateFileData(file);
-    cache.set(id, fileData);
-    return id;
+    cache.set(fileData.id, fileData);
+    return fileData.id;
   };
 
   /**
@@ -178,22 +182,22 @@ const useWhiteboardFilesManager = ({
     file: BinaryFileData & { url?: string }
   ): Promise<BinaryFileDataWithUrl | undefined> => {
     return semaphore.use(async () => {
-      // File already has URL
+      // File already has URL - preserve it along with dataURL if present
       if (file.url) {
-        return { ...file, dataURL: '' as DataURL } as BinaryFileDataWithUrl;
+        return { ...file } as BinaryFileDataWithUrl;
       }
 
       // Check if we have it cached with URL
       const cachedFile = cache.get(file.id);
       if (cachedFile?.url) {
-        return { ...file, dataURL: '' as DataURL, url: cachedFile.url } as BinaryFileDataWithUrl;
+        return { ...file, url: cachedFile.url } as BinaryFileDataWithUrl;
       }
 
       // Upload file if it has dataURL and we have storage
       if (file.dataURL && storageBucketId) {
         const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
         const { url } = await uploader.upload(fileObject);
-        const result = { ...file, url, dataURL: '' as DataURL } as BinaryFileDataWithUrl;
+        const result = { ...file, url } as BinaryFileDataWithUrl;
         cache.set(file.id, result);
         return result;
       }
@@ -279,7 +283,7 @@ const useWhiteboardFilesManager = ({
         downloadingFiles,
       },
     }),
-    [storageBucketId, excalidrawAPI, cacheVersion, downloadingFiles, uploadingFile]
+    [storageBucketId, excalidrawAPI, cacheVersion, downloadingFiles, uploadingFile, guestName]
   );
 };
 
