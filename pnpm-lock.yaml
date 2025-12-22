@@ -224,12 +224,6 @@ importers:
       markdown-it-sup:
         specifier: ^2.0.0
         version: 2.0.0
-      mdast-util-to-hast:
-        specifier: ^13.0.0
-        version: 13.2.0
-      prosemirror-state:
-        specifier: ^1.4.3
-        version: 1.4.3
       react:
         specifier: 19.2.1
         version: 19.2.1
@@ -14909,9 +14903,15 @@ snapshots:
 
   zen-observable@0.8.15: {}
 
-  zustand@4.5.7(@types/react@19.1.8)(immer@10.1.3)(react@19.1.0):
+  zod-validation-error@3.5.4(zod@3.25.76):
     dependencies:
-      use-sync-external-store: 1.5.0(react@19.1.0)
+      zod: 3.25.76
+
+  zod@3.25.76: {}
+
+  zustand@4.5.7(@types/react@19.1.8)(immer@10.1.3)(react@19.2.1):
+    dependencies:
+      use-sync-external-store: 1.5.0(react@19.2.1)
     optionalDependencies:
       '@types/react': 19.1.8
       immer: 10.1.3
