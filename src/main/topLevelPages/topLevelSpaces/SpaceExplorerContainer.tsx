@@ -1,4 +1,4 @@
-import { Dispatch, useEffect, useMemo, useState } from 'react';
+import { Dispatch, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   useMySpacesExplorerPageQuery,
   useSpaceExplorerAllSpacesQuery,
@@ -17,7 +17,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '@/main/search/SearchView';
 import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerView';
-import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { uniqBy } from 'lodash';
 
@@ -81,20 +80,33 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
       membershipFilter === SpacesExplorerMembershipFilter.Public) &&
     !shouldSearch;
 
+  // Call the query hook directly instead of passing it to usePaginatedQuery
   const {
     data: spacesData,
-    fetchMore: fetchMoreSpaces,
+    fetchMore: fetchMoreSpacesRaw,
     loading: isLoadingSpaces,
-    hasMore: hasMoreSpaces,
-  } = usePaginatedQuery({
-    useQuery: useSpaceExplorerAllSpacesQuery,
-    pageSize: ITEMS_LIMIT,
-    variables: {},
-    getPageInfo: result => result.spacesPaginated.pageInfo,
-    options: {
-      skip: !usesPagination,
+  } = useSpaceExplorerAllSpacesQuery({
+    variables: {
+      first: ITEMS_LIMIT,
     },
+    skip: !usesPagination,
   });
+
+  const spacePageInfo = spacesData?.spacesPaginated.pageInfo;
+  const hasMoreSpaces = spacePageInfo?.hasNextPage ?? false;
+
+  const fetchMoreSpaces = useCallback(async () => {
+    if (!spacesData) {
+      return;
+    }
+
+    await fetchMoreSpacesRaw({
+      variables: {
+        first: ITEMS_LIMIT,
+        after: spacePageInfo?.endCursor,
+      },
+    });
+  }, [spacesData, fetchMoreSpacesRaw, spacePageInfo?.endCursor, ITEMS_LIMIT]);
 
   const fetchMore = usesPagination ? fetchMoreSpaces : () => Promise.resolve();
 

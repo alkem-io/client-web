@@ -47,6 +47,7 @@ const SearchBar = ({ ref, ...props }: BoxProps & { withRedirect?: boolean } & { 
     const terms = getSearchTerms(value);
     const params = new URLSearchParams({ [SEARCH_TERMS_URL_PARAM]: terms });
     if (props.withRedirect) {
+      // eslint-disable-next-line react-compiler/react-compiler -- window.location assignment is standard navigation
       window.location.href = `/?${params}`;
     } else {
       navigate(`${pathname}?${params}`);
