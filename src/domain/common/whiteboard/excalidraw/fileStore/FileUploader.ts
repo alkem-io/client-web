@@ -21,7 +21,7 @@ export interface FileUploaderConfig {
  */
 export class FileUploader {
   constructor(
-    private config: FileUploaderConfig,
+    private getConfig: () => FileUploaderConfig,
     private uploadMutation: (variables: {
       file: File;
       uploadData: { storageBucketId: string };
@@ -30,7 +30,7 @@ export class FileUploader {
 
   async upload(file: File): Promise<UploadResult> {
     const fileId = await generateIdFromFile(file);
-    const { storageBucketId, allowFallbackToAttached } = this.config;
+    const { storageBucketId, allowFallbackToAttached } = this.getConfig();
 
     if (!storageBucketId) {
       if (allowFallbackToAttached) {

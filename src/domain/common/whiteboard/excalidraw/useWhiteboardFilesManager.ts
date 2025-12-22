@@ -66,10 +66,19 @@ const useWhiteboardFilesManager = ({
     uploadFileRef.current = uploadFile;
   }, [uploadFile]);
 
+  // Store config in ref to avoid stale storageBucketId/allowFallbackToAttached
+  const configRef = useRef({ storageBucketId, allowFallbackToAttached });
+  useEffect(() => {
+    configRef.current = { storageBucketId, allowFallbackToAttached };
+  }, [storageBucketId, allowFallbackToAttached]);
+
   // Core services (created once, stable across renders)
   const cache = useRef(new WhiteboardFileCache()).current;
   const uploader = useRef(
-    new FileUploader({ storageBucketId, allowFallbackToAttached }, variables => uploadFileRef.current({ variables }))
+    new FileUploader(
+      () => configRef.current,
+      variables => uploadFileRef.current({ variables })
+    )
   ).current;
   const downloader = useRef(new FileDownloader()).current;
   const semaphore = useRef(new Semaphore(1)).current;
