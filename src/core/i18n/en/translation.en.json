@@ -225,7 +225,7 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "vidua": "Vidua. Vidua is an eIDAS-certified provider, ensuring secure and legally recognized authentication under EU standards."
+        "cleverbase": "Connect with Cleverbase: an EU qualified trust service provider, issuing legally recognized digital identities and secure authentication."
       }
     },
     "signUp": {
@@ -3577,7 +3577,7 @@
       "verification-flow-continue": "Continue",
       "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
       "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
-      "claim-missing": "You haven't verified your Vidua identity. Please verify your identity and try again or try another sign up method.",
+      "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Pick a password for your $t(common.account)"
     },
     "fields": {
