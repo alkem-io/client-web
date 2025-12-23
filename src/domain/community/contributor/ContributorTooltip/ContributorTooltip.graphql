@@ -1,4 +1,11 @@
-query ContributorTooltip($userId: UUID!, $includeUser: Boolean = false) {
+query ContributorTooltip(
+  $userId: UUID! =  "00000000-0000-0000-0000-000000000000"
+  $includeUser: Boolean = false
+  $organizationId: UUID! =  "00000000-0000-0000-0000-000000000000"
+  $includeOrganization: Boolean = false
+  $virtualContributorId: UUID! =  "00000000-0000-0000-0000-000000000000"
+  $includeVirtualContributor: Boolean = false
+) {
   user(ID: $userId) @include(if: $includeUser) {
     id
     profile {
@@ -20,5 +27,48 @@ query ContributorTooltip($userId: UUID!, $includeUser: Boolean = false) {
       url
     }
   }
-  # Pending other contributor types
+  organization(ID: $organizationId) @include(if: $includeOrganization) {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualModel
+      }
+      location {
+        id
+        city
+        country
+      }
+      tagsets {
+        id
+        name
+        tags
+      }
+      url
+    }
+  }
+  lookup @include(if: $includeVirtualContributor) {
+    virtualContributor(ID: $virtualContributorId) {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          ...VisualModel
+        }
+        location {
+          id
+          city
+          country
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+        url
+      }
+    }
+  }
 }
