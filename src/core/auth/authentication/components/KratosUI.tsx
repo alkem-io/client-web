@@ -13,7 +13,7 @@ import { useKratosFormContext } from './Kratos/KratosForm';
 import KratosHidden from './Kratos/KratosHidden';
 import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
-import KratosSocialButton from './Kratos/KratosSocialButton';
+import KratosSocialButton, { socialCustomizations } from './Kratos/KratosSocialButton';
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './Kratos/constants';
 import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
 import { useKratosT } from './Kratos/messages';
@@ -244,7 +244,17 @@ export const KratosUI: FC<KratosUIProps> = ({
         )}
         {nodesByGroup.oidc.length > 0 && (
           <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
-            {nodesByGroup.oidc.map(toUiControl)}
+            {[...nodesByGroup.oidc]
+              .sort((a, b) => {
+                const aValue = isInputNode(a) ? a.attributes.value : '';
+                const bValue = isInputNode(b) ? b.attributes.value : '';
+
+                const aOrder = socialCustomizations[aValue]?.sortOrder ?? 0;
+                const bOrder = socialCustomizations[bValue]?.sortOrder ?? 0;
+
+                return aOrder - bOrder;
+              })
+              .map(toUiControl)}
           </Gutters>
         )}
       </Box>
