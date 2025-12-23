@@ -1,0 +1,137 @@
+{
+  "context": {
+    "L0": {
+      "displayName": {
+        "title": "Title *",
+        "description": "",
+        "placeholder": ""
+      },
+      "nameId": {
+        "title": "Url",
+        "description": "",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "Tagline",
+        "description": "",
+        "placeholder": ""
+      },
+      "description": {
+        "title": "What",
+        "description": "",
+        "placeholder": ""
+      },
+      "when": {
+        "title": "Impact",
+        "description": "",
+        "placeholder": ""
+      },
+      "why": {
+        "title": "Why",
+        "description": "",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Who",
+        "description": "",
+        "placeholder": ""
+      },
+      "tags": {
+        "title": "Tags",
+        "description": "",
+        "placeholder": "",
+        "tooltip": "Tags"
+      },
+      "template": {
+        "title": "Template:",
+        "defaultTemplate": "Default Alkemio $t(common.template) for $t(common.spaces)"
+      }
+    },
+    "L1": {
+      "displayName": {
+        "title": "Title *",
+        "description": "",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "Tagline",
+        "description": "",
+        "placeholder": ""
+      },
+      "description": {
+        "title": "What",
+        "description": "",
+        "placeholder": ""
+      },
+      "when": {
+        "title": "Impact",
+        "description": "",
+        "placeholder": ""
+      },
+      "why": {
+        "title": "Why",
+        "description": "",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Who",
+        "description": "",
+        "placeholder": ""
+      },
+      "tags": {
+        "title": "Tags",
+        "description": "",
+        "placeholder": "",
+        "tooltip": "Tags"
+      },
+      "template": {
+        "title": "$t(common.template):",
+        "defaultTemplate": "Default Alkemio $t(common.template) for $t(common.subspaces)"
+      }
+    },
+    "L2": {
+      "displayName": {
+        "title": "Title",
+        "description": "Try to keep it short, descriptive and engaging",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "Tagline",
+        "description": "",
+        "placeholder": ""
+      },
+      "description": {
+        "title": "What",
+        "description": "",
+        "placeholder": ""
+      },
+      "when": {
+        "title": "Impact",
+        "description": "",
+        "placeholder": ""
+      },
+      "why": {
+        "title": "Why",
+        "description": "",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Who",
+        "description": "",
+        "placeholder": ""
+      },
+      "tags": {
+        "title": "Tags",
+        "description": "Enter words that are key to your $t(common.subspace) to make it stand out and easier to find.",
+        "placeholder": ""
+      },
+      "innovationFlow": {
+        "title": "$t(common.subspace) Flow"
+      },
+      "template": {
+        "title": "$t(common.template):",
+        "defaultTemplate": "Default Alkemio $t(common.template) for $t(common.subspaces)"
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "topBar": {
+    "sign-in": "Log In | Sign Up"
+  },
+  "navigation": {
+    "admin": {
+      "settingsMenu": {
+        "quit": "Quit $t(common.settings)"
+      },
+      "subspace": {
+        "create": "Create $t(common.subspace)",
+        "edit": "Edit $t(common.subspace)"
+      }
+    }
+  },
+  "footer": {
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "security": "Security",
+    "feedback": "Feedback",
+    "support": "Support",
+    "about": "About",
+    "copyright": "© 2025 Alkemio B.V."
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "community": {
+    "memberUsers": "$t(common.Member) Users ({{count}})",
+    "leading-organizations": "Leading $t(common.Organizations)",
+    "memberOrganizations": "Member $t(common.Organizations) ({{count}})",
+    "pendingMemberships": "Solicitações e convites pendentes",
+    "leads": "Leads",
+    "members": "$t(common.Members)",
+    "host": "Host",
+    "virtualContributor": "$t(common.virtualContributor)",
+    "members-count": "{{count}} $t(common.Member)",
+    "members-count_plural": "{{count}} $t(common.Members)",
+    "addMember": "Add $t(common.member)",
+    "unauthorizedPermissionsChange": "Você não tem permissão para editar as permissões deste usuário",
+    "virtualContributors": {
+      "blockTitle": "$t(common.virtualContributors) ({{count}})",
+      "removeDialog": {
+        "title": "Remove $t(common.virtualContributor)",
+        "confirm": "Você tem certeza?"
+      },
+      "externalVCsInfo": "At the moment, only Alkemio Support can add an external $t(common.virtualContributor) to your $t(common.space). Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
+      "searchVC": "Find $t(common.virtualContributor)",
+      "permissionRequiredTooltip": "To use $t(common.virtualContributors), please upgrade your license or contact the Alkemio team for assistance."
+    },
+    "application-form": {
+      "title": "Formulário de inscrição",
+      "subtitle": "This section allows you to modify the questions for users applying to the $t(common.space). <br /><b>Please note</b> that these questions will only be shown when the $t(common.membership) options (in the block above) are set to \"Applications required\"",
+      "required-question": "Pergunta Obrigatória",
+      "move-up": "Mover a questão uma posição para cima",
+      "move-down": "Mover a questão uma posição para baixo",
+      "delete-question": "Excluir pergunta",
+      "updated-successfully": "Formulário de Inscrição atualizado com sucesso."
+    },
+    "communityGuidelines": {
+      "title": "$t(common.Community) guidelines",
+      "saveAndDeleteContentSuccessMessage": "$t(common.Community) guidelines content removed and saved successfully.",
+      "updatedSuccessfully": "$t(common.Community) guidelines updated successfully.",
+      "adminsOnly": "Since there are no $t(common.community) guidelines specified, this block is only visible for $t(common.admins) and $t(common.leads).",
+      "communityGuidelinesRedirect": "Click here to update the $t(common.community) guidelines in the $t(common.space) $t(common.settings).",
+      "confirmationDialog": {
+        "title": "Updating $t(common.community) guidelines",
+        "description": "Are you sure you want to replace your existing $t(common.community) guidelines? This action cannot be undone."
+      },
+      "deleteCommunityGuidelines": "Delete $t(common.community) guidelines"
+    },
+    "applicationsHelp": "Here you can find everyone that applied to become a $t(common.member) of this $t(common.space). By clicking on them you can review their application and accept or reject them.",
+    "applicationStatus": {
+      "applicationReceived": "Inscrição Recebida",
+      "applicationApproved": "Inscrição Aprovada",
+      "applicationRejected": "Inscrição rejeitada",
+      "applicationArchived": "Inscrição arquivada"
+    },
+    "invitations": {
+      "inviteButton": {
+        "USER": "Invite people to this $t(common.space)",
+        "ORGANIZATION": "Invite people to this $t(common.space)",
+        "VIRTUAL": "Invite $t(common.virtualContributor)"
+      },
+      "inviteToRole": "Convidar para ser: ",
+      "inviteContributorsDialog": {
+        "users": {
+          "title": "Convidar outros para juntarem-se a '{{spaceName}}'",
+          "description": "Procure por pessoas abaixo ou adicione o endereço de e-mail diretamente",
+          "descriptionMembers": "Search $t(common.members) from the parent $t(common.spaceSubspace).",
+          "note": "Tenha em mente que o seu e-mail pessoal ficará visível para qualquer pessoa que você enviar mensagens.",
+          "defaultWelcomeMessage": "Hi, I would like to invite you to {{spaceName}}. Have a look at the $t(common.space) or click on the button below to directly accept or decline the invitation.",
+          "placeholder": "Usuário ou e-mail...",
+          "success": "Seu convite foi enviado com sucesso para os seguintes destinatários:",
+          "failure": "Não foi possível enviar o convite para os seguintes destinatários:",
+          "back": "Enviar outro convite",
+          "invitationsSent": "Já possui um convite/aplicativo aberto",
+          "invitationByEmailTooltip": "{{email}} will be invited to sign up to Alkemio and to this $t(common.space)",
+          "results": {
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "Já possui um convite/aplicativo aberto",
+            "ALREADY_INVITED_TO_ROLE_SET": "Já possui um convite/aplicativo aberto",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "Invitation to the parent $t(common.community) was not authorized",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "Convidado para entrar na plataforma",
+            "INVITED_TO_ROLE_SET": "Invited to join the $t(common.community)"
+          },
+          "validationErrors": {
+            "required": "Por favor, adicione pelo menos um colaborador para convidar",
+            "invalidAddress": "Please remove invalid entries in order to proceed"
+          }
+        },
+        "vcs": {
+          "title": "$t(common.virtualContributors) Store",
+          "dialogTitle": "Invite $t(common.virtualContributor) to join this $t(common.space)",
+          "invitationSent": "Convite enviado com sucesso",
+          "inviteExternalVC": "Convidar Colaborador Virtual Externo",
+          "inviteBtn": "Invite $t(common.virtualContributor)",
+          "defaultVCInvitationMessage": "Hi, I would like to invite your $t(common.virtualContributor) {{name}} to {{space}}. Have a look at the $t(common.space) or click on the button below to directly accept or decline the invitation.",
+          "onAccount": {
+            "title": "$t(common.virtualContributors) linked to this $t(common.space)'s $t(common.account)"
+          },
+          "inLibrary": {
+            "title": "Other $t(common.virtualContributors)"
+          },
+          "emptyMessage": "No available $t(common.virtualContributors)",
+          "successfullyAdded": "{{contributor}} adicionado com sucesso",
+          "vcFetchErrorMessage": "An error occurred while fetching the $t(common.virtualContributors)"
+        },
+        "welcomeMessage": "Mensagem do Convite"
+      }
+    },
+    "confirmationDialogs": {
+      "delete": {
+        "application": {
+          "title": "Excluindo a solicitação de '{{user}}'",
+          "content": "Tem certeza que deseja arquivar essa solicitação? A solicitação será rejeitada, se já não for o caso."
+        },
+        "invitation": {
+          "title": "Deletando convite de '{{user}}'",
+          "content": "Tem certeza que deseja deletar esse convite? O convite será deletado, se já não for o caso."
+        },
+        "platformInvitation": {
+          "title": "Deletando convite de '{{user}}'",
+          "content": "Tem certeza que deseja deletar esse convite? O convite será deletado, se já não for o caso."
+        }
+      },
+      "approve": {
+        "title": "Aprovar solicitação de {{user}}",
+        "content": "Are you sure that you want to Approve this application? The user will be added to the $t(common.space) and will be able to access it.",
+        "confirmButton": "Sim, aprovar"
+      },
+      "reject": {
+        "title": "Rejeitar solicitação de {{user}}",
+        "content": "Are you sure that you want to Reject this application? The user will not be able to access the $t(common.space).",
+        "confirmButton": "Sim, rejeitar"
+      }
+    },
+    "pendingMembership": {
+      "pendingMemberships": "My Pending $t(common.Memberships)",
+      "pendingMembershipsWithCount": "My Pending $t(common.Memberships) ({{count}})",
+      "invitationsSectionTitle": "Convites",
+      "virtualInvitationsSectionTitle": "Invitations for my $t(common.virtualContributor)",
+      "applicationsSectionTitle": "Abrir inscrições",
+      "invitationDialog": {
+        "title": "My Pending $t(common.Membership): {{space}}",
+        "vc": {
+          "title": "Pending $t(common.virtualContributor) $t(common.membership): {{space}}"
+        },
+        "actions": {
+          "hide": "Ocultar este convite",
+          "reject": "Recusar",
+          "join": "Juntar-se",
+          "accept": "Entrar"
+        }
+      },
+      "invitationTitle": "{{time}} {{user}} convidado {{invitedEntity}} para <spaceicon /> {{space}}",
+      "invitationCardTitle": "{{user}} convidado {{invitedEntity}} para <spaceicon /> {{space}}",
+      "you": "Você",
+      "vc": "your $t(common.virtualContributor)"
+    },
+    "memberSettings": {
+      "title": "$t(common.Member) $t(common.settings)",
+      "lead": "This $t(common.member) is a <b>$t(common.lead)</b>: Leads are shown as the $t(common.hosts) of the $t(common.community). ",
+      "admin": "This $t(common.member) is an <b>$t(common.admin)</b>: (s)he has the right to administer this $t(common.community) and all of its content and contributors.",
+      "maxLeadsWarning": "Note that there is a specific <b>maximum number of $t(common.leads)</b> for the communities. If the maximum number if reached, this option will be disabled for others.",
+      "removeMember": {
+        "sectionTitle": "Remove $t(common.member)",
+        "remove": "Click here to remove this user from this $t(common.community). Be careful, this action cannot be undone.",
+        "dialogTitle": "Are you sure you want to remove this $t(common.member)?",
+        "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this $t(common.community) and all the underlying $t(common.subspaces) {{memberFirstName}} may be $t(common.member) of. {{memberFirstName}}’s contributions will remain in place."
+      }
+    },
+    "removeGuidelinesConfirmationDialog": {
+      "title": "Remove $t(common.community) guidelines content",
+      "content": "Are you sure you want to remove the $t(common.community) guidelines? This action cannot be undone."
+    },
+    "unableToAddMemberInfo": {
+      "title": "Unable To Add $t(common.member)",
+      "content": "This $t(common.member) must be added to the parent $t(common.space) first."
+    }
+  },
+  "dashboard-community-section": {
+    "title": "$t(common.Community)"
+  },
+  "contributors-section": {
+    "title": "Colaboradores"
+  },
+  "associated-organizations-view": {
+    "no-data": "Sem {{name, lowercase}} disponível"
+  },
+  "dashboard-contributors-section": {
+    "dialog-title": "Colaboradores",
+    "more": "...mais {{count}} a mais"
+  },
+  "associates-view": {
+    "less": "mostrar menos",
+    "more": "...mais {{count}} a mais",
+    "sign-in": "Please sign in to see the users that are associated with this $t(common.organization)."
+  }
+}

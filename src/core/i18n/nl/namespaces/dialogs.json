@@ -1,0 +1,38 @@
+{
+  "share-dialog": {
+    "title": "Kopieer de onderstaande link om deze {{entity}} te delen",
+    "share-this": "Deel deze {{entity}}",
+    "share-this-on": "Deel deze {{entity}} op {{platform}}",
+    "or": "of",
+    "url": "URL",
+    "warning": "Houd er rekening mee dat uw persoonlijke e-mailadres zichtbaar is voor de gebruiker wanneer u hen een bericht stuurt.",
+    "platforms": {
+      "clipboard": {
+        "title": "Link kopiëren",
+        "copy": "Kopieer",
+        "copied": "Gekopieerd!"
+      },
+      "alkemio": {
+        "name": "Alkemio",
+        "title": "Delen op Alkemio",
+        "description": "Deel deze {{entity}} rechtstreeks met andere Alkemio gebruikers. Je kunt hieronder zoeken naar Alkemio gebruikers en een persoonlijk bericht toevoegen.",
+        "default-template": "Hallo!\n\nIk wil deze {{entity}} met je delen.\n\nNeem een kijkje!"
+      },
+      "linkedin": {
+        "title": "Delen op LinkedIn"
+      },
+      "twitter": {
+        "title": "Delen op Twitter"
+      },
+      "whatsapp": {
+        "title": "Delen op Whatsapp"
+      },
+      "email": {
+        "title": "Delen via e-mail"
+      }
+    }
+  },
+  "aboutDialog": {
+    "applyNotSignedInHelperText": "Je wordt eerst doorgestuurd naar de inlogpagina van Alkemio"
+  }
+}
