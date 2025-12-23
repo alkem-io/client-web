@@ -1,5 +1,4 @@
 fragment VcInteractionsDetails on VcInteraction {
-    id
-    threadID
+   threadID
     virtualContributorID
 }

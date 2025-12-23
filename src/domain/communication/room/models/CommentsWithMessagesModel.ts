@@ -35,5 +35,5 @@ export type CommentsWithMessagesModel = {
     }[];
     sender?: ContributorModel;
   }[];
-  vcInteractions: { id: string; threadID: string; virtualContributorID: string }[];
+  vcInteractions: { threadID: string; virtualContributorID: string }[];
 };

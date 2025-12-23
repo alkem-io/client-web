@@ -9,7 +9,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
-import { CommunicationConversationType, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
+import {  UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
   ContributorItem,
@@ -91,7 +91,6 @@ export const NewMessageDialog = ({ open, onClose, onConversationCreated }: NewMe
     await createConversation({
       variables: {
         conversationData: {
-          type: CommunicationConversationType.UserUser,
           userID: selectedUser.id,
         },
       },

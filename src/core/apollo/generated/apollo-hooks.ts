@@ -924,7 +924,6 @@ export const MessageDetailsFragmentDoc = gql`
 `;
 export const VcInteractionsDetailsFragmentDoc = gql`
   fragment VcInteractionsDetails on VcInteraction {
-    id
     threadID
     virtualContributorID
   }
@@ -1941,15 +1940,6 @@ export const SpaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -1961,15 +1951,6 @@ export const SpaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -2003,15 +1984,6 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -2023,15 +1995,6 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -3774,15 +3737,6 @@ export const ExploreSpacesFragmentDoc = gql`
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
           }
         }
         leadOrganizations {
@@ -3793,15 +3747,6 @@ export const ExploreSpacesFragmentDoc = gql`
             displayName
             avatar: visual(type: AVATAR) {
               ...VisualModel
-            }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
             }
           }
         }
@@ -27256,7 +27201,7 @@ export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.Spa
 }
 export const CreateConversationDocument = gql`
   mutation CreateConversation($conversationData: CreateConversationInput!) {
-    createConversationOnConversationsSet(conversationData: $conversationData) {
+    createConversation(conversationData: $conversationData) {
       id
       room {
         id

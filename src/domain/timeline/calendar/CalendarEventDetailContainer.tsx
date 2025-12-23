@@ -20,7 +20,6 @@ type Provided = {
   event?: CalendarEventDetailData;
   messages: Message[];
   vcInteractions: {
-    id: string;
     threadID: string;
     virtualContributorID: string;
   }[];
