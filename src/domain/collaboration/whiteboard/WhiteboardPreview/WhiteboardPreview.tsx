@@ -45,7 +45,7 @@ const Container = styled(Box)(({ theme, onClick }) => ({
       display: 'block',
     },
   },
-  // Background blur on hover
+  // Background overlay on hover
   '&:hover::before': onClick
     ? {
         content: '""',
@@ -55,7 +55,8 @@ const Container = styled(Box)(({ theme, onClick }) => ({
         width: '100%',
         height: '100%',
         borderRadius: theme.shape.borderRadius,
-        backdropFilter: 'blur(3px)',
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 0 3px rgba(0, 0, 0, 0.8)', // fill some gaps around the edges
         zIndex: 1,
       }
     : undefined,
@@ -101,7 +102,7 @@ const WhiteboardChipButton = ({ disableClick, ...props }: ButtonProps & { disabl
       sx={theme => ({
         ...buttonsInPreview(theme),
         top: gutters(1)(theme),
-        left: gutters(1)(theme),
+        right: gutters(1)(theme),
         textTransform: 'none',
         pointerEvents: disableClick ? 'none' : 'auto',
         [theme.breakpoints.down('sm')]: {
