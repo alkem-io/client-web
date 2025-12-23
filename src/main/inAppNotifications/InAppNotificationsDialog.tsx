@@ -1,4 +1,4 @@
-import { DialogContent, IconButton, Link, Tooltip } from '@mui/material';
+import { DialogContent, IconButton, Tooltip } from '@mui/material';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 import { InAppNotificationSubscriber } from '@/main/inAppNotifications/inAppNotificationSubscriber';
 import { InAppNotificationsFilterChips } from './InAppNotificationsFilterChips';
 import { buildNotificationSettingsUrl } from '../routing/urlBuilders';
+import RouterLink from '@/core/ui/link/RouterLink';
 
 export const InAppNotificationsDialog = () => {
   const { t } = useTranslation();
@@ -39,7 +40,7 @@ export const InAppNotificationsDialog = () => {
             </Tooltip>
             {userModel?.profile.url && (
               <Tooltip title={t('common.settings')} placement="top">
-                <IconButton component={Link} href={buildNotificationSettingsUrl(userModel.profile.url)}>
+                <IconButton component={RouterLink} to={buildNotificationSettingsUrl(userModel.profile.url)}>
                   <SettingsOutlinedIcon />
                 </IconButton>
               </Tooltip>
