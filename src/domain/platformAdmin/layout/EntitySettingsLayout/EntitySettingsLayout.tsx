@@ -30,6 +30,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   return (
     <PageContent background="background.paper" gridContainerProps={{ paddingTop: 0 }}>
       <EntitySettingsTabs
+        data-testid={`${entityTypeName}-settings`}
         tabs={subheaderTabs}
         currentTab={currentTab}
         aria-label={`${entityTypeName} Settings tabs`}
