@@ -192,9 +192,12 @@ export default defineConfig({
             if (id.includes('@alkemio/excalidraw') || id.includes('excalidraw')) {
               return 'vendor-excalidraw';
             }
-            // React ecosystem
-            if (id.includes('react-router') || id.includes('react-dom') || id.includes('react/')) {
+            // React ecosystem - split react and react-router for better caching
+            if (id.includes('react/') || id.includes('react-dom')) {
               return 'vendor-react';
+            }
+            if (id.includes('react-router')) {
+              return 'vendor-react-router';
             }
             // Forms and validation
             if (id.includes('formik') || id.includes('yup')) {
@@ -239,6 +242,18 @@ export default defineConfig({
             // Image processing
             if (id.includes('react-image') || id.includes('image-blob-reduce') || id.includes('pica')) {
               return 'vendor-image';
+            }
+            // Socket.io
+            if (id.includes('socket.io')) {
+              return 'vendor-socketio';
+            }
+            // Axios
+            if (id.includes('axios')) {
+              return 'vendor-axios';
+            }
+            // Elastic APM
+            if (id.includes('@elastic/apm')) {
+              return 'vendor-apm';
             }
             // Everything else from node_modules
             return 'vendor-other';
