@@ -152,6 +152,113 @@ export default defineConfig({
         entryFileNames: 'assets/[name][hash].js',
         chunkFileNames: 'assets/[name][hash].js',
         assetFileNames: 'assets/[name][hash].[ext]',
+        manualChunks: (id) => {
+          // Separate vendor chunks for better caching
+          if (id.includes('node_modules')) {
+            // Apollo Client
+            if (id.includes('@apollo/client')) {
+              return 'vendor-apollo';
+            }
+            // MUI components
+            if (id.includes('@mui/material') || id.includes('@mui/system')) {
+              return 'vendor-mui';
+            }
+            if (id.includes('@mui/icons-material')) {
+              return 'vendor-mui-icons';
+            }
+            if (id.includes('@mui/x-data-grid')) {
+              return 'vendor-mui-datagrid';
+            }
+            if (id.includes('@mui/x-date-pickers')) {
+              return 'vendor-mui-datepickers';
+            }
+            // Emotion styling
+            if (id.includes('@emotion/')) {
+              return 'vendor-emotion';
+            }
+            // Tiptap editor
+            if (id.includes('@tiptap/')) {
+              return 'vendor-tiptap';
+            }
+            // Markdown processing
+            if (id.includes('markdown-it') || id.includes('remark') || id.includes('rehype') || id.includes('unified') || id.includes('mdast') || id.includes('hast')) {
+              return 'vendor-markdown';
+            }
+            // Mermaid charting
+            if (id.includes('mermaid')) {
+              return 'vendor-mermaid';
+            }
+            // Excalidraw
+            if (id.includes('@alkemio/excalidraw') || id.includes('excalidraw')) {
+              return 'vendor-excalidraw';
+            }
+            // React ecosystem - split react and react-router for better caching
+            if (id.includes('react/') || id.includes('react-dom')) {
+              return 'vendor-react';
+            }
+            if (id.includes('react-router')) {
+              return 'vendor-react-router';
+            }
+            // Forms and validation
+            if (id.includes('formik') || id.includes('yup')) {
+              return 'vendor-forms';
+            }
+            // i18n
+            if (id.includes('i18next')) {
+              return 'vendor-i18n';
+            }
+            // Drag and drop
+            if (id.includes('@hello-pangea/dnd') || id.includes('@atlaskit/pragmatic-drag-and-drop')) {
+              return 'vendor-dnd';
+            }
+            // GraphQL
+            if (id.includes('graphql')) {
+              return 'vendor-graphql';
+            }
+            // Lodash
+            if (id.includes('lodash')) {
+              return 'vendor-lodash';
+            }
+            // Date utilities
+            if (id.includes('date-fns') || id.includes('dayjs')) {
+              return 'vendor-date';
+            }
+            // Sentry
+            if (id.includes('@sentry/')) {
+              return 'vendor-sentry';
+            }
+            // XState
+            if (id.includes('xstate') || id.includes('@xstate')) {
+              return 'vendor-xstate';
+            }
+            // Prosemirror
+            if (id.includes('prosemirror') || id.includes('y-prosemirror')) {
+              return 'vendor-prosemirror';
+            }
+            // YJS (real-time collaboration)
+            if (id.includes('yjs') || id.includes('@hocuspocus')) {
+              return 'vendor-yjs';
+            }
+            // Image processing
+            if (id.includes('react-image') || id.includes('image-blob-reduce') || id.includes('pica')) {
+              return 'vendor-image';
+            }
+            // Socket.io
+            if (id.includes('socket.io')) {
+              return 'vendor-socketio';
+            }
+            // Axios
+            if (id.includes('axios')) {
+              return 'vendor-axios';
+            }
+            // Elastic APM
+            if (id.includes('@elastic/apm')) {
+              return 'vendor-apm';
+            }
+            // Everything else from node_modules
+            return 'vendor-other';
+          }
+        },
       },
     },
   },
