@@ -23,7 +23,7 @@ const CalloutContributionPreviewMemo = ({
       {loading ? (
         <Loading />
       ) : (
-        <MemoPreview memo={displayMemo} onClick={onOpenContribution} sx={{ height: gutters(13) }} />
+        <MemoPreview memo={displayMemo} onClick={onOpenContribution} sx={{ height: gutters(16) }} />
       )}
     </Box>
   );

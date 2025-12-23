@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { MouseEventHandler } from 'react';
 import CroppedMarkdown from '@/core/ui/markdown/CroppedMarkdown';
 import { gutters } from '@/core/ui/grid/utils';
-import { Box, ButtonBase, SxProps } from '@mui/material';
-import { alpha, styled } from '@mui/material';
-import { Caption } from '@/core/ui/typography';
+import { Box, Button, ButtonProps, SxProps } from '@mui/material';
+import { styled } from '@mui/material';
 import Gutters from '@/core/ui/grid/Gutters';
 import Centered from '@/core/ui/utils/Centered';
 import { Theme } from '@mui/material/styles';
+import { previewContainerStyles, previewButtonStyles, chipButtonPositionStyles } from '../../common/PreviewStyles';
 
 type MemoPreviewProps = {
   displayName?: string;
@@ -22,67 +22,83 @@ type MemoPreviewProps = {
   sx?: SxProps<Theme>;
 };
 
-const Container = styled(ButtonBase)(({ theme }) => ({
+const Container = styled(Box)(({ theme, onClick }) => previewContainerStyles(theme, onClick));
+
+const ContentContainer = styled(Box)<{ withMinHeight?: boolean }>(({ theme, withMinHeight }) => ({
   position: 'relative',
-  height: gutters(13)(theme),
-  overflow: 'hidden',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderRadius: theme.shape.borderRadius,
   width: '100%',
+  display: 'flex',
+  minHeight: withMinHeight ? gutters(16)(theme) : undefined,
 }));
 
-const CaptionContainer = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  right: 0,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: gutters(2)(theme),
-  backgroundColor: alpha(theme.palette.common.white, 0.8),
-}));
+const OpenMemoButton = (props: ButtonProps) => {
+  const { t } = useTranslation();
+  return (
+    <Button variant="outlined" className="only-on-hover" sx={theme => previewButtonStyles(theme)} {...props}>
+      {t('callout.memo.clickToSee')}
+    </Button>
+  );
+};
+
+const MemoChipButton = (props: ButtonProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <Button
+      variant="outlined"
+      startIcon={<MemoIcon />}
+      size="small"
+      sx={theme => ({
+        ...previewButtonStyles(theme),
+        ...chipButtonPositionStyles(theme),
+      })}
+      aria-label={t('common.Memo')}
+      {...props}
+    >
+      {t('common.Memo')}
+    </Button>
+  );
+};
 
 const MemoPreview = ({ memo, onClick, sx }: MemoPreviewProps) => {
-  const { t } = useTranslation();
+  // onClick presence distinguishes between response preview (onClick present) and framing preview (onClick absent)
+  const isInteractivePreview = Boolean(onClick);
+
   if (!memo?.markdown) {
     return (
-      <Container onClick={onClick} sx={{ cursor: 'pointer', ...sx }}>
-        <Centered>
-          <MemoIcon />
-        </Centered>
-        <CaptionContainer>
-          {onClick && (
-            <Caption sx={{ color: theme => theme.palette.primary.main }}>{t('callout.memo.clickToSee')}</Caption>
-          )}
-        </CaptionContainer>
+      <Container onClick={onClick} sx={sx}>
+        <ContentContainer withMinHeight={isInteractivePreview}>
+          <Centered>
+            <MemoIcon />
+          </Centered>
+        </ContentContainer>
+        {isInteractivePreview && <MemoChipButton />}
+        {isInteractivePreview && <OpenMemoButton />}
       </Container>
     );
   } else {
     // add quote styling at the start - avoid having double quote blocks
     const quotedMarkdown = memo.markdown.replace(/^(?!>)|^>>/gm, '> ');
     return (
-      <Gutters disablePadding onClick={onClick} sx={{ cursor: 'pointer', position: 'relative', ...sx }}>
-        <CroppedMarkdown
-          backgroundColor="paper"
-          minHeightGutters={3}
-          maxHeightGutters={10}
-          containerProps={{
-            marginX: gutters(1),
-          }}
-          overflowMarker={
-            onClick && (
-              <CaptionContainer>
-                <Caption sx={{ color: theme => theme.palette.primary.main }}>{t('callout.memo.clickToSee')}</Caption>
-              </CaptionContainer>
-            )
-          }
-        >
-          {quotedMarkdown}
-        </CroppedMarkdown>
-      </Gutters>
+      <Container onClick={onClick} sx={sx}>
+        <ContentContainer withMinHeight={isInteractivePreview}>
+          <Gutters disablePadding sx={{ width: '100%' }}>
+            <CroppedMarkdown
+              backgroundColor="paper"
+              minHeightGutters={3}
+              maxHeightGutters={16}
+              containerProps={{
+                marginX: gutters(1),
+                marginTop: gutters(1),
+              }}
+            >
+              {quotedMarkdown}
+            </CroppedMarkdown>
+          </Gutters>
+        </ContentContainer>
+        {isInteractivePreview && <MemoChipButton />}
+        {isInteractivePreview && <OpenMemoButton />}
+      </Container>
     );
   }
 };
