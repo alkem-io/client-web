@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import {
   refetchPlatformAdminOrganizationsListQuery,
@@ -10,7 +10,6 @@ import {
   useRevokeLicensePlanFromAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { useTranslation } from 'react-i18next';
@@ -27,14 +26,33 @@ const PAGE_SIZE = 10;
 export const usePlatformAdminOrganizationsList = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { data, ...paginationProvided } = usePaginatedQuery({
-    useQuery: usePlatformAdminOrganizationsListQuery,
+  // Call the query hook directly instead of passing it to usePaginatedQuery
+  const { data, loading, fetchMore: fetchMoreRaw, error } = usePlatformAdminOrganizationsListQuery({
     variables: {
+      first: PAGE_SIZE,
       filter: { displayName: searchTerm },
     },
-    pageSize: PAGE_SIZE,
-    getPageInfo: data => data?.platformAdmin.organizations.pageInfo,
   });
+
+  const pageInfo = data?.platformAdmin.organizations.pageInfo;
+  const hasMore = pageInfo?.hasNextPage ?? false;
+
+  const fetchMore = useCallback(
+    async (itemsNumber = PAGE_SIZE) => {
+      if (!data) {
+        return;
+      }
+
+      await fetchMoreRaw({
+        variables: {
+          first: itemsNumber,
+          after: pageInfo?.endCursor,
+          filter: { displayName: searchTerm },
+        },
+      });
+    },
+    [data, fetchMoreRaw, pageInfo?.endCursor, searchTerm, PAGE_SIZE]
+  );
 
   const { t } = useTranslation();
   const notify = useNotification();
@@ -173,7 +191,12 @@ export const usePlatformAdminOrganizationsList = () => {
     licensePlans,
     assignLicensePlan,
     revokeLicensePlan,
-    ...paginationProvided,
+    loading,
+    error,
+    fetchMore,
+    hasMore,
+    pageSize: PAGE_SIZE,
+    firstPageSize: PAGE_SIZE,
   };
 };
 

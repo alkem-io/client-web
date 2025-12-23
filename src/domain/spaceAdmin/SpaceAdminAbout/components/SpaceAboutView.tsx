@@ -3,11 +3,13 @@ import { useSpaceAboutFullQuery, useUpdateSpaceMutation } from '@/core/apollo/ge
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import SpaceAboutForm, {
   SpaceAboutEditFormValuesType,
+  SpaceAboutFormHandle,
 } from '@/domain/spaceAdmin/SpaceAdminAbout/components/SpaceAboutForm';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { SpaceAboutFullModel } from '@/domain/space/about/model/spaceAboutFull.model';
 import { Actions } from '@/core/ui/actions/Actions';
 import Loading from '@/core/ui/loading/Loading';
+import { useRef } from 'react';
 
 export const SpaceAboutView = () => {
   const notify = useNotification();
@@ -24,6 +26,8 @@ export const SpaceAboutView = () => {
   const [updateSpace, { loading: isLoading }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
   });
+
+  const spaceAboutFormRef = useRef<SpaceAboutFormHandle>(null);
 
   if (resolverLoading || spaceDataLoading || !about) {
     return <Loading />;
@@ -53,20 +57,19 @@ export const SpaceAboutView = () => {
       },
     });
   };
-  let submitWired;
 
   return (
     <>
       <SpaceAboutForm
+        ref={spaceAboutFormRef}
         isEdit
         spaceLevel={spaceLevel}
         about={about}
         onSubmit={onSubmit}
-        wireSubmit={submit => (submitWired = submit)}
         loading={isLoading}
       />
       <Actions justifyContent={'flex-end'}>
-        <SaveButton loading={isLoading} onClick={() => submitWired()} />
+        <SaveButton loading={isLoading} onClick={() => spaceAboutFormRef.current?.submit()} />
       </Actions>
     </>
   );

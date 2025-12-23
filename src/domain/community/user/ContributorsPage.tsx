@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useMemo } from 'react';
+import { useState, ChangeEvent, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InputAdornment, OutlinedInput } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -19,16 +19,11 @@ import {
   useContributorsVirtualInLibraryQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
-  ContributorsPageOrganizationsQuery,
-  ContributorsPageOrganizationsQueryVariables,
-  ContributorsPageUsersQuery,
-  ContributorsPageUsersQueryVariables,
   OrganizationContributorFragment,
   OrganizationVerificationEnum,
   UserContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { arrayShuffle } from '@/core/utils/array.shuffle';
-import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { VirtualContributorModelBase } from '../virtualContributor/model/VirtualContributorModelBase';
 import { ApolloError } from '@apollo/client';
 
@@ -70,25 +65,48 @@ const ContributorsPage = () => {
 
   const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.contributors' });
 
-  const usersQueryResult = usePaginatedQuery<ContributorsPageUsersQuery, ContributorsPageUsersQueryVariables>({
-    useQuery: useContributorsPageUsersQuery,
-    options: {
-      fetchPolicy: 'cache-first',
-      nextFetchPolicy: 'cache-first',
-      skip: !isAuthenticated,
-    },
+  // Call the query hook directly instead of passing it to usePaginatedQuery
+  const {
+    data: usersData,
+    loading: usersLoading,
+    fetchMore: usersFetchMoreRaw,
+    error: usersError,
+  } = useContributorsPageUsersQuery({
     variables: {
+      first: pageSize,
       withTags: true,
       filter: { firstName: searchTermsDebounced, lastName: searchTermsDebounced, email: searchTermsDebounced },
     },
-    pageSize: pageSize,
-    getPageInfo: result => result.usersPaginated.pageInfo,
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-first',
+    skip: !isAuthenticated,
   });
+
+  const usersPageInfo = usersData?.usersPaginated.pageInfo;
+  const usersHasMore = usersPageInfo?.hasNextPage ?? false;
+
+  const usersFetchMore = useCallback(
+    async (itemsNumber = pageSize) => {
+      if (!usersData) {
+        return;
+      }
+
+      await usersFetchMoreRaw({
+        variables: {
+          first: itemsNumber,
+          after: usersPageInfo?.endCursor,
+          withTags: true,
+          filter: { firstName: searchTermsDebounced, lastName: searchTermsDebounced, email: searchTermsDebounced },
+        },
+      });
+    },
+    [usersData, usersFetchMoreRaw, usersPageInfo?.endCursor, pageSize, searchTermsDebounced]
+  );
 
   const randomizedUsers = useMemo(() => {
     // if the length changed, shuffle only the new portion of the array
     // to avoid re-rendering the entire list
-    const users = usersQueryResult.data?.usersPaginated.users;
+    const users = usersData?.usersPaginated.users;
 
     if (!users) {
       return [];
@@ -97,28 +115,27 @@ const ContributorsPage = () => {
     const randomizedNewUsers = arrayShuffle(users.slice(-pageSize));
 
     return [...users.slice(0, users.length - pageSize), ...randomizedNewUsers];
-  }, [usersQueryResult.data?.usersPaginated.users?.length]);
+  }, [usersData?.usersPaginated.users?.length, pageSize]);
 
   const users: PaginatedResult<UserContributorFragment> = {
     items: randomizedUsers,
-    loading: usersQueryResult.loading,
-    hasMore: usersQueryResult.hasMore,
-    pageSize: usersQueryResult.pageSize,
-    firstPageSize: usersQueryResult.firstPageSize,
-    error: usersQueryResult.error,
-    fetchMore: usersQueryResult.fetchMore,
+    loading: usersLoading,
+    hasMore: usersHasMore,
+    pageSize: pageSize,
+    firstPageSize: pageSize,
+    error: usersError,
+    fetchMore: usersFetchMore,
   };
 
-  const organizationsQueryResult = usePaginatedQuery<
-    ContributorsPageOrganizationsQuery,
-    ContributorsPageOrganizationsQueryVariables
-  >({
-    useQuery: useContributorsPageOrganizationsQuery,
-    options: {
-      fetchPolicy: 'cache-first',
-      nextFetchPolicy: 'cache-first',
-    },
+  // Call organizations query hook directly
+  const {
+    data: organizationsData,
+    loading: organizationsLoading,
+    fetchMore: organizationsFetchMoreRaw,
+    error: organizationsError,
+  } = useContributorsPageOrganizationsQuery({
     variables: {
+      first: pageSize,
       status: OrganizationVerificationEnum.VerifiedManualAttestation,
       filter: {
         contactEmail: searchTerms,
@@ -128,18 +145,52 @@ const ContributorsPage = () => {
         website: searchTerms,
       },
     },
-    pageSize: pageSize,
-    getPageInfo: result => result.organizationsPaginated.pageInfo,
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-first',
   });
 
+  const organizationsPageInfo = organizationsData?.organizationsPaginated.pageInfo;
+  const organizationsHasMore = organizationsPageInfo?.hasNextPage ?? false;
+
+  const organizationsFetchMore = useCallback(
+    async (itemsNumber = pageSize) => {
+      if (!organizationsData) {
+        return;
+      }
+
+      await organizationsFetchMoreRaw({
+        variables: {
+          first: itemsNumber,
+          after: organizationsPageInfo?.endCursor,
+          status: OrganizationVerificationEnum.VerifiedManualAttestation,
+          filter: {
+            contactEmail: searchTerms,
+            displayName: searchTerms,
+            domain: searchTerms,
+            nameID: searchTerms,
+            website: searchTerms,
+          },
+        },
+      });
+    },
+    [
+      organizationsData,
+      organizationsFetchMoreRaw,
+      organizationsPageInfo?.endCursor,
+      pageSize,
+      searchTerms,
+      OrganizationVerificationEnum.VerifiedManualAttestation,
+    ]
+  );
+
   const organizations: PaginatedResult<OrganizationContributorFragment> = {
-    items: organizationsQueryResult.data?.organizationsPaginated.organization,
-    loading: organizationsQueryResult.loading,
-    hasMore: organizationsQueryResult.hasMore,
-    pageSize: organizationsQueryResult.pageSize,
-    firstPageSize: organizationsQueryResult.firstPageSize,
-    error: organizationsQueryResult.error,
-    fetchMore: organizationsQueryResult.fetchMore,
+    items: organizationsData?.organizationsPaginated.organization,
+    loading: organizationsLoading,
+    hasMore: organizationsHasMore,
+    pageSize: pageSize,
+    firstPageSize: pageSize,
+    error: organizationsError,
+    fetchMore: organizationsFetchMore,
   };
 
   const { data: vcData, loading: loadingVCs } = useContributorsVirtualInLibraryQuery();

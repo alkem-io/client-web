@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Accordion, AccordionDetails, AccordionSummary, Box, styled } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -24,7 +24,7 @@ const StyledAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: 'none',
 }));
 
-const CalloutDescription = memo(({ callout }: { callout: CalloutModelLight }) => {
+const CalloutDescription = ({ callout }: { callout: CalloutModelLight }) => {
   const { t } = useTranslation();
 
   if (callout.framing.whiteboard?.profile.preview?.uri) {
@@ -38,7 +38,7 @@ const CalloutDescription = memo(({ callout }: { callout: CalloutModelLight }) =>
       <CaptionSmall>{t('common.noDescription')}</CaptionSmall>
     );
   }
-});
+};
 
 const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: InnovationFlowCalloutsPreviewProps) => {
   const [selectedCallout, setSelectedCallout] = useState<string | false>(false);
