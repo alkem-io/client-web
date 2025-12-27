@@ -61,6 +61,12 @@
 
 **Checkpoint**: User Story 1 complete - users can select and place emojis on whiteboards ✅
 
+### Bug Fixes for User Story 1
+
+- [x] T017a [US1] Fix coordinate calculation to use Excalidraw's `viewportCoordsToSceneCoords()` instead of manual formula - fixes emoji placement at various zoom levels in `CollaborativeExcalidrawWrapper.tsx` `Domain`
+- [x] T017b [US1] Add `emojiPlacementInfo` prop to `WhiteboardEmojiReactionPicker` for bidirectional state sync - picker resets after placement completes `React19`
+- [x] T017c [US1] Update `WhiteboardView.tsx` and `PublicWhiteboardPage.tsx` to pass `emojiPlacementInfo` prop to picker component `React19`
+
 ---
 
 ## Phase 4: User Story 2 - Manipulate Emoji Content (Priority: P2)

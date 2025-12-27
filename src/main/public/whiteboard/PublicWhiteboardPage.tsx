@@ -203,6 +203,7 @@ const PublicWhiteboardPageContent: FC = () => {
                 <WhiteboardEmojiReactionPicker
                   disabled={collabState.isReadOnly}
                   onPlacementModeChange={collabState.onEmojiPlacementModeChange}
+                  emojiPlacementInfo={collabState.emojiPlacementInfo}
                 />
               )}
             </>

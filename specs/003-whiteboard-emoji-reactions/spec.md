@@ -13,6 +13,11 @@
 - Q: Where should the emoji picker be positioned? → A: In the header toolbar, beside the preview settings button (accessed via `headerActions` prop)
 - Q: What cursor feedback should be shown during placement mode? → A: The selected emoji character should be displayed as a floating element that follows the mouse cursor until the user clicks to place
 
+### Session 2025-12-28 (Bug Fixes)
+
+- **Coordinate Calculation Bug**: When placing emojis at different zoom levels (e.g., 10% or 70%), emojis appeared at incorrect positions or didn't appear at all. Root cause: manual coordinate calculation `(canvasX - scrollX) / zoom.value` was incorrect. Solution: Use Excalidraw's `viewportCoordsToSceneCoords()` utility function which correctly handles all zoom, scroll, and offset calculations.
+- **Picker State Reset Bug**: After placing an emoji, the picker button continued to show the selected emoji instead of resetting to the default icon. Root cause: `WhiteboardEmojiReactionPicker` has internal state that wasn't being reset when the parent component cleared `emojiPlacementInfo`. Solution: Added bidirectional sync via `emojiPlacementInfo` prop so picker can detect when placement completes and reset its internal state.
+
 ## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Add Emoji to Whiteboard (Priority: P1)
@@ -188,7 +193,7 @@ The following 10 emojis are recommended for the default configuration, selected 
 - **SC-001**: Users can select an emoji and place it on the whiteboard canvas in under 5 seconds
 - **SC-002**: 95% of emoji placement attempts succeed on first try without errors
 - **SC-003**: Emoji content syncs to other collaborators within 2 seconds of placement (via existing whiteboard sync)
-- **SC-004**: Users can successfully place emojis at any zoom level (25% to 400%) with position accuracy within 5 pixels
+- **SC-004**: Users can successfully place emojis at any zoom level (25% to 400%) with position accuracy within 5 pixels using Excalidraw's `viewportCoordsToSceneCoords()` utility function
 - **SC-005**: The emoji picker loads and displays within 1 second of being opened
 - **SC-006**: 90% of users can successfully complete the emoji placement workflow without assistance or errors
 - **SC-007**: Whiteboard canvas maintains 60fps rendering performance with up to 100 emoji elements visible

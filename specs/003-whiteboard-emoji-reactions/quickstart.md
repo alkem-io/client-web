@@ -85,10 +85,19 @@ excalidrawAPI.updateScene({
 
 ### 4.3 Coordinate Conversion
 
-Screen clicks must be converted to scene coordinates:
+Screen clicks must be converted to scene coordinates. **Important**: Use Excalidraw's `viewportCoordsToSceneCoords()` utility function instead of manual calculation, as it correctly handles all zoom levels, scroll positions, and canvas offsets:
 
 ```typescript
-const { x, y } = excalidrawAPI.screenToScene(screenX, screenY);
+import { viewportCoordsToSceneCoords } from '@alkemio/excalidraw';
+
+// CORRECT: Use Excalidraw's utility function
+const sceneCoords = viewportCoordsToSceneCoords(
+  { clientX: event.clientX, clientY: event.clientY },
+  appState
+);
+
+// WRONG: Manual calculation fails at different zoom levels
+// const x = (canvasX - scrollX) / zoom.value; // DON'T DO THIS
 ```
 
 ## 5. Implementation Workflow
@@ -155,7 +164,9 @@ describe('defaultEmojiConfig', () => {
 
 | Issue | Solution |
 |-------|----------|
-| Emoji appears at wrong position | Ensure you're using `screenToScene()` for coordinate conversion |
+| Emoji appears at wrong position at various zoom levels | **Must use** `viewportCoordsToSceneCoords()` from `@alkemio/excalidraw` - manual coordinate calculation fails at different zoom levels |
+| Emoji doesn't appear at extreme zoom (e.g., 10%) | Same as above - the `viewportCoordsToSceneCoords()` function handles all zoom/scroll/offset calculations correctly |
+| Picker doesn't reset after placement | Pass `emojiPlacementInfo` prop to picker component so it can detect when placement completes and reset internal state |
 | Emoji doesn't persist after refresh | Check that `updateScene()` was called correctly |
 | Picker doesn't appear | Verify `headerActions` prop is correctly wired in WhiteboardDialog |
 | TypeScript errors with Excalidraw types | Import from `@alkemio/excalidraw` (the fork), not `excalidraw` |

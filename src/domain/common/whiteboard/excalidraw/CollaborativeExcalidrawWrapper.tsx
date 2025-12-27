@@ -291,20 +291,20 @@ const CollaborativeExcalidrawWrapper = ({
 
       // Get the app state for coordinate conversion
       const appState = excalidrawApi.getAppState();
-      const { scrollX, scrollY, zoom, offsetLeft, offsetTop } = appState;
 
-      // Convert screen coordinates to scene coordinates
-      // Account for canvas offset, scroll, and zoom
-      const canvasX = event.clientX - offsetLeft;
-      const canvasY = event.clientY - offsetTop;
-      const sceneX = (canvasX - scrollX) / zoom.value;
-      const sceneY = (canvasY - scrollY) / zoom.value;
+      // Use Excalidraw's utility function for accurate coordinate conversion
+      // This correctly handles zoom, scroll, and canvas offset at all zoom levels
+      const { viewportCoordsToSceneCoords } = await import('@alkemio/excalidraw');
+      const sceneCoords = viewportCoordsToSceneCoords(
+        { clientX: event.clientX, clientY: event.clientY },
+        appState
+      );
 
       // Create emoji element
       const elementSkeleton = createEmojiReactionElement({
         emoji: emojiPlacementInfo.emoji,
-        x: sceneX,
-        y: sceneY,
+        x: sceneCoords.x,
+        y: sceneCoords.y,
       });
 
       // Dynamically import to avoid loading excalidraw in tests

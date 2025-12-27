@@ -31,6 +31,13 @@ interface WhiteboardEmojiReactionPickerProps {
    * Parent uses this to track placement state and handle canvas clicks.
    */
   onPlacementModeChange?: (placementInfo: EmojiReactionPlacementInfo | null) => void;
+
+  /**
+   * Current placement info from parent. When this becomes null while picker
+   * is in placing mode, it signals that placement was completed externally
+   * and the picker should reset its internal state.
+   */
+  emojiPlacementInfo?: EmojiReactionPlacementInfo | null;
 }
 
 /**
@@ -55,6 +62,7 @@ const WhiteboardEmojiReactionPicker = ({
   disabled = false,
   className,
   onPlacementModeChange,
+  emojiPlacementInfo,
 }: WhiteboardEmojiReactionPickerProps) => {
   const { t } = useTranslation();
   const config = useEmojiReactionConfiguration();
@@ -70,6 +78,15 @@ const WhiteboardEmojiReactionPicker = ({
     placeEmoji,
     cancel,
   } = useEmojiReactionPickerState();
+
+  // Reset picker state when parent signals placement is complete
+  // This happens when emojiPlacementInfo becomes null while we're still in placing mode
+  useEffect(() => {
+    if (isPlacing && emojiPlacementInfo === null) {
+      // Parent handled placement, reset our internal state
+      placeEmoji();
+    }
+  }, [emojiPlacementInfo, isPlacing, placeEmoji]);
 
   // Notify parent when placement mode changes
   useEffect(() => {

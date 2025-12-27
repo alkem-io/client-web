@@ -159,6 +159,10 @@ src/main/public/whiteboard/
 8. Write unit tests
 9. Add i18n strings
 
+### Phase 2.1: Bug Fixes (Complete)
+1. **Coordinate Calculation Fix**: Replaced manual formula `(canvasX - scrollX) / zoom.value` with Excalidraw's `viewportCoordsToSceneCoords()` utility function - fixes emoji placement at all zoom levels (10%-400%)
+2. **Picker State Reset Fix**: Added `emojiPlacementInfo` prop to `WhiteboardEmojiReactionPicker` with effect that resets internal state when parent signals placement complete
+
 ## Exit Criteria
 
 - [x] Emoji picker accessible from whiteboard header toolbar beside preview settings (FR-001)

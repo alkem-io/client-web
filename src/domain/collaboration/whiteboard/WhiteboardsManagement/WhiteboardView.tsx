@@ -145,6 +145,7 @@ const WhiteboardView = ({
                     <WhiteboardEmojiReactionPicker
                       disabled={collabState.isReadOnly}
                       onPlacementModeChange={collabState.onEmojiPlacementModeChange}
+                      emojiPlacementInfo={collabState.emojiPlacementInfo}
                     />
                     <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
                   </>
