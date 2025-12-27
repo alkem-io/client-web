@@ -8,11 +8,13 @@
 
 ## 1. Feature Overview
 
-This feature adds an emoji picker to the whiteboard that allows users to select and place emoji content on the canvas. Key points:
+This feature adds an emoji picker to the whiteboard header toolbar (beside the preview settings button) that allows users to select and place emoji content on the canvas. Key points:
 
 - **Client-side only** – No GraphQL or API calls
-- **Paste-as-content** – Emojis are added as Excalidraw text elements (simulates user paste)
+- **Paste-as-content** – Emojis are added as Excalidraw text elements
 - **Existing sync handles persistence** – Once on canvas, collaborative sync takes over
+- **Header toolbar location** – Emoji picker is in the dialog header, accessed via `headerActions` prop
+- **Emoji cursor** – During placement mode, the selected emoji follows the mouse cursor
 
 ## 2. Prerequisites
 
@@ -34,18 +36,20 @@ pnpm start
 | File | Purpose |
 |------|---------|
 | [src/core/ui/forms/emoji/EmojiSelector.tsx](../../src/core/ui/forms/emoji/EmojiSelector.tsx) | Reference implementation of emoji picker patterns |
-| [src/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx](../../src/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx) | Main whiteboard component – **integration point** |
-| [src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx](../../src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx) | Dialog wrapper for whiteboards |
+| [src/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx](../../src/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx) | Main whiteboard component – exposes emoji controls via render prop |
+| [src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx](../../src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx) | Dialog wrapper – forwards emoji controls to headerActions |
+| [src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx](../../src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx) | View component – renders emoji picker in headerActions |
 
-### New Files to Create
+### Files Created/Modified
 
 | Path | Purpose |
 |------|---------|
-| `src/domain/collaboration/whiteboard/emoji/types.ts` | TypeScript interfaces (copy from contracts/) |
-| `src/domain/collaboration/whiteboard/emoji/emojiConfig.ts` | Default emoji configuration |
-| `src/domain/collaboration/whiteboard/emoji/createEmojiElement.ts` | Generate Excalidraw text element JSON |
-| `src/domain/collaboration/whiteboard/emoji/useEmojiConfiguration.ts` | Hook to access emoji config |
-| `src/domain/collaboration/whiteboard/components/WhiteboardEmojiPicker.tsx` | React component for picker UI |
+| `src/domain/collaboration/whiteboard/reactionEmoji/types.ts` | TypeScript interfaces |
+| `src/domain/collaboration/whiteboard/reactionEmoji/emojiReactionConfig.ts` | Default emoji configuration (10 emojis) |
+| `src/domain/collaboration/whiteboard/reactionEmoji/createEmojiReactionElement.ts` | Generate Excalidraw text element JSON |
+| `src/domain/collaboration/whiteboard/reactionEmoji/useEmojiReactionConfiguration.ts` | Hook to access emoji config |
+| `src/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker.tsx` | React component for picker UI |
+| `src/domain/collaboration/whiteboard/components/EmojiReactionGrid.tsx` | Grid layout for emoji buttons |
 
 ## 4. Core Concepts
 
@@ -97,34 +101,37 @@ const { x, y } = excalidrawAPI.screenToScene(screenX, screenY);
 - [x] Contracts complete
 - [x] Quickstart complete
 
-### Phase 2: Core Logic
-1. Create `types.ts` – Copy interfaces from `contracts/emoji-config.contract.ts`
-2. Create `emojiConfig.ts` – Default 10-emoji configuration
-3. Create `createEmojiElement.ts` – Element generation function
-4. Create `useEmojiConfiguration.ts` – Simple hook returning config
+### Phase 2: Core Logic ✅
+1. ✅ Created `types.ts` – TypeScript interfaces
+2. ✅ Created `emojiReactionConfig.ts` – Default 10-emoji configuration
+3. ✅ Created `createEmojiReactionElement.ts` – Element generation function
+4. ✅ Created `useEmojiReactionConfiguration.ts` – Hook returning config
 
-### Phase 3: UI Components
-1. Create `WhiteboardEmojiPicker.tsx` – Grid of emoji buttons
-2. Integrate into `CollaborativeExcalidrawWrapper.tsx`
-3. Wire canvas click handling for placement
+### Phase 3: UI Components ✅ (MVP Complete)
+1. ✅ Created `WhiteboardEmojiReactionPicker.tsx` – Popover with emoji grid
+2. ✅ Created `EmojiReactionGrid.tsx` – Grid layout for emoji buttons
+3. ✅ Integrated into header toolbar via `headerActions` prop
+4. ✅ Canvas click handling for placement in `CollaborativeExcalidrawWrapper.tsx`
+5. ✅ Emoji cursor – selected emoji follows mouse during placement mode
 
-### Phase 4: Polish
-1. Add keyboard navigation (Arrow keys, Enter, Escape)
-2. Add i18n strings
-3. Add unit tests
+### Phase 4: Polish (Remaining)
+1. [ ] Add keyboard navigation (Arrow keys, Enter, Escape)
+2. ✅ Added i18n strings
+3. ✅ Added unit tests (459 tests passing)
 
 ## 6. Testing
 
 ### Manual Testing Checklist
 
-1. [ ] Open a whiteboard in edit mode
-2. [ ] Verify emoji picker button is visible
-3. [ ] Click emoji picker – grid appears
-4. [ ] Select an emoji – cursor changes or indicator shows
-5. [ ] Click on canvas – emoji appears at click location
-6. [ ] Verify emoji can be selected/moved like any other element
+1. [x] Open a whiteboard in edit mode
+2. [x] Verify emoji picker button is visible in header toolbar (beside preview settings)
+3. [x] Click emoji picker – popover with emoji grid appears
+4. [x] Select an emoji – popover closes, selected emoji follows mouse cursor
+5. [x] Click on canvas – emoji appears at click location, cursor returns to normal
+6. [x] Verify emoji can be selected/moved like any other element
 7. [ ] Refresh page – emoji persists (collaborative sync)
 8. [ ] Open in another browser – emoji visible (real-time sync)
+9. [x] Click outside canvas during placement mode – placement is cancelled
 
 ### Unit Tests to Write
 
@@ -150,8 +157,10 @@ describe('defaultEmojiConfig', () => {
 |-------|----------|
 | Emoji appears at wrong position | Ensure you're using `screenToScene()` for coordinate conversion |
 | Emoji doesn't persist after refresh | Check that `updateScene()` was called correctly |
-| Picker doesn't close after placement | Add `onCanvasClick` handler to close picker state |
+| Picker doesn't appear | Verify `headerActions` prop is correctly wired in WhiteboardDialog |
 | TypeScript errors with Excalidraw types | Import from `@alkemio/excalidraw` (the fork), not `excalidraw` |
+| Emoji cursor not showing | Check that `emojiPlacementInfo` is passed through `WhiteboardHeaderState` |
+| Picker not available for guests | Ensure `PublicWhiteboardPage` includes picker in `headerActions` |
 
 ## 8. Reference Links
 

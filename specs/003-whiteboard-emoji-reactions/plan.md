@@ -102,14 +102,19 @@ src/
 
 # Whiteboard Component Integration Points
 src/domain/common/whiteboard/excalidraw/
-├── CollaborativeExcalidrawWrapper.tsx      # MODIFY: Add emoji picker to toolbar area
-└── ExcalidrawWrapper.tsx                   # MODIFY: Add emoji picker (non-collaborative)
+├── CollaborativeExcalidrawWrapper.tsx      # MODIFY: Expose emoji controls via render prop; handle emoji cursor display
+└── ExcalidrawWrapper.tsx                   # READ-ONLY: No changes (non-collaborative mode)
 
 src/domain/collaboration/whiteboard/
 ├── WhiteboardDialog/
-│   └── WhiteboardDialog.tsx                # MODIFY: Wire emoji picker
+│   └── WhiteboardDialog.tsx                # MODIFY: Forward emoji controls to headerActions via WhiteboardHeaderState interface
+├── WhiteboardsManagement/
+│   └── WhiteboardView.tsx                  # MODIFY: Render emoji picker in headerActions (beside preview settings)
 └── components/                             # NEW: Whiteboard-specific components
-    └── WhiteboardEmojiPicker.tsx           # Toolbar button + picker + placement
+    └── WhiteboardEmojiReactionPicker.tsx   # Emoji picker button + popover (rendered in header)
+
+src/main/public/whiteboard/
+└── PublicWhiteboardPage.tsx                # MODIFY: Render emoji picker in headerActions for guest access
 \`\`\`
 
 **Structure Decision**: This feature follows the existing domain-driven structure:
@@ -156,10 +161,10 @@ src/domain/collaboration/whiteboard/
 
 ## Exit Criteria
 
-- [ ] Emoji picker accessible from whiteboard toolbar (FR-001)
-- [ ] Placement mode with visual cursor feedback (FR-011)
-- [ ] Emojis placed as standard whiteboard content (FR-003, FR-004)
-- [ ] Configuration loads from bundled module (FR-006)
+- [x] Emoji picker accessible from whiteboard header toolbar beside preview settings (FR-001)
+- [x] Placement mode with emoji character cursor following mouse position (FR-011)
+- [x] Emojis placed as standard whiteboard content (FR-003, FR-004)
+- [x] Configuration loads from bundled module (FR-006)
 - [ ] Keyboard navigation functional (Accessibility)
-- [ ] Unit test coverage for configuration and element generation
+- [x] Unit test coverage for configuration and element generation
 - [ ] Integration test for placement flow

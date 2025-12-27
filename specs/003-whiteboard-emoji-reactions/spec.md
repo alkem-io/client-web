@@ -10,6 +10,8 @@
 ### Session 2025-12-27
 
 - Q: Where should the emoji configuration JSON file be located? → A: Bundled in `src/` as a TypeScript/JSON module, imported at build time
+- Q: Where should the emoji picker be positioned? → A: In the header toolbar, beside the preview settings button (accessed via `headerActions` prop)
+- Q: What cursor feedback should be shown during placement mode? → A: The selected emoji character should be displayed as a floating element that follows the mouse cursor until the user clicks to place
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -23,9 +25,9 @@ A user editing a whiteboard wants to add an emoji as visual content on the canva
 
 **Acceptance Scenarios**:
 
-1. **Given** a user has edit access to a whiteboard, **When** they click the emoji selector button, **Then** an emoji picker interface appears displaying available emoji options from the configured list
-2. **Given** the emoji picker is open, **When** the user selects an emoji, **Then** the picker closes and the user's cursor indicates they are in "placement mode"
-3. **Given** the user is in emoji placement mode, **When** they click anywhere on the whiteboard canvas, **Then** the selected emoji is placed at that location as whiteboard content
+1. **Given** a user has edit access to a whiteboard, **When** they click the emoji selector button in the header toolbar (beside the preview settings button), **Then** an emoji picker popover appears displaying available emoji options from the configured list
+2. **Given** the emoji picker is open, **When** the user selects an emoji, **Then** the picker closes and the user's cursor changes to display the selected emoji character, indicating "placement mode"
+3. **Given** the user is in emoji placement mode, **When** they click anywhere on the whiteboard canvas, **Then** the selected emoji is placed at that location as whiteboard content and the cursor returns to normal
 4. **Given** an emoji has been placed on the canvas, **When** other collaborators view the whiteboard, **Then** they see the emoji at the same location
 5. **Given** the user is in emoji placement mode, **When** they click outside the canvas bounds, **Then** the placement mode is cancelled and no emoji is placed
 6. **Given** the user is in emoji placement mode with one emoji selected, **When** they select a different emoji from the picker, **Then** the new emoji replaces the previous selection
@@ -139,7 +141,7 @@ Users want to quickly find specific emojis without scrolling through a long list
 
 ### Functional Requirements
 
-- **FR-001**: System MUST provide an emoji picker interface accessible from the whiteboard toolbar that displays outside the main canvas area
+- **FR-001**: System MUST provide an emoji picker interface accessible from the whiteboard header toolbar (beside the preview settings button) that displays outside the main canvas area
 - **FR-002**: System MUST support emoji selection from the picker interface using click/tap interactions
 - **FR-003**: System MUST enable users to place selected emojis at specific coordinates on the whiteboard canvas as standard content elements
 - **FR-004**: System MUST treat placed emojis as standard whiteboard content that can be selected, moved, resized, and deleted using existing whiteboard controls
@@ -149,7 +151,7 @@ Users want to quickly find specific emojis without scrolling through a long list
 - **FR-008**: System MUST respect whiteboard permissions—only users with edit access can place, move, or remove emoji content
 - **FR-009**: System MUST synchronize emoji content in real-time across all active whiteboard sessions (via existing whiteboard sync)
 - **FR-010**: System MUST disable the emoji picker for users with read-only access to the whiteboard
-- **FR-011**: System MUST provide visual feedback during emoji placement mode (e.g., cursor changes, preview)
+- **FR-011**: System MUST provide visual feedback during emoji placement mode by displaying the selected emoji character as the mouse cursor until the user clicks to place or clicks outside the canvas to cancel
 - **FR-012**: System MUST place emojis at a size appropriate to the current zoom level so they remain visible and proportional
 - **FR-013**: System MUST provide 10 default emojis suitable for safe, constructive collaboration (see Suggested Default Emoji Set)
 

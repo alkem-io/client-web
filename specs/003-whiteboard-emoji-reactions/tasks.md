@@ -52,9 +52,9 @@
 - [x] T009 [US1] Create `WhiteboardEmojiReactionPicker` component in `src/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker.tsx` `React19` `Domain`
 - [x] T010 [US1] Create `EmojiReactionGrid` subcomponent for emoji button layout in `src/domain/collaboration/whiteboard/components/EmojiReactionGrid.tsx` `React19`
 - [x] T011 [US1] Create `useEmojiReactionPickerState` hook for picker open/close/placement state in `src/domain/collaboration/whiteboard/reactionEmoji/useEmojiReactionPickerState.ts` `Domain`
-- [x] T012 [US1] Integrate `WhiteboardEmojiReactionPicker` into `CollaborativeExcalidrawWrapper.tsx` - add toolbar button and picker popover `React19`
+- [x] T012 [US1] Integrate `WhiteboardEmojiReactionPicker` into whiteboard header toolbar via `headerActions` prop - picker appears beside preview settings button `React19`
 - [x] T013 [US1] Implement canvas click handler for emojiReaction placement - convert screen to scene coordinates and call `createEmojiReactionElement()` in `CollaborativeExcalidrawWrapper.tsx` `Domain`
-- [x] T014 [US1] Add visual feedback for placement mode (cursor change, selected emoji indicator) in `CollaborativeExcalidrawWrapper.tsx` `Quality`
+- [x] T014 [US1] Add visual feedback for placement mode - display selected emoji as floating cursor that follows mouse position in `CollaborativeExcalidrawWrapper.tsx` `Quality`
 - [x] T015 [US1] Handle outside-canvas click to cancel placement mode in `CollaborativeExcalidrawWrapper.tsx`
 - [x] T016 [US1] Disable emojiReaction picker button for read-only whiteboards in `CollaborativeExcalidrawWrapper.tsx` `Quality`
 - [x] T017 [P] [US1] Add i18n strings for emojiReaction picker UI in `src/core/i18n/en/translation.en.json` `Quality`
