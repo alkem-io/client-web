@@ -1,9 +1,15 @@
-4# Feature Specification: Whiteboard Emoji Content
+# Feature Specification: Whiteboard Emoji Content
 
 **Feature Branch**: `003-whiteboard-emoji-reactions`
 **Created**: 2025-12-26
 **Status**: Draft
 **Input**: User description: "I want to create a new feature to allow emoji reactions on whiteboards. The user should be able to click on an emoji selector outside the main whiteboard canvas, select an emoji and then place the emoji somewhere on the whiteboard canvas."
+
+## Clarifications
+
+### Session 2025-12-27
+
+- Q: Where should the emoji configuration JSON file be located? → A: Bundled in `src/` as a TypeScript/JSON module, imported at build time
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -45,17 +51,17 @@ Users with edit access want to interact with emoji content on the whiteboard jus
 
 ### User Story 3 - Configurable Emoji Set (Priority: P3)
 
-The available emojis in the picker are loaded from a configurable JSON file, allowing administrators or developers to customize the emoji palette without code changes.
+The available emojis in the picker are defined in a bundled JSON/TypeScript module in `src/`, allowing developers to customize the emoji palette by editing the source configuration.
 
-**Why this priority**: Provides flexibility for customization but not essential for initial value delivery. A default emoji set can be provided initially.
+**Why this priority**: Provides flexibility for customization but not essential for initial value delivery. A default emoji set is provided in source.
 
-**Independent Test**: Can be tested by modifying the JSON configuration file and verifying the emoji picker displays the updated set. Delivers value by enabling customization.
+**Independent Test**: Can be tested by modifying the bundled emoji configuration, rebuilding, and verifying the emoji picker displays the updated set. Delivers value by enabling customization.
 
 **Acceptance Scenarios**:
 
-1. **Given** a JSON configuration file defines the available emojis, **When** the emoji picker is opened, **Then** it displays only the emojis defined in the configuration
-2. **Given** the JSON configuration is updated with new emojis, **When** the application reloads, **Then** the emoji picker reflects the updated set
-3. **Given** the JSON configuration is empty or missing, **When** the emoji picker is opened, **Then** a sensible default set of emojis is displayed
+1. **Given** the bundled emoji module defines the available emojis, **When** the emoji picker is opened, **Then** it displays only the emojis defined in the configuration
+2. **Given** the emoji configuration is updated and the app is rebuilt, **When** the application loads, **Then** the emoji picker reflects the updated set
+3. **Given** the emoji configuration module exports an empty array, **When** the emoji picker would open, **Then** the emoji picker is hidden (per FR-007)
 
 ---
 
@@ -70,7 +76,7 @@ Users want to quickly find specific emojis without scrolling through a long list
 **Acceptance Scenarios**:
 
 1. **Given** the emoji picker is open, **When** a user types in the search field, **Then** the picker filters emojis matching the search term
-2. **Given** the JSON configuration defines emoji categories, **When** the user clicks a category tab, **Then** only emojis from that category are displayed
+2. **Given** the bundled configuration defines emoji categories, **When** the user clicks a category tab, **Then** only emojis from that category are displayed
 3. **Given** a user searches for an emoji, **When** no matches are found, **Then** a "no results" message is displayed
 
 ---
@@ -85,7 +91,7 @@ Users want to quickly find specific emojis without scrolling through a long list
 - **Zoom level handling**: Emojis are placed at a size appropriate to the current zoom level so they remain visible and proportional to other content.
 - **Session expiry during placement**: The emoji placement fails silently; no content is added. Standard session expiry handling applies.
 - **Network failure during placement**: The emoji placement fails; standard whiteboard error handling applies with appropriate user feedback.
-- **Invalid/missing emoji configuration**: The emoji picker is not shown. Users cannot access the emoji feature until valid configuration is provided.
+- **Invalid/empty emoji configuration**: The emoji picker is hidden. The bundled module must export a valid non-empty array for the feature to be available.
 
 ## Requirements _(mandatory)_
 
@@ -96,9 +102,9 @@ Users want to quickly find specific emojis without scrolling through a long list
 - **React Components**: UI shells in `src/main` will consume domain hooks. The emoji picker component (`EmojiPicker`) will remain a thin orchestration layer. Emoji elements on the canvas use the existing whiteboard element rendering and manipulation system.
 
 - **Configuration**:
-  - Emoji set is loaded from a JSON configuration file
+  - Emoji set is bundled as a TypeScript/JSON module in `src/` and imported at build time
   - Configuration includes emoji characters, display names, categories, and search keywords
-  - Default configuration provided; can be overridden for customization
+  - Default configuration provided in source; changes require rebuild
 
 - **React 19 Concurrency**:
   - Emoji picker will use Suspense boundaries for lazy-loading configuration
@@ -138,23 +144,40 @@ Users want to quickly find specific emojis without scrolling through a long list
 - **FR-003**: System MUST enable users to place selected emojis at specific coordinates on the whiteboard canvas as standard content elements
 - **FR-004**: System MUST treat placed emojis as standard whiteboard content that can be selected, moved, resized, and deleted using existing whiteboard controls
 - **FR-005**: System MUST display all emoji content on the whiteboard canvas at their saved positions
-- **FR-006**: System MUST load the available emoji set from a configurable JSON file
+- **FR-006**: System MUST load the available emoji set from a bundled JSON/TypeScript module in `src/`
 - **FR-007**: System MUST hide the emoji picker entirely when emoji configuration is missing or invalid
 - **FR-008**: System MUST respect whiteboard permissions—only users with edit access can place, move, or remove emoji content
 - **FR-009**: System MUST synchronize emoji content in real-time across all active whiteboard sessions (via existing whiteboard sync)
 - **FR-010**: System MUST disable the emoji picker for users with read-only access to the whiteboard
 - **FR-011**: System MUST provide visual feedback during emoji placement mode (e.g., cursor changes, preview)
 - **FR-012**: System MUST place emojis at a size appropriate to the current zoom level so they remain visible and proportional
-- **FR-013**: System MUST provide a minimum of 50 commonly-used emojis in the default configuration
+- **FR-013**: System MUST provide 10 default emojis suitable for safe, constructive collaboration (see Suggested Default Emoji Set)
 
 ### Key Entities
 
 - **EmojiConfiguration**: Represents the configurable set of available emojis. Key attributes include:
   - List of emoji entries (character, display name, search keywords)
   - Optional category groupings
-  - Configuration source (JSON file path)
+  - Configuration source (bundled TypeScript/JSON module)
 
 - **Whiteboard Content (Emoji)**: Emojis placed on the canvas are standard whiteboard content elements. They inherit all existing whiteboard element behaviors (selection, movement, resizing, deletion, real-time sync).
+
+### Suggested Default Emoji Set
+
+The following 10 emojis are recommended for the default configuration, selected for safe, constructive collaboration:
+
+| Emoji | Name | Purpose | Search Keywords |
+|-------|------|---------|-----------------|
+| 👍 | Thumbs Up | Agreement, approval | agree, yes, good, like, approve |
+| ⭐ | Star | Highlight, favorite, important | star, important, favorite, highlight |
+| ✅ | Check Mark | Complete, approved, done | done, complete, approved, check, yes |
+| 💡 | Light Bulb | Idea, insight, suggestion | idea, insight, suggestion, think, lightbulb |
+| ❓ | Question | Needs clarification, unclear | question, unclear, help, ask, clarify |
+| 💬 | Speech Bubble | Discussion needed, comment | discuss, comment, talk, conversation |
+| 🎯 | Target | Goal, on-point, focus | goal, target, focus, aim, objective |
+| 👏 | Clapping Hands | Great work, celebration | applause, great, celebrate, well done, bravo |
+| 📌 | Pin | Important, bookmark, remember | pin, important, bookmark, remember, note |
+| 🚀 | Rocket | Progress, momentum, launch | rocket, progress, go, launch, momentum |
 
 ## Success Criteria _(mandatory)_
 
