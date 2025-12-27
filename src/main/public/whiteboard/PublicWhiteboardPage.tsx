@@ -10,7 +10,9 @@ import { useCurrentUserFullQuery } from '@/core/apollo/generated/apollo-hooks';
 import { buildSignUpUrl } from '@/main/routing/urlBuilders';
 import WhiteboardDialog, {
   WhiteboardDetails,
+  WhiteboardHeaderState,
 } from '@/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog';
+import WhiteboardEmojiReactionPicker from '@/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import PublicWhiteboardLayout from './PublicWhiteboardLayout';
 import JoinWhiteboardDialog from './JoinWhiteboardDialog';
@@ -183,7 +185,7 @@ const PublicWhiteboardPageContent: FC = () => {
           fullscreen,
           previewSettingsDialogOpen: previewSettingsDialogOpen,
           readOnlyDisplayName: true, // Guests cannot edit display name
-          headerActions: () => (
+          headerActions: (collabState: WhiteboardHeaderState) => (
             <>
               <ShareButton
                 url={computedGuestShareUrl}
@@ -195,6 +197,14 @@ const PublicWhiteboardPageContent: FC = () => {
               <FullscreenButton />
 
               <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
+
+              {/* Show emoji picker for guests when they can write */}
+              {collabState.mode === 'write' && (
+                <WhiteboardEmojiReactionPicker
+                  disabled={collabState.isReadOnly}
+                  onPlacementModeChange={collabState.onEmojiPlacementModeChange}
+                />
+              )}
             </>
           ),
         }}

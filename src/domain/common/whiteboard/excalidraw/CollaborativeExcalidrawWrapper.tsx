@@ -11,7 +11,6 @@ import { useTick } from '@/core/utils/time/tick';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import WhiteboardEmojiReactionPicker from '@/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker';
 import { createEmojiReactionElement } from '@/domain/collaboration/whiteboard/reactionEmoji/createEmojiReactionElement';
 import { EmojiReactionPlacementInfo } from '@/domain/collaboration/whiteboard/reactionEmoji/types';
 import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
@@ -77,6 +76,10 @@ export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
 
 interface CollaborativeExcalidrawWrapperProvided extends CollabState {
   restartCollaboration: () => void;
+  // Emoji reaction placement controls
+  isReadOnly: boolean;
+  emojiPlacementInfo: EmojiReactionPlacementInfo | null;
+  onEmojiPlacementModeChange: (placementInfo: EmojiReactionPlacementInfo | null) => void;
 }
 
 export interface WhiteboardWhiteboardProps {
@@ -243,6 +246,24 @@ const CollaborativeExcalidrawWrapper = ({
   // Ref for canvas container to detect outside clicks (T015)
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
+  // State for emoji cursor position (tracks mouse while in placement mode)
+  const [cursorPosition, setCursorPosition] = useState<{ x: number; y: number } | null>(null);
+
+  // Track mouse position when in placement mode
+  useEffect(() => {
+    if (!emojiPlacementInfo?.isActive) {
+      setCursorPosition(null);
+      return;
+    }
+
+    const handleMouseMove = (event: MouseEvent) => {
+      setCursorPosition({ x: event.clientX, y: event.clientY });
+    };
+
+    globalThis.addEventListener('mousemove', handleMouseMove);
+    return () => globalThis.removeEventListener('mousemove', handleMouseMove);
+  }, [emojiPlacementInfo?.isActive]);
+
   // Cancel placement mode when clicking outside canvas (T015)
   useEffect(() => {
     if (!emojiPlacementInfo?.isActive) {
@@ -320,35 +341,50 @@ const CollaborativeExcalidrawWrapper = ({
             autoFocus
             generateIdForFile={filesManager.addNewFile}
             aiEnabled={false}
-            renderTopRightUI={_isMobile => (
-              <WhiteboardEmojiReactionPicker
-                disabled={isReadOnly}
-                onPlacementModeChange={handleEmojiPlacementModeChange}
-              />
-            )}
             {...restOptions}
           />
         )}
       </Suspense>
       {/* Emoji placement overlay - captures clicks when in placement mode (T013, T014) */}
       {emojiPlacementInfo?.isActive && (
-        <Box
-          onClick={handleEmojiPlacementClick}
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            cursor: 'crosshair',
-            zIndex: 10,
-            // Semi-transparent to indicate placement mode (T014)
-            backgroundColor: 'rgba(0, 0, 0, 0.02)',
-          }}
-          aria-label={t('whiteboard.emojiReaction.placementMode', 'Click to place emoji: {{emoji}}', {
-            emoji: emojiPlacementInfo.emoji,
-          })}
-        />
+        <>
+          <Box
+            onClick={handleEmojiPlacementClick}
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              cursor: 'none', // Hide default cursor
+              zIndex: 10,
+              // Semi-transparent to indicate placement mode (T014)
+              backgroundColor: 'rgba(0, 0, 0, 0.02)',
+            }}
+            aria-label={t('whiteboard.emojiReaction.placementMode', 'Click to place emoji: {{emoji}}', {
+              emoji: emojiPlacementInfo.emoji,
+            })}
+          />
+          {/* Floating emoji cursor that follows mouse position */}
+          {cursorPosition && (
+            <Box
+              sx={{
+                position: 'fixed',
+                left: cursorPosition.x,
+                top: cursorPosition.y,
+                fontSize: '24px',
+                lineHeight: 1,
+                pointerEvents: 'none',
+                zIndex: 11,
+                transform: 'translate(-50%, -50%)',
+                userSelect: 'none',
+              }}
+              aria-hidden="true"
+            >
+              {emojiPlacementInfo.emoji}
+            </Box>
+          )}
+        </>
       )}
     </Box>
   );
@@ -362,6 +398,10 @@ const CollaborativeExcalidrawWrapper = ({
         mode,
         modeReason,
         restartCollaboration,
+        // Emoji reaction controls
+        isReadOnly,
+        emojiPlacementInfo,
+        onEmojiPlacementModeChange: handleEmojiPlacementModeChange,
       })}
       <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
         <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />
