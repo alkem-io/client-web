@@ -160,27 +160,6 @@ const WhiteboardEmojiReactionPicker = ({
     cancel();
   };
 
-  /**
-   * This method should be called by the parent when the canvas is clicked
-   * during placement mode. It completes the placement flow.
-   */
-  const handleCanvasClick = (coordinates: SceneCoordinates) => {
-    if (isPlacing && selectedEmoji) {
-      onEmojiPlace?.(selectedEmoji, coordinates);
-      placeEmoji();
-    }
-  };
-
-  // Expose handleCanvasClick via a custom attribute for parent integration
-  // This is a workaround since we can't directly pass a ref up
-  // The parent will need to call this when canvas is clicked
-  const pickerState = {
-    isPlacing,
-    selectedEmoji,
-    handleCanvasClick,
-    cancel,
-  };
-
   return (
     <Box className={className} data-emoji-picker-state={JSON.stringify({ isPlacing, selectedEmoji })}>
       <Tooltip
@@ -201,19 +180,21 @@ const WhiteboardEmojiReactionPicker = ({
             aria-label={t('whiteboard.emojiReaction.addEmoji', 'Add emoji reaction')}
             aria-expanded={isOpen}
             aria-haspopup="dialog"
-            sx={theme => ({
-              backgroundColor: isPlacing
-                ? theme.palette.primary.light
-                : isOpen
-                  ? theme.palette.action.selected
-                  : 'transparent',
+            sx={theme => {
+              const getBackgroundColor = () => {
+                if (isPlacing) return theme.palette.primary.light;
+                if (isOpen) return theme.palette.action.selected;
+                return 'transparent';
+              };
+              return {
+              backgroundColor: getBackgroundColor(),
               color: isPlacing ? theme.palette.primary.contrastText : 'inherit',
               '&:hover': {
                 backgroundColor: isPlacing
                   ? theme.palette.primary.main
                   : theme.palette.action.hover,
               },
-            })}
+            }; }}
           >
             {isPlacing && selectedEmoji ? (
               <Typography component="span" sx={{ fontSize: '1.25rem' }}>
@@ -294,4 +275,4 @@ const WhiteboardEmojiReactionPicker = ({
 export default WhiteboardEmojiReactionPicker;
 
 // Export the hook for external state management if needed
-export { useEmojiReactionPickerState };
+export { useEmojiReactionPickerState } from '../reactionEmoji/useEmojiReactionPickerState';
