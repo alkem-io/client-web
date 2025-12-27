@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Box, IconButton, Popover, Tooltip, Typography } from '@mui/material';
 import AddReactionOutlinedIcon from '@mui/icons-material/AddReactionOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -79,14 +79,25 @@ const WhiteboardEmojiReactionPicker = ({
     cancel,
   } = useEmojiReactionPickerState();
 
-  // Reset picker state when parent signals placement is complete
-  // This happens when emojiPlacementInfo becomes null while we're still in placing mode
+  // Track previous placement info to detect transitions from active to null
+  const [wasPlacementActive, setWasPlacementActive] = useState(false);
+
+  // Track when parent has active placement info
   useEffect(() => {
-    if (isPlacing && emojiPlacementInfo === null) {
+    if (emojiPlacementInfo?.isActive) {
+      setWasPlacementActive(true);
+    }
+  }, [emojiPlacementInfo]);
+
+  // Reset picker state when parent signals placement is complete
+  // Only reset when transitioning from active placement to null (not on initial null)
+  useEffect(() => {
+    if (isPlacing && wasPlacementActive && emojiPlacementInfo === null) {
       // Parent handled placement, reset our internal state
       placeEmoji();
+      setWasPlacementActive(false);
     }
-  }, [emojiPlacementInfo, isPlacing, placeEmoji]);
+  }, [emojiPlacementInfo, isPlacing, wasPlacementActive, placeEmoji]);
 
   // Notify parent when placement mode changes
   useEffect(() => {
