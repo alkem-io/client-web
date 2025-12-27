@@ -940,7 +940,16 @@
       "new-temporary-reference": "Temporary Link Id: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Click to open $t(common.whiteboard)"
+      "clickToSee": "Click to open $t(common.whiteboard)",
+      "emojiReaction": {
+        "addEmoji": "Add emoji reaction",
+        "title": "Add Emoji",
+        "hint": "Select an emoji, then click on the canvas",
+        "clickToPlace": "Click on canvas to place {{emoji}}",
+        "placementMode": "Click to place emoji: {{emoji}}",
+        "gridLabel": "Select an emoji",
+        "noEmojis": "No emojis available"
+      }
     },
     "memo": {
       "clickToSee": "Click to see the full $t(common.memo)"

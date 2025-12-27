@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
@@ -11,6 +11,9 @@ import { useTick } from '@/core/utils/time/tick';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
+import WhiteboardEmojiReactionPicker from '@/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker';
+import { createEmojiReactionElement } from '@/domain/collaboration/whiteboard/reactionEmoji/createEmojiReactionElement';
+import { EmojiReactionPlacementInfo } from '@/domain/collaboration/whiteboard/reactionEmoji/types';
 import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
 import type {
   AppState,
@@ -101,6 +104,9 @@ const CollaborativeExcalidrawWrapper = ({
   const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
 
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
+
+  // Emoji reaction placement state
+  const [emojiPlacementInfo, setEmojiPlacementInfo] = useState<EmojiReactionPlacementInfo | null>(null);
 
   const { whiteboard, filesManager, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
@@ -226,8 +232,78 @@ const CollaborativeExcalidrawWrapper = ({
     [actions.onInitApi]
   );
 
+  // Determine if whiteboard is in read-only mode
+  const isReadOnly = !collaborating || mode === 'read' || !isSceneInitialized;
+
+  // Handle placement mode changes from emoji picker
+  const handleEmojiPlacementModeChange = useCallback((placementInfo: EmojiReactionPlacementInfo | null) => {
+    setEmojiPlacementInfo(placementInfo);
+  }, []);
+
+  // Ref for canvas container to detect outside clicks (T015)
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
+
+  // Cancel placement mode when clicking outside canvas (T015)
+  useEffect(() => {
+    if (!emojiPlacementInfo?.isActive) {
+      return;
+    }
+
+    const handleDocumentClick = (event: MouseEvent) => {
+      // If click is outside the canvas container, cancel placement
+      if (canvasContainerRef.current && !canvasContainerRef.current.contains(event.target as Node)) {
+        setEmojiPlacementInfo(null);
+      }
+    };
+
+    // Use capture phase to catch clicks before they propagate
+    document.addEventListener('click', handleDocumentClick, true);
+    return () => document.removeEventListener('click', handleDocumentClick, true);
+  }, [emojiPlacementInfo?.isActive]);
+
+  // Handle canvas click for emoji placement (T013)
+  const handleEmojiPlacementClick = useCallback(
+    async (event: React.MouseEvent<HTMLDivElement>) => {
+      if (!emojiPlacementInfo?.isActive || !emojiPlacementInfo.emoji || !excalidrawApi) {
+        return;
+      }
+
+      // Get the app state for coordinate conversion
+      const appState = excalidrawApi.getAppState();
+      const { scrollX, scrollY, zoom, offsetLeft, offsetTop } = appState;
+
+      // Convert screen coordinates to scene coordinates
+      // Account for canvas offset, scroll, and zoom
+      const canvasX = event.clientX - offsetLeft;
+      const canvasY = event.clientY - offsetTop;
+      const sceneX = (canvasX - scrollX) / zoom.value;
+      const sceneY = (canvasY - scrollY) / zoom.value;
+
+      // Create emoji element
+      const elementSkeleton = createEmojiReactionElement({
+        emoji: emojiPlacementInfo.emoji,
+        x: sceneX,
+        y: sceneY,
+      });
+
+      // Dynamically import to avoid loading excalidraw in tests
+      const { convertToExcalidrawElements } = await import('@alkemio/excalidraw');
+
+      // Convert skeleton to full Excalidraw element and add to scene
+      const elements = convertToExcalidrawElements([elementSkeleton]);
+      const currentElements = excalidrawApi.getSceneElements();
+      excalidrawApi.updateScene({
+        elements: [...currentElements, ...elements],
+      });
+
+      // Clear placement mode
+      setEmojiPlacementInfo(null);
+    },
+    [emojiPlacementInfo, excalidrawApi]
+  );
+
   const children = (
-    <Box sx={{ height: 1, flexGrow: 1, position: 'relative' }}>
+    <Box ref={canvasContainerRef} sx={{ height: 1, flexGrow: 1, position: 'relative' }}>
       <Suspense fallback={<Loading />}>
         <LoadingScene enabled={!isSceneInitialized} />
         {whiteboard && (
@@ -237,20 +313,43 @@ const CollaborativeExcalidrawWrapper = ({
             initialData={whiteboardDefaults}
             UIOptions={mergedUIOptions}
             isCollaborating={collaborating}
-            viewModeEnabled={!collaborating || mode === 'read' || !isSceneInitialized}
+            viewModeEnabled={isReadOnly}
             onChange={onChange}
             onPointerUpdate={collabApi?.onPointerUpdate}
             detectScroll={false}
             autoFocus
             generateIdForFile={filesManager.addNewFile}
             aiEnabled={false}
-            /*renderTopRightUI={_isMobile => {
-                return <LiveCollaborationStatus />;
-              }}*/
+            renderTopRightUI={_isMobile => (
+              <WhiteboardEmojiReactionPicker
+                disabled={isReadOnly}
+                onPlacementModeChange={handleEmojiPlacementModeChange}
+              />
+            )}
             {...restOptions}
           />
         )}
       </Suspense>
+      {/* Emoji placement overlay - captures clicks when in placement mode (T013, T014) */}
+      {emojiPlacementInfo?.isActive && (
+        <Box
+          onClick={handleEmojiPlacementClick}
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            cursor: 'crosshair',
+            zIndex: 10,
+            // Semi-transparent to indicate placement mode (T014)
+            backgroundColor: 'rgba(0, 0, 0, 0.02)',
+          }}
+          aria-label={t('whiteboard.emojiReaction.placementMode', 'Click to place emoji: {{emoji}}', {
+            emoji: emojiPlacementInfo.emoji,
+          })}
+        />
+      )}
     </Box>
   );
 
