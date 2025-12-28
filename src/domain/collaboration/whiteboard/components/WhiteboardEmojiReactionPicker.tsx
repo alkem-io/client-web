@@ -6,16 +6,9 @@ import { useTranslation } from 'react-i18next';
 import EmojiReactionGrid from './EmojiReactionGrid';
 import { useEmojiReactionConfiguration } from '../reactionEmoji/useEmojiReactionConfiguration';
 import { useEmojiReactionPickerState } from '../reactionEmoji/useEmojiReactionPickerState';
-import { EmojiReactionPlacementInfo, SceneCoordinates } from '../reactionEmoji/types';
+import { EmojiReactionPlacementInfo } from '../reactionEmoji/types';
 
 interface WhiteboardEmojiReactionPickerProps {
-  /**
-   * Callback when an emoji should be placed on the canvas.
-   * Called with the emoji character and coordinates (to be provided by canvas click).
-   * Optional - parent handles this via canvas click integration.
-   */
-  onEmojiPlace?: (emoji: string, coordinates: SceneCoordinates) => void;
-
   /**
    * Whether the picker is disabled (e.g., read-only mode).
    */
@@ -50,15 +43,13 @@ interface WhiteboardEmojiReactionPickerProps {
  * @example
  * ```tsx
  * <WhiteboardEmojiReactionPicker
- *   onEmojiPlace={(emoji, coords) => {
- *     addEmojiToCanvas(emoji, coords.x, coords.y);
- *   }}
+ *   onPlacementModeChange={(info) => setEmojiPlacementInfo(info)}
+ *   emojiPlacementInfo={emojiPlacementInfo}
  *   disabled={isReadOnly}
  * />
  * ```
  */
 const WhiteboardEmojiReactionPicker = ({
-  onEmojiPlace,
   disabled = false,
   className,
   onPlacementModeChange,
