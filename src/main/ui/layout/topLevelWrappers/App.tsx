@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '@/core/ui/notifications/NotificationHandler';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -6,8 +6,10 @@ import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { useCookies } from 'react-cookie';
 import { ALKEMIO_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
-import CookieConsent from '@/main/cookies/CookieConsent';
 import { Box } from '@mui/material';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+
+const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CookieConsent'));
 
 const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
@@ -50,7 +52,11 @@ const App = () => {
       >
         <Outlet />
       </Box>
-      {!cookies.accepted_cookies && <CookieConsent ref={cookieConsentRef} />}
+      {!cookies.accepted_cookies && (
+        <Suspense fallback={null}>
+          <CookieConsent ref={cookieConsentRef} />
+        </Suspense>
+      )}
       <NotificationHandler />
     </>
   );
