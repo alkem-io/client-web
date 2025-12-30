@@ -21,7 +21,8 @@ export const AuthRequiredPage = () => {
   const { locations } = useConfig();
 
   const signInUrl = buildLoginUrl(returnUrl);
-  const homeUrl = `//${locations?.domain ?? ''}/${TopLevelRoutePath.Home}`;
+  const domain = locations?.domain ? `https://${locations.domain}` : '';
+  const homeUrl = `${domain}/${TopLevelRoutePath.Home}`;
 
   return (
     <TopLevelLayout>
