@@ -50,7 +50,7 @@ const SpaceSubspacesPage = () => {
   const subspaces = space?.subspaces ?? [];
 
   // Use shared hook for parent info and avatar stacking
-  const { parentInfo, collectAvatars } = useSubspaceCardData(space);
+  const { collectAvatars } = useSubspaceCardData(space);
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -106,7 +106,6 @@ const SpaceSubspacesPage = () => {
             leadOrganizations={item.about.membership?.leadOrganizations}
             showLeads={isAuthenticated}
             onContactLead={handleContactLead}
-            parentInfo={parentInfo}
             avatarUris={collectAvatars(item)}
           />
         )}

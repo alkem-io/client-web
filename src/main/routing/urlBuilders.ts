@@ -19,6 +19,10 @@ export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
 };
 
+export const buildNotificationSettingsUrl = (entityUrl: string) => {
+  return `${entityUrl}/settings/notifications`;
+};
+
 export const buildSettingsCommunityUrl = (entityUrl: string) => {
   return `${buildSettingsUrl(entityUrl)}/community`;
 };

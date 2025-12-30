@@ -44,6 +44,7 @@ export const SubmenuActionButton = ({ dialogs, icon = <MoreHoriz />, tooltip }: 
         aria-controls={open ? 'submenu-actions' : undefined}
         aria-haspopup="menu"
         aria-expanded={open}
+        sx={{ width: '100%' }}
       >
         {icon}
       </ButtonWithTooltip>

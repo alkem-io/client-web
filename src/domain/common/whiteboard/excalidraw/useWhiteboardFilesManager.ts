@@ -1,93 +1,37 @@
-import { useContext, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import type {
   BinaryFileData,
   BinaryFiles,
-  DataURL,
   ExcalidrawImperativeAPI,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
-import Semaphore from 'ts-semaphore';
 import { error, TagCategoryValues } from '@/core/logging/sentry/log';
 import { GuestSessionContext } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
+import Semaphore from 'ts-semaphore';
+import { dataUrlToFile } from './fileStore/fileConverters';
+import { WhiteboardFileCache } from './fileStore/WhiteboardFileCache';
+import { FileUploader } from './fileStore/FileUploader';
+import { FileDownloader } from './fileStore/FileDownloader';
+import type {
+  BinaryFileDataWithUrl,
+  BinaryFilesWithUrl,
+  BinaryFilesWithOptionalUrl,
+  WhiteboardWithFiles,
+} from './types';
 
-export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
-export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
-export type BinaryFilesWithUrl = Record<string, BinaryFileDataWithUrl>;
-export type BinaryFilesWithOptionalUrl = Record<string, BinaryFileDataWithOptionalUrl>;
-
-const isValidDataURL = (url: string) =>
-  url.match(/^(data:)([\w/+-]*)(;charset=[\w-]+|;base64){0,1},[A-Za-z0-9+/=]+$/gi) !== null;
-
-const dataUrlToFile = async (
-  dataUrl: string,
-  fileName: string = 'from data',
-  mimeType: string | undefined = undefined,
-  lastModified: number = new Date().getTime()
-): Promise<File> => {
-  if (!isValidDataURL(dataUrl)) {
-    return Promise.reject('Not a valid dataURL detected');
-  }
-
-  const mime = dataUrl.split(',')?.[0]?.match(/:(.*?);/)?.[1];
-  const blob = await (await fetch(dataUrl)).blob();
-  return new File([blob], fileName, { type: mime ?? mimeType ?? 'application/octet-stream', lastModified });
-};
-
-const blobToDataURL = (blob: Blob): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      resolve(reader.result as string);
-    };
-
-    reader.onerror = () => {
-      reject(reader.error);
-    };
-
-    reader.readAsDataURL(blob);
-  });
-};
-
-/**
- * Encodes a string to Base64, handling Unicode characters properly.
- * This is necessary because HTTP headers only support ISO-8859-1 characters.
- */
-const encodeToBase64 = (str: string): string => {
-  // TextEncoder converts the string to UTF-8 bytes
-  const bytes = new TextEncoder().encode(str);
-  // Convert bytes to a binary string
-  const binaryString = Array.from(bytes, byte => String.fromCharCode(byte)).join('');
-  // Encode to Base64
-  return btoa(binaryString);
-};
-
-const fetchFileToDataURL = async (url: string, guestName?: string | null): Promise<string> => {
-  const headers: Record<string, string> = {};
-
-  if (guestName) {
-    Object.assign(headers, { 'x-guest-name': encodeToBase64(guestName) });
-  }
-  const response = await fetch(url, { headers });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch file from ${url}`);
-  }
-
-  const blob = await response.blob();
-  return blobToDataURL(blob);
-};
+// Re-export types for backward compatibility
+export type {
+  BinaryFileDataWithUrl,
+  BinaryFileDataWithOptionalUrl,
+  BinaryFilesWithUrl,
+  BinaryFilesWithOptionalUrl,
+  WhiteboardWithFiles,
+} from './types';
 
 interface Props {
-  storageBucketId?: string; // FilesManagers without storageBucketId will throw an exception on file upload
+  storageBucketId?: string;
   excalidrawAPI: ExcalidrawImperativeAPI | null;
-  // TODO remove when all whiteboards are known to have a storageBucketId
   allowFallbackToAttached?: boolean;
-}
-
-interface WhiteboardWithFiles {
-  files?: Record<string, BinaryFileDataWithOptionalUrl>;
 }
 
 export interface WhiteboardFilesManager {
@@ -109,206 +53,102 @@ const useWhiteboardFilesManager = ({
   allowFallbackToAttached,
   excalidrawAPI,
 }: Props): WhiteboardFilesManager => {
-  const log = (..._args) => {
-    // TODO: Remove those `log()`s when this is confirmed to be fully stable
-    //console.log('[FileManager]', ..._args);
-  };
   const guestSessionContext = useContext(GuestSessionContext);
   const guestName = guestSessionContext?.guestName;
 
-  /**
-   * Stores all the files temporarily:
-   * - Files that come from loadFiles, downloaded when the wb json is loaded into excalidraw and the files are requested from their Urls
-   * - Files that are added by the user to the wb when editing and are uploaded
-   */
-  const fileStore = useRef<Record<string, BinaryFileDataWithUrl>>({});
-  const [fileStoreVersion, setFileStoreVersion] = useState<number>(0); // This is used to force a re-render when the fileStore changes
-
-  log('[render]', {
-    filesCount: Object.keys(fileStore.current).length,
-    fileStore: fileStore.current,
-    params: { storageBucketId, allowFallbackToAttached, excalidrawAPI },
-  });
-
-  const fileStoreAddFile = (fileId: string, file: BinaryFileDataWithUrl) => {
-    log('changing fileStore version from', fileStore.current, ' to ', {
-      ...fileStore.current,
-      [fileId]: file,
-    });
-
-    fileStore.current = { ...fileStore.current, [fileId]: file };
-    setFileStoreVersion(fileStoreVersion => fileStoreVersion + 1);
-  };
-
+  // State
   const [downloadingFiles, setDownloadingFiles] = useState(false);
   const [uploadFile, { loading: uploadingFile }] = useUploadFileMutation();
 
+  // Store the latest uploadFile in a ref to avoid stale closure issues
+  const uploadFileRef = useRef(uploadFile);
+  useEffect(() => {
+    uploadFileRef.current = uploadFile;
+  }, [uploadFile]);
+
+  // Store config in ref to avoid stale storageBucketId/allowFallbackToAttached
+  const configRef = useRef({ storageBucketId, allowFallbackToAttached });
+  useEffect(() => {
+    configRef.current = { storageBucketId, allowFallbackToAttached };
+  }, [storageBucketId, allowFallbackToAttached]);
+
+  // Core services (created once, stable across renders)
+  const cache = useRef(new WhiteboardFileCache()).current;
+  const uploader = useRef(
+    new FileUploader(
+      () => configRef.current,
+      variables => uploadFileRef.current({ variables })
+    )
+  ).current;
+  const downloader = useRef(new FileDownloader()).current;
+  const semaphore = useRef(new Semaphore(1)).current;
+
+  // Force re-render when cache changes
+  const [cacheVersion, setCacheVersion] = useState(0);
+  useEffect(() => {
+    return cache.subscribe(() => setCacheVersion(cache.getVersion()));
+  }, [cache]);
+
   /**
-   * Generates the fileId using the Excalidraw's internal function (the SHA-1 of the content).
-   * Uploads the file to the storageBucket
-   * Stores the file with the storageBucket url in fileStore.
-   * @param file: File
-   * @returns FileId
+   * Upload a new file and return its ID
    */
   const addNewFile = async (file: File): Promise<string> => {
-    return (await uploadFileToStorage(file)).id;
-  };
-
-  const uploadFileToStorage = async (file: File): Promise<{ id: string; url: string }> => {
-    const fileId = await generateIdFromFile(file);
-
-    // Check fileStore with defensive copy to avoid race conditions
-    const cachedFile = fileStore.current[fileId];
-    if (cachedFile?.url) {
-      log('file was already in our store', fileId, cachedFile);
-      return { id: fileId, url: cachedFile.url };
-    }
-
-    if (!storageBucketId) {
-      if (allowFallbackToAttached) {
-        return { id: fileId, url: '' };
-      } else {
-        const errorMessage = `Missing StorageBucket: Uploading images to this whiteboard is not supported (fileId: ${fileId}, fileName: ${file.name})`;
-        error(errorMessage, { category: TagCategoryValues.WHITEBOARD, label: 'upload-no-storage-bucket' });
-        throw new Error(errorMessage);
-      }
-    }
-
-    log('uploading new file', fileId, file);
-    const { data, errors } = await uploadFile({
-      variables: {
-        file,
-        uploadData: {
-          storageBucketId,
-        },
-      },
-    });
-
-    if (!data?.uploadFileOnStorageBucket.url || errors) {
-      const errorMessage = `Failed to upload file to storage: ${errors?.[0]?.message || 'Unknown upload error'} (fileId: ${fileId}, fileName: ${file.name})`;
-      error(errorMessage, { category: TagCategoryValues.WHITEBOARD, label: 'upload-failed' });
-      return Promise.reject(errors?.[0]?.message);
-    }
-
-    log('newFile uploaded', fileId, data.uploadFileOnStorageBucket);
-
-    const fileFromExcalidraw = excalidrawAPI?.getFiles()?.[fileId];
-    const url = data.uploadFileOnStorageBucket.url;
-
-    if (fileFromExcalidraw) {
-      fileStoreAddFile(fileId, {
-        ...fileFromExcalidraw,
-        url,
-      });
-    } else {
-      fileStoreAddFile(fileId, {
-        id: fileId,
-        mimeType: excalidrawFileMimeType(file.type),
-        created: Date.now(),
-        url,
-        dataURL: (await blobToDataURL(file)) as DataURL,
-      });
-    }
-
-    return { id: fileId, url };
+    const fileData = await uploader.uploadAndCreateFileData(file);
+    cache.set(fileData.id, fileData);
+    return fileData.id;
   };
 
   /**
-   * Receives a whiteboard object { elements, files ... },
-   * analyzes the files object and downloads all the files that have a url and don't have a dataURL
-   * once everything is downloaded the function pushFilesToExcalidraw can be called
-   * @param whiteboard
-   * @returns
+   * Load files from a whiteboard: cache files with dataURL, download files with URL
    */
   const loadFiles = async (whiteboard: WhiteboardWithFiles | undefined): Promise<void> => {
     if (!whiteboard?.files) {
-      log('No files to download');
       return;
     }
 
-    const files = whiteboard.files;
-    // leave only the incoming files that HAVE a dataURL and add them to the local scene
-    // we don't need to download these
-    Object.values(files)
-      .filter<BinaryFileData>((file): file is BinaryFileData => !!file.dataURL)
-      .forEach(file => fileStoreAddFile(file.id, { ...file, url: '' } as BinaryFileDataWithUrl));
-    // leave only the incoming files that don't have a dataURL but have URL and are not in the fileStore
-    const downloadableFileIds = Object.keys(files).filter(
-      fileId => !files[fileId]?.dataURL && !fileStore.current[fileId]
-    );
+    const files = Object.values(whiteboard.files);
 
-    if (!downloadableFileIds.length) {
+    // Cache files that already have dataURL
+    files
+      .filter(file => file.dataURL)
+      .forEach(file => {
+        const fileWithOptionalUrl = file as BinaryFileData & { url?: string };
+        const url = fileWithOptionalUrl.url || '';
+        cache.set(file.id, { ...file, url } as BinaryFileDataWithUrl);
+      });
+
+    // Download files that only have URL
+    const filesToDownload = files.filter(file => !file.dataURL && file.url && !cache.has(file.id));
+
+    if (filesToDownload.length === 0) {
       return;
     }
-
-    log('I need to download these files', downloadableFileIds);
 
     setDownloadingFiles(true);
-
-    const results = await Promise.allSettled(
-      downloadableFileIds.map(async fileId => {
-        if (fileStore.current[fileId]?.dataURL) {
-          log(`No need to download ${fileId} already in the store`, fileStore.current[fileId]);
-          return;
-        }
-        const file = whiteboard!.files![fileId];
-        if (!file.url) {
-          error(`Cannot download file - missing URL: ${file.id}`, {
-            category: TagCategoryValues.WHITEBOARD,
-            label: 'download-missing-url',
-          });
-          throw new Error(`Cannot download: ${file.id}`);
-        }
-
-        log('DOWNLOADING ', file);
-        try {
-          const dataURL = await fetchFileToDataURL(file.url, guestName);
-          // try-catch will avoid putting the file in the store if fetching fails
-          fileStoreAddFile(fileId, { ...file, dataURL } as BinaryFileDataWithUrl);
-        } catch (e) {
-          error(`Error downloading file: ${file.url}`, {
-            category: TagCategoryValues.WHITEBOARD,
-            label: 'download-fetch-failed',
-          });
-          throw e;
-        }
-      })
-    );
-
-    // Log any failed downloads
-    const failedDownloads = results.filter(result => result.status === 'rejected');
-    if (failedDownloads.length > 0) {
-      const reasons = failedDownloads.map(r => (r as PromiseRejectedResult).reason?.message).join(', ');
-      error(
-        `Failed to download ${failedDownloads.length} of ${downloadableFileIds.length} whiteboard files: ${reasons}`,
-        { category: TagCategoryValues.WHITEBOARD, label: 'download-batch-failures' }
-      );
-    }
-
+    const { succeeded } = await downloader.downloadMultiple(filesToDownload, { guestName });
+    succeeded.forEach(file => cache.set(file.id, file));
     setDownloadingFiles(false);
   };
 
   /**
-   * Returns all the files uploaded to the fileStore.
-   * Argument `files` should be the files that are currently in the whiteboard, can be obtained from Excalidraw's API.
-   * if any of the passed files is not in the fileStore, it will be uploaded to the storageBucket.
-   *
-   * @returns {BinaryFilesWithUrl} - The files with their URLs in the storage bucket.
-   * Property `dataURL` can contain the base64 data of the file if it was coming in the parameter `files`.
+   * Get all uploaded files from cache, uploading any missing ones
    */
   const getUploadedFiles = async (files: BinaryFiles): Promise<BinaryFilesWithUrl> => {
-    const result: BinaryFilesWithUrl = {};
     if (!files) {
-      return result;
+      return {};
     }
+
+    const result: BinaryFilesWithUrl = {};
     const failedFileIds: string[] = [];
+
     for (const id of Object.keys(files)) {
-      if (fileStore.current[id]) {
-        result[id] = fileStore.current[id];
+      const cachedFile = cache.get(id);
+      if (cachedFile) {
+        result[id] = cachedFile;
       } else {
-        const file = await convertLocalFileToRemote(files[id]);
-        if (file) {
-          result[id] = file;
+        const converted = await convertLocalFileToRemote(files[id]);
+        if (converted) {
+          result[id] = converted;
         } else {
           failedFileIds.push(id);
         }
@@ -324,38 +164,65 @@ const useWhiteboardFilesManager = ({
   };
 
   /**
-   * Injects into Excalidraw all the files in our fileStore.
-   * Excalidraw will filter later if any of those files was deleted.
-   * @returns
+   * Push cached files to Excalidraw
    */
   const pushFilesToExcalidraw = async () => {
     if (!excalidrawAPI) {
-      log('excalidrawAPI not ready yet or no files', excalidrawAPI, fileStore.current);
       return;
     }
-    const filesAlreadyInExcalidraw = excalidrawAPI.getFiles();
-    const filesAsArray = Object.keys(fileStore.current)
-      .filter(fileId => !filesAlreadyInExcalidraw[fileId]?.dataURL) // filter out all the files that are already loaded in Excalidraw
-      .map(fileId => fileStore.current[fileId]);
 
-    if (filesAsArray.length > 0) {
-      log('pushing files to Excalidraw from FilesManager', fileStore.current, filesAsArray);
-      excalidrawAPI.addFiles(filesAsArray);
+    const filesAlreadyInExcalidraw = excalidrawAPI.getFiles();
+    const filesToPush = cache.getAllArray().filter(fileInStore => {
+      const fileInExcalidraw = filesAlreadyInExcalidraw[fileInStore.id];
+      return !fileInExcalidraw || (!fileInExcalidraw.dataURL && fileInStore.dataURL);
+    });
+
+    if (filesToPush.length > 0) {
+      excalidrawAPI.addFiles(filesToPush);
     }
   };
 
   /**
-   * Receives a Whiteboard, { elements, files ... }
-   * Returns the same but a modified version of files removing all the dataURLs.
-   *
-   * Uploads the files to the storage bucket if they are not yet uploaded.
-   *
-   * @param whiteboard
-   * @returns
+   * Convert local file (with dataURL) to remote file (with URL)
+   */
+  const convertLocalFileToRemote = (
+    file: BinaryFileData & { url?: string }
+  ): Promise<BinaryFileDataWithUrl | undefined> => {
+    return semaphore.use(async () => {
+      // File already has URL - preserve it along with dataURL if present
+      if (file.url) {
+        return { ...file } as BinaryFileDataWithUrl;
+      }
+
+      // Check if we have it cached with URL
+      const cachedFile = cache.get(file.id);
+      if (cachedFile?.url) {
+        return { ...file, url: cachedFile.url } as BinaryFileDataWithUrl;
+      }
+
+      // Upload file if it has dataURL and we have storage
+      if (file.dataURL && storageBucketId) {
+        const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
+        const { url } = await uploader.upload(fileObject);
+        const result = { ...file, url } as BinaryFileDataWithUrl;
+        cache.set(file.id, result);
+        return result;
+      }
+
+      // Cannot convert
+      error(
+        `Cannot convert file to remote - missing required data: ${file.id} (hasUrl: ${!!file.url}, hasDataURL: ${!!file.dataURL}, hasStorageBucketId: ${!!storageBucketId}, inCache: ${cache.has(file.id)})`,
+        { category: TagCategoryValues.WHITEBOARD, label: 'convert-missing-data' }
+      );
+      return undefined;
+    });
+  };
+
+  /**
+   * Convert all local files in a whiteboard to remote files
    */
   const convertLocalFilesToRemoteInWhiteboard = async <W extends WhiteboardWithFiles>(whiteboard: W): Promise<W> => {
     if (!whiteboard?.files) {
-      log('no whiteboard or no files', whiteboard);
       return whiteboard;
     }
 
@@ -367,13 +234,12 @@ const useWhiteboardFilesManager = ({
       Object.keys(files).map(async fileId => {
         const file = files[fileId];
         const normalizedFile = await convertLocalFileToRemote(file);
+
         if (normalizedFile) {
           filesNext[fileId] = normalizedFile;
         } else if (allowFallbackToAttached) {
-          // TODO remove when all whiteboards are known to have a storageBucketId
           filesNext[fileId] = file;
         } else {
-          // File conversion failed and no fallback - this file will be lost
           failedConversions.push(fileId);
           error(
             `File conversion failed and will be dropped: ${fileId} (hasUrl: ${!!file.url}, hasDataURL: ${!!file.dataURL}, storageBucketId: ${storageBucketId})`,
@@ -393,88 +259,27 @@ const useWhiteboardFilesManager = ({
     return { files: filesNext, ...rest } as W;
   };
 
-  const semaphore = useRef(new Semaphore(1)).current;
-
   /**
-   * Finds a file in the fileStore and prepares it to be sent:
-   * - Ensures that it has a URL
-   * - Removes dataURL
-   *
-   * A Semaphore is required in this function because it can be called multiple times in parallel by Collab.syncFiles
-   * Multiple upload requests were triggered because those `await uploadFileToStorage` were taking longer
-   * than the next call to this function from syncFiles.
-   * The semaphore ensures that the second call to this function will wait for the upload to finish
-   * and then the first condition will evaluate to `true` because the file will be already in the fileStore.
-   */
-  const convertLocalFileToRemote = (
-    file: BinaryFileData & { url?: string }
-  ): Promise<BinaryFileDataWithUrl | undefined> => {
-    return semaphore.use(async () => {
-      if (file.url) {
-        return { ...file, dataURL: '' } as BinaryFileDataWithUrl;
-      }
-      // the file might be in the store, but does it have a URL to return?
-      if (fileStore.current[file.id]?.url) {
-        // The file is in the fileStore, so it has been uploaded at some point, take the url from there:
-        return { ...file, dataURL: '', url: fileStore.current[file.id].url } as BinaryFileDataWithUrl;
-      }
-      // it doesn't matter if the file is in the store, but can we upload it`s content?
-      else if (file.dataURL && storageBucketId) {
-        log('NEED TO UPLOAD ', file.id, file);
-        const fileObject = await dataUrlToFile(file.dataURL, '', file.mimeType, file.created);
-        // In theory id should be equal to fileId, but Excalidraw modifies files after it loads them in memory, so hashes don't have to necessarily match anymore
-        const { id, url } = await uploadFileToStorage(fileObject);
-        log('Uploaded ', file.id, file, fileObject, id, url);
-        return { ...file, url, dataURL: '' } as BinaryFileDataWithUrl;
-      } else {
-        // File cannot be converted - log the reason
-        error(
-          `Cannot convert file to remote - missing required data: ${file.id} (hasUrl: ${!!file.url}, hasDataURL: ${!!file.dataURL}, hasStorageBucketId: ${!!storageBucketId}, inFileStore: ${!!fileStore.current[file.id]})`,
-          { category: TagCategoryValues.WHITEBOARD, label: 'convert-missing-data' }
-        );
-        return undefined;
-      }
-    });
-  };
-
-  /**
-   * Receives a mixed list of files with dataURL or URL. Loads only the files with dataURLs and tries to convert them to URLs.
-   * Returns only the converted files.
-   * @param files
+   * Load embedded files and convert them to remote
    */
   const loadAndTryConvertEmbeddedFiles = async (files: BinaryFilesWithOptionalUrl): Promise<BinaryFilesWithUrl> => {
-    // extract only files with dataURL
-    const filesWithDataUrl = { ...files };
-    Object.values(filesWithDataUrl).forEach(file => {
-      if (!file.dataURL) {
-        delete filesWithDataUrl[file.id];
-      }
-    });
+    const filesWithDataUrl = Object.values(files).filter(file => file.dataURL);
 
-    const filesWithDataUrlArray = Object.values(filesWithDataUrl);
-
-    if (!filesWithDataUrlArray.length) {
+    if (filesWithDataUrl.length === 0) {
       return {};
     }
 
-    // adds files with dataURL
-    excalidrawAPI?.addFiles(filesWithDataUrlArray);
-    // converts files from dataURL to URL
-    const { files: uploadedFilesWithOptionalUrl } = await convertLocalFilesToRemoteInWhiteboard({
-      files: filesWithDataUrl,
-    });
+    excalidrawAPI?.addFiles(filesWithDataUrl);
 
-    // leave only the successfully converted files
-    return Object.fromEntries(
-      // filter out files that were not converted
-      Object.entries(uploadedFilesWithOptionalUrl).filter(([_, file]) => file.url)
-    ) as BinaryFilesWithUrl;
+    const { files: uploadedFiles } = await convertLocalFilesToRemoteInWhiteboard({ files });
+
+    return Object.fromEntries(Object.entries(uploadedFiles).filter(([_, file]) => file.url)) as BinaryFilesWithUrl;
   };
 
   return useMemo<WhiteboardFilesManager>(
     () => ({
       addNewFile,
-      loadFiles, // Load external files into Excalidraw
+      loadFiles,
       getUploadedFiles,
       pushFilesToExcalidraw,
       convertLocalFileToRemote,
@@ -485,7 +290,7 @@ const useWhiteboardFilesManager = ({
         downloadingFiles,
       },
     }),
-    [storageBucketId, excalidrawAPI, fileStore.current, fileStoreVersion, downloadingFiles, uploadingFile]
+    [storageBucketId, excalidrawAPI, cacheVersion, downloadingFiles, uploadingFile, guestName]
   );
 };
 
