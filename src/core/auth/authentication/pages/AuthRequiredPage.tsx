@@ -13,13 +13,16 @@ import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
 import PageContent from '@/core/ui/content/PageContent';
 import { Container, LeftArea, Picture, RightArea } from '@/core/pages/Errors/Error404';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 export const AuthRequiredPage = () => {
   const returnUrl = useQueryParams().get(PARAM_NAME_RETURN_URL) ?? undefined;
   const { t } = useTranslation();
+  const { locations } = useConfig();
 
   const signInUrl = buildLoginUrl(returnUrl);
-  const homeUrl = `/${TopLevelRoutePath.Home}`;
+  const domain = locations?.domain ? `https://${locations.domain}` : '';
+  const homeUrl = `${domain}/${TopLevelRoutePath.Home}`;
 
   return (
     <TopLevelLayout>
