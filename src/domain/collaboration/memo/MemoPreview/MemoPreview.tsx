@@ -27,6 +27,7 @@ const Container = styled(Box)(({ theme, onClick }) => previewContainerStyles(the
 const ContentContainer = styled(Box)<{ withMinHeight?: boolean }>(({ theme, withMinHeight }) => ({
   position: 'relative',
   width: '100%',
+  height: '100%',
   display: 'flex',
   minHeight: withMinHeight ? gutters(16)(theme) : undefined,
 }));
