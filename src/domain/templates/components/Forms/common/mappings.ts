@@ -248,7 +248,10 @@ export const toCreateTemplateMutationVariables = (
           delete callout.framing.whiteboard?.profile?.visuals;
         }
       }
-      if (!calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post)) {
+      if (
+        !calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) &&
+        !calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Memo)
+      ) {
         delete callout.contributionDefaults?.postDescription;
       }
       if (
@@ -432,7 +435,10 @@ export const toUpdateTemplateMutationVariables = (
         delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
         delete updateCalloutVariables.calloutData?.framing?.whiteboardPreviewSettings;
       }
-      if (!calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post)) {
+      if (
+        !calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) &&
+        !calloutTemplateData.callout?.settings.contribution.allowedTypes.includes(CalloutContributionType.Memo)
+      ) {
         delete updateCalloutVariables.calloutData?.contributionDefaults?.postDescription;
       }
       if (
