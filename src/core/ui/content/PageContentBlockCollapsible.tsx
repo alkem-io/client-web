@@ -8,13 +8,14 @@ import { useTranslation } from 'react-i18next';
 
 interface ExpandMoreButtonProps extends IconButtonProps {
   collapsed: boolean;
+  withActions?: boolean;
 }
 
 const ExpandMoreButton = styled((props: ExpandMoreButtonProps) => {
-  const { collapsed, ...other } = props;
+  const { collapsed, withActions, ...other } = props;
   return <IconButton {...other} />;
-})(({ theme }) => ({
-  marginLeft: 'auto',
+})(({ theme, withActions }) => ({
+  marginLeft: withActions ? 0 : 'auto',
   transition: theme.transitions.create('transform', {
     duration: theme.transitions.duration.shortest,
   }),
@@ -76,7 +77,7 @@ const PageContentBlockCollapsible = ({
             </Box>
           ))}
         {seamless && <Divider sx={{ flexGrow: 1, marginLeft: gutters(0.5) }} />}
-        <ExpandMoreButton collapsed={isCollapsed} aria-label={t('buttons.expand')}>
+        <ExpandMoreButton collapsed={isCollapsed} aria-label={t('buttons.expand')} withActions={!!primaryAction}>
           <ExpandMoreIcon />
         </ExpandMoreButton>
       </Box>
