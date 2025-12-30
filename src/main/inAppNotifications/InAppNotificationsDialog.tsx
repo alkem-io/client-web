@@ -44,3 +44,5 @@ export const InAppNotificationsDialog = () => {
     </DialogWithGrid>
   );
 };
+
+export default InAppNotificationsDialog;

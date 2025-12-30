@@ -153,6 +153,32 @@ export default defineConfig({
         chunkFileNames: 'assets/[name][hash].js',
         assetFileNames: 'assets/[name][hash].[ext]',
         manualChunks: (id) => {
+          // Application-level code splitting for feature modules
+          if (!id.includes('node_modules')) {
+            // Split large feature areas into separate chunks
+            if (id.includes('/main/guidance/')) {
+              return 'app-guidance';
+            }
+            if (id.includes('/main/topLevelPages/')) {
+              return 'app-top-level-pages';
+            }
+            if (id.includes('/main/inAppNotifications/')) {
+              return 'app-notifications';
+            }
+            if (id.includes('/main/search/')) {
+              return 'app-search';
+            }
+            if (id.includes('/main/admin/')) {
+              return 'app-admin';
+            }
+            if (id.includes('/domain/platformAdmin/')) {
+              return 'app-platform-admin';
+            }
+            if (id.includes('/domain/spaceAdmin/')) {
+              return 'app-space-admin';
+            }
+          }
+          
           // Separate vendor chunks for better caching
           if (id.includes('node_modules')) {
             // Apollo Client

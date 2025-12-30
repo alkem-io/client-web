@@ -8,12 +8,12 @@ import { UserMessagingChatList } from './UserMessagingChatList';
 import { UserMessagingConversationView } from './UserMessagingConversationView';
 import { NewMessageDialog } from './NewMessageDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import { useMemo, useCallback, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 
 const POLLING_INTERVAL_MS = 5000; // Poll every 5 seconds
 
-export const UserMessagingDialog = () => {
+const UserMessagingDialog = () => {
   const { t } = useTranslation();
   const { isOpen, setIsOpen, selectedConversationId, setSelectedConversationId } = useUserMessagingContext();
   const { conversations, isLoading, refetch } = useUserConversations();
@@ -39,10 +39,9 @@ export const UserMessagingDialog = () => {
     };
   }, [isOpen, selectedConversationId, refetch]);
 
-  const selectedConversation = useMemo(() => {
-    if (!selectedConversationId) return null;
-    return conversations.find(c => c.id === selectedConversationId) ?? null;
-  }, [conversations, selectedConversationId]);
+  const selectedConversation = selectedConversationId
+    ? conversations.find(c => c.id === selectedConversationId) ?? null
+    : null;
 
   const handleSelectConversation = (conversationId: string) => {
     setSelectedConversationId(conversationId);
@@ -56,9 +55,9 @@ export const UserMessagingDialog = () => {
     setIsOpen(false);
   };
 
-  const handleMessageSent = useCallback(() => {
+  const handleMessageSent = () => {
     refetch();
-  }, [refetch]);
+  };
 
   const handleOpenNewMessage = () => {
     setIsNewMessageDialogOpen(true);
@@ -68,20 +67,17 @@ export const UserMessagingDialog = () => {
     setIsNewMessageDialogOpen(false);
   };
 
-  const handleNewMessageSent = useCallback(
-    async (userId: string) => {
-      // Refetch conversations to get the new conversation
-      const result = await refetch();
+  const handleNewMessageSent = async (userId: string) => {
+    // Refetch conversations to get the new conversation
+    const result = await refetch();
 
-      // Find the conversation with this user and select it
-      const newConversation = result.data?.me?.conversations?.users?.find(conv => conv.user?.id === userId);
+    // Find the conversation with this user and select it
+    const newConversation = result.data?.me?.conversations?.users?.find(conv => conv.user?.id === userId);
 
-      if (newConversation) {
-        setSelectedConversationId(newConversation.id);
-      }
-    },
-    [refetch, setSelectedConversationId]
-  );
+    if (newConversation) {
+      setSelectedConversationId(newConversation.id);
+    }
+  };
 
   // Mobile view: show either the list or the conversation
   if (isMobile) {
@@ -186,3 +182,5 @@ export const UserMessagingDialog = () => {
     </>
   );
 };
+
+export default UserMessagingDialog;
