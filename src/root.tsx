@@ -24,14 +24,17 @@ import { FC } from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter } from 'react-router-dom';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
-import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
-import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
 import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext';
-import { UserMessagingDialog } from './main/userMessaging/UserMessagingDialog';
 import { VersionHandling } from './main/versionHandling';
 import { rem } from '@/core/ui/typography/utils';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { Suspense } from 'react';
+
+const GlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./core/lazyLoading/GlobalErrorDialog'));
+const InAppNotificationsDialog = lazyWithGlobalErrorHandler(() => import('./main/inAppNotifications/InAppNotificationsDialog'));
+const UserMessagingDialog = lazyWithGlobalErrorHandler(() => import('./main/userMessaging/UserMessagingDialog'));
 
 // MARKDOWN_CLASS_NAME used in the styles below
 const globalStyles = (theme: Theme) => ({
@@ -121,9 +124,13 @@ const Root: FC = () => {
                                       <NavigationHistoryTracker />
                                       <ApmUserSetter />
                                       <ScrollToTop />
-                                      <InAppNotificationsDialog />
+                                      <Suspense fallback={null}>
+                                        <InAppNotificationsDialog />
+                                      </Suspense>
                                       <InAppNotificationCountSubscriber />
-                                      <UserMessagingDialog />
+                                      <Suspense fallback={null}>
+                                        <UserMessagingDialog />
+                                      </Suspense>
                                       <VersionHandling />
                                       <Error40XBoundary
                                         errorComponent={errorState => (
@@ -133,7 +140,9 @@ const Root: FC = () => {
                                         )}
                                       >
                                         <TopLevelRoutes />
-                                        <GlobalErrorDialog />
+                                        <Suspense fallback={null}>
+                                          <GlobalErrorDialog />
+                                        </Suspense>
                                       </Error40XBoundary>
                                     </UserMessagingProvider>
                                   </InAppNotificationsProvider>

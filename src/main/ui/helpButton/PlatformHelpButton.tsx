@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import HelpIcon from '@mui/icons-material/Help';
 import HelpDialog from '@/core/help/dialog/HelpDialog';
 import { IconButton } from '@mui/material';
@@ -6,8 +6,10 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { AuthorizationPrivilege, PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
-import ChatWidget from '@/main/guidance/chatWidget/ChatWidget';
 import { useTranslation } from 'react-i18next';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+
+const ChatWidget = lazyWithGlobalErrorHandler(() => import('@/main/guidance/chatWidget/ChatWidget'));
 
 const PlatformHelpButton = () => {
   const { t } = useTranslation();
@@ -28,7 +30,9 @@ const PlatformHelpButton = () => {
   return (
     <>
       {shouldDisplayChatWidget ? (
-        <ChatWidget />
+        <Suspense fallback={null}>
+          <ChatWidget />
+        </Suspense>
       ) : (
         <IconButton onClick={openHelpDialog} aria-label={t('common.help')}>
           <HelpIcon color="primary" fontSize="large" sx={{ filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));' }} />

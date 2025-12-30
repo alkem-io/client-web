@@ -1,5 +1,5 @@
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { createContext, useState, useContext, ReactNode, useMemo } from 'react';
+import { createContext, useState, useContext, ReactNode } from 'react';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 interface UserMessagingContextProps {
@@ -26,12 +26,7 @@ export const UserMessagingProvider = ({ children }: { children: ReactNode }) => 
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
 
   // Feature is enabled only for BETA_TESTER role
-  const isEnabled = useMemo(() => {
-    if (!userModel?.id) {
-      return false;
-    }
-    return platformRoles.includes(RoleName.PlatformBetaTester);
-  }, [userModel, platformRoles]);
+  const isEnabled = userModel?.id ? platformRoles.includes(RoleName.PlatformBetaTester) : false;
 
   const handleSetIsOpen = (open: boolean) => {
     setIsOpen(open);

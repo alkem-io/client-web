@@ -50,3 +50,5 @@ export const GlobalErrorDialog: React.FC = () => {
     </Dialog>
   );
 };
+
+export default GlobalErrorDialog;
