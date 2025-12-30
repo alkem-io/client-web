@@ -54,8 +54,12 @@ export const mapProfileModelToCreateProfileInput = (
 };
 
 export const mapProfileTagsToCreateTags = (profileModel: Pick<ProfileModel, 'tagsets'>): string[] | undefined => {
-  if (!profileModel || !profileModel.tagsets) {
+  if (!profileModel || !profileModel.tagsets || profileModel.tagsets.length === 0) {
     return undefined;
+  }
+
+  if (profileModel.tagsets.length === 1) {
+    return profileModel.tagsets[0].tags;
   }
 
   return profileModel.tagsets.find(tagset => tagset.name === TagsetReservedName.Default)?.tags;
