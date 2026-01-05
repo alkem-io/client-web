@@ -13,6 +13,7 @@ import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import { createEmojiReactionElement } from '@/domain/collaboration/whiteboard/reactionEmoji/createEmojiReactionElement';
 import { EmojiReactionPlacementInfo } from '@/domain/collaboration/whiteboard/reactionEmoji/types';
+import WhiteboardEmojiReactionPicker from '@/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker';
 import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
 import type {
   AppState,
@@ -295,10 +296,7 @@ const CollaborativeExcalidrawWrapper = ({
       // Use Excalidraw's utility function for accurate coordinate conversion
       // This correctly handles zoom, scroll, and canvas offset at all zoom levels
       const { viewportCoordsToSceneCoords } = await import('@alkemio/excalidraw');
-      const sceneCoords = viewportCoordsToSceneCoords(
-        { clientX: event.clientX, clientY: event.clientY },
-        appState
-      );
+      const sceneCoords = viewportCoordsToSceneCoords({ clientX: event.clientX, clientY: event.clientY }, appState);
 
       // Create emoji element
       const elementSkeleton = createEmojiReactionElement({
@@ -325,6 +323,15 @@ const CollaborativeExcalidrawWrapper = ({
 
   const children = (
     <Box ref={canvasContainerRef} sx={{ height: 1, flexGrow: 1, position: 'relative' }}>
+      {/* Floating emoji picker button - positioned top-right below header (as per Figma design) */}
+      {!isReadOnly && mode === 'write' && (
+        <WhiteboardEmojiReactionPicker
+          disabled={isReadOnly}
+          onPlacementModeChange={handleEmojiPlacementModeChange}
+          emojiPlacementInfo={emojiPlacementInfo}
+          className="floating-emoji-picker"
+        />
+      )}
       <Suspense fallback={<Loading />}>
         <LoadingScene enabled={!isSceneInitialized} />
         {whiteboard && (

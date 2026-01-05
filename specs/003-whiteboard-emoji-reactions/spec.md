@@ -13,6 +13,13 @@
 - Q: Where should the emoji picker be positioned? → A: In the header toolbar, beside the preview settings button (accessed via `headerActions` prop)
 - Q: What cursor feedback should be shown during placement mode? → A: The selected emoji character should be displayed as a floating element that follows the mouse cursor until the user clicks to place
 
+### Session 2026-01-05 (UI Repositioning)
+
+- **Positioning Change**: Emoji picker moved from header toolbar to floating button in dialog content area, positioned top-right below the header (as per Figma design)
+- **Responsive Design**: Mobile devices (breakpoint `sm` and below): `top: 0, right: -16px`; Desktop: `top: 16px, right: 0`
+- **Icon Styling**: Icon color changed to `theme.palette.action.active` (lighter grey) to match other toolbar icons; background changed to `theme.palette.background.paper` with shadow elevation
+- **Integration**: Picker now rendered in `CollaborativeExcalidrawWrapper` instead of passed through `headerActions`
+
 ### Session 2025-12-28 (Bug Fixes)
 
 - **Coordinate Calculation Bug**: When placing emojis at different zoom levels (e.g., 10% or 70%), emojis appeared at incorrect positions or didn't appear at all. Root cause: manual coordinate calculation `(canvasX - scrollX) / zoom.value` was incorrect. Solution: Use Excalidraw's `viewportCoordsToSceneCoords()` utility function which correctly handles all zoom, scroll, and offset calculations.
@@ -30,7 +37,7 @@ A user editing a whiteboard wants to add an emoji as visual content on the canva
 
 **Acceptance Scenarios**:
 
-1. **Given** a user has edit access to a whiteboard, **When** they click the emoji selector button in the header toolbar (beside the preview settings button), **Then** an emoji picker popover appears displaying available emoji options from the configured list
+1. **Given** a user has edit access to a whiteboard, **When** they click the floating emoji selector button in the top-right of the dialog content (below the header), **Then** an emoji picker popover appears displaying available emoji options from the configured list
 2. **Given** the emoji picker is open, **When** the user selects an emoji, **Then** the picker closes and the user's cursor changes to display the selected emoji character, indicating "placement mode"
 3. **Given** the user is in emoji placement mode, **When** they click anywhere on the whiteboard canvas, **Then** the selected emoji is placed at that location as whiteboard content and the cursor returns to normal
 4. **Given** an emoji has been placed on the canvas, **When** other collaborators view the whiteboard, **Then** they see the emoji at the same location
@@ -146,7 +153,7 @@ Users want to quickly find specific emojis without scrolling through a long list
 
 ### Functional Requirements
 
-- **FR-001**: System MUST provide an emoji picker interface accessible from the whiteboard header toolbar (beside the preview settings button) that displays outside the main canvas area
+- **FR-001**: System MUST provide an emoji picker interface as a floating button in the top-right of the dialog content area (below the header), positioned responsively: desktop (top: 16px, right: 0), mobile (top: 0, right: -16px)
 - **FR-002**: System MUST support emoji selection from the picker interface using click/tap interactions
 - **FR-003**: System MUST enable users to place selected emojis at specific coordinates on the whiteboard canvas as standard content elements
 - **FR-004**: System MUST treat placed emojis as standard whiteboard content that can be selected, moved, resized, and deleted using existing whiteboard controls
@@ -173,18 +180,18 @@ Users want to quickly find specific emojis without scrolling through a long list
 
 The following 10 emojis are recommended for the default configuration, selected for safe, constructive collaboration:
 
-| Emoji | Name | Purpose | Search Keywords |
-|-------|------|---------|-----------------|
-| 👍 | Thumbs Up | Agreement, approval | agree, yes, good, like, approve |
-| ⭐ | Star | Highlight, favorite, important | star, important, favorite, highlight |
-| ✅ | Check Mark | Complete, approved, done | done, complete, approved, check, yes |
-| 💡 | Light Bulb | Idea, insight, suggestion | idea, insight, suggestion, think, lightbulb |
-| ❓ | Question | Needs clarification, unclear | question, unclear, help, ask, clarify |
-| 💬 | Speech Bubble | Discussion needed, comment | discuss, comment, talk, conversation |
-| 🎯 | Target | Goal, on-point, focus | goal, target, focus, aim, objective |
-| 👏 | Clapping Hands | Great work, celebration | applause, great, celebrate, well done, bravo |
-| 📌 | Pin | Important, bookmark, remember | pin, important, bookmark, remember, note |
-| 🚀 | Rocket | Progress, momentum, launch | rocket, progress, go, launch, momentum |
+| Emoji | Name           | Purpose                        | Search Keywords                              |
+| ----- | -------------- | ------------------------------ | -------------------------------------------- |
+| 👍    | Thumbs Up      | Agreement, approval            | agree, yes, good, like, approve              |
+| ⭐    | Star           | Highlight, favorite, important | star, important, favorite, highlight         |
+| ✅    | Check Mark     | Complete, approved, done       | done, complete, approved, check, yes         |
+| 💡    | Light Bulb     | Idea, insight, suggestion      | idea, insight, suggestion, think, lightbulb  |
+| ❓    | Question       | Needs clarification, unclear   | question, unclear, help, ask, clarify        |
+| 💬    | Speech Bubble  | Discussion needed, comment     | discuss, comment, talk, conversation         |
+| 🎯    | Target         | Goal, on-point, focus          | goal, target, focus, aim, objective          |
+| 👏    | Clapping Hands | Great work, celebration        | applause, great, celebrate, well done, bravo |
+| 📌    | Pin            | Important, bookmark, remember  | pin, important, bookmark, remember, note     |
+| 🚀    | Rocket         | Progress, momentum, launch     | rocket, progress, go, launch, momentum       |
 
 ## Success Criteria _(mandatory)_
 

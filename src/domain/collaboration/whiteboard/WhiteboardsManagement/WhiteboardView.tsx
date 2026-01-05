@@ -10,7 +10,6 @@ import CollaborationSettings from '../../realTimeCollaboration/CollaborationSett
 import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
 import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
-import WhiteboardEmojiReactionPicker from '../components/WhiteboardEmojiReactionPicker';
 import useWhiteboardGuestAccess from '../hooks/useWhiteboardGuestAccess';
 import { buildGuestShareUrl } from '../utils/buildGuestShareUrl';
 import WhiteboardGuestAccessControls from '../WhiteboardShareDialog/WhiteboardGuestAccessControls';
@@ -141,14 +140,7 @@ const WhiteboardView = ({
                 <SaveRequestIndicatorIcon isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
 
                 {hasUpdatePrivileges && collabState.mode === 'write' && (
-                  <>
-                    <WhiteboardEmojiReactionPicker
-                      disabled={collabState.isReadOnly}
-                      onPlacementModeChange={collabState.onEmojiPlacementModeChange}
-                      emojiPlacementInfo={collabState.emojiPlacementInfo}
-                    />
-                    <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
-                  </>
+                  <WhiteboardPreviewSettingsButton onClick={() => setPreviewSettingsDialogOpen(true)} />
                 )}
               </>
             ),

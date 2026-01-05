@@ -8,12 +8,13 @@
 
 ## 1. Feature Overview
 
-This feature adds an emoji picker to the whiteboard header toolbar (beside the preview settings button) that allows users to select and place emoji content on the canvas. Key points:
+This feature adds an emoji picker as a floating button in the whiteboard dialog that allows users to select and place emoji content on the canvas. Key points:
 
 - **Client-side only** – No GraphQL or API calls
 - **Paste-as-content** – Emojis are added as Excalidraw text elements
 - **Existing sync handles persistence** – Once on canvas, collaborative sync takes over
-- **Header toolbar location** – Emoji picker is in the dialog header, accessed via `headerActions` prop
+- **Floating button location** – Emoji picker button positioned top-right in dialog content, below header. Responsive: desktop (top: 16px, right: 0), mobile (top: 0, right: -16px)
+- **Icon styling** – Matches other toolbar icons with `theme.palette.action.active` color
 - **Emoji cursor** – During placement mode, the selected emoji follows the mouse cursor
 
 ## 2. Prerequisites
@@ -33,23 +34,23 @@ pnpm start
 
 ### Existing Files (read these first)
 
-| File | Purpose |
-|------|---------|
-| [src/core/ui/forms/emoji/EmojiSelector.tsx](../../src/core/ui/forms/emoji/EmojiSelector.tsx) | Reference implementation of emoji picker patterns |
-| [src/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx](../../src/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx) | Main whiteboard component – exposes emoji controls via render prop |
-| [src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx](../../src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx) | Dialog wrapper – forwards emoji controls to headerActions |
-| [src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx](../../src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx) | View component – renders emoji picker in headerActions |
+| File                                                                                                                                                               | Purpose                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| [src/core/ui/forms/emoji/EmojiSelector.tsx](../../src/core/ui/forms/emoji/EmojiSelector.tsx)                                                                       | Reference implementation of emoji picker patterns                                        |
+| [src/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx](../../src/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx)     | Main whiteboard component – renders floating emoji picker in dialog content              |
+| [src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx](../../src/domain/collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog.tsx)       | Dialog wrapper – contains whiteboard with floating emoji picker                          |
+| [src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx](../../src/domain/collaboration/whiteboard/WhiteboardsManagement/WhiteboardView.tsx) | View component – no emoji-specific changes (picker is in CollaborativeExcalidrawWrapper) |
 
 ### Files Created/Modified
 
-| Path | Purpose |
-|------|---------|
-| `src/domain/collaboration/whiteboard/reactionEmoji/types.ts` | TypeScript interfaces |
-| `src/domain/collaboration/whiteboard/reactionEmoji/emojiReactionConfig.ts` | Default emoji configuration (10 emojis) |
-| `src/domain/collaboration/whiteboard/reactionEmoji/createEmojiReactionElement.ts` | Generate Excalidraw text element JSON |
-| `src/domain/collaboration/whiteboard/reactionEmoji/useEmojiReactionConfiguration.ts` | Hook to access emoji config |
-| `src/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker.tsx` | React component for picker UI |
-| `src/domain/collaboration/whiteboard/components/EmojiReactionGrid.tsx` | Grid layout for emoji buttons |
+| Path                                                                                 | Purpose                                 |
+| ------------------------------------------------------------------------------------ | --------------------------------------- |
+| `src/domain/collaboration/whiteboard/reactionEmoji/types.ts`                         | TypeScript interfaces                   |
+| `src/domain/collaboration/whiteboard/reactionEmoji/emojiReactionConfig.ts`           | Default emoji configuration (10 emojis) |
+| `src/domain/collaboration/whiteboard/reactionEmoji/createEmojiReactionElement.ts`    | Generate Excalidraw text element JSON   |
+| `src/domain/collaboration/whiteboard/reactionEmoji/useEmojiReactionConfiguration.ts` | Hook to access emoji config             |
+| `src/domain/collaboration/whiteboard/components/WhiteboardEmojiReactionPicker.tsx`   | React component for picker UI           |
+| `src/domain/collaboration/whiteboard/components/EmojiReactionGrid.tsx`               | Grid layout for emoji buttons           |
 
 ## 4. Core Concepts
 
@@ -77,10 +78,9 @@ Use Excalidraw's `updateScene()` API to add the element:
 
 ```typescript
 const excalidrawAPI = // ... from ref
-
-excalidrawAPI.updateScene({
-  elements: [...excalidrawAPI.getSceneElements(), element],
-});
+  excalidrawAPI.updateScene({
+    elements: [...excalidrawAPI.getSceneElements(), element],
+  });
 ```
 
 ### 4.3 Coordinate Conversion
@@ -91,10 +91,7 @@ Screen clicks must be converted to scene coordinates. **Important**: Use Excalid
 import { viewportCoordsToSceneCoords } from '@alkemio/excalidraw';
 
 // CORRECT: Use Excalidraw's utility function
-const sceneCoords = viewportCoordsToSceneCoords(
-  { clientX: event.clientX, clientY: event.clientY },
-  appState
-);
+const sceneCoords = viewportCoordsToSceneCoords({ clientX: event.clientX, clientY: event.clientY }, appState);
 
 // WRONG: Manual calculation fails at different zoom levels
 // const x = (canvasX - scrollX) / zoom.value; // DON'T DO THIS
@@ -103,6 +100,7 @@ const sceneCoords = viewportCoordsToSceneCoords(
 ## 5. Implementation Workflow
 
 ### Phase 1: Foundation (current)
+
 - [x] Spec complete
 - [x] Plan complete
 - [x] Research complete
@@ -111,12 +109,14 @@ const sceneCoords = viewportCoordsToSceneCoords(
 - [x] Quickstart complete
 
 ### Phase 2: Core Logic ✅
+
 1. ✅ Created `types.ts` – TypeScript interfaces
 2. ✅ Created `emojiReactionConfig.ts` – Default 10-emoji configuration
 3. ✅ Created `createEmojiReactionElement.ts` – Element generation function
 4. ✅ Created `useEmojiReactionConfiguration.ts` – Hook returning config
 
 ### Phase 3: UI Components ✅ (MVP Complete)
+
 1. ✅ Created `WhiteboardEmojiReactionPicker.tsx` – Popover with emoji grid
 2. ✅ Created `EmojiReactionGrid.tsx` – Grid layout for emoji buttons
 3. ✅ Integrated into header toolbar via `headerActions` prop
@@ -124,6 +124,7 @@ const sceneCoords = viewportCoordsToSceneCoords(
 5. ✅ Emoji cursor – selected emoji follows mouse during placement mode
 
 ### Phase 4: Polish (Remaining)
+
 1. [ ] Add keyboard navigation (Arrow keys, Enter, Escape)
 2. ✅ Added i18n strings
 3. ✅ Added unit tests (459 tests passing)
@@ -162,16 +163,16 @@ describe('defaultEmojiConfig', () => {
 
 ## 7. Common Gotchas
 
-| Issue | Solution |
-|-------|----------|
+| Issue                                                  | Solution                                                                                                                               |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Emoji appears at wrong position at various zoom levels | **Must use** `viewportCoordsToSceneCoords()` from `@alkemio/excalidraw` - manual coordinate calculation fails at different zoom levels |
-| Emoji doesn't appear at extreme zoom (e.g., 10%) | Same as above - the `viewportCoordsToSceneCoords()` function handles all zoom/scroll/offset calculations correctly |
-| Picker doesn't reset after placement | Pass `emojiPlacementInfo` prop to picker component so it can detect when placement completes and reset internal state |
-| Emoji doesn't persist after refresh | Check that `updateScene()` was called correctly |
-| Picker doesn't appear | Verify `headerActions` prop is correctly wired in WhiteboardDialog |
-| TypeScript errors with Excalidraw types | Import from `@alkemio/excalidraw` (the fork), not `excalidraw` |
-| Emoji cursor not showing | Check that `emojiPlacementInfo` is passed through `WhiteboardHeaderState` |
-| Picker not available for guests | Ensure `PublicWhiteboardPage` includes picker in `headerActions` |
+| Emoji doesn't appear at extreme zoom (e.g., 10%)       | Same as above - the `viewportCoordsToSceneCoords()` function handles all zoom/scroll/offset calculations correctly                     |
+| Picker doesn't reset after placement                   | Pass `emojiPlacementInfo` prop to picker component so it can detect when placement completes and reset internal state                  |
+| Emoji doesn't persist after refresh                    | Check that `updateScene()` was called correctly                                                                                        |
+| Picker doesn't appear                                  | Verify `headerActions` prop is correctly wired in WhiteboardDialog                                                                     |
+| TypeScript errors with Excalidraw types                | Import from `@alkemio/excalidraw` (the fork), not `excalidraw`                                                                         |
+| Emoji cursor not showing                               | Check that `emojiPlacementInfo` is passed through `WhiteboardHeaderState`                                                              |
+| Picker not available for guests                        | Ensure `PublicWhiteboardPage` includes picker in `headerActions`                                                                       |
 
 ## 8. Reference Links
 

@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
-import { Box, IconButton, Popover, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Popover, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import { Theme } from '@mui/material/styles';
 import AddReactionOutlinedIcon from '@mui/icons-material/AddReactionOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
@@ -59,16 +60,10 @@ const WhiteboardEmojiReactionPicker = ({
   const config = useEmojiReactionConfiguration();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const firstEmojiRef = useRef<HTMLButtonElement>(null);
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
-  const {
-    isOpen,
-    isPlacing,
-    selectedEmoji,
-    openPicker,
-    selectEmoji,
-    placeEmoji,
-    cancel,
-  } = useEmojiReactionPickerState();
+  const { isOpen, isPlacing, selectedEmoji, openPicker, selectEmoji, placeEmoji, cancel } =
+    useEmojiReactionPickerState();
 
   // Track previous placement info to detect transitions from active to null
   const [wasPlacementActive, setWasPlacementActive] = useState(false);
@@ -152,7 +147,16 @@ const WhiteboardEmojiReactionPicker = ({
   };
 
   return (
-    <Box className={className} data-emoji-picker-state={JSON.stringify({ isPlacing, selectedEmoji })}>
+    <Box
+      className={className}
+      data-emoji-picker-state={JSON.stringify({ isPlacing, selectedEmoji })}
+      sx={{
+        position: 'absolute',
+        top: isMobile ? 0 : 16,
+        right: isMobile ? -16 : 0,
+        zIndex: 100,
+      }}
+    >
       <Tooltip
         title={
           isPlacing
@@ -161,7 +165,7 @@ const WhiteboardEmojiReactionPicker = ({
               })
             : t('whiteboard.emojiReaction.addEmoji', 'Add emoji reaction')
         }
-        placement="top"
+        placement="left"
       >
         <span>
           <IconButton
@@ -175,17 +179,18 @@ const WhiteboardEmojiReactionPicker = ({
               const getBackgroundColor = () => {
                 if (isPlacing) return theme.palette.primary.light;
                 if (isOpen) return theme.palette.action.selected;
-                return 'transparent';
+                return theme.palette.background.paper;
               };
               return {
-              backgroundColor: getBackgroundColor(),
-              color: isPlacing ? theme.palette.primary.contrastText : 'inherit',
-              '&:hover': {
-                backgroundColor: isPlacing
-                  ? theme.palette.primary.main
-                  : theme.palette.action.hover,
-              },
-            }; }}
+                backgroundColor: getBackgroundColor(),
+                color: isPlacing ? theme.palette.primary.contrastText : theme.palette.action.active,
+                boxShadow: theme.shadows[2],
+                '&:hover': {
+                  backgroundColor: isPlacing ? theme.palette.primary.main : theme.palette.action.hover,
+                  boxShadow: theme.shadows[4],
+                },
+              };
+            }}
           >
             {isPlacing && selectedEmoji ? (
               <Typography component="span" sx={{ fontSize: '1.25rem' }}>
@@ -235,26 +240,14 @@ const WhiteboardEmojiReactionPicker = ({
             <Typography variant="subtitle2" color="text.secondary">
               {t('whiteboard.emojiReaction.title', 'Add Emoji')}
             </Typography>
-            <IconButton
-              size="small"
-              onClick={handleClose}
-              aria-label={t('common.close', 'Close')}
-            >
+            <IconButton size="small" onClick={handleClose} aria-label={t('common.close', 'Close')}>
               <CloseIcon fontSize="small" />
             </IconButton>
           </Box>
 
-          <EmojiReactionGrid
-            config={config}
-            onSelect={handleEmojiSelect}
-            selectedEmoji={selectedEmoji}
-          />
+          <EmojiReactionGrid config={config} onSelect={handleEmojiSelect} selectedEmoji={selectedEmoji} />
 
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ display: 'block', px: 1.5, pb: 1 }}
-          >
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', px: 1.5, pb: 1 }}>
             {t('whiteboard.emojiReaction.hint', 'Select an emoji, then click on the canvas')}
           </Typography>
         </Box>

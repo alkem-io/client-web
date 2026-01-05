@@ -71,13 +71,13 @@ _GATE: ✅ Pass - no violations identified_
 
 \`\`\`text
 specs/003-whiteboard-emoji-reactions/
-├── plan.md              # This file
-├── research.md          # Phase 0: Library research, Excalidraw integration patterns
-├── data-model.md        # Phase 1: Emoji configuration schema, element structure
-├── quickstart.md        # Phase 1: Developer setup guide
-├── contracts/           # Phase 1: Interface contracts
-│   └── emoji-config.contract.ts
-└── tasks.md             # Phase 2 output (created by /speckit.tasks)
+├── plan.md # This file
+├── research.md # Phase 0: Library research, Excalidraw integration patterns
+├── data-model.md # Phase 1: Emoji configuration schema, element structure
+├── quickstart.md # Phase 1: Developer setup guide
+├── contracts/ # Phase 1: Interface contracts
+│ └── emoji-config.contract.ts
+└── tasks.md # Phase 2 output (created by /speckit.tasks)
 \`\`\`
 
 ### Source Code (repository root)
@@ -85,39 +85,41 @@ specs/003-whiteboard-emoji-reactions/
 \`\`\`text
 src/
 ├── domain/
-│   └── collaboration/
-│       └── whiteboard/
-│           └── emoji/                      # NEW: Domain façade
-│               ├── emojiConfig.ts          # Bundled default emoji configuration
-│               ├── useEmojiConfiguration.ts # Hook to access emoji config
-│               ├── createEmojiElement.ts   # Generate Excalidraw JSON for emoji
-│               └── types.ts                # TypeScript interfaces
+│ └── collaboration/
+│ └── whiteboard/
+│ └── emoji/ # NEW: Domain façade
+│ ├── emojiConfig.ts # Bundled default emoji configuration
+│ ├── useEmojiConfiguration.ts # Hook to access emoji config
+│ ├── createEmojiElement.ts # Generate Excalidraw JSON for emoji
+│ └── types.ts # TypeScript interfaces
 ├── core/
-│   └── ui/
-│       └── forms/
-│           └── emoji/
-│               └── EmojiSelector.tsx       # EXISTING: Reference for patterns
+│ └── ui/
+│ └── forms/
+│ └── emoji/
+│ └── EmojiSelector.tsx # EXISTING: Reference for patterns
 └── main/
-    └── [whiteboard routes]                 # Existing routing, no changes needed
+└── [whiteboard routes] # Existing routing, no changes needed
 
 # Whiteboard Component Integration Points
+
 src/domain/common/whiteboard/excalidraw/
-├── CollaborativeExcalidrawWrapper.tsx      # MODIFY: Expose emoji controls via render prop; handle emoji cursor display
-└── ExcalidrawWrapper.tsx                   # READ-ONLY: No changes (non-collaborative mode)
+├── CollaborativeExcalidrawWrapper.tsx # MODIFY: Expose emoji controls via render prop; handle emoji cursor display
+└── ExcalidrawWrapper.tsx # READ-ONLY: No changes (non-collaborative mode)
 
 src/domain/collaboration/whiteboard/
 ├── WhiteboardDialog/
-│   └── WhiteboardDialog.tsx                # MODIFY: Forward emoji controls to headerActions via WhiteboardHeaderState interface
+│ └── WhiteboardDialog.tsx # MODIFY: Forward emoji controls to CollaborativeExcalidrawWrapper via render props
 ├── WhiteboardsManagement/
-│   └── WhiteboardView.tsx                  # MODIFY: Render emoji picker in headerActions (beside preview settings)
-└── components/                             # NEW: Whiteboard-specific components
-    └── WhiteboardEmojiReactionPicker.tsx   # Emoji picker button + popover (rendered in header)
+│ └── WhiteboardView.tsx # READ-ONLY: No changes needed (emoji picker now in dialog content)
+└── components/ # NEW: Whiteboard-specific components
+└── WhiteboardEmojiReactionPicker.tsx # Emoji picker button + popover (floating in dialog content)
 
 src/main/public/whiteboard/
-└── PublicWhiteboardPage.tsx                # MODIFY: Render emoji picker in headerActions for guest access
+└── PublicWhiteboardPage.tsx # READ-ONLY: No changes needed (emoji picker now in dialog content)
 \`\`\`
 
 **Structure Decision**: This feature follows the existing domain-driven structure:
+
 - Domain logic in `src/domain/collaboration/whiteboard/emoji/` (new directory)
 - Simple emoji picker component (no complex state management needed)
 - Integrates with Excalidraw via paste/element creation APIs
@@ -127,28 +129,31 @@ src/main/public/whiteboard/
 
 > No Constitution violations. Feature uses existing patterns and infrastructure.
 
-| Area | Approach | Rationale |
-|------|----------|-----------|
-| Emoji Picker Library | Reuse existing `emoji-picker-react` | Already installed, working integration exists |
-| Canvas Integration | Generate Excalidraw JSON, paste as content | Simulates user paste; no direct API manipulation |
-| Configuration | Bundled TypeScript module | Build-time inclusion, type-safe, no runtime loading |
-| State Management | Local component state only | Minimal complexity; no context providers needed |
+| Area                 | Approach                                   | Rationale                                           |
+| -------------------- | ------------------------------------------ | --------------------------------------------------- |
+| Emoji Picker Library | Reuse existing `emoji-picker-react`        | Already installed, working integration exists       |
+| Canvas Integration   | Generate Excalidraw JSON, paste as content | Simulates user paste; no direct API manipulation    |
+| Configuration        | Bundled TypeScript module                  | Build-time inclusion, type-safe, no runtime loading |
+| State Management     | Local component state only                 | Minimal complexity; no context providers needed     |
 
 ## Implementation Phases
 
 ### Phase 0: Research (Complete via research.md)
+
 - Excalidraw element JSON structure for text elements
 - Excalidraw paste/clipboard API integration
 - Existing `EmojiSelector` patterns for reference
 - Canvas coordinate mapping for placement position
 
 ### Phase 1: Foundation (Complete via data-model.md, contracts/)
+
 - Define `EmojiConfigEntry` TypeScript interface
 - Define default emoji set (10 emojis per spec)
 - Define `createEmojiElement()` function signature
 - Document Excalidraw JSON format for text elements
 
 ### Phase 2: Implementation (Complete via tasks.md)
+
 1. Create emoji configuration module with types
 2. Implement `useEmojiConfiguration` hook
 3. Implement `createEmojiElement()` JSON generator
@@ -160,12 +165,22 @@ src/main/public/whiteboard/
 9. Add i18n strings
 
 ### Phase 2.1: Bug Fixes (Complete)
+
 1. **Coordinate Calculation Fix**: Replaced manual formula `(canvasX - scrollX) / zoom.value` with Excalidraw's `viewportCoordsToSceneCoords()` utility function - fixes emoji placement at all zoom levels (10%-400%)
 2. **Picker State Reset Fix**: Added `emojiPlacementInfo` prop to `WhiteboardEmojiReactionPicker` with effect that resets internal state when parent signals placement complete
 
+### Phase 2.2: UI Repositioning (Complete - 2026-01-05)
+
+1. **Floating Button Layout**: Moved emoji picker from header toolbar to floating button in dialog content, positioned top-right below header
+2. **Responsive Positioning**: Added mobile-responsive positioning using `useMediaQuery` - mobile: `top: 0, right: -16px`, desktop: `top: 16px, right: 0`
+3. **Icon Color Standardization**: Changed icon color from `inherit` to `theme.palette.action.active` to match other toolbar icons
+4. **Integration Point Change**: Moved emoji picker rendering from `WhiteboardView`/`PublicWhiteboardPage` to `CollaborativeExcalidrawWrapper` for centralized placement
+
 ## Exit Criteria
 
-- [x] Emoji picker accessible from whiteboard header toolbar beside preview settings (FR-001)
+- [x] Emoji picker accessible as floating button in top-right of dialog content, below header (FR-001)
+- [x] Emoji picker responsive: desktop (top: 16px, right: 0), mobile (top: 0, right: -16px)
+- [x] Icon color matches other toolbar icons (theme.palette.action.active)
 - [x] Placement mode with emoji character cursor following mouse position (FR-011)
 - [x] Emojis placed as standard whiteboard content (FR-003, FR-004)
 - [x] Configuration loads from bundled module (FR-006)
