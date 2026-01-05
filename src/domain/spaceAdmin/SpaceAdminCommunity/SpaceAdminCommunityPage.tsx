@@ -254,7 +254,10 @@ const SpaceAdminCommunityPage = ({
                     open={communityGuidelinesTemplatesDialogOpen}
                     templateType={TemplateType.CommunityGuidelines}
                     onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
-                    onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+                    onSelectTemplate={async (template: Identifiable) => {
+                      await onSelectCommunityGuidelinesTemplate(template);
+                      setCommunityGuidelinesTemplatesDialogOpen(false);
+                    }}
                     enablePlatformTemplates
                     actionButton={() => (
                       <Button startIcon={<SystemUpdateAltIcon />} variant="contained">

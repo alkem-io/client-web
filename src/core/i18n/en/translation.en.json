@@ -1582,9 +1582,6 @@
         "text": "Are you sure you want to close this $t(common.post)? Unsaved changes will be lost."
       }
     },
-    "calloutEdit": {
-      "titleWithType": "Edit {{type}}"
-    },
     "post-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
       "type-step": {
