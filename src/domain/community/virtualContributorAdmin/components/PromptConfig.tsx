@@ -41,16 +41,20 @@ export const PromptConfig = ({ vc }: PromptConfigProps) => {
 
   // Update prompt when aiPersona changes
   useEffect(() => {
-    if (aiPersona?.prompt[0]) {
-      setPrompt(aiPersona.prompt[0]);
+    const newPrompt = aiPersona?.prompt?.[0];
+    if (newPrompt !== undefined) {
+      setPrompt(newPrompt);
+    } else if (newPrompt === undefined && aiPersona?.id) {
+      // Clear stale data when prompt becomes undefined
+      setPrompt('');
     }
-  }, [aiPersona?.id, aiPersona?.prompt]);
+  }, [aiPersona?.id, aiPersona?.prompt?.[0]]);
 
   const initialValues: FormValueType = useMemo(() => {
     return {
-      prompt: aiPersona?.prompt[0] || '',
+      prompt: aiPersona?.prompt?.[0] || '',
     };
-  }, [aiPersona?.id, aiPersona?.prompt]);
+  }, [aiPersona?.id, aiPersona?.prompt?.[0]]);
 
   const validationSchema = yup.object().shape({
     prompt: MarkdownValidator(MARKDOWN_TEXT_LENGTH),

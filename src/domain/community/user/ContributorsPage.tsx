@@ -164,11 +164,11 @@ const ContributorsPage = () => {
           after: organizationsPageInfo?.endCursor,
           status: OrganizationVerificationEnum.VerifiedManualAttestation,
           filter: {
-            contactEmail: searchTerms,
-            displayName: searchTerms,
-            domain: searchTerms,
-            nameID: searchTerms,
-            website: searchTerms,
+            contactEmail: searchTermsDebounced,
+            displayName: searchTermsDebounced,
+            domain: searchTermsDebounced,
+            nameID: searchTermsDebounced,
+            website: searchTermsDebounced,
           },
         },
       });
@@ -178,7 +178,7 @@ const ContributorsPage = () => {
       organizationsFetchMoreRaw,
       organizationsPageInfo?.endCursor,
       pageSize,
-      searchTerms,
+      searchTermsDebounced,
       OrganizationVerificationEnum.VerifiedManualAttestation,
     ]
   );

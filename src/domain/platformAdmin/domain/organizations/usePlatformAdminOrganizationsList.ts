@@ -27,7 +27,12 @@ export const usePlatformAdminOrganizationsList = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Call the query hook directly instead of passing it to usePaginatedQuery
-  const { data, loading, fetchMore: fetchMoreRaw, error } = usePlatformAdminOrganizationsListQuery({
+  const {
+    data,
+    loading,
+    fetchMore: fetchMoreRaw,
+    error,
+  } = usePlatformAdminOrganizationsListQuery({
     variables: {
       first: PAGE_SIZE,
       filter: { displayName: searchTerm },
@@ -51,7 +56,7 @@ export const usePlatformAdminOrganizationsList = () => {
         },
       });
     },
-    [data, fetchMoreRaw, pageInfo?.endCursor, searchTerm, PAGE_SIZE]
+    [data, fetchMoreRaw, pageInfo?.endCursor, searchTerm]
   );
 
   const { t } = useTranslation();

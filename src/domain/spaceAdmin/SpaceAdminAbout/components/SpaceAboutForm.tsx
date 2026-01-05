@@ -12,7 +12,6 @@ interface SpaceAboutFormProps {
     profile?: { description?: string };
   };
   onSubmit: (formData: SpaceAboutEditFormValuesType) => void;
-  isEdit: boolean;
   loading: boolean;
   spaceLevel?: SpaceLevel;
 }

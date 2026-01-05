@@ -62,7 +62,6 @@ export const SpaceAboutView = () => {
     <>
       <SpaceAboutForm
         ref={spaceAboutFormRef}
-        isEdit
         spaceLevel={spaceLevel}
         about={about}
         onSubmit={onSubmit}
