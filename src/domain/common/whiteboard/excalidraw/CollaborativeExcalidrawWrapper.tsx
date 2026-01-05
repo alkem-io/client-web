@@ -324,7 +324,7 @@ const CollaborativeExcalidrawWrapper = ({
   const children = (
     <Box ref={canvasContainerRef} sx={{ height: 1, flexGrow: 1, position: 'relative' }}>
       {/* Floating emoji picker button - positioned top-right below header (as per Figma design) */}
-      {!isReadOnly && mode === 'write' && (
+      {!isReadOnly && (
         <WhiteboardEmojiReactionPicker
           disabled={isReadOnly}
           onPlacementModeChange={handleEmojiPlacementModeChange}
