@@ -4,13 +4,12 @@ import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { Divider } from '@mui/material';
 import { useState, useEffect, ReactNode } from 'react';
-import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
+import WhiteboardDialog, { WhiteboardDetails, WhiteboardHeaderState } from '../WhiteboardDialog/WhiteboardDialog';
 import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import CollaborationSettings from '../../realTimeCollaboration/CollaborationSettings/CollaborationSettings';
 import { SaveRequestIndicatorIcon } from '@/domain/collaboration/realTimeCollaboration/SaveRequestIndicatorIcon';
 import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
 import WhiteboardPreviewSettingsButton from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsButton';
-import { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardGuestAccess from '../hooks/useWhiteboardGuestAccess';
 import { buildGuestShareUrl } from '../utils/buildGuestShareUrl';
 import WhiteboardGuestAccessControls from '../WhiteboardShareDialog/WhiteboardGuestAccessControls';
@@ -116,7 +115,7 @@ const WhiteboardView = ({
             readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
             fullscreen,
             previewSettingsDialogOpen: previewSettingsDialogOpen,
-            headerActions: (collabState: CollabState) => (
+            headerActions: (collabState: WhiteboardHeaderState) => (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
                   <WhiteboardGuestAccessControls whiteboard={whiteboard} guestAccessEnabled={guestAccess.enabled}>
