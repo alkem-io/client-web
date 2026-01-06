@@ -35,7 +35,9 @@ import FocusTrap from '@mui/material/Unstable_TrapFocus';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
-const PendingMembershipsDialog = lazyWithGlobalErrorHandler(() => import('@/domain/community/pendingMembership/PendingMembershipsDialog'));
+const PendingMembershipsDialog = lazyWithGlobalErrorHandler(
+  () => import('@/domain/community/pendingMembership/PendingMembershipsDialog')
+);
 const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/core/help/dialog/HelpDialog'));
 
 interface PlatformNavigationUserMenuProps {
@@ -72,29 +74,24 @@ const PlatformNavigationUserMenu = ({
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
 
   // the roles should follow the order
-  let role: string | null = null;
-  for (const platformRole of platformRoles) {
-    switch (platformRole) {
-      case RoleName.GlobalAdmin:
-        role = t('common.roles.GLOBAL_ADMIN');
-        break;
-      case RoleName.GlobalSupport:
-        role = t('common.roles.GLOBAL_SUPPORT');
-        break;
-      case RoleName.GlobalLicenseManager:
-        role = t('common.roles.GLOBAL_LICENSE_MANAGER');
-        break;
-      case RoleName.PlatformBetaTester:
-        role = t('common.roles.PLATFORM_BETA_TESTER');
-        break;
-      case RoleName.PlatformVcCampaign:
-        role = t('common.roles.PLATFORM_VC_CAMPAIGN');
-        break;
-      default:
-        break;
+  const getRole = (): string | null => {
+    for (const platformRole of platformRoles) {
+      switch (platformRole) {
+        case RoleName.GlobalAdmin:
+          return t('common.roles.GLOBAL_ADMIN');
+        case RoleName.GlobalSupport:
+          return t('common.roles.GLOBAL_SUPPORT');
+        case RoleName.GlobalLicenseManager:
+          return t('common.roles.GLOBAL_LICENSE_MANAGER');
+        case RoleName.PlatformBetaTester:
+          return t('common.roles.PLATFORM_BETA_TESTER');
+        case RoleName.PlatformVcCampaign:
+          return t('common.roles.PLATFORM_VC_CAMPAIGN');
+      }
     }
-    if (role) break;
-  }
+    return null;
+  };
+  const role = getRole();
 
   const Wrapper = surface ? GlobalMenuSurface : Box;
 
