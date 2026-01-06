@@ -95,8 +95,33 @@ The client development stack includes:
 - [React documentation](https://reactjs.org/).
 - Typescript
 - Apollo Client
+- React Compiler (automatic performance optimization)
 
 For Typescript, the Javascript generated is ES2016.
+
+### React Compiler
+
+The project uses the React Compiler (babel-plugin-react-compiler) to automatically optimize React components. The compiler adds automatic memoization to components and hooks, reducing the need for manual `useMemo`, `useCallback`, and `React.memo` calls.
+
+Benefits:
+
+- Automatic performance optimization
+- Cleaner code with less boilerplate
+- Works seamlessly with React 19
+
+For more details, see [docs/react-compiler.md](docs/react-compiler.md).
+
+### Bundle Analysis
+
+Analyze your bundle size and composition:
+
+```bash
+pnpm analyze        # Production build with analysis
+pnpm analyze:dev    # Development build with analysis
+pnpm analyze:sentry # Production build with Sentry + analysis
+```
+
+This generates an interactive visualization at `build/stats.html` showing module sizes, dependencies, and optimization opportunities. For more details, see [docs/bundle-analysis.md](docs/bundle-analysis.md).
 
 ## Supported web browsers
 

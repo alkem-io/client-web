@@ -14,7 +14,7 @@ import { InAppNotificationsFilterChips } from './InAppNotificationsFilterChips';
 import { buildNotificationSettingsUrl } from '../routing/urlBuilders';
 import RouterLink from '@/core/ui/link/RouterLink';
 
-export const InAppNotificationsDialog = () => {
+const InAppNotificationsDialog = () => {
   const { t } = useTranslation();
   const { isOpen, setIsOpen, selectedFilter, setSelectedFilter } = useInAppNotificationsContext();
   const { markNotificationsAsRead } = useInAppNotifications();
@@ -58,3 +58,5 @@ export const InAppNotificationsDialog = () => {
     </DialogWithGrid>
   );
 };
+
+export default InAppNotificationsDialog;

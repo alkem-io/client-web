@@ -41,7 +41,7 @@ const Excalidraw = lazyWithGlobalErrorHandler(async () => {
   return { default: Excalidraw };
 });
 
-const LoadingScene = React.memo(({ enabled }: { enabled: boolean }) => {
+const LoadingScene = ({ enabled }: { enabled: boolean }) => {
   const { t } = useTranslation();
 
   return enabled ? (
@@ -57,7 +57,7 @@ const LoadingScene = React.memo(({ enabled }: { enabled: boolean }) => {
       <Loading text={t('pages.whiteboard.loadingScene')} />
     </Box>
   ) : null;
-});
+};
 
 export interface WhiteboardWhiteboardEntities {
   whiteboard: (Identifiable & { profile?: { url?: string } }) | undefined;
@@ -184,6 +184,7 @@ const CollaborativeExcalidrawWrapper = ({
       });
     },
     onInitialize: collabApi => {
+      // eslint-disable-next-line react-compiler/react-compiler -- Refs are meant to be mutated
       combinedCollabApiRef.current = collabApi;
     },
     onSceneInitChange: (initialized: boolean) => {

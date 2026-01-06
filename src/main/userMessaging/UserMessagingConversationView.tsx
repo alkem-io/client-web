@@ -10,7 +10,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { UserConversation, UserConversationMessage } from './useUserConversations';
 import { useSendMessageToRoomMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useCallback, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
 
 interface MessageBubbleProps {
@@ -106,30 +106,27 @@ export const UserMessagingConversationView = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation?.messages.length]);
 
-  const handleSendMessage = useCallback(
-    async (message: string) => {
-      if (!conversation?.roomId || !message.trim()) {
-        return;
-      }
+  const handleSendMessage = async (message: string) => {
+    if (!conversation?.roomId || !message.trim()) {
+      return;
+    }
 
-      try {
-        await sendMessage({
-          variables: {
-            messageData: {
-              roomID: conversation.roomId,
-              message: message.trim(),
-            },
+    try {
+      await sendMessage({
+        variables: {
+          messageData: {
+            roomID: conversation.roomId,
+            message: message.trim(),
           },
-        });
-        onMessageSent?.();
-        return true; // Return true to reset the form
-      } catch (error) {
-        console.error('Failed to send message:', error);
-        return false;
-      }
-    },
-    [conversation?.roomId, sendMessage, onMessageSent]
-  );
+        },
+      });
+      onMessageSent?.();
+      return true; // Return true to reset the form
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      return false;
+    }
+  };
 
   if (!conversation) {
     return (
