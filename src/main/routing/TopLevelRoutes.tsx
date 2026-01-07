@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
-import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { Restricted } from '@/core/routing/Restricted';
 import { nameOfUrl } from './urlParams';
@@ -20,6 +19,7 @@ import { UrlResolverProvider } from './urlResolver/UrlResolverProvider';
 import TopLevelLayout from '../ui/layout/TopLevelLayout';
 import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 
+const HomePage = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/Home/HomePage'));
 const PublicWhiteboardPage = lazyWithGlobalErrorHandler(() => import('@/main/public/whiteboard/PublicWhiteboardPage'));
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/main/documentation/DocumentationPage'));
 const RedirectDocumentation = lazyWithGlobalErrorHandler(() => import('@/main/documentation/RedirectDocumentation'));
@@ -78,7 +78,9 @@ export const TopLevelRoutes = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path={TopLevelRoutePath.Home}>
-                <HomePage />
+                <Suspense fallback={<Loading />}>
+                  <HomePage />
+                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }

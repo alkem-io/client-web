@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import {
   Box,
   List,
@@ -42,13 +42,11 @@ export const UserMessagingChatList = ({
   const [searchTerm, setSearchTerm] = useState('');
   const { isSmallScreen: isMobile } = useScreenSize();
 
-  const filteredConversations = useMemo(() => {
-    if (!searchTerm.trim()) {
-      return conversations;
-    }
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    return conversations.filter(conversation => conversation.user.displayName.toLowerCase().includes(lowerSearchTerm));
-  }, [conversations, searchTerm]);
+  const filteredConversations = !searchTerm.trim()
+    ? conversations
+    : conversations.filter(conversation =>
+        conversation.user.displayName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
   const handleClearSearch = () => {
     setSearchTerm('');

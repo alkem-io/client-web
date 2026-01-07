@@ -82,7 +82,7 @@ export const DialogActionButton = ({
           {tooltip}
         </NavigatableMenuItem>
       ) : (
-        <Link to={`${url}/${dialog}`} replace>
+        <Link to={`${url}/${dialog}`} replace style={{ minWidth: 0 }}>
           {actionDisplay === 'fullWidth' ? (
             <FullWidthButton
               startIcon={<Icon />}
@@ -96,7 +96,7 @@ export const DialogActionButton = ({
               variant={isCollapsed ? 'text' : buttonVariant}
               tooltip={tooltip}
               tooltipPlacement={isCollapsed ? 'right' : 'bottom'}
-              sx={{ maxWidth: '100%' }}
+              sx={{ maxWidth: '100%', width: '100%' }}
               iconButton
             >
               <Icon />

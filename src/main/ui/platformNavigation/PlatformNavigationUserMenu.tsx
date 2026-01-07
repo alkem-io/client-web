@@ -1,9 +1,8 @@
-import { PropsWithChildren, ReactNode, useMemo, useState } from 'react';
+import { PropsWithChildren, ReactNode, useState, Suspense } from 'react';
 import { Box, Divider, MenuList, Typography } from '@mui/material';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import { buildLoginUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
-import PendingMembershipsDialog from '@/domain/community/pendingMembership/PendingMembershipsDialog';
 import {
   AssignmentIndOutlined,
   DashboardOutlined,
@@ -21,7 +20,6 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import LanguageSelect from '@/core/ui/language/LanguageSelect';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import HelpDialog from '@/core/help/dialog/HelpDialog';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 import { useLocation } from 'react-router-dom';
 import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
@@ -35,6 +33,12 @@ import {
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import FocusTrap from '@mui/material/Unstable_TrapFocus';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+
+const PendingMembershipsDialog = lazyWithGlobalErrorHandler(
+  () => import('@/domain/community/pendingMembership/PendingMembershipsDialog')
+);
+const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/core/help/dialog/HelpDialog'));
 
 interface PlatformNavigationUserMenuProps {
   surface: boolean;
@@ -70,7 +74,7 @@ const PlatformNavigationUserMenu = ({
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
 
   // the roles should follow the order
-  const role = useMemo(() => {
+  const getRole = (): string | null => {
     for (const platformRole of platformRoles) {
       switch (platformRole) {
         case RoleName.GlobalAdmin:
@@ -83,11 +87,11 @@ const PlatformNavigationUserMenu = ({
           return t('common.roles.PLATFORM_BETA_TESTER');
         case RoleName.PlatformVcCampaign:
           return t('common.roles.PLATFORM_VC_CAMPAIGN');
-        default:
-          return null;
       }
     }
-  }, [platformRoles, t]);
+    return null;
+  };
+  const role = getRole();
 
   const Wrapper = surface ? GlobalMenuSurface : Box;
 
@@ -210,8 +214,14 @@ const PlatformNavigationUserMenu = ({
           </MenuList>
         </FocusTrap>
       </Wrapper>
-      {userModel && <PendingMembershipsDialog />}
-      <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
+      {userModel && (
+        <Suspense fallback={null}>
+          <PendingMembershipsDialog />
+        </Suspense>
+      )}
+      <Suspense fallback={null}>
+        <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
+      </Suspense>
     </>
   );
 };

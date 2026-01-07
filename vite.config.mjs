@@ -3,12 +3,14 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
+import { visualizer } from 'rollup-plugin-visualizer';
 import { generateMetaJson } from './build-utils.mjs';
 
 /**
  * Vite configuration for the Alkemio client-web project.
  *
- * - Integrates React, TypeScript path resolution, and SVGR plugins.
+ * - Integrates React with React Compiler enabled for automatic memoization and performance optimization.
+ * - Integrates TypeScript path resolution and SVGR plugins.
  * - Adds a custom plugin (`no-cache-index`) to prevent caching of `index.html` and `/home` routes in the dev server by setting aggressive no-cache headers.
  * - Adds a custom plugin (`generate-meta-json`) to generate `public/meta.json` with version info from `package.json` at build time.
  * - Sets up path aliasing for `@` to `./src`.
@@ -20,7 +22,11 @@ import { generateMetaJson } from './build-utils.mjs';
  */
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    }),
     viteTsconfigPaths(),
     svgrPlugin(),
     // Plugin to prevent index.html caching in dev server
@@ -120,7 +126,14 @@ export default defineConfig({
         generateMetaJson();
       },
     },
-  ],
+    // Bundle analyzer - generates stats.html when ANALYZE=true
+    process.env.ANALYZE === 'true' && visualizer({
+      open: true,
+      filename: 'build/stats.html',
+      gzipSize: true,
+      brotliSize: true,
+    }),
+  ].filter(Boolean),
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -142,7 +155,14 @@ export default defineConfig({
       },
     },
   },
-  optimizeDeps: { include: ['@emotion/react', '@emotion/styled', '@mui/material/Tooltip', '@mui/icons-material'] },
+  optimizeDeps: {
+    include: [
+      '@emotion/react',
+      '@emotion/styled',
+      '@mui/material/Tooltip',
+      '@mui/icons-material',
+    ],
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['src/setupTests.ts'],

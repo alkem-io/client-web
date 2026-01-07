@@ -6,8 +6,7 @@ import Typography from '@mui/material/Typography';
 import PostForm, { PostFormInput, PostFormOutput } from '../../post/PostForm/PostForm';
 import usePostSettings from '../../post/graphql/usePostSettings';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { PostSettingsFragment, AuthorizationPrivilege, VisualType } from '@/core/apollo/generated/graphql-schema';
-import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
+import { PostSettingsFragment, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import {
   useDeleteContributionMutation,
   useMoveContributionToCalloutMutation,
@@ -26,6 +25,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import DeleteButton from '@/core/ui/actions/DeleteButton';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface CalloutContributionDialogPostProps extends CalloutContributionPreviewDialogProps {}
 
@@ -108,7 +108,6 @@ const CalloutContributionDialogPost = ({
 
   // TODO This page component exposes too much of inner logic that should be encapsulated
   // either in a container/hook or a rendered view
-  const visuals = postSettings.post?.profile.visuals ?? [];
   const isPostLoaded = Boolean(
     post && postSettings.post && !postSettings.updating && !postSettings.deleting && !isMovingContribution
   );
@@ -189,12 +188,7 @@ const CalloutContributionDialogPost = ({
               disableRichMedia={calloutRestrictions?.disableRichMedia}
             >
               {() => (
-                <Gutters>
-                  <Typography variant={'h4'}>{t('common.visuals')}</Typography>
-                  {/* Do not show VisualType.Card for Posts for now, see #4362.
-                    TODO: Maybe in the future we want to remove those visuals from the database,
-                    for now Card profiles don't have a Banner because it's not shown anywhere */}
-                  <EditVisualsView visuals={visuals} visualTypes={[VisualType.Banner]} />
+                <Gutters disablePadding paddingTop={gutters(2)}>
                   {canMoveCard && (
                     <>
                       <Typography variant={'h4'}>{t('post-edit.postLocation.title')}</Typography>
