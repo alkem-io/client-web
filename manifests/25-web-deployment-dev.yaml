@@ -19,6 +19,7 @@ spec:
       containers:
         - name: alkemio-web
           image: rg.nl-ams.scw.cloud/alkemio/alkemio-web:latest
+          imagePullPolicy: Always
           envFrom:
             - secretRef:
                 name: alkemio-secrets
