@@ -55,30 +55,11 @@ const ExpandableDescription = ({
     <Box
       sx={{
         position: 'relative',
-        padding: gutters(0.2),
-        '&:hover .edit-button, &:hover .edit-overlay': {
+        '&:hover .edit-button': {
           opacity: 1,
         },
       }}
     >
-      {canEdit && editPath && (
-        <Box
-          className="edit-overlay"
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            bottom: gutters(0.7),
-            left: 0,
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            opacity: 0,
-            transition: 'opacity 0.2s',
-            pointerEvents: 'none',
-            zIndex: 0,
-            borderRadius: 1,
-          }}
-        />
-      )}
       <AutomaticOverflowGradient
         maxHeight={isExpanded ? undefined : gutters(4)}
         overflowMarker={<SeeMore label="buttons.readMore" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
