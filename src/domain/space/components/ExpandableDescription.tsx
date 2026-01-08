@@ -56,10 +56,7 @@ const ExpandableDescription = ({
       sx={{
         position: 'relative',
         padding: gutters(0.2),
-        '&:hover .edit-button': {
-          opacity: 1,
-        },
-        '&:hover .edit-overlay': {
+        '&:hover .edit-button, &:hover .edit-overlay': {
           opacity: 1,
         },
       }}
@@ -101,7 +98,6 @@ const ExpandableDescription = ({
               onClick={handleEditClick}
               size="small"
               sx={{
-                // color: 'primary.main',
                 color: 'highlight.dark',
                 backgroundColor: 'highlight.main',
                 opacity: 0,
