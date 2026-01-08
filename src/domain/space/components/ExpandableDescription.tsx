@@ -39,8 +39,7 @@ const ExpandableDescription = ({
   const handleEditClick = () => {
     if (editPath) {
       if (useEditTab) {
-        // Convert to 0-based index for editTab, ensuring it's never negative
-        const editTabIndex = Math.max(0, tabPosition - 1);
+        const editTabIndex = Math.max(0, tabPosition);
         navigate(`${editPath}?editTab=${editTabIndex}`);
       } else {
         navigate(editPath);
@@ -56,11 +55,33 @@ const ExpandableDescription = ({
     <Box
       sx={{
         position: 'relative',
+        padding: gutters(0.2),
         '&:hover .edit-button': {
+          opacity: 1,
+        },
+        '&:hover .edit-overlay': {
           opacity: 1,
         },
       }}
     >
+      {canEdit && editPath && (
+        <Box
+          className="edit-overlay"
+          sx={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            bottom: gutters(0.7),
+            left: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            opacity: 0,
+            transition: 'opacity 0.2s',
+            pointerEvents: 'none',
+            zIndex: 0,
+            borderRadius: 1,
+          }}
+        />
+      )}
       <AutomaticOverflowGradient
         maxHeight={isExpanded ? undefined : gutters(4)}
         overflowMarker={<SeeMore label="buttons.readMore" onClick={handleExpandToggle} sx={{ marginTop: -1 }} />}
@@ -80,13 +101,14 @@ const ExpandableDescription = ({
               onClick={handleEditClick}
               size="small"
               sx={{
-                color: 'primary.main',
+                // color: 'primary.main',
+                color: 'highlight.dark',
+                backgroundColor: 'highlight.main',
                 opacity: 0,
                 '&:focus-visible, &:hover': {
                   color: 'highlight.dark',
-
-                  opacity: 1,
                   backgroundColor: 'highlight.main',
+                  opacity: 1,
                 },
               }}
               aria-label={`${t('common.enums.edit-mode.edit')} ${t('common.description')}`}
