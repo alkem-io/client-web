@@ -19,6 +19,7 @@ type MemoPreviewProps = {
     | undefined;
   onClick?: MouseEventHandler;
   onClose?: () => void;
+  disablePadding?: boolean;
   sx?: SxProps<Theme>;
 };
 
@@ -61,7 +62,7 @@ const MemoChipButton = (props: ButtonProps) => {
   );
 };
 
-const MemoPreview = ({ memo, onClick, sx }: MemoPreviewProps) => {
+const MemoPreview = ({ memo, onClick, disablePadding, sx }: MemoPreviewProps) => {
   // onClick presence distinguishes between response preview (onClick present) and framing preview (onClick absent)
   const isInteractivePreview = Boolean(onClick);
 
@@ -88,10 +89,14 @@ const MemoPreview = ({ memo, onClick, sx }: MemoPreviewProps) => {
               backgroundColor="paper"
               minHeightGutters={3}
               maxHeightGutters={16}
-              containerProps={{
-                marginX: gutters(1),
-                marginTop: gutters(1),
-              }}
+              containerProps={
+                disablePadding
+                  ? undefined
+                  : {
+                      marginX: gutters(1),
+                      marginTop: gutters(1),
+                    }
+              }
             >
               {quotedMarkdown}
             </CroppedMarkdown>

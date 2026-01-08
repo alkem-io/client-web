@@ -97,6 +97,17 @@ export const formatLongDateTimeString = ({
   return longDateTimeString;
 };
 
+export const formatDate = (date: Date | undefined, defaultValue: string = '') => {
+  if (!date) {
+    return defaultValue;
+  }
+  return new Date(date).toLocaleDateString(LocaleId, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+};
+
 export const formatLongDate = (date: Date | undefined, defaultValue: string = '') => {
   if (!date) {
     return defaultValue;
@@ -165,7 +176,7 @@ export const startOfDay = (date: Date = new Date()) => {
   return result;
 };
 
-export const formatDateTime = (date: Date) => {
+export const formatDateTime = (date: string | Date) => {
   return dayjs(date).format('DD/MM/YYYY[ at ]HH:mm');
 };
 

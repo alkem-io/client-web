@@ -40,6 +40,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import useNavigate from '@/core/routing/useNavigate';
 import { AnyContribution } from '../../calloutContributions/interfaces/AnyContributionType';
+import CalloutContributionsBlock from '../../calloutContributions/CalloutContributionsBlock';
 
 export const CalloutViewSkeleton = () => (
   <PageContentBlock>
@@ -120,7 +121,6 @@ const CalloutView = ({
       {calloutSettingsProvided => (
         <CalloutViewLayout
           callout={callout}
-          contributionsCount={contributionsCount}
           contentRef={scrollerRef}
           {...calloutSettingsProvided}
           expanded={expanded}
@@ -151,18 +151,7 @@ const CalloutView = ({
 
           {/* Collaborate with Whiteboards */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard) && (
-            <>
-              {contributionId && (
-                /* Selected Contribution */
-                <CalloutContributionPreview
-                  callout={callout}
-                  contributionId={contributionId}
-                  previewComponent={CalloutContributionPreviewWhiteboard}
-                  dialogComponent={CalloutContributionDialogWhiteboard}
-                  calloutRestrictions={calloutRestrictions}
-                  onCalloutUpdate={onCalloutUpdate}
-                />
-              )}
+            <CalloutContributionsBlock>
               {/* If there is a contributionId show the scroller */}
               {contributionId && (
                 <CalloutContributionsHorizontalPager
@@ -172,6 +161,17 @@ const CalloutView = ({
                   contributionSelectedId={contributionId}
                   cardComponent={WhiteboardCard}
                   onClickOnContribution={handleClickOnContribution}
+                />
+              )}
+              {contributionId && (
+                /* Selected Contribution */
+                <CalloutContributionPreview
+                  callout={callout}
+                  contributionId={contributionId}
+                  previewComponent={CalloutContributionPreviewWhiteboard}
+                  dialogComponent={CalloutContributionDialogWhiteboard}
+                  calloutRestrictions={calloutRestrictions}
+                  onCalloutUpdate={onCalloutUpdate}
                 />
               )}
               {/* else show the expandable container with the cards */}
@@ -190,12 +190,22 @@ const CalloutView = ({
                   calloutRestrictions={calloutRestrictions}
                 />
               )}
-            </>
+            </CalloutContributionsBlock>
           )}
 
           {/* Collaborate with Posts */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) && (
-            <>
+            <CalloutContributionsBlock>
+              {/* If there is a contributionId show the scroller */}
+              {contributionId && (
+                <CalloutContributionsHorizontalPager
+                  callout={callout}
+                  contributionType={CalloutContributionType.Post}
+                  contributionSelectedId={contributionId}
+                  cardComponent={PostCard}
+                  onClickOnContribution={handleClickOnContribution}
+                />
+              )}
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
@@ -205,16 +215,6 @@ const CalloutView = ({
                   dialogComponent={CalloutContributionDialogPost}
                   calloutRestrictions={calloutRestrictions}
                   onCalloutUpdate={onCalloutUpdate}
-                />
-              )}
-              {/* If there is a contributionId show the scroller */}
-              {contributionId && (
-                <CalloutContributionsHorizontalPager
-                  callout={callout}
-                  contributionType={CalloutContributionType.Post}
-                  contributionSelectedId={contributionId}
-                  cardComponent={PostCard}
-                  onClickOnContribution={handleClickOnContribution}
                 />
               )}
               {/* else show the expandable container with the cards */}
@@ -232,12 +232,22 @@ const CalloutView = ({
                   calloutRestrictions={calloutRestrictions}
                 />
               )}
-            </>
+            </CalloutContributionsBlock>
           )}
 
           {/* Collaborate with Memos */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Memo) && (
-            <>
+            <CalloutContributionsBlock>
+              {/* If there is a contributionId show the scroller */}
+              {contributionId && (
+                <CalloutContributionsHorizontalPager
+                  callout={callout}
+                  contributionType={CalloutContributionType.Memo}
+                  contributionSelectedId={contributionId}
+                  cardComponent={MemoCard}
+                  onClickOnContribution={handleClickOnContribution}
+                />
+              )}
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
@@ -247,16 +257,6 @@ const CalloutView = ({
                   dialogComponent={CalloutContributionDialogMemo}
                   calloutRestrictions={calloutRestrictions}
                   onCalloutUpdate={onCalloutUpdate}
-                />
-              )}
-              {/* If there is a contributionId show the scroller */}
-              {contributionId && (
-                <CalloutContributionsHorizontalPager
-                  callout={callout}
-                  contributionType={CalloutContributionType.Memo}
-                  contributionSelectedId={contributionId}
-                  cardComponent={MemoCard}
-                  onClickOnContribution={handleClickOnContribution}
                 />
               )}
               {/* else show the expandable container with the cards */}
@@ -274,7 +274,7 @@ const CalloutView = ({
                   calloutRestrictions={calloutRestrictions}
                 />
               )}
-            </>
+            </CalloutContributionsBlock>
           )}
 
           {/* Framing Comments */}

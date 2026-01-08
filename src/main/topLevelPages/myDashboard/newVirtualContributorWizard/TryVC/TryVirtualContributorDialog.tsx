@@ -95,10 +95,9 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       draft: false,
       editable: true,
       movable: true,
-      publishedAt: undefined,
-      authorAvatarUri: undefined,
-      authorName: undefined,
-    }
+      publishedDate: undefined,
+      publishedBy: undefined,
+    },
   });
 
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation(options);

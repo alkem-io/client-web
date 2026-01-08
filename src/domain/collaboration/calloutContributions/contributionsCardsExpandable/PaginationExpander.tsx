@@ -2,7 +2,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Caption } from '@/core/ui/typography';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface PaginationExpanderProps {
   onClick: () => void;
@@ -52,17 +53,15 @@ const PaginationExpander = ({
       return <Caption>{t('callout.contributions.contributionsCount', { count: totalContributions })}</Caption>;
     } else {
       return (
-        <Box display="flex" flexDirection="row" alignContent="end" sx={{ cursor: 'pointer' }} onClick={onClick}>
-          <ExpandMoreIcon />
-          <Caption>
-            <Trans
-              i18nKey="callout.contributions.contributionsItemsCountExpand"
-              components={{
-                click: <strong />,
-              }}
-              values={{ count: totalContributions }}
-            />
-          </Caption>
+        <Box textAlign="center" marginTop={gutters(-2)}>
+          <Button
+            variant="outlined"
+            onClick={onClick}
+            startIcon={<ExpandMoreIcon />}
+            sx={{ backgroundColor: theme => theme.palette.background.paper }}
+          >
+            Expand
+          </Button>
         </Box>
       );
     }

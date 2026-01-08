@@ -118,6 +118,7 @@
     "see-more": "See more",
     "see-all": "More {{subject}}",
     "readMore": "Read more",
+    "ellipsisReadMore": "... Read more",
     "showLess": "Show less",
     "retry": "Try again",
     "home": "Home",
@@ -610,7 +611,8 @@
         "month_other": "{{count}} months",
         "year_one": "{{count}} year",
         "year_other": "{{count}} years"
-      }
+      },
+      "moreThan1Year": "> 1 year ago"
     },
     "supportEmail": "support@alkem.io",
     "options": "Options",
@@ -912,7 +914,8 @@
       "contributionsItemsCount_other": "{{count}} items in this $t(common.collection)",
       "contributionsItemsCountExpand": "{{count}} items in this $t(common.collection), <click>click here</click> to see all",
       "contributionsCollapse": "{{count}} items in this $t(common.collection), <click>click here</click> to hide some",
-      "noContributions": "No contributions yet, be the first to contribute!"
+      "noContributions": "No contributions yet, be the first to contribute!",
+      "contributions": "Contributions ({{count}})"
     },
     "draftNotice": "DRAFT - Only visible for $t(common.admins)",
     "closed": "This discussion is closed so you can no longer comment",

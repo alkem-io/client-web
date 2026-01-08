@@ -117,4 +117,12 @@ fragment CalloutDetails on Callout {
   settings {
     ...CalloutSettingsFull
   }
+  publishedDate
+  publishedBy {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
 }

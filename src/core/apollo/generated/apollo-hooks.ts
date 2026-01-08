@@ -603,6 +603,20 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogUpdateSentFragmentDoc}
   ${ActivityLogCalendarEventCreatedFragmentDoc}
 `;
+export const ContributionAuthorFragmentDoc = gql`
+  fragment ContributionAuthor on User {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        id
+        name
+        uri
+      }
+    }
+  }
+`;
 export const CalloutContributionsWhiteboardCardFragmentDoc = gql`
   fragment CalloutContributionsWhiteboardCard on Whiteboard {
     id
@@ -620,14 +634,11 @@ export const CalloutContributionsWhiteboardCardFragmentDoc = gql`
     }
     createdDate
     createdBy {
-      id
-      profile {
-        id
-        displayName
-      }
+      ...ContributionAuthor
     }
   }
   ${VisualModelFragmentDoc}
+  ${ContributionAuthorFragmentDoc}
 `;
 export const CalloutContributionsMemoCardFragmentDoc = gql`
   fragment CalloutContributionsMemoCard on Memo {
@@ -640,13 +651,10 @@ export const CalloutContributionsMemoCardFragmentDoc = gql`
     markdown
     createdDate
     createdBy {
-      id
-      profile {
-        id
-        displayName
-      }
+      ...ContributionAuthor
     }
   }
+  ${ContributionAuthorFragmentDoc}
 `;
 export const CalloutContributionsPostCardFragmentDoc = gql`
   fragment CalloutContributionsPostCard on Post {
@@ -662,11 +670,7 @@ export const CalloutContributionsPostCardFragmentDoc = gql`
     }
     createdDate
     createdBy {
-      id
-      profile {
-        id
-        displayName
-      }
+      ...ContributionAuthor
     }
     authorization {
       id
@@ -678,6 +682,7 @@ export const CalloutContributionsPostCardFragmentDoc = gql`
     }
   }
   ${TagsetDetailsFragmentDoc}
+  ${ContributionAuthorFragmentDoc}
 `;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
@@ -1016,6 +1021,14 @@ export const CalloutDetailsFragmentDoc = gql`
     }
     settings {
       ...CalloutSettingsFull
+    }
+    publishedDate
+    publishedBy {
+      id
+      profile {
+        id
+        displayName
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -1941,15 +1954,6 @@ export const SpaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -1961,15 +1965,6 @@ export const SpaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -2003,15 +1998,6 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -2023,15 +2009,6 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -3774,15 +3751,6 @@ export const ExploreSpacesFragmentDoc = gql`
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
           }
         }
         leadOrganizations {
@@ -3793,15 +3761,6 @@ export const ExploreSpacesFragmentDoc = gql`
             displayName
             avatar: visual(type: AVATAR) {
               ...VisualModel
-            }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
             }
           }
         }

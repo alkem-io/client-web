@@ -52,11 +52,7 @@ fragment CalloutContributionsWhiteboardCard on Whiteboard {
   }
   createdDate
   createdBy {
-    id
-    profile {
-      id
-      displayName
-    }
+    ...ContributionAuthor
   }
 }
 
@@ -70,11 +66,7 @@ fragment CalloutContributionsMemoCard on Memo {
   markdown
   createdDate
   createdBy {
-    id
-    profile {
-      id
-      displayName
-    }
+    ...ContributionAuthor
   }
 }
 
@@ -91,11 +83,7 @@ fragment CalloutContributionsPostCard on Post {
   }
   createdDate
   createdBy {
-    id
-    profile {
-      id
-      displayName
-    }
+    ...ContributionAuthor
   }
   authorization {
     id
@@ -104,5 +92,18 @@ fragment CalloutContributionsPostCard on Post {
   comments {
     id
     messagesCount
+  }
+}
+
+fragment ContributionAuthor on User {
+  id
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      id
+      name
+      uri
+    }
   }
 }
