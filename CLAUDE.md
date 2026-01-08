@@ -4,11 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Alkemio Client Web is a React + TypeScript single-page application served by Vite. It uses MUI and Emotion for the design system, and Apollo Client for the GraphQL data layer.
+Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. It uses MUI and Emotion for the design system, and Apollo Client for the GraphQL data layer.
 
 - Repository is large (~18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`
-- Requires Node ≥20.19.0 and pnpm ≥10.17.1 (pinned via Volta)
+- Requires Node ≥20.19.0 and pnpm ≥10.17.1 (pinned via Volta to Node 20.19.0)
 - Always use pnpm; the lockfile is authoritative
+- All commits must be signed
 
 ## Essential Commands
 
@@ -30,6 +31,9 @@ pnpm lint:prod
 
 # Run tests (non-interactive)
 pnpm vitest run --reporter=basic
+
+# Run a single test file
+pnpm vitest run src/path/to/file.test.ts --reporter=basic
 
 # Watch mode for tests
 pnpm test
@@ -102,11 +106,13 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 
 - Prefer `type` over `interface` unless extending other interfaces
 - Prefer `as const` objects over `enum` (enums introduce runtime quirks and nominal typing)
-- Views should not import from `src/core/apollo` (no GraphQL dependencies in dumb components)
+- Views (dumb components) should not import from `src/core/apollo` (no GraphQL dependencies)
+- Keep Apollo-related hooks in Containers/hooks, not directly in Pages
 - Admin components should be prefixed with `Admin`
 - Avoid over-engineering: only make changes that are directly requested or clearly necessary
 - Don't add comments, docstrings, or type annotations to code you didn't change
 - Don't add error handling for scenarios that can't happen; trust internal code and framework guarantees
+- Barrel exports via `index.ts` files are forbidden—always use explicit file paths for imports
 
 ### State & Hooks
 
@@ -128,6 +134,13 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 2. Run `pnpm codegen` (requires backend running at `localhost:4000/graphql`)
 3. Generated files go to `src/core/apollo/generated/`
 4. Commit generated outputs
+5. Always use generated hooks from `src/core/apollo/generated/apollo-hooks.ts`; raw `useQuery` or unchecked responses are prohibited
+
+## Internationalization (i18n)
+
+- All user-visible strings MUST use `react-i18next` via the `t()` function
+- Never hardcode text or pass string literals as fallback to `t()`—add missing keys to `src/core/i18n/en/translation.en.json`
+- Only the English source file may be edited; other locale files are generated downstream
 
 ## Environment Variables
 
@@ -148,15 +161,18 @@ pnpm test:coverage                 # With coverage (Istanbul provider)
 
 Execution typically completes in ~1.2s with 19 files / 247 tests passing.
 
-## React Compiler
+## React 19 & React Compiler
 
-The project uses the React Compiler (babel-plugin-react-compiler) to automatically optimize React components. The compiler adds automatic memoization, reducing the need for manual `useMemo`, `useCallback`, and `React.memo` calls.
+The project uses React 19 with the React Compiler (babel-plugin-react-compiler) for automatic optimization.
 
-Benefits:
+**React 19 patterns to use:**
+- `useTransition` and `useOptimistic` for long-running mutations
+- Suspense boundaries for data fetching
+- Treat rendering as pure and concurrency-safe
 
-- Automatic performance optimization
+**React Compiler benefits:**
+- Automatic memoization reduces need for manual `useMemo`/`useCallback`/`React.memo`
 - Cleaner code with less boilerplate
-- Seamless integration with React 19
 
 For more details, see `docs/react-compiler.md`.
 
@@ -215,16 +231,22 @@ Husky runs lint-staged on commit:
 
 ### Component Best Practices
 
-- Keep Apollo-related hooks in Containers, not directly in Pages
 - Avoid nesting objects in props except for view models
-- Don't base View props on GraphQL definitions
+- Don't base View props on GraphQL definitions—Views should not import from `src/core/apollo`
 - Group props by domain, not by functional role
+- Views receive props and return formatted results; they should not fetch data
+- Controllers (smart components) handle data fetching, localStorage persistence, route matching
 
 ### CI/CD
 
 - All commits must be signed
 - GitHub Actions enforce: successful Docker build, passing TypeScript + ESLint, working Vite build
 - Run `pnpm lint` and `pnpm vitest run --reporter=basic` before staging changes
+
+### Accessibility
+
+- WCAG 2.1 AA criteria must be met for every interactive element
+- Use semantic HTML, keyboard navigation, and ARIA attributes where needed
 
 ## Public Routes
 
