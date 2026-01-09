@@ -49,7 +49,7 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const { data, loading } = useSpaceAccountQuery({
-    variables: { spaceId: spaceId! },
+    variables: { spaceId: spaceId },
     skip: !spaceId,
   });
 
@@ -104,10 +104,9 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
       return undefined;
     }
 
-    const daysLeft =
-      activeSubscription && activeSubscription.expires
-        ? Math.ceil((new Date(activeSubscription.expires).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-        : undefined;
+    const daysLeft = activeSubscription?.expires
+      ? Math.ceil((new Date(activeSubscription.expires).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+      : undefined;
 
     return {
       currentPlan,
@@ -161,16 +160,18 @@ const SpaceAdminAccountPage: FC<SpaceAdminAccountPageProps> = ({ spaceId, routeP
               </Gutters>
               <Gutters disablePadding>
                 <BlockTitle>{t('pages.admin.generic.sections.account.hostTitle')}</BlockTitle>
-                <ContributorCardHorizontal
-                  profile={{
-                    displayName: space.about.provider.profile.displayName,
-                    avatar: space.about.provider.profile.avatar,
-                    location: space.about.provider.profile.location,
-                    tagsets: undefined,
-                    url: space?.about.provider.profile.url,
-                  }}
-                  seamless
-                />
+                {space.about.provider && (
+                  <ContributorCardHorizontal
+                    profile={{
+                      displayName: space.about.provider.profile.displayName,
+                      avatar: space.about.provider.profile.avatar,
+                      location: space.about.provider.profile.location,
+                      tagsets: undefined,
+                      url: space.about.provider.profile.url,
+                    }}
+                    seamless
+                  />
+                )}
               </Gutters>
               <Gutters disablePadding>
                 <SeeMore

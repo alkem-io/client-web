@@ -29,7 +29,7 @@ const MemoCard = ({ contribution, columns, callout, selected }: MemoCardProps) =
           {memo?.createdBy?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
-      <MemoPreview memo={memo} displayName={memo?.profile.displayName} sx={{ height: gutters(8) }} />
+      <MemoPreview memo={memo} displayName={memo?.profile.displayName} sx={{ height: gutters(4) }} />
       <CardFooter>{memo?.createdDate && <CardFooterDate date={memo?.createdDate} />}</CardFooter>
     </ContributeCard>
   );

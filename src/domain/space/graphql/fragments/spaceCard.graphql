@@ -1,0 +1,34 @@
+fragment SpaceCard on Space {
+  id
+  level
+  visibility
+  about {
+    ...SpaceAboutCardBanner
+    membership {
+      myPrivileges
+      leadUsers {
+        id
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+      leadOrganizations {
+        id
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualModel
+          }
+        }
+      }
+    }
+    isContentPublic
+  }
+}

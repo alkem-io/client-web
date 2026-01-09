@@ -118,6 +118,7 @@
     "see-more": "See more",
     "see-all": "More {{subject}}",
     "readMore": "Read more",
+    "showLess": "Show less",
     "retry": "Try again",
     "home": "Home",
     "take-me-home": "Take me home",
@@ -939,7 +940,16 @@
       "new-temporary-reference": "Temporary Link Id: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Click to open $t(common.whiteboard)"
+      "clickToSee": "Click to open $t(common.whiteboard)",
+      "emojiReaction": {
+        "addEmoji": "Add emoji reaction",
+        "title": "Add Emoji",
+        "hint": "Select an emoji, then click on the canvas",
+        "clickToPlace": "Click on canvas to place {{emoji}}",
+        "placementMode": "Click to place emoji: {{emoji}}",
+        "gridLabel": "Select an emoji",
+        "noEmojis": "No emojis available"
+      }
     },
     "memo": {
       "clickToSee": "Click to see the full $t(common.memo)"
@@ -1571,9 +1581,6 @@
         "title": "Discard $t(common.post)",
         "text": "Are you sure you want to close this $t(common.post)? Unsaved changes will be lost."
       }
-    },
-    "calloutEdit": {
-      "titleWithType": "Edit {{type}}"
     },
     "post-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import TextField from '@mui/material/TextField';
@@ -24,7 +24,7 @@ const SearchBar = ({ ref, ...props }: BoxProps & { withRedirect?: boolean } & { 
   };
   const [value, setValue] = useState(getInitialValue);
 
-  const isTermValid = useMemo(() => value.length < MINIMUM_TERM_LENGTH, [value]);
+  const isTermValid = value.length < MINIMUM_TERM_LENGTH;
 
   const keyPressHandler = ({ code }: React.KeyboardEvent<HTMLDivElement>) => {
     if (isTermValid) {
@@ -36,22 +36,20 @@ const SearchBar = ({ ref, ...props }: BoxProps & { withRedirect?: boolean } & { 
     }
   };
 
-  const handleValueChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(event.target.value);
-    },
-    [setValue]
-  );
+  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+  };
 
-  const handleNavigateToSearchPage = useCallback(() => {
+  const handleNavigateToSearchPage = () => {
     const terms = getSearchTerms(value);
     const params = new URLSearchParams({ [SEARCH_TERMS_URL_PARAM]: terms });
     if (props.withRedirect) {
+      // eslint-disable-next-line react-compiler/react-compiler -- window.location assignment is standard navigation
       window.location.href = `/?${params}`;
     } else {
       navigate(`${pathname}?${params}`);
     }
-  }, [isTermValid, value, navigate, props.withRedirect]);
+  };
 
   return (
     <Box ref={ref} flexGrow={1} justifyContent="center" {...props}>

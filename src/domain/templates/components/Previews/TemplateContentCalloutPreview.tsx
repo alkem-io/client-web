@@ -6,6 +6,8 @@ import WhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPrevi
 import { findDefaultTagset } from '@/domain/common/tagset/TagsetUtils';
 import { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import MemoPreview from '@/domain/collaboration/memo/MemoPreview/MemoPreview';
+import References from '@/domain/shared/components/References/References';
+import { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 
 interface TemplateContentCalloutPreviewProps {
   template?: {
@@ -16,6 +18,7 @@ interface TemplateContentCalloutPreviewProps {
           description?: string;
           tagsets?: TagsetModel[];
           tagset?: TagsetModel;
+          references?: ReferenceModel[];
         };
         whiteboard?: {
           profile: {
@@ -36,12 +39,14 @@ const TemplateContentCalloutPreview = ({ template }: TemplateContentCalloutPrevi
   const framing = template?.callout?.framing;
   const whiteboard = template?.callout?.framing.whiteboard;
   const memo = template?.callout?.framing.memo;
+  const references = framing?.profile.references;
 
   return (
     <PageContentBlock>
       <BlockSectionTitle>{framing?.profile.displayName}</BlockSectionTitle>
       <WrapperMarkdown>{framing?.profile.description ?? ''}</WrapperMarkdown>
       <TagsComponent tags={findDefaultTagset(framing?.profile.tagsets)?.tags ?? framing?.profile.tagset?.tags ?? []} />
+      {references && references.length > 0 && <References compact references={references} />}
       {whiteboard && <WhiteboardPreview whiteboard={whiteboard} displayName={framing?.profile.displayName} />}
       {memo && <MemoPreview memo={memo} displayName={framing?.profile.displayName} />}
     </PageContentBlock>

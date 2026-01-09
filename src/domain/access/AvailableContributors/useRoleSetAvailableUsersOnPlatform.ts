@@ -1,7 +1,6 @@
 import { usePlatformRoleAvailableUsersQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AVAILABLE_USERS_PAGE_SIZE, AvailableUsersResponse } from './common';
-import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Identifiable } from '@/core/utils/Identifiable';
 
 type useRoleSetAvailableUsersOnPlatformParams = {
@@ -21,17 +20,36 @@ const useRoleSetAvailableUsersOnPlatform = ({
   filter,
   skip,
 }: useRoleSetAvailableUsersOnPlatformParams): useRoleSetAvailableUsersOnPlatformProvided => {
-  const { data, loading, fetchMore, refetch, hasMore } = usePaginatedQuery({
-    useQuery: usePlatformRoleAvailableUsersQuery,
-    options: {
-      fetchPolicy: 'cache-first',
-      nextFetchPolicy: 'cache-first',
-      skip,
+  // Call the query hook directly instead of passing it to usePaginatedQuery
+  const { data, loading, fetchMore: fetchMoreRaw, refetch } = usePlatformRoleAvailableUsersQuery({
+    variables: {
+      first: AVAILABLE_USERS_PAGE_SIZE,
+      filter: { displayName: filter },
     },
-    pageSize: AVAILABLE_USERS_PAGE_SIZE,
-    variables: { filter: { displayName: filter } },
-    getPageInfo: data => data?.usersPaginated.pageInfo,
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-first',
+    skip,
   });
+
+  const pageInfo = data?.usersPaginated.pageInfo;
+  const hasMore = pageInfo?.hasNextPage ?? false;
+
+  const fetchMore = useCallback(
+    async (itemsNumber = AVAILABLE_USERS_PAGE_SIZE) => {
+      if (!data) {
+        return;
+      }
+
+      await fetchMoreRaw({
+        variables: {
+          first: itemsNumber,
+          after: pageInfo?.endCursor,
+          filter: { displayName: filter },
+        },
+      });
+    },
+    [data, fetchMoreRaw, pageInfo?.endCursor, filter, AVAILABLE_USERS_PAGE_SIZE]
+  );
 
   const firstPage = data?.usersPaginated;
   const users = useMemo(() => {
@@ -46,7 +64,7 @@ const useRoleSetAvailableUsersOnPlatform = ({
 
   return {
     users,
-    hasMore: hasMore ?? false,
+    hasMore,
     fetchMore,
     refetch,
     loading,

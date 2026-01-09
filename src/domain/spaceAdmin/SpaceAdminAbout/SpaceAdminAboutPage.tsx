@@ -7,13 +7,14 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { formatLocation } from '@/domain/common/location/LocationUtils';
-import ProfileForm, { ProfileFormValues } from '@/domain/common/profile/ProfileForm';
+import ProfileForm, { ProfileFormHandle, ProfileFormValues } from '@/domain/common/profile/ProfileForm';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
 import { SettingsSection } from '@/domain/platformAdmin/layout/EntitySettingsLayout/SettingsSection';
 import type { SettingsPageProps } from '@/domain/platformAdmin/layout/EntitySettingsLayout/types';
 import { compact } from 'lodash';
-import { FC } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import LayoutSwitcher from '../layout/SpaceAdminLayoutSwitcher';
 import SpaceAboutView from './components/SpaceAboutView';
 import { EmptyProfileModel, ProfileModel } from '@/domain/common/profile/ProfileModel';
@@ -28,6 +29,15 @@ export interface SpaceAdminAboutPageProps extends SettingsPageProps {
 const SpaceAdminAboutPage: FC<SpaceAdminAboutPageProps> = ({ useL0Layout, spaceId, routePrefix = '../' }) => {
   const notify = useNotification();
   const { t } = useTranslation();
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      const element = document.getElementById(hash.slice(1));
+      element?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [hash]);
+
   const { data: spaceData } = useSpaceAboutDetailsQuery({
     variables: {
       spaceId,
@@ -65,18 +75,19 @@ const SpaceAdminAboutPage: FC<SpaceAdminAboutPageProps> = ({ useL0Layout, spaceI
     location,
   };
 
-  let submitWired;
+  const profileFormRef = useRef<ProfileFormHandle>(null);
+
   return (
     <LayoutSwitcher currentTab={SettingsSection.About} tabRoutePrefix={routePrefix} useL0Layout={useL0Layout}>
       <PageContentColumn columns={12}>
         <PageContentBlock>
           <PageContentBlockHeader title={t('components.editSpaceForm.about')} />
-          <ProfileForm profile={profileModel} onSubmit={onSubmit} wireSubmit={submit => (submitWired = submit)} />
+          <ProfileForm ref={profileFormRef} profile={profileModel} onSubmit={onSubmit} />
           <Actions justifyContent={'flex-end'}>
-            <SaveButton loading={loading} onClick={() => submitWired()} />
+            <SaveButton loading={loading} onClick={() => profileFormRef.current?.submit()} />
           </Actions>
         </PageContentBlock>
-        <PageContentBlock>
+        <PageContentBlock id="description">
           <PageContentBlockHeader title={t('common.description')} />
           <SpaceAboutView />
         </PageContentBlock>

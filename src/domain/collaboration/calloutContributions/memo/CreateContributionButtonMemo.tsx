@@ -23,7 +23,7 @@ const CreateContributionButtonMemo = ({
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [createMemo] = useCreateMemoOnCalloutMutation();
-  const [memoName, setMemoName] = useState(callout.contributionDefaults?.defaultDisplayName ?? t('common.memo'));
+  const [memoName, setMemoName] = useState(callout.contributionDefaults?.defaultDisplayName ?? t('common.Memo'));
 
   const [handleCreateMemo, creatingMemo] = useLoadingState(async () => {
     const memoNameMandatory = ensurePresence(memoName);

@@ -9,7 +9,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Formik } from 'formik';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Button, OutlinedInput } from '@mui/material';
@@ -39,12 +39,22 @@ export const PromptConfig = ({ vc }: PromptConfigProps) => {
 
   const [updateAiPersona, { loading: updateLoading }] = useUpdateAiPersonaMutation();
 
+  // Update prompt when aiPersona changes
+  useEffect(() => {
+    const newPrompt = aiPersona?.prompt?.[0];
+    if (newPrompt !== undefined) {
+      setPrompt(newPrompt);
+    } else if (newPrompt === undefined && aiPersona?.id) {
+      // Clear stale data when prompt becomes undefined
+      setPrompt('');
+    }
+  }, [aiPersona?.id, aiPersona?.prompt?.[0]]);
+
   const initialValues: FormValueType = useMemo(() => {
-    setPrompt(aiPersona?.prompt[0] || '');
     return {
-      prompt: aiPersona?.prompt[0] || '',
+      prompt: aiPersona?.prompt?.[0] || '',
     };
-  }, [aiPersona?.id]);
+  }, [aiPersona?.id, aiPersona?.prompt?.[0]]);
 
   const validationSchema = yup.object().shape({
     prompt: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
