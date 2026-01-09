@@ -115,6 +115,61 @@ class BenchmarkComparator {
     }
     report.push('');
 
+    // Memory analysis (if available)
+    if (this.before.memory && this.after.memory) {
+      report.push('## 🧠 Memory Analysis\n');
+
+      // Per-route memory
+      report.push('### Per-Route Memory Usage\n');
+      const routes = Object.keys(this.before.memory).filter(k => !['leakAnalysis', 'summary'].includes(k));
+
+      if (routes.length > 0) {
+        report.push('| Route | Before Peak | After Peak | Change | Before Load Impact | After Load Impact |');
+        report.push('|-------|-------------|------------|--------|-------------------|-------------------|');
+
+        for (const route of routes) {
+          const beforeMem = this.before.memory[route];
+          const afterMem = this.after.memory[route];
+
+          if (beforeMem && afterMem) {
+            const peakChange = calculateDiffBytes(beforeMem.peakMemory, afterMem.peakMemory);
+            report.push(`| ${route} | ${formatBytes(beforeMem.peakMemory)} | ${formatBytes(afterMem.peakMemory)} | ${peakChange} | ${formatBytes(beforeMem.loadImpact)} | ${formatBytes(afterMem.loadImpact)} |`);
+          }
+        }
+        report.push('');
+      }
+
+      // Memory summary
+      if (this.before.memory.summary && this.after.memory.summary) {
+        report.push('### Memory Summary\n');
+        report.push('| Metric | Before | After | Change |');
+        report.push('|--------|--------|-------|--------|');
+
+        const beforeSum = this.before.memory.summary;
+        const afterSum = this.after.memory.summary;
+
+        report.push(`| Average Peak Memory | ${formatBytes(beforeSum.averagePeakMemory)} | ${formatBytes(afterSum.averagePeakMemory)} | ${calculateDiffBytes(beforeSum.averagePeakMemory, afterSum.averagePeakMemory)} |`);
+        report.push(`| Average Load Impact | ${formatBytes(beforeSum.averageLoadImpact)} | ${formatBytes(afterSum.averageLoadImpact)} | ${calculateDiffBytes(beforeSum.averageLoadImpact, afterSum.averageLoadImpact)} |`);
+        report.push(`| Leak Risk | ${beforeSum.leakRisk} | ${afterSum.leakRisk} | ${beforeSum.leakRisk === afterSum.leakRisk ? '⚪ No change' : afterSum.leakRisk === 'LOW' ? '🟢 Improved' : '🔴 Worse'} |`);
+        report.push(`| Memory Trend | ${beforeSum.trend} | ${afterSum.trend} | - |`);
+        report.push('');
+      }
+
+      // Leak analysis comparison
+      if (this.before.memory.leakAnalysis && this.after.memory.leakAnalysis) {
+        const beforeLeak = this.before.memory.leakAnalysis;
+        const afterLeak = this.after.memory.leakAnalysis;
+
+        report.push('### Memory Leak Analysis\n');
+        report.push('| Metric | Before | After | Change |');
+        report.push('|--------|--------|-------|--------|');
+        report.push(`| Growth over 3 cycles | ${formatBytes(beforeLeak.growthBytes)} (${beforeLeak.growthPercent?.toFixed(1)}%) | ${formatBytes(afterLeak.growthBytes)} (${afterLeak.growthPercent?.toFixed(1)}%) | ${calculateDiffBytes(beforeLeak.growthBytes, afterLeak.growthBytes)} |`);
+        report.push(`| Potential Leak | ${beforeLeak.potentialLeak ? '⚠️ YES' : '✅ NO'} | ${afterLeak.potentialLeak ? '⚠️ YES' : '✅ NO'} | ${!afterLeak.potentialLeak && beforeLeak.potentialLeak ? '🟢 Fixed!' : afterLeak.potentialLeak && !beforeLeak.potentialLeak ? '🔴 New leak!' : '⚪ No change'} |`);
+        report.push(`| Trend | ${beforeLeak.trend} | ${afterLeak.trend} | - |`);
+        report.push('');
+      }
+    }
+
     // User journeys
     report.push('## 👤 User Journey Metrics\n');
     const beforeJourney = this.before.userJourneys.mainNavigation;

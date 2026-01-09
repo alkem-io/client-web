@@ -21,6 +21,14 @@ const CONFIG = {
   waitAfterLoad: 2000, // Wait for dynamic content
 };
 
+function formatBytes(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
 class PerformanceBenchmark {
   constructor(buildName) {
     this.buildName = buildName;
@@ -31,6 +39,7 @@ class PerformanceBenchmark {
       customMetrics: {},
       userJourneys: {},
       bundleAnalysis: {},
+      memory: {},
     };
   }
 
@@ -244,6 +253,173 @@ class PerformanceBenchmark {
     }
   }
 
+  async captureMemorySnapshot(page, client, label) {
+    // Force garbage collection if possible
+    try {
+      await client.send('HeapProfiler.collectGarbage');
+    } catch (e) {
+      // GC may not be available
+    }
+    await page.waitForTimeout(100);
+
+    // Get JS heap metrics
+    const jsMemory = await page.evaluate(() => {
+      if (performance.memory) {
+        return {
+          usedJSHeapSize: performance.memory.usedJSHeapSize,
+          totalJSHeapSize: performance.memory.totalJSHeapSize,
+          jsHeapSizeLimit: performance.memory.jsHeapSizeLimit,
+        };
+      }
+      return null;
+    });
+
+    // Get CDP performance metrics
+    const cdpMetrics = await client.send('Performance.getMetrics');
+    const metricsMap = {};
+    cdpMetrics.metrics.forEach(m => {
+      metricsMap[m.name] = m.value;
+    });
+
+    // Get DOM metrics
+    const domMetrics = await page.evaluate(() => {
+      return {
+        domNodes: document.getElementsByTagName('*').length,
+        iframes: document.getElementsByTagName('iframe').length,
+        images: document.getElementsByTagName('img').length,
+        scripts: document.getElementsByTagName('script').length,
+      };
+    });
+
+    return {
+      label,
+      timestamp: Date.now(),
+      jsHeap: jsMemory,
+      cdp: {
+        JSHeapUsedSize: metricsMap.JSHeapUsedSize,
+        JSHeapTotalSize: metricsMap.JSHeapTotalSize,
+        Documents: metricsMap.Documents,
+        Frames: metricsMap.Frames,
+        JSEventListeners: metricsMap.JSEventListeners,
+        LayoutObjects: metricsMap.LayoutObjects,
+        Nodes: metricsMap.Nodes,
+      },
+      dom: domMetrics,
+    };
+  }
+
+  async measureMemoryPerRoute(url, routeName) {
+    console.log(`  Analyzing memory for ${routeName}...`);
+
+    const browser = await chromium.launch({
+      headless: true,
+      args: ['--js-flags=--expose-gc', '--enable-precise-memory-info'],
+    });
+
+    const context = await browser.newContext({
+      viewport: { width: 1920, height: 1080 },
+    });
+
+    const page = await context.newPage();
+    const client = await page.context().newCDPSession(page);
+
+    await client.send('Performance.enable');
+    await client.send('HeapProfiler.enable');
+
+    try {
+      // Baseline
+      await page.goto('about:blank');
+      const baseline = await this.captureMemorySnapshot(page, client, 'baseline');
+
+      // After load
+      await page.goto(url, { waitUntil: 'networkidle' });
+      await page.waitForTimeout(CONFIG.waitAfterLoad);
+      const afterLoad = await this.captureMemorySnapshot(page, client, 'after-load');
+
+      // After interactions
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+      await page.waitForTimeout(1000);
+      const afterInteraction = await this.captureMemorySnapshot(page, client, 'after-interaction');
+
+      // Idle (after GC)
+      await page.waitForTimeout(2000);
+      const idle = await this.captureMemorySnapshot(page, client, 'idle');
+
+      const getHeapSize = (snapshot) => snapshot.jsHeap?.usedJSHeapSize || snapshot.cdp.JSHeapUsedSize;
+
+      return {
+        baseline: getHeapSize(baseline),
+        afterLoad: getHeapSize(afterLoad),
+        afterInteraction: getHeapSize(afterInteraction),
+        idle: getHeapSize(idle),
+        loadImpact: getHeapSize(afterLoad) - getHeapSize(baseline),
+        peakMemory: Math.max(getHeapSize(afterLoad), getHeapSize(afterInteraction), getHeapSize(idle)),
+        domNodes: idle.dom.domNodes,
+        eventListeners: idle.cdp.JSEventListeners,
+        layoutObjects: idle.cdp.LayoutObjects,
+      };
+    } finally {
+      await browser.close();
+    }
+  }
+
+  async measureMemoryLeaks() {
+    console.log('  Checking for memory leaks...');
+
+    const browser = await chromium.launch({
+      headless: true,
+      args: ['--js-flags=--expose-gc', '--enable-precise-memory-info'],
+    });
+
+    const context = await browser.newContext({ viewport: { width: 1920, height: 1080 } });
+    const page = await context.newPage();
+    const client = await page.context().newCDPSession(page);
+
+    await client.send('Performance.enable');
+    await client.send('HeapProfiler.enable');
+
+    const readings = [];
+
+    try {
+      const routes = CONFIG.testRoutes.map(r => `${CONFIG.baseUrl}${r.path}`);
+
+      for (let cycle = 0; cycle < 3; cycle++) {
+        for (const route of routes) {
+          await page.goto(route, { waitUntil: 'networkidle' });
+          await page.waitForTimeout(500);
+        }
+
+        try {
+          await client.send('HeapProfiler.collectGarbage');
+        } catch (e) {}
+        await page.waitForTimeout(300);
+
+        const snapshot = await this.captureMemorySnapshot(page, client, `cycle-${cycle + 1}`);
+        readings.push({
+          cycle: cycle + 1,
+          usedHeap: snapshot.jsHeap?.usedJSHeapSize || snapshot.cdp.JSHeapUsedSize,
+          domNodes: snapshot.dom.domNodes,
+          eventListeners: snapshot.cdp.JSEventListeners,
+        });
+      }
+
+      const firstReading = readings[0].usedHeap;
+      const lastReading = readings[readings.length - 1].usedHeap;
+      const growth = lastReading - firstReading;
+      const growthPercent = (growth / firstReading) * 100;
+
+      return {
+        readings,
+        growthBytes: growth,
+        growthPercent,
+        potentialLeak: growthPercent > 20,
+        trend: growthPercent > 20 ? 'increasing' : growthPercent < -10 ? 'decreasing' : 'stable',
+      };
+    } finally {
+      await browser.close();
+    }
+  }
+
   async run() {
     console.log(`\n🚀 Running performance benchmark for: ${this.buildName}\n`);
 
@@ -262,7 +438,24 @@ class PerformanceBenchmark {
     console.log('\n⚡ Measuring runtime performance...');
     this.results.customMetrics.runtime = await this.measureRuntimePerformance();
 
-    // 4. User journeys
+    // 4. Memory analysis
+    console.log('\n🧠 Measuring memory usage...');
+    for (const route of CONFIG.testRoutes) {
+      const url = `${CONFIG.baseUrl}${route.path}`;
+      this.results.memory[route.name] = await this.measureMemoryPerRoute(url, route.name);
+    }
+    this.results.memory.leakAnalysis = await this.measureMemoryLeaks();
+
+    // Calculate memory summary
+    const routeNames = CONFIG.testRoutes.map(r => r.name);
+    this.results.memory.summary = {
+      averagePeakMemory: routeNames.reduce((sum, r) => sum + (this.results.memory[r]?.peakMemory || 0), 0) / routeNames.length,
+      averageLoadImpact: routeNames.reduce((sum, r) => sum + (this.results.memory[r]?.loadImpact || 0), 0) / routeNames.length,
+      leakRisk: this.results.memory.leakAnalysis?.potentialLeak ? 'HIGH' : 'LOW',
+      trend: this.results.memory.leakAnalysis?.trend || 'unknown',
+    };
+
+    // 5. User journeys
     console.log('\n👤 Measuring user journeys...');
     const journey = { name: 'main-navigation' };
     this.results.userJourneys.mainNavigation = await this.measureUserJourney(journey);
@@ -270,7 +463,45 @@ class PerformanceBenchmark {
     // Save results
     await this.saveResults();
 
+    // Print summary
+    this.printSummary();
+
     console.log(`\n✅ Benchmark complete! Results saved to: ${RESULTS_DIR}\n`);
+  }
+
+  printSummary() {
+    console.log('\n' + '─'.repeat(60));
+    console.log('📈 BENCHMARK SUMMARY');
+    console.log('─'.repeat(60));
+
+    // Lighthouse summary
+    console.log('\n🎯 Lighthouse Scores:');
+    for (const [route, metrics] of Object.entries(this.results.lighthouse)) {
+      if (metrics) {
+        console.log(`   ${route}: ${metrics.performanceScore}/100 | LCP: ${Math.round(metrics.largestContentfulPaint)}ms`);
+      }
+    }
+
+    // Memory summary
+    console.log('\n🧠 Memory Usage:');
+    for (const route of CONFIG.testRoutes) {
+      const mem = this.results.memory[route.name];
+      if (mem) {
+        console.log(`   ${route.name}: Peak ${formatBytes(mem.peakMemory)} | Load Impact: ${formatBytes(mem.loadImpact)}`);
+      }
+    }
+
+    const leak = this.results.memory.leakAnalysis;
+    if (leak) {
+      console.log(`   Leak Risk: ${leak.potentialLeak ? '⚠️  HIGH' : '✅ LOW'} (${leak.trend}, ${leak.growthPercent?.toFixed(1)}% growth)`);
+    }
+
+    // Bundle summary
+    const bundle = this.results.bundleAnalysis;
+    if (bundle) {
+      console.log('\n📦 Bundle:');
+      console.log(`   JS Files: ${bundle.jsFiles} | Total Size: ${formatBytes(bundle.totalSize)}`);
+    }
   }
 
   async saveResults() {
