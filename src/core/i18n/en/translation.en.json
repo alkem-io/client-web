@@ -943,7 +943,7 @@
       "new-temporary-reference": "Temporary Link Id: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Click to open $t(common.whiteboard)",
+      "clickToSee": "Click to see the full $t(common.whiteboard)",
       "emojiReaction": {
         "addEmoji": "Add emoji reaction",
         "title": "Add Emoji",

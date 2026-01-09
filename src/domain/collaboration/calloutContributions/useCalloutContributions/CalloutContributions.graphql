@@ -35,6 +35,25 @@ query CalloutContributions(
     }
   }
 }
+query CalloutContributionsCount(
+  $calloutId: UUID!
+  $includeLink: Boolean! = false
+  $includeWhiteboard: Boolean! = false
+  $includeMemo: Boolean! = false
+  $includePost: Boolean! = false
+) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      contributionsCount {
+        link @include(if: $includeLink)
+        whiteboard @include(if: $includeWhiteboard)
+        memo @include(if: $includeMemo)
+        post @include(if: $includePost)
+      }
+    }
+  }
+}
 
 fragment CalloutContributionsWhiteboardCard on Whiteboard {
   id

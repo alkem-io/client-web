@@ -80,15 +80,12 @@ const PaginationDot = styled(Box, {
 }));
 
 const CalloutContributionsHorizontalPager = ({
-  ref,
   callout,
   contributionType,
   contributionSelectedId,
   cardComponent: Card,
   onClickOnContribution,
-}: CalloutContributionsHorizontalPagerProps & {
-  ref?: React.Ref<HTMLDivElement>;
-}) => {
+}: CalloutContributionsHorizontalPagerProps) => {
   /**
    * Used to move to the correct page when a contributionId is provided, but only once
    */
@@ -148,12 +145,12 @@ const CalloutContributionsHorizontalPager = ({
   const fullRow = currentPageItems.length >= responsiveConfig.PageSize; // we have 5 items in this page
 
   return (
-    <Gutters ref={inViewRef}>
+    <>
       <Gutters
         row
         disablePadding
         justifyContent={fullRow ? 'space-between' : undefined}
-        ref={ref}
+        ref={inViewRef}
         flexWrap={responsiveConfig.SingleRow ? 'nowrap' : 'wrap'}
       >
         {responsiveConfig.ScrollerButtons === 'big' && (
@@ -201,7 +198,7 @@ const CalloutContributionsHorizontalPager = ({
           </ScrollButton>
         )}
       </Box>
-    </Gutters>
+    </>
   );
 };
 

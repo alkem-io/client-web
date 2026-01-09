@@ -42,7 +42,6 @@ const PageContentBlockHeaderCardLike = <D extends React.ElementType = BoxTypeMap
   return (
     <SwapColors swap={!!selected}>
       <Box
-        margin={gutters(-1)}
         marginBottom={0}
         borderBottom={`1px solid ${theme.palette.divider}`}
         paddingX={gutters()}

@@ -1,21 +1,14 @@
 import { useCalloutContributionQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CalloutContributionType,
-  RoleSetContributorType,
-} from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderCardLike from '@/core/ui/content/PageContentBlockHeaderCardLike';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { formatDateTime } from '@/core/utils/time/utils';
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { Box, IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
+import { Skeleton, Tooltip, useTheme } from '@mui/material';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import useNavigate from '@/core/routing/useNavigate';
 import { useRef, useState } from 'react';
-import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { useTranslation } from 'react-i18next';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
@@ -99,11 +92,6 @@ const CalloutContributionPreview = ({
   const formattedCreatedDate = createdDate && formatDateTime(createdDate);
   const formattedElapsedTime = createdDate && formatTimeElapsed(createdDate, t, columns > 6 ? 'long' : 'short');
 
-  const contributionUrl =
-    (contributionType === CalloutContributionType.Post && contribution?.post?.profile.url) ||
-    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.url) ||
-    (contributionType === CalloutContributionType.Memo && contribution?.memo?.profile.url);
-
   const handleContributionDeleted = (deletedContributionId: string) => {
     if (contributionId === deletedContributionId) {
       // Deleted the contribution currently on screen, navigate back to the callout
@@ -112,27 +100,8 @@ const CalloutContributionPreview = ({
     onCalloutUpdate?.();
   };
 
-  const calloutContributionTypeToShareDialogKey = (
-    type: CalloutContributionType
-  ): 'post' | 'whiteboard' | 'memo' | 'link' => {
-    switch (type) {
-      case CalloutContributionType.Post:
-        return 'post';
-      case CalloutContributionType.Whiteboard:
-        return 'whiteboard';
-      case CalloutContributionType.Link:
-        return 'link';
-      case CalloutContributionType.Memo:
-        return 'memo';
-    }
-  };
-
-  // Maybe we need to check if we can update the post/whiteboard/memo... inside?
-  const canUpdateContribution =
-    contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-
   return (
-    <PageContentBlock>
+    <PageContentBlock disablePadding disableGap>
       <PageContentBlockHeaderCardLike
         avatar={authorAvatar}
         title={displayName}
@@ -145,33 +114,6 @@ const CalloutContributionPreview = ({
                 {formattedElapsedTime}
               </Caption>
             </Tooltip>
-            {canUpdateContribution && (
-              <IconButton
-                onClick={() => setContributionDialogOpen(true)}
-                title={t('buttons.edit')}
-                aria-label={t('buttons.edit')}
-                color="primary"
-                size="small"
-              >
-                <EditOutlinedIcon />
-              </IconButton>
-            )}
-            {/* `display: contents` avoids the box to occupy any space if it's empty */}
-            <Box ref={extraActionsPortalRef} display="contents" />
-            {contributionUrl && (
-              <ShareButton
-                url={contributionUrl}
-                entityTypeName={calloutContributionTypeToShareDialogKey(contributionType)}
-              />
-            )}
-            <IconButton
-              onClick={() => navigate(callout.framing.profile.url)}
-              size="small"
-              color="primary"
-              aria-label={t('buttons.close')}
-            >
-              <CloseOutlinedIcon />
-            </IconButton>
           </>
         }
       />

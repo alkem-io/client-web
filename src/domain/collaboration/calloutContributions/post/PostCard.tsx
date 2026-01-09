@@ -5,13 +5,14 @@ import CardHeader from '@/core/ui/card/CardHeader';
 import CardDetails from '@/core/ui/card/CardDetails';
 import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
 import CardFooter from '@/core/ui/card/CardFooter';
-import CardFooterDate from '@/core/ui/card/CardFooterDate';
 import MessageCounter from '@/core/ui/card/MessageCounter';
 import { gutters } from '@/core/ui/grid/utils';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { isNumber } from 'lodash';
 import { VisualModel } from '@/domain/common/visual/model/VisualModel';
 import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
+import { formatDate } from '@/core/utils/time/utils';
+import { Caption } from '@/core/ui/typography';
 
 export interface PostContribution extends Identifiable {
   post?: {
@@ -49,12 +50,15 @@ const PostCard = ({ contribution, columns, selected, onClick }: PostCardProps) =
   const post = contribution.post;
   return (
     <ContributeCard onClick={handleClick} columns={columns}>
-      <CardHeader title={post.profile.displayName} contrast={selected} author={post?.createdBy} />
+      <CardHeader title={post.profile.displayName} contrast={selected} author={post.createdBy}>
+        {post?.createdDate && (
+          <Caption color={selected ? 'white' : 'textPrimary'}>{formatDate(post?.createdDate)}</Caption>
+        )}
+      </CardHeader>
       <CardDetails>
         <CardDescriptionWithTags tags={post.profile?.tagset?.tags}>{post.profile?.description}</CardDescriptionWithTags>
       </CardDetails>
       <CardFooter>
-        {post.createdDate && <CardFooterDate date={post.createdDate} />}
         {isNumber(post.comments?.messagesCount) && post.comments?.messagesCount > 0 && (
           <MessageCounter commentsCount={post.comments?.messagesCount} />
         )}

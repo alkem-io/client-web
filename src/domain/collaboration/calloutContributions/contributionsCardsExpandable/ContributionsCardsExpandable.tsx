@@ -9,20 +9,14 @@ import { ComponentType, useEffect, useState } from 'react';
 import { BaseCalloutViewProps } from '../../callout/CalloutViewTypes';
 import { AnyContribution } from '../interfaces/AnyContributionType';
 import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
-import { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
 import useCalloutContributions from '../useCalloutContributions/useCalloutContributions';
 import PaginationExpander from './PaginationExpander';
-import { CalloutRestrictions } from '../../callout/CalloutRestrictionsTypes';
-import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import { useTranslation } from 'react-i18next';
 import AutomaticOverflowGradient from '@/core/ui/overflow/AutomaticOverflowGradient';
 import { gutters } from '@/core/ui/grid/utils';
 
 interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
   contributionType: CalloutContributionType;
   contributionCardComponent: ComponentType<CalloutContributionCardComponentProps>;
-  createContributionButtonComponent?: ComponentType<CalloutContributionCreateButtonProps>;
-  calloutRestrictions?: CalloutRestrictions;
   onClickOnContribution: (contribution: AnyContribution) => void;
 }
 
@@ -32,14 +26,11 @@ const ContributionsCardsExpandable = ({
   callout,
   contributionType,
   contributionCardComponent: Card,
-  createContributionButtonComponent: CreateContributionButton,
   onClickOnContribution,
-  calloutRestrictions,
   loading: loadingCallout,
   expanded: calloutExpanded,
   onCalloutUpdate,
 }: ContributionsCardsExpandableProps) => {
-  const { t } = useTranslation();
   const { isSmallScreen, isMediumSmallScreen } = useScreenSize();
   const [isCollapsed, setIsCollapsed] = useState(true);
 
@@ -49,8 +40,6 @@ const ContributionsCardsExpandable = ({
     inViewRef,
     contributions: { items: contributions, hasMore, setFetchAll, total: totalContributions },
     loading: loadingContributions,
-    canCreateContribution,
-    onCalloutContributionsUpdate,
   } = useCalloutContributions({
     callout,
     contributionType,
@@ -79,16 +68,6 @@ const ContributionsCardsExpandable = ({
 
   return (
     <>
-      <PageContentBlockHeader title={t('callout.contributions.contributions', { count: totalContributions ?? 0 })}>
-        {!loadingCallout && CreateContributionButton && (
-          <CreateContributionButton
-            callout={callout}
-            canCreateContribution={canCreateContribution}
-            onContributionCreated={onCalloutContributionsUpdate}
-            calloutRestrictions={calloutRestrictions}
-          />
-        )}
-      </PageContentBlockHeader>
       {loadingCallout && <Loading />}
       <AutomaticOverflowGradient
         maxHeight={isCollapsed ? gutters(15) : undefined}

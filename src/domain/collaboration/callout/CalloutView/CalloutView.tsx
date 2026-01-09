@@ -151,7 +151,13 @@ const CalloutView = ({
 
           {/* Collaborate with Whiteboards */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Whiteboard) && (
-            <CalloutContributionsBlock>
+            <CalloutContributionsBlock
+              callout={callout}
+              contributionType={CalloutContributionType.Whiteboard}
+              createContributionButtonComponent={CreateContributionButtonWhiteboard}
+              calloutRestrictions={calloutRestrictions}
+              onCalloutContributionsUpdate={onCalloutUpdate}
+            >
               {/* If there is a contributionId show the scroller */}
               {contributionId && (
                 <CalloutContributionsHorizontalPager
@@ -185,9 +191,7 @@ const CalloutView = ({
                   onCollapse={onCollapse}
                   onCalloutUpdate={onCalloutUpdate}
                   contributionCardComponent={WhiteboardCard}
-                  createContributionButtonComponent={CreateContributionButtonWhiteboard}
                   onClickOnContribution={handleClickOnContribution}
-                  calloutRestrictions={calloutRestrictions}
                 />
               )}
             </CalloutContributionsBlock>
@@ -195,7 +199,13 @@ const CalloutView = ({
 
           {/* Collaborate with Posts */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Post) && (
-            <CalloutContributionsBlock>
+            <CalloutContributionsBlock
+              callout={callout}
+              contributionType={CalloutContributionType.Post}
+              createContributionButtonComponent={CreateContributionButtonPost}
+              calloutRestrictions={calloutRestrictions}
+              onCalloutContributionsUpdate={onCalloutUpdate}
+            >
               {/* If there is a contributionId show the scroller */}
               {contributionId && (
                 <CalloutContributionsHorizontalPager
@@ -227,9 +237,7 @@ const CalloutView = ({
                   onCollapse={onCollapse}
                   onCalloutUpdate={onCalloutUpdate}
                   contributionCardComponent={PostCard}
-                  createContributionButtonComponent={CreateContributionButtonPost}
                   onClickOnContribution={handleClickOnContribution}
-                  calloutRestrictions={calloutRestrictions}
                 />
               )}
             </CalloutContributionsBlock>
@@ -237,7 +245,13 @@ const CalloutView = ({
 
           {/* Collaborate with Memos */}
           {callout.settings.contribution.allowedTypes.includes(CalloutContributionType.Memo) && (
-            <CalloutContributionsBlock>
+            <CalloutContributionsBlock
+              callout={callout}
+              contributionType={CalloutContributionType.Memo}
+              createContributionButtonComponent={CreateContributionButtonMemo}
+              calloutRestrictions={calloutRestrictions}
+              onCalloutContributionsUpdate={onCalloutUpdate}
+            >
               {/* If there is a contributionId show the scroller */}
               {contributionId && (
                 <CalloutContributionsHorizontalPager
@@ -269,9 +283,7 @@ const CalloutView = ({
                   onCollapse={onCollapse}
                   onCalloutUpdate={onCalloutUpdate}
                   contributionCardComponent={MemoCard}
-                  createContributionButtonComponent={CreateContributionButtonMemo}
                   onClickOnContribution={handleClickOnContribution}
-                  calloutRestrictions={calloutRestrictions}
                 />
               )}
             </CalloutContributionsBlock>

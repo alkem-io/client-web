@@ -14291,6 +14291,34 @@ export type CalloutContributionsQuery = {
   };
 };
 
+export type CalloutContributionsCountQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+  includeLink?: Scalars['Boolean']['input'];
+  includeWhiteboard?: Scalars['Boolean']['input'];
+  includeMemo?: Scalars['Boolean']['input'];
+  includePost?: Scalars['Boolean']['input'];
+}>;
+
+export type CalloutContributionsCountQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          contributionsCount: {
+            __typename?: 'CalloutContributionsCountOutput';
+            link?: number;
+            whiteboard?: number;
+            memo?: number;
+            post?: number;
+          };
+        }
+      | undefined;
+  };
+};
+
 export type CalloutContributionsWhiteboardCardFragment = {
   __typename?: 'Whiteboard';
   id: string;

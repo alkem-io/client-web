@@ -23,12 +23,14 @@ const MemoCard = ({ contribution, columns, callout, selected }: MemoCardProps) =
   return (
     <ContributeCard to={memo?.profile.url} state={linkState} columns={columns}>
       <CardHeader title={memo?.profile.displayName} contrast={selected} author={memo?.createdBy}>
-        {memo?.createdDate && <Caption>{formatDate(memo?.createdDate)}</Caption>}
+        {memo?.createdDate && (
+          <Caption color={selected ? 'white' : 'textPrimary'}>{formatDate(memo?.createdDate)}</Caption>
+        )}
       </CardHeader>
       <MemoPreview
         memo={memo}
         displayName={memo?.profile.displayName}
-        disablePadding
+        seamless
         sx={{
           height: gutters(4),
           margin: 0,
