@@ -39,8 +39,7 @@ const ExpandableDescription = ({
   const handleEditClick = () => {
     if (editPath) {
       if (useEditTab) {
-        // Convert to 0-based index for editTab, ensuring it's never negative
-        const editTabIndex = Math.max(0, tabPosition - 1);
+        const editTabIndex = Math.max(0, tabPosition);
         navigate(`${editPath}?editTab=${editTabIndex}`);
       } else {
         navigate(editPath);
@@ -80,13 +79,13 @@ const ExpandableDescription = ({
               onClick={handleEditClick}
               size="small"
               sx={{
-                color: 'primary.main',
+                color: 'highlight.dark',
+                backgroundColor: 'highlight.main',
                 opacity: 0,
                 '&:focus-visible, &:hover': {
                   color: 'highlight.dark',
-
-                  opacity: 1,
                   backgroundColor: 'highlight.main',
+                  opacity: 1,
                 },
               }}
               aria-label={`${t('common.enums.edit-mode.edit')} ${t('common.description')}`}
