@@ -507,6 +507,18 @@ export type ActivityLogInput = {
   types?: InputMaybe<Array<ActivityEventType>>;
 };
 
+export type AdminAuthenticationIdBackfillResult = {
+  __typename?: 'AdminAuthenticationIDBackfillResult';
+  /** Total users examined during the backfill run */
+  processed: Scalars['Int']['output'];
+  /** Batches that initially failed but succeeded after a retry during the run */
+  retriedBatches: Scalars['Int']['output'];
+  /** Users skipped because they already had authenticationID or no Kratos identity was found */
+  skipped: Scalars['Int']['output'];
+  /** Users whose authenticationID was updated during the run */
+  updated: Scalars['Int']['output'];
+};
+
 export type Agent = {
   __typename?: 'Agent';
   /** The authorization rules for the entity */
@@ -774,7 +786,7 @@ export enum AuthorizationPolicyType {
   Collaboration = 'COLLABORATION',
   Communication = 'COMMUNICATION',
   CommunicationConversation = 'COMMUNICATION_CONVERSATION',
-  CommunicationConversationsSet = 'COMMUNICATION_CONVERSATIONS_SET',
+  CommunicationMessaging = 'COMMUNICATION_MESSAGING',
   Community = 'COMMUNITY',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
   Discussion = 'DISCUSSION',
@@ -1537,16 +1549,17 @@ export type Conversation = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  messaging: Messaging;
   /** The room for this Conversation. */
   room?: Maybe<Room>;
+  /** The type of this Conversation (USER_USER or USER_VC), inferred from member agent types. */
   type: CommunicationConversationType;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
-  /** The user participating in this Conversation. */
+  /** The other user participating in this Conversation (excludes the current user). */
   user?: Maybe<User>;
   /** The virtual contributor participating in this Conversation (only for USER_AGENT conversations). */
   virtualContributor?: Maybe<VirtualContributor>;
-  wellKnownVirtualContributor?: Maybe<VirtualContributorWellKnown>;
 };
 
 export type ConversationVcAnswerRelevanceInput = {
@@ -1843,7 +1856,6 @@ export type CreateContributionOnCalloutInput = {
 };
 
 export type CreateConversationInput = {
-  type: CommunicationConversationType;
   userID: Scalars['UUID']['input'];
   virtualContributorID?: InputMaybe<Scalars['UUID']['input']>;
   wellKnownVirtualContributor?: InputMaybe<VirtualContributorWellKnown>;
@@ -2233,7 +2245,6 @@ export type CreateUserGroupInput = {
 };
 
 export type CreateUserInput = {
-  accountUpn?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
@@ -4089,6 +4100,18 @@ export type MessageParent = {
   url: Scalars['String']['output'];
 };
 
+export type Messaging = {
+  __typename?: 'Messaging';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
+};
+
 export type Metadata = {
   __typename?: 'Metadata';
   /** Collection of metadata about Alkemio services. */
@@ -4175,6 +4198,8 @@ export type Mutation = {
   addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
+  /** Populate authenticationID for existing users by querying Kratos Admin API */
+  adminBackfillAuthenticationIDs: AdminAuthenticationIdBackfillResult;
   /** Ensure all community members are registered for communications. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean']['output'];
   /** Remove an orphaned room from messaging platform. */
@@ -4257,8 +4282,8 @@ export type Mutation = {
   createCalloutOnCalloutsSet: Callout;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
-  /** Create a new Conversation on the ConversationsSet. */
-  createConversationOnConversationsSet: Conversation;
+  /** Create a new Conversation on the Messaging. */
+  createConversation: Conversation;
   /** Creates a new Discussion as part of this Forum. */
   createDiscussion: Discussion;
   /** Create a new CalendarEvent on the Calendar. */
@@ -4677,7 +4702,7 @@ export type MutationCreateContributionOnCalloutArgs = {
   contributionData: CreateContributionOnCalloutInput;
 };
 
-export type MutationCreateConversationOnConversationsSetArgs = {
+export type MutationCreateConversationArgs = {
   conversationData: CreateConversationInput;
 };
 
@@ -5583,6 +5608,7 @@ export type Platform = {
   library: Library;
   /** The Licensing in use by the platform. */
   licensingFramework: Licensing;
+  messaging?: Maybe<Messaging>;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
   /** The RoleSet for this Platform. */
@@ -8110,7 +8136,6 @@ export type UpdateUserGroupInput = {
 
 export type UpdateUserInput = {
   ID: Scalars['UUID']['input'];
-  accountUpn?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
@@ -8461,8 +8486,6 @@ export type User = Contributor & {
   __typename?: 'User';
   /** The account hosted by this User. */
   account?: Maybe<Account>;
-  /** The unique personal identifier (upn) for the account associated with this user profile */
-  accountUpn: Scalars['String']['output'];
   /** The Agent representing this User. */
   agent: Agent;
   /** Details about the authentication used for this User. */
@@ -8686,15 +8709,10 @@ export type UsersWithAuthorizationCredentialInput = {
 
 export type VcInteraction = {
   __typename?: 'VcInteraction';
-  /** The date at which the entity was created. */
-  createdDate: Scalars['DateTime']['output'];
-  /** The ID of the entity */
-  id: Scalars['UUID']['output'];
-  room: Room;
+  /** The thread ID (Matrix message ID) where VC is engaged */
   threadID: Scalars['String']['output'];
-  /** The date at which the entity was last updated. */
-  updatedDate: Scalars['DateTime']['output'];
-  virtualContributorID: Scalars['UUID']['output'];
+  /** The actor ID (agent.id) of the Virtual Contributor */
+  virtualContributorID: Scalars['String']['output'];
 };
 
 export type VirtualContributor = Contributor & {
@@ -8749,6 +8767,8 @@ export type VirtualContributor = Contributor & {
   status: VirtualContributorStatus;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+  /** The well-known identifier of this Virtual Contributor, if configured at platform level. */
+  wellKnownVirtualContributor?: Maybe<VirtualContributorWellKnown>;
 };
 
 export enum VirtualContributorBodyOfKnowledgeType {
@@ -13078,12 +13098,7 @@ export type UpdateCalloutContentMutation = {
                 }
               | undefined;
           }>;
-          vcInteractions: Array<{
-            __typename?: 'VcInteraction';
-            id: string;
-            threadID: string;
-            virtualContributorID: string;
-          }>;
+          vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
         }
       | undefined;
     authorization?:
@@ -13454,12 +13469,7 @@ export type UpdateCalloutVisibilityMutation = {
                 }
               | undefined;
           }>;
-          vcInteractions: Array<{
-            __typename?: 'VcInteraction';
-            id: string;
-            threadID: string;
-            virtualContributorID: string;
-          }>;
+          vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
         }
       | undefined;
     authorization?:
@@ -13901,7 +13911,6 @@ export type CalloutContributionCommentsQuery = {
                   }>;
                   vcInteractions: Array<{
                     __typename?: 'VcInteraction';
-                    id: string;
                     threadID: string;
                     virtualContributorID: string;
                   }>;
@@ -14959,12 +14968,7 @@ export type CreateCalloutMutation = {
                 }
               | undefined;
           }>;
-          vcInteractions: Array<{
-            __typename?: 'VcInteraction';
-            id: string;
-            threadID: string;
-            virtualContributorID: string;
-          }>;
+          vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
         }
       | undefined;
     authorization?:
@@ -15485,12 +15489,7 @@ export type CalloutDetailsQuery = {
                       }
                     | undefined;
                 }>;
-                vcInteractions: Array<{
-                  __typename?: 'VcInteraction';
-                  id: string;
-                  threadID: string;
-                  virtualContributorID: string;
-                }>;
+                vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
               }
             | undefined;
           authorization?:
@@ -15893,12 +15892,7 @@ export type CalloutDetailsFragment = {
               }
             | undefined;
         }>;
-        vcInteractions: Array<{
-          __typename?: 'VcInteraction';
-          id: string;
-          threadID: string;
-          virtualContributorID: string;
-        }>;
+        vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
       }
     | undefined;
   authorization?:
@@ -18084,7 +18078,7 @@ export type CommentsWithMessagesFragment = {
         }
       | undefined;
   }>;
-  vcInteractions: Array<{ __typename?: 'VcInteraction'; id: string; threadID: string; virtualContributorID: string }>;
+  vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
 };
 
 export type RemoveReactionMutationVariables = Exact<{
@@ -18117,7 +18111,6 @@ export type ReplyToMessageMutation = {
 
 export type VcInteractionsDetailsFragment = {
   __typename?: 'VcInteraction';
-  id: string;
   threadID: string;
   virtualContributorID: string;
 };
@@ -18215,12 +18208,7 @@ export type RoomEventsSubscription = {
     roomID: string;
     room: {
       __typename?: 'Room';
-      vcInteractions: Array<{
-        __typename?: 'VcInteraction';
-        id: string;
-        threadID: string;
-        virtualContributorID: string;
-      }>;
+      vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
     };
     message?:
       | {
@@ -30905,12 +30893,7 @@ export type CalendarEventDetailsQuery = {
                   }
                 | undefined;
             }>;
-            vcInteractions: Array<{
-              __typename?: 'VcInteraction';
-              id: string;
-              threadID: string;
-              virtualContributorID: string;
-            }>;
+            vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
           };
           profile: {
             __typename?: 'Profile';
@@ -31150,7 +31133,7 @@ export type CalendarEventDetailsFragment = {
           }
         | undefined;
     }>;
-    vcInteractions: Array<{ __typename?: 'VcInteraction'; id: string; threadID: string; virtualContributorID: string }>;
+    vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
   };
   profile: {
     __typename?: 'Profile';
@@ -31410,12 +31393,7 @@ export type CreateCalendarEventMutation = {
             }
           | undefined;
       }>;
-      vcInteractions: Array<{
-        __typename?: 'VcInteraction';
-        id: string;
-        threadID: string;
-        virtualContributorID: string;
-      }>;
+      vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
     };
     profile: {
       __typename?: 'Profile';
@@ -31654,12 +31632,7 @@ export type UpdateCalendarEventMutation = {
             }
           | undefined;
       }>;
-      vcInteractions: Array<{
-        __typename?: 'VcInteraction';
-        id: string;
-        threadID: string;
-        virtualContributorID: string;
-      }>;
+      vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
     };
     profile: {
       __typename?: 'Profile';
@@ -31986,12 +31959,7 @@ export type ConversationVcMessagesQuery = {
                       }
                     | undefined;
                 }>;
-                vcInteractions: Array<{
-                  __typename?: 'VcInteraction';
-                  id: string;
-                  threadID: string;
-                  virtualContributorID: string;
-                }>;
+                vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
               }
             | undefined;
         }
@@ -41216,7 +41184,7 @@ export type CreateConversationMutationVariables = Exact<{
 
 export type CreateConversationMutation = {
   __typename?: 'Mutation';
-  createConversationOnConversationsSet: {
+  createConversation: {
     __typename?: 'Conversation';
     id: string;
     room?: { __typename?: 'Room'; id: string } | undefined;
