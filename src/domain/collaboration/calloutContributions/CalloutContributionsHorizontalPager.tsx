@@ -70,7 +70,8 @@ const PaginationDot = styled(Box, {
   width: 10,
   height: 10,
   borderRadius: '50%',
-  backgroundColor: selected ? theme.palette.primary.main : theme.palette.divider,
+  backgroundColor: selected ? theme.palette.primary.main : theme.palette.background.paper,
+  border: `1px solid ${theme.palette.primary.main}`,
   cursor: 'pointer',
   transition: 'background-color 0.3s ease',
   '&:hover': {

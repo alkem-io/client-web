@@ -8,6 +8,7 @@ type BlockTitleWithIconProps = {
   subtitle?: ReactNode;
   titleId?: string;
   icon?: ReactElement<SvgIconProps>;
+  avatar?: ReactNode;
   variant?: TypographyProps['variant'];
 };
 
@@ -16,6 +17,7 @@ const BlockTitleWithIcon = ({
   subtitle,
   titleId,
   icon,
+  avatar,
   variant = 'h3',
   children,
   ...props
@@ -31,8 +33,9 @@ const BlockTitleWithIcon = ({
     {...props}
   >
     {icon && cloneElement(icon, { fontSize: 'small' })}
+    {avatar}
     {title && typeof title === 'string' ? (
-      <BlockTitle variant={variant} noWrap>
+      <BlockTitle variant={variant} noWrap sx={{ color: theme => theme.palette.text.primary }}>
         {title}
         {subtitle}
       </BlockTitle>

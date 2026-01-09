@@ -610,12 +610,11 @@ export const ContributionAuthorFragmentDoc = gql`
       id
       displayName
       avatar: visual(type: AVATAR) {
-        id
-        name
-        uri
+        ...VisualModel
       }
     }
   }
+  ${VisualModelFragmentDoc}
 `;
 export const CalloutContributionsWhiteboardCardFragmentDoc = gql`
   fragment CalloutContributionsWhiteboardCard on Whiteboard {
@@ -7479,11 +7478,7 @@ export const CalloutContributionDocument = gql`
           }
           createdDate
           createdBy {
-            id
-            profile {
-              id
-              displayName
-            }
+            ...ContributionAuthor
           }
         }
         memo @include(if: $includeMemo) {
@@ -7496,21 +7491,13 @@ export const CalloutContributionDocument = gql`
           markdown
           createdDate
           createdBy {
-            id
-            profile {
-              id
-              displayName
-            }
+            ...ContributionAuthor
           }
         }
         post @include(if: $includePost) {
           id
           createdBy {
-            id
-            profile {
-              id
-              displayName
-            }
+            ...ContributionAuthor
           }
           createdDate
           comments {
@@ -7541,6 +7528,7 @@ export const CalloutContributionDocument = gql`
   }
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${VisualModelFragmentDoc}
+  ${ContributionAuthorFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 

@@ -13562,7 +13562,20 @@ export type CalloutContributionQuery = {
                   | {
                       __typename?: 'User';
                       id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
                     }
                   | undefined;
               }
@@ -13578,7 +13591,20 @@ export type CalloutContributionQuery = {
                   | {
                       __typename?: 'User';
                       id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
                     }
                   | undefined;
               }
@@ -13592,7 +13618,20 @@ export type CalloutContributionQuery = {
                   | {
                       __typename?: 'User';
                       id: string;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      };
                     }
                   | undefined;
                 comments: { __typename?: 'Room'; id: string; messagesCount: number };
@@ -14032,7 +14071,15 @@ export type CalloutPostCreatedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
-              avatar?: { __typename?: 'Visual'; id: string; name: VisualType; uri: string } | undefined;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
             };
           }
         | undefined;
@@ -14136,7 +14183,15 @@ export type CalloutContributionsQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
-                          avatar?: { __typename?: 'Visual'; id: string; name: VisualType; uri: string } | undefined;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                         };
                       }
                     | undefined;
@@ -14157,7 +14212,15 @@ export type CalloutContributionsQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
-                          avatar?: { __typename?: 'Visual'; id: string; name: VisualType; uri: string } | undefined;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                         };
                       }
                     | undefined;
@@ -14193,7 +14256,15 @@ export type CalloutContributionsQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
-                          avatar?: { __typename?: 'Visual'; id: string; name: VisualType; uri: string } | undefined;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                         };
                       }
                     | undefined;
@@ -14244,7 +14315,9 @@ export type CalloutContributionsWhiteboardCardFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          avatar?: { __typename?: 'Visual'; id: string; name: VisualType; uri: string } | undefined;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
         };
       }
     | undefined;
@@ -14264,7 +14337,9 @@ export type CalloutContributionsMemoCardFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          avatar?: { __typename?: 'Visual'; id: string; name: VisualType; uri: string } | undefined;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
         };
       }
     | undefined;
@@ -14299,7 +14374,9 @@ export type CalloutContributionsPostCardFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          avatar?: { __typename?: 'Visual'; id: string; name: VisualType; uri: string } | undefined;
+          avatar?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
         };
       }
     | undefined;
@@ -14316,7 +14393,9 @@ export type ContributionAuthorFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
-    avatar?: { __typename?: 'Visual'; id: string; name: VisualType; uri: string } | undefined;
+    avatar?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | undefined;
   };
 };
 

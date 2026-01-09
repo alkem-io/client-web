@@ -101,9 +101,7 @@ fragment ContributionAuthor on User {
     id
     displayName
     avatar: visual(type: AVATAR) {
-      id
-      name
-      uri
+      ...VisualModel
     }
   }
 }
