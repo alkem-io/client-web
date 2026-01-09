@@ -1819,6 +1819,7 @@ export type InnovationFlowSettingsFieldPolicy = {
 export type InnovationFlowStateKeySpecifier = (
   | 'authorization'
   | 'createdDate'
+  | 'defaultCalloutTemplate'
   | 'description'
   | 'displayName'
   | 'id'
@@ -1830,6 +1831,7 @@ export type InnovationFlowStateKeySpecifier = (
 export type InnovationFlowStateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2603,6 +2605,7 @@ export type MutationKeySpecifier = (
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
+  | 'removeDefaultCalloutTemplateOnInnovationFlowState'
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
   | 'removeNotificationEmailFromBlacklist'
@@ -2623,6 +2626,7 @@ export type MutationKeySpecifier = (
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
   | 'sendMessageToUsers'
+  | 'setDefaultCalloutTemplateOnInnovationFlowState'
   | 'setPlatformWellKnownVirtualContributor'
   | 'transferCallout'
   | 'transferInnovationHubToAccount'
@@ -2789,6 +2793,7 @@ export type MutationFieldPolicy = {
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2809,6 +2814,7 @@ export type MutationFieldPolicy = {
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  setDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
   setPlatformWellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;

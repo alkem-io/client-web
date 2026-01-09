@@ -352,6 +352,14 @@ export const InnovationFlowStatesFragmentDoc = gql`
       settings {
         allowNewCallouts
       }
+      defaultCalloutTemplate {
+        id
+        profile {
+          id
+          displayName
+        }
+        type
+      }
     }
   }
 `;
@@ -1941,15 +1949,6 @@ export const SpaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -1961,15 +1960,6 @@ export const SpaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -2003,15 +1993,6 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -2023,15 +2004,6 @@ export const SubspaceCardFragmentDoc = gql`
             id
             url
             displayName
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
@@ -3774,15 +3746,6 @@ export const ExploreSpacesFragmentDoc = gql`
             avatar: visual(type: AVATAR) {
               ...VisualModel
             }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
           }
         }
         leadOrganizations {
@@ -3793,15 +3756,6 @@ export const ExploreSpacesFragmentDoc = gql`
             displayName
             avatar: visual(type: AVATAR) {
               ...VisualModel
-            }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
             }
           }
         }
@@ -6404,6 +6358,99 @@ export type AccountInformationQueryResult = Apollo.QueryResult<
 export function refetchAccountInformationQuery(variables: SchemaTypes.AccountInformationQueryVariables) {
   return { query: AccountInformationDocument, variables: variables };
 }
+export const SpaceInnovationFlowDocument = gql`
+  query SpaceInnovationFlow($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        collaboration {
+          id
+          innovationFlow {
+            id
+            states {
+              id
+              displayName
+              defaultCalloutTemplate {
+                id
+                profile {
+                  id
+                  displayName
+                }
+                type
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceInnovationFlowQuery__
+ *
+ * To run a query within a React component, call `useSpaceInnovationFlowQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceInnovationFlowQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceInnovationFlowQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceInnovationFlowQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceInnovationFlowQuery,
+    SchemaTypes.SpaceInnovationFlowQueryVariables
+  > &
+    ({ variables: SchemaTypes.SpaceInnovationFlowQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceInnovationFlowQuery, SchemaTypes.SpaceInnovationFlowQueryVariables>(
+    SpaceInnovationFlowDocument,
+    options
+  );
+}
+export function useSpaceInnovationFlowLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceInnovationFlowQuery,
+    SchemaTypes.SpaceInnovationFlowQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceInnovationFlowQuery, SchemaTypes.SpaceInnovationFlowQueryVariables>(
+    SpaceInnovationFlowDocument,
+    options
+  );
+}
+export function useSpaceInnovationFlowSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.SpaceInnovationFlowQuery,
+        SchemaTypes.SpaceInnovationFlowQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.SpaceInnovationFlowQuery, SchemaTypes.SpaceInnovationFlowQueryVariables>(
+    SpaceInnovationFlowDocument,
+    options
+  );
+}
+export type SpaceInnovationFlowQueryHookResult = ReturnType<typeof useSpaceInnovationFlowQuery>;
+export type SpaceInnovationFlowLazyQueryHookResult = ReturnType<typeof useSpaceInnovationFlowLazyQuery>;
+export type SpaceInnovationFlowSuspenseQueryHookResult = ReturnType<typeof useSpaceInnovationFlowSuspenseQuery>;
+export type SpaceInnovationFlowQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceInnovationFlowQuery,
+  SchemaTypes.SpaceInnovationFlowQueryVariables
+>;
+export function refetchSpaceInnovationFlowQuery(variables: SchemaTypes.SpaceInnovationFlowQueryVariables) {
+  return { query: SpaceInnovationFlowDocument, variables: variables };
+}
 export const InnovationFlowSettingsDocument = gql`
   query InnovationFlowSettings($collaborationId: UUID!) {
     lookup {
@@ -6745,6 +6792,125 @@ export type UpdateInnovationFlowMutationResult = Apollo.MutationResult<SchemaTyp
 export type UpdateInnovationFlowMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationFlowMutation,
   SchemaTypes.UpdateInnovationFlowMutationVariables
+>;
+export const SetDefaultCalloutTemplateOnInnovationFlowStateDocument = gql`
+  mutation SetDefaultCalloutTemplateOnInnovationFlowState($flowStateId: UUID!, $templateId: UUID!) {
+    setDefaultCalloutTemplateOnInnovationFlowState(setData: { flowStateID: $flowStateId, templateID: $templateId }) {
+      id
+      displayName
+      defaultCalloutTemplate {
+        id
+        profile {
+          id
+          displayName
+        }
+        type
+      }
+    }
+  }
+`;
+export type SetDefaultCalloutTemplateOnInnovationFlowStateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SetDefaultCalloutTemplateOnInnovationFlowStateMutation,
+  SchemaTypes.SetDefaultCalloutTemplateOnInnovationFlowStateMutationVariables
+>;
+
+/**
+ * __useSetDefaultCalloutTemplateOnInnovationFlowStateMutation__
+ *
+ * To run a mutation, you first call `useSetDefaultCalloutTemplateOnInnovationFlowStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetDefaultCalloutTemplateOnInnovationFlowStateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setDefaultCalloutTemplateOnInnovationFlowStateMutation, { data, loading, error }] = useSetDefaultCalloutTemplateOnInnovationFlowStateMutation({
+ *   variables: {
+ *      flowStateId: // value for 'flowStateId'
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useSetDefaultCalloutTemplateOnInnovationFlowStateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SetDefaultCalloutTemplateOnInnovationFlowStateMutation,
+    SchemaTypes.SetDefaultCalloutTemplateOnInnovationFlowStateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.SetDefaultCalloutTemplateOnInnovationFlowStateMutation,
+    SchemaTypes.SetDefaultCalloutTemplateOnInnovationFlowStateMutationVariables
+  >(SetDefaultCalloutTemplateOnInnovationFlowStateDocument, options);
+}
+export type SetDefaultCalloutTemplateOnInnovationFlowStateMutationHookResult = ReturnType<
+  typeof useSetDefaultCalloutTemplateOnInnovationFlowStateMutation
+>;
+export type SetDefaultCalloutTemplateOnInnovationFlowStateMutationResult =
+  Apollo.MutationResult<SchemaTypes.SetDefaultCalloutTemplateOnInnovationFlowStateMutation>;
+export type SetDefaultCalloutTemplateOnInnovationFlowStateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SetDefaultCalloutTemplateOnInnovationFlowStateMutation,
+  SchemaTypes.SetDefaultCalloutTemplateOnInnovationFlowStateMutationVariables
+>;
+export const RemoveDefaultCalloutTemplateOnInnovationFlowStateDocument = gql`
+  mutation RemoveDefaultCalloutTemplateOnInnovationFlowState($flowStateId: UUID!) {
+    removeDefaultCalloutTemplateOnInnovationFlowState(removeData: { flowStateID: $flowStateId }) {
+      id
+      displayName
+      defaultCalloutTemplate {
+        id
+        profile {
+          id
+          displayName
+        }
+        type
+      }
+    }
+  }
+`;
+export type RemoveDefaultCalloutTemplateOnInnovationFlowStateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveDefaultCalloutTemplateOnInnovationFlowStateMutation,
+  SchemaTypes.RemoveDefaultCalloutTemplateOnInnovationFlowStateMutationVariables
+>;
+
+/**
+ * __useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation__
+ *
+ * To run a mutation, you first call `useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeDefaultCalloutTemplateOnInnovationFlowStateMutation, { data, loading, error }] = useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation({
+ *   variables: {
+ *      flowStateId: // value for 'flowStateId'
+ *   },
+ * });
+ */
+export function useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveDefaultCalloutTemplateOnInnovationFlowStateMutation,
+    SchemaTypes.RemoveDefaultCalloutTemplateOnInnovationFlowStateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveDefaultCalloutTemplateOnInnovationFlowStateMutation,
+    SchemaTypes.RemoveDefaultCalloutTemplateOnInnovationFlowStateMutationVariables
+  >(RemoveDefaultCalloutTemplateOnInnovationFlowStateDocument, options);
+}
+export type RemoveDefaultCalloutTemplateOnInnovationFlowStateMutationHookResult = ReturnType<
+  typeof useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation
+>;
+export type RemoveDefaultCalloutTemplateOnInnovationFlowStateMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveDefaultCalloutTemplateOnInnovationFlowStateMutation>;
+export type RemoveDefaultCalloutTemplateOnInnovationFlowStateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveDefaultCalloutTemplateOnInnovationFlowStateMutation,
+  SchemaTypes.RemoveDefaultCalloutTemplateOnInnovationFlowStateMutationVariables
 >;
 export const UpdateInnovationFlowCurrentStateDocument = gql`
   mutation UpdateInnovationFlowCurrentState($innovationFlowId: UUID!, $currentStateId: UUID!) {
