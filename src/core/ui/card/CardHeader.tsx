@@ -27,7 +27,7 @@ type CardTitleSectionProps = {
 const CardHeader = ({
   iconComponent,
   title = '',
-  contrast,
+  contrast = false,
   author,
   children,
 }: PropsWithChildren<CardTitleSectionProps>) => {

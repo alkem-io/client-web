@@ -1,11 +1,16 @@
 import { useCalloutContributionQuery } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutContributionType, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutContributionType,
+  RoleSetContributorType,
+} from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderCardLike from '@/core/ui/content/PageContentBlockHeaderCardLike';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { formatDateTime } from '@/core/utils/time/utils';
-import { Skeleton, Tooltip, useTheme } from '@mui/material';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { Box, IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import useNavigate from '@/core/routing/useNavigate';
 import { useRef, useState } from 'react';
@@ -100,6 +105,9 @@ const CalloutContributionPreview = ({
     onCalloutUpdate?.();
   };
 
+  const canUpdateContribution =
+    contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+
   return (
     <PageContentBlock disablePadding disableGap>
       <PageContentBlockHeaderCardLike
@@ -109,6 +117,19 @@ const CalloutContributionPreview = ({
         selected
         actions={
           <>
+            {canUpdateContribution && (
+              <IconButton
+                onClick={() => setContributionDialogOpen(true)}
+                title={t('buttons.edit')}
+                aria-label={t('buttons.edit')}
+                color="primary"
+                size="small"
+              >
+                <EditOutlinedIcon />
+              </IconButton>
+            )}
+            {/* `display: contents` avoids the box to occupy any space if it's empty */}
+            <Box ref={extraActionsPortalRef} display="contents" />
             <Tooltip title={formattedCreatedDate} arrow>
               <Caption whiteSpace="nowrap" color="textPrimary">
                 {formattedElapsedTime}
