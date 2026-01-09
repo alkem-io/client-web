@@ -60,9 +60,7 @@ const WhiteboardCard = ({ contribution, columns, callout, selected }: Whiteboard
   return (
     <ContributeCard to={whiteboard?.profile.url} state={linkState} columns={columns}>
       <CardHeader title={whiteboard?.profile.displayName} contrast={selected} author={whiteboard?.createdBy}>
-        {whiteboard?.createdDate && (
-          <Caption color={selected ? 'white' : 'textPrimary'}>{formatDate(whiteboard?.createdDate)}</Caption>
-        )}
+        {whiteboard?.createdDate && <Caption color="textPrimary">{formatDate(whiteboard?.createdDate)}</Caption>}
       </CardHeader>
       {whiteboard?.profile.visual?.uri ? (
         <CardImage

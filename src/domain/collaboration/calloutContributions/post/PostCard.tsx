@@ -51,9 +51,7 @@ const PostCard = ({ contribution, columns, selected, onClick }: PostCardProps) =
   return (
     <ContributeCard onClick={handleClick} columns={columns}>
       <CardHeader title={post.profile.displayName} contrast={selected} author={post.createdBy}>
-        {post?.createdDate && (
-          <Caption color={selected ? 'white' : 'textPrimary'}>{formatDate(post?.createdDate)}</Caption>
-        )}
+        {post?.createdDate && <Caption color="textPrimary">{formatDate(post?.createdDate)}</Caption>}
       </CardHeader>
       <CardDetails>
         <CardDescriptionWithTags tags={post.profile?.tagset?.tags}>{post.profile?.description}</CardDescriptionWithTags>

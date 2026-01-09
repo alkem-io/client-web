@@ -1,5 +1,5 @@
 import { ComponentType, PropsWithChildren, ReactNode } from 'react';
-import { SvgIconProps, useTheme } from '@mui/material';
+import { SvgIconProps } from '@mui/material';
 import { BlockTitle } from '../typography';
 import { gutters } from '../grid/utils';
 import RoundedIcon from '../icon/RoundedIcon';
@@ -7,6 +7,7 @@ import BadgeCardView from '../list/BadgeCardView';
 import Avatar from '../avatar/Avatar';
 import ContributorTooltip from '@/domain/community/contributor/ContributorTooltip/ContributorTooltip';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import SwapColors from '../palette/SwapColors';
 
 type CardTitleSectionProps = {
   title?: ReactNode;
@@ -30,28 +31,6 @@ const CardHeader = ({
   author,
   children,
 }: PropsWithChildren<CardTitleSectionProps>) => {
-  const theme = useTheme();
-
-  const cardStyle = contrast
-    ? {
-        backgroundColor: theme.palette.primary.main,
-      }
-    : undefined;
-
-  const titleStyle = {
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    ...(contrast
-      ? {
-          color: theme.palette.primary.contrastText,
-          fontWeight: 'bold',
-        }
-      : undefined),
-  };
-
   const avatar = author?.profile.avatar?.uri ? (
     <ContributorTooltip contributorId={author.id} contributorType={RoleSetContributorType.User}>
       <Avatar size="xsmall" src={author.profile.avatar.uri} alt={author.profile.displayName} />
@@ -68,15 +47,26 @@ const CardHeader = ({
       alignItems="start"
       gap={1}
       contentProps={{ paddingLeft: 0.5 }}
-      sx={{
+      sx={theme => ({
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
         borderBottom: `1px solid ${theme.palette.divider}`,
-        ...cardStyle,
-      }}
+        backgroundColor: contrast ? theme.palette.primary.main : undefined,
+      })}
     >
-      <BlockTitle {...titleStyle}>{title}</BlockTitle>
-      {children}
+      <SwapColors swap={contrast}>
+        <BlockTitle
+          display="-webkit-box"
+          sx={{ WebkitLineClamp: '2', WebkitBoxOrient: 'vertical' }}
+          textOverflow="ellipsis"
+          overflow="hidden"
+          fontWeight={contrast ? 'bold' : undefined}
+          color="textPrimary"
+        >
+          {title}
+        </BlockTitle>
+        {children}
+      </SwapColors>
     </BadgeCardView>
   );
 };
