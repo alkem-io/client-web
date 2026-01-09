@@ -60,7 +60,7 @@ const PaginationExpander = ({
             startIcon={<ExpandMoreIcon />}
             sx={{ backgroundColor: theme => theme.palette.background.paper }}
           >
-            Expand
+            {t('buttons.expand')}
           </Button>
         </Box>
       );

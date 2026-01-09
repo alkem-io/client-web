@@ -97,7 +97,7 @@ export const formatLongDateTimeString = ({
   return longDateTimeString;
 };
 
-export const formatDate = (date: Date | undefined, defaultValue: string = '') => {
+export const formatDate = (date: Date | string | undefined, defaultValue: string = '') => {
   if (!date) {
     return defaultValue;
   }

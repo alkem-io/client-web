@@ -38,12 +38,19 @@ const CardHeader = ({
       }
     : undefined;
 
-  const titleStyle = contrast
-    ? {
-        color: theme.palette.background.paper,
-        fontWeight: 'bold',
-      }
-    : undefined;
+  const titleStyle = {
+    display: '-webkit-box',
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    ...(contrast
+      ? {
+          color: theme.palette.primary.contrastText,
+          fontWeight: 'bold',
+        }
+      : undefined),
+  };
 
   const avatar = author?.profile.avatar?.uri ? (
     <ContributorTooltip contributorId={author.id} contributorType={RoleSetContributorType.User}>
@@ -68,18 +75,7 @@ const CardHeader = ({
         ...cardStyle,
       }}
     >
-      <BlockTitle
-        {...titleStyle}
-        sx={{
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
-        {title}
-      </BlockTitle>
+      <BlockTitle {...titleStyle}>{title}</BlockTitle>
       {children}
     </BadgeCardView>
   );

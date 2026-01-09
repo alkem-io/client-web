@@ -12,15 +12,16 @@ interface FormattedDateProps {
 
 const FormattedDate = ({ date, component: Component = Caption, format = 'long' }: FormattedDateProps) => {
   const { t } = useTranslation();
-  if (date) {
-    return (
-      <Tooltip title={formatDateTime(date)} arrow>
-        <span style={{ cursor: 'default' }}>
-          <Component>{formatTimeElapsed(date, t, format)}</Component>
-        </span>
-      </Tooltip>
-    );
+  if (!date) {
+    return null;
   }
+  return (
+    <Tooltip title={formatDateTime(date)} arrow>
+      <span style={{ cursor: 'default' }}>
+        <Component>{formatTimeElapsed(date, t, format)}</Component>
+      </span>
+    </Tooltip>
+  );
 };
 
 export default FormattedDate;

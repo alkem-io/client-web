@@ -21,6 +21,7 @@ interface ContributionsCardsExpandableProps extends BaseCalloutViewProps {
 }
 
 const CONTRIBUTIONS_PER_ROW = 5;
+const GRID_COLUMNS_PER_CARD = 3;
 
 const ContributionsCardsExpandable = ({
   callout,
@@ -60,10 +61,9 @@ const ContributionsCardsExpandable = ({
   }, [calloutExpanded, hasMore, setFetchAll, isCollapsed]);
 
   const gridColumns = (() => {
-    if (isSmallScreen) return 3;
-    if (isMediumSmallScreen) return 9;
-    if (calloutExpanded) return 15;
-    return 15;
+    if (isSmallScreen) return GRID_COLUMNS_PER_CARD; // 1 card per row
+    if (isMediumSmallScreen) return GRID_COLUMNS_PER_CARD * 3; // 3 cards per row
+    return GRID_COLUMNS_PER_CARD * 5; // 5 cards per row
   })();
 
   return (
@@ -90,13 +90,13 @@ const ContributionsCardsExpandable = ({
               <Card
                 key={contribution.id}
                 callout={callout}
-                columns={3}
+                columns={GRID_COLUMNS_PER_CARD}
                 contribution={contribution}
                 onClick={() => onClickOnContribution(contribution)}
               />
             ))}
             {loadingContributions &&
-              times(pageSize, index => <ContributeCardSkeleton key={index} columns={calloutExpanded ? 2 : 3} />)}
+              times(pageSize, index => <ContributeCardSkeleton key={index} columns={GRID_COLUMNS_PER_CARD} />)}
           </Gutters>
         </GridProvider>
       </AutomaticOverflowGradient>
