@@ -1,0 +1,193 @@
+{
+  "community": {
+    "memberUsers": "crwdns40720:0$t(common.Member)crwdnd40720:0{{count}}crwdne40720:0",
+    "leading-organizations": "crwdns40722:0$t(common.Organizations)crwdne40722:0",
+    "memberOrganizations": "crwdns40724:0$t(common.Organizations)crwdnd40724:0{{count}}crwdne40724:0",
+    "pendingMemberships": "crwdns18188:0crwdne18188:0",
+    "leads": "crwdns18192:0crwdne18192:0",
+    "members": "crwdns40726:0$t(common.Members)crwdne40726:0",
+    "host": "crwdns18196:0crwdne18196:0",
+    "virtualContributor": "crwdns42306:0$t(common.virtualContributor)crwdne42306:0",
+    "members-count": "crwdns40730:0{{count}}crwdnd40730:0$t(common.Member)crwdne40730:0",
+    "members-count_plural": "crwdns40732:0{{count}}crwdnd40732:0$t(common.Members)crwdne40732:0",
+    "addMember": "crwdns40734:0$t(common.member)crwdne40734:0",
+    "unauthorizedPermissionsChange": "crwdns18206:0crwdne18206:0",
+    "virtualContributors": {
+      "blockTitle": "crwdns40736:0$t(common.virtualContributors)crwdnd40736:0{{count}}crwdne40736:0",
+      "removeDialog": {
+        "title": "crwdns42308:0$t(common.virtualContributor)crwdne42308:0",
+        "confirm": "crwdns18212:0crwdne18212:0"
+      },
+      "externalVCsInfo": "crwdns42310:0$t(common.virtualContributor)crwdnd42310:0$t(common.space)crwdne42310:0",
+      "searchVC": "crwdns42312:0$t(common.virtualContributor)crwdne42312:0",
+      "permissionRequiredTooltip": "crwdns40744:0$t(common.virtualContributors)crwdne40744:0"
+    },
+    "application-form": {
+      "title": "crwdns18222:0crwdne18222:0",
+      "subtitle": "crwdns40746:0$t(common.space)crwdnd40746:0$t(common.membership)crwdne40746:0",
+      "required-question": "crwdns18226:0crwdne18226:0",
+      "move-up": "crwdns18228:0crwdne18228:0",
+      "move-down": "crwdns18230:0crwdne18230:0",
+      "delete-question": "crwdns18232:0crwdne18232:0",
+      "updated-successfully": "crwdns18234:0crwdne18234:0"
+    },
+    "communityGuidelines": {
+      "title": "crwdns40748:0$t(common.Community)crwdne40748:0",
+      "saveAndDeleteContentSuccessMessage": "crwdns40750:0$t(common.Community)crwdne40750:0",
+      "updatedSuccessfully": "crwdns40752:0$t(common.Community)crwdne40752:0",
+      "adminsOnly": "crwdns40754:0$t(common.community)crwdnd40754:0$t(common.admins)crwdnd40754:0$t(common.leads)crwdne40754:0",
+      "communityGuidelinesRedirect": "crwdns40756:0$t(common.community)crwdnd40756:0$t(common.space)crwdnd40756:0$t(common.settings)crwdne40756:0",
+      "confirmationDialog": {
+        "title": "crwdns40758:0$t(common.community)crwdne40758:0",
+        "description": "crwdns40760:0$t(common.community)crwdne40760:0"
+      },
+      "deleteCommunityGuidelines": "crwdns40762:0$t(common.community)crwdne40762:0"
+    },
+    "applicationsHelp": "crwdns40764:0$t(common.member)crwdnd40764:0$t(common.space)crwdne40764:0",
+    "applicationStatus": {
+      "applicationReceived": "crwdns18254:0crwdne18254:0",
+      "applicationApproved": "crwdns18256:0crwdne18256:0",
+      "applicationRejected": "crwdns18258:0crwdne18258:0",
+      "applicationArchived": "crwdns18260:0crwdne18260:0"
+    },
+    "invitations": {
+      "inviteButton": {
+        "USER": "crwdns40224:0$t(common.space)crwdne40224:0",
+        "ORGANIZATION": "crwdns40226:0$t(common.space)crwdne40226:0",
+        "VIRTUAL": "crwdns42314:0$t(common.virtualContributor)crwdne42314:0"
+      },
+      "inviteToRole": "crwdns36966:0crwdne36966:0",
+      "inviteContributorsDialog": {
+        "users": {
+          "title": "crwdns36968:0{{spaceName}}crwdne36968:0",
+          "description": "crwdns36970:0crwdne36970:0",
+          "descriptionMembers": "crwdns40768:0$t(common.members)crwdnd40768:0$t(common.spaceSubspace)crwdne40768:0",
+          "note": "crwdns36972:0crwdne36972:0",
+          "defaultWelcomeMessage": "crwdns40228:0{{spaceName}}crwdnd40228:0$t(common.space)crwdne40228:0",
+          "placeholder": "crwdns36976:0crwdne36976:0",
+          "success": "crwdns36978:0crwdne36978:0",
+          "failure": "crwdns36980:0crwdne36980:0",
+          "back": "crwdns36982:0crwdne36982:0",
+          "invitationsSent": "crwdns36984:0{{count}}crwdne36984:0",
+          "invitationByEmailTooltip": "crwdns40230:0{{email}}crwdnd40230:0$t(common.space)crwdne40230:0",
+          "results": {
+            "ALREADY_INVITED_TO_PLATFORM_AND_ROLE_SET": "crwdns36988:0crwdne36988:0",
+            "ALREADY_INVITED_TO_ROLE_SET": "crwdns36990:0crwdne36990:0",
+            "INVITATION_TO_PARENT_NOT_AUTHORIZED": "crwdns40770:0$t(common.community)crwdne40770:0",
+            "INVITED_TO_PLATFORM_AND_ROLE_SET": "crwdns36994:0crwdne36994:0",
+            "INVITED_TO_ROLE_SET": "crwdns40772:0$t(common.community)crwdne40772:0"
+          },
+          "validationErrors": {
+            "required": "crwdns37048:0crwdne37048:0",
+            "invalidAddress": "crwdns37050:0crwdne37050:0"
+          }
+        },
+        "vcs": {
+          "title": "crwdns40774:0$t(common.virtualContributors)crwdne40774:0",
+          "dialogTitle": "crwdns42316:0$t(common.virtualContributor)crwdnd42316:0$t(common.space)crwdne42316:0",
+          "invitationSent": "crwdns37002:0crwdne37002:0",
+          "inviteExternalVC": "crwdns37004:0crwdne37004:0",
+          "inviteBtn": "crwdns42318:0$t(common.virtualContributor)crwdne42318:0",
+          "defaultVCInvitationMessage": "crwdns42320:0$t(common.virtualContributor)crwdnd42320:0{{name}}crwdnd42320:0{{space}}crwdnd42320:0$t(common.space)crwdne42320:0",
+          "onAccount": {
+            "title": "crwdns40782:0$t(common.virtualContributors)crwdnd40782:0$t(common.space)crwdnd40782:0$t(common.account)crwdne40782:0"
+          },
+          "inLibrary": {
+            "title": "crwdns40784:0$t(common.virtualContributors)crwdne40784:0"
+          },
+          "emptyMessage": "crwdns40786:0$t(common.virtualContributors)crwdne40786:0",
+          "successfullyAdded": "crwdns37016:0{{contributor}}crwdne37016:0",
+          "vcFetchErrorMessage": "crwdns40788:0$t(common.virtualContributors)crwdne40788:0"
+        },
+        "welcomeMessage": "crwdns37020:0crwdne37020:0"
+      }
+    },
+    "confirmationDialogs": {
+      "delete": {
+        "application": {
+          "title": "crwdns37022:0{{user}}crwdne37022:0",
+          "content": "crwdns37024:0crwdne37024:0"
+        },
+        "invitation": {
+          "title": "crwdns37026:0{{user}}crwdne37026:0",
+          "content": "crwdns37028:0crwdne37028:0"
+        },
+        "platformInvitation": {
+          "title": "crwdns37030:0{{user}}crwdne37030:0",
+          "content": "crwdns37032:0crwdne37032:0"
+        }
+      },
+      "approve": {
+        "title": "crwdns37034:0{{user}}crwdne37034:0",
+        "content": "crwdns40238:0$t(common.space)crwdne40238:0",
+        "confirmButton": "crwdns37038:0crwdne37038:0"
+      },
+      "reject": {
+        "title": "crwdns37040:0{{user}}crwdne37040:0",
+        "content": "crwdns40240:0$t(common.space)crwdne40240:0",
+        "confirmButton": "crwdns37044:0crwdne37044:0"
+      }
+    },
+    "pendingMembership": {
+      "pendingMemberships": "crwdns40790:0$t(common.Memberships)crwdne40790:0",
+      "pendingMembershipsWithCount": "crwdns40792:0$t(common.Memberships)crwdnd40792:0{{count}}crwdne40792:0",
+      "invitationsSectionTitle": "crwdns18286:0crwdne18286:0",
+      "virtualInvitationsSectionTitle": "crwdns42322:0$t(common.virtualContributor)crwdne42322:0",
+      "applicationsSectionTitle": "crwdns18290:0crwdne18290:0",
+      "invitationDialog": {
+        "title": "crwdns40796:0$t(common.Membership)crwdnd40796:0{{space}}crwdne40796:0",
+        "vc": {
+          "title": "crwdns42324:0$t(common.virtualContributor)crwdnd42324:0$t(common.membership)crwdnd42324:0{{space}}crwdne42324:0"
+        },
+        "actions": {
+          "hide": "crwdns18296:0crwdne18296:0",
+          "reject": "crwdns18298:0crwdne18298:0",
+          "join": "crwdns18300:0crwdne18300:0",
+          "accept": "crwdns18302:0crwdne18302:0"
+        }
+      },
+      "invitationTitle": "crwdns36864:0{{time}}crwdnd36864:0{{user}}crwdnd36864:0{{invitedEntity}}crwdnd36864:0{{space}}crwdne36864:0",
+      "invitationCardTitle": "crwdns37158:0{{user}}crwdnd37158:0{{invitedEntity}}crwdnd37158:0{{space}}crwdne37158:0",
+      "you": "crwdns18306:0crwdne18306:0",
+      "vc": "crwdns42326:0$t(common.virtualContributor)crwdne42326:0"
+    },
+    "memberSettings": {
+      "title": "crwdns40802:0$t(common.Member)crwdnd40802:0$t(common.settings)crwdne40802:0",
+      "lead": "crwdns40804:0$t(common.member)crwdnd40804:0$t(common.lead)crwdnd40804:0$t(common.hosts)crwdnd40804:0$t(common.community)crwdne40804:0",
+      "admin": "crwdns40806:0$t(common.member)crwdnd40806:0$t(common.admin)crwdnd40806:0$t(common.community)crwdne40806:0",
+      "maxLeadsWarning": "crwdns40808:0$t(common.leads)crwdne40808:0",
+      "removeMember": {
+        "sectionTitle": "crwdns40810:0$t(common.member)crwdne40810:0",
+        "remove": "crwdns40812:0$t(common.community)crwdne40812:0",
+        "dialogTitle": "crwdns40814:0$t(common.member)crwdne40814:0",
+        "dialogContent": "crwdns40816:0{{member}}crwdnd40816:0$t(common.community)crwdnd40816:0$t(common.subspaces)crwdnd40816:0{{memberFirstName}}crwdnd40816:0$t(common.member)crwdnd40816:0{{memberFirstName}}crwdne40816:0"
+      }
+    },
+    "removeGuidelinesConfirmationDialog": {
+      "title": "crwdns40818:0$t(common.community)crwdne40818:0",
+      "content": "crwdns40820:0$t(common.community)crwdne40820:0"
+    },
+    "unableToAddMemberInfo": {
+      "title": "crwdns40822:0$t(common.member)crwdne40822:0",
+      "content": "crwdns40824:0$t(common.member)crwdnd40824:0$t(common.space)crwdne40824:0"
+    }
+  },
+  "dashboard-community-section": {
+    "title": "crwdns41814:0$t(common.Community)crwdne41814:0"
+  },
+  "contributors-section": {
+    "title": "crwdns20768:0crwdne20768:0"
+  },
+  "associated-organizations-view": {
+    "no-data": "crwdns20774:0{{name, lowercase}}crwdne20774:0"
+  },
+  "dashboard-contributors-section": {
+    "dialog-title": "crwdns20776:0crwdne20776:0",
+    "more": "crwdns20778:0{{count}}crwdne20778:0"
+  },
+  "associates-view": {
+    "less": "crwdns20780:0crwdne20780:0",
+    "more": "crwdns20782:0{{count}}crwdne20782:0",
+    "sign-in": "crwdns41842:0$t(common.organization)crwdne41842:0"
+  }
+}

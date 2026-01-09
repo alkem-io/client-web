@@ -1,0 +1,23 @@
+{
+  "messaging": {
+    "message": "Mensaje",
+    "message-optional": "Mensaje (Opcional)",
+    "successfully-sent": "Mensaje enviado correctamente",
+    "messageDeleted": "This message has been deleted.",
+    "insertEmoji": "Insert Emoji",
+    "addReaction": "Add reaction",
+    "addMention": "Mention someone",
+    "formattingHelp": "Formatting help",
+    "missingAuthor": "Alkemio (virtual) contributor"
+  },
+  "send-message-dialog": {
+    "direct-message-title": "Enviar un mensaje",
+    "community-message-title": "Enviar un mensaje a {{contact}}"
+  },
+  "snackbars": {
+    "appVersion": {
+      "message": "A new version of the app is available.",
+      "recurringMessage": "Please close all Alkemio tabs and reload to update."
+    }
+  }
+}

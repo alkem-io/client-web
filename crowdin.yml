@@ -1,6 +1,78 @@
 files:
+  # Core platform features
+  - source: /src/core/i18n/en/namespaces/common.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/common.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/common.json
+  - source: /src/core/i18n/en/namespaces/authentication.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/authentication.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/authentication.json
+  - source: /src/core/i18n/en/namespaces/navigation.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/navigation.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/navigation.json
+  - source: /src/core/i18n/en/namespaces/messaging.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/messaging.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/messaging.json
+  
+  # Domain-specific features
+  - source: /src/core/i18n/en/namespaces/spaces.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/spaces.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/spaces.json
+  - source: /src/core/i18n/en/namespaces/community.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/community.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/community.json
+  - source: /src/core/i18n/en/namespaces/collaboration.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/collaboration.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/collaboration.json
+  - source: /src/core/i18n/en/namespaces/innovation.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/innovation.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/innovation.json
+  - source: /src/core/i18n/en/namespaces/templates.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/templates.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/templates.json
+  - source: /src/core/i18n/en/namespaces/credentials.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/credentials.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/credentials.json
+  
+  # UI Components
+  - source: /src/core/i18n/en/namespaces/components.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/components.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/components.json
+  - source: /src/core/i18n/en/namespaces/forms.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/forms.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/forms.json
+  - source: /src/core/i18n/en/namespaces/dialogs.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/dialogs.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/dialogs.json
+  
+  # Utilities and misc
+  - source: /src/core/i18n/en/namespaces/calendar.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/calendar.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/calendar.json
+  - source: /src/core/i18n/en/namespaces/operations.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/operations.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/operations.json
+  - source: /src/core/i18n/en/namespaces/pages.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/pages.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/pages.json
+  - source: /src/core/i18n/en/namespaces/context.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/context.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/context.json
+  
+  # Specific features
+  - source: /src/core/i18n/en/namespaces/virtualContributor.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/virtualContributor.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/virtualContributor.json
+  - source: /src/core/i18n/en/namespaces/chatbot.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/chatbot.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/chatbot.json
+  - source: /src/core/i18n/en/namespaces/platform.json
+    translation: /src/core/i18n/%two_letters_code%/namespaces/platform.json
+    export_pattern: /src/core/i18n/%two_letters_code%/namespaces/platform.json
+
+  # Legacy monolithic translation file (kept for backward compatibility during transition)
   - source: /src/core/i18n/en/translation.en.json  # Path in Crowdin
     translation: /src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json  # Path in Crowdin
     export_pattern: /src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json  # Map to local project structure
+    
 project_id_env: CROWDIN_PROJECT_ID
 api_token_env: CROWDIN_PERSONAL_TOKEN

@@ -1,0 +1,40 @@
+{
+  "chatbot": {
+    "title": "Help",
+    "intro": "Hallo, dit is de automatische begeleidingschat van Alkemio. Het kan je antwoorden geven op basis van Alkemio's documentatie. Waar ben je naar op zoek?",
+    "infoDialog": {
+      "title": "Alkemio Help",
+      "content": "Gebruik de Alkemio help chat om antwoorden te krijgen op je vragen over het platform. Deze __AI-aangedreven persoonlijke assistent__ stelt je in staat om als het ware te communiceren met de inhoud van de Alkemio documentatie. In de antwoorden wordt verwezen naar de pagina waarop het antwoord gevonden is, waar je eventueel meer kan lezen.\n\nMeer informatie? Klik [hier](https://alkem.io/vc/guidance) voor diens $t(common.profile)!"
+    },
+    "feedback": {
+      "message": "Is dit antwoord relevant?",
+      "tooltip": "Dit bericht is automatisch gegenereerd op basis van de documentatie van Alkemio. Je feedback is zeer relevant voor ons!"
+    },
+    "menu": {
+      "clear": "Nieuw gesprek",
+      "close": "Sluit venster"
+    },
+    "confirmNewChat": {
+      "title": "Een nieuw gesprek beginnen?",
+      "description": "Als je een nieuw gesprek start, wordt je huidige gesprek geschiedenis gewist. Weet je zeker dat je wilt doorgaan?",
+      "confirm": "Ja, nieuw gesprek starten"
+    },
+    "references": [
+      {
+        "icon": "GradeOutlined",
+        "uri": "https://alkem.io/docs/getting-started/first-steps.nl-NL",
+        "title": "Nieuwe gebruiker? Neem een kijkje bij onze 'Getting Started' pagina!"
+      },
+      {
+        "icon": "NotListedLocationOutlined",
+        "uri": "https://alkem.io/docs/index.nl-NL",
+        "title": "Nog steeds vragen? Leer hier meer"
+      },
+      {
+        "icon": "EmailOutlined",
+        "uri": "https://alkem.io/docs/support.nl-NL",
+        "title": "Neem contact op met het Alkemio team"
+      }
+    ]
+  }
+}

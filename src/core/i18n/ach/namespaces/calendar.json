@@ -1,0 +1,25 @@
+{
+  "calendar": {
+    "add-event": "crwdns17432:0crwdne17432:0",
+    "edit-event": "crwdns17434:0crwdne17434:0",
+    "delete-event": "crwdns17436:0crwdne17436:0",
+    "delete-confirmation": "crwdns17438:0{{title}}crwdnd17438:0{{entity}}crwdne17438:0",
+    "event": {
+      "type": "crwdns17440:0crwdne17440:0",
+      "multiple-days": "crwdns17442:0{{days}}crwdne17442:0",
+      "whole-day": "crwdns17444:0crwdne17444:0",
+      "visibleOnParentCalendar": "crwdns40204:0$t(common.space)crwdne40204:0"
+    },
+    "validation": {
+      "durationMinutes": {
+        "positive": "crwdns17448:0crwdne17448:0"
+      }
+    },
+    "no-data": "crwdns17450:0crwdne17450:0",
+    "no-upcoming-events": "crwdns17452:0crwdne17452:0",
+    "past-events": "crwdns17454:0crwdne17454:0",
+    "show-calendar": "crwdns17456:0crwdne17456:0",
+    "defaultEventDescription": "crwdns17458:0crwdne17458:0",
+    "adminsOnly": "crwdns40502:0$t(common.admins)crwdnd40502:0$t(common.leads)crwdne40502:0"
+  }
+}

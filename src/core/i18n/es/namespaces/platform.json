@@ -1,0 +1,13 @@
+{
+  "releaseNotes": {
+    "title": "<big>🎉 Platform update!</big> <small>We have some exciting news for you… Click here to read all about it!</small>",
+    "url": "/forum/releases/latest?date=4725",
+    "isClickable": "TRUE"
+  },
+  "cookie": {
+    "consent": "Haciendo click en \"Aceptar todas las cookies\", usted acepta que se almacenen cookies en su dispositivo para mejorar la navegación por el sitio y analizar su uso.",
+    "settings": "Al visitar un sitio web, alguna información puede almacenarse en su explorador en forma de cookies. Esta información puede ser sobre usted, sus preferencias y su dispositivo. Sobre todo, esta información es usada para hacer que el sitio web funcione lo mejor posible. Algunos sitios web las usan con fines de mercadotecnia. Como Alkemio no permite ningún tipo de publicidad en su sitio web, solo distinguimos dos tipos de cookies.",
+    "technical": "Cookies técnicamente necesarias: le permiten navegar y utilizar las funciones básicas y almacenar sus preferencias.",
+    "analysis": "Cookies de análisis: permiten determinar cómo interactúan los visitantes con nuestros servicios para mejorar la experiencia del usuario."
+  }
+}

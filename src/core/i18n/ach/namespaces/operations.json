@@ -1,0 +1,8 @@
+{
+  "operations": {
+    "user-group": {
+      "updated-successfully": "crwdns20660:0{{name}}crwdne20660:0",
+      "deleted-successfully": "crwdns20662:0{{name}}crwdne20662:0"
+    }
+  }
+}

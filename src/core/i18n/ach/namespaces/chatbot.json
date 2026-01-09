@@ -1,0 +1,40 @@
+{
+  "chatbot": {
+    "title": "crwdns17356:0crwdne17356:0",
+    "intro": "crwdns17358:0crwdne17358:0",
+    "infoDialog": {
+      "title": "crwdns17360:0crwdne17360:0",
+      "content": "crwdns40500:0https://alkem.io/vc/guidancecrwdnd40500:0$t(common.profile)crwdne40500:0"
+    },
+    "feedback": {
+      "message": "crwdns17364:0crwdne17364:0",
+      "tooltip": "crwdns17366:0crwdne17366:0"
+    },
+    "menu": {
+      "clear": "crwdns36759:0crwdne36759:0",
+      "close": "crwdns17370:0crwdne17370:0"
+    },
+    "confirmNewChat": {
+      "title": "crwdns36761:0crwdne36761:0",
+      "description": "crwdns36763:0crwdne36763:0",
+      "confirm": "crwdns36765:0crwdne36765:0"
+    },
+    "references": [
+      {
+        "icon": "crwdns17372:0crwdne17372:0",
+        "uri": "crwdns36846:0crwdne36846:0",
+        "title": "crwdns17376:0crwdne17376:0"
+      },
+      {
+        "icon": "crwdns17378:0crwdne17378:0",
+        "uri": "crwdns36848:0crwdne36848:0",
+        "title": "crwdns36850:0crwdne36850:0"
+      },
+      {
+        "icon": "crwdns17384:0crwdne17384:0",
+        "uri": "crwdns36852:0crwdne36852:0",
+        "title": "crwdns17388:0crwdne17388:0"
+      }
+    ]
+  }
+}
