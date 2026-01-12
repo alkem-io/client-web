@@ -226,7 +226,7 @@
         "microsoft": "crwdns17664:0crwdne17664:0",
         "github": "crwdns37072:0crwdne37072:0",
         "apple": "crwdns37074:0crwdne37074:0",
-        "vidua": "crwdns37076:0crwdne37076:0"
+        "cleverbase": "crwdns43484:0crwdne43484:0"
       }
     },
     "signUp": {
@@ -940,7 +940,16 @@
       "new-temporary-reference": "crwdns18384:0{{temp}}crwdne18384:0"
     },
     "whiteboard": {
-      "clickToSee": "crwdns43074:0$t(common.whiteboard)crwdne43074:0"
+      "clickToSee": "crwdns43074:0$t(common.whiteboard)crwdne43074:0",
+      "emojiReaction": {
+        "addEmoji": "crwdns43488:0crwdne43488:0",
+        "title": "crwdns43490:0crwdne43490:0",
+        "hint": "crwdns43492:0crwdne43492:0",
+        "clickToPlace": "crwdns43494:0{{emoji}}crwdne43494:0",
+        "placementMode": "crwdns43496:0{{emoji}}crwdne43496:0",
+        "gridLabel": "crwdns43498:0crwdne43498:0",
+        "noEmojis": "crwdns43500:0crwdne43500:0"
+      }
     },
     "memo": {
       "clickToSee": "crwdns40894:0$t(common.memo)crwdne40894:0"
@@ -1572,9 +1581,6 @@
         "title": "crwdns41050:0$t(common.post)crwdne41050:0",
         "text": "crwdns41052:0$t(common.post)crwdne41052:0"
       }
-    },
-    "calloutEdit": {
-      "titleWithType": "crwdns19060:0{{type}}crwdne19060:0"
     },
     "post-creation": {
       "title": "crwdns19076:0{{calloutDisplayName}}crwdne19076:0",
@@ -3587,7 +3593,7 @@
       "verification-flow-continue": "crwdns20678:0crwdne20678:0",
       "login-flow-account-exists": "crwdns41802:0$t(common.account)crwdne41802:0",
       "invalid-credentials": "crwdns43112:0crwdne43112:0",
-      "claim-missing": "crwdns37156:0crwdne37156:0",
+      "claim-missing": "crwdns43486:0crwdne43486:0",
       "pick-password": "crwdns41804:0$t(common.account)crwdne41804:0"
     },
     "fields": {

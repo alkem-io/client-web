@@ -226,7 +226,7 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "cleverbase": "Cleverbase. Cleverbase е сертифициран доставител по стандарта eIDAS, който гарантира сигурна и юридически призната аутентификация според стандартите на ЕС."
+        "cleverbase": "Cleverbase: an EU qualified trust service provider, issuing legally recognized digital identities and secure authentication."
       }
     },
     "signUp": {
@@ -940,7 +940,16 @@
       "new-temporary-reference": "Временен идентификатор на връзка: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Кликнете, за да отворите $t(common.whiteboard)"
+      "clickToSee": "Кликнете, за да отворите $t(common.whiteboard)",
+      "emojiReaction": {
+        "addEmoji": "Add emoji reaction",
+        "title": "Add Emoji",
+        "hint": "Select an emoji, then click on the canvas",
+        "clickToPlace": "Click on canvas to place {{emoji}}",
+        "placementMode": "Click to place emoji: {{emoji}}",
+        "gridLabel": "Select an emoji",
+        "noEmojis": "No emojis available"
+      }
     },
     "memo": {
       "clickToSee": "Кликнете, за да видите пълната $t(common.memo)"
@@ -1572,9 +1581,6 @@
         "title": "Изхвърли $t(common.post)",
         "text": "Сигурни ли сте, че искате да затворите този $t(common.post)? Незапазените промени ще бъдат загубени."
       }
-    },
-    "calloutEdit": {
-      "titleWithType": "Редактирай {{type}}"
     },
     "post-creation": {
       "title": "Публикувайте отговора си към {{calloutDisplayName}}",
@@ -3578,7 +3584,7 @@
       "verification-flow-continue": "Продължете",
       "login-flow-account-exists": "Този имейл вече е свързан с $t(common.account). Ако преди това сте се регистрирали през LinkedIn, GitHub или Microsoft, моля използвайте този метод за вход. В противен случай, нулирайте паролата си.",
       "invalid-credentials": "Въведеният имейл адрес или парола е невалиден. Моля, проверете вашите идентификационни данни и опитайте отново. Искате ли вместо това да се регистрирате? Можете да го направите, като кликнете върху връзката по-горе.",
-      "claim-missing": "Не сте потвърдили вашата Cleverbase самоличност. Моля, потвърдете самоличността си и опитайте отново или опитайте друг метод за регистрация.",
+      "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Изберете парола за вашия $t(common.account)"
     },
     "fields": {
