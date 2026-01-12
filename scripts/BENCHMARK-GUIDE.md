@@ -48,22 +48,17 @@ pnpm install
 
 2. Build your application:
 
-```bash
-# For "before" build (without optimizations)
-pnpm build
-
-# For "after" build (with optimizations)
-pnpm build
-```
+````bash
+# For "before" and "after" build
+npm run build:sentry
 
 3. Serve your build on `localhost:3000`:
 
 ```bash
 # Use any static server, e.g.:
-pnpm serve:dev  # This serves on port 3001, you may need to adjust
-# or
-npx serve -s build -l 3000
-```
+npm run serve:dev  # This serves on port 3001, you may need to adjust
+
+````
 
 ## Running Benchmarks
 
@@ -73,7 +68,7 @@ npx serve -s build -l 3000
 2. Run the benchmark:
 
 ```bash
-pnpm benchmark before
+npm run benchmark before
 ```
 
 This will:
@@ -91,7 +86,7 @@ This will:
 3. Run the benchmark:
 
 ```bash
-pnpm benchmark after
+npm run benchmark after
 ```
 
 Results saved to `performance-results/after-{timestamp}.json`
@@ -99,7 +94,7 @@ Results saved to `performance-results/after-{timestamp}.json`
 ### Step 3: Compare Results
 
 ```bash
-pnpm benchmark:compare
+npm run benchmark:compare
 ```
 
 This automatically compares the two most recent benchmarks and generates a detailed markdown report with:
@@ -112,7 +107,7 @@ This automatically compares the two most recent benchmarks and generates a detai
 You can also specify which files to compare:
 
 ```bash
-pnpm benchmark:compare before-1234567890.json after-1234567891.json
+npm run benchmark:compare before-1234567890.json after-1234567891.json
 ```
 
 ## Customizing Benchmarks
@@ -131,7 +126,6 @@ const CONFIG = {
     // Add your routes here
     { path: '/my-route', name: 'MyRoute' },
   ],
-  runs: 3,
   waitAfterLoad: 2000,
 };
 ```
@@ -224,35 +218,6 @@ async measureUserJourney(journey) {
 4. **Cool down**: Wait between benchmarks to let the system stabilize
 5. **Network consistency**: Benchmarks assume localhost, so network shouldn't vary
 6. **Document changes**: Note what changed between builds in your git commits
-
-## Example Workflow
-
-```bash
-# 1. Checkout "before" state
-git checkout before-optimizations
-
-# 2. Build and serve
-pnpm build
-npx serve -s build -l 3000
-
-# 3. Benchmark (in new terminal)
-pnpm benchmark before
-
-# 4. Checkout "after" state
-git checkout after-optimizations
-
-# 5. Build and serve
-pnpm build
-npx serve -s build -l 3000
-
-# 6. Benchmark
-pnpm benchmark after
-
-# 7. Compare
-pnpm benchmark:compare
-
-# 8. Review report in performance-results/
-```
 
 ## Output Files
 

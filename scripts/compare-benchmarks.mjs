@@ -15,11 +15,12 @@ function formatMs(ms) {
   return `${ms.toFixed(0)} ms`;
 }
 
-function calculateDiff(before, after) {
+function calculateDiff(before, after, higherIsBetter = false) {
   const diff = after - before;
   const percentChange = ((diff / before) * 100).toFixed(1);
   const sign = diff > 0 ? '+' : '';
-  const emoji = diff < 0 ? '🟢' : diff > 0 ? '🔴' : '⚪';
+  const isImprovement = higherIsBetter ? diff > 0 : diff < 0;
+  const emoji = isImprovement ? '🟢' : (diff === 0 ? '⚪' : '🔴');
   return `${emoji} ${sign}${percentChange}% (${sign}${formatMs(diff)})`;
 }
 
@@ -76,7 +77,8 @@ class BenchmarkComparator {
         const before = beforeMetrics[key];
         const after = afterMetrics[key];
         if (before !== undefined && after !== undefined) {
-          report.push(`| ${label} | ${formatter(before)} | ${formatter(after)} | ${calculateDiff(before, after)} |`);
+          const higherIsBetter = key === 'performanceScore';
+          report.push(`| ${label} | ${formatter(before)} | ${formatter(after)} | ${calculateDiff(before, after, higherIsBetter)} |`);
         }
       }
       report.push('');

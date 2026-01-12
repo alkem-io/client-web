@@ -17,7 +17,6 @@ const CONFIG = {
     { path: '/welcome-space', name: 'Welcome Space' },
     { path: '/spaces', name: 'Spaces' },
   ],
-  runs: 3, // Multiple runs for statistical significance
   waitAfterLoad: 2000, // Wait for dynamic content
 };
 
@@ -79,13 +78,13 @@ class PerformanceBenchmark {
 
       const audits = runnerResult.lhr.audits;
       const metrics = {
-        performanceScore: runnerResult.lhr.categories.performance.score * 100,
-        firstContentfulPaint: audits['first-contentful-paint'].numericValue,
-        largestContentfulPaint: audits['largest-contentful-paint'].numericValue,
-        timeToInteractive: audits['interactive'].numericValue,
-        speedIndex: audits['speed-index'].numericValue,
-        totalBlockingTime: audits['total-blocking-time'].numericValue,
-        cumulativeLayoutShift: audits['cumulative-layout-shift'].numericValue,
+        performanceScore: (runnerResult.lhr.categories?.performance?.score ?? 0) * 100,
+        firstContentfulPaint: audits['first-contentful-paint']?.numericValue,
+        largestContentfulPaint: audits['largest-contentful-paint']?.numericValue,
+        timeToInteractive: audits['interactive']?.numericValue,
+        speedIndex: audits['speed-index']?.numericValue,
+        totalBlockingTime: audits['total-blocking-time']?.numericValue,
+        cumulativeLayoutShift: audits['cumulative-layout-shift']?.numericValue,
         firstMeaningfulPaint: audits['first-meaningful-paint']?.numericValue,
       };
 
@@ -133,7 +132,7 @@ class PerformanceBenchmark {
         totalJsSize: jsResources.reduce((sum, r) => sum + r.contentLength, 0),
         totalCssSize: cssResources.reduce((sum, r) => sum + r.contentLength, 0),
         totalSize: resources.reduce((sum, r) => sum + r.contentLength, 0),
-        largestJs: Math.max(...jsResources.map(r => r.contentLength)),
+        largestJs: jsResources.length > 0 ? Math.max(...jsResources.map(r => r.contentLength)) : 0,
         chunks: jsResources.map(r => ({
           name: r.url.split('/').pop(),
           size: r.contentLength,
@@ -506,7 +505,12 @@ class PerformanceBenchmark {
 
   async saveResults() {
     await fs.mkdir(RESULTS_DIR, { recursive: true });
-    const filename = `${this.buildName}-${Date.now()}.json`;
+    // Sanitize buildName to prevent path traversal
+    const sanitizedBuildName = this.buildName
+      .replace(/[/\\]/g, '-')
+      .replace(/[^a-zA-Z0-9._-]/g, '')
+      .slice(0, 100) || 'build';
+    const filename = `${sanitizedBuildName}-${Date.now()}.json`;
     const filepath = path.join(RESULTS_DIR, filename);
     await fs.writeFile(filepath, JSON.stringify(this.results, null, 2));
   }

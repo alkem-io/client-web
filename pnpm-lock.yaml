@@ -409,7 +409,7 @@ importers:
         specifier: ^13.0.3
         version: 13.3.0(enquirer@2.4.1)
       playwright:
-        specifier: ^1.51.1
+        specifier: ^1.57.0
         version: 1.57.0
       prettier:
         specifier: ^3.5.3

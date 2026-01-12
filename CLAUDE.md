@@ -29,7 +29,7 @@ pnpm lint
 pnpm lint:prod
 
 # Run tests (non-interactive)
-pnpm vitest run --reporter=basic
+pnpm vitest run
 
 # Watch mode for tests
 pnpm test
@@ -141,7 +141,7 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 Tests use Vitest with jsdom environment:
 
 ```bash
-pnpm vitest run --reporter=basic  # Run all tests once (non-interactive)
+pnpm vitest run  # Run all tests once (non-interactive)
 pnpm test                          # Watch mode
 pnpm test:coverage                 # With coverage (Istanbul provider)
 ```
@@ -224,7 +224,7 @@ Husky runs lint-staged on commit:
 
 - All commits must be signed
 - GitHub Actions enforce: successful Docker build, passing TypeScript + ESLint, working Vite build
-- Run `pnpm lint` and `pnpm vitest run --reporter=basic` before staging changes
+- Run `pnpm lint` and `pnpm vitest run` before staging changes
 
 ## Public Routes
 

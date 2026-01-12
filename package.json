@@ -213,7 +213,7 @@
     "husky": "^4.3.7",
     "lighthouse": "^12.2.1",
     "lint-staged": "^13.0.3",
-    "playwright": "^1.51.1",
+    "playwright": "^1.57.0",
     "prettier": "^3.5.3",
     "rollup-plugin-visualizer": "^6.0.5",
     "serve": "^14.2.4",
