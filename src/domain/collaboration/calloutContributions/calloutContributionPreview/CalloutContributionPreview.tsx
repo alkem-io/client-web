@@ -9,11 +9,13 @@ import PageContentBlockHeaderCardLike from '@/core/ui/content/PageContentBlockHe
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { formatDateTime } from '@/core/utils/time/utils';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { Box, IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import useNavigate from '@/core/routing/useNavigate';
 import { useRef, useState } from 'react';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { useTranslation } from 'react-i18next';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { CalloutContributionPreviewComponentProps } from '../interfaces/CalloutContributionPreviewComponentProps';
@@ -97,12 +99,32 @@ const CalloutContributionPreview = ({
   const formattedCreatedDate = createdDate && formatDateTime(createdDate);
   const formattedElapsedTime = createdDate && formatTimeElapsed(createdDate, t, columns > 6 ? 'long' : 'short');
 
+  const contributionUrl =
+    (contributionType === CalloutContributionType.Post && contribution?.post?.profile.url) ||
+    (contributionType === CalloutContributionType.Whiteboard && contribution?.whiteboard?.profile.url) ||
+    (contributionType === CalloutContributionType.Memo && contribution?.memo?.profile.url);
+
   const handleContributionDeleted = (deletedContributionId: string) => {
     if (contributionId === deletedContributionId) {
       // Deleted the contribution currently on screen, navigate back to the callout
       navigate(callout.framing.profile.url);
     }
     onCalloutUpdate?.();
+  };
+
+  const calloutContributionTypeToShareDialogKey = (
+    type: CalloutContributionType
+  ): 'post' | 'whiteboard' | 'memo' | 'link' => {
+    switch (type) {
+      case CalloutContributionType.Post:
+        return 'post';
+      case CalloutContributionType.Whiteboard:
+        return 'whiteboard';
+      case CalloutContributionType.Link:
+        return 'link';
+      case CalloutContributionType.Memo:
+        return 'memo';
+    }
   };
 
   const canUpdateContribution =
@@ -117,6 +139,11 @@ const CalloutContributionPreview = ({
         selected
         actions={
           <>
+            <Tooltip title={formattedCreatedDate} arrow>
+              <Caption whiteSpace="nowrap" color="textPrimary">
+                {formattedElapsedTime}
+              </Caption>
+            </Tooltip>
             {canUpdateContribution && (
               <IconButton
                 onClick={() => setContributionDialogOpen(true)}
@@ -130,11 +157,20 @@ const CalloutContributionPreview = ({
             )}
             {/* `display: contents` avoids the box to occupy any space if it's empty */}
             <Box ref={extraActionsPortalRef} display="contents" />
-            <Tooltip title={formattedCreatedDate} arrow>
-              <Caption whiteSpace="nowrap" color="textPrimary">
-                {formattedElapsedTime}
-              </Caption>
-            </Tooltip>
+            {contributionUrl && (
+              <ShareButton
+                url={contributionUrl}
+                entityTypeName={calloutContributionTypeToShareDialogKey(contributionType)}
+              />
+            )}
+            <IconButton
+              onClick={() => navigate(callout.framing.profile.url)}
+              size="small"
+              sx={{ color: theme => theme.palette.text.primary }}
+              aria-label={t('buttons.close')}
+            >
+              <CloseOutlinedIcon />
+            </IconButton>
           </>
         }
       />

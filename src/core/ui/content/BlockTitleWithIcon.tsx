@@ -5,7 +5,7 @@ import { BlockTitle, Caption } from '../typography';
 
 type BlockTitleWithIconProps = {
   title: ReactNode;
-  subtitle?: ReactNode;
+  subtitle?: string;
   titleId?: string;
   icon?: ReactElement<SvgIconProps>;
   avatar?: ReactNode;

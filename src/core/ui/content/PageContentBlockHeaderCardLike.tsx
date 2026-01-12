@@ -1,5 +1,5 @@
 import { Box, BoxProps, SvgIconProps, TypographyProps, useTheme } from '@mui/material';
-import { Caption, CaptionSmall } from '../typography';
+import { CaptionSmall } from '../typography';
 import { ComponentType, PropsWithChildren, ReactNode } from 'react';
 import { Actions } from '../actions/Actions';
 import { gutters } from '../grid/utils';
@@ -12,7 +12,7 @@ import SwapColors from '../palette/SwapColors';
 
 export interface PageContentBlockHeaderCardLikeProps {
   title: ReactNode;
-  subtitle?: ReactNode;
+  subtitle?: string;
   titleId?: string;
   icon?: ComponentType<SvgIconProps>;
   avatar?: ReactNode;
@@ -68,7 +68,7 @@ const PageContentBlockHeaderCardLike = <D extends React.ElementType = BoxTypeMap
           <BlockTitleWithIcon
             title={title}
             titleId={titleId}
-            subtitle={<Caption>{subtitle}</Caption>}
+            subtitle={subtitle}
             icon={icon ? <RoundedIcon size="xsmall" component={icon} /> : undefined}
             avatar={avatar}
             variant={variant}
