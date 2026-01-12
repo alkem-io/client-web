@@ -21,6 +21,7 @@ import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import InnovationFlowStateForm from './InnovationFlowStateForm';
 import InnovationFlowStateMenu from './InnovationFlowStateMenu';
 import { Identifiable } from '@/core/utils/Identifiable';
+import SetDefaultTemplateDialog from '../InnovationFlowDialogs/SetDefaultTemplateDialog';
 
 const STATES_DROPPABLE_ID = '__states';
 
@@ -57,6 +58,7 @@ export interface InnovationFlowDragNDropEditorProps {
   ) => Promise<unknown>;
   onEditFlowState: (stateId: string, newState: InnovationFlowStateModel) => Promise<unknown>;
   onDeleteFlowState: (stateId: string) => Promise<unknown>;
+  onSetDefaultTemplate: (stateId: string, templateId: string | null) => Promise<unknown>;
   /**
    * Prevents the user from changing the number of states, adding or removing
    */
@@ -89,6 +91,7 @@ const InnovationFlowDragNDropEditor = ({
   onCreateFlowState,
   onEditFlowState,
   onDeleteFlowState,
+  onSetDefaultTemplate,
   disableStateNumberChange = false,
 }: InnovationFlowDragNDropEditorProps) => {
   // eslint-disable-next-line react-compiler/react-compiler -- Required: @hello-pangea/dnd render props pattern breaks with React Compiler memoization
@@ -104,6 +107,7 @@ const InnovationFlowDragNDropEditor = ({
   >(undefined);
   const [editFlowState, setEditFlowState] = useState<(Identifiable & InnovationFlowStateModel) | undefined>();
   const [deleteFlowStateId, setDeleteFlowStateId] = useState<string | undefined>();
+  const [setDefaultTemplateStateId, setSetDefaultTemplateStateId] = useState<string | undefined>();
 
   // Track if we've already processed the editTab param to avoid re-triggering
   const editTabProcessedRef = useRef<string | null>(null);
@@ -185,6 +189,7 @@ const InnovationFlowDragNDropEditor = ({
                                 onAddStateAfter={stateBefore => setCreateFlowState({ after: stateBefore, last: false })}
                                 onEdit={() => setEditFlowState(state)}
                                 onDelete={() => setDeleteFlowStateId(state.id)}
+                                onSetDefaultTemplate={() => setSetDefaultTemplateStateId(state.id)}
                                 disableStateNumberChange={disableStateNumberChange}
                                 disableAddStateAfter={!canAddState}
                                 disableRemoveState={disableStateNumberChange}
@@ -279,6 +284,17 @@ const InnovationFlowDragNDropEditor = ({
           contentId: 'components.innovationFlowSettings.stateEditor.deleteDialog.text',
           confirmButtonTextId: 'buttons.delete',
         }}
+      />
+      <SetDefaultTemplateDialog
+        open={Boolean(setDefaultTemplateStateId)}
+        onClose={() => setSetDefaultTemplateStateId(undefined)}
+        onSelectTemplate={templateId => {
+          if (setDefaultTemplateStateId) {
+            return onSetDefaultTemplate(setDefaultTemplateStateId, templateId);
+          }
+          return Promise.resolve();
+        }}
+        currentTemplate={innovationFlowStates?.find(s => s.id === setDefaultTemplateStateId)?.defaultCalloutTemplate}
       />
     </>
   );

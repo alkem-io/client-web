@@ -10,6 +10,8 @@ import {
   useDeleteStateOnInnovationFlowMutation,
   useUpdateInnovationFlowStatesSortOrderMutation,
   useUpdateCollaborationFromSpaceTemplateMutation,
+  useSetDefaultCalloutTemplateOnInnovationFlowStateMutation,
+  useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -349,6 +351,28 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     });
   };
 
+  const [setDefaultCalloutTemplate] = useSetDefaultCalloutTemplateOnInnovationFlowStateMutation();
+  const [removeDefaultCalloutTemplate] = useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation();
+
+  const handleSetDefaultTemplate = async (flowStateId: string, templateId: string | null) => {
+    if (templateId) {
+      await setDefaultCalloutTemplate({
+        variables: {
+          flowStateId,
+          templateId,
+        },
+        refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
+      });
+    } else {
+      await removeDefaultCalloutTemplate({
+        variables: {
+          flowStateId,
+        },
+        refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
+      });
+    }
+  };
+
   return {
     data: {
       innovationFlow,
@@ -368,6 +392,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
       createState: handleCreateState,
       editState: handleEditState,
       deleteState: handleDeleteState,
+      setDefaultTemplate: handleSetDefaultTemplate,
     },
     state: {
       loading: loadingData || loadingUpdateInnovationFlow || loadingUpdateCallout || loadingSortOrder,

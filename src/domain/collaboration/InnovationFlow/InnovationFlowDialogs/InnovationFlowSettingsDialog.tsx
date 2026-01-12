@@ -94,6 +94,7 @@ const InnovationFlowSettingsDialog = ({
             onCreateFlowState={(state, options) => actions.createState(state, options.after)}
             onEditFlowState={actions.editState}
             onDeleteFlowState={actions.deleteState}
+            onSetDefaultTemplate={actions.setDefaultTemplate}
           />
         </DialogContent>
       </DialogWithGrid>

@@ -5,4 +5,10 @@ export type InnovationFlowStateModel = {
     allowNewCallouts: boolean;
   };
   sortOrder: number;
+  defaultCalloutTemplate?: {
+    id: string;
+    profile: {
+      displayName: string;
+    };
+  } | null;
 };

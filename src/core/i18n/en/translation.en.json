@@ -1348,6 +1348,7 @@
         "editState": "Edit Details",
         "deleteState": "Delete",
         "addState": "Add Phase",
+        "setDefaultTemplate": "Set Default Post Template",
         "invalidChars": "A phase name cannot contain special characters.",
         "noRepeatedStates": "A phase with the same name already exists.",
         "createDialog": {
@@ -1376,6 +1377,18 @@
             "noDescription": "This will replace only the $t(common.innovation-flow), keeping your current $t(common.posts) as they are.",
             "apply": "Apply new $t(common.template)"
           }
+        }
+      },
+      "defaultTemplate": {
+        "currentTemplate": "Current template: {{template}}",
+        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow state.",
+        "removeConfirmation": {
+          "title": "Remove Default Template?",
+          "description": "This will remove the default template for this flow step. New posts will no longer be pre-filled with template content."
+        },
+        "errors": {
+          "selectFailed": "Failed to set the default template. Please try again.",
+          "removeFailed": "Failed to remove the default template. Please try again."
         }
       }
     },

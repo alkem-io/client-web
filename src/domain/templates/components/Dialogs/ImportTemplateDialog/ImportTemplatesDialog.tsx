@@ -1,6 +1,6 @@
-import { Button, ButtonProps, CircularProgress, DialogActions, DialogContent, Link } from '@mui/material';
+import { Button, ButtonProps, CircularProgress, DialogActions, DialogContent, Link, Box } from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { cloneElement, ReactElement, useEffect, useMemo, useState } from 'react';
+import { cloneElement, ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ImportTemplatesDialogGallery from './ImportTemplatesDialogGallery';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
@@ -18,6 +18,10 @@ import {
 import { gutters } from '@/core/ui/grid/utils';
 import SearchIcon from '@mui/icons-material/Search';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
+import GridProvider from '@/core/ui/grid/GridProvider';
 
 export interface ImportTemplatesOptions {
   /**
@@ -39,7 +43,10 @@ interface ImportTemplatesDialogProps extends ImportTemplatesOptions {
   open: boolean;
   onClose?: () => void;
   onSelectTemplate: (template: AnyTemplate) => Promise<unknown>;
-  actionButton: (template: AnyTemplate) => ReactElement<ButtonProps>;
+  actionButton?: (template: AnyTemplate) => ReactElement<ButtonProps>;
+  selectedTemplateId?: string;
+  onRemoveTemplate?: () => Promise<unknown>;
+  removeTemplateLoading?: boolean;
 }
 
 const ImportTemplatesDialog = ({
@@ -51,6 +58,9 @@ const ImportTemplatesDialog = ({
   onSelectTemplate,
   actionButton,
   templateType,
+  selectedTemplateId,
+  onRemoveTemplate,
+  removeTemplateLoading = false,
 }: ImportTemplatesDialogProps) => {
   const { t } = useTranslation();
   const { levelZeroSpaceId } = useUrlResolver();
@@ -59,6 +69,8 @@ const ImportTemplatesDialog = ({
   const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(!canUseSpaceTemplates);
 
   const [previewTemplate, setPreviewTemplate] = useState<AnyTemplate>();
+  const [showRemoveConfirmation, setShowRemoveConfirmation] = useState(false);
+
   const [handleImportTemplate, loadingImport] = useLoadingState(async () => {
     if (previewTemplate) {
       await onSelectTemplate(previewTemplate);
@@ -73,6 +85,17 @@ const ImportTemplatesDialog = ({
   const handleClose = () => {
     onClose?.();
     handleClosePreview();
+  };
+
+  const handleRemoveClick = () => {
+    setShowRemoveConfirmation(true);
+  };
+
+  const handleConfirmRemove = async () => {
+    if (onRemoveTemplate) {
+      await onRemoveTemplate();
+      setShowRemoveConfirmation(false);
+    }
   };
 
   const { data: templatesSetData } = useSpaceTemplatesManagerQuery({
@@ -91,11 +114,9 @@ const ImportTemplatesDialog = ({
     skip: !open || disableSpaceTemplates || !templatesSetId,
   });
 
-  const templates = useMemo(() => {
-    return templatesData?.lookup.templatesSet?.templates
-      .filter(template => template.type === templateType)
-      .map(template => ({ template, innovationPack: undefined }));
-  }, [templatesData, templateType]);
+  const templates = templatesData?.lookup.templatesSet?.templates
+    .filter(template => template.type === templateType)
+    .map(template => ({ template, innovationPack: undefined }));
 
   const { data: platformTemplatesData, loading: loadingPlatform } = useImportTemplateDialogPlatformTemplatesQuery({
     variables: {
@@ -106,6 +127,11 @@ const ImportTemplatesDialog = ({
     skip: !open || !loadPlatformTemplates,
   });
   const platformTemplates = platformTemplatesData?.platform.library.templates;
+
+  // Find the selected template to show at the top
+  const selectedTemplate = selectedTemplateId
+    ? [...(templates || []), ...(platformTemplates || [])].find(t => t.template.id === selectedTemplateId)
+    : undefined;
 
   useEffect(() => {
     if (!open) {
@@ -128,7 +154,7 @@ const ImportTemplatesDialog = ({
           title={
             templateType
               ? t('pages.admin.generic.sections.templates.import.title', {
-                  templateType: t(`common.enums.templateType.${templateType!}`),
+                  templateType: t(`common.enums.templateType.${templateType}`),
                 })
               : t('pages.admin.generic.sections.templates.import.defaultTitle')
           }
@@ -137,6 +163,29 @@ const ImportTemplatesDialog = ({
         />
         <DialogContent>
           {subtitle && <Caption marginBottom={gutters()}>{subtitle}</Caption>}
+
+          {/* Show selected template at the top with Remove button */}
+          {selectedTemplate && onRemoveTemplate && (
+            <Box display="flex" gap={2} alignItems="flex-start" marginBottom={gutters(2)}>
+              <GridProvider columns={12} force>
+                <TemplateCard
+                  template={selectedTemplate.template}
+                  innovationPack={selectedTemplate.innovationPack}
+                  onClick={() => setPreviewTemplate(selectedTemplate.template)}
+                />
+              </GridProvider>
+              <Button
+                onClick={handleRemoveClick}
+                startIcon={<DeleteOutlineIcon />}
+                color="error"
+                disabled={removeTemplateLoading}
+                sx={{ flexShrink: 0, minWidth: 'auto' }}
+              >
+                {t('buttons.remove')}
+              </Button>
+            </Box>
+          )}
+
           {canUseSpaceTemplates && (
             <ImportTemplatesDialogGallery
               templates={templates}
@@ -158,18 +207,16 @@ const ImportTemplatesDialog = ({
             </Link>
           )}
           {loadPlatformTemplates && (
-            <>
-              <ImportTemplatesDialogGallery
-                templates={platformTemplates}
-                onClickTemplate={template => setPreviewTemplate(template)}
-                loading={loadingPlatform}
-              >
-                <BlockTitle marginY={gutters()}>
-                  {loadingPlatform && <CircularProgress size={15} sx={{ marginRight: gutters() }} />}
-                  {t('templateLibrary.platformTemplates')}
-                </BlockTitle>
-              </ImportTemplatesDialogGallery>
-            </>
+            <ImportTemplatesDialogGallery
+              templates={platformTemplates}
+              onClickTemplate={template => setPreviewTemplate(template)}
+              loading={loadingPlatform}
+            >
+              <BlockTitle marginY={gutters()}>
+                {loadingPlatform && <CircularProgress size={15} sx={{ marginRight: gutters() }} />}
+                {t('templateLibrary.platformTemplates')}
+              </BlockTitle>
+            </ImportTemplatesDialogGallery>
           )}
         </DialogContent>
         <DialogActions>
@@ -181,10 +228,37 @@ const ImportTemplatesDialog = ({
           open
           template={previewTemplate}
           onClose={handleClosePreview}
-          actions={cloneElement(actionButton(previewTemplate), {
-            onClick: handleImportTemplate,
-            loading: loadingImport,
-          })}
+          actions={
+            actionButton ? (
+              cloneElement(actionButton(previewTemplate), {
+                onClick: handleImportTemplate,
+                loading: loadingImport,
+              })
+            ) : (
+              <Button variant="contained" onClick={handleImportTemplate} disabled={loadingImport}>
+                {t('buttons.select')}
+              </Button>
+            )
+          }
+        />
+      )}
+      {onRemoveTemplate && (
+        <ConfirmationDialog
+          entities={{
+            titleId: 'components.innovationFlowSettings.defaultTemplate.removeConfirmation.title',
+            content: t('components.innovationFlowSettings.defaultTemplate.removeConfirmation.description'),
+            confirmButtonTextId: 'buttons.remove',
+          }}
+          actions={{
+            onConfirm: handleConfirmRemove,
+            onCancel: () => setShowRemoveConfirmation(false),
+          }}
+          options={{
+            show: showRemoveConfirmation,
+          }}
+          state={{
+            isLoading: removeTemplateLoading,
+          }}
         />
       )}
     </>
