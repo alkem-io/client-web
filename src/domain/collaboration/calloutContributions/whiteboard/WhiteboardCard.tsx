@@ -46,7 +46,7 @@ const WhiteboardDefaultImage = () => {
   );
 };
 
-const WhiteboardCard = ({ contribution, columns, callout, selected }: WhiteboardCardProps) => {
+const WhiteboardCard = ({ contribution, columns, callout, onClick, selected }: WhiteboardCardProps) => {
   const { t } = useTranslation();
   const whiteboard = contribution?.whiteboard;
 
@@ -58,7 +58,7 @@ const WhiteboardCard = ({ contribution, columns, callout, selected }: Whiteboard
   }, [callout]);
 
   return (
-    <ContributeCard to={whiteboard?.profile.url} state={linkState} columns={columns}>
+    <ContributeCard to={whiteboard?.profile.url} onClick={onClick} state={linkState} columns={columns}>
       <CardHeader title={whiteboard?.profile.displayName} contrast={selected} author={whiteboard?.createdBy}>
         {whiteboard?.createdDate && <Caption color="textPrimary">{formatDate(whiteboard?.createdDate)}</Caption>}
       </CardHeader>

@@ -10,7 +10,7 @@ import { formatDate } from '@/core/utils/time/utils';
 
 interface MemoCardProps extends CalloutContributionCardComponentProps {}
 
-const MemoCard = ({ contribution, columns, callout, selected }: MemoCardProps) => {
+const MemoCard = ({ contribution, columns, callout, onClick, selected }: MemoCardProps) => {
   const memo = contribution?.memo;
 
   const linkState = useMemo(() => {
@@ -21,7 +21,7 @@ const MemoCard = ({ contribution, columns, callout, selected }: MemoCardProps) =
   }, [callout]);
 
   return (
-    <ContributeCard to={memo?.profile.url} state={linkState} columns={columns}>
+    <ContributeCard to={memo?.profile.url} onClick={onClick} state={linkState} columns={columns}>
       <CardHeader title={memo?.profile.displayName} contrast={selected} author={memo?.createdBy}>
         {memo?.createdDate && <Caption>{formatDate(memo?.createdDate)}</Caption>}
       </CardHeader>

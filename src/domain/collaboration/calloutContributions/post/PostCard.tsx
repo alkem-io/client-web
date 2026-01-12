@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { Skeleton } from '@mui/material';
 import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardHeader from '@/core/ui/card/CardHeader';
@@ -31,9 +30,7 @@ export interface PostContribution extends Identifiable {
 
 interface PostCardProps extends CalloutContributionCardComponentProps {}
 
-const PostCard = ({ contribution, columns, selected, onClick }: PostCardProps) => {
-  const handleClick = useCallback(() => contribution && onClick?.(), [onClick, contribution]);
-
+const PostCard = ({ contribution, columns, onClick, selected }: PostCardProps) => {
   if (!contribution || !contribution.post) {
     return (
       <ContributeCard columns={columns}>
@@ -49,7 +46,7 @@ const PostCard = ({ contribution, columns, selected, onClick }: PostCardProps) =
   }
   const post = contribution.post;
   return (
-    <ContributeCard onClick={handleClick} columns={columns}>
+    <ContributeCard to={post?.profile.url} onClick={onClick} columns={columns}>
       <CardHeader title={post.profile.displayName} contrast={selected} author={post.createdBy}>
         {post?.createdDate && <Caption color="textPrimary">{formatDate(post?.createdDate)}</Caption>}
       </CardHeader>
