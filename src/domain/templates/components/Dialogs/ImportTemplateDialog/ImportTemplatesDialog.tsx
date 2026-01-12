@@ -8,7 +8,7 @@ import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle, Caption } from '@/core/ui/typography';
-import PreviewTemplateDialog from '../PreviewTemplateDialog/PreviewTemplateDialog';
+import PreviewTemplateDialog from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import {
   useImportTemplateDialogPlatformTemplatesQuery,
@@ -22,6 +22,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
 import GridProvider from '@/core/ui/grid/GridProvider';
+import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
 
 export interface ImportTemplatesOptions {
   /**
@@ -235,9 +236,7 @@ const ImportTemplatesDialog = ({
                 loading: loadingImport,
               })
             ) : (
-              <Button variant="contained" onClick={handleImportTemplate} disabled={loadingImport}>
-                {t('buttons.select')}
-              </Button>
+              <TemplateActionButton textKey="buttons.select" onClick={handleImportTemplate} disabled={loadingImport} />
             )
           }
         />
