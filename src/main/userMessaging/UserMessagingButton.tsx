@@ -1,10 +1,13 @@
 import { IconButton, Paper } from '@mui/material';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import { useTranslation } from 'react-i18next';
+import BadgeCounter from '@/core/ui/icon/BadgeCounter';
 import { useUserMessagingContext } from './UserMessagingContext';
+import { useConversationsUnreadCount } from './useConversationsUnreadCount';
 
 export const UserMessagingButton = () => {
   const { isEnabled, setIsOpen } = useUserMessagingContext();
+  const unreadCount = useConversationsUnreadCount();
   const { t } = useTranslation();
 
   const openMessaging = () => {
@@ -31,6 +34,9 @@ export const UserMessagingButton = () => {
       }}
     >
       <ChatOutlinedIcon />
+      {unreadCount > 0 && (
+        <BadgeCounter count={unreadCount} size="small" sx={{ position: 'absolute', top: -4, right: -4 }} />
+      )}
     </Paper>
   );
 };

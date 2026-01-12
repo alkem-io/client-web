@@ -2376,6 +2376,7 @@ export type MeQueryResultsKeySpecifier = (
   | 'communityInvitations'
   | 'communityInvitationsCount'
   | 'conversations'
+  | 'conversationsUnreadCount'
   | 'id'
   | 'mySpaces'
   | 'notifications'
@@ -2390,6 +2391,7 @@ export type MeQueryResultsFieldPolicy = {
   communityInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitationsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   conversations?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   notifications?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2618,6 +2620,7 @@ export type MutationKeySpecifier = (
   | 'inviteForEntryRoleOnRoleSet'
   | 'joinRoleSet'
   | 'licenseResetOnAccount'
+  | 'markConversationAsRead'
   | 'markNotificationsAsRead'
   | 'markNotificationsAsUnread'
   | 'moveContributionToCallout'
@@ -2805,6 +2808,7 @@ export type MutationFieldPolicy = {
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  markConversationAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4179,6 +4183,7 @@ export type StorageConfigFieldPolicy = {
 export type SubscriptionKeySpecifier = (
   | 'activityCreated'
   | 'calloutPostCreated'
+  | 'conversationsUnreadCount'
   | 'forumDiscussionUpdated'
   | 'inAppNotificationReceived'
   | 'notificationsUnreadCount'
@@ -4190,6 +4195,7 @@ export type SubscriptionKeySpecifier = (
 export type SubscriptionFieldPolicy = {
   activityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
   forumDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   inAppNotificationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;

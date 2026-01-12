@@ -2,6 +2,7 @@ import { DialogContent, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { useMarkConversationAsReadMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useUserMessagingContext } from './UserMessagingContext';
 import { useUserConversations } from './useUserConversations';
 import { UserMessagingChatList } from './UserMessagingChatList';
@@ -19,6 +20,7 @@ const UserMessagingDialog = () => {
   const { conversations, isLoading, refetch } = useUserConversations();
   const { isSmallScreen: isMobile } = useScreenSize();
   const [isNewMessageDialogOpen, setIsNewMessageDialogOpen] = useState(false);
+  const [markAsRead] = useMarkConversationAsReadMutation();
 
   // Poll for new messages when dialog is open and a conversation is selected
   useEffect(() => {
@@ -27,24 +29,30 @@ const UserMessagingDialog = () => {
     }
 
     const intervalId = setInterval(() => {
-      refetch().catch(error => {
-        // in case of an error, stop polling
-        console.log('Failed to poll for new messages: ', error);
-        clearInterval(intervalId);
-      });
+      refetch()
+        .then(() => {
+          // Mark as read after fetching new messages to clear the unread counter
+          markAsRead({ variables: { conversationId: selectedConversationId } });
+        })
+        .catch(error => {
+          // in case of an error, stop polling
+          console.log('Failed to poll for new messages: ', error);
+          clearInterval(intervalId);
+        });
     }, POLLING_INTERVAL_MS);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [isOpen, selectedConversationId, refetch]);
+  }, [isOpen, selectedConversationId, refetch, markAsRead]);
 
   const selectedConversation = selectedConversationId
-    ? conversations.find(c => c.id === selectedConversationId) ?? null
+    ? (conversations.find(c => c.id === selectedConversationId) ?? null)
     : null;
 
   const handleSelectConversation = (conversationId: string) => {
     setSelectedConversationId(conversationId);
+    markAsRead({ variables: { conversationId } });
   };
 
   const handleBack = () => {
@@ -76,6 +84,7 @@ const UserMessagingDialog = () => {
 
     if (newConversation) {
       setSelectedConversationId(newConversation.id);
+      markAsRead({ variables: { conversationId: newConversation.id } });
     }
   };
 

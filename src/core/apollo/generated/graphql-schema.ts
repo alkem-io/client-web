@@ -3978,6 +3978,8 @@ export type MeQueryResults = {
   communityInvitationsCount: Scalars['Float']['output'];
   /** The conversations the current authenticated user is part of. */
   conversations: MeConversationsResult;
+  /** The number of conversations with unread messages for the current authenticated user. */
+  conversationsUnreadCount: Scalars['Float']['output'];
   /** The query id */
   id: Scalars['String']['output'];
   /** The Spaces I am contributing to */
@@ -4392,6 +4394,8 @@ export type Mutation = {
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
+  /** Marks a conversation as read for the current user, updating the lastReadAt timestamp. */
+  markConversationAsRead: Scalars['Boolean']['output'];
   /** Mark notifications as read. If no filter is provided, marks all user notifications as read. If filter with types is provided, marks only those notification types as read. */
   markNotificationsAsRead: Scalars['Boolean']['output'];
   /** Mark notifications as unread. If no filter is provided, marks all user notifications as unread. If filter with types is provided, marks only those notification types as unread. */
@@ -4916,6 +4920,10 @@ export type MutationJoinRoleSetArgs = {
 
 export type MutationLicenseResetOnAccountArgs = {
   resetData: AccountLicenseResetInput;
+};
+
+export type MutationMarkConversationAsReadArgs = {
+  conversationId: Scalars['UUID']['input'];
 };
 
 export type MutationMarkNotificationsAsReadArgs = {
@@ -7279,6 +7287,8 @@ export type Subscription = {
   activityCreated: ActivityCreatedSubscriptionResult;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   calloutPostCreated: CalloutPostCreated;
+  /** Counter of conversations with unread messages for the currently authenticated user. */
+  conversationsUnreadCount: Scalars['Int']['output'];
   /** Receive updates on Discussions */
   forumDiscussionUpdated: Discussion;
   /** New in-app notification received for the currently authenticated user. */
@@ -40989,6 +40999,17 @@ export type SpaceExplorerWelcomeSpaceQuery = {
   };
 };
 
+export type ConversationsUnreadCountQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ConversationsUnreadCountQuery = {
+  __typename?: 'Query';
+  me: { __typename?: 'MeQueryResults'; conversationsUnreadCount: number };
+};
+
+export type OnConversationsUnreadCountSubscriptionVariables = Exact<{ [key: string]: never }>;
+
+export type OnConversationsUnreadCountSubscription = { __typename?: 'Subscription'; conversationsUnreadCount: number };
+
 export type CreateConversationMutationVariables = Exact<{
   conversationData: CreateConversationInput;
 }>;
@@ -41001,6 +41022,12 @@ export type CreateConversationMutation = {
     room?: { __typename?: 'Room'; id: string } | undefined;
   };
 };
+
+export type MarkConversationAsReadMutationVariables = Exact<{
+  conversationId: Scalars['UUID']['input'];
+}>;
+
+export type MarkConversationAsReadMutation = { __typename?: 'Mutation'; markConversationAsRead: boolean };
 
 export type UserConversationsQueryVariables = Exact<{ [key: string]: never }>;
 

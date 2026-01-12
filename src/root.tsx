@@ -28,6 +28,7 @@ import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotif
 import { UserMessagingProvider } from './main/userMessaging/UserMessagingContext';
 import { VersionHandling } from './main/versionHandling';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
+import { ConversationsUnreadCountSubscriber } from '@/main/userMessaging/ConversationsUnreadCountSubscriber';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { Suspense } from 'react';
 
@@ -142,6 +143,7 @@ const Root: FC = () => {
                                         <InAppNotificationsDialog />
                                       </Suspense>
                                       <InAppNotificationCountSubscriber />
+                                      <ConversationsUnreadCountSubscriber />
                                       <Suspense fallback={null}>
                                         <UserMessagingDialog />
                                       </Suspense>
