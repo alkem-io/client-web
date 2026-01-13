@@ -1,5 +1,6 @@
 import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useUserMessagingContext } from './UserMessagingContext';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useMemo } from 'react';
 
 export interface UserConversationMessage {
@@ -25,10 +26,13 @@ export interface UserConversation {
     url?: string;
   };
   lastMessage?: UserConversationMessage;
+  unreadMessagesCount: number;
 }
 
 export const useUserConversations = () => {
   const { isEnabled, isOpen } = useUserMessagingContext();
+  const { userModel } = useCurrentUserContext();
+  const currentUserId = userModel?.id;
 
   const { data, loading, error, refetch } = useUserConversationsQuery({
     skip: !isEnabled || !isOpen,
@@ -61,6 +65,12 @@ export const useUserConversations = () => {
           // Sort messages by timestamp
           messages.sort((a, b) => a.timestamp - b.timestamp);
 
+          // Calculate unread messages count (excluding current user's messages)
+          const lastReadAt = conv.lastReadAt ? new Date(conv.lastReadAt).getTime() : null;
+          const unreadMessagesCount = lastReadAt
+            ? messages.filter(msg => msg.timestamp > lastReadAt && msg.sender?.id !== currentUserId).length
+            : messages.filter(msg => msg.sender?.id !== currentUserId).length; // If never read, count other's messages
+
           return {
             id: conv.id,
             roomId: conv.room?.id ?? '',
@@ -73,6 +83,7 @@ export const useUserConversations = () => {
               url: conv.user!.profile?.url,
             },
             lastMessage: messages.length > 0 ? messages[messages.length - 1] : undefined,
+            unreadMessagesCount,
           };
         })
         // Sort conversations: no messages first (newest chats), then by last message timestamp (most recent first)
@@ -85,7 +96,7 @@ export const useUserConversations = () => {
           return b.lastMessage.timestamp - a.lastMessage.timestamp;
         })
     );
-  }, [data?.me?.conversations?.users]);
+  }, [data?.me?.conversations?.users, currentUserId]);
 
   return {
     conversations,

@@ -27405,12 +27405,73 @@ export type MarkConversationAsReadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MarkConversationAsReadMutation,
   SchemaTypes.MarkConversationAsReadMutationVariables
 >;
+export const OnUserConversationMessageDocument = gql`
+  subscription OnUserConversationMessage {
+    userConversationMessage {
+      conversationId
+      roomId
+      type
+      data {
+        id
+        message
+        timestamp
+        sender {
+          ... on User {
+            id
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                id
+                uri
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOnUserConversationMessageSubscription__
+ *
+ * To run a query within a React component, call `useOnUserConversationMessageSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnUserConversationMessageSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnUserConversationMessageSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOnUserConversationMessageSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.OnUserConversationMessageSubscription,
+    SchemaTypes.OnUserConversationMessageSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.OnUserConversationMessageSubscription,
+    SchemaTypes.OnUserConversationMessageSubscriptionVariables
+  >(OnUserConversationMessageDocument, options);
+}
+export type OnUserConversationMessageSubscriptionHookResult = ReturnType<
+  typeof useOnUserConversationMessageSubscription
+>;
+export type OnUserConversationMessageSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.OnUserConversationMessageSubscription>;
 export const UserConversationsDocument = gql`
   query UserConversations {
     me {
       conversations {
         users {
           id
+          lastReadAt
           room {
             id
             messages {

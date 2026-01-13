@@ -22,6 +22,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { UserConversation } from './useUserConversations';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import BadgeCounter from '@/core/ui/icon/BadgeCounter';
 
 interface UserMessagingChatListProps {
   conversations: UserConversation[];
@@ -166,11 +167,16 @@ export const UserMessagingChatList = ({
                   <Typography variant="body1" fontWeight={500} noWrap sx={{ maxWidth: '60%' }}>
                     {conversation.user.displayName}
                   </Typography>
-                  {conversation.lastMessage && (
-                    <Caption color="neutral.light">
-                      {formatTimeElapsed(new Date(conversation.lastMessage.timestamp), t)}
-                    </Caption>
-                  )}
+                  <Box display="flex" flexDirection="column" alignItems="flex-end" gap={0.5}>
+                    {conversation.lastMessage && (
+                      <Caption color="neutral.light">
+                        {formatTimeElapsed(new Date(conversation.lastMessage.timestamp), t)}
+                      </Caption>
+                    )}
+                    {conversation.unreadMessagesCount > 0 && (
+                      <BadgeCounter count={conversation.unreadMessagesCount} size="small" />
+                    )}
+                  </Box>
                 </Box>
               }
               secondary={

@@ -9,10 +9,9 @@ import { UserMessagingChatList } from './UserMessagingChatList';
 import { UserMessagingConversationView } from './UserMessagingConversationView';
 import { NewMessageDialog } from './NewMessageDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-
-const POLLING_INTERVAL_MS = 5000; // Poll every 5 seconds
+import { UserConversationMessageSubscriber } from './UserConversationMessageSubscriber';
 
 const UserMessagingDialog = () => {
   const { t } = useTranslation();
@@ -22,29 +21,8 @@ const UserMessagingDialog = () => {
   const [isNewMessageDialogOpen, setIsNewMessageDialogOpen] = useState(false);
   const [markAsRead] = useMarkConversationAsReadMutation();
 
-  // Poll for new messages when dialog is open and a conversation is selected
-  useEffect(() => {
-    if (!isOpen || !selectedConversationId) {
-      return;
-    }
-
-    const intervalId = setInterval(() => {
-      refetch()
-        .then(() => {
-          // Mark as read after fetching new messages to clear the unread counter
-          markAsRead({ variables: { conversationId: selectedConversationId } });
-        })
-        .catch(error => {
-          // in case of an error, stop polling
-          console.log('Failed to poll for new messages: ', error);
-          clearInterval(intervalId);
-        });
-    }, POLLING_INTERVAL_MS);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [isOpen, selectedConversationId, refetch, markAsRead]);
+  // Subscribe to message updates only when the dialog is open
+  UserConversationMessageSubscriber({ skip: !isOpen });
 
   const selectedConversation = selectedConversationId
     ? (conversations.find(c => c.id === selectedConversationId) ?? null)
@@ -52,7 +30,18 @@ const UserMessagingDialog = () => {
 
   const handleSelectConversation = (conversationId: string) => {
     setSelectedConversationId(conversationId);
-    markAsRead({ variables: { conversationId } });
+    markAsRead({
+      variables: { conversationId },
+      update: cache => {
+        // Update the lastReadAt in cache to clear the unread count
+        cache.modify({
+          id: cache.identify({ __typename: 'Conversation', id: conversationId }),
+          fields: {
+            lastReadAt: () => new Date().toISOString(),
+          },
+        });
+      },
+    });
   };
 
   const handleBack = () => {
@@ -84,7 +73,17 @@ const UserMessagingDialog = () => {
 
     if (newConversation) {
       setSelectedConversationId(newConversation.id);
-      markAsRead({ variables: { conversationId: newConversation.id } });
+      markAsRead({
+        variables: { conversationId: newConversation.id },
+        update: cache => {
+          cache.modify({
+            id: cache.identify({ __typename: 'Conversation', id: newConversation.id }),
+            fields: {
+              lastReadAt: () => new Date().toISOString(),
+            },
+          });
+        },
+      });
     }
   };
 

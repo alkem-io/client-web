@@ -1549,6 +1549,8 @@ export type Conversation = {
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** The timestamp when the current user last read this conversation. Null if never read. */
+  lastReadAt?: Maybe<Scalars['DateTime']['output']>;
   messaging: Messaging;
   /** The room for this Conversation. */
   room?: Maybe<Room>;
@@ -7299,6 +7301,8 @@ export type Subscription = {
   roomEvents: RoomEventSubscriptionResult;
   /** Receive new Subspaces created on the Space. */
   subspaceCreated: SubspaceCreated;
+  /** Receive message events for all conversations the authenticated user is a member of. */
+  userConversationMessage: UserConversationMessageEventSubscriptionResult;
   /** Receive updates on virtual contributors */
   virtualContributorUpdated: VirtualContributorUpdatedSubscriptionResult;
 };
@@ -8539,6 +8543,19 @@ export type UserAuthenticationResult = {
 export type UserAuthorizationResetInput = {
   /** The identifier of the User whose Authorization Policy should be reset. */
   userID: Scalars['UUID']['input'];
+};
+
+/** A message event happened in a conversation the user is a member of. */
+export type UserConversationMessageEventSubscriptionResult = {
+  __typename?: 'UserConversationMessageEventSubscriptionResult';
+  /** The identifier for the Conversation. */
+  conversationId: Scalars['String']['output'];
+  /** The message data. */
+  data: Message;
+  /** The identifier for the Room. */
+  roomId: Scalars['String']['output'];
+  /** The type of event. */
+  type: MutationType;
 };
 
 export type UserFilterInput = {
@@ -41029,6 +41046,38 @@ export type MarkConversationAsReadMutationVariables = Exact<{
 
 export type MarkConversationAsReadMutation = { __typename?: 'Mutation'; markConversationAsRead: boolean };
 
+export type OnUserConversationMessageSubscriptionVariables = Exact<{ [key: string]: never }>;
+
+export type OnUserConversationMessageSubscription = {
+  __typename?: 'Subscription';
+  userConversationMessage: {
+    __typename?: 'UserConversationMessageEventSubscriptionResult';
+    conversationId: string;
+    roomId: string;
+    type: MutationType;
+    data: {
+      __typename?: 'Message';
+      id: string;
+      message: string;
+      timestamp: number;
+      sender?:
+        | { __typename?: 'Organization' }
+        | {
+            __typename?: 'User';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }
+        | { __typename?: 'VirtualContributor' }
+        | undefined;
+    };
+  };
+};
+
 export type UserConversationsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserConversationsQuery = {
@@ -41040,6 +41089,7 @@ export type UserConversationsQuery = {
       users: Array<{
         __typename?: 'Conversation';
         id: string;
+        lastReadAt?: Date | undefined;
         room?:
           | {
               __typename?: 'Room';

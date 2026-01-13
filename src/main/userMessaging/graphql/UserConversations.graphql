@@ -3,6 +3,7 @@ query UserConversations {
     conversations {
       users {
         id
+        lastReadAt
         room {
           id
           messages {

@@ -1,0 +1,25 @@
+subscription OnUserConversationMessage {
+  userConversationMessage {
+    conversationId
+    roomId
+    type
+    data {
+      id
+      message
+      timestamp
+      sender {
+        ... on User {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+      }
+    }
+  }
+}

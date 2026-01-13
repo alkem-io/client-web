@@ -1101,6 +1101,7 @@ export type ConversationKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'lastReadAt'
   | 'messaging'
   | 'room'
   | 'type'
@@ -1113,6 +1114,7 @@ export type ConversationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastReadAt?: FieldPolicy<any> | FieldReadFunction<any>;
   messaging?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4189,6 +4191,7 @@ export type SubscriptionKeySpecifier = (
   | 'notificationsUnreadCount'
   | 'roomEvents'
   | 'subspaceCreated'
+  | 'userConversationMessage'
   | 'virtualContributorUpdated'
   | SubscriptionKeySpecifier
 )[];
@@ -4201,6 +4204,7 @@ export type SubscriptionFieldPolicy = {
   notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  userConversationMessage?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubspaceCreatedKeySpecifier = ('spaceID' | 'subspace' | SubspaceCreatedKeySpecifier)[];
@@ -4607,6 +4611,19 @@ export type UserAuthenticationResultFieldPolicy = {
   authenticatedAt?: FieldPolicy<any> | FieldReadFunction<any>;
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
   methods?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserConversationMessageEventSubscriptionResultKeySpecifier = (
+  | 'conversationId'
+  | 'data'
+  | 'roomId'
+  | 'type'
+  | UserConversationMessageEventSubscriptionResultKeySpecifier
+)[];
+export type UserConversationMessageEventSubscriptionResultFieldPolicy = {
+  conversationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  data?: FieldPolicy<any> | FieldReadFunction<any>;
+  roomId?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserGroupKeySpecifier = (
   | 'authorization'
@@ -6373,6 +6390,13 @@ export type StrictTypedTypePolicies = {
   UserAuthenticationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserAuthenticationResultKeySpecifier | (() => undefined | UserAuthenticationResultKeySpecifier);
     fields?: UserAuthenticationResultFieldPolicy;
+  };
+  UserConversationMessageEventSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserConversationMessageEventSubscriptionResultKeySpecifier
+      | (() => undefined | UserConversationMessageEventSubscriptionResultKeySpecifier);
+    fields?: UserConversationMessageEventSubscriptionResultFieldPolicy;
   };
   UserGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserGroupKeySpecifier | (() => undefined | UserGroupKeySpecifier);
