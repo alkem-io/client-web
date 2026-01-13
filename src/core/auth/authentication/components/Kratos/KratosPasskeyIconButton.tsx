@@ -5,13 +5,13 @@ import { UiNode, UiNodeInputAttributes } from '@ory/kratos-client';
 import { useTranslation } from 'react-i18next';
 import { getNodeName, getNodeTitle, getPasskeyTriggerType } from './helpers';
 
-interface KratosWebAuthnIconButtonProps {
+interface KratosPasskeyIconButtonProps {
   node: UiNode & { attributes: UiNodeInputAttributes };
   isScriptLoaded: boolean;
   disabled?: boolean;
 }
 
-const KratosWebAuthnIconButton: FC<KratosWebAuthnIconButtonProps> = ({ node, isScriptLoaded, disabled = false }) => {
+const KratosPasskeyIconButton: FC<KratosPasskeyIconButtonProps> = ({ node, isScriptLoaded, disabled = false }) => {
   const { t } = useTranslation();
   const [isProcessing, setIsProcessing] = useState(false);
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
@@ -109,4 +109,4 @@ const KratosWebAuthnIconButton: FC<KratosWebAuthnIconButtonProps> = ({ node, isS
   );
 };
 
-export default KratosWebAuthnIconButton;
+export default KratosPasskeyIconButton;

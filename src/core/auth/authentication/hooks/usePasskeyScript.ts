@@ -2,20 +2,20 @@ import { useEffect, useState, useRef } from 'react';
 import { UiNode, UiNodeScriptAttributes } from '@ory/kratos-client';
 import { isScriptNode } from '../components/Kratos/helpers';
 
-type WebAuthnScriptStatus = 'idle' | 'loading' | 'loaded' | 'error';
+type PasskeyScriptStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
-interface UseWebAuthnScriptResult {
-  status: WebAuthnScriptStatus;
+interface UsePasskeyScriptResult {
+  status: PasskeyScriptStatus;
   error: Error | null;
   isReady: boolean;
 }
 
 /**
- * Hook to safely load the Ory WebAuthn/Passkey script from Kratos UI nodes.
+ * Hook to safely load the Ory Passkey script from Kratos UI nodes.
  * Handles script loading, caching, and error states.
  */
-export const useWebAuthnScript = (nodes: UiNode[] | undefined): UseWebAuthnScriptResult => {
-  const [status, setStatus] = useState<WebAuthnScriptStatus>('idle');
+export const usePasskeyScript = (nodes: UiNode[] | undefined): UsePasskeyScriptResult => {
+  const [status, setStatus] = useState<PasskeyScriptStatus>('idle');
   const [error, setError] = useState<Error | null>(null);
   const scriptRef = useRef<HTMLScriptElement | null>(null);
 
@@ -24,7 +24,7 @@ export const useWebAuthnScript = (nodes: UiNode[] | undefined): UseWebAuthnScrip
 
     const scriptNode = nodes.find(isScriptNode);
     if (!scriptNode) {
-      // No script node means WebAuthn/Passkey is not enabled
+      // No script node means Passkey is not enabled
       return;
     }
 
@@ -66,7 +66,7 @@ export const useWebAuthnScript = (nodes: UiNode[] | undefined): UseWebAuthnScrip
 
     script.onerror = () => {
       setStatus('error');
-      setError(new Error(`Failed to load WebAuthn script: ${attrs.src}`));
+      setError(new Error(`Failed to load Passkey script: ${attrs.src}`));
     };
 
     document.head.appendChild(script);
@@ -83,4 +83,4 @@ export const useWebAuthnScript = (nodes: UiNode[] | undefined): UseWebAuthnScrip
   };
 };
 
-export default useWebAuthnScript;
+export default usePasskeyScript;

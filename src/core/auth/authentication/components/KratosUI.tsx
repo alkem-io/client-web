@@ -17,10 +17,10 @@ import { KratosInputExtraProps } from './Kratos/KratosProps';
 import KratosSocialButton, { socialCustomizations } from './Kratos/KratosSocialButton';
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './Kratos/constants';
 import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isPasskeyAutocompleteInit, isScriptNode, isSubmitButton, isTextNode, isPasskeyTrigger, isPasskeyMethodButton } from './Kratos/helpers';
-import KratosWebAuthnButton from './Kratos/KratosWebAuthnButton';
-import KratosWebAuthnIconButton from './Kratos/KratosWebAuthnIconButton';
+import KratosPasskeyButton from './Kratos/KratosPasskeyButton';
+import KratosPasskeyIconButton from './Kratos/KratosPasskeyIconButton';
 import KratosText from './Kratos/KratosText';
-import useWebAuthnScript from '../hooks/useWebAuthnScript';
+import usePasskeyScript from '../hooks/usePasskeyScript';
 import { useKratosT } from './Kratos/messages';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
@@ -70,8 +70,8 @@ interface NodeGroups {
   default: UiNode[];
   oidc: UiNode[];
   password: UiNode[];
-  webauthn: UiNode[];
-  webauthnCredentials: UiNode[]; // Existing credentials (text nodes) and remove buttons
+  passkey: UiNode[];
+  passkeyCredentials: UiNode[]; // Existing credentials (text nodes) and remove buttons
   rest: UiNode[];
   submit: UiNode[];
   hidden: UiNode[];
@@ -96,8 +96,8 @@ export const KratosUI: FC<KratosUIProps> = ({
 
   const { t: kratosT } = useKratosT();
 
-  // Load WebAuthn/Passkey script if present in nodes
-  const { isReady: isWebAuthnScriptReady } = useWebAuthnScript(ui?.nodes);
+  // Load Passkey script if present in nodes
+  const { isReady: isPasskeyScriptReady } = usePasskeyScript(ui?.nodes);
 
   const renderedNodes = useMemo(
     () =>
@@ -110,7 +110,7 @@ export const KratosUI: FC<KratosUIProps> = ({
   const nodesByGroup = useMemo(() => {
     return renderedNodes?.reduce(
       (acc, node) => {
-        // Skip script nodes - they are handled separately by useWebAuthnScript
+        // Skip script nodes - they are handled separately by usePasskeyScript
         if (isScriptNode(node)) {
           return acc;
         }
@@ -128,19 +128,19 @@ export const KratosUI: FC<KratosUIProps> = ({
             return { ...acc, oidc: [...acc.oidc, node] };
           case 'webauthn':
           case 'passkey':
-            // WebAuthn/Passkey trigger buttons go to webauthn group
+            // Passkey trigger buttons go to passkey group
             if (isPasskeyTrigger(node)) {
-              return { ...acc, webauthn: [...acc.webauthn, node] };
+              return { ...acc, passkey: [...acc.passkey, node] };
             }
-            // Text nodes (existing credentials) go to webauthnCredentials
+            // Text nodes (existing credentials) go to passkeyCredentials
             if (isTextNode(node)) {
-              return { ...acc, webauthnCredentials: [...acc.webauthnCredentials, node] };
+              return { ...acc, passkeyCredentials: [...acc.passkeyCredentials, node] };
             }
-            // Remove buttons for existing credentials go to webauthnCredentials
+            // Remove buttons for existing credentials go to passkeyCredentials
             if (isSubmitButton(node)) {
-              return { ...acc, webauthnCredentials: [...acc.webauthnCredentials, node] };
+              return { ...acc, passkeyCredentials: [...acc.passkeyCredentials, node] };
             }
-            // Other webauthn nodes (like hidden inputs) go to hidden or rest
+            // Other passkey nodes (like hidden inputs) go to hidden or rest
             if (isHiddenInput(node)) {
               return { ...acc, hidden: [...acc.hidden, node] };
             }
@@ -160,7 +160,7 @@ export const KratosUI: FC<KratosUIProps> = ({
             return { ...acc, rest: [...acc.rest, node] };
         }
       },
-      { default: [], oidc: [], password: [], webauthn: [], webauthnCredentials: [], rest: [], submit: [], hidden: [] } as NodeGroups
+      { default: [], oidc: [], password: [], passkey: [], passkeyCredentials: [], rest: [], submit: [], hidden: [] } as NodeGroups
     );
   }, [renderedNodes]);
 
@@ -221,13 +221,13 @@ export const KratosUI: FC<KratosUIProps> = ({
       return <KratosSocialButton key={node.attributes.value} node={node} disabled={disableInputs} />;
     }
 
-    // Handle WebAuthn/Passkey trigger buttons
+    // Handle Passkey trigger buttons
     if ((node.group === 'webauthn' || node.group === 'passkey') && isPasskeyTrigger(node)) {
       return (
-        <KratosWebAuthnButton
+        <KratosPasskeyButton
           key={key}
           node={node}
-          isScriptLoaded={isWebAuthnScriptReady}
+          isScriptLoaded={isPasskeyScriptReady}
           disabled={disableInputs}
         />
       );
@@ -240,13 +240,13 @@ export const KratosUI: FC<KratosUIProps> = ({
         if (node.attributes.value.includes(':back')) {
           return <KratosButton key={key} node={node} variant="text" />;
         }
-        // Check for WebAuthn/Passkey triggers - these call Ory WebAuthn functions
+        // Check for Passkey triggers - these call Ory Passkey functions
         if (isPasskeyTrigger(node)) {
           return (
-            <KratosWebAuthnButton
+            <KratosPasskeyButton
               key={key}
               node={node}
-              isScriptLoaded={isWebAuthnScriptReady}
+              isScriptLoaded={isPasskeyScriptReady}
               disabled={disableInputs}
             />
           );
@@ -316,25 +316,25 @@ export const KratosUI: FC<KratosUIProps> = ({
         {nodesByGroup.submit.length > 0 && (
           <Box alignSelf="center" display="flex" flexDirection="column" gap={1} paddingY={1.5} width="100%">
             {nodesByGroup.submit.map(toUiControl)}
-            {/* Show "or" if there are WebAuthn or OIDC buttons to show after */}
-            {(nodesByGroup.webauthn.length > 0 || nodesByGroup.oidc.length > 0) && (
+            {/* Show "or" if there are Passkey or OIDC buttons to show after */}
+            {(nodesByGroup.passkey.length > 0 || nodesByGroup.oidc.length > 0) && (
               <Text textAlign="center">{t('authentication.or')}</Text>
             )}
           </Box>
         )}
-        {nodesByGroup.webauthnCredentials.length > 0 && (
+        {nodesByGroup.passkeyCredentials.length > 0 && (
           <Box display="flex" flexDirection="column" gap={1} paddingY={1} width="100%">
-            {nodesByGroup.webauthnCredentials.map(toUiControl)}
+            {nodesByGroup.passkeyCredentials.map(toUiControl)}
           </Box>
         )}
-        {/* For login flows, render WebAuthn icon buttons alongside OIDC buttons */}
-        {flowType === 'login' && nodesByGroup.webauthn.length > 0 && nodesByGroup.oidc.length > 0 && (
+        {/* For login flows, render Passkey icon buttons alongside OIDC buttons */}
+        {flowType === 'login' && nodesByGroup.passkey.length > 0 && nodesByGroup.oidc.length > 0 && (
           <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
-            {nodesByGroup.webauthn.map((node, index) => (
-              <KratosWebAuthnIconButton
-                key={`webauthn-${index}`}
+            {nodesByGroup.passkey.map((node, index) => (
+              <KratosPasskeyIconButton
+                key={`passkey-${index}`}
                 node={node as UiNode & { attributes: UiNodeInputAttributes }}
-                isScriptLoaded={isWebAuthnScriptReady}
+                isScriptLoaded={isPasskeyScriptReady}
                 disabled={disableInputs}
               />
             ))}
@@ -351,28 +351,28 @@ export const KratosUI: FC<KratosUIProps> = ({
               .map(toUiControl)}
           </Gutters>
         )}
-        {/* For login flows with only WebAuthn (no OIDC), show icon buttons in a row */}
-        {flowType === 'login' && nodesByGroup.webauthn.length > 0 && nodesByGroup.oidc.length === 0 && (
+        {/* For login flows with only Passkey (no OIDC), show icon buttons in a row */}
+        {flowType === 'login' && nodesByGroup.passkey.length > 0 && nodesByGroup.oidc.length === 0 && (
           <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
-            {nodesByGroup.webauthn.map((node, index) => (
-              <KratosWebAuthnIconButton
-                key={`webauthn-${index}`}
+            {nodesByGroup.passkey.map((node, index) => (
+              <KratosPasskeyIconButton
+                key={`passkey-${index}`}
                 node={node as UiNode & { attributes: UiNodeInputAttributes }}
-                isScriptLoaded={isWebAuthnScriptReady}
+                isScriptLoaded={isPasskeyScriptReady}
                 disabled={disableInputs}
               />
             ))}
           </Gutters>
         )}
-        {/* For non-login flows (settings, registration), keep full-width WebAuthn buttons */}
-        {flowType !== 'login' && nodesByGroup.webauthn.length > 0 && (
+        {/* For non-login flows (settings, registration), keep full-width Passkey buttons */}
+        {flowType !== 'login' && nodesByGroup.passkey.length > 0 && (
           <Box display="flex" flexDirection="column" gap={1} paddingY={1.5} width="100%">
-            {nodesByGroup.webauthn.map(toUiControl)}
+            {nodesByGroup.passkey.map(toUiControl)}
             {nodesByGroup.oidc.length > 0 && <Text textAlign="center">{t('authentication.or')}</Text>}
           </Box>
         )}
-        {/* OIDC buttons for non-login flows, or when there are no WebAuthn buttons in login flow */}
-        {(flowType !== 'login' || nodesByGroup.webauthn.length === 0) && nodesByGroup.oidc.length > 0 && (
+        {/* OIDC buttons for non-login flows, or when there are no Passkey buttons in login flow */}
+        {(flowType !== 'login' || nodesByGroup.passkey.length === 0) && nodesByGroup.oidc.length > 0 && (
           <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
             {[...nodesByGroup.oidc]
               .sort((a, b) => {

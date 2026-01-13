@@ -15,13 +15,13 @@ declare global {
   }
 }
 
-interface KratosWebAuthnButtonProps {
+interface KratosPasskeyButtonProps {
   node: UiNode & { attributes: UiNodeInputAttributes };
   isScriptLoaded: boolean;
   disabled?: boolean;
 }
 
-const KratosWebAuthnButton: FC<KratosWebAuthnButtonProps> = ({ node, isScriptLoaded, disabled = false }) => {
+const KratosPasskeyButton: FC<KratosPasskeyButtonProps> = ({ node, isScriptLoaded, disabled = false }) => {
   const { t } = useTranslation();
   const [isProcessing, setIsProcessing] = useState(false);
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
@@ -110,4 +110,4 @@ const KratosWebAuthnButton: FC<KratosWebAuthnButtonProps> = ({ node, isScriptLoa
   );
 };
 
-export default KratosWebAuthnButton;
+export default KratosPasskeyButton;
