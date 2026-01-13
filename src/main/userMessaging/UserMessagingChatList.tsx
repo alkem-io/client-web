@@ -174,7 +174,11 @@ export const UserMessagingChatList = ({
                       </Caption>
                     )}
                     {conversation.unreadMessagesCount > 0 && (
-                      <BadgeCounter count={conversation.unreadMessagesCount} size="small" />
+                      <BadgeCounter
+                        count={conversation.unreadMessagesCount}
+                        size="small"
+                        aria-label={`${conversation.unreadMessagesCount} unread messages`}
+                      />
                     )}
                   </Box>
                 </Box>

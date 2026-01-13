@@ -35,7 +35,12 @@ export const UserMessagingButton = () => {
     >
       <ChatOutlinedIcon />
       {unreadCount > 0 && (
-        <BadgeCounter count={unreadCount} size="small" sx={{ position: 'absolute', top: -4, right: -4 }} />
+        <BadgeCounter
+          count={unreadCount}
+          size="small"
+          aria-label={`${unreadCount} unread chats`}
+          sx={{ position: 'absolute', top: -4, right: -4 }}
+        />
       )}
     </Paper>
   );

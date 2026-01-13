@@ -76,7 +76,11 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
               {pendingInvitationsCount > 0 && (
                 <>
                   <Box sx={{ flexGrow: 1 }} />
-                  <BadgeCounter count={pendingInvitationsCount} size="small" />
+                  <BadgeCounter
+                    count={pendingInvitationsCount}
+                    size="small"
+                    aria-label={`${pendingInvitationsCount} pending invitations`}
+                  />
                 </>
               )}
             </ListItemButton>
@@ -147,7 +151,12 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
         header={
           <Gutters row disableGap disablePadding sx={{ position: 'relative' }}>
             {pendingInvitationsCount > 0 && (
-              <BadgeCounter count={pendingInvitationsCount} size="small" sx={{ position: 'absolute' }} />
+              <BadgeCounter
+                count={pendingInvitationsCount}
+                size="small"
+                aria-label={`${pendingInvitationsCount} pending invitations`}
+                sx={{ position: 'absolute' }}
+              />
             )}
             <MenuIcon fontSize="small" sx={{ color: 'neutral.light' }} />
             <Caption paddingLeft={gutters()}>{t('common.menu')}</Caption>

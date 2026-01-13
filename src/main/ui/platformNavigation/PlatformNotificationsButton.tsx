@@ -35,7 +35,12 @@ export const PlatformNotificationsButton = () => {
     >
       <NotificationsNoneOutlinedIcon />
       {unreadCount > 0 && (
-        <BadgeCounter count={unreadCount} size="small" sx={{ position: 'absolute', top: -4, right: -4 }} />
+        <BadgeCounter
+          count={unreadCount}
+          size="small"
+          aria-label={`${unreadCount} unread notifications`}
+          sx={{ position: 'absolute', top: -4, right: -4 }}
+        />
       )}
     </Paper>
   );

@@ -1,10 +1,16 @@
 import { TypographyProps, useTheme } from '@mui/material';
+import { AriaAttributes } from 'react';
 import { gutters } from '../grid/utils';
 import { Caption } from '../typography';
 
 interface BadgeCounterProps extends TypographyProps {
   count?: number;
   size?: 'small' | 'medium';
+  /**
+   * Accessible label describing what the count represents.
+   * Should be contextual, e.g., "3 unread messages" or "5 notifications".
+   */
+  'aria-label'?: AriaAttributes['aria-label'];
 }
 
 const BadgeSizes: Record<NonNullable<BadgeCounterProps['size']>, TypographyProps> = {
@@ -25,6 +31,7 @@ const BadgeCounter = ({ count, size = 'medium', ...props }: BadgeCounterProps) =
 
   return (
     <Caption
+      role="status"
       bgcolor={theme.palette.error.dark}
       color={theme.palette.error.contrastText}
       fontWeight="bold"
