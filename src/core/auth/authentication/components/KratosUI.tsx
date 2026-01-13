@@ -2,7 +2,7 @@ import { Text } from '@/core/ui/typography';
 import { Alert, Box, Button } from '@mui/material';
 import KeyIcon from '@mui/icons-material/Key';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
-import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
+import { UiContainer, UiNode, UiNodeInputAttributes, UiText } from '@ory/kratos-client';
 import { isMatch, some } from 'lodash';
 import { ComponentType, FC, PropsWithChildren, ReactNode, createContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +19,7 @@ import KratosSocialButton, { socialCustomizations } from './Kratos/KratosSocialB
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './Kratos/constants';
 import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isPasskeyAutocompleteInit, isScriptNode, isSubmitButton, isTextNode, isWebAuthnOrPasskeyTrigger, isWebAuthnMethodButton } from './Kratos/helpers';
 import KratosWebAuthnButton from './Kratos/KratosWebAuthnButton';
+import KratosWebAuthnIconButton from './Kratos/KratosWebAuthnIconButton';
 import KratosText from './Kratos/KratosText';
 import useWebAuthnScript from '../hooks/useWebAuthnScript';
 import { useKratosT } from './Kratos/messages';
@@ -317,6 +318,7 @@ export const KratosUI: FC<KratosUIProps> = ({
         {nodesByGroup.submit.length > 0 && (
           <Box alignSelf="center" display="flex" flexDirection="column" gap={1} paddingY={1.5} width="100%">
             {nodesByGroup.submit.map(toUiControl)}
+            {/* Show "or" if there are WebAuthn or OIDC buttons to show after */}
             {(nodesByGroup.webauthn.length > 0 || nodesByGroup.oidc.length > 0) && (
               <Text textAlign="center">{t('authentication.or')}</Text>
             )}
@@ -327,13 +329,52 @@ export const KratosUI: FC<KratosUIProps> = ({
             {nodesByGroup.webauthnCredentials.map(toUiControl)}
           </Box>
         )}
-        {nodesByGroup.webauthn.length > 0 && (
+        {/* For login flows, render WebAuthn icon buttons alongside OIDC buttons */}
+        {flowType === 'login' && nodesByGroup.webauthn.length > 0 && nodesByGroup.oidc.length > 0 && (
+          <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
+            {nodesByGroup.webauthn.map((node, index) => (
+              <KratosWebAuthnIconButton
+                key={`webauthn-${index}`}
+                node={node as UiNode & { attributes: UiNodeInputAttributes }}
+                isScriptLoaded={isWebAuthnScriptReady}
+                disabled={disableInputs}
+              />
+            ))}
+            {[...nodesByGroup.oidc]
+              .sort((a, b) => {
+                const aValue = isInputNode(a) ? a.attributes.value : '';
+                const bValue = isInputNode(b) ? b.attributes.value : '';
+
+                const aOrder = socialCustomizations[aValue]?.sortOrder ?? 0;
+                const bOrder = socialCustomizations[bValue]?.sortOrder ?? 0;
+
+                return aOrder - bOrder;
+              })
+              .map(toUiControl)}
+          </Gutters>
+        )}
+        {/* For login flows with only WebAuthn (no OIDC), show icon buttons in a row */}
+        {flowType === 'login' && nodesByGroup.webauthn.length > 0 && nodesByGroup.oidc.length === 0 && (
+          <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
+            {nodesByGroup.webauthn.map((node, index) => (
+              <KratosWebAuthnIconButton
+                key={`webauthn-${index}`}
+                node={node as UiNode & { attributes: UiNodeInputAttributes }}
+                isScriptLoaded={isWebAuthnScriptReady}
+                disabled={disableInputs}
+              />
+            ))}
+          </Gutters>
+        )}
+        {/* For non-login flows (settings, registration), keep full-width WebAuthn buttons */}
+        {flowType !== 'login' && nodesByGroup.webauthn.length > 0 && (
           <Box display="flex" flexDirection="column" gap={1} paddingY={1.5} width="100%">
             {nodesByGroup.webauthn.map(toUiControl)}
             {nodesByGroup.oidc.length > 0 && <Text textAlign="center">{t('authentication.or')}</Text>}
           </Box>
         )}
-        {nodesByGroup.oidc.length > 0 && (
+        {/* OIDC buttons for non-login flows, or when there are no WebAuthn buttons in login flow */}
+        {(flowType !== 'login' || nodesByGroup.webauthn.length === 0) && nodesByGroup.oidc.length > 0 && (
           <Gutters row sx={{ gap: gutters(0.5), justifyContent: 'center', padding: 0 }}>
             {[...nodesByGroup.oidc]
               .sort((a, b) => {
