@@ -57,7 +57,8 @@ export const SubspacePageLayout = () => {
   const { isVideoCallEnabled } = useVideoCall(subspace?.id);
 
   const {
-    currentInnovationFlowStateDisplayName: currentInnovationFlowState,
+    currentInnovationFlowState,
+    currentInnovationFlowStateDisplayName,
     innovationFlowStates,
     canEditInnovationFlow,
   } = useInnovationFlowStates({ collaborationId });
@@ -88,13 +89,15 @@ export const SubspacePageLayout = () => {
       return;
     }
     // Set the current state on page load or the first state if none is selected
-    const selectedIndex = innovationFlowStates?.findIndex(state => state.displayName === currentInnovationFlowState);
+    const selectedIndex = innovationFlowStates?.findIndex(
+      state => state.displayName === currentInnovationFlowStateDisplayName
+    );
     if (selectedIndex !== undefined && selectedIndex >= 0) {
       setSelectedInnovationFlowState!(innovationFlowStates[selectedIndex].displayName);
     } else {
       setSelectedInnovationFlowState!(innovationFlowStates[0].displayName);
     }
-  }, [innovationFlowStates, currentInnovationFlowState, setSelectedInnovationFlowState]);
+  }, [innovationFlowStates, currentInnovationFlowStateDisplayName, setSelectedInnovationFlowState]);
 
   let classificationTagsets: ClassificationTagsetModel[] = [];
   if (selectedInnovationFlowState) {
@@ -154,7 +157,7 @@ export const SubspacePageLayout = () => {
             >
               <InnovationFlowStates
                 states={innovationFlowStates}
-                currentState={currentInnovationFlowState}
+                currentState={currentInnovationFlowStateDisplayName}
                 selectedState={selectedInnovationFlowState}
                 onSelectState={state => setSelectedInnovationFlowState!(state.displayName)}
                 visualizer={InnovationFlowChips}
@@ -179,6 +182,7 @@ export const SubspacePageLayout = () => {
               onClose={() => setIsCalloutCreationDialogOpen(false)}
               calloutsSetId={calloutsSetId}
               calloutClassification={buildFlowStateClassificationTagsets(selectedInnovationFlowState)}
+              defaultTemplateId={currentInnovationFlowState?.defaultCalloutTemplate?.id ?? null}
             />
           </Suspense>
         </PageContentColumnBase>
@@ -187,7 +191,7 @@ export const SubspacePageLayout = () => {
       <SubspaceDrawerMenu
         innovationFlowStates={innovationFlowStates}
         selectedInnovationFlowState={selectedInnovationFlowState}
-        currentInnovationFlowState={currentInnovationFlowState}
+        currentInnovationFlowStateDisplayName={currentInnovationFlowStateDisplayName}
         createButton={createButton}
         onSelectState={setSelectedInnovationFlowState!}
         about={about}

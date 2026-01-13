@@ -4,6 +4,7 @@ import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 
 export interface UseInnovationFlowStatesProvided {
   innovationFlowStates: InnovationFlowStateModel[] | undefined;
+  currentInnovationFlowState: InnovationFlowStateModel | undefined;
   currentInnovationFlowStateDisplayName: string | undefined;
   canEditInnovationFlow: boolean | undefined;
 }
@@ -21,14 +22,14 @@ const useInnovationFlowStates = ({
   const innovationFlow = data?.lookup.collaboration?.innovationFlow;
   const innovationFlowStates = innovationFlow?.states;
 
-  const currentInnovationFlowStateDisplayName = innovationFlowStates?.find(
-    state => state.id === innovationFlow?.currentState?.id
-  )?.displayName;
+  const currentInnovationFlowState = innovationFlowStates?.find(state => state.id === innovationFlow?.currentState?.id);
+  const currentInnovationFlowStateDisplayName = currentInnovationFlowState?.displayName;
   const myPrivileges = innovationFlow?.authorization?.myPrivileges;
   const canEditInnovationFlow = myPrivileges?.includes(AuthorizationPrivilege.Update);
 
   return {
     innovationFlowStates,
+    currentInnovationFlowState,
     currentInnovationFlowStateDisplayName,
     canEditInnovationFlow,
   };

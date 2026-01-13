@@ -7,7 +7,7 @@ import { mapCalloutTemplateToCalloutForm } from '../models/mappings';
 
 interface UseCalloutTemplateImportProps {
   calloutRestrictions?: CalloutRestrictions;
-  defaultTemplateId?: string;
+  defaultTemplateId?: string | null;
   dialogOpen?: boolean;
 }
 

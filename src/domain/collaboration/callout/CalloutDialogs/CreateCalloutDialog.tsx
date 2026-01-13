@@ -42,7 +42,7 @@ export interface CreateCalloutDialogProps {
   calloutClassification?: ClassificationTagsetModel[];
 
   // Default template to pre-load (from innovation flow state):
-  defaultTemplateId?: string;
+  defaultTemplateId?: string | null;
 
   calloutRestrictions?: CalloutRestrictions;
 }

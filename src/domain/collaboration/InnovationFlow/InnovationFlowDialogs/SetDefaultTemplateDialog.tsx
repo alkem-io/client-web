@@ -59,19 +59,12 @@ const SetDefaultTemplateDialog = ({
     }
   };
 
-  const subtitleText = currentTemplate
-    ? t('components.innovationFlowSettings.defaultTemplate.currentTemplate', {
-        template: currentTemplate.profile.displayName,
-      })
-    : t('components.innovationFlowSettings.defaultTemplate.noTemplate');
-
   return (
     <ImportTemplatesDialog
       open={open}
       onClose={onClose}
       templateType={TemplateType.Callout}
       enablePlatformTemplates
-      subtitle={subtitleText}
       onSelectTemplate={handleSelectTemplate}
       selectedTemplateId={currentTemplate?.id}
       onRemoveTemplate={currentTemplate ? handleRemoveTemplate : undefined}
