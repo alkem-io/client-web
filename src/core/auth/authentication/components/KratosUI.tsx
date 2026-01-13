@@ -1,6 +1,5 @@
 import { Text } from '@/core/ui/typography';
 import { Alert, Box, Button } from '@mui/material';
-import KeyIcon from '@mui/icons-material/Key';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import { UiContainer, UiNode, UiNodeInputAttributes, UiText } from '@ory/kratos-client';
 import { isMatch, some } from 'lodash';
@@ -17,7 +16,7 @@ import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
 import KratosSocialButton, { socialCustomizations } from './Kratos/KratosSocialButton';
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './Kratos/constants';
-import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isPasskeyAutocompleteInit, isScriptNode, isSubmitButton, isTextNode, isWebAuthnOrPasskeyTrigger, isWebAuthnMethodButton } from './Kratos/helpers';
+import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isPasskeyAutocompleteInit, isScriptNode, isSubmitButton, isTextNode, isPasskeyTrigger, isPasskeyMethodButton } from './Kratos/helpers';
 import KratosWebAuthnButton from './Kratos/KratosWebAuthnButton';
 import KratosWebAuthnIconButton from './Kratos/KratosWebAuthnIconButton';
 import KratosText from './Kratos/KratosText';
@@ -130,7 +129,7 @@ export const KratosUI: FC<KratosUIProps> = ({
           case 'webauthn':
           case 'passkey':
             // WebAuthn/Passkey trigger buttons go to webauthn group
-            if (isWebAuthnOrPasskeyTrigger(node)) {
+            if (isPasskeyTrigger(node)) {
               return { ...acc, webauthn: [...acc.webauthn, node] };
             }
             // Text nodes (existing credentials) go to webauthnCredentials
@@ -223,7 +222,7 @@ export const KratosUI: FC<KratosUIProps> = ({
     }
 
     // Handle WebAuthn/Passkey trigger buttons
-    if ((node.group === 'webauthn' || node.group === 'passkey') && isWebAuthnOrPasskeyTrigger(node)) {
+    if ((node.group === 'webauthn' || node.group === 'passkey') && isPasskeyTrigger(node)) {
       return (
         <KratosWebAuthnButton
           key={key}
@@ -242,7 +241,7 @@ export const KratosUI: FC<KratosUIProps> = ({
           return <KratosButton key={key} node={node} variant="text" />;
         }
         // Check for WebAuthn/Passkey triggers - these call Ory WebAuthn functions
-        if (isWebAuthnOrPasskeyTrigger(node)) {
+        if (isPasskeyTrigger(node)) {
           return (
             <KratosWebAuthnButton
               key={key}
@@ -252,16 +251,15 @@ export const KratosUI: FC<KratosUIProps> = ({
             />
           );
         }
-        // Check for WebAuthn/Passkey method buttons - these are regular submit buttons with icons
-        if (isWebAuthnMethodButton(node)) {
-          const isPasskey = node.attributes.value === 'passkey';
+        // Check for Passkey method buttons - these are regular submit buttons with icons
+        if (isPasskeyMethodButton(node)) {
           return (
             <KratosButton
               sx={{ paddingY: 1, backgroundColor: theme => theme.palette.highlight.dark }}
               key={key}
               node={node}
               disabled={disableInputs || submitDisabled}
-              startIcon={isPasskey ? <FingerprintIcon /> : <KeyIcon />}
+              startIcon={<FingerprintIcon />}
             />
           );
         }

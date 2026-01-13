@@ -233,15 +233,13 @@
       "signUpEmail": "Sign up with E-Mail",
       "alreadyHaveAccount": "Already have an $t(common.account)?"
     },
-    "webauthn": {
-      "sign-in-with-security-key": "Sign in with security key",
-      "register-security-key": "Register security key",
-      "sign-in-with-passkey": "Sign in with passkey",
-      "register-passkey": "Register passkey",
-      "not-supported": "Security keys are not supported by your browser",
-      "script-loading": "Loading security key support...",
-      "script-error": "Failed to load security key functionality",
-      "unknown-error": "An error occurred with your security key"
+    "passkey": {
+      "sign-in": "Sign in with passkey",
+      "register": "Register passkey",
+      "not-supported": "Passkeys are not supported by your browser",
+      "script-loading": "Loading passkey support...",
+      "script-error": "Failed to load passkey functionality",
+      "unknown-error": "An error occurred with your passkey"
     }
   },
   "common": {

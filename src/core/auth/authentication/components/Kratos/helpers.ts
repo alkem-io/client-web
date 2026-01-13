@@ -100,9 +100,7 @@ export const isScriptNode = (node: UiNode): node is UiNode & { attributes: UiNod
 export const isTextNode = (node: UiNode): node is UiNode & { attributes: UiNodeTextAttributes } =>
   node.attributes.node_type === 'text';
 
-const WEBAUTHN_PASSKEY_TRIGGERS = [
-  'oryWebAuthnLogin',
-  'oryWebAuthnRegistration',
+const PASSKEY_TRIGGERS = [
   'oryPasskeyLogin',
   'oryPasskeyLoginAutocompleteInit',
   'oryPasskeyRegistration',
@@ -110,9 +108,7 @@ const WEBAUTHN_PASSKEY_TRIGGERS = [
 ] as const;
 
 // Triggers that should be rendered as visible buttons
-const VISIBLE_WEBAUTHN_TRIGGERS = [
-  'oryWebAuthnLogin',
-  'oryWebAuthnRegistration',
+const VISIBLE_PASSKEY_TRIGGERS = [
   'oryPasskeyLogin',
   'oryPasskeyRegistration',
   'oryPasskeySettingsRegistration',
@@ -128,49 +124,49 @@ export const isPasskeyAutocompleteInit = (node: UiNode): boolean => {
   return attrs.onclickTrigger === 'oryPasskeyLoginAutocompleteInit';
 };
 
-export const isWebAuthnOrPasskeyTrigger = (node: UiNode): boolean => {
+export const isPasskeyTrigger = (node: UiNode): boolean => {
   if (!isInputNode(node)) return false;
   const attrs = node.attributes as UiNodeInputAttributes;
 
   // Check modern onclickTrigger attribute (exclude autocomplete init - it's not a visible button)
   if (attrs.onclickTrigger) {
-    return VISIBLE_WEBAUTHN_TRIGGERS.includes(attrs.onclickTrigger as (typeof VISIBLE_WEBAUTHN_TRIGGERS)[number]);
+    return VISIBLE_PASSKEY_TRIGGERS.includes(attrs.onclickTrigger as (typeof VISIBLE_PASSKEY_TRIGGERS)[number]);
   }
 
-  // Check deprecated onclick attribute (contains inline JS like "window.__oryWebAuthnLogin()")
+  // Check deprecated onclick attribute
   if (attrs.onclick) {
-    return VISIBLE_WEBAUTHN_TRIGGERS.some(trigger => attrs.onclick?.includes(`__${trigger}`));
+    return VISIBLE_PASSKEY_TRIGGERS.some(trigger => attrs.onclick?.includes(`__${trigger}`));
   }
 
   return false;
 };
 
 /**
- * Checks if a node is a WebAuthn/Passkey method submit button (not a trigger button).
- * These buttons submit the form with the webauthn/passkey method but don't call Ory functions.
+ * Checks if a node is a Passkey method submit button (not a trigger button).
+ * These buttons submit the form with the passkey method but don't call Ory functions.
  */
-export const isWebAuthnMethodButton = (node: UiNode): boolean => {
+export const isPasskeyMethodButton = (node: UiNode): boolean => {
   if (!isInputNode(node)) return false;
   const attrs = node.attributes as UiNodeInputAttributes;
-  return attrs.type === 'submit' && attrs.name === 'method' && (attrs.value === 'webauthn' || attrs.value === 'passkey');
+  return attrs.type === 'submit' && attrs.name === 'method' && attrs.value === 'passkey';
 };
 
 /**
- * Gets the trigger type from a WebAuthn/Passkey node.
- * Returns the trigger name (e.g., 'oryWebAuthnLogin') or undefined if not a trigger node.
+ * Gets the trigger type from a Passkey node.
+ * Returns the trigger name (e.g., 'oryPasskeyLogin') or undefined if not a trigger node.
  */
-export const getWebAuthnTriggerType = (node: UiNode): string | undefined => {
+export const getPasskeyTriggerType = (node: UiNode): string | undefined => {
   if (!isInputNode(node)) return undefined;
   const attrs = node.attributes as UiNodeInputAttributes;
 
   // Check modern onclickTrigger attribute
-  if (attrs.onclickTrigger && WEBAUTHN_PASSKEY_TRIGGERS.includes(attrs.onclickTrigger as (typeof WEBAUTHN_PASSKEY_TRIGGERS)[number])) {
+  if (attrs.onclickTrigger && PASSKEY_TRIGGERS.includes(attrs.onclickTrigger as (typeof PASSKEY_TRIGGERS)[number])) {
     return attrs.onclickTrigger;
   }
 
   // Check deprecated onclick attribute
   if (attrs.onclick) {
-    const match = WEBAUTHN_PASSKEY_TRIGGERS.find(trigger => attrs.onclick?.includes(`__${trigger}`));
+    const match = PASSKEY_TRIGGERS.find(trigger => attrs.onclick?.includes(`__${trigger}`));
     if (match) return match;
   }
 
