@@ -41,7 +41,8 @@ export const SubspacePageLayout = () => {
   const { t } = useTranslation();
   const { permissions } = useSubSpace();
   const { spaceLevel, spaceId, parentSpaceId } = useUrlResolver();
-  const { selectedInnovationFlowState, setSelectedInnovationFlowState } = useContext(InnovationFlowStateContext);
+  const { selectedInnovationFlowState: selectedFlowStateName, setSelectedInnovationFlowState } =
+    useContext(InnovationFlowStateContext);
   const { data: subspacePageData } = useSubspacePageQuery({
     variables: {
       spaceId: spaceId!,
@@ -57,11 +58,11 @@ export const SubspacePageLayout = () => {
   const { isVideoCallEnabled } = useVideoCall(subspace?.id);
 
   const {
-    currentInnovationFlowState,
     currentInnovationFlowStateDisplayName,
+    selectedInnovationFlowState,
     innovationFlowStates,
     canEditInnovationFlow,
-  } = useInnovationFlowStates({ collaborationId });
+  } = useInnovationFlowStates({ collaborationId, selectedStateName: selectedFlowStateName });
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
 
   const isCollapsed = localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false;
@@ -100,11 +101,11 @@ export const SubspacePageLayout = () => {
   }, [innovationFlowStates, currentInnovationFlowStateDisplayName, setSelectedInnovationFlowState]);
 
   let classificationTagsets: ClassificationTagsetModel[] = [];
-  if (selectedInnovationFlowState) {
+  if (selectedFlowStateName) {
     classificationTagsets = [
       {
         name: TagsetReservedName.FlowState,
-        tags: [selectedInnovationFlowState],
+        tags: [selectedFlowStateName],
       },
     ];
   }
@@ -113,7 +114,7 @@ export const SubspacePageLayout = () => {
     calloutsSetId,
     classificationTagsets: classificationTagsets,
     includeClassification: true,
-    skip: !selectedInnovationFlowState,
+    skip: !selectedFlowStateName,
   });
 
   const showInnovationFlowStates = Boolean(innovationFlowStates?.length);
@@ -158,7 +159,7 @@ export const SubspacePageLayout = () => {
               <InnovationFlowStates
                 states={innovationFlowStates}
                 currentState={currentInnovationFlowStateDisplayName}
-                selectedState={selectedInnovationFlowState}
+                selectedState={selectedFlowStateName}
                 onSelectState={state => setSelectedInnovationFlowState!(state.displayName)}
                 visualizer={InnovationFlowChips}
                 createButton={calloutsSetProvided?.canCreateCallout && createButton}
@@ -181,8 +182,8 @@ export const SubspacePageLayout = () => {
               open={isCalloutCreationDialogOpen}
               onClose={() => setIsCalloutCreationDialogOpen(false)}
               calloutsSetId={calloutsSetId}
-              calloutClassification={buildFlowStateClassificationTagsets(selectedInnovationFlowState)}
-              defaultTemplateId={currentInnovationFlowState?.defaultCalloutTemplate?.id ?? null}
+              calloutClassification={buildFlowStateClassificationTagsets(selectedFlowStateName)}
+              defaultTemplateId={selectedInnovationFlowState?.defaultCalloutTemplate?.id ?? null}
             />
           </Suspense>
         </PageContentColumnBase>
@@ -190,7 +191,7 @@ export const SubspacePageLayout = () => {
 
       <SubspaceDrawerMenu
         innovationFlowStates={innovationFlowStates}
-        selectedInnovationFlowState={selectedInnovationFlowState}
+        selectedInnovationFlowState={selectedFlowStateName}
         currentInnovationFlowStateDisplayName={currentInnovationFlowStateDisplayName}
         createButton={createButton}
         onSelectState={setSelectedInnovationFlowState!}
