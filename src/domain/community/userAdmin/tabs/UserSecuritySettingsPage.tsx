@@ -1,4 +1,3 @@
-import { FormEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
@@ -38,49 +37,8 @@ export const UserSecuritySettingsPage = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const flowId = searchParams.get('flow') ?? undefined;
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { flow: settingsFlow, loading, error, refetch } = useKratosFlow(FlowTypeName.Settings, flowId);
-
-  const handleSubmit = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-
-      const form = e.currentTarget;
-      const formData = new FormData(form);
-
-      // Get the submit button that was clicked
-      const submitter = (e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
-      if (submitter?.name && submitter?.value) {
-        formData.set(submitter.name, submitter.value);
-      }
-
-      setIsSubmitting(true);
-
-      try {
-        const response = await fetch(form.action, {
-          method: form.method || 'POST',
-          body: new URLSearchParams(formData as unknown as Record<string, string>),
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          credentials: 'include',
-        });
-
-        if (response.ok || response.status === 422) {
-          // Refresh the flow to get updated data
-          refetch();
-        } else {
-          console.error('Settings update failed:', response.status);
-        }
-      } catch (err) {
-        console.error('Settings update error:', err);
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [refetch]
-  );
+  const { flow: settingsFlow, loading, error } = useKratosFlow(FlowTypeName.Settings, flowId);
 
   if (loading) {
     return (
@@ -130,22 +88,13 @@ export const UserSecuritySettingsPage = () => {
 
           {settingsFlow?.ui && (
             <Box sx={{ mt: 2 }}>
-              <SecurityFormContext.Provider value={contextValue}>
-                <Box
-                  component="form"
-                  action={settingsFlow.ui.action}
-                  method={settingsFlow.ui.method}
-                  onSubmit={handleSubmit}
-                  noValidate
-                >
-                  <KratosUI
-                    ui={settingsFlow.ui}
-                    removedFields={REMOVED_FIELDS}
-                    flowType="settings"
-                    disableInputs={isSubmitting}
-                  />
-                </Box>
-              </SecurityFormContext.Provider>
+              <KratosForm ui={settingsFlow.ui}>
+                <KratosUI
+                  ui={settingsFlow.ui}
+                  removedFields={REMOVED_FIELDS}
+                  flowType="settings"
+                />
+              </KratosForm>
             </Box>
           )}
         </PageContentBlock>
