@@ -90,6 +90,7 @@ const FlowStateTabPage = ({ sectionIndex }: FlowStateTabPageProps) => {
           onClose={() => setIsCalloutCreationDialogOpen(false)}
           calloutsSetId={calloutsSetId}
           calloutClassification={buildFlowStateClassificationTagsets(flowStateForNewCallouts?.displayName || '')}
+          defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
         />
       </Suspense>
     </>

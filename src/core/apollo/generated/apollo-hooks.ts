@@ -20169,6 +20169,13 @@ export const SpaceTabDocument = gql`
               settings {
                 allowNewCallouts
               }
+              defaultCalloutTemplate {
+                id
+                profile {
+                  id
+                  displayName
+                }
+              }
             }
           }
           calloutsSet {
