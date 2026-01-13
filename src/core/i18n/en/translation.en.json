@@ -239,7 +239,8 @@
       "not-supported": "Passkeys are not supported by your browser",
       "script-loading": "Loading passkey support...",
       "script-error": "Failed to load passkey functionality",
-      "unknown-error": "An error occurred with your passkey"
+      "unknown-error": "An error occurred with your passkey",
+      "remove-credential": "Remove passkey"
     }
   },
   "common": {

@@ -3,6 +3,7 @@ import { Box, Typography, Paper, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import KeyIcon from '@mui/icons-material/Key';
 import { UiNode, UiNodeTextAttributes } from '@ory/kratos-client';
+import { useTranslation } from 'react-i18next';
 import { useKratosT } from './messages';
 
 interface KratosTextProps {
@@ -15,13 +16,14 @@ interface KratosTextProps {
  * like WebAuthn security keys or passkeys.
  */
 export const KratosText: FC<KratosTextProps> = ({ node, onRemove }) => {
-  const { t } = useKratosT();
+  const { t } = useTranslation();
+  const { t: kratosT } = useKratosT();
   const { text } = node.attributes;
   const label = node.meta.label;
 
   // For WebAuthn credentials, the text contains the credential info
   // Label contains the credential name/identifier
-  const displayText = label ? t(label) : text.text;
+  const displayText = label ? kratosT(label) : text.text;
 
   return (
     <Paper
@@ -44,7 +46,7 @@ export const KratosText: FC<KratosTextProps> = ({ node, onRemove }) => {
         )}
       </Box>
       {onRemove && (
-        <IconButton size="small" onClick={onRemove} aria-label="Remove security key">
+        <IconButton size="small" onClick={onRemove} aria-label={t('authentication.passkey.remove-credential')}>
           <DeleteIcon fontSize="small" />
         </IconButton>
       )}

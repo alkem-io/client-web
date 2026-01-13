@@ -6,12 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { getNodeName, getNodeTitle, getPasskeyTriggerType } from './helpers';
 
 // Global type declarations for Ory Passkey functions
+// Options parameter is passed by the Ory script with WebAuthn credentials
 declare global {
   interface Window {
-    __oryPasskeyLogin?: () => Promise<void>;
-    __oryPasskeyLoginAutocompleteInit?: () => Promise<void>;
-    __oryPasskeyRegistration?: () => Promise<void>;
-    __oryPasskeySettingsRegistration?: () => Promise<void>;
+    __oryPasskeyLogin?: (options?: unknown) => Promise<void>;
+    __oryPasskeyLoginAutocompleteInit?: (options?: unknown) => Promise<void>;
+    __oryPasskeyRegistration?: (options?: unknown) => Promise<void>;
+    __oryPasskeySettingsRegistration?: (options?: unknown) => Promise<void>;
   }
 }
 
@@ -46,12 +47,14 @@ const KratosPasskeyButton: FC<KratosPasskeyButtonProps> = ({ node, isScriptLoade
     setPasskeyError(null);
 
     try {
-      // If the node has an onclick attribute with inline JS, execute it directly
+      // If the node has an onclick attribute with inline JS, execute it
       // This is how Ory Kratos passes passkey options to the client
+      // The onclick contains JavaScript like: window.__oryPasskeyLogin({...options...})
       if (attributes.onclick) {
-        // The onclick contains JavaScript like: window.__oryPasskeyLogin({...options...})
-        // We need to execute it using eval (this is the recommended approach by Ory for SPAs)
-        eval(attributes.onclick);
+        // Use Function constructor instead of eval for slightly better security
+        // (still executes arbitrary code but is more explicit and doesn't access local scope)
+        const fn = new Function(attributes.onclick);
+        await fn();
       } else if (attributes.onclickTrigger) {
         // Modern Kratos uses onclickTrigger instead of onclick
         switch (triggerType) {
@@ -67,6 +70,8 @@ const KratosPasskeyButton: FC<KratosPasskeyButtonProps> = ({ node, isScriptLoade
           case 'oryPasskeySettingsRegistration':
             await window.__oryPasskeySettingsRegistration?.();
             break;
+          default:
+            throw new Error(`Unknown passkey trigger type: ${triggerType}`);
         }
       }
     } catch (err) {
@@ -78,7 +83,9 @@ const KratosPasskeyButton: FC<KratosPasskeyButtonProps> = ({ node, isScriptLoade
     }
   }, [isScriptLoaded, triggerType, attributes.onclick, attributes.onclickTrigger, t]);
 
-  const isButtonDisabled = attributes.disabled || disabled || !isScriptLoaded || isProcessing;
+  // Note: We don't disable the button while script is loading - clicking will show an error message
+  // This makes the script-loading error message reachable for UX feedback
+  const isButtonDisabled = attributes.disabled || disabled || isProcessing;
   const buttonLabel = getNodeTitle(node, t) ?? t('authentication.passkey.sign-in');
 
   return (

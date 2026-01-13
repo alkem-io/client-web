@@ -35,7 +35,9 @@ const KratosPasskeyIconButton: FC<KratosPasskeyIconButtonProps> = ({ node, isScr
 
     try {
       if (attributes.onclick) {
-        eval(attributes.onclick);
+        // Use Function constructor instead of eval for slightly better security
+        const fn = new Function(attributes.onclick);
+        await fn();
       } else if (attributes.onclickTrigger) {
         switch (triggerType) {
           case 'oryPasskeyLogin':
@@ -50,6 +52,8 @@ const KratosPasskeyIconButton: FC<KratosPasskeyIconButtonProps> = ({ node, isScr
           case 'oryPasskeySettingsRegistration':
             await window.__oryPasskeySettingsRegistration?.();
             break;
+          default:
+            throw new Error(`Unknown passkey trigger type: ${triggerType}`);
         }
       }
     } catch (err) {
@@ -60,7 +64,9 @@ const KratosPasskeyIconButton: FC<KratosPasskeyIconButtonProps> = ({ node, isScr
     }
   }, [isScriptLoaded, triggerType, attributes.onclick, attributes.onclickTrigger, t]);
 
-  const isButtonDisabled = attributes.disabled || disabled || !isScriptLoaded || isProcessing;
+  // Note: We don't disable the button while script is loading - clicking will show an error message
+  // This makes the script-loading error message reachable for UX feedback
+  const isButtonDisabled = attributes.disabled || disabled || isProcessing;
   const buttonLabel = getNodeTitle(node, t) ?? t('authentication.passkey.sign-in');
 
   return (
@@ -74,29 +80,33 @@ const KratosPasskeyIconButton: FC<KratosPasskeyIconButtonProps> = ({ node, isScr
         }}
       >
         <Tooltip title={buttonLabel} placement="top" arrow>
-          <Button
-            name={getNodeName(node)}
-            type="button"
-            disabled={isButtonDisabled}
-            value={attributes.value}
-            onClick={handleClick}
-            variant="contained"
-            sx={{
-              background: theme => theme.palette.background.paper,
-              padding: 0,
-              height: '100%',
-              margin: 0,
-              '&.Mui-disabled': {
-                opacity: 0.6,
-              },
-            }}
-          >
-            {isProcessing ? (
-              <CircularProgress size={32} color="inherit" />
-            ) : (
-              <FingerprintIcon sx={{ fontSize: 32, color: theme => theme.palette.primary.main }} />
-            )}
-          </Button>
+          {/* Wrap in span so Tooltip works even when button is disabled */}
+          <span style={{ height: '100%', display: 'inline-flex' }}>
+            <Button
+              name={getNodeName(node)}
+              type="button"
+              disabled={isButtonDisabled}
+              value={attributes.value}
+              onClick={handleClick}
+              variant="contained"
+              aria-label={buttonLabel}
+              sx={{
+                background: theme => theme.palette.background.paper,
+                padding: 0,
+                height: '100%',
+                margin: 0,
+                '&.Mui-disabled': {
+                  opacity: 0.6,
+                },
+              }}
+            >
+              {isProcessing ? (
+                <CircularProgress size={32} color="inherit" />
+              ) : (
+                <FingerprintIcon sx={{ fontSize: 32, color: theme => theme.palette.primary.main }} />
+              )}
+            </Button>
+          </span>
         </Tooltip>
         <input type="hidden" name={attributes.name} />
       </Box>
