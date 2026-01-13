@@ -62,7 +62,6 @@ type useCalendarEventProvided = {
     roomId: string | undefined;
     messages: Message[];
     vcInteractions: {
-      id: string;
       threadID: string;
       virtualContributorID: string;
     }[];

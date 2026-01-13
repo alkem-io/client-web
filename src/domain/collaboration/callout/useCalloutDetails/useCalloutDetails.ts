@@ -35,7 +35,7 @@ const useCalloutDetails = ({
   const { entitlements, permissions } = useSpacePermissionsAndEntitlements();
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
-  const calloutsCanBeSavedAsTemplate = entitlements?.entitledToSaveAsTemplate && permissions.canCreateTemplates;
+  const canBeSavedAsTemplate = permissions.canSaveAsTemplate && entitlements.entitledToSaveAsTemplate;
   const { canMoveCallouts } = useCalloutsSetAuthorization({ calloutsSetId });
 
   const { data, loading, refetch, error } = useCalloutDetailsQuery({
@@ -67,18 +67,11 @@ const useCalloutDetails = ({
       draft: calloutDetails.settings.visibility === CalloutVisibility.Draft,
       editable: calloutDetails.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
       movable: canMoveCallouts,
-      canBeSavedAsTemplate: calloutsCanBeSavedAsTemplate,
+      canBeSavedAsTemplate,
       classificationTagsets: [],
       ...memoizedOverrideCalloutSettings,
     };
-  }, [
-    data,
-    loading,
-    calloutsSetId,
-    canMoveCallouts,
-    calloutsCanBeSavedAsTemplate,
-    memoizedOverrideCalloutSettings,
-  ]);
+  }, [data, loading, calloutsSetId, canMoveCallouts, canBeSavedAsTemplate, memoizedOverrideCalloutSettings]);
 
   return {
     callout: result,
