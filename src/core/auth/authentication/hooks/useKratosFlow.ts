@@ -33,6 +33,7 @@ interface ReturnValue<Name extends FlowTypeName> {
   flow: ReturnFlowType[Name] | undefined;
   error: Error | undefined;
   loading: boolean;
+  refetch: () => void;
 }
 
 const useKratosFlow = <Name extends FlowTypeName>(
@@ -113,18 +114,19 @@ const useKratosFlow = <Name extends FlowTypeName>(
     [flowTypeName]
   );
 
-  const getOrInitializeFlow = () => {
+  const getOrInitializeFlow = useCallback(() => {
     if (client) {
       handlePromise(typeof flowId === 'undefined' ? initializeFlow(client) : getFlow(client, flowId));
     }
-  };
+  }, [client, flowId, getFlow, handlePromise, initializeFlow]);
 
-  useEffect(getOrInitializeFlow, [client, flowId, getFlow, handlePromise, initializeFlow]);
+  useEffect(getOrInitializeFlow, [getOrInitializeFlow]);
 
   return {
     flow,
     error,
     loading,
+    refetch: getOrInitializeFlow,
   };
 };
 
