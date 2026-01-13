@@ -1380,7 +1380,7 @@
         }
       },
       "defaultTemplate": {
-        "currentTemplate": "Current template: {{template}}",
+        "currentlySelected": "Currently Selected Template:",
         "noTemplate": "No default template set. Select a template to pre-fill posts in this flow state.",
         "removeConfirmation": {
           "title": "Remove Default Template?",
