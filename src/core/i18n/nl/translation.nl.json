@@ -226,7 +226,7 @@
         "microsoft": "Microsoft",
         "github": "Github",
         "apple": "Apple",
-        "cleverbase": "Cleverbase: een EU-gekwalificeerde vertrouwensdienstverlener, die wettelijk erkende digitale identiteiten en veilige authenticatie uitgeeft."
+        "cleverbase": "Cleverbase: an EU qualified trust service provider, issuing legally recognized digital identities and secure authentication."
       }
     },
     "signUp": {
@@ -940,7 +940,16 @@
       "new-temporary-reference": "Tijdelijke link ID: {{temp}}"
     },
     "whiteboard": {
-      "clickToSee": "Klik om het $t(common.whiteboard) te openen"
+      "clickToSee": "Klik om het $t(common.whiteboard) te openen",
+      "emojiReaction": {
+        "addEmoji": "Add emoji reaction",
+        "title": "Add Emoji",
+        "hint": "Select an emoji, then click on the canvas",
+        "clickToPlace": "Click on canvas to place {{emoji}}",
+        "placementMode": "Click to place emoji: {{emoji}}",
+        "gridLabel": "Select an emoji",
+        "noEmojis": "No emojis available"
+      }
     },
     "memo": {
       "clickToSee": "Klik om de volledige $t(common.memo) te bekijken"
@@ -1572,9 +1581,6 @@
         "title": "Verwijder $t(common.post)",
         "text": "Weet je zeker dat je deze $t(common.post) wilt sluiten? Niet-opgeslagen wijzigingen gaan verloren."
       }
-    },
-    "calloutEdit": {
-      "titleWithType": "{{type}} aanpassen"
     },
     "post-creation": {
       "title": "Dien je antwoord in voor {{calloutDisplayName}}",
@@ -3578,7 +3584,7 @@
       "verification-flow-continue": "Volgende",
       "login-flow-account-exists": "Dit e-mailadres is al verbonden met een $t(common.account). Als je je eerder hebt aangemeld via LinkedIn, GitHub of Microsoft, gebruik dan die inlogmethode. Anders kun je ook je wachtwoord herstellen.",
       "invalid-credentials": "Het ingevoerde e-mailadres of wachtwoord is ongeldig. Controleer je gegevens en probeer het opnieuw. Probeer je je in plaats daarvan aan te melden? Je kunt dit doen door op de link hierboven te klikken.",
-      "claim-missing": "Je hebt je Cleverbase-identiteit nog niet geverifieerd. Controleer je identiteit en probeer het opnieuw of probeer een andere registratiemethode.",
+      "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
       "pick-password": "Kies een wachtwoord voor je $t(common.account)"
     },
     "fields": {

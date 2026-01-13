@@ -932,7 +932,6 @@ export const MessageDetailsFragmentDoc = gql`
 `;
 export const VcInteractionsDetailsFragmentDoc = gql`
   fragment VcInteractionsDetails on VcInteraction {
-    id
     threadID
     virtualContributorID
   }
@@ -27429,7 +27428,7 @@ export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.Spa
 }
 export const CreateConversationDocument = gql`
   mutation CreateConversation($conversationData: CreateConversationInput!) {
-    createConversationOnConversationsSet(conversationData: $conversationData) {
+    createConversation(conversationData: $conversationData) {
       id
       room {
         id
