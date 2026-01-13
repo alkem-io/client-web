@@ -21,9 +21,6 @@ const UserMessagingDialog = () => {
   const [isNewMessageDialogOpen, setIsNewMessageDialogOpen] = useState(false);
   const [markAsRead] = useMarkConversationAsReadMutation();
 
-  // Subscribe to message updates only when the dialog is open
-  UserConversationMessageSubscriber({ skip: !isOpen });
-
   const selectedConversation = selectedConversationId
     ? (conversations.find(c => c.id === selectedConversationId) ?? null)
     : null;
@@ -91,6 +88,8 @@ const UserMessagingDialog = () => {
   if (isMobile) {
     return (
       <>
+        {/* Subscribe to message updates only when the dialog is open */}
+        <UserConversationMessageSubscriber skip={!isOpen} />
         <DialogWithGrid
           open={isOpen}
           columns={12}
@@ -142,6 +141,8 @@ const UserMessagingDialog = () => {
   // Desktop view: split layout
   return (
     <>
+      {/* Subscribe to message updates only when the dialog is open */}
+      <UserConversationMessageSubscriber skip={!isOpen} />
       <DialogWithGrid
         open={isOpen}
         columns={8}
