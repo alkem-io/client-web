@@ -21,8 +21,8 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
-import GridProvider from '@/core/ui/grid/GridProvider';
 import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
+import GridProvider from '@/core/ui/grid/GridProvider';
 
 export interface ImportTemplatesOptions {
   /**
@@ -167,23 +167,41 @@ const ImportTemplatesDialog = ({
 
           {/* Show selected template at the top with Remove button */}
           {selectedTemplate && onRemoveTemplate && (
-            <Box display="flex" gap={2} alignItems="flex-start" marginBottom={gutters(2)}>
-              <GridProvider columns={12} force>
-                <TemplateCard
-                  template={selectedTemplate.template}
-                  innovationPack={selectedTemplate.innovationPack}
-                  onClick={() => setPreviewTemplate(selectedTemplate.template)}
-                />
-              </GridProvider>
-              <Button
-                onClick={handleRemoveClick}
-                startIcon={<DeleteOutlineIcon />}
-                color="error"
-                disabled={removeTemplateLoading}
-                sx={{ flexShrink: 0, minWidth: 'auto' }}
-              >
-                {t('buttons.remove')}
-              </Button>
+            <Box display="flex" flexDirection="column" marginBottom={gutters(2)}>
+              <Box paddingY={gutters(1)}>
+                <BlockTitle>{t('components.innovationFlowSettings.defaultTemplate.currentlySelected')}</BlockTitle>
+              </Box>
+              <Box display="flex" flexDirection="row">
+                <Box display="flex" flexDirection="column" alignItems="flex-end" gap={gutters(1)} width={245}>
+                  <GridProvider columns={1} force>
+                    <TemplateCard
+                      template={selectedTemplate.template}
+                      innovationPack={selectedTemplate.innovationPack}
+                      isSelected
+                      onClick={() => setPreviewTemplate(selectedTemplate.template)}
+                    />
+                  </GridProvider>
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    gap="10px"
+                    onClick={removeTemplateLoading ? undefined : handleRemoveClick}
+                    sx={{
+                      cursor: removeTemplateLoading ? 'default' : 'pointer',
+                      opacity: removeTemplateLoading ? 0.5 : 1,
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                    }}
+                    component="button"
+                    aria-label={t('buttons.remove')}
+                    disabled={removeTemplateLoading}
+                  >
+                    <DeleteOutlineIcon sx={{ color: '#B30000', width: gutters(1.05), height: gutters(1.05) }} />
+                    <BlockTitle sx={{ color: '#B30000' }}>{t('buttons.remove')}</BlockTitle>
+                  </Box>
+                </Box>
+              </Box>
             </Box>
           )}
 
