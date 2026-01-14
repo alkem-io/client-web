@@ -232,6 +232,15 @@
     "signUp": {
       "signUpEmail": "Sign up with E-Mail",
       "alreadyHaveAccount": "Already have an $t(common.account)?"
+    },
+    "passkey": {
+      "sign-in": "Sign in with passkey",
+      "register": "Register passkey",
+      "not-supported": "Passkeys are not supported by your browser",
+      "script-loading": "Loading passkey support...",
+      "script-error": "Failed to load passkey functionality",
+      "unknown-error": "An error occurred with your passkey",
+      "remove-credential": "Remove passkey"
     }
   },
   "common": {
@@ -415,6 +424,7 @@
     "notification": "notification",
     "notifications": "notifications",
     "credentials": "Credentials",
+    "security": "Security",
     "my-profile": "My $t(common.profile)",
     "my-memberships": "My $t(common.memberships)",
     "Profile": "Profile",
@@ -2337,6 +2347,9 @@
           "authorization": {
             "description": "Here you can tweak authorization $t(common.settings) for this {{entity}}."
           },
+          "security": {
+            "description": "Here you can manage your security settings, including passkeys and security keys."
+          },
           "templates": {
             "description": "Here you can create and edit $t(common.templates) for this {{entity}}.",
             "delete-confirmation": "Are you sure you want to delete the $t(common.template) '{{template}}'?",
@@ -2437,6 +2450,11 @@
           "privacy": {
             "contributorRolesVisible": "Show contributor roles to all registered users"
           }
+        },
+        "security": {
+          "title": "Security",
+          "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
+          "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
         }
       },
       "organization": {
