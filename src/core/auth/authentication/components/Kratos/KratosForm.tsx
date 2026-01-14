@@ -5,6 +5,7 @@ import { isSubmittingPasswordFlow } from './helpers';
 
 interface KratosFormProps extends BoxProps<'form'> {
   ui?: UiContainer;
+  onSubmit?: (e: FormEvent<HTMLFormElement>) => void | Promise<void>;
 }
 
 interface KratosFormContextValue {
@@ -14,19 +15,27 @@ interface KratosFormContextValue {
 
 const KratosFormContext = createContext<KratosFormContextValue | null>(null);
 
-const KratosForm = ({ ui, children, ...formProps }: KratosFormProps) => {
+const KratosForm = ({ ui, children, onSubmit: customOnSubmit, ...formProps }: KratosFormProps) => {
   const [isFormValid, setIsFormValid] = useState(true);
 
-  const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
-    if (isSubmittingPasswordFlow(e)) {
-      if (!e.currentTarget.checkValidity()) {
-        setIsFormValid(false);
-        e.preventDefault();
-        e.stopPropagation();
-        return;
+  const handleSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      if (isSubmittingPasswordFlow(e)) {
+        if (!e.currentTarget.checkValidity()) {
+          setIsFormValid(false);
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
       }
-    }
-  }, []);
+
+      // If a custom onSubmit handler is provided, use it
+      if (customOnSubmit) {
+        customOnSubmit(e);
+      }
+    },
+    [customOnSubmit]
+  );
 
   const contextValue = useMemo<KratosFormContextValue>(
     () => ({ isFormValid, setIsFormValid }),
