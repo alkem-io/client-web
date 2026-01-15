@@ -4,7 +4,8 @@ import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
+import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
 
 interface MenuItem {
   iconComponent: ComponentType<SvgIconProps>;
@@ -29,9 +30,9 @@ const PLATFORM_NAVIGATION_MENU_ITEMS: MenuItem[] = [
     route: '/spaces',
   },
   {
-    label: 'pages.contributors.fullName',
-    iconComponent: GroupOutlinedIcon,
-    route: '/contributors',
+    label: 'pages.documentation.title',
+    iconComponent: QuizOutlinedIcon,
+    route: `/${TopLevelRoutePath.Docs}`,
   },
 ];
 
