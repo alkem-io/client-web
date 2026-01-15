@@ -132,9 +132,11 @@ export const UserMessagingConversationView = ({
 
   // Scroll to bottom when messages change
   useLayoutEffect(() => {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
+
+    return () => clearTimeout(timeoutId);
   }, [messages.length, conversation?.roomId]);
 
   const handleSendMessage = async (message: string) => {
