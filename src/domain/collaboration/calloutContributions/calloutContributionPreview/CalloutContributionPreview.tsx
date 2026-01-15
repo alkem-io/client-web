@@ -14,7 +14,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { Box, IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
 import { CalloutDetailsModelExtended } from '../../callout/models/CalloutDetailsModel';
 import useNavigate from '@/core/routing/useNavigate';
-import { useRef, useState } from 'react';
+import { Ref, useRef, useState } from 'react';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import { useTranslation } from 'react-i18next';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -30,23 +30,28 @@ interface CalloutContributionPreviewProps {
   contributionId: string;
   previewComponent: React.ComponentType<CalloutContributionPreviewComponentProps>;
   dialogComponent: React.ComponentType<CalloutContributionPreviewDialogProps>;
+  openContributionDialogOnLoad?: boolean;
   calloutRestrictions?: CalloutRestrictions;
   onCalloutUpdate?: () => Promise<unknown>;
 }
 
 const CalloutContributionPreview = ({
+  ref,
   callout,
   contributionId,
   previewComponent: PreviewComponent,
   dialogComponent: DialogComponent,
+  openContributionDialogOnLoad = false,
   calloutRestrictions,
   onCalloutUpdate,
-}: CalloutContributionPreviewProps) => {
+}: CalloutContributionPreviewProps & {
+  ref?: Ref<HTMLDivElement>;
+}) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const columns = useColumns();
-  const [contributionDialogOpen, setContributionDialogOpen] = useState(false);
+  const [contributionDialogOpen, setContributionDialogOpen] = useState(openContributionDialogOnLoad);
   const extraActionsPortalRef = useRef<HTMLDivElement>(null);
 
   const { allowedTypes } = callout.settings.contribution;
@@ -131,7 +136,7 @@ const CalloutContributionPreview = ({
     contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
   return (
-    <PageContentBlock disablePadding disableGap>
+    <PageContentBlock disablePadding disableGap ref={ref}>
       <PageContentBlockHeaderCardLike
         avatar={authorAvatar}
         title={displayName}

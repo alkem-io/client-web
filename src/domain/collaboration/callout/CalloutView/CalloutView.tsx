@@ -79,7 +79,7 @@ const CalloutView = ({
   const { space } = useSpace();
   const { subspace } = useSubSpace();
   const navigate = useNavigate();
-  const contributionPreviewRef = useRef<HTMLElement>(null);
+  const contributionPreviewRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLElement>(null);
 
   const myMembershipStatus =
@@ -172,10 +172,12 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
+                  ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewWhiteboard}
                   dialogComponent={CalloutContributionDialogWhiteboard}
+                  openContributionDialogOnLoad
                   calloutRestrictions={calloutRestrictions}
                   onCalloutUpdate={onCalloutUpdate}
                 />
@@ -219,6 +221,7 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
+                  ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewPost}
@@ -265,10 +268,12 @@ const CalloutView = ({
               {contributionId && (
                 /* Selected Contribution */
                 <CalloutContributionPreview
+                  ref={contributionPreviewRef}
                   callout={callout}
                   contributionId={contributionId}
                   previewComponent={CalloutContributionPreviewMemo}
                   dialogComponent={CalloutContributionDialogMemo}
+                  openContributionDialogOnLoad
                   calloutRestrictions={calloutRestrictions}
                   onCalloutUpdate={onCalloutUpdate}
                 />
