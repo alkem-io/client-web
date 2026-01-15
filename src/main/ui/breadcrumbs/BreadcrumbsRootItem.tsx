@@ -7,7 +7,11 @@ import { useTranslation } from 'react-i18next';
 
 const Logo = () => <AlkemioLogo />;
 
-const BreadcrumbsRootItem = (props: Expandable) => {
+interface BreadcrumbsRootItemProps extends Expandable {
+  size?: 'medium' | 'large';
+}
+
+const BreadcrumbsRootItem = ({ size, ...props }: BreadcrumbsRootItemProps) => {
   const { t } = useTranslation();
 
   const { profile, loading } = useBreadcrumbsTopLevelItem();
@@ -18,6 +22,7 @@ const BreadcrumbsRootItem = (props: Expandable) => {
       avatar={profile?.bannerWide}
       iconComponent={profile ? undefined : Logo}
       loading={loading}
+      size={size}
       {...props}
     >
       {profile?.displayName ?? t('pages.home.title')}

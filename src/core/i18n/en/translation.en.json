@@ -2863,6 +2863,12 @@
             "caption": "{{tagline}}"
           }
         },
+        "resources": {
+          "innovationHubs": "Starting pages",
+          "spaces": "$t(common.spaces)",
+          "virtualContributors": "$t(common.virtualContributors)",
+          "innovationPacks": "$t(common.innovation-packs)"
+        },
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
           "welcomeUnauthenticatedSubtitle": "Safe $t(common.spaces) for Collaboration",
