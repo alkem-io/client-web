@@ -76,8 +76,9 @@ const MessageCacheFragment = gql`
 
 export const useConversationEventsSubscription = (selectedRoomId: string | null) => {
   const { isEnabled } = useUserMessagingContext();
-  const { isAuthenticated } = useCurrentUserContext();
+  const { isAuthenticated, userModel } = useCurrentUserContext();
   const client = useApolloClient();
+  const currentUserId = userModel?.id;
 
   const handleConversationCreated = useCallback(
     (event: ConversationCreatedEvent) => {
@@ -149,6 +150,10 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
       // Check if currently viewing this conversation
       const isViewing = event.roomId === selectedRoomId;
 
+      // Check if message is from current user (don't increment unread for own messages)
+      const isOwnMessage =
+        event.message.sender?.__typename === 'User' && event.message.sender.id === currentUserId;
+
       // Write lastMessage to cache first to get a proper reference
       const lastMessageRef = client.cache.writeFragment({
         data: {
@@ -170,8 +175,8 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
           lastMessage: () => lastMessageRef,
           // Increment messagesCount
           messagesCount: (existing: number = 0) => existing + 1,
-          // Increment unreadCount ONLY if NOT viewing
-          unreadCount: (existing: number = 0) => (isViewing ? existing : existing + 1),
+          // Increment unreadCount ONLY if NOT viewing and NOT own message
+          unreadCount: (existing: number = 0) => (isViewing || isOwnMessage ? existing : existing + 1),
           // Append to messages array (if loaded in cache)
           messages: (existingMessages, { readField }) => {
             // Handle case where messages might not be an array
@@ -247,7 +252,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         );
       }
     },
-    [client, selectedRoomId]
+    [client, selectedRoomId, currentUserId]
   );
 
   const handleMessageRemoved = useCallback(
