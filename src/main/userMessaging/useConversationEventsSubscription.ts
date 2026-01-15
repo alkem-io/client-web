@@ -151,8 +151,8 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
       const isViewing = event.roomId === selectedRoomId;
 
       // Check if message is from current user (don't increment unread for own messages)
-      const isOwnMessage =
-        event.message.sender?.__typename === 'User' && event.message.sender.id === currentUserId;
+      const sender = event.message.sender;
+      const isOwnMessage = sender && 'id' in sender && sender.id === currentUserId;
 
       // Write lastMessage to cache first to get a proper reference
       const lastMessageRef = client.cache.writeFragment({

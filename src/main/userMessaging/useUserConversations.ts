@@ -73,7 +73,7 @@ export const useUserConversations = () => {
   }, [data?.me?.conversations?.users]);
 
   const totalUnreadCount = useMemo(() => {
-    return conversations.reduce((sum, conv) => sum + conv.unreadCount, 0);
+    return conversations.filter(conv => conv.unreadCount > 0).length;
   }, [conversations]);
 
   return {
