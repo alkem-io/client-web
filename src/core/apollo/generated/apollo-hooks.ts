@@ -1523,6 +1523,13 @@ export const UserDetailsFragmentDoc = gql`
       }
       url
     }
+    settings {
+      id
+      homeSpace {
+        spaceID
+        autoRedirect
+      }
+    }
   }
   ${VisualModelFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -1544,6 +1551,10 @@ export const UserSettingsFragmentFragmentDoc = gql`
     }
     privacy {
       contributionRolesPubliclyVisible
+    }
+    homeSpace {
+      spaceID
+      autoRedirect
     }
     notification {
       platform {
@@ -14187,6 +14198,7 @@ export const UserContributionsDocument = gql`
       spaces {
         id
         roles
+        displayName
         subspaces {
           id
           level
@@ -14335,6 +14347,80 @@ export type UserOrganizationIdsQueryResult = Apollo.QueryResult<
 export function refetchUserOrganizationIdsQuery(variables: SchemaTypes.UserOrganizationIdsQueryVariables) {
   return { query: UserOrganizationIdsDocument, variables: variables };
 }
+export const HomeSpaceUrlDocument = gql`
+  query HomeSpaceUrl($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        about {
+          id
+          profile {
+            id
+            url
+            displayName
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useHomeSpaceUrlQuery__
+ *
+ * To run a query within a React component, call `useHomeSpaceUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeSpaceUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomeSpaceUrlQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useHomeSpaceUrlQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HomeSpaceUrlQuery, SchemaTypes.HomeSpaceUrlQueryVariables> &
+    ({ variables: SchemaTypes.HomeSpaceUrlQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HomeSpaceUrlQuery, SchemaTypes.HomeSpaceUrlQueryVariables>(
+    HomeSpaceUrlDocument,
+    options
+  );
+}
+export function useHomeSpaceUrlLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HomeSpaceUrlQuery, SchemaTypes.HomeSpaceUrlQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HomeSpaceUrlQuery, SchemaTypes.HomeSpaceUrlQueryVariables>(
+    HomeSpaceUrlDocument,
+    options
+  );
+}
+export function useHomeSpaceUrlSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.HomeSpaceUrlQuery, SchemaTypes.HomeSpaceUrlQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.HomeSpaceUrlQuery, SchemaTypes.HomeSpaceUrlQueryVariables>(
+    HomeSpaceUrlDocument,
+    options
+  );
+}
+export type HomeSpaceUrlQueryHookResult = ReturnType<typeof useHomeSpaceUrlQuery>;
+export type HomeSpaceUrlLazyQueryHookResult = ReturnType<typeof useHomeSpaceUrlLazyQuery>;
+export type HomeSpaceUrlSuspenseQueryHookResult = ReturnType<typeof useHomeSpaceUrlSuspenseQuery>;
+export type HomeSpaceUrlQueryResult = Apollo.QueryResult<
+  SchemaTypes.HomeSpaceUrlQuery,
+  SchemaTypes.HomeSpaceUrlQueryVariables
+>;
+export function refetchHomeSpaceUrlQuery(variables: SchemaTypes.HomeSpaceUrlQueryVariables) {
+  return { query: HomeSpaceUrlDocument, variables: variables };
+}
 export const UpdateUserDocument = gql`
   mutation updateUser($input: UpdateUserInput!) {
     updateUser(userData: $input) {
@@ -14385,6 +14471,10 @@ export const UpdateUserSettingsDocument = gql`
     updateUserSettings(settingsData: $settingsData) {
       id
       settings {
+        homeSpace {
+          spaceID
+          autoRedirect
+        }
         notification {
           user {
             mentioned {
