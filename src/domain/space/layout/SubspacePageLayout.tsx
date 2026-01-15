@@ -41,7 +41,8 @@ export const SubspacePageLayout = () => {
   const { t } = useTranslation();
   const { permissions } = useSubSpace();
   const { spaceLevel, spaceId, parentSpaceId } = useUrlResolver();
-  const { selectedInnovationFlowState, setSelectedInnovationFlowState } = useContext(InnovationFlowStateContext);
+  const { selectedInnovationFlowState: selectedFlowStateName, setSelectedInnovationFlowState } =
+    useContext(InnovationFlowStateContext);
   const { data: subspacePageData } = useSubspacePageQuery({
     variables: {
       spaceId: spaceId!,
@@ -57,10 +58,11 @@ export const SubspacePageLayout = () => {
   const { isVideoCallEnabled } = useVideoCall(subspace?.id);
 
   const {
-    currentInnovationFlowStateDisplayName: currentInnovationFlowState,
+    currentInnovationFlowStateDisplayName,
+    selectedInnovationFlowState,
     innovationFlowStates,
     canEditInnovationFlow,
-  } = useInnovationFlowStates({ collaborationId });
+  } = useInnovationFlowStates({ collaborationId, selectedStateName: selectedFlowStateName });
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(false);
 
   const isCollapsed = localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false;
@@ -88,20 +90,22 @@ export const SubspacePageLayout = () => {
       return;
     }
     // Set the current state on page load or the first state if none is selected
-    const selectedIndex = innovationFlowStates?.findIndex(state => state.displayName === currentInnovationFlowState);
+    const selectedIndex = innovationFlowStates?.findIndex(
+      state => state.displayName === currentInnovationFlowStateDisplayName
+    );
     if (selectedIndex !== undefined && selectedIndex >= 0) {
       setSelectedInnovationFlowState!(innovationFlowStates[selectedIndex].displayName);
     } else {
       setSelectedInnovationFlowState!(innovationFlowStates[0].displayName);
     }
-  }, [innovationFlowStates, currentInnovationFlowState, setSelectedInnovationFlowState]);
+  }, [innovationFlowStates, currentInnovationFlowStateDisplayName, setSelectedInnovationFlowState]);
 
   let classificationTagsets: ClassificationTagsetModel[] = [];
-  if (selectedInnovationFlowState) {
+  if (selectedFlowStateName) {
     classificationTagsets = [
       {
         name: TagsetReservedName.FlowState,
-        tags: [selectedInnovationFlowState],
+        tags: [selectedFlowStateName],
       },
     ];
   }
@@ -110,7 +114,7 @@ export const SubspacePageLayout = () => {
     calloutsSetId,
     classificationTagsets: classificationTagsets,
     includeClassification: true,
-    skip: !selectedInnovationFlowState,
+    skip: !selectedFlowStateName,
   });
 
   const showInnovationFlowStates = Boolean(innovationFlowStates?.length);
@@ -154,8 +158,8 @@ export const SubspacePageLayout = () => {
             >
               <InnovationFlowStates
                 states={innovationFlowStates}
-                currentState={currentInnovationFlowState}
-                selectedState={selectedInnovationFlowState}
+                currentState={currentInnovationFlowStateDisplayName}
+                selectedState={selectedFlowStateName}
                 onSelectState={state => setSelectedInnovationFlowState!(state.displayName)}
                 visualizer={InnovationFlowChips}
                 createButton={calloutsSetProvided?.canCreateCallout && createButton}
@@ -178,7 +182,8 @@ export const SubspacePageLayout = () => {
               open={isCalloutCreationDialogOpen}
               onClose={() => setIsCalloutCreationDialogOpen(false)}
               calloutsSetId={calloutsSetId}
-              calloutClassification={buildFlowStateClassificationTagsets(selectedInnovationFlowState)}
+              calloutClassification={buildFlowStateClassificationTagsets(selectedFlowStateName)}
+              defaultTemplateId={selectedInnovationFlowState?.defaultCalloutTemplate?.id ?? null}
             />
           </Suspense>
         </PageContentColumnBase>
@@ -186,8 +191,8 @@ export const SubspacePageLayout = () => {
 
       <SubspaceDrawerMenu
         innovationFlowStates={innovationFlowStates}
-        selectedInnovationFlowState={selectedInnovationFlowState}
-        currentInnovationFlowState={currentInnovationFlowState}
+        selectedInnovationFlowState={selectedFlowStateName}
+        currentInnovationFlowStateDisplayName={currentInnovationFlowStateDisplayName}
         createButton={createButton}
         onSelectState={setSelectedInnovationFlowState!}
         about={about}

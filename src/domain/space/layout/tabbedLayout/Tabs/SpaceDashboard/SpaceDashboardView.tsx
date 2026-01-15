@@ -148,6 +148,7 @@ const SpaceDashboardView = ({
             loading={calloutsSetProvided.loading}
             onSortOrderUpdate={calloutsSetProvided.onCalloutsSortOrderUpdate}
             onCalloutUpdate={calloutsSetProvided.refetchCallout}
+            defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
           />
         </ContentColumn>
         {tryVirtualContributorOpen && (

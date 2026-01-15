@@ -10,6 +10,7 @@ interface CalloutsGroupProps extends CalloutsViewProps {
   canCreateCallout: boolean;
   createInFlowState?: string;
   createButtonPlace?: 'top' | 'bottom';
+  defaultTemplateId?: string;
 }
 
 const CreateCalloutDialog = lazyWithGlobalErrorHandler(
@@ -21,6 +22,7 @@ const CalloutsGroupView = ({
   createInFlowState,
   createButtonPlace = 'top',
   calloutsSetId,
+  defaultTemplateId,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const { t } = useTranslation();
@@ -49,6 +51,7 @@ const CalloutsGroupView = ({
           calloutsSetId={calloutsSetId}
           calloutClassification={buildFlowStateClassificationTagsets(createInFlowState || '')}
           calloutRestrictions={calloutsViewProps.calloutRestrictions}
+          defaultTemplateId={defaultTemplateId}
         />
       </Suspense>
     </>
