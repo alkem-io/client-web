@@ -1,5 +1,4 @@
 import { Button, DialogActions, DialogContent, Checkbox, FormControlLabel, Tooltip, Box } from '@mui/material';
-import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   CreateCalloutContributionInput,
   CalloutContributionType,
@@ -7,12 +6,12 @@ import {
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { Identifiable } from '@/core/utils/Identifiable';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useCalloutTemplateImport } from './useCalloutTemplateImport';
 import {
   CalloutCreationTypeWithPreviewImages,
   useCalloutCreationWithPreviewImages,
@@ -31,7 +30,7 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CalloutRestrictions } from '../CalloutRestrictionsTypes';
-import { mapCalloutTemplateToCalloutForm, mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
+import { mapCalloutSettingsFormToCalloutSettingsModel } from '../models/mappings';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
 export interface CreateCalloutDialogProps {
@@ -39,8 +38,11 @@ export interface CreateCalloutDialogProps {
   onClose?: () => void;
 
   // Where to save the callout:
-  calloutsSetId: string | undefined;
-  calloutClassification?: ClassificationTagsetModel[] | undefined;
+  calloutsSetId?: string;
+  calloutClassification?: ClassificationTagsetModel[];
+
+  // Default template to pre-load (from innovation flow state):
+  defaultTemplateId?: string | null;
 
   calloutRestrictions?: CalloutRestrictions;
 }
@@ -50,6 +52,7 @@ const CreateCalloutDialog = ({
   onClose,
   calloutsSetId,
   calloutClassification,
+  defaultTemplateId,
   calloutRestrictions,
 }: CreateCalloutDialogProps) => {
   const { t } = useTranslation();
@@ -59,56 +62,37 @@ const CreateCalloutDialog = ({
 
   const { handleCreateCallout } = useCalloutCreationWithPreviewImages({ calloutsSetId });
 
-  const [importCalloutTemplateDialogOpen, setImportCalloutTemplateDialogOpen] = useState(false);
-  const [importCalloutTemplateConfirmDialogOpen, setImportCalloutTemplateConfirmDialogOpen] = useState(false);
-
   const [isValid, setIsValid] = useState(false);
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
-  const [templateSelected, setTemplateSelected] = useState<CalloutFormSubmittedValues | undefined>(undefined);
-  const [fetchTemplateContent] = useTemplateContentLazyQuery();
-  const handleSelectTemplate = async ({ id: templateId }: Identifiable) => {
-    const { data } = await fetchTemplateContent({
-      variables: {
-        templateId,
-        includeCallout: true,
-      },
-    });
-
-    const template = data?.lookup.template;
-    const templateCallout = template?.callout;
-    setTemplateSelected(mapCalloutTemplateToCalloutForm(templateCallout, calloutRestrictions));
-    if (!template || !templateCallout) {
-      throw new Error("Couldn't load CalloutTemplate");
-    }
-
-    setImportCalloutTemplateDialogOpen(false);
-  };
-  const handleImportTemplateClick = () => {
-    if (isEmptyCalloutForm(calloutFormData)) {
-      setImportCalloutTemplateDialogOpen(true);
-    } else {
-      setImportCalloutTemplateConfirmDialogOpen(true);
-    }
-  };
+  const {
+    templateSelected,
+    importDialogOpen,
+    confirmDialogOpen,
+    setImportDialogOpen,
+    setConfirmDialogOpen,
+    handleSelectTemplate,
+    handleImportClick,
+    clearTemplate,
+    closeDialogs,
+  } = useCalloutTemplateImport({ calloutRestrictions, defaultTemplateId, dialogOpen: open });
 
   const [calloutFormData, setCalloutFormData] = useState<CalloutFormSubmittedValues>();
 
   const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(false);
   const handleCloseButtonClick = () => {
-    if (!isEmptyCalloutForm(calloutFormData)) {
-      setConfirmCloseDialogOpen(true);
-    } else {
+    if (isEmptyCalloutForm(calloutFormData)) {
       onClose?.();
+    } else {
+      setConfirmCloseDialogOpen(true);
     }
   };
   const handleClose = () => {
-    setTemplateSelected(undefined);
+    clearTemplate();
     setCalloutFormData(undefined);
     setConfirmCloseDialogOpen(false);
-    setImportCalloutTemplateDialogOpen(false);
-    setImportCalloutTemplateConfirmDialogOpen(false);
+    closeDialogs();
     onClose?.();
   };
 
@@ -189,7 +173,11 @@ const CreateCalloutDialog = ({
           title={t('callout.create.dialogTitle')}
           onClose={handleCloseButtonClick}
           actions={
-            <Button variant="outlined" onClick={handleImportTemplateClick} startIcon={<TipsAndUpdatesOutlinedIcon />}>
+            <Button
+              variant="outlined"
+              onClick={() => handleImportClick(calloutFormData)}
+              startIcon={<TipsAndUpdatesOutlinedIcon />}
+            >
               {t('buttons.find-template')}
             </Button>
           }
@@ -244,14 +232,10 @@ const CreateCalloutDialog = ({
       </DialogWithGrid>
       <ImportTemplatesDialog
         templateType={TemplateType.Callout}
-        actionButton={() => (
-          <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
-            {t('buttons.use')}
-          </Button>
-        )}
-        open={importCalloutTemplateDialogOpen}
+        actionButton={() => <TemplateActionButton />}
+        open={importDialogOpen}
         onSelectTemplate={handleSelectTemplate}
-        onClose={() => setImportCalloutTemplateDialogOpen(false)}
+        onClose={() => setImportDialogOpen(false)}
         enablePlatformTemplates
       />
       <ConfirmationDialog
@@ -261,14 +245,14 @@ const CreateCalloutDialog = ({
           confirmButtonTextId: 'buttons.yesContinue',
         }}
         options={{
-          show: importCalloutTemplateConfirmDialogOpen,
+          show: confirmDialogOpen,
         }}
         actions={{
           onConfirm: () => {
-            setImportCalloutTemplateDialogOpen(true);
-            setImportCalloutTemplateConfirmDialogOpen(false);
+            setImportDialogOpen(true);
+            setConfirmDialogOpen(false);
           },
-          onCancel: () => setImportCalloutTemplateConfirmDialogOpen(false),
+          onCancel: () => setConfirmDialogOpen(false),
         }}
       />
       <ConfirmationDialog

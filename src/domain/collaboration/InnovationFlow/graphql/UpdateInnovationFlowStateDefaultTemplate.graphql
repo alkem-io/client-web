@@ -1,0 +1,34 @@
+mutation SetDefaultCalloutTemplateOnInnovationFlowState(
+  $flowStateId: UUID!
+  $templateId: UUID!
+) {
+  setDefaultCalloutTemplateOnInnovationFlowState(
+    setData: { flowStateID: $flowStateId, templateID: $templateId }
+  ) {
+    id
+    displayName
+    defaultCalloutTemplate {
+      id
+      profile {
+        id
+        displayName
+      }
+      type
+    }
+  }
+}
+
+mutation RemoveDefaultCalloutTemplateOnInnovationFlowState($flowStateId: UUID!) {
+  removeDefaultCalloutTemplateOnInnovationFlowState(removeData: { flowStateID: $flowStateId }) {
+    id
+    displayName
+    defaultCalloutTemplate {
+      id
+      profile {
+        id
+        displayName
+      }
+      type
+    }
+  }
+}
