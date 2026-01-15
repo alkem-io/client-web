@@ -33,7 +33,7 @@ const HomePageLayout = ({ children }: PropsWithChildren) => {
       <PlatformNavigationBar
         breadcrumbs={
           <Breadcrumbs>
-            <BreadcrumbsRootItem />
+            <BreadcrumbsRootItem size={isHomePage ? 'large' : undefined} />
           </Breadcrumbs>
         }
         staticPosition={isHomePage}
