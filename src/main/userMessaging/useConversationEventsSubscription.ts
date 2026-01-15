@@ -92,9 +92,9 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
             return existing;
           }
 
-          // Sender of first message = the other user
+          // Sender of first message = the other user in the conversation
           const sender = event.message.sender;
-          if (!sender || sender.__typename !== 'User') {
+          if (!sender || !('id' in sender)) {
             return existing;
           }
 
@@ -254,11 +254,6 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
 
       if (!roomCacheId) return;
 
-      const messageCacheId = client.cache.identify({
-        __typename: 'Message',
-        id: event.messageId,
-      });
-
       // Remove message from room's messages array
       client.cache.modify({
         id: roomCacheId,
@@ -306,9 +301,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
       }
 
       // Evict the message from cache entirely
-      if (messageCacheId) {
-        evictFromCache(client.cache, event.messageId, 'Message');
-      }
+      evictFromCache(client.cache, event.messageId, 'Message');
     },
     [client]
   );
