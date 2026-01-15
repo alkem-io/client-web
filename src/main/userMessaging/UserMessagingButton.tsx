@@ -1,10 +1,10 @@
-import { IconButton, Paper } from '@mui/material';
+import { Badge, IconButton, Paper } from '@mui/material';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import { useTranslation } from 'react-i18next';
 import { useUserMessagingContext } from './UserMessagingContext';
 
 export const UserMessagingButton = () => {
-  const { isEnabled, setIsOpen } = useUserMessagingContext();
+  const { isEnabled, setIsOpen, totalUnreadCount } = useUserMessagingContext();
   const { t } = useTranslation();
 
   const openMessaging = () => {
@@ -30,7 +30,21 @@ export const UserMessagingButton = () => {
         },
       }}
     >
-      <ChatOutlinedIcon />
+      <Badge
+        badgeContent={totalUnreadCount}
+        color="error"
+        max={99}
+        invisible={totalUnreadCount === 0}
+        sx={{
+          '& .MuiBadge-badge': {
+            fontSize: '0.65rem',
+            height: 16,
+            minWidth: 16,
+          },
+        }}
+      >
+        <ChatOutlinedIcon />
+      </Badge>
     </Paper>
   );
 };

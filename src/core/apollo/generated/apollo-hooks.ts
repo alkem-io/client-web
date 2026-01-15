@@ -873,6 +873,7 @@ export const ReactionDetailsFragmentDoc = gql`
   fragment ReactionDetails on Reaction {
     id
     emoji
+    timestamp
     sender {
       id
       profile {
@@ -27199,6 +27200,192 @@ export type SpaceExplorerWelcomeSpaceQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables) {
   return { query: SpaceExplorerWelcomeSpaceDocument, variables: variables };
 }
+export const ConversationEventsDocument = gql`
+  subscription ConversationEvents {
+    conversationEvents {
+      eventType
+      conversationCreated {
+        id
+        roomId
+        message {
+          id
+          message
+          timestamp
+          sender {
+            ... on User {
+              id
+              profile {
+                id
+                displayName
+                url
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+              }
+            }
+          }
+        }
+      }
+      messageReceived {
+        roomId
+        message {
+          id
+          message
+          timestamp
+          sender {
+            ... on User {
+              id
+              profile {
+                id
+                displayName
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+              }
+            }
+          }
+        }
+      }
+      messageRemoved {
+        roomId
+        messageId
+      }
+      readReceiptUpdated {
+        roomId
+        lastReadEventId
+      }
+    }
+  }
+`;
+
+/**
+ * __useConversationEventsSubscription__
+ *
+ * To run a query within a React component, call `useConversationEventsSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useConversationEventsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConversationEventsSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useConversationEventsSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.ConversationEventsSubscription,
+    SchemaTypes.ConversationEventsSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.ConversationEventsSubscription,
+    SchemaTypes.ConversationEventsSubscriptionVariables
+  >(ConversationEventsDocument, options);
+}
+export type ConversationEventsSubscriptionHookResult = ReturnType<typeof useConversationEventsSubscription>;
+export type ConversationEventsSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.ConversationEventsSubscription>;
+export const ConversationMessagesDocument = gql`
+  query ConversationMessages($conversationId: UUID!) {
+    lookup {
+      conversation(ID: $conversationId) {
+        id
+        room {
+          id
+          messages {
+            id
+            message
+            timestamp
+            sender {
+              ... on User {
+                id
+                profile {
+                  id
+                  displayName
+                  avatar: visual(type: AVATAR) {
+                    id
+                    uri
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useConversationMessagesQuery__
+ *
+ * To run a query within a React component, call `useConversationMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConversationMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConversationMessagesQuery({
+ *   variables: {
+ *      conversationId: // value for 'conversationId'
+ *   },
+ * });
+ */
+export function useConversationMessagesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ConversationMessagesQuery,
+    SchemaTypes.ConversationMessagesQueryVariables
+  > &
+    ({ variables: SchemaTypes.ConversationMessagesQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ConversationMessagesQuery, SchemaTypes.ConversationMessagesQueryVariables>(
+    ConversationMessagesDocument,
+    options
+  );
+}
+export function useConversationMessagesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ConversationMessagesQuery,
+    SchemaTypes.ConversationMessagesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ConversationMessagesQuery, SchemaTypes.ConversationMessagesQueryVariables>(
+    ConversationMessagesDocument,
+    options
+  );
+}
+export function useConversationMessagesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ConversationMessagesQuery,
+        SchemaTypes.ConversationMessagesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.ConversationMessagesQuery, SchemaTypes.ConversationMessagesQueryVariables>(
+    ConversationMessagesDocument,
+    options
+  );
+}
+export type ConversationMessagesQueryHookResult = ReturnType<typeof useConversationMessagesQuery>;
+export type ConversationMessagesLazyQueryHookResult = ReturnType<typeof useConversationMessagesLazyQuery>;
+export type ConversationMessagesSuspenseQueryHookResult = ReturnType<typeof useConversationMessagesSuspenseQuery>;
+export type ConversationMessagesQueryResult = Apollo.QueryResult<
+  SchemaTypes.ConversationMessagesQuery,
+  SchemaTypes.ConversationMessagesQueryVariables
+>;
+export function refetchConversationMessagesQuery(variables: SchemaTypes.ConversationMessagesQueryVariables) {
+  return { query: ConversationMessagesDocument, variables: variables };
+}
 export const CreateConversationDocument = gql`
   mutation CreateConversation($conversationData: CreateConversationInput!) {
     createConversation(conversationData: $conversationData) {
@@ -27249,6 +27436,51 @@ export type CreateConversationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateConversationMutation,
   SchemaTypes.CreateConversationMutationVariables
 >;
+export const MarkMessageAsReadDocument = gql`
+  mutation MarkMessageAsRead($messageData: RoomMarkMessageReadInput!) {
+    markMessageAsReadInRoom(messageData: $messageData)
+  }
+`;
+export type MarkMessageAsReadMutationFn = Apollo.MutationFunction<
+  SchemaTypes.MarkMessageAsReadMutation,
+  SchemaTypes.MarkMessageAsReadMutationVariables
+>;
+
+/**
+ * __useMarkMessageAsReadMutation__
+ *
+ * To run a mutation, you first call `useMarkMessageAsReadMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMarkMessageAsReadMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [markMessageAsReadMutation, { data, loading, error }] = useMarkMessageAsReadMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useMarkMessageAsReadMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.MarkMessageAsReadMutation,
+    SchemaTypes.MarkMessageAsReadMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.MarkMessageAsReadMutation, SchemaTypes.MarkMessageAsReadMutationVariables>(
+    MarkMessageAsReadDocument,
+    options
+  );
+}
+export type MarkMessageAsReadMutationHookResult = ReturnType<typeof useMarkMessageAsReadMutation>;
+export type MarkMessageAsReadMutationResult = Apollo.MutationResult<SchemaTypes.MarkMessageAsReadMutation>;
+export type MarkMessageAsReadMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.MarkMessageAsReadMutation,
+  SchemaTypes.MarkMessageAsReadMutationVariables
+>;
 export const UserConversationsDocument = gql`
   query UserConversations {
     me {
@@ -27257,7 +27489,9 @@ export const UserConversationsDocument = gql`
           id
           room {
             id
-            messages {
+            unreadCount
+            messagesCount
+            lastMessage {
               id
               message
               timestamp
@@ -27275,18 +27509,17 @@ export const UserConversationsDocument = gql`
                 }
               }
             }
-            messagesCount
           }
           user {
             id
             profile {
               id
               displayName
+              url
               avatar: visual(type: AVATAR) {
                 id
                 uri
               }
-              url
             }
           }
         }

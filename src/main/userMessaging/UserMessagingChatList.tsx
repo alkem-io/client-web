@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+  Badge,
   Box,
   List,
   ListItemButton,
@@ -153,17 +154,38 @@ export const UserMessagingChatList = ({
             }}
           >
             <ListItemAvatar sx={{ minWidth: 48 }}>
-              <Avatar
-                src={conversation.user.avatarUri}
-                alt={conversation.user.displayName}
-                size="medium"
-                sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
-              />
+              <Badge
+                badgeContent={conversation.unreadCount}
+                color="error"
+                max={99}
+                invisible={conversation.unreadCount === 0}
+                overlap="circular"
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                sx={{
+                  '& .MuiBadge-badge': {
+                    fontSize: '0.6rem',
+                    height: 16,
+                    minWidth: 16,
+                  },
+                }}
+              >
+                <Avatar
+                  src={conversation.user.avatarUri}
+                  alt={conversation.user.displayName}
+                  size="medium"
+                  sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
+                />
+              </Badge>
             </ListItemAvatar>
             <ListItemText
               primary={
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                  <Typography variant="body1" fontWeight={500} noWrap sx={{ maxWidth: '60%' }}>
+                  <Typography
+                    variant="body1"
+                    fontWeight={conversation.unreadCount > 0 ? 700 : 500}
+                    noWrap
+                    sx={{ maxWidth: '60%' }}
+                  >
                     {conversation.user.displayName}
                   </Typography>
                   {conversation.lastMessage && (
@@ -175,7 +197,13 @@ export const UserMessagingChatList = ({
               }
               secondary={
                 conversation.lastMessage ? (
-                  <Typography variant="body2" color="neutral.main" noWrap sx={{ maxWidth: '90%' }}>
+                  <Typography
+                    variant="body2"
+                    color={conversation.unreadCount > 0 ? 'text.primary' : 'neutral.main'}
+                    fontWeight={conversation.unreadCount > 0 ? 600 : 400}
+                    noWrap
+                    sx={{ maxWidth: '90%' }}
+                  >
                     {conversation.lastMessage.message}
                   </Typography>
                 ) : (

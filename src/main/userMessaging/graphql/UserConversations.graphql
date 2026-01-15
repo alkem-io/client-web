@@ -5,7 +5,9 @@ query UserConversations {
         id
         room {
           id
-          messages {
+          unreadCount
+          messagesCount
+          lastMessage {
             id
             message
             timestamp
@@ -23,18 +25,17 @@ query UserConversations {
               }
             }
           }
-          messagesCount
         }
         user {
           id
           profile {
             id
             displayName
+            url
             avatar: visual(type: AVATAR) {
               id
               uri
             }
-            url
           }
         }
       }
