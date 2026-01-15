@@ -43,7 +43,7 @@ const Authorship = ({ author, date, component: Component = Caption, children }: 
               role="img"
             />
           )}
-          <Component style={{ cursor: 'default' }}>{author.profile.displayName}</Component>
+          <Component style={{ cursor: 'default', whiteSpace: 'nowrap' }}>{author.profile.displayName}</Component>
         </Box>
       </ContributorTooltip>
       {author.profile.displayName && date && ' · '}
