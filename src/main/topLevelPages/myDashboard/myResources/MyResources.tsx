@@ -45,7 +45,7 @@ const MyResources = () => {
         <Box>
           <BlockSectionTitle sx={{ mb: 1 }}>{t('pages.home.sections.resources.innovationHubs')}</BlockSectionTitle>
           {innovationHubs?.map(hub => (
-            <InnovationHubCardHorizontal key={hub.id} {...hub} size="small" />
+            <InnovationHubCardHorizontal key={hub.id} {...hub} size="medium" />
           ))}
         </Box>
       )}
@@ -56,8 +56,9 @@ const MyResources = () => {
             <SpaceCardHorizontal
               key={space.id}
               space={{ id: space.id, about: space.about, level: space.level }}
-              size="small"
+              size="medium"
               deepness={0}
+              withIcon={false}
               seamless
               sx={{
                 display: 'inline-block',
@@ -74,7 +75,7 @@ const MyResources = () => {
         <Box>
           <BlockSectionTitle sx={{ mb: 1 }}>{t('pages.home.sections.resources.virtualContributors')}</BlockSectionTitle>
           {virtualContributors.map(vc => (
-            <ContributorCardHorizontal key={vc.id} profile={vc.profile} size="small" withUnifiedTitle seamless />
+            <ContributorCardHorizontal key={vc.id} profile={vc.profile} size="medium" withUnifiedTitle seamless />
           ))}
         </Box>
       )}
@@ -82,7 +83,7 @@ const MyResources = () => {
         <Box>
           <BlockSectionTitle sx={{ mb: 1 }}>{t('pages.home.sections.resources.innovationPacks')}</BlockSectionTitle>
           {innovationPacks.map(pack => (
-            <InnovationPackCardHorizontal key={pack.id} {...pack} size="small" />
+            <InnovationPackCardHorizontal key={pack.id} {...pack} size="medium" />
           ))}
         </Box>
       )}
