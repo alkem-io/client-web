@@ -41,6 +41,7 @@ const ImageContainer = styled(Box, {
   width: '100%',
   display: 'flex',
   aspectRatio: seamless ? 6.5 : WhiteboardPreviewVisualDimensions.aspectRatio,
+  minHeight: gutters(8)(theme),
   '& > img': {
     objectFit: seamless ? 'cover' : 'contain',
     width: '100%',
