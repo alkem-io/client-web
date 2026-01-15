@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  Badge,
   Box,
   List,
   ListItemButton,
@@ -23,6 +22,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { UserConversation } from './useUserConversations';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import BadgeCounter from '@/core/ui/icon/BadgeCounter';
 
 interface UserMessagingChatListProps {
   conversations: UserConversation[];
@@ -154,38 +154,17 @@ export const UserMessagingChatList = ({
             }}
           >
             <ListItemAvatar sx={{ minWidth: 48 }}>
-              <Badge
-                badgeContent={conversation.unreadCount}
-                color="error"
-                max={99}
-                invisible={conversation.unreadCount === 0}
-                overlap="circular"
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                sx={{
-                  '& .MuiBadge-badge': {
-                    fontSize: '0.6rem',
-                    height: 16,
-                    minWidth: 16,
-                  },
-                }}
-              >
-                <Avatar
-                  src={conversation.user.avatarUri}
-                  alt={conversation.user.displayName}
-                  size="medium"
-                  sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
-                />
-              </Badge>
+              <Avatar
+                src={conversation.user.avatarUri}
+                alt={conversation.user.displayName}
+                size="medium"
+                sx={{ boxShadow: '0 0px 2px rgba(0, 0, 0, 0.2)' }}
+              />
             </ListItemAvatar>
             <ListItemText
               primary={
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                  <Typography
-                    variant="body1"
-                    fontWeight={conversation.unreadCount > 0 ? 700 : 500}
-                    noWrap
-                    sx={{ maxWidth: '60%' }}
-                  >
+                  <Typography variant="body1" fontWeight={500} noWrap sx={{ maxWidth: '60%' }}>
                     {conversation.user.displayName}
                   </Typography>
                   {conversation.lastMessage && (
@@ -193,13 +172,38 @@ export const UserMessagingChatList = ({
                       {formatTimeElapsed(new Date(conversation.lastMessage.timestamp), t)}
                     </Caption>
                   )}
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="flex-end"
+                    gap={0.5}
+                    sx={{ position: 'relative' }}
+                  >
+                    {conversation.lastMessage && (
+                      <Caption color="neutral.light">
+                        {formatTimeElapsed(new Date(conversation.lastMessage.timestamp), t)}
+                      </Caption>
+                    )}
+                    {conversation.unreadCount > 0 && (
+                      <BadgeCounter
+                        count={conversation.unreadCount}
+                        size="small"
+                        aria-label={`${conversation.unreadCount} unread messages`}
+                        sx={{
+                          position: 'absolute',
+                          top: 20,
+                          right: 2,
+                          backgroundColor: theme => theme.palette.primary.main,
+                        }}
+                      />
+                    )}
+                  </Box>
                 </Box>
               }
               secondary={
                 conversation.lastMessage ? (
                   <Typography
                     variant="body2"
-                    color={conversation.unreadCount > 0 ? 'text.primary' : 'neutral.main'}
                     fontWeight={conversation.unreadCount > 0 ? 600 : 400}
                     noWrap
                     sx={{ maxWidth: '90%' }}

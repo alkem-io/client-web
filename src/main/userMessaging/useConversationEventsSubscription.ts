@@ -82,15 +82,13 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
 
   const handleConversationCreated = useCallback(
     (event: ConversationCreatedEvent) => {
-      client.cache.updateQuery<UserConversationsQuery>(
-        { query: UserConversationsDocument },
-        existing => {
-          if (!existing?.me?.conversations?.users) return existing;
+      client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
+        if (!existing?.me?.conversations?.users) return existing;
 
-          // Check if already exists (idempotency)
-          if (existing.me.conversations.users.some(c => c.id === event.id)) {
-            return existing;
-          }
+        // Check if already exists (idempotency)
+        if (existing.me.conversations.users.some(c => c.id === event.id)) {
+          return existing;
+        }
 
           // Sender of first message = the other user in the conversation
           const sender = event.message.sender;
@@ -98,44 +96,43 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
             return existing;
           }
 
-          // Build new conversation from event
-          // If current user is the sender, unreadCount = 0 (we sent it)
-          const isOwnMessage = sender.id === currentUserId;
-          const newConversation = {
-            __typename: 'Conversation' as const,
-            id: event.id,
-            room: {
-              __typename: 'Room' as const,
-              id: event.roomId,
-              unreadCount: isOwnMessage ? 0 : 1,
-              messagesCount: 1,
-              lastMessage: {
-                __typename: 'Message' as const,
-                id: event.message.id,
-                message: event.message.message,
-                timestamp: event.message.timestamp,
-                sender: sender,
-              },
+        // Build new conversation from event
+        // If current user is the sender, unreadCount = 0 (we sent it)
+        const isOwnMessage = sender.id === currentUserId;
+        const newConversation = {
+          __typename: 'Conversation' as const,
+          id: event.id,
+          room: {
+            __typename: 'Room' as const,
+            id: event.roomId,
+            unreadCount: isOwnMessage ? 0 : 1,
+            messagesCount: 1,
+            lastMessage: {
+              __typename: 'Message' as const,
+              id: event.message.id,
+              message: event.message.message,
+              timestamp: event.message.timestamp,
+              sender: sender,
             },
-            user: {
-              __typename: 'User' as const,
-              id: sender.id,
-              profile: sender.profile,
-            },
-          };
+          },
+          user: {
+            __typename: 'User' as const,
+            id: sender.id,
+            profile: sender.profile,
+          },
+        };
 
-          return {
-            ...existing,
-            me: {
-              ...existing.me,
-              conversations: {
-                ...existing.me.conversations,
-                users: [newConversation, ...existing.me.conversations.users],
-              },
+        return {
+          ...existing,
+          me: {
+            ...existing.me,
+            conversations: {
+              ...existing.me.conversations,
+              users: [newConversation, ...existing.me.conversations.users],
             },
-          };
-        }
-      );
+          },
+        };
+      });
     },
     [client, currentUserId]
   );
