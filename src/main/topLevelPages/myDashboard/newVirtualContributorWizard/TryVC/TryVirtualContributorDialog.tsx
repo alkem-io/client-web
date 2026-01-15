@@ -96,7 +96,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       editable: true,
       movable: true,
       publishedDate: undefined,
-      publishedBy: undefined,
+      createdBy: undefined,
     },
   });
 

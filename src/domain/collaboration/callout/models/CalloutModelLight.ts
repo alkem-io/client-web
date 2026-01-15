@@ -45,7 +45,7 @@ export type CalloutModelExtension<T> = T & {
   canBeSavedAsTemplate: boolean;
   classificationTagsets: ClassificationTagsetModel[];
   publishedDate?: Date | undefined;
-  publishedBy?:
+  createdBy?:
     | {
         id: string;
         profile: {

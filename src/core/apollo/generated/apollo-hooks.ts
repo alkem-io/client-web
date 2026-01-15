@@ -1021,7 +1021,7 @@ export const CalloutDetailsFragmentDoc = gql`
       ...CalloutSettingsFull
     }
     publishedDate
-    publishedBy {
+    createdBy {
       id
       profile {
         id

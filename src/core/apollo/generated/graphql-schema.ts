@@ -1596,9 +1596,9 @@ export type ConvertSpaceL1ToSpaceL0Input = {
 };
 
 export type ConvertSpaceL1ToSpaceL2Input = {
-  /** The Space L1 to be the parent of the Space L1 when it is moved to be L2.  */
+  /** The Space L1 to be the parent of the Space L1 when it is moved to be L2. */
   parentSpaceL1ID: Scalars['UUID']['input'];
-  /** The Space L1 to be moved to be a child of another Space L. Both the L1 Space and the parent Space must be in the same L0 Space.  */
+  /** The Space L1 to be moved to be a child of another Space L. Both the L1 Space and the parent Space must be in the same L0 Space. */
   spaceL1ID: Scalars['UUID']['input'];
 };
 
@@ -13116,7 +13116,7 @@ export type UpdateCalloutContentMutation = {
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
-    publishedBy?:
+    createdBy?:
       | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
       | undefined;
   };
@@ -13487,7 +13487,7 @@ export type UpdateCalloutVisibilityMutation = {
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
-    publishedBy?:
+    createdBy?:
       | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
       | undefined;
   };
@@ -14986,7 +14986,7 @@ export type CreateCalloutMutation = {
       };
       framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
     };
-    publishedBy?:
+    createdBy?:
       | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
       | undefined;
   };
@@ -15507,7 +15507,7 @@ export type CalloutDetailsQuery = {
             };
             framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
           };
-          publishedBy?:
+          createdBy?:
             | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
             | undefined;
           classification?:
@@ -15910,7 +15910,7 @@ export type CalloutDetailsFragment = {
     };
     framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
   };
-  publishedBy?:
+  createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
 };

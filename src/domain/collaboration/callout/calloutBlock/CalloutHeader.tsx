@@ -50,7 +50,7 @@ const CalloutHeader = ({
       >
         <MoreVertIcon color="primary" />
       </IconButton>
-      <Authorship author={callout.publishedBy} date={callout.publishedDate} />
+      <Authorship author={callout.createdBy} date={callout.publishedDate} />
     </>
   );
 
