@@ -1,4 +1,5 @@
 export type InnovationFlowStateModel = {
+  id: string;
   displayName: string;
   description?: string;
   settings: {

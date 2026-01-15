@@ -1391,7 +1391,7 @@
       },
       "defaultTemplate": {
         "currentlySelected": "Currently Selected Template:",
-        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow state.",
+        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow step.",
         "removeConfirmation": {
           "title": "Remove Default Template?",
           "description": "This will remove the default template for this flow step. New posts will no longer be pre-filled with template content."

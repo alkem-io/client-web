@@ -238,11 +238,15 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     const requiredInnovationFlow = ensurePresence(innovationFlow, 'Innovation Flow');
     const currentStates = requiredInnovationFlow.states.map(state => ({ id: state.id, sortOrder: state.sortOrder }));
 
-    newStateData.sortOrder = stateBeforeId
-      ? (currentStates.find(state => state.id === stateBeforeId)?.sortOrder ?? 0) + 1
-      : currentStates.length > 0
-        ? Math.max(...currentStates.map(state => state.sortOrder)) + 1
-        : 1;
+    let calculatedSortOrder: number;
+    if (stateBeforeId) {
+      calculatedSortOrder = (currentStates.find(state => state.id === stateBeforeId)?.sortOrder ?? 0) + 1;
+    } else if (currentStates.length > 0) {
+      calculatedSortOrder = Math.max(...currentStates.map(state => state.sortOrder)) + 1;
+    } else {
+      calculatedSortOrder = 1;
+    }
+    newStateData.sortOrder = calculatedSortOrder;
 
     const newState = await createStateOnInnovationFlow({
       variables: {
@@ -344,31 +348,35 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
         addCallouts,
       },
       refetchQueries: [
-        refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
+        refetchInnovationFlowSettingsQuery({ collaborationId }),
         'InnovationFlowDetails',
         'CalloutsOnCalloutsSetUsingClassification',
       ],
     });
   };
 
-  const [setDefaultCalloutTemplate] = useSetDefaultCalloutTemplateOnInnovationFlowStateMutation();
-  const [removeDefaultCalloutTemplate] = useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation();
+  const [setDefaultCalloutTemplate, { loading: loadingSetDefaultTemplate }] =
+    useSetDefaultCalloutTemplateOnInnovationFlowStateMutation();
+  const [removeDefaultCalloutTemplate, { loading: loadingRemoveDefaultTemplate }] =
+    useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation();
 
   const handleSetDefaultTemplate = async (flowStateId: string, templateId: string | null) => {
+    const collaborationId = ensurePresence(collaboration?.id, 'Collaboration');
+
     if (templateId) {
       await setDefaultCalloutTemplate({
         variables: {
           flowStateId,
           templateId,
         },
-        refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
+        refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId })],
       });
     } else {
       await removeDefaultCalloutTemplate({
         variables: {
           flowStateId,
         },
-        refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
+        refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId })],
       });
     }
   };
@@ -395,7 +403,13 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
       setDefaultTemplate: handleSetDefaultTemplate,
     },
     state: {
-      loading: loadingData || loadingUpdateInnovationFlow || loadingUpdateCallout || loadingSortOrder,
+      loading:
+        loadingData ||
+        loadingUpdateInnovationFlow ||
+        loadingUpdateCallout ||
+        loadingSortOrder ||
+        loadingSetDefaultTemplate ||
+        loadingRemoveDefaultTemplate,
       changingState,
     },
   };

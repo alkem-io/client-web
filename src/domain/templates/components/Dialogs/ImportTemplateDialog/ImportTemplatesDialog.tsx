@@ -131,7 +131,9 @@ const ImportTemplatesDialog = ({
 
   // Find the selected template to show at the top
   const selectedTemplate = selectedTemplateId
-    ? [...(templates || []), ...(platformTemplates || [])].find(t => t.template.id === selectedTemplateId)
+    ? [...(templates || []), ...(platformTemplates || [])].find(
+        templateItem => templateItem.template.id === selectedTemplateId
+      )
     : undefined;
 
   useEffect(() => {
@@ -254,7 +256,7 @@ const ImportTemplatesDialog = ({
                 loading: loadingImport,
               })
             ) : (
-              <TemplateActionButton textKey="buttons.select" onClick={handleImportTemplate} disabled={loadingImport} />
+              <TemplateActionButton textKey="buttons.select" onClick={handleImportTemplate} loading={loadingImport} />
             )
           }
         />
@@ -263,7 +265,7 @@ const ImportTemplatesDialog = ({
         <ConfirmationDialog
           entities={{
             titleId: 'components.innovationFlowSettings.defaultTemplate.removeConfirmation.title',
-            content: t('components.innovationFlowSettings.defaultTemplate.removeConfirmation.description'),
+            contentId: 'components.innovationFlowSettings.defaultTemplate.removeConfirmation.description',
             confirmButtonTextId: 'buttons.remove',
           }}
           actions={{

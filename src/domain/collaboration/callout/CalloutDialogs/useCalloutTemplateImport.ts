@@ -32,10 +32,12 @@ export const useCalloutTemplateImport = ({
 
     const template = data?.lookup.template;
     const templateCallout = template?.callout;
-    setTemplateSelected(mapCalloutTemplateToCalloutForm(templateCallout, calloutRestrictions));
+
     if (!template || !templateCallout) {
       throw new Error("Couldn't load CalloutTemplate");
     }
+
+    setTemplateSelected(mapCalloutTemplateToCalloutForm(templateCallout, calloutRestrictions));
 
     setImportDialogOpen(false);
   };
