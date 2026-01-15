@@ -19,11 +19,11 @@ const CreateCalloutDialog = lazyWithGlobalErrorHandler(
   () => import('@/domain/collaboration/callout/CalloutDialogs/CreateCalloutDialog')
 );
 
-type FlowStateTabPageProps = {
+type SpaceCustomTabPageProps = {
   sectionIndex: number;
 };
 
-const FlowStateTabPage = ({ sectionIndex }: FlowStateTabPageProps) => {
+const SpaceCustomTabPage = ({ sectionIndex }: SpaceCustomTabPageProps) => {
   const { urlInfo, classificationTagsets, flowStateForNewCallouts, tabDescription } = useSpaceTabProvider({
     tabPosition: sectionIndex,
   });
@@ -81,6 +81,7 @@ const FlowStateTabPage = ({ sectionIndex }: FlowStateTabPageProps) => {
             loading={loading}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
             onCalloutUpdate={refetchCallout}
+            defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
           />
         </ContentColumn>
       </PageContent>
@@ -97,4 +98,4 @@ const FlowStateTabPage = ({ sectionIndex }: FlowStateTabPageProps) => {
   );
 };
 
-export default FlowStateTabPage;
+export default SpaceCustomTabPage;
