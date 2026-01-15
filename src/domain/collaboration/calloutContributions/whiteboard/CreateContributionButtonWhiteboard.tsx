@@ -56,6 +56,7 @@ const CreateContributionButtonWhiteboard = ({
         },
       });
     }
+    setDialogOpen(false);
   });
 
   return (

@@ -53,6 +53,7 @@ const CreateContributionButtonMemo = ({
         },
       });
     }
+    setDialogOpen(false);
   });
 
   return (
