@@ -7,6 +7,7 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 
 export const UserAdminTabs: TabDefinition<SettingsSection>[] = [
   {
@@ -43,5 +44,10 @@ export const UserAdminTabs: TabDefinition<SettingsSection>[] = [
     section: SettingsSection.Settings,
     route: 'settings',
     icon: SettingsOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Security,
+    route: 'security',
+    icon: SecurityOutlinedIcon,
   },
 ];

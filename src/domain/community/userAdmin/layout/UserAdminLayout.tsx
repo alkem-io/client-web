@@ -10,6 +10,7 @@ const tabs = [
   SettingsSection.Organizations,
   SettingsSection.Notifications,
   SettingsSection.Settings,
+  SettingsSection.Security,
 ].map(section => {
   return UserAdminTabs.find(tab => tab.section === section)!;
 });
