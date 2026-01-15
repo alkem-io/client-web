@@ -1562,17 +1562,13 @@ export type Conversation = {
   virtualContributor?: Maybe<VirtualContributor>;
 };
 
-/** Event fired when a new conversation is created (first message sent). */
+/** Event fired when a new conversation is created. Each member receives a personalized event with the other participant resolved via conversation.user or conversation.virtualContributor. */
 export type ConversationCreatedEvent = {
   __typename?: 'ConversationCreatedEvent';
-  /** The conversation entity ID. */
-  id: Scalars['UUID']['output'];
-  /** The members of the conversation. */
-  memberships?: Maybe<Array<ConversationMembership>>;
-  /** The first message in the conversation. */
-  message: Message;
-  /** The room ID associated with the conversation. */
-  roomId: Scalars['UUID']['output'];
+  /** The conversation that was created. */
+  conversation: Conversation;
+  /** The first message in the conversation. Null when conversation is created without an initial message. */
+  message?: Maybe<Message>;
 };
 
 /** Payload for conversation subscription events. */
@@ -1597,15 +1593,6 @@ export enum ConversationEventType {
   MessageRemoved = 'MESSAGE_REMOVED',
   ReadReceiptUpdated = 'READ_RECEIPT_UPDATED',
 }
-
-/** A membership record for a conversation participant. */
-export type ConversationMembership = {
-  __typename?: 'ConversationMembership';
-  /** The agent ID of the conversation member. */
-  agentId: Scalars['UUID']['output'];
-  /** When this member joined the conversation. */
-  createdAt: Scalars['DateTime']['output'];
-};
 
 /** Event fired when a new message is received in a conversation. */
 export type ConversationMessageReceivedEvent = {
@@ -41139,15 +41126,40 @@ export type ConversationEventsSubscription = {
     conversationCreated?:
       | {
           __typename?: 'ConversationCreatedEvent';
-          id: string;
-          roomId: string;
-          message: {
-            __typename?: 'Message';
+          conversation: {
+            __typename?: 'Conversation';
             id: string;
-            message: string;
-            timestamp: number;
-            sender?:
-              | { __typename?: 'Organization' }
+            room?:
+              | {
+                  __typename?: 'Room';
+                  id: string;
+                  unreadCount: number;
+                  messagesCount: number;
+                  lastMessage?:
+                    | {
+                        __typename?: 'Message';
+                        id: string;
+                        message: string;
+                        timestamp: number;
+                        sender?:
+                          | { __typename?: 'Organization' }
+                          | {
+                              __typename?: 'User';
+                              id: string;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              };
+                            }
+                          | { __typename?: 'VirtualContributor' }
+                          | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+            user?:
               | {
                   __typename?: 'User';
                   id: string;
@@ -41159,9 +41171,30 @@ export type ConversationEventsSubscription = {
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   };
                 }
-              | { __typename?: 'VirtualContributor' }
               | undefined;
           };
+          message?:
+            | {
+                __typename?: 'Message';
+                id: string;
+                message: string;
+                timestamp: number;
+                sender?:
+                  | { __typename?: 'Organization' }
+                  | {
+                      __typename?: 'User';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
+                    }
+                  | { __typename?: 'VirtualContributor' }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
     messageReceived?:

@@ -1121,17 +1121,13 @@ export type ConversationFieldPolicy = {
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ConversationCreatedEventKeySpecifier = (
-  | 'id'
-  | 'memberships'
+  | 'conversation'
   | 'message'
-  | 'roomId'
   | ConversationCreatedEventKeySpecifier
 )[];
 export type ConversationCreatedEventFieldPolicy = {
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  memberships?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversation?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
-  roomId?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ConversationEventSubscriptionResultKeySpecifier = (
   | 'conversationCreated'
@@ -1147,11 +1143,6 @@ export type ConversationEventSubscriptionResultFieldPolicy = {
   messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   messageRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
   readReceiptUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ConversationMembershipKeySpecifier = ('agentId' | 'createdAt' | ConversationMembershipKeySpecifier)[];
-export type ConversationMembershipFieldPolicy = {
-  agentId?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ConversationMessageReceivedEventKeySpecifier = (
   | 'message'
@@ -5418,10 +5409,6 @@ export type StrictTypedTypePolicies = {
       | ConversationEventSubscriptionResultKeySpecifier
       | (() => undefined | ConversationEventSubscriptionResultKeySpecifier);
     fields?: ConversationEventSubscriptionResultFieldPolicy;
-  };
-  ConversationMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ConversationMembershipKeySpecifier | (() => undefined | ConversationMembershipKeySpecifier);
-    fields?: ConversationMembershipFieldPolicy;
   };
   ConversationMessageReceivedEvent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

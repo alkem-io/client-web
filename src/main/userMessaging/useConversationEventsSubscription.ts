@@ -85,40 +85,34 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
       client.cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
         if (!existing?.me?.conversations?.users) return existing;
 
-        // Check if already exists (idempotency)
-        if (existing.me.conversations.users.some(c => c.id === event.id)) {
+        const conversation = event.conversation;
+        const room = conversation.room;
+        const user = conversation.user;
+
+        if (!room || !user) {
           return existing;
         }
 
-          // Sender of first message = the other user in the conversation
-          const sender = event.message.sender;
-          if (!sender || !('id' in sender)) {
-            return existing;
-          }
+        // Check if already exists (idempotency)
+        if (existing.me.conversations.users.some(c => c.id === conversation.id)) {
+          return existing;
+        }
 
-        // Build new conversation from event
-        // If current user is the sender, unreadCount = 0 (we sent it)
-        const isOwnMessage = sender.id === currentUserId;
+        // Use conversation data directly from event
         const newConversation = {
           __typename: 'Conversation' as const,
-          id: event.id,
+          id: conversation.id,
           room: {
             __typename: 'Room' as const,
-            id: event.roomId,
-            unreadCount: isOwnMessage ? 0 : 1,
-            messagesCount: 1,
-            lastMessage: {
-              __typename: 'Message' as const,
-              id: event.message.id,
-              message: event.message.message,
-              timestamp: event.message.timestamp,
-              sender: sender,
-            },
+            id: room.id,
+            unreadCount: room.unreadCount,
+            messagesCount: room.messagesCount,
+            lastMessage: room.lastMessage,
           },
           user: {
             __typename: 'User' as const,
-            id: sender.id,
-            profile: sender.profile,
+            id: user.id,
+            profile: user.profile,
           },
         };
 
@@ -134,7 +128,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         };
       });
     },
-    [client, currentUserId]
+    [client]
   );
 
   const handleMessageReceived = useCallback(

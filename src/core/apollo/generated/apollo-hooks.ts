@@ -27205,8 +27205,44 @@ export const ConversationEventsDocument = gql`
     conversationEvents {
       eventType
       conversationCreated {
-        id
-        roomId
+        conversation {
+          id
+          room {
+            id
+            unreadCount
+            messagesCount
+            lastMessage {
+              id
+              message
+              timestamp
+              sender {
+                ... on User {
+                  id
+                  profile {
+                    id
+                    displayName
+                    avatar: visual(type: AVATAR) {
+                      id
+                      uri
+                    }
+                  }
+                }
+              }
+            }
+          }
+          user {
+            id
+            profile {
+              id
+              displayName
+              url
+              avatar: visual(type: AVATAR) {
+                id
+                uri
+              }
+            }
+          }
+        }
         message {
           id
           message
@@ -27217,7 +27253,6 @@ export const ConversationEventsDocument = gql`
               profile {
                 id
                 displayName
-                url
                 avatar: visual(type: AVATAR) {
                   id
                   uri
