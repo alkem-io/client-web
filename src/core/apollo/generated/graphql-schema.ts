@@ -4528,6 +4528,8 @@ export type Mutation = {
   updateSpacePlatformSettings: Space;
   /** Updates one of the Setting on a Space */
   updateSpaceSettings: Space;
+  /** Update the sortOrder field of the supplied Subspaces to increase as per the order that they are provided in. */
+  updateSubspacesSortOrder: Array<Space>;
   /** Updates the specified Tagset. */
   updateTagset: Tagset;
   /** Updates the specified Template. */
@@ -5182,6 +5184,10 @@ export type MutationUpdateSpacePlatformSettingsArgs = {
 
 export type MutationUpdateSpaceSettingsArgs = {
   settingsData: UpdateSpaceSettingsInput;
+};
+
+export type MutationUpdateSubspacesSortOrderArgs = {
+  sortOrderData: UpdateSubspacesSortOrderInput;
 };
 
 export type MutationUpdateTagsetArgs = {
@@ -6337,6 +6343,8 @@ export type RelayPaginatedSpace = {
   platformAccess: PlatformRolesAccess;
   /** The settings for this Space. */
   settings: SpaceSettings;
+  /** The sorting order for this Space within its parent. */
+  sortOrder: Scalars['Float']['output'];
   /** The StorageAggregator in use by this Space */
   storageAggregator: StorageAggregator;
   /** The subscriptions active for this Space. */
@@ -7021,6 +7029,8 @@ export type Space = {
   platformAccess: PlatformRolesAccess;
   /** The settings for this Space. */
   settings: SpaceSettings;
+  /** The sorting order for this Space within its parent. */
+  sortOrder: Scalars['Float']['output'];
   /** The StorageAggregator in use by this Space */
   storageAggregator: StorageAggregator;
   /** The subscriptions active for this Space. */
@@ -8109,6 +8119,12 @@ export type UpdateSpaceSettingsPrivacyInput = {
   /** Flag to control if Platform Support has admin rights. */
   allowPlatformSupportAsAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   mode?: InputMaybe<SpacePrivacyMode>;
+};
+
+export type UpdateSubspacesSortOrderInput = {
+  spaceID: Scalars['UUID']['input'];
+  /** The IDs of the subspaces to update the sort order on */
+  subspaceIDs: Array<Scalars['UUID']['input']>;
 };
 
 export type UpdateTagsetInput = {
@@ -25189,6 +25205,7 @@ export type SubspacesInSpaceQuery = {
             __typename?: 'Space';
             id: string;
             level: SpaceLevel;
+            sortOrder: number;
             about: {
               __typename?: 'SpaceAbout';
               id: string;
@@ -27439,6 +27456,16 @@ export type DeleteDocumentMutationVariables = Exact<{
 export type DeleteDocumentMutation = {
   __typename?: 'Mutation';
   deleteDocument: { __typename?: 'Document'; id: string };
+};
+
+export type UpdateSubspacesSortOrderMutationVariables = Exact<{
+  spaceID: Scalars['UUID']['input'];
+  subspaceIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+}>;
+
+export type UpdateSubspacesSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateSubspacesSortOrder: Array<{ __typename?: 'Space'; id: string; sortOrder: number }>;
 };
 
 export type SpaceAdminDefaultSpaceTemplatesDetailsQueryVariables = Exact<{

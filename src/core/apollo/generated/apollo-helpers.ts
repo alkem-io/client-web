@@ -2687,6 +2687,7 @@ export type MutationKeySpecifier = (
   | 'updateSpace'
   | 'updateSpacePlatformSettings'
   | 'updateSpaceSettings'
+  | 'updateSubspacesSortOrder'
   | 'updateTagset'
   | 'updateTemplate'
   | 'updateTemplateContentSpace'
@@ -2876,6 +2877,7 @@ export type MutationFieldPolicy = {
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpaceSettings?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateSubspacesSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplateContentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3578,6 +3580,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'nameID'
   | 'platformAccess'
   | 'settings'
+  | 'sortOrder'
   | 'storageAggregator'
   | 'subscriptions'
   | 'subspaceByNameID'
@@ -3603,6 +3606,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3955,6 +3959,7 @@ export type SpaceKeySpecifier = (
   | 'nameID'
   | 'platformAccess'
   | 'settings'
+  | 'sortOrder'
   | 'storageAggregator'
   | 'subscriptions'
   | 'subspaceByNameID'
@@ -3980,6 +3985,7 @@ export type SpaceFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
