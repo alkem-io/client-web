@@ -1,5 +1,5 @@
 import { ComponentType, PropsWithChildren, ReactNode } from 'react';
-import { SvgIconProps } from '@mui/material';
+import { Box, SvgIconProps } from '@mui/material';
 import { BlockTitle } from '../typography';
 import { gutters } from '../grid/utils';
 import RoundedIcon from '../icon/RoundedIcon';
@@ -65,7 +65,9 @@ const CardHeader = ({
         >
           {title}
         </BlockTitle>
-        {children}
+        <Box display="flex" gap={gutters()}>
+          {children}
+        </Box>
       </SwapColors>
     </BadgeCardView>
   );

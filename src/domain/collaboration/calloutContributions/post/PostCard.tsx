@@ -49,15 +49,13 @@ const PostCard = ({ contribution, columns, onClick, selected }: PostCardProps) =
     <ContributeCard to={post?.profile.url} onClick={onClick} columns={columns}>
       <CardHeader title={post.profile.displayName} contrast={selected} author={post.createdBy}>
         {post?.createdDate && <Caption color="textPrimary">{formatDate(post?.createdDate)}</Caption>}
+        {isNumber(post.comments?.messagesCount) && post.comments?.messagesCount > 0 && (
+          <MessageCounter commentsCount={post.comments?.messagesCount} size="xs" />
+        )}
       </CardHeader>
       <CardDetails>
         <CardDescriptionWithTags tags={post.profile?.tagset?.tags}>{post.profile?.description}</CardDescriptionWithTags>
       </CardDetails>
-      <CardFooter>
-        {isNumber(post.comments?.messagesCount) && post.comments?.messagesCount > 0 && (
-          <MessageCounter commentsCount={post.comments?.messagesCount} />
-        )}
-      </CardFooter>
     </ContributeCard>
   );
 };
