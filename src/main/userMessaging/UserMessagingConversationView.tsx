@@ -12,7 +12,7 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { UserConversation } from './useUserConversations';
 import { ConversationMessage } from './useConversationMessages';
 import { useSendMessageToRoomMutation, useMarkMessageAsReadMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
 
 interface MessageBubbleProps {
@@ -131,9 +131,11 @@ export const UserMessagingConversationView = ({
   }, [markConversationAsRead]);
 
   // Scroll to bottom when messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages.length]);
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }, [messages.length, conversation?.roomId]);
 
   const handleSendMessage = async (message: string) => {
     if (!conversation?.roomId || !message.trim()) {
