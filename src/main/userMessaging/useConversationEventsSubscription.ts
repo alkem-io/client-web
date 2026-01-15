@@ -99,13 +99,15 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
           }
 
           // Build new conversation from event
+          // If current user is the sender, unreadCount = 0 (we sent it)
+          const isOwnMessage = sender.id === currentUserId;
           const newConversation = {
             __typename: 'Conversation' as const,
             id: event.id,
             room: {
               __typename: 'Room' as const,
               id: event.roomId,
-              unreadCount: 1, // New conversation = 1 unread
+              unreadCount: isOwnMessage ? 0 : 1,
               messagesCount: 1,
               lastMessage: {
                 __typename: 'Message' as const,
@@ -135,7 +137,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         }
       );
     },
-    [client]
+    [client, currentUserId]
   );
 
   const handleMessageReceived = useCallback(
@@ -189,20 +191,8 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
             const exists = existingMessages.some(ref => readField('id', ref) === messageId);
             if (exists) return existingMessages;
 
-            // Add new message to cache and return reference
-            const newMessageRef = client.cache.writeFragment({
-              data: {
-                __typename: 'Message',
-                id: event.message.id,
-                message: event.message.message,
-                timestamp: event.message.timestamp,
-                sender: event.message.sender,
-                reactions: [],
-                threadID: null,
-              },
-              fragment: MessageCacheFragment,
-            });
-            return newMessageRef ? [...existingMessages, newMessageRef] : existingMessages;
+            // Reuse lastMessageRef (already written to cache above)
+            return lastMessageRef ? [...existingMessages, lastMessageRef] : existingMessages;
           },
         },
       });
