@@ -39,7 +39,11 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
 export const NAVIGATION_CONTENT_HEIGHT_GUTTERS = 3;
 export const NAVIGATION_CONTAINER_HEIGHT_GUTTERS = NAVIGATION_CONTENT_HEIGHT_GUTTERS + 1;
 
-const NavigationBar = ({ children }: PropsWithChildren) => {
+interface NavigationBarProps {
+  staticPosition?: boolean;
+}
+
+const NavigationBar = ({ staticPosition, children }: PropsWithChildren<NavigationBarProps>) => {
   const scrollTop = useScrollTop();
 
   const hasScrolledUp = useScrolledUp();
@@ -88,7 +92,7 @@ const NavigationBar = ({ children }: PropsWithChildren) => {
     <ElevationContext value={hasSurface ? 0 : PLATFORM_NAVIGATION_ITEM_ELEVATION}>
       <Slide direction="down" in={!hasScrolledPast || hasSlidIn}>
         <AppBar
-          position={isFixed ? 'fixed' : 'absolute'}
+          position={isFixed ? 'fixed' : staticPosition ? 'static' : 'absolute'}
           color="transparent"
           component="nav"
           sx={{

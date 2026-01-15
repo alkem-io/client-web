@@ -15,7 +15,7 @@ interface RecentSpacesListProps {
 const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
   const { t } = useTranslation();
 
-  const { visibleSpaces, cardColumns } = useSpaceCardLayout();
+  const { visibleSpaces, firstCardColumns, remainingCardColumns } = useSpaceCardLayout();
 
   const { data } = useRecentSpacesQuery({ variables: { limit: visibleSpaces } });
 
@@ -27,8 +27,8 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
   return (
     <Gutters disablePadding sx={{ width: '100%' }}>
       <Gutters row disablePadding>
-        {data?.me.mySpaces.slice(0, visibleSpaces).map(result => (
-          <GridItem key={result.space.id} columns={cardColumns}>
+        {data?.me.mySpaces.slice(0, visibleSpaces).map((result, index) => (
+          <GridItem key={result.space.id} columns={index === 0 ? firstCardColumns : remainingCardColumns}>
             <SpaceCard
               spaceId={result.space.id}
               displayName={result.space.about.profile.displayName}
