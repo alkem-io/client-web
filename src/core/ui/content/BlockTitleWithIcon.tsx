@@ -37,7 +37,7 @@ const BlockTitleWithIcon = ({
     {title && typeof title === 'string' ? (
       <BlockTitle variant={variant} noWrap color="textPrimary">
         {title}
-        {subtitle}
+        <Caption>{subtitle}</Caption>
       </BlockTitle>
     ) : (
       <Caption noWrap>{title}</Caption>
