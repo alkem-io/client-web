@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { gutters } from '@/core/ui/grid/utils';
 import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
-import InnovationFlowStateForm from './InnovationFlowStateForm';
+import InnovationFlowStateForm, { InnovationFlowStateFormValues } from './InnovationFlowStateForm';
 import InnovationFlowStateMenu from './InnovationFlowStateMenu';
 import { Identifiable } from '@/core/utils/Identifiable';
 import SetDefaultTemplateDialog from '../InnovationFlowDialogs/SetDefaultTemplateDialog';
@@ -53,10 +53,10 @@ export interface InnovationFlowDragNDropEditorProps {
   onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown>;
   onUpdateCurrentState?: (stateId: string) => void;
   onCreateFlowState: (
-    newState: InnovationFlowStateModel,
+    newState: InnovationFlowStateFormValues,
     options: { after: string; last: false } | { after?: never; last: true }
   ) => Promise<unknown>;
-  onEditFlowState: (stateId: string, newState: InnovationFlowStateModel) => Promise<unknown>;
+  onEditFlowState: (stateId: string, newState: InnovationFlowStateFormValues) => Promise<unknown>;
   onDeleteFlowState: (stateId: string) => Promise<unknown>;
   onSetDefaultTemplate: (stateId: string, templateId: string | null) => Promise<unknown>;
   /**
