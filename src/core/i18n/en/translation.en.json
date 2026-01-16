@@ -1362,6 +1362,7 @@
         "editState": "Edit Details",
         "deleteState": "Delete",
         "addState": "Add Phase",
+        "setDefaultTemplate": "Set Default Post Template",
         "invalidChars": "A phase name cannot contain special characters.",
         "noRepeatedStates": "A phase with the same name already exists.",
         "createDialog": {
@@ -1402,6 +1403,18 @@
             },
             "apply": "Apply"
           }
+        }
+      },
+      "defaultTemplate": {
+        "currentlySelected": "Currently Selected Template:",
+        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow step.",
+        "removeConfirmation": {
+          "title": "Remove Default Template?",
+          "description": "This will remove the default template for this flow step. New posts will no longer be pre-filled with template content."
+        },
+        "errors": {
+          "selectFailed": "Failed to set the default template. Please try again.",
+          "removeFailed": "Failed to remove the default template. Please try again."
         }
       }
     },
@@ -2544,9 +2557,10 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Change Default $t(common.template)",
                 "title": "Change Default $t(common.subspace) $t(common.template)",
-                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you’re looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
+                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
-            }
+            },
+            "reorderSubspaces": "Reorder $t(common.subspaces)"
           }
         },
         "authorization": {

@@ -12,7 +12,7 @@ import { InnovationFlowStateModel } from '../models/InnovationFlowStateModel';
 import Gutters from '@/core/ui/grid/Gutters';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 
-export interface InnovationFlowStateFormValues extends InnovationFlowStateModel {}
+export interface InnovationFlowStateFormValues extends Omit<InnovationFlowStateModel, 'id'> {}
 
 type InnovationFlowStateFormProps = {
   state?: InnovationFlowStateModel;
