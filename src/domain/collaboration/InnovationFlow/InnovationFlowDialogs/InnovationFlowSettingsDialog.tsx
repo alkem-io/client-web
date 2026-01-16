@@ -15,6 +15,7 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ApplySpaceTemplateDialog from '@/domain/templates/components/Dialogs/ApplySpaceTemplateDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { ImportFlowOptions } from './useInnovationFlowSettings';
 
 export type InnovationFlowSettingsDialogProps = {
   open?: boolean;
@@ -42,9 +43,9 @@ const InnovationFlowSettingsDialog = ({
 
   const handleImportInnovationFlowFromSpaceTemplate = async (
     { id: templateId }: Identifiable,
-    importCallouts: boolean
+    options?: ImportFlowOptions
   ) => {
-    await actions.importInnovationFlowFromSpaceTemplate(templateId, importCallouts);
+    await actions.importInnovationFlowFromSpaceTemplate(templateId, options);
     setSelectedTemplateToImport(undefined);
     setImportInnovationFlowDialogOpen(false);
   };
@@ -120,7 +121,7 @@ const InnovationFlowSettingsDialog = ({
       />
       <ApplySpaceTemplateDialog
         open={Boolean(selectedTemplateToImport)}
-        onConfirm={addCallouts => handleImportInnovationFlowFromSpaceTemplate(selectedTemplateToImport!, addCallouts)}
+        onConfirm={options => handleImportInnovationFlowFromSpaceTemplate(selectedTemplateToImport!, options)}
         onClose={() => setSelectedTemplateToImport(undefined)}
       />
       <ImportTemplatesDialog
