@@ -42,10 +42,10 @@
 
 **⚠️ CRITICAL**: Must complete before UI work (Phase 3+) can begin
 
-- [ ] T005 Update GraphQL mutation to include `deleteExistingCallouts` parameter in src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettings.graphql
-- [ ] T006 Create `ImportFlowOptions` interface type in src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings.tsx
-- [ ] T007 Update `handleImportInnovationFlowFromSpaceTemplate` handler signature to accept options object in src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings.tsx
-- [ ] T008 Update mutation call to pass `deleteExistingCallouts` variable in src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings.tsx
+- [x] T005 Update GraphQL mutation to include `deleteExistingCallouts` parameter in src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettings.graphql
+- [x] T006 Create `ImportFlowOptions` interface type in src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings.tsx
+- [x] T007 Update `handleImportInnovationFlowFromSpaceTemplate` handler signature to accept options object in src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings.tsx
+- [x] T008 Update mutation call to pass `deleteExistingCallouts` variable in src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings.tsx
 
 **Checkpoint**: GraphQL layer ready - UI implementation can now begin
 
@@ -59,17 +59,17 @@
 
 ### Implementation for User Story 1
 
-- [ ] T009 [P] [US1] Create `FlowReplaceOption` enum type in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T010 [P] [US1] Add translation keys for Option 1 ("Replace all posts") in src/core/i18n/en/translation.en.json under `components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog`
-- [ ] T011 [P] [US1] Add translation keys for confirmation dialog (title, description, confirm button) in src/core/i18n/en/translation.en.json
-- [ ] T012 [US1] Add Option 1 radio button with description to `OPTIONS` array in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T013 [US1] Refactor state from `addCallouts: boolean` to `selectedOption: FlowReplaceOption` in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T014 [US1] Add confirmation dialog state (`confirmDeleteDialogOpen`) in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T015 [US1] Implement confirmation dialog using `ConfirmationDialog` component for Option 1 in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T016 [US1] Update `handleConfirm` to check selected option and show confirmation for Option 1 in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T017 [US1] Implement `onConfirm` callback to call mutation with `deleteExistingCallouts: true, addCallouts: true` in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T018 [US1] Update dialog props interface to pass new `onConfirm` signature with options in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T019 [US1] Update `InnovationFlowSettingsDialog` to pass new handler signature in src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog.tsx
+- [x] T009 [P] [US1] Create `FlowReplaceOption` enum type in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T010 [P] [US1] Add translation keys for Option 1 ("Replace all posts") in src/core/i18n/en/translation.en.json under `components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog`
+- [x] T011 [P] [US1] Add translation keys for confirmation dialog (title, description, confirm button) in src/core/i18n/en/translation.en.json
+- [x] T012 [US1] Add Option 1 radio button with description to `OPTIONS` array in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T013 [US1] Refactor state from `addCallouts: boolean` to `selectedOption: FlowReplaceOption` in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T014 [US1] Add confirmation dialog state (`confirmDeleteDialogOpen`) in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T015 [US1] Implement confirmation dialog using `ConfirmationDialog` component for Option 1 in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T016 [US1] Update `handleConfirm` to check selected option and show confirmation for Option 1 in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T017 [US1] Implement `onConfirm` callback to call mutation with `deleteExistingCallouts: true, addCallouts: true` in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T018 [US1] Update dialog props interface to pass new `onConfirm` signature with options in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T019 [US1] Update `InnovationFlowSettingsDialog` to pass new handler signature in src/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog.tsx
 
 **Checkpoint**: User Story 1 (Replace All) should be fully functional - users can delete all posts and replace with template posts
 
@@ -83,10 +83,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T020 [P] [US2] Add translation keys for Option 2 description (if different from existing) in src/core/i18n/en/translation.en.json
-- [ ] T021 [US2] Add Option 2 radio button with description to `OPTIONS` array in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T022 [US2] Implement Option 2 logic to call mutation with `deleteExistingCallouts: false, addCallouts: true` in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T023 [US2] Verify Option 2 does NOT show confirmation dialog (non-destructive) in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T020 [P] [US2] Add translation keys for Option 2 description (if different from existing) in src/core/i18n/en/translation.en.json
+- [x] T021 [US2] Add Option 2 radio button with description to `OPTIONS` array in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T022 [US2] Implement Option 2 logic to call mutation with `deleteExistingCallouts: false, addCallouts: true` in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T023 [US2] Verify Option 2 does NOT show confirmation dialog (non-destructive) in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
 
 **Checkpoint**: User Story 2 (Add Template Posts) should work - existing posts preserved with new template posts added
 
@@ -100,10 +100,10 @@
 
 ### Implementation for User Story 3
 
-- [ ] T024 [P] [US3] Add translation keys for Option 3 description (if different from existing) in src/core/i18n/en/translation.en.json
-- [ ] T025 [US3] Add Option 3 radio button with description to `OPTIONS` array in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T026 [US3] Implement Option 3 logic to call mutation with `deleteExistingCallouts: false, addCallouts: false` in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T027 [US3] Verify Option 3 does NOT show confirmation dialog (non-destructive) in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T024 [P] [US3] Add translation keys for Option 3 description (if different from existing) in src/core/i18n/en/translation.en.json
+- [x] T025 [US3] Add Option 3 radio button with description to `OPTIONS` array in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T026 [US3] Implement Option 3 logic to call mutation with `deleteExistingCallouts: false, addCallouts: false` in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T027 [US3] Verify Option 3 does NOT show confirmation dialog (non-destructive) in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
 
 **Checkpoint**: User Story 3 (Flow Only) should work - flow changes without affecting posts
 
@@ -113,12 +113,12 @@
 
 **Purpose**: Edge cases, accessibility, and final validation
 
-- [ ] T028 [P] Handle edge case: Skip confirmation dialog for Option 1 when SubSpace has no existing posts in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T029 [P] Handle edge case: Template has no callouts (all options should still work) in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T030 [P] Add aria-label attributes to radio buttons for accessibility in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T031 [P] Verify keyboard navigation works correctly for all options in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T032 Verify error handling displays user-friendly messages on mutation failure in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
-- [ ] T033 Run `pnpm lint` and fix any linting issues
+- [x] T028 [P] Handle edge case: Skip confirmation dialog for Option 1 when SubSpace has no existing posts in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T029 [P] Handle edge case: Template has no callouts (all options should still work) in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T030 [P] Add aria-label attributes to radio buttons for accessibility in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T031 [P] Verify keyboard navigation works correctly for all options in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T032 Verify error handling displays user-friendly messages on mutation failure in src/domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx
+- [x] T033 Run `pnpm lint` and fix any linting issues
 - [ ] T034 Manual testing: Test all three options against Figma design specifications
 - [ ] T035 Manual testing: Verify all acceptance scenarios from spec.md pass
 

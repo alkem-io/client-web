@@ -1378,7 +1378,7 @@
           "title": "Find $t(common.space) $t(common.template)",
           "confirmationDialog": {
             "title": "Be careful when changing the flow!",
-            "description": "- By changing the $t(common.innovation-flow), **all changes made to the current flow will be lost**.\n- All existing $t(common.posts) will be grouped under the first phase of the new flow."
+            "description": "Please choose carefully when updating the innovation flow. Your action **cannot be undone**."
           },
           "importCalloutsDialog": {
             "title": "Apply New $t(common.template)",
@@ -1397,7 +1397,7 @@
             },
             "confirmDelete": {
               "title": "Confirm Deletion",
-              "description": "This action will <b>permanently delete all existing $t(common.posts-lower)</b> and replace them with $t(common.posts-lower) from the $t(common.template-lower). This cannot be undone. Are you sure you want to proceed?"
+              "description": "This action will <strong>permanently delete all existing $t(common.posts-lower)</strong> and replace them with $t(common.posts-lower) from the $t(common.template-lower). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
             },
             "apply": "Apply"
           }

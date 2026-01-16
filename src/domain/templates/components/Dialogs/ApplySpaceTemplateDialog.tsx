@@ -19,6 +19,7 @@ interface ApplySpaceTemplateDialogProps {
   open: boolean;
   onClose: () => void;
   onConfirm: (options: ImportFlowOptions) => Promise<unknown> | void;
+  existingCalloutsCount?: number;
 }
 
 const OPTIONS = [
@@ -45,19 +46,26 @@ const OPTIONS = [
   },
 ] as const;
 
-const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({ open, onClose, onConfirm }) => {
+const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({
+  open,
+  onClose,
+  onConfirm,
+  existingCalloutsCount = 0,
+}) => {
   const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState<FlowReplaceOption>(FlowReplaceOption.ADD_TEMPLATE_POSTS);
   const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState(false);
 
+  const hasExistingCallouts = existingCalloutsCount > 0;
+
   const [handleConfirm, loading] = useLoadingState(async () => {
-    // Show confirmation dialog for destructive Option 1
-    if (selectedOption === FlowReplaceOption.REPLACE_ALL) {
+    // Show confirmation dialog for destructive Option 1 only when there are existing callouts
+    if (selectedOption === FlowReplaceOption.REPLACE_ALL && hasExistingCallouts) {
       setConfirmDeleteDialogOpen(true);
       return;
     }
 
-    // For non-destructive options, proceed immediately
+    // For non-destructive options or when no callouts exist, proceed immediately
     await executeConfirm();
   });
 
@@ -96,19 +104,22 @@ const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({ ope
             <RadioGroup
               value={selectedOption}
               onChange={event => setSelectedOption(event.target.value as FlowReplaceOption)}
+              aria-label={t(
+                'components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.title'
+              )}
             >
               <Gutters disablePadding>
                 {OPTIONS.map(option => (
                   <FormControlLabel
                     key={option.value}
                     value={option.value}
-                    control={<Radio />}
+                    control={<Radio slotProps={{ input: { 'aria-describedby': `${option.value}-description` } }} />}
                     label={
                       <>
                         <Text sx={{ fontWeight: 'bold' }}>
                           <>{t(option.labelKey)}</>
                         </Text>
-                        <Caption>
+                        <Caption id={`${option.value}-description`}>
                           <>{t(option.descriptionKey)}</>
                         </Caption>
                       </>
@@ -132,8 +143,14 @@ const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({ ope
         entities={{
           titleId:
             'components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.confirmDelete.title',
-          contentId:
-            'components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.confirmDelete.description',
+          content: (
+            <Trans
+              i18nKey="components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.confirmDelete.description"
+              components={{
+                strong: <strong />,
+              }}
+            />
+          ),
           confirmButtonTextId: 'buttons.confirm',
         }}
         actions={{
