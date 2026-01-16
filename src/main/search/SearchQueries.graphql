@@ -24,6 +24,19 @@ query search($searchData: SearchInput!) {
       total
     }
 
+    framingResults {
+      cursor
+      results {
+        id
+        type
+        score
+        terms
+        ...SearchResultMemo
+        ...SearchResultWhiteboard
+      }
+      total
+    }
+
     contributionResults {
       cursor
       results {

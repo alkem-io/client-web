@@ -25266,6 +25266,18 @@ export const SearchDocument = gql`
         }
         total
       }
+      framingResults {
+        cursor
+        results {
+          id
+          type
+          score
+          terms
+          ...SearchResultMemo
+          ...SearchResultWhiteboard
+        }
+        total
+      }
       contributionResults {
         cursor
         results {
@@ -25295,9 +25307,9 @@ export const SearchDocument = gql`
   }
   ${SearchResultSpaceFragmentDoc}
   ${SearchResultCalloutFragmentDoc}
-  ${SearchResultPostFragmentDoc}
   ${SearchResultMemoFragmentDoc}
   ${SearchResultWhiteboardFragmentDoc}
+  ${SearchResultPostFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
 `;

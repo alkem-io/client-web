@@ -277,6 +277,7 @@
     "callouts": "$t(common.posts)",
     "Callout": "$t(common.Post)",
     "Callouts": "$t(common.Posts)",
+    "framing": "Additional Content",
     "collaborationTools": "Collaboration Tools",
     "createdBy": "Created by",
     "Memo": "Memo",
@@ -812,7 +813,7 @@
       "createButtonTooltip": "Add $t(common.Callout)",
       "dialogTitle": "Add $t(common.Callout)",
       "framingSettings": {
-        "title": "Additional Content",
+        "title": "$t(common.framing)",
         "none": {
           "title": "None",
           "tooltip": "No additional content"
@@ -1306,7 +1307,6 @@
     },
     "searchDialog": {
       "headerTitle": "Search results",
-      "spacesAndSubspaces": "$t(common.spaces) & $t(common.subspaces)",
       "collaborationTools": "Collaboration Tools"
     },
     "searchScope": {
@@ -2746,6 +2746,7 @@
       "filter": {
         "type": {
           "space": "$t(common.space) type",
+          "framing": "$t(common.framing) type",
           "contribution": "Contribution type",
           "contributor": "Contributor type"
         },
@@ -2753,13 +2754,22 @@
           "all": "All",
           "space": "$t(common.spaces)",
           "subspace": "$t(common.subspaces)",
+          "contributor": "$t(common.contributors)",
           "user": "Users",
           "organization": "$t(common.Organizations)",
-          "post": "$t(common.Posts)",
-          "whiteboard": "$t(common.Whiteboards) (available soon)",
           "callout": "$t(common.Callouts)",
-          "memo": "$t(common.Memos) (available soon)",
-          "response": "$t(common.Responses)"
+          "framing": "$t(common.framing)",
+          "contribution": "$t(common.Responses)",
+          "memo": "$t(common.Memos)",
+          "post": "$t(common.Posts)",
+          "whiteboard": "$t(common.Whiteboards)"
+        },
+        "results": {
+          "spacesAndSubspaces": "$t(common.spaces) & $t(common.subspaces)",
+          "callout": "$t(common.Callouts)",
+          "framing": "$t(common.framing)",
+          "contribution": "$t(common.Responses)",
+          "contributor": "$t(common.contributors)"
         }
       },
       "spaceFilterTitle": "$t(common.spaces)"

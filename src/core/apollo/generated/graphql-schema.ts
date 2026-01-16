@@ -2747,6 +2747,8 @@ export type ISearchResults = {
   contributionResults: ISearchCategoryResult;
   /** The search results for contributors (Users, Organizations). */
   contributorResults: ISearchCategoryResult;
+  /** The search results callout framings (Whiteboards, Memos as additional content). */
+  framingResults: ISearchCategoryResult;
   /** The search results for Spaces / Subspaces. */
   spaceResults: ISearchCategoryResult;
 };
@@ -6820,11 +6822,12 @@ export type RoomSendMessageReplyInput = {
   threadID: Scalars['MessageID']['input'];
 };
 
-/** The category in which to search. A category may include a couple of entity types, e.g. "responses" include posts, whiteboard, etc. */
+/** The category in which to search. A category may include a couple of entity types, e.g. "contributions" include posts, whiteboard, etc. */
 export enum SearchCategory {
   CollaborationTools = 'COLLABORATION_TOOLS',
+  Contributions = 'CONTRIBUTIONS',
   Contributors = 'CONTRIBUTORS',
-  Responses = 'RESPONSES',
+  Framings = 'FRAMINGS',
   Spaces = 'SPACES',
 }
 
@@ -36361,6 +36364,232 @@ export type SearchQuery = {
             type: SearchResultType;
             score: number;
             terms: Array<string>;
+          }
+      >;
+    };
+    framingResults: {
+      __typename?: 'ISearchCategoryResult';
+      cursor?: string | undefined;
+      total: number;
+      results: Array<
+        | {
+            __typename?: 'SearchResultCallout';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
+        | {
+            __typename?: 'SearchResultMemo';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+            isContribution: boolean;
+            memo: {
+              __typename?: 'Memo';
+              id: string;
+              createdDate: Date;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                description?: string | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
+            };
+            space: {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              visibility: SpaceVisibility;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                isContentPublic: boolean;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+                membership: {
+                  __typename?: 'SpaceAboutMembership';
+                  myMembershipStatus?: CommunityMembershipStatus | undefined;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  communityID: string;
+                  roleSetID: string;
+                };
+                guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+              };
+            };
+            callout: {
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              };
+            };
+          }
+        | {
+            __typename?: 'SearchResultOrganization';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
+        | { __typename?: 'SearchResultPost'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | { __typename?: 'SearchResultSpace'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | {
+            __typename?: 'SearchResultWhiteboard';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+            isContribution: boolean;
+            whiteboard: {
+              __typename?: 'Whiteboard';
+              id: string;
+              createdDate: Date;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                description?: string | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
+            };
+            space: {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              visibility: SpaceVisibility;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                isContentPublic: boolean;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+                membership: {
+                  __typename?: 'SpaceAboutMembership';
+                  myMembershipStatus?: CommunityMembershipStatus | undefined;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  communityID: string;
+                  roleSetID: string;
+                };
+                guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+              };
+            };
+            callout: {
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              };
+            };
           }
       >;
     };

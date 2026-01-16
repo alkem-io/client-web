@@ -38,6 +38,24 @@ export const calloutFilterConfig: FilterConfig = {
   },
 };
 
+export const framingFilterConfig: FilterConfig = {
+  all: {
+    title: 'pages.search.filter.key.all',
+    value: [SearchResultType.Whiteboard, SearchResultType.Memo],
+    typename: 'all',
+  },
+  whiteboard: {
+    title: 'pages.search.filter.key.whiteboard',
+    value: [SearchResultType.Whiteboard],
+    typename: 'whiteboard',
+  },
+  memo: {
+    title: 'pages.search.filter.key.memo',
+    value: [SearchResultType.Memo],
+    typename: 'memo',
+  },
+};
+
 export const contributionFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
