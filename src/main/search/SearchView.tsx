@@ -24,6 +24,8 @@ import {
   SearchResultSpaceFragment,
   SearchResultCalloutFragment,
   SearchResultOrganizationFragment,
+  SearchResultMemoFragment,
+  SearchResultWhiteboardFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -60,7 +62,9 @@ export type SearchResultMetaType =
   | TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
   | TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>
   | TypedSearchResult<SearchResultType.Subspace, SearchResultSpaceFragment>
-  | TypedSearchResult<SearchResultType.Callout, SearchResultCalloutFragment>;
+  | TypedSearchResult<SearchResultType.Callout, SearchResultCalloutFragment>
+  | TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>
+  | TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>;
 
 interface SearchViewProps {
   searchRoute: string;
@@ -85,7 +89,7 @@ type ResultsCursors = {
 const searchResultSectionTypes: Record<keyof SearchViewSections, SearchResultType[]> = {
   spaceResults: [SearchResultType.Space, SearchResultType.Subspace],
   calloutResults: [SearchResultType.Callout],
-  contributionResults: [SearchResultType.Post],
+  contributionResults: [SearchResultType.Post, SearchResultType.Memo, SearchResultType.Whiteboard],
   contributorResults: [SearchResultType.User, SearchResultType.Organization],
 };
 
@@ -443,7 +447,18 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
   const filteredContributionResults =
     contributionFilter.typename === 'all'
       ? contributionResults
-      : contributionResults.filter(contribution => contribution.type === 'POST');
+      : contributionResults.filter(contribution => {
+          switch (contributionFilter.typename) {
+            case 'post':
+              return contribution.type === 'POST';
+            case 'memo':
+              return contribution.type === 'MEMO';
+            case 'whiteboard':
+              return contribution.type === 'WHITEBOARD';
+            default:
+              return true;
+          }
+        });
 
   const filteredContributorResults =
     contributorFilter.typename === 'all'

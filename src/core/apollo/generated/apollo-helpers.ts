@@ -3861,6 +3861,27 @@ export type SearchResultCalloutFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SearchResultMemoKeySpecifier = (
+  | 'callout'
+  | 'id'
+  | 'isContribution'
+  | 'memo'
+  | 'score'
+  | 'space'
+  | 'terms'
+  | 'type'
+  | SearchResultMemoKeySpecifier
+)[];
+export type SearchResultMemoFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  memo?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SearchResultOrganizationKeySpecifier = (
   | 'id'
   | 'organization'
@@ -3926,6 +3947,27 @@ export type SearchResultUserFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SearchResultWhiteboardKeySpecifier = (
+  | 'callout'
+  | 'id'
+  | 'isContribution'
+  | 'score'
+  | 'space'
+  | 'terms'
+  | 'type'
+  | 'whiteboard'
+  | SearchResultWhiteboardKeySpecifier
+)[];
+export type SearchResultWhiteboardFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'environment' | 'submitPII' | SentryKeySpecifier)[];
 export type SentryFieldPolicy = {
@@ -6158,6 +6200,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | SearchResultCalloutKeySpecifier | (() => undefined | SearchResultCalloutKeySpecifier);
     fields?: SearchResultCalloutFieldPolicy;
   };
+  SearchResultMemo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultMemoKeySpecifier | (() => undefined | SearchResultMemoKeySpecifier);
+    fields?: SearchResultMemoFieldPolicy;
+  };
   SearchResultOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultOrganizationKeySpecifier | (() => undefined | SearchResultOrganizationKeySpecifier);
     fields?: SearchResultOrganizationFieldPolicy;
@@ -6173,6 +6219,10 @@ export type StrictTypedTypePolicies = {
   SearchResultUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultUserKeySpecifier | (() => undefined | SearchResultUserKeySpecifier);
     fields?: SearchResultUserFieldPolicy;
+  };
+  SearchResultWhiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultWhiteboardKeySpecifier | (() => undefined | SearchResultWhiteboardKeySpecifier);
+    fields?: SearchResultWhiteboardFieldPolicy;
   };
   Sentry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SentryKeySpecifier | (() => undefined | SentryKeySpecifier);

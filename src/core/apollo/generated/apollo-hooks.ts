@@ -3686,6 +3686,118 @@ export const SearchResultSpaceFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualModelFragmentDoc}
 `;
+export const MemoParentFragmentDoc = gql`
+  fragment MemoParent on SearchResultMemo {
+    space {
+      id
+      level
+      visibility
+      about {
+        ...SpaceAboutLight
+      }
+    }
+    callout {
+      id
+      framing {
+        id
+        profile {
+          id
+          url
+          displayName
+        }
+      }
+    }
+  }
+  ${SpaceAboutLightFragmentDoc}
+`;
+export const SearchResultMemoFragmentDoc = gql`
+  fragment SearchResultMemo on SearchResultMemo {
+    memo {
+      id
+      profile {
+        id
+        url
+        displayName
+        description
+        visual(type: CARD) {
+          ...VisualModel
+        }
+        tagset {
+          ...TagsetDetails
+        }
+      }
+      createdBy {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+      createdDate
+    }
+    isContribution
+    ...MemoParent
+  }
+  ${VisualModelFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${MemoParentFragmentDoc}
+`;
+export const WhiteboardParentFragmentDoc = gql`
+  fragment WhiteboardParent on SearchResultWhiteboard {
+    space {
+      id
+      level
+      visibility
+      about {
+        ...SpaceAboutLight
+      }
+    }
+    callout {
+      id
+      framing {
+        id
+        profile {
+          id
+          url
+          displayName
+        }
+      }
+    }
+  }
+  ${SpaceAboutLightFragmentDoc}
+`;
+export const SearchResultWhiteboardFragmentDoc = gql`
+  fragment SearchResultWhiteboard on SearchResultWhiteboard {
+    whiteboard {
+      id
+      profile {
+        id
+        url
+        displayName
+        description
+        visual(type: CARD) {
+          ...VisualModel
+        }
+        tagset {
+          ...TagsetDetails
+        }
+      }
+      createdBy {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+      createdDate
+    }
+    isContribution
+    ...WhiteboardParent
+  }
+  ${VisualModelFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${WhiteboardParentFragmentDoc}
+`;
 export const DashboardSpaceMembershipFragmentDoc = gql`
   fragment DashboardSpaceMembership on Space {
     id
@@ -25162,7 +25274,8 @@ export const SearchDocument = gql`
           score
           terms
           ...SearchResultPost
-          ...SearchResultCallout
+          ...SearchResultMemo
+          ...SearchResultWhiteboard
         }
         total
       }
@@ -25183,6 +25296,8 @@ export const SearchDocument = gql`
   ${SearchResultSpaceFragmentDoc}
   ${SearchResultCalloutFragmentDoc}
   ${SearchResultPostFragmentDoc}
+  ${SearchResultMemoFragmentDoc}
+  ${SearchResultWhiteboardFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
 `;

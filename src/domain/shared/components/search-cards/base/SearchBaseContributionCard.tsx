@@ -1,11 +1,9 @@
 import { Box, SvgIconProps } from '@mui/material';
 import { FC, PropsWithChildren } from 'react';
-import CardFooter from '@/core/ui/card/CardFooter';
 import CardHeader from '@/core/ui/card/CardHeader';
 import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
 import ContributeCard from '@/core/ui/card/ContributeCard';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { gutters } from '@/core/ui/grid/utils';
 
 export interface SearchBaseContributionCardProps {
   icon: React.ComponentType<SvgIconProps>;
@@ -31,9 +29,10 @@ const SearchBaseContributionCard: FC<PropsWithChildren<SearchBaseContributionCar
         </CardHeader>
       </Box>
       {children}
-      <CardFooter paddingX={gutters(1)} marginBottom={gutters(1.5)}>
-        {/*<CardMatchedTerms tags={matchedTerms} />*/}
+      {/*<CardFooter paddingX={gutters(1)} marginBottom={gutters(1.5)}>
+        <CardMatchedTerms tags={matchedTerms} />
       </CardFooter>
+      */}
     </ContributeCard>
   );
 };

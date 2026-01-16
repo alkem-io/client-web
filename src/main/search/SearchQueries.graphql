@@ -32,7 +32,8 @@ query search($searchData: SearchInput!) {
         score
         terms
         ...SearchResultPost
-        ...SearchResultCallout
+        ...SearchResultMemo
+        ...SearchResultWhiteboard
       }
       total
     }
@@ -238,6 +239,106 @@ query userRolesSearchCards($userId: UUID!) {
     organizations {
       id
       roles
+    }
+  }
+}
+
+fragment SearchResultMemo on SearchResultMemo {
+  memo {
+    id
+    profile {
+      id
+      url
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualModel
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    createdDate
+  }
+  isContribution
+  ...MemoParent
+}
+
+fragment MemoParent on SearchResultMemo {
+  space {
+    id
+    level
+    visibility
+    about {
+      ...SpaceAboutLight
+    }
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+    }
+  }
+}
+
+fragment SearchResultWhiteboard on SearchResultWhiteboard {
+  whiteboard {
+    id
+    profile {
+      id
+      url
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualModel
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    createdDate
+  }
+  isContribution
+  ...WhiteboardParent
+}
+
+fragment WhiteboardParent on SearchResultWhiteboard {
+  space {
+    id
+    level
+    visibility
+    about {
+      ...SpaceAboutLight
+    }
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
     }
   }
 }

@@ -2743,7 +2743,7 @@ export type ISearchResults = {
   __typename?: 'ISearchResults';
   /** The search results for Callouts. */
   calloutResults: ISearchCategoryResult;
-  /** The search results for contributions (Posts, Whiteboards etc). */
+  /** The search results for contributions (Posts, Whiteboards, Memos). */
   contributionResults: ISearchCategoryResult;
   /** The search results for contributors (Users, Organizations). */
   contributorResults: ISearchCategoryResult;
@@ -6877,6 +6877,26 @@ export type SearchResultCallout = SearchResult & {
   type: SearchResultType;
 };
 
+export type SearchResultMemo = SearchResult & {
+  __typename?: 'SearchResultMemo';
+  /** The Callout of the Memo. */
+  callout: Callout;
+  /** The identifier of the search result. Does not represent the entity in Alkemio. */
+  id: Scalars['UUID']['output'];
+  /** Whether the Memo is a contribution (response) or part of the framing. */
+  isContribution: Scalars['Boolean']['output'];
+  /** The Memo that was found. */
+  memo: Memo;
+  /** The score for this search result; more matches means a higher score. */
+  score: Scalars['Float']['output'];
+  /** The Space of the Memo. */
+  space: Space;
+  /** The terms that were matched for this result */
+  terms: Array<Scalars['String']['output']>;
+  /** The type of returned result for this search. */
+  type: SearchResultType;
+};
+
 export type SearchResultOrganization = SearchResult & {
   __typename?: 'SearchResultOrganization';
   /** The identifier of the search result. Does not represent the entity in Alkemio. */
@@ -6949,6 +6969,26 @@ export type SearchResultUser = SearchResult & {
   type: SearchResultType;
   /** The User that was found. */
   user: User;
+};
+
+export type SearchResultWhiteboard = SearchResult & {
+  __typename?: 'SearchResultWhiteboard';
+  /** The Callout of the Whiteboard. */
+  callout: Callout;
+  /** The identifier of the search result. Does not represent the entity in Alkemio. */
+  id: Scalars['UUID']['output'];
+  /** Whether the Whiteboard is a contribution (response) or part of the framing. */
+  isContribution: Scalars['Boolean']['output'];
+  /** The score for this search result; more matches means a higher score. */
+  score: Scalars['Float']['output'];
+  /** The Space of the Whiteboard. */
+  space: Space;
+  /** The terms that were matched for this result */
+  terms: Array<Scalars['String']['output']>;
+  /** The type of returned result for this search. */
+  type: SearchResultType;
+  /** The Whiteboard that was found. */
+  whiteboard: Whiteboard;
 };
 
 export enum SearchVisibility {
@@ -36106,6 +36146,7 @@ export type SearchQuery = {
             score: number;
             terms: Array<string>;
           }
+        | { __typename?: 'SearchResultMemo'; id: string; type: SearchResultType; score: number; terms: Array<string> }
         | {
             __typename?: 'SearchResultOrganization';
             id: string;
@@ -36204,6 +36245,13 @@ export type SearchQuery = {
             };
           }
         | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | {
+            __typename?: 'SearchResultWhiteboard';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
       >;
     };
     calloutResults: {
@@ -36296,6 +36344,7 @@ export type SearchQuery = {
               };
             };
           }
+        | { __typename?: 'SearchResultMemo'; id: string; type: SearchResultType; score: number; terms: Array<string> }
         | {
             __typename?: 'SearchResultOrganization';
             id: string;
@@ -36306,6 +36355,13 @@ export type SearchQuery = {
         | { __typename?: 'SearchResultPost'; id: string; type: SearchResultType; score: number; terms: Array<string> }
         | { __typename?: 'SearchResultSpace'; id: string; type: SearchResultType; score: number; terms: Array<string> }
         | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | {
+            __typename?: 'SearchResultWhiteboard';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
       >;
     };
     contributionResults: {
@@ -36319,43 +36375,57 @@ export type SearchQuery = {
             type: SearchResultType;
             score: number;
             terms: Array<string>;
-            callout: {
-              __typename?: 'Callout';
+          }
+        | {
+            __typename?: 'SearchResultMemo';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+            isContribution: boolean;
+            memo: {
+              __typename?: 'Memo';
               id: string;
-              framing: {
-                __typename?: 'CalloutFraming';
+              createdDate: Date;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  url: string;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                };
+                url: string;
+                displayName: string;
+                description?: string | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
               };
-              contributions: Array<{
-                __typename?: 'CalloutContribution';
-                id: string;
-                post?: { __typename?: 'Post'; id: string } | undefined;
-                whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
-                link?: { __typename?: 'Link'; id: string } | undefined;
-              }>;
-              comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
             };
             space: {
               __typename?: 'Space';
               id: string;
               level: SpaceLevel;
+              visibility: SpaceVisibility;
               about: {
                 __typename?: 'SpaceAbout';
                 id: string;
@@ -36395,6 +36465,15 @@ export type SearchQuery = {
                   roleSetID: string;
                 };
                 guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+              };
+            };
+            callout: {
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
               };
             };
           }
@@ -36508,6 +36587,107 @@ export type SearchQuery = {
           }
         | { __typename?: 'SearchResultSpace'; id: string; type: SearchResultType; score: number; terms: Array<string> }
         | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | {
+            __typename?: 'SearchResultWhiteboard';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+            isContribution: boolean;
+            whiteboard: {
+              __typename?: 'Whiteboard';
+              id: string;
+              createdDate: Date;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                description?: string | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
+            };
+            space: {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              visibility: SpaceVisibility;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                isContentPublic: boolean;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+                membership: {
+                  __typename?: 'SpaceAboutMembership';
+                  myMembershipStatus?: CommunityMembershipStatus | undefined;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  communityID: string;
+                  roleSetID: string;
+                };
+                guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+              };
+            };
+            callout: {
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              };
+            };
+          }
       >;
     };
     contributorResults: {
@@ -36522,6 +36702,7 @@ export type SearchQuery = {
             score: number;
             terms: Array<string>;
           }
+        | { __typename?: 'SearchResultMemo'; id: string; type: SearchResultType; score: number; terms: Array<string> }
         | {
             __typename?: 'SearchResultOrganization';
             id: string;
@@ -36604,6 +36785,13 @@ export type SearchQuery = {
                   | undefined;
               };
             };
+          }
+        | {
+            __typename?: 'SearchResultWhiteboard';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
           }
       >;
     };
@@ -37048,6 +37236,252 @@ export type UserRolesSearchCardsQuery = {
   };
 };
 
+export type SearchResultMemoFragment = {
+  __typename?: 'SearchResultMemo';
+  isContribution: boolean;
+  memo: {
+    __typename?: 'Memo';
+    id: string;
+    createdDate: Date;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
+    createdBy?:
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | undefined;
+  };
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    visibility: SpaceVisibility;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      isContentPublic: boolean;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        description?: string | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+      };
+      membership: {
+        __typename?: 'SpaceAboutMembership';
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID: string;
+        roleSetID: string;
+      };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+    };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    };
+  };
+};
+
+export type MemoParentFragment = {
+  __typename?: 'SearchResultMemo';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    visibility: SpaceVisibility;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      isContentPublic: boolean;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        description?: string | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+      };
+      membership: {
+        __typename?: 'SpaceAboutMembership';
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID: string;
+        roleSetID: string;
+      };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+    };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    };
+  };
+};
+
+export type SearchResultWhiteboardFragment = {
+  __typename?: 'SearchResultWhiteboard';
+  isContribution: boolean;
+  whiteboard: {
+    __typename?: 'Whiteboard';
+    id: string;
+    createdDate: Date;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
+    createdBy?:
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | undefined;
+  };
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    visibility: SpaceVisibility;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      isContentPublic: boolean;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        description?: string | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+      };
+      membership: {
+        __typename?: 'SpaceAboutMembership';
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID: string;
+        roleSetID: string;
+      };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+    };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    };
+  };
+};
+
+export type WhiteboardParentFragment = {
+  __typename?: 'SearchResultWhiteboard';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    visibility: SpaceVisibility;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      isContentPublic: boolean;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        description?: string | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+      };
+      membership: {
+        __typename?: 'SpaceAboutMembership';
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID: string;
+        roleSetID: string;
+      };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+    };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    };
+  };
+};
+
 export type SearchScopeDetailsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
 }>;
@@ -37483,6 +37917,7 @@ export type ExploreSpacesSearchQuery = {
       total: number;
       results: Array<
         | { __typename?: 'SearchResultCallout'; score: number; terms: Array<string>; type: SearchResultType }
+        | { __typename?: 'SearchResultMemo'; score: number; terms: Array<string>; type: SearchResultType }
         | { __typename?: 'SearchResultOrganization'; score: number; terms: Array<string>; type: SearchResultType }
         | { __typename?: 'SearchResultPost'; score: number; terms: Array<string>; type: SearchResultType }
         | {
@@ -37570,6 +38005,7 @@ export type ExploreSpacesSearchQuery = {
             };
           }
         | { __typename?: 'SearchResultUser'; score: number; terms: Array<string>; type: SearchResultType }
+        | { __typename?: 'SearchResultWhiteboard'; score: number; terms: Array<string>; type: SearchResultType }
       >;
     };
   };
@@ -40389,6 +40825,7 @@ export type SpaceExplorerSearchQuery = {
       total: number;
       results: Array<
         | { __typename?: 'SearchResultCallout'; score: number; terms: Array<string>; type: SearchResultType }
+        | { __typename?: 'SearchResultMemo'; score: number; terms: Array<string>; type: SearchResultType }
         | { __typename?: 'SearchResultOrganization'; score: number; terms: Array<string>; type: SearchResultType }
         | { __typename?: 'SearchResultPost'; score: number; terms: Array<string>; type: SearchResultType }
         | {
@@ -40508,6 +40945,7 @@ export type SpaceExplorerSearchQuery = {
             };
           }
         | { __typename?: 'SearchResultUser'; score: number; terms: Array<string>; type: SearchResultType }
+        | { __typename?: 'SearchResultWhiteboard'; score: number; terms: Array<string>; type: SearchResultType }
       >;
     };
   };

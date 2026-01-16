@@ -4,6 +4,8 @@ import {
   SearchResultSpaceFragment,
   SearchResultType,
   SearchResultUserFragment,
+  SearchResultMemoFragment,
+  SearchResultWhiteboardFragment,
   UserRolesSearchCardsQuery,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -13,6 +15,8 @@ import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hoo
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
+import { SearchContributionMemoCard } from '@/domain/shared/components/search-cards/SearchContributionMemoCard';
+import { SearchContributionWhiteboardCard } from '@/domain/shared/components/search-cards/SearchContributionWhiteboardCard';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '@/core/ui/card/CardContent';
@@ -22,6 +26,7 @@ import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import { spaceLevelIcon } from '@/domain/space/icons/SpaceIconByLevel';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
+import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;
@@ -133,6 +138,28 @@ const getContributionParentInformation = (
   };
 };
 
+const getMemoParentInformation = (
+  data: TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>
+): ContributionParentInformation => {
+  return {
+    displayName: data.space.about.profile.displayName,
+    locked: !data.space?.about.isContentPublic,
+    url: data.space.about.profile.url,
+    icon: spaceLevelIcon[data.space.level] ?? SpaceL0Icon,
+  };
+};
+
+const getWhiteboardParentInformation = (
+  data: TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>
+): ContributionParentInformation => {
+  return {
+    displayName: data.space.about.profile.displayName,
+    locked: !data.space?.about.isContentPublic,
+    url: data.space.about.profile.url,
+    icon: spaceLevelIcon[data.space.level] ?? SpaceL0Icon,
+  };
+};
+
 const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>) => {
   if (!data?.post) {
     return null;
@@ -152,6 +179,68 @@ const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, 
       commentsCount={card.comments?.messagesCount}
       matchedTerms={data.terms}
       url={data.post.profile.url}
+      parentSegment={
+        <CardContent>
+          <CardParentSpaceSegment iconComponent={WhiteboardIcon} parentSpaceUri={data.callout.framing.profile.url}>
+            {data.callout.framing.profile.displayName}
+          </CardParentSpaceSegment>
+          <CardParentSpaceSegment iconComponent={parent.icon} parentSpaceUri={parent.url} locked={parent.locked}>
+            {parent.displayName}
+          </CardParentSpaceSegment>
+        </CardContent>
+      }
+    />
+  );
+};
+
+const hydrateMemo = (data: TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>) => {
+  if (!data?.memo) {
+    return null;
+  }
+
+  const memo = data.memo;
+  const parent = getMemoParentInformation(data);
+
+  return (
+    <SearchContributionMemoCard
+      name={memo.profile.displayName}
+      author={memo.createdBy?.profile.displayName}
+      description={memo.profile.description}
+      tags={memo.profile.tagset?.tags}
+      createdDate={memo.createdDate}
+      matchedTerms={data.terms}
+      url={memo.profile.url}
+      parentSegment={
+        <CardContent>
+          <CardParentSpaceSegment iconComponent={WhiteboardIcon} parentSpaceUri={data.callout.framing.profile.url}>
+            {data.callout.framing.profile.displayName}
+          </CardParentSpaceSegment>
+          <CardParentSpaceSegment iconComponent={parent.icon} parentSpaceUri={parent.url} locked={parent.locked}>
+            {parent.displayName}
+          </CardParentSpaceSegment>
+        </CardContent>
+      }
+    />
+  );
+};
+
+const hydrateWhiteboard = (data: TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>) => {
+  if (!data?.whiteboard) {
+    return null;
+  }
+
+  const whiteboard = data.whiteboard;
+  const parent = getWhiteboardParentInformation(data);
+
+  return (
+    <SearchContributionWhiteboardCard
+      name={whiteboard.profile.displayName}
+      author={whiteboard.createdBy?.profile.displayName}
+      description={whiteboard.profile.description}
+      tags={whiteboard.profile.tagset?.tags}
+      createdDate={whiteboard.createdDate}
+      matchedTerms={data.terms}
+      url={whiteboard.profile.url}
       parentSegment={
         <CardContent>
           <CardParentSpaceSegment parentSpaceUri={data.callout.framing.profile.url}>
@@ -176,6 +265,10 @@ interface UseHydrateCardProvided {
     TypedSearchResult<SearchResultType.Organization, SearchResultOrganizationFragment>
   >;
   hydrateContributionCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>>;
+  hydrateMemoCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>>;
+  hydrateWhiteboardCard: HydratedCardGetter<
+    TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>
+  >;
   hydrateSpaceCard: HydratedCardGetter<
     TypedSearchResult<SearchResultType.Space | SearchResultType.Subspace, SearchResultSpaceFragment>
   >;
@@ -201,6 +294,8 @@ export const useHydrateCard = (): UseHydrateCardProvided => {
   return {
     hydrateSpaceCard,
     hydrateContributionCard: hydrateContributionPost,
+    hydrateMemoCard: hydrateMemo,
+    hydrateWhiteboardCard: hydrateWhiteboard,
     hydrateUserCard,
     hydrateOrganizationCard,
   };
