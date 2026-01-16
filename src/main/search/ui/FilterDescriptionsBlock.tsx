@@ -51,15 +51,14 @@ const FiltersDescriptionBlock = ({ results }: FiltersDescriptionBlockProps) => {
 
       <FiltersDescriptionBlockItem
         href="#collaboration-tools"
-        disabled={!(results?.calloutResults?.results?.length ?? 0)}
+        disabled={!(results?.calloutResults?.results?.length ?? 0) && !(results?.framingResults?.results?.length ?? 0)}
       >
         <DrawOutlined />
-        <Caption>{t('pages.search.filter.results.callout' /*, { count: results?.calloutResults?.total }*/)}</Caption>
-      </FiltersDescriptionBlockItem>
-
-      <FiltersDescriptionBlockItem href="#framing" disabled={!(results?.framingResults?.results?.length ?? 0)}>
-        <LibraryBooksOutlined />
-        <Caption>{t('pages.search.filter.results.framing' /*, { count: results?.framingResults?.total }*/)}</Caption>
+        <Caption>
+          {t(
+            'pages.search.filter.results.callout' /*, { count: results?.calloutResults?.total + results?.framingResults?.total }*/
+          )}
+        </Caption>
       </FiltersDescriptionBlockItem>
 
       <FiltersDescriptionBlockItem
@@ -90,7 +89,7 @@ const FiltersDescriptionBlockItem = ({
   disabled ? (
     <Tooltip title="No results" arrow>
       <Caption color="textDisabled">
-      <Gutters sx={{ flexDirection: 'row', padding: gutters(0.5) }}> {children}</Gutters>
+        <Gutters sx={{ flexDirection: 'row', padding: gutters(0.5) }}> {children}</Gutters>
       </Caption>
     </Tooltip>
   ) : (
