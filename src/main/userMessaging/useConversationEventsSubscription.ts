@@ -214,6 +214,8 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
               message: event.message.message,
               timestamp: event.message.timestamp,
               sender: event.message.sender,
+              reactions: [],
+              threadID: null,
             };
 
             return {
