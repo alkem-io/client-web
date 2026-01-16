@@ -1,4 +1,4 @@
-import { Button, DialogContent, ListItemIcon, MenuItem } from '@mui/material';
+import { Box, Button, CircularProgress, DialogContent, ListItemIcon, MenuItem } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -14,6 +14,7 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import ApplySpaceTemplateDialog from '@/domain/templates/components/Dialogs/ApplySpaceTemplateDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 import { ImportFlowOptions } from './useInnovationFlowSettings';
+import { Caption } from '@/core/ui/typography';
 
 export type InnovationFlowSettingsDialogProps = {
   open?: boolean;
@@ -37,14 +38,22 @@ const InnovationFlowSettingsDialog = ({
 
   const [importInnovationFlowDialogOpen, setImportInnovationFlowDialogOpen] = useState(false);
   const [selectedTemplateToImport, setSelectedTemplateToImport] = useState<Identifiable>();
+  const [isImporting, setIsImporting] = useState(false);
 
   const handleImportInnovationFlowFromSpaceTemplate = async (
     { id: templateId }: Identifiable,
     options?: ImportFlowOptions
   ) => {
-    await actions.importInnovationFlowFromSpaceTemplate(templateId, options);
+    // Close dialogs immediately and show loading state
     setSelectedTemplateToImport(undefined);
     setImportInnovationFlowDialogOpen(false);
+    setIsImporting(true);
+
+    try {
+      await actions.importInnovationFlowFromSpaceTemplate(templateId, options);
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   return (
@@ -80,7 +89,14 @@ const InnovationFlowSettingsDialog = ({
               }}
             </PageContentBlockContextualMenu>
           }
-        />
+        >
+          {isImporting && (
+            <Box display="flex" alignItems="center" gap={1} marginLeft={2}>
+              <CircularProgress size={16} />
+              <Caption>{t('components.innovationFlowSettings.importing')}</Caption>
+            </Box>
+          )}
+        </DialogHeader>
         <DialogContent>
           <InnovationFlowCollaborationToolsBlock
             callouts={callouts}

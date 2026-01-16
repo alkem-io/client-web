@@ -2,7 +2,6 @@ import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Caption, Text } from '@/core/ui/typography';
-import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { Button, Dialog, DialogActions, DialogContent, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -58,7 +57,7 @@ const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({
 
   const hasExistingCallouts = existingCalloutsCount > 0;
 
-  const [handleConfirm, loading] = useLoadingState(async () => {
+  const handleConfirm = () => {
     // Show confirmation dialog for destructive Option 1 only when there are existing callouts
     if (selectedOption === FlowReplaceOption.REPLACE_ALL && hasExistingCallouts) {
       setConfirmDeleteDialogOpen(true);
@@ -66,21 +65,22 @@ const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({
     }
 
     // For non-destructive options or when no callouts exist, proceed immediately
-    await executeConfirm();
-  });
+    executeConfirm();
+  };
 
-  const executeConfirm = async () => {
+  const executeConfirm = () => {
     const options: ImportFlowOptions = {
       addCallouts: selectedOption !== FlowReplaceOption.FLOW_ONLY,
       deleteExistingCallouts: selectedOption === FlowReplaceOption.REPLACE_ALL,
     };
-    await onConfirm(options);
+    // Close dialog immediately and let parent handle the async operation
     onClose();
+    onConfirm(options);
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = () => {
     setConfirmDeleteDialogOpen(false);
-    await executeConfirm();
+    executeConfirm();
   };
 
   return (
@@ -134,7 +134,7 @@ const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({
           <Button variant="text" onClick={onClose}>
             {t('buttons.cancel')}
           </Button>
-          <Button variant="contained" onClick={handleConfirm} loading={loading}>
+          <Button variant="contained" onClick={handleConfirm}>
             {t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.apply')}
           </Button>
         </DialogActions>
@@ -154,14 +154,11 @@ const ApplySpaceTemplateDialog: React.FC<ApplySpaceTemplateDialogProps> = ({
           confirmButtonTextId: 'buttons.confirm',
         }}
         actions={{
-          onConfirm: () => void handleConfirmDelete(),
+          onConfirm: handleConfirmDelete,
           onCancel: () => setConfirmDeleteDialogOpen(false),
         }}
         options={{
           show: confirmDeleteDialogOpen,
-        }}
-        state={{
-          isLoading: loading,
         }}
       />
     </>
