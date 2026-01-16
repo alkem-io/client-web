@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 type SearchResultsCount =
   | {
       total: number | undefined;
+      results: unknown[] | undefined;
     }
   | undefined;
 
@@ -24,7 +25,7 @@ interface FiltersDescriptionBlockProps {
     | undefined;
 }
 
-const FiltersDescriptionBlock = ({}: FiltersDescriptionBlockProps) => {
+const FiltersDescriptionBlock = ({ results }: FiltersDescriptionBlockProps) => {
   const { t } = useTranslation();
 
   return (
@@ -41,31 +42,37 @@ const FiltersDescriptionBlock = ({}: FiltersDescriptionBlockProps) => {
         border: `1px solid ${theme.palette.divider}`,
       })}
     >
-      <FiltersDescriptionBlockItem href="#spaces">
+      <FiltersDescriptionBlockItem href="#spaces" disabled={!(results?.spaceResults?.results?.length ?? 0)}>
         <HubOutlined />
         <Caption>
           {t('pages.search.filter.results.spacesAndSubspaces' /*, { count: results?.spaceResults?.total }*/)}
         </Caption>
       </FiltersDescriptionBlockItem>
 
-      <FiltersDescriptionBlockItem href="#collaboration-tools">
+      <FiltersDescriptionBlockItem
+        href="#collaboration-tools"
+        disabled={!(results?.calloutResults?.results?.length ?? 0)}
+      >
         <DrawOutlined />
         <Caption>{t('pages.search.filter.results.callout' /*, { count: results?.calloutResults?.total }*/)}</Caption>
       </FiltersDescriptionBlockItem>
 
-      <FiltersDescriptionBlockItem href="#framing">
+      <FiltersDescriptionBlockItem href="#framing" disabled={!(results?.framingResults?.results?.length ?? 0)}>
         <LibraryBooksOutlined />
         <Caption>{t('pages.search.filter.results.framing' /*, { count: results?.framingResults?.total }*/)}</Caption>
       </FiltersDescriptionBlockItem>
 
-      <FiltersDescriptionBlockItem href="#contributions">
+      <FiltersDescriptionBlockItem
+        href="#contributions"
+        disabled={!(results?.contributionResults?.results?.length ?? 0)}
+      >
         <LibraryBooksOutlined />
         <Caption>
           {t('pages.search.filter.results.contribution' /*, { count: results?.contributionResults?.total }*/)}
         </Caption>
       </FiltersDescriptionBlockItem>
 
-      <FiltersDescriptionBlockItem href="#contributors">
+      <FiltersDescriptionBlockItem href="#contributors" disabled={!(results?.contributorResults?.results?.length ?? 0)}>
         <GroupOutlined />
         <Caption>
           {t('pages.search.filter.results.contributor' /*, { count: results?.contributorResults?.total }*/)}
@@ -75,10 +82,19 @@ const FiltersDescriptionBlock = ({}: FiltersDescriptionBlockProps) => {
   );
 };
 
-const FiltersDescriptionBlockItem = ({ children, href }: PropsWithChildren<{ href: string }>) => (
-  <Link href={href} underline="none">
-    <Gutters sx={{ flexDirection: 'row', padding: gutters(0.5) }}>{children}</Gutters>
-  </Link>
-);
+const FiltersDescriptionBlockItem = ({
+  children,
+  href,
+  disabled,
+}: PropsWithChildren<{ href: string; disabled?: boolean }>) =>
+  disabled ? (
+    <Caption color="textDisabled">
+      <Gutters sx={{ flexDirection: 'row', padding: gutters(0.5) }}> {children}</Gutters>
+    </Caption>
+  ) : (
+    <Link href={href} underline="none">
+      <Gutters sx={{ flexDirection: 'row', padding: gutters(0.5) }}> {children}</Gutters>
+    </Link>
+  );
 
 export default FiltersDescriptionBlock;

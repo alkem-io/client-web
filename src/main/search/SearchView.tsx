@@ -590,90 +590,96 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
         <FiltersDescriptionBlock results={data?.search} />
 
         <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
-          <SectionWrapper>
-            <SearchResultSection
-              tagId="spaces"
-              title={spaceFilterTitle}
-              filterTitle={t('pages.search.filter.type.space')}
-              count={data?.search?.spaceResults?.total ?? 0}
-              filterConfig={spaceFilterConfig}
-              results={filteredSpaceResults}
-              currentFilter={spaceFilter}
-              onFilterChange={setSpaceFilter}
-              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
-              cardComponent={SearchResultPostChooser}
-              canLoadMore={canSpaceLoadMore}
-              onClickLoadMore={() => fetchNewResults(SearchCategory.Spaces)}
-            />
-          </SectionWrapper>
-
-          <SectionWrapper>
-            <SearchResultSection
-              tagId="collaboration-tools"
-              title={t('pages.search.filter.key.callout')}
-              filterTitle={t('common.type')}
-              count={data?.search?.calloutResults?.total ?? 0}
-              filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
-              results={convertedCalloutResults}
-              currentFilter={calloutFilter}
-              onFilterChange={setCalloutFilter}
-              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
-              cardComponent={SearchResultsCalloutCard}
-              canLoadMore={canCalloutLoadMore}
-              onClickLoadMore={() => fetchNewResults(SearchCategory.CollaborationTools)}
-            />
-          </SectionWrapper>
-
-          <SectionWrapper>
-            <SearchResultSection
-              tagId="framing"
-              title={t('pages.search.filter.key.framing')}
-              filterTitle={t('pages.search.filter.type.framing')}
-              count={data?.search?.framingResults?.total ?? 0}
-              filterConfig={framingFilterConfig}
-              results={filteredFramingResults}
-              currentFilter={framingFilter}
-              onFilterChange={setFramingFilter}
-              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
-              cardComponent={SearchResultPostChooser}
-              canLoadMore={canFramingLoadMore}
-              onClickLoadMore={() => fetchNewResults(SearchCategory.Framings)}
-            />
-          </SectionWrapper>
-
-          <SectionWrapper>
-            <SearchResultSection
-              tagId="contributions"
-              title={t('pages.search.filter.key.contribution')}
-              filterTitle={t('pages.search.filter.type.contribution')}
-              count={data?.search?.contributionResults?.total ?? 0}
-              filterConfig={contributionFilterConfig}
-              results={filteredContributionResults}
-              currentFilter={contributionFilter}
-              onFilterChange={setContributionFilter}
-              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
-              cardComponent={SearchResultPostChooser}
-              canLoadMore={canContributionLoadMore}
-              onClickLoadMore={() => fetchNewResults(SearchCategory.Contributions)}
-            />
-          </SectionWrapper>
-
-          <SectionWrapper>
-            <SearchResultSection
-              tagId="contributors"
-              title={t('common.contributors')}
-              filterTitle={t('pages.search.filter.type.contributor')}
-              count={data?.search?.contributorResults?.total ?? 0}
-              filterConfig={contributorFilterConfig}
-              results={filteredContributorResults}
-              currentFilter={contributorFilter}
-              onFilterChange={setContributorFilter}
-              loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
-              cardComponent={SearchResultPostChooser}
-              canLoadMore={canContributorLoadMore}
-              onClickLoadMore={() => fetchNewResults(SearchCategory.Contributors)}
-            />
-          </SectionWrapper>
+          {filteredSpaceResults?.length > 0 && (
+            <SectionWrapper>
+              <SearchResultSection
+                tagId="spaces"
+                title={spaceFilterTitle}
+                filterTitle={t('pages.search.filter.type.space')}
+                count={data?.search?.spaceResults?.total ?? 0}
+                filterConfig={spaceFilterConfig}
+                results={filteredSpaceResults}
+                currentFilter={spaceFilter}
+                onFilterChange={setSpaceFilter}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+                cardComponent={SearchResultPostChooser}
+                canLoadMore={canSpaceLoadMore}
+                onClickLoadMore={() => fetchNewResults(SearchCategory.Spaces)}
+              />
+            </SectionWrapper>
+          )}
+          {convertedCalloutResults?.length > 0 && (
+            <SectionWrapper>
+              <SearchResultSection
+                tagId="collaboration-tools"
+                title={t('pages.search.filter.key.callout')}
+                filterTitle={t('common.type')}
+                count={data?.search?.calloutResults?.total ?? 0}
+                filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
+                results={convertedCalloutResults}
+                currentFilter={calloutFilter}
+                onFilterChange={setCalloutFilter}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+                cardComponent={SearchResultsCalloutCard}
+                canLoadMore={canCalloutLoadMore}
+                onClickLoadMore={() => fetchNewResults(SearchCategory.CollaborationTools)}
+              />
+            </SectionWrapper>
+          )}
+          {filteredFramingResults?.length > 0 && (
+            <SectionWrapper>
+              <SearchResultSection
+                tagId="framing"
+                title={t('pages.search.filter.key.framing')}
+                filterTitle={t('pages.search.filter.type.framing')}
+                count={data?.search?.framingResults?.total ?? 0}
+                filterConfig={framingFilterConfig}
+                results={filteredFramingResults}
+                currentFilter={framingFilter}
+                onFilterChange={setFramingFilter}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+                cardComponent={SearchResultPostChooser}
+                canLoadMore={canFramingLoadMore}
+                onClickLoadMore={() => fetchNewResults(SearchCategory.Framings)}
+              />
+            </SectionWrapper>
+          )}
+          {filteredContributionResults?.length > 0 && (
+            <SectionWrapper>
+              <SearchResultSection
+                tagId="contributions"
+                title={t('pages.search.filter.key.contribution')}
+                filterTitle={t('pages.search.filter.type.contribution')}
+                count={data?.search?.contributionResults?.total ?? 0}
+                filterConfig={contributionFilterConfig}
+                results={filteredContributionResults}
+                currentFilter={contributionFilter}
+                onFilterChange={setContributionFilter}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+                cardComponent={SearchResultPostChooser}
+                canLoadMore={canContributionLoadMore}
+                onClickLoadMore={() => fetchNewResults(SearchCategory.Contributions)}
+              />
+            </SectionWrapper>
+          )}
+          {filteredContributorResults?.length > 0 && (
+            <SectionWrapper>
+              <SearchResultSection
+                tagId="contributors"
+                title={t('common.contributors')}
+                filterTitle={t('pages.search.filter.type.contributor')}
+                count={data?.search?.contributorResults?.total ?? 0}
+                filterConfig={contributorFilterConfig}
+                results={filteredContributorResults}
+                currentFilter={contributorFilter}
+                onFilterChange={setContributorFilter}
+                loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
+                cardComponent={SearchResultPostChooser}
+                canLoadMore={canContributorLoadMore}
+                onClickLoadMore={() => fetchNewResults(SearchCategory.Contributors)}
+              />
+            </SectionWrapper>
+          )}
         </Gutters>
       </Gutters>
     </PageContentColumn>
