@@ -3,27 +3,38 @@ import SearchBaseContributionCard, { SearchBaseContributionCardProps } from './b
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import CardFooterDate from '@/core/ui/card/CardFooterDate';
 import CardFooter from '@/core/ui/card/CardFooter';
-import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
-import CardDetails from '@/core/ui/card/CardDetails';
+import { VisualModel } from '@/domain/common/visual/model/VisualModel';
+import CardImage from '@/core/ui/card/CardImage';
+import {
+  WHITEBOARD_IMAGE_ASPECT_RATIO,
+  WhiteboardDefaultImage,
+} from '@/domain/collaboration/calloutContributions/whiteboard/WhiteboardCard';
+import { useTranslation } from 'react-i18next';
 
 export type SearchContributionWhiteboardCardProps = Omit<SearchBaseContributionCardProps, 'icon'> & {
   createdDate?: Date;
-  description?: string;
+  visual?: VisualModel;
   parentSegment: ReactNode;
 };
 
 export const SearchContributionWhiteboardCard: FC<SearchContributionWhiteboardCardProps> = ({
   createdDate,
-  description = '',
-  tags = [],
+  visual,
   parentSegment,
   ...props
 }) => {
+  const { t } = useTranslation();
   return (
     <SearchBaseContributionCard icon={WhiteboardIcon} {...props}>
-      <CardDetails paddingBottom={1}>
-        <CardDescriptionWithTags tags={tags}>{description}</CardDescriptionWithTags>
-      </CardDetails>
+      {visual?.uri ? (
+        <CardImage
+          aspectRatio={WHITEBOARD_IMAGE_ASPECT_RATIO}
+          src={visual?.uri}
+          alt={t('visuals-alt-text.banner.whiteboard.text', { displayName: props.name })}
+        />
+      ) : (
+        <WhiteboardDefaultImage />
+      )}
       {parentSegment}
       <CardFooter>{createdDate && <CardFooterDate date={createdDate} />}</CardFooter>
     </SearchBaseContributionCard>

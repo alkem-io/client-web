@@ -205,7 +205,7 @@ const hydrateMemo = (data: TypedSearchResult<SearchResultType.Memo, SearchResult
     <SearchContributionMemoCard
       name={memo.profile.displayName}
       author={memo.createdBy?.profile.displayName}
-      description={memo.profile.description}
+      description={memo.markdown}
       tags={memo.profile.tagset?.tags}
       createdDate={memo.createdDate}
       matchedTerms={data.terms}
@@ -236,7 +236,7 @@ const hydrateWhiteboard = (data: TypedSearchResult<SearchResultType.Whiteboard, 
     <SearchContributionWhiteboardCard
       name={whiteboard.profile.displayName}
       author={whiteboard.createdBy?.profile.displayName}
-      description={whiteboard.profile.description}
+      visual={whiteboard.profile.preview}
       tags={whiteboard.profile.tagset?.tags}
       createdDate={whiteboard.createdDate}
       matchedTerms={data.terms}

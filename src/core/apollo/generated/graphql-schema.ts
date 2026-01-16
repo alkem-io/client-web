@@ -36385,11 +36385,11 @@ export type SearchQuery = {
             type: SearchResultType;
             score: number;
             terms: Array<string>;
-            isContribution: boolean;
             memo: {
               __typename?: 'Memo';
               id: string;
               createdDate: Date;
+              markdown?: string | undefined;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -36496,7 +36496,6 @@ export type SearchQuery = {
             type: SearchResultType;
             score: number;
             terms: Array<string>;
-            isContribution: boolean;
             whiteboard: {
               __typename?: 'Whiteboard';
               id: string;
@@ -36507,7 +36506,7 @@ export type SearchQuery = {
                 url: string;
                 displayName: string;
                 description?: string | undefined;
-                visual?:
+                preview?:
                   | {
                       __typename?: 'Visual';
                       id: string;
@@ -36611,11 +36610,11 @@ export type SearchQuery = {
             type: SearchResultType;
             score: number;
             terms: Array<string>;
-            isContribution: boolean;
             memo: {
               __typename?: 'Memo';
               id: string;
               createdDate: Date;
+              markdown?: string | undefined;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -36822,7 +36821,6 @@ export type SearchQuery = {
             type: SearchResultType;
             score: number;
             terms: Array<string>;
-            isContribution: boolean;
             whiteboard: {
               __typename?: 'Whiteboard';
               id: string;
@@ -36833,7 +36831,7 @@ export type SearchQuery = {
                 url: string;
                 displayName: string;
                 description?: string | undefined;
-                visual?:
+                preview?:
                   | {
                       __typename?: 'Visual';
                       id: string;
@@ -37467,11 +37465,11 @@ export type UserRolesSearchCardsQuery = {
 
 export type SearchResultMemoFragment = {
   __typename?: 'SearchResultMemo';
-  isContribution: boolean;
   memo: {
     __typename?: 'Memo';
     id: string;
     createdDate: Date;
+    markdown?: string | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -37590,7 +37588,6 @@ export type MemoParentFragment = {
 
 export type SearchResultWhiteboardFragment = {
   __typename?: 'SearchResultWhiteboard';
-  isContribution: boolean;
   whiteboard: {
     __typename?: 'Whiteboard';
     id: string;
@@ -37601,7 +37598,7 @@ export type SearchResultWhiteboardFragment = {
       url: string;
       displayName: string;
       description?: string | undefined;
-      visual?:
+      preview?:
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
       tagset?:

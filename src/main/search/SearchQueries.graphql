@@ -279,8 +279,8 @@ fragment SearchResultMemo on SearchResultMemo {
       }
     }
     createdDate
+    markdown
   }
-  isContribution
   ...MemoParent
 }
 
@@ -314,7 +314,7 @@ fragment SearchResultWhiteboard on SearchResultWhiteboard {
       url
       displayName
       description
-      visual(type: CARD) {
+      preview: visual(type: WHITEBOARD_PREVIEW) {
         ...VisualModel
       }
       tagset {
@@ -330,7 +330,6 @@ fragment SearchResultWhiteboard on SearchResultWhiteboard {
     }
     createdDate
   }
-  isContribution
   ...WhiteboardParent
 }
 

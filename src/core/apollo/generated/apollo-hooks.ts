@@ -3734,8 +3734,8 @@ export const SearchResultMemoFragmentDoc = gql`
         }
       }
       createdDate
+      markdown
     }
-    isContribution
     ...MemoParent
   }
   ${VisualModelFragmentDoc}
@@ -3775,7 +3775,7 @@ export const SearchResultWhiteboardFragmentDoc = gql`
         url
         displayName
         description
-        visual(type: CARD) {
+        preview: visual(type: WHITEBOARD_PREVIEW) {
           ...VisualModel
         }
         tagset {
@@ -3791,7 +3791,6 @@ export const SearchResultWhiteboardFragmentDoc = gql`
       }
       createdDate
     }
-    isContribution
     ...WhiteboardParent
   }
   ${VisualModelFragmentDoc}
