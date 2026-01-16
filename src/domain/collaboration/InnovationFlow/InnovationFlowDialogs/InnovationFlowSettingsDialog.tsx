@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
-import useInnovationFlowSettings from './useInnovationFlowSettings';
+import useInnovationFlowSettings, { ImportFlowOptions } from './useInnovationFlowSettings';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
@@ -13,7 +13,6 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ApplySpaceTemplateDialog from '@/domain/templates/components/Dialogs/ApplySpaceTemplateDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
-import { ImportFlowOptions } from './useInnovationFlowSettings';
 import { Caption } from '@/core/ui/typography';
 
 export type InnovationFlowSettingsDialogProps = {
