@@ -1,0 +1,28 @@
+query ConversationMessages($conversationId: UUID!) {
+  lookup {
+    conversation(ID: $conversationId) {
+      id
+      room {
+        id
+        messages {
+          id
+          message
+          timestamp
+          sender {
+            ... on User {
+              id
+              profile {
+                id
+                displayName
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,92 @@
+subscription ConversationEvents {
+  conversationEvents {
+    eventType
+    conversationCreated {
+      conversation {
+        id
+        room {
+          id
+          unreadCount
+          messagesCount
+          lastMessage {
+            id
+            message
+            timestamp
+            sender {
+              ... on User {
+                id
+                profile {
+                  id
+                  displayName
+                  avatar: visual(type: AVATAR) {
+                    id
+                    uri
+                  }
+                }
+              }
+            }
+          }
+        }
+        user {
+          id
+          profile {
+            id
+            displayName
+            url
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+      }
+      message {
+        id
+        message
+        timestamp
+        sender {
+          ... on User {
+            id
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                id
+                uri
+              }
+            }
+          }
+        }
+      }
+    }
+    messageReceived {
+      roomId
+      message {
+        id
+        message
+        timestamp
+        sender {
+          ... on User {
+            id
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                id
+                uri
+              }
+            }
+          }
+        }
+      }
+    }
+    messageRemoved {
+      roomId
+      messageId
+    }
+    readReceiptUpdated {
+      roomId
+      lastReadEventId
+    }
+  }
+}

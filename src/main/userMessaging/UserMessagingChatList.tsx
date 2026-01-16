@@ -22,6 +22,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { UserConversation } from './useUserConversations';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import BadgeCounter from '@/core/ui/icon/BadgeCounter';
 
 interface UserMessagingChatListProps {
   conversations: UserConversation[];
@@ -171,11 +172,42 @@ export const UserMessagingChatList = ({
                       {formatTimeElapsed(new Date(conversation.lastMessage.timestamp), t)}
                     </Caption>
                   )}
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="flex-end"
+                    gap={0.5}
+                    sx={{ position: 'relative' }}
+                  >
+                    {conversation.lastMessage && (
+                      <Caption color="neutral.light">
+                        {formatTimeElapsed(new Date(conversation.lastMessage.timestamp), t)}
+                      </Caption>
+                    )}
+                    {conversation.unreadCount > 0 && (
+                      <BadgeCounter
+                        count={conversation.unreadCount}
+                        size="small"
+                        aria-label={`${conversation.unreadCount} unread messages`}
+                        sx={{
+                          position: 'absolute',
+                          top: 20,
+                          right: 2,
+                          backgroundColor: theme => theme.palette.primary.main,
+                        }}
+                      />
+                    )}
+                  </Box>
                 </Box>
               }
               secondary={
                 conversation.lastMessage ? (
-                  <Typography variant="body2" color="neutral.main" noWrap sx={{ maxWidth: '90%' }}>
+                  <Typography
+                    variant="body2"
+                    fontWeight={conversation.unreadCount > 0 ? 600 : 400}
+                    noWrap
+                    sx={{ maxWidth: '90%' }}
+                  >
                     {conversation.lastMessage.message}
                   </Typography>
                 ) : (
