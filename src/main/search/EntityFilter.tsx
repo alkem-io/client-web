@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FilterConfig, FilterDefinition } from './Filter';
+import { FILTER_OFF, FilterConfig, FilterDefinition } from './Filter';
 
 interface EntityFilterProps {
   title?: string;
@@ -48,10 +48,13 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
       <IconButton
         ref={buttonRef}
         onClick={() => setFilterMenuOpen(true)}
-        sx={{ marginRight: gutters(-0.5) }}
+        sx={{
+          marginRight: gutters(-0.5),
+        }}
         aria-label={t('common.filter')}
       >
-        <RoundedIcon component={FilterAltOutlinedIcon} size="medium" />
+        <RoundedIcon component={FilterAltOutlinedIcon} size="medium" variant={currentFilter.typename === FILTER_OFF ? 'outlined' : 'filled'} />
+        { }
       </IconButton>
       {/* Popup menu for big screens */}
       {!isSmallScreen && (

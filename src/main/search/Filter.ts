@@ -1,6 +1,8 @@
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { SearchResultType } from '@/core/apollo/generated/graphql-schema';
 
+export const FILTER_OFF = 'all';
+
 export interface FilterDefinition {
   title: TranslationKey;
   value: SearchResultType[];
@@ -16,7 +18,7 @@ export const spaceFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
     value: [SearchResultType.Space, SearchResultType.Subspace],
-    typename: 'all',
+    typename: FILTER_OFF,
   },
   space: {
     title: 'pages.search.filter.key.space',
@@ -34,7 +36,7 @@ export const calloutFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
     value: [SearchResultType.Callout],
-    typename: 'all',
+    typename: FILTER_OFF,
   },
 };
 
@@ -42,7 +44,7 @@ export const framingFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
     value: [SearchResultType.Whiteboard, SearchResultType.Memo],
-    typename: 'all',
+    typename: FILTER_OFF,
   },
   whiteboard: {
     title: 'pages.search.filter.key.whiteboard',
@@ -60,7 +62,7 @@ export const contributionFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
     value: [SearchResultType.Post, SearchResultType.Whiteboard, SearchResultType.Memo],
-    typename: 'all',
+    typename: FILTER_OFF,
   },
   post: {
     title: 'pages.search.filter.key.post',
@@ -83,7 +85,7 @@ export const contributorFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
     value: [SearchResultType.User, SearchResultType.Organization],
-    typename: 'all',
+    typename: FILTER_OFF,
   },
   user: {
     title: 'pages.search.filter.key.user',

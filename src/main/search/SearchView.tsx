@@ -228,7 +228,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
     skip: hasNoTermsLength || resolvingSpace,
   });
 
-  const results = hasNoTermsLength ? undefined : toResultType(data);
+  /*const results = hasNoTermsLength ? undefined : toResultType(data);
 
   const { spaceResults, calloutResults, framingResults, contributionResults, contributorResults }: SearchViewSections =
     useMemo(
@@ -244,6 +244,9 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
     contributionResults,
     contributorResults,
   });
+  */
+  const { spaceResults, calloutResults, framingResults, contributionResults, contributorResults }: SearchViewSections =
+    toResultType(hasNoTermsLength ? undefined : data);
 
   const { data: spaceDetails, loading } = useSearchScopeDetailsSpaceQuery({
     variables: { spaceId: spaceId! },
@@ -590,7 +593,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
         <FiltersDescriptionBlock results={data?.search} />
 
         <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
-          {filteredSpaceResults?.length > 0 && (
+          {(data?.search?.spaceResults.results?.length ?? 0) > 0 && (
             <SectionWrapper>
               <SearchResultSection
                 tagId="spaces"
@@ -608,7 +611,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               />
             </SectionWrapper>
           )}
-          {convertedCalloutResults?.length > 0 && (
+          {(data?.search?.calloutResults.results?.length ?? 0) > 0 && (
             <SectionWrapper>
               <SearchResultSection
                 tagId="collaboration-tools"
@@ -626,7 +629,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               />
             </SectionWrapper>
           )}
-          {filteredFramingResults?.length > 0 && (
+          {(data?.search?.framingResults.results?.length ?? 0) > 0 && (
             <SectionWrapper>
               <SearchResultSection
                 tagId="framing"
@@ -644,7 +647,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               />
             </SectionWrapper>
           )}
-          {filteredContributionResults?.length > 0 && (
+          {(data?.search?.contributionResults.results?.length ?? 0) > 0 && (
             <SectionWrapper>
               <SearchResultSection
                 tagId="contributions"
@@ -662,7 +665,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               />
             </SectionWrapper>
           )}
-          {filteredContributorResults?.length > 0 && (
+          {(data?.search?.contributorResults.results?.length ?? 0) > 0 && (
             <SectionWrapper>
               <SearchResultSection
                 tagId="contributors"
@@ -688,32 +691,34 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
 
 export default SearchView;
 
-function toResultType(query?: SearchQuery): SearchResultMetaType[] {
-  if (!query) {
-    return [];
-  }
-
-  const spaceResults = (query.search.spaceResults?.results || []).map<SearchResultMetaType>(
+function toResultType(query?: SearchQuery) {
+  const spaceResults = (query?.search.spaceResults?.results || []).map<SearchResultMetaType>(
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
-  const framingResults = (query.search.framingResults?.results || []).map<SearchResultMetaType>(
+  const framingResults = (query?.search.framingResults?.results || []).map<SearchResultMetaType>(
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
-  const contributionResults = (query.search.contributionResults?.results || []).map<SearchResultMetaType>(
+  const contributionResults = (query?.search.contributionResults?.results || []).map<SearchResultMetaType>(
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
-  const contributorResults = (query.search.contributorResults?.results || []).map<SearchResultMetaType>(
+  const contributorResults = (query?.search.contributorResults?.results || []).map<SearchResultMetaType>(
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
-  const calloutResults = (query.search.calloutResults?.results || []).map<SearchResultMetaType>(
+  const calloutResults = (query?.search.calloutResults?.results || []).map<SearchResultMetaType>(
     ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] }) as SearchResultMetaType
   );
 
-  return [...spaceResults, ...framingResults, ...contributionResults, ...contributorResults, ...calloutResults];
+  return {
+    spaceResults,
+    framingResults,
+    contributionResults,
+    contributorResults,
+    calloutResults,
+  };
 }
 
 function SectionWrapper({ children }: PropsWithChildren) {

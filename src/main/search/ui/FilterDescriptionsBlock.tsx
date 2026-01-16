@@ -1,7 +1,7 @@
 import { HubOutlined, DrawOutlined, GroupOutlined, LibraryBooksOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import { Link } from '@mui/material';
+import { Link, Tooltip } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -88,9 +88,11 @@ const FiltersDescriptionBlockItem = ({
   disabled,
 }: PropsWithChildren<{ href: string; disabled?: boolean }>) =>
   disabled ? (
-    <Caption color="textDisabled">
+    <Tooltip title="No results" arrow>
+      <Caption color="textDisabled">
       <Gutters sx={{ flexDirection: 'row', padding: gutters(0.5) }}> {children}</Gutters>
-    </Caption>
+      </Caption>
+    </Tooltip>
   ) : (
     <Link href={href} underline="none">
       <Gutters sx={{ flexDirection: 'row', padding: gutters(0.5) }}> {children}</Gutters>
