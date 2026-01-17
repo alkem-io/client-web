@@ -5,11 +5,11 @@ import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFr
 import { useTranslation } from 'react-i18next';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
-  AskVirtualContributorQuestionMutationOptions,
-  useAskVirtualContributorQuestionMutation,
+  MessageDetailsFragmentDoc,
   useConversationVcMessagesQuery,
   useConversationWithGuidanceVcQuery,
   useResetConversationVcMutation,
+  useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 
 interface Provided {
@@ -22,7 +22,7 @@ interface Provided {
 }
 
 const useChatGuidanceCommunication = ({ skip = false }): Provided => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [resetConversationVc] = useResetConversationVcMutation();
 
@@ -70,30 +70,50 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, !roomId);
 
-  const [askVcQuestion] = useAskVirtualContributorQuestionMutation();
-  const askQuestion = async (
-    question: string,
-    refetchQueries?: AskVirtualContributorQuestionMutationOptions['refetchQueries']
-  ) => {
-    if (!conversationId) {
+  const [sendMessageToRoom] = useSendMessageToRoomMutation({
+    update: (cache, { data }) => {
+      if (isSubscribedToMessages || !data?.sendMessageToRoom) {
+        return;
+      }
+
+      const cacheRoomId = cache.identify({
+        id: roomId,
+        __typename: 'Room',
+      });
+
+      if (!cacheRoomId) {
+        return;
+      }
+
+      cache.modify({
+        id: cacheRoomId,
+        fields: {
+          messages(existingMessages = []) {
+            const newMessage = cache.writeFragment({
+              data: data.sendMessageToRoom,
+              fragment: MessageDetailsFragmentDoc,
+              fragmentName: 'MessageDetails',
+            });
+            return [...existingMessages, newMessage];
+          },
+        },
+      });
+    },
+  });
+
+  const handleSendMessage = async (message: string): Promise<void> => {
+    if (!roomId) {
       return;
     }
 
-    return askVcQuestion({
+    await sendMessageToRoom({
       variables: {
-        input: {
-          conversationID: conversationId,
-          question,
-          language: i18n.language.toUpperCase(),
+        messageData: {
+          roomID: roomId,
+          message,
         },
       },
-      refetchQueries,
-      awaitRefetchQueries: true,
     });
-  };
-
-  const handleSendMessage = async (message: string): Promise<void> => {
-    await askQuestion(message, ['ConversationVcMessages']);
   };
 
   const [clearChat, loadingClearChat] = useLoadingState(async () => {
@@ -107,7 +127,7 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
           conversationID: conversationId,
         },
       },
-      refetchQueries: ['ConversationVcMessages'],
+      refetchQueries: ['ConversationWithGuidanceVc', 'ConversationVcMessages'],
       awaitRefetchQueries: true,
     });
   });

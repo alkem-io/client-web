@@ -1621,26 +1621,8 @@ export type ConversationReadReceiptUpdatedEvent = {
   roomId: Scalars['UUID']['output'];
 };
 
-export type ConversationVcAnswerRelevanceInput = {
-  /** The ID of the conversation. */
-  conversationID: Scalars['UUID']['input'];
-  /** The answer id. */
-  id: Scalars['String']['input'];
-  /** Is the answer relevant or not. */
-  relevant: Scalars['Boolean']['input'];
-};
-
-export type ConversationVcAskQuestionInput = {
-  /** The ID of the conversation. */
-  conversationID: Scalars['UUID']['input'];
-  /** The language of the answer. */
-  language?: InputMaybe<Scalars['String']['input']>;
-  /** The question that is being asked. */
-  question: Scalars['String']['input'];
-};
-
 export type ConversationVcResetInput = {
-  /** The ID of the conversation. */
+  /** The ID of the Conversation to reset. */
   conversationID: Scalars['UUID']['input'];
 };
 
@@ -3088,6 +3070,8 @@ export type InnovationFlowState = {
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** Default callout template applied to this flow state (nullable, optional). */
+  defaultCalloutTemplate?: Maybe<Template>;
   /** The explanation text to clarify the state. */
   description?: Maybe<Scalars['Markdown']['output']>;
   /** The display name for the State */
@@ -4124,19 +4108,6 @@ export type Message = {
   timestamp: Scalars['Float']['output'];
 };
 
-/** A detailed answer to a question, typically from an AI service. */
-export type MessageAnswerQuestion = {
-  __typename?: 'MessageAnswerQuestion';
-  /** Error message if an error occurred */
-  error?: Maybe<Scalars['String']['output']>;
-  /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']['output']>;
-  /** The original question */
-  question: Scalars['String']['output'];
-  /** Message successfully sent. If false, error will have the reason. */
-  success: Scalars['Boolean']['output'];
-};
-
 /** Details about a message, including the room it was sent in and the parent entity that is using the room. */
 export type MessageDetails = {
   __typename?: 'MessageDetails';
@@ -4297,8 +4268,6 @@ export type Mutation = {
   aiServerUpdateAiPersona: AiPersona;
   /** Apply to join the specified RoleSet in the entry Role. */
   applyForEntryRoleOnRoleSet: Application;
-  /** Ask the chat engine for guidance. */
-  askVcQuestion: MessageAnswerQuestion;
   /** Assign the specified LicensePlan to an Account. */
   assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
@@ -4439,8 +4408,6 @@ export type Mutation = {
   eventOnInvitation: Invitation;
   /** Trigger an event on the Organization Verification. */
   eventOnOrganizationVerification: OrganizationVerification;
-  /** User vote if a specific answer is relevant. */
-  feedbackOnVcAnswerRelevance: Scalars['Boolean']['output'];
   /** Grants an authorization credential to an Organization. */
   grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
@@ -4465,6 +4432,8 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean']['output'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
+  /** Remove the default callout template from an InnovationFlowState. */
+  removeDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
   /** Removes an Iframe Allowed URL from the Platform Settings */
   removeIframeAllowedURL: Array<Scalars['String']['output']>;
   /** Removes a message. */
@@ -4483,7 +4452,7 @@ export type Mutation = {
   removeRoleFromVirtualContributor: VirtualContributor;
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
-  /** Resets the interaction with the chat engine. */
+  /** Resets the interaction with the VC by recreating the room. */
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
   resetLicenseOnAccounts: Space;
@@ -4505,6 +4474,8 @@ export type Mutation = {
   sendMessageToRoom: Message;
   /** Send message to multiple Users. */
   sendMessageToUsers: Scalars['Boolean']['output'];
+  /** Set the default callout template for an InnovationFlowState. */
+  setDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
   /** Set the mapping of a well-known Virtual Contributor to a specific Virtual Contributor UUID. */
   setPlatformWellKnownVirtualContributor: PlatformWellKnownVirtualContributors;
   /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
@@ -4689,10 +4660,6 @@ export type MutationAiServerUpdateAiPersonaArgs = {
 
 export type MutationApplyForEntryRoleOnRoleSetArgs = {
   applicationData: ApplyForEntryRoleOnRoleSetInput;
-};
-
-export type MutationAskVcQuestionArgs = {
-  input: ConversationVcAskQuestionInput;
 };
 
 export type MutationAssignLicensePlanToAccountArgs = {
@@ -4955,10 +4922,6 @@ export type MutationEventOnOrganizationVerificationArgs = {
   eventData: OrganizationVerificationEventInput;
 };
 
-export type MutationFeedbackOnVcAnswerRelevanceArgs = {
-  input: ConversationVcAnswerRelevanceInput;
-};
-
 export type MutationGrantCredentialToOrganizationArgs = {
   grantCredentialData: GrantOrganizationAuthorizationCredentialInput;
 };
@@ -5001,6 +4964,10 @@ export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
 
 export type MutationRemoveCommunityGuidelinesContentArgs = {
   communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
+};
+
+export type MutationRemoveDefaultCalloutTemplateOnInnovationFlowStateArgs = {
+  removeData: RemoveDefaultCalloutTemplateOnInnovationFlowStateInput;
 };
 
 export type MutationRemoveIframeAllowedUrlArgs = {
@@ -5077,6 +5044,10 @@ export type MutationSendMessageToRoomArgs = {
 
 export type MutationSendMessageToUsersArgs = {
   messageData: CommunicationSendMessageToUsersInput;
+};
+
+export type MutationSetDefaultCalloutTemplateOnInnovationFlowStateArgs = {
+  setData: SetDefaultCalloutTemplateOnInnovationFlowStateInput;
 };
 
 export type MutationSetPlatformWellKnownVirtualContributorArgs = {
@@ -6436,6 +6407,10 @@ export type RemoveCommunityGuidelinesContentInput = {
   communityGuidelinesID: Scalars['UUID']['input'];
 };
 
+export type RemoveDefaultCalloutTemplateOnInnovationFlowStateInput = {
+  flowStateID: Scalars['UUID']['input'];
+};
+
 export type RemovePlatformRoleInput = {
   contributorID: Scalars['UUID']['input'];
   role: RoleName;
@@ -7061,6 +7036,11 @@ export type ServiceMetadata = {
   name?: Maybe<Scalars['String']['output']>;
   /** Version in the format {major.minor.patch} - using SemVer. */
   version?: Maybe<Scalars['String']['output']>;
+};
+
+export type SetDefaultCalloutTemplateOnInnovationFlowStateInput = {
+  flowStateID: Scalars['UUID']['input'];
+  templateID: Scalars['UUID']['input'];
 };
 
 export type SetPlatformWellKnownVirtualContributorInput = {
@@ -31698,12 +31678,6 @@ export type AuthorizationPrivilegesForUserQuery = {
   };
 };
 
-export type FeedbackOnVcAnswerRelevanceMutationVariables = Exact<{
-  input: ConversationVcAnswerRelevanceInput;
-}>;
-
-export type FeedbackOnVcAnswerRelevanceMutation = { __typename?: 'Mutation'; feedbackOnVcAnswerRelevance: boolean };
-
 export type ResetConversationVcMutationVariables = Exact<{
   input: ConversationVcResetInput;
 }>;
@@ -31711,15 +31685,6 @@ export type ResetConversationVcMutationVariables = Exact<{
 export type ResetConversationVcMutation = {
   __typename?: 'Mutation';
   resetConversationVc: { __typename?: 'Conversation'; id: string };
-};
-
-export type AskVirtualContributorQuestionMutationVariables = Exact<{
-  input: ConversationVcAskQuestionInput;
-}>;
-
-export type AskVirtualContributorQuestionMutation = {
-  __typename?: 'Mutation';
-  askVcQuestion: { __typename?: 'MessageAnswerQuestion'; id?: string | undefined; success: boolean };
 };
 
 export type ConversationWithGuidanceVcQueryVariables = Exact<{ [key: string]: never }>;

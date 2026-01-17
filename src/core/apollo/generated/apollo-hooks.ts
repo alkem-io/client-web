@@ -24114,52 +24114,6 @@ export function refetchAuthorizationPrivilegesForUserQuery(
 ) {
   return { query: AuthorizationPrivilegesForUserDocument, variables: variables };
 }
-export const FeedbackOnVcAnswerRelevanceDocument = gql`
-  mutation feedbackOnVcAnswerRelevance($input: ConversationVcAnswerRelevanceInput!) {
-    feedbackOnVcAnswerRelevance(input: $input)
-  }
-`;
-export type FeedbackOnVcAnswerRelevanceMutationFn = Apollo.MutationFunction<
-  SchemaTypes.FeedbackOnVcAnswerRelevanceMutation,
-  SchemaTypes.FeedbackOnVcAnswerRelevanceMutationVariables
->;
-
-/**
- * __useFeedbackOnVcAnswerRelevanceMutation__
- *
- * To run a mutation, you first call `useFeedbackOnVcAnswerRelevanceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useFeedbackOnVcAnswerRelevanceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [feedbackOnVcAnswerRelevanceMutation, { data, loading, error }] = useFeedbackOnVcAnswerRelevanceMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useFeedbackOnVcAnswerRelevanceMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.FeedbackOnVcAnswerRelevanceMutation,
-    SchemaTypes.FeedbackOnVcAnswerRelevanceMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.FeedbackOnVcAnswerRelevanceMutation,
-    SchemaTypes.FeedbackOnVcAnswerRelevanceMutationVariables
-  >(FeedbackOnVcAnswerRelevanceDocument, options);
-}
-export type FeedbackOnVcAnswerRelevanceMutationHookResult = ReturnType<typeof useFeedbackOnVcAnswerRelevanceMutation>;
-export type FeedbackOnVcAnswerRelevanceMutationResult =
-  Apollo.MutationResult<SchemaTypes.FeedbackOnVcAnswerRelevanceMutation>;
-export type FeedbackOnVcAnswerRelevanceMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.FeedbackOnVcAnswerRelevanceMutation,
-  SchemaTypes.FeedbackOnVcAnswerRelevanceMutationVariables
->;
 export const ResetConversationVcDocument = gql`
   mutation resetConversationVc($input: ConversationVcResetInput!) {
     resetConversationVc(input: $input) {
@@ -24206,57 +24160,6 @@ export type ResetConversationVcMutationResult = Apollo.MutationResult<SchemaType
 export type ResetConversationVcMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ResetConversationVcMutation,
   SchemaTypes.ResetConversationVcMutationVariables
->;
-export const AskVirtualContributorQuestionDocument = gql`
-  mutation askVirtualContributorQuestion($input: ConversationVcAskQuestionInput!) {
-    askVcQuestion(input: $input) {
-      id
-      success
-    }
-  }
-`;
-export type AskVirtualContributorQuestionMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AskVirtualContributorQuestionMutation,
-  SchemaTypes.AskVirtualContributorQuestionMutationVariables
->;
-
-/**
- * __useAskVirtualContributorQuestionMutation__
- *
- * To run a mutation, you first call `useAskVirtualContributorQuestionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAskVirtualContributorQuestionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [askVirtualContributorQuestionMutation, { data, loading, error }] = useAskVirtualContributorQuestionMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAskVirtualContributorQuestionMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AskVirtualContributorQuestionMutation,
-    SchemaTypes.AskVirtualContributorQuestionMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AskVirtualContributorQuestionMutation,
-    SchemaTypes.AskVirtualContributorQuestionMutationVariables
-  >(AskVirtualContributorQuestionDocument, options);
-}
-export type AskVirtualContributorQuestionMutationHookResult = ReturnType<
-  typeof useAskVirtualContributorQuestionMutation
->;
-export type AskVirtualContributorQuestionMutationResult =
-  Apollo.MutationResult<SchemaTypes.AskVirtualContributorQuestionMutation>;
-export type AskVirtualContributorQuestionMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AskVirtualContributorQuestionMutation,
-  SchemaTypes.AskVirtualContributorQuestionMutationVariables
 >;
 export const ConversationWithGuidanceVcDocument = gql`
   query ConversationWithGuidanceVc {

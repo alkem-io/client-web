@@ -1,17 +1,6 @@
-mutation feedbackOnVcAnswerRelevance($input: ConversationVcAnswerRelevanceInput!) {
-  feedbackOnVcAnswerRelevance(input: $input)
-}
-
 mutation resetConversationVc($input: ConversationVcResetInput!) {
   resetConversationVc(input: $input) {
     id
-  }
-}
-
-mutation askVirtualContributorQuestion($input: ConversationVcAskQuestionInput!) {
-  askVcQuestion(input: $input) {
-    id
-    success
   }
 }
 
