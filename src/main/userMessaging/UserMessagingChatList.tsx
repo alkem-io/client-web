@@ -167,11 +167,6 @@ export const UserMessagingChatList = ({
                   <Typography variant="body1" fontWeight={500} noWrap sx={{ maxWidth: '60%' }}>
                     {conversation.user.displayName}
                   </Typography>
-                  {conversation.lastMessage && (
-                    <Caption color="neutral.light">
-                      {formatTimeElapsed(new Date(conversation.lastMessage.timestamp), t)}
-                    </Caption>
-                  )}
                   <Box
                     display="flex"
                     flexDirection="column"
