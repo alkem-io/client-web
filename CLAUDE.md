@@ -202,6 +202,17 @@ Husky runs lint-staged on commit:
 - Runs ESLint with auto-fix
 - Run `pnpm lint` before committing to catch issues early
 
+## Debugging & Root Cause Analysis
+
+**CRITICAL**: NEVER apply fixes, duct tape, workarounds, or mask symptoms before understanding the root cause of a problem. When investigating bugs:
+
+1. **Reproduce first** - Confirm the issue exists and is reproducible
+2. **Understand the root cause** - Investigate WHY the problem occurs, not just WHAT is happening
+3. **Only then fix** - Apply the minimal fix that addresses the actual root cause
+4. **Verify the fix** - Confirm the root cause is addressed, not just the symptoms masked
+
+Adding `fetchPolicy`, `nextFetchPolicy`, debug flags, or other workarounds without understanding why they're needed creates technical debt and hides real issues. If you don't know why something works, you don't have a fix—you have a time bomb.
+
 ## Practical Tips & Gotchas
 
 ### GraphQL Code Generation

@@ -1,22 +1,29 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
-import { Message } from '@/domain/communication/room/models/Message';
-import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import { useTranslation } from 'react-i18next';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
-  MessageDetailsFragmentDoc,
-  useConversationVcMessagesQuery,
   useConversationWithGuidanceVcQuery,
+  useMarkMessageAsReadMutation,
   useResetConversationVcMutation,
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { useConversationMessages, ConversationMessage } from '@/main/userMessaging/useConversationMessages';
+
+// Message format expected by ChatWidgetInner
+interface GuidanceMessage {
+  id: string;
+  message: string;
+  createdAt: Date;
+  author?: { id: string };
+}
 
 interface Provided {
   loading?: boolean;
-  messages?: Message[];
+  messages?: GuidanceMessage[];
   clearChat: () => Promise<void>;
   sendMessage: (message: string) => Promise<unknown>;
+  markAsRead: () => void;
   isSubscribedToMessages: boolean;
   conversationId: string;
 }
@@ -24,82 +31,65 @@ interface Provided {
 const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   const { t } = useTranslation();
 
-  const [resetConversationVc] = useResetConversationVcMutation();
-
+  // 1. Get guidance conversation ID
   const { data: conversationGuidanceData, loading: conversationIdLoading } = useConversationWithGuidanceVcQuery({
     skip,
   });
   const conversation = conversationGuidanceData?.me.conversations.conversationGuidanceVc;
-  const conversationId = conversation?.id;
-  const roomId = conversation?.room?.id;
+  const conversationId = conversation?.id ?? null;
 
-  const { data: messagesData, loading: messagesLoading } = useConversationVcMessagesQuery({
-    variables: {
-      conversationId: conversationId!,
-    },
-    skip: !conversationId,
-  });
+  // 2. Use shared hook for messages
+  const { messages: conversationMessages, roomId, isLoading: messagesLoading } = useConversationMessages(conversationId);
 
-  const messages: Message[] = useMemo(() => {
-    const introMessage = {
+  // 3. Transform to guidance message format and add intro message
+  const messages: GuidanceMessage[] = useMemo(() => {
+    const introMessage: GuidanceMessage = {
       id: '__intro',
-      createdAt: new Date(),
-      reactions: [],
+      createdAt: new Date(0), // Earliest possible date so it sorts first
       message: t('chatbot.intro'),
       author: undefined,
     };
-    const room = messagesData?.lookup.conversation?.room;
 
-    if (room?.messages?.length) {
-      return [
-        introMessage,
-        ...room.messages.map(message => ({
-          id: message.id,
-          threadID: message.threadID,
-          message: message.message,
-          author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
-          createdAt: new Date(message.timestamp),
-          reactions: message.reactions,
-        })),
-      ];
-    } else {
-      // No messages or just no room at all => Return just one message with the intro text
+    if (conversationMessages.length === 0) {
       return [introMessage];
     }
-  }, [messagesData?.lookup.conversation?.room?.messages, conversationId, conversationIdLoading, messagesLoading]);
 
-  const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, !roomId);
+    const transformedMessages = conversationMessages.map((msg: ConversationMessage): GuidanceMessage => ({
+      id: msg.id,
+      message: msg.message,
+      createdAt: new Date(msg.timestamp),
+      author: msg.sender ? { id: msg.sender.id } : undefined,
+    }));
 
-  const [sendMessageToRoom] = useSendMessageToRoomMutation({
-    update: (cache, { data }) => {
-      if (isSubscribedToMessages || !data?.sendMessageToRoom) {
-        return;
-      }
+    return [introMessage, ...transformedMessages];
+  }, [conversationMessages, t]);
 
-      const cacheRoomId = cache.identify({
-        id: roomId,
-        __typename: 'Room',
-      });
+  // 4. Subscribe to room events
+  const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId ?? undefined, !roomId);
 
-      if (!cacheRoomId) {
-        return;
-      }
+  // 5. Mark as read mutation
+  const [markMessageAsRead] = useMarkMessageAsReadMutation();
 
-      cache.modify({
-        id: cacheRoomId,
-        fields: {
-          messages(existingMessages = []) {
-            const newMessage = cache.writeFragment({
-              data: data.sendMessageToRoom,
-              fragment: MessageDetailsFragmentDoc,
-              fragmentName: 'MessageDetails',
-            });
-            return [...existingMessages, newMessage];
-          },
+  const handleMarkAsRead = useCallback(() => {
+    const realMessages = messages.filter(m => m.id !== '__intro');
+    const lastMessage = realMessages[realMessages.length - 1];
+
+    if (!roomId || !lastMessage) {
+      return;
+    }
+
+    markMessageAsRead({
+      variables: {
+        messageData: {
+          roomID: roomId,
+          messageID: lastMessage.id,
         },
-      });
-    },
-  });
+      },
+    });
+  }, [roomId, messages, markMessageAsRead]);
+
+  // 6. Send message mutation
+  const [sendMessageToRoom] = useSendMessageToRoomMutation();
 
   const handleSendMessage = async (message: string): Promise<void> => {
     if (!roomId) {
@@ -116,6 +106,9 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
     });
   };
 
+  // 7. Reset conversation mutation (guidance-specific)
+  const [resetConversationVc] = useResetConversationVcMutation();
+
   const [clearChat, loadingClearChat] = useLoadingState(async () => {
     if (!conversationId) {
       return;
@@ -127,7 +120,7 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
           conversationID: conversationId,
         },
       },
-      refetchQueries: ['ConversationWithGuidanceVc', 'ConversationVcMessages'],
+      refetchQueries: ['ConversationWithGuidanceVc', 'ConversationMessages'],
       awaitRefetchQueries: true,
     });
   });
@@ -138,7 +131,8 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
     isSubscribedToMessages,
     clearChat,
     sendMessage: handleSendMessage,
-    conversationId: conversationId!,
+    markAsRead: handleMarkAsRead,
+    conversationId: conversationId ?? '',
   };
 };
 

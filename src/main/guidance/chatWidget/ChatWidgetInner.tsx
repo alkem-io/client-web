@@ -31,7 +31,7 @@ const ChatWidgetInner = () => {
   const [openClearConfirm, setOpenClearConfirm] = useState(false);
   const [chatToggleTime, setChatToggleTime] = useState(Date.now());
 
-  const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
+  const { messages, sendMessage, clearChat, markAsRead, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
   const { userModel } = useCurrentUserContext();
   const userId = userModel?.id;
 
@@ -79,11 +79,13 @@ const ChatWidgetInner = () => {
           setBadgeCount(1);
         } else {
           markAllMessagesRead();
+          markAsRead();
         }
       } else if (messages.length === 1) {
         setBadgeCount(1);
       } else {
         markAllMessagesRead();
+        markAsRead();
       }
     }
     if (loading) {
@@ -113,6 +115,7 @@ const ChatWidgetInner = () => {
           handleNewUserMessage={handleNewUserMessage}
           handleToggle={() => {
             setChatToggleTime(Date.now());
+            markAsRead();
           }}
           footer={<ChatWidgetFooter />}
           menuButton={<ChatWidgetNewThreadButton onClear={onClearClick} />}

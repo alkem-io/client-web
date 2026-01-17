@@ -31702,174 +31702,6 @@ export type ConversationWithGuidanceVcQuery = {
   };
 };
 
-export type ConversationVcMessagesQueryVariables = Exact<{
-  conversationId: Scalars['UUID']['input'];
-}>;
-
-export type ConversationVcMessagesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    conversation?:
-      | {
-          __typename?: 'Conversation';
-          id: string;
-          room?:
-            | {
-                __typename?: 'Room';
-                id: string;
-                messagesCount: number;
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-                messages: Array<{
-                  __typename?: 'Message';
-                  id: string;
-                  message: string;
-                  timestamp: number;
-                  threadID?: string | undefined;
-                  reactions: Array<{
-                    __typename?: 'Reaction';
-                    id: string;
-                    emoji: string;
-                    timestamp: number;
-                    sender?:
-                      | {
-                          __typename?: 'User';
-                          id: string;
-                          profile: { __typename?: 'Profile'; id: string; displayName: string };
-                        }
-                      | undefined;
-                  }>;
-                  sender?:
-                    | {
-                        __typename?: 'Organization';
-                        id: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          url: string;
-                          description?: string | undefined;
-                          avatar?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: VisualType;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          tagsets?:
-                            | Array<{
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }>
-                            | undefined;
-                          location?:
-                            | {
-                                __typename?: 'Location';
-                                id: string;
-                                country?: string | undefined;
-                                city?: string | undefined;
-                              }
-                            | undefined;
-                        };
-                      }
-                    | {
-                        __typename?: 'User';
-                        id: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          url: string;
-                          description?: string | undefined;
-                          avatar?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: VisualType;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          tagsets?:
-                            | Array<{
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }>
-                            | undefined;
-                          location?:
-                            | {
-                                __typename?: 'Location';
-                                id: string;
-                                country?: string | undefined;
-                                city?: string | undefined;
-                              }
-                            | undefined;
-                        };
-                      }
-                    | {
-                        __typename?: 'VirtualContributor';
-                        id: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          url: string;
-                          description?: string | undefined;
-                          avatar?:
-                            | {
-                                __typename?: 'Visual';
-                                id: string;
-                                uri: string;
-                                name: VisualType;
-                                alternativeText?: string | undefined;
-                              }
-                            | undefined;
-                          tagsets?:
-                            | Array<{
-                                __typename?: 'Tagset';
-                                id: string;
-                                name: string;
-                                tags: Array<string>;
-                                allowedValues: Array<string>;
-                                type: TagsetType;
-                              }>
-                            | undefined;
-                          location?:
-                            | {
-                                __typename?: 'Location';
-                                id: string;
-                                country?: string | undefined;
-                                city?: string | undefined;
-                              }
-                            | undefined;
-                        };
-                      }
-                    | undefined;
-                }>;
-                vcInteractions: Array<{ __typename?: 'VcInteraction'; threadID: string; virtualContributorID: string }>;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type NotificationsUnreadCountSubscriptionVariables = Exact<{ [key: string]: never }>;
 
 export type NotificationsUnreadCountSubscription = { __typename?: 'Subscription'; notificationsUnreadCount: number };
@@ -41118,7 +40950,16 @@ export type ConversationEventsSubscription = {
                                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               };
                             }
-                          | { __typename?: 'VirtualContributor' }
+                          | {
+                              __typename?: 'VirtualContributor';
+                              id: string;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              };
+                            }
                           | undefined;
                       }
                     | undefined;
@@ -41156,7 +40997,16 @@ export type ConversationEventsSubscription = {
                         avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       };
                     }
-                  | { __typename?: 'VirtualContributor' }
+                  | {
+                      __typename?: 'VirtualContributor';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
+                    }
                   | undefined;
               }
             | undefined;
@@ -41183,7 +41033,16 @@ export type ConversationEventsSubscription = {
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   };
                 }
-              | { __typename?: 'VirtualContributor' }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  };
+                }
               | undefined;
           };
         }
@@ -41228,7 +41087,16 @@ export type ConversationMessagesQuery = {
                           avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
                       }
-                    | { __typename?: 'VirtualContributor' }
+                    | {
+                        __typename?: 'VirtualContributor';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
                     | undefined;
                 }>;
               }
@@ -41292,7 +41160,16 @@ export type UserConversationsQuery = {
                             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                           };
                         }
-                      | { __typename?: 'VirtualContributor' }
+                      | {
+                          __typename?: 'VirtualContributor';
+                          id: string;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          };
+                        }
                       | undefined;
                   }
                 | undefined;
