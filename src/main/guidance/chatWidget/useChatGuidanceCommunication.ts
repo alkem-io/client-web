@@ -64,6 +64,12 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
     return [introMessage, ...transformedMessages];
   }, [conversationMessages, t]);
 
+  // Compute last message ID separately to avoid handleMarkAsRead recreation on every message change
+  const lastMessageId = useMemo(() => {
+    const lastMsg = conversationMessages[conversationMessages.length - 1];
+    return lastMsg?.id;
+  }, [conversationMessages]);
+
   // 4. Subscribe to room events
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId ?? undefined, !roomId);
 
@@ -71,10 +77,7 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   const [markMessageAsRead] = useMarkMessageAsReadMutation();
 
   const handleMarkAsRead = useCallback(() => {
-    const realMessages = messages.filter(m => m.id !== '__intro');
-    const lastMessage = realMessages[realMessages.length - 1];
-
-    if (!roomId || !lastMessage) {
+    if (!roomId || !lastMessageId) {
       return;
     }
 
@@ -82,16 +85,16 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
       variables: {
         messageData: {
           roomID: roomId,
-          messageID: lastMessage.id,
+          messageID: lastMessageId,
         },
       },
     });
-  }, [roomId, messages, markMessageAsRead]);
+  }, [roomId, lastMessageId, markMessageAsRead]);
 
   // 6. Send message mutation
   const [sendMessageToRoom] = useSendMessageToRoomMutation();
 
-  const handleSendMessage = async (message: string): Promise<void> => {
+  const handleSendMessage = useCallback(async (message: string): Promise<void> => {
     if (!roomId) {
       return;
     }
@@ -104,7 +107,7 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
         },
       },
     });
-  };
+  }, [roomId, sendMessageToRoom]);
 
   // 7. Reset conversation mutation (guidance-specific)
   const [resetConversationVc] = useResetConversationVcMutation();
