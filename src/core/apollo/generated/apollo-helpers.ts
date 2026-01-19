@@ -1832,6 +1832,7 @@ export type InnovationFlowSettingsFieldPolicy = {
 export type InnovationFlowStateKeySpecifier = (
   | 'authorization'
   | 'createdDate'
+  | 'defaultCalloutTemplate'
   | 'description'
   | 'displayName'
   | 'id'
@@ -1843,6 +1844,7 @@ export type InnovationFlowStateKeySpecifier = (
 export type InnovationFlowStateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2624,6 +2626,7 @@ export type MutationKeySpecifier = (
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
+  | 'removeDefaultCalloutTemplateOnInnovationFlowState'
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
   | 'removeNotificationEmailFromBlacklist'
@@ -2644,6 +2647,7 @@ export type MutationKeySpecifier = (
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
   | 'sendMessageToUsers'
+  | 'setDefaultCalloutTemplateOnInnovationFlowState'
   | 'setPlatformWellKnownVirtualContributor'
   | 'transferCallout'
   | 'transferInnovationHubToAccount'
@@ -2683,6 +2687,7 @@ export type MutationKeySpecifier = (
   | 'updateSpace'
   | 'updateSpacePlatformSettings'
   | 'updateSpaceSettings'
+  | 'updateSubspacesSortOrder'
   | 'updateTagset'
   | 'updateTemplate'
   | 'updateTemplateContentSpace'
@@ -2811,6 +2816,7 @@ export type MutationFieldPolicy = {
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2831,6 +2837,7 @@ export type MutationFieldPolicy = {
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  setDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
   setPlatformWellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2870,6 +2877,7 @@ export type MutationFieldPolicy = {
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpaceSettings?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateSubspacesSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplateContentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3572,6 +3580,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'nameID'
   | 'platformAccess'
   | 'settings'
+  | 'sortOrder'
   | 'storageAggregator'
   | 'subscriptions'
   | 'subspaceByNameID'
@@ -3597,6 +3606,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3949,6 +3959,7 @@ export type SpaceKeySpecifier = (
   | 'nameID'
   | 'platformAccess'
   | 'settings'
+  | 'sortOrder'
   | 'storageAggregator'
   | 'subscriptions'
   | 'subspaceByNameID'
@@ -3974,6 +3985,7 @@ export type SpaceFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;

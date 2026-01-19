@@ -3029,6 +3029,8 @@ export type InnovationFlowState = {
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** Default callout template applied to this flow state (nullable, optional). */
+  defaultCalloutTemplate?: Maybe<Template>;
   /** The explanation text to clarify the state. */
   description?: Maybe<Scalars['Markdown']['output']>;
   /** The display name for the State */
@@ -4404,6 +4406,8 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean']['output'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
+  /** Remove the default callout template from an InnovationFlowState. */
+  removeDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
   /** Removes an Iframe Allowed URL from the Platform Settings */
   removeIframeAllowedURL: Array<Scalars['String']['output']>;
   /** Removes a message. */
@@ -4444,6 +4448,8 @@ export type Mutation = {
   sendMessageToRoom: Message;
   /** Send message to multiple Users. */
   sendMessageToUsers: Scalars['Boolean']['output'];
+  /** Set the default callout template for an InnovationFlowState. */
+  setDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
   /** Set the mapping of a well-known Virtual Contributor to a specific Virtual Contributor UUID. */
   setPlatformWellKnownVirtualContributor: PlatformWellKnownVirtualContributors;
   /** Transfer the specified Callout from its current CalloutsSet to the target CalloutsSet. Note: this is experimental, and only for GlobalAdmins. The user that executes the transfer becomes the creator of the Callout. */
@@ -4522,6 +4528,8 @@ export type Mutation = {
   updateSpacePlatformSettings: Space;
   /** Updates one of the Setting on a Space */
   updateSpaceSettings: Space;
+  /** Update the sortOrder field of the supplied Subspaces to increase as per the order that they are provided in. */
+  updateSubspacesSortOrder: Array<Space>;
   /** Updates the specified Tagset. */
   updateTagset: Tagset;
   /** Updates the specified Template. */
@@ -4938,6 +4946,10 @@ export type MutationRemoveCommunityGuidelinesContentArgs = {
   communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
 };
 
+export type MutationRemoveDefaultCalloutTemplateOnInnovationFlowStateArgs = {
+  removeData: RemoveDefaultCalloutTemplateOnInnovationFlowStateInput;
+};
+
 export type MutationRemoveIframeAllowedUrlArgs = {
   whitelistedURL: Scalars['String']['input'];
 };
@@ -5012,6 +5024,10 @@ export type MutationSendMessageToRoomArgs = {
 
 export type MutationSendMessageToUsersArgs = {
   messageData: CommunicationSendMessageToUsersInput;
+};
+
+export type MutationSetDefaultCalloutTemplateOnInnovationFlowStateArgs = {
+  setData: SetDefaultCalloutTemplateOnInnovationFlowStateInput;
 };
 
 export type MutationSetPlatformWellKnownVirtualContributorArgs = {
@@ -5168,6 +5184,10 @@ export type MutationUpdateSpacePlatformSettingsArgs = {
 
 export type MutationUpdateSpaceSettingsArgs = {
   settingsData: UpdateSpaceSettingsInput;
+};
+
+export type MutationUpdateSubspacesSortOrderArgs = {
+  sortOrderData: UpdateSubspacesSortOrderInput;
 };
 
 export type MutationUpdateTagsetArgs = {
@@ -6323,6 +6343,8 @@ export type RelayPaginatedSpace = {
   platformAccess: PlatformRolesAccess;
   /** The settings for this Space. */
   settings: SpaceSettings;
+  /** The sorting order for this Space within its parent. */
+  sortOrder: Scalars['Float']['output'];
   /** The StorageAggregator in use by this Space */
   storageAggregator: StorageAggregator;
   /** The subscriptions active for this Space. */
@@ -6369,6 +6391,10 @@ export type RelayPaginatedSpacePageInfo = {
 export type RemoveCommunityGuidelinesContentInput = {
   /** ID of the CommunityGuidelines that will be emptied */
   communityGuidelinesID: Scalars['UUID']['input'];
+};
+
+export type RemoveDefaultCalloutTemplateOnInnovationFlowStateInput = {
+  flowStateID: Scalars['UUID']['input'];
 };
 
 export type RemovePlatformRoleInput = {
@@ -6959,6 +6985,11 @@ export type ServiceMetadata = {
   version?: Maybe<Scalars['String']['output']>;
 };
 
+export type SetDefaultCalloutTemplateOnInnovationFlowStateInput = {
+  flowStateID: Scalars['UUID']['input'];
+  templateID: Scalars['UUID']['input'];
+};
+
 export type SetPlatformWellKnownVirtualContributorInput = {
   /** The UUID of the Virtual Contributor. */
   virtualContributorID: Scalars['UUID']['input'];
@@ -6998,6 +7029,8 @@ export type Space = {
   platformAccess: PlatformRolesAccess;
   /** The settings for this Space. */
   settings: SpaceSettings;
+  /** The sorting order for this Space within its parent. */
+  sortOrder: Scalars['Float']['output'];
   /** The StorageAggregator in use by this Space */
   storageAggregator: StorageAggregator;
   /** The subscriptions active for this Space. */
@@ -8086,6 +8119,12 @@ export type UpdateSpaceSettingsPrivacyInput = {
   /** Flag to control if Platform Support has admin rights. */
   allowPlatformSupportAsAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   mode?: InputMaybe<SpacePrivacyMode>;
+};
+
+export type UpdateSubspacesSortOrderInput = {
+  spaceID: Scalars['UUID']['input'];
+  /** The IDs of the subspaces to update the sort order on */
+  subspaceIDs: Array<Scalars['UUID']['input']>;
 };
 
 export type UpdateTagsetInput = {
@@ -10598,6 +10637,44 @@ export type AccountItemProfileFragment = {
     | undefined;
 };
 
+export type SpaceInnovationFlowQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceInnovationFlowQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          collaboration: {
+            __typename?: 'Collaboration';
+            id: string;
+            innovationFlow: {
+              __typename?: 'InnovationFlow';
+              id: string;
+              states: Array<{
+                __typename?: 'InnovationFlowState';
+                id: string;
+                displayName: string;
+                defaultCalloutTemplate?:
+                  | {
+                      __typename?: 'Template';
+                      id: string;
+                      type: TemplateType;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    }
+                  | undefined;
+              }>;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type InnovationFlowSettingsQueryVariables = Exact<{
   collaborationId: Scalars['UUID']['input'];
 }>;
@@ -10663,6 +10740,14 @@ export type InnovationFlowSettingsQuery = {
               description?: string | undefined;
               sortOrder: number;
               settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              defaultCalloutTemplate?:
+                | {
+                    __typename?: 'Template';
+                    id: string;
+                    type: TemplateType;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
             }>;
           };
           authorization?:
@@ -10773,6 +10858,14 @@ export type InnovationFlowDetailsQuery = {
               description?: string | undefined;
               sortOrder: number;
               settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+              defaultCalloutTemplate?:
+                | {
+                    __typename?: 'Template';
+                    id: string;
+                    type: TemplateType;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
             }>;
           };
         }
@@ -10914,6 +11007,14 @@ export type InnovationFlowDetailsFragment = {
     description?: string | undefined;
     sortOrder: number;
     settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+    defaultCalloutTemplate?:
+      | {
+          __typename?: 'Template';
+          id: string;
+          type: TemplateType;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
   }>;
 };
 
@@ -10950,6 +11051,14 @@ export type InnovationFlowStatesFragment = {
     description?: string | undefined;
     sortOrder: number;
     settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+    defaultCalloutTemplate?:
+      | {
+          __typename?: 'Template';
+          id: string;
+          type: TemplateType;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
   }>;
 };
 
@@ -10963,6 +11072,49 @@ export type UpdateInnovationFlowMutation = {
     __typename?: 'InnovationFlow';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+export type SetDefaultCalloutTemplateOnInnovationFlowStateMutationVariables = Exact<{
+  flowStateId: Scalars['UUID']['input'];
+  templateId: Scalars['UUID']['input'];
+}>;
+
+export type SetDefaultCalloutTemplateOnInnovationFlowStateMutation = {
+  __typename?: 'Mutation';
+  setDefaultCalloutTemplateOnInnovationFlowState: {
+    __typename?: 'InnovationFlowState';
+    id: string;
+    displayName: string;
+    defaultCalloutTemplate?:
+      | {
+          __typename?: 'Template';
+          id: string;
+          type: TemplateType;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
+  };
+};
+
+export type RemoveDefaultCalloutTemplateOnInnovationFlowStateMutationVariables = Exact<{
+  flowStateId: Scalars['UUID']['input'];
+}>;
+
+export type RemoveDefaultCalloutTemplateOnInnovationFlowStateMutation = {
+  __typename?: 'Mutation';
+  removeDefaultCalloutTemplateOnInnovationFlowState: {
+    __typename?: 'InnovationFlowState';
+    id: string;
+    displayName: string;
+    defaultCalloutTemplate?:
+      | {
+          __typename?: 'Template';
+          id: string;
+          type: TemplateType;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
   };
 };
 
@@ -25242,6 +25394,7 @@ export type SubspacesInSpaceQuery = {
             __typename?: 'Space';
             id: string;
             level: SpaceLevel;
+            sortOrder: number;
             about: {
               __typename?: 'SpaceAbout';
               id: string;
@@ -25631,6 +25784,13 @@ export type SpaceTabQuery = {
                 description?: string | undefined;
                 sortOrder: number;
                 settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                defaultCalloutTemplate?:
+                  | {
+                      __typename?: 'Template';
+                      id: string;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    }
+                  | undefined;
               }>;
             };
             calloutsSet: { __typename?: 'CalloutsSet'; id: string };
@@ -27487,6 +27647,16 @@ export type DeleteDocumentMutation = {
   deleteDocument: { __typename?: 'Document'; id: string };
 };
 
+export type UpdateSubspacesSortOrderMutationVariables = Exact<{
+  spaceID: Scalars['UUID']['input'];
+  subspaceIds: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+}>;
+
+export type UpdateSubspacesSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateSubspacesSortOrder: Array<{ __typename?: 'Space'; id: string; sortOrder: number }>;
+};
+
 export type SpaceAdminDefaultSpaceTemplatesDetailsQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
 }>;
@@ -27649,6 +27819,14 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                     description?: string | undefined;
                                     sortOrder: number;
                                     settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                                    defaultCalloutTemplate?:
+                                      | {
+                                          __typename?: 'Template';
+                                          id: string;
+                                          type: TemplateType;
+                                          profile: { __typename?: 'Profile'; id: string; displayName: string };
+                                        }
+                                      | undefined;
                                   }>;
                                 };
                               };
@@ -28898,6 +29076,14 @@ export type TemplateContentQuery = {
                       description?: string | undefined;
                       sortOrder: number;
                       settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                      defaultCalloutTemplate?:
+                        | {
+                            __typename?: 'Template';
+                            id: string;
+                            type: TemplateType;
+                            profile: { __typename?: 'Profile'; id: string; displayName: string };
+                          }
+                        | undefined;
                     }>;
                   };
                   calloutsSet: {
@@ -29095,6 +29281,14 @@ export type SpaceTemplateContentQuery = {
                 description?: string | undefined;
                 sortOrder: number;
                 settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                defaultCalloutTemplate?:
+                  | {
+                      __typename?: 'Template';
+                      id: string;
+                      type: TemplateType;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    }
+                  | undefined;
               }>;
             };
             calloutsSet: {
@@ -29476,6 +29670,14 @@ export type SpaceTemplateContentFragment = {
         description?: string | undefined;
         sortOrder: number;
         settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+        defaultCalloutTemplate?:
+          | {
+              __typename?: 'Template';
+              id: string;
+              type: TemplateType;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }
+          | undefined;
       }>;
     };
     calloutsSet: {
@@ -29617,6 +29819,14 @@ export type SpaceTemplateContent_CollaborationFragment = {
       description?: string | undefined;
       sortOrder: number;
       settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+      defaultCalloutTemplate?:
+        | {
+            __typename?: 'Template';
+            id: string;
+            type: TemplateType;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | undefined;
     }>;
   };
   calloutsSet: {

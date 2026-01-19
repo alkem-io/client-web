@@ -1,4 +1,4 @@
-import { Button, DialogContent, ListItemIcon, MenuItem } from '@mui/material';
+import { DialogContent, ListItemIcon, MenuItem } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -11,8 +11,8 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '@/core/utils/Identifiable';
+import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
 import ApplySpaceTemplateDialog from '@/domain/templates/components/Dialogs/ApplySpaceTemplateDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
 
@@ -94,6 +94,7 @@ const InnovationFlowSettingsDialog = ({
             onCreateFlowState={(state, options) => actions.createState(state, options.after)}
             onEditFlowState={actions.editState}
             onDeleteFlowState={actions.deleteState}
+            onSetDefaultTemplate={actions.setDefaultTemplate}
           />
         </DialogContent>
       </DialogWithGrid>
@@ -129,11 +130,7 @@ const InnovationFlowSettingsDialog = ({
         onClose={() => setImportInnovationFlowDialogOpen(false)}
         onSelectTemplate={async templateId => setSelectedTemplateToImport(templateId)}
         enablePlatformTemplates
-        actionButton={() => (
-          <Button startIcon={<SystemUpdateAltIcon />} variant="contained">
-            {t('buttons.use')}
-          </Button>
-        )}
+        actionButton={() => <TemplateActionButton />}
       />
     </>
   );

@@ -1,4 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Footer from '@/main/ui/platformFooter/PlatformFooter';
 import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '@/main/ui/helpButton/PlatformHelpButton';
@@ -12,6 +13,7 @@ import SearchDialog from '@/main/search/SearchDialog';
 
 const HomePageLayout = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();
+  const location = useLocation();
   const [title, setTitle] = useState(t('pages.home.sections.welcome.welcomeUnauthenticated'));
   const [subTitle, setSubTitle] = useState(t('pages.home.sections.welcome.welcomeUnauthenticatedSubtitle'));
 
@@ -24,16 +26,19 @@ const HomePageLayout = ({ children }: PropsWithChildren) => {
     }
   }, [isAuthenticated, userModel]);
 
+  const isHomePage = location.pathname === '/home';
+
   return (
     <>
       <PlatformNavigationBar
         breadcrumbs={
           <Breadcrumbs>
-            <BreadcrumbsRootItem />
+            <BreadcrumbsRootItem size={isHomePage ? 'large' : undefined} />
           </Breadcrumbs>
         }
+        staticPosition={isHomePage}
       />
-      <TopLevelPageBanner title={title} subtitle={subTitle} />
+      {!isHomePage && <TopLevelPageBanner title={title} subtitle={subTitle} />}
       {children}
       <Footer />
       <FloatingActionButtons floatingActions={<PlatformHelpButton />} />
