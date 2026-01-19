@@ -23,7 +23,7 @@ const MemoCard = ({ contribution, columns, callout, onClick, selected }: MemoCar
   return (
     <ContributeCard to={memo?.profile.url} onClick={onClick} state={linkState} columns={columns}>
       <CardHeader title={memo?.profile.displayName} contrast={selected} author={memo?.createdBy}>
-        {memo?.createdDate && <Caption>{formatDate(memo?.createdDate)}</Caption>}
+        {memo?.createdDate && <Caption color="textPrimary">{formatDate(memo?.createdDate)}</Caption>}
       </CardHeader>
       <MemoPreview
         memo={memo}
