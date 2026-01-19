@@ -90,6 +90,8 @@ const SEARCH_RESULTS_COUNT = 4;
 export const MAX_TERMS_SEARCH = 5;
 const tagsetNames = ['skills', 'keywords'];
 
+const concatSearchResults = <T,>(a: T[] = [], b: T[] = []): T[] => [...a, ...b];
+
 const Logo = () => <AlkemioLogo />;
 
 const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: SearchViewProps) => {
@@ -247,7 +249,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               {
                 category: SearchCategory.Framings,
                 size: SEARCH_RESULTS_COUNT,
-                types: calloutAndFramingFilterConfig.value,
+                types: calloutAndFramingFilter.value,
                 cursor: resultsCursors.framingCursor,
               },
             ];
@@ -291,7 +293,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               {
                 category: SearchCategory.Framings,
                 size: SEARCH_RESULTS_COUNT,
-                types: calloutAndFramingFilterConfig.value,
+                types: calloutAndFramingFilter.value,
                 cursor: resultsCursors.framingCursor,
               },
               {
@@ -359,7 +361,10 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
                   ...prev.search,
                   spaceResults: {
                     ...fetchMoreResult.search.spaceResults,
-                    results: [...prev.search.spaceResults?.results, ...fetchMoreResult.search.spaceResults?.results],
+                    results: concatSearchResults(
+                      prev.search.spaceResults?.results,
+                      fetchMoreResult.search.spaceResults?.results
+                    ),
                   },
                 },
               };
@@ -371,10 +376,10 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
                   ...prev.search,
                   calloutResults: {
                     ...fetchMoreResult.search.calloutResults,
-                    results: [
-                      ...prev.search.calloutResults?.results,
-                      ...fetchMoreResult.search.calloutResults?.results,
-                    ],
+                    results: concatSearchResults(
+                      prev.search.calloutResults?.results,
+                      fetchMoreResult.search.calloutResults?.results
+                    ),
                   },
                 },
               };
@@ -386,10 +391,10 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
                   ...prev.search,
                   framingResults: {
                     ...fetchMoreResult.search.framingResults,
-                    results: [
-                      ...prev.search.framingResults?.results,
-                      ...fetchMoreResult.search.framingResults?.results,
-                    ],
+                    results: concatSearchResults(
+                      prev.search.framingResults?.results,
+                      fetchMoreResult.search.framingResults?.results
+                    ),
                   },
                 },
               };
@@ -401,10 +406,10 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
                   ...prev.search,
                   contributionResults: {
                     ...fetchMoreResult.search.contributionResults,
-                    results: [
-                      ...prev.search.contributionResults?.results,
-                      ...fetchMoreResult.search.contributionResults?.results,
-                    ],
+                    results: concatSearchResults(
+                      prev.search.contributionResults?.results,
+                      fetchMoreResult.search.contributionResults?.results
+                    ),
                   },
                 },
               };
@@ -416,10 +421,10 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
                   ...prev.search,
                   contributorResults: {
                     ...fetchMoreResult.search.contributorResults,
-                    results: [
-                      ...prev.search.contributorResults?.results,
-                      ...fetchMoreResult.search.contributorResults?.results,
-                    ],
+                    results: concatSearchResults(
+                      prev.search.contributorResults?.results,
+                      fetchMoreResult.search.contributorResults?.results
+                    ),
                   },
                 },
               };
@@ -589,8 +594,10 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
                 cardComponent={SearchResultsCalloutAndFramingCard}
                 canLoadMore={canCalloutAndFramingLoadMore}
                 onClickLoadMore={async () => {
-                  await fetchNewResults(SearchCategory.CollaborationTools);
-                  await fetchNewResults(SearchCategory.Framings);
+                  await Promise.all([
+                    fetchNewResults(SearchCategory.CollaborationTools),
+                    fetchNewResults(SearchCategory.Framings),
+                  ]);
                 }}
               />
             </SectionWrapper>

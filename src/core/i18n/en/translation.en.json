@@ -2770,7 +2770,8 @@
           "callout": "$t(common.Callouts)",
           "framing": "$t(common.framing)",
           "contribution": "$t(common.Responses)",
-          "contributor": "$t(common.contributors)"
+          "contributor": "$t(common.contributors)",
+          "noResults": "No results of this type matched your search terms."
         }
       },
       "spaceFilterTitle": "$t(common.spaces)"

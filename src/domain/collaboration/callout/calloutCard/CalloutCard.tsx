@@ -17,7 +17,7 @@ export interface CalloutCardCallout {
       tagset?: {
         tags: string[];
       };
-      url?: string;
+      url: string;
     };
   };
 }

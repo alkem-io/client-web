@@ -53,8 +53,11 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
         }}
         aria-label={t('common.filter')}
       >
-        <RoundedIcon component={FilterAltOutlinedIcon} size="medium" variant={currentFilter.typename === FILTER_OFF ? 'outlined' : 'filled'} />
-        { }
+        <RoundedIcon
+          component={FilterAltOutlinedIcon}
+          size="medium"
+          variant={currentFilter.typename === FILTER_OFF ? 'outlined' : 'filled'}
+        />
       </IconButton>
       {/* Popup menu for big screens */}
       {!isSmallScreen && (
