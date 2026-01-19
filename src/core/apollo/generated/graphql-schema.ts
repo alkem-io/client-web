@@ -1562,6 +1562,65 @@ export type Conversation = {
   virtualContributor?: Maybe<VirtualContributor>;
 };
 
+/** Event fired when a new conversation is created. Each member receives a personalized event with the other participant resolved via conversation.user or conversation.virtualContributor. */
+export type ConversationCreatedEvent = {
+  __typename?: 'ConversationCreatedEvent';
+  /** The conversation that was created. */
+  conversation: Conversation;
+  /** The first message in the conversation. Null when conversation is created without an initial message. */
+  message?: Maybe<Message>;
+};
+
+/** Payload for conversation subscription events. */
+export type ConversationEventSubscriptionResult = {
+  __typename?: 'ConversationEventSubscriptionResult';
+  /** Present when eventType is CONVERSATION_CREATED. */
+  conversationCreated?: Maybe<ConversationCreatedEvent>;
+  /** The type of event. Use this to determine which payload field is populated. */
+  eventType: ConversationEventType;
+  /** Present when eventType is MESSAGE_RECEIVED. */
+  messageReceived?: Maybe<ConversationMessageReceivedEvent>;
+  /** Present when eventType is MESSAGE_REMOVED. */
+  messageRemoved?: Maybe<ConversationMessageRemovedEvent>;
+  /** Present when eventType is READ_RECEIPT_UPDATED. */
+  readReceiptUpdated?: Maybe<ConversationReadReceiptUpdatedEvent>;
+};
+
+/** The type of conversation event. */
+export enum ConversationEventType {
+  ConversationCreated = 'CONVERSATION_CREATED',
+  MessageReceived = 'MESSAGE_RECEIVED',
+  MessageRemoved = 'MESSAGE_REMOVED',
+  ReadReceiptUpdated = 'READ_RECEIPT_UPDATED',
+}
+
+/** Event fired when a new message is received in a conversation. */
+export type ConversationMessageReceivedEvent = {
+  __typename?: 'ConversationMessageReceivedEvent';
+  /** The message that was received. */
+  message: Message;
+  /** The room ID where the message was received. */
+  roomId: Scalars['UUID']['output'];
+};
+
+/** Event fired when a message is removed from a conversation. */
+export type ConversationMessageRemovedEvent = {
+  __typename?: 'ConversationMessageRemovedEvent';
+  /** The ID of the message that was removed. */
+  messageId: Scalars['MessageID']['output'];
+  /** The room ID where the message was removed. */
+  roomId: Scalars['UUID']['output'];
+};
+
+/** Event fired when a read receipt is updated in a conversation. */
+export type ConversationReadReceiptUpdatedEvent = {
+  __typename?: 'ConversationReadReceiptUpdatedEvent';
+  /** The ID of the last read event (message). */
+  lastReadEventId: Scalars['MessageID']['output'];
+  /** The room ID where the read receipt was updated. */
+  roomId: Scalars['UUID']['output'];
+};
+
 export type ConversationVcAnswerRelevanceInput = {
   /** The ID of the conversation. */
   conversationID: Scalars['UUID']['input'];
@@ -4062,7 +4121,7 @@ export type Message = {
   /** The User or Virtual Contributor that created this Message */
   sender?: Maybe<Contributor>;
   /** The message being replied to */
-  threadID?: Maybe<Scalars['String']['output']>;
+  threadID?: Maybe<Scalars['MessageID']['output']>;
   /** The server timestamp in UTC */
   timestamp: Scalars['Float']['output'];
 };
@@ -4394,6 +4453,8 @@ export type Mutation = {
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
+  /** Marks a message as read for the current user. */
+  markMessageAsReadInRoom: Scalars['Boolean']['output'];
   /** Mark notifications as read. If no filter is provided, marks all user notifications as read. If filter with types is provided, marks only those notification types as read. */
   markNotificationsAsRead: Scalars['Boolean']['output'];
   /** Mark notifications as unread. If no filter is provided, marks all user notifications as unread. If filter with types is provided, marks only those notification types as unread. */
@@ -4924,6 +4985,10 @@ export type MutationJoinRoleSetArgs = {
 
 export type MutationLicenseResetOnAccountArgs = {
   resetData: AccountLicenseResetInput;
+};
+
+export type MutationMarkMessageAsReadInRoomArgs = {
+  messageData: RoomMarkMessageReadInput;
 };
 
 export type MutationMarkNotificationsAsReadArgs = {
@@ -6344,7 +6409,7 @@ export type RelayPaginatedSpace = {
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The sorting order for this Space within its parent. */
-  sortOrder: Scalars['Float']['output'];
+  sortOrder: Scalars['Int']['output'];
   /** The StorageAggregator in use by this Space */
   storageAggregator: StorageAggregator;
   /** The subscriptions active for this Space. */
@@ -6744,16 +6809,28 @@ export type Room = {
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The display name of the Room. */
+  displayName: Scalars['String']['output'];
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** The last message sent to the Room. Useful for conversation previews. */
+  lastMessage?: Maybe<Message>;
   /** Messages in this Room. */
   messages: Array<Message>;
   /** The number of messages in the Room. */
-  messagesCount: Scalars['Float']['output'];
+  messagesCount: Scalars['Int']['output'];
+  /** Simple unread message count for the current user. Use unreadCounts for per-thread breakdown. */
+  unreadCount: Scalars['Int']['output'];
+  /** Unread message counts for the current user in this Room. */
+  unreadCounts: RoomUnreadCounts;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   /** Virtual Contributor Interactions in this Room. */
   vcInteractions: Array<VcInteraction>;
+};
+
+export type RoomUnreadCountsArgs = {
+  threadIds?: InputMaybe<Array<Scalars['MessageID']['input']>>;
 };
 
 export type RoomAddReactionToMessageInput = {
@@ -6776,6 +6853,15 @@ export type RoomEventSubscriptionResult = {
   room: Room;
   /** The identifier for the Room on which the event happened. */
   roomID: Scalars['String']['output'];
+};
+
+export type RoomMarkMessageReadInput = {
+  /** The message id that should be marked as read. */
+  messageID: Scalars['MessageID']['input'];
+  /** The Room to mark message as read in. */
+  roomID: Scalars['UUID']['input'];
+  /** The thread id if the message is in a thread. */
+  threadID?: InputMaybe<Scalars['MessageID']['input']>;
 };
 
 /** A message event happened in the subscribed room */
@@ -6826,6 +6912,24 @@ export type RoomSendMessageReplyInput = {
   roomID: Scalars['UUID']['input'];
   /** The message starting the thread being replied to */
   threadID: Scalars['MessageID']['input'];
+};
+
+/** Unread message count for a specific thread in a Room. */
+export type RoomThreadUnreadCount = {
+  __typename?: 'RoomThreadUnreadCount';
+  /** The number of unread messages in the thread. */
+  count: Scalars['Int']['output'];
+  /** The thread ID. */
+  threadId: Scalars['MessageID']['output'];
+};
+
+/** Unread message counts for a Room. */
+export type RoomUnreadCounts = {
+  __typename?: 'RoomUnreadCounts';
+  /** The total number of unread messages in the Room. */
+  roomUnreadCount: Scalars['Int']['output'];
+  /** Unread counts per thread, if thread IDs were requested. */
+  threadUnreadCounts?: Maybe<Array<RoomThreadUnreadCount>>;
 };
 
 /** The category in which to search. A category may include a couple of entity types, e.g. "responses" include posts, whiteboard, etc. */
@@ -7030,7 +7134,7 @@ export type Space = {
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The sorting order for this Space within its parent. */
-  sortOrder: Scalars['Float']['output'];
+  sortOrder: Scalars['Int']['output'];
   /** The StorageAggregator in use by this Space */
   storageAggregator: StorageAggregator;
   /** The subscriptions active for this Space. */
@@ -7312,6 +7416,8 @@ export type Subscription = {
   activityCreated: ActivityCreatedSubscriptionResult;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   calloutPostCreated: CalloutPostCreated;
+  /** Receive conversation events for the authenticated user. Includes new conversations, messages, and read receipts. */
+  conversationEvents: ConversationEventSubscriptionResult;
   /** Receive updates on Discussions */
   forumDiscussionUpdated: Discussion;
   /** New in-app notification received for the currently authenticated user. */
@@ -8768,7 +8874,7 @@ export type UsersWithAuthorizationCredentialInput = {
 export type VcInteraction = {
   __typename?: 'VcInteraction';
   /** The thread ID (Matrix message ID) where VC is engaged */
-  threadID: Scalars['String']['output'];
+  threadID: Scalars['MessageID']['output'];
   /** The actor ID (agent.id) of the Virtual Contributor */
   virtualContributorID: Scalars['String']['output'];
 };
@@ -40409,6 +40515,64 @@ export type SpaceProfileCommunityDetailsFragment = {
   };
 };
 
+export type HomeSpaceLookupQueryVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+}>;
+
+export type HomeSpaceLookupQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            isContentPublic: boolean;
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              tagline?: string | undefined;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type RecentSpacesQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']['input']>;
 }>;
@@ -40417,6 +40581,17 @@ export type RecentSpacesQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          settings: {
+            __typename?: 'UserSettings';
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined };
+          };
+          profile: { __typename?: 'Profile'; url: string };
+        }
+      | undefined;
     mySpaces: Array<{
       __typename?: 'MySpaceResults';
       space: {

@@ -1,12 +1,16 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
-import { useRecentSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useRecentSpacesQuery, useHomeSpaceLookupQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Caption } from '@/core/ui/typography';
 import { useSpaceCardLayout } from '@/main/topLevelPages/myDashboard/useSpaceCardLayout';
 import SpaceCard from '@/domain/space/components/cards/SpaceCard';
 import Gutters from '@/core/ui/grid/Gutters';
 import GridItem from '@/core/ui/grid/GridItem';
+import HomeSpacePlaceholderCard from './HomeSpacePlaceholderCard';
+import HomeSpacePinButton from '@/domain/space/components/HomeSpacePinButton';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 interface RecentSpacesListProps {
   onSeeMore?: () => void;
@@ -17,18 +21,59 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
 
   const { visibleSpaces, firstCardColumns, remainingCardColumns } = useSpaceCardLayout();
 
-  const { data } = useRecentSpacesQuery({ variables: { limit: visibleSpaces } });
+  // Fetch recent spaces and user settings (includes homeSpace ID)
+  const { data } = useRecentSpacesQuery({ variables: { limit: visibleSpaces + 1 } });
 
-  // an edge case, a different layout should be shown in this case
-  if (!data?.me.mySpaces.length) {
+  const homeSpaceId = data?.me.user?.settings?.homeSpace?.spaceID;
+  const profileUrl = data?.me.user?.profile?.url;
+
+  // Conditionally fetch homeSpace details if ID is set
+  const { data: homeSpaceData } = useHomeSpaceLookupQuery({
+    variables: { spaceId: homeSpaceId! },
+    skip: !homeSpaceId,
+  });
+
+  const homeSpace = homeSpaceData?.lookup.space;
+
+  // Filter out homeSpace from recent spaces to avoid duplication and limit to visibleSpaces - 1
+  const remainingSpaces = useMemo(() => {
+    const spaces = data?.me.mySpaces ?? [];
+    return spaces.filter(s => s.space.id !== homeSpaceId).slice(0, visibleSpaces - 1);
+  }, [data?.me.mySpaces, homeSpaceId, visibleSpaces]);
+
+  // Settings URL for the placeholder card
+  const settingsUrl = profileUrl ? `${buildSettingsUrl(profileUrl)}/membership` : '';
+
+  // Show component if we have data (either homeSpace, placeholder, or recent spaces)
+  if (!data) {
     return null;
   }
 
+  const hasMoreSpaces = (data?.me.mySpaces?.length ?? 0) >= visibleSpaces;
+
   return (
     <Gutters disablePadding sx={{ width: '100%' }}>
-      <Gutters row disablePadding>
-        {data?.me.mySpaces.slice(0, visibleSpaces).map((result, index) => (
-          <GridItem key={result.space.id} columns={index === 0 ? firstCardColumns : remainingCardColumns}>
+      <Gutters row disablePadding sx={{ alignItems: 'flex-start' }}>
+        {/* First card: homeSpace or placeholder */}
+        {homeSpace ? (
+          <GridItem key={homeSpace.id} columns={firstCardColumns}>
+            <SpaceCard
+              spaceId={homeSpace.id}
+              displayName={homeSpace.about.profile.displayName}
+              banner={homeSpace.about.profile.cardBanner}
+              spaceUri={homeSpace.about.profile.url ?? ''}
+              isPrivate={!homeSpace.about.isContentPublic}
+              compact
+              iconOverlay={<HomeSpacePinButton settingsUrl={settingsUrl} />}
+            />
+          </GridItem>
+        ) : (
+          <HomeSpacePlaceholderCard columns={firstCardColumns} settingsUrl={settingsUrl} />
+        )}
+
+        {/* Remaining recent spaces */}
+        {remainingSpaces.map(result => (
+          <GridItem key={result.space.id} columns={remainingCardColumns}>
             <SpaceCard
               spaceId={result.space.id}
               displayName={result.space.about.profile.displayName}
@@ -40,7 +85,7 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
           </GridItem>
         ))}
       </Gutters>
-      {data?.me.mySpaces.length >= visibleSpaces && (
+      {hasMoreSpaces && (
         <Button endIcon={<DoubleArrowOutlined />} sx={{ textTransform: 'none' }} onClick={onSeeMore}>
           <Caption>{t('pages.home.sections.recentSpaces.seeMore')}</Caption>
         </Button>

@@ -107,7 +107,8 @@ const UserAdminMembershipPage = () => {
   }, [userId, pendingMembershipsData]);
 
   const handleHomeSpaceChange = async (event: SelectChangeEvent<string>) => {
-    const newSpaceId = event.target.value || undefined;
+    // Use null to explicitly clear the field in GraphQL (empty string from Select means "clear")
+    const newSpaceId = event.target.value || null;
     setIsUpdating(true);
 
     try {
@@ -117,7 +118,8 @@ const UserAdminMembershipPage = () => {
             userID: userId!,
             settings: {
               homeSpace: {
-                spaceID: newSpaceId,
+                // Type assertion needed: GraphQL requires null to clear, but codegen types use undefined
+                spaceID: newSpaceId as string | undefined,
                 // If clearing the space, auto-disable redirect
                 autoRedirect: newSpaceId ? currentAutoRedirect : false,
               },

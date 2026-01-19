@@ -27015,9 +27015,92 @@ export type AllSpaceSubspacesQueryResult = Apollo.QueryResult<
 export function refetchAllSpaceSubspacesQuery(variables: SchemaTypes.AllSpaceSubspacesQueryVariables) {
   return { query: AllSpaceSubspacesDocument, variables: variables };
 }
+export const HomeSpaceLookupDocument = gql`
+  query HomeSpaceLookup($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        about {
+          ...SpaceAboutCardBanner
+          isContentPublic
+        }
+        level
+      }
+    }
+  }
+  ${SpaceAboutCardBannerFragmentDoc}
+`;
+
+/**
+ * __useHomeSpaceLookupQuery__
+ *
+ * To run a query within a React component, call `useHomeSpaceLookupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeSpaceLookupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomeSpaceLookupQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useHomeSpaceLookupQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HomeSpaceLookupQuery, SchemaTypes.HomeSpaceLookupQueryVariables> &
+    ({ variables: SchemaTypes.HomeSpaceLookupQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HomeSpaceLookupQuery, SchemaTypes.HomeSpaceLookupQueryVariables>(
+    HomeSpaceLookupDocument,
+    options
+  );
+}
+export function useHomeSpaceLookupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HomeSpaceLookupQuery, SchemaTypes.HomeSpaceLookupQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HomeSpaceLookupQuery, SchemaTypes.HomeSpaceLookupQueryVariables>(
+    HomeSpaceLookupDocument,
+    options
+  );
+}
+export function useHomeSpaceLookupSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.HomeSpaceLookupQuery, SchemaTypes.HomeSpaceLookupQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.HomeSpaceLookupQuery, SchemaTypes.HomeSpaceLookupQueryVariables>(
+    HomeSpaceLookupDocument,
+    options
+  );
+}
+export type HomeSpaceLookupQueryHookResult = ReturnType<typeof useHomeSpaceLookupQuery>;
+export type HomeSpaceLookupLazyQueryHookResult = ReturnType<typeof useHomeSpaceLookupLazyQuery>;
+export type HomeSpaceLookupSuspenseQueryHookResult = ReturnType<typeof useHomeSpaceLookupSuspenseQuery>;
+export type HomeSpaceLookupQueryResult = Apollo.QueryResult<
+  SchemaTypes.HomeSpaceLookupQuery,
+  SchemaTypes.HomeSpaceLookupQueryVariables
+>;
+export function refetchHomeSpaceLookupQuery(variables: SchemaTypes.HomeSpaceLookupQueryVariables) {
+  return { query: HomeSpaceLookupDocument, variables: variables };
+}
 export const RecentSpacesDocument = gql`
   query RecentSpaces($limit: Float) {
     me {
+      user {
+        id
+        settings {
+          homeSpace {
+            spaceID
+          }
+        }
+        profile {
+          url
+        }
+      }
       mySpaces(limit: $limit) {
         space {
           id

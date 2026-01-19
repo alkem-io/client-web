@@ -12,6 +12,9 @@ import { getDefaultSpaceVisualUrl } from '../../../icons/defaultVisualUrls';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useInnovationHubSpaceBannerRibbon from '@/domain/innovationHub/InnovationHubSpaceBannerRibbon/useInnovationHubSpaceBannerRibbon';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import HomeSpacePinButton from '@/domain/space/components/HomeSpacePinButton';
 
 export const TITLE_HEIGHT = 6;
 
@@ -50,6 +53,7 @@ const SpacePageBanner = ({ isAdmin, loading: dataLoading = false, watermark, tit
   const { t } = useTranslation();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
   const [imageLoading, setImageLoading] = useState(true);
+  const { userModel } = useCurrentUserContext();
 
   const {
     space: { id: spaceId },
@@ -69,6 +73,14 @@ const SpacePageBanner = ({ isAdmin, loading: dataLoading = false, watermark, tit
     spaceId,
   });
 
+  // Check if current space is the user's home space
+  const userSettings = userModel as
+    | { settings?: { homeSpace?: { spaceID?: string } }; profile?: { url?: string } }
+    | undefined;
+  const homeSpaceId = userSettings?.settings?.homeSpace?.spaceID;
+  const isHomeSpace = Boolean(homeSpaceId && spaceId && homeSpaceId === spaceId);
+  const settingsUrl = userSettings?.profile?.url ? `${buildSettingsUrl(userSettings.profile.url)}/membership` : '';
+
   const imageLoadError = () => {
     setImageLoading(false);
   };
@@ -83,7 +95,7 @@ const SpacePageBanner = ({ isAdmin, loading: dataLoading = false, watermark, tit
     <Root ref={containerReference}>
       {ribbon}
       {imageLoading && <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />}
-      <Box>
+      <Box sx={{ position: 'relative' }}>
         <ImageBlurredSides
           src={profile?.banner?.uri || getDefaultSpaceVisualUrl(VisualType.Banner, spaceId)}
           alt={t('visuals-alt-text.banner.page.text', { altText: profile?.banner?.alternativeText })}
@@ -95,6 +107,31 @@ const SpacePageBanner = ({ isAdmin, loading: dataLoading = false, watermark, tit
           maxWidth="100%"
         />
         <WatermarkContainer>{watermark}</WatermarkContainer>
+        {isHomeSpace && settingsUrl && (
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 8,
+              left: 0,
+              right: 0,
+              zIndex: 1,
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <Box
+              sx={{
+                width: gutters(MAX_CONTENT_WIDTH_GUTTERS - 2),
+                maxWidth: '100%',
+                position: 'relative',
+              }}
+            >
+              <Box sx={{ position: 'absolute', left: 20, bottom: 10 }}>
+                <HomeSpacePinButton settingsUrl={settingsUrl} />
+              </Box>
+            </Box>
+          </Box>
+        )}
       </Box>
       <Title>
         <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
