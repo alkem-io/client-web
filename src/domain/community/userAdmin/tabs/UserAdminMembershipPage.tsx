@@ -107,7 +107,7 @@ const UserAdminMembershipPage = () => {
   }, [userId, pendingMembershipsData]);
 
   const handleHomeSpaceChange = async (event: SelectChangeEvent<string>) => {
-    const newSpaceId = event.target.value || null;
+    const newSpaceId = event.target.value || undefined;
     setIsUpdating(true);
 
     try {
