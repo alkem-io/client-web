@@ -60,7 +60,7 @@ As a SubSpace administrator who wants to update only the innovation flow structu
 
 ### Edge Cases
 
-- What happens when the user selects Option 1 but the SubSpace has no existing posts? The flow should still be replaced and template posts created; no confirmation dialog needed since there's nothing to delete.
+- What happens when the user selects Option 1 but the SubSpace has no existing posts? The flow should still be replaced and template posts created; no confirmation dialog is displayed since there is nothing to delete.
 - What happens when the confirmation dialog for Option 1 times out or is dismissed by clicking outside? The action should be cancelled (same as clicking Cancel button).
 - What happens when the backend operation fails mid-process for Option 1? The system should display an error message and not leave the SubSpace in a partial state.
 - What happens when the new template has no template posts? Options 1 and 2 should still replace the flow; Option 1 deletes existing posts, Option 2 keeps them.
@@ -71,8 +71,8 @@ As a SubSpace administrator who wants to update only the innovation flow structu
 
 - **FR-001**: System MUST present three distinct options when a user attempts to change the innovation flow template in a SubSpace that already has a flow configured
 - **FR-002**: System MUST clearly describe the impact of each option in user-friendly language before the user makes a selection
-- **FR-003**: System MUST display a confirmation dialog for Option 1 that explicitly warns the user that all existing posts in the current SubSpace will be permanently deleted
-- **FR-004**: System MUST require explicit user confirmation (button click) before executing Option 1
+- **FR-003**: System MUST display a confirmation dialog for Option 1 when existing posts are present, explicitly warning the user that all existing posts in the current SubSpace will be permanently deleted
+- **FR-004**: System MUST require explicit user confirmation (button click) before executing Option 1 when existing posts are present
 - **FR-005**: System MUST allow the user to cancel out of the confirmation dialog without making any changes
 - **FR-006**: System MUST execute the selected option atomically - either complete the entire operation or make no changes
 - **FR-007**: System MUST display appropriate success or error feedback after the operation completes

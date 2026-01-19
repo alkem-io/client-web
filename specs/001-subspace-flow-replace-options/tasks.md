@@ -186,7 +186,7 @@ Task: "Add translation keys for confirmation dialog in src/core/i18n/en/translat
 
 ### Full Feature Delivery
 
-All 35 tasks complete:
+Target: All 35 tasks complete — current: 29 complete, T001-T004 and T034-T035 incomplete
 
 - 3 options fully functional
 - Confirmation dialog for destructive action
