@@ -24,6 +24,17 @@ subscription ConversationEvents {
                   }
                 }
               }
+              ... on VirtualContributor {
+                id
+                profile {
+                  id
+                  displayName
+                  avatar: visual(type: AVATAR) {
+                    id
+                    uri
+                  }
+                }
+              }
             }
           }
         }
@@ -56,6 +67,17 @@ subscription ConversationEvents {
               }
             }
           }
+          ... on VirtualContributor {
+            id
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                id
+                uri
+              }
+            }
+          }
         }
       }
     }
@@ -67,6 +89,17 @@ subscription ConversationEvents {
         timestamp
         sender {
           ... on User {
+            id
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                id
+                uri
+              }
+            }
+          }
+          ... on VirtualContributor {
             id
             profile {
               id

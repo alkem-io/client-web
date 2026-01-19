@@ -1,100 +1,116 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
-import { Message } from '@/domain/communication/room/models/Message';
-import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import { useTranslation } from 'react-i18next';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
-  AskVirtualContributorQuestionMutationOptions,
-  useAskVirtualContributorQuestionMutation,
-  useConversationVcMessagesQuery,
   useConversationWithGuidanceVcQuery,
+  useMarkMessageAsReadMutation,
   useResetConversationVcMutation,
+  useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { useConversationMessages, ConversationMessage } from '@/main/userMessaging/useConversationMessages';
+
+// Message format expected by ChatWidgetInner
+interface GuidanceMessage {
+  id: string;
+  message: string;
+  createdAt: Date;
+  author?: { id: string };
+}
 
 interface Provided {
   loading?: boolean;
-  messages?: Message[];
+  messages?: GuidanceMessage[];
   clearChat: () => Promise<void>;
   sendMessage: (message: string) => Promise<unknown>;
+  markAsRead: () => void;
   isSubscribedToMessages: boolean;
   conversationId: string;
 }
 
 const useChatGuidanceCommunication = ({ skip = false }): Provided => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
-  const [resetConversationVc] = useResetConversationVcMutation();
-
+  // 1. Get guidance conversation ID
   const { data: conversationGuidanceData, loading: conversationIdLoading } = useConversationWithGuidanceVcQuery({
     skip,
   });
   const conversation = conversationGuidanceData?.me.conversations.conversationGuidanceVc;
-  const conversationId = conversation?.id;
-  const roomId = conversation?.room?.id;
+  const conversationId = conversation?.id ?? null;
 
-  const { data: messagesData, loading: messagesLoading } = useConversationVcMessagesQuery({
-    variables: {
-      conversationId: conversationId!,
-    },
-    skip: !conversationId,
-  });
+  // 2. Use shared hook for messages
+  const { messages: conversationMessages, roomId, isLoading: messagesLoading } = useConversationMessages(conversationId);
 
-  const messages: Message[] = useMemo(() => {
-    const introMessage = {
+  // 3. Transform to guidance message format and add intro message
+  const messages: GuidanceMessage[] = useMemo(() => {
+    const introMessage: GuidanceMessage = {
       id: '__intro',
-      createdAt: new Date(),
-      reactions: [],
+      createdAt: new Date(0), // Earliest possible date so it sorts first
       message: t('chatbot.intro'),
       author: undefined,
     };
-    const room = messagesData?.lookup.conversation?.room;
 
-    if (room?.messages?.length) {
-      return [
-        introMessage,
-        ...room.messages.map(message => ({
-          id: message.id,
-          threadID: message.threadID,
-          message: message.message,
-          author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
-          createdAt: new Date(message.timestamp),
-          reactions: message.reactions,
-        })),
-      ];
-    } else {
-      // No messages or just no room at all => Return just one message with the intro text
+    if (conversationMessages.length === 0) {
       return [introMessage];
     }
-  }, [messagesData?.lookup.conversation?.room?.messages, conversationId, conversationIdLoading, messagesLoading]);
 
-  const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, !roomId);
+    const transformedMessages = conversationMessages.map((msg: ConversationMessage): GuidanceMessage => ({
+      id: msg.id,
+      message: msg.message,
+      createdAt: new Date(msg.timestamp),
+      author: msg.sender ? { id: msg.sender.id } : undefined,
+    }));
 
-  const [askVcQuestion] = useAskVirtualContributorQuestionMutation();
-  const askQuestion = async (
-    question: string,
-    refetchQueries?: AskVirtualContributorQuestionMutationOptions['refetchQueries']
-  ) => {
-    if (!conversationId) {
+    return [introMessage, ...transformedMessages];
+  }, [conversationMessages, t]);
+
+  // Compute last message ID separately to avoid handleMarkAsRead recreation on every message change
+  const lastMessageId = useMemo(() => {
+    const lastMsg = conversationMessages[conversationMessages.length - 1];
+    return lastMsg?.id;
+  }, [conversationMessages]);
+
+  // 4. Subscribe to room events
+  const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId ?? undefined, !roomId);
+
+  // 5. Mark as read mutation
+  const [markMessageAsRead] = useMarkMessageAsReadMutation();
+
+  const handleMarkAsRead = useCallback(() => {
+    if (!roomId || !lastMessageId) {
       return;
     }
 
-    return askVcQuestion({
+    markMessageAsRead({
       variables: {
-        input: {
-          conversationID: conversationId,
-          question,
-          language: i18n.language.toUpperCase(),
+        messageData: {
+          roomID: roomId,
+          messageID: lastMessageId,
         },
       },
-      refetchQueries,
-      awaitRefetchQueries: true,
     });
-  };
+  }, [roomId, lastMessageId, markMessageAsRead]);
 
-  const handleSendMessage = async (message: string): Promise<void> => {
-    await askQuestion(message, ['ConversationVcMessages']);
-  };
+  // 6. Send message mutation
+  const [sendMessageToRoom] = useSendMessageToRoomMutation();
+
+  const handleSendMessage = useCallback(async (message: string): Promise<void> => {
+    if (!roomId) {
+      return;
+    }
+
+    await sendMessageToRoom({
+      variables: {
+        messageData: {
+          roomID: roomId,
+          message,
+        },
+      },
+    });
+  }, [roomId, sendMessageToRoom]);
+
+  // 7. Reset conversation mutation (guidance-specific)
+  const [resetConversationVc] = useResetConversationVcMutation();
 
   const [clearChat, loadingClearChat] = useLoadingState(async () => {
     if (!conversationId) {
@@ -107,7 +123,7 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
           conversationID: conversationId,
         },
       },
-      refetchQueries: ['ConversationVcMessages'],
+      refetchQueries: ['ConversationWithGuidanceVc', 'ConversationMessages'],
       awaitRefetchQueries: true,
     });
   });
@@ -118,7 +134,8 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
     isSubscribedToMessages,
     clearChat,
     sendMessage: handleSendMessage,
-    conversationId: conversationId!,
+    markAsRead: handleMarkAsRead,
+    conversationId: conversationId ?? '',
   };
 };
 

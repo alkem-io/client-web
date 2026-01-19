@@ -28,22 +28,33 @@ type GraphQLSender =
         avatar?: { uri: string } | null;
       } | null;
     }
-  | { __typename?: 'VirtualContributor' }
+  | {
+      __typename?: 'VirtualContributor';
+      id: string;
+      profile?: {
+        displayName?: string;
+        avatar?: { uri: string } | null;
+      } | null;
+    }
   | null
   | undefined;
 
 /**
  * Maps a GraphQL message sender to our simplified MessageSender type.
- * Only User senders are supported; others return undefined.
+ * Supports User and VirtualContributor senders.
  */
 export const mapMessageSender = (sender: GraphQLSender): MessageSender | undefined => {
-  if (!sender || sender.__typename !== 'User') {
+  if (!sender) {
     return undefined;
   }
 
-  return {
-    id: sender.id,
-    displayName: sender.profile?.displayName ?? '',
-    avatarUri: sender.profile?.avatar?.uri,
-  };
+  if (sender.__typename === 'User' || sender.__typename === 'VirtualContributor') {
+    return {
+      id: sender.id,
+      displayName: sender.profile?.displayName ?? '',
+      avatarUri: sender.profile?.avatar?.uri,
+    };
+  }
+
+  return undefined;
 };
