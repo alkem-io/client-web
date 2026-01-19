@@ -525,6 +525,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
           top: 0,
           zIndex: 10,
           backgroundColor: '#fff',
+          marginTop: 0.5,
         }}
       >
         <MultipleSelect size="small" onChange={handleTermsChange} value={termsFromUrl} minLength={2} autoFocus />

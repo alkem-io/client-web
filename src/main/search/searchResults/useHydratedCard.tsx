@@ -243,7 +243,7 @@ const hydrateWhiteboard = (data: TypedSearchResult<SearchResultType.Whiteboard, 
       url={whiteboard.profile.url}
       parentSegment={
         <CardContent>
-          <CardParentSpaceSegment parentSpaceUri={data.callout.framing.profile.url}>
+          <CardParentSpaceSegment iconComponent={WhiteboardIcon} parentSpaceUri={data.callout.framing.profile.url}>
             {data.callout.framing.profile.displayName}
           </CardParentSpaceSegment>
           <CardParentSpaceSegment iconComponent={parent.icon} parentSpaceUri={parent.url} locked={parent.locked}>
