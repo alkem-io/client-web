@@ -20,6 +20,8 @@ import {
 import { ReactElement, cloneElement, useEffect, useRef, useState } from 'react';
 import Widget from './controls/Widget';
 import { useMessages } from './controls/context/MessagesContext';
+import { useChatBehavior } from './controls/context/ChatBehaviorContext';
+import { CHAT_LOADER_TIMEOUT_MS } from './constants';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import ChatWidgetFooter from './ChatWidgetFooter';
@@ -169,7 +171,9 @@ const ChatWidgetInner = () => {
   const [openClearConfirm, setOpenClearConfirm] = useState(false);
   const [chatToggleTime, setChatToggleTime] = useState(Date.now());
 
-  const { messages, sendMessage, clearChat, conversationId, loading } = useChatGuidanceCommunication({ skip: !firstOpen });
+  const { messages, sendMessage, clearChat, conversationId, loading } = useChatGuidanceCommunication({
+    skip: !firstOpen,
+  });
   const { userModel } = useCurrentUserContext();
   const userId = userModel?.id;
 
@@ -177,8 +181,42 @@ const ChatWidgetInner = () => {
   const { dropMessages, addUserMessage, addResponseMessage, addComponentMessage, setBadgeCount, markAllMessagesRead } =
     useMessages();
 
+  // Loader and input control for message sending
+  const { setMessageLoader, setDisabledInput } = useChatBehavior();
+  const loaderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const waitingForResponseRef = useRef<boolean>(false);
+
   const handleNewUserMessage = async (newMessage: string) => {
-    await sendMessage(newMessage);
+    // Clear any existing timeout
+    if (loaderTimeoutRef.current) {
+      clearTimeout(loaderTimeoutRef.current);
+    }
+
+    // Show loader and disable input
+    setMessageLoader(true);
+    setDisabledInput(true);
+    waitingForResponseRef.current = true;
+
+    // Set fallback timeout
+    loaderTimeoutRef.current = setTimeout(() => {
+      setMessageLoader(false);
+      setDisabledInput(false);
+      waitingForResponseRef.current = false;
+      loaderTimeoutRef.current = null;
+    }, CHAT_LOADER_TIMEOUT_MS);
+
+    try {
+      await sendMessage(newMessage);
+    } catch (_error) {
+      // On error, immediately hide loader and re-enable input
+      if (loaderTimeoutRef.current) {
+        clearTimeout(loaderTimeoutRef.current);
+        loaderTimeoutRef.current = null;
+      }
+      setMessageLoader(false);
+      setDisabledInput(false);
+      waitingForResponseRef.current = false;
+    }
   };
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -211,6 +249,24 @@ const ChatWidgetInner = () => {
           addResponseMessage(message.message);
         }
       });
+
+      // Check if we received a server response while waiting
+      if (waitingForResponseRef.current) {
+        const lastMessage = messages[messages.length - 1];
+        const isFromServer = !lastMessage.author || lastMessage.author.id !== userId;
+
+        if (isFromServer) {
+          // Server responded! Hide loader and re-enable input
+          if (loaderTimeoutRef.current) {
+            clearTimeout(loaderTimeoutRef.current);
+            loaderTimeoutRef.current = null;
+          }
+          setMessageLoader(false);
+          setDisabledInput(false);
+          waitingForResponseRef.current = false;
+        }
+      }
+
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.author?.id && lastMessage.author.id !== userId) {
         addComponentMessage(Feedback, { answerId: lastMessage.id, conversationId: conversationId }, false);
@@ -229,6 +285,15 @@ const ChatWidgetInner = () => {
       addComponentMessage(Loading, undefined, false);
     }
   }, [messages, loading]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (loaderTimeoutRef.current) {
+        clearTimeout(loaderTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <>
