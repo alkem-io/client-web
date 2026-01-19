@@ -10,14 +10,3 @@ query ConversationWithGuidanceVc {
     }
   }
 }
-
-query ConversationVcMessages($conversationId: UUID!) {
-  lookup {
-    conversation(ID: $conversationId) {
-      id
-      room {
-        ...CommentsWithMessages
-      }
-    }
-  }
-}

@@ -20,6 +20,17 @@ query ConversationMessages($conversationId: UUID!) {
                 }
               }
             }
+            ... on VirtualContributor {
+              id
+              profile {
+                id
+                displayName
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+              }
+            }
           }
         }
       }

@@ -1883,6 +1883,7 @@ export type InnovationFlowSettingsFieldPolicy = {
 export type InnovationFlowStateKeySpecifier = (
   | 'authorization'
   | 'createdDate'
+  | 'defaultCalloutTemplate'
   | 'description'
   | 'displayName'
   | 'id'
@@ -1894,6 +1895,7 @@ export type InnovationFlowStateKeySpecifier = (
 export type InnovationFlowStateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2493,19 +2495,6 @@ export type MessageFieldPolicy = {
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MessageAnswerQuestionKeySpecifier = (
-  | 'error'
-  | 'id'
-  | 'question'
-  | 'success'
-  | MessageAnswerQuestionKeySpecifier
-)[];
-export type MessageAnswerQuestionFieldPolicy = {
-  error?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  question?: FieldPolicy<any> | FieldReadFunction<any>;
-  success?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
 export type MessageDetailsFieldPolicy = {
   message?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2592,7 +2581,6 @@ export type MutationKeySpecifier = (
   | 'aiServerDeleteAiPersona'
   | 'aiServerUpdateAiPersona'
   | 'applyForEntryRoleOnRoleSet'
-  | 'askVcQuestion'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
   | 'assignPlatformRoleToUser'
@@ -2663,7 +2651,6 @@ export type MutationKeySpecifier = (
   | 'eventOnApplication'
   | 'eventOnInvitation'
   | 'eventOnOrganizationVerification'
-  | 'feedbackOnVcAnswerRelevance'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'inviteForEntryRoleOnRoleSet'
@@ -2676,6 +2663,7 @@ export type MutationKeySpecifier = (
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
+  | 'removeDefaultCalloutTemplateOnInnovationFlowState'
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
   | 'removeNotificationEmailFromBlacklist'
@@ -2696,6 +2684,7 @@ export type MutationKeySpecifier = (
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
   | 'sendMessageToUsers'
+  | 'setDefaultCalloutTemplateOnInnovationFlowState'
   | 'setPlatformWellKnownVirtualContributor'
   | 'transferCallout'
   | 'transferInnovationHubToAccount'
@@ -2780,7 +2769,6 @@ export type MutationFieldPolicy = {
   aiServerDeleteAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  askVcQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2851,7 +2839,6 @@ export type MutationFieldPolicy = {
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
-  feedbackOnVcAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2864,6 +2851,7 @@ export type MutationFieldPolicy = {
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2884,6 +2872,7 @@ export type MutationFieldPolicy = {
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  setDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
   setPlatformWellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5899,10 +5888,6 @@ export type StrictTypedTypePolicies = {
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
     fields?: MessageFieldPolicy;
-  };
-  MessageAnswerQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MessageAnswerQuestionKeySpecifier | (() => undefined | MessageAnswerQuestionKeySpecifier);
-    fields?: MessageAnswerQuestionFieldPolicy;
   };
   MessageDetails?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageDetailsKeySpecifier | (() => undefined | MessageDetailsKeySpecifier);

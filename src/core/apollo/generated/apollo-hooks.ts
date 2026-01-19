@@ -24114,52 +24114,6 @@ export function refetchAuthorizationPrivilegesForUserQuery(
 ) {
   return { query: AuthorizationPrivilegesForUserDocument, variables: variables };
 }
-export const FeedbackOnVcAnswerRelevanceDocument = gql`
-  mutation feedbackOnVcAnswerRelevance($input: ConversationVcAnswerRelevanceInput!) {
-    feedbackOnVcAnswerRelevance(input: $input)
-  }
-`;
-export type FeedbackOnVcAnswerRelevanceMutationFn = Apollo.MutationFunction<
-  SchemaTypes.FeedbackOnVcAnswerRelevanceMutation,
-  SchemaTypes.FeedbackOnVcAnswerRelevanceMutationVariables
->;
-
-/**
- * __useFeedbackOnVcAnswerRelevanceMutation__
- *
- * To run a mutation, you first call `useFeedbackOnVcAnswerRelevanceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useFeedbackOnVcAnswerRelevanceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [feedbackOnVcAnswerRelevanceMutation, { data, loading, error }] = useFeedbackOnVcAnswerRelevanceMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useFeedbackOnVcAnswerRelevanceMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.FeedbackOnVcAnswerRelevanceMutation,
-    SchemaTypes.FeedbackOnVcAnswerRelevanceMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.FeedbackOnVcAnswerRelevanceMutation,
-    SchemaTypes.FeedbackOnVcAnswerRelevanceMutationVariables
-  >(FeedbackOnVcAnswerRelevanceDocument, options);
-}
-export type FeedbackOnVcAnswerRelevanceMutationHookResult = ReturnType<typeof useFeedbackOnVcAnswerRelevanceMutation>;
-export type FeedbackOnVcAnswerRelevanceMutationResult =
-  Apollo.MutationResult<SchemaTypes.FeedbackOnVcAnswerRelevanceMutation>;
-export type FeedbackOnVcAnswerRelevanceMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.FeedbackOnVcAnswerRelevanceMutation,
-  SchemaTypes.FeedbackOnVcAnswerRelevanceMutationVariables
->;
 export const ResetConversationVcDocument = gql`
   mutation resetConversationVc($input: ConversationVcResetInput!) {
     resetConversationVc(input: $input) {
@@ -24206,57 +24160,6 @@ export type ResetConversationVcMutationResult = Apollo.MutationResult<SchemaType
 export type ResetConversationVcMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ResetConversationVcMutation,
   SchemaTypes.ResetConversationVcMutationVariables
->;
-export const AskVirtualContributorQuestionDocument = gql`
-  mutation askVirtualContributorQuestion($input: ConversationVcAskQuestionInput!) {
-    askVcQuestion(input: $input) {
-      id
-      success
-    }
-  }
-`;
-export type AskVirtualContributorQuestionMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AskVirtualContributorQuestionMutation,
-  SchemaTypes.AskVirtualContributorQuestionMutationVariables
->;
-
-/**
- * __useAskVirtualContributorQuestionMutation__
- *
- * To run a mutation, you first call `useAskVirtualContributorQuestionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAskVirtualContributorQuestionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [askVirtualContributorQuestionMutation, { data, loading, error }] = useAskVirtualContributorQuestionMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAskVirtualContributorQuestionMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AskVirtualContributorQuestionMutation,
-    SchemaTypes.AskVirtualContributorQuestionMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AskVirtualContributorQuestionMutation,
-    SchemaTypes.AskVirtualContributorQuestionMutationVariables
-  >(AskVirtualContributorQuestionDocument, options);
-}
-export type AskVirtualContributorQuestionMutationHookResult = ReturnType<
-  typeof useAskVirtualContributorQuestionMutation
->;
-export type AskVirtualContributorQuestionMutationResult =
-  Apollo.MutationResult<SchemaTypes.AskVirtualContributorQuestionMutation>;
-export type AskVirtualContributorQuestionMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AskVirtualContributorQuestionMutation,
-  SchemaTypes.AskVirtualContributorQuestionMutationVariables
 >;
 export const ConversationWithGuidanceVcDocument = gql`
   query ConversationWithGuidanceVc {
@@ -24339,85 +24242,6 @@ export function refetchConversationWithGuidanceVcQuery(
   variables?: SchemaTypes.ConversationWithGuidanceVcQueryVariables
 ) {
   return { query: ConversationWithGuidanceVcDocument, variables: variables };
-}
-export const ConversationVcMessagesDocument = gql`
-  query ConversationVcMessages($conversationId: UUID!) {
-    lookup {
-      conversation(ID: $conversationId) {
-        id
-        room {
-          ...CommentsWithMessages
-        }
-      }
-    }
-  }
-  ${CommentsWithMessagesFragmentDoc}
-`;
-
-/**
- * __useConversationVcMessagesQuery__
- *
- * To run a query within a React component, call `useConversationVcMessagesQuery` and pass it any options that fit your needs.
- * When your component renders, `useConversationVcMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useConversationVcMessagesQuery({
- *   variables: {
- *      conversationId: // value for 'conversationId'
- *   },
- * });
- */
-export function useConversationVcMessagesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ConversationVcMessagesQuery,
-    SchemaTypes.ConversationVcMessagesQueryVariables
-  > &
-    ({ variables: SchemaTypes.ConversationVcMessagesQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ConversationVcMessagesQuery, SchemaTypes.ConversationVcMessagesQueryVariables>(
-    ConversationVcMessagesDocument,
-    options
-  );
-}
-export function useConversationVcMessagesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ConversationVcMessagesQuery,
-    SchemaTypes.ConversationVcMessagesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ConversationVcMessagesQuery, SchemaTypes.ConversationVcMessagesQueryVariables>(
-    ConversationVcMessagesDocument,
-    options
-  );
-}
-export function useConversationVcMessagesSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.ConversationVcMessagesQuery,
-        SchemaTypes.ConversationVcMessagesQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.ConversationVcMessagesQuery,
-    SchemaTypes.ConversationVcMessagesQueryVariables
-  >(ConversationVcMessagesDocument, options);
-}
-export type ConversationVcMessagesQueryHookResult = ReturnType<typeof useConversationVcMessagesQuery>;
-export type ConversationVcMessagesLazyQueryHookResult = ReturnType<typeof useConversationVcMessagesLazyQuery>;
-export type ConversationVcMessagesSuspenseQueryHookResult = ReturnType<typeof useConversationVcMessagesSuspenseQuery>;
-export type ConversationVcMessagesQueryResult = Apollo.QueryResult<
-  SchemaTypes.ConversationVcMessagesQuery,
-  SchemaTypes.ConversationVcMessagesQueryVariables
->;
-export function refetchConversationVcMessagesQuery(variables: SchemaTypes.ConversationVcMessagesQueryVariables) {
-  return { query: ConversationVcMessagesDocument, variables: variables };
 }
 export const NotificationsUnreadCountDocument = gql`
   subscription NotificationsUnreadCount {
@@ -27227,6 +27051,17 @@ export const ConversationEventsDocument = gql`
                     }
                   }
                 }
+                ... on VirtualContributor {
+                  id
+                  profile {
+                    id
+                    displayName
+                    avatar: visual(type: AVATAR) {
+                      id
+                      uri
+                    }
+                  }
+                }
               }
             }
           }
@@ -27259,6 +27094,17 @@ export const ConversationEventsDocument = gql`
                 }
               }
             }
+            ... on VirtualContributor {
+              id
+              profile {
+                id
+                displayName
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+              }
+            }
           }
         }
       }
@@ -27270,6 +27116,17 @@ export const ConversationEventsDocument = gql`
           timestamp
           sender {
             ... on User {
+              id
+              profile {
+                id
+                displayName
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+              }
+            }
+            ... on VirtualContributor {
               id
               profile {
                 id
@@ -27338,6 +27195,17 @@ export const ConversationMessagesDocument = gql`
             timestamp
             sender {
               ... on User {
+                id
+                profile {
+                  id
+                  displayName
+                  avatar: visual(type: AVATAR) {
+                    id
+                    uri
+                  }
+                }
+              }
+              ... on VirtualContributor {
                 id
                 profile {
                   id
@@ -27532,6 +27400,17 @@ export const UserConversationsDocument = gql`
               timestamp
               sender {
                 ... on User {
+                  id
+                  profile {
+                    id
+                    displayName
+                    avatar: visual(type: AVATAR) {
+                      id
+                      uri
+                    }
+                  }
+                }
+                ... on VirtualContributor {
                   id
                   profile {
                     id
