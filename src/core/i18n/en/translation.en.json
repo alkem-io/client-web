@@ -2549,9 +2549,10 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Change Default $t(common.template)",
                 "title": "Change Default $t(common.subspace) $t(common.template)",
-                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you’re looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
+                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
-            }
+            },
+            "reorderSubspaces": "Reorder $t(common.subspaces)"
           }
         },
         "authorization": {
