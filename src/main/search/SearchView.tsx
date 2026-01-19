@@ -37,7 +37,8 @@ import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless
 import {
   FilterConfig,
   FilterDefinition,
-  calloutAndFramingFilterConfig,
+  calloutFilterConfig,
+  framingFilterConfig,
   contributionFilterConfig,
   contributorFilterConfig,
 } from './Filter';
@@ -73,7 +74,7 @@ interface SearchViewProps {
 interface SearchViewSections {
   spaceResults?: SearchResultMetaType[];
   calloutResults?: SearchResultMetaType[];
-  // framingResults?: SearchResultMetaType[];  // framingResults merged into calloutResults
+  framingResults?: SearchResultMetaType[]; // framingResults merged into calloutResults
   contributionResults?: SearchResultMetaType[];
   contributorResults?: SearchResultMetaType[];
 }
@@ -92,11 +93,24 @@ const tagsetNames = ['skills', 'keywords'];
 
 const concatSearchResults = <T,>(a: T[] = [], b: T[] = []): T[] => [...a, ...b];
 
+const interlaceArrays = <T,>(a: T[] = [], b: T[] = [], chunkSize: number = SEARCH_RESULTS_COUNT): T[] => {
+  const result: T[] = [];
+  const maxLength = Math.max(a.length, b.length);
+
+  for (let i = 0; i < maxLength; i += chunkSize) {
+    result.push(...a.slice(i, i + chunkSize));
+    result.push(...b.slice(i, i + chunkSize));
+  }
+
+  return result;
+};
+
 const Logo = () => <AlkemioLogo />;
 
 const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: SearchViewProps) => {
   const [canSpaceLoadMore, setCanSpaceLoadMore] = useState(true);
-  const [canCalloutAndFramingLoadMore, setCanCalloutAndFramingLoadMore] = useState(true);
+  const [canCalloutLoadMore, setCanCalloutLoadMore] = useState(true);
+  const [canFramingLoadMore, setCanFramingLoadMore] = useState(true);
   const [canContributionLoadMore, setCanContributionLoadMore] = useState(true);
   const [canContributorLoadMore, setContributorCanLoadMore] = useState(true);
 
@@ -108,9 +122,8 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
     contributorCursor: undefined,
   });
   const [spaceFilter, setSpaceFilter] = useState<FilterDefinition>(spaceFilterConfig.all);
-  const [calloutAndFramingFilter, setCalloutAndFramingFilter] = useState<FilterDefinition>(
-    calloutAndFramingFilterConfig.all
-  );
+  const [calloutFilter, setCalloutFilter] = useState<FilterDefinition>(calloutFilterConfig.all);
+  const [framingFilter, setFramingFilter] = useState<FilterDefinition>(framingFilterConfig.all);
   const [contributionFilter, setContributionFilter] = useState<FilterDefinition>(contributionFilterConfig.all);
   const [contributorFilter, setContributorFilter] = useState<FilterDefinition>(contributorFilterConfig.all);
 
@@ -129,7 +142,8 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
   const handleTermsChange = useCallback(
     (newValue: string[]) => {
       setCanSpaceLoadMore(true);
-      setCanCalloutAndFramingLoadMore(true);
+      setCanCalloutLoadMore(true);
+      setCanFramingLoadMore(true);
       setCanContributionLoadMore(true);
       setContributorCanLoadMore(true);
 
@@ -192,7 +206,13 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
           {
             category: SearchCategory.CollaborationTools,
             size: SEARCH_RESULTS_COUNT,
-            types: calloutAndFramingFilterConfig.all.value,
+            types: calloutFilterConfig.all.value,
+            cursor: undefined,
+          },
+          {
+            category: SearchCategory.Framings,
+            size: SEARCH_RESULTS_COUNT,
+            types: framingFilterConfig.all.value,
             cursor: undefined,
           },
           {
@@ -214,9 +234,8 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
     skip: hasNoTermsLength || resolvingSpace,
   });
 
-  const { spaceResults, calloutResults, contributionResults, contributorResults }: SearchViewSections = toResultType(
-    hasNoTermsLength ? undefined : data
-  );
+  const { spaceResults, calloutResults, framingResults, contributionResults, contributorResults }: SearchViewSections =
+    toResultType(hasNoTermsLength ? undefined : data);
 
   const { data: spaceDetails, loading } = useSearchScopeDetailsSpaceQuery({
     variables: { spaceId: spaceId! },
@@ -238,18 +257,23 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
             ];
           }
 
-          case SearchCategory.CollaborationTools:
-          case SearchCategory.Framings: {
+          case SearchCategory.CollaborationTools: {
             return [
               {
                 category: SearchCategory.CollaborationTools,
                 size: SEARCH_RESULTS_COUNT,
+                // types: calloutFilter.value,  // Callouts do not have type filter
                 cursor: resultsCursors.calloutCursor,
               },
+            ];
+          }
+
+          case SearchCategory.Framings: {
+            return [
               {
                 category: SearchCategory.Framings,
                 size: SEARCH_RESULTS_COUNT,
-                types: calloutAndFramingFilter.value,
+                types: framingFilter.value,
                 cursor: resultsCursors.framingCursor,
               },
             ];
@@ -288,12 +312,13 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               {
                 category: SearchCategory.CollaborationTools,
                 size: SEARCH_RESULTS_COUNT,
+                // types: calloutFilter.value,  // Callouts do not have type filter
                 cursor: resultsCursors.calloutCursor,
               },
               {
                 category: SearchCategory.Framings,
                 size: SEARCH_RESULTS_COUNT,
-                types: calloutAndFramingFilter.value,
+                types: framingFilter.value,
                 cursor: resultsCursors.framingCursor,
               },
               {
@@ -330,12 +355,12 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               break;
             }
 
-            case SearchCategory.CollaborationTools:
+            case SearchCategory.CollaborationTools: {
+              setCanCalloutLoadMore(fetchMoreResult?.search?.calloutResults?.results?.length > 0);
+              break;
+            }
             case SearchCategory.Framings: {
-              setCanCalloutAndFramingLoadMore(
-                fetchMoreResult?.search?.calloutResults?.results?.length > 0 ||
-                  fetchMoreResult?.search?.framingResults?.results?.length > 0
-              );
+              setCanFramingLoadMore(fetchMoreResult?.search?.framingResults?.results?.length > 0);
               break;
             }
 
@@ -441,7 +466,8 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
       termsFromUrl,
       resultsCursors,
       spaceFilter.value,
-      calloutAndFramingFilter.value,
+      calloutFilter.value,
+      framingFilter.value,
       contributionFilter.value,
       contributorFilter.value,
       fetchMore,
@@ -451,7 +477,8 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
   useEffect(() => {
     if (hasNoTermsLength) {
       setSpaceFilter(spaceFilterConfig.all);
-      setCalloutAndFramingFilter(calloutAndFramingFilterConfig.all);
+      setCalloutFilter(calloutFilterConfig.all);
+      setFramingFilter(framingFilterConfig.all);
       setContributionFilter(contributionFilterConfig.all);
       setContributorFilter(contributorFilterConfig.all);
     }
@@ -477,13 +504,13 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
           spaceFilter.typename === 'space' ? space.type === 'SPACE' : space.type === 'SUBSPACE'
         );
 
-  const filteredCalloutAndFramingResults =
-    calloutAndFramingFilter.typename === 'all'
-      ? calloutResults
-      : calloutResults?.filter(result => {
-          switch (calloutAndFramingFilter.typename) {
-            case 'callout':
-              return result.type === 'CALLOUT';
+  const filteredCalloutResults = calloutResults; // No type filter for callouts
+
+  const filteredFramingResults =
+    framingFilter.typename === 'all'
+      ? framingResults
+      : framingResults?.filter(result => {
+          switch (framingFilter.typename) {
             case 'memo':
               return result.type === 'MEMO';
             case 'whiteboard':
@@ -492,6 +519,8 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
               return true;
           }
         });
+
+  const filteredCalloutAndFramingResults = interlaceArrays(filteredCalloutResults ?? [], filteredFramingResults ?? []);
 
   const filteredContributionResults =
     contributionFilter.typename === 'all'
@@ -587,19 +616,19 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
                 title={t('pages.search.filter.key.callout')}
                 filterTitle={t('common.type')}
                 count={(data?.search?.calloutResults?.total ?? 0) + (data?.search?.framingResults?.total ?? 0)}
-                filterConfig={calloutAndFramingFilterConfig}
+                filterConfig={framingFilterConfig}
                 results={filteredCalloutAndFramingResults}
-                currentFilter={calloutAndFramingFilter}
-                onFilterChange={setCalloutAndFramingFilter}
+                currentFilter={framingFilter}
+                onFilterChange={setFramingFilter}
                 loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
                 cardComponent={SearchResultsCalloutAndFramingCard}
-                canLoadMore={canCalloutAndFramingLoadMore}
-                onClickLoadMore={async () => {
+                canLoadMore={canCalloutLoadMore || canFramingLoadMore}
+                onClickLoadMore={async () =>
                   await Promise.all([
                     fetchNewResults(SearchCategory.CollaborationTools),
                     fetchNewResults(SearchCategory.Framings),
-                  ]);
-                }}
+                  ])
+                }
               />
             </SectionWrapper>
           )}
@@ -670,7 +699,8 @@ function toResultType(query?: SearchQuery): SearchViewSections {
 
   return {
     spaceResults,
-    calloutResults: [...calloutResults, ...framingResults],
+    calloutResults,
+    framingResults,
     contributionResults,
     contributorResults,
   };

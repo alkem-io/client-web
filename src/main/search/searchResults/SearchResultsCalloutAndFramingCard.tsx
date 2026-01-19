@@ -23,13 +23,7 @@ const SearchResultsCalloutAndFramingCard = ({ result }: SearchResultsCalloutAndF
     return null;
   }
   if (result.type === 'CALLOUT') {
-    return (
-      <CalloutCard
-        callout={result.callout}
-        to={result.callout.framing.profile.url}
-        footer={<SearchResultsCalloutCardFooter {...result} />}
-      />
-    );
+    return <CalloutCard callout={result.callout} footer={<SearchResultsCalloutCardFooter {...result} />} />;
   } else {
     return <SearchResultPostChooser result={result} />;
   }

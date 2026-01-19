@@ -32,36 +32,18 @@ export const spaceFilterConfig: FilterConfig = {
   },
 };
 
-// export const calloutFilterConfig: FilterConfig = {
-//   all: {
-//     title: 'pages.search.filter.key.all',
-//     value: [SearchResultType.Callout],
-//     typename: FILTER_OFF,
-//   },
-// };
-
-// export const framingFilterConfig: FilterConfig = {
-//   all: {
-//     title: 'pages.search.filter.key.all',
-//     value: [SearchResultType.Whiteboard, SearchResultType.Memo],
-//     typename: FILTER_OFF,
-//   },
-//   whiteboard: {
-//     title: 'pages.search.filter.key.whiteboard',
-//     value: [SearchResultType.Whiteboard],
-//     typename: 'whiteboard',
-//   },
-//   memo: {
-//     title: 'pages.search.filter.key.memo',
-//     value: [SearchResultType.Memo],
-//     typename: 'memo',
-//   },
-// };
-
-export const calloutAndFramingFilterConfig: FilterConfig = {
+export const calloutFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
-    value: [SearchResultType.Callout, SearchResultType.Whiteboard, SearchResultType.Memo],
+    value: [SearchResultType.Callout],
+    typename: FILTER_OFF,
+  },
+};
+
+export const framingFilterConfig: FilterConfig = {
+  all: {
+    title: 'pages.search.filter.key.all',
+    value: [SearchResultType.Whiteboard, SearchResultType.Memo],
     typename: FILTER_OFF,
   },
   whiteboard: {
