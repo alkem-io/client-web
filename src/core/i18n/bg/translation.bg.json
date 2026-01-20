@@ -232,6 +232,15 @@
     "signUp": {
       "signUpEmail": "Регистрация с имейл",
       "alreadyHaveAccount": "Вече имате $t(common.account)?"
+    },
+    "passkey": {
+      "sign-in": "Sign in with passkey",
+      "register": "Register passkey",
+      "not-supported": "Passkeys are not supported by your browser",
+      "script-loading": "Loading passkey support...",
+      "script-error": "Failed to load passkey functionality",
+      "unknown-error": "An error occurred with your passkey",
+      "remove-credential": "Remove passkey"
     }
   },
   "common": {
@@ -415,6 +424,7 @@
     "notification": "известие",
     "notifications": "известия",
     "credentials": "Удостоверения",
+    "security": "Security",
     "my-profile": "Моят $t(common.profile)",
     "my-memberships": "Моите $t(common.memberships)",
     "Profile": "$t(common.Profile)",
@@ -1348,6 +1358,7 @@
         "editState": "Редактирай детайли",
         "deleteState": "Изтрий",
         "addState": "Добави фаза",
+        "setDefaultTemplate": "Set Default Post Template",
         "invalidChars": "Името на фаза не може да съдържа специални символи.",
         "noRepeatedStates": "Вече съществува фаза с това име.",
         "createDialog": {
@@ -1376,6 +1387,18 @@
             "noDescription": "Това ще замени само $t(common.innovation-flow), запазвайки текущите Ви $t(common.posts) така, както са.",
             "apply": "Приложи нов $t(common.template)"
           }
+        }
+      },
+      "defaultTemplate": {
+        "currentlySelected": "Currently Selected Template:",
+        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow step.",
+        "removeConfirmation": {
+          "title": "Remove Default Template?",
+          "description": "This will remove the default template for this flow step. New posts will no longer be pre-filled with template content."
+        },
+        "errors": {
+          "selectFailed": "Failed to set the default template. Please try again.",
+          "removeFailed": "Failed to remove the default template. Please try again."
         }
       }
     },
@@ -2324,6 +2347,9 @@
           "authorization": {
             "description": "Тук можете да нагласите авторизационните $t(common.settings) за този {{entity}}."
           },
+          "security": {
+            "description": "Here you can manage your security settings, including passkeys and security keys."
+          },
           "templates": {
             "description": "Тук можете да създавате и редактирате $t(common.templates) за този {{entity}}.",
             "delete-confirmation": "Сигурни ли сте, че искате да изтриете $t(common.template) '{{template}}'?",
@@ -2424,6 +2450,11 @@
           "privacy": {
             "contributorRolesVisible": "Показване на ролите на допринасящите на всички регистрирани потребители"
           }
+        },
+        "security": {
+          "title": "Security",
+          "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
+          "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
         }
       },
       "organization": {
@@ -2510,9 +2541,10 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Променете шаблона по подразбиране",
                 "title": "Променете шаблона по подразбиране за $t(common.subspace)",
-                "description": "Персонализирайте шаблона по подразбиране за новосъздадени $t(common.subspaces).<br/><br/>По-долу можете да изберете между $t(common.templates), събрани в $t(common.space) $t(common.templateLibrary). Ако търсите да създадете нови $t(common.templates) или да изследвате допълнителни $t(common.templates), <library>кликнете тук</library>, за да получите достъп до тази библиотека."
+                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library."
               }
-            }
+            },
+            "reorderSubspaces": "Reorder $t(common.subspaces)"
           }
         },
         "authorization": {
@@ -2844,6 +2876,12 @@
             "message": "{{space}}",
             "caption": "{{tagline}}"
           }
+        },
+        "resources": {
+          "innovationHubs": "Starting pages",
+          "spaces": "$t(common.spaces)",
+          "virtualContributors": "$t(common.virtualContributors)",
+          "innovationPacks": "$t(common.innovation-packs)"
         },
         "welcome": {
           "welcomeUnauthenticated": "Добре дошли в Alkemio!",
