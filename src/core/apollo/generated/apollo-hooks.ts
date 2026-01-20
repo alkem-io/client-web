@@ -17153,6 +17153,90 @@ export type PlatformLicensingPlansQueryResult = Apollo.QueryResult<
 export function refetchPlatformLicensingPlansQuery(variables?: SchemaTypes.PlatformLicensingPlansQueryVariables) {
   return { query: PlatformLicensingPlansDocument, variables: variables };
 }
+export const HomeRedirectDataDocument = gql`
+  query HomeRedirectData {
+    me {
+      user {
+        id
+        settings {
+          homeSpace {
+            spaceID
+            autoRedirect
+          }
+        }
+      }
+      spaceMembershipsHierarchical(limit: 2) {
+        id
+        space {
+          id
+          about {
+            profile {
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useHomeRedirectDataQuery__
+ *
+ * To run a query within a React component, call `useHomeRedirectDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeRedirectDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomeRedirectDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useHomeRedirectDataQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.HomeRedirectDataQuery, SchemaTypes.HomeRedirectDataQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HomeRedirectDataQuery, SchemaTypes.HomeRedirectDataQueryVariables>(
+    HomeRedirectDataDocument,
+    options
+  );
+}
+export function useHomeRedirectDataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HomeRedirectDataQuery,
+    SchemaTypes.HomeRedirectDataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HomeRedirectDataQuery, SchemaTypes.HomeRedirectDataQueryVariables>(
+    HomeRedirectDataDocument,
+    options
+  );
+}
+export function useHomeRedirectDataSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.HomeRedirectDataQuery, SchemaTypes.HomeRedirectDataQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.HomeRedirectDataQuery, SchemaTypes.HomeRedirectDataQueryVariables>(
+    HomeRedirectDataDocument,
+    options
+  );
+}
+export type HomeRedirectDataQueryHookResult = ReturnType<typeof useHomeRedirectDataQuery>;
+export type HomeRedirectDataLazyQueryHookResult = ReturnType<typeof useHomeRedirectDataLazyQuery>;
+export type HomeRedirectDataSuspenseQueryHookResult = ReturnType<typeof useHomeRedirectDataSuspenseQuery>;
+export type HomeRedirectDataQueryResult = Apollo.QueryResult<
+  SchemaTypes.HomeRedirectDataQuery,
+  SchemaTypes.HomeRedirectDataQueryVariables
+>;
+export function refetchHomeRedirectDataQuery(variables?: SchemaTypes.HomeRedirectDataQueryVariables) {
+  return { query: HomeRedirectDataDocument, variables: variables };
+}
 export const PlatformRoleSetDocument = gql`
   query PlatformRoleSet {
     platform {

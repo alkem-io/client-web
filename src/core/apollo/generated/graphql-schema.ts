@@ -22768,6 +22768,34 @@ export type PlatformLicensingPlansQuery = {
   };
 };
 
+export type HomeRedirectDataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type HomeRedirectDataQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          settings: {
+            __typename?: 'UserSettings';
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+          };
+        }
+      | undefined;
+    spaceMembershipsHierarchical: Array<{
+      __typename?: 'CommunityMembershipResult';
+      id: string;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        about: { __typename?: 'SpaceAbout'; profile: { __typename?: 'Profile'; url: string } };
+      };
+    }>;
+  };
+};
+
 export type PlatformRoleSetQueryVariables = Exact<{ [key: string]: never }>;
 
 export type PlatformRoleSetQuery = {
