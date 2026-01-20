@@ -39,7 +39,11 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   const conversationId = conversation?.id ?? null;
 
   // 2. Use shared hook for messages
-  const { messages: conversationMessages, roomId, isLoading: messagesLoading } = useConversationMessages(conversationId);
+  const {
+    messages: conversationMessages,
+    roomId,
+    isLoading: messagesLoading,
+  } = useConversationMessages(conversationId);
 
   // 3. Transform to guidance message format and add intro message
   const messages: GuidanceMessage[] = useMemo(() => {
@@ -54,12 +58,14 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
       return [introMessage];
     }
 
-    const transformedMessages = conversationMessages.map((msg: ConversationMessage): GuidanceMessage => ({
-      id: msg.id,
-      message: msg.message,
-      createdAt: new Date(msg.timestamp),
-      author: msg.sender ? { id: msg.sender.id } : undefined,
-    }));
+    const transformedMessages = conversationMessages.map(
+      (msg: ConversationMessage): GuidanceMessage => ({
+        id: msg.id,
+        message: msg.message,
+        createdAt: new Date(msg.timestamp),
+        author: msg.sender ? { id: msg.sender.id } : undefined,
+      })
+    );
 
     return [introMessage, ...transformedMessages];
   }, [conversationMessages, t]);
@@ -94,20 +100,23 @@ const useChatGuidanceCommunication = ({ skip = false }): Provided => {
   // 6. Send message mutation
   const [sendMessageToRoom] = useSendMessageToRoomMutation();
 
-  const handleSendMessage = useCallback(async (message: string): Promise<void> => {
-    if (!roomId) {
-      return;
-    }
+  const handleSendMessage = useCallback(
+    async (message: string): Promise<void> => {
+      if (!roomId) {
+        return;
+      }
 
-    await sendMessageToRoom({
-      variables: {
-        messageData: {
-          roomID: roomId,
-          message,
+      await sendMessageToRoom({
+        variables: {
+          messageData: {
+            roomID: roomId,
+            message,
+          },
         },
-      },
-    });
-  }, [roomId, sendMessageToRoom]);
+      });
+    },
+    [roomId, sendMessageToRoom]
+  );
 
   // 7. Reset conversation mutation (guidance-specific)
   const [resetConversationVc] = useResetConversationVcMutation();

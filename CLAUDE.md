@@ -166,11 +166,13 @@ Execution typically completes in ~1.2s with 19 files / 247 tests passing.
 The project uses React 19 with the React Compiler (babel-plugin-react-compiler) for automatic optimization.
 
 **React 19 patterns to use:**
+
 - `useTransition` and `useOptimistic` for long-running mutations
 - Suspense boundaries for data fetching
 - Treat rendering as pure and concurrency-safe
 
 **React Compiler benefits:**
+
 - Automatic memoization reduces need for manual `useMemo`/`useCallback`/`React.memo`
 - Cleaner code with less boilerplate
 
