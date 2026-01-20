@@ -140,6 +140,14 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
 
       if (!roomCacheId) return;
 
+      // Check if this message is already known (catch-up/replay from Matrix)
+      // by comparing with the current lastMessage in cache
+      const currentRoomData = client.cache.readFragment<{ lastMessage?: { id: string } | null }>({
+        id: roomCacheId,
+        fragment: RoomLastMessageFragment,
+      });
+      const isAlreadyKnown = currentRoomData?.lastMessage?.id === event.message.id;
+
       // Check if currently viewing this conversation
       const isViewing = event.roomId === selectedRoomId;
 
@@ -166,10 +174,11 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
         fields: {
           // Update lastMessage with proper cache reference
           lastMessage: () => lastMessageRef,
-          // Increment messagesCount
-          messagesCount: (existing: number = 0) => existing + 1,
-          // Increment unreadCount ONLY if NOT viewing and NOT own message
-          unreadCount: (existing: number = 0) => (isViewing || isOwnMessage ? existing : existing + 1),
+          // Increment messagesCount only if truly new message
+          messagesCount: (existing: number = 0) => (isAlreadyKnown ? existing : existing + 1),
+          // Increment unreadCount only if truly new, NOT viewing, and NOT own message
+          unreadCount: (existing: number = 0) =>
+            isAlreadyKnown || isViewing || isOwnMessage ? existing : existing + 1,
           // Append to messages array (if loaded in cache)
           messages: (existingMessages, { readField }) => {
             // Handle case where messages might not be an array
