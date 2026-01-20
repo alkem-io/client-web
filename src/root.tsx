@@ -30,6 +30,7 @@ import { VersionHandling } from './main/versionHandling';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { Suspense } from 'react';
+import { ApolloUserCacheReset } from '@/core/apollo/context/ApolloUserCacheReset';
 
 const GlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./core/lazyLoading/GlobalErrorDialog'));
 const InAppNotificationsDialog = lazyWithGlobalErrorHandler(
@@ -131,6 +132,7 @@ const Root: FC = () => {
                           <ApmProvider>
                             <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
                               <UserProvider>
+                                <ApolloUserCacheReset />
                                 <PendingMembershipsDialogProvider>
                                   <InAppNotificationsProvider>
                                     <UserMessagingProvider>
