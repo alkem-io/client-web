@@ -13,7 +13,7 @@ type SearchResultsCount =
     }
   | undefined;
 
-interface FiltersDescriptionBlockProps {
+interface SearchCategoriesMenuProps {
   results:
     | {
         spaceResults: SearchResultsCount;
@@ -25,7 +25,7 @@ interface FiltersDescriptionBlockProps {
     | undefined;
 }
 
-const FiltersDescriptionBlock = ({ results }: FiltersDescriptionBlockProps) => {
+const SearchCategoriesMenu = ({ results }: SearchCategoriesMenuProps) => {
   const { t } = useTranslation();
 
   return (
@@ -42,14 +42,14 @@ const FiltersDescriptionBlock = ({ results }: FiltersDescriptionBlockProps) => {
         border: `1px solid ${theme.palette.divider}`,
       })}
     >
-      <FiltersDescriptionBlockItem href="#spaces" disabled={!(results?.spaceResults?.results?.length ?? 0)}>
+      <SearchCategoriesMenuItem href="#spaces" disabled={!(results?.spaceResults?.results?.length ?? 0)}>
         <HubOutlined />
         <Caption>
           {t('pages.search.filter.results.spacesAndSubspaces' /*, { count: results?.spaceResults?.total }*/)}
         </Caption>
-      </FiltersDescriptionBlockItem>
+      </SearchCategoriesMenuItem>
 
-      <FiltersDescriptionBlockItem
+      <SearchCategoriesMenuItem
         href="#collaboration-tools"
         disabled={!(results?.calloutResults?.results?.length ?? 0) && !(results?.framingResults?.results?.length ?? 0)}
       >
@@ -59,29 +59,26 @@ const FiltersDescriptionBlock = ({ results }: FiltersDescriptionBlockProps) => {
             'pages.search.filter.results.callout' /*, { count: results?.calloutResults?.total + results?.framingResults?.total }*/
           )}
         </Caption>
-      </FiltersDescriptionBlockItem>
+      </SearchCategoriesMenuItem>
 
-      <FiltersDescriptionBlockItem
-        href="#contributions"
-        disabled={!(results?.contributionResults?.results?.length ?? 0)}
-      >
+      <SearchCategoriesMenuItem href="#contributions" disabled={!(results?.contributionResults?.results?.length ?? 0)}>
         <LibraryBooksOutlined />
         <Caption>
           {t('pages.search.filter.results.contribution' /*, { count: results?.contributionResults?.total }*/)}
         </Caption>
-      </FiltersDescriptionBlockItem>
+      </SearchCategoriesMenuItem>
 
-      <FiltersDescriptionBlockItem href="#contributors" disabled={!(results?.contributorResults?.results?.length ?? 0)}>
+      <SearchCategoriesMenuItem href="#contributors" disabled={!(results?.contributorResults?.results?.length ?? 0)}>
         <GroupOutlined />
         <Caption>
           {t('pages.search.filter.results.contributor' /*, { count: results?.contributorResults?.total }*/)}
         </Caption>
-      </FiltersDescriptionBlockItem>
+      </SearchCategoriesMenuItem>
     </Gutters>
   );
 };
 
-const FiltersDescriptionBlockItem = ({
+const SearchCategoriesMenuItem = ({
   children,
   href,
   disabled,
@@ -90,9 +87,16 @@ const FiltersDescriptionBlockItem = ({
   if (disabled) {
     return (
       <Tooltip title={t('pages.search.filter.results.noResults')} arrow>
-        <Caption color="textDisabled">
-          <Gutters sx={{ flexDirection: 'row', padding: gutters(0.5) }}>{children}</Gutters>
-        </Caption>
+        <Gutters
+          sx={{
+            flexDirection: 'row',
+            padding: gutters(0.5),
+            userSelect: 'none',
+            color: theme => theme.palette.text.disabled,
+          }}
+        >
+          {children}
+        </Gutters>
       </Tooltip>
     );
   }
@@ -103,4 +107,4 @@ const FiltersDescriptionBlockItem = ({
   );
 };
 
-export default FiltersDescriptionBlock;
+export default SearchCategoriesMenu;

@@ -127,31 +127,12 @@ interface ContributionParentInformation {
   icon: ComponentType<SvgIconProps>;
 }
 
-const getContributionParentInformation = (
-  data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
-): ContributionParentInformation => {
-  return {
-    displayName: data.space.about.profile.displayName,
-    locked: !data.space?.about.isContentPublic,
-    url: data.space.about.profile.url,
-    icon: spaceLevelIcon[data.space.level] ?? SpaceL0Icon,
-  };
-};
+type ContributionSearchResult =
+  | TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
+  | TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>
+  | TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>;
 
-const getMemoParentInformation = (
-  data: TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>
-): ContributionParentInformation => {
-  return {
-    displayName: data.space.about.profile.displayName,
-    locked: !data.space?.about.isContentPublic,
-    url: data.space.about.profile.url,
-    icon: spaceLevelIcon[data.space.level] ?? SpaceL0Icon,
-  };
-};
-
-const getWhiteboardParentInformation = (
-  data: TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>
-): ContributionParentInformation => {
+const getContributionParentInformation = (data: ContributionSearchResult): ContributionParentInformation => {
   return {
     displayName: data.space.about.profile.displayName,
     locked: !data.space?.about.isContentPublic,
@@ -199,7 +180,7 @@ const hydrateMemo = (data: TypedSearchResult<SearchResultType.Memo, SearchResult
   }
 
   const memo = data.memo;
-  const parent = getMemoParentInformation(data);
+  const parent = getContributionParentInformation(data);
 
   return (
     <SearchContributionMemoCard
@@ -230,7 +211,7 @@ const hydrateWhiteboard = (data: TypedSearchResult<SearchResultType.Whiteboard, 
   }
 
   const whiteboard = data.whiteboard;
-  const parent = getWhiteboardParentInformation(data);
+  const parent = getContributionParentInformation(data);
 
   return (
     <SearchContributionWhiteboardCard

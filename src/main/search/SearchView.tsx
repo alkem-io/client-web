@@ -51,7 +51,7 @@ import { useSearchTerms } from './useSearchTerms';
 import { buildLoginUrl } from '../routing/urlBuilders';
 import AlkemioLogo from '../ui/logo/logoSmall.svg?react';
 import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from './constants';
-import FiltersDescriptionBlock from './ui/FilterDescriptionsBlock';
+import SearchCategoriesMenu from './ui/SearchCategoriesMenu';
 
 export type TypedSearchResult<Type extends SearchResultType, ResultFragment extends {}> = SearchResult &
   ResultFragment & { type: Type };
@@ -588,7 +588,7 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
       )}
 
       <Gutters disablePadding sx={{ width: '100%', flexDirection: 'row' }}>
-        <FiltersDescriptionBlock results={data?.search} />
+        <SearchCategoriesMenu results={data?.search} />
 
         <Gutters disablePadding sx={{ width: '100%', flexDirection: 'column' }}>
           {(data?.search?.spaceResults.results?.length ?? 0) > 0 && (
