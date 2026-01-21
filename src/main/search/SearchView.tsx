@@ -624,8 +624,8 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
                 loading={isSearching || isSearchingForMore} // TODO: Add logic to check if the search is in the given section because now all buttons animate loading!
                 cardComponent={SearchResultsCalloutAndFramingCard}
                 canLoadMore={canCalloutLoadMore || canFramingLoadMore}
-                onClickLoadMore={async () =>
-                  await Promise.all([
+                onClickLoadMore={() =>
+                  Promise.all([
                     fetchNewResults(SearchCategory.CollaborationTools),
                     fetchNewResults(SearchCategory.Framings),
                   ])

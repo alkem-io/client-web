@@ -88,11 +88,15 @@ const SearchCategoriesMenuItem = ({
     return (
       <Tooltip title={t('pages.search.filter.results.noResults')} arrow>
         <Gutters
+          tabIndex={0}
+          role="link"
+          aria-disabled="true"
           sx={{
             flexDirection: 'row',
             padding: gutters(0.5),
             userSelect: 'none',
             color: theme => theme.palette.text.disabled,
+            cursor: 'default',
           }}
         >
           {children}
