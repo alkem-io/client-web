@@ -4480,7 +4480,7 @@ export type Mutation = {
   updateCalloutsSortOrder: Array<Callout>;
   /** Updates a Tagset on a Classification. */
   updateClassificationTagset: Tagset;
-  /** Updates a Collaboration, including InnovationFlow states, using the Space content from the specified Template. */
+  /** Updates a Collaboration using the Space content from the specified Template. Behavior depends on parameter combinations: (1) Flow Only: deleteExistingCallouts=false, addCallouts=false - updates only InnovationFlow states; (2) Add Posts: deleteExistingCallouts=false, addCallouts=true - keeps existing and adds template callouts; (3) Replace All: deleteExistingCallouts=true, addCallouts=true - deletes existing then adds template callouts; (4) Delete Only: deleteExistingCallouts=true, addCallouts=false - deletes existing callouts. Execution order: delete (if requested) → update flow states → add (if requested). */
   updateCollaborationFromSpaceTemplate: Collaboration;
   /** Updates the CommunityGuidelines. */
   updateCommunityGuidelines: CommunityGuidelines;
@@ -7828,6 +7828,8 @@ export type UpdateCollaborationFromSpaceTemplateInput = {
   addCallouts?: InputMaybe<Scalars['Boolean']['input']>;
   /** ID of the Collaboration to be updated */
   collaborationID: Scalars['UUID']['input'];
+  /** Delete existing Callouts before applying template. When combined with addCallouts=true, enables Replace All behavior. */
+  deleteExistingCallouts?: InputMaybe<Scalars['Boolean']['input']>;
   /** The Space Template whose Collaboration that will be used for updates to the target Collaboration */
   spaceTemplateID: Scalars['UUID']['input'];
 };
@@ -10951,6 +10953,7 @@ export type UpdateCollaborationFromSpaceTemplateMutationVariables = Exact<{
   collaborationId: Scalars['UUID']['input'];
   spaceTemplateId: Scalars['UUID']['input'];
   addCallouts?: InputMaybe<Scalars['Boolean']['input']>;
+  deleteExistingCallouts?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type UpdateCollaborationFromSpaceTemplateMutation = {

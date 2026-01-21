@@ -6788,9 +6788,15 @@ export const UpdateCollaborationFromSpaceTemplateDocument = gql`
     $collaborationId: UUID!
     $spaceTemplateId: UUID!
     $addCallouts: Boolean
+    $deleteExistingCallouts: Boolean
   ) {
     updateCollaborationFromSpaceTemplate(
-      updateData: { collaborationID: $collaborationId, spaceTemplateID: $spaceTemplateId, addCallouts: $addCallouts }
+      updateData: {
+        collaborationID: $collaborationId
+        spaceTemplateID: $spaceTemplateId
+        addCallouts: $addCallouts
+        deleteExistingCallouts: $deleteExistingCallouts
+      }
     ) {
       id
       innovationFlow {
@@ -6828,6 +6834,7 @@ export type UpdateCollaborationFromSpaceTemplateMutationFn = Apollo.MutationFunc
  *      collaborationId: // value for 'collaborationId'
  *      spaceTemplateId: // value for 'spaceTemplateId'
  *      addCallouts: // value for 'addCallouts'
+ *      deleteExistingCallouts: // value for 'deleteExistingCallouts'
  *   },
  * });
  */
