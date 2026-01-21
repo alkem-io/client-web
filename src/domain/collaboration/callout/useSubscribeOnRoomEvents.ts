@@ -57,20 +57,22 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
 
         switch (type) {
           case MutationType.Create: {
+            // Write the message to cache (or update if exists)
+            const newMessageRef = client.cache.writeFragment({
+              data,
+              fragment: MessageDetailsFragmentDoc,
+              fragmentName: 'MessageDetails',
+            });
+
             client.cache.modify({
               id: roomRefId,
               fields: {
                 messages(existingMessages = []) {
-                  if (messageRefId && existingMessages.some(m => m.__ref === messageRefId)) {
-                    return existingMessages; // Message already in the list
-                  } else {
-                    const newMessage = client.cache.writeFragment({
-                      data,
-                      fragment: MessageDetailsFragmentDoc,
-                      fragmentName: 'MessageDetails',
-                    });
-                    return [...existingMessages, newMessage];
+                  // Check if already in the Room's messages array
+                  if (existingMessages.some(m => m.__ref === messageRefId)) {
+                    return existingMessages;
                   }
+                  return [...existingMessages, newMessageRef];
                 },
                 vcInteractions(existingInteractions = []) {
                   return [

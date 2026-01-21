@@ -1403,15 +1403,15 @@
         }
       },
       "defaultTemplate": {
-        "currentlySelected": "crwdns43662:0$t(common.template)crwdne43662:0",
+        "currentlySelected": "crwdns43536:0crwdne43536:0",
         "noTemplate": "crwdns43538:0crwdne43538:0",
         "removeConfirmation": {
-          "title": "crwdns43664:0$t(common.template)crwdne43664:0",
-          "description": "crwdns43666:0$t(common.template)crwdnd43666:0$t(common.template)crwdne43666:0"
+          "title": "crwdns43540:0crwdne43540:0",
+          "description": "crwdns43542:0crwdne43542:0"
         },
         "errors": {
-          "selectFailed": "crwdns43668:0$t(common.template)crwdne43668:0",
-          "removeFailed": "crwdns43670:0$t(common.template)crwdne43670:0"
+          "selectFailed": "crwdns43544:0crwdne43544:0",
+          "removeFailed": "crwdns43546:0crwdne43546:0"
         }
       }
     },
