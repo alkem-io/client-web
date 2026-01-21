@@ -7,14 +7,16 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import Gutters from '@/core/ui/grid/Gutters';
+import Loading from '@/core/ui/loading/Loading';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { UserConversation, UserConversationMessage } from './useUserConversations';
-import { useSendMessageToRoomMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useRef, useEffect } from 'react';
+import { UserConversation } from './useUserConversations';
+import { ConversationMessage } from './useConversationMessages';
+import { useSendMessageToRoomMutation, useMarkMessageAsReadMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
 
 interface MessageBubbleProps {
-  message: UserConversationMessage;
+  message: ConversationMessage;
   isOwnMessage: boolean;
 }
 
@@ -84,27 +86,58 @@ const MessageBubble = ({ message, isOwnMessage }: MessageBubbleProps) => {
 
 interface UserMessagingConversationViewProps {
   conversation: UserConversation | null;
+  messages: ConversationMessage[];
+  messagesLoading: boolean;
   onBack?: () => void;
   showBackButton?: boolean;
-  onMessageSent?: () => void;
 }
 
 export const UserMessagingConversationView = ({
   conversation,
+  messages,
+  messagesLoading,
   onBack,
   showBackButton = false,
-  onMessageSent,
 }: UserMessagingConversationViewProps) => {
   const { t } = useTranslation();
   const { userModel } = useCurrentUserContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [sendMessage, { loading: isSending }] = useSendMessageToRoomMutation();
+  const [markAsRead] = useMarkMessageAsReadMutation();
+
+  // Mark last message as read when conversation is opened or new messages arrive
+  const markConversationAsRead = useCallback(() => {
+    if (!conversation?.roomId || !messages.length || conversation.unreadCount === 0) {
+      return;
+    }
+
+    const lastMessage = messages[messages.length - 1];
+    markAsRead({
+      variables: {
+        messageData: {
+          roomID: conversation.roomId,
+          messageID: lastMessage.id,
+        },
+      },
+    }).catch(error => {
+      console.error('Failed to mark messages as read:', error);
+    });
+  }, [conversation?.roomId, conversation?.unreadCount, messages, markAsRead]);
+
+  // Mark as read when conversation is opened
+  useEffect(() => {
+    markConversationAsRead();
+  }, [markConversationAsRead]);
 
   // Scroll to bottom when messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [conversation?.messages.length]);
+  useLayoutEffect(() => {
+    const timeoutId = setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, [messages.length, conversation?.roomId]);
 
   const handleSendMessage = async (message: string) => {
     if (!conversation?.roomId || !message.trim()) {
@@ -120,7 +153,6 @@ export const UserMessagingConversationView = ({
           },
         },
       });
-      onMessageSent?.();
       return true; // Return true to reset the form
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -176,12 +208,16 @@ export const UserMessagingConversationView = ({
         flexDirection="column"
         sx={{ boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.15) inset' }}
       >
-        {conversation.messages.length === 0 ? (
+        {messagesLoading ? (
+          <Gutters alignItems="center" justifyContent="center" flex={1}>
+            <Loading />
+          </Gutters>
+        ) : messages.length === 0 ? (
           <Gutters alignItems="center" justifyContent="center" flex={1}>
             <Caption>{t('components.userMessaging.noMessages' as const)}</Caption>
           </Gutters>
         ) : (
-          conversation.messages.map(message => (
+          messages.map(message => (
             <MessageBubble key={message.id} message={message} isOwnMessage={message.sender?.id === userModel?.id} />
           ))
         )}

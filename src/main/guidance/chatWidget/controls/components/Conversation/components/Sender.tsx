@@ -4,11 +4,11 @@ import { ReactNode } from 'react';
 import { useChatBehavior } from '../../../context/ChatBehaviorContext';
 
 import { getCaretIndex, isFirefox, updateCaret, insertNodeAtCaret, getSelection } from '../../../utils';
-import send from '../../../assets/send_button.svg';
 
 const brRegex = /<br>/g;
 
 import { Box, IconButton } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 import { gutters } from '@/core/ui/grid/utils';
 import { ISenderRef } from '../Conversation';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +34,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
   const [enter, setEnter] = useState(false);
   const [firefox, setFirefox] = useState(false);
   const [height, setHeight] = useState(0);
+  const [hasContent, setHasContent] = useState(false);
 
   useEffect(() => {
     if (showChat && autofocus) inputRef.current?.focus();
@@ -53,6 +54,7 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
     if (el && el.innerHTML) {
       sendMessage(el.innerText);
       el.innerHTML = '';
+      setHasContent(false);
     }
   };
 
@@ -93,6 +95,13 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
       const { clientHeight } = senderEl;
       setHeight(clientHeight);
       // onChangeSize(clientHeight ? clientHeight -1 : 0)
+    }
+
+    // Check if input has content
+    const el = inputRef.current;
+    if (el) {
+      const content = el.innerText?.trim() || '';
+      setHasContent(content.length > 0);
     }
   };
 
@@ -210,23 +219,17 @@ function Sender({ sendMessage, placeholder, disabledInput, autofocus, buttonAlt,
         onClick={handlerSendMessage}
         sx={{
           paddingTop: '4px',
-          cursor: 'pointer',
+          cursor: disabledInput ? 'not-allowed' : 'pointer',
+          color: theme => (hasContent ? theme.palette.primary.main : theme.palette.muted.main),
           '&:hover': {
             backgroundColor: 'transparent',
           },
         }}
         type="submit"
         disabled={disabledInput}
+        aria-label={buttonAlt}
       >
-        <Box
-          component="img"
-          src={send}
-          alt={buttonAlt}
-          sx={{
-            height: 25,
-            width: 25,
-          }}
-        />
+        <SendIcon />
       </IconButton>
     </Box>
   );

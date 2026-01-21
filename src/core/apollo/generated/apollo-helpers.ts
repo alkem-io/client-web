@@ -422,6 +422,19 @@ export type ActivityLogEntryUpdateSentFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AdminAuthenticationIDBackfillResultKeySpecifier = (
+  | 'processed'
+  | 'retriedBatches'
+  | 'skipped'
+  | 'updated'
+  | AdminAuthenticationIDBackfillResultKeySpecifier
+)[];
+export type AdminAuthenticationIDBackfillResultFieldPolicy = {
+  processed?: FieldPolicy<any> | FieldReadFunction<any>;
+  retriedBatches?: FieldPolicy<any> | FieldReadFunction<any>;
+  skipped?: FieldPolicy<any> | FieldReadFunction<any>;
+  updated?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AgentKeySpecifier = (
   | 'authorization'
   | 'createdDate'
@@ -1088,24 +1101,75 @@ export type ConversationKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'messaging'
   | 'room'
   | 'type'
   | 'updatedDate'
   | 'user'
   | 'virtualContributor'
-  | 'wellKnownVirtualContributor'
   | ConversationKeySpecifier
 )[];
 export type ConversationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  messaging?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
-  wellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ConversationCreatedEventKeySpecifier = (
+  | 'conversation'
+  | 'message'
+  | ConversationCreatedEventKeySpecifier
+)[];
+export type ConversationCreatedEventFieldPolicy = {
+  conversation?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ConversationEventSubscriptionResultKeySpecifier = (
+  | 'conversationCreated'
+  | 'eventType'
+  | 'messageReceived'
+  | 'messageRemoved'
+  | 'readReceiptUpdated'
+  | ConversationEventSubscriptionResultKeySpecifier
+)[];
+export type ConversationEventSubscriptionResultFieldPolicy = {
+  conversationCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  eventType?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
+  readReceiptUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ConversationMessageReceivedEventKeySpecifier = (
+  | 'message'
+  | 'roomId'
+  | ConversationMessageReceivedEventKeySpecifier
+)[];
+export type ConversationMessageReceivedEventFieldPolicy = {
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+  roomId?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ConversationMessageRemovedEventKeySpecifier = (
+  | 'messageId'
+  | 'roomId'
+  | ConversationMessageRemovedEventKeySpecifier
+)[];
+export type ConversationMessageRemovedEventFieldPolicy = {
+  messageId?: FieldPolicy<any> | FieldReadFunction<any>;
+  roomId?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ConversationReadReceiptUpdatedEventKeySpecifier = (
+  | 'lastReadEventId'
+  | 'roomId'
+  | ConversationReadReceiptUpdatedEventKeySpecifier
+)[];
+export type ConversationReadReceiptUpdatedEventFieldPolicy = {
+  lastReadEventId?: FieldPolicy<any> | FieldReadFunction<any>;
+  roomId?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutContributionDataKeySpecifier = (
   | 'link'
@@ -1819,6 +1883,7 @@ export type InnovationFlowSettingsFieldPolicy = {
 export type InnovationFlowStateKeySpecifier = (
   | 'authorization'
   | 'createdDate'
+  | 'defaultCalloutTemplate'
   | 'description'
   | 'displayName'
   | 'id'
@@ -1830,6 +1895,7 @@ export type InnovationFlowStateKeySpecifier = (
 export type InnovationFlowStateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2429,19 +2495,6 @@ export type MessageFieldPolicy = {
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MessageAnswerQuestionKeySpecifier = (
-  | 'error'
-  | 'id'
-  | 'question'
-  | 'success'
-  | MessageAnswerQuestionKeySpecifier
-)[];
-export type MessageAnswerQuestionFieldPolicy = {
-  error?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  question?: FieldPolicy<any> | FieldReadFunction<any>;
-  success?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type MessageDetailsKeySpecifier = ('message' | 'parent' | 'room' | MessageDetailsKeySpecifier)[];
 export type MessageDetailsFieldPolicy = {
   message?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2453,6 +2506,13 @@ export type MessageParentFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MessagingKeySpecifier = ('authorization' | 'createdDate' | 'id' | 'updatedDate' | MessagingKeySpecifier)[];
+export type MessagingFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MetadataKeySpecifier = ('services' | MetadataKeySpecifier)[];
 export type MetadataFieldPolicy = {
@@ -2501,6 +2561,7 @@ export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
   | 'addNotificationEmailToBlacklist'
   | 'addReactionToMessageInRoom'
+  | 'adminBackfillAuthenticationIDs'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomState'
@@ -2520,7 +2581,6 @@ export type MutationKeySpecifier = (
   | 'aiServerDeleteAiPersona'
   | 'aiServerUpdateAiPersona'
   | 'applyForEntryRoleOnRoleSet'
-  | 'askVcQuestion'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
   | 'assignPlatformRoleToUser'
@@ -2542,7 +2602,7 @@ export type MutationKeySpecifier = (
   | 'convertVirtualContributorToUseKnowledgeBase'
   | 'createCalloutOnCalloutsSet'
   | 'createContributionOnCallout'
-  | 'createConversationOnConversationsSet'
+  | 'createConversation'
   | 'createDiscussion'
   | 'createEventOnCalendar'
   | 'createGroupOnCommunity'
@@ -2591,18 +2651,19 @@ export type MutationKeySpecifier = (
   | 'eventOnApplication'
   | 'eventOnInvitation'
   | 'eventOnOrganizationVerification'
-  | 'feedbackOnVcAnswerRelevance'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'inviteForEntryRoleOnRoleSet'
   | 'joinRoleSet'
   | 'licenseResetOnAccount'
+  | 'markMessageAsReadInRoom'
   | 'markNotificationsAsRead'
   | 'markNotificationsAsUnread'
   | 'moveContributionToCallout'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
+  | 'removeDefaultCalloutTemplateOnInnovationFlowState'
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
   | 'removeNotificationEmailFromBlacklist'
@@ -2623,6 +2684,7 @@ export type MutationKeySpecifier = (
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
   | 'sendMessageToUsers'
+  | 'setDefaultCalloutTemplateOnInnovationFlowState'
   | 'setPlatformWellKnownVirtualContributor'
   | 'transferCallout'
   | 'transferInnovationHubToAccount'
@@ -2687,6 +2749,7 @@ export type MutationFieldPolicy = {
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminBackfillAuthenticationIDs?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2706,7 +2769,6 @@ export type MutationFieldPolicy = {
   aiServerDeleteAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  askVcQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2728,7 +2790,7 @@ export type MutationFieldPolicy = {
   convertVirtualContributorToUseKnowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCalloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
-  createConversationOnConversationsSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  createConversation?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2777,18 +2839,19 @@ export type MutationFieldPolicy = {
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
-  feedbackOnVcAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  markMessageAsReadInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2809,6 +2872,7 @@ export type MutationFieldPolicy = {
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  setDefaultCalloutTemplateOnInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
   setPlatformWellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   transferCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3059,6 +3123,7 @@ export type PlatformKeySpecifier = (
   | 'latestReleaseDiscussion'
   | 'library'
   | 'licensingFramework'
+  | 'messaging'
   | 'metadata'
   | 'roleSet'
   | 'settings'
@@ -3078,6 +3143,7 @@ export type PlatformFieldPolicy = {
   latestReleaseDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensingFramework?: FieldPolicy<any> | FieldReadFunction<any>;
+  messaging?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3758,9 +3824,13 @@ export type RolesResultSpaceFieldPolicy = {
 export type RoomKeySpecifier = (
   | 'authorization'
   | 'createdDate'
+  | 'displayName'
   | 'id'
+  | 'lastMessage'
   | 'messages'
   | 'messagesCount'
+  | 'unreadCount'
+  | 'unreadCounts'
   | 'updatedDate'
   | 'vcInteractions'
   | RoomKeySpecifier
@@ -3768,9 +3838,13 @@ export type RoomKeySpecifier = (
 export type RoomFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastMessage?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
   messagesCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  unreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  unreadCounts?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   vcInteractions?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3806,6 +3880,16 @@ export type RoomMessageReactionEventSubscriptionResultFieldPolicy = {
   data?: FieldPolicy<any> | FieldReadFunction<any>;
   messageID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RoomThreadUnreadCountKeySpecifier = ('count' | 'threadId' | RoomThreadUnreadCountKeySpecifier)[];
+export type RoomThreadUnreadCountFieldPolicy = {
+  count?: FieldPolicy<any> | FieldReadFunction<any>;
+  threadId?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RoomUnreadCountsKeySpecifier = ('roomUnreadCount' | 'threadUnreadCounts' | RoomUnreadCountsKeySpecifier)[];
+export type RoomUnreadCountsFieldPolicy = {
+  roomUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  threadUnreadCounts?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SearchResultKeySpecifier = ('id' | 'score' | 'terms' | 'type' | SearchResultKeySpecifier)[];
 export type SearchResultFieldPolicy = {
@@ -4155,6 +4239,7 @@ export type StorageConfigFieldPolicy = {
 export type SubscriptionKeySpecifier = (
   | 'activityCreated'
   | 'calloutPostCreated'
+  | 'conversationEvents'
   | 'forumDiscussionUpdated'
   | 'inAppNotificationReceived'
   | 'notificationsUnreadCount'
@@ -4166,6 +4251,7 @@ export type SubscriptionKeySpecifier = (
 export type SubscriptionFieldPolicy = {
   activityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversationEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   forumDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   inAppNotificationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4532,7 +4618,6 @@ export type UrlResolverQueryResultsFieldPolicy = {
 };
 export type UserKeySpecifier = (
   | 'account'
-  | 'accountUpn'
   | 'agent'
   | 'authentication'
   | 'authorization'
@@ -4552,7 +4637,6 @@ export type UserKeySpecifier = (
 )[];
 export type UserFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
-  accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authentication?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4752,21 +4836,9 @@ export type UsersInRolesResponseFieldPolicy = {
   role?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type VcInteractionKeySpecifier = (
-  | 'createdDate'
-  | 'id'
-  | 'room'
-  | 'threadID'
-  | 'updatedDate'
-  | 'virtualContributorID'
-  | VcInteractionKeySpecifier
-)[];
+export type VcInteractionKeySpecifier = ('threadID' | 'virtualContributorID' | VcInteractionKeySpecifier)[];
 export type VcInteractionFieldPolicy = {
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  room?: FieldPolicy<any> | FieldReadFunction<any>;
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VirtualContributorKeySpecifier = (
@@ -4795,6 +4867,7 @@ export type VirtualContributorKeySpecifier = (
   | 'settings'
   | 'status'
   | 'updatedDate'
+  | 'wellKnownVirtualContributor'
   | VirtualContributorKeySpecifier
 )[];
 export type VirtualContributorFieldPolicy = {
@@ -4823,6 +4896,7 @@ export type VirtualContributorFieldPolicy = {
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  wellKnownVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VirtualContributorModelCardKeySpecifier = (
   | 'aiEngine'
@@ -5102,6 +5176,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | ActivityLogEntryUpdateSentKeySpecifier);
     fields?: ActivityLogEntryUpdateSentFieldPolicy;
   };
+  AdminAuthenticationIDBackfillResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AdminAuthenticationIDBackfillResultKeySpecifier
+      | (() => undefined | AdminAuthenticationIDBackfillResultKeySpecifier);
+    fields?: AdminAuthenticationIDBackfillResultFieldPolicy;
+  };
   Agent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AgentKeySpecifier | (() => undefined | AgentKeySpecifier);
     fields?: AgentFieldPolicy;
@@ -5306,6 +5387,38 @@ export type StrictTypedTypePolicies = {
   Conversation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ConversationKeySpecifier | (() => undefined | ConversationKeySpecifier);
     fields?: ConversationFieldPolicy;
+  };
+  ConversationCreatedEvent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ConversationCreatedEventKeySpecifier | (() => undefined | ConversationCreatedEventKeySpecifier);
+    fields?: ConversationCreatedEventFieldPolicy;
+  };
+  ConversationEventSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ConversationEventSubscriptionResultKeySpecifier
+      | (() => undefined | ConversationEventSubscriptionResultKeySpecifier);
+    fields?: ConversationEventSubscriptionResultFieldPolicy;
+  };
+  ConversationMessageReceivedEvent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ConversationMessageReceivedEventKeySpecifier
+      | (() => undefined | ConversationMessageReceivedEventKeySpecifier);
+    fields?: ConversationMessageReceivedEventFieldPolicy;
+  };
+  ConversationMessageRemovedEvent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ConversationMessageRemovedEventKeySpecifier
+      | (() => undefined | ConversationMessageRemovedEventKeySpecifier);
+    fields?: ConversationMessageRemovedEventFieldPolicy;
+  };
+  ConversationReadReceiptUpdatedEvent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ConversationReadReceiptUpdatedEventKeySpecifier
+      | (() => undefined | ConversationReadReceiptUpdatedEventKeySpecifier);
+    fields?: ConversationReadReceiptUpdatedEventFieldPolicy;
   };
   CreateCalloutContributionData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -5776,10 +5889,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
     fields?: MessageFieldPolicy;
   };
-  MessageAnswerQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MessageAnswerQuestionKeySpecifier | (() => undefined | MessageAnswerQuestionKeySpecifier);
-    fields?: MessageAnswerQuestionFieldPolicy;
-  };
   MessageDetails?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageDetailsKeySpecifier | (() => undefined | MessageDetailsKeySpecifier);
     fields?: MessageDetailsFieldPolicy;
@@ -5787,6 +5896,10 @@ export type StrictTypedTypePolicies = {
   MessageParent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageParentKeySpecifier | (() => undefined | MessageParentKeySpecifier);
     fields?: MessageParentFieldPolicy;
+  };
+  Messaging?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MessagingKeySpecifier | (() => undefined | MessagingKeySpecifier);
+    fields?: MessagingFieldPolicy;
   };
   Metadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MetadataKeySpecifier | (() => undefined | MetadataKeySpecifier);
@@ -6120,6 +6233,14 @@ export type StrictTypedTypePolicies = {
       | RoomMessageReactionEventSubscriptionResultKeySpecifier
       | (() => undefined | RoomMessageReactionEventSubscriptionResultKeySpecifier);
     fields?: RoomMessageReactionEventSubscriptionResultFieldPolicy;
+  };
+  RoomThreadUnreadCount?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RoomThreadUnreadCountKeySpecifier | (() => undefined | RoomThreadUnreadCountKeySpecifier);
+    fields?: RoomThreadUnreadCountFieldPolicy;
+  };
+  RoomUnreadCounts?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RoomUnreadCountsKeySpecifier | (() => undefined | RoomUnreadCountsKeySpecifier);
+    fields?: RoomUnreadCountsFieldPolicy;
   };
   SearchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultKeySpecifier | (() => undefined | SearchResultKeySpecifier);

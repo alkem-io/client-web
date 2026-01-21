@@ -6,6 +6,7 @@ import UserAdminMembershipPage from '../tabs/UserAdminMembershipPage';
 import UserAdminNotificationsPage from '../tabs/UserAdminNotificationsPage';
 import UserAdminOrganizationsPage from '../tabs/UserAdminOrganizationsPage';
 import UserAdminSettingsPage from '../tabs/UserAdminSettingsPage';
+import UserSecuritySettingsPage from '../tabs/UserSecuritySettingsPage';
 
 export const UserAdminRoute = () => {
   return (
@@ -18,6 +19,7 @@ export const UserAdminRoute = () => {
         <Route path={'organizations'} element={<UserAdminOrganizationsPage />} />
         <Route path={'notifications'} element={<UserAdminNotificationsPage />} />
         <Route path={'settings'} element={<UserAdminSettingsPage />} />
+        <Route path={'security'} element={<UserSecuritySettingsPage />} />
         {/*{isFeatureEnabled(PlatformFeatureFlagName.Ssi) && (*/}
         {/*  <Route path={'credentials'} element={<UserAdminCredentialsPage />} />*/}
         {/*)}*/}

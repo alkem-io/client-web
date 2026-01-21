@@ -31,9 +31,10 @@ export type CommentsWithMessagesModel = {
     reactions: {
       id: string;
       emoji: string;
+      timestamp: number;
       sender?: { id: string; profile: { displayName: string } };
     }[];
     sender?: ContributorModel;
   }[];
-  vcInteractions: { id: string; threadID: string; virtualContributorID: string }[];
+  vcInteractions: { threadID: string; virtualContributorID: string }[];
 };
