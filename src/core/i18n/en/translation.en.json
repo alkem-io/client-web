@@ -1351,6 +1351,7 @@
     },
     "innovationFlowSettings": {
       "title": "Manage Flow",
+      "importing": "Importing in progress...",
       "buttonTooltip": "Manage Flow",
       "editProfileDialog": {
         "title": "Edit Details: Flow"
