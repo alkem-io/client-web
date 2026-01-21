@@ -26,10 +26,21 @@ import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
+import { OnIncomingFloatingEmojiCallback } from './collab/Collab';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
+
+/**
+ * Extended ExcalidrawProps to include the new floating emoji broadcast callback.
+ * This prop is added in the @alkemio/excalidraw package update for emoji reactions.
+ * @see https://github.com/alkem-io/excalidraw-fork/pull/22
+ */
+interface ExtendedExcalidrawProps extends ExcalidrawProps {
+  /** Request host app to broadcast a floating emoji at a scene point (if collab is enabled) */
+  onRequestBroadcastFloatingEmoji?: (emoji: string, x: number, y: number) => void;
+}
 
 const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
@@ -38,7 +49,7 @@ const Excalidraw = lazyWithGlobalErrorHandler(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
   await import('@alkemio/excalidraw/index.css');
   await import('./styles/excalidraw-overrides.css');
-  return { default: Excalidraw };
+  return { default: Excalidraw as React.ComponentType<ExtendedExcalidrawProps> };
 });
 
 const LoadingScene = ({ enabled }: { enabled: boolean }) => {
@@ -69,6 +80,8 @@ export interface WhiteboardWhiteboardActions {
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
   onSceneInitChange?: (initialized: boolean) => void;
   onRemoteSave?: (error?: string) => void;
+  /** Callback when a floating emoji is received from another collaborator */
+  onIncomingFloatingEmoji?: OnIncomingFloatingEmojiCallback;
 }
 
 export interface WhiteboardWhiteboardEvents {}
@@ -184,14 +197,22 @@ const CollaborativeExcalidrawWrapper = ({
       });
     },
     onInitialize: collabApi => {
-      // eslint-disable-next-line react-compiler/react-compiler -- Refs are meant to be mutated
       combinedCollabApiRef.current = collabApi;
     },
     onSceneInitChange: (initialized: boolean) => {
       setSceneInitialized(initialized);
       actions.onSceneInitChange?.(initialized);
     },
+    onIncomingFloatingEmoji: actions.onIncomingFloatingEmoji,
   });
+
+  // Handler for broadcasting floating emojis to collaborators
+  const handleRequestBroadcastFloatingEmoji = useCallback(
+    (emoji: string, x: number, y: number) => {
+      return collabApi?.broadcastFloatingEmoji?.(emoji, x, y);
+    },
+    [collabApi]
+  );
 
   const onChange = async (elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
     const uploadedFiles = await filesManager.getUploadedFiles(files);
@@ -345,6 +366,7 @@ const CollaborativeExcalidrawWrapper = ({
             viewModeEnabled={isReadOnly}
             onChange={onChange}
             onPointerUpdate={collabApi?.onPointerUpdate}
+            onRequestBroadcastFloatingEmoji={handleRequestBroadcastFloatingEmoji}
             detectScroll={false}
             autoFocus
             generateIdForFile={filesManager.addNewFile}
