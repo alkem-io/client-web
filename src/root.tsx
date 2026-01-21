@@ -76,7 +76,6 @@ const globalStyles = (theme: Theme) => ({
     whiteSpace: 'pre-wrap',
   },
   '.tiptap p, .markdown p, .tiptap table, .markdown table': {
-    paddingTop: '10px',
     margin: 0,
     fontFamily: fontFamilySourceSans,
     fontSize: 12,
