@@ -46,3 +46,6 @@ public/*config.js
 
 # Performance benchmark results
 /performance-results
+
+# Claude Code
+.claude/settings.local.json

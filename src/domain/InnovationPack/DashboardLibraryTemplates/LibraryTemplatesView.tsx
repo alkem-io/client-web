@@ -134,7 +134,7 @@ const LibraryTemplatesView = ({
         )}
       </ScrollableCardsLayoutContainer>
 
-      {!isSmallScreen && hasMore && <SeeMore subject={t('common.templates')} onClick={onDialogOpen} />}
+      {!isSmallScreen && hasMore && <SeeMore subject={t('common.Templates')} onClick={onDialogOpen} />}
     </PageContentBlock>
   );
 };

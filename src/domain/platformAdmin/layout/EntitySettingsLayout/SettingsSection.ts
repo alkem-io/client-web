@@ -14,7 +14,6 @@ export enum SettingsSection {
   Notifications = 'notifications',
   Credentials = 'credentials',
   Security = 'security',
-  InnovationFlow = 'innovation-flow',
   Account = 'account',
   Settings = 'settings',
   Layout = 'layout',

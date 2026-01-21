@@ -11040,6 +11040,7 @@ export type UpdateCollaborationFromSpaceTemplateMutationVariables = Exact<{
   collaborationId: Scalars['UUID']['input'];
   spaceTemplateId: Scalars['UUID']['input'];
   addCallouts?: InputMaybe<Scalars['Boolean']['input']>;
+  deleteExistingCallouts?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type UpdateCollaborationFromSpaceTemplateMutation = {

@@ -1,20 +1,19 @@
-import { DialogContent, ListItemIcon, MenuItem } from '@mui/material';
+import { Box, CircularProgress, DialogContent, ListItemIcon, MenuItem } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
-import useInnovationFlowSettings from './useInnovationFlowSettings';
+import useInnovationFlowSettings, { ImportFlowOptions } from './useInnovationFlowSettings';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import TemplateActionButton from '@/domain/templates/components/Buttons/TemplateActionButton';
 import ApplySpaceTemplateDialog from '@/domain/templates/components/Dialogs/ApplySpaceTemplateDialog';
 import { useScreenSize } from '@/core/ui/grid/constants';
+import { Caption } from '@/core/ui/typography';
 
 export type InnovationFlowSettingsDialogProps = {
   open?: boolean;
@@ -36,17 +35,24 @@ const InnovationFlowSettingsDialog = ({
   });
   const { innovationFlow, callouts } = data;
 
-  const [importInnovationFlowConfirmDialogOpen, setImportInnovationFlowConfirmDialogOpen] = useState(false);
   const [importInnovationFlowDialogOpen, setImportInnovationFlowDialogOpen] = useState(false);
   const [selectedTemplateToImport, setSelectedTemplateToImport] = useState<Identifiable>();
+  const [isImporting, setIsImporting] = useState(false);
 
   const handleImportInnovationFlowFromSpaceTemplate = async (
     { id: templateId }: Identifiable,
-    importCallouts: boolean
+    options?: ImportFlowOptions
   ) => {
-    await actions.importInnovationFlowFromSpaceTemplate(templateId, importCallouts);
+    // Close dialogs immediately and show loading state
     setSelectedTemplateToImport(undefined);
     setImportInnovationFlowDialogOpen(false);
+    setIsImporting(true);
+
+    try {
+      await actions.importInnovationFlowFromSpaceTemplate(templateId, options);
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   return (
@@ -69,7 +75,7 @@ const InnovationFlowSettingsDialog = ({
                 return (
                   <MenuItem
                     onClick={() => {
-                      setImportInnovationFlowConfirmDialogOpen(true);
+                      setImportInnovationFlowDialogOpen(true);
                       closeMenu();
                     }}
                   >
@@ -82,7 +88,14 @@ const InnovationFlowSettingsDialog = ({
               }}
             </PageContentBlockContextualMenu>
           }
-        />
+        >
+          {isImporting && (
+            <Box display="flex" alignItems="center" gap={1} marginLeft={2}>
+              <CircularProgress size={16} />
+              <Caption>{t('components.innovationFlowSettings.importing')}</Caption>
+            </Box>
+          )}
+        </DialogHeader>
         <DialogContent>
           <InnovationFlowCollaborationToolsBlock
             callouts={callouts}
@@ -98,31 +111,11 @@ const InnovationFlowSettingsDialog = ({
           />
         </DialogContent>
       </DialogWithGrid>
-      <ConfirmationDialog
-        actions={{
-          onConfirm: () => {
-            setImportInnovationFlowDialogOpen(true);
-            setImportInnovationFlowConfirmDialogOpen(false);
-          },
-          onCancel: () => setImportInnovationFlowConfirmDialogOpen(false),
-        }}
-        options={{
-          show: importInnovationFlowConfirmDialogOpen,
-        }}
-        entities={{
-          titleId: 'components.innovationFlowSettings.stateEditor.selectDifferentFlow.confirmationDialog.title',
-          content: (
-            <WrapperMarkdown>
-              {t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.confirmationDialog.description')}
-            </WrapperMarkdown>
-          ),
-          confirmButtonTextId: 'buttons.continue',
-        }}
-      />
       <ApplySpaceTemplateDialog
         open={Boolean(selectedTemplateToImport)}
-        onConfirm={addCallouts => handleImportInnovationFlowFromSpaceTemplate(selectedTemplateToImport!, addCallouts)}
+        onConfirm={options => handleImportInnovationFlowFromSpaceTemplate(selectedTemplateToImport!, options)}
         onClose={() => setSelectedTemplateToImport(undefined)}
+        existingCalloutsCount={callouts.length}
       />
       <ImportTemplatesDialog
         open={importInnovationFlowDialogOpen}
