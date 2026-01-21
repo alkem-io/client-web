@@ -11,6 +11,7 @@ import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/ma
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 
 interface CreateContributionButtonWhiteboardProps extends CalloutContributionCreateButtonProps {}
 
@@ -55,11 +56,17 @@ const CreateContributionButtonWhiteboard = ({
         },
       });
     }
+    setDialogOpen(false);
   });
 
   return (
     <>
-      {canCreateContribution ? <CreateContributionButton onClick={() => setDialogOpen(true)} /> : undefined}
+      {canCreateContribution ? (
+        <CreateContributionButton
+          onClick={() => setDialogOpen(true)}
+          contributionType={CalloutContributionType.Whiteboard}
+        />
+      ) : undefined}
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
         <DialogHeader
           onClose={() => setDialogOpen(false)}

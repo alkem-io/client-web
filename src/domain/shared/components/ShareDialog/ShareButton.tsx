@@ -53,7 +53,7 @@ const ShareButton: FC<ShareButtonProps> = ({
             aria-haspopup="true"
             onClick={() => setDialogOpen(true)}
             disabled={disabled}
-            sx={{ color: theme => theme.palette.primary.main, ...sx }}
+            sx={{ color: theme => theme.palette.text.primary, ...sx }}
           >
             <ShareOutlinedIcon />
           </IconButton>

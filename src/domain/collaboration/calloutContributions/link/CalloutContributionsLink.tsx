@@ -24,6 +24,7 @@ import LinkContributionsList from './LinksList';
 import { LinkContribution } from './models/LinkContribution';
 import { LinkDetails } from './models/LinkDetails';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import useCalloutCollaborationPermissions from '../useCalloutContributions/useCalloutCollaborationPermissions';
 
 const MAX_LINKS_COMPACT_VIEW = 8;
 
@@ -42,13 +43,17 @@ const CalloutContributionsLink = ({
   const {
     inViewRef,
     contributions: { items: contributions, hasMore, setFetchAll, total: totalContributions },
-    canCreateContribution,
     onCalloutContributionsUpdate: refetchCalloutAndContributions,
   } = useCalloutContributions({
     callout,
     contributionType: CalloutContributionType.Link,
     onCalloutUpdate,
     pageSize: MAX_LINKS_COMPACT_VIEW,
+  });
+
+  const { canCreateContribution } = useCalloutCollaborationPermissions({
+    callout,
+    contributionType: CalloutContributionType.Link,
   });
 
   // Always show all Links in expanded mode:

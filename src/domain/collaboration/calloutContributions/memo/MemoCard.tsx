@@ -1,18 +1,16 @@
 import { useMemo } from 'react';
 import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardHeader from '@/core/ui/card/CardHeader';
-import CardFooter from '@/core/ui/card/CardFooter';
-import CardFooterDate from '@/core/ui/card/CardFooterDate';
-import { MemoIcon } from '@/domain/collaboration/memo/icon/MemoIcon';
 import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
 import { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
-import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
 import MemoPreview from '@/domain/collaboration/memo/MemoPreview/MemoPreview';
 import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
+import { formatDate } from '@/core/utils/time/utils';
 
 interface MemoCardProps extends CalloutContributionCardComponentProps {}
 
-const MemoCard = ({ contribution, columns, callout, selected }: MemoCardProps) => {
+const MemoCard = ({ contribution, columns, callout, onClick, selected }: MemoCardProps) => {
   const memo = contribution?.memo;
 
   const linkState = useMemo(() => {
@@ -23,14 +21,21 @@ const MemoCard = ({ contribution, columns, callout, selected }: MemoCardProps) =
   }, [callout]);
 
   return (
-    <ContributeCard to={memo?.profile.url} state={linkState} columns={columns}>
-      <CardHeader title={memo?.profile.displayName} iconComponent={MemoIcon} contrast={selected}>
-        <CardHeaderCaption color={selected ? 'white' : undefined}>
-          {memo?.createdBy?.profile.displayName}
-        </CardHeaderCaption>
+    <ContributeCard to={memo?.profile.url} onClick={onClick} state={linkState} columns={columns}>
+      <CardHeader title={memo?.profile.displayName} contrast={selected} author={memo?.createdBy}>
+        {memo?.createdDate && <Caption color="textPrimary">{formatDate(memo?.createdDate)}</Caption>}
       </CardHeader>
-      <MemoPreview memo={memo} displayName={memo?.profile.displayName} sx={{ height: gutters(4) }} />
-      <CardFooter>{memo?.createdDate && <CardFooterDate date={memo?.createdDate} />}</CardFooter>
+      <MemoPreview
+        memo={memo}
+        displayName={memo?.profile.displayName}
+        seamless
+        sx={{
+          height: gutters(4),
+          margin: 0,
+          backgroundColor: theme => theme.palette.background.default,
+          borderRadius: 0,
+        }}
+      />
     </ContributeCard>
   );
 };

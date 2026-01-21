@@ -96,7 +96,7 @@ const CalloutContributionPreviewPost = ({
           borderRadius: '4px',
           borderColor: theme => theme.palette.divider,
           backgroundColor: commentsExpanded ? theme.palette.primary.main : 'transparent',
-          color: commentsExpanded ? theme.palette.primary.contrastText : theme.palette.text.primary,
+          color: theme.palette.primary.contrastText,
         }}
         onClick={toggleCommentsExpanded}
         disabled={loading || !contribution}
@@ -110,11 +110,7 @@ const CalloutContributionPreviewPost = ({
         <ForumOutlinedIcon
           fontSize="small"
           sx={{
-            color: commentsExpanded
-              ? theme.palette.primary.contrastText
-              : commentsCount > 0
-                ? theme.palette.primary.main
-                : theme.palette.primary.light,
+            color: theme.palette.primary.contrastText,
           }}
         />
       </Button>
@@ -133,11 +129,7 @@ const CalloutContributionPreviewPost = ({
   return (
     <>
       {extraActionsPortalRef.current && createPortal(extraActionsButton, extraActionsPortalRef.current)}
-      <Box
-        margin={gutters(-1)}
-        display="flex"
-        flexDirection={responsiveConfig.CommentsPosition === 'right' ? 'row' : 'column'}
-      >
+      <Box display="flex" flexDirection={responsiveConfig.CommentsPosition === 'right' ? 'row' : 'column'}>
         <PostContentWrapper sx={PostDescriptionAnimation} flex={responsiveConfig.PostCommentsRatio.post}>
           <Box ref={postContentRef}>
             <WrapperMarkdown>{contribution?.post?.profile.description ?? ''}</WrapperMarkdown>
