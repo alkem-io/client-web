@@ -41,6 +41,7 @@ import {
   framingFilterConfig,
   contributionFilterConfig,
   contributorFilterConfig,
+  FILTER_OFF,
 } from './Filter';
 import SearchResultSection from './SearchResultSection';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
@@ -93,7 +94,12 @@ const tagsetNames = ['skills', 'keywords'];
 
 const concatSearchResults = <T,>(a: T[] = [], b: T[] = []): T[] => [...a, ...b];
 
-const interlaceArrays = <T,>(a: T[] = [], b: T[] = [], chunkSize: number = SEARCH_RESULTS_COUNT): T[] => {
+const interlaceAndFilterArrays = <T extends { type: SearchResultType }>(
+  a: T[] = [],
+  b: T[] = [],
+  chunkSize: number = SEARCH_RESULTS_COUNT,
+  filter?: FilterDefinition
+): T[] => {
   const result: T[] = [];
   const maxLength = Math.max(a.length, b.length);
 
@@ -102,7 +108,11 @@ const interlaceArrays = <T,>(a: T[] = [], b: T[] = [], chunkSize: number = SEARC
     result.push(...b.slice(i, i + chunkSize));
   }
 
-  return result;
+  if (!filter || filter.typename === FILTER_OFF) {
+    return result;
+  } else {
+    return result.filter(result => filter.value.includes(result.type));
+  }
 };
 
 const Logo = () => <AlkemioLogo />;
@@ -504,23 +514,12 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
           spaceFilter.typename === 'space' ? space.type === 'SPACE' : space.type === 'SUBSPACE'
         );
 
-  const filteredCalloutResults = calloutResults; // No type filter for callouts
-
-  const filteredFramingResults =
-    framingFilter.typename === 'all'
-      ? framingResults
-      : framingResults?.filter(result => {
-          switch (framingFilter.typename) {
-            case 'memo':
-              return result.type === 'MEMO';
-            case 'whiteboard':
-              return result.type === 'WHITEBOARD';
-            default:
-              return true;
-          }
-        });
-
-  const filteredCalloutAndFramingResults = interlaceArrays(filteredCalloutResults ?? [], filteredFramingResults ?? []);
+  const filteredCalloutAndFramingResults = interlaceAndFilterArrays(
+    calloutResults,
+    framingResults,
+    SEARCH_RESULTS_COUNT,
+    framingFilter // No type filter for callouts
+  );
 
   const filteredContributionResults =
     contributionFilter.typename === 'all'
@@ -528,11 +527,11 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
       : contributionResults?.filter(contribution => {
           switch (contributionFilter.typename) {
             case 'post':
-              return contribution.type === 'POST';
+              return contribution.type === SearchResultType.Post;
             case 'memo':
-              return contribution.type === 'MEMO';
+              return contribution.type === SearchResultType.Memo;
             case 'whiteboard':
-              return contribution.type === 'WHITEBOARD';
+              return contribution.type === SearchResultType.Whiteboard;
             default:
               return true;
           }
@@ -542,7 +541,9 @@ const SearchView = ({ searchRoute, spaceFilterConfig, spaceFilterTitle }: Search
     contributorFilter.typename === 'all'
       ? contributorResults
       : contributorResults?.filter(contributor =>
-          contributorFilter.typename === 'user' ? contributor.type === 'USER' : contributor.type === 'ORGANIZATION'
+          contributorFilter.typename === 'user'
+            ? contributor.type === SearchResultType.User
+            : contributor.type === SearchResultType.Organization
         );
 
   return (
