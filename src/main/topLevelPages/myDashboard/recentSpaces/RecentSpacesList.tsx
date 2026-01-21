@@ -10,7 +10,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import GridItem from '@/core/ui/grid/GridItem';
 import HomeSpacePlaceholderCard from './HomeSpacePlaceholderCard';
 import HomeSpacePinButton from '@/domain/space/components/HomeSpacePinButton';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
 
 interface RecentSpacesListProps {
   onSeeMore?: () => void;
@@ -21,11 +21,10 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
 
   const { visibleSpaces, firstCardColumns, remainingCardColumns } = useSpaceCardLayout();
 
-  // Fetch recent spaces and user settings (includes homeSpace ID)
-  const { data } = useRecentSpacesQuery({ variables: { limit: visibleSpaces + 1 } });
+  const { homeSpaceId, membershipSettingsUrl } = useHomeSpaceSettings();
 
-  const homeSpaceId = data?.me.user?.settings?.homeSpace?.spaceID;
-  const profileUrl = data?.me.user?.profile?.url;
+  // Fetch recent spaces
+  const { data } = useRecentSpacesQuery({ variables: { limit: visibleSpaces + 1 } });
 
   // Conditionally fetch homeSpace details if ID is set
   const { data: homeSpaceData } = useHomeSpaceLookupQuery({
@@ -40,9 +39,6 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
     const spaces = data?.me.mySpaces ?? [];
     return spaces.filter(s => s.space.id !== homeSpaceId).slice(0, visibleSpaces - 1);
   }, [data?.me.mySpaces, homeSpaceId, visibleSpaces]);
-
-  // Settings URL for the placeholder card
-  const settingsUrl = profileUrl ? `${buildSettingsUrl(profileUrl)}/membership` : '';
 
   // Show component if we have data (either homeSpace, placeholder, or recent spaces)
   if (!data) {
@@ -64,11 +60,11 @@ const RecentSpacesList = ({ onSeeMore }: RecentSpacesListProps) => {
               spaceUri={homeSpace.about.profile.url ?? ''}
               isPrivate={!homeSpace.about.isContentPublic}
               compact
-              iconOverlay={<HomeSpacePinButton settingsUrl={settingsUrl} />}
+              iconOverlay={<HomeSpacePinButton settingsUrl={membershipSettingsUrl} />}
             />
           </GridItem>
         ) : (
-          <HomeSpacePlaceholderCard columns={firstCardColumns} settingsUrl={settingsUrl} />
+          <HomeSpacePlaceholderCard columns={firstCardColumns} settingsUrl={membershipSettingsUrl} />
         )}
 
         {/* Remaining recent spaces */}

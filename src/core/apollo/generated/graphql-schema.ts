@@ -4539,7 +4539,7 @@ export type Mutation = {
   updateCalloutsSortOrder: Array<Callout>;
   /** Updates a Tagset on a Classification. */
   updateClassificationTagset: Tagset;
-  /** Updates a Collaboration, including InnovationFlow states, using the Space content from the specified Template. */
+  /** Updates a Collaboration using the Space content from the specified Template. Behavior depends on parameter combinations: (1) Flow Only: deleteExistingCallouts=false, addCallouts=false - updates only InnovationFlow states; (2) Add Posts: deleteExistingCallouts=false, addCallouts=true - keeps existing and adds template callouts; (3) Replace All: deleteExistingCallouts=true, addCallouts=true - deletes existing then adds template callouts; (4) Delete Only: deleteExistingCallouts=true, addCallouts=false - deletes existing callouts and updates InnovationFlow states. Execution order: delete (if requested) → update flow states (always) → add (if requested). */
   updateCollaborationFromSpaceTemplate: Collaboration;
   /** Updates the CommunityGuidelines. */
   updateCommunityGuidelines: CommunityGuidelines;
@@ -7891,6 +7891,8 @@ export type UpdateCollaborationFromSpaceTemplateInput = {
   addCallouts?: InputMaybe<Scalars['Boolean']['input']>;
   /** ID of the Collaboration to be updated */
   collaborationID: Scalars['UUID']['input'];
+  /** Delete existing Callouts before applying template. When combined with addCallouts=true, enables Replace All behavior. */
+  deleteExistingCallouts?: InputMaybe<Scalars['Boolean']['input']>;
   /** The Space Template whose Collaboration that will be used for updates to the target Collaboration */
   spaceTemplateID: Scalars['UUID']['input'];
 };
@@ -37536,6 +37538,17 @@ export type DashboardWithMembershipsQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          settings: {
+            __typename?: 'UserSettings';
+            homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined };
+          };
+          profile: { __typename?: 'Profile'; url: string };
+        }
+      | undefined;
     spaceMembershipsHierarchical: Array<{
       __typename?: 'CommunityMembershipResult';
       id: string;

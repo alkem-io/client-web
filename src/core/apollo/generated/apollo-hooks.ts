@@ -25843,6 +25843,17 @@ export function refetchCampaignBlockCredentialsQuery(variables?: SchemaTypes.Cam
 export const DashboardWithMembershipsDocument = gql`
   query DashboardWithMemberships($limit: Float! = 0) {
     me {
+      user {
+        id
+        settings {
+          homeSpace {
+            spaceID
+          }
+        }
+        profile {
+          url
+        }
+      }
       spaceMembershipsHierarchical(limit: $limit) {
         id
         space {

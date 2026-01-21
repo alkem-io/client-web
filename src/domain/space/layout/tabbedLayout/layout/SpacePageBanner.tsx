@@ -12,8 +12,7 @@ import { getDefaultSpaceVisualUrl } from '../../../icons/defaultVisualUrls';
 import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import useInnovationHubSpaceBannerRibbon from '@/domain/innovationHub/InnovationHubSpaceBannerRibbon/useInnovationHubSpaceBannerRibbon';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
 import HomeSpacePinButton from '@/domain/space/components/HomeSpacePinButton';
 
 export const TITLE_HEIGHT = 6;
@@ -53,7 +52,7 @@ const SpacePageBanner = ({ isAdmin, loading: dataLoading = false, watermark, tit
   const { t } = useTranslation();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
   const [imageLoading, setImageLoading] = useState(true);
-  const { userModel } = useCurrentUserContext();
+  const { homeSpaceId, membershipSettingsUrl } = useHomeSpaceSettings();
 
   const {
     space: { id: spaceId },
@@ -74,12 +73,7 @@ const SpacePageBanner = ({ isAdmin, loading: dataLoading = false, watermark, tit
   });
 
   // Check if current space is the user's home space
-  const userSettings = userModel as
-    | { settings?: { homeSpace?: { spaceID?: string } }; profile?: { url?: string } }
-    | undefined;
-  const homeSpaceId = userSettings?.settings?.homeSpace?.spaceID;
   const isHomeSpace = Boolean(homeSpaceId && spaceId && homeSpaceId === spaceId);
-  const settingsUrl = userSettings?.profile?.url ? `${buildSettingsUrl(userSettings.profile.url)}/membership` : '';
 
   const imageLoadError = () => {
     setImageLoading(false);
@@ -107,7 +101,7 @@ const SpacePageBanner = ({ isAdmin, loading: dataLoading = false, watermark, tit
           maxWidth="100%"
         />
         <WatermarkContainer>{watermark}</WatermarkContainer>
-        {isHomeSpace && settingsUrl && (
+        {isHomeSpace && membershipSettingsUrl && (
           <Box
             sx={{
               position: 'absolute',
@@ -127,7 +121,7 @@ const SpacePageBanner = ({ isAdmin, loading: dataLoading = false, watermark, tit
               }}
             >
               <Box sx={{ position: 'absolute', left: 20, bottom: 10 }}>
-                <HomeSpacePinButton settingsUrl={settingsUrl} />
+                <HomeSpacePinButton settingsUrl={membershipSettingsUrl} />
               </Box>
             </Box>
           </Box>
