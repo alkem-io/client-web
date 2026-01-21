@@ -2360,6 +2360,9 @@
           "authorization": {
             "description": "crwdns41222:0$t(common.settings)crwdnd41222:0{{entity}}crwdne41222:0"
           },
+          "security": {
+            "description": "crwdns43518:0crwdne43518:0"
+          },
           "templates": {
             "description": "crwdns41224:0$t(common.templates)crwdnd41224:0{{entity}}crwdne41224:0",
             "delete-confirmation": "crwdns41226:0$t(common.template)crwdnd41226:0{{template}}crwdne41226:0",
@@ -2460,6 +2463,11 @@
           "privacy": {
             "contributorRolesVisible": "crwdns19740:0crwdne19740:0"
           }
+        },
+        "security": {
+          "title": "crwdns43520:0crwdne43520:0",
+          "description": "crwdns43522:0crwdne43522:0",
+          "not-enabled": "crwdns43524:0crwdne43524:0"
         }
       },
       "organization": {
@@ -2546,9 +2554,10 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "crwdns41330:0$t(common.template)crwdne41330:0",
                 "title": "crwdns41332:0$t(common.subspace)crwdnd41332:0$t(common.template)crwdne41332:0",
-                "description": "crwdns41334:0$t(common.template)crwdnd41334:0$t(common.subspaces)crwdnd41334:0$t(common.templates)crwdnd41334:0$t(common.space)crwdnd41334:0$t(common.templateLibrary)crwdnd41334:0$t(common.templates)crwdnd41334:0$t(common.templates)crwdne41334:0"
+                "description": "crwdns43548:0$t(common.template)crwdnd43548:0$t(common.subspaces)crwdnd43548:0$t(common.templates)crwdnd43548:0$t(common.space)crwdnd43548:0$t(common.templateLibrary)crwdnd43548:0$t(common.templates)crwdnd43548:0$t(common.templates)crwdne43548:0"
               }
-            }
+            },
+            "reorderSubspaces": "crwdns43550:0$t(common.subspaces)crwdne43550:0"
           }
         },
         "authorization": {
@@ -2889,6 +2898,12 @@
             "message": "crwdns36906:0{{space}}crwdne36906:0",
             "caption": "crwdns20160:0{{tagline}}crwdne20160:0"
           }
+        },
+        "resources": {
+          "innovationHubs": "crwdns43526:0crwdne43526:0",
+          "spaces": "crwdns43528:0$t(common.spaces)crwdne43528:0",
+          "virtualContributors": "crwdns43530:0$t(common.virtualContributors)crwdne43530:0",
+          "innovationPacks": "crwdns43532:0$t(common.innovation-packs)crwdne43532:0"
         },
         "welcome": {
           "welcomeUnauthenticated": "crwdns20162:0crwdne20162:0",
