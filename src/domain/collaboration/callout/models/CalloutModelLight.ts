@@ -44,9 +44,15 @@ export type CalloutModelExtension<T> = T & {
   movable: boolean;
   canBeSavedAsTemplate: boolean;
   classificationTagsets: ClassificationTagsetModel[];
-  authorName?: string;
-  authorAvatarUri?: string;
-  publishedAt?: string;
+  publishedDate?: Date | undefined;
+  createdBy?:
+    | {
+        id: string;
+        profile: {
+          displayName: string;
+        };
+      }
+    | undefined;
 };
 
 /**
