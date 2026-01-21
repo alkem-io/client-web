@@ -1,5 +1,6 @@
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type {
   BinaryFileData,
@@ -12,6 +13,7 @@ import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { compact, debounce, merge } from 'lodash';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
@@ -50,8 +52,30 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
   const { whiteboard, filesManager } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
   const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
+  const { t } = useTranslation();
+  const notify = useNotification();
 
-  const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
+  const { addNewFile, validateFile, loadFiles, pushFilesToExcalidraw } = filesManager;
+
+  /**
+   * Validate file before adding to whiteboard.
+   * Rejects invalid files with a user-visible notification.
+   */
+  const handleGenerateIdForFile = useCallback(
+    async (file: File): Promise<string> => {
+      const validation = validateFile(file);
+      if (!validation.ok) {
+        const message: string =
+          validation.reason === 'unsupportedMimeType'
+            ? t('callout.whiteboard.images.unsupportedType')
+            : t('callout.whiteboard.images.tooLarge', { maxSize: '15MB' });
+        notify(message, 'error');
+        throw new Error(message);
+      }
+      return addNewFile(file);
+    },
+    [validateFile, addNewFile, t, notify]
+  );
 
   const data = useMemo(() => {
     const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
@@ -186,7 +210,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
             UIOptions={mergedUIOptions}
             isCollaborating={false}
             viewModeEnabled
-            generateIdForFile={addNewFile}
+            generateIdForFile={handleGenerateIdForFile}
             aiEnabled={false}
             {...restOptions}
           />

@@ -966,6 +966,16 @@
         "placementMode": "Click to place emoji: {{emoji}}",
         "gridLabel": "Select an emoji",
         "noEmojis": "No emojis available"
+      },
+      "images": {
+        "unsupportedType": "Unsupported image format. Please use PNG, JPEG, or WebP.",
+        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
+        "uploadFailed": "Couldn't upload the image. Please try again.",
+        "downloadFailed": "Couldn't load the image. Please try again.",
+        "retry": "Retry",
+        "singleFailure": "An image could not be loaded",
+        "multipleFailures_one": "{{count}} image could not be loaded",
+        "multipleFailures_other": "{{count}} images could not be loaded"
       }
     },
     "memo": {

@@ -11,6 +11,7 @@ import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawW
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
+import WhiteboardImageFailureBanner from '@/domain/collaboration/whiteboard/components/WhiteboardImageFailureBanner';
 import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw'; // @alkemio/excalidraw/dist/types/excalidraw/data/json
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
@@ -19,7 +20,7 @@ import { Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useMemo, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PreviewImageDimensions, WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import useGenerateWhiteboardVisuals from '../WhiteboardVisuals/useGenerateWhiteboardVisuals';
@@ -98,13 +99,32 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
     allowFallbackToAttached: options.allowFilesAttached,
   });
 
+  const [retrying, setRetrying] = useState(false);
+  const failureState = filesManager.getFailureState();
+
+  const handleRetryFailedDownloads = useCallback(async () => {
+    setRetrying(true);
+    try {
+      await filesManager.retryFailedDownloads();
+    } finally {
+      setRetrying(false);
+    }
+  }, [filesManager]);
+
   const handleUpdate = async (whiteboard: WhiteboardWithContent, state: RelevantExcalidrawState | undefined) => {
     if (!state) {
       return;
     }
     const { serializeAsJSON } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
 
-    const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
+    const { whiteboard: convertedState, unrecoverableFiles } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
+
+    // Surface unrecoverable files - these will be lost
+    if (unrecoverableFiles.length > 0) {
+      console.warn(`Whiteboard save: ${unrecoverableFiles.length} files could not be saved (no URL or dataURL)`);
+    }
+
+    const { appState, elements, files } = convertedState;
 
     const previewImages = await generateWhiteboardVisuals(whiteboard, true, options.previewImagesSettings);
 
@@ -211,7 +231,12 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
                 {options.dialogTitle ?? t('common.Whiteboard')}
                 <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
               </DialogHeader>
-              <DialogContent sx={{ pt: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <DialogContent sx={{ pt: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                <WhiteboardImageFailureBanner
+                  failureState={failureState}
+                  onRetry={handleRetryFailedDownloads}
+                  retrying={retrying}
+                />
                 {!state?.loadingWhiteboardContent && whiteboard && (
                   <ExcalidrawWrapper
                     entities={{

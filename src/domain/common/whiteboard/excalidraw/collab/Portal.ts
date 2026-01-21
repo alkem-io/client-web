@@ -5,18 +5,20 @@ import type { DataURL, SocketId } from '@alkemio/excalidraw/dist/types/excalidra
 
 import { CollaboratorModeEvent, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
 import { Socket } from 'socket.io-client';
-import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFilesManager';
+import { BinaryFileDataWithOptionalUrl, BinaryFilesWithOptionalUrl } from '../types';
+import { isFileRenderable, shouldStripDataUrlForBroadcast } from '../fileStore/fileAvailability';
 import type { isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw/dist/types/element/src';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { validateGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/guestNameValidator';
+import { warn, TagCategoryValues } from '@/core/logging/sentry/log';
 
 interface PortalProps {
   onRemoteSave: () => void;
   onCloseConnection: () => void;
   onRoomUserChange: (clients: SocketId[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
-  getFiles: () => Promise<BinaryFilesWithUrl>;
+  getFiles: () => Promise<BinaryFilesWithOptionalUrl>;
 }
 
 interface BroadcastOptions {
@@ -50,7 +52,7 @@ class Portal {
   onCloseConnection: () => void;
   onRoomUserChange: (clients: SocketId[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
-  getFiles: () => Promise<BinaryFilesWithUrl>;
+  getFiles: () => Promise<BinaryFilesWithOptionalUrl>;
   socket: Socket | null = null;
   sceneInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
@@ -191,7 +193,7 @@ class Portal {
   broadcastScene = async (
     updateType: WS_SCENE_EVENT_TYPES.SCENE_UPDATE,
     allElements: readonly OrderedExcalidrawElement[],
-    allFiles: BinaryFilesWithUrl,
+    allFiles: BinaryFilesWithOptionalUrl,
     { syncAll = false }: BroadcastSceneOptions = {}
   ) => {
     if (!this.excalidrawAPI) {
@@ -216,13 +218,30 @@ class Portal {
     }, [] as SyncableExcalidrawElement[]);
 
     const emptyDataURL = '' as DataURL;
-    const syncableFiles = Object.keys(allFiles).reduce<Record<string, BinaryFileDataWithUrl>>((result, fileId) => {
+    const skippedFiles: string[] = [];
+    const syncableFiles = Object.keys(allFiles).reduce<Record<string, BinaryFileDataWithOptionalUrl>>((result, fileId) => {
+      const file = allFiles[fileId];
+      // Skip files that have no usable retrieval path (neither url nor dataURL)
+      if (!isFileRenderable(file)) {
+        skippedFiles.push(fileId);
+        return result;
+      }
       if (syncAll || !this.broadcastedFiles.has(fileId)) {
-        result[fileId] = { ...allFiles[fileId], dataURL: emptyDataURL };
+        // Only strip dataURL when url is usable; otherwise peers need dataURL to render
+        const dataURL = shouldStripDataUrlForBroadcast(file) ? emptyDataURL : file.dataURL;
+        result[fileId] = { ...file, dataURL };
         this.broadcastedFiles.add(fileId);
       }
       return result;
     }, {});
+
+    // Log diagnostic info if files were skipped due to lack of retrieval path (FR-007)
+    if (skippedFiles.length > 0) {
+      warn(
+        `Broadcast skipped ${skippedFiles.length} files with no usable retrieval path: [${skippedFiles.join(', ')}]`,
+        { category: TagCategoryValues.WHITEBOARD, label: 'broadcast-files-skipped' }
+      );
+    }
 
     const data: SocketUpdateDataSource[typeof updateType] = {
       type: updateType,

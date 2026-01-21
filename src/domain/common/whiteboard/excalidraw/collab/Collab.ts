@@ -446,7 +446,7 @@ class Collab {
   };
 
   private throttledSyncScene = throttle(
-    async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
+    async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithOptionalUrl) => {
       const { hashElementsVersion } = await this.excalidrawUtils;
       const newVersion = hashElementsVersion(elements);
 
@@ -459,7 +459,7 @@ class Collab {
     SCENE_SYNC_TIMEOUT
   );
 
-  public syncScene = async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
+  public syncScene = async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithOptionalUrl) => {
     this.throttledSyncScene(elements, files);
   };
 

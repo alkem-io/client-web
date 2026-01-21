@@ -10,10 +10,16 @@ import { GuestSessionContext } from '@/domain/collaboration/whiteboard/guestAcce
 import Semaphore from 'ts-semaphore';
 import { dataUrlToFile } from './fileStore/fileConverters';
 import { WhiteboardFileCache } from './fileStore/WhiteboardFileCache';
-import { FileUploader } from './fileStore/FileUploader';
-import { FileDownloader } from './fileStore/FileDownloader';
+import { FileUploader, type UploadFailure } from './fileStore/FileUploader';
+import { FileDownloader, type DownloadFailure } from './fileStore/FileDownloader';
+import {
+  validateWhiteboardImageFile,
+  type ImageValidationResult,
+  type ImageValidationConfig,
+} from './fileStore/fileValidation';
 import type {
   BinaryFileDataWithUrl,
+  BinaryFileDataWithOptionalUrl,
   BinaryFilesWithUrl,
   BinaryFilesWithOptionalUrl,
   WhiteboardWithFiles,
@@ -30,18 +36,40 @@ export type {
 
 interface Props {
   storageBucketId?: string;
+  allowedMimeTypes?: string[];
+  maxFileSize?: number;
   excalidrawAPI: ExcalidrawImperativeAPI | null;
   allowFallbackToAttached?: boolean;
 }
 
+export interface ConversionResult<W> {
+  whiteboard: W;
+  failedConversions: string[];
+  unrecoverableFiles: string[];
+}
+
+export interface FileFailureState {
+  uploadFailures: UploadFailure[];
+  downloadFailures: DownloadFailure[];
+  hasFailures: boolean;
+}
+
 export interface WhiteboardFilesManager {
   addNewFile: (file: File) => Promise<string>;
+  validateFile: (file: File) => ImageValidationResult;
+  upgradeFilesToRemote: () => Promise<{ upgraded: number; failed: number }>;
   loadFiles: (data: WhiteboardWithFiles) => Promise<void>;
-  getUploadedFiles: (filesInExcalidraw: BinaryFiles) => Promise<BinaryFilesWithUrl>;
+  getUploadedFiles: (filesInExcalidraw: BinaryFiles) => Promise<BinaryFilesWithOptionalUrl>;
   pushFilesToExcalidraw: () => Promise<void>;
-  convertLocalFilesToRemoteInWhiteboard: <W extends WhiteboardWithFiles>(whiteboard: W) => Promise<W>;
+  convertLocalFilesToRemoteInWhiteboard: <W extends WhiteboardWithFiles>(
+    whiteboard: W
+  ) => Promise<ConversionResult<W>>;
   convertLocalFileToRemote: (file: BinaryFileData & { url?: string }) => Promise<BinaryFileDataWithUrl | undefined>;
   loadAndTryConvertEmbeddedFiles: (files: BinaryFilesWithOptionalUrl) => Promise<BinaryFilesWithUrl>;
+  // Failure tracking and retry APIs (T029)
+  getFailureState: () => FileFailureState;
+  retryFailedDownloads: () => Promise<{ succeeded: number; failed: number }>;
+  clearFailures: () => void;
   loading: {
     uploadingFile: boolean;
     downloadingFiles: boolean;
@@ -50,6 +78,8 @@ export interface WhiteboardFilesManager {
 
 const useWhiteboardFilesManager = ({
   storageBucketId,
+  allowedMimeTypes,
+  maxFileSize,
   allowFallbackToAttached,
   excalidrawAPI,
 }: Props): WhiteboardFilesManager => {
@@ -66,11 +96,11 @@ const useWhiteboardFilesManager = ({
     uploadFileRef.current = uploadFile;
   }, [uploadFile]);
 
-  // Store config in ref to avoid stale storageBucketId/allowFallbackToAttached
-  const configRef = useRef({ storageBucketId, allowFallbackToAttached });
+  // Store config in ref to avoid stale storageBucketId/allowFallbackToAttached/allowedMimeTypes/maxFileSize
+  const configRef = useRef({ storageBucketId, allowFallbackToAttached, allowedMimeTypes, maxFileSize });
   useEffect(() => {
-    configRef.current = { storageBucketId, allowFallbackToAttached };
-  }, [storageBucketId, allowFallbackToAttached]);
+    configRef.current = { storageBucketId, allowFallbackToAttached, allowedMimeTypes, maxFileSize };
+  }, [storageBucketId, allowFallbackToAttached, allowedMimeTypes, maxFileSize]);
 
   // Core services (created once, stable across renders)
   const cache = useRef(new WhiteboardFileCache()).current;
@@ -90,12 +120,64 @@ const useWhiteboardFilesManager = ({
   }, [cache]);
 
   /**
-   * Upload a new file and return its ID
+   * Validate a file against storage bucket constraints before upload
+   */
+  const validateFile = (file: File): ImageValidationResult => {
+    const { allowedMimeTypes: configuredMimeTypes, maxFileSize: configuredMaxSize } = configRef.current;
+    return validateWhiteboardImageFile(file, {
+      allowedMimeTypes: configuredMimeTypes,
+      maxFileSizeBytes: configuredMaxSize,
+    });
+  };
+
+  /**
+   * Register a new file locally and return its ID (side-effect free: no network).
+   * File is immediately usable via dataURL; upload happens asynchronously via upgradeFilesToRemote.
    */
   const addNewFile = async (file: File): Promise<string> => {
-    const fileData = await uploader.uploadAndCreateFileData(file);
+    const fileData = await uploader.createFileData(file);
     cache.set(fileData.id, fileData);
     return fileData.id;
+  };
+
+  /**
+   * Asynchronously upload all cached files that have dataURL but no URL.
+   * Updates the cache with the new URL; subsequent broadcasts will include the URL.
+   * Returns the count of successfully upgraded files.
+   */
+  const upgradeFilesToRemote = async (): Promise<{ upgraded: number; failed: number }> => {
+    const filesToUpgrade = cache.getAllArray().filter(file => file.dataURL && !file.url);
+
+    if (filesToUpgrade.length === 0) {
+      return { upgraded: 0, failed: 0 };
+    }
+
+    const { storageBucketId: bucketId } = configRef.current;
+    if (!bucketId) {
+      // No storage bucket - cannot upgrade
+      return { upgraded: 0, failed: filesToUpgrade.length };
+    }
+
+    let upgraded = 0;
+    let failed = 0;
+
+    for (const file of filesToUpgrade) {
+      try {
+        const fileObject = await dataUrlToFile(file.dataURL!, '', file.mimeType, file.created);
+        const { url } = await uploader.upload(fileObject);
+        cache.set(file.id, { ...file, url });
+        upgraded++;
+      } catch (e) {
+        // Log but don't throw - file remains usable via dataURL
+        error(`Failed to upgrade file ${file.id} to remote: ${e instanceof Error ? e.message : 'Unknown error'}`, {
+          category: TagCategoryValues.WHITEBOARD,
+          label: 'upgrade-to-remote-failed',
+        });
+        failed++;
+      }
+    }
+
+    return { upgraded, failed };
   };
 
   /**
@@ -112,9 +194,7 @@ const useWhiteboardFilesManager = ({
     files
       .filter(file => file.dataURL)
       .forEach(file => {
-        const fileWithOptionalUrl = file as BinaryFileData & { url?: string };
-        const url = fileWithOptionalUrl.url || '';
-        cache.set(file.id, { ...file, url } as BinaryFileDataWithUrl);
+        cache.set(file.id, file as BinaryFileDataWithOptionalUrl);
       });
 
     // Download files that only have URL
@@ -131,32 +211,48 @@ const useWhiteboardFilesManager = ({
   };
 
   /**
-   * Get all uploaded files from cache, uploading any missing ones
+   * Get all uploaded files from cache, uploading any missing ones.
+   * Returns files with optional URL - files with only dataURL can still be broadcast
+   * to peers who will receive the dataURL directly.
    */
-  const getUploadedFiles = async (files: BinaryFiles): Promise<BinaryFilesWithUrl> => {
+  const getUploadedFiles = async (files: BinaryFiles): Promise<BinaryFilesWithOptionalUrl> => {
     if (!files) {
       return {};
     }
 
-    const result: BinaryFilesWithUrl = {};
+    const result: BinaryFilesWithOptionalUrl = {};
     const failedFileIds: string[] = [];
 
     for (const id of Object.keys(files)) {
       const cachedFile = cache.get(id);
-      if (cachedFile) {
-        result[id] = cachedFile;
+      const url = cachedFile?.url;
+
+      if (url) {
+        // File already has URL - use it
+        result[id] = { ...files[id], url } as BinaryFileDataWithUrl;
+        continue;
+      }
+
+      // Attempt to upload and get URL
+      const converted = await convertLocalFileToRemote(files[id]);
+      if (converted) {
+        result[id] = converted;
       } else {
-        const converted = await convertLocalFileToRemote(files[id]);
-        if (converted) {
-          result[id] = converted;
+        // Upload failed - fall back to including the file with its dataURL
+        // This allows peers to receive the dataURL directly and still render the image
+        const fileWithDataUrl = files[id];
+        if (fileWithDataUrl.dataURL) {
+          result[id] = { ...fileWithDataUrl } as BinaryFileDataWithOptionalUrl;
+          failedFileIds.push(id);
         } else {
+          // No URL and no dataURL - file is unrecoverable, skip it
           failedFileIds.push(id);
         }
       }
     }
     if (failedFileIds.length > 0) {
       error(
-        `Failed to convert ${failedFileIds.length} of ${Object.keys(files).length} local files to remote: [${failedFileIds.join(', ')}]`,
+        `Failed to convert ${failedFileIds.length} of ${Object.keys(files).length} local files to remote (using dataURL fallback where available): [${failedFileIds.join(', ')}]`,
         { category: TagCategoryValues.WHITEBOARD, label: 'convert-to-remote-failures' }
       );
     }
@@ -219,16 +315,22 @@ const useWhiteboardFilesManager = ({
   };
 
   /**
-   * Convert all local files in a whiteboard to remote files
+   * Convert all local files in a whiteboard to remote files.
+   * Never drops files with valid retrieval paths (url or dataURL).
+   * On upload failures, preserves dataURL so files can still be rendered.
+   * Returns the whiteboard with preserved files and a list of any conversion failures.
    */
-  const convertLocalFilesToRemoteInWhiteboard = async <W extends WhiteboardWithFiles>(whiteboard: W): Promise<W> => {
+  const convertLocalFilesToRemoteInWhiteboard = async <W extends WhiteboardWithFiles>(
+    whiteboard: W
+  ): Promise<{ whiteboard: W; failedConversions: string[]; unrecoverableFiles: string[] }> => {
     if (!whiteboard?.files) {
-      return whiteboard;
+      return { whiteboard, failedConversions: [], unrecoverableFiles: [] };
     }
 
     const { files, ...rest } = whiteboard;
     const filesNext: Record<string, BinaryFileDataWithUrl | BinaryFileData> = {};
-    const failedConversions: string[] = [];
+    const failedConversions: string[] = []; // files that failed to get URL but have dataURL
+    const unrecoverableFiles: string[] = []; // files with neither URL nor dataURL
 
     await Promise.all(
       Object.keys(files).map(async fileId => {
@@ -236,14 +338,25 @@ const useWhiteboardFilesManager = ({
         const normalizedFile = await convertLocalFileToRemote(file);
 
         if (normalizedFile) {
+          // Successfully converted to remote
           filesNext[fileId] = normalizedFile;
-        } else if (allowFallbackToAttached) {
+        } else if (file.dataURL) {
+          // Conversion failed but file has dataURL - preserve for rendering
           filesNext[fileId] = file;
-        } else {
           failedConversions.push(fileId);
           error(
-            `File conversion failed and will be dropped: ${fileId} (hasUrl: ${!!file.url}, hasDataURL: ${!!file.dataURL}, storageBucketId: ${storageBucketId})`,
-            { category: TagCategoryValues.WHITEBOARD, label: 'file-dropped-no-fallback' }
+            `File conversion failed but preserved with dataURL: ${fileId}`,
+            { category: TagCategoryValues.WHITEBOARD, label: 'file-preserved-with-dataurl' }
+          );
+        } else if (file.url) {
+          // File already has URL - preserve it
+          filesNext[fileId] = file;
+        } else {
+          // No URL and no dataURL - file is unrecoverable
+          unrecoverableFiles.push(fileId);
+          error(
+            `File has no retrieval path (no url, no dataURL) and will be dropped: ${fileId}`,
+            { category: TagCategoryValues.WHITEBOARD, label: 'file-unrecoverable' }
           );
         }
       })
@@ -251,12 +364,23 @@ const useWhiteboardFilesManager = ({
 
     if (failedConversions.length > 0) {
       error(
-        `${failedConversions.length} of ${Object.keys(files).length} files dropped during conversion - whiteboard may lose files: [${failedConversions.join(', ')}]`,
-        { category: TagCategoryValues.WHITEBOARD, label: 'files-dropped-batch' }
+        `${failedConversions.length} of ${Object.keys(files).length} files failed remote conversion but preserved with dataURL: [${failedConversions.join(', ')}]`,
+        { category: TagCategoryValues.WHITEBOARD, label: 'files-conversion-partial' }
       );
     }
 
-    return { files: filesNext, ...rest } as W;
+    if (unrecoverableFiles.length > 0) {
+      error(
+        `${unrecoverableFiles.length} of ${Object.keys(files).length} files dropped (unrecoverable): [${unrecoverableFiles.join(', ')}]`,
+        { category: TagCategoryValues.WHITEBOARD, label: 'files-dropped-unrecoverable' }
+      );
+    }
+
+    return {
+      whiteboard: { files: filesNext, ...rest } as W,
+      failedConversions,
+      unrecoverableFiles,
+    };
   };
 
   /**
@@ -271,20 +395,72 @@ const useWhiteboardFilesManager = ({
 
     excalidrawAPI?.addFiles(filesWithDataUrl);
 
-    const { files: uploadedFiles } = await convertLocalFilesToRemoteInWhiteboard({ files });
+    const { whiteboard: { files: uploadedFiles } } = await convertLocalFilesToRemoteInWhiteboard({ files });
 
-    return Object.fromEntries(Object.entries(uploadedFiles).filter(([_, file]) => file.url)) as BinaryFilesWithUrl;
+    return Object.fromEntries(Object.entries(uploadedFiles ?? {}).filter(([_, file]) => file.url)) as BinaryFilesWithUrl;
+  };
+
+  /**
+   * Get current failure state for uploads and downloads (T029)
+   */
+  const getFailureState = (): FileFailureState => {
+    const uploadFailures = uploader.getFailedUploads();
+    const downloadFailures = downloader.getFailedDownloads();
+    return {
+      uploadFailures,
+      downloadFailures,
+      hasFailures: uploadFailures.length > 0 || downloadFailures.length > 0,
+    };
+  };
+
+  /**
+   * Retry downloading files that previously failed (T029)
+   */
+  const retryFailedDownloads = async (): Promise<{ succeeded: number; failed: number }> => {
+    const failedCount = downloader.getFailedDownloads().length;
+    if (failedCount === 0) {
+      return { succeeded: 0, failed: 0 };
+    }
+
+    const result = await downloader.retryFailed(fileId => cache.get(fileId), { guestName });
+    result.succeeded.forEach(file => cache.set(file.id, file));
+
+    // Log retry outcome for diagnostics (FR-007)
+    if (result.succeeded.length > 0 || result.failed.length > 0) {
+      error(
+        `Whiteboard file download retry: ${result.succeeded.length}/${failedCount} recovered, ${result.failed.length} still failing`,
+        {
+          category: TagCategoryValues.WHITEBOARD,
+          label: 'download-retry-outcome',
+        }
+      );
+    }
+
+    return { succeeded: result.succeeded.length, failed: result.failed.length };
+  };
+
+  /**
+   * Clear all tracked failures (T029)
+   */
+  const clearFailures = (): void => {
+    uploader.clearAllFailures();
+    downloader.clearAllFailures();
   };
 
   return useMemo<WhiteboardFilesManager>(
     () => ({
       addNewFile,
+      validateFile,
+      upgradeFilesToRemote,
       loadFiles,
       getUploadedFiles,
       pushFilesToExcalidraw,
       convertLocalFileToRemote,
       convertLocalFilesToRemoteInWhiteboard,
       loadAndTryConvertEmbeddedFiles,
+      getFailureState,
+      retryFailedDownloads,
+      clearFailures,
       loading: {
         uploadingFile,
         downloadingFiles,

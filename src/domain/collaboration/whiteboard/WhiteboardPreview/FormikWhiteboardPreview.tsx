@@ -102,7 +102,12 @@ const FormikWhiteboardPreview = ({
       id: '__template',
       nameID: '__template',
       // Needed to pass yup validation of WhiteboardDialog
-      profile: { id: '__templateProfile', displayName: '__template', url: '', storageBucket: { id: '' } },
+      profile: {
+        id: '__templateProfile',
+        displayName: '__template',
+        url: '',
+        storageBucket: { id: '', allowedMimeTypes: [], maxFileSize: 0 },
+      },
       content: field.value,
       previewSettings: previewSettingsField.value ?? DefaultWhiteboardPreviewSettings,
     };

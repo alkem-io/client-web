@@ -1,4 +1,4 @@
-import type { BinaryFileDataWithUrl } from '../types';
+import type { BinaryFileDataWithOptionalUrl } from '../types';
 
 /**
  * Simple in-memory cache for whiteboard files.
@@ -16,11 +16,11 @@ import type { BinaryFileDataWithUrl } from '../types';
  * **No manual cleanup needed**: React's component lifecycle handles cleanup automatically.
  */
 export class WhiteboardFileCache {
-  private files: Record<string, BinaryFileDataWithUrl> = {};
+  private files: Record<string, BinaryFileDataWithOptionalUrl> = {};
   private version = 0;
   private listeners: Array<() => void> = [];
 
-  get(fileId: string): BinaryFileDataWithUrl | undefined {
+  get(fileId: string): BinaryFileDataWithOptionalUrl | undefined {
     return this.files[fileId];
   }
 
@@ -28,17 +28,17 @@ export class WhiteboardFileCache {
     return !!this.files[fileId];
   }
 
-  set(fileId: string, file: BinaryFileDataWithUrl): void {
+  set(fileId: string, file: BinaryFileDataWithOptionalUrl): void {
     this.files = { ...this.files, [fileId]: file };
     this.version++;
     this.notifyListeners();
   }
 
-  getAll(): Record<string, BinaryFileDataWithUrl> {
+  getAll(): Record<string, BinaryFileDataWithOptionalUrl> {
     return this.files;
   }
 
-  getAllArray(): BinaryFileDataWithUrl[] {
+  getAllArray(): BinaryFileDataWithOptionalUrl[] {
     return Object.values(this.files);
   }
 

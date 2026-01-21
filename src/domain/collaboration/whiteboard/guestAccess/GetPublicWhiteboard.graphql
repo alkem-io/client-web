@@ -17,6 +17,8 @@ fragment PublicWhiteboardFragment on Whiteboard {
     url
     storageBucket {
       id
+      allowedMimeTypes
+      maxFileSize
     }
   }
   createdDate
