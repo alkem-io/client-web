@@ -169,13 +169,11 @@ export const SpaceTemplateSelector: FC<SpaceTemplateSelectorProps> = ({
             if (isTemplateSelectable && !isTemplateSelectable(template as SpaceTemplate)) {
               return (
                 /* Keep it inside a react fragment <>...</> to disable the onClick handler that the dialog is adding*/
-                <>
-                  <Tooltip title={t('createSpace.innovationFlowError')}>
-                    <span>
-                      <TemplateActionButton disabled />
-                    </span>
-                  </Tooltip>
-                </>
+                <Tooltip title={t('createSpace.innovationFlowError')}>
+                  <span>
+                    <TemplateActionButton disabled />
+                  </span>
+                </Tooltip>
               );
             }
             return <TemplateActionButton />;
