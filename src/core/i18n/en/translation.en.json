@@ -1380,10 +1380,10 @@
           },
           "importCalloutsDialog": {
             "title": "Apply New $t(common.template)",
-            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovationFlow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovation-flow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
             "option1": {
               "label": "Replace with new flow",
-              "description": "This will delete your current $t(common.innovationFlow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
+              "description": "This will delete your current $t(common.innovation-flow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
             },
             "option2": {
               "label": "Replace and add $t(common.template) $t(common.posts) to existing ones",
@@ -1391,7 +1391,7 @@
             },
             "option3": {
               "label": "Replace flow without adding $t(common.template) $t(common.posts)",
-              "description": "Only replace $t(common.innovationFlow) without adding $t(common.template) $t(common.posts)."
+              "description": "Only replace $t(common.innovation-flow) without adding $t(common.template) $t(common.posts)."
             },
             "confirmDelete": {
               "title": "Confirm Deletion",
