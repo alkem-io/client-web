@@ -1409,8 +1409,8 @@
           "description": "This will remove the default $t(common.template) for this flow step. New posts will no longer be pre-filled with $t(common.template) content."
         },
         "errors": {
-          "selectFailed": "Failed to set the default template. Please try again.",
-          "removeFailed": "Failed to remove the default template. Please try again."
+          "selectFailed": "Failed to set the default $t(common.template). Please try again.",
+          "removeFailed": "Failed to remove the default $t(common.template). Please try again."
         }
       }
     },
