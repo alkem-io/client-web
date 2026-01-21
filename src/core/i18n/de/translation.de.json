@@ -232,6 +232,15 @@
     "signUp": {
       "signUpEmail": "Registrieren Sie sich mit E-Mail",
       "alreadyHaveAccount": "Already have an $t(common.account)?"
+    },
+    "passkey": {
+      "sign-in": "Sign in with passkey",
+      "register": "Register passkey",
+      "not-supported": "Passkeys are not supported by your browser",
+      "script-loading": "Loading passkey support...",
+      "script-error": "Failed to load passkey functionality",
+      "unknown-error": "An error occurred with your passkey",
+      "remove-credential": "Remove passkey"
     }
   },
   "common": {
@@ -355,10 +364,12 @@
     "role": "Rolle",
     "agreement": "Vereinbarung",
     "agreements": "Verträge",
-    "templates": "Vorlagen",
     "noneTemplates": "No templates",
     "templateTypes": "Template types",
-    "template": "Vorlage",
+    "template": "template",
+    "Template": "Template",
+    "templates": "templates",
+    "Templates": "Templates",
     "group": "Gruppe",
     "groups": "Gruppen",
     "user-group": "Benutzergruppe",
@@ -415,6 +426,7 @@
     "notification": "notification",
     "notifications": "notifications",
     "credentials": "Voraussetzungen",
+    "security": "Security",
     "my-profile": "My $t(common.profile)",
     "my-memberships": "My $t(common.memberships)",
     "Profile": "Profile",
@@ -441,8 +453,8 @@
     "loading": "Wird geladen...",
     "InnovationFlow": "Innovation Flow",
     "innovationFlow": "innovation flow",
-    "InnovationFlows": "Innovationsfluss",
-    "innovationFlows": "innovationsfluss",
+    "InnovationFlows": "Innovation Flows",
+    "innovationFlows": "innovation flows",
     "innovation-packs": "Innovationsfluss",
     "innovation-hub": "Innovationsfluss",
     "innovation-hubs": "Innovationsfluss",
@@ -519,17 +531,17 @@
       },
       "templateType": {
         "CALLOUT": "Collaboration Tool $t(common.Template)",
-        "CALLOUT_plural": "Collaboration Tool $t(common.Templates)",
+        "CALLOUT_plural": "Collaboration Tool $t(common.templates)",
         "SPACE": "$t(common.space) $t(common.Template)",
-        "SPACE_plural": "$t(common.space) $t(common.Templates)",
+        "SPACE_plural": "$t(common.space) $t(common.templates)",
         "COMMUNITY_GUIDELINES": "$t(common.Community) Guidelines $t(common.Template)",
-        "COMMUNITY_GUIDELINES_plural": "$t(common.Community) Guidelines $t(common.Templates)",
+        "COMMUNITY_GUIDELINES_plural": "$t(common.Community) Guidelines $t(common.templates)",
         "INNOVATION_FLOW": "$t(common.InnovationFlow)",
-        "INNOVATION_FLOW_plural": "$t(common.InnovationFlow) $t(common.Templates)",
+        "INNOVATION_FLOW_plural": "$t(common.InnovationFlow) $t(common.templates)",
         "POST": "Post $t(common.Template)",
-        "POST_plural": "Post $t(common.Templates)",
+        "POST_plural": "Post $t(common.templates)",
         "WHITEBOARD": "$t(common.Whiteboard) $t(common.Template)",
-        "WHITEBOARD_plural": "$t(common.Whiteboard) $t(common.Templates)"
+        "WHITEBOARD_plural": "$t(common.Whiteboard) $t(common.templates)"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link $t(common.Collection)",
@@ -1190,7 +1202,7 @@
   "templateDialog": {
     "profile": {
       "title": "$t(common.Template) description",
-      "help": "This description will be visible to anyone browsing through the $t(common.Templates). However, it is not part of the actual {{entityTypeName}} content.",
+      "help": "This description will be visible to anyone browsing through the $t(common.templates). However, it is not part of the actual {{entityTypeName}} content.",
       "fields": {
         "displayName": "$t(common.Template) title",
         "description": "$t(common.Template) description",
@@ -1242,10 +1254,10 @@
       "guidelinesTitle": "Title",
       "guidelinesDescription": "Guidelines"
     },
-    "platformTemplates": "Platform $t(common.Templates)",
-    "loadPlatformTemplates": "Or click here to browse through all platform $t(common.Templates)",
-    "platformUseDisabled": "Please note that you can only use the $t(common.Templates) that are selected for this $t(common.community) (see above). If you would like to use any of the $t(common.Templates) below, please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add these in the $t(common.Template) section of the $t(common.space) Settings.",
-    "disabledTemplateInfo": "Please note that you can only use the $t(common.Templates) that are selected for this $t(common.community), which this is not. If you would like to use this $t(common.Template), please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add it in the $t(common.Template) section of the $t(common.space) $t(common.settings).",
+    "platformTemplates": "Platform $t(common.templates)",
+    "loadPlatformTemplates": "Or click here to browse through all platform $t(common.templates)",
+    "platformUseDisabled": "Please note that you can only use the $t(common.templates) that are selected for this $t(common.community) (see above). If you would like to use any of the $t(common.templates) below, please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add these in the $t(common.Template) section of the $t(common.space) Settings.",
+    "disabledTemplateInfo": "Please note that you can only use the $t(common.templates) that are selected for this $t(common.community), which this is not. If you would like to use this $t(common.Template), please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add it in the $t(common.Template) section of the $t(common.space) $t(common.settings).",
     "importTemplateDialog": {
       "confirmClose": {
         "title": "Discard $t(common.Template)",
@@ -1340,6 +1352,7 @@
     },
     "innovationFlowSettings": {
       "title": "Innovation Flow Settings",
+      "importing": "Importing in progress...",
       "buttonTooltip": "Manage Innovation Flow",
       "editProfileDialog": {
         "title": "Edit Details: Innovation Flow"
@@ -1350,6 +1363,7 @@
         "editState": "Edit Details",
         "deleteState": "Delete",
         "addState": "Add Phase",
+        "setDefaultTemplate": "Set Default Post Template",
         "invalidChars": "A phase name cannot contain special characters.",
         "noRepeatedStates": "A phase with the same name already exists.",
         "createDialog": {
@@ -1367,17 +1381,41 @@
           "title": "Find $t(common.space) $t(common.Template)",
           "confirmationDialog": {
             "title": "Be careful when changing the flow!",
-            "description": "- By changing the $t(common.InnovationFlow), **all changes made to the current flow will be lost**.\n- All existing $t(common.posts) will be grouped under the first phase of the new flow."
+            "description": "Please choose carefully when updating the innovation flow. Your action **cannot be undone**."
           },
           "importCalloutsDialog": {
-            "title": "Apply New $t(common.Template)",
-            "description": "You are about to apply a new $t(common.Template). This action will <b>permanently delete</b> your current $t(common.InnovationFlow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
-            "yes": "Add $t(common.posts) from $t(common.Template)",
-            "yesDescription": "This will include the new $t(common.posts) from the $t(common.Template) in addition to your existing ones.",
-            "no": "Only Change the $t(common.InnovationFlow)",
-            "noDescription": "This will replace only the $t(common.InnovationFlow), keeping your current $t(common.posts) as they are.",
-            "apply": "Apply new $t(common.Template)"
+            "title": "Apply New $t(common.template)",
+            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovationFlow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "option1": {
+              "label": "Replace with new flow",
+              "description": "This will delete your current $t(common.innovationFlow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
+            },
+            "option2": {
+              "label": "Replace and add $t(common.template) $t(common.posts) to existing ones",
+              "description": "This will include the new $t(common.posts) from the $t(common.template) in addition to your existing ones."
+            },
+            "option3": {
+              "label": "Replace flow without adding $t(common.template) $t(common.posts)",
+              "description": "Only replace $t(common.innovationFlow) without adding $t(common.template) $t(common.posts)."
+            },
+            "confirmDelete": {
+              "title": "Confirm Deletion",
+              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
+            },
+            "apply": "Apply"
           }
+        }
+      },
+      "defaultTemplate": {
+        "currentlySelected": "Currently Selected $t(common.template):",
+        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow step.",
+        "removeConfirmation": {
+          "title": "Remove Default $t(common.template)?",
+          "description": "This will remove the default $t(common.template) for this flow step. New posts will no longer be pre-filled with $t(common.template) content."
+        },
+        "errors": {
+          "selectFailed": "Failed to set the default $t(common.template). Please try again.",
+          "removeFailed": "Failed to remove the default $t(common.template). Please try again."
         }
       }
     },
@@ -2326,6 +2364,9 @@
           "authorization": {
             "description": "Here you can tweak authorization $t(common.settings) for this {{entity}}."
           },
+          "security": {
+            "description": "Here you can manage your security settings, including passkeys and security keys."
+          },
           "templates": {
             "description": "Here you can create and edit $t(common.Templates) for this {{entity}}.",
             "delete-confirmation": "Are you sure you want to delete the $t(common.Template) '{{template}}'?",
@@ -2426,6 +2467,11 @@
           "privacy": {
             "contributorRolesVisible": "Show contributor roles to all registered users"
           }
+        },
+        "security": {
+          "title": "Security",
+          "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
+          "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
         }
       },
       "organization": {
@@ -2512,9 +2558,10 @@
               "defaultSpaceTemplate": {
                 "selectDifferentTemplate": "Change Default $t(common.Template)",
                 "title": "Change Default $t(common.subspace) $t(common.Template)",
-                "description": "Customize the default $t(common.Template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.Templates) collected in the $t(common.space) $t(common.templateLibrary). If you’re looking to create new $t(common.Templates) or explore additional $t(common.Templates), <library>click here</library> to access this library."
+                "description": "Customize the default $t(common.Template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.Templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.Templates) or explore additional $t(common.Templates), <library>click here</library> to access this library."
               }
-            }
+            },
+            "reorderSubspaces": "Reorder $t(common.subspaces)"
           }
         },
         "authorization": {
@@ -2846,6 +2893,12 @@
             "message": "{{space}}",
             "caption": "{{tagline}}"
           }
+        },
+        "resources": {
+          "innovationHubs": "Starting pages",
+          "spaces": "$t(common.spaces)",
+          "virtualContributors": "$t(common.virtualContributors)",
+          "innovationPacks": "$t(common.innovation-packs)"
         },
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
