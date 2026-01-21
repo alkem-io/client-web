@@ -6916,6 +6916,24 @@ export type RoomSendMessageReplyInput = {
   threadID: Scalars['MessageID']['input'];
 };
 
+/** Unread message count for a specific thread in a Room. */
+export type RoomThreadUnreadCount = {
+  __typename?: 'RoomThreadUnreadCount';
+  /** The number of unread messages in the thread. */
+  count: Scalars['Int']['output'];
+  /** The thread ID. */
+  threadId: Scalars['MessageID']['output'];
+};
+
+/** Unread message counts for a Room. */
+export type RoomUnreadCounts = {
+  __typename?: 'RoomUnreadCounts';
+  /** The total number of unread messages in the Room. */
+  roomUnreadCount: Scalars['Int']['output'];
+  /** Unread counts per thread, if thread IDs were requested. */
+  threadUnreadCounts?: Maybe<Array<RoomThreadUnreadCount>>;
+};
+
 /** The category in which to search. A category may include a couple of entity types, e.g. "contributions" include posts, whiteboard, etc. */
 export enum SearchCategory {
   CollaborationTools = 'COLLABORATION_TOOLS',
