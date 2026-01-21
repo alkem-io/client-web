@@ -156,8 +156,8 @@
     "accept-all-cookies": "Accepteer Alle Cookies",
     "confirm-choice": "Bevestig keuze",
     "confirm": "Bevestig",
-    "change-template": "Bewerk $t(common.Template)",
-    "find-template": "Zoek $t(common.Template)",
+    "change-template": "Change $t(common.Template)",
+    "find-template": "Find $t(common.Template)",
     "change": "Verander",
     "share": "Delen",
     "view": "Bekijk",
@@ -179,7 +179,7 @@
     "fullscreen": "Volledig scherm in-/uitschakelen",
     "changeLanguage": "Taal wijzigen",
     "getHelp": "Krijg hulp",
-    "saveAsTemplate": "Opslaan als $t(common.Template)",
+    "saveAsTemplate": "Save as $t(common.Template)",
     "skipLink": "Ga door naar het volgende blok",
     "toggle": "{{entity}} aan/uitzetten",
     "toolsMenu": "Tools menu",
@@ -232,6 +232,15 @@
     "signUp": {
       "signUpEmail": "Aanmelden met e-mail",
       "alreadyHaveAccount": "Heb je al een $t(common.account)?"
+    },
+    "passkey": {
+      "sign-in": "Sign in with passkey",
+      "register": "Register passkey",
+      "not-supported": "Passkeys are not supported by your browser",
+      "script-loading": "Loading passkey support...",
+      "script-error": "Failed to load passkey functionality",
+      "unknown-error": "An error occurred with your passkey",
+      "remove-credential": "Remove passkey"
     }
   },
   "common": {
@@ -355,10 +364,12 @@
     "role": "Rol",
     "agreement": "Overeenkomst",
     "agreements": "Overeenkomsten",
-    "templates": "Templates",
     "noneTemplates": "Geen templates",
     "templateTypes": "Template types",
-    "template": "Template",
+    "template": "template",
+    "Template": "Template",
+    "templates": "templates",
+    "Templates": "Templates",
     "group": "Groep",
     "groups": "Groepen",
     "user-group": "Gebruikersgroep",
@@ -415,6 +426,7 @@
     "notification": "melding",
     "notifications": "meldingen",
     "credentials": "Gegevens",
+    "security": "Security",
     "my-profile": "Mijn $t(common.profile)",
     "my-memberships": "Mijn $t(common.memberships)",
     "Profile": "Profiel",
@@ -439,10 +451,10 @@
     "help": "Help",
     "helpCenter": "Help",
     "loading": "Laden...",
-    "InnovationFlow": "Innovatie Flow",
-    "innovationFlow": "innovatie flow",
-    "InnovationFlows": "Innovatie Flows",
-    "innovationFlows": "innovatie flows",
+    "InnovationFlow": "Innovation Flow",
+    "innovationFlow": "innovation flow",
+    "InnovationFlows": "Innovation Flows",
+    "innovationFlows": "innovation flows",
     "innovation-packs": "Template Packs",
     "innovation-hub": "Innovatie Hub",
     "innovation-hubs": "Innovatie Hubs",
@@ -518,18 +530,18 @@
         "OTHER": "Overig"
       },
       "templateType": {
-        "CALLOUT": "Samenwerkingstool $t(common.Template)",
-        "CALLOUT_plural": "Samenwerkingstool $t(common.Templates)",
+        "CALLOUT": "Collaboration Tool $t(common.Template)",
+        "CALLOUT_plural": "Samenwerkingstool $t(common.templates)",
         "SPACE": "$t(common.space) $t(common.Template)",
-        "SPACE_plural": "$t(common.space) $t(common.Templates)",
-        "COMMUNITY_GUIDELINES": "$t(common.Community) Richtlijnen $t(common.Template)",
-        "COMMUNITY_GUIDELINES_plural": "$t(common.Community) Richtlijnen $t(common.Templates)",
+        "SPACE_plural": "$t(common.space) $t(common.templates)",
+        "COMMUNITY_GUIDELINES": "$t(common.Community) Guidelines $t(common.Template)",
+        "COMMUNITY_GUIDELINES_plural": "$t(common.Community) Richtlijnen $t(common.templates)",
         "INNOVATION_FLOW": "$t(common.InnovationFlow)",
-        "INNOVATION_FLOW_plural": "$t(common.InnovationFlow) $t(common.Templates)",
+        "INNOVATION_FLOW_plural": "$t(common.InnovationFlow) $t(common.templates)",
         "POST": "Post $t(common.Template)",
-        "POST_plural": "Post $t(common.Templates)",
+        "POST_plural": "Post $t(common.templates)",
         "WHITEBOARD": "$t(common.Whiteboard) $t(common.Template)",
-        "WHITEBOARD_plural": "$t(common.Whiteboard) $t(common.Templates)"
+        "WHITEBOARD_plural": "$t(common.Whiteboard) $t(common.templates)"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link $t(common.Collection)",
@@ -891,7 +903,7 @@
       "importTemplate": {
         "confirmOverwrite": {
           "title": "Huidige invoer overschrijven?",
-          "content": "Bij het importeren van een $t(common.Template) kan de huidige inhoud worden overschreven. Weet je zeker dat je door wil gaan?"
+          "content": "If you import a $t(common.Template), your current input could be overwritten. Are you sure you want to continue?"
         }
       },
       "notification": {
@@ -925,7 +937,7 @@
     "permission-help-text": "Gebruik de switch hieronder om deze $t(common.callout) te sluiten voor nieuwe bijdragen.",
     "callout-location": "Locatie: ",
     "sortContributions": "Sorteer bijdragen",
-    "saveAsTemplate": "Opslaan als $t(common.Template)",
+    "saveAsTemplate": "Save as $t(common.Template)",
     "alkemio-link": "Klik hier om meer te lezen over Alkemio's $t(common.posts)",
     "link-collection": {
       "add-link": "Voeg links of documenten toe aan {{title}}",
@@ -1078,7 +1090,7 @@
       },
       "template": {
         "title": "Template:",
-        "defaultTemplate": "Standaard Alkemio $t(common.Template) voor $t(common.spaces)"
+        "defaultTemplate": "Default Alkemio $t(common.Template) for $t(common.spaces)"
       }
     },
     "L1": {
@@ -1120,7 +1132,7 @@
       },
       "template": {
         "title": "$t(common.Template):",
-        "defaultTemplate": "Standaard Alkemio $t(common.Template) voor $t(common.subspaces)"
+        "defaultTemplate": "Default Alkemio $t(common.Template) for $t(common.subspaces)"
       }
     },
     "L2": {
@@ -1164,7 +1176,7 @@
       },
       "template": {
         "title": "$t(common.Template):",
-        "defaultTemplate": "Standaard Alkemio $t(common.Template) voor $t(common.subspaces)"
+        "defaultTemplate": "Default Alkemio $t(common.Template) for $t(common.subspaces)"
       }
     }
   },
@@ -1189,11 +1201,11 @@
   },
   "templateDialog": {
     "profile": {
-      "title": "$t(common.Template) beschrijving",
-      "help": "Deze beschrijving is zichtbaar voor iedereen die de $t(common.Templates) bekijkt. Het maakt echter geen deel uit van de werkelijke {{entityTypeName}} inhoud.",
+      "title": "$t(common.Template) description",
+      "help": "Deze beschrijving is zichtbaar voor iedereen die de $t(common.templates) bekijkt. Het maakt echter geen deel uit van de werkelijke {{entityTypeName}} inhoud.",
       "fields": {
-        "displayName": "$t(common.Template) titel",
-        "description": "$t(common.Template) beschrijving",
+        "displayName": "$t(common.Template) title",
+        "description": "$t(common.Template) description",
         "tags": "$t(common.Template) tags"
       }
     }
@@ -1212,7 +1224,7 @@
     "whiteboardTemplates": {
       "name": "$t(common.enums.templateType.WHITEBOARD)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.WHITEBOARD_plural)",
-      "editTemplateButton": "Bewerk $t(common.Template)",
+      "editTemplateButton": "Edit $t(common.Template)",
       "editDialogTitle": "Bewerk $t(common.enums.templateType.WHITEBOARD)",
       "errorImporting": "Fout bij het importeren van $t(common.enums.templateType.WHITEBOARD)"
     },
@@ -1221,10 +1233,10 @@
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
         "title": "$t(common.subspace) URL",
-        "description": "Voer de URL van de $t(common.space) of $t(common.subspace) in die je wil kopiëren als $t(common.Template).",
+        "description": "Enter the URL of the $t(common.space) or $t(common.subspace) you want to copy as a $t(common.Template).",
         "use": "Gebruik deze $t(common.space)",
-        "urlRequired": "Plak hier de URL van de $t(common.space) die je wil kopiëren als $t(common.Template).",
-        "noRights": "Je hebt $t(common.admin) rechten nodig in de $t(common.space) die je wilt kopiëren als $t(common.Template).",
+        "urlRequired": "Please paste here the URL of the $t(common.space) you want to copy as a $t(common.Template).",
+        "noRights": "You need $t(common.admin) rights in the $t(common.space) you want to copy as a $t(common.Template).",
         "invalidUrl": "De URL wordt niet herkend als een $t(common.space) URL.",
         "spaceNotFoundError": "$t(common.space) niet gevonden",
         "selectAnother": "Update Samenwerking van een andere $t(common.space)"
@@ -1232,8 +1244,8 @@
       "preview": {
         "info": "Altijd inbegrepen: Over informatie & $t(common.settings)"
       },
-      "recursive": "Voeg ook $t(common.subspaces) toe van de geselecteerde $t(common.space) in de $t(common.Template)",
-      "includesSubspaces": "Deze $t(common.Template) bevat ook deze $t(common.subspaces):"
+      "recursive": "Also include $t(common.subspaces) of the selected $t(common.space) in the $t(common.Template)",
+      "includesSubspaces": "This $t(common.Template) also includes these $t(common.subspaces):"
     },
     "communityGuidelinesTemplates": {
       "name": "$t(common.enums.templateType.COMMUNITY_GUIDELINES)",
@@ -1242,29 +1254,29 @@
       "guidelinesTitle": "Titel",
       "guidelinesDescription": "Richtlijnen"
     },
-    "platformTemplates": "Platform $t(common.Templates)",
-    "loadPlatformTemplates": "Of klik hier om door alle platform $t(common.Templates) te bladeren",
-    "platformUseDisabled": "Houd er rekening mee dat je alleen de $t(common.Templates) kunt gebruiken die voor deze $t(common.community) zijn geselecteerd. (zie hierboven). Als je een van de $t(common.Templates) hieronder wilt gebruiken, vraag de $t(common.admin) of de $t(common.lead) van de $t(common.space) om deze toe te voegen in de $t(common.Template) sectie in de $t(common.space) instellingen.",
-    "disabledTemplateInfo": "Houd er rekening mee dat je alleen de $t(common.Templates) kunt gebruiken die voor deze $t(common.community) zijn geselecteerd. Als je een van de andere $t(common.Template) wil gebruiken, vraag de $t(common.admin) of de $t(common.lead) van de $t(common.space) om deze toe te voegen in de $t(common.Template) sectie van de $t(common.space) $t(common.settings).",
+    "platformTemplates": "Platform $t(common.templates)",
+    "loadPlatformTemplates": "Of klik hier om door alle platform $t(common.templates) te bladeren",
+    "platformUseDisabled": "Please note that you can only use the $t(common.templates) that are selected for this $t(common.community) (see above). If you would like to use any of the $t(common.templates) below, please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add these in the $t(common.Template) section of the $t(common.space) Settings.",
+    "disabledTemplateInfo": "Please note that you can only use the $t(common.templates) that are selected for this $t(common.community), which this is not. If you would like to use this $t(common.Template), please ask the $t(common.admin) or the $t(common.lead) of the $t(common.space) to add it in the $t(common.Template) section of the $t(common.space) $t(common.settings).",
     "importTemplateDialog": {
       "confirmClose": {
-        "title": "Verwijder $t(common.Template)",
-        "description": "Weet je zeker dat je deze $t(common.Template) wilt sluiten? Niet-opgeslagen wijzigingen gaan verloren."
+        "title": "Discard $t(common.Template)",
+        "description": "Are you sure you want to close this $t(common.Template)? Unsaved changes will be lost."
       }
     },
     "notifications": {
-      "templateSaved": "$t(common.Template) succesvol opgeslagen"
+      "templateSaved": "$t(common.Template) saved successfully"
     }
   },
   "innovation-templates": {
     "states": {
       "title": "Definitie",
-      "placeholder": "Plak hier de beschrijving van de stappen in deze $t(common.InnovationFlow)"
+      "placeholder": "Here you can paste the description of the phases to use for this $t(common.InnovationFlow)"
     }
   },
   "components": {
     "calloutTemplateDialog": {
-      "typeReadonly": "Zodra een $t(common.Template) is gemaakt, kan het type niet worden gewijzigd. Als je een ander type nodig hebt, maak dan een nieuwe $t(common.Template)."
+      "typeReadonly": "Once a $t(common.Template) is created, its type cannot be changed. If you need a different type, please create a new $t(common.Template)."
     },
     "shareSettings": {
       "description": "Op basis van de $t(common.settings) van de $t(common.space) waarin {{elementName}} zich bevindt, kun je bewerken met meerdere gebruikers tegelijk. Als je niet wilt dat anderen bewerken, wijzig dan onderstaande $t(common.settings).",
@@ -1340,6 +1352,7 @@
     },
     "innovationFlowSettings": {
       "title": "Instellingen Innovatieflow",
+      "importing": "Importing in progress...",
       "buttonTooltip": "Beheer Innovatie Flow",
       "editProfileDialog": {
         "title": "Details Bewerken: Innovatieflow"
@@ -1350,6 +1363,7 @@
         "editState": "Details Bewerken",
         "deleteState": "Verwijderen",
         "addState": "Fase Toevoegen",
+        "setDefaultTemplate": "Set Default Post Template",
         "invalidChars": "Een fase naam kan geen speciale tekens bevatten.",
         "noRepeatedStates": "Er bestaat al een fase met dezelfde naam.",
         "createDialog": {
@@ -1364,20 +1378,44 @@
           "activeStateWarning": "Deze fase is momenteel actief en kan niet worden verwijderd. Je kan het altijd hernoemen of een andere fase als actieve fase instellen."
         },
         "selectDifferentFlow": {
-          "title": "Zoek $t(common.space) $t(common.Template)",
+          "title": "Find $t(common.space) $t(common.Template)",
           "confirmationDialog": {
             "title": "Wees voorzichtig bij het wijzigen van de Flow!",
-            "description": "- Door het wijzigen van de $t(common.InnovationFlow) **gaan alle veranderingen die in de huidige flow zijn aangebracht verloren**.\n- Alle bestaande $t(common.posts) zullen gegroepeerd worden onder de eerste fase van de nieuwe flow."
+            "description": "Please choose carefully when updating the innovation flow. Your action **cannot be undone**."
           },
           "importCalloutsDialog": {
-            "title": "Nieuw $t(common.Template) toepassen",
-            "description": "Je staat op het punt een nieuw $t(common.Template) toe te passen. Deze actie zal je huidige $t(common.InnovationFlow) <b>permanent verwijderen</b>. De bestaande $t(common.posts) die gekoppeld zijn aan verschillende fasen blijven en worden gegroepeerd in de eerste fase van de nieuwe setup.<br/><br/>Kies een van de volgende opties:",
-            "yes": "Voeg $t(common.posts) van $t(common.Template) toe",
-            "yesDescription": "Dit zal de nieuwe $t(common.posts) van de $t(common.Template) bevatten naast je bestaanden.",
-            "no": "Alleen de $t(common.InnovationFlow) wijzigen",
-            "noDescription": "Dit vervangt alleen de $t(common.InnovationFlow), waarbij je huidige $t(common.posts) behouden blijven zoals ze zijn.",
-            "apply": "Nieuw $t(common.Template) toepassen"
+            "title": "Nieuw $t(common.template) toepassen",
+            "description": "You are about to apply a new $t(common.template). This action will permanently delete your current $t(common.innovationFlow). However, the existing $t(common.posts) linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "option1": {
+              "label": "Replace with new flow",
+              "description": "This will delete your current $t(common.innovationFlow) with all existing $t(common.posts) and replace it with the new flow including the $t(common.template) $t(common.posts)."
+            },
+            "option2": {
+              "label": "Replace and add $t(common.template) $t(common.posts) to existing ones",
+              "description": "This will include the new $t(common.posts) from the $t(common.template) in addition to your existing ones."
+            },
+            "option3": {
+              "label": "Replace flow without adding $t(common.template) $t(common.posts)",
+              "description": "Only replace $t(common.innovationFlow) without adding $t(common.template) $t(common.posts)."
+            },
+            "confirmDelete": {
+              "title": "Confirm Deletion",
+              "description": "This action will <strong>permanently delete all existing $t(common.posts)</strong> and replace them with $t(common.posts) from the $t(common.template). This <strong>cannot be undone</strong>. Are you sure you want to proceed?"
+            },
+            "apply": "Apply"
           }
+        }
+      },
+      "defaultTemplate": {
+        "currentlySelected": "Currently Selected $t(common.template):",
+        "noTemplate": "No default template set. Select a template to pre-fill posts in this flow step.",
+        "removeConfirmation": {
+          "title": "Remove Default $t(common.template)?",
+          "description": "This will remove the default $t(common.template) for this flow step. New posts will no longer be pre-filled with $t(common.template) content."
+        },
+        "errors": {
+          "selectFailed": "Failed to set the default $t(common.template). Please try again.",
+          "removeFailed": "Failed to remove the default $t(common.template). Please try again."
         }
       }
     },
@@ -1539,7 +1577,7 @@
       "title": "Wat wil je je $t(common.community) vragen?",
       "titleWithType": "{{type}} toevoegen",
       "post-type-label": "$t(common.Post) label",
-      "custom-template": "Aangepast $t(common.Template)",
+      "custom-template": "Custom $t(common.Template)",
       "info-step": {
         "title": "Details",
         "description": "Omschrijving",
@@ -1570,14 +1608,14 @@
         "post-template-text": "Voeg een standaard tekst toe aan de $t(common.posts), bijvoorbeeld een aantal vragen die je wilt dat mensen beantwoorden.",
         "post-template-default-description": "Standaard beschrijving",
         "whiteboard-template-label": "$t(common.Template):",
-        "whiteboard-empty-template": "Leeg $t(common.Template)",
-        "whiteboard-reset-template": "Reset Leeg $t(common.Template)",
+        "whiteboard-empty-template": "Empty $t(common.Template)",
+        "whiteboard-reset-template": "Reset Empty $t(common.Template)",
         "no-post-template-selected": "Selecteer een $t(common.enums.templateType.WHITEBOARD)",
         "no-whiteboard-template-selected": "Selecteer een $t(common.enums.templateType.WHITEBOARD)"
       },
       "create-step": {
         "title": "Maak aan",
-        "post-template-label": "Kies $t(common.post) $t(common.Template)"
+        "post-template-label": "Choose $t(common.post) $t(common.Template)"
       },
       "closeDialog": {
         "title": "Verwijder $t(common.post)",
@@ -2272,7 +2310,7 @@
     },
     "contribute": {
       "innovationFlow": {
-        "title": "Deze {{entity}} wordt geleid door de <b>{{innovationFlowDisplayName}}</b>. Deze $t(common.InnovationFlow) maakt het proces en de acties per fase waaraan je kunt deelnemen inzichtelijk.",
+        "title": "This {{entity}} is guided by the <b>{{innovationFlowDisplayName}}</b>. This $t(common.InnovationFlow) structures the process and invites you to take specified actions per stage.",
         "readMore": "Lees meer over de <b>{{innovationFlowDisplayName}}</b>"
       },
       "no-posts": "Geen $t(common.posts) gevonden"
@@ -2282,7 +2320,7 @@
       "fullName": "$t(common.templateLibrary)",
       "title": "Alkemio's $t(common.templateLibrary)",
       "subtitle": "Zet je $t(common.spaceSubspace) direct aan de slag met deze kant-en-klare tools. <click>Lees meer</click>.",
-      "useTemplateButton": "Gebruik deze $t(common.Template) door deze vanuit je $t(common.space) te selecteren.",
+      "useTemplateButton": "Access this $t(common.Template) from your $t(common.space) to use it.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
         "dialogTitle": "$t(common.innovation-packs)"
@@ -2326,16 +2364,19 @@
           "authorization": {
             "description": "Hier kan je de authorisatie $t(common.settings) aanpassen voor deze {{entity}}."
           },
+          "security": {
+            "description": "Here you can manage your security settings, including passkeys and security keys."
+          },
           "templates": {
-            "description": "Hier kunt u $t(common.Templates) maken en bewerken voor deze {{entity}}.",
-            "delete-confirmation": "Weet je zeker dat je $t(common.Template) '{{template}} wilt verwijderen?",
+            "description": "Here you can create and edit $t(common.Templates) for this {{entity}}.",
+            "delete-confirmation": "Are you sure you want to delete the $t(common.Template) '{{template}}'?",
             "import": {
               "defaultTitle": "$t(common.templateLibrary)",
               "title": "$t(common.templateLibrary): {{templateType}}",
-              "subtitle": "Zoek $t(common.Templates) om te gebruiken in je $t(common.space) of $t(common.subspace). Selecteer de $t(common.Template) en klik op `Importeren` om het toe te voegen aan je $t(common.Template) set.",
-              "callout-template-import-subtitle": "Zoek een $t(common.Template) voor mensen om te gebruiken wanneer ze bijdragen aan je $t(common.callout)",
-              "noTemplates": "Geen $t(common.Templates) in de $t(common.space) bibliotheek.",
-              "imported-successfully-notification": "$t(common.Template) met succes geïmporteerd"
+              "subtitle": "Find $t(common.Templates) to use in your $t(common.space) or $t(common.subspace). Select the $t(common.Template) and click `Import` to add it to your $t(common.Template) set.",
+              "callout-template-import-subtitle": "Find a $t(common.Template) for people to use when contributing to your $t(common.callout)",
+              "noTemplates": "No $t(common.Templates) in the $t(common.space) library.",
+              "imported-successfully-notification": "$t(common.Template) imported successfully"
             },
             "validation": {
               "spaceRequired": "Selecteer een bestaande $t(common.spaceSubspace) om verder te gaan."
@@ -2386,7 +2427,7 @@
             "limitNotice": "Om de limieten op je $t(common.account) te verhogen, vul het formulier onderaan <contact>de contactpagina</contact> in.",
             "notAvailable": "Niet beschikbaar",
             "notAvailableNotice": "Neem contact op met het Alkemio team om deze functie in te schakelen op je $t(common.account)",
-            "noTemplates": "Dit $t(common.innovationPack) heeft nog geen $t(common.Template)",
+            "noTemplates": "This $t(common.innovationPack) doesn't have any $t(common.Template) yet",
             "customHomepages": "$t(common.customHomepages)",
             "hostTitle": "Host",
             "contactsLink": "Als je een van deze $t(common.settings) wilt wijzigen, neem dan hier contact op met het Alkemio team.",
@@ -2426,6 +2467,11 @@
           "privacy": {
             "contributorRolesVisible": "Toon bijdrager rollen aan alle geregistreerde gebruikers"
           }
+        },
+        "security": {
+          "title": "Security",
+          "description": "Manage your security settings, including passkeys and security keys for two-factor authentication.",
+          "not-enabled": "Passkey and security key authentication is not currently enabled on this platform. Contact your administrator to enable this feature."
         }
       },
       "organization": {
@@ -2499,7 +2545,7 @@
           "subspace-created": "$t(common.subspace) succesvol aangemaakt.",
           "subspace-removed": "$t(common.subspace) succesvol verwijderd.",
           "subspace-updated": "$t(common.subspace) succesvol geupdate.",
-          "templateSaved": "$t(common.Template) succesvol opgeslagen"
+          "templateSaved": "$t(common.Template) saved successfully"
         }
       },
       "space": {
@@ -2507,14 +2553,15 @@
           "subspaces": {
             "description": "Je kunt hier $t(common.subspaces) bewerken voor deze $t(common.space).",
             "defaultSettings": {
-              "title": "Standaard $t(common.subspace) $t(common.Template)",
+              "title": "Default $t(common.subspace) $t(common.Template)",
               "description": "Kies de standaard $t(common.settings) die van toepassing zijn bij het aanmaken van een nieuwe $t(common.subspace) binnen deze $t(common.space). Deze $t(common.settings) kunnen worden gewijzigd tijdens het creëren of op een later tijdstip.",
               "defaultSpaceTemplate": {
-                "selectDifferentTemplate": "Wijzig standaard $t(common.Template)",
-                "title": "Wijzig standaard $t(common.subspace) $t(common.Template)",
-                "description": "Pas de standaard $t(common.Template) aan voor nieuw aangemaakte $t(common.subspaces).<br/><br/>Hieronder kun je kiezen tussen de $t(common.Templates) die zijn verzameld in de $t(common.space) $t(common.templateLibrary). Als je nieuwe $t(common.Templates) wilt maken of extra $t(common.Templates) wilt verkennen, klik dan <library>hier</library> om deze bibliotheek te openen."
+                "selectDifferentTemplate": "Change Default $t(common.Template)",
+                "title": "Change Default $t(common.subspace) $t(common.Template)",
+                "description": "Customize the default $t(common.Template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.Templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.Templates) or explore additional $t(common.Templates), <library>click here</library> to access this library."
               }
-            }
+            },
+            "reorderSubspaces": "Reorder $t(common.subspaces)"
           }
         },
         "authorization": {
@@ -2549,7 +2596,7 @@
             "title": "$t(common.space) functies",
             "features": {
               "WHITEBOARD_MULTI_USER": "Multi-user $t(common.Whiteboards)",
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Template maken van $t(common.callout)",
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create $t(common.Template) from $t(common.callout)",
               "VIRTUAL_CONTRIBUTORS": "Interactie aangaan met $t(common.virtualContributors)"
             }
           },
@@ -2575,9 +2622,9 @@
           },
           "copySpace": {
             "title": "Kopieer $t(common.subspace)",
-            "description": "Om deze $t(common.subspace) setup te gebruiken, kun je deze dupliceren binnen dezelfde $t(common.space) of opslaan als een $t(common.Template) voor gebruik op het hele platform. In beide scenario's zullen de $t(common.InnovationFlow) en alle $t(common.posts) worden gekopieerd. Houd er rekening mee dat $t(common.comments) of bijdragen aan een tool niet in de template of gekopieerde $t(common.subspace) zullen worden opgenomen.",
-            "createTemplate": "Template maken",
-            "createTemplateTooltip": "Om een $t(common.Template) van deze $t(common.subspace) aan te maken, heb je $t(common.space) $t(common.admin) rechten nodig.",
+            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.Template) for use across the platform. In both scenarios, the $t(common.InnovationFlow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the template or duplicated $t(common.subspace).",
+            "createTemplate": "Create $t(common.Template)",
+            "createTemplateTooltip": "To create a $t(common.Template) from this $t(common.subspace), you need $t(common.space) $t(common.admin) permissions.",
             "duplicate": "Dupliceer"
           },
           "account": {
@@ -2847,6 +2894,12 @@
             "caption": "{{tagline}}"
           }
         },
+        "resources": {
+          "innovationHubs": "Starting pages",
+          "spaces": "$t(common.spaces)",
+          "virtualContributors": "$t(common.virtualContributors)",
+          "innovationPacks": "$t(common.innovation-packs)"
+        },
         "welcome": {
           "welcomeUnauthenticated": "Welkom op Alkemio!",
           "welcomeUnauthenticatedSubtitle": "$t(common.spaces) voor Samenwerking",
@@ -3047,7 +3100,7 @@
       "last-saved": "Laatst opgeslagen: {{datetime}}",
       "unsuccessful-save": "<p><strong>{{warningMessage}} Kan wijzigingen niet opslaan. Laatst opgeslagen: {{datetime}}.</strong></p>\n<p>Als dit probleem aanhoudt, neem dan contact op met het Alkemio team. Om te voorkomen dat je voortgang verliest, klik je op het menu in de linkerbovenhoek om je $t(common.whiteboard) op te slaan op je lokale schijf.</p>",
       "state-actions": {
-        "save-as-template": "Opslaan als $t(common.Template)",
+        "save-as-template": "Save as $t(common.Template)",
         "save-and-check-in": "Opslaan & bewerken stoppen",
         "save": "Opslaan",
         "delete": "Verwijder"
@@ -3061,16 +3114,16 @@
         "confirmationText": "Weet je zeker dat je de inhoud van dit $t(common.whiteboard) wilt verwijderen?"
       },
       "template": {
-        "header": "$t(common.Templates) gedefinieerd in Alkemio",
-        "how-to": "Om een $t(common.Template) aan te maken, maak een nieuwe $t(common.whiteboard) of gebruik een bestaande en sla deze op als een $t(common.Template)."
+        "header": "$t(common.Templates) defined in Alkemio",
+        "how-to": "To create a $t(common.Template) create a new $t(common.whiteboard) or use an existing one and save it as a $t(common.Template)."
       },
       "space": {
-        "templatesHeader": "$t(common.Templates) gedefinieerd in deze $t(common.space)",
-        "templatesSubheader": "De $t(common.Templates) gedefinieerd in deze $t(common.space) kunnen gebruikt worden in elke $t(common.subspace) die deze $t(common.space) hosts."
+        "templatesHeader": "$t(common.Templates) defined in this $t(common.space)",
+        "templatesSubheader": "The $t(common.Templates) defined in this $t(common.space) can be used in every $t(common.subspace) that this $t(common.space) hosts."
       },
       "subspace": {
-        "templatesHeader": "$t(common.Templates) gedefinieerd in deze $t(common.subspace)",
-        "templatesSubheader": "De $t(common.Templates) gedefinieerd in deze $t(common.subspace)."
+        "templatesHeader": "$t(common.Templates) defined in this $t(common.subspace)",
+        "templatesSubheader": "The $t(common.Templates) defined in this $t(common.subspace) within its scope."
       },
       "whiteboardDisconnected": {
         "title": "$t(common.Whiteboards) verbinding verloren",
@@ -3661,8 +3714,8 @@
     }
   },
   "innovation-edit": {
-    "new": "Nieuwe $t(common.InnovationFlow)",
-    "edit": "Bewerk $t(common.InnovationFlow)"
+    "new": "New $t(common.InnovationFlow)",
+    "edit": "Edit $t(common.InnovationFlow)"
   },
   "contributors-section": {
     "title": "Bijdragers"
@@ -3778,7 +3831,7 @@
     "license": {
       "noPlansError": "Geen beschikbare paketten. Neem contact op met support."
     },
-    "innovationFlowError": "Deze $t(common.Template) kan niet worden gebruikt voor $t(common.spaces). Selecteer een andere $t(common.Template)."
+    "innovationFlowError": "This $t(common.Template) cannot be used for root $t(common.spaces). Please, select another $t(common.Template)."
   },
   "plansTable": {
     "title": "Kies een abonnement",
